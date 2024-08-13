@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils.container;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.Resettable;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -17,12 +16,12 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 	@Override
 	default void reset() {}
 
+	/**
+	 * Called when the slot is clicked.
+	 * @return {@code true} if the click should be canceled, {@code false} otherwise. Defaults to {@code false} if not overridden.
+	 */
 	default boolean onClickSlot(int slot, ItemStack stack, int screenId) {
 		return false;
-	}
-
-	static void markHighlightsDirty() {
-		SkyblockerMod.getInstance().containerSolverManager.markDirty();
 	}
 
 	static void trimEdges(Int2ObjectMap<ItemStack> slots, int rows) {

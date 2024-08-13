@@ -87,7 +87,6 @@ public class SkyblockerMod implements ClientModInitializer {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final Gson GSON_COMPACT = new GsonBuilder().create();
     private static SkyblockerMod INSTANCE;
-    public final ContainerSolverManager containerSolverManager = new ContainerSolverManager();
     public final StatusBarTracker statusBarTracker = new StatusBarTracker();
 
     /**
@@ -202,7 +201,7 @@ public class SkyblockerMod implements ClientModInitializer {
         FancyStatusBars.init();
         SkyblockInventoryScreen.initEquipment();
         EventNotifications.init();
-        containerSolverManager.init();
+        ContainerSolverManager.init();
         statusBarTracker.init();
         BeaconHighlighter.init();
         WarpAutocomplete.init();
