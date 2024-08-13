@@ -308,5 +308,7 @@
     "argument.color.hex.invalidChar": "Caractere inválido para hex integer: %s. Caracteres válidos: [0-9a-fA-F]",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Aviso de Perigo",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Exibe um aviso quando você está em perigo devido a um golpe de tentáculo ou de TNT. A cor do aviso adapta-se ao nível de perigo!",
-    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Contorna Kuudra em um laranja escuro."
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Contorna Kuudra em um laranja escuro.",
+    "key.bazaarLookup": "Olhar no Bazar",
+    "key.skyblocker.slottext": "Texto do Slot"
 }
