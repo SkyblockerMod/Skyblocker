@@ -80,6 +80,7 @@ public class Utils {
     private static boolean mayorTickScheduled = false;
     private static int mayorTickRetryAttempts = 0;
     private static String mayor = "";
+    private static String minister = "";
 
     /**
      * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
@@ -198,6 +199,14 @@ public class Utils {
     @NotNull
     public static String getMayor() {
         return mayor;
+    }
+
+    /**
+     * @return the current minister as cached on skyblock join.
+     */
+    @NotNull
+    public static String getMinister() {
+        return minister;
     }
 
     public static void init() {
@@ -510,7 +519,7 @@ public class Utils {
                 if (!response.ok()) throw new HttpResponseException(response.statusCode(), response.content());
                 JsonObject json = JsonParser.parseString(response.content()).getAsJsonObject();
                 if (!json.get("success").getAsBoolean()) throw new RuntimeException("Request failed!"); //Can't find a more appropriate exception to throw here.
-                return json.get("mayor").getAsJsonObject().get("name").getAsString();
+                return json.get("mayor").getAsJsonObject();
             } catch (Exception e) {
                 throw new RuntimeException(e); //Wrap the exception to be handled by the exceptionally block
             }
@@ -524,11 +533,12 @@ public class Utils {
             } else {
                 LOGGER.warn("[Skyblocker] Failed to get mayor status after 5 retries! Stopping further retries until next reboot.");
             }
-            return ""; //Have to return a value for the thenAccept block.
+            return new JsonObject(); //Have to return a value for the thenAccept block.
         }).thenAccept(result -> {
             if (!result.isEmpty()) {
-                mayor = result;
-                LOGGER.info("[Skyblocker] Mayor set to {}.", mayor);
+                mayor = result.get("name").getAsString();
+                minister = result.getAsJsonObject("minister").get("name").getAsString();
+                LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);
                 scheduleMayorTick(); //Ends up as a cyclic task with finer control over scheduled time
             }
         });
