@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.mayors;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
@@ -20,7 +21,7 @@ public final class JerryTimer {
 		//Example message: "§b ☺ §eThere is a §aGreen Jerry§e!"
 		//There are various formats, all of which start with the "§b ☺ " prefix and contain the word "<color> Jerry"
 		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-			if (overlay || !Utils.getMayor().equals("Jerry") || !SkyblockerConfigManager.get().helpers.jerry.enableJerryTimer) return;
+			if (overlay || !MayorUtils.getMayor().name().equals("Jerry") || !SkyblockerConfigManager.get().helpers.jerry.enableJerryTimer) return;
 			String text = message.getString();
 			//This part of hypixel still uses legacy text formatting, so we can't directly check for the actual text
 			if (!text.startsWith("§b ☺ ") || !text.contains("Jerry")) return;

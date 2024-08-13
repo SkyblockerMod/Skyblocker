@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -19,7 +20,6 @@ import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.collection.DefaultedList;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,7 +151,7 @@ public class DungeonScore {
 		setCurrentFloor();
 		dungeonStarted = true;
 		puzzleCount = getPuzzleCount();
-		isMayorPaul = StringUtils.equalsAny("Paul", Utils.getMayor(), Utils.getMinister());
+		isMayorPaul = MayorUtils.getMayor().perks().stream().anyMatch(perk -> perk.name().equals("EZPZ")) || MayorUtils.getMinister().perk().name().equals("EZPZ");
 		startingTime = System.currentTimeMillis();
 		floorRequirement = FloorRequirement.valueOf(currentFloor);
 		floorHasMimics = MIMIC_FLOORS_PATTERN.matcher(currentFloor).matches();
