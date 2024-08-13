@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import java.time.Duration;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemListWidget;
 import net.minecraft.client.gui.DrawContext;
@@ -12,11 +10,9 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.CraftingRecipe;
-import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeMatcher;
 import net.minecraft.recipe.book.RecipeBookCategory;
@@ -25,9 +21,10 @@ import net.minecraft.screen.AbstractRecipeScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+
+import java.time.Duration;
 
 public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingTableScreenHandler> {
     private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/crafting_table.png");
@@ -44,7 +41,6 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
 
     public SkyblockCraftingTableScreen(SkyblockCraftingTableScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
-        this.backgroundWidth += 22;
     }
 
     @Override
@@ -52,15 +48,15 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         super.init();
         this.narrow = this.width < 379;
         this.recipeBook.initialize(this.width, this.height, this.client, this.narrow, new DummyRecipeScreenHandler());
-        this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth) + 11;
+        this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth);
         this.addDrawableChild(new TexturedButtonWidget(this.x + 5, this.height / 2 - 49, 20, 18, RecipeBookWidget.BUTTON_TEXTURES, button -> {
             this.recipeBook.toggleOpen();
-            this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth) + 11;
+            this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth);
             button.setPosition(this.x + 5, this.height / 2 - 49);
-            if (moreCraftsButton != null) moreCraftsButton.setPosition(this.x + 174, this.y + 62);
+            if (moreCraftsButton != null) moreCraftsButton.setPosition(this.x + 174 + 4, this.y + 62);
         }));
         if (!handler.mirrorverse) {
-            moreCraftsButton = new TexturedButtonWidget(this.x + 174, y + 62, 16, 16, MORE_CRAFTS_TEXTURES,
+            moreCraftsButton = new TexturedButtonWidget(this.x + 174 + 4, y + 62, 16, 16, MORE_CRAFTS_TEXTURES,
                     button -> this.onMouseClick(handler.slots.get(26), handler.slots.get(26).id, 0, SlotActionType.PICKUP));
             moreCraftsButton.setTooltipDelay(Duration.ofMillis(250L));
             moreCraftsButton.setTooltip(Tooltip.of(Text.literal("More Crafts")));
@@ -108,7 +104,8 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         int i = this.x;
         int j = (this.height - this.backgroundHeight) / 2;
         context.drawTexture(TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
-        if (!handler.mirrorverse) context.drawGuiTexture(QUICK_CRAFT, i + 173, j, 0, 25, 84);
+        //4 px of margin to allow some space for custom resource packs that have size differences on the crafting table/inventory textures
+        if (!handler.mirrorverse) context.drawGuiTexture(QUICK_CRAFT, i + 169, j - 3, 0, 37, 90);
     }
 
     @Override
@@ -194,7 +191,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         }
 
         @Override
-        public boolean canUse(PlayerEntity player) {
+        public boolean canUse(PlayerEntity player)  {
             return false;
         }
     }

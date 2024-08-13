@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
@@ -37,9 +38,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * Opened here {@code de.hysky.skyblocker.mixins.MinecraftClientMixin#skyblocker$skyblockInventoryScreen}
+ * Opened here {@link de.hysky.skyblocker.mixins.MinecraftClientMixin#skyblocker$skyblockInventoryScreen}
  * <br>
- * Book button is moved here {@code de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker}
+ * Book button is moved here {@link de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker$replaceRecipeBook(RecipeBookWidget)}
  */
 public class SkyblockInventoryScreen extends InventoryScreen {
     private static final Logger LOGGER = LoggerFactory.getLogger("Equipment");
