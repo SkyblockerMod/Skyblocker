@@ -28,6 +28,7 @@ public class TooltipManager {
 			new TrueHexDyeScreenDisplay(),
 			new SupercraftReminder(),
 			ChocolateFactorySolver.INSTANCE,
+			BitsTooltip.INSTANCE,
 			new ReorderHelper(),
 			new NpcPriceTooltip(1),
 			new BazaarPriceTooltip(2),
