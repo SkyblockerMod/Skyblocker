@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -25,7 +25,7 @@ public abstract class GenericContainerScreenHandlerMixin extends ScreenHandler {
     @Override
     public void setStackInSlot(int slot, int revision, ItemStack stack) {
         super.setStackInSlot(slot, revision, stack);
-        SkyblockerMod.getInstance().containerSolverManager.markDirty();
+        ContainerSolverManager.markHighlightsDirty();
 
         Screen currentScreen = MinecraftClient.getInstance().currentScreen;
         switch (currentScreen) {
@@ -47,7 +47,7 @@ public abstract class GenericContainerScreenHandlerMixin extends ScreenHandler {
     @Override
     public void updateSlotStacks(int revision, List<ItemStack> stacks, ItemStack cursorStack) {
         super.updateSlotStacks(revision, stacks, cursorStack);
-        SkyblockerMod.getInstance().containerSolverManager.markDirty();
+        ContainerSolverManager.markHighlightsDirty();
         if (MinecraftClient.getInstance().currentScreen instanceof PartyFinderScreen screen) {
             screen.markDirty();
         }

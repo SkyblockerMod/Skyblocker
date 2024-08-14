@@ -34,38 +34,36 @@ import java.util.List;
  * Manager class for {@link SimpleContainerSolver}s like terminal solvers and experiment solvers. To add a new gui solver, extend {@link SimpleContainerSolver} and register it in {@link #ContainerSolverManager()}.
  */
 public class ContainerSolverManager {
-	private final ContainerSolver[] solvers;
-	private ContainerSolver currentSolver = null;
-	private List<ColorHighlight> highlights;
+	private static final ContainerSolver[] solvers = new ContainerSolver[]{
+			new ColorTerminal(),
+			new OrderTerminal(),
+			new StartsWithTerminal(),
+			new LightsOnTerminal(),
+			new CroesusHelper(),
+			new CroesusProfit(),
+			new ChronomatronSolver(),
+			new CommissionHighlight(),
+			new SuperpairsSolver(),
+			UltrasequencerSolver.INSTANCE,
+			new NewYearCakeBagHelper(),
+			NewYearCakesHelper.INSTANCE,
+			ChocolateFactorySolver.INSTANCE,
+			new ReorderHelper()
+	};
+	private static ContainerSolver currentSolver = null;
+	private static List<ColorHighlight> highlights;
 	/**
 	 * Useful for keeping track of a solver's state in a Screen instance, such as if Hypixel closes & reopens a screen after every click (as they do with terminals).
 	 */
-	private int screenId = 0;
+	private static int screenId = 0;
 
-	public ContainerSolverManager() {
-		solvers = new ContainerSolver[]{
-				new ColorTerminal(),
-				new OrderTerminal(),
-				new StartsWithTerminal(),
-				new LightsOnTerminal(),
-				new CroesusHelper(),
-				new CroesusProfit(),
-				new ChronomatronSolver(),
-				new CommissionHighlight(),
-				new SuperpairsSolver(),
-				UltrasequencerSolver.INSTANCE,
-				new NewYearCakeBagHelper(),
-				NewYearCakesHelper.INSTANCE,
-				ChocolateFactorySolver.INSTANCE,
-				new ReorderHelper()
-		};
-	}
+	private ContainerSolverManager() {}
 
-	public ContainerSolver getCurrentSolver() {
+	public static ContainerSolver getCurrentSolver() {
 		return currentSolver;
 	}
 
-	public void init() {
+	public static void init() {
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
 				ScreenEvents.afterRender(screen).register((screen1, context, mouseX, mouseY, delta) -> {
@@ -83,23 +81,20 @@ public class ContainerSolverManager {
 		});
 	}
 
-	public void onSetScreen(@NotNull GenericContainerScreen screen) {
+	@SuppressWarnings({"ConstantValue", "java:S1066"})
+	public static void onSetScreen(@NotNull GenericContainerScreen screen) {
 		String screenName = screen.getTitle().getString();
 		for (ContainerSolver solver : solvers) {
 			if (solver.isEnabled()) {
-				if (solver instanceof SimpleContainerSolver containerSolver && containerSolver.test(screenName)) {
-					++screenId;
-					currentSolver = containerSolver;
-					currentSolver.start(screen);
-					markDirty();
-
-					return;
-				} else if (solver.test(screen)) {
+				//Ignore the result of instanceof being always true.
+				//This only happens because all solvers in the `solvers` array are SimpleContainerSolvers, which extend RegexContainerMatcher.
+				//This may not be the case as more and more solvers are added.
+				//Also don't merge this with the above `if`, the parenthesis mess gets hard to read. (java:S1066 for sonarlint users)
+				if ((solver instanceof RegexContainerMatcher containerMatcher && containerMatcher.test(screenName)) || solver.test(screen)) {
 					++screenId;
 					currentSolver = solver;
 					currentSolver.start(screen);
-					markDirty();
-
+					markHighlightsDirty();
 					return;
 				}
 			}
@@ -107,33 +102,27 @@ public class ContainerSolverManager {
 		clearScreen();
 	}
 
-	public void clearScreen() {
+	public static void clearScreen() {
 		if (currentSolver != null) {
 			currentSolver.reset();
 			currentSolver = null;
 		}
 	}
 
-	public void markDirty() {
+	public static void markHighlightsDirty() {
 		highlights = null;
 	}
 
 	/**
 	 * @return Whether the click should be disallowed.
 	 */
-	public boolean onSlotClick(int slot, ItemStack stack) {
-		if (currentSolver != null) {
-			return currentSolver.onClickSlot(slot, stack, screenId);
-		}
-
-		return false;
+	public static boolean onSlotClick(int slot, ItemStack stack) {
+		return currentSolver != null && currentSolver.onClickSlot(slot, stack, screenId);
 	}
 
-	public void onDraw(DrawContext context, List<Slot> slots) {
-		if (currentSolver == null)
-			return;
-		if (highlights == null)
-			highlights = currentSolver.getColors(slotMap(slots));
+	public static void onDraw(DrawContext context, List<Slot> slots) {
+		if (currentSolver == null) return;
+		if (highlights == null) highlights = currentSolver.getColors(slotMap(slots));
 		RenderSystem.enableDepthTest();
 		RenderSystem.colorMask(true, true, true, false);
 		for (ColorHighlight highlight : highlights) {
@@ -144,7 +133,7 @@ public class ContainerSolverManager {
 		RenderSystem.colorMask(true, true, true, true);
 	}
 
-	private Int2ObjectMap<ItemStack> slotMap(List<Slot> slots) {
+	private static Int2ObjectMap<ItemStack> slotMap(List<Slot> slots) {
 		Int2ObjectMap<ItemStack> slotMap = new Int2ObjectRBTreeMap<>();
 		for (int i = 0; i < slots.size(); i++) {
 			slotMap.put(i, slots.get(i).getStack());
