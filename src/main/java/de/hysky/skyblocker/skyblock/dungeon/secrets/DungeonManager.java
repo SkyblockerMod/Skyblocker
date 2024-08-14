@@ -253,6 +253,7 @@ public class DungeonManager {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
                 .then(literal("markAsFound").then(markSecretsCommand(true)))
                 .then(literal("markAsMissing").then(markSecretsCommand(false)))
+                .then(literal("markAllAsMissing").executes(DungeonManager::markAllSecretsAsMissing))
                 .then(literal("getRelativePos").executes(DungeonManager::getRelativePos))
                 .then(literal("getRelativeTargetPos").executes(DungeonManager::getRelativeTargetPos))
                 .then(literal("addWaypoint").then(addCustomWaypointCommand(false, registryAccess)))
@@ -370,6 +371,17 @@ public class DungeonManager {
             }
             return Command.SINGLE_SUCCESS;
         });
+    }
+
+    private static int markAllSecretsAsMissing(CommandContext<FabricClientCommandSource> context) {
+        if (!isCurrentRoomMatched()) {
+            currentRoom.markAllSecrets(false);
+            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.markSecretsMissing")));
+        } else {
+            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.markSecretsMissingUnable")));
+        }
+
+        return Command.SINGLE_SUCCESS;
     }
 
     private static int getRelativePos(CommandContext<FabricClientCommandSource> context) {
