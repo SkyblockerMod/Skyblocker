@@ -70,46 +70,77 @@ public class BitsTooltip extends SimpleContainerSolver implements TooltipAdder {
     @Override
     public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
         List<ColorHighlight> highlights = new ArrayList<>();
-        double bestCoinsPerBit = 0;
-        int bestSlotIndex = -1;
-
+        Map<String, Long> bestCoinsPerBitSelling = new HashMap<>();
+        Map<String, Long> bestCoinsPerBitAll = new HashMap<>();
+        int bestSlotIndexSelling = -1;
+        int bestSlotIndexAll = -1;
 
         for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
             ItemStack stack = entry.getValue();
             if (stack == null || stack.isEmpty()) continue;
 
-            if (!CATEGORY_PATTERN.matcher(ItemUtils.concatenateLore(ItemUtils.getLore(stack))).find()) {
-                String lore = ItemUtils.concatenateLore(ItemUtils.getLore(stack));
-                Matcher bitsMatcher = BITS_PATTERN.matcher(lore);
-                if (!bitsMatcher.find()) continue;
-                long bitsCost = Long.parseLong(bitsMatcher.group("amount").replace(",", ""));
-                double itemCost = getPrice(stack)*stack.getCount();
+            String itemId = stack.getSkyblockApiId(); // Получаем ID предмета
+            String lore = ItemUtils.concatenateLore(ItemUtils.getLore(stack));
+            Matcher bitsMatcher = BITS_PATTERN.matcher(lore);
+            if (!bitsMatcher.find()) continue;
 
-                if (itemCost == 0) continue;
+            long bitsCost = Long.parseLong(bitsMatcher.group("amount").replace(",", ""));
+            double itemCost = getPrice(stack) * stack.getCount();
+            if (itemCost == 0 || bitsCost == 0) continue;
 
-                long coinsPerBit = Math.round(itemCost / bitsCost);
-                LOGGER.info("Coins per bit for {}: {}", stack.getSkyblockApiId(), coinsPerBit);
+            long coinsPerBit = Math.round(itemCost / bitsCost);
 
-                if (coinsPerBit > bestCoinsPerBit) {
-                    bestCoinsPerBit = coinsPerBit;
-                    bestSlotIndex = entry.getIntKey();
-                }
-            } else {
-                LOGGER.info("Detected category!");
+            // Проверка на лучший предмет из хорошо продающихся
+            if (sellingItems.contains(itemId) && (bestCoinsPerBitSelling.isEmpty() || coinsPerBit > bestCoinsPerBitSelling.getOrDefault(itemId, 0L))) {
+                bestCoinsPerBitSelling.put(itemId, coinsPerBit);
+                bestSlotIndexSelling = entry.getIntKey();
+            }
 
-                long coinsPerBit = processCategory(stack);
+            // Проверка на лучший предмет из всех
+            if (coinsPerBit > bestCoinsPerBitAll.getOrDefault(itemId, 0L)) {
+                bestCoinsPerBitAll.put(itemId, coinsPerBit);
+                bestSlotIndexAll = entry.getIntKey();
+            }
+        }
 
-                if (coinsPerBit > bestCoinsPerBit) {
-                    bestCoinsPerBit = coinsPerBit;
-                    bestSlotIndex = entry.getIntKey();
+        // Обработка категорий
+        for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
+            ItemStack stack = entry.getValue();
+            if (stack == null || stack.isEmpty()) continue;
+
+            if (CATEGORY_PATTERN.matcher(ItemUtils.concatenateLore(ItemUtils.getLore(stack))).find()) {
+                Map<String, Long> categoryResults = processCategory(stack);
+                for (Map.Entry<String, Long> categoryEntry : categoryResults.entrySet()) {
+                    String itemID = categoryEntry.getKey();
+                    long coinsPerBit = categoryEntry.getValue();
+
+                    if (sellingItems.contains(itemID) && (bestCoinsPerBitSelling.isEmpty() || coinsPerBit > bestCoinsPerBitSelling.getOrDefault(itemID, 0L))) {
+                        bestCoinsPerBitSelling.put(itemID, coinsPerBit);
+                        bestSlotIndexSelling = entry.getIntKey();
+                    }
+
+                    if (coinsPerBit > bestCoinsPerBitAll.getOrDefault(itemID, 0L)) {
+                        bestCoinsPerBitAll.put(itemID, coinsPerBit);
+                        bestSlotIndexAll = entry.getIntKey();
+                    }
                 }
             }
         }
-        if (bestSlotIndex != -1) {
-            highlights.add(ColorHighlight.green(bestSlotIndex));
+
+        // Логика подсветки
+        if (bestSlotIndexSelling != -1 && bestSlotIndexSelling == bestSlotIndexAll) {
+            highlights.add(ColorHighlight.green(bestSlotIndexSelling)); // Подсвечиваем только хорошо продающийся предмет
+        } else {
+            if (bestSlotIndexSelling != -1) {
+                highlights.add(ColorHighlight.green(bestSlotIndexSelling)); // Подсвечиваем хорошо продающийся предмет
+            }
+            if (bestSlotIndexAll != -1) {
+                highlights.add(ColorHighlight.yellow(bestSlotIndexAll)); // Подсвечиваем лучший предмет из всех
+            }
         }
         return highlights;
     }
+
 
     @Override
     public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
@@ -118,7 +149,7 @@ public class BitsTooltip extends SimpleContainerSolver implements TooltipAdder {
         String lore = ItemUtils.concatenateLore(lines);
         Matcher bitsMatcher = BITS_PATTERN.matcher(lore);
         if (!bitsMatcher.find()) {
-//            LOGGER.info("No bits pattern found in lore for item: {}", stack.getSkyblockApiId());
+            LOGGER.info("No bits pattern found in lore for item: {}", stack.getSkyblockApiId());
             return;
         }
 
@@ -126,28 +157,26 @@ public class BitsTooltip extends SimpleContainerSolver implements TooltipAdder {
 
         double itemCost = getPrice(stack)*stack.getCount();
         if (itemCost == 0) {
-//            LOGGER.info("Item cost is zero for {}", stack.getSkyblockApiId());
+            LOGGER.info("Item cost is zero for {}", stack.getSkyblockApiId());
             return;
         }
 
         long coinsPerBit = Math.round(itemCost / bitsCost);
-//        LOGGER.info("Coins per bit for {}: {}", stack.getSkyblockApiId(), coinsPerBit);
+        LOGGER.info("Coins per bit for {}: {}", stack.getSkyblockApiId(), coinsPerBit);
 
         lines.add(Text.empty()
                 .append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
                 .append(Text.literal(DECIMAL_FORMAT.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA))
         );
-
     }
 
-    private long processCategory(ItemStack stack) {
+    private Map<String, Long> processCategory(ItemStack stack) {
         String categoryName = stack.getName().getString();
         LOGGER.info("Detected category name: {}", categoryName);
+
         if (categories.containsKey(categoryName)) {
             LOGGER.info("Key matched for: {}", categoryName);
             Map<String, Long> results = new HashMap<>();
-            long bestResult = 0;
-            String bestItemID = "";
 
             Map<String, Integer> category = categories.get(categoryName);
             for (Map.Entry<String, Integer> entry : category.entrySet()) {
@@ -156,27 +185,48 @@ public class BitsTooltip extends SimpleContainerSolver implements TooltipAdder {
                 double itemCost = getPrice(itemID);
                 LOGGER.info("Line processed: {} item, {} price in bits, {} price in coins", itemID, itemBitsPrice, itemCost);
                 long roundedValue = Math.round(itemCost / itemBitsPrice);
-                results.put(itemID, roundedValue);
-                if (roundedValue > bestResult) {
-                    bestResult = roundedValue;
-                    bestItemID = itemID; // Сохраняем ID предмета с наибольшим значением
-                }
+                results.put(itemID, roundedValue); // Добавляем пару "ID, coinsPerBit" в результат
             }
-            LOGGER.info("Best item: {} with value: {}", bestItemID, bestResult);
-            return bestResult;
-        } else if (categoryName.contains("Fuel Blocks")) {  // TODO: add blaze slayer 9 discount support
+            return results;
+        } else if (categoryName.contains("Fuel Blocks")) {
             LOGGER.info("Fuel Blocks code triggered");
             String itemID = "INFERNO_FUEL_BLOCK";
             int[] itemBitsPrice = {75, 3600};
             double itemCost = getPrice(itemID);
-            return (long) (Math.max(itemCost / itemBitsPrice[0], itemCost * 64 / itemBitsPrice[1]));    // this is semi-pointless as stack should be ALWAYS better
+            long coinsPerBit = (long) (Math.max(itemCost / itemBitsPrice[0], itemCost * 64 / itemBitsPrice[1]));
+            return Collections.singletonMap(itemID, coinsPerBit);
         } else {
-            LOGGER.warn("For {} key was NOT matched!", categoryName);
+            LOGGER.warn("Can't recognize category {} from bits shop! Consider reporting this to our discord!", categoryName);
         }
-        return 0;
+        return Collections.emptyMap();
     }
 
-    // SKYBLOCK_ID, Bits Price. Actual data on 13.08.2024
+
+    /**
+     * List of items that sell well. No, it is not automated, but that stuff is unlikely to change unless some update
+     * Definition of "good selling item": 300+ daily sales, 12+ hourly sales
+     * I would personally also demand good price per item as filling up all ah slots with catalyst would suck
+     * But newer players would find a good use of it so ima keep my preferences away
+     * Actual on 14.08.2024
+     */
+    private final List<String> sellingItems = Arrays.asList(
+            "KAT_FLOWER",
+            "KAT_BOUQUET",
+            "HEAT_CORE",
+            "ULTIMATE_CARROT_CANDY_UPGRADE",
+            "TALISMAN_ENRICHMENT_SWAPPER",
+            "GOD_POTION_2",
+            "KISMET_FEATHER",
+            "MATRIARCH_PARFUM",
+            "AUTOPET_RULES_2"   // it barely made it here
+    );
+
+
+    /**
+     * SKYBLOCK_ID, Bits Price
+     * Yes I just hardcoded it. Why work smart when you can work hard?
+     * Actual on 14.08.2024
+     */
     private final Map<String, Integer> catKat = Util.make(new HashMap<>(), map -> {
         map.put("KAT_FLOWER", 500);
         map.put("KAT_BOUQUET", 2500);
