@@ -325,5 +325,12 @@
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip": "Destaque: Apenas mostra um destaque.\n\nContorno + Destaque: Mostra tanto um destaque e um contorno.\n\nContorno: Apenas mostra um contorno.",
     "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning": "Sem Aviso de Flecha Venenosa",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType": "Tipo de Destaque de Porta",
-    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Brilho de Kuudra"
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Brilho de Kuudra",
+    "skyblocker.config.dungeons.allowDroppingProtectedItems.@Tooltip": "Permite o uso de habilidades de classe nas Dungeons em um espaço de inventário boqueado ou enquanto segura um item que foi protegido usando /skyblocker protectitem.",
+    "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound.@Tooltip": "Toca um som ao atingir a pontuação %d nas dungeons.",
+    "skyblocker.config.dungeons.map": "Mapa",
+    "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Destaca as alavancas corretas para clicar em vermelho",
+    "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit": "Calculadora de Lucro do Báu de Croesus",
+    "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight.@Tooltip": "Destaca as portas Wither e Blood em vermelho se bloqueadas e em verde se desbloqueadas.",
+    "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Destaca baús com melhor lucro no NPC Croesus.\n\n\nO melhor baú será destacado em verde.\nSe houver um baú no qual vale a pena usar a dungeon key, ele será destacado em amarelo"
 }
