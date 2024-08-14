@@ -362,7 +362,15 @@ public class DungeonManager {
     }
 
     private static RequiredArgumentBuilder<FabricClientCommandSource, Integer> markSecretsCommand(boolean found) {
-        return argument("secretIndex", IntegerArgumentType.integer()).executes(context -> {
+        return argument("secretIndex", IntegerArgumentType.integer()).suggests((provider, builder) -> {
+            if (isCurrentRoomMatched()) {
+                int secretCount = currentRoom.getSecretCount();
+                for (int i = 1; i < secretCount; i++) {
+                    builder.suggest(i);
+                }
+            }
+            return builder.buildFuture();
+        }).executes(context -> {
             int secretIndex = IntegerArgumentType.getInteger(context, "secretIndex");
             if (markSecrets(secretIndex, found)) {
                 context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable(found ? "skyblocker.dungeons.secrets.markSecretFound" : "skyblocker.dungeons.secrets.markSecretMissing", secretIndex)));

@@ -626,6 +626,10 @@ public class Room implements Tickable, Renderable {
         secretWaypoints.values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
     }
 
+    protected int getSecretCount() {
+        return secretWaypoints.rowMap().size();
+    }
+
     public enum Type {
         ENTRANCE(MapColor.DARK_GREEN.getRenderColorByte(MapColor.Brightness.HIGH)),
         ROOM(MapColor.ORANGE.getRenderColorByte(MapColor.Brightness.LOWEST)),
