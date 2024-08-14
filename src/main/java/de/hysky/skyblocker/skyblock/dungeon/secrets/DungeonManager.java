@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.JsonOps;
@@ -252,8 +253,7 @@ public class DungeonManager {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
                 .then(literal("markAsFound").then(markSecretsCommand(true)))
-                .then(literal("markAsMissing").then(markSecretsCommand(false)))
-                .then(literal("markAllAsMissing").executes(DungeonManager::markAllSecretsAsMissing))
+                .then(literal("markAsMissing").then(markSecretsCommand(false)).then(markAllSecretsAsMissingCommand()))
                 .then(literal("getRelativePos").executes(DungeonManager::getRelativePos))
                 .then(literal("getRelativeTargetPos").executes(DungeonManager::getRelativeTargetPos))
                 .then(literal("addWaypoint").then(addCustomWaypointCommand(false, registryAccess)))
@@ -373,15 +373,17 @@ public class DungeonManager {
         });
     }
 
-    private static int markAllSecretsAsMissing(CommandContext<FabricClientCommandSource> context) {
-        if (!isCurrentRoomMatched()) {
-            currentRoom.markAllSecrets(false);
-            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.markSecretsMissing")));
-        } else {
-            context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.markSecretsMissingUnable")));
-        }
+    private static LiteralArgumentBuilder<FabricClientCommandSource> markAllSecretsAsMissingCommand() {
+        return literal("all").executes(context -> {
+            if (isCurrentRoomMatched()) {
+                currentRoom.markAllSecrets(false);
+                context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.markSecretsMissing")));
+            } else {
+                context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.markSecretsMissingUnable")));
+            }
 
-        return Command.SINGLE_SUCCESS;
+            return Command.SINGLE_SUCCESS;
+        });
     }
 
     private static int getRelativePos(CommandContext<FabricClientCommandSource> context) {
