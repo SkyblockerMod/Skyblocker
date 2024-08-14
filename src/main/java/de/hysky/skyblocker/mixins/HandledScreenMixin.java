@@ -7,7 +7,6 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
-import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
@@ -24,11 +23,11 @@ import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
+import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
@@ -50,7 +49,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
@@ -208,11 +206,19 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	}
 
 	/**
-	 * Redirects getStack calls to account for different stacks in experiment solvers.
+	 * Avoids getting currentSolver again when it's already in the scope for some usages of this method.
+	 * @see #skyblocker$experimentSolvers$getStack(Slot, ItemStack, ContainerSolver)
 	 */
 	@Unique
 	private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack) {
-		ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
+		return skyblocker$experimentSolvers$getStack(slot, stack, ContainerSolverManager.getCurrentSolver());
+	}
+
+	/**
+	 * Redirects getStack calls to account for different stacks in experiment solvers.
+	 */
+	@Unique
+	private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack, ContainerSolver currentSolver) {
 		if ((currentSolver instanceof SuperpairsSolver || currentSolver instanceof UltrasequencerSolver) && ((ExperimentSolver) currentSolver).getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
 			ItemStack itemStack = ((ExperimentSolver) currentSolver).getSlots().get(slot.getIndex());
 			return itemStack == null ? stack : itemStack;
@@ -239,13 +245,13 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		if (slot == null) return;
 		String title = getTitle().getString();
-		ItemStack stack = skyblocker$experimentSolvers$getStack(slot, slot.getStack());
-		ContainerSolver currentSolver = SkyblockerMod.getInstance().containerSolverManager.getCurrentSolver();
+		ContainerSolver currentSolver = ContainerSolverManager.getCurrentSolver();
+		ItemStack stack = skyblocker$experimentSolvers$getStack(slot, slot.getStack(), currentSolver);
 
 		// Prevent clicks on filler items
 		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && FILLER_ITEMS.contains(stack.getName().getString()) &&
 				// Allow clicks in Ultrasequencer and Superpairs
-				(!UltrasequencerSolver.INSTANCE.getTitlePattern().matcher(title).matches() || SkyblockerConfigManager.get().helpers.experiments.enableUltrasequencerSolver)) {
+				(!UltrasequencerSolver.INSTANCE.test(title) || SkyblockerConfigManager.get().helpers.experiments.enableUltrasequencerSolver)) {
 			ci.cancel();
 			return;
 		}
@@ -300,33 +306,9 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 
 		if (currentSolver != null) {
-			boolean disallowed = SkyblockerMod.getInstance().containerSolverManager.onSlotClick(slotId, stack);
+			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack);
 
 			if (disallowed) ci.cancel();
-		}
-
-		// Experiment Solvers
-		if (currentSolver instanceof ExperimentSolver experimentSolver && experimentSolver.getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
-			switch (experimentSolver) {
-				case ChronomatronSolver chronomatronSolver -> {
-					Item item = chronomatronSolver.getChronomatronSlots().get(chronomatronSolver.getChronomatronCurrentOrdinal());
-					if ((stack.isOf(item) || ChronomatronSolver.TERRACOTTA_TO_GLASS.get(stack.getItem()) == item) && chronomatronSolver.incrementChronomatronCurrentOrdinal() >= chronomatronSolver.getChronomatronSlots().size()) {
-						chronomatronSolver.setState(ExperimentSolver.State.END);
-					}
-				}
-
-				case SuperpairsSolver superpairsSolver -> {
-					superpairsSolver.setSuperpairsPrevClickedSlot(slot.getIndex());
-					superpairsSolver.setSuperpairsCurrentSlot(ItemStack.EMPTY);
-				}
-
-				case UltrasequencerSolver ultrasequencerSolver when slot.getIndex() == ultrasequencerSolver.getUltrasequencerNextSlot() -> {
-					int count = ultrasequencerSolver.getSlots().get(ultrasequencerSolver.getUltrasequencerNextSlot()).getCount() + 1;
-					ultrasequencerSolver.getSlots().entrySet().stream().filter(entry -> entry.getValue().getCount() == count).findAny().map(Map.Entry::getKey).ifPresentOrElse(ultrasequencerSolver::setUltrasequencerNextSlot, () -> ultrasequencerSolver.setState(ExperimentSolver.State.END));
-				}
-
-				default -> { /*Do Nothing*/ }
-			}
 		}
 	}
 
