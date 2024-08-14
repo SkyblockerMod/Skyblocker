@@ -1,14 +1,14 @@
-Report bugs @ github.com/SkyblockerMod/Skyblocker!
-Beta versions are available on GitHub Actions!
-Get an items wiki page by pressing F4!
+github.com/SkyblockerMod/Skyblocker!
+Beta versions are on GitHub Actions!
+Get an items wiki by pressing F4!
 github.com/SkyblockerMod/Skyblocker/wiki/contribute!
-View other players' profiles with /pv!
+View players' profiles with /pv!
 Click on a chat tip to know more!
 /skyblocker waypoints is compatible with Skytils!
 Prevent drops with /skyblocker protectItem!
-Skyblocker discord is https://discord.gg/aNNJHQykck!
-Feature requests and bug reports are welcome on GitHub!
-QuickNav buttons can be customized in the config!
+Feature Requests are welcome on GitHub!
+Bug Reports are welcome on GitHub!
+QuickNav can be customized in the config!
 Use Discord Rich Presence to show off!
 Customize settings in the config!
 Need help? Use /skyblocker!
