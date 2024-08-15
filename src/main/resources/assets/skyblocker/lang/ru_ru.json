@@ -706,5 +706,8 @@
     "skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip": "Прячет черепа, появляющиеся при использовании Soulweaver Gloves.",
     "skyblocker.config.general.itemInfoDisplay.slotText": "Текст ячейки",
     "skyblocker.config.general.itemInfoDisplay.slotText.@Tooltip": "Показывает информацию, такую как: уровень книги зачарования, уровень миньона, уровень питомца, уровень зелья, количство пройденых блоков у Prehistoric Egg, максимальную скорость Rancher Boots и уровень скила.",
-    "skyblocker.config.general.itemTooltip.craft.OFF": "Выкл."
+    "skyblocker.config.general.itemTooltip.craft.OFF": "Выключить",
+    "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Включить помощник для Chocolate Factory",
+    "skyblocker.config.general.searchOverlay.starsTooltip": "Счётчик звёзд для данжионизированных предметов",
+    "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory"
 }
