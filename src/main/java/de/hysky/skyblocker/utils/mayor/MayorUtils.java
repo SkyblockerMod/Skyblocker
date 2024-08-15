@@ -57,7 +57,9 @@ public class MayorUtils {
 				if (!response.ok()) throw new HttpResponseException(response.statusCode(), response.content());
 				JsonObject json = JsonParser.parseString(response.content()).getAsJsonObject();
 				if (!json.get("success").getAsBoolean()) throw new RuntimeException("Request failed!"); //Can't find a more appropriate exception to throw here.
-				return json.get("mayor").getAsJsonObject();
+				JsonObject mayorObject = json.getAsJsonObject("mayor");
+				if (mayorObject == null) throw new RuntimeException("No mayor object found in response!");
+				return mayorObject;
 			} catch (Exception e) {
 				throw new RuntimeException(e); //Wrap the exception to be handled by the exceptionally block
 			}
@@ -74,24 +76,30 @@ public class MayorUtils {
 			return new JsonObject(); //Have to return a value for the thenAccept block.
 		}).thenAccept(result -> {
 			if (!result.isEmpty()) {
-				mayor = new Mayor(result.get("key").getAsString(),
-						result.get("name").getAsString(),
-						result.getAsJsonArray("perks")
-						      .asList()
-						      .stream()
-						      .map(JsonElement::getAsJsonObject)
-						      .map(object -> new Perk(object.get("name").getAsString(), object.get("description").getAsString()))
-						      .toList());
-				JsonObject ministerObject = result.getAsJsonObject("minister");
-				minister = new Minister(ministerObject.get("key").getAsString(),
-						ministerObject.get("name").getAsString(),
-						ministerObject.getAsJsonArray("perk")
-						      .asList()
-						      .stream()
-						      .map(JsonElement::getAsJsonObject)
-						      .map(object -> new Perk(object.get("name").getAsString(), object.get("description").getAsString()))
-						      .findFirst().orElse(Perk.EMPTY));
-				LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor.name(), minister.name());
+				try {
+					mayor = new Mayor(result.get("key").getAsString(),
+							result.get("name").getAsString(),
+							result.getAsJsonArray("perks")
+							      .asList()
+							      .stream()
+							      .map(JsonElement::getAsJsonObject)
+							      .map(object -> new Perk(object.get("name").getAsString(), object.get("description").getAsString()))
+							      .toList());
+				} catch (Exception e) {
+					LOGGER.warn("[Skyblocker] Failed to parse mayor status from the API response.", e);
+					mayor = Mayor.EMPTY;
+				}
+				try {
+					JsonObject ministerObject = result.getAsJsonObject("minister");
+					JsonObject ministerPerk = ministerObject.getAsJsonObject("perk");
+					minister = new Minister(ministerObject.get("key").getAsString(),
+							ministerObject.get("name").getAsString(),
+							new Perk(ministerPerk.get("name").getAsString(), ministerPerk.get("description").getAsString()));
+				} catch (Exception e) {
+					LOGGER.warn("[Skyblocker] Failed to parse minister status from the API response. This might be due to a special mayor, in which case there are no ministers.", e);
+					minister = Minister.EMPTY;
+				}
+				LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);
 				scheduleMayorTick(); //Ends up as a cyclic task with finer control over scheduled time
 			}
 		});
