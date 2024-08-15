@@ -35,6 +35,9 @@ public class HelperConfig {
     @SerialEntry
     public ItemPrice itemPrice = new ItemPrice();
 
+    @SerialEntry
+    public boolean enableBitsTooltip = true;
+
     public static class MythologicalRitual {
         @SerialEntry
         public boolean enableMythologicalRitualHelper = true;

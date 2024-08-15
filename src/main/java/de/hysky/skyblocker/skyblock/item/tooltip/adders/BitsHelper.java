@@ -23,21 +23,21 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BitsTooltip extends SimpleContainerSolver implements TooltipAdder {
+public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
     private static final Pattern BITS_PATTERN = Pattern.compile("Cost (?<amount>[\\d,]+) Bits");
     private static final Pattern CATEGORY_PATTERN = Pattern.compile("Click to browse!");
     private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
     private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Bits");
 
-    public static final BitsTooltip INSTANCE = new BitsTooltip();
+    public static final BitsHelper INSTANCE = new BitsHelper();
 
-    public BitsTooltip() {
+    public BitsHelper() {
         super(".*(?:Community Shop|Bits Shop).*");
     }
 
     @Override
     public boolean isEnabled() {
-        return SkyblockerConfigManager.get().general.itemTooltip.showBitsCost;
+        return SkyblockerConfigManager.get().helpers.enableBitsTooltip;
     }
 
     /**

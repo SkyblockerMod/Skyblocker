@@ -139,8 +139,6 @@ public class GeneralConfig {
         @SerialEntry
         public boolean enableEstimatedItemValue = true;
 
-        @SerialEntry
-        public boolean showBitsCost = false;
     }
 
     public enum Average {

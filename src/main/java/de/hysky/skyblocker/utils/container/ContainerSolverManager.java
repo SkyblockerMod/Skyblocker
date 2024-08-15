@@ -17,7 +17,7 @@ import de.hysky.skyblocker.skyblock.dwarven.CommissionHighlight;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.BitsTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.BitsHelper;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -51,7 +51,7 @@ public class ContainerSolverManager {
 			NewYearCakesHelper.INSTANCE,
 			ChocolateFactorySolver.INSTANCE,
 			new ReorderHelper(),
-			new BitsTooltip()
+			new BitsHelper()
 	};
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;
