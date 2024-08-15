@@ -712,5 +712,5 @@
     "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
     "skyblocker.config.general.searchOverlay.maxPet": "Максимальный уровень питомца",
     "skyblocker.config.general.searchOverlay.maxPet.@Tooltip": "Показывать только питомцев максимального уровня",
-    "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper.@Tooltip": "Выделяет самые выгодные улучшения, если включено.\n\nСамое выгодное улучшение помечено зелёным, но, если вы не можете себе его позволить, оно будет помечено жёлтым, а зёленым тогда будет помечено следующее по выгодности улучшение, которое вы можете себе позволить."
+    "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper.@Tooltip": "Выделяет самые лучшие улучшения, если включено.\n\nСамое лучшее улучшение помечено зелёным, но, если вы не можете себе его позволить, оно будет помечено жёлтым, а зёленым тогда будет помечено следующее лучшее улучшение, которое вы можете себе позволить сейчас."
 }
