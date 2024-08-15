@@ -34,6 +34,7 @@ import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.garden.FarmingHud;
+import de.hysky.skyblocker.skyblock.garden.GardenPlotsWidget;
 import de.hysky.skyblocker.skyblock.garden.LowerSensitivity;
 import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.*;
@@ -216,6 +217,7 @@ public class SkyblockerMod implements ClientModInitializer {
         MobGlow.init();
         MayorUtils.init();
         SlayerEntitiesGlow.init();
+        GardenPlotsWidget.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);
