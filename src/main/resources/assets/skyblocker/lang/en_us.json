@@ -398,7 +398,7 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar": "Show In Action Bar:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar.@Tooltip": "Show the message in your action bar.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.announcement": "Show Announcement:",
-  "skyblocker.config.chat.chatRules.screen.ruleScreen.announcement.@Tooltip": "Show the message in the middle of the screen.",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.announcement.@Tooltip": "Show the message in the Title Container. It's position and scale can be changed in the UI & Visuals category of the mod settings.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.false": "False",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.filter": "Filter:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.filter.@Tooltip": "The string/regex to match a chat message to.",
