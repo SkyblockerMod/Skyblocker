@@ -57,6 +57,7 @@ import de.hysky.skyblocker.skyblock.waypoint.*;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
 import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
+import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
@@ -212,6 +213,7 @@ public class SkyblockerMod implements ClientModInitializer {
         SlotTextManager.init();
         BazaarHelper.init();
         MobGlow.init();
+        MayorUtils.init();
         SlayerEntitiesGlow.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);

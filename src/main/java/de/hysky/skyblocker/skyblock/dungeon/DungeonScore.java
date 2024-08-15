@@ -1,9 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -11,6 +9,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -152,7 +151,7 @@ public class DungeonScore {
 		setCurrentFloor();
 		dungeonStarted = true;
 		puzzleCount = getPuzzleCount();
-		isMayorPaul = Utils.getMayor().equals("Paul");
+		isMayorPaul = MayorUtils.getMayor().perks().stream().anyMatch(perk -> perk.name().equals("EZPZ")) || MayorUtils.getMinister().perk().name().equals("EZPZ");
 		startingTime = System.currentTimeMillis();
 		floorRequirement = FloorRequirement.valueOf(currentFloor);
 		floorHasMimics = MIMIC_FLOORS_PATTERN.matcher(currentFloor).matches();
