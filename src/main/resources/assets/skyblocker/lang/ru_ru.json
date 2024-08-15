@@ -716,5 +716,6 @@
     "skyblocker.config.helpers.chocolateFactory.enableEggFinder": "Включить искатель яиц",
     "skyblocker.config.helpers.chocolateFactory.enableEggFinder.@Tooltip": "Подсвечивает яйца из Hoppity's Hunt.",
     "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder": "Включить напоминание о Time Tower",
-    "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip": "Отправляет сообщение в чат, когда ваш Time Tower деактивируется."
+    "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip": "Отправляет сообщение в чат, когда ваш Time Tower деактивируется.",
+    "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages": "Отправлять сообщения о находке яиц"
 }
