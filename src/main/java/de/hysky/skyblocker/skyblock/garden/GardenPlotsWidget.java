@@ -208,7 +208,7 @@ public class GardenPlotsWidget extends ClickableWidget {
 			if (hovered) {
 				context.fill(slotX + 1, slotY + 1, slotX + 17, slotY + 17, 0xAA_FF_FF_FF);
 				matrices.push();
-				matrices.translate(slotX - 1, slotY - 1, 100.f);
+				matrices.translate(slotX, slotY, 100.f);
 				matrices.scale(1.125f, 1.125f, 1.125f);
 				context.drawItem(item, 0, 0);
 				matrices.pop();
