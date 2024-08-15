@@ -714,5 +714,7 @@
     "skyblocker.config.general.searchOverlay.maxPet.@Tooltip": "Показывать только питомцев максимального уровня",
     "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper.@Tooltip": "Выделяет самые лучшие улучшения, если включено.\n\nСамое лучшее улучшение помечено зелёным, но, если вы не можете себе его позволить, оно будет помечено жёлтым, а зёленым тогда будет помечено следующее лучшее улучшение, которое вы можете себе позволить сейчас.",
     "skyblocker.config.helpers.chocolateFactory.enableEggFinder": "Включить искатель яиц",
-    "skyblocker.config.helpers.chocolateFactory.enableEggFinder.@Tooltip": "Выделяет яйца Hoppity's Hunt."
+    "skyblocker.config.helpers.chocolateFactory.enableEggFinder.@Tooltip": "Выделяет яйца Hoppity's Hunt.",
+    "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder": "Включить напоминание о Time Tower",
+    "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip": "Отправляет сообщение в чат, когда ваш Time Tower деактивирован"
 }
