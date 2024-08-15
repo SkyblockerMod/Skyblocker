@@ -718,5 +718,6 @@
     "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder": "Включить напоминание о Time Tower",
     "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip": "Отправляет сообщение в чат, когда ваш Time Tower деактивируется.",
     "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages": "Отправлять сообщение о найденном яйце",
-    "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages.@Tooltip": "Посылает сообщение в чат, когда яйцо найдено на нынешнем острове."
+    "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages.@Tooltip": "Посылает сообщение в чат, когда яйцо найдено на нынешнем острове.",
+    "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "Постоянно играет характерные звуки, пока кролик-бродяга находится в вашей шоколадной фабрике. Если он золотой, будет воспроизведен иной звук с большей частотой."
 }
