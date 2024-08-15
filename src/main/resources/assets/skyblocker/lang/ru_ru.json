@@ -723,5 +723,6 @@
     "skyblocker.config.mining.commissionWaypoints.showBaseCamp": "Показать метку Basecamp",
     "skyblocker.config.mining.commissionWaypoints.showBaseCamp.@Tooltip": "Показать метку для basecamp когда в glacite tunnels (действует при обновлении комиссий).",
     "skyblocker.config.mining.commissionWaypoints.showEmissary": "Показать эмиссара",
-    "skyblocker.config.helpers.chocolateFactory.waypointType": "Тип метки яйца"
+    "skyblocker.config.helpers.chocolateFactory.waypointType": "Тип метки яйца",
+    "skyblocker.config.helpers.chocolateFactory.waypointType.@Tooltip": "Контрольная точка: отображает подсветку и луч маяка.\n\nОбведённая точка: отображает одновременно и контрольную точку, и обводку.\n\nПодсвтека: отображает только подсветку.\n\nОбведённая подсветка: отображает одновременно и подсветку, и обводку.\n\nОбводка: отображает только обводку."
 }
