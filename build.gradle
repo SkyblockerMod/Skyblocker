@@ -1,3 +1,14 @@
+import org.objectweb.asm.AnnotationVisitor
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.ClassWriter
+import org.objectweb.asm.MethodVisitor
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.InsnList
+import org.objectweb.asm.tree.InsnNode
+import org.objectweb.asm.tree.MethodInsnNode
+import org.objectweb.asm.tree.MethodNode
+
 plugins {
 	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
@@ -193,9 +204,6 @@ dependencies {
 
 	// Apache Commons Text
 	include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
-
-	// Annotation Processor
-	annotationProcessor project(":processor")
 }
 
 loom {
@@ -235,6 +243,136 @@ jar {
 
 test {
 	useJUnitPlatform()
+}
+
+// Inject init calls to methods annotated with @Init via ASM
+
+tasks.withType(JavaCompile) {
+	doLast {
+		if (name.equals("compileJava")) { //Limit to the main compilation phase and not the tests phase
+			def start = System.currentTimeMillis();
+			def classesDir = destinationDirectory.get().asFile
+			List<String> methodSignatures = []
+
+			//Find all methods with the @Init annotation
+			findInitMethods(classesDir, methodSignatures)
+
+			//Inject calls to the @Init annotated methods in the SkyblockerMod class
+			injectInitCalls(classesDir, methodSignatures)
+
+			println "Injecting init methods took: " + (System.currentTimeMillis() - start) + "ms"
+		}
+	}
+}
+
+void findInitMethods(File directory, List<String> methodSignatures) {
+	directory.eachFileRecurse { file ->
+		if (file.name.endsWith(".class")) {
+			file.withInputStream { inputStream ->
+				ClassReader classReader = new ClassReader(inputStream);
+
+				classReader.accept(new ClassVisitor(Opcodes.ASM9) {
+					@Override
+					MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+						// Only check methods that are public, static, have no args, and have a void return type
+						if ((access & Opcodes.ACC_PUBLIC) != 0 && (access & Opcodes.ACC_STATIC) != 0 && descriptor.equals("()V")) {
+							return new MethodVisitor(Opcodes.ASM9) {
+								@Override
+								AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+									if (desc.equals("Lde/hysky/skyblocker/annotations/Init;")) {
+										String methodCall = classReader.getClassName() + "." + name
+
+										//Interface static methods need special handling so we add a special marker for that
+										if ((classReader.getAccess() & Opcodes.ACC_INTERFACE) != 0) methodCall += "-ITF"
+
+										methodSignatures.add(methodCall)
+									}
+
+									return super.visitAnnotation(desc, visible)
+								}
+							}
+						}
+
+						return super.visitMethod(access, name, descriptor, signature, exceptions)
+					}
+				}, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES)
+			}
+		}
+	}
+}
+
+void injectInitCalls(File directory, List<String> methodSignatures) {
+	File mainClassFile = findMainClass(directory)
+
+	if (mainClassFile == null) {
+		throw new RuntimeException("SkyblockerMod class wasn't found :(")
+	}
+
+	byte[] classBytes = mainClassFile.bytes
+	ClassReader classReader = new ClassReader(classBytes)
+	ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
+
+	classReader.accept(new ClassVisitor(Opcodes.ASM9, classWriter) {
+		@Override
+		MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+			MethodVisitor methodVisitor = super.visitMethod(access, name, descriptor, signature, exceptions);
+
+			// Limit replacing to the init method which is private, static, named init, has no args, and has a void return type
+			if ((access & Opcodes.ACC_PRIVATE) != 0 && (access & Opcodes.ACC_STATIC) != 0 && name.equals("init") && descriptor.equals("()V")) {
+				// Method node that we will overwrite the init method with
+				MethodNode methodNode = new MethodNode(Opcodes.ASM9, access, name, descriptor, signature, exceptions)
+
+				// The instructions that will replace the content of the init method
+				InsnList insnList = new InsnList()
+
+				// Inject calls to each found @Init annotated method
+				methodSignatures.each { sig ->
+					String className = sig.substring(0, sig.indexOf('.'))
+					String methodName = sig.substring(sig.indexOf('.') + 1, sig.length()).replace("-ITF", "")
+
+					MethodInsnNode methodInsnNode = new MethodInsnNode(Opcodes.INVOKESTATIC, className, methodName, "()V", sig.endsWith("-ITF"))
+
+					insnList.add(methodInsnNode)
+				}
+
+				// Return from the method
+				insnList.add(new InsnNode(Opcodes.RETURN))
+
+				// Put our instructions in the method node
+				methodNode.instructions = insnList
+
+				// Apply our new method node to the visitor to replace the original one
+				methodNode.accept(methodVisitor)
+			}
+
+			return methodVisitor
+		}
+	}, 0)
+
+	try {
+		mainClassFile.withOutputStream { outputStream ->
+			outputStream.write(classWriter.toByteArray())
+		}
+	} catch (IOException e) {
+		e.printStackTrace()	
+	}
+}
+
+// Find the main SkyblockerMod class
+File findMainClass(File directory) {
+    for (File file : directory.listFiles()) {
+        if (file.isDirectory()) {
+        	File foundFile = findMainClass(file);
+
+            if (foundFile != null) {
+                return foundFile
+            }
+        } else if (file.name.equals("SkyblockerMod.class")) {
+            return file
+        }
+    }
+
+    return null
 }
 
 publishMods {

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -36,6 +37,10 @@ public class DungeonBlaze extends DungeonPuzzle {
 
     private DungeonBlaze() {
         super("blaze", "blaze-room-1-high", "blaze-room-1-low");
+    }
+
+    @Init
+    public static void init() {
     }
 
     /**

@@ -105,7 +105,7 @@ public class SkyblockerMod implements ClientModInitializer {
         containerSolverManager.init();
         statusBarTracker.init();
 
-        Initializer.init();
+        init();
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);
         Scheduler.INSTANCE.scheduleCyclic(BackpackPreview::tick, 50);
@@ -123,5 +123,15 @@ public class SkyblockerMod implements ClientModInitializer {
     public void tick(MinecraftClient client) {
         Scheduler.INSTANCE.tick();
         MessageScheduler.INSTANCE.tick();
+    }
+
+    /**
+     * This method is responsible for initializing all classes, in order to initialize your class
+     * you must annotate its initializer method with the {@code @Init} annotation. At compile time the content of this method
+     * is completely overwritten by ASM so adding a call here will do nothing.
+     * 
+     * @see de.hysky.skyblocker.annotations.Init
+     */
+    private static void init() {
     }
 }

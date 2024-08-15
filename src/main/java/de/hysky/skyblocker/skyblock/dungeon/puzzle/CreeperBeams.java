@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -47,6 +48,10 @@ public class CreeperBeams extends DungeonPuzzle {
 
     private CreeperBeams() {
         super("creeper", "creeper-room");
+    }
+
+    @Init
+    public static void init() {
     }
 
     @Override
