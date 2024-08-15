@@ -705,5 +705,6 @@
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Отображает предупреждение, когда вам угрожает опасность из-за удара щупальцем или TNT. Цвет предупреждения адаптируется в зависимости от уровня опасности!",
     "skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip": "Прячет черепа, появляющиеся при использовании Soulweaver Gloves.",
     "skyblocker.config.general.itemInfoDisplay.slotText": "Текст ячейки",
-    "skyblocker.config.general.itemInfoDisplay.slotText.@Tooltip": "Показывает различную информацию, а именно: Уровни книг зачарований, уровень миньона, уровень питомца, уровень зелья, количство пройденых блоков у Prehistoric Egg, максимальную скорость Rancher Boots и уровень скила."
+    "skyblocker.config.general.itemInfoDisplay.slotText.@Tooltip": "Показывает различную информацию, а именно: Уровни книг зачарований, уровень миньона, уровень питомца, уровень зелья, количство пройденых блоков у Prehistoric Egg, максимальную скорость Rancher Boots и уровень скила.",
+    "skyblocker.config.general.itemTooltip.craft.OFF": "Выкл."
 }
