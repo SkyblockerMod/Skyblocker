@@ -87,7 +87,7 @@ public class GardenPlotsWidget extends ClickableWidget {
 				ScreenEvents.remove(screen).register(ignored -> {
 					GenericContainerScreenHandler screenHandler = containerScreen.getScreenHandler();
 					// Take plot icons and names
-					for (int i = 2; i < 43; i += (i % 9 == 6 ? 5 : 1)) {
+					for (int row = 0; row < 5; row++) for (int i = row * 9 + 2; i < row * 9 + 7; i++) {
 						if (i == 22) continue; // Barn icon
 						Slot slot = screenHandler.slots.get(i);
 						ItemStack stack = slot.getStack();
