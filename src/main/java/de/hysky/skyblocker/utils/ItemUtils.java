@@ -10,13 +10,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
-import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
-import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
+import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
@@ -152,14 +151,12 @@ public final class ItemUtils {
                     return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getInt(enchant);
                 }
             }
-
             case "PET" -> {
                 if (customData.contains("petInfo")) {
                     PetCache.PetInfo petInfo = PetCache.PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
                     return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
                 }
             }
-
             case "POTION" -> {
                 String enhanced = customData.contains("enhanced") ? "_ENHANCED" : "";
                 String extended = customData.contains("extended") ? "_EXTENDED" : "";
@@ -169,7 +166,6 @@ public final class ItemUtils {
                             + enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
                 }
             }
-
             case "RUNE" -> {
                 if (customData.contains("runes")) {
                     NbtCompound runes = customData.getCompound("runes");
@@ -177,7 +173,6 @@ public final class ItemUtils {
                     return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getInt(rune);
                 }
             }
-
             case "ATTRIBUTE_SHARD" -> {
                 if (customData.contains("attributes")) {
                     NbtCompound shards = customData.getCompound("attributes");
@@ -185,49 +180,38 @@ public final class ItemUtils {
                     return id + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard);
                 }
             }
-
             case "NEW_YEAR_CAKE" -> {
                 return id + "_" + customData.getInt("new_years_cake");
             }
-
             case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024" -> {
                 return id + "_" + customData.getString("party_hat_color").toUpperCase(Locale.ENGLISH);
             }
-
             case "PARTY_HAT_SLOTH" -> {
                 return id + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ENGLISH);
             }
-
             case "CRIMSON_HELMET", "CRIMSON_CHESTPLATE", "CRIMSON_LEGGINGS", "CRIMSON_BOOTS" -> {
                 NbtCompound attributes = customData.getCompound("attributes");
-
                 if (attributes.contains("magic_find") && attributes.contains("veteran")) {
                     return id + "-MAGIC_FIND-VETERAN";
                 }
             }
-
             case "AURORA_HELMET", "AURORA_CHESTPLATE", "AURORA_LEGGINGS", "AURORA_BOOTS" -> {
                 NbtCompound attributes = customData.getCompound("attributes");
-
                 if (attributes.contains("mana_pool") && attributes.contains("mana_regeneration")) {
                     return id + "-MANA_POOL-MANA_REGENERATION";
                 }
             }
-
             case "TERROR_HELMET", "TERROR_CHESTPLATE", "TERROR_LEGGINGS", "TERROR_BOOTS" -> {
                 NbtCompound attributes = customData.getCompound("attributes");
-
                 if (attributes.contains("lifeline") && attributes.contains("mana_pool")) {
                     return id + "-LIFELINE-MANA_POOL";
                 }
             }
-
             case "MIDAS_SWORD" -> {
                 if (customData.getInt("winning_bid") >= 50000000) {
                     return id + "_50M";
                 }
             }
-
             case "MIDAS_STAFF" -> {
                 if (customData.getInt("winning_bid") >= 100000000) {
                     return id + "_100M";
@@ -254,6 +238,7 @@ public final class ItemUtils {
                 yield enchant.toUpperCase(Locale.ENGLISH) + ";" + enchantments.getInt(enchant);
             }
             case "PET" -> {
+                if (!customData.contains("petInfo")) yield id;
                 PetCache.PetInfo petInfo = PetCache.PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
                 yield petInfo.type() + ';' + petInfo.tierIndex();
             }
@@ -349,7 +334,7 @@ public final class ItemUtils {
         // TODO Cache the max durability and only update the current durability on inventory tick
 
         if (stack.getSkyblockId().equals("PICKONIMBUS")) {
-        	int pickonimbusDurability = customData.getInt("pickonimbus_durability");
+            int pickonimbusDurability = customData.getInt("pickonimbus_durability");
 
             return IntIntPair.of(customData.contains("pickonimbus_durability") ? pickonimbusDurability : 5000, 5000);
         }
