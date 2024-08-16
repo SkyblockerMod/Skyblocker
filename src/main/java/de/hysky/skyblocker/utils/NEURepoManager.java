@@ -65,7 +65,7 @@ public class NEURepoManager {
             try {
                 client.getNetworkHandler().onSynchronizeRecipes(packet);
             } catch (Exception e) {
-                LOGGER.info("[Skyblocker] recipe sync error" , e);
+                LOGGER.info("[Skyblocker NEU Repo] recipe sync error", e);
             }
         }
     }
@@ -76,27 +76,36 @@ public class NEURepoManager {
 
     private static CompletableFuture<Boolean> loadRepository() {
         return CompletableFuture.supplyAsync(() -> {
+            boolean success = true;
             try {
                 if (Files.isDirectory(NEURepoManager.LOCAL_REPO_DIR)) {
                     try (Git localRepo = Git.open(NEURepoManager.LOCAL_REPO_DIR.toFile())) {
                         localRepo.pull().setRebase(true).call();
-                        LOGGER.info("[Skyblocker] NEU Repository Updated");
+                        LOGGER.info("[Skyblocker NEU Repo] NEU Repository Updated");
                     }
                 } else {
                     Git.cloneRepository().setURI(REMOTE_REPO_URL).setDirectory(NEURepoManager.LOCAL_REPO_DIR.toFile()).setBranchesToClone(List.of("refs/heads/master")).setBranch("refs/heads/master").call().close();
-                    LOGGER.info("[Skyblocker] NEU Repository Downloaded");
+                    LOGGER.info("[Skyblocker NEU Repo] NEU Repository Downloaded");
                 }
-                NEU_REPO.reload();
-                return true;
             } catch (TransportException e) {
-                LOGGER.error("[Skyblocker] Transport operation failed. Most likely unable to connect to the remote NEU repo on github", e);
+                LOGGER.error("[Skyblocker NEU Repo] Transport operation failed. Most likely unable to connect to the remote NEU repo on github", e);
+                success = false;
             } catch (RepositoryNotFoundException e) {
-                LOGGER.warn("[Skyblocker] Local NEU Repository not found or corrupted, downloading new one", e);
+                LOGGER.warn("[Skyblocker NEU Repo] Local NEU Repository not found or corrupted, downloading new one", e);
                 Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepository(MinecraftClient.getInstance().player), 1);
+                success = false;
             } catch (Exception e) {
-                LOGGER.error("[Skyblocker] Encountered unknown exception while initializing NEU Repository", e);
+                LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while downloading NEU Repository", e);
+                success = false;
             }
-            return false;
+
+            try {
+                NEU_REPO.reload();
+            } catch (Exception e) {
+                LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while loading NEU Repository", e);
+                success = false;
+            }
+            return success;
         });
     }
 
@@ -114,7 +123,7 @@ public class NEURepoManager {
                 sendMessage(player, Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.deleted")));
                 sendMessage(player, Constants.PREFIX.get().append(Text.translatable(loadRepository().join() ? "skyblocker.updateRepository.success" : "skyblocker.updateRepository.failed")));
             } catch (Exception e) {
-                LOGGER.error("[Skyblocker] Encountered unknown exception while deleting the NEU repo", e);
+                LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while deleting the NEU repo", e);
                 sendMessage(player, Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.error")));
             }
         });
