@@ -26,9 +26,7 @@ import java.util.List;
  * REI integration
  */
 public class SkyblockerREIClientPlugin implements REIClientPlugin {
-    public static final CategoryIdentifier<SkyblockCraftingDisplay> SKYBLOCK = CategoryIdentifier.of(SkyblockerMod.NAMESPACE,
-        "skyblock"
-    );
+    public static final CategoryIdentifier<SkyblockCraftingDisplay> SKYBLOCK = CategoryIdentifier.of(SkyblockerMod.NAMESPACE, "skyblock");
 
     @Override
     public void registerCategories(CategoryRegistry categoryRegistry) {
