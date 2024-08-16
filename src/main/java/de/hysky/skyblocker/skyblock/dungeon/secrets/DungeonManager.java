@@ -365,7 +365,7 @@ public class DungeonManager {
     private static RequiredArgumentBuilder<FabricClientCommandSource, Integer> markSecretsCommand(boolean found) {
         return argument("secretIndex", IntegerArgumentType.integer()).suggests((provider, builder) -> {
             if (isCurrentRoomMatched()) {
-                IntStream.range(1, currentRoom.getSecretCount() - 1).forEach(builder::suggest);
+                IntStream.rangeClosed(1, currentRoom.getSecretCount()).forEach(builder::suggest);
             }
             return builder.buildFuture();
         }).executes(context -> {
