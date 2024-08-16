@@ -307,6 +307,26 @@ public class DungeonsCategory {
                                 .build())
                         .build())
 
+                // Waypoints for goldor phase in f7/m7
+                .group(OptionGroup.createBuilder().name(Text.translatable("skyblocker.config.dungeons.goldorWaypoints"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints"))
+                                .binding(defaults.dungeons.goldor.enableGoldorWaypoints,
+                                        () -> config.dungeons.goldor.enableGoldorWaypoints,
+                                        newValue -> config.dungeons.goldor.enableGoldorWaypoints = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Type>createBuilder()
+                                .name(Text.translatable("skyblocker.config.dungeons.goldorWaypoints.waypointType"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.goldorWaypoints.waypointType.@Tooltip")))
+                                .binding(defaults.dungeons.goldor.waypointType,
+                                        () -> config.dungeons.goldor.waypointType,
+                                        newValue -> config.dungeons.goldor.waypointType = newValue)
+                                .controller(ConfigUtils::createEnumCyclingListController)
+                                .build())
+                        .build())
+
                 // Dungeon Secret Waypoints
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.dungeons.secretWaypoints"))

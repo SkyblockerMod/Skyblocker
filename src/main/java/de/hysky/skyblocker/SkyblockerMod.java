@@ -2,7 +2,6 @@ package de.hysky.skyblocker;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import de.hysky.skyblocker.config.ConfigNullFieldsFix;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
@@ -56,11 +55,11 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.waypoint.*;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
+import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
 import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
-import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -155,6 +154,7 @@ public class SkyblockerMod implements ClientModInitializer {
         DungeonScoreHUD.init();
         DungeonManager.init();
         DungeonBlaze.init();
+        GoldorWaypointsManager.init();
         Waterboard.init();
         Silverfish.init();
         IceFill.init();
