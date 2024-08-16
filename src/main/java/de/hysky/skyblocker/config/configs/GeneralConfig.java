@@ -23,6 +23,9 @@ public class GeneralConfig {
     public boolean acceptReparty = true;
 
     @SerialEntry
+    public boolean inventorySearchCtrlK = false;
+
+    @SerialEntry
     public Shortcuts shortcuts = new Shortcuts();
 
     @SerialEntry

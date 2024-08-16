@@ -57,6 +57,14 @@ public class GeneralCategory {
                                 newValue -> config.general.acceptReparty = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.general.inventorySearchCtrlK"))
+                        .description(OptionDescription.of(Text.of("For BigloBot <3")))
+                        .binding(defaults.general.inventorySearchCtrlK,
+                                () -> config.general.inventorySearchCtrlK,
+                                newValue -> config.general.inventorySearchCtrlK = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
 
                 //Shortcuts
                 .group(OptionGroup.createBuilder()
