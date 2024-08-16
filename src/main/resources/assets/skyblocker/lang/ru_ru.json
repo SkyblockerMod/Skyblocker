@@ -732,7 +732,7 @@
     "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "Начинает отсчет в последние пять секунд перед взрывом Fire Pillar. Настройте 'Название контейнера' для изменения местоположения в HUD (Примечание: Это использует только рудиментарную дистанцию проверки, так что Pillar может быть вызван слеером другого игрока)",
     "skyblocker.config.helpers.jerry": "Jerry",
     "skyblocker.config.helpers.jerry.enableJerryTimer": "Включить таймер появления Jerry",
-    "skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip": "Отправляет сообщение в чат и воспроизводит звук, когда перезарядка на появляние у спрятанного Jerry заканчивается.",
+    "skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip": "Отправляет сообщение в чат и воспроизводит звук, когда время перезарядки на появляние спрятанного Jerry заканчивается.",
     "skyblocker.config.eventNotifications": "Уведомления о событиях",
     "skyblocker.config.eventNotifications.criterion": "Критерий уведомлений"
 }
