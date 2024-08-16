@@ -81,6 +81,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.zip.InflaterInputStream;
 
@@ -364,10 +365,7 @@ public class DungeonManager {
     private static RequiredArgumentBuilder<FabricClientCommandSource, Integer> markSecretsCommand(boolean found) {
         return argument("secretIndex", IntegerArgumentType.integer()).suggests((provider, builder) -> {
             if (isCurrentRoomMatched()) {
-                int secretCount = currentRoom.getSecretCount();
-                for (int i = 1; i < secretCount; i++) {
-                    builder.suggest(i);
-                }
+                IntStream.range(1, currentRoom.getSecretCount() - 1).forEach(builder::suggest);
             }
             return builder.buildFuture();
         }).executes(context -> {
