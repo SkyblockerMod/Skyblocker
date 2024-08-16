@@ -68,7 +68,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
         .toList();
     private final Slot EMPTY_SLOT = new Slot(null, 0, 0, 0);
 
-    public Tooltip modifyTooltip(ItemStack stack,List<Text> lines) {
+    public Tooltip modifyTooltip(ItemStack stack, List<Text> lines) {
         for (TooltipAdder adder : adders) {
             if (adder.isEnabled()) adder.addToTooltip(EMPTY_SLOT, stack, lines);
         }
