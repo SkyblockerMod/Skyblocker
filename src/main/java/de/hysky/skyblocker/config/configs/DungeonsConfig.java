@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 
 public class DungeonsConfig {
@@ -224,11 +225,7 @@ public class DungeonsConfig {
 
             @Override
             public String toString() {
-                return switch (this) {
-                    case HIGHLIGHT -> "Highlight";
-                    case OUTLINED_HIGHLIGHT -> "Outlined Highlight";
-                    case OUTLINE -> "Outline";
-                };
+                return I18n.translate("skyblocker.config.dungeons.doorHighlight.doorHighlightType.type." + name());
             }
         }
     }

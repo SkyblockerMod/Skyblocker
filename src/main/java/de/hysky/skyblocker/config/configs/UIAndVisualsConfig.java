@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 
 import java.awt.*;
@@ -104,10 +105,7 @@ public class UIAndVisualsConfig {
 
         @Override
         public String toString() {
-            return switch (this) {
-                case HORIZONTAL -> "Horizontal";
-                case VERTICAL -> "Vertical";
-            };
+            return I18n.translate("skyblocker.config.uiAndVisuals.titleContainer.direction." + name());
         }
     }
 
@@ -116,11 +114,7 @@ public class UIAndVisualsConfig {
 
         @Override
         public String toString() {
-            return switch (this) {
-                case LEFT -> "Left";
-                case RIGHT -> "Right";
-                case MIDDLE -> "Middle";
-            };
+            return I18n.translate("skyblocker.config.uiAndVisuals.titleContainer.alignment." + name());
         }
     }
 

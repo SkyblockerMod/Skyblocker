@@ -68,7 +68,8 @@ public class QuickNavigationConfig {
         /**
          * Default constructor or else gson skips initialization.
          */
-        private QuickNavItem() {}
+        @SuppressWarnings("unused")
+		private QuickNavItem() {}
 
         public QuickNavItem(ItemData itemData, String clickEvent, String tooltip) {
             this(itemData, "none", clickEvent, tooltip);

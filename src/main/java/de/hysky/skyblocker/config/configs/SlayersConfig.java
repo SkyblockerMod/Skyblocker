@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.configs;
 
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import net.minecraft.client.resource.language.I18n;
 
 public class SlayersConfig {
     @SerialEntry
@@ -10,7 +11,12 @@ public class SlayersConfig {
     public HighlightSlayerEntities highlightBosses = HighlightSlayerEntities.OFF;
 
     public enum HighlightSlayerEntities {
-        OFF, GLOW, HITBOX
+        OFF, GLOW, HITBOX;
+
+        @Override
+        public String toString() {
+            return I18n.translate("skyblocker.config.slayer.highlightBosses." + name());
+        }
     }
 
     @SerialEntry
@@ -79,19 +85,13 @@ public class SlayersConfig {
         public Boolean attunementHighlights = true;
 
         public enum FirePillar {
-            OFF("Off"),
-            VISUAL("Visual Indicator"),
-            SOUND_AND_VISUAL("Sound and Visual Indicator");
-
-            private final String description;
-
-            FirePillar(String description) {
-                this.description = description;
-            }
+            OFF,
+            VISUAL,
+            SOUND_AND_VISUAL;
 
             @Override
             public String toString() {
-                return description;
+                return I18n.translate("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode." + name());
             }
         }
     }

@@ -60,7 +60,6 @@ public class ReorderHelper extends SimpleContainerSolver implements TooltipAdder
 			case 11, 13 -> {
 				lines.add(Text.empty());
 				lines.add(Text.empty().append(Text.translatable("skyblocker.reorderHelper.tooltip.line1")).formatted(Formatting.DARK_GRAY, Formatting.ITALIC));
-				lines.add(Text.empty().append(Text.translatable("skyblocker.reorderHelper.tooltip.line2")).formatted(Formatting.DARK_GRAY, Formatting.ITALIC));
 			}
 		}
 	}
