@@ -1029,7 +1029,7 @@
   "skyblocker.partyFinder.deList": "Click to de-list",
   "skyblocker.partyFinder.join": "Click to join",
 
-  "skyblocker.reorderHelper.tooltip.line1": "[Skyblocker] You can copy the amount of items\nby holding CTRL while clicking on the item!",
+  "skyblocker.reorderHelper.tooltip": "[Skyblocker] You can copy the amount of items\nby holding CTRL while clicking on the item!",
 
   "skyblocker.fancyAuctionHouse.editBid": "Click to edit bid!",
   "skyblocker.fancyAuctionHouse.price": "Price:",
