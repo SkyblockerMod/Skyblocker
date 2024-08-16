@@ -734,5 +734,6 @@
     "skyblocker.config.helpers.jerry.enableJerryTimer": "Включить таймер появления Jerry",
     "skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip": "Отправляет сообщение в чат и воспроизводит звук, когда время перезарядки на появляние спрятанного Jerry заканчивается.",
     "skyblocker.config.eventNotifications": "Уведомления о событиях",
-    "skyblocker.config.eventNotifications.criterion": "Критерии уведомлений"
+    "skyblocker.config.eventNotifications.criterion": "Критерии уведомлений",
+    "skyblocker.config.eventNotifications.monologue": "ты можешь пж зайти на скайблок быстренько? это было б круто потому что если ты это видишь это значит что либо конфиг очистился или ты используешь мод впервые так что спс за то что его выбрал и надеюсь тебе он понравится! так что да это то место где ты будешь видеть все напоминания об ивентах на скайблоке они будут добавлены когда ты зайдешь так что тебе сначала надо зайти на скайблок и да надеюсь тебе понравится мод после этого"
 }
