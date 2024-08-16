@@ -61,7 +61,10 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
     }
 
     private final List<TooltipAdder> adders = Arrays.stream(TooltipManager.adders)
-        .filter(adder -> adder instanceof SimpleTooltipAdder && ((SimpleTooltipAdder) adder).titlePattern != null)
+        .filter(adder -> {
+            if (!(adder instanceof SimpleTooltipAdder simpleTooltipAdder)) return false;
+            return simpleTooltipAdder.titlePattern == null;
+        })
         .toList();
     private final Slot EMPTY_SLOT = new Slot(null, 0, 0, 0);
 
