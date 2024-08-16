@@ -731,5 +731,6 @@
     "skyblocker.config.dungeons.livid.enableLividColorBoundingBox.@Tooltip": "Применяет цветовую рамку к правильному боссу Livid в F5/M5.",
     "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "Начинает отсчет в последние пять секунд перед взрывом Fire Pillar. Настройте 'Название контейнера' для изменения местоположения в HUD (Примечание: Это использует только рудиментарную дистанцию проверки, так что Pillar может быть вызван слеером другого игрока)",
     "skyblocker.config.helpers.jerry": "Jerry",
-    "skyblocker.config.helpers.jerry.enableJerryTimer": "Включить таймер на Jerry"
+    "skyblocker.config.helpers.jerry.enableJerryTimer": "Включить таймер на Jerry",
+    "skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip": "Отправляет сообщение в чат и воспроизводит звук, когда перезарядка на появляние у спрятанного Jerry заканчивается."
 }
