@@ -734,5 +734,5 @@
     "skyblocker.config.helpers.jerry.enableJerryTimer": "Включить таймер появления Jerry",
     "skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip": "Отправляет сообщение в чат и воспроизводит звук, когда время перезарядки на появляние спрятанного Jerry заканчивается.",
     "skyblocker.config.eventNotifications": "Уведомления о событиях",
-    "skyblocker.config.eventNotifications.criterion": "Критерий уведомлений"
+    "skyblocker.config.eventNotifications.criterion": "Критерии уведомлений"
 }
