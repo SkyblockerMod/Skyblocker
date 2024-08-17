@@ -49,17 +49,17 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
     }
 
     @Inject(method = "openEditSignScreen", at = @At("HEAD"), cancellable = true)
-    public void skyblocker$redirectEditSignScreen(SignBlockEntity sign, boolean front, CallbackInfo callbackInfo) {
+    public void skyblocker$redirectEditSignScreen(SignBlockEntity sign, boolean front, CallbackInfo ci) {
         // Fancy Party Finder
         if (!PartyFinderScreen.isInKuudraPartyFinder && client.currentScreen instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted() && sign.getText(front).getMessage(3, false).getString().toLowerCase().contains("level")) {
             partyFinderScreen.updateSign(sign, front);
-            callbackInfo.cancel();
+            ci.cancel();
             return;
         }
 
         if (client.currentScreen instanceof AuctionViewScreen auctionViewScreen) {
             this.client.setScreen(new EditBidPopup(auctionViewScreen, sign, front, auctionViewScreen.minBid));
-            callbackInfo.cancel();
+            ci.cancel();
         }
 
         // Search Overlay
@@ -68,13 +68,13 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
                 if (sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query")) {
                     SearchOverManager.updateSign(sign, front, true);
                     client.setScreen(new OverlayScreen(Text.of("")));
-                    callbackInfo.cancel();
+                    ci.cancel();
                 }
             } else if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableBazaar && client.currentScreen.getTitle().getString().toLowerCase().contains("bazaar")) {
                 if (sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query")) {
                     SearchOverManager.updateSign(sign, front, false);
                     client.setScreen(new OverlayScreen(Text.of("")));
-                    callbackInfo.cancel();
+                    ci.cancel();
                 }
             }
         }

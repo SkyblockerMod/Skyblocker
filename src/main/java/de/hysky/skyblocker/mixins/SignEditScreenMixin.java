@@ -13,6 +13,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.llamalad7.mixinextras.sugar.Local;
+
 import java.util.Objects;
 
 @Mixin(AbstractSignEditScreen.class)
@@ -22,7 +24,7 @@ public abstract class SignEditScreenMixin {
     private String[] messages;
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void skyblocker$render(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
         //if the sign is being used to enter number send it to the sign calculator
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.enabled && Objects.equals(messages[1], "^^^^^^^^^^^^^^^")) {
             SignCalculator.renderCalculator(context, messages[0], context.getScaledWindowWidth() / 2, 55);

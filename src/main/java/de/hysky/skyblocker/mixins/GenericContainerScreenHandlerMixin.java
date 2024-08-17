@@ -31,7 +31,7 @@ public abstract class GenericContainerScreenHandlerMixin extends ScreenHandler {
         switch (currentScreen) {
             case PartyFinderScreen screen -> screen.markDirty();
             case GenericContainerScreen screen when screen.getTitle().getString().toLowerCase().contains("equipment") -> {
-                int line = slot/9;
+                int line = slot / 9;
                 if (line > 0 && line < 5 && slot % 9 == 1) {
                     boolean empty = stack.getName().getString().trim().toLowerCase().startsWith("empty");
                     if (Utils.isInTheRift())
