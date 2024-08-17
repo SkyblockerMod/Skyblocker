@@ -217,5 +217,12 @@
     "skyblocker.end.hud.protectorLocations.left": "左",
     "skyblocker.end.hud.protectorLocations.center": "中部",
     "skyblocker.end.hud.protectorLocations.back": "後ろ",
-    "skyblocker.bars.config.explanationTitle": "これは何？"
+    "skyblocker.bars.config.explanationTitle": "これは何？",
+    "skyblocker.config.foraging.hunting": "狩猟",
+    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.@Tooltip": "背景のスタイルを丸型または四角型から選択してください！",
+    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.style.CIRCULAR": "丸型",
+    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.style.SQUARE": "四角型",
+    "skyblocker.config.general.itemInfoDisplay.slotText.mode.ENABLED": "有効",
+    "skyblocker.config.general.itemInfoDisplay.slotText.mode.DISABLED": "無効",
+    "skyblocker.config.general.itemProtection.slotLockStyle.style.CLASSIC": "クラシック"
 }
