@@ -33,13 +33,13 @@ public abstract class InitProcessor implements Plugin<Project> {
 
 			long start = System.currentTimeMillis();
 			File classesDir = task.getDestinationDirectory().get().getAsFile();
-			Map<String, Integer> methodSignatures = new HashMap<>();
+			Map<MethodReference, Integer> methodSignatures = new HashMap<>();
 
 			//Find all methods with the @Init annotation
 			findInitMethods(classesDir, methodSignatures);
 
 			//Sort the methods by their priority. It's also converted to a list because the priority values are useless from here on
-			List<String> sortedMethodSignatures = methodSignatures.entrySet()
+			List<MethodReference> sortedMethodSignatures = methodSignatures.entrySet()
 			                                                      .stream()
 			                                                      .sorted(Map.Entry.comparingByValue())
 			                                                      .map(Map.Entry::getKey)
@@ -52,7 +52,7 @@ public abstract class InitProcessor implements Plugin<Project> {
 		}));
 	}
 
-	public void findInitMethods(File directory, Map<String, Integer> methodSignatures) {
+	public void findInitMethods(File directory, Map<MethodReference, Integer> methodSignatures) {
 		try {
 			Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<>() {
 				@Override
@@ -74,7 +74,7 @@ public abstract class InitProcessor implements Plugin<Project> {
 		}
 	}
 
-	public void injectInitCalls(File directory, List<String> methodSignatures) {
+	public void injectInitCalls(File directory, List<MethodReference> methodSignatures) {
 		File mainClassFile = findMainClass(directory);
 
 		if (mainClassFile == null) {
@@ -117,9 +117,9 @@ public abstract class InitProcessor implements Plugin<Project> {
 	}
 
 	static class InjectingClassVisitor extends ClassVisitor {
-		private final List<String> methodSignatures;
+		private final List<MethodReference> methodSignatures;
 
-		public InjectingClassVisitor(ClassVisitor classVisitor, List<String> methodSignatures) {
+		public InjectingClassVisitor(ClassVisitor classVisitor, List<MethodReference> methodSignatures) {
 			super(Opcodes.ASM9, classVisitor);
 			this.methodSignatures = methodSignatures;
 		}
@@ -137,11 +137,8 @@ public abstract class InitProcessor implements Plugin<Project> {
 				InsnList insnList = new InsnList();
 
 				// Inject calls to each found @Init annotated method
-				for (String methodCall : methodSignatures) {
-					String className = methodCall.substring(0, methodCall.indexOf('.'));
-					String methodName = methodCall.substring(methodCall.indexOf('.') + 1).replace("-ITF", "");
-
-					MethodInsnNode methodInsnNode = new MethodInsnNode(Opcodes.INVOKESTATIC, className, methodName, "()V", methodCall.endsWith("-ITF"));
+				for (MethodReference methodCall : methodSignatures) {
+					MethodInsnNode methodInsnNode = new MethodInsnNode(Opcodes.INVOKESTATIC, methodCall.className(), methodCall.methodName(), methodCall.descriptor(), methodCall.itf());
 
 					insnList.add(methodInsnNode);
 				}
@@ -161,10 +158,10 @@ public abstract class InitProcessor implements Plugin<Project> {
 	}
 
 	static class ReadingClassVisitor extends ClassVisitor {
-		private final Map<String, Integer> methodSignatures;
+		private final Map<MethodReference, Integer> methodSignatures;
 		private final ClassReader classReader;
 
-		public ReadingClassVisitor(ClassReader classReader, Map<String, Integer> methodSignatures) {
+		public ReadingClassVisitor(ClassReader classReader, Map<MethodReference, Integer> methodSignatures) {
 			super(Opcodes.ASM9);
 			this.classReader = classReader;
 			this.methodSignatures = methodSignatures;
@@ -183,25 +180,30 @@ public abstract class InitProcessor implements Plugin<Project> {
 					return new InitAnnotationVisitor(methodSignatures, getMethodCall());
 				}
 
-				private @NotNull String getMethodCall() {
-					String methodCall = classReader.getClassName() + "." + name;
-					if ((access & Opcodes.ACC_PUBLIC) == 0) throw new IllegalStateException(methodCall + ": Initializer methods must be public");
-					if ((access & Opcodes.ACC_STATIC) == 0) throw new IllegalStateException(methodCall + ": Initializer methods must be static");
-					if (!descriptor.equals("()V")) throw new IllegalStateException(methodCall + ": Initializer methods must have no args and a void return type");
+				private @NotNull MethodReference getMethodCall() {
+					String className = classReader.getClassName();
+					String methodName = name;
+					String methodCallString = className + "." + methodName;
+					boolean itf = false;
+
+					if ((access & Opcodes.ACC_PUBLIC) == 0) throw new IllegalStateException(methodCallString + ": Initializer methods must be public");
+					if ((access & Opcodes.ACC_STATIC) == 0) throw new IllegalStateException(methodCallString + ": Initializer methods must be static");
+					if (!descriptor.equals("()V")) throw new IllegalStateException(methodCallString + ": Initializer methods must have no args and a void return type");
 
 					//Interface static methods need special handling, so we add a special marker for that
-					if ((classReader.getAccess() & Opcodes.ACC_INTERFACE) != 0) methodCall += "-ITF";
-					return methodCall;
+					if ((classReader.getAccess() & Opcodes.ACC_INTERFACE) != 0) itf = true;
+
+					return new MethodReference(className, methodName, descriptor, itf);
 				}
 			};
 		}
 	}
 
 	static class InitAnnotationVisitor extends AnnotationVisitor {
-		private final Map<String, Integer> methodSignatures;
-		private final String methodCall;
+		private final Map<MethodReference, Integer> methodSignatures;
+		private final MethodReference methodCall;
 
-		protected InitAnnotationVisitor(Map<String, Integer> methodSignatures, String methodCall) {
+		protected InitAnnotationVisitor(Map<MethodReference, Integer> methodSignatures, MethodReference methodCall) {
 			super(Opcodes.ASM9);
 			this.methodSignatures = methodSignatures;
 			this.methodCall = methodCall;
@@ -222,4 +224,12 @@ public abstract class InitProcessor implements Plugin<Project> {
 			super.visit(name, value);
 		}
 	}
+
+	/**
+	 * @param className  the class name (e.g. de/hysky/skyblocker/skyblock/ChestValue)
+	 * @param methodName the method's name (e.g. init)
+	 * @param descriptor the method's descriptor (only ()V for now)
+	 * @param itf        whether the target class is an {@code interface} or not
+	 */
+	private record MethodReference(String className, String methodName, String descriptor, boolean itf) {}
 }
