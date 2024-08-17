@@ -112,7 +112,7 @@ public class SkyblockerMod implements ClientModInitializer {
         Scheduler.INSTANCE.scheduleCyclic(DwarvenHud::update, 40);
         Scheduler.INSTANCE.scheduleCyclic(CrystalsHud::update, 40);
         Scheduler.INSTANCE.scheduleCyclic(PlayerListMgr::updateList, 20);
-}
+    }
 
     /**
      * Ticks the scheduler. Called once at the end of every client tick through
@@ -126,10 +126,10 @@ public class SkyblockerMod implements ClientModInitializer {
     }
 
     /**
-     * This method is responsible for initializing all classes, in order to initialize your class
-     * you must annotate its initializer method with the {@code @Init} annotation. At compile time the content of this method
-     * is completely overwritten by ASM so adding a call here will do nothing.
-     * 
+     * This method is responsible for initializing all classes.
+     * To have your class initialized you must annotate its initializer method with the {@code @Init} annotation.
+     * At compile time, ASM completely overwrites the content of this method, so adding a call here will do nothing.
+     *
      * @see de.hysky.skyblocker.annotations.Init
      */
     private static void init() {

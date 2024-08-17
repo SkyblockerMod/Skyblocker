@@ -14,4 +14,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.CLASS)
 public @interface Init {
+	/**
+	 * The priority of the initializer method.
+	 * The higher the number, the later the method will be called.
+	 * Use this to ensure that your initializer method is called after another initializer method if it depends on it.
+	 */
+	int priority() default 0;
+	//TODO: Actually implement this
 }

@@ -1,62 +1,52 @@
-import org.objectweb.asm.AnnotationVisitor
-import org.objectweb.asm.ClassReader
-import org.objectweb.asm.ClassVisitor
-import org.objectweb.asm.ClassWriter
-import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.InsnList
-import org.objectweb.asm.tree.InsnNode
-import org.objectweb.asm.tree.MethodInsnNode
-import org.objectweb.asm.tree.MethodNode
-
 plugins {
 	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
 	id "me.modmuss50.mod-publish-plugin" version "0.7.2"
+    id "de.hysky.skyblocker.annotation-processor"
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
-	flatDir {
-		dirs 'libs'
-	}
+    // Add repositories to retrieve artifacts from in here.
+    // You should only use this when depending on other mods because
+    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+    // for more information about repositories.
+    flatDir {
+        dirs 'libs'
+    }
 
-	maven {
-		name 'Maven Central'
-		url 'https://repo.maven.apache.org/maven2'
-	}
+    maven {
+        name 'Maven Central'
+        url 'https://repo.maven.apache.org/maven2'
+    }
 
-	// For ModMenu and EMI
-	exclusiveContent {
-		forRepository {
-			maven { url "https://maven.terraformersmc.com/releases" }
-		}
+    // For ModMenu and EMI
+    exclusiveContent {
+        forRepository {
+            maven { url "https://maven.terraformersmc.com/releases" }
+        }
 
-		filter {
-			includeGroup "com.terraformersmc"
-			includeGroup "dev.emi"
-		}
-	}
+        filter {
+            includeGroup "com.terraformersmc"
+            includeGroup "dev.emi"
+        }
+    }
 
-	// For REI
-	exclusiveContent {
-		forRepository {
-			maven { url "https://maven.shedaniel.me/" }
-		}
+    // For REI
+    exclusiveContent {
+        forRepository {
+            maven { url "https://maven.shedaniel.me/" }
+        }
 
-		filter {
-			includeGroup "me.shedaniel"
-			includeGroup "me.shedaniel.cloth"
-			includeGroup "dev.architectury"
-		}
-	}
+        filter {
+            includeGroup "me.shedaniel"
+            includeGroup "me.shedaniel.cloth"
+            includeGroup "dev.architectury"
+        }
+    }
 
 	// For JEI
 	exclusiveContent {
@@ -76,105 +66,105 @@ repositories {
 	maven {
 		url "https://maven.isxander.dev/releases"
 
-		content {
-			includeGroup "dev.isxander"
-			includeGroup "org.quiltmc.parsers"
-		}
-	}
+        content {
+            includeGroup "dev.isxander"
+            includeGroup "org.quiltmc.parsers"
+        }
+    }
 
-	// For Minecraft snapshots
-	maven {
-		url "https://maven.isxander.dev/snapshots"
+    // For Minecraft snapshots
+    maven {
+        url "https://maven.isxander.dev/snapshots"
 
-		content {
-			includeGroup "dev.isxander"
-		}
-	}
+        content {
+            includeGroup "dev.isxander"
+        }
+    }
 
-	// For Discord RPC
-	exclusiveContent {
-		forRepository {
-			maven {
-				name = "meteor-maven"
-				url = "https://maven.meteordev.org/releases"
-			}
-		}
+    // For Discord RPC
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "meteor-maven"
+                url = "https://maven.meteordev.org/releases"
+            }
+        }
 
-		filter {
-			includeGroup "meteordevelopment"
-		}
-	}
+        filter {
+            includeGroup "meteordevelopment"
+        }
+    }
 
-	// For Occlusion Culling library
-	exclusiveContent {
-		forRepository {
-			maven { url "https://repo.codemc.io/repository/maven-public/" }
-		}
+    // For Occlusion Culling library
+    exclusiveContent {
+        forRepository {
+            maven { url "https://repo.codemc.io/repository/maven-public/" }
+        }
 
-		filter {
-			includeGroup "com.logisticscraft"
-		}
-	}
+        filter {
+            includeGroup "com.logisticscraft"
+        }
+    }
 
-	// For NEU repo parser
-	exclusiveContent {
-		forRepository {
-			maven { url "https://repo.nea.moe/releases" }
-		}
+    // For NEU repo parser
+    exclusiveContent {
+        forRepository {
+            maven { url "https://repo.nea.moe/releases" }
+        }
 
-		filter {
-			includeGroup "moe.nea"
-		}
-	}
+        filter {
+            includeGroup "moe.nea"
+        }
+    }
 
-	maven {
-		url "https://maven.azureaaron.net/releases"
+    maven {
+        url "https://maven.azureaaron.net/releases"
 
-		content {
-			includeGroup "net.azureaaron"
-		}
-	}
+        content {
+            includeGroup "net.azureaaron"
+        }
+    }
 
-	maven {
-		url "https://maven.azureaaron.net/snapshots"
+    maven {
+        url "https://maven.azureaaron.net/snapshots"
 
-		content {
-			includeGroup "net.azureaaron"
-		}
-	}
+        content {
+            includeGroup "net.azureaaron"
+        }
+    }
 }
 
 dependencies {
-	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
-	// To change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	//Layered Yarn & Mojmap - used to fill in intermediary names
-	mappings loom.layered {
-		//Using Mojmap breaks runClient, so uncomment only for snapshots when temp mappings are needed
-		//officialMojangMappings()
-		mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
-	}
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+    // To change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    //Layered Yarn & Mojmap - used to fill in intermediary names
+    mappings loom.layered {
+        //Using Mojmap breaks runClient, so uncomment only for snapshots when temp mappings are needed
+        //officialMojangMappings()
+        mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Fabric API
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    // Fabric API
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	// YACL
-	include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
+    // YACL
+    include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
 
-	// HM API (Hypixel Mod API Library)
-	include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
+    // HM API (Hypixel Mod API Library)
+    include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
 
-	// Mod Menu
-	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
+    // Mod Menu
+    modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
-	// REI
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
-	//modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+    // REI
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
+    //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
-	// EMI
-	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
-	//modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
+    // EMI
+    modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
+    //modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
 	// JEI (Using modrinth repo since official release is in mojmap and doesn't work)
 	modCompileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
@@ -182,16 +172,16 @@ dependencies {
 
 	compileOnly "com.demonwav.mcdev:annotations:${project.mcdev_annotations_version}"
 
-	include modImplementation("meteordevelopment:discord-ipc:1.1")
+    include modImplementation("meteordevelopment:discord-ipc:1.1")
 
-	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
-	include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
+    // Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
+    include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
 
-	// NEU RepoParser
-	include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
+    // NEU RepoParser
+    include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
 
-	// Networth Calculator (https://github.com/AzureAaron/networth-calculator)
-	include implementation("net.azureaaron:networth-calculator:${project.networth_calculator_version}")
+    // Networth Calculator (https://github.com/AzureAaron/networth-calculator)
+    include implementation("net.azureaaron:networth-calculator:${project.networth_calculator_version}")
 
 	// Legacy Item DFU
 	include implementation("net.azureaaron:legacy-item-dfu:${project.legacy_item_dfu_version}")
@@ -199,189 +189,59 @@ dependencies {
 	// JGit used pull data from the NEU item repo
 	include implementation("org.eclipse.jgit:org.eclipse.jgit:${project.jgit_version}")
 
-	// Apache Commons Math
-	include implementation("org.apache.commons:commons-math3:${project.commons_math_version}")
+    // Apache Commons Math
+    include implementation("org.apache.commons:commons-math3:${project.commons_math_version}")
 
-	// Apache Commons Text
-	include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
+    // Apache Commons Text
+    include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/skyblocker.accesswidener")
+    accessWidenerPath = file("src/main/resources/skyblocker.accesswidener")
 
-	mixin {
-		useLegacyMixinAp = false
-	}
+    mixin {
+        useLegacyMixinAp = false
+    }
 }
 
 base {
-	archivesName = project.archives_base_name
+    archivesName = project.archives_base_name
 }
 
 processResources {
-	inputs.property "version", project.version
+    inputs.property "version", project.version
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+    it.options.release = 21
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${base.archivesName.get()}"}
-	}
+    from("LICENSE") {
+        rename { "${it}_${base.archivesName.get()}" }
+    }
 }
 
 test {
-	useJUnitPlatform()
-}
-
-// Inject init calls to methods annotated with @Init via ASM
-
-tasks.withType(JavaCompile) {
-	doLast {
-		if (name.equals("compileJava")) { //Limit to the main compilation phase and not the tests phase
-			def start = System.currentTimeMillis();
-			def classesDir = destinationDirectory.get().asFile
-			List<String> methodSignatures = []
-
-			//Find all methods with the @Init annotation
-			findInitMethods(classesDir, methodSignatures)
-
-			//Inject calls to the @Init annotated methods in the SkyblockerMod class
-			injectInitCalls(classesDir, methodSignatures)
-
-			println "Injecting init methods took: " + (System.currentTimeMillis() - start) + "ms"
-		}
-	}
-}
-
-void findInitMethods(File directory, List<String> methodSignatures) {
-	directory.eachFileRecurse { file ->
-		if (file.name.endsWith(".class")) {
-			file.withInputStream { inputStream ->
-				ClassReader classReader = new ClassReader(inputStream);
-
-				classReader.accept(new ClassVisitor(Opcodes.ASM9) {
-					@Override
-					MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-						// Only check methods that are public, static, have no args, and have a void return type
-						if ((access & Opcodes.ACC_PUBLIC) != 0 && (access & Opcodes.ACC_STATIC) != 0 && descriptor.equals("()V")) {
-							return new MethodVisitor(Opcodes.ASM9) {
-								@Override
-								AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-									if (desc.equals("Lde/hysky/skyblocker/annotations/Init;")) {
-										String methodCall = classReader.getClassName() + "." + name
-
-										//Interface static methods need special handling so we add a special marker for that
-										if ((classReader.getAccess() & Opcodes.ACC_INTERFACE) != 0) methodCall += "-ITF"
-
-										methodSignatures.add(methodCall)
-									}
-
-									return super.visitAnnotation(desc, visible)
-								}
-							}
-						}
-
-						return super.visitMethod(access, name, descriptor, signature, exceptions)
-					}
-				}, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES)
-			}
-		}
-	}
-}
-
-void injectInitCalls(File directory, List<String> methodSignatures) {
-	File mainClassFile = findMainClass(directory)
-
-	if (mainClassFile == null) {
-		throw new RuntimeException("SkyblockerMod class wasn't found :(")
-	}
-
-	byte[] classBytes = mainClassFile.bytes
-	ClassReader classReader = new ClassReader(classBytes)
-	ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
-
-	classReader.accept(new ClassVisitor(Opcodes.ASM9, classWriter) {
-		@Override
-		MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-			MethodVisitor methodVisitor = super.visitMethod(access, name, descriptor, signature, exceptions);
-
-			// Limit replacing to the init method which is private, static, named init, has no args, and has a void return type
-			if ((access & Opcodes.ACC_PRIVATE) != 0 && (access & Opcodes.ACC_STATIC) != 0 && name.equals("init") && descriptor.equals("()V")) {
-				// Method node that we will overwrite the init method with
-				MethodNode methodNode = new MethodNode(Opcodes.ASM9, access, name, descriptor, signature, exceptions)
-
-				// The instructions that will replace the content of the init method
-				InsnList insnList = new InsnList()
-
-				// Inject calls to each found @Init annotated method
-				methodSignatures.each { sig ->
-					String className = sig.substring(0, sig.indexOf('.'))
-					String methodName = sig.substring(sig.indexOf('.') + 1, sig.length()).replace("-ITF", "")
-
-					MethodInsnNode methodInsnNode = new MethodInsnNode(Opcodes.INVOKESTATIC, className, methodName, "()V", sig.endsWith("-ITF"))
-
-					insnList.add(methodInsnNode)
-				}
-
-				// Return from the method
-				insnList.add(new InsnNode(Opcodes.RETURN))
-
-				// Put our instructions in the method node
-				methodNode.instructions = insnList
-
-				// Apply our new method node to the visitor to replace the original one
-				methodNode.accept(methodVisitor)
-			}
-
-			return methodVisitor
-		}
-	}, 0)
-
-	try {
-		mainClassFile.withOutputStream { outputStream ->
-			outputStream.write(classWriter.toByteArray())
-		}
-	} catch (IOException e) {
-		e.printStackTrace()	
-	}
-}
-
-// Find the main SkyblockerMod class
-File findMainClass(File directory) {
-    for (File file : directory.listFiles()) {
-        if (file.isDirectory()) {
-        	File foundFile = findMainClass(file);
-
-            if (foundFile != null) {
-                return foundFile
-            }
-        } else if (file.name.equals("SkyblockerMod.class")) {
-            return file
-        }
-    }
-
-    return null
+    useJUnitPlatform()
 }
 
 publishMods {
-	file = remapJar.archiveFile
-	changelog = System.getenv('CHANGELOG')
-	version = "v${project.version}"
-	displayName = "Skyblocker ${mod_version} for ${minecraft_version}"
-	modLoaders.add("fabric")
-	type = STABLE
+    file = remapJar.archiveFile
+    changelog = System.getenv('CHANGELOG')
+    version = "v${project.version}"
+    displayName = "Skyblocker ${mod_version} for ${minecraft_version}"
+    modLoaders.add("fabric")
+    type = STABLE
 
 	modrinth {
 		accessToken = System.getenv("MODRINTH_TOKEN")
@@ -413,17 +273,17 @@ publishMods {
 
 // configure the maven publication
 publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-		}
-	}
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
-	}
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    repositories {
+        // Add repositories to publish to here.
+        // Notice: This block does NOT have the same function as the block in the top level.
+        // The repositories here will be used for publishing your artifact, not for
+        // retrieving dependencies.
+    }
 }
