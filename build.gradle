@@ -9,44 +9,44 @@ version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
 
 repositories {
-    // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
-    flatDir {
-        dirs 'libs'
-    }
+	// Add repositories to retrieve artifacts from in here.
+	// You should only use this when depending on other mods because
+	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
+	// for more information about repositories.
+	flatDir {
+		dirs 'libs'
+	}
 
-    maven {
-        name 'Maven Central'
-        url 'https://repo.maven.apache.org/maven2'
-    }
+	maven {
+		name 'Maven Central'
+		url 'https://repo.maven.apache.org/maven2'
+	}
 
-    // For ModMenu and EMI
-    exclusiveContent {
-        forRepository {
-            maven { url "https://maven.terraformersmc.com/releases" }
-        }
+	// For ModMenu and EMI
+	exclusiveContent {
+		forRepository {
+			maven { url "https://maven.terraformersmc.com/releases" }
+		}
 
-        filter {
-            includeGroup "com.terraformersmc"
-            includeGroup "dev.emi"
-        }
-    }
+		filter {
+			includeGroup "com.terraformersmc"
+			includeGroup "dev.emi"
+		}
+	}
 
-    // For REI
-    exclusiveContent {
-        forRepository {
-            maven { url "https://maven.shedaniel.me/" }
-        }
+	// For REI
+	exclusiveContent {
+		forRepository {
+			maven { url "https://maven.shedaniel.me/" }
+		}
 
-        filter {
-            includeGroup "me.shedaniel"
-            includeGroup "me.shedaniel.cloth"
-            includeGroup "dev.architectury"
-        }
-    }
+		filter {
+			includeGroup "me.shedaniel"
+			includeGroup "me.shedaniel.cloth"
+			includeGroup "dev.architectury"
+		}
+	}
 
 	// For JEI
 	exclusiveContent {
@@ -66,105 +66,105 @@ repositories {
 	maven {
 		url "https://maven.isxander.dev/releases"
 
-        content {
-            includeGroup "dev.isxander"
-            includeGroup "org.quiltmc.parsers"
-        }
-    }
+		content {
+			includeGroup "dev.isxander"
+			includeGroup "org.quiltmc.parsers"
+		}
+	}
 
-    // For Minecraft snapshots
-    maven {
-        url "https://maven.isxander.dev/snapshots"
+	// For Minecraft snapshots
+	maven {
+		url "https://maven.isxander.dev/snapshots"
 
-        content {
-            includeGroup "dev.isxander"
-        }
-    }
+		content {
+			includeGroup "dev.isxander"
+		}
+	}
 
-    // For Discord RPC
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "meteor-maven"
-                url = "https://maven.meteordev.org/releases"
-            }
-        }
+	// For Discord RPC
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "meteor-maven"
+				url = "https://maven.meteordev.org/releases"
+			}
+		}
 
-        filter {
-            includeGroup "meteordevelopment"
-        }
-    }
+		filter {
+			includeGroup "meteordevelopment"
+		}
+	}
 
-    // For Occlusion Culling library
-    exclusiveContent {
-        forRepository {
-            maven { url "https://repo.codemc.io/repository/maven-public/" }
-        }
+	// For Occlusion Culling library
+	exclusiveContent {
+		forRepository {
+			maven { url "https://repo.codemc.io/repository/maven-public/" }
+		}
 
-        filter {
-            includeGroup "com.logisticscraft"
-        }
-    }
+		filter {
+			includeGroup "com.logisticscraft"
+		}
+	}
 
-    // For NEU repo parser
-    exclusiveContent {
-        forRepository {
-            maven { url "https://repo.nea.moe/releases" }
-        }
+	// For NEU repo parser
+	exclusiveContent {
+		forRepository {
+			maven { url "https://repo.nea.moe/releases" }
+		}
 
-        filter {
-            includeGroup "moe.nea"
-        }
-    }
+		filter {
+			includeGroup "moe.nea"
+		}
+	}
 
-    maven {
-        url "https://maven.azureaaron.net/releases"
+	maven {
+		url "https://maven.azureaaron.net/releases"
 
-        content {
-            includeGroup "net.azureaaron"
-        }
-    }
+		content {
+			includeGroup "net.azureaaron"
+		}
+	}
 
-    maven {
-        url "https://maven.azureaaron.net/snapshots"
+	maven {
+		url "https://maven.azureaaron.net/snapshots"
 
-        content {
-            includeGroup "net.azureaaron"
-        }
-    }
+		content {
+			includeGroup "net.azureaaron"
+		}
+	}
 }
 
 dependencies {
-    testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
-    // To change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    //Layered Yarn & Mojmap - used to fill in intermediary names
-    mappings loom.layered {
-        //Using Mojmap breaks runClient, so uncomment only for snapshots when temp mappings are needed
-        //officialMojangMappings()
-        mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
-    }
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	//Layered Yarn & Mojmap - used to fill in intermediary names
+	mappings loom.layered {
+		//Using Mojmap breaks runClient, so uncomment only for snapshots when temp mappings are needed
+		//officialMojangMappings()
+		mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
+	}
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    // Fabric API
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	// Fabric API
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-    // YACL
-    include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
+	// YACL
+	include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
 
-    // HM API (Hypixel Mod API Library)
-    include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
+	// HM API (Hypixel Mod API Library)
+	include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
 
-    // Mod Menu
-    modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
+	// Mod Menu
+	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
-    // REI
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
-    //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	// REI
+	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
+	//modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
-    // EMI
-    modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
-    //modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
+	// EMI
+	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
+	//modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
 	// JEI (Using modrinth repo since official release is in mojmap and doesn't work)
 	modCompileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
@@ -172,16 +172,16 @@ dependencies {
 
 	compileOnly "com.demonwav.mcdev:annotations:${project.mcdev_annotations_version}"
 
-    include modImplementation("meteordevelopment:discord-ipc:1.1")
+	include modImplementation("meteordevelopment:discord-ipc:1.1")
 
-    // Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
-    include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
+	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
+	include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
 
-    // NEU RepoParser
-    include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
+	// NEU RepoParser
+	include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
 
-    // Networth Calculator (https://github.com/AzureAaron/networth-calculator)
-    include implementation("net.azureaaron:networth-calculator:${project.networth_calculator_version}")
+	// Networth Calculator (https://github.com/AzureAaron/networth-calculator)
+	include implementation("net.azureaaron:networth-calculator:${project.networth_calculator_version}")
 
 	// Legacy Item DFU
 	include implementation("net.azureaaron:legacy-item-dfu:${project.legacy_item_dfu_version}")
@@ -189,59 +189,59 @@ dependencies {
 	// JGit used pull data from the NEU item repo
 	include implementation("org.eclipse.jgit:org.eclipse.jgit:${project.jgit_version}")
 
-    // Apache Commons Math
-    include implementation("org.apache.commons:commons-math3:${project.commons_math_version}")
+	// Apache Commons Math
+	include implementation("org.apache.commons:commons-math3:${project.commons_math_version}")
 
-    // Apache Commons Text
-    include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
+	// Apache Commons Text
+	include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/skyblocker.accesswidener")
+	accessWidenerPath = file("src/main/resources/skyblocker.accesswidener")
 
-    mixin {
-        useLegacyMixinAp = false
-    }
+	mixin {
+		useLegacyMixinAp = false
+	}
 }
 
 base {
-    archivesName = project.archives_base_name
+	archivesName = project.archives_base_name
 }
 
 processResources {
-    inputs.property "version", project.version
+	inputs.property "version", project.version
 
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = 21
+	it.options.release = 21
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
-    from("LICENSE") {
-        rename { "${it}_${base.archivesName.get()}" }
-    }
+	from("LICENSE") {
+		rename { "${it}_${base.archivesName.get()}" }
+	}
 }
 
 test {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
 
 publishMods {
-    file = remapJar.archiveFile
-    changelog = System.getenv('CHANGELOG')
-    version = "v${project.version}"
-    displayName = "Skyblocker ${mod_version} for ${minecraft_version}"
-    modLoaders.add("fabric")
-    type = STABLE
+	file = remapJar.archiveFile
+	changelog = System.getenv('CHANGELOG')
+	version = "v${project.version}"
+	displayName = "Skyblocker ${mod_version} for ${minecraft_version}"
+	modLoaders.add("fabric")
+	type = STABLE
 
 	modrinth {
 		accessToken = System.getenv("MODRINTH_TOKEN")
@@ -273,17 +273,17 @@ publishMods {
 
 // configure the maven publication
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
 
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
-    }
+	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+	repositories {
+		// Add repositories to publish to here.
+		// Notice: This block does NOT have the same function as the block in the top level.
+		// The repositories here will be used for publishing your artifact, not for
+		// retrieving dependencies.
+	}
 }
