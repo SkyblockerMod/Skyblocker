@@ -18,8 +18,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
@@ -31,19 +32,26 @@ public abstract class InitProcessor implements Plugin<Project> {
 
 			long start = System.currentTimeMillis();
 			File classesDir = task.getDestinationDirectory().get().getAsFile();
-			List<String> methodSignatures = new ArrayList<>();
+			Map<String, Integer> methodSignatures = new HashMap<>();
 
 			//Find all methods with the @Init annotation
 			findInitMethods(classesDir, methodSignatures);
 
-			//Inject calls to the @Init annotated methods in the SkyblockerMod class
-			injectInitCalls(classesDir, methodSignatures);
+			//Sort the methods by their priority. It's also converted to a list because the priority values are useless from here on
+			List<String> sortedMethodSignatures = methodSignatures.entrySet()
+			                                                      .stream()
+			                                                      .sorted(Map.Entry.comparingByValue())
+			                                                      .map(Map.Entry::getKey)
+			                                                      .toList();
 
-			project.getLogger().info("Injecting init methods took: {}ms", System.currentTimeMillis() - start);
+			//Inject calls to the @Init annotated methods in the SkyblockerMod class
+			injectInitCalls(classesDir, sortedMethodSignatures);
+
+			System.out.println("Injecting init methods took: " + (System.currentTimeMillis() - start) + "ms");
 		}));
 	}
 
-	public void findInitMethods(File directory, List<String> methodSignatures) {
+	public void findInitMethods(File directory, Map<String, Integer> methodSignatures) {
 		try {
 			Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<>() {
 				@Override
@@ -52,7 +60,7 @@ public abstract class InitProcessor implements Plugin<Project> {
 					if (!file.getName().endsWith(".class")) return FileVisitResult.CONTINUE;
 					try (InputStream inputStream = new FileInputStream(file)) {
 						ClassReader classReader = new ClassReader(inputStream);
-						classReader.accept(new ReadingClassVisitor(Opcodes.ASM9, classReader, methodSignatures), ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+						classReader.accept(new ReadingClassVisitor(classReader, methodSignatures), ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -82,7 +90,7 @@ public abstract class InitProcessor implements Plugin<Project> {
 		ClassReader classReader = new ClassReader(classBytes);
 		ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 
-		classReader.accept(new InjectingClassVisitor(Opcodes.ASM9, classWriter, methodSignatures), 0);
+		classReader.accept(new InjectingClassVisitor(classWriter, methodSignatures), 0);
 
 		try {
 			Files.write(mainClassFile.toPath(), classWriter.toByteArray());
@@ -110,8 +118,8 @@ public abstract class InitProcessor implements Plugin<Project> {
 	static class InjectingClassVisitor extends ClassVisitor {
 		private final List<String> methodSignatures;
 
-		public InjectingClassVisitor(int api, ClassVisitor classVisitor, List<String> methodSignatures) {
-			super(api, classVisitor);
+		public InjectingClassVisitor(ClassVisitor classVisitor, List<String> methodSignatures) {
+			super(Opcodes.ASM9, classVisitor);
 			this.methodSignatures = methodSignatures;
 		}
 
@@ -128,11 +136,11 @@ public abstract class InitProcessor implements Plugin<Project> {
 				InsnList insnList = new InsnList();
 
 				// Inject calls to each found @Init annotated method
-				for (String sig : methodSignatures) {
-					String className = sig.substring(0, sig.indexOf('.'));
-					String methodName = sig.substring(sig.indexOf('.') + 1).replace("-ITF", "");
+				for (String methodCall : methodSignatures) {
+					String className = methodCall.substring(0, methodCall.indexOf('.'));
+					String methodName = methodCall.substring(methodCall.indexOf('.') + 1).replace("-ITF", "");
 
-					MethodInsnNode methodInsnNode = new MethodInsnNode(Opcodes.INVOKESTATIC, className, methodName, "()V", sig.endsWith("-ITF"));
+					MethodInsnNode methodInsnNode = new MethodInsnNode(Opcodes.INVOKESTATIC, className, methodName, "()V", methodCall.endsWith("-ITF"));
 
 					insnList.add(methodInsnNode);
 				}
@@ -152,11 +160,11 @@ public abstract class InitProcessor implements Plugin<Project> {
 	}
 
 	static class ReadingClassVisitor extends ClassVisitor {
-		private final List<String> methodSignatures;
+		private final Map<String, Integer> methodSignatures;
 		private final ClassReader classReader;
 
-		public ReadingClassVisitor(int api, ClassReader classReader, List<String> methodSignatures) {
-			super(api);
+		public ReadingClassVisitor(ClassReader classReader, Map<String, Integer> methodSignatures) {
+			super(Opcodes.ASM9);
 			this.classReader = classReader;
 			this.methodSignatures = methodSignatures;
 		}
@@ -174,7 +182,8 @@ public abstract class InitProcessor implements Plugin<Project> {
 							//Interface static methods need special handling, so we add a special marker for that
 							if ((classReader.getAccess() & Opcodes.ACC_INTERFACE) != 0) methodCall += "-ITF";
 
-							methodSignatures.add(methodCall);
+							//Delegates adding the method call to the map to the InitAnnotationVisitor since we don't have a value to put in the map here
+							return new InitAnnotationVisitor(methodSignatures, methodCall);
 						}
 
 						return super.visitAnnotation(desc, visible);
@@ -183,6 +192,32 @@ public abstract class InitProcessor implements Plugin<Project> {
 			}
 
 			return super.visitMethod(access, name, descriptor, signature, exceptions);
+		}
+	}
+
+	static class InitAnnotationVisitor extends AnnotationVisitor {
+		private final Map<String, Integer> methodSignatures;
+		private final String methodCall;
+
+		protected InitAnnotationVisitor(Map<String, Integer> methodSignatures, String methodCall) {
+			super(Opcodes.ASM9);
+			this.methodSignatures = methodSignatures;
+			this.methodCall = methodCall;
+		}
+
+		@Override
+		public void visitEnd() {
+			//Annotations that use the default value for the priority field will not be called by the visit method, so we have to handle them here.
+			methodSignatures.putIfAbsent(methodCall, 0);
+			super.visitEnd();
+		}
+
+		@Override
+		public void visit(String name, Object value) {
+			if (name.equals("priority")) {
+				methodSignatures.put(methodCall, (int) value);
+			}
+			super.visit(name, value);
 		}
 	}
 }

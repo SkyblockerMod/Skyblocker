@@ -20,5 +20,4 @@ public @interface Init {
 	 * Use this to ensure that your initializer method is called after another initializer method if it depends on it.
 	 */
 	int priority() default 0;
-	//TODO: Actually implement this
 }
