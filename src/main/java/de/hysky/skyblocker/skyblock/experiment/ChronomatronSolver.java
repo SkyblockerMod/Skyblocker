@@ -140,5 +140,6 @@ public final class ChronomatronSolver extends ExperimentSolver {
 		chronomatronChainLengthCount = 0;
 		chronomatronCurrentSlot = 0;
 		chronomatronCurrentOrdinal = 0;
+		super.reset();
 	}
 }
