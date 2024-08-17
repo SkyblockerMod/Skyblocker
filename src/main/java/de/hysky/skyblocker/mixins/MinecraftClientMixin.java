@@ -61,9 +61,8 @@ public abstract class MinecraftClientMixin {
         return Utils.isOnSkyblock() ? new JoinWorldPlaceholderScreen() : screen;
     }
 
-    @WrapOperation(method = "handleInputEvents", at = @At(value = "NEW", target = "(Lnet/minecraft/entity/player/PlayerEntity;)Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;"))
+    @WrapOperation(method = "handleInputEvents", at = @At(value = "NEW", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;"))
     private InventoryScreen skyblocker$skyblockInventoryScreen(PlayerEntity player, Operation<InventoryScreen> original) {
-        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory) return new SkyblockInventoryScreen(player);
-        else return original.call(player);
+        return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory ? new SkyblockInventoryScreen(player) : original.call(player);
     }
 }

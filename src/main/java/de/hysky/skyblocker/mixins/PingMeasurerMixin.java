@@ -1,22 +1,21 @@
 package de.hysky.skyblocker.mixins;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.network.PingMeasurer;
-import net.minecraft.util.profiler.MultiValueDebugSampleLogImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(PingMeasurer.class)
 public class PingMeasurerMixin {
 
-    @WrapOperation(method = "onPingResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/MultiValueDebugSampleLogImpl;push(J)V"))
-    private void skyblocker$onPingResult(MultiValueDebugSampleLogImpl log, long ping, Operation<Void> operation) {
+    @ModifyArg(method = "onPingResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/MultiValueDebugSampleLogImpl;push(J)V"))
+    private long skyblocker$onPingResult(long ping) {
         if (Utils.isInCrimson()) {
             DojoManager.onPingResult(ping);
         }
-        operation.call(log, ping);
+
+        return ping;
     }
 }

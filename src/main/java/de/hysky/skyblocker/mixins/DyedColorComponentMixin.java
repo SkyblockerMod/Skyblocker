@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(DyedColorComponent.class)
-public record DyedColorComponentMixin() {
+public class DyedColorComponentMixin {
 
 	@ModifyReturnValue(method = "getColor", at = @At("RETURN"))
 	private static int skyblocker$customDyeColor(int originalColor, @Local(argsOnly = true) ItemStack stack) {
