@@ -1,6 +1,10 @@
 package de.hysky.skyblocker.utils;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -18,5 +22,9 @@ public final class CodecUtils {
 
 	public static MapCodec<OptionalDouble> optionalDouble(MapCodec<Optional<Double>> codec) {
 		return codec.xmap(opt -> opt.map(OptionalDouble::of).orElseGet(OptionalDouble::empty), optDouble -> optDouble.isPresent() ? Optional.of(optDouble.getAsDouble()) : Optional.empty());
+	}
+
+	public static <K> Codec<Object2BooleanMap<K>> object2BooleanMapCodec(Codec<K> keyCodec) {
+	    return Codec.unboundedMap(keyCodec, Codec.BOOL).xmap(Object2BooleanOpenHashMap::new, Object2BooleanOpenHashMap::new);
 	}
 }
