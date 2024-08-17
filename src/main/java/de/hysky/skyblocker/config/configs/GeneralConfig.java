@@ -181,10 +181,10 @@ public class GeneralConfig {
         public boolean attributeShardInfo = true;
 
         @SerialEntry
-        public boolean itemRarityBackgrounds = false;
+        public boolean itemRarityBackgrounds = true;
 
         @SerialEntry
-        public RarityBackgroundStyle itemRarityBackgroundStyle = RarityBackgroundStyle.CIRCULAR;
+        public RarityBackgroundStyle itemRarityBackgroundStyle = RarityBackgroundStyle.SQUARE;
 
         @SerialEntry
         public float itemRarityBackgroundsOpacity = 1f;
