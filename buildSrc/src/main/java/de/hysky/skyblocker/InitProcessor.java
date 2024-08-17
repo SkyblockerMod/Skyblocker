@@ -3,6 +3,7 @@ package de.hysky.skyblocker;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.compile.JavaCompile;
+import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -171,27 +172,28 @@ public abstract class InitProcessor implements Plugin<Project> {
 
 		@Override
 		public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-			// Only check methods that are public, static, have no args, and have a void return type
-			if ((access & Opcodes.ACC_PUBLIC) != 0 && (access & Opcodes.ACC_STATIC) != 0 && descriptor.equals("()V")) {
-				return new MethodVisitor(Opcodes.ASM9) {
-					@Override
-					public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-						if (desc.equals("Lde/hysky/skyblocker/annotations/Init;")) {
-							String methodCall = classReader.getClassName() + "." + name;
+			return new MethodVisitor(Opcodes.ASM9) {
+				@Override
+				public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+					//This method visitor checks all methods and only acts upon those with the Init annotation.
+					//This lets us warn the user about invalid init methods and misuse of the annotation
+					if (!desc.equals("Lde/hysky/skyblocker/annotations/Init;")) return super.visitAnnotation(desc, visible);
 
-							//Interface static methods need special handling, so we add a special marker for that
-							if ((classReader.getAccess() & Opcodes.ACC_INTERFACE) != 0) methodCall += "-ITF";
+					//Delegates adding the method call to the map to the InitAnnotationVisitor since we don't have a value to put in the map here
+					return new InitAnnotationVisitor(methodSignatures, getMethodCall());
+				}
 
-							//Delegates adding the method call to the map to the InitAnnotationVisitor since we don't have a value to put in the map here
-							return new InitAnnotationVisitor(methodSignatures, methodCall);
-						}
+				private @NotNull String getMethodCall() {
+					String methodCall = classReader.getClassName() + "." + name;
+					if ((access & Opcodes.ACC_PUBLIC) == 0) throw new IllegalStateException(methodCall + ": Initializer methods must be public");
+					if ((access & Opcodes.ACC_STATIC) == 0) throw new IllegalStateException(methodCall + ": Initializer methods must be static");
+					if (!descriptor.equals("()V")) throw new IllegalStateException(methodCall + ": Initializer methods must have no args and a void return type");
 
-						return super.visitAnnotation(desc, visible);
-					}
-				};
-			}
-
-			return super.visitMethod(access, name, descriptor, signature, exceptions);
+					//Interface static methods need special handling, so we add a special marker for that
+					if ((classReader.getAccess() & Opcodes.ACC_INTERFACE) != 0) methodCall += "-ITF";
+					return methodCall;
+				}
+			};
 		}
 	}
 
