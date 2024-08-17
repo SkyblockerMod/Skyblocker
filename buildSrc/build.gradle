@@ -7,8 +7,8 @@ repositories {
 }
 
 dependencies {
-    implementation "org.ow2.asm:asm:9.7"
-    implementation "org.ow2.asm:asm-tree:9.7"
+    implementation "org.ow2.asm:asm:${project.asm_version}"
+    implementation "org.ow2.asm:asm-tree:${project.asm_version}"
 }
 
 
