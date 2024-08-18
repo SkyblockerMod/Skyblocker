@@ -1,3 +1,169 @@
+# Release 1.22.0
+
+## Highlight
+- Profile Viewer (/pv or /skyblocker pv) note: You may have to delete an old default shortcut if /pv doesn't work
+- Dojo helper
+- Simon Says Solver & Lights On Solver
+- Jerry timer
+- JEI support for Item List
+- Equipment in inventory
+- Craft Cost Tooltip
+- Special Effects for rare dye drops
+- Essence Shop Price
+- Complete sack bz and npc sell price
+- Repeated ding when a stray rabbit appears
+- Completed commission highlighter
+- Crystal hollows Auto detect waypoint from chat for example when talking to king
+- Bazaar Helpers (Highlights, Slot Text)
+- Nucleus waypoints
+- Wishing compass solver
+- Correct livid highlight in m5
+- Option to increase fog radius in Crimson Isles
+- True HEX display for dye items
+- Chest Value on minion generated stuff
+- Kuudra glow
+- Kuudra danger warning
+- Crystal Hollows Treasure Chest Highlighter
+- Quick nav tooltip
+- Skyblock XP Messages
+- Crystal Waypoints server-sided sharing via WebSocket
+- Dungeon fairy room door highlight
+- Tooltip display Estimated Item Value (chest value now uses estimated item value)
+- Blaze Slayer Helper (Attunement highlighting, Fire Pillar Countdown Notifiications)
+- Slayer Highlights (Hitbox Slayer Mob Highlighting, Glow Effect Slayer Mob Highlighting)
+- Update Notifications by chat message and toast
+- Improve location detection and reparty command with the Hypixel Mod API
+- Block trading and auctioning protected items
+- Make Ordered Waypoints waypoint type configurable via global setting
+- Enhance shortcuts redirects
+- Fix Emi and rei now displaying again
+- Fix Superpairs Solver not starting properly
+- Fix Nukekubi head highlight
+- Fix Visitor Helper readding NPCs after you accept/deny them
+- Fix a lot of config crashes because of null values
+- Fix quick nav tooltip config
+- Fix Farming Hud Crash
+- Fix item debug crashes
+- Fix slot text bugs with pets
+- Fixed a memory leak
+- Fix a rare crash in the Click In Order terminal
+- Fixes recipe book search being case sensitive
+- Fix some Egg Finder bugs
+- Fix Skytils v1 waypoint importing
+- Fix log spam from dungeon secrets widget
+
+## What's Changed
+* Change OptionalInt costs to OptionalLong by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/809
+* Profile Viewer by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/708
+* Nucleus waypoints by @UpFault in https://github.com/SkyblockerMod/Skyblocker/pull/738
+* Refactor and add more tips by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/752
+* Add completed commission highlight by @Vricken in https://github.com/SkyblockerMod/Skyblocker/pull/797
+* Remove the development environment branch from the isInLocation methods by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/810
+* Fix wrong icon being shown when the player has enough gems to instantly upgrade by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/814
+* Change README.md version from 1.20.6 to 1.21 by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/819
+* Dojo helper by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/747
+* Jerry timer by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/748
+* Migrate to setup gradle by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/768
+* Equipment in inventory by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/718
+* Schedule mayor cache ticking to the next year rather than every 20 mins by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/751
+* Add Craft Cost Tooltip by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/781
+* Multiply npc price tooltip by the amount of items in the sack by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/782
+* Fix PetLevelAdder working incorrectly in the sea creatures guide by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/817
+* Fix discord announcement not including minecraft version by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/821
+* Make ordered waypoints' waypoint type configurable by the global waypoint config by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/825
+* Same formatting in features by @Mininoob46 in https://github.com/SkyblockerMod/Skyblocker/pull/826
+* Fix EggFinder highlight not being removed upon new egg spawn by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/811
+* Profile Viewer some changes by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/818
+* Repeated ding when a stray rabbit appears by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/828
+* Fix waypoints Skytils v1 importing by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/822
+* Shortcut arguments redirect by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/824
+* Fix control test helper for dojo by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/831
+* Locraw remover 9000 by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/829
+* Simon Says Solver & Lights On Solver by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/724
+* Aaron's Mod compatibility for profile viewer by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/833
+* Item Protection Enhancements by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/836
+* Workaround "fake" transparent pixels by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/838
+* Fix recipe book search being case sensitive by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/839
+* Bazaar Helper by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/728
+* Change colo(u)r for max collections and skills slot text by @Vricken in https://github.com/SkyblockerMod/Skyblocker/pull/804
+* Add some custom command argument types by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/834
+* Fix quicknav buttons 8, 9 and 12 having empty string as ui title by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/840
+* Fix result text displaying weirdly when its too long in the recipe book by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/842
+* Fix dungeon secret widget spamming logs by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/843
+* Some fixes and some opinionated changes for the en_us lang file by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/841
+* EssenceShopPrice feature by @UpFault in https://github.com/SkyblockerMod/Skyblocker/pull/737
+* make all formatting use static instances of numberformat using US locale by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/765
+* Update Attribute Short Names by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/844
+* Fix Memory Leak by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/853
+* Profileviewer Copy Instead of Mutating ItemRepo Itemstack map by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/857
+* Fix rare npe in OrderTerminal by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/848
+* Fix inconsistency with Hypixel's inconsistencies by @IllagerCaptain in https://github.com/SkyblockerMod/Skyblocker/pull/852
+* Refactor container matcher implementations into interfaces by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/788
+* Improve mining waypoint by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/791
+* Make ChocolateFactorySolver a singleton to fix tooltip not working by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/863
+* use bounding box instead of block size by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/726
+* emi/rei, Quicknav, livid and nukekubi head (eman boss head) fix by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/812
+* Fix empty categories being checked by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/851
+* Move to Mod API for isOnSkyblock detection by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/854
+* Bazaar Lookup/Misc Options by @VeritasDL in https://github.com/SkyblockerMod/Skyblocker/pull/792
+* Option to increase fog radius when in the Crimson Isles by @IBeHunting in https://github.com/SkyblockerMod/Skyblocker/pull/856
+* Fix slot text not working on favorited pets by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/868
+* Center quick nav buttons in bigger UIs by @nea89o in https://github.com/SkyblockerMod/Skyblocker/pull/871
+* Add slot text to Rabbit levels in the Chocolate Factory by @aiden-powers in https://github.com/SkyblockerMod/Skyblocker/pull/827
+* Tooltip Tweaks by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/835
+* Clean up id mess and add tests by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/867
+* Fix Roman Numeral parsing crash by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/882
+* Fix Farming Hud Crash by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/883
+* Fix item debug crashes by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/886
+* Add raytracing to the egg finder to make it fairer by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/845
+* Chest Value: Only show minion's generated stuff and visual upgrade by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/861
+* Kuudra Part 2 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/873
+* Profile Viewer Use Taming Levels Added to API. Maybe fix wardrobe + inv. by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/880
+* Treasure Chest Highlighter for crystal hollows by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/849
+* Quick nav tooltip by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/865
+* Skyblock XP Messages by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/872
+* Added description to hideEmptyTooltips option. by @aiden-powers in https://github.com/SkyblockerMod/Skyblocker/pull/893
+* Crystal Waypoints server-sided sharing via WebSocket by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/895
+* PV Tweaks by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/874
+* Better dungeon door detection/overlay by @GatienDoesStuff in https://github.com/SkyblockerMod/Skyblocker/pull/879
+* Fix Croesus profit estimator on master mode chests by @GatienDoesStuff in https://github.com/SkyblockerMod/Skyblocker/pull/900
+* Fix clean pickonimbuses showing diamond pickaxe durability by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/906
+* Fix visitor helper readding visitors after you accept/deny them by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/907
+* True Hex Display for Vincent & Rare Dye Drop Special Effects by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/885
+* Fix a lot of config crashes because of null values by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/902
+* Fix quick nav tooltip config by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/909
+* 1.21.1 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/898
+* Networth by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/806
+* Fast util refactor by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/896
+* Slayer Helpers Slayer Highlights, Blaze Helpers and Glow Caching by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/888
+* Crystals Waypoint WebSocket Enhancements by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/917
+* Fix SuperpairsSolver not starting properly by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/918
+* Chat rules thingamabobs by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/897
+* Fix pet neu id crash by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/921
+* Update Networth Calculator to fix NPE by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/928
+* Fix paul's minister perk not being accounted for by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/923
+* Always load NEU repo by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/920
+* Make enums translatable and fix line break issue by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/932
+* Make Warp Autocomplete adapt to the player's rank by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/930
+* Call ExperimentSolver reset method by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/937
+* Mixins Review by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/936
+* Change Rarity Background Default Settings by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/935
+* Update Notifications by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/877
+* Mark all secrets missing in subcommand by @btwonion in https://github.com/SkyblockerMod/Skyblocker/pull/927
+* Add JEI integration by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/448
+* Proper Item DFU for PV by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/913
+
+## New Contributors
+* @Vricken made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/797
+* @Mininoob46 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/826
+* @IllagerCaptain made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/852
+* @IBeHunting made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/856
+* @nea89o made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/871
+* @aiden-powers made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/827
+* @GatienDoesStuff made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/879
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.21.1...v1.22.0
+___
 # Release 1.21.1
 
 ## Highlight

@@ -16,6 +16,8 @@
   - *Silverfish*
   - *Ice Fill*
   - *Boulder*
+  - *Simon Says Solver*
+  - *Lights On*
   - Terminal:
     - *Order*
     - *Coloured Items*
@@ -44,6 +46,12 @@
   - *Pearl*
 - **No arrow poison warning**
 - **Low arrow poison warning**
+- **Kuudra glow**
+- **Kuudra danger warning**
+
+### Crimson Isles:
+- **Dojo helper**
+- **Option to increase fog radius**
 
 ### Item and Armor Customization:
 - *Item Renaming*
@@ -59,6 +67,19 @@
   - *XP*
 - **Vanilla health/xp and fancy bar shown in parallel**
 
+### Profile Viewer:
+- **Skills**
+- **Slayer**
+- **Catacombs**
+- **Container:**
+  - Inventory
+  - Enderchest
+  - Backpack
+  - Wardrobe
+  - Pets
+  - Accessory Bag
+- **Collections**
+
 ### Dwarven Mines / Crystal Hollows / Glacite Mining:
 - **Dwarven Mines Solver:**
   - Fetchur
@@ -72,6 +93,11 @@
     - *Find locations in chat messages*
     - *Share waypoints*
   - Metal detector helper
+  - Auto-detect waypoint from chat for example when talking to king
+  - Nucleus waypoints
+  - Wishing compass helper
+  - Treasure Chest Highlighter
+  - Crystal Waypoints server-sided sharing via WebSocket
 - **Glacite Tunnels:**
   - *Cold Overlay*
 - **Commission HUD:**
@@ -97,6 +123,12 @@
   - Beacon Highlighting
   - Yang Glyph Notification
   - Nukekubi Head Highlighting
+- **Blaze Slayer:**
+  - Attunement highlighting
+  - Fire Pillar Countdown Notifiications
+- **General:**
+  - Slayer (Mini)Bosses Highlighting
+  - Glow Effect Slayer Mob Highlighting
 
 ### Garden Features:
 - **Farming HUD:**
@@ -134,8 +166,10 @@
     - *stage*
     - *Location*
 - **Ender Nodes Helper**
+- **Special Effects for rare dye drops**
 
 ### User Interface Enhancements:
+- **Equipment in inventory**
 - **Search overlays for bz and ah**
 - **Slot Text:**
   - *Attribute Shard Info Display*
@@ -153,6 +187,9 @@
   - *Your Essence*
   - *Power Stone Guide*
   - *Stats Tuning*
+  - *Collection*
+  - *Community Shop*
+  - *Bazaar*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
@@ -164,6 +201,10 @@
   - *Exotic Armor Identifier*
   - *Item Quality*
   - *Accessories Helper*
+  - *Craft Cost*
+  - *Essence Shop Price*
+  - *True HEX display for dye items*
+  - *Estimated Item Value*
 - **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
 - **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
@@ -192,7 +233,7 @@
   - *Teleport Pad Messages*
   - *Sky Mall*
 
-### Miscellaneous Solvers:
+### Miscellaneous Helpers:
 - **Experiments Solvers**
 - **Fishing:**
   - Helper (Includes sound notifications)
@@ -200,17 +241,19 @@
   - Hide other rods
 - **Mythological Ritual Helper**
 - **Chocolate factory Helper**
+- **Jerry timer**
 
 ### Miscellaneous Features:
-- **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei) and [EMI](https://modrinth.com/mod/emi) Support**
+- **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
 - **Item Protection**
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
 - **Wiki Lookup:** Press F4 to open the wiki page about the held item.
 - **OptiFabric Compatibility**
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
-- **ChestValue**
+- **Chest Value**
 - **Add useful tips in chat**
 - **Suppress badlion packet warnings**
 - **Remove screens when switching island**
 - **Skin transparency correction**
+- **Skyblock XP Messages**
