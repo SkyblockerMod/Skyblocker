@@ -17,6 +17,11 @@ public class DyeSpecialEffectsTest {
 
 	@Test
 	void testDye3() {
-		Assertions.assertTrue(DyeSpecialEffects.DROP_PATTERN.matcher("WOW! [MVP+] Viciscat found Cat Dye #1!").matches(), "Dye Test #3 didn't match!");
+		Assertions.assertTrue(DyeSpecialEffects.DROP_PATTERN.matcher("WOW! [MVP+] AzureAaron found Necron Dye!").matches(), "Dye Test #3 didn't match!");
+	}
+
+	@Test
+	void testDye4() {
+		Assertions.assertTrue(DyeSpecialEffects.DROP_PATTERN.matcher("WOW! [MVP+] Viciscat found Cat Dye #1!").matches(), "Dye Test #4 didn't match!");
 	}
 }
