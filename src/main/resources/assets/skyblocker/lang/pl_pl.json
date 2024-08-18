@@ -83,5 +83,7 @@
     "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage.@Tooltip": "Po osiągnięciu progu wysyła wiadomość na czacie, jeśli znaleziono mniej niż 5 krypt.",
     "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nUwaga: Działa to poprawnie tylko wtedy, gdy wiadomości o śmierci są włączone w ustawieniach skyblock. Jeśli chcesz ukryć wiadomości o śmierci, użyj zamiast tego ustawienia Ukryj wiadomości o śmierci gracza, aby umożliwić dalsze przetwarzanie wiadomości o śmierci",
     "skyblocker.config.dungeons.livid.enableLividColorTitle": "Włącz tytuł w żywych kolorach",
-    "skyblocker.config.dungeons.livid.enableLividColorTitle.@Tooltip": "Wyświetlaj żywy kolor w tytule podczas walki z Livid."
+    "skyblocker.config.dungeons.livid.enableLividColorTitle.@Tooltip": "Wyświetlaj żywy kolor w tytule podczas walki z Livid.",
+    "skyblocker.config.dungeons.livid.lividColorText": "kolor tekstu Livid",
+    "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Tekst, który zostanie wysłany na czacie podczas walki z bossem Livid. Ciąg \"[kolor]\" zostanie zastąpiony kolorem."
 }
