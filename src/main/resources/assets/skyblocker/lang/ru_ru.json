@@ -174,7 +174,7 @@
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType": "Тип подсветки двери",
     "skyblocker.config.uiAndVisuals.chestValue": "Суммарная стоимость хранилища",
     "skyblocker.config.general.chestValue.@Tooltip": "Считает рыночную стоимость всех предметов в хранилище.",
-    "skyblocker.config.dungeons.secretWaypoints": "Метки секретов в Dungeon",
+    "skyblocker.config.dungeons.secretWaypoints": "Метки секретов в данже",
     "skyblocker.config.dungeons.secretWaypoints.enableSecretWaypoints": "Включить метки секретов в Dungeon",
     "skyblocker.config.uiAndVisuals.titleContainer.titleContainerScale": "Размер названия контейнера",
     "skyblocker.config.uiAndVisuals.teleportOverlay.enableInstantTransmission": "Включить оверлей моментального перемещения",
