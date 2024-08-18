@@ -20,7 +20,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
@@ -53,7 +53,8 @@ public class UpdateNotifications {
 	public static Config config = Config.DEFAULT;
 	private static boolean sentUpdateNotification;
 
-	static void init() {
+	@Init
+	public static void init() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loadConfig());
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
 		SkyblockEvents.JOIN.register(() -> {

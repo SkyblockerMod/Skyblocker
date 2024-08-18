@@ -2,56 +2,16 @@ package de.hysky.skyblocker;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.ConfigNullFieldsFix;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsHud;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.skyblock.*;
-import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
-import de.hysky.skyblocker.skyblock.calculators.CalculatorCommand;
-import de.hysky.skyblocker.skyblock.chat.ChatRulesHandler;
-import de.hysky.skyblocker.skyblock.chat.SkyblockXpMessages;
-import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
-import de.hysky.skyblocker.skyblock.chocolatefactory.TimeTowerReminder;
-import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
-import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
-import de.hysky.skyblocker.skyblock.dungeon.*;
-import de.hysky.skyblocker.skyblock.dungeon.device.LightsOn;
-import de.hysky.skyblocker.skyblock.dungeon.device.SimonSays;
-import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
-import de.hysky.skyblocker.skyblock.dungeon.puzzle.*;
-import de.hysky.skyblocker.skyblock.dungeon.puzzle.boulder.Boulder;
-import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretsTracker;
-import de.hysky.skyblocker.skyblock.dwarven.*;
-import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
-import de.hysky.skyblocker.skyblock.end.EnderNodes;
-import de.hysky.skyblocker.skyblock.end.TheEnd;
-import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.skyblock.events.EventNotifications;
-import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
-import de.hysky.skyblocker.skyblock.garden.FarmingHud;
-import de.hysky.skyblocker.skyblock.garden.LowerSensitivity;
-import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
-import de.hysky.skyblocker.skyblock.item.*;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.AccessoriesHelper;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.skyblock.waypoint.*;
-import de.hysky.skyblocker.utils.*;
-import de.hysky.skyblocker.utils.chat.ChatMessageListener;
-import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
-import de.hysky.skyblocker.utils.mayor.MayorUtils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
-import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -102,7 +62,6 @@ public class SkyblockerMod implements ClientModInitializer {
         SkyblockerConfigManager.init();
         ConfigNullFieldsFix.init(); //DO NOT INIT ANY CLASS THAT USES CONFIG FIELDS BEFORE THIS!
 
-        containerSolverManager.init();
         statusBarTracker.init();
 
         init();
@@ -130,7 +89,7 @@ public class SkyblockerMod implements ClientModInitializer {
      * To have your class initialized you must annotate its initializer method with the {@code @Init} annotation.
      * At compile time, ASM completely overwrites the content of this method, so adding a call here will do nothing.
      *
-     * @see de.hysky.skyblocker.annotations.Init
+     * @see Init
      */
     private static void init() {
     }
