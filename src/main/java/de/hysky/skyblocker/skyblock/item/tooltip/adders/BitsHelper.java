@@ -1,18 +1,14 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.InventoryScreenMixin;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.profileviewer.inventory.Inventory;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
@@ -38,6 +34,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
     @Language("RegExp") private static final String TITLE_PATTERN = ".*(?:Community Shop|Bits Shop).*";
     private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
     private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Bits");
+    private static final String LOGS_PREFIX = "[Skyblocker Bits Helper] ";
 
     public static final BitsHelper INSTANCE = new BitsHelper();
 
@@ -45,51 +42,13 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
         super(TITLE_PATTERN);
     }
 
-    @Override
-    public boolean isEnabled() {
-        return SkyblockerConfigManager.get().helpers.enableBitsTooltip;
-    }
-
-    /**
-     * Gets price from ItemStack
-     * extracts ID from stack
-     */
-    double getPrice(ItemStack stack) {
-        double itemCost = 0;
-        String itemID = stack.getSkyblockApiId();
-
-        if (TooltipInfoType.BAZAAR.getData().has(itemID)) {
-            itemCost = TooltipInfoType.BAZAAR.getData().getAsJsonObject(stack.getSkyblockApiId()).get("buyPrice").getAsDouble();
-        } else if (TooltipInfoType.LOWEST_BINS.getData().has(itemID)) {
-            itemCost = TooltipInfoType.LOWEST_BINS.getData().get(stack.getSkyblockApiId()).getAsDouble();
-        }
-        return itemCost;
-    }
-
-    /**
-     * Gets price from itemID
-     */
-    double getPrice(String itemID) {
-        double itemCost = 0;
-
-        if (TooltipInfoType.BAZAAR.getData().has(itemID)) {
-            itemCost = TooltipInfoType.BAZAAR.getData().getAsJsonObject(itemID).get("buyPrice").getAsDouble();
-        } else if (TooltipInfoType.LOWEST_BINS.getData().has(itemID)) {
-            itemCost = TooltipInfoType.LOWEST_BINS.getData().get(itemID).getAsDouble();
-        }
-        return itemCost;
-    }
-
     private Map<String, Pair<String, Long>> categoryOutput = new HashMap<>();
     private int bestSlotIndexSelling = -1;
     private int bestSlotIndexAll = -1;
 
-    // TODO: всё хуйня, переделывай
     @Override
     public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
         List<ColorHighlight> highlights = new ArrayList<>();
-//        categoryOutput.clear();     // we need it to allow this thing to refresh
-        LOGGER.warn("getColors triggered!");
         BestItemsResult bestItemsResult = calculateBestItems(slots);
 
         bestSlotIndexSelling = bestItemsResult.bestSlotIndexSelling;
@@ -111,8 +70,8 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 
     /**
      * Why there is no simpler way to get those?
-     * That thing is needed here to avoid NPE/0 coins per bit bs on first iteration
      */
+    private boolean megamindInLogs = false;
     private Int2ObjectMap<ItemStack> getSlots() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.currentScreen instanceof HandledScreen) {
@@ -123,20 +82,23 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
             for (int i = 0; i < handler.slots.size(); i++) {
                 slots.put(i, handler.getSlot(i).getStack());
             }
-            LOGGER.info("No slots?\n" +
-                    "⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝\n" +
-                    "⠸⡸⠜⠕⠕⠁⢁⢇⢏⢽⢺⣪⡳⡝⣎⣏⢯⢞⡿⣟⣷⣳⢯⡷⣽⢽⢯⣳⣫⠇\n" +
-                    "⠀⠀⢀⢀⢄⢬⢪⡪⡎⣆⡈⠚⠜⠕⠇⠗⠝⢕⢯⢫⣞⣯⣿⣻⡽⣏⢗⣗⠏⠀\n" +
-                    "⠀⠪⡪⡪⣪⢪⢺⢸⢢⢓⢆⢤⢀⠀⠀⠀⠀⠈⢊⢞⡾⣿⡯⣏⢮⠷⠁⠀⠀\n" +
-                    "⠀⠀⠀⠈⠊⠆⡃⠕⢕⢇⢇⢇⢇⢇⢏⢎⢎⢆⢄⠀⢑⣽⣿⢝⠲⠉⠀⠀⠀⠀\n" +
-                    "⠀⠀⠀⠀⠀⡿⠂⠠⠀⡇⢇⠕⢈⣀⠀⠁⠡⠣⡣⡫⣂⣿⠯⢪⠰⠂⠀⠀⠀⠀\n" +
-                    "⠀⠀⠀⠀⡦⡙⡂⢀⢤⢣⠣⡈⣾⡃⠠⠄⠀⡄⢱⣌⣶⢏⢊⠂⠀⠀⠀⠀⠀⠀\n" +
-                    "⠀⠀⠀⠀⢝⡲⣜⡮⡏⢎⢌⢂⠙⠢⠐⢀⢘⢵⣽⣿⡿⠁⠁⠀⠀⠀⠀⠀⠀⠀\n" +
-                    "⠀⠀⠀⠀⠨⣺⡺⡕⡕⡱⡑⡆⡕⡅⡕⡜⡼⢽⡻⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                    "⠀⠀⠀⠀⣼⣳⣫⣾⣵⣗⡵⡱⡡⢣⢑⢕⢜⢕⡝⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                    "⠀⠀⠀⣴⣿⣾⣿⣿⣿⡿⡽⡑⢌⠪⡢⡣⣣⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                    "⠀⠀⠀⡟⡾⣿⢿⢿⢵⣽⣾⣼⣘⢸⢸⣞⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                    "⠀⠀⠀⠀⠁⠇⠡⠩⡫⢿⣝⡻⡮⣒⢽⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
+            if (!megamindInLogs) {
+                LOGGER.info(LOGS_PREFIX+"No slots?\n" +
+                            "⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝\n" +
+                            "⠸⡸⠜⠕⠕⠁⢁⢇⢏⢽⢺⣪⡳⡝⣎⣏⢯⢞⡿⣟⣷⣳⢯⡷⣽⢽⢯⣳⣫⠇\n" +
+                            "⠀⠀⢀⢀⢄⢬⢪⡪⡎⣆⡈⠚⠜⠕⠇⠗⠝⢕⢯⢫⣞⣯⣿⣻⡽⣏⢗⣗⠏⠀\n" +
+                            "⠀⠪⡪⡪⣪⢪⢺⢸⢢⢓⢆⢤⢀⠀⠀⠀⠀⠈⢊⢞⡾⣿⡯⣏⢮⠷⠁⠀⠀\n" +
+                            "⠀⠀⠀⠈⠊⠆⡃⠕⢕⢇⢇⢇⢇⢇⢏⢎⢎⢆⢄⠀⢑⣽⣿⢝⠲⠉⠀⠀⠀⠀\n" +
+                            "⠀⠀⠀⠀⠀⡿⠂⠠⠀⡇⢇⠕⢈⣀⠀⠁⠡⠣⡣⡫⣂⣿⠯⢪⠰⠂⠀⠀⠀⠀\n" +
+                            "⠀⠀⠀⠀⡦⡙⡂⢀⢤⢣⠣⡈⣾⡃⠠⠄⠀⡄⢱⣌⣶⢏⢊⠂⠀⠀⠀⠀⠀⠀\n" +
+                            "⠀⠀⠀⠀⢝⡲⣜⡮⡏⢎⢌⢂⠙⠢⠐⢀⢘⢵⣽⣿⡿⠁⠁⠀⠀⠀⠀⠀⠀⠀\n" +
+                            "⠀⠀⠀⠀⠨⣺⡺⡕⡕⡱⡑⡆⡕⡅⡕⡜⡼⢽⡻⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                            "⠀⠀⠀⠀⣼⣳⣫⣾⣵⣗⡵⡱⡡⢣⢑⢕⢜⢕⡝⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                            "⠀⠀⠀⣴⣿⣾⣿⣿⣿⡿⡽⡑⢌⠪⡢⡣⣣⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                            "⠀⠀⠀⡟⡾⣿⢿⢿⢵⣽⣾⣼⣘⢸⢸⣞⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                            "⠀⠀⠀⠀⠁⠇⠡⠩⡫⢿⣝⡻⡮⣒⢽⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
+                megamindInLogs = true;
+            }
             return slots;
         }
         return null;
@@ -163,19 +125,15 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
             coinsPerBit = Math.round(itemCost / bitsCost);
         } else {
             String outerKey = stack.getName().getString();
-            Pair<String, Long> innerMap = categoryOutput.get(outerKey);
-            Pair<String, Long> innerMapGreen = categoryOutput.get(outerKey + "GREEN"); // not really null safe but we don't care as it should be triggered only when we KNOW there is a green thing
+            Pair<String, Long> innerMap, innerMapGreen;
             if (bestSlotIndexSelling != -1) if (bestSlotIndexSelling == focusedSlot.getIndex()) isGreen = true;
 
-            if (innerMap == null) {
-                LOGGER.warn("TRIGGERED innerMap == null");
-                BestItemsResult result = calculateBestItems(getSlots());
-                innerMap = categoryOutput.get(outerKey);
-                innerMapGreen = categoryOutput.get(outerKey + "GREEN");
-            }
+            BestItemsResult result = calculateBestItems(getSlots());
+            innerMap = categoryOutput.get(outerKey);
+            innerMapGreen = categoryOutput.get(outerKey + "GREEN");
 
             if (innerMap != null) {
-                LOGGER.info("innerMap STATE: {}, {}", innerMap.getLeft(), innerMap.getRight());
+                LOGGER.debug(LOGS_PREFIX+"innerMap STATE: {}, {}", innerMap.getLeft(), innerMap.getRight());
                 if (isGreen) {  // this is here so green highlighted category won't show yellow stuff
                     itemID = innerMapGreen.getLeft();
                     coinsPerBit = innerMapGreen.getRight();
@@ -185,9 +143,9 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
                 }
             }
         }
-        LOGGER.info("itemID and coinsPerBit: {}, {}", itemID, coinsPerBit);
+        LOGGER.debug(LOGS_PREFIX+"itemID and coinsPerBit: {}, {}", itemID, coinsPerBit);
         ItemStack foundItemStack = ItemRepository.getItemStack(itemID);
-        if (Objects.equals(itemID, "")) {
+        if (Objects.equals(itemID, "")) {   // a bit dirty, but basically if itemID is empty then it is normal item and NOT category
             lines.add(Text.empty()
                     .append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
                     .append(Text.literal(DECIMAL_FORMAT.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
@@ -201,8 +159,8 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
                     .append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
                     .append(Text.literal(DECIMAL_FORMAT.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
             lines.add(Text.literal("From " + ItemRepository.getItemStack(itemID).getName().getString()).formatted(Formatting.DARK_AQUA));
-        } else {
-            LOGGER.warn("ItemStack not found for {}", itemID);
+        } else {    // if below so it won't clog logs with that cursed enchanted book
+            if (!Objects.equals(stack.getName().getString(), "Stacking Enchants")) LOGGER.warn(LOGS_PREFIX+"ItemStack not found for {}", itemID);
             lines.add(Text.empty()
                     .append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
                     .append(Text.literal(DECIMAL_FORMAT.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
@@ -217,8 +175,8 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
         categoryOutput.put(catName, new Pair<>("", 0L));
         categoryOutput.put(catName+"GREEN", new Pair<>("", 0L));
         Map<String, Long> categoryResults = processCategory(stack);
-        LOGGER.warn("TRIGGERED INNER CODE FOR PROCESSING: {}", catName);
-        LOGGER.info("categoryResults: {}", categoryResults.toString());
+        LOGGER.debug(LOGS_PREFIX+"TRIGGERED INNER CODE FOR PROCESSING: {}", catName);
+        LOGGER.debug(LOGS_PREFIX+"categoryResults: {}", categoryResults.toString());
 
         for (Map.Entry<String, Long> categoryEntry : categoryResults.entrySet()) {
             String itemID = categoryEntry.getKey();
@@ -236,7 +194,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
                 bestCoinsPerBitAll = coinsPerBit;
             }
         }
-        LOGGER.info("CURRENT STATE OF categoryOutput: {}, {}", categoryOutput.get(catName).getLeft(), categoryOutput.get(catName).getRight());
+        LOGGER.debug(LOGS_PREFIX+"CURRENT STATE OF categoryOutput: {}, {}", categoryOutput.get(catName).getLeft(), categoryOutput.get(catName).getRight());
         return categoryOutput.get(catName);
     }
 
@@ -254,28 +212,21 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 
             if (CATEGORY_PATTERN.matcher(ItemUtils.concatenateLore(ItemUtils.getLore(stack))).find()) {
                 String catName = stack.getName().getString();
-                categoryOutput.put(catName, new Pair<>("", 0L));
-                categoryOutput.put(catName+"GREEN", new Pair<>("", 0L));
                 Pair<String, Long> categoryResults = calculateBestInCategory(stack);
-                LOGGER.warn("TRIGGERED OUTER CODE FOR PROCESSING: {}", catName);
+                LOGGER.debug(LOGS_PREFIX+"TRIGGERED OUTER CODE FOR PROCESSING: {}", catName);
 
                 String itemID = categoryResults.getLeft();
                 long coinsPerBit = categoryResults.getRight();
 
                 if (sellingItems.contains(itemID) && (coinsPerBit > bestCoinsPerBitSelling)) {
-//                    categoryOutput.get(catName + "GREEN").setLeft(itemID);
-//                    categoryOutput.get(catName + "GREEN").setRight(coinsPerBit);
                     bestCoinsPerBitSelling = coinsPerBit;
                     bestSlotIndexSelling = entry.getIntKey();
                 }
 
                 if (coinsPerBit > bestCoinsPerBitAll) {
-//                    categoryOutput.get(catName).setLeft(itemID);
-//                    categoryOutput.get(catName).setRight(coinsPerBit);
                     bestCoinsPerBitAll = coinsPerBit;
                     bestSlotIndexAll = entry.getIntKey();
                 }
-//                LOGGER.info("CURRENT STATE OF categoryOutput: {}, {}", categoryOutput.get(catName + "GREEN").getLeft(), categoryOutput.get(catName + "GREEN").getRight());
             }
         }
 
@@ -283,7 +234,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
             ItemStack stack = entry.getValue();
             if (stack == null || stack.isEmpty()) continue;
 
-            String itemId = stack.getSkyblockApiId(); // Получаем ID предмета
+            String itemId = stack.getSkyblockApiId();
             String lore = ItemUtils.concatenateLore(ItemUtils.getLore(stack));
             Matcher bitsMatcher = BITS_PATTERN.matcher(lore);
             if (!bitsMatcher.find()) continue;
@@ -294,13 +245,11 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 
             long coinsPerBit = Math.round(itemCost / bitsCost);
 
-            // Проверка на лучший предмет из хорошо продающихся
             if (sellingItems.contains(itemId) && (coinsPerBit > bestCoinsPerBitSelling)) {
                 bestCoinsPerBitSelling = coinsPerBit;
                 bestSlotIndexSelling = entry.getIntKey();
             }
 
-            // Проверка на лучший предмет из всех
             if (coinsPerBit > bestCoinsPerBitAll) {
                 bestCoinsPerBitAll = coinsPerBit;
                 bestSlotIndexAll = entry.getIntKey();
@@ -309,44 +258,33 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
         return new BestItemsResult(bestSlotIndexSelling, bestSlotIndexAll, bestCoinsPerBitSelling, bestCoinsPerBitAll);
     }
 
-
     private Map<String, Long> processCategory(ItemStack stack) {
         String categoryName = stack.getName().getString();
-        LOGGER.info("Detected category name: {}", categoryName);
+        LOGGER.debug(LOGS_PREFIX+"Detected category name: {}", categoryName);
 
         if (categories.containsKey(categoryName)) {
-            LOGGER.info("Key matched for: {}", categoryName);
+            LOGGER.debug(LOGS_PREFIX+"Key matched for: {}", categoryName);
             Map<String, Long> results = new HashMap<>();
             Map<String, Integer> category = categories.get(categoryName);
 
-//            long bestCoinsPerBitSelling = 0L;
-//            long bestCoinsPerBitAll = 0L;
             for (Map.Entry<String, Integer> entry : category.entrySet()) {
-                String itemID = entry.getKey(); // ID предмета
-                Integer itemBitsPrice = entry.getValue(); // цена в битах
+                String itemID = entry.getKey();
+                Integer itemBitsPrice = entry.getValue();
                 double itemCost = getPrice(itemID);
-                LOGGER.info("Line processed: {} item, {} price in bits, {} price in coins", itemID, itemBitsPrice, itemCost);
+                LOGGER.debug(LOGS_PREFIX+"Line processed: {} item, {} price in bits, {} price in coins", itemID, itemBitsPrice, itemCost);
                 long coinsPerBit = Math.round(itemCost / itemBitsPrice);
-                results.put(itemID, coinsPerBit); // Добавляем пару "ID, coinsPerBit" в результат
-//                if (coinsPerBit > bestCoinsPerBitSelling) {
-//                    categoryOutput.get(categoryName+"GREEN").setLeft(itemID);
-//                    categoryOutput.get(categoryName+"GREEN").setRight(coinsPerBit);
-//                }
-//                if (coinsPerBit > bestCoinsPerBitAll) {
-//                    categoryOutput.get(categoryName).setLeft(itemID);
-//                    categoryOutput.get(categoryName).setRight(coinsPerBit);
-//                }
+                results.put(itemID, coinsPerBit);
             }
             return results;
         } else if (categoryName.contains("Fuel Blocks")) {
-            LOGGER.info("Fuel Blocks code triggered");
-            String itemID = "INFERNO_FUEL_BLOCK";
-            int[] itemBitsPrice = {75, 3600};
-            double itemCost = getPrice(itemID);
+            LOGGER.debug(LOGS_PREFIX+"Fuel Blocks code triggered"); // so that thing gets cheaper if player has blaze slayer 9
+            String itemID = "INFERNO_FUEL_BLOCK";   // but I don't know if only 1x offer of 64x offer gets discount too
+            int[] itemBitsPrice = {75, 3600};   // if only 1x gets discount then it doesn't matter as x64 would be ALWAYS better even with it
+            double itemCost = getPrice(itemID); // TLDR: need blaze slayer 9 player to show their prices
             long coinsPerBit = (long) (Math.max(itemCost / itemBitsPrice[0], itemCost * 64 / itemBitsPrice[1]));
             return Collections.singletonMap(itemID, coinsPerBit);
         } else {
-            LOGGER.warn("Can't recognize category {} from bits shop! Consider reporting this to our discord!", categoryName);
+            LOGGER.warn(LOGS_PREFIX+"Can't recognize category {} from bits shop! Consider reporting this to our discord!", categoryName);
         }
         return Collections.emptyMap();
     }
@@ -371,17 +309,10 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
             "AUTOPET_RULES_2"   // it barely made it here
     );
 
-    private String getGreen() {
-        for (String item: sellingItems) {
-
-        }
-        return null;
-    };
-
-
     /**
      * SKYBLOCK_ID, Bits Price
      * Yes I just hardcoded it. Why work smart when you can work hard?
+     * Those are only from submenus (categories) as normal item is easy to parse
      * It probably could've been extracted from neu repo or something
      * Actual on 14.08.2024
      */
@@ -473,6 +404,41 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
             this.bestCoinsPerBitSelling = bestCoinsPerBitSelling;
             this.bestCoinsPerBitAll = bestCoinsPerBitAll;
         }
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return SkyblockerConfigManager.get().helpers.enableBitsTooltip;
+    }
+
+    /**
+     * Gets price from ItemStack
+     * extracts ID from stack
+     */
+    double getPrice(ItemStack stack) {
+        double itemCost = 0;
+        String itemID = stack.getSkyblockApiId();
+
+        if (TooltipInfoType.BAZAAR.getData().has(itemID)) {
+            itemCost = TooltipInfoType.BAZAAR.getData().getAsJsonObject(stack.getSkyblockApiId()).get("buyPrice").getAsDouble();
+        } else if (TooltipInfoType.LOWEST_BINS.getData().has(itemID)) {
+            itemCost = TooltipInfoType.LOWEST_BINS.getData().get(stack.getSkyblockApiId()).getAsDouble();
+        }
+        return itemCost;
+    }
+
+    /**
+     * Gets price from itemID
+     */
+    double getPrice(String itemID) {
+        double itemCost = 0;
+
+        if (TooltipInfoType.BAZAAR.getData().has(itemID)) {
+            itemCost = TooltipInfoType.BAZAAR.getData().getAsJsonObject(itemID).get("buyPrice").getAsDouble();
+        } else if (TooltipInfoType.LOWEST_BINS.getData().has(itemID)) {
+            itemCost = TooltipInfoType.LOWEST_BINS.getData().get(itemID).getAsDouble();
+        }
+        return itemCost;
     }
 
     @Override
