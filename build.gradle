@@ -47,6 +47,20 @@ repositories {
 		}
 	}
 
+	// For JEI
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
+
 	// YACL
 	maven {
 		url "https://maven.isxander.dev/releases"
@@ -150,6 +164,10 @@ dependencies {
 	// EMI
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
 	//modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
+
+	// JEI (Using modrinth repo since official release is in mojmap and doesn't work)
+	modCompileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
+	//modRuntimeOnly "maven.modrinth:jei:${project.jei_version}-fabric"
 
 	compileOnly "com.demonwav.mcdev:annotations:${project.mcdev_annotations_version}"
 

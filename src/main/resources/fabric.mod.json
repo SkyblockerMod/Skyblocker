@@ -26,6 +26,9 @@
     ],
     "emi": [
       "de.hysky.skyblocker.compatibility.emi.SkyblockerEMIPlugin"
+    ],
+    "jei_mod_plugin": [
+      "de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin"
     ]
   },
   "mixins": [
