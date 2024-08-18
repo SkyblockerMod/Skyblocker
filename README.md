@@ -8,9 +8,6 @@
  \
 [![Discord](https://img.shields.io/discord/879732108745125969?logo=discord&labelColor=cecece&color=7289DA&label=)](https://discord.com/invite/aNNJHQykck)
 
-**Translate status** \
-[![Translate status](https://translate.hysky.de/widget/Skyblocker/multi-auto.svg)](https://translate.hysky.de/projects/Skyblocker/skyblocker/)
-
 Hypixel Skyblock Mod for Minecraft 1.21 & 1.21.1
 
 Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/installation) or use our [Modpack](https://modrinth.com/modpack/skyblocker-modpack)
@@ -592,6 +589,9 @@ information.
 </table>
 
 ### Translator
+
+**Translate status** \
+[![Translate status](https://translate.hysky.de/widget/Skyblocker/multi-auto.svg)](https://translate.hysky.de/projects/Skyblocker/skyblocker/)
 
 We thank all our translators for their valuable support!
 
