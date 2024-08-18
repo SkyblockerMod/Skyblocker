@@ -1,18 +1,20 @@
 # Release 1.22.0
 
 ## Highlight
-- Profile Viewer
+- Profile Viewer (/pv or /skyblocker pv) note: You may have to delete an old default shortcut if /pv doesn't work
 - Dojo helper
 - Simon Says Solver & Lights On Solver
 - Jerry timer
+- JEI support for Item List
 - Equipment in inventory
 - Craft Cost Tooltip
+- Special Effects for rare dye drops
 - Essence Shop Price
-- complete sack bz and npc sell price
+- Complete sack bz and npc sell price
 - Repeated ding when a stray rabbit appears
 - Completed commission highlighter
 - Crystal hollows Auto detect waypoint from chat for example when talking to king
-- Bazaar highlighter
+- Bazaar Helpers (Highlights, Slot Text)
 - Nucleus waypoints
 - Wishing compass solver
 - Correct livid highlight in m5
@@ -21,21 +23,34 @@
 - Chest Value on minion generated stuff
 - Kuudra glow
 - Kuudra danger warning
-- Treasure Chest Highlighter
+- Crystal Hollows Treasure Chest Highlighter
 - Quick nav tooltip
 - Skyblock XP Messages
 - Crystal Waypoints server-sided sharing via WebSocket
-- Dungeon fairy room highlight
-- Tooltip display Estimated Item Value
+- Dungeon fairy room door highlight
+- Tooltip display Estimated Item Value (chest value now uses estimated item value)
 - Blaze Slayer Helper (Attunement highlighting, Fire Pillar Countdown Notifiications)
 - Slayer Highlights (Hitbox Slayer Mob Highlighting, Glow Effect Slayer Mob Highlighting)
+- Update Notifications by chat message and toast
+- Improve location detection and reparty command with the Hypixel Mod API
+- Block trading and auctioning protected items
+- Make Ordered Waypoints waypoint type configurable via global setting
+- Enhance shortcuts redirects
 - Fix Emi and rei now displaying again
-- Fix SuperpairsSolver not starting properly
+- Fix Superpairs Solver not starting properly
 - Fix Nukekubi head highlight
+- Fix Visitor Helper readding NPCs after you accept/deny them
 - Fix a lot of config crashes because of null values
 - Fix quick nav tooltip config
 - Fix Farming Hud Crash
 - Fix item debug crashes
+- Fix slot text bugs with pets
+- Fixed a memory leak
+- Fix a rare crash in the Click In Order terminal
+- Fixes recipe book search being case sensitive
+- Fix some Egg Finder bugs
+- Fix Skytils v1 waypoint importing
+- Fix log spam from dungeon secrets widget
 
 ## What's Changed
 * Change OptionalInt costs to OptionalLong by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/809
@@ -123,6 +138,20 @@
 * Slayer Helpers Slayer Highlights, Blaze Helpers and Glow Caching by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/888
 * Crystals Waypoint WebSocket Enhancements by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/917
 * Fix SuperpairsSolver not starting properly by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/918
+* Chat rules thingamabobs by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/897
+* Fix pet neu id crash by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/921
+* Update Networth Calculator to fix NPE by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/928
+* Fix paul's minister perk not being accounted for by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/923
+* Always load NEU repo by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/920
+* Make enums translatable and fix line break issue by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/932
+* Make Warp Autocomplete adapt to the player's rank by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/930
+* Call ExperimentSolver reset method by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/937
+* Mixins Review by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/936
+* Change Rarity Background Default Settings by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/935
+* Update Notifications by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/877
+* Mark all secrets missing in subcommand by @btwonion in https://github.com/SkyblockerMod/Skyblocker/pull/927
+* Add JEI integration by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/448
+* Proper Item DFU for PV by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/913
 
 ## New Contributors
 * @Vricken made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/797

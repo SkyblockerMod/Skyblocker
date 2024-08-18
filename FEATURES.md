@@ -166,6 +166,7 @@
     - *stage*
     - *Location*
 - **Ender Nodes Helper**
+- **Special Effects for rare dye drops**
 
 ### User Interface Enhancements:
 - **Equipment in inventory**
@@ -243,7 +244,7 @@
 - **Jerry timer**
 
 ### Miscellaneous Features:
-- **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei) and [EMI](https://modrinth.com/mod/emi) Support**
+- **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
 - **Item Protection**
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
 - **Wiki Lookup:** Press F4 to open the wiki page about the held item.
