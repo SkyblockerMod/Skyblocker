@@ -10,6 +10,9 @@ public class SlayersConfig {
     @SerialEntry
     public HighlightSlayerEntities highlightBosses = HighlightSlayerEntities.OFF;
 
+	@SerialEntry
+	public boolean displayBossbar = false;
+
     public enum HighlightSlayerEntities {
         OFF, GLOW, HITBOX;
 

@@ -7,6 +7,7 @@
     "AbstractInventoryScreenMixin",
     "BackgroundRendererMixin",
     "BatEntityMixin",
+    "BossBarHudMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldMixin",
