@@ -65,7 +65,7 @@ public class LegacyItemStackFixer {
 		stack.set(DataComponentTypes.ATTRIBUTE_MODIFIERS, AttributeModifiersComponent.DEFAULT.withShowInTooltip(false));
 
 		//Hide Vanilla Enchantments
-		stack.set(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT.withShowInTooltip(false));
+		stack.set(DataComponentTypes.ENCHANTMENTS, stack.getOrDefault(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT).withShowInTooltip(false));
 
 		return stack;
 	}
