@@ -920,5 +920,14 @@
     "skyblocker.waypoints.type.OUTLINED_WAYPOINT": "邊框+路徑點",
     "skyblocker.waypoints.type.HIGHLIGHT": "突顯",
     "skyblocker.waypoints.type.OUTLINED_HIGHLIGHT": "邊框+突顯",
-    "skyblocker.waypoints.type.OUTLINE": "邊框"
+    "skyblocker.waypoints.type.OUTLINE": "邊框",
+    "skyblocker.config.general.updateChannel.channel.ALPHA": "開發版",
+    "skyblocker.config.general.updateChannel.channel.BETA": "測試版",
+    "skyblocker.config.general.updateChannel.channel.RELEASE": "正式版",
+    "skyblocker.config.general.updateNotifications": "更新通知",
+    "skyblocker.updateNotifications.newUpdateMessage": "Skyblocker有新的更新！ %s",
+    "skyblocker.updateNotifications.newUpdateToast.title": "Skyblocker有新版本可用！",
+    "skyblocker.updateNotifications.newUpdateToast.description": "下載版本%s！",
+    "skyblocker.config.general.updateChannel": "更新頻道",
+    "skyblocker.config.general.updateChannel.@Tooltip": "選擇接收哪一種更新的通知，可在正式版、測試版和開發版中選擇。"
 }
