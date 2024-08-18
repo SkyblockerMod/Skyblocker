@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerScreen;
+import de.hysky.skyblocker.UpdateNotifications;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
@@ -33,6 +34,21 @@ public class GeneralCategory {
                                 () -> config.general.enableTips,
                                 newValue -> config.general.enableTips = newValue)
                         .controller(ConfigUtils::createBooleanController)
+                        .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.general.updateNotifications"))
+                        .binding(UpdateNotifications.Config.DEFAULT.enabled(),
+                                () -> UpdateNotifications.config.enabled(),
+                                newValue -> UpdateNotifications.config = UpdateNotifications.config.withEnabled(newValue))
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
+                .option(Option.<UpdateNotifications.Channel>createBuilder()
+                        .name(Text.translatable("skyblocker.config.general.updateChannel"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.general.updateChannel.@Tooltip")))
+                        .binding(UpdateNotifications.Config.DEFAULT.channel(),
+                                () -> UpdateNotifications.config.channel(),
+                                newValue -> UpdateNotifications.config = UpdateNotifications.config.withChannel(newValue))
+                        .controller(ConfigUtils::createEnumCyclingListController)
                         .build())
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.general.acceptReparty"))

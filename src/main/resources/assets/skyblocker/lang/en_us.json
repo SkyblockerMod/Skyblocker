@@ -320,6 +320,13 @@
   "skyblocker.config.general.specialEffects.rareDyeDropEffects": "Rare Dye Drop Effects",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "Adds a special visual effect triggered upon dropping a rare dye!",
 
+  "skyblocker.config.general.updateChannel": "Update Channel",
+  "skyblocker.config.general.updateChannel.@Tooltip": "Choose between receiving notifications for releases, for both releases and betas, or for releases; betas; and alphas.",
+  "skyblocker.config.general.updateChannel.channel.ALPHA": "Alpha",
+  "skyblocker.config.general.updateChannel.channel.BETA": "Beta",
+  "skyblocker.config.general.updateChannel.channel.RELEASE": "Release",
+  "skyblocker.config.general.updateNotifications": "Update Notifications",
+
   "skyblocker.config.general.wikiLookup": "Wiki Lookup",
   "skyblocker.config.general.wikiLookup.enableWikiLookup": "Enable Wiki Lookup",
   "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "Opens the wiki page of the hovered item with the F4 key.",
@@ -784,6 +791,10 @@
   "skyblocker.config.uiAndVisuals.waypoints.waypointType": "Waypoint Type",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip": "Waypoint: Displays a highlight and a beacon beam.\n\nOutlined Waypoint: Displays both a waypoint and an outline.\n\nHighlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote": "\n\n\nThis option does not apply to all waypoints. Some waypoints such as secret waypoints have their own waypoint type option.",
+
+  "skyblocker.updateNotifications.newUpdateMessage": "There's a new Skyblocker update available! %s",
+  "skyblocker.updateNotifications.newUpdateToast.title": "Skyblocker Update Available!",
+  "skyblocker.updateNotifications.newUpdateToast.description": "Download version %s!",
 
   "skyblocker.utils.locationUpdateError": "Failed to update your location! Some features of the mod may not work properly :(",
 
