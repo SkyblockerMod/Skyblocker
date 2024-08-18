@@ -839,6 +839,8 @@
   "skyblocker.dungeons.secrets.markSecretMissing": "§rMarked secret #%d as missing.",
   "skyblocker.dungeons.secrets.markSecretFoundUnable": "§cUnable to mark secret #%d as found.",
   "skyblocker.dungeons.secrets.markSecretMissingUnable": "§cUnable to mark secret #%d as missing.",
+  "skyblocker.dungeons.secrets.markSecretsMissing": "§rMarked all secrets in this room as missing.",
+  "skyblocker.dungeons.secrets.markSecretsMissingUnable": "§cUnable to mark secrets in this room as missing.",
   "skyblocker.dungeons.secrets.posMessage": "§rRoom: %s, Direction: %s, X: %d, Y: %d, Z: %d",
   "skyblocker.dungeons.secrets.noTarget": "§cNo target block found! (Are you pointing at a block in range?)",
   "skyblocker.dungeons.secrets.notMatched": "§cThe current room is not matched! (Are you in a dungeon room?)",
