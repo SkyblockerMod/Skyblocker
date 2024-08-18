@@ -46,10 +46,10 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
             this.recipeBook.toggleOpen();
             this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth);
             button.setPosition(this.x + 5, this.height / 2 - 49);
-            if (moreCraftsButton != null) moreCraftsButton.setPosition(this.x + 174 + 4, this.y + 62);
+            if (moreCraftsButton != null) moreCraftsButton.setPosition(this.x + 152, this.y + 63);
         }));
         if (!handler.mirrorverse) {
-            moreCraftsButton = new TexturedButtonWidget(this.x + 174 + 4, y + 62, 16, 16, MORE_CRAFTS_TEXTURES,
+            moreCraftsButton = new TexturedButtonWidget(this.x + 152, y + 63, 16, 16, MORE_CRAFTS_TEXTURES,
                     button -> this.onMouseClick(handler.slots.get(26), handler.slots.get(26).id, 0, SlotActionType.PICKUP));
             moreCraftsButton.setTooltipDelay(Duration.ofMillis(250L));
             moreCraftsButton.setTooltip(Tooltip.of(Text.literal("More Crafts")));
@@ -96,8 +96,8 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         int i = this.x;
         int j = (this.height - this.backgroundHeight) / 2;
         context.drawTexture(TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
-		//4 px of margin to allow some space for custom resource packs that have size differences on the crafting table/inventory textures
-        if (!handler.mirrorverse) context.drawGuiTexture(RenderLayer::getGuiTextured, QUICK_CRAFT, i + 169, j - 3, 0, 37, 90);
+        //4 px of margin to allow some space for custom resource packs that have size differences on the crafting table/inventory textures
+        if (!handler.mirrorverse) context.drawGuiTexture(RenderLayer::getGuiTextured, QUICK_CRAFT, i + 143, j - 3, 0, 37, 90);
     }
 
     @Override
