@@ -111,6 +111,10 @@ public class ContainerSolverManager {
 
 	public static void markHighlightsDirty() {
 		highlights = null;
+
+		if (currentSolver != null) {
+			currentSolver.markDirty();
+		}
 	}
 
 	/**
@@ -133,7 +137,7 @@ public class ContainerSolverManager {
 		RenderSystem.colorMask(true, true, true, true);
 	}
 
-	private static Int2ObjectMap<ItemStack> slotMap(List<Slot> slots) {
+	public static Int2ObjectMap<ItemStack> slotMap(List<Slot> slots) {
 		Int2ObjectMap<ItemStack> slotMap = new Int2ObjectRBTreeMap<>();
 		for (int i = 0; i < slots.size(); i++) {
 			slotMap.put(i, slots.get(i).getStack());

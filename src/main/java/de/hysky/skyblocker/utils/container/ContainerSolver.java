@@ -17,6 +17,11 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 	default void reset() {}
 
 	/**
+	 * Called upon marking highlights dirty in {@link ContainerSolverManager#markHighlightsDirty()}.
+	 */
+	default void markDirty() {}
+
+	/**
 	 * Called when the slot is clicked.
 	 * @return {@code true} if the click should be canceled, {@code false} otherwise. Defaults to {@code false} if not overridden.
 	 */
