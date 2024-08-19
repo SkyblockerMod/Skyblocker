@@ -51,7 +51,7 @@ public class ContainerSolverManager {
 			NewYearCakesHelper.INSTANCE,
 			ChocolateFactorySolver.INSTANCE,
 			new ReorderHelper(),
-			new BitsHelper()
+			BitsHelper.INSTANCE
 	};
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;

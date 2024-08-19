@@ -355,8 +355,8 @@
 
   "skyblocker.config.helpers.enableNewYearCakesHelper": "Enable New Year Cakes Helper",
   "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "Highlights the missing new year cakes green and the cakes you have already red.\n\nRequires you to open your cake bag at least once to work.",
-  "skyblocker.config.helpers.enableBitsHelper": "Highlight best Bits Shop offer",
-  "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Bits Shop (Community Store). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip",
+  "skyblocker.config.helpers.enableBitsHelper": "Highlight best Community Store (Bits Shop) offer",
+  "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip",
 
 
   "skyblocker.config.helpers.enableWardrobeHelper": "Enable Wardrobe Helper",
