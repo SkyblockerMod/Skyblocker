@@ -26,6 +26,15 @@ public class HelperCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 
+		        .option(Option.<Boolean>createBuilder()
+		                .name(Text.translatable("skyblocker.config.helpers.enableWardrobeHelper"))
+		                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.enableWardrobeHelper.@Tooltip")))
+		                .binding(defaults.helpers.enableWardrobeHelper,
+				                () -> config.helpers.enableWardrobeHelper,
+				                newValue -> config.helpers.enableWardrobeHelper = newValue)
+		                .controller(ConfigUtils::createBooleanController)
+				        .build())
+
                 //Mythological Ritual
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.helpers.mythologicalRitual"))
