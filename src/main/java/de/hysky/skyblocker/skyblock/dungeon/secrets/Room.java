@@ -520,7 +520,7 @@ public class Room implements Tickable, Renderable {
      */
     protected void onChatMessage(String message) {
         if (isAllSecretsFound(message)) {
-            secretWaypoints.values().forEach(SecretWaypoint::setFound);
+            markAllSecrets(true);
         } else if (LOCKED_CHEST.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
             secretWaypoints.column(lastChestSecret).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
                     .ifPresent(secretWaypoint -> markSecretsAndLogInfo(secretWaypoint, false, "[Skyblocker Dungeon Secrets] Detected locked chest interaction, setting secret #{} as missing", secretWaypoint.secretIndex));
@@ -620,6 +620,14 @@ public class Room implements Tickable, Renderable {
             secret.values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
             return true;
         }
+    }
+
+    protected void markAllSecrets(boolean found) {
+        secretWaypoints.values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
+    }
+
+    protected int getSecretCount() {
+        return secretWaypoints.rowMap().size();
     }
 
     public enum Type {

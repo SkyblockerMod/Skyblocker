@@ -8,6 +8,8 @@ import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.azureaaron.hmapi.data.rank.PackageRank;
+import net.azureaaron.hmapi.data.rank.RankType;
 import net.azureaaron.hmapi.data.server.Environment;
 import net.azureaaron.hmapi.events.HypixelPacketEvents;
 import net.azureaaron.hmapi.network.HypixelNetworking;
@@ -15,6 +17,7 @@ import net.azureaaron.hmapi.network.packet.s2c.ErrorS2CPacket;
 import net.azureaaron.hmapi.network.packet.s2c.HelloS2CPacket;
 import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket;
 import net.azureaaron.hmapi.network.packet.v1.s2c.LocationUpdateS2CPacket;
+import net.azureaaron.hmapi.network.packet.v1.s2c.PlayerInfoS2CPacket;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -45,6 +48,11 @@ public class Utils {
     public static final String PROFILE_ID_PREFIX = "Profile ID: ";
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
+    /**
+     * The player's rank.
+     */
+    @NotNull
+    private static RankType rank = PackageRank.NONE;
     /**
      * Current Skyblock location (from the Mod API)
      */
@@ -186,6 +194,14 @@ public class Utils {
         return map;
     }
 
+    /**
+     * @return the player's rank
+     */
+    @NotNull
+    public static RankType getRank() {
+        return rank;
+    }
+
     public static void init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
@@ -195,6 +211,7 @@ public class Utils {
         HypixelNetworking.registerToEvents(Util.make(new Object2IntOpenHashMap<>(), map -> map.put(LocationUpdateS2CPacket.ID, 1)));
         HypixelPacketEvents.HELLO.register(Utils::onPacket);
         HypixelPacketEvents.LOCATION_UPDATE.register(Utils::onPacket);
+        HypixelPacketEvents.PLAYER_INFO.register(Utils::onPacket);
     }
 
     /**
@@ -374,6 +391,9 @@ public class Utils {
         switch (packet) {
             case HelloS2CPacket(var environment) -> {
                 Utils.environment = environment;
+
+                //Request the player's rank information
+                HypixelNetworking.sendPlayerInfoC2SPacket(1);
             }
 
             case LocationUpdateS2CPacket(var serverName, var serverType, var _lobbyName, var mode, var map) -> {
@@ -410,6 +430,10 @@ public class Utils {
                 }
 
                 LOGGER.error("[Skyblocker] Failed to update your current location! Some features of the mod may not work correctly :( - Error: {}", error);
+            }
+
+            case PlayerInfoS2CPacket(var playerRank, var packageRank, var monthlyPackageRank, var _prefix) -> {
+                rank = RankType.getEffectiveRank(playerRank, packageRank, monthlyPackageRank);
             }
 
             default -> {} //Do Nothing

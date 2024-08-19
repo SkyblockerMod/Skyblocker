@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(BeaconBlockEntityRenderer.class)
 public interface BeaconBlockEntityRendererInvoker {
-    @SuppressWarnings("unused")
     @Invoker("renderBeam")
     static void renderBeam(MatrixStack matrices, VertexConsumerProvider vertexConsumers, float tickDelta, long worldTime, int yOffset, int maxY, int color) {
         throw new UnsupportedOperationException();

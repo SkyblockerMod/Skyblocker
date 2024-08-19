@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.configs;
 
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 
@@ -22,7 +23,12 @@ public class EventNotificationsConfig {
         NONE,
         SKYBLOCK,
         HYPIXEL,
-        EVERYWHERE
+        EVERYWHERE;
+
+        @Override
+        public String toString() {
+            return I18n.translate("skyblocker.config.eventNotifications.criterion." + name());
+        }
     }
 
     public enum Sound {
@@ -32,13 +38,19 @@ public class EventNotificationsConfig {
         PLING(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value()),
         GOAT(SoundEvents.GOAT_HORN_SOUNDS.getFirst().value());
 
+        private final SoundEvent soundEvent;
+
+        Sound(SoundEvent soundEvent) {
+            this.soundEvent = soundEvent;
+        }
+
         public SoundEvent getSoundEvent() {
             return soundEvent;
         }
 
-        final SoundEvent soundEvent;
-        Sound(SoundEvent soundEvent) {
-            this.soundEvent = soundEvent;
+        @Override
+        public String toString() {
+            return I18n.translate("skyblocker.config.eventNotifications.notificationSound.sound." + name());
         }
     }
 }

@@ -25,11 +25,10 @@ public class ClientWorldMixin {
     private void skyblocker$handleBlockUpdate(CallbackInfo ci, @Local(argsOnly = true) BlockPos pos, @Local(argsOnly = true) BlockState state) {
         if (Utils.isInCrimson()) {
             DojoManager.onBlockUpdate(pos.toImmutable(), state);
-        }
-        else if (Utils.isInCrystalHollows()) {
+        } else if (Utils.isInCrystalHollows()) {
             CrystalsChestHighlighter.onBlockUpdate(pos.toImmutable(), state);
         }
+
         SimonSays.onBlockUpdate(pos, state);
-        
     }
 }

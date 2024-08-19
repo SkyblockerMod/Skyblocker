@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.waypoint;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -141,13 +142,7 @@ public class Waypoint implements Renderable {
 
         @Override
         public String toString() {
-            return switch (this) {
-                case WAYPOINT -> "Waypoint";
-                case OUTLINED_WAYPOINT -> "Outlined Waypoint";
-                case HIGHLIGHT -> "Highlight";
-                case OUTLINED_HIGHLIGHT -> "Outlined Highlight";
-                case OUTLINE -> "Outline";
-            };
+            return I18n.translate("skyblocker.waypoints.type." + name());
         }
     }
 }

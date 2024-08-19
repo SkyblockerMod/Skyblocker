@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.JsonOps;
@@ -80,6 +81,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.zip.InflaterInputStream;
 
@@ -252,7 +254,7 @@ public class DungeonManager {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
                 .then(literal("markAsFound").then(markSecretsCommand(true)))
-                .then(literal("markAsMissing").then(markSecretsCommand(false)))
+                .then(literal("markAsMissing").then(markSecretsCommand(false)).then(markAllSecretsAsMissingCommand()))
                 .then(literal("getRelativePos").executes(DungeonManager::getRelativePos))
                 .then(literal("getRelativeTargetPos").executes(DungeonManager::getRelativeTargetPos))
                 .then(literal("addWaypoint").then(addCustomWaypointCommand(false, registryAccess)))
@@ -361,13 +363,31 @@ public class DungeonManager {
     }
 
     private static RequiredArgumentBuilder<FabricClientCommandSource, Integer> markSecretsCommand(boolean found) {
-        return argument("secretIndex", IntegerArgumentType.integer()).executes(context -> {
+        return argument("secretIndex", IntegerArgumentType.integer()).suggests((provider, builder) -> {
+            if (isCurrentRoomMatched()) {
+                IntStream.rangeClosed(1, currentRoom.getSecretCount()).forEach(builder::suggest);
+            }
+            return builder.buildFuture();
+        }).executes(context -> {
             int secretIndex = IntegerArgumentType.getInteger(context, "secretIndex");
             if (markSecrets(secretIndex, found)) {
                 context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable(found ? "skyblocker.dungeons.secrets.markSecretFound" : "skyblocker.dungeons.secrets.markSecretMissing", secretIndex)));
             } else {
                 context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable(found ? "skyblocker.dungeons.secrets.markSecretFoundUnable" : "skyblocker.dungeons.secrets.markSecretMissingUnable", secretIndex)));
             }
+            return Command.SINGLE_SUCCESS;
+        });
+    }
+
+    private static LiteralArgumentBuilder<FabricClientCommandSource> markAllSecretsAsMissingCommand() {
+        return literal("all").executes(context -> {
+            if (isCurrentRoomMatched()) {
+                currentRoom.markAllSecrets(false);
+                context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.markSecretsMissing")));
+            } else {
+                context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secrets.markSecretsMissingUnable")));
+            }
+
             return Command.SINGLE_SUCCESS;
         });
     }

@@ -5,7 +5,11 @@
   "name": "Skyblocker",
   "description": "Hypixel Skyblock Mod",
   "authors": ["LifeIsAParadox/wohlhabend", "kevinthegreat1", "AzureAaron"],
-  "contributors": ["xMrVizzy", "d3dx9", "ExternalTime", "Zailer43", "TacoMonkey", "KonaeAkira", "Fix3dll", "null2264", "HyperSoop", "edgarogh", "TheColdPot", "Julienraptor01", "ADON15c", "catandA", "msg-programs", "lantice3720", "Futuremappermydud", "koloiyolo", "viciscat", "Grayray75", "alexiayaa", "KhafraDev", "btwonion", "Kaluub", "Emirlol", "LegendaryLilac", "olim88", "Ghost-3", "esteban4567890", "Fluboxer", "VeritasDL", "TheDearbear", "BigloBot", "f3shqt", "UpFault"],
+  "contributors": ["xMrVizzy", "d3dx9", "ExternalTime", "Zailer43", "TacoMonkey", "KonaeAkira", "Fix3dll", "null2264",
+    "HyperSoop", "edgarogh", "TheColdPot", "Julienraptor01", "ADON15c", "catandA", "msg-programs", "lantice3720",
+    "Futuremappermydud", "koloiyolo", "viciscat", "Grayray75", "alexiayaa", "KhafraDev", "btwonion", "Kaluub", "Emirlol",
+    "LegendaryLilac", "olim88", "Ghost-3", "esteban4567890", "Fluboxer", "VeritasDL", "TheDearbear", "BigloBot", "f3shqt",
+    "UpFault", "Vricken", "IBeHunting", "nea89o", "GatienDoesStuff"],
   "contact": {
     "homepage": "https://hysky.de",
     "sources": "https://github.com/SkyblockerMod/Skyblocker",
@@ -26,6 +30,9 @@
     ],
     "emi": [
       "de.hysky.skyblocker.compatibility.emi.SkyblockerEMIPlugin"
+    ],
+    "jei_mod_plugin": [
+      "de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin"
     ]
   },
   "mixins": [
@@ -34,9 +41,9 @@
   "accessWidener": "skyblocker.accesswidener",
   "depends": {
     "fabricloader": ">=0.15.11",
-    "fabric-api": ">=0.102.0+1.21.1",
+    "fabric-api": ">=0.102.1+1.21.1",
     "yet_another_config_lib_v3": ">=3.5.0+1.21",
-    "hm-api": ">=1.0.0+1.21",
+    "hm-api": ">=1.0.1+1.21.1",
     "minecraft": "~1.21",
     "java": ">=21"
   },

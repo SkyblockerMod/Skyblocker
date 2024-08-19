@@ -22,7 +22,7 @@ public class DyeSpecialEffects {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	@VisibleForTesting
-	protected static final Pattern DROP_PATTERN = Pattern.compile("WOW! (?:\\[[A-Z+]+\\] )?(?<player>[A-Za-z0-9_]+) found (?<dye>[A-Za-z ]+ Dye) #[\\d,]+!");
+	protected static final Pattern DROP_PATTERN = Pattern.compile("WOW! (?:\\[[A-Z+]+\\] )?(?<player>[A-Za-z0-9_]+) found (?<dye>[A-Za-z ]+ Dye)(?: #[\\d,]+)?!");
 
 	static void init() {
 		ClientReceiveMessageEvents.GAME.register(DyeSpecialEffects::displayDyeDropEffect);

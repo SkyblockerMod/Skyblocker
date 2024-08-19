@@ -77,6 +77,9 @@
 
   "skyblocker.config.dungeons.doorHighlight": "Door Highlight",
   "skyblocker.config.dungeons.doorHighlight.doorHighlightType": "Door Highlight Type",
+  "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.HIGHLIGHT": "Highlight",
+  "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.OUTLINED_HIGHLIGHT": "Outlined Highlight",
+  "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.OUTLINE": "Outline",
   "skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip": "Highlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
   "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nNote: Dungeon Secret Waypoints must be enabled for this to work.",
   "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight": "Enable Door Highlight",
@@ -231,9 +234,6 @@
 
   "skyblocker.config.general.acceptReparty": "Auto accept Reparty",
 
-  "skyblocker.config.uiAndVisuals.hideEmptyTooltips": "Hide empty item tooltips in menus",
-  "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "Hides the tooltip of an item if it doesn't have any information to display. Also blocks clicks on filler items like glass panes.",
-
   "skyblocker.config.general.hitbox": "Hitboxes",
   "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Enable 1.8 farmland hitbox",
   "skyblocker.config.general.hitbox.oldLeverHitbox": "Enable 1.8 lever hitbox",
@@ -243,11 +243,18 @@
   "skyblocker.config.general.itemInfoDisplay.attributeShardInfo.@Tooltip": "Displays the attribute's level and the initials of the attribute's name on the slot containing the item.",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle": "Item Rarity Background Style",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.@Tooltip": "Choose between a circular or a square background style!",
+  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.style.CIRCULAR": "Circular",
+  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.style.SQUARE": "Square",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds": "Item Rarity Backgrounds",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Displays a colored background behind an item, the color represents the item's rarity.",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsOpacity": "Item Rarity Backgrounds Opacity",
   "skyblocker.config.general.itemInfoDisplay.slotText": "Slot Text",
   "skyblocker.config.general.itemInfoDisplay.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level",
+  "skyblocker.config.general.itemInfoDisplay.slotText.mode.ENABLED": "Enabled",
+  "skyblocker.config.general.itemInfoDisplay.slotText.mode.HOLD_TO_SHOW": "Hold to Show",
+  "skyblocker.config.general.itemInfoDisplay.slotText.mode.PRESS_TO_TOGGLE": "Press to Toggle",
+  "skyblocker.config.general.itemInfoDisplay.slotText.mode.HOLD_TO_HIDE": "Hold to Hide",
+  "skyblocker.config.general.itemInfoDisplay.slotText.mode.DISABLED": "Disabled",
 
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
@@ -255,6 +262,8 @@
   "skyblocker.config.general.itemProtection": "Item Protection",
   "skyblocker.config.general.itemProtection.slotLockStyle": "Slot Lock Icon Style",
   "skyblocker.config.general.itemProtection.slotLockStyle.@Tooltip": "Choose between the fancy or the classic slot lock icon.",
+  "skyblocker.config.general.itemProtection.slotLockStyle.style.CLASSIC": "Classic",
+  "skyblocker.config.general.itemProtection.slotLockStyle.style.FANCY": "Fancy",
 
   "skyblocker.config.general.itemTooltip": "Item Tooltip",
   "skyblocker.config.general.itemTooltip.avg": "Average Type",
@@ -315,6 +324,13 @@
   "skyblocker.config.general.specialEffects.rareDungeonDropEffects.@Tooltip": "Adds a special visual effect triggered upon obtaining rare dungeon loot!",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects": "Rare Dye Drop Effects",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "Adds a special visual effect triggered upon dropping a rare dye!",
+
+  "skyblocker.config.general.updateChannel": "Update Channel",
+  "skyblocker.config.general.updateChannel.@Tooltip": "Choose between receiving notifications for releases, for both releases and betas, or for releases; betas; and alphas.",
+  "skyblocker.config.general.updateChannel.channel.ALPHA": "Alpha",
+  "skyblocker.config.general.updateChannel.channel.BETA": "Beta",
+  "skyblocker.config.general.updateChannel.channel.RELEASE": "Release",
+  "skyblocker.config.general.updateNotifications": "Update Notifications",
 
   "skyblocker.config.general.wikiLookup": "Wiki Lookup",
   "skyblocker.config.general.wikiLookup.enableWikiLookup": "Enable Wiki Lookup",
@@ -469,8 +485,17 @@
   "skyblocker.config.eventNotifications": "Event Notifications",
 
   "skyblocker.config.eventNotifications.criterion": "Notification Criterion",
+  "skyblocker.config.eventNotifications.criterion.NONE": "None",
+  "skyblocker.config.eventNotifications.criterion.SKYBLOCK": "SkyBlock",
+  "skyblocker.config.eventNotifications.criterion.HYPIXEL": "Hypixel",
+  "skyblocker.config.eventNotifications.criterion.EVERYWHERE": "Everywhere",
   "skyblocker.config.eventNotifications.monologue": "can you pls log onto skyblock rq pls? that would be cool cuz like if you are seeing dis then it means that ur config either got cleared or that this is ur first time using the mod if so then thanks for choosing it and hopefully you enjoy it! so yea this is where you will be able to set reminders for all events in skyblock they will be added as you encounter so you first need to log onto skyblock so yea hope you enjoy the mod and all that",
   "skyblocker.config.eventNotifications.notificationSound": "Notification Sound",
+  "skyblocker.config.eventNotifications.notificationSound.sound.NONE": "None",
+  "skyblocker.config.eventNotifications.notificationSound.sound.BELL": "Bell",
+  "skyblocker.config.eventNotifications.notificationSound.sound.DING": "Ding",
+  "skyblocker.config.eventNotifications.notificationSound.sound.PLING": "Pling",
+  "skyblocker.config.eventNotifications.notificationSound.sound.GOAT": "Goat",
   "skyblocker.config.eventNotifications.@Tooltip[0]": "Configure how much time before an event you will be reminded with a notification toast! For example if you set '5m' and '30s' in the list, you will receive a notification 5 minutes before and another 30 seconds before an event starts.",
   "skyblocker.config.eventNotifications.@Tooltip[1]": "The order doesn't matter. If you want to disable notifications, just empty the list.",
   "skyblocker.config.eventNotifications.@Tooltip[2]": "This list will modify the '%s' event",
@@ -484,6 +509,10 @@
   "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[2]": "\nGlacite: Show waypoints only in glacite tunnels.",
   "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[3]": "\nBoth: Show waypoints in dwarven mines and glacite tunnels.",
   "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[4]": "\n(takes effect when commissions updated)",
+  "skyblocker.config.mining.commissionWaypoints.mode.OFF": "Off",
+  "skyblocker.config.mining.commissionWaypoints.mode.DWARVEN": "Dwarven",
+  "skyblocker.config.mining.commissionWaypoints.mode.GLACITE": "Glacite",
+  "skyblocker.config.mining.commissionWaypoints.mode.BOTH": "Both",
   "skyblocker.config.mining.commissionWaypoints.useColor": "Colored Waypoints",
   "skyblocker.config.mining.commissionWaypoints.useColor.@Tooltip": "Color the waypoint text to match the block it's for.",
   "skyblocker.config.mining.commissionWaypoints.textScale": "Text Scale",
@@ -621,6 +650,9 @@
   "skyblocker.config.slayer.blazeSlayer": "Blaze Slayer",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer" : "Fire Pillar Countdown Notifications",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "Countdowns the last five seconds before the Fire Pillar explodes. Configure 'Title Container' to customise the location on the HUD (Note: This only uses a rudimentary distance check, so the Pillar may be spawned by another player's slayer)",
+  "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.OFF": "Off",
+  "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.VISUAL": "Visual Indicator",
+  "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.SOUND_AND_VISUAL": "Sound and Visual Indicator",
   "skyblocker.config.slayer.blazeSlayer.attunementHighlights" : "Attunement Highlights",
   "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "If Boss Highlighting is on, applies a color matching the current attunement to the selected effect.",
 
@@ -639,6 +671,9 @@
   "skyblocker.config.slayer.highlightBosses.@Tooltip[1]": "\nGLOW: Creates a glow effect on Slayer Bosses. Due to technical limitations, there is a small chance of this option making mistakes in mob detection",
   "skyblocker.config.slayer.highlightBosses.@Tooltip[2]": "\nHITBOX: Display a Hitbox around the Slayer Boss",
   "skyblocker.config.slayer.highlightBosses.@Tooltip[3]": "\nThis option is required for Blazeslayer Attunement Highlighting",
+  "skyblocker.config.slayer.highlightBosses.OFF": "Off",
+  "skyblocker.config.slayer.highlightBosses.GLOW": "Glow",
+  "skyblocker.config.slayer.highlightBosses.HITBOX": "Hitbox",
 
   "skyblocker.config.slayer.vampireSlayer": "Vampire Slayer",
   "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "Compact Effigy Waypoints",
@@ -698,6 +733,9 @@
   "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity": "Flame Opacity",
   "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity.@Tooltip": "100%  default opacity\n0%     off",
 
+  "skyblocker.config.uiAndVisuals.hideEmptyTooltips": "Hide empty item tooltips in menus",
+  "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "Hides the tooltip of an item if it doesn't have any information to display. Also blocks clicks on filler items like glass panes.",
+
   "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "Enable Sign Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "Enables the ability for you to do calculations when inputting values such as price for the ah.\n Key:\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\n purse/P = current purse value",
@@ -745,7 +783,12 @@
 
   "skyblocker.config.uiAndVisuals.titleContainer": "Title Container",
   "skyblocker.config.uiAndVisuals.titleContainer.@Tooltip": "Used to display multiple titles at once, Example use: Vampire Slayer",
+  "skyblocker.config.uiAndVisuals.titleContainer.alignment.LEFT": "Left",
+  "skyblocker.config.uiAndVisuals.titleContainer.alignment.RIGHT": "Right",
+  "skyblocker.config.uiAndVisuals.titleContainer.alignment.MIDDLE": "Middle",
   "skyblocker.config.uiAndVisuals.titleContainer.config": "Title Container Placement Config...",
+  "skyblocker.config.uiAndVisuals.titleContainer.direction.HORIZONTAL": "Horizontal",
+  "skyblocker.config.uiAndVisuals.titleContainer.direction.VERTICAL": "Vertical",
   "skyblocker.config.uiAndVisuals.titleContainer.titleContainerScale": "Title Container Scale",
 
   "skyblocker.config.uiAndVisuals.waypoints": "Waypoints",
@@ -753,6 +796,10 @@
   "skyblocker.config.uiAndVisuals.waypoints.waypointType": "Waypoint Type",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip": "Waypoint: Displays a highlight and a beacon beam.\n\nOutlined Waypoint: Displays both a waypoint and an outline.\n\nHighlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote": "\n\n\nThis option does not apply to all waypoints. Some waypoints such as secret waypoints have their own waypoint type option.",
+
+  "skyblocker.updateNotifications.newUpdateMessage": "There's a new Skyblocker update available! %s",
+  "skyblocker.updateNotifications.newUpdateToast.title": "Skyblocker Update Available!",
+  "skyblocker.updateNotifications.newUpdateToast.description": "Download version %s!",
 
   "skyblocker.utils.locationUpdateError": "Failed to update your location! Some features of the mod may not work properly :(",
 
@@ -797,6 +844,8 @@
   "skyblocker.dungeons.secrets.markSecretMissing": "§rMarked secret #%d as missing.",
   "skyblocker.dungeons.secrets.markSecretFoundUnable": "§cUnable to mark secret #%d as found.",
   "skyblocker.dungeons.secrets.markSecretMissingUnable": "§cUnable to mark secret #%d as missing.",
+  "skyblocker.dungeons.secrets.markSecretsMissing": "§rMarked all secrets in this room as missing.",
+  "skyblocker.dungeons.secrets.markSecretsMissingUnable": "§cUnable to mark secrets in this room as missing.",
   "skyblocker.dungeons.secrets.posMessage": "§rRoom: %s, Direction: %s, X: %d, Y: %d, Z: %d",
   "skyblocker.dungeons.secrets.noTarget": "§cNo target block found! (Are you pointing at a block in range?)",
   "skyblocker.dungeons.secrets.notMatched": "§cThe current room is not matched! (Are you in a dungeon room?)",
@@ -900,7 +949,7 @@
   "skyblocker.customItemNames.removed": "§fRemoved this item's custom name.",
   "skyblocker.customItemNames.neverHad": "§fThis item doesn't have a custom name set, but why not add one? ;)",
   "skyblocker.customItemNames.added": "§fSet a custom name for your currently held item!",
-  "skyblocker.customItemNames.noItemUuid": "§cYou must be holding an item that has an uuid to set a custom name!",
+  "skyblocker.customItemNames.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom name!",
   "skyblocker.customItemNames.unableToSetName": "§cUnable to set a custom item name :( (Are you in skyblock?, are you holding an item?)",
 
   "skyblocker.customDyeColors.invalidHex": "§cInvalid HEX color code!",
@@ -908,7 +957,7 @@
   "skyblocker.customDyeColors.removed": "§fRemoved this item's custom dye color.",
   "skyblocker.customDyeColors.neverHad": "§fThis item doesn't have a custom dye color set, but why not add one? ;)",
   "skyblocker.customDyeColors.added": "§fSet a custom dye color for your currently held item!",
-  "skyblocker.customDyeColors.noItemUuid": "§cYou must be holding an item that has an uuid to set a custom dye color!",
+  "skyblocker.customDyeColors.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom dye color!",
   "skyblocker.customDyeColors.unableToSetColor": "§cUnable to set a custom dye color :( (Are you in skyblock?, are you holding an item?)",
 
   "skyblocker.customArmorTrims.invalidMaterialOrPattern": "§cYou supplied either an invalid material or an invalid trim pattern!",
@@ -916,7 +965,7 @@
   "skyblocker.customArmorTrims.removed": "§fRemoved this item's custom armor trim.",
   "skyblocker.customArmorTrims.neverHad": "§fThis item doesn't have an armor trim set, but why not add one? ;)",
   "skyblocker.customArmorTrims.added": "§fSet a custom armor trim for your currently held item!",
-  "skyblocker.customArmorTrims.noItemUuid": "§cYou must be holding an item that has an uuid to set a custom armor trim!",
+  "skyblocker.customArmorTrims.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom armor trim!",
   "skyblocker.customArmorTrims.unableToSetTrim": "§cUnable to set a custom armor trim :( (Are you in skyblock?, are you holding an item?)",
 
   "skyblocker.customAnimatedDyes.invalidHex": "§cAn invalid HEX color code was supplied!",
@@ -924,7 +973,7 @@
   "skyblocker.customAnimatedDyes.removed": "Removed this item's custom animated dye.",
   "skyblocker.customAnimatedDyes.neverHad": "This item doesn't have a custom animated dye set, but why not add one? ;)",
   "skyblocker.customAnimatedDyes.added": "Set a custom animated dye for your currently held item!",
-  "skyblocker.customAnimatedDyes.noItemUuid": "§cYou must be holding an item that has an uuid to set a custom animated dye.",
+  "skyblocker.customAnimatedDyes.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom animated dye.",
   "skyblocker.customAnimatedDyes.unableToSetDye": "§cUnable to set a custom animated dye :( (Are you in skyblock?, are you holding an item?)",
 
   "skyblocker.quiverWarning.50Left": "You only have 50 Arrows left in your Quiver!",
@@ -933,7 +982,7 @@
 
   "skyblocker.itemProtection.added": "§fYour %s will now be protected! §o*your item now feels a little safer :')*",
   "skyblocker.itemProtection.removed": "§fYour %s will §nno longer be protected§f :( - §lBeware of the dangers in doing this!",
-  "skyblocker.itemProtection.noItemUuid": "§cYou must be holding an item that has an uuid to protect it!",
+  "skyblocker.itemProtection.noItemUuid": "§cYou must be holding an item that has a uuid to protect it!",
   "skyblocker.itemProtection.unableToProtect": "§cUnable to protect this item :( (Are you in skyblock?, are you holding an item?)",
 
   "skyblocker.tips.enabled": "§aEnabled Tips.",
@@ -998,8 +1047,7 @@
   "skyblocker.partyFinder.deList": "Click to de-list",
   "skyblocker.partyFinder.join": "Click to join",
 
-  "skyblocker.reorderHelper.tooltip.line1": "[Skyblocker] You can copy the amount of items",
-  "skyblocker.reorderHelper.tooltip.line2": "by holding CTRL while clicking on the item!",
+  "skyblocker.reorderHelper.tooltip": "[Skyblocker] You can copy the amount of items\nby holding CTRL while clicking on the item!",
 
   "skyblocker.fancyAuctionHouse.editBid": "Click to edit bid!",
   "skyblocker.fancyAuctionHouse.price": "Price:",
@@ -1055,6 +1103,12 @@
   "skyblocker.waypoints.ordered.import.coleWeight.groupAlreadyExists": "§cThere is already an ordered waypoints group under the name \"%s\", please choose another name to import your waypoints under.",
   "skyblocker.waypoints.ordered.import.coleWeight.success": "Successfully imported waypoints from the Cole Weight format.",
   "skyblocker.waypoints.ordered.import.coleWeight.fail": "§cFailed to import waypoints from the Cole Weight format. Make sure to have the waypoint data copied to your clipboard!",
+
+  "skyblocker.waypoints.type.WAYPOINT": "Waypoint",
+  "skyblocker.waypoints.type.OUTLINED_WAYPOINT": "Outlined Waypoint",
+  "skyblocker.waypoints.type.HIGHLIGHT": "Highlight",
+  "skyblocker.waypoints.type.OUTLINED_HIGHLIGHT": "Outlined Highlight",
+  "skyblocker.waypoints.type.OUTLINE": "Outline",
 
   "skyblocker.profileviewer.inventory.inventory": "Inventory",
   "skyblocker.profileviewer.inventory.armor": "Armor",

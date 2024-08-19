@@ -181,10 +181,10 @@ public class GeneralConfig {
         public boolean attributeShardInfo = true;
 
         @SerialEntry
-        public boolean itemRarityBackgrounds = false;
+        public boolean itemRarityBackgrounds = true;
 
         @SerialEntry
-        public RarityBackgroundStyle itemRarityBackgroundStyle = RarityBackgroundStyle.CIRCULAR;
+        public RarityBackgroundStyle itemRarityBackgroundStyle = RarityBackgroundStyle.SQUARE;
 
         @SerialEntry
         public float itemRarityBackgroundsOpacity = 1f;
@@ -202,10 +202,7 @@ public class GeneralConfig {
 
         @Override
         public String toString() {
-            return switch (this) {
-                case CIRCULAR -> "Circular";
-                case SQUARE -> "Square";
-            };
+            return I18n.translate("skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.style." + name());
         }
     }
 
@@ -226,10 +223,7 @@ public class GeneralConfig {
 
         @Override
         public String toString() {
-            return switch (this) {
-                case CLASSIC -> "Classic";
-                case FANCY -> "FANCY";
-            };
+            return I18n.translate("skyblocker.config.general.itemProtection.slotLockStyle.style." + name());
         }
     }
 

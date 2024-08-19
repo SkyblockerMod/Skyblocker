@@ -93,4 +93,10 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 		}
 		return super.onClickSlot(slot, stack, screenId);
 	}
+
+	@Override
+	public void reset() {
+		ultrasequencerNextSlot = 0;
+		super.reset();
+	}
 }

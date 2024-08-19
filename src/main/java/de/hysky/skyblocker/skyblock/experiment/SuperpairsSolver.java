@@ -110,5 +110,6 @@ public final class SuperpairsSolver extends ExperimentSolver {
 		superpairsPrevClickedSlot = 0;
 		superpairsCurrentSlot = ItemStack.EMPTY;
 		superpairsDuplicatedSlots.clear();
+		super.reset();
 	}
 }

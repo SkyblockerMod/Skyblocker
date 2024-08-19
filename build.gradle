@@ -47,6 +47,20 @@ repositories {
 		}
 	}
 
+	// For JEI
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
+
 	// YACL
 	maven {
 		url "https://maven.isxander.dev/releases"
@@ -151,6 +165,10 @@ dependencies {
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
 	//modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
+	// JEI (Using modrinth repo since official release is in mojmap and doesn't work)
+	modCompileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
+	//modRuntimeOnly "maven.modrinth:jei:${project.jei_version}-fabric"
+
 	compileOnly "com.demonwav.mcdev:annotations:${project.mcdev_annotations_version}"
 
 	include modImplementation("meteordevelopment:discord-ipc:1.1")
@@ -163,6 +181,9 @@ dependencies {
 
 	// Networth Calculator (https://github.com/AzureAaron/networth-calculator)
 	include implementation("net.azureaaron:networth-calculator:${project.networth_calculator_version}")
+
+	// Legacy Item DFU
+	include implementation("net.azureaaron:legacy-item-dfu:${project.legacy_item_dfu_version}")
 
 	// JGit used pull data from the NEU item repo
 	include implementation("org.eclipse.jgit:org.eclipse.jgit:${project.jgit_version}")

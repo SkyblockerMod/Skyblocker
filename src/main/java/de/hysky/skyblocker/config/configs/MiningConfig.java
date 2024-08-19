@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.configs;
 
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import net.minecraft.client.resource.language.I18n;
 
 import java.awt.*;
 
@@ -133,12 +134,7 @@ public class MiningConfig {
 
         @Override
         public String toString() {
-            return switch (this) {
-                case OFF -> "Off";
-                case DWARVEN -> "Dwarven";
-                case GLACITE -> "Glacite";
-                case BOTH -> "Both";
-            };
+            return I18n.translate("skyblocker.config.mining.commissionWaypoints.mode." + name());
         }
     }
 
