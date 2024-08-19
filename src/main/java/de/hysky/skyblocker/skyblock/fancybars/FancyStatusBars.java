@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class FancyStatusBars {
@@ -64,6 +64,9 @@ public class FancyStatusBars {
         statusBars.put("experience", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/experience"),
                 new Color[]{new Color(100, 230, 70)},
                 false, new Color(128, 255, 32), Text.translatable("skyblocker.bars.config.experience")));
+        statusBars.put("speed", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/speed"),
+                new Color[]{new Color(255, 255, 255)},
+                false, new Color(185, 185, 185), Text.translatable("skyblocker.bars.config.speed")));
 
         // Fetch from old status bar config
         int[] counts = new int[3]; // counts for RIGHT, LAYER1, LAYER2
@@ -76,6 +79,8 @@ public class FancyStatusBars {
         loadOldBarPosition(defense, counts, barPositions.defenceBarPosition);
         StatusBar experience = statusBars.get("experience");
         loadOldBarPosition(experience, counts, barPositions.experienceBarPosition);
+        StatusBar speed = statusBars.get("speed");
+        loadOldBarPosition(speed, counts, barPositions.speedBarPosition);
 
         CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig).thenAccept(object -> {
             if (object != null) {
@@ -304,6 +309,8 @@ public class FancyStatusBars {
         statusBars.get("intelligence").updateValues(intelligence.value() / (float) intelligence.max(), intelligence.overflow() / (float) intelligence.max(), intelligence.value());
         int defense = statusBarTracker.getDefense();
         statusBars.get("defense").updateValues(defense / (defense + 100.f), 0, defense);
+        StatusBarTracker.Resource speed = statusBarTracker.getSpeed();
+        statusBars.get("speed").updateValues(speed.value() / (float) speed.max(), 0, speed.value());
         statusBars.get("experience").updateValues(player.experienceProgress, 0, player.experienceLevel);
         return true;
     }

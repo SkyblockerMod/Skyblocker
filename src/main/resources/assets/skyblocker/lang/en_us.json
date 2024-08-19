@@ -694,7 +694,7 @@
 
   "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "Hide Status Effect Overlay",
 
-  "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defence & XP Bars",
+  "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defence, Speed & XP Bars",
   "skyblocker.config.uiAndVisuals.bars.enableBars": "Enable Bars",
 
   "skyblocker.config.uiAndVisuals.chestValue": "Chest Value",
@@ -813,6 +813,7 @@
   "skyblocker.bars.config.defense": "Defense",
   "skyblocker.bars.config.intelligence": "Intelligence",
   "skyblocker.bars.config.experience": "Experience",
+  "skyblocker.bars.config.speed": "Speed",
   "skyblocker.bars.config.mainColor": "Main Color",
   "skyblocker.bars.config.overflowColor": "Overflow Color",
   "skyblocker.bars.config.textColor": "Text Color",
@@ -1022,7 +1023,7 @@
   "skyblocker.tips.eventNotifications": "Check out the customizable event notifications in the config.",
   "skyblocker.tips.signCalculator": "Type an math expression in a sign to have the mod calculate it for you.",
   "skyblocker.tips.calculateCommand": "Enter an expression after /skyblocker calculate to have the mod calculate it for you.",
-  "skyblocker.tips.fancierBars": "Customize the look of your health, mana, defense, and experience bars with /skyblocker bars. You can snap and resize bars too!",
+  "skyblocker.tips.fancierBars": "Customize the look of your health, mana, defense, speed, and experience bars with /skyblocker bars. You can snap and resize bars too!",
   "skyblocker.tips.crystalWaypointsShare": "Share Crystal Hollows Waypoints with /skyblocker crystalWaypoints share.",
   "skyblocker.tips.gardenMouseLock": "Lock your mouse while farming in the Skyblocker Garden config.",
   "skyblocker.tips.newYearCakesHelper": "Open your New Year Cake Bag and Skyblocker will remember them and highlight duplicate cakes red and missing cakes green.",
