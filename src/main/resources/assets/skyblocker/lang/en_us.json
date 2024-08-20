@@ -778,6 +778,9 @@
 
   "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
 
+  "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enabled": "Enable smoothing when using teleport ability's",
+
   "skyblocker.config.uiAndVisuals.tabHud": "Fancy tab HUD (Temporarily disabled outside dungeons)",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground": "Enable HUD Background",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip": "Enables the background of the non-tab HUD.",
