@@ -116,11 +116,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	@Inject(at = @At("HEAD"), method = "keyPressed")
 	public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-		// Search
-		if (keyCode == (SkyblockerConfigManager.get().general.inventorySearchCtrlK ? GLFW.GLFW_KEY_K : GLFW.GLFW_KEY_F) && (modifiers & GLFW.GLFW_MOD_CONTROL) != 0) {
-			InventorySearch.search((HandledScreen<?>) (Object) this);
-		}
-		else if (this.client != null && this.client.player != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && Utils.isOnSkyblock()) {
+		if (this.client != null && this.client.player != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 			//wiki lookup
 			if (config.general.wikiLookup.enableWikiLookup && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) {

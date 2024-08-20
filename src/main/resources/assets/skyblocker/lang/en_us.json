@@ -245,8 +245,6 @@
 
   "skyblocker.config.general.acceptReparty": "Auto accept Reparty",
 
-  "skyblocker.config.general.inventorySearchCtrlK": "Use CTRL + K for inventory search instead of CTRL + F",
-
   "skyblocker.config.general.hitbox": "Hitboxes",
   "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Enable 1.8 farmland hitbox",
   "skyblocker.config.general.hitbox.oldLeverHitbox": "Enable 1.8 lever hitbox",
@@ -764,6 +762,16 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals": "Only show with \"=\".",
   "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "Only show the calculator when the message starts with \"=\".",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
+
+
+  "skyblocker.config.uiAndVisuals.inventorySearch": "Inventory Search",
+  "skyblocker.config.uiAndVisuals.inventorySearch.ctrlK": "Use CTRL + K for inventory search instead of CTRL + F",
+  "skyblocker.config.uiAndVisuals.inventorySearch.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText": "Show clickable text",
+  "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText.@Tooltip": "Shows a clickable text at the top of the screen to open the search field.",
+  "skyblocker.config.uiAndVisuals.inventorySearch.state.OFF": "Off",
+  "skyblocker.config.uiAndVisuals.inventorySearch.state.SKYBLOCK": "Skyblock Only",
+  "skyblocker.config.uiAndVisuals.inventorySearch.state.EVERYWHERE": "Everywhere",
 
   "skyblocker.config.uiAndVisuals.itemCooldown": "Item Cooldown",
   "skyblocker.config.uiAndVisuals.itemCooldown.enableItemCooldowns": "Enable Item Cooldown",
