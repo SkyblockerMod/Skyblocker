@@ -7,6 +7,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
+import de.hysky.skyblocker.skyblock.SmoothAOTE;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.crimson.slayer.FirePillarAnnouncer;
@@ -27,6 +28,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -134,5 +136,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
     private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
         EggFinder.checkIfEgg(entity);
+    }
+
+    @Inject(method = "onPlayerPositionLook", at = @At("TAIL"))
+    private void onPlayerTeleported(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
+        //player has been teleported by the server tell the smooth aote this
+        SmoothAOTE.reset();
     }
 }
