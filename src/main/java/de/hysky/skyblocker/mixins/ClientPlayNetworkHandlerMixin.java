@@ -7,6 +7,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
+import de.hysky.skyblocker.skyblock.SmoothAOTE;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
@@ -31,6 +32,7 @@ import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -150,4 +152,10 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		EnderNodes.onParticle(packet);
 		WishingCompassSolver.onParticle(packet);
 	}
+
+	 @Inject(method = "onPlayerPositionLook", at = @At("TAIL"))
+    private void onPlayerTeleported(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
+        //player has been teleported by the server tell the smooth aote this
+        SmoothAOTE.reset();
+    }
 }
