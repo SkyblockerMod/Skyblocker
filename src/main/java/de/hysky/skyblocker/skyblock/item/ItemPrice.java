@@ -2,8 +2,6 @@ package de.hysky.skyblocker.skyblock.item;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.BazaarPriceTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.LBinTooltip;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -33,11 +31,10 @@ public class ItemPrice {
             "key.categories.skyblocker"
     ));
 
-    // TODO: fix pet items
     public static void itemPriceLookup(ClientPlayerEntity player, @NotNull Slot slot) {
         ItemStack stack = ItemRepository.getItemStack(slot.getStack().getNeuName());
         if (stack != null && !stack.isEmpty()) {
-            String itemName = Formatting.strip(stack.getName().getString());
+            String itemName = Formatting.strip(stack.getName().getString()).replaceFirst("\\[Lvl \\d+ ➡ \\d+] ", "");
             if (TooltipInfoType.BAZAAR.getData() != null) {
                 MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName);
             } else if (TooltipInfoType.LOWEST_BINS.getData() != null) {
@@ -59,7 +56,7 @@ public class ItemPrice {
         CompletableFuture.allOf(futureList.toArray(CompletableFuture[]::new))
                 .thenRun(() -> player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshedItemPrices"))))
                 .exceptionally(e -> {
-                    ItemTooltip.LOGGER.error("[Skyblocker] Failed to refresh item prices", e);
+                    ItemTooltip.LOGGER.error("[Skyblocker Item Price] Failed to refresh item prices", e);
                     player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed")));
                     return null;
                 });
