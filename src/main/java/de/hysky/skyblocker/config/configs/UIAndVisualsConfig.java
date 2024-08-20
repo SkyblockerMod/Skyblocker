@@ -71,6 +71,9 @@ public class UIAndVisualsConfig {
     public TeleportOverlay teleportOverlay = new TeleportOverlay();
 
     @SerialEntry
+    public SmoothAOTE smoothAOTE = new SmoothAOTE();
+
+    @SerialEntry
     public SearchOverlay searchOverlay = new SearchOverlay();
 
     @SerialEntry
@@ -326,6 +329,12 @@ public class UIAndVisualsConfig {
 
         @SerialEntry
         public boolean enableWitherImpact = true;
+    }
+
+    public static class SmoothAOTE {
+        @SerialEntry
+        public boolean enabled = true;
+
     }
 
     public static class SearchOverlay {

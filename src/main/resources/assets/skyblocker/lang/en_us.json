@@ -887,6 +887,10 @@
 
   "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
 
+  "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enabled": "Enable smoothing when using teleport ability's",
+
+  
   "skyblocker.config.uiAndVisuals.tabHud": "Fancy HUD and TAB",
   "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Open Config Screen",
   "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Default Positioning Behavior",

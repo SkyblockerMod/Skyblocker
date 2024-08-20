@@ -397,6 +397,19 @@ public class UIAndVisualsCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
+                //Smooth AOTE
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enabled"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enabled.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enabled,
+                                        () -> config.uiAndVisuals.smoothAOTE.enabled,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enabled = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .build())
 
                 //Search overlay
                 .group(OptionGroup.createBuilder()
