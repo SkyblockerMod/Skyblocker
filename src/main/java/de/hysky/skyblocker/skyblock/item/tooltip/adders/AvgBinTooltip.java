@@ -19,6 +19,7 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+		String skyblockApiId = stack.getSkyblockApiId();
 		String neuName = stack.getNeuName();
 
         if (TooltipInfoType.ONE_DAY_AVERAGE.getData() == null || TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
@@ -28,7 +29,7 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
                   We are skipping check average prices for potions, runes
                   and enchanted books because there is no data for their in API.
                  */
-			if (!neuName.isEmpty() && LBinTooltip.lbinExist) {
+			if (!neuName.isEmpty() && TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId)) {
 				GeneralConfig.Average type = ItemTooltip.config.avg;
 
 				// "No data" line because of API not keeping old data, it causes NullPointerException
