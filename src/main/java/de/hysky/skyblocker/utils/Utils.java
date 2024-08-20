@@ -6,6 +6,8 @@ import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.azureaaron.hmapi.data.rank.PackageRank;
@@ -68,6 +70,7 @@ public class Utils {
      */
     @NotNull
     private static String profileId = "";
+    private static boolean receivedProfileId = false;
     /**
      * The following fields store data returned from the Mod API: {@link #environment}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
      */
@@ -408,6 +411,7 @@ public class Utils {
 
                 if (Utils.gameType.equals("SKYBLOCK")) {
                     isOnSkyblock = true;
+                    tickProfileId();
 
                     if (!previousServerType.equals("SKYBLOCK")) SkyblockEvents.JOIN.invoker().onSkyblockJoin();
                 } else if (previousServerType.equals("SKYBLOCK")) {
@@ -438,6 +442,18 @@ public class Utils {
 
             default -> {} //Do Nothing
         }
+    }
+
+    /**
+     * After 8 seconds of having swapped servers we send the /profileid command if we didn't
+     * yet receive the profile id message.
+     */
+    private static void tickProfileId() {
+        receivedProfileId = false;
+
+        Scheduler.INSTANCE.schedule(() -> {
+            if (!receivedProfileId) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid");
+        }, 20 * 8); //8 seconds
     }
 
     /**
@@ -488,6 +504,8 @@ public class Utils {
             } else if (message.startsWith(PROFILE_ID_PREFIX)) {
                 String prevProfileId = profileId;
                 profileId = message.substring(PROFILE_ID_PREFIX.length());
+                receivedProfileId = true;
+
                 if (!prevProfileId.equals(profileId)) {
                     SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
                 }
