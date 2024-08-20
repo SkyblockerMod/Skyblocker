@@ -5,19 +5,16 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockMobDropRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.data.*;
 import net.minecraft.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class ItemRepository {
@@ -91,8 +88,8 @@ public class ItemRepository {
         return null;
     }
 
-    public static List<SkyblockCraftingRecipe> getRecipesPmd(String neuId) {
-        return List.of();
+    public static List<SkyblockRecipe> getRecipesAndUsages(ItemStack stack) {
+        return Stream.concat(getRecipes(stack), getUsages(stack)).toList();
     }
 
     public static boolean filesImported() {
@@ -124,7 +121,6 @@ public class ItemRepository {
         return Stream.of();
     }
 
-    @Deprecated
     public static Stream<SkyblockRecipe> getRecipesStream() {return recipes.stream(); }
 
     public static Stream<SkyblockRecipe> getRecipes(ItemStack stack) {
@@ -139,7 +135,6 @@ public class ItemRepository {
         return switch (neuRecipe) {
             case NEUCraftingRecipe craftingRecipe -> new SkyblockCraftingRecipe(craftingRecipe);
             case NEUForgeRecipe forgeRecipe -> new SkyblockForgeRecipe(forgeRecipe);
-            case NEUMobDropRecipe mobDropRecipe -> new SkyblockMobDropRecipe(mobDropRecipe);
             case null, default -> null;
         };
     }
