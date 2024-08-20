@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,11 +14,12 @@ public class SmoothAOTE {
 
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
-    private static final int smoothTime = 100; // todo i would like this to be able to be your ping value
+    private static final long maxTeleportTime = 1000;
 
     private static long startTime;
     private static Vec3d startPos;
     private static Vec3d teleportVector;
+    private static long lastPing;
 
     public static void init() {
         UseItemCallback.EVENT.register(SmoothAOTE::onItemInteract);
@@ -34,7 +34,8 @@ public class SmoothAOTE {
 
     private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
         //todo add manna check
-        if (CLIENT.player == null) {
+        //stop checking if player does not exist or option is disabled
+        if (CLIENT.player == null || !SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enabled) {
             return null;
         }
         ItemStack stack = CLIENT.player.getStackInHand(hand);
@@ -47,7 +48,6 @@ public class SmoothAOTE {
             startPos = CLIENT.player.getEyePos();
         } else {
             startPos = startPos.add(teleportVector);
-            System.out.println("this is doing somthing");
         }
         startTime = System.currentTimeMillis();
 
@@ -67,11 +67,21 @@ public class SmoothAOTE {
     }
 
     public static Vec3d getInterpolatedPos() {
-        double percentage = Math.min((double) (System.currentTimeMillis() - startTime) / smoothTime, 1);
         if (CLIENT.player == null || teleportVector == null || startPos == null) {
             return null;
         }
+        long gap = System.currentTimeMillis() - startTime;
+        //if teleport has taken over max time reset and return null
+        if (gap > maxTeleportTime) {
+            reset();
+            return null;
+        }
+        double percentage = Math.min((double) (gap) / Math.min(lastPing, maxTeleportTime), 1);
 
         return startPos.add(teleportVector.multiply(percentage));
+    }
+
+    public static void updatePing(long ping) {
+        lastPing = ping;
     }
 }
