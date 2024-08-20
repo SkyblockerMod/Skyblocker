@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.ItemUtils;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
 import io.github.moulberry.repo.data.NEUIngredient;
 import net.minecraft.client.gui.ScreenPos;
@@ -28,12 +29,6 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
         result = SkyblockRecipe.getItemStack(neuCraftingRecipe.getOutput());
     }
 
-    public static SkyblockCraftingRecipe fromNEURecipe(NEUCraftingRecipe neuCraftingRecipe) {
-        return new SkyblockCraftingRecipe(neuCraftingRecipe);
-    }
-
-
-
     public List<ItemStack> getGrid() {
         return grid;
     }
@@ -42,13 +37,9 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
         return result;
     }
 
-    public String getCraftText() {
-        return "remove this";
-    }
-
     @Override
     public List<RecipeSlot> getInputSlots(int width, int height) {
-        ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 26: 31));
+        ScreenPos start = new ScreenPos(width / 2 - 58, height / 2 - (getExtraText().getString().isEmpty() ? 27: 32));
         List<RecipeSlot> toReturn = new ArrayList<>(9);
         for (int i = 0; i < grid.size(); i++) {
             int x = i % 3;
@@ -82,6 +73,12 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
     @Override
     public Identifier getCategoryIdentifier() {
         return SkyblockCraftingRecipe.IDENTIFIER;
+    }
+
+    @Override
+    public Identifier getRecipeIdentifier() {
+        return Identifier.of("skyblock", ItemUtils.getItemId(getResult()).toLowerCase().replace(';', '_') + "_" + getResult().getCount());
+
     }
 
     @Override

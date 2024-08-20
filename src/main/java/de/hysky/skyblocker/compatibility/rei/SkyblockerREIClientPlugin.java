@@ -3,7 +3,6 @@ package de.hysky.skyblocker.compatibility.rei;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockMobDropRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
@@ -26,10 +25,8 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
         if (FabricLoader.getInstance().isModLoaded("firmament")) return;
         categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.IDENTIFIER), EntryStacks.of(Items.CRAFTING_TABLE));
         categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.IDENTIFIER), EntryStacks.of(Items.ANVIL));
-        //categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockMobDropRecipe.IDENTIFIER), EntryStacks.of(Items.ANVIL));
-        categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock"), ItemUtils.getSkyblockerStack(), 73));
-        categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, Text.literal("Dwarven Forge (Skyblock)"), new ItemStack(Items.FURNACE), 84));
-        categoryRegistry.add(new SkyblockRecipeCategory(SkyblockMobDropRecipe.IDENTIFIER, Text.literal("Mob Drops (Skyblock)"), new ItemStack(Items.DIAMOND_SWORD), 73));
+        categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
+        categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_forge"), new ItemStack(Items.FURNACE), 84));
     }
 
     @Override

@@ -1,15 +1,19 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.screen.ButtonTextures;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
@@ -27,6 +31,8 @@ import java.util.Locale;
 public class SearchResultsWidget implements Drawable, Element {
     private static final ButtonTextures PAGE_FORWARD_TEXTURES = new ButtonTextures(Identifier.ofVanilla("recipe_book/page_forward"), Identifier.ofVanilla("recipe_book/page_forward_highlighted"));
     private static final ButtonTextures PAGE_BACKWARD_TEXTURES = new ButtonTextures(Identifier.ofVanilla("recipe_book/page_backward"), Identifier.ofVanilla("recipe_book/page_backward_highlighted"));
+    private static final Identifier SLOT_TEXTURE = Identifier.ofVanilla("container/slot");
+    private static final Identifier ARROW_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "arrow");
     private static final int COLS = 5;
     private static final int MAX_TEXT_WIDTH = 124;
     private static final String ELLIPSIS = "...";
@@ -36,9 +42,10 @@ public class SearchResultsWidget implements Drawable, Element {
     private final int parentY;
 
     private final List<ItemStack> searchResults = new ArrayList<>();
-    private List<SkyblockCraftingRecipe> recipeResults = new ArrayList<>();
+    private List<SkyblockRecipe> recipeResults = new ArrayList<>();
     private String searchText = null;
     private final List<ResultButtonWidget> resultButtons = new ArrayList<>();
+    private final List<SkyblockRecipe.RecipeSlot> recipeSlots = new ArrayList<>();
     private final ToggleButtonWidget nextPageButton;
     private final ToggleButtonWidget prevPageButton;
     private int currentPage = 0;
@@ -91,20 +98,13 @@ public class SearchResultsWidget implements Drawable, Element {
     }
 
     private void updateButtons() {
+        recipeSlots.clear();
         if (this.displayRecipes) {
-            SkyblockCraftingRecipe recipe = this.recipeResults.get(this.currentPage);
+            SkyblockRecipe recipe = this.recipeResults.get(this.currentPage);
             for (ResultButtonWidget button : resultButtons)
                 button.clearItemStack();
-            resultButtons.get(5).setItemStack(recipe.getGrid().getFirst());
-            resultButtons.get(6).setItemStack(recipe.getGrid().get(1));
-            resultButtons.get(7).setItemStack(recipe.getGrid().get(2));
-            resultButtons.get(10).setItemStack(recipe.getGrid().get(3));
-            resultButtons.get(11).setItemStack(recipe.getGrid().get(4));
-            resultButtons.get(12).setItemStack(recipe.getGrid().get(5));
-            resultButtons.get(15).setItemStack(recipe.getGrid().get(6));
-            resultButtons.get(16).setItemStack(recipe.getGrid().get(7));
-            resultButtons.get(17).setItemStack(recipe.getGrid().get(8));
-            resultButtons.get(14).setItemStack(recipe.getResult());
+            recipeSlots.addAll(recipe.getInputSlots(125, 75));
+            recipeSlots.addAll(recipe.getOutputSlots(125, 75));
         } else {
             for (int i = 0; i < resultButtons.size(); ++i) {
                 int index = this.currentPage * resultButtons.size() + i;
@@ -124,15 +124,21 @@ public class SearchResultsWidget implements Drawable, Element {
         RenderSystem.disableDepthTest();
         if (this.displayRecipes) {
             //Craft text - usually a requirement for the recipe
-            String craftText = this.recipeResults.get(this.currentPage).getCraftText();
+            SkyblockRecipe recipe = this.recipeResults.get(this.currentPage);
+            Text craftText = recipe.getExtraText();
             if (textRenderer.getWidth(craftText) > MAX_TEXT_WIDTH) {
-            	drawTooltip(textRenderer, context, craftText, this.parentX + 11, this.parentY + 31, mouseX, mouseY);
-            	craftText = textRenderer.trimToWidth(craftText, MAX_TEXT_WIDTH) + ELLIPSIS;
+            	drawTooltip(textRenderer, context, craftText, this.parentX + 11, this.parentY + 31 + 100 - 9, mouseX, mouseY);
+            	craftText = Text.of(textRenderer.trimToWidth(craftText, MAX_TEXT_WIDTH) + ELLIPSIS);
             }
-            context.drawTextWithShadow(textRenderer, craftText, this.parentX + 11, this.parentY + 31, 0xffffffff);
+            context.drawTextWithShadow(textRenderer, craftText, this.parentX + 11, this.parentY + 31 + 100 - 9, 0xffffffff);
+
+            // Recipe category
+            Text category = Text.translatable("emi.category.skyblocker." + recipe.getCategoryIdentifier().getPath());
+            context.drawTextWithShadow(textRenderer, category, this.parentX + 11, this.parentY + 31, -1);
 
             //Item name
-            Text resultText = this.recipeResults.get(this.currentPage).getResult().getName();
+            // TODO fix if we add recipes with multiple outputs
+            Text resultText = recipe.getOutputs().getFirst().getName();
             if (textRenderer.getWidth(resultText) > MAX_TEXT_WIDTH) {
             	drawTooltip(textRenderer, context, resultText, this.parentX + 11, this.parentY + 43, mouseX, mouseY);
             	StringVisitable trimmed = StringVisitable.concat(textRenderer.trimToWidth(resultText, MAX_TEXT_WIDTH), StringVisitable.plain(ELLIPSIS));
@@ -143,8 +149,21 @@ public class SearchResultsWidget implements Drawable, Element {
             	context.drawTextWithShadow(textRenderer, resultText, this.parentX + 11, this.parentY + 43, 0xffffffff);
             }
 
+            MatrixStack matrices = context.getMatrices();
+            matrices.push();
+            matrices.translate(parentX + 11, parentY + 31 + 25, 0);
+            for (SkyblockRecipe.RecipeSlot recipeSlot : recipeSlots) {
+                if (recipeSlot.showBackground()) context.drawGuiTexture(SLOT_TEXTURE, recipeSlot.x(), recipeSlot.y(), 18, 18);
+                context.drawItem(recipeSlot.stack(), recipeSlot.x() + 1, recipeSlot.y() + 1);
+            }
+
+            ScreenPos arrowLocation = recipe.getArrowLocation(125, 75);
+            if (arrowLocation != null) context.drawGuiTexture(ARROW_TEXTURE, arrowLocation.x(), arrowLocation.y(), 24, 16);
+
+            matrices.pop();
+
             //Arrow pointing to result item from the recipe
-            context.drawTextWithShadow(textRenderer, "▶", this.parentX + 96, this.parentY + 90, 0xaaffffff);
+            //context.drawTextWithShadow(textRenderer, "▶", this.parentX + 96, this.parentY + 90, 0xaaffffff);
         }
         for (ResultButtonWidget button : resultButtons)
             button.render(context, mouseX, mouseY, delta);
@@ -181,6 +200,16 @@ public class SearchResultsWidget implements Drawable, Element {
         for (ResultButtonWidget button : resultButtons)
             if (button.isMouseOver(mouseX, mouseY))
                 button.renderTooltip(context, mouseX, mouseY);
+        for (SkyblockRecipe.RecipeSlot recipeSlot : recipeSlots) {
+            int shiftedMouseX = mouseX - parentX - 11;
+            int shiftedMouseY = mouseY - parentY - 31 - 25;
+            if (isMouseOverSlot(recipeSlot, shiftedMouseX, shiftedMouseY)) {
+                MinecraftClient client = MinecraftClient.getInstance();
+                if (client.currentScreen == null) continue;
+                List<Text> tooltip = Screen.getTooltipFromItem(client, recipeSlot.stack());
+                client.currentScreen.setTooltip(tooltip.stream().map(Text::asOrderedText).toList());
+            }
+        }
         RenderSystem.enableDepthTest();
     }
 
@@ -191,16 +220,18 @@ public class SearchResultsWidget implements Drawable, Element {
                 if (internalName.isEmpty()) {
                     continue;
                 }
-                List<SkyblockCraftingRecipe> recipes = ItemRepository.getRecipesPmd(internalName);
-                if (!recipes.isEmpty()) {
-                    this.recipeResults = recipes;
-                    this.currentPage = 0;
-                    this.pageCount = recipes.size();
-                    this.displayRecipes = true;
-                    this.updateButtons();
-                }
+                fetchRecipesAndUpdate(button.itemStack);
                 return true;
             }
+        for (SkyblockRecipe.RecipeSlot recipeSlot : recipeSlots) {
+            int shiftedMouseX = (int) (mouseX - parentX - 11);
+            int shiftedMouseY = (int) (mouseY - parentY - 31 - 25);
+            if (isMouseOverSlot(recipeSlot, shiftedMouseX, shiftedMouseY)) {
+
+                fetchRecipesAndUpdate(recipeSlot.stack());
+                return true;
+            }
+        }
         if (this.prevPageButton.mouseClicked(mouseX, mouseY, mouseButton)) {
             --this.currentPage;
             this.updateButtons();
@@ -212,6 +243,21 @@ public class SearchResultsWidget implements Drawable, Element {
             return true;
         }
         return false;
+    }
+
+    private static boolean isMouseOverSlot(SkyblockRecipe.RecipeSlot recipeSlot, int mouseX, int mouseY) {
+        return recipeSlot.x() <= mouseX && mouseX < recipeSlot.x() + 18 && recipeSlot.y() <= mouseY && mouseY < recipeSlot.y() + 18;
+    }
+
+    private void fetchRecipesAndUpdate(ItemStack recipeSlot) {
+        List<SkyblockRecipe> recipes = ItemRepository.getRecipesAndUsages(recipeSlot);
+        if (!recipes.isEmpty()) {
+            this.recipeResults = recipes;
+            this.currentPage = 0;
+            this.pageCount = recipes.size();
+            this.displayRecipes = true;
+            this.updateButtons();
+        }
     }
 
     private boolean focused = false;

@@ -1143,5 +1143,6 @@
   "skyblocker.profileviewer.inventory.inactive.description.backpack": "The selected backpack",
   "skyblocker.profileviewer.inventory.inactive.description.general": "does not contain this slot",
 
-  "emi.category.skyblocker.skyblock": "Crafting (Skyblock)"
+  "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
+  "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)"
 }

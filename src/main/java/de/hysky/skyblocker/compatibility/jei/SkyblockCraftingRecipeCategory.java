@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class SkyblockCraftingRecipeCategory extends CraftingRecipeCategory {
     @SuppressWarnings({"unchecked", "RedundantCast", "rawtypes"})
     private static final RecipeType<RecipeEntry<CraftingRecipe>> SKYBLOCK_RECIPE = new RecipeType<>(Identifier.of(SkyblockerMod.NAMESPACE, "skyblock"), (Class<? extends RecipeEntry<CraftingRecipe>>) (Class) RecipeEntry.class);
-    private final Text title = Text.translatable("emi.category.skyblocker.skyblock");
+    private final Text title = Text.translatable("emi.category.skyblocker.skyblock_crafting");
     private final IDrawable icon;
 
     public SkyblockCraftingRecipeCategory(IGuiHelper guiHelper) {
