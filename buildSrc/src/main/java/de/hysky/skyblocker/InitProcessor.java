@@ -184,14 +184,12 @@ public abstract class InitProcessor implements Plugin<Project> {
 					String className = classReader.getClassName();
 					String methodName = name;
 					String methodCallString = className + "." + methodName;
-					boolean itf = false;
-
 					if ((access & Opcodes.ACC_PUBLIC) == 0) throw new IllegalStateException(methodCallString + ": Initializer methods must be public");
 					if ((access & Opcodes.ACC_STATIC) == 0) throw new IllegalStateException(methodCallString + ": Initializer methods must be static");
 					if (!descriptor.equals("()V")) throw new IllegalStateException(methodCallString + ": Initializer methods must have no args and a void return type");
 
 					//Interface static methods need special handling, so we add a special marker for that
-					if ((classReader.getAccess() & Opcodes.ACC_INTERFACE) != 0) itf = true;
+					boolean itf = (classReader.getAccess() & Opcodes.ACC_INTERFACE) != 0;
 
 					return new MethodReference(className, methodName, descriptor, itf);
 				}
