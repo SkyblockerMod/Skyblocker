@@ -214,7 +214,7 @@ public class MythologicalRitual {
                     if (burrow.echoBurrowLine != null) {
                         RenderHelper.renderLinesFromPoints(context, burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
                     }
-                    if (burrow.nextBurrowEstimatedPos != null && !burrow.shouldRender()) {
+                    if (burrow.nextBurrowEstimatedPos != null && burrow.confirmed == TriState.DEFAULT) {
                         RenderHelper.renderFilledWithBeaconBeam(context, burrow.nextBurrowEstimatedPos, RED_COLOR_COMPONENTS, 0.5f, true);
                     }
                 }
