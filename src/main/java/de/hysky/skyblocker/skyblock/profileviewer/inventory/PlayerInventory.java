@@ -1,8 +1,12 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.InventoryItemLoader;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -61,7 +65,9 @@ public class PlayerInventory implements ProfileViewerPage {
 
     private void drawContainerItems(DrawContext context, int rootX, int rootY, IntIntPair dimensions, int startIndex, int endIndex, int mouseX, int mouseY) {
         for (int i = 0; i < endIndex - startIndex; i++) {
-            if (containerList.get(startIndex + i) == ItemStack.EMPTY) continue;
+            ItemStack stack = containerList.get(startIndex + i);
+            if (stack.isEmpty()) continue;
+
             int column = i % dimensions.rightInt();
             int row = i / dimensions.rightInt();
 
@@ -69,14 +75,21 @@ public class PlayerInventory implements ProfileViewerPage {
             int y = (rootY + 18 + row * 18) + (dimensions.leftInt()  > 1 && row + 1 == dimensions.leftInt() ? 4 : 0);
 
             if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) {
-                ItemRarityBackgrounds.tryDraw(containerList.get(startIndex + i), context, x, y);
+                ItemRarityBackgrounds.tryDraw(stack, context, x, y);
             }
 
-            context.drawItem(containerList.get(startIndex + i), x, y);
-            context.drawItemInSlot(textRenderer, containerList.get(startIndex + i), x, y);
+            if (ItemProtection.isItemProtected(stack)) {
+                RenderSystem.enableBlend();
+                context.drawTexture(ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
+                RenderSystem.disableBlend();
+            }
+
+            context.drawItem(stack, x, y);
+            context.drawItemInSlot(textRenderer, stack, x, y);
+            SlotTextManager.renderSlotText(context, textRenderer, null, stack, i, x, y);
 
             if (mouseX > x - 2 && mouseX < x + 16 + 1 && mouseY > y - 2 && mouseY < y + 16 + 1) {
-                tooltip = containerList.get(startIndex + i).getTooltip(Item.TooltipContext.DEFAULT, CLIENT.player, CLIENT.options.advancedItemTooltips ? TooltipType.ADVANCED : TooltipType.BASIC);
+                tooltip = stack.getTooltip(Item.TooltipContext.DEFAULT, CLIENT.player, CLIENT.options.advancedItemTooltips ? TooltipType.ADVANCED : TooltipType.BASIC);
             }
         }
     }
