@@ -165,7 +165,7 @@ dependencies {
 
 	// EMI
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
-	modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
+	//modLocalRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
 	// JEI (Using modrinth repo since official release is in mojmap and doesn't work)
 	modCompileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
