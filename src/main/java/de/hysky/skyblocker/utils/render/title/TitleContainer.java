@@ -89,64 +89,46 @@ public class TitleContainer {
     }
 
     protected static void render(DrawContext context, Set<Title> titles, int xPos, int yPos, float tickDelta) {
-        var client = MinecraftClient.getInstance();
-        TextRenderer textRenderer = client.textRenderer;
+        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
         // Calculate Scale to use
-        float scale = 3F * (SkyblockerConfigManager.get().uiAndVisuals.titleContainer.titleContainerScale / 100F);
-
+        float scale = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.getRenderScale();
         // Grab direction and alignment values
         UIAndVisualsConfig.Direction direction = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction;
         UIAndVisualsConfig.Alignment alignment = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment;
+
         // x/y refer to the starting position for the text
+        // If left or right aligned or middle aligned vertically, start at xPos, we will shift each text later
+        float x = xPos;
         // y always starts at yPos
-        float x = 0;
         float y = yPos;
 
-        //Calculate the width of combined text
-        float width = 0;
-        for (Title title : titles) {
-            width += textRenderer.getWidth(title.getText()) * scale + 10;
-        }
-
-        if (alignment == UIAndVisualsConfig.Alignment.MIDDLE) {
-            if (direction == UIAndVisualsConfig.Direction.HORIZONTAL) {
-                //If middle aligned horizontally, start the xPosition at half of the width to the left.
-                x = xPos - (width / 2);
-            } else {
-                //If middle aligned vertically, start at xPos, we will shift each text to the left later
-                x = xPos;
-            }
-        }
-        if (alignment == UIAndVisualsConfig.Alignment.LEFT || alignment == UIAndVisualsConfig.Alignment.RIGHT) {
-            //If left or right aligned, start at xPos, we will shift each text later
-            x = xPos;
+        // Calculate the width of combined text
+        float totalWidth = getWidth(textRenderer, titles);
+        if (alignment == UIAndVisualsConfig.Alignment.MIDDLE && direction == UIAndVisualsConfig.Direction.HORIZONTAL) {
+            // If middle aligned horizontally, start the xPosition at half of the width to the left.
+            x = xPos - totalWidth / 2;
         }
 
         for (Title title : titles) {
-
             //Calculate which x the text should use
-            float xToUse;
-            if (direction == UIAndVisualsConfig.Direction.HORIZONTAL) {
-                xToUse = alignment == UIAndVisualsConfig.Alignment.RIGHT ?
-                        x - (textRenderer.getWidth(title.getText()) * scale) : //if right aligned we need the text position to be aligned on the right side.
-                        x;
-            } else {
-                xToUse = alignment == UIAndVisualsConfig.Alignment.MIDDLE ?
-                        x - (textRenderer.getWidth(title.getText()) * scale) / 2 : //if middle aligned we need the text position to be aligned in the middle.
-                        alignment == UIAndVisualsConfig.Alignment.RIGHT ?
-                                x - (textRenderer.getWidth(title.getText()) * scale) : //if right aligned we need the text position to be aligned on the right side.
-                                x;
+            float xTextLeft = x;
+            if (alignment == UIAndVisualsConfig.Alignment.RIGHT) {
+                //if right aligned we need the text position to be aligned on the right side.
+                xTextLeft = x - textRenderer.getWidth(title.getText()) * scale;
+            } else if (direction == UIAndVisualsConfig.Direction.VERTICAL && alignment == UIAndVisualsConfig.Alignment.MIDDLE) {
+                //if middle aligned we need the text position to be aligned in the middle.
+                xTextLeft = x - (textRenderer.getWidth(title.getText()) * scale) / 2;
             }
 
             //Start displaying the title at the correct position, not at the default position
             if (title.isDefaultPos()) {
-                title.x = xToUse;
+                title.x = xTextLeft;
                 title.y = y;
             }
 
             //Lerp the texts x and y variables
-            title.x = MathHelper.lerp(tickDelta * 0.5F, title.x, xToUse);
+            title.x = MathHelper.lerp(tickDelta * 0.5F, title.x, xTextLeft);
             title.y = MathHelper.lerp(tickDelta * 0.5F, title.y, y);
 
             //Translate the matrix to the texts position and scale
@@ -162,17 +144,29 @@ public class TitleContainer {
             if (direction == UIAndVisualsConfig.Direction.HORIZONTAL) {
                 if (alignment == UIAndVisualsConfig.Alignment.MIDDLE || alignment == UIAndVisualsConfig.Alignment.LEFT) {
                     //Move to the right if middle or left aligned
-                    x += textRenderer.getWidth(title.getText()) * scale + 10;
-                }
-
-                if (alignment == UIAndVisualsConfig.Alignment.RIGHT) {
+                    x += (textRenderer.getWidth(title.getText()) + 10) * scale;
+                } else if (alignment == UIAndVisualsConfig.Alignment.RIGHT) {
                     //Move to the left if right aligned
-                    x -= textRenderer.getWidth(title.getText()) * scale + 10;
+                    x -= (textRenderer.getWidth(title.getText()) + 10) * scale;
                 }
             } else {
                 //Y always moves by the same amount if vertical
-                y += textRenderer.fontHeight * scale + 10;
+                y += (textRenderer.fontHeight + 1) * scale;
             }
         }
+    }
+
+    protected static int getWidth(TextRenderer textRenderer, Set<Title> titles) {
+        float scale = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.getRenderScale();
+        return SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction == UIAndVisualsConfig.Direction.HORIZONTAL ?
+                (int) ((titles.stream().map(Title::getText).mapToInt(textRenderer::getWidth).mapToDouble(width -> width + 10).sum() - 10) * scale) :
+                (int) (titles.stream().map(Title::getText).mapToInt(textRenderer::getWidth).max().orElse(0) * scale);
+    }
+
+    protected static int getHeight(TextRenderer textRenderer, Set<Title> titles) {
+        float scale = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.getRenderScale();
+        return SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction == UIAndVisualsConfig.Direction.HORIZONTAL ?
+                (int) (textRenderer.fontHeight * scale) :
+                (int) ((textRenderer.fontHeight + 1) * titles.size() * scale);
     }
 }

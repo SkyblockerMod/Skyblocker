@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.render.title;
 
+import com.demonwav.mcdev.annotations.Translatable;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -20,7 +21,7 @@ public class Title {
      * @param textKey    the translation key
      * @param formatting the formatting to be applied to the text
      */
-    public Title(String textKey, Formatting formatting) {
+    public Title(@Translatable String textKey, Formatting formatting) {
         this(Text.translatable(textKey).formatted(formatting));
     }
 

@@ -18,8 +18,8 @@ import java.util.List;
  * (i.e. one for dwarven mines, one for the end, etc.) See an implementation for an example.
  */
 public abstract class HudConfigScreen extends Screen {
-    private final Screen parent;
-    private final List<HudWidget> widgets;
+    protected final Screen parent;
+    protected final List<HudWidget> widgets;
 
     private HudWidget draggingWidget;
     private double mouseClickRelativeX;
@@ -51,7 +51,7 @@ public abstract class HudConfigScreen extends Screen {
     @Override
     public final void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
-        renderWidget(context, widgets);
+        renderWidget(context, widgets, delta);
         context.drawCenteredTextWithShadow(textRenderer, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
     }
 
@@ -60,7 +60,7 @@ public abstract class HudConfigScreen extends Screen {
      * @param context the context to render in
      * @param widgets the widgets to render
      */
-    protected void renderWidget(DrawContext context, List<HudWidget> widgets) {
+    protected void renderWidget(DrawContext context, List<HudWidget> widgets, float delta) {
         for (HudWidget widget : widgets) {
             widget.render(context);
         }
@@ -69,7 +69,7 @@ public abstract class HudConfigScreen extends Screen {
     @Override
     public final boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         if (button == 0 && draggingWidget != null) {
-            draggingWidget.setX((int) Math.clamp(mouseX - mouseClickRelativeX, 0, this.width - draggingWidget.getWidth()));
+            draggingWidget.setX((int) Math.clamp(mouseX - mouseClickRelativeX, 0, this.width - draggingWidget.getWidth()) - getWidgetXOffset(draggingWidget));
             draggingWidget.setY((int) Math.clamp(mouseY - mouseClickRelativeY, 0, this.height - draggingWidget.getHeight()));
         }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
@@ -79,9 +79,9 @@ public abstract class HudConfigScreen extends Screen {
     public final boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
             for (HudWidget widget : widgets) {
-                if (RenderHelper.pointIsInArea(mouseX, mouseY, widget.getX(), widget.getY(), widget.getX() + widget.getWidth(), widget.getY() + widget.getHeight())) {
+                if (RenderHelper.pointIsInArea(mouseX, mouseY, widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
                     draggingWidget = widget;
-                    mouseClickRelativeX = mouseX - widget.getX();
+                    mouseClickRelativeX = mouseX - widget.getX() - getWidgetXOffset(widget);
                     mouseClickRelativeY = mouseY - widget.getY();
                     break;
                 }
@@ -96,6 +96,10 @@ public abstract class HudConfigScreen extends Screen {
     public final boolean mouseReleased(double mouseX, double mouseY, int button) {
         draggingWidget = null;
         return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    protected int getWidgetXOffset(HudWidget widget) {
+        return 0;
     }
 
     /**
