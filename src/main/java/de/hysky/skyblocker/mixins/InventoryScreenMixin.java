@@ -7,12 +7,10 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemListWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.text.Text;
@@ -24,7 +22,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(InventoryScreen.class)
-public abstract class InventoryScreenMixin {
+public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHandler> {
+
+    public InventoryScreenMixin(PlayerScreenHandler handler, PlayerInventory inventory, Text title) {
+        super(handler, inventory, title);
+    }
 
     @ModifyExpressionValue(method = "<init>", at = @At(value = "NEW", target = "Lnet/minecraft/client/gui/screen/recipebook/RecipeBookWidget;"))
     private RecipeBookWidget skyblocker$replaceRecipeBook(RecipeBookWidget original) {
