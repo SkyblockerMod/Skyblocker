@@ -70,7 +70,11 @@ public class Utils {
      */
     @NotNull
     private static String profileId = "";
-    private static boolean receivedProfileId = false;
+    /**
+     * The server from which we last received the profile id message from.
+     */
+    @NotNull
+    private static int profileIdRequest = 0;
     /**
      * The following fields store data returned from the Mod API: {@link #environment}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
      */
@@ -445,14 +449,19 @@ public class Utils {
     }
 
     /**
-     * After 8 seconds of having swapped servers we send the /profileid command if we didn't
-     * yet receive the profile id message.
+     * After 8 seconds of having swapped servers we check if we've been sent the profile id message on
+     * this server and if we haven't then we send the /profileid command.
      */
     private static void tickProfileId() {
-        receivedProfileId = false;
+        profileIdRequest++;
 
-        Scheduler.INSTANCE.schedule(() -> {
-            if (!receivedProfileId) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid");
+        Scheduler.INSTANCE.schedule(new Runnable() {
+            private final int requestId = profileIdRequest;
+
+		    @Override
+		    public void run() {
+		        if (requestId == profileIdRequest) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid");
+		    }
         }, 20 * 8); //8 seconds
     }
 
@@ -504,7 +513,7 @@ public class Utils {
             } else if (message.startsWith(PROFILE_ID_PREFIX)) {
                 String prevProfileId = profileId;
                 profileId = message.substring(PROFILE_ID_PREFIX.length());
-                receivedProfileId = true;
+                profileIdRequest++;
 
                 if (!prevProfileId.equals(profileId)) {
                     SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
