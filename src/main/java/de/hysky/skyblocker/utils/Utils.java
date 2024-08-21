@@ -7,7 +7,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
-import de.hysky.skyblocker.utils.purse.PurseAPI;
+import de.hysky.skyblocker.utils.purse.PurseChangeCause;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -90,6 +90,8 @@ public class Utils {
     private static String locationRaw = "";
     @NotNull
     private static String map = "";
+    @NotNull
+    public static double currPurse = -1;
 
     /**
      * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
@@ -294,6 +296,18 @@ public class Utils {
         return purse;
     }
 
+    public static void updatePurse() {
+        if (currPurse == -1) {
+            currPurse = Utils.getPurse();
+            return;
+        }
+        double newPurse = Utils.getPurse();
+        double diff = newPurse - currPurse;
+        if (diff == 0) return;
+        currPurse = newPurse;
+        SkyblockEvents.PURSE_CHANGE.invoker().onPurseChange(diff, PurseChangeCause.getCause(diff));
+    }
+
     public static int getBits() {
         int bits = 0;
         String bitsString = null;
@@ -352,7 +366,7 @@ public class Utils {
 
             TEXT_SCOREBOARD.addAll(textLines);
             STRING_SCOREBOARD.addAll(stringLines);
-            PurseAPI.update();
+            updatePurse();
         } catch (NullPointerException e) {
             //Do nothing
         }
