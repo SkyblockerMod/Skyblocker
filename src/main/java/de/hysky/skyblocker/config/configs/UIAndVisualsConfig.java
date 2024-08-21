@@ -179,9 +179,6 @@ public class UIAndVisualsConfig {
 
         @SerialEntry
         public OldBarPosition experienceBarPosition = OldBarPosition.LAYER1;
-        @SerialEntry
-        public OldBarPosition speedBarPosition = OldBarPosition.LAYER1;
-
     }
 
     /**
