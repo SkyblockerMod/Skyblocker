@@ -119,5 +119,8 @@
     "key.bazaarRefresh": "Pazarı Yenile",
     "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Tıklanılması gereken kaldıracı kırmızıyla işaretler",
     "skyblocker.config.dungeons.devices.solveSimonSays": "Simon Says'i Çöz",
-    "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Tıklanması gereken doğru butonu yeşil renkle, bir sonraki butonu ise sarı renkle vurgular."
+    "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Tıklanması gereken doğru butonu yeşil renkle, bir sonraki butonu ise sarı renkle vurgular.",
+    "argument.color.rgb.incomplete": "Tamamlanmamış (3 renk değeri bekleniyor).",
+    "argument.color.hex.invalidString": "Hex değeri tam olarak 6 karakter uzunluğunda olmalı, %d karakter bulundu.",
+    "argument.color.hex.invalidChar": "Hex değeri için uygunsuz karakter: %s. Uygun karakterler: [0-9a-fA-F]"
 }
