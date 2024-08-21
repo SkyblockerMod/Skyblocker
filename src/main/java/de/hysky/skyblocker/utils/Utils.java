@@ -7,6 +7,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
+import de.hysky.skyblocker.utils.purse.PurseAPI;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -280,8 +281,11 @@ public class Utils {
             for (String sidebarLine : STRING_SCOREBOARD) {
                 if (sidebarLine.contains("Piggy:") || sidebarLine.contains("Purse:")) purseString = sidebarLine;
             }
-            if (purseString != null) purse = Double.parseDouble(purseString.replaceAll("[^0-9.]", "").strip());
-            else purse = 0;
+            if (purseString != null) {
+                // this is so that it correctly gets purse amount when the (+n) coins appears
+                purseString = purseString.replaceAll("\\(([+\\-])[0-9.]+\\)", "");
+                purse = Double.parseDouble(purseString.replaceAll("[^0-9.]", "").strip());
+            } else purse = 0;
 
         } catch (IndexOutOfBoundsException e) {
             LOGGER.error("[Skyblocker] Failed to get purse from sidebar", e);
@@ -347,6 +351,7 @@ public class Utils {
 
             TEXT_SCOREBOARD.addAll(textLines);
             STRING_SCOREBOARD.addAll(stringLines);
+            PurseAPI.update();
         } catch (NullPointerException e) {
             //Do nothing
         }

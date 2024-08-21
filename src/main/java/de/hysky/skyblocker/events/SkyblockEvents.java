@@ -1,10 +1,13 @@
 package de.hysky.skyblocker.events;
 
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.purse.PurseChangeCause;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+
+import static de.hysky.skyblocker.utils.ProfileUtils.LOGGER;
 
 @Environment(EnvType.CLIENT)
 public final class SkyblockEvents {
@@ -36,6 +39,13 @@ public final class SkyblockEvents {
         }
     });
 
+    public static final Event<PurseChange> PURSE_CHANGE = EventFactory.createArrayBacked(PurseChange.class, callbacks -> (diff, cause) -> {
+        LOGGER.info(diff + "" + cause);
+        for (PurseChange callback : callbacks) {
+            callback.onPurseChange(diff, cause);
+        }
+    });
+
     @Environment(EnvType.CLIENT)
     @FunctionalInterface
     public interface SkyblockJoin {
@@ -58,5 +68,11 @@ public final class SkyblockEvents {
     @FunctionalInterface
     public interface ProfileChange {
         void onSkyblockProfileChange(String prevProfileId, String profileId);
+    }
+
+    @Environment(EnvType.CLIENT)
+    @FunctionalInterface
+    public interface PurseChange {
+        void onPurseChange(double diff, PurseChangeCause cause);
     }
 }
