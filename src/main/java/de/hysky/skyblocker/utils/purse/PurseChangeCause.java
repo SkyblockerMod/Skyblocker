@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils.purse;
 
-import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 
@@ -31,7 +30,7 @@ public enum PurseChangeCause {
                 // UI closed
                 // need to make this more specific, but atm might as well attrib to mob kill
                 return MOB_KILL;
-            } else if (Utils.getIslandArea().replaceAll("\\P{InBasic_Latin}", "").strip().equals("Bank")){
+            } else if (Utils.getIslandArea().replaceAll("\\P{InBasic_Latin}", "").strip().equals("Bank")) {
                 return TAKE_BANK;
             }
             return UNKNOWN_GAIN;

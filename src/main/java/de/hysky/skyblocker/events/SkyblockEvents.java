@@ -7,8 +7,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-import static de.hysky.skyblocker.utils.ProfileUtils.LOGGER;
-
 @Environment(EnvType.CLIENT)
 public final class SkyblockEvents {
     public static final Event<SkyblockJoin> JOIN = EventFactory.createArrayBacked(SkyblockJoin.class, callbacks -> () -> {
@@ -31,6 +29,7 @@ public final class SkyblockEvents {
 
     /**
      * Called when the player's Skyblock profile changes.
+     *
      * @implNote This is called upon receiving the chat message for the profile change rather than the exact moment of profile change, so it may be delayed by a few seconds.
      */
     public static final Event<ProfileChange> PROFILE_CHANGE = EventFactory.createArrayBacked(ProfileChange.class, callbacks -> (prev, profile) -> {
@@ -40,7 +39,6 @@ public final class SkyblockEvents {
     });
 
     public static final Event<PurseChange> PURSE_CHANGE = EventFactory.createArrayBacked(PurseChange.class, callbacks -> (diff, cause) -> {
-        LOGGER.info(diff + "" + cause);
         for (PurseChange callback : callbacks) {
             callback.onPurseChange(diff, cause);
         }

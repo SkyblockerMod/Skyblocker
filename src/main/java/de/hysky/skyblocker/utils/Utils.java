@@ -131,6 +131,7 @@ public class Utils {
     public static boolean isInKuudra() {
         return location == Location.KUUDRAS_HOLLOW;
     }
+
     public static boolean isInCrimson() {
         return location == Location.CRIMSON_ISLE;
     }
@@ -459,7 +460,6 @@ public class Utils {
      * and {@link #location}
      *
      * @param message json message from chat
-     * 
      * @deprecated Retained just in case the mod api doesn't work or gets disabled.
      */
     @Deprecated
