@@ -79,8 +79,6 @@ public class FancyStatusBars {
         loadOldBarPosition(defense, counts, barPositions.defenceBarPosition);
         StatusBar experience = statusBars.get("experience");
         loadOldBarPosition(experience, counts, barPositions.experienceBarPosition);
-        StatusBar speed = statusBars.get("speed");
-        loadOldBarPosition(speed, counts, barPositions.speedBarPosition);
 
         CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig).thenAccept(object -> {
             if (object != null) {
