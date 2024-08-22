@@ -335,6 +335,21 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public boolean enabled = true;
 
+        @SerialEntry
+        public boolean enableWeirdTransmission = true;
+
+        @SerialEntry
+        public boolean enableInstantTransmission = true;
+
+        @SerialEntry
+        public boolean enableEtherTransmission = true;
+
+        @SerialEntry
+        public boolean enableSinrecallTransmission = true;
+
+        @SerialEntry
+        public boolean enableWitherImpact = true;
+
     }
 
     public static class SearchOverlay {

@@ -409,6 +409,41 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.smoothAOTE.enabled = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission"))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableWeirdTransmission,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableWeirdTransmission,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableWeirdTransmission = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission"))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableInstantTransmission,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableInstantTransmission,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableInstantTransmission = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission"))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableEtherTransmission,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableEtherTransmission,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableEtherTransmission = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission"))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableSinrecallTransmission,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact"))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableWitherImpact,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableWitherImpact,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableWitherImpact = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .build())
 
                 //Search overlay
