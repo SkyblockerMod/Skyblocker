@@ -28,11 +28,11 @@
     "skyblocker.config.dungeons.terminals.solveStartsWith": "Помощь в решении Starts With",
     "skyblocker.itemTooltip.nullMessage": "§cИнформация о цене предмета обновится менее чем через 60 секунд. Если нет, проверьте latest.log",
     "skyblocker.config.chat.filter.hideTeleportPad": "Скрывать сообщения Teleport Pad",
-    "skyblocker.config.general.itemTooltip.enableAvgBIN": "Показать средние цены на BIN",
+    "skyblocker.config.general.itemTooltip.enableAvgBIN": "Показать средние цены по BIN",
     "skyblocker.config.general.itemTooltip.avg": "Тип среднестатистической цены",
     "skyblocker.config.general.itemTooltip.avg.@Tooltip": "Можно выбрать, за сколько дней будет браться средняя цена",
     "skyblocker.config.general.itemTooltip.enableLowestBIN": "Показать минимальную цену на BIN",
-    "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Показать цены на Bazaar-е",
+    "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Показать цены на базаре",
     "skyblocker.config.misc.richPresence": "Активность в статусе Discord",
     "skyblocker.config.misc.richPresence.info": "Отображаемая информация",
     "skyblocker.config.misc.richPresence.info.@Tooltip": "Не имеет значения при цикличном отображении",
@@ -788,5 +788,6 @@
     "skyblocker.config.general.itemInfoDisplay.slotText.mode.HOLD_TO_HIDE": "Зажмите чтобы спрятать",
     "skyblocker.config.general.itemInfoDisplay.slotText.mode.DISABLED": "Выключено",
     "skyblocker.config.general.itemProtection.slotLockStyle.style.CLASSIC": "Классический",
-    "skyblocker.config.general.itemProtection.slotLockStyle.style.FANCY": "Красивый"
+    "skyblocker.config.general.itemProtection.slotLockStyle.style.FANCY": "Красивый",
+    "skyblocker.config.general.itemTooltip.craft": "Цена крафта"
 }
