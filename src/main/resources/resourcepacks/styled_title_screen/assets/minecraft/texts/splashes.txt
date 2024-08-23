@@ -6,6 +6,7 @@ View players' profiles with /pv!
 Click on a chat tip to know more!
 /skyblocker waypoints is compatible with Skytils!
 Prevent drops with /skyblocker protectItem!
+Skyblocker discord is discord.gg/aNNJHQykck!
 Feature Requests are welcome on GitHub!
 Bug Reports are welcome on GitHub!
 QuickNav can be customized in the config!

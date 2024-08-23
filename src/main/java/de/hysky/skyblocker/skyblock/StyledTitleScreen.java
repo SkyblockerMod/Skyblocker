@@ -10,7 +10,7 @@ public class StyledTitleScreen {
 		ResourceManagerHelper.registerBuiltinResourcePack(
 				Identifier.of(SkyblockerMod.NAMESPACE, "styled_title_screen"),
 				SkyblockerMod.SKYBLOCKER_MOD,
-				ResourcePackActivationType.ALWAYS_ENABLED
+				ResourcePackActivationType.DEFAULT_ENABLED
 		);
 	}
 }

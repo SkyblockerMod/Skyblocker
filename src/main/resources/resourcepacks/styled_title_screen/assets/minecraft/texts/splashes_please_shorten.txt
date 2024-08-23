@@ -1,4 +1,4 @@
-For each line shortened, delete it.
+TODO: Please shorten these lines and move to splashes.txt.
 
 Apply a custom dye color to your leather armor with /skyblocker custom dyeColor
 You can set custom armor trims on your armor using /skyblocker custom armorTrim.
