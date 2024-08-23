@@ -24,6 +24,11 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 @Mixin(InventoryScreen.class)
 public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHandler> {
 
+    @Unique
+    private GardenPlotsWidget gardenPlotsWidget;
+    @Unique
+    private ButtonWidget deskButton;
+
     public InventoryScreenMixin(PlayerScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
     }
@@ -42,12 +47,6 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
     private int skyblocker$moveButtonWhenPressed(int x) {
         return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory ? x + 21 : x;
     }
-
-
-    @Unique
-    private GardenPlotsWidget gardenPlotsWidget;
-    @Unique
-    private ButtonWidget deskButton;
 
     @Inject(method = "method_19891", at = @At("TAIL"))
     private void skyblocker$moveGardenPlotsWdiget(CallbackInfo ci) {
