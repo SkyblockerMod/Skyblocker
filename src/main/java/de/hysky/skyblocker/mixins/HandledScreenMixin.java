@@ -322,9 +322,9 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			RenderSystem.disableBlend();
 		}
 		// Search
+		// Darken the slots
 		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {
 			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 100, 0x88_000000);
-
 		}
 	}
 
