@@ -34,7 +34,7 @@ public class InventorySearch {
 
 			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((screen1, key, scancode, modifiers) -> {
 				if (key == (inventorySearchConfig.ctrlK ? GLFW.GLFW_KEY_K : GLFW.GLFW_KEY_F) && (modifiers & GLFW.GLFW_MOD_CONTROL) != 0) {
-					InventorySearch.search(handledScreen);
+					InventorySearch.showSearchBar(handledScreen);
 					return false;
 				}
 				return true;
@@ -42,25 +42,29 @@ public class InventorySearch {
 		});
 	}
 
-	public static void search(HandledScreen<?> handledScreen) {
+	public static void showSearchBar(HandledScreen<?> handledScreen) {
 		if (handledScreen == openedHandledScreen) return;
 		openedHandledScreen = handledScreen;
 		TextFieldWidget textFieldWidget = getTextFieldWidget(handledScreen);
 		Screens.getButtons(handledScreen).add(new TextWidget(0, 5, handledScreen.width, 10, Text.literal("Search Inventory"), Screens.getTextRenderer(handledScreen)));
 		Screens.getButtons(handledScreen).addFirst(textFieldWidget);
-		Screens.getButtons(handledScreen).removeIf(button -> button instanceof SearchTextWidget);
+		Screens.getButtons(handledScreen).removeIf(button -> button instanceof SearchTextWidget); // remove search text
 		handledScreen.setFocused(textFieldWidget);
 
-		ScreenEvents.remove(handledScreen).register(InventorySearch::reset);
+		ScreenEvents.remove(handledScreen).register(InventorySearch::onScreenClosed);
 	}
 
 	private static @NotNull TextFieldWidget getTextFieldWidget(HandledScreen<?> handledScreen) {
+		// Slightly modified text field widget
 		TextFieldWidget textFieldWidget = new TextFieldWidget(Screens.getTextRenderer(handledScreen), 120, 20, Text.literal("Search Inventory")) {
 			@Override
 			public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+				// Makes the widget catch all key presses (except escape) to fix closing the inventory when pressing E
+				// also check that the widget is focused and active
 				return super.keyPressed(keyCode, scanCode, modifiers) || (keyCode != 256 && this.isNarratable() && this.isFocused());
 			}
 
+			// Unfocus when clicking outside
 			@Override
 			public boolean mouseClicked(double mouseX, double mouseY, int button) {
 				if (isFocused() && !clicked(mouseX, mouseY)) {
@@ -71,7 +75,8 @@ public class InventorySearch {
 			}
 		};
 		textFieldWidget.setPosition((handledScreen.width - textFieldWidget.getWidth()) / 2, 15);
-		textFieldWidget.setText(search);
+		textFieldWidget.setPlaceholder(Text.translatable("gui.socialInteractions.search_hint"));
+		textFieldWidget.setText(search); // Restore previous search
 		textFieldWidget.setChangedListener(InventorySearch::onSearchTyped);
 		return textFieldWidget;
 	}
@@ -90,12 +95,15 @@ public class InventorySearch {
 		search = text.toLowerCase();
 	}
 
-	private static void reset(Screen screen) {
+	private static void onScreenClosed(Screen screen) {
 		openedHandledScreen = null;
 		slotToMatch.clear();
 
 	}
 
+	/**
+	 * Button to open the search bar, for accessibility reasons (pojav and general preferences)
+	 */
 	private static class SearchTextWidget extends TextWidget {
 
 		private final Text underlinedText;
@@ -114,7 +122,7 @@ public class InventorySearch {
 
 		@Override
 		public void onClick(double mouseX, double mouseY) {
-			InventorySearch.search(screen);
+			InventorySearch.showSearchBar(screen);
 		}
 
 		@Override
