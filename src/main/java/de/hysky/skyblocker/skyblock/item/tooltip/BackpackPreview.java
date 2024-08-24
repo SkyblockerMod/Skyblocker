@@ -42,7 +42,6 @@ import java.util.stream.Collectors;
 
 public class BackpackPreview {
     private static final Logger LOGGER = LoggerFactory.getLogger(BackpackPreview.class);
-    private static final Identifier ITEM_PROTECTION = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
     private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/generic_54.png");
     private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)");
     private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)");
@@ -167,7 +166,7 @@ public class BackpackPreview {
 
             if (ItemProtection.isItemProtected(currentStack)) {
                 RenderSystem.enableBlend();
-                context.drawTexture(ITEM_PROTECTION, itemX, itemY, 0, 0, 16, 16, 16, 16);
+                context.drawTexture(ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
                 RenderSystem.disableBlend();
             }
 

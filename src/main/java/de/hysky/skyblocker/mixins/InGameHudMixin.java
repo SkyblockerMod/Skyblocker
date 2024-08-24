@@ -41,9 +41,6 @@ import java.util.regex.Pattern;
 public abstract class InGameHudMixin {
     @Unique
     private static final Supplier<Identifier> SLOT_LOCK_ICON = () -> SkyblockerConfigManager.get().general.itemProtection.slotLockStyle.tex;
-
-    @Unique
-    private static final Identifier ITEM_PROTECTION = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
     @Unique
     private static final Pattern DICER_TITLE_BLACKLIST = Pattern.compile(".+? DROP!");
 
@@ -71,7 +68,7 @@ public abstract class InGameHudMixin {
             //item protection
             if (ItemProtection.isItemProtected(player.getInventory().main.get(index))) {
                 RenderSystem.enableBlend();
-                context.drawTexture(ITEM_PROTECTION, x, y, 0, 0, 16, 16, 16, 16);
+                context.drawTexture(ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
                 RenderSystem.disableBlend();
             }
         }
