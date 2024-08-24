@@ -75,10 +75,11 @@ public class MobGlow {
 	}
 
 	private static boolean computeShouldMobGlow(Entity entity) {
-		String name = entity.getName().getString();
 
 		// Dungeons
 		if (Utils.isInDungeons()) {
+			String name = entity.getName().getString();
+
 			return switch (entity) {
 
 				// Minibosses
@@ -99,7 +100,7 @@ public class MobGlow {
 		return switch (entity) {
 
 			// Rift Blobbercyst
-			case PlayerEntity p when Utils.isInTheRift() && name.equals("Blobbercyst ") -> SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow;
+			case PlayerEntity p when Utils.isInTheRift() && p.getName().getString().equals("Blobbercyst ") -> SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow;
 
 			// Dojo Helpers
 			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmorStandName(zombie));

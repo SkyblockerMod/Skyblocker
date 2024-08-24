@@ -127,7 +127,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
         if (SkyblockerConfigManager.get().slayers.highlightMinis == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerEntitiesGlow.isSlayerMiniMob(armorStandEntity)
                 || SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerEntitiesGlow.isSlayer(armorStandEntity)) {
-            SlayerEntitiesGlow.setSlayerMobGlow(armorStandEntity);
+            if (armorStandEntity.isDead()) {
+                SlayerEntitiesGlow.cleanupArmorstand(armorStandEntity);
+            } else {
+                SlayerEntitiesGlow.setSlayerMobGlow(armorStandEntity);
+            }
         }
 
         if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);

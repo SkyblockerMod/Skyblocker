@@ -23,7 +23,7 @@ public class SlayerUtils {
 
     //TODO: Cache this, probably included in Packet system
     public static List<Entity> getEntityArmorStands(Entity entity) {
-        return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(1F, 2.5F, 1F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
+        return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.3F, 2.5F, 0.3F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
     }
 
     //Eventually this should be modified so that if you hit a slayer boss all slayer features will work on that boss.
@@ -64,9 +64,8 @@ public class SlayerUtils {
             boolean type = false;
             for (String line : Utils.STRING_SCOREBOARD) {
                 switch (line) {
-                    case String a when a.contains("Slayer Quest") -> { return false; }
-                    case String b when b.contains("Slay the boss!") -> inFight = true;
-                    case String c when c.contains(slayer) -> type = true;
+                    case String a when a.contains("Slay the boss!") -> inFight = true;
+                    case String b when b.contains(slayer) -> type = true;
                     default -> { continue; }
                 }
                 if (inFight && type) return true;
