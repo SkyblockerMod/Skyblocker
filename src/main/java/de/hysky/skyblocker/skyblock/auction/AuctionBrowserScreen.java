@@ -7,7 +7,7 @@ import de.hysky.skyblocker.skyblock.auction.widgets.AuctionTypeWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.CategoryTabWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.RarityWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.SortWidget;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
@@ -294,11 +294,8 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                             String coins = split[1].replace(",", "").replace("coins", "").trim();
                             try {
                                 long parsed = Long.parseLong(coins);
-                                JsonElement jsonElement = TooltipInfoType.THREE_DAY_AVERAGE.getData().get(stack.getNeuName());
-                                if (jsonElement == null) break;
-                                else {
-                                    isSlotHighlighted.put(slotId, jsonElement.getAsDouble() > parsed);
-                                }
+                                double price = TooltipInfoType.THREE_DAY_AVERAGE.getData().getDouble(stack.getNeuName());
+                                isSlotHighlighted.put(slotId, price > parsed);
                             } catch (Exception e) {
                                 LOGGER.error("[Skyblocker Fancy Auction House] Failed to parse BIN price", e);
                             }

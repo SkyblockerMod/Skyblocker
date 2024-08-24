@@ -2,12 +2,15 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.config.configs.GeneralConfig.Craft;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.data.NEUIngredient;
 import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.data.NEUKatUpgradeRecipe;
 import io.github.moulberry.repo.data.NEURecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -42,7 +45,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
         if (neuItem == null) return;
 
         List<NEURecipe> neuRecipes = neuItem.getRecipes();
-        if (neuRecipes.isEmpty() || neuRecipes.getFirst() instanceof io.github.moulberry.repo.data.NEUKatUpgradeRecipe) return;
+        if (neuRecipes.isEmpty() || neuRecipes.getFirst() instanceof NEUKatUpgradeRecipe) return;
 
         try {
             double totalCraftCost = getItemCost(neuRecipes.getFirst(), 0);
@@ -78,10 +81,11 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 
             double itemCost = 0;
 
-            if (TooltipInfoType.BAZAAR.getData().has(inputItemName)) {
-                itemCost = TooltipInfoType.BAZAAR.getData().getAsJsonObject(inputItemName).get(SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost.getOrder()).getAsDouble();
-            } else if (TooltipInfoType.LOWEST_BINS.getData().has(inputItemName)) {
-                itemCost = TooltipInfoType.LOWEST_BINS.getData().get(inputItemName).getAsDouble();
+            if (TooltipInfoType.BAZAAR.getData().containsKey(inputItemName)) {
+                BazaarProduct product = TooltipInfoType.BAZAAR.getData().get(inputItemName);
+                itemCost = SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost == Craft.BUY_ORDER ? product.buyPrice().orElse(0d) : product.sellPrice().orElse(0d);
+            } else if (TooltipInfoType.LOWEST_BINS.getData().containsKey(inputItemName)) {
+                itemCost = TooltipInfoType.LOWEST_BINS.getData().getDouble(inputItemName);
             }
 
             if (itemCost > 0) {

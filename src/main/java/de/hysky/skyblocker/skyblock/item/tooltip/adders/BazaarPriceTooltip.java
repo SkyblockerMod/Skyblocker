@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import com.google.gson.JsonObject;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.BazaarProduct;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -35,17 +35,17 @@ public class BazaarPriceTooltip extends SimpleTooltipAdder {
 			} else {
 				amount = stack.getCount();
 			}
-			JsonObject getItem = TooltipInfoType.BAZAAR.getData().getAsJsonObject(skyblockApiId);
+			BazaarProduct product = TooltipInfoType.BAZAAR.getData().get(skyblockApiId);
 			lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
 			              .formatted(Formatting.GOLD)
-			              .append(getItem.get("buyPrice").isJsonNull()
+			              .append(product.buyPrice().isEmpty()
 					             ? Text.literal("No data").formatted(Formatting.RED)
-					              : ItemTooltip.getCoinsMessage(getItem.get("buyPrice").getAsDouble(), amount)));
+					              : ItemTooltip.getCoinsMessage(product.buyPrice().getAsDouble(), amount)));
 			lines.add(Text.literal(String.format("%-19s", "Bazaar sell Price:"))
 			              .formatted(Formatting.GOLD)
-			              .append(getItem.get("sellPrice").isJsonNull()
+			              .append(product.sellPrice().isEmpty()
 					             ? Text.literal("No data").formatted(Formatting.RED)
-					              : ItemTooltip.getCoinsMessage(getItem.get("sellPrice").getAsDouble(), amount)));
+					              : ItemTooltip.getCoinsMessage(product.sellPrice().getAsDouble(), amount)));
 			bazaarExist = true;
 		}
 	}

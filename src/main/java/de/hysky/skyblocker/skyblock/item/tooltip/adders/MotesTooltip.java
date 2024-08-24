@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.MutableText;
@@ -24,7 +24,7 @@ public class MotesTooltip extends SimpleTooltipAdder {
 		if (TooltipInfoType.MOTES.hasOrNullWarning(internalID)) {
 			lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
 			              .formatted(Formatting.LIGHT_PURPLE)
-			              .append(getMotesMessage(TooltipInfoType.MOTES.getData().get(internalID).getAsInt(), stack.getCount())));
+			              .append(getMotesMessage(TooltipInfoType.MOTES.getData().getInt(internalID), stack.getCount())));
 		}
 	}
 

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import net.azureaaron.networth.NetworthResult;
 import net.minecraft.item.ItemStack;
