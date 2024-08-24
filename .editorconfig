@@ -19,11 +19,7 @@ ij_java_keep_simple_classes_in_one_line = true
 ij_java_keep_simple_lambdas_in_one_line = true
 ij_java_keep_simple_methods_in_one_line = true
 
-[*.json]
-indent_style = space
-indent_size = 2
-
-[*.properties]
+[*.{json,properties}]
 indent_style = space
 indent_size = 2
 
