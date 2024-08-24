@@ -1,3 +1,60 @@
+# Release 1.21.2 for 1.20.6
+
+This will most likely be the last release for 1.20.6, containing bug fixes.
+
+## Highlight
+- Complete sack bz and npc sell price
+- Correct livid highlight in m5
+- Make Ordered Waypoints waypoint type configurable via global setting
+- Fix Emi and rei now displaying again
+- Fix Nukekubi head highlight
+- Fix Visitor Helper readding NPCs after you accept/deny them
+- Fix Farming Hud Crash
+- Fix item debug crashes
+- Fix slot text bugs with pets
+- Fixed a memory leak
+- Fix a rare crash in the Click In Order terminal
+- Fixes recipe book search being case sensitive
+- Fix some Egg Finder bugs
+- Fix Skytils v1 waypoint importing
+- Fix log spam from dungeon secrets widget
+
+## What's Changed
+* Change OptionalInt costs to OptionalLong by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/809
+* Fix wrong icon being shown when the player has enough gems to instantly upgrade by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/814
+* Multiply npc price tooltip by the amount of items in the sack by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/782
+* Fix PetLevelAdder working incorrectly in the sea creatures guide by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/817
+* Fix discord announcement not including minecraft version by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/821
+* Make ordered waypoints' waypoint type configurable by the global waypoint config by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/825
+* Fix EggFinder highlight not being removed upon new egg spawn by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/811
+* Fix waypoints Skytils v1 importing by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/822
+* Workaround "fake" transparent pixels by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/838
+* Fix recipe book search being case sensitive by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/839
+* Add some custom command argument types by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/834
+* Fix quicknav buttons 8, 9 and 12 having empty string as ui title by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/840
+* Fix result text displaying weirdly when its too long in the recipe book by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/842
+* Fix dungeon secret widget spamming logs by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/843
+* Some fixes and some opinionated changes for the en_us lang file by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/841
+* Update Attribute Short Names by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/844
+* Fix Memory Leak by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/853
+* Fix rare npe in OrderTerminal by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/848
+* Fix inconsistency with Hypixel's inconsistencies by @IllagerCaptain in https://github.com/SkyblockerMod/Skyblocker/pull/852
+* emi/rei, Quicknav, livid and nukekubi head (eman boss head) fix by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/812
+* Fix empty categories being checked by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/851
+* Clean up id mess and add tests by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/867
+* Fix Farming Hud Crash by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/883
+* Fix item debug crashes by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/886
+* Add raytracing to the egg finder to make it fairer by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/845
+* Fix Croesus profit estimator on master mode chests by @GatienDoesStuff in https://github.com/SkyblockerMod/Skyblocker/pull/900
+* Fix clean pickonimbuses showing diamond pickaxe durability by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/906
+* Fix visitor helper readding visitors after you accept/deny them by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/907
+* Always load NEU repo by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/920
+
+## New Contributors
+* @IllagerCaptain made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/852
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.21.1+1.20.6...v1.21.2+1.20.6
+---
 # Release 1.21.1 for 1.20.6
 
 ## Highlight
