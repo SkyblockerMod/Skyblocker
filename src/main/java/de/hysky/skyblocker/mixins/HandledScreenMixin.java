@@ -2,6 +2,7 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -201,7 +202,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	}
 
 	@ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)
-	private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, DrawContext context, Slot slot) {
+	private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, @Local(argsOnly = true) Slot slot) {
 		return skyblocker$experimentSolvers$getStack(slot, stack);
 	}
 
@@ -219,8 +220,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 */
 	@Unique
 	private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack, ContainerSolver currentSolver) {
-		if ((currentSolver instanceof SuperpairsSolver || currentSolver instanceof UltrasequencerSolver) && ((ExperimentSolver) currentSolver).getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
-			ItemStack itemStack = ((ExperimentSolver) currentSolver).getSlots().get(slot.getIndex());
+		if (currentSolver instanceof ExperimentSolver experimentSolver && (experimentSolver instanceof SuperpairsSolver || experimentSolver instanceof UltrasequencerSolver) && experimentSolver.getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
+			ItemStack itemStack = experimentSolver.getSlots().get(slot.getIndex());
 			return itemStack == null ? stack : itemStack;
 		}
 		return stack;
