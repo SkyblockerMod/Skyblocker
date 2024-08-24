@@ -16,7 +16,6 @@ import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.utils.Http;
 
 public final class DataTooltipInfo<T> extends SimpleTooltipInfo implements DataTooltipInfoType<T> {
-	private final Predicate<GeneralConfig.ItemTooltip> dataEnabled;
 	private final String address;
 	private final Codec<T> codec;
 	@Nullable
@@ -24,18 +23,19 @@ public final class DataTooltipInfo<T> extends SimpleTooltipInfo implements DataT
 	private final boolean cacheable;
 	private long hash;
 	private final BiPredicate<T, String> contains;
+	private final Predicate<GeneralConfig.ItemTooltip> dataEnabled;
 	@Nullable
 	private final Consumer<T>[] callbacks;
 
 	@SafeVarargs
-	protected DataTooltipInfo(Predicate<GeneralConfig.ItemTooltip> tooltipEnabled, Predicate<GeneralConfig.ItemTooltip> dataEnabled, String address, Codec<T> codec, boolean cacheable, BiPredicate<T, String> contains, Consumer<T>... callbacks) {
+	protected DataTooltipInfo(String address, Codec<T> codec, boolean cacheable, BiPredicate<T, String> contains, Predicate<GeneralConfig.ItemTooltip> tooltipEnabled, Predicate<GeneralConfig.ItemTooltip> dataEnabled, Consumer<T>... callbacks) {
 		super(tooltipEnabled);
 
-		this.dataEnabled = dataEnabled;
 		this.address = address;
 		this.codec = codec;
 		this.cacheable = cacheable;
 		this.contains = contains;
+		this.dataEnabled = dataEnabled;
 		this.callbacks = callbacks;
 	}
 
