@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
+import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.OptionalDouble;
 import java.util.OptionalLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,14 +31,16 @@ public class EssenceShopPrice extends SimpleTooltipAdder {
 		super("\\S+ Essence Shop", priority);
 	}
 
-	public static void refreshEssencePrices(JsonObject data) {
+	public static void refreshEssencePrices(Object2ObjectMap<String, BazaarProduct> data) {
 		for (String essenceType : ESSENCE_TYPES) {
-			JsonElement price = data.get("ESSENCE_" + essenceType);
-			if (price == null || !price.isJsonObject()) continue;
-			JsonElement sellPrice = price.getAsJsonObject().get("sellPrice");
-			if (sellPrice == null) continue;
-			if (sellPrice.isJsonPrimitive()) {
-				ESSENCE_PRICES.put(essenceType, sellPrice.getAsLong());
+			BazaarProduct product = data.get("ESSENCE_" + essenceType);
+
+			if (product != null) {
+				OptionalDouble sellPrice = product.sellPrice();
+
+				if (sellPrice.isPresent()) {
+					ESSENCE_PRICES.put(essenceType, (long) sellPrice.getAsDouble());
+				}
 			}
 		}
 	}

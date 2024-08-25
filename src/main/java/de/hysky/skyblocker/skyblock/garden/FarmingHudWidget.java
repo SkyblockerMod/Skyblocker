@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
@@ -93,7 +93,7 @@ public class FarmingHudWidget extends Widget {
      */
     private String getPriceText(String cropItemId, float cropsPerMinute) {
         DoubleBooleanPair itemBazaarPrice = ItemUtils.getItemPrice(cropItemId); // Gets the bazaar sell price of the crop.
-        double itemNpcPrice = TooltipInfoType.NPC.hasOrNullWarning(cropItemId) ? TooltipInfoType.NPC.getData().get(cropItemId).getAsDouble() : Double.MIN_VALUE; // Gets the npc sell price of the crop or set to the min double value if it doesn't exist.
+        double itemNpcPrice = TooltipInfoType.NPC.hasOrNullWarning(cropItemId) ? TooltipInfoType.NPC.getData().getDouble(cropItemId) : Double.MIN_VALUE; // Gets the npc sell price of the crop or set to the min double value if it doesn't exist.
         boolean shouldUseNpcPrice = itemNpcPrice > itemBazaarPrice.leftDouble(); // Use the npc price if it's more than the bazaar sell price.
         double price = shouldUseNpcPrice ? itemNpcPrice : itemBazaarPrice.leftDouble(); // same as above
 
