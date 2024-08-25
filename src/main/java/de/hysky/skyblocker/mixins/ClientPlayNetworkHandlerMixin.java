@@ -187,6 +187,6 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
     private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
         EggFinder.checkIfEgg(entity);
-		CorpseFinder.checkIfCorpse(entity);
+        CorpseFinder.checkIfCorpse(entity);
     }
 }
