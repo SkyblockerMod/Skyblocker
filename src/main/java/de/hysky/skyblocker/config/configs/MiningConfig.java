@@ -164,6 +164,12 @@ public class MiningConfig {
     public static class Glacite {
         @SerialEntry
         public boolean coldOverlay = true;
+
+        @SerialEntry
+        public boolean enableCorpseFinder = true;
+
+        @SerialEntry
+        public boolean enableParsingChatCorpseFinder = true;
     }
 
     public enum DwarvenHudStyle {

@@ -175,11 +175,17 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
-		EggFinder.checkIfEgg(armorStandEntity);
-		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
-			CompactDamage.compactDamage(armorStandEntity);
-		} catch (Exception e) {
-			LOGGER.error("[Skyblocker Compact Damage] Failed to compact damage number", e);
-		}
-	}
+        EggFinder.checkIfEgg(armorStandEntity);
+        try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
+            CompactDamage.compactDamage(armorStandEntity);
+        } catch (Exception e) {
+            LOGGER.error("[Skyblocker Compact Damage] Failed to compact damage number", e);
+        }
+    }
+
+    @Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
+    private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
+        EggFinder.checkIfEgg(entity);
+        CorpseHelper.checkIfCorpse(entity);
+    }
 }

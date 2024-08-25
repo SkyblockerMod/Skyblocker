@@ -256,6 +256,22 @@ public class MiningCategory {
                                         newValue -> config.mining.glacite.coldOverlay = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.glacite.enableCorpseFinder"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.enableCorpseFinder@Tooltip")))
+                                .binding(defaults.mining.glacite.enableCorpseFinder,
+                                        () -> config.mining.glacite.enableCorpseFinder,
+                                        newValue -> config.mining.glacite.enableCorpseFinder = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.glacite.enableParsingChatCorpseFinder"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.enableParsingChatCorpseFinder@Tooltip")))
+                                .binding(defaults.mining.glacite.enableParsingChatCorpseFinder,
+                                        () -> config.mining.glacite.enableParsingChatCorpseFinder,
+                                        newValue -> config.mining.glacite.enableParsingChatCorpseFinder = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .build())
                 .build();
     }
