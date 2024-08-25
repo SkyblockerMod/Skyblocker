@@ -26,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen.fetchCollectionsData;
+import static de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen.getCollectionsData;
 import static de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils.COMMA_FORMATTER;
 
 public class GenericCategory implements ProfileViewerPage {
@@ -44,11 +44,10 @@ public class GenericCategory implements ProfileViewerPage {
             Map.entry("MUSHROOM_COLLECTION", "RED_MUSHROOM"));
     private final String[] ROMAN_NUMERALS = {"-", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
 
+    @SuppressWarnings("unchecked")
     public GenericCategory(JsonObject hProfile, JsonObject pProfile, String collection) {
-        Map<String, Map<String, ?>> fetchedData = fetchCollectionsData();
-        //noinspection unchecked
+        Map<String, Map<String, ?>> fetchedData = getCollectionsData();
         collectionsMap = (Map<String, String[]>) fetchedData.get("COLLECTIONS");
-        //noinspection unchecked
         tierRequirementsMap = (Map<String, IntList>) fetchedData.get("TIER_REQS");
         this.category = collection;
         setupItemStacks(hProfile, pProfile);

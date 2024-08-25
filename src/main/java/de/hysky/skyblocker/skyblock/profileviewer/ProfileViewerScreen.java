@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -214,34 +213,37 @@ public class ProfileViewerScreen extends Screen {
     }
 
     @NotNull
-    public static Map<String, Map<String, ?>> fetchCollectionsData() {
-        if (!COLLECTIONS_CACHE.isEmpty()) return COLLECTIONS_CACHE;
-        try {
-            JsonObject jsonObject = JsonParser.parseString(Http.sendGetRequest(HYPIXEL_COLLECTIONS)).getAsJsonObject();
-            if (jsonObject.get("success").getAsBoolean()) {
-                Map<String, String[]> collectionsMap = new HashMap<>();
-                Map<String, IntList> tierRequirementsMap = new HashMap<>();
-                JsonObject collections = jsonObject.getAsJsonObject("collections");
-                collections.entrySet().forEach(entry -> {
-                    String category = entry.getKey();
-                    JsonObject itemsObject = entry.getValue().getAsJsonObject().getAsJsonObject("items");
-                    String[] items = itemsObject.keySet().toArray(new String[0]);
-                    collectionsMap.put(category, items);
-                    itemsObject.entrySet().forEach(itemEntry -> {
-                        IntList tierReqs = new IntArrayList();
-                        itemEntry.getValue().getAsJsonObject().getAsJsonArray("tiers").forEach(req ->
-                                tierReqs.add(req.getAsJsonObject().get("amountRequired").getAsInt()));
-                        tierRequirementsMap.put(itemEntry.getKey(), tierReqs);
+    private static void fetchCollectionsData() {
+        CompletableFuture.runAsync(() -> {
+            try {
+                JsonObject jsonObject = JsonParser.parseString(Http.sendGetRequest(HYPIXEL_COLLECTIONS)).getAsJsonObject();
+                if (jsonObject.get("success").getAsBoolean()) {
+                    Map<String, String[]> collectionsMap = new HashMap<>();
+                    Map<String, IntList> tierRequirementsMap = new HashMap<>();
+                    JsonObject collections = jsonObject.getAsJsonObject("collections");
+                    collections.entrySet().forEach(entry -> {
+                        String category = entry.getKey();
+                        JsonObject itemsObject = entry.getValue().getAsJsonObject().getAsJsonObject("items");
+                        String[] items = itemsObject.keySet().toArray(new String[0]);
+                        collectionsMap.put(category, items);
+                        itemsObject.entrySet().forEach(itemEntry -> {
+                            IntList tierReqs = new IntArrayList();
+                            itemEntry.getValue().getAsJsonObject().getAsJsonArray("tiers").forEach(req ->
+                                    tierReqs.add(req.getAsJsonObject().get("amountRequired").getAsInt()));
+                            tierRequirementsMap.put(itemEntry.getKey(), tierReqs);
+                        });
                     });
-                });
-                COLLECTIONS_CACHE.put("COLLECTIONS", collectionsMap);
-                COLLECTIONS_CACHE.put("TIER_REQS", tierRequirementsMap);
-                return COLLECTIONS_CACHE;
+                    COLLECTIONS_CACHE.put("COLLECTIONS", collectionsMap);
+                    COLLECTIONS_CACHE.put("TIER_REQS", tierRequirementsMap);
+                }
+            } catch (Exception e) {
+                LOGGER.error("[Skyblocker Profile Viewer] Failed to fetch collections data", e);
             }
-        } catch (IOException | InterruptedException e) {
-            LOGGER.error("[Skyblocker Profile Viewer] Failed to fetch collections data", e);
-        }
-        return Collections.emptyMap();
+        });
+    }
+
+    public static Map<String, Map<String, ?>> getCollectionsData() {
+        return COLLECTIONS_CACHE;
     }
 
     /**
