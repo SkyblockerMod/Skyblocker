@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.command.argumenttypes.EggTypeArgumentType;
@@ -143,7 +144,7 @@ public class EggFinder {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		for (EggType type : EggType.entries) {
 			Egg egg = type.egg;
-			if (egg != null && egg.waypoint.shouldRender() && egg.seen) egg.waypoint.render(context);
+			if (egg != null && egg.waypoint.shouldRender() && (egg.seen || Debug.debugEnabled())) egg.waypoint.render(context);
 		}
 	}
 

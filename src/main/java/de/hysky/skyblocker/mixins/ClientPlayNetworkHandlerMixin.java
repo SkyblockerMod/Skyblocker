@@ -12,7 +12,7 @@ import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.crimson.slayer.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.dwarven.CorpseHelper;
+import de.hysky.skyblocker.skyblock.dwarven.CorpseFinder;
 import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
@@ -148,6 +148,6 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
     private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
         EggFinder.checkIfEgg(entity);
-        CorpseHelper.checkIfCorpse(entity);
+        CorpseFinder.checkIfCorpse(entity);
     }
 }
