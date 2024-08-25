@@ -28,22 +28,19 @@ public interface DataTooltipInfoType<T> extends TooltipInfoType, Runnable {
 
 	/**
 	 * Downloads the data if it is enabled.
-	 *
-	 * @param futureList the list to add the future to
 	 */
-	default void downloadIfEnabled(List<CompletableFuture<Void>> futureList) {
+	default CompletableFuture<Void> downloadIfEnabled() {
 		if (isDataEnabled()) {
-			download(futureList);
+			return download();
 		}
+		return CompletableFuture.completedFuture(null);
 	}
 
 	/**
 	 * Downloads the data.
-	 *
-	 * @param futureList the list to add the future to
 	 */
-	default void download(List<CompletableFuture<Void>> futureList) {
-		futureList.add(CompletableFuture.runAsync(this));
+	default CompletableFuture<Void> download() {
+		return CompletableFuture.runAsync(this);
 	}
 
 	/**
