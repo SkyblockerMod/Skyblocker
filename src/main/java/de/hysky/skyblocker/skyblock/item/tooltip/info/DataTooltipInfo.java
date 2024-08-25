@@ -79,7 +79,7 @@ public final class DataTooltipInfo<T> extends SimpleTooltipInfo implements DataT
 			String response = Http.sendGetRequest(address);
 
 			if (response.trim().startsWith("<!DOCTYPE") || response.trim().startsWith("<html")) {
-				ItemTooltip.LOGGER.warn("[Skyblocker] Received HTML content for {}. Expected JSON.", this);
+				ItemTooltip.LOGGER.warn("[Skyblocker] Received HTML content for {}. Expected JSON.", this.address);
 				return;
 			}
 
@@ -91,7 +91,7 @@ public final class DataTooltipInfo<T> extends SimpleTooltipInfo implements DataT
 				}
 			}
 		} catch (Exception e) {
-			ItemTooltip.LOGGER.warn("[Skyblocker] Failed to download {} prices!", this, e);
+			ItemTooltip.LOGGER.warn("[Skyblocker] Failed to download {} data!", this.address, e);
 		}
 	}
 }
