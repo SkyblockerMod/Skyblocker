@@ -18,7 +18,6 @@ import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntImmutableList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -48,10 +47,11 @@ public class ProfileViewerScreen extends Screen {
     public static final Logger LOGGER = LoggerFactory.getLogger(ProfileViewerScreen.class);
     private static final Text TITLE = Text.of("Skyblocker Profile Viewer");
     private static final String HYPIXEL_COLLECTIONS = "https://api.hypixel.net/v2/resources/skyblock/collections";
-    private static final Object2ObjectOpenHashMap<String, Map<String, ?>> COLLECTIONS_CACHE = new Object2ObjectOpenHashMap<>();
     private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/base_plate.png");
     private static final int GUI_WIDTH = 322;
     private static final int GUI_HEIGHT = 180;
+    private static Map<String, String[]> COLLECTIONS;
+    private static Map<String, IntList> TIER_REQUIREMENTS;
 
     private String playerName;
     private JsonObject hypixelProfile;
@@ -231,8 +231,8 @@ public class ProfileViewerScreen extends Screen {
                             tierRequirementsMap.put(itemEntry.getKey(), tierReqs);
                         });
                     });
-                    COLLECTIONS_CACHE.put("COLLECTIONS", collectionsMap);
-                    COLLECTIONS_CACHE.put("TIER_REQS", tierRequirementsMap);
+                    COLLECTIONS = collectionsMap;
+                    TIER_REQUIREMENTS = tierRequirementsMap;
                 }
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker Profile Viewer] Failed to fetch collections data", e);
@@ -240,8 +240,12 @@ public class ProfileViewerScreen extends Screen {
         });
     }
 
-    public static Map<String, Map<String, ?>> getCollectionsData() {
-        return COLLECTIONS_CACHE;
+    public static Map<String, String[]> getCollections() {
+        return COLLECTIONS;
+    }
+
+    public static Map<String, IntList> getTierRequirements() {
+        return TIER_REQUIREMENTS;
     }
 
     /**
