@@ -43,7 +43,6 @@ public class CorpseFinder {
     private static final Pattern CORPSE_FOUND_PATTERN = Pattern.compile("([A-Z]+) CORPSE LOOT!");
     private static final Pattern CORDS_PATTERN_SKY_HANNI = Pattern.compile("x: (?<x>-?\\d+), y: (?<y>-?\\d+), z: (?<z>-?\\d+) \\|\\s*(?<corpseType>[A-Za-z]+)?");
     private static final Pattern CORDS_PATTERN_SKYBLOCKER = Pattern.compile(".*?(?<corpseType>[A-Z]+)? found at (?<x>-?\\d+),\\s(?<y>-?\\d+),\\s(?<z>-?\\d+)\\b");
-
     private static final String PREFIX = "[Skyblocker Corpse Finder] ";
     private static final Logger LOGGER = LoggerFactory.getLogger(CorpseFinder.class);
     private static final Map<String, List<Corpse>> corpsesByType = new HashMap<>(); // remember - keys here are helmets, not type itself
@@ -76,6 +75,7 @@ public class CorpseFinder {
     private static boolean seenDebugWarning = false;
     private static void handleLocationChange(Location location) {
         isLocationCorrect = location == LOCATION;   // true if mineshafts else false
+        if (isLocationCorrect) corpsesByType.clear();
     }
 
     public static void checkIfCorpse(Entity entity) {
@@ -112,7 +112,7 @@ public class CorpseFinder {
                 }}}}
 
     private static void onChatMessage(Text text, boolean overlay) {
-        if (!isLocationCorrect || !SkyblockerConfigManager.get().mining.glacite.enableCorpseFinder || overlay) return;
+        if (!isLocationCorrect || !SkyblockerConfigManager.get().mining.glacite.enableCorpseFinder || text.getString().startsWith("[Skyblocker]") || overlay) return;
         if (SkyblockerConfigManager.get().mining.glacite.enableParsingChatCorpseFinder) parseCords(text);  // parsing cords from chat
 
         Matcher matcherCorpse = CORPSE_FOUND_PATTERN.matcher(text.getString());
@@ -258,27 +258,31 @@ public class CorpseFinder {
             List<Corpse> corpses = corpsesByType.get(getType(corpseType));
             for (Corpse corpse : corpses) {
                 if (corpse.waypoint.pos.equals(parsedPos)) {
-                    corpse.seen = true;
-                    foundCorpse = true;
-                    if (Debug.debugEnabled()) LOGGER.info(PREFIX + "Setting corpse {} as seen!", corpse.entity);
-                    MinecraftClient.getInstance().player.sendMessage(
+                    if (!corpse.seen) {
+                        corpse.seen = true;
+                        foundCorpse = true;
+                        if (Debug.debugEnabled()) LOGGER.info(PREFIX + "Setting corpse {} as seen!", corpse.entity);
+                        MinecraftClient.getInstance().player.sendMessage(
                             Constants.PREFIX.get()
-                                    .append("Parsed message from chat, adding corpse at ")
-                                    .append(corpse.entity.getBlockPos().up(0).toShortString()));
+                                .append("Parsed message from chat (Skyblocker format), adding corpse at ")
+                                .append(corpse.entity.getBlockPos().up(0).toShortString()));
+                    }
                 }
             }
         } else {
             for (List<Corpse> corpses : corpsesByType.values()) {
                 for (Corpse corpse : corpses) {
                     if (corpse.waypoint.pos.equals(parsedPos)) {
-                        corpse.seen = true;
-                        foundCorpse = true;
-                        if (Debug.debugEnabled()) LOGGER.info(PREFIX + "Setting corpse {} as seen!", corpse.entity);
-                        MinecraftClient.getInstance().player.sendMessage(
+                        if (!corpse.seen) {
+                            corpse.seen = true;
+                            foundCorpse = true;
+                            if (Debug.debugEnabled()) LOGGER.warn(PREFIX + "Failed to get corpse type from message!");
+                            if (Debug.debugEnabled()) LOGGER.info(PREFIX + "Setting corpse {} as seen!", corpse.entity);
+                            MinecraftClient.getInstance().player.sendMessage(
                                 Constants.PREFIX.get()
-                                        .append("Parsed message from chat, adding corpse at ")
-                                        .append(corpse.entity.getBlockPos().up(0).toShortString()));
-                    }}}}
+                                    .append("Parsed message from chat (Skyblocker format), adding corpse at ")
+                                    .append(corpse.entity.getBlockPos().up(0).toShortString()));
+                        }}}}}
         if (!foundCorpse) {
             LOGGER.warn(PREFIX + "Did NOT found any match for corpses! corpsesByType.values(): {}", corpsesByType.values());
             if (Debug.debugEnabled()) {
@@ -301,30 +305,34 @@ public class CorpseFinder {
         boolean foundCorpse = false;
         BlockPos parsedPos = new BlockPos(x - 1, y - 1, z - 1);   // skyhanni cords format difference is -1, -1, -1
         if (corpseType != null) {
-            List<Corpse> corpses = corpsesByType.get(getType(corpseType));
+            List<Corpse> corpses = corpsesByType.get(getType(corpseType.toUpperCase()));
             for (Corpse corpse : corpses) {
                 if (corpse.waypoint.pos.equals(parsedPos)) {
-                    corpse.seen = true;
-                    foundCorpse = true;
-                    if (Debug.debugEnabled()) LOGGER.info(PREFIX + "Setting corpse {} as seen!", corpse.entity);
-                    MinecraftClient.getInstance().player.sendMessage(
+                    if (!corpse.seen) {
+                        corpse.seen = true;
+                        foundCorpse = true;
+                        if (Debug.debugEnabled()) LOGGER.info(PREFIX + "Setting corpse {} as seen!", corpse.entity);
+                        MinecraftClient.getInstance().player.sendMessage(
                             Constants.PREFIX.get()
-                                    .append("Parsed message from chat, adding corpse at ")
-                                    .append(corpse.entity.getBlockPos().up(0).toShortString()));
+                                .append("Parsed message from chat (SkyHanni format), adding corpse at ")
+                                .append(corpse.entity.getBlockPos().up(0).toShortString()));
+                    }
                 }
             }
         } else {
             for (List<Corpse> corpses : corpsesByType.values()) {
                 for (Corpse corpse : corpses) {
                     if (corpse.waypoint.pos.equals(parsedPos)) {
+                        if (!corpse.seen) {
                         corpse.seen = true;
                         foundCorpse = true;
+                        if (Debug.debugEnabled()) LOGGER.warn(PREFIX + "Failed to get corpse type from message!");
                         if (Debug.debugEnabled()) LOGGER.info(PREFIX + "Setting corpse {} as seen!", corpse.entity);
                         MinecraftClient.getInstance().player.sendMessage(
                                 Constants.PREFIX.get()
-                                        .append("Parsed message from chat, adding corpse at ")
+                                        .append("Parsed message from chat (SkyHanni format), adding corpse at ")
                                         .append(corpse.entity.getBlockPos().up(0).toShortString()));
-        }}}}
+        }}}}}
         if (!foundCorpse) {
             LOGGER.warn(PREFIX + "Did NOT found any match for corpses! corpsesByType.values(): {}", corpsesByType.values());
             if (Debug.debugEnabled()) {
