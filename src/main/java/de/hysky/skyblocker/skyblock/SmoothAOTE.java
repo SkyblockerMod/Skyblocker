@@ -9,7 +9,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 public class SmoothAOTE {
@@ -41,7 +45,7 @@ public class SmoothAOTE {
     private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
         //todo add manna check
         //stop checking if player does not exist
-        if (CLIENT.player == null) {
+        if (CLIENT.player == null || CLIENT.world == null) {
             return null;
         }
         //get return item
@@ -105,7 +109,6 @@ public class SmoothAOTE {
             }
         }
 
-
         //work out start pos of warp and set start time. if there is an active warp going on make the end of that the start of the next one
         if (startPos == null || teleportVector == null) {
             startPos = CLIENT.player.getEyePos();
@@ -121,10 +124,21 @@ public class SmoothAOTE {
         Vec3d look = CLIENT.player.getRotationVector(pitch, yaw);
         //find target location depending on how far the item they are using takes them
         teleportVector = look.multiply(distance);
+        //make sure there are no blocks in the way and if so account for this
+        BlockHitResult hitResult = world.raycast(new RaycastContext(startPos, startPos.add(teleportVector), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, CLIENT.player));
+        if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
+            Vec3d offsetEndPos;
+            if (hitResult.getSide().equals(Direction.UP) || hitResult.getSide().equals(Direction.DOWN)) {
+                offsetEndPos = hitResult.getPos().offset(hitResult.getSide(), 1);
+            } else {
+                offsetEndPos = hitResult.getPos().offset(hitResult.getSide(), 0.5);
+            }
+            teleportVector = offsetEndPos.subtract(startPos);
+        }
         //compensate for pixel rounding the end position to x.5 y.62 z.5
         Vec3d predictedEnd = startPos.add(teleportVector);
-        Vec3d offset = new Vec3d(predictedEnd.x - (Math.floor(predictedEnd.x) + 0.5), predictedEnd.y - (Math.ceil(predictedEnd.y) + 0.62), predictedEnd.z - (Math.floor(predictedEnd.z) + 0.5));
-        teleportVector = teleportVector.subtract(offset);
+        Vec3d offsetVec = new Vec3d(predictedEnd.x - (Math.floor(predictedEnd.x) + 0.5), predictedEnd.y - (Math.ceil(predictedEnd.y) + 0.62), predictedEnd.z - (Math.floor(predictedEnd.z) + 0.5));
+        teleportVector = teleportVector.subtract(offsetVec);
 
         return TypedActionResult.pass(stack);
     }
