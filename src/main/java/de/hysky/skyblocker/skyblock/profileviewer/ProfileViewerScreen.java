@@ -16,7 +16,7 @@ import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntImmutableList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -34,7 +34,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -201,7 +200,7 @@ public class ProfileViewerScreen extends Screen {
         fetchCollectionsData(); // caching on launch
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            LiteralArgumentBuilder<FabricClientCommandSource> literalArgumentBuilder =  ClientCommandManager.literal("pv")
+            LiteralArgumentBuilder<FabricClientCommandSource> literalArgumentBuilder = ClientCommandManager.literal("pv")
                     .then(ClientCommandManager.argument("username", StringArgumentType.string())
                             .suggests((source, builder) -> CommandSource.suggestMatching(getPlayerSuggestions(source.getSource()), builder))
                             .executes(Scheduler.queueOpenScreenFactoryCommand(context -> new ProfileViewerScreen(StringArgumentType.getString(context, "username"))))
@@ -212,7 +211,6 @@ public class ProfileViewerScreen extends Screen {
         });
     }
 
-    @NotNull
     private static void fetchCollectionsData() {
         CompletableFuture.runAsync(() -> {
             try {
@@ -227,9 +225,9 @@ public class ProfileViewerScreen extends Screen {
                         String[] items = itemsObject.keySet().toArray(new String[0]);
                         collectionsMap.put(category, items);
                         itemsObject.entrySet().forEach(itemEntry -> {
-                            IntList tierReqs = new IntArrayList();
-                            itemEntry.getValue().getAsJsonObject().getAsJsonArray("tiers").forEach(req ->
-                                    tierReqs.add(req.getAsJsonObject().get("amountRequired").getAsInt()));
+                            IntImmutableList tierReqs = IntImmutableList.toList(itemEntry.getValue().getAsJsonObject().getAsJsonArray("tiers").asList().stream()
+                                    .mapToInt(tier -> tier.getAsJsonObject().get("amountRequired").getAsInt())
+                            );
                             tierRequirementsMap.put(itemEntry.getKey(), tierReqs);
                         });
                     });
