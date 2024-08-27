@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.MinecraftClient;
@@ -26,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen.fetchCollectionsData;
 import static de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils.COMMA_FORMATTER;
 
 public class GenericCategory implements ProfileViewerPage {
@@ -45,11 +45,8 @@ public class GenericCategory implements ProfileViewerPage {
     private final String[] ROMAN_NUMERALS = {"-", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
 
     public GenericCategory(JsonObject hProfile, JsonObject pProfile, String collection) {
-        Map<String, Map<String, ?>> fetchedData = fetchCollectionsData();
-        //noinspection unchecked
-        collectionsMap = (Map<String, String[]>) fetchedData.get("COLLECTIONS");
-        //noinspection unchecked
-        tierRequirementsMap = (Map<String, IntList>) fetchedData.get("TIER_REQS");
+        collectionsMap = ProfileViewerScreen.getCollections();
+        tierRequirementsMap = ProfileViewerScreen.getTierRequirements();
         this.category = collection;
         setupItemStacks(hProfile, pProfile);
     }
