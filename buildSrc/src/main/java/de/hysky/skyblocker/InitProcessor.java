@@ -4,6 +4,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -11,9 +12,9 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,10 +41,10 @@ public abstract class InitProcessor implements Plugin<Project> {
 
 			//Sort the methods by their priority. It's also converted to a list because the priority values are useless from here on
 			List<MethodReference> sortedMethodSignatures = methodSignatures.entrySet()
-			                                                      .stream()
-			                                                      .sorted(Map.Entry.comparingByValue())
-			                                                      .map(Map.Entry::getKey)
-			                                                      .toList();
+			                                                               .stream()
+			                                                               .sorted(Map.Entry.comparingByValue())
+			                                                               .map(Map.Entry::getKey)
+			                                                               .toList();
 
 			//Inject calls to the @Init annotated methods in the SkyblockerMod class
 			injectInitCalls(classesDir, sortedMethodSignatures);
@@ -52,14 +53,14 @@ public abstract class InitProcessor implements Plugin<Project> {
 		}));
 	}
 
-	public void findInitMethods(File directory, Map<MethodReference, Integer> methodSignatures) {
+	public void findInitMethods(@NotNull File directory, Map<MethodReference, Integer> methodSignatures) {
 		try {
 			Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<>() {
 				@Override
 				public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
 					File file = path.toFile();
 					if (!file.getName().endsWith(".class")) return FileVisitResult.CONTINUE;
-					try (InputStream inputStream = new FileInputStream(file)) {
+					try (InputStream inputStream = Files.newInputStream(file.toPath())) {
 						ClassReader classReader = new ClassReader(inputStream);
 						classReader.accept(new ReadingClassVisitor(classReader, methodSignatures), ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
 					} catch (IOException e) {
@@ -75,33 +76,23 @@ public abstract class InitProcessor implements Plugin<Project> {
 	}
 
 	public void injectInitCalls(File directory, List<MethodReference> methodSignatures) {
-		File mainClassFile = findMainClass(directory);
+		Path mainClassFile = Objects.requireNonNull(findMainClass(directory), "SkyblockerMod class wasn't found :(").toPath();
 
-		if (mainClassFile == null) {
-			throw new RuntimeException("SkyblockerMod class wasn't found :(");
-		}
-
-		byte[] classBytes;
-		try {
-			classBytes = Files.readAllBytes(mainClassFile.toPath());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-		ClassReader classReader = new ClassReader(classBytes);
-		ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-
-		classReader.accept(new InjectingClassVisitor(classWriter, methodSignatures), 0);
-
-		try {
-			Files.write(mainClassFile.toPath(), classWriter.toByteArray());
-		} catch (IOException e) {
+		try (InputStream inputStream = Files.newInputStream(mainClassFile)) {
+			ClassReader classReader = new ClassReader(inputStream);
+			ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+			classReader.accept(new InjectingClassVisitor(classWriter, methodSignatures), 0);
+			try (OutputStream outputStream = Files.newOutputStream(mainClassFile)) {
+				outputStream.write(classWriter.toByteArray());
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	// Find the main SkyblockerMod class
-	public File findMainClass(File directory) {
+	@Nullable
+	public File findMainClass(@NotNull File directory) {
 		if (!directory.isDirectory()) throw new IllegalArgumentException("Not a directory");
 		for (File file : Objects.requireNonNull(directory.listFiles())) {
 			if (file.isDirectory()) {
@@ -168,7 +159,7 @@ public abstract class InitProcessor implements Plugin<Project> {
 		}
 
 		@Override
-		public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+		public MethodVisitor visitMethod(int access, String methodName, String descriptor, String signature, String[] exceptions) {
 			return new MethodVisitor(Opcodes.ASM9) {
 				@Override
 				public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
@@ -182,7 +173,6 @@ public abstract class InitProcessor implements Plugin<Project> {
 
 				private @NotNull MethodReference getMethodCall() {
 					String className = classReader.getClassName();
-					String methodName = name;
 					String methodCallString = className + "." + methodName;
 					if ((access & Opcodes.ACC_PUBLIC) == 0) throw new IllegalStateException(methodCallString + ": Initializer methods must be public");
 					if ((access & Opcodes.ACC_STATIC) == 0) throw new IllegalStateException(methodCallString + ": Initializer methods must be static");
@@ -224,10 +214,10 @@ public abstract class InitProcessor implements Plugin<Project> {
 	}
 
 	/**
-	 * @param className  the class name (e.g. de/hysky/skyblocker/skyblock/ChestValue)
+	 * @param className the class name (e.g. de/hysky/skyblocker/skyblock/ChestValue)
 	 * @param methodName the method's name (e.g. init)
 	 * @param descriptor the method's descriptor (only ()V for now)
-	 * @param itf        whether the target class is an {@code interface} or not
+	 * @param itf whether the target class is an {@code interface} or not
 	 */
-	private record MethodReference(String className, String methodName, String descriptor, boolean itf) {}
+	public record MethodReference(String className, String methodName, String descriptor, boolean itf) {}
 }
