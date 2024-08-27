@@ -4,6 +4,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.categories.*;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
@@ -69,22 +70,27 @@ public class SkyblockerConfigManager {
     }
 
     public static Screen createGUI(Screen parent) {
-        return YetAnotherConfigLib.create(HANDLER, (defaults, config, builder) -> builder
-                .title(Text.translatable("skyblocker.config.title"))
-                .category(GeneralCategory.create(defaults, config))
-                .category(UIAndVisualsCategory.create(defaults, config))
-                .category(HelperCategory.create(defaults, config))
-                .category(DungeonsCategory.create(defaults, config))
-                //.category(ForagingCategory.create(defaults, config))
-                .category(CrimsonIsleCategory.create(defaults, config))
-                .category(MiningCategory.create(defaults, config))
-                .category(FarmingCategory.create(defaults, config))
-                .category(OtherLocationsCategory.create(defaults, config))
-                .category(SlayersCategory.create(defaults, config))
-                .category(ChatCategory.create(defaults, config))
-                .category(QuickNavigationCategory.create(defaults, config))
-                .category(EventNotificationsCategory.create(defaults, config))
-                .category(MiscCategory.create(defaults, config))).generateScreen(parent);
+        return YetAnotherConfigLib.create(HANDLER, (defaults, config, builder) -> {
+            builder.title(Text.translatable("skyblocker.config.title"))
+                   .category(GeneralCategory.create(defaults, config))
+                   .category(UIAndVisualsCategory.create(defaults, config))
+                   .category(HelperCategory.create(defaults, config))
+                   .category(DungeonsCategory.create(defaults, config))
+                   //.category(ForagingCategory.create(defaults, config))
+                   .category(CrimsonIsleCategory.create(defaults, config))
+                   .category(MiningCategory.create(defaults, config))
+                   .category(FarmingCategory.create(defaults, config))
+                   .category(OtherLocationsCategory.create(defaults, config))
+                   .category(SlayersCategory.create(defaults, config))
+                   .category(ChatCategory.create(defaults, config))
+                   .category(QuickNavigationCategory.create(defaults, config))
+                   .category(EventNotificationsCategory.create(defaults, config))
+                   .category(MiscCategory.create(defaults, config));
+            if (Debug.debugEnabled()) {
+                builder.category(DebugCategory.create(defaults, config));
+            }
+            return builder;
+        }).generateScreen(parent);
     }
 
     /**

@@ -8,6 +8,8 @@
   "key.skyblocker.toggleB": "Toggle tab HUD to screen B",
   "key.skyblocker.defaultTgl": "Switch tab HUD to default view",
   "key.skyblocker.toggleA": "Toggle tab HUD to screen A",
+  "key.skyblocker.debug.dumpNearbyEntities": "Dump Nearby Entities",
+  "key.skyblocker.debug.dumpHoveredItem": "Dump Hovered Item",
   "key.wikiLookup": "Wiki Lookup",
   "key.itemProtection": "Protect Item",
   "key.skyblocker.slottext": "Slot Text",
@@ -55,6 +57,13 @@
   "skyblocker.config.crimsonIsle.kuudra.safeSpotWaypoints": "Safe Spot Waypoints",
   "skyblocker.config.crimsonIsle.kuudra.suppliesAndFuelWaypointType": "Supplies/Fuel Waypoint Type",
   "skyblocker.config.crimsonIsle.kuudra.supplyWaypoints": "Supply Waypoints",
+
+  "skyblocker.config.debug": "Debug",
+
+  "skyblocker.config.debug.dumpRange": "Entity Dump Range",
+  "skyblocker.config.debug.dumpRange.@Tooltip": "The range in blocks around the player to dump entities within.",
+  "skyblocker.config.debug.showInvisibleArmorStands": "Show Invisible Armor Stands",
+  "skyblocker.config.debug.debugWebSockets": "Enable Websocket Debug Messages",
 
   "skyblocker.config.dungeons": "Dungeons",
 
