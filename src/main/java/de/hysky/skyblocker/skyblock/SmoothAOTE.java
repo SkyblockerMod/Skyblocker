@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.Perspective;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -42,13 +43,29 @@ public class SmoothAOTE {
         teleportVector = null;
     }
 
-    private static int extractTeleporterCustomData(NbtCompound customData, int baseRange) {
+    /**
+     * checks to see if a teleport device is using transmission tuner to increase the range
+     *
+     * @param customData the custom data of the teleport device
+     * @param baseRange  the base range for the device without tuner
+     * @return the range with tuner
+     */
+    private static int extractTunedCustomData(NbtCompound customData, int baseRange) {
         return customData != null && customData.contains("tuned_transmission") ? baseRange + customData.getInt("tuned_transmission") : baseRange;
     }
 
+    /**
+     * Finds if a player uses a teleport and then saves the start position and time. then works out final position and saves that too
+     *
+     * @param playerEntity the player
+     * @param world        the world
+     * @param hand         what the player is holding
+     * @return if the right click should go though
+     */
+
     private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
-        //stop checking if player does not exist
-        if (CLIENT.player == null || CLIENT.world == null) {
+        //stop checking if player does not exist  or is in 3d person
+        if (CLIENT.player == null || CLIENT.world == null || CLIENT.options.getPerspective() != Perspective.FIRST_PERSON) {
             return null;
         }
         //get return item
@@ -77,23 +94,23 @@ public class SmoothAOTE {
             }
             case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
                 if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission && CLIENT.options.sneakKey.isPressed() && customData.getInt("ethermerge") == 1) {
-                    distance = extractTeleporterCustomData(customData, 57);
+                    distance = extractTunedCustomData(customData, 57);
                 } else if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableInstantTransmission) {
-                    distance = extractTeleporterCustomData(customData, 8);
+                    distance = extractTunedCustomData(customData, 8);
                 } else {
                     return TypedActionResult.pass(stack);
                 }
             }
             case "ETHERWARP_CONDUIT" -> {
                 if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission) {
-                    distance = extractTeleporterCustomData(customData, 57);
+                    distance = extractTunedCustomData(customData, 57);
                 } else {
                     return TypedActionResult.pass(stack);
                 }
             }
             case "SINSEEKER_SCYTHE" -> {
                 if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableSinrecallTransmission) {
-                    distance = extractTeleporterCustomData(customData, 4);
+                    distance = extractTunedCustomData(customData, 4);
                 } else {
                     return TypedActionResult.pass(stack);
                 }
@@ -150,6 +167,12 @@ public class SmoothAOTE {
 
         return TypedActionResult.pass(stack);
     }
+
+    /**
+     * works out where they player should be based on how far though the predicted teleport time.
+     *
+     * @return the camera position for the interpolated pos
+     */
 
     public static Vec3d getInterpolatedPos() {
         if (CLIENT.player == null || teleportVector == null || startPos == null) {
