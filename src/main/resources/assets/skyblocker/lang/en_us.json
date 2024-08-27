@@ -888,8 +888,7 @@
   "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
 
   "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
-  "skyblocker.config.uiAndVisuals.smoothAOTE.enabled": "Enable Teleport Smoothing",
-  "skyblocker.config.uiAndVisuals.smoothAOTE.enabled.@Tooltip": "Toggle teleport smoothing for all teleporting methods",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip": "Smooth out teleporting with right click teleport ability's",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission": "Enable Ether Transmission",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission": "Enable Instant Transmission ",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission": "Enable Sinrecall Transmission",

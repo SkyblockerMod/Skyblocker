@@ -3,14 +3,11 @@ package de.hysky.skyblocker.skyblock;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
@@ -19,7 +16,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,16 +53,13 @@ public class SmoothAOTE {
         }
         //get return item
         ItemStack stack = CLIENT.player.getStackInHand(hand);
-        if (!SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enabled) {
-            return TypedActionResult.pass(stack);
-        }
 
         //work out if the player is holding a teleporting item that is enabled and if so how far the item will take them
         ItemStack heldItem = CLIENT.player.getMainHandStack();
         String itemId = heldItem.getSkyblockId();
         NbtCompound customData = ItemUtils.getCustomData(heldItem);
 
-        int distance = 0;
+        int distance;
         switch (itemId) {
             case "ASPECT_OF_THE_LEECH_1" -> {
                 if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWeirdTransmission) {
@@ -117,7 +110,7 @@ public class SmoothAOTE {
             }
         }
         //make sure the player has enough mana to do the teleport
-        Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem,MANA_LORE);
+        Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem, MANA_LORE);
         if (manaNeeded != null && manaNeeded.matches()) {
             if (SkyblockerMod.getInstance().statusBarTracker.getMana().value() < Integer.parseInt(manaNeeded.group(1))) { // todo the players mana can lag behind as it is updated server side. client side mana calculations would help with this
                 return TypedActionResult.pass(stack);

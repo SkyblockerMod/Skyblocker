@@ -159,13 +159,15 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
 	 @Inject(method = "onPlayerPositionLook", at = @At("TAIL"))
     private void onPlayerTeleported(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
-        //player has been teleported by the server tell the smooth aote this
+        //player has been teleported by the server tell the smooth AOTE this
         SmoothAOTE.reset();
     }
 
     @WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;shouldShowPacketSizeAndPingCharts()Z"))
     private boolean shouldShowPacketSizeAndPingCharts(DebugHud instance, Operation<Boolean> original) {
         //make the f3+3 screen always send ping packets even when closed
-        return true; //todo config
+        //this is needed to make smooth AOTE work
+        return true;
+
     }
 }

@@ -332,8 +332,6 @@ public class UIAndVisualsConfig {
     }
 
     public static class SmoothAOTE {
-        @SerialEntry
-        public boolean enabled = true;
 
         @SerialEntry
         public boolean enableWeirdTransmission = true;
