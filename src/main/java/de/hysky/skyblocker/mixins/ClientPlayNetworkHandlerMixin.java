@@ -15,8 +15,9 @@ import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.crimson.slayer.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
+import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
+import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
@@ -32,7 +33,6 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -127,7 +127,8 @@ public abstract class ClientPlayNetworkHandlerMixin {
             }
         }
 
-        if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
+        if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF)
+            FirePillarAnnouncer.checkFirePillar(entity);
 
         EggFinder.checkIfEgg(armorStandEntity);
         try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
