@@ -7,6 +7,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.ws.message.Message;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceSet;
+import net.azureaaron.hmapi.data.server.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 public class WsStateManager {
@@ -33,6 +34,8 @@ public class WsStateManager {
 	 * place is inside of the {@link SkyblockEvents#LOCATION_CHANGE} event.
 	 */
 	public static void subscribe(Service service, Optional<Message<? extends Message<?>>> message) {
+		if (Utils.getEnvironment() != Environment.PRODUCTION) return;
+
 		SUBSCRIBED_SERVICES.add(service);
 		WsMessageHandler.sendSimple(Type.SUBSCRIBE, service, Utils.getServer(), message);
 
