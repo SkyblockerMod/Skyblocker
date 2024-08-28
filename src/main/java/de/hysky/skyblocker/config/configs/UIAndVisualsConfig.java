@@ -347,7 +347,6 @@ public class UIAndVisualsConfig {
 
         @SerialEntry
         public boolean enableWitherImpact = true;
-
     }
 
     public static class SearchOverlay {

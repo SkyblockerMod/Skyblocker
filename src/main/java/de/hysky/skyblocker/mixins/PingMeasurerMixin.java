@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.SmoothAOTE;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.utils.Utils;
