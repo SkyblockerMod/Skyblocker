@@ -64,12 +64,17 @@ public class SmoothAOTE {
      */
 
     private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
-        //stop checking if player does not exist  or is in 3d person
-        if (CLIENT.player == null || CLIENT.world == null || CLIENT.options.getPerspective() != Perspective.FIRST_PERSON) {
+        //stop checking if player does not exist
+        if (CLIENT.player == null || CLIENT.world == null) {
             return null;
         }
         //get return item
         ItemStack stack = CLIENT.player.getStackInHand(hand);
+
+        // make sure the camera is not in 3rd person
+        if ( CLIENT.options.getPerspective() != Perspective.FIRST_PERSON) {
+            return TypedActionResult.pass(stack);
+        }
 
         //work out if the player is holding a teleporting item that is enabled and if so how far the item will take them
         ItemStack heldItem = CLIENT.player.getMainHandStack();
