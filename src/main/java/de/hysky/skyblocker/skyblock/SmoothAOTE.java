@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
@@ -29,13 +30,15 @@ public class SmoothAOTE {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
     private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
-    private static final long MAX_TELEPORT_TIME = 1000;
+    private static final long MAX_TELEPORT_TIME = 2500; //2.5 seconds
 
     private static long startTime;
     private static Vec3d startPos;
     private static Vec3d teleportVector;
     private static long lastPing;
     private static int teleportsAhead;
+    private static long lastTeleportTime;
+    private static boolean teleportDisabled;
 
     public static void init() {
         UseItemCallback.EVENT.register(SmoothAOTE::onItemInteract);
@@ -44,6 +47,9 @@ public class SmoothAOTE {
     public static void playerTeleported() {
         //the player has been teleported so 1 less teleport ahead
         teleportsAhead = Math.max(0, teleportsAhead - 1);
+        //re-enable the animation if the player is teleported as this means they can teleport again. and reset timer for last teleport update
+        lastTeleportTime = System.currentTimeMillis();
+        teleportDisabled = false;
 
         //if the server is in sync in number of teleports
         if (teleportsAhead == 0) {
@@ -88,7 +94,7 @@ public class SmoothAOTE {
         }
 
         //make sure the player is in an area teleporting is allowed not allowed in glacite mineshafts and floor 7 boss
-        if (Utils.getMap().equals("Glacite Mineshafts") || (Utils.isInDungeons() && DungeonManager.isInBoss() && DungeonManager.getBoss() == DungeonBoss.MAXOR)) {
+        if (!isAllowedLocation()) {
             return TypedActionResult.pass(stack);
         }
 
@@ -161,10 +167,14 @@ public class SmoothAOTE {
 
         //work out start pos of warp and set start time. if there is an active warp going on make the end of that the start of the next one
         if (startPos == null || teleportVector == null) {
+            //start of teleport sequence
             startPos = CLIENT.player.getEyePos();
+            lastTeleportTime = System.currentTimeMillis();
         } else {
+            //add to the end of the teleport sequence
             startPos = startPos.add(teleportVector);
         }
+
         startTime = System.currentTimeMillis();
 
         // calculate the vector the player will follow for the teleport
@@ -197,19 +207,62 @@ public class SmoothAOTE {
     }
 
     /**
+     * Works out if the players location lets them use teleportation or not
+     *
+     * @return if the player should be allowed to teleport
+     */
+    private static boolean isAllowedLocation() {
+        //check mines shafts
+        if (Utils.getMap().equals("Mineshaft")) {
+            return false;
+        } else if (Utils.getIslandArea().equals("⏣ Jungle Temple")) { //do not allow in jungle temple
+            return false;
+        } else if (Utils.getLocation() == Location.PRIVATE_ISLAND && !Utils.getIslandArea().equals("⏣ Your Island")) { //do not allow it when visiting
+            return false;
+        } else if (Utils.getLocation() == Location.PRIVATE_ISLAND && !Utils.getIslandArea().equals("⏣ Your Island")) { //do not allow it when visiting garden
+            return false;
+        } else if (Utils.isInDungeons()) { //check places in dungeons where you can't teleport
+            if (DungeonManager.isInBoss() && DungeonManager.getBoss() == DungeonBoss.MAXOR) {
+                return false;
+            }
+            //make sure the player is in a room then check for disallowed rooms
+            if (!DungeonManager.isCurrentRoomMatched()) {
+                return true;
+            }
+            //does not work in boulder room
+            if (DungeonManager.getCurrentRoom().getName().equals("boxes-room")) {
+                return false;
+            }
+            //does not work in teleport maze room
+            if (DungeonManager.getCurrentRoom().getName().equals("teleport-pad-room")) {
+                return false;
+            }
+            //does not work in trap room
+            if (DungeonManager.getCurrentRoom().getName().startsWith("trap")) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * works out where they player should be based on how far though the predicted teleport time.
      *
      * @return the camera position for the interpolated pos
      */
 
     public static Vec3d getInterpolatedPos() {
-        if (CLIENT.player == null || teleportVector == null || startPos == null) {
+        if (CLIENT.player == null || teleportVector == null || startPos == null || teleportDisabled) {
             return null;
         }
         long gap = System.currentTimeMillis() - startTime;
-        //if teleport has taken over max time reset and return null
-        if (gap > MAX_TELEPORT_TIME) {
-            playerTeleported();
+        //make sure the player is actually getting teleported if not disable teleporting until they are teleported again
+        if (System.currentTimeMillis() - lastTeleportTime > MAX_TELEPORT_TIME) {
+            teleportDisabled = true;
+            startPos = null;
+            teleportVector = null;
+            teleportsAhead = 0;
             return null;
         }
         double percentage = Math.min((double) (gap) / Math.min(lastPing, MAX_TELEPORT_TIME), 1);
