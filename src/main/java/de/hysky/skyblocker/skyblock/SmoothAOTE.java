@@ -2,7 +2,10 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.Perspective;
@@ -73,6 +76,11 @@ public class SmoothAOTE {
 
         // make sure the camera is not in 3rd person
         if (CLIENT.options.getPerspective() != Perspective.FIRST_PERSON) {
+            return TypedActionResult.pass(stack);
+        }
+
+        //make sure the player is in an area teleporting is allowed not allowed in glacite mineshafts and floor 7 boss
+        if (Utils.getMap().equals("Glacite Mineshafts") || (Utils.isInDungeons() && DungeonManager.isInBoss() && DungeonManager.getBoss() == DungeonBoss.MAXOR)) {
             return TypedActionResult.pass(stack);
         }
 
