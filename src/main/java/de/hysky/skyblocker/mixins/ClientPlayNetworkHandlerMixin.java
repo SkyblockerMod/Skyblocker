@@ -159,7 +159,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	 @Inject(method = "onPlayerPositionLook", at = @At("TAIL"))
     private void onPlayerTeleported(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
         //player has been teleported by the server tell the smooth AOTE this
-        SmoothAOTE.reset();
+        SmoothAOTE.playerTeleported();
     }
 
     @WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;shouldShowPacketSizeAndPingCharts()Z"))

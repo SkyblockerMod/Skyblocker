@@ -35,15 +35,23 @@ public class SmoothAOTE {
     private static Vec3d startPos;
     private static Vec3d teleportVector;
     private static long lastPing;
+    private static int teleportsAhead;
 
     public static void init() {
         UseItemCallback.EVENT.register(SmoothAOTE::onItemInteract);
     }
 
-    public static void reset() {
-        //reset when player has reached the end of the teleport
-        startPos = null;
-        teleportVector = null;
+    public static void playerTeleported() {
+        //the player has been teleported so 1 less teleport ahead
+        teleportsAhead = Math.max(0, teleportsAhead - 1);
+
+        //if the server is in sync in number of teleports
+        if (teleportsAhead == 0) {
+            //reset when player has reached the end of the teleports
+            startPos = null;
+            teleportVector = null;
+        }
+
     }
 
     /**
@@ -182,6 +190,9 @@ public class SmoothAOTE {
         Vec3d offsetVec = new Vec3d(predictedEnd.x - (Math.floor(predictedEnd.x) + 0.5), predictedEnd.y - (Math.ceil(predictedEnd.y) + 0.62), predictedEnd.z - (Math.floor(predictedEnd.z) + 0.5));
         teleportVector = teleportVector.subtract(offsetVec);
 
+        //add 1 to teleports ahead
+        teleportsAhead += 1;
+
         return TypedActionResult.pass(stack);
     }
 
@@ -198,7 +209,7 @@ public class SmoothAOTE {
         long gap = System.currentTimeMillis() - startTime;
         //if teleport has taken over max time reset and return null
         if (gap > MAX_TELEPORT_TIME) {
-            reset();
+            playerTeleported();
             return null;
         }
         double percentage = Math.min((double) (gap) / Math.min(lastPing, MAX_TELEPORT_TIME), 1);
