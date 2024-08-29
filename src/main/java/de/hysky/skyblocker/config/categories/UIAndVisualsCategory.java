@@ -397,6 +397,7 @@ public class UIAndVisualsCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
+
                 //Smooth AOTE
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE"))
@@ -404,6 +405,7 @@ public class UIAndVisualsCategory {
                         .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip")))
                                 .binding(defaults.uiAndVisuals.smoothAOTE.enableWeirdTransmission,
                                         () -> config.uiAndVisuals.smoothAOTE.enableWeirdTransmission,
                                         newValue -> config.uiAndVisuals.smoothAOTE.enableWeirdTransmission = newValue)
@@ -411,6 +413,7 @@ public class UIAndVisualsCategory {
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission.@Tooltip")))
                                 .binding(defaults.uiAndVisuals.smoothAOTE.enableInstantTransmission,
                                         () -> config.uiAndVisuals.smoothAOTE.enableInstantTransmission,
                                         newValue -> config.uiAndVisuals.smoothAOTE.enableInstantTransmission = newValue)
@@ -418,6 +421,7 @@ public class UIAndVisualsCategory {
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip")))
                                 .binding(defaults.uiAndVisuals.smoothAOTE.enableEtherTransmission,
                                         () -> config.uiAndVisuals.smoothAOTE.enableEtherTransmission,
                                         newValue -> config.uiAndVisuals.smoothAOTE.enableEtherTransmission = newValue)
@@ -425,6 +429,7 @@ public class UIAndVisualsCategory {
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip")))
                                 .binding(defaults.uiAndVisuals.smoothAOTE.enableSinrecallTransmission,
                                         () -> config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission,
                                         newValue -> config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission = newValue)
@@ -432,6 +437,7 @@ public class UIAndVisualsCategory {
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip")))
                                 .binding(defaults.uiAndVisuals.smoothAOTE.enableWitherImpact,
                                         () -> config.uiAndVisuals.smoothAOTE.enableWitherImpact,
                                         newValue -> config.uiAndVisuals.smoothAOTE.enableWitherImpact = newValue)
