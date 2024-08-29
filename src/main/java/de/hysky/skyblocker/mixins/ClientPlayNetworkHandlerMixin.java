@@ -167,7 +167,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
         if (Utils.isOnSkyblock()) {
             return true;
         }
-        return  original.call();
+        return  original.call(instance);
 
     }
 }
