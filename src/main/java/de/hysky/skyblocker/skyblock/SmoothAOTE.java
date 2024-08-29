@@ -26,7 +26,7 @@ public class SmoothAOTE {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
     private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
-    private static final long maxTeleportTime = 1000;
+    private static final long MAX_TELEPORT_TIME = 1000;
 
     private static long startTime;
     private static Vec3d startPos;
@@ -72,7 +72,7 @@ public class SmoothAOTE {
         ItemStack stack = CLIENT.player.getStackInHand(hand);
 
         // make sure the camera is not in 3rd person
-        if ( CLIENT.options.getPerspective() != Perspective.FIRST_PERSON) {
+        if (CLIENT.options.getPerspective() != Perspective.FIRST_PERSON) {
             return TypedActionResult.pass(stack);
         }
 
@@ -185,11 +185,11 @@ public class SmoothAOTE {
         }
         long gap = System.currentTimeMillis() - startTime;
         //if teleport has taken over max time reset and return null
-        if (gap > maxTeleportTime) {
+        if (gap > MAX_TELEPORT_TIME) {
             reset();
             return null;
         }
-        double percentage = Math.min((double) (gap) / Math.min(lastPing, maxTeleportTime), 1);
+        double percentage = Math.min((double) (gap) / Math.min(lastPing, MAX_TELEPORT_TIME), 1);
 
         return startPos.add(teleportVector.multiply(percentage));
     }

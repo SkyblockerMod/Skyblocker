@@ -166,7 +166,10 @@ public abstract class ClientPlayNetworkHandlerMixin {
     private boolean shouldShowPacketSizeAndPingCharts(DebugHud instance, Operation<Boolean> original) {
         //make the f3+3 screen always send ping packets even when closed
         //this is needed to make smooth AOTE work
-        return true;
+        if (Utils.isOnSkyblock()) {
+            return true;
+        }
+        return  original.call();
 
     }
 }

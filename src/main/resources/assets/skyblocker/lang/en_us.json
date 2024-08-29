@@ -890,10 +890,15 @@
   "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
   "skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip": "Smooths out teleporting with right click teleport ability's",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission": "Enable Ether Transmission",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip": "for: Etherwarp Conduit and Ether Merged",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission": "Enable Instant Transmission ",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission.@Tooltip": "for: AOTE and AOTV ",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission": "Enable Sinrecall Transmission",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip": "for: Sinseeker Scythe",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission": "Enable Weird Transmission",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip": "for: Aspect of the Leech 1 and 2",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact": "Enable Wither Impact",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "for: Necron Blade, Hyperion, Scylla, Valkyrie",
 
   
   "skyblocker.config.uiAndVisuals.tabHud": "Fancy HUD and TAB",
