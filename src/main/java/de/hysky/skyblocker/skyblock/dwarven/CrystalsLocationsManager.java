@@ -322,12 +322,12 @@ public class CrystalsLocationsManager {
     }
 
     public static void addCustomWaypointFromSocket(MiningLocationLabel.CrystalHollowsLocationsCategory category, BlockPos pos) {
-        if (activeWaypoints.containsKey(category.name())) return;
+        if (activeWaypoints.containsKey(category.getName())) return;
 
         removeUnknownNear(pos);
         MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
         waypointsSent2Socket.add(category);
-        activeWaypoints.put(category.name(), waypoint);
+        activeWaypoints.put(category.getName(), waypoint);
         CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.webSocket.receivedCrystalsWaypoint", Text.literal(category.getName()).withColor(category.getColor()))));
     }
 
