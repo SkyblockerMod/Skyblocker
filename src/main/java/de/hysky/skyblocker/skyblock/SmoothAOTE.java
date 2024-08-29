@@ -94,46 +94,50 @@ public class SmoothAOTE {
             case "ASPECT_OF_THE_LEECH_1" -> {
                 if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWeirdTransmission) {
                     distance = 3;
-                } else {
-                    return TypedActionResult.pass(stack);
+                    break;
                 }
+                return TypedActionResult.pass(stack);
+
             }
             case "ASPECT_OF_THE_LEECH_2" -> {
                 if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWeirdTransmission) {
                     distance = 4;
-                } else {
-                    return TypedActionResult.pass(stack);
+                    break;
                 }
+                return TypedActionResult.pass(stack);
             }
             case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
-                if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission && CLIENT.options.sneakKey.isPressed() && customData.getInt("ethermerge") == 1) {
-                    distance = extractTunedCustomData(customData, 57);
+                if (CLIENT.options.sneakKey.isPressed() && customData.getInt("ethermerge") == 1) {
+                    if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission) {
+                        distance = extractTunedCustomData(customData, 57);
+                        break;
+                    }
                 } else if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableInstantTransmission) {
                     distance = extractTunedCustomData(customData, 8);
-                } else {
-                    return TypedActionResult.pass(stack);
+                    break;
                 }
+                return TypedActionResult.pass(stack);
             }
             case "ETHERWARP_CONDUIT" -> {
                 if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission) {
                     distance = extractTunedCustomData(customData, 57);
-                } else {
-                    return TypedActionResult.pass(stack);
+                    break;
                 }
+                return TypedActionResult.pass(stack);
             }
             case "SINSEEKER_SCYTHE" -> {
                 if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableSinrecallTransmission) {
                     distance = extractTunedCustomData(customData, 4);
-                } else {
-                    return TypedActionResult.pass(stack);
+                    break;
                 }
+                return TypedActionResult.pass(stack);
             }
             case "NECRON_BLADE", "ASTRAEA", "HYPERION", "SCYLLA", "VALKYRIE" -> {
                 if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWitherImpact) {
                     distance = 10;
-                } else {
-                    return TypedActionResult.pass(stack);
+                    break;
                 }
+                return TypedActionResult.pass(stack);
             }
             default -> {
                 return TypedActionResult.pass(stack);
