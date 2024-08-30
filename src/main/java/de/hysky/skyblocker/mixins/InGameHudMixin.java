@@ -163,7 +163,7 @@ public abstract class InGameHudMixin {
     }
 
     @Inject(method = "renderPlayerList", at = @At("HEAD"))
-    private void skyblocker$renderHud(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+    private void skyblocker$renderHud(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
         if (!Utils.isOnSkyblock()) return;
         MinecraftClient client = MinecraftClient.getInstance();
 

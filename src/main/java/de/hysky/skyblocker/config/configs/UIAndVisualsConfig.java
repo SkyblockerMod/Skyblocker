@@ -165,12 +165,14 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public boolean effectsFromFooter = false;
 
+        @Deprecated
         @SerialEntry
         public boolean plainPlayerNames = false;
 
         @SerialEntry
         public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
 
+        @Deprecated
         @SerialEntry
         public NameSorting nameSorting = NameSorting.DEFAULT;
     }

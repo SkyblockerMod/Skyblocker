@@ -333,7 +333,7 @@ public class PreviewTab implements Tab {
                 protected void appendClickableNarrations(NarrationMessageBuilder builder) {
                 }
             });
-            widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Apply everywhere"), button -> {
+            widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Apply Everywhere"), button -> {
                         if (this.previewWidget.selectedWidget == null) return;
                         PositionRule toCopy = ScreenMaster.getScreenBuilder(getCurrentLocation()).getPositionRule(this.previewWidget.selectedWidget.getInternalID());
                         if (toCopy == null) return;
@@ -345,7 +345,7 @@ public class PreviewTab implements Tab {
                             );
                         }
                         button.setMessage(Text.literal("Applied!"));
-                        Scheduler.INSTANCE.schedule(() -> button.setMessage(Text.literal("Apply everywhere")), 15);
+                        Scheduler.INSTANCE.schedule(() -> button.setMessage(Text.literal("Apply Everywhere")), 15);
                     }).width(width).tooltip(Tooltip.of(Text.literal("Apply positioning to all locations. This cannot be restored!"))).build()
             );
 
