@@ -15,11 +15,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 import java.util.regex.Matcher;
@@ -57,7 +54,6 @@ public class SmoothAOTE {
             startPos = null;
             teleportVector = null;
         }
-
     }
 
     /**
@@ -87,6 +83,11 @@ public class SmoothAOTE {
         }
         //get return item
         ItemStack stack = CLIENT.player.getStackInHand(hand);
+
+        //make sure it's not disabled
+        if (teleportDisabled) {
+            return  TypedActionResult.pass(stack);
+        }
 
         // make sure the camera is not in 3rd person
         if (CLIENT.options.getPerspective() != Perspective.FIRST_PERSON) {
@@ -169,41 +170,43 @@ public class SmoothAOTE {
         if (startPos == null || teleportVector == null) {
             //start of teleport sequence
             startPos = CLIENT.player.getEyePos();
-            lastTeleportTime = System.currentTimeMillis();
         } else {
             //add to the end of the teleport sequence
-            startPos = startPos.add(teleportVector);
+            startPos = startPos.add(teleportVector);//todo start moving from current interpolated pos
         }
 
         startTime = System.currentTimeMillis();
+        //if not ahead reset last teleport time
+        if (teleportsAhead == 0) {
+            lastTeleportTime = System.currentTimeMillis();
+        }
 
         // calculate the vector the player will follow for the teleport
         //get direction
         float pitch = CLIENT.player.getPitch();
         float yaw = CLIENT.player.getYaw();
         Vec3d look = CLIENT.player.getRotationVector(pitch, yaw);
+        
         //find target location depending on how far the item they are using takes them
-        teleportVector = look.multiply(distance);
-        //make sure there are no blocks in the way and if so account for this
-        BlockHitResult hitResult = world.raycast(new RaycastContext(startPos, startPos.add(teleportVector), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, CLIENT.player));
-        if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
-            Vec3d offsetEndPos;
-            if (hitResult.getSide().equals(Direction.UP) || hitResult.getSide().equals(Direction.DOWN)) {
-                offsetEndPos = hitResult.getPos().offset(hitResult.getSide(), 1);
-            } else {
-                offsetEndPos = hitResult.getPos().offset(hitResult.getSide(), 0.5);
-            }
-            teleportVector = offsetEndPos.subtract(startPos);
+        teleportVector = raycast(distance, look, startPos);
+        if (teleportVector == null) {
+            startPos = null;
+            return TypedActionResult.pass(stack);
         }
-        //compensate for pixel rounding the end position to x.5 y.62 z.5
-        Vec3d predictedEnd = startPos.add(teleportVector);
-        Vec3d offsetVec = new Vec3d(predictedEnd.x - (Math.floor(predictedEnd.x) + 0.5), predictedEnd.y - (Math.ceil(predictedEnd.y) + 0.62), predictedEnd.z - (Math.floor(predictedEnd.z) + 0.5));
-        teleportVector = teleportVector.subtract(offsetVec);
+        //round the vector values to 1dp
 
+        //compensate for hypixel rounding the end position to x.5 y.62 z.5
+        Vec3d predictedEnd = startPos.add(teleportVector);
+        Vec3d offsetVec = new Vec3d(predictedEnd.x - getOffset(predictedEnd.x), predictedEnd.y - (Math.ceil(predictedEnd.y) + 0.62), predictedEnd.z - getOffset(predictedEnd.z));
+        teleportVector = teleportVector.subtract(offsetVec);
         //add 1 to teleports ahead
         teleportsAhead += 1;
 
         return TypedActionResult.pass(stack);
+    }
+
+    private static double getOffset(double input) {
+        return Math.round(input - 0.5) + 0.5;
     }
 
     /**
@@ -247,6 +250,33 @@ public class SmoothAOTE {
     }
 
     /**
+     * custom raycast hopefully more like hypxiels checks the player can be at every block of the raycast then when one is hit set pos to block before
+     *
+     * @param distance maximum distance
+     * @return teleport vector
+     */
+    private static Vec3d raycast(int distance, Vec3d direction, Vec3d startPos) {
+        if (CLIENT.world == null) {
+            return null;
+        }
+        for (double offset = 0; offset <= distance; offset += 1) {
+            BlockPos checkPos = BlockPos.ofFloored(startPos.add(direction.multiply(offset)));
+
+            //there are block in the way return the previce location
+            if (!CLIENT.world.getBlockState(checkPos).isAir() || !CLIENT.world.getBlockState(checkPos.up()).isAir()) { //todo some transparent blocks can be teleported in (Buttons could be more)
+                System.out.println(startPos.add(direction.multiply(offset - 1)) + "hit block");
+                if (offset == 0) {
+                    // no teleport can happen
+                    return null;
+                }
+                return direction.multiply(offset - 1);
+            }
+
+        }
+        return direction.multiply(distance);
+    }
+
+    /**
      * works out where they player should be based on how far though the predicted teleport time.
      *
      * @return the camera position for the interpolated pos
@@ -258,7 +288,7 @@ public class SmoothAOTE {
         }
         long gap = System.currentTimeMillis() - startTime;
         //make sure the player is actually getting teleported if not disable teleporting until they are teleported again
-        if (System.currentTimeMillis() - lastTeleportTime > MAX_TELEPORT_TIME) {
+        if (System.currentTimeMillis() - lastTeleportTime > 1000) {
             teleportDisabled = true;
             startPos = null;
             teleportVector = null;
@@ -273,4 +303,6 @@ public class SmoothAOTE {
     public static void updatePing(long ping) {
         lastPing = ping;
     }
+
+
 }
