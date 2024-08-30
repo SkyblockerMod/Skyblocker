@@ -31,6 +31,7 @@ public class SmoothAOTE {
 
     private static long startTime;
     private static Vec3d startPos;
+    private static Vec3d cameraStartPos;
     private static Vec3d teleportVector;
     private static long lastPing;
     private static int teleportsAhead;
@@ -167,19 +168,20 @@ public class SmoothAOTE {
         }
 
         //work out start pos of warp and set start time. if there is an active warp going on make the end of that the start of the next one
-        if (startPos == null || teleportVector == null) {
+        if (teleportsAhead == 0) {
             //start of teleport sequence
-            startPos = CLIENT.player.getEyePos();
+            startPos = CLIENT.player.getPos().add(0,1.62,0); // the eye poss should not be affected by crouching
+            cameraStartPos = CLIENT.player.getEyePos();
+            lastTeleportTime = System.currentTimeMillis();
         } else {
             //add to the end of the teleport sequence
-            startPos = startPos.add(teleportVector);//todo start moving from current interpolated pos
+            startPos = startPos.add(teleportVector);
+            //set the camera start pos to how far though the teleport the player is to make is smoother
+            cameraStartPos = getInterpolatedPos();
         }
 
         startTime = System.currentTimeMillis();
-        //if not ahead reset last teleport time
-        if (teleportsAhead == 0) {
-            lastTeleportTime = System.currentTimeMillis();
-        }
+
 
         // calculate the vector the player will follow for the teleport
         //get direction
@@ -297,7 +299,7 @@ public class SmoothAOTE {
         }
         double percentage = Math.min((double) (gap) / Math.min(lastPing, MAX_TELEPORT_TIME), 1);
 
-        return startPos.add(teleportVector.multiply(percentage));
+        return cameraStartPos.add(teleportVector.multiply(percentage));
     }
 
     public static void updatePing(long ping) {
