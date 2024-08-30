@@ -21,7 +21,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.LayeredDrawer;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -163,7 +162,7 @@ public abstract class InGameHudMixin {
     }
 
     @Inject(method = "renderPlayerList", at = @At("HEAD"))
-    private void skyblocker$renderHud(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+    private void skyblocker$renderHud(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
         if (!Utils.isOnSkyblock()) return;
         MinecraftClient client = MinecraftClient.getInstance();
 
