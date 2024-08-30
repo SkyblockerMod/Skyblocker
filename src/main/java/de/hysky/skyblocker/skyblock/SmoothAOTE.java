@@ -87,7 +87,7 @@ public class SmoothAOTE {
 
         //make sure it's not disabled
         if (teleportDisabled) {
-            return  TypedActionResult.pass(stack);
+            return TypedActionResult.pass(stack);
         }
 
         // make sure the camera is not in 3rd person
@@ -170,7 +170,7 @@ public class SmoothAOTE {
         //work out start pos of warp and set start time. if there is an active warp going on make the end of that the start of the next one
         if (teleportsAhead == 0) {
             //start of teleport sequence
-            startPos = CLIENT.player.getPos().add(0,1.62,0); // the eye poss should not be affected by crouching
+            startPos = CLIENT.player.getPos().add(0, 1.62, 0); // the eye poss should not be affected by crouching
             cameraStartPos = CLIENT.player.getEyePos();
             lastTeleportTime = System.currentTimeMillis();
         } else {
@@ -188,7 +188,7 @@ public class SmoothAOTE {
         float pitch = CLIENT.player.getPitch();
         float yaw = CLIENT.player.getYaw();
         Vec3d look = CLIENT.player.getRotationVector(pitch, yaw);
-        
+
         //find target location depending on how far the item they are using takes them
         teleportVector = raycast(distance, look, startPos);
         if (teleportVector == null) {
@@ -199,7 +199,7 @@ public class SmoothAOTE {
 
         //compensate for hypixel rounding the end position to x.5 y.62 z.5
         Vec3d predictedEnd = startPos.add(teleportVector);
-        Vec3d offsetVec = new Vec3d(predictedEnd.x - getOffset(predictedEnd.x), predictedEnd.y - (Math.ceil(predictedEnd.y) + 0.62), predictedEnd.z - getOffset(predictedEnd.z));
+        Vec3d offsetVec = new Vec3d(predictedEnd.x - roundToCenter(predictedEnd.x), predictedEnd.y - (Math.ceil(predictedEnd.y) + 0.62), predictedEnd.z - roundToCenter(predictedEnd.z));
         teleportVector = teleportVector.subtract(offsetVec);
         //add 1 to teleports ahead
         teleportsAhead += 1;
@@ -207,7 +207,7 @@ public class SmoothAOTE {
         return TypedActionResult.pass(stack);
     }
 
-    private static double getOffset(double input) {
+    private static double roundToCenter(double input) {
         return Math.round(input - 0.5) + 0.5;
     }
 
@@ -223,8 +223,6 @@ public class SmoothAOTE {
         } else if (Utils.getIslandArea().equals("⏣ Jungle Temple")) { //do not allow in jungle temple
             return false;
         } else if (Utils.getLocation() == Location.PRIVATE_ISLAND && !Utils.getIslandArea().equals("⏣ Your Island")) { //do not allow it when visiting
-            return false;
-        } else if (Utils.getLocation() == Location.PRIVATE_ISLAND && !Utils.getIslandArea().equals("⏣ Your Island")) { //do not allow it when visiting garden
             return false;
         } else if (Utils.isInDungeons()) { //check places in dungeons where you can't teleport
             if (DungeonManager.isInBoss() && DungeonManager.getBoss() == DungeonBoss.MAXOR) {
