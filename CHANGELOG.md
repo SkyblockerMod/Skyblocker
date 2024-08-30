@@ -1,3 +1,25 @@
+# Release 1.22.1
+
+## Highlight
+* Display Slot Text and Protected Items in PV
+* Request Profile Id if we don't receive it
+* Fix Ultrasequencer Bugs
+* Fix NoSuchElementException with modelless Abicases
+* Fix PV Collections Crash
+* Fix WebSocket bugs
+
+## What's Changed
+* Fix Ultrasequencer Bugs by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/942
+* Fix NoSuchElementException with modelless Abicases by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/953
+* Slot Text and Item Protection support for the PV by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/954
+* Request Profile Id if we don't receive it by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/947
+* [Pv & SlayerHighlight] Fixes and improvements by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/952
+* Tooltip Info Rework + Performance improvements by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/957
+* Fix PV Collections Crash by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/959
+* Fix WebSocket bugs by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/964
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.22.0...v1.22.1
+___
 # Release 1.22.0
 
 ## Highlight
