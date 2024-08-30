@@ -183,7 +183,7 @@ public class SmoothAOTE {
         }
 
         //work out start pos of warp and set start time. if there is an active warp going on make the end of that the start of the next one
-        if (teleportsAhead == 0) {
+        if (teleportsAhead == 0 || startPos == null || teleportVector == null) {
             //start of teleport sequence
             startPos = CLIENT.player.getPos().add(0, 1.62, 0); // the eye poss should not be affected by crouching
             cameraStartPos = CLIENT.player.getEyePos();
@@ -272,12 +272,11 @@ public class SmoothAOTE {
         if (CLIENT.world == null) {
             return null;
         }
-        for (double offset = 0; offset <= distance; offset += 1) {
+        for (double offset = 0; offset <= distance; offset ++) {
             BlockPos checkPos = BlockPos.ofFloored(startPos.add(direction.multiply(offset)));
 
-            //there are block in the way return the previce location
+            //there are block in the way return the last location
             if (!CLIENT.world.getBlockState(checkPos).isAir() || !CLIENT.world.getBlockState(checkPos.up()).isAir()) { //todo some transparent blocks can be teleported in (Buttons could be more)
-                System.out.println(startPos.add(direction.multiply(offset - 1)) + "hit block");
                 if (offset == 0) {
                     // no teleport can happen
                     return null;
