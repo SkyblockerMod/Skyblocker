@@ -3,12 +3,12 @@ package de.hysky.skyblocker.utils.waypoint;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.skyblock.waypoint.OrderedWaypoints;
+import de.hysky.skyblocker.utils.InstancedUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -135,27 +135,29 @@ public class WaypointCategory {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (WaypointCategory) obj;
-        return Objects.equals(this.name, that.name) &&
-                Objects.equals(this.island, that.island) &&
-                Objects.equals(this.waypoints, that.waypoints) &&
-                this.ordered == that.ordered;
+    public boolean equals(Object o) {
+        try {
+            return (boolean) InstancedUtils.equals(getClass()).invokeExact(this, o);
+        } catch (Throwable ignored) {
+            return super.equals(o);
+        }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, island, waypoints, ordered);
+        try {
+            return (int) InstancedUtils.hashCode(getClass()).invokeExact(this);
+        } catch (Throwable ignored) {
+            return super.hashCode();
+        }
     }
 
     @Override
     public String toString() {
-        return "WaypointCategory[" +
-                "name=" + name + ", " +
-                "island=" + island + ", " +
-                "waypoints=" + waypoints + ", " +
-                "ordered=" + ordered + ']';
+        try {
+            return (String) InstancedUtils.toString(getClass()).invokeExact(this);
+        } catch (Throwable ignored) {
+            return super.toString();
+        }
     }
 }
