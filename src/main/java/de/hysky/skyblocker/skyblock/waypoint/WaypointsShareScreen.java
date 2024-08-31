@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.waypoint;
 
 import com.google.common.collect.Multimap;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
-import de.hysky.skyblocker.utils.waypoint.WaypointCategory;
+import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -19,7 +19,7 @@ import java.util.Set;
 public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScreen> {
     private final Set<NamedWaypoint> selectedWaypoints = new HashSet<>();
 
-    protected WaypointsShareScreen(WaypointsScreen parent, Multimap<String, WaypointCategory> waypoints) {
+    protected WaypointsShareScreen(WaypointsScreen parent, Multimap<String, WaypointGroup> waypoints) {
         super(Text.translatable("skyblocker.waypoints.shareWaypoints"), parent, waypoints, parent.island);
     }
 
@@ -31,13 +31,13 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
         GridWidget.Adder adder = gridWidget.createAdder(2);
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.importWaypointsSkytils"), buttonImport -> {
             try {
-                List<WaypointCategory> waypointCategories = Waypoints.fromSkytils(client.keyboard.getClipboard(), island);
-                for (WaypointCategory waypointCategory : waypointCategories) {
-                    selectedWaypoints.addAll(waypointCategory.waypoints());
-                    waypoints.put(waypointCategory.island(), waypointCategory);
+                List<WaypointGroup> waypointGroups = Waypoints.fromSkytils(client.keyboard.getClipboard(), island);
+                for (WaypointGroup waypointGroup : waypointGroups) {
+                    selectedWaypoints.addAll(waypointGroup.waypoints());
+                    waypoints.put(waypointGroup.island(), waypointGroup);
                 }
                 waypointsListWidget.updateEntries();
-                SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.importSuccess"), Text.translatable("skyblocker.waypoints.importSuccessText", waypointCategories.stream().map(WaypointCategory::waypoints).mapToInt(List::size).sum(), waypointCategories.size()));
+                SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.importSuccess"), Text.translatable("skyblocker.waypoints.importSuccessText", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size()));
             } catch (Exception e) {
                 Waypoints.LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skytils waypoint data", e);
                 SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.importError"), Text.translatable("skyblocker.waypoints.importErrorText"));
@@ -45,11 +45,11 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importWaypointsSkytils.tooltip"))).build());
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.importWaypointsSnoopy"), buttonImport -> {
             try {
-                WaypointCategory waypointCategory = Waypoints.fromColeweightJson(client.keyboard.getClipboard(), island);
-                selectedWaypoints.addAll(waypointCategory.waypoints());
-                waypoints.put(waypointCategory.island(), waypointCategory);
+                WaypointGroup waypointGroup = Waypoints.fromColeweightJson(client.keyboard.getClipboard(), island);
+                selectedWaypoints.addAll(waypointGroup.waypoints());
+                waypoints.put(waypointGroup.island(), waypointGroup);
                 waypointsListWidget.updateEntries();
-                SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.importSuccess"), Text.translatable("skyblocker.waypoints.importSuccessText", waypointCategory.waypoints().size(), 1));
+                SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.importSuccess"), Text.translatable("skyblocker.waypoints.importSuccessText", waypointGroup.waypoints().size(), 1));
             } catch (Exception e) {
                 Waypoints.LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Snoopy waypoint data", e);
                 SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.importError"), Text.translatable("skyblocker.waypoints.importErrorText"));
@@ -58,9 +58,9 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
         adder.add(ButtonWidget.builder(ScreenTexts.BACK, buttonBack -> close()).build());
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.exportWaypointsSkytils"), buttonExport -> {
             try {
-                List<WaypointCategory> waypointCategories = waypoints.values().stream().filter(waypointCategory -> waypointCategory.island().equals(island)).map(waypointCategory -> waypointCategory.filterWaypoints(selectedWaypoints::contains)).filter(waypointCategory -> !waypointCategory.waypoints().isEmpty()).toList();
-                client.keyboard.setClipboard(Waypoints.toSkytilsBase64(waypointCategories));
-                SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.exportSuccess"), Text.translatable("skyblocker.waypoints.exportSuccessText", waypointCategories.stream().map(WaypointCategory::waypoints).mapToInt(List::size).sum(), waypointCategories.size()));
+                List<WaypointGroup> waypointGroups = waypoints.values().stream().filter(waypointGroup -> waypointGroup.island().equals(island)).map(waypointGroup -> waypointGroup.filterWaypoints(selectedWaypoints::contains)).filter(waypointGroup -> !waypointGroup.waypoints().isEmpty()).toList();
+                client.keyboard.setClipboard(Waypoints.toSkytilsBase64(waypointGroups));
+                SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.exportSuccess"), Text.translatable("skyblocker.waypoints.exportSuccessText", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size()));
             } catch (Exception e) {
                 Waypoints.LOGGER.error("[Skyblocker Waypoints] Encountered exception while serializing Skytils waypoint data", e);
                 SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.exportError"), Text.translatable("skyblocker.waypoints.exportErrorText"));
