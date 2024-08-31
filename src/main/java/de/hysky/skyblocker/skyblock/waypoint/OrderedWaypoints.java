@@ -426,7 +426,7 @@ public class OrderedWaypoints {
 		}
 	}
 
-	private record ColeWeightWaypoint(OptionalInt x, OptionalInt y, OptionalInt z, OptionalInt r, OptionalInt g, OptionalInt b, Optional<Options> options) {
+	public record ColeWeightWaypoint(OptionalInt x, OptionalInt y, OptionalInt z, OptionalInt r, OptionalInt g, OptionalInt b, Optional<Options> options) {
 		static final Codec<ColeWeightWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				CodecUtils.optionalInt(Codec.INT.optionalFieldOf("x")).forGetter(ColeWeightWaypoint::x),
 				CodecUtils.optionalInt(Codec.INT.optionalFieldOf("y")).forGetter(ColeWeightWaypoint::y),
@@ -439,8 +439,8 @@ public class OrderedWaypoints {
 		static final Codec<List<ColeWeightWaypoint>> LIST_CODEC = CODEC.listOf();
 
 		//Even though we don't import the name this is still here incase that eventually changes
-		record Options(Optional<String> name) {
-			static final Codec<Options> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		public record Options(Optional<String> name) {
+			public static final Codec<Options> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 					Codec.STRING.optionalFieldOf("name").forGetter(Options::name))
 					.apply(instance, Options::new));
 		}

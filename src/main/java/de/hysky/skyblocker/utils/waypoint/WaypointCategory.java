@@ -25,6 +25,7 @@ public class WaypointCategory {
             Codec.STRING.fieldOf("island").forGetter(WaypointCategory::island),
             NamedWaypoint.SKYTILS_CODEC.listOf().fieldOf("waypoints").forGetter(WaypointCategory::waypoints)
     ).apply(instance, WaypointCategory::new));
+    public static final Codec<WaypointCategory> COLEWEIGHT_CODEC = NamedWaypoint.COLEWEIGHT_CODEC.listOf().xmap(coleWeightWaypoints -> new WaypointCategory("Coleweight", "", coleWeightWaypoints, true), WaypointCategory::waypoints);
 
     private final String name;
     private final String island;
@@ -33,7 +34,11 @@ public class WaypointCategory {
     protected int currentIndex;
 
     public WaypointCategory(String name, String island, List<NamedWaypoint> waypoints) {
-        this(name, island, waypoints, false, 0);
+        this(name, island, waypoints, false);
+    }
+
+    public WaypointCategory(String name, String island, List<NamedWaypoint> waypoints, boolean ordered) {
+        this(name, island, waypoints, ordered, 0);
     }
 
     public WaypointCategory(String name, String island, List<NamedWaypoint> waypoints, boolean ordered, int currentIndex) {
