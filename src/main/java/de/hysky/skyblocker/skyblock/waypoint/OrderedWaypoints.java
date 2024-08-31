@@ -62,7 +62,7 @@ public class OrderedWaypoints {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Codec<Map<String, OrderedWaypointGroup>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING, OrderedWaypointGroup.CODEC).xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new);
 	private static final String PREFIX = "[Skyblocker::OrderedWaypoints::v1]";
-	private static final Path PATH = SkyblockerMod.CONFIG_DIR.resolve("ordered_waypoints.json");
+	public static final Path PATH = SkyblockerMod.CONFIG_DIR.resolve("ordered_waypoints.json");
 	private static final Map<String, OrderedWaypointGroup> WAYPOINTS = new Object2ObjectOpenHashMap<>();
 	private static final Semaphore SEMAPHORE = new Semaphore(1);
 	private static final Object2IntOpenHashMap<String> INDEX_STORE = new Object2IntOpenHashMap<>();

@@ -22,13 +22,13 @@ import java.util.function.Supplier;
 
 public class NamedWaypoint extends Waypoint {
     public static final Codec<NamedWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            BlockPos.CODEC.fieldOf("pos").forGetter(secretWaypoint -> secretWaypoint.pos),
-            TextCodecs.CODEC.fieldOf("name").forGetter(secretWaypoint -> secretWaypoint.name),
+            BlockPos.CODEC.fieldOf("pos").forGetter(waypoint -> waypoint.pos),
+            TextCodecs.CODEC.fieldOf("name").forGetter(waypoint -> waypoint.name),
             Codec.floatRange(0, 1).listOf().comapFlatMap(
                     colorComponentsList -> colorComponentsList.size() == 3 ? DataResult.success(Floats.toArray(colorComponentsList)) : DataResult.error(() -> "Expected 3 color components, got " + colorComponentsList.size() + " instead"),
                     Floats::asList
-            ).fieldOf("colorComponents").forGetter(secretWaypoint -> secretWaypoint.colorComponents),
-            Codec.FLOAT.fieldOf("alpha").forGetter(secretWaypoint -> secretWaypoint.alpha),
+            ).fieldOf("colorComponents").forGetter(waypoint -> waypoint.colorComponents),
+            Codec.FLOAT.fieldOf("alpha").forGetter(waypoint -> waypoint.alpha),
             Codec.BOOL.fieldOf("shouldRender").forGetter(Waypoint::isEnabled)
     ).apply(instance, NamedWaypoint::new));
     public static final Codec<NamedWaypoint> SKYTILS_CODEC = RecordCodecBuilder.create(instance -> instance.group(

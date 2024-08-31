@@ -24,18 +24,16 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
@@ -43,6 +41,7 @@ public class Waypoints {
     public static final Logger LOGGER = LoggerFactory.getLogger(Waypoints.class);
     private static final Codec<List<WaypointGroup>> CODEC = WaypointGroup.CODEC.listOf();
     private static final Codec<List<WaypointGroup>> SKYTILS_CODEC = WaypointGroup.SKYTILS_CODEC.listOf();
+    private static final String PREFIX = "[Skyblocker-Waypoint-Data-V1]";
     protected static final SystemToast.Type WAYPOINTS_TOAST_TYPE = new SystemToast.Type();
 
     private static final Path waypointsFile = FabricLoader.getInstance().getConfigDir().resolve(SkyblockerMod.NAMESPACE).resolve("waypoints.json");
@@ -59,11 +58,43 @@ public class Waypoints {
     public static void loadWaypoints() {
         waypoints.clear();
         try (BufferedReader reader = Files.newBufferedReader(waypointsFile)) {
-            List<WaypointGroup> waypoints = CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
-            waypoints.forEach(waypointGroup -> Waypoints.waypoints.put(waypointGroup.island(), waypointGroup));
+            List<WaypointGroup> waypointGroups = CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
+            waypointGroups.forEach(waypointGroup -> waypoints.put(waypointGroup.island(), waypointGroup));
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading waypoints", e);
         }
+    }
+
+    public static void saveWaypoints(MinecraftClient client) {
+        try (BufferedWriter writer = Files.newBufferedWriter(waypointsFile)) {
+            JsonElement waypointsJson = CODEC.encodeStart(JsonOps.INSTANCE, List.copyOf(waypoints.values())).resultOrPartial(LOGGER::error).orElseThrow();
+            SkyblockerMod.GSON.toJson(waypointsJson, writer);
+            LOGGER.info("[Skyblocker Waypoints] Saved waypoints");
+        } catch (Exception e) {
+            LOGGER.error("[Skyblocker Waypoints] Encountered exception while saving waypoints", e);
+        }
+    }
+
+    public static List<WaypointGroup> fromSkyblocker(String waypointsString) {
+        if (waypointsString.startsWith(PREFIX)) {
+            try (GZIPInputStream reader = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(waypointsString.replace(PREFIX, ""))))) {
+                return CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(new String(reader.readAllBytes()), JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
+            } catch (IOException e) {
+                LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skyblocker waypoint data", e);
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    public static String toSkyblocker(List<WaypointGroup> waypointGroups) {
+        String waypointsJson = SkyblockerMod.GSON.toJson(CODEC.encodeStart(JsonOps.INSTANCE, waypointGroups).resultOrPartial(LOGGER::error).orElseThrow());
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (GZIPOutputStream gzip = new GZIPOutputStream(output)){
+            gzip.write(waypointsJson.getBytes());
+        } catch (IOException e) {
+            LOGGER.error("[Skyblocker Waypoints] Encountered exception while serializing Skyblocker waypoint data", e);
+        }
+        return PREFIX + new String(Base64.getEncoder().encode(output.toByteArray()));
     }
 
     public static List<WaypointGroup> fromSkytils(String waypointsString, String defaultIsland) {
@@ -118,24 +149,19 @@ public class Waypoints {
         return WaypointGroup.COLEWEIGHT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(waypointsJson)).resultOrPartial(LOGGER::error).orElseThrow().withIsland(defaultIsland);
     }
 
-    public static void saveWaypoints(MinecraftClient client) {
-        try (BufferedWriter writer = Files.newBufferedWriter(waypointsFile)) {
-            JsonElement waypointsJson = CODEC.encodeStart(JsonOps.INSTANCE, List.copyOf(waypoints.values())).resultOrPartial(LOGGER::error).orElseThrow();
-            SkyblockerMod.GSON.toJson(waypointsJson, writer);
-            LOGGER.info("[Skyblocker Waypoints] Saved waypoints");
-        } catch (Exception e) {
-            LOGGER.error("[Skyblocker Waypoints] Encountered exception while saving waypoints", e);
-        }
-    }
-
     public static Multimap<String, WaypointGroup> waypointsDeepCopy() {
         return waypoints.values().stream().map(WaypointGroup::deepCopy).collect(Multimaps.toMultimap(WaypointGroup::island, Function.identity(), () -> MultimapBuilder.hashKeys().arrayListValues().build()));
     }
 
     public static void render(WorldRenderContext context) {
         if (SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
-            Collection<WaypointGroup> groups = waypoints.get(Utils.getLocationRaw());
-            for (WaypointGroup group : groups) {
+            for (WaypointGroup group : waypoints.get(Utils.getLocationRaw())) {
+                if (group != null) {
+                    group.render(context);
+                }
+            }
+            if (Utils.getLocationRaw().isEmpty()) return;
+            for (WaypointGroup group : waypoints.get("")) {
                 if (group != null) {
                     group.render(context);
                 }
