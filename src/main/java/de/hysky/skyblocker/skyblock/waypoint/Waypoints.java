@@ -12,7 +12,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import de.hysky.skyblocker.utils.waypoint.WaypointCategory;
+import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -41,12 +41,12 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class Waypoints {
     public static final Logger LOGGER = LoggerFactory.getLogger(Waypoints.class);
-    private static final Codec<List<WaypointCategory>> CODEC = WaypointCategory.CODEC.listOf();
-    private static final Codec<List<WaypointCategory>> SKYTILS_CODEC = WaypointCategory.SKYTILS_CODEC.listOf();
+    private static final Codec<List<WaypointGroup>> CODEC = WaypointGroup.CODEC.listOf();
+    private static final Codec<List<WaypointGroup>> SKYTILS_CODEC = WaypointGroup.SKYTILS_CODEC.listOf();
     protected static final SystemToast.Type WAYPOINTS_TOAST_TYPE = new SystemToast.Type();
 
     private static final Path waypointsFile = FabricLoader.getInstance().getConfigDir().resolve(SkyblockerMod.NAMESPACE).resolve("waypoints.json");
-    protected static final Multimap<String, WaypointCategory> waypoints = MultimapBuilder.hashKeys().arrayListValues().build();
+    protected static final Multimap<String, WaypointGroup> waypoints = MultimapBuilder.hashKeys().arrayListValues().build();
 
     @Init
     public static void init() {
@@ -59,14 +59,14 @@ public class Waypoints {
     public static void loadWaypoints() {
         waypoints.clear();
         try (BufferedReader reader = Files.newBufferedReader(waypointsFile)) {
-            List<WaypointCategory> waypoints = CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
-            waypoints.forEach(waypointCategory -> Waypoints.waypoints.put(waypointCategory.island(), waypointCategory));
+            List<WaypointGroup> waypoints = CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
+            waypoints.forEach(waypointGroup -> Waypoints.waypoints.put(waypointGroup.island(), waypointGroup));
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading waypoints", e);
         }
     }
 
-    public static List<WaypointCategory> fromSkytils(String waypointsString, String defaultIsland) {
+    public static List<WaypointGroup> fromSkytils(String waypointsString, String defaultIsland) {
         try {
             if (waypointsString.startsWith("<Skytils-Waypoint-Data>(V")) {
                 int version = Integer.parseInt(waypointsString.substring(25, waypointsString.indexOf(')')));
@@ -87,35 +87,35 @@ public class Waypoints {
         return Collections.emptyList();
     }
 
-    public static List<WaypointCategory> fromSkytilsJson(String waypointCategoriesString, String defaultIsland) {
-        JsonArray waypointCategoriesJson;
+    public static List<WaypointGroup> fromSkytilsJson(String waypointGroupsString, String defaultIsland) {
+        JsonArray waypointGroupsJson;
         try {
-            waypointCategoriesJson = SkyblockerMod.GSON.fromJson(waypointCategoriesString, JsonObject.class).getAsJsonArray("categories");
+            waypointGroupsJson = SkyblockerMod.GSON.fromJson(waypointGroupsString, JsonObject.class).getAsJsonArray("categories");
         } catch (JsonSyntaxException e) {
-            // Handle the case where there is only a single json list of waypoints and no category data.
-            JsonObject waypointCategoryJson = new JsonObject();
-            waypointCategoryJson.addProperty("name", "New Category");
-            waypointCategoryJson.addProperty("island", defaultIsland);
-            waypointCategoryJson.add("waypoints", SkyblockerMod.GSON.fromJson(waypointCategoriesString, JsonArray.class));
-            waypointCategoriesJson = new JsonArray();
-            waypointCategoriesJson.add(waypointCategoryJson);
+            // Handle the case where there is only a single json list of waypoints and no group data.
+            JsonObject waypointGroupJson = new JsonObject();
+            waypointGroupJson.addProperty("name", "New Group");
+            waypointGroupJson.addProperty("island", defaultIsland);
+            waypointGroupJson.add("waypoints", SkyblockerMod.GSON.fromJson(waypointGroupsString, JsonArray.class));
+            waypointGroupsJson = new JsonArray();
+            waypointGroupsJson.add(waypointGroupJson);
         }
-        List<WaypointCategory> waypointCategories = SKYTILS_CODEC.parse(JsonOps.INSTANCE, waypointCategoriesJson).resultOrPartial(LOGGER::error).orElseThrow();
-        return waypointCategories.stream().map(waypointCategory -> Location.from(waypointCategory.island()) == Location.UNKNOWN ? waypointCategory.withIsland(defaultIsland) : waypointCategory).toList();
+        List<WaypointGroup> waypointGroups = SKYTILS_CODEC.parse(JsonOps.INSTANCE, waypointGroupsJson).resultOrPartial(LOGGER::error).orElseThrow();
+        return waypointGroups.stream().map(waypointGroup -> Location.from(waypointGroup.island()) == Location.UNKNOWN ? waypointGroup.withIsland(defaultIsland) : waypointGroup).toList();
     }
 
-    public static String toSkytilsBase64(List<WaypointCategory> waypointCategories) {
-        return Base64.getEncoder().encodeToString(toSkytilsJson(waypointCategories).getBytes());
+    public static String toSkytilsBase64(List<WaypointGroup> waypointGroups) {
+        return Base64.getEncoder().encodeToString(toSkytilsJson(waypointGroups).getBytes());
     }
 
-    public static String toSkytilsJson(List<WaypointCategory> waypointCategories) {
-        JsonObject waypointCategoriesJson = new JsonObject();
-        waypointCategoriesJson.add("categories", SKYTILS_CODEC.encodeStart(JsonOps.INSTANCE, waypointCategories).resultOrPartial(LOGGER::error).orElseThrow());
-        return SkyblockerMod.GSON_COMPACT.toJson(waypointCategoriesJson);
+    public static String toSkytilsJson(List<WaypointGroup> waypointGroups) {
+        JsonObject waypointGroupsJson = new JsonObject();
+        waypointGroupsJson.add("categories", SKYTILS_CODEC.encodeStart(JsonOps.INSTANCE, waypointGroups).resultOrPartial(LOGGER::error).orElseThrow());
+        return SkyblockerMod.GSON_COMPACT.toJson(waypointGroupsJson);
     }
 
-    public static WaypointCategory fromColeweightJson(String waypointsJson, String defaultIsland) {
-        return WaypointCategory.COLEWEIGHT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(waypointsJson)).resultOrPartial(LOGGER::error).orElseThrow().withIsland(defaultIsland);
+    public static WaypointGroup fromColeweightJson(String waypointsJson, String defaultIsland) {
+        return WaypointGroup.COLEWEIGHT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(waypointsJson)).resultOrPartial(LOGGER::error).orElseThrow().withIsland(defaultIsland);
     }
 
     public static void saveWaypoints(MinecraftClient client) {
@@ -128,16 +128,16 @@ public class Waypoints {
         }
     }
 
-    public static Multimap<String, WaypointCategory> waypointsDeepCopy() {
-        return waypoints.values().stream().map(WaypointCategory::deepCopy).collect(Multimaps.toMultimap(WaypointCategory::island, Function.identity(), () -> MultimapBuilder.hashKeys().arrayListValues().build()));
+    public static Multimap<String, WaypointGroup> waypointsDeepCopy() {
+        return waypoints.values().stream().map(WaypointGroup::deepCopy).collect(Multimaps.toMultimap(WaypointGroup::island, Function.identity(), () -> MultimapBuilder.hashKeys().arrayListValues().build()));
     }
 
     public static void render(WorldRenderContext context) {
         if (SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
-            Collection<WaypointCategory> categories = waypoints.get(Utils.getLocationRaw());
-            for (WaypointCategory category : categories) {
-                if (category != null) {
-                    category.render(context);
+            Collection<WaypointGroup> groups = waypoints.get(Utils.getLocationRaw());
+            for (WaypointGroup group : groups) {
+                if (group != null) {
+                    group.render(context);
                 }
             }
         }

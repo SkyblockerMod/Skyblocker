@@ -12,20 +12,20 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class WaypointCategory {
-    public static final Codec<WaypointCategory> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("name").forGetter(WaypointCategory::name),
-            Codec.STRING.fieldOf("island").forGetter(WaypointCategory::island),
-            NamedWaypoint.CODEC.listOf().fieldOf("waypoints").forGetter(WaypointCategory::waypoints),
-            Codec.BOOL.lenientOptionalFieldOf("ordered", false).forGetter(WaypointCategory::ordered),
-            Codec.INT.lenientOptionalFieldOf("currentIndex", 0).forGetter(category -> category.currentIndex)
-    ).apply(instance, WaypointCategory::new));
-    public static final Codec<WaypointCategory> SKYTILS_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("name").forGetter(WaypointCategory::name),
-            Codec.STRING.fieldOf("island").forGetter(WaypointCategory::island),
-            NamedWaypoint.SKYTILS_CODEC.listOf().fieldOf("waypoints").forGetter(WaypointCategory::waypoints)
-    ).apply(instance, WaypointCategory::new));
-    public static final Codec<WaypointCategory> COLEWEIGHT_CODEC = NamedWaypoint.COLEWEIGHT_CODEC.listOf().xmap(coleWeightWaypoints -> new WaypointCategory("Coleweight", "", coleWeightWaypoints, true), WaypointCategory::waypoints);
+public class WaypointGroup {
+    public static final Codec<WaypointGroup> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("name").forGetter(WaypointGroup::name),
+            Codec.STRING.fieldOf("island").forGetter(WaypointGroup::island),
+            NamedWaypoint.CODEC.listOf().fieldOf("waypoints").forGetter(WaypointGroup::waypoints),
+            Codec.BOOL.lenientOptionalFieldOf("ordered", false).forGetter(WaypointGroup::ordered),
+            Codec.INT.lenientOptionalFieldOf("currentIndex", 0).forGetter(group -> group.currentIndex)
+    ).apply(instance, WaypointGroup::new));
+    public static final Codec<WaypointGroup> SKYTILS_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("name").forGetter(WaypointGroup::name),
+            Codec.STRING.fieldOf("island").forGetter(WaypointGroup::island),
+            NamedWaypoint.SKYTILS_CODEC.listOf().fieldOf("waypoints").forGetter(WaypointGroup::waypoints)
+    ).apply(instance, WaypointGroup::new));
+    public static final Codec<WaypointGroup> COLEWEIGHT_CODEC = NamedWaypoint.COLEWEIGHT_CODEC.listOf().xmap(coleWeightWaypoints -> new WaypointGroup("Coleweight", "", coleWeightWaypoints, true), WaypointGroup::waypoints);
 
     private final String name;
     private final String island;
@@ -33,15 +33,15 @@ public class WaypointCategory {
     private final boolean ordered;
     protected int currentIndex;
 
-    public WaypointCategory(String name, String island, List<NamedWaypoint> waypoints) {
+    public WaypointGroup(String name, String island, List<NamedWaypoint> waypoints) {
         this(name, island, waypoints, false);
     }
 
-    public WaypointCategory(String name, String island, List<NamedWaypoint> waypoints, boolean ordered) {
+    public WaypointGroup(String name, String island, List<NamedWaypoint> waypoints, boolean ordered) {
         this(name, island, waypoints, ordered, 0);
     }
 
-    public WaypointCategory(String name, String island, List<NamedWaypoint> waypoints, boolean ordered, int currentIndex) {
+    public WaypointGroup(String name, String island, List<NamedWaypoint> waypoints, boolean ordered, int currentIndex) {
         this.name = name;
         this.island = island;
         // Set ordered first since convertWaypoint depends on it
@@ -66,27 +66,27 @@ public class WaypointCategory {
         return ordered;
     }
 
-    public WaypointCategory withName(String name) {
-        return new WaypointCategory(name, island, waypoints, ordered, currentIndex);
+    public WaypointGroup withName(String name) {
+        return new WaypointGroup(name, island, waypoints, ordered, currentIndex);
     }
 
-    public WaypointCategory withIsland(String island) {
-        return new WaypointCategory(name, island, waypoints, ordered, currentIndex);
+    public WaypointGroup withIsland(String island) {
+        return new WaypointGroup(name, island, waypoints, ordered, currentIndex);
     }
 
-    public WaypointCategory withOrdered(boolean ordered) {
-        return new WaypointCategory(name, island, waypoints, ordered, currentIndex);
+    public WaypointGroup withOrdered(boolean ordered) {
+        return new WaypointGroup(name, island, waypoints, ordered, currentIndex);
     }
 
-    public WaypointCategory filterWaypoints(Predicate<NamedWaypoint> predicate) {
-        return new WaypointCategory(name, island, waypoints.stream().filter(predicate).toList(), ordered, currentIndex);
+    public WaypointGroup filterWaypoints(Predicate<NamedWaypoint> predicate) {
+        return new WaypointGroup(name, island, waypoints.stream().filter(predicate).toList(), ordered, currentIndex);
     }
 
     /**
-     * Returns a deep copy of this {@link WaypointCategory} with a mutable waypoints list for editing.
+     * Returns a deep copy of this {@link WaypointGroup} with a mutable waypoints list for editing.
      */
-    public WaypointCategory deepCopy() {
-        return new WaypointCategory(name, island, waypoints.stream().map(NamedWaypoint::copy).collect(Collectors.toList()), ordered, currentIndex);
+    public WaypointGroup deepCopy() {
+        return new WaypointGroup(name, island, waypoints.stream().map(NamedWaypoint::copy).collect(Collectors.toList()), ordered, currentIndex);
     }
 
     public NamedWaypoint createWaypoint(BlockPos pos) {
@@ -95,7 +95,7 @@ public class WaypointCategory {
     }
 
     /**
-     * Converts the given waypoint to the correct type based on whether this category is ordered or not.
+     * Converts the given waypoint to the correct type based on whether this group is ordered or not.
      */
     public NamedWaypoint convertWaypoint(NamedWaypoint waypoint) {
         if (ordered) {
@@ -114,15 +114,15 @@ public class WaypointCategory {
                 }
             }
 
-            int categoryPreviousIndex = (currentIndex - 1 + waypoints.size()) % waypoints.size();
-            int categoryNextIndex = (currentIndex + 1) % waypoints.size();
+            int previousIndex = (currentIndex - 1 + waypoints.size()) % waypoints.size();
+            int nextIndex = (currentIndex + 1) % waypoints.size();
             for (int i = 0; i < waypoints.size(); i++) {
                 NamedWaypoint waypoint = waypoints.get(i);
                 if (waypoint instanceof OrderedNamedWaypoint orderedNamedWaypoint) {
                     orderedNamedWaypoint.index = i;
-                    if (i == categoryPreviousIndex) {
+                    if (i == previousIndex) {
                         orderedNamedWaypoint.relativeIndex = OrderedWaypoints.RelativeIndex.PREVIOUS;
-                    } else if (i == categoryNextIndex) {
+                    } else if (i == nextIndex) {
                         orderedNamedWaypoint.relativeIndex = OrderedWaypoints.RelativeIndex.NEXT;
                     } else if (i == currentIndex) {
                         orderedNamedWaypoint.relativeIndex = OrderedWaypoints.RelativeIndex.CURRENT;

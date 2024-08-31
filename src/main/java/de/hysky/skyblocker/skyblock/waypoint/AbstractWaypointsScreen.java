@@ -5,7 +5,7 @@ import com.google.common.collect.MultimapBuilder;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
-import de.hysky.skyblocker.utils.waypoint.WaypointCategory;
+import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
     protected final T parent;
-    protected final Multimap<String, WaypointCategory> waypoints;
+    protected final Multimap<String, WaypointGroup> waypoints;
     protected String island;
     protected WaypointsListWidget waypointsListWidget;
     protected DropdownWidget<Location> islandWidget;
@@ -22,11 +22,11 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
         this(title, parent, MultimapBuilder.hashKeys().arrayListValues().build());
     }
 
-    public AbstractWaypointsScreen(Text title, T parent, Multimap<String, WaypointCategory> waypoints) {
+    public AbstractWaypointsScreen(Text title, T parent, Multimap<String, WaypointGroup> waypoints) {
         this(title, parent, waypoints, Utils.getLocationRaw());
     }
 
-    public AbstractWaypointsScreen(Text title, T parent, Multimap<String, WaypointCategory> waypoints, String island) {
+    public AbstractWaypointsScreen(Text title, T parent, Multimap<String, WaypointGroup> waypoints, String island) {
         super(title);
         this.parent = parent;
         this.waypoints = waypoints;
