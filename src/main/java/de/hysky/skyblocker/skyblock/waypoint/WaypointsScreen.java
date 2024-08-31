@@ -45,12 +45,12 @@ public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
 
     @Override
     protected boolean isEnabled(NamedWaypoint waypoint) {
-        return waypoint.shouldRender();
+        return waypoint.isEnabled();
     }
 
     @Override
     protected void enabledChanged(NamedWaypoint waypoint, boolean enabled) {
-        waypoint.setShouldRender(enabled);
+        waypoint.setEnabled(enabled);
     }
 
     private void saveWaypoints() {

@@ -27,7 +27,7 @@ public class NamedWaypoint extends Waypoint {
                     Floats::asList
             ).fieldOf("colorComponents").forGetter(secretWaypoint -> secretWaypoint.colorComponents),
             Codec.FLOAT.fieldOf("alpha").forGetter(secretWaypoint -> secretWaypoint.alpha),
-            Codec.BOOL.fieldOf("shouldRender").forGetter(Waypoint::shouldRender)
+            Codec.BOOL.fieldOf("shouldRender").forGetter(Waypoint::isEnabled)
     ).apply(instance, NamedWaypoint::new));
     public static final Codec<NamedWaypoint> SKYTILS_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("x").forGetter(waypoint -> waypoint.pos.getX()),
@@ -35,33 +35,37 @@ public class NamedWaypoint extends Waypoint {
             Codec.INT.fieldOf("z").forGetter(waypoint -> waypoint.pos.getZ()),
             Codec.either(Codec.STRING, Codec.INT).xmap(either -> either.map(str -> str, Object::toString), Either::left).fieldOf("name").forGetter(waypoint -> waypoint.name.getString()),
             Codec.INT.optionalFieldOf("color", ColorHelper.getArgb(128, 0, 255, 0)).forGetter(waypoint -> (int) (waypoint.alpha * 255) << 24 | (int) (waypoint.colorComponents[0] * 255) << 16 | (int) (waypoint.colorComponents[1] * 255) << 8 | (int) (waypoint.colorComponents[2] * 255)),
-            Codec.BOOL.fieldOf("enabled").forGetter(Waypoint::shouldRender)
+            Codec.BOOL.fieldOf("enabled").forGetter(Waypoint::isEnabled)
     ).apply(instance, NamedWaypoint::fromSkytils));
     public final Text name;
     public final Vec3d centerPos;
+
+    public NamedWaypoint(NamedWaypoint namedWaypoint) {
+        this(namedWaypoint.pos, namedWaypoint.name, namedWaypoint.typeSupplier, namedWaypoint.colorComponents, namedWaypoint.alpha, namedWaypoint.isEnabled());
+    }
 
     public NamedWaypoint(BlockPos pos, String name, float[] colorComponents) {
         this(pos, name, colorComponents, true);
     }
 
-    public NamedWaypoint(BlockPos pos, String name, float[] colorComponents, boolean shouldRender) {
-        this(pos, name, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, shouldRender);
+    public NamedWaypoint(BlockPos pos, String name, float[] colorComponents, boolean enabled) {
+        this(pos, name, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, enabled);
     }
 
-    public NamedWaypoint(BlockPos pos, String name, float[] colorComponents, float alpha, boolean shouldRender) {
-        this(pos, Text.of(name), colorComponents, alpha, shouldRender);
+    public NamedWaypoint(BlockPos pos, String name, float[] colorComponents, float alpha, boolean enabled) {
+        this(pos, Text.of(name), colorComponents, alpha, enabled);
     }
 
-    public NamedWaypoint(BlockPos pos, Text name, float[] colorComponents, float alpha, boolean shouldRender) {
-        this(pos, name, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, colorComponents, alpha, shouldRender);
+    public NamedWaypoint(BlockPos pos, Text name, float[] colorComponents, float alpha, boolean enabled) {
+        this(pos, name, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, colorComponents, alpha, enabled);
     }
 
     public NamedWaypoint(BlockPos pos, Text name, Supplier<Type> typeSupplier, float[] colorComponents) {
         this(pos, name, typeSupplier, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, true);
     }
 
-    public NamedWaypoint(BlockPos pos, Text name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean shouldRender) {
-        super(pos, typeSupplier, colorComponents, alpha, DEFAULT_LINE_WIDTH, true, shouldRender);
+    public NamedWaypoint(BlockPos pos, Text name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean enabled) {
+        super(pos, typeSupplier, colorComponents, alpha, DEFAULT_LINE_WIDTH, true, enabled);
         this.name = name;
         this.centerPos = pos.toCenterPos();
     }
@@ -74,28 +78,31 @@ public class NamedWaypoint extends Waypoint {
         return new NamedWaypoint(new BlockPos(x, y, z), name, ColorUtils.getFloatComponents(color), alpha, enabled);
     }
 
+    /**
+     * Returns a copy of this waypoint. Note that this differs from {@link #NamedWaypoint(NamedWaypoint) the copy constructor} in that this should be overridden by subclasses and return a new instance of the runtime type.
+     */
     public NamedWaypoint copy() {
-        return new NamedWaypoint(pos, name, typeSupplier, getColorComponents(), alpha, shouldRender());
+        return new NamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled());
     }
 
     @Override
     public NamedWaypoint withX(int x) {
-        return new NamedWaypoint(new BlockPos(x, pos.getY(), pos.getZ()), name, typeSupplier, getColorComponents(), alpha, shouldRender());
+        return new NamedWaypoint(new BlockPos(x, pos.getY(), pos.getZ()), name, typeSupplier, colorComponents, alpha, isEnabled());
     }
 
     @Override
     public NamedWaypoint withY(int y) {
-        return new NamedWaypoint(pos.withY(y), name, typeSupplier, getColorComponents(), alpha, shouldRender());
+        return new NamedWaypoint(pos.withY(y), name, typeSupplier, colorComponents, alpha, isEnabled());
     }
 
     @Override
     public NamedWaypoint withZ(int z) {
-        return new NamedWaypoint(new BlockPos(pos.getX(), pos.getY(), z), name, typeSupplier, getColorComponents(), alpha, shouldRender());
+        return new NamedWaypoint(new BlockPos(pos.getX(), pos.getY(), z), name, typeSupplier, colorComponents, alpha, isEnabled());
     }
 
     @Override
     public NamedWaypoint withColor(float[] colorComponents, float alpha) {
-        return new NamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, shouldRender());
+        return new NamedWaypoint(pos, name, typeSupplier, colorComponents, alpha, isEnabled());
     }
 
     public Text getName() {
@@ -103,7 +110,7 @@ public class NamedWaypoint extends Waypoint {
     }
 
     public NamedWaypoint withName(String name) {
-        return new NamedWaypoint(pos, Text.literal(name), typeSupplier, getColorComponents(), alpha, shouldRender());
+        return new NamedWaypoint(pos, Text.literal(name), typeSupplier, colorComponents, alpha, isEnabled());
     }
 
     protected boolean shouldRenderName() {

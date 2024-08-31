@@ -105,6 +105,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         private final List<ClickableWidget> children;
         private final CheckboxWidget enabled;
         private final TextFieldWidget nameField;
+        private final CheckboxWidget ordered;
         private final ButtonWidget buttonNewWaypoint;
         private final ButtonWidget buttonDelete;
 
@@ -118,6 +119,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             nameField = new TextFieldWidget(client.textRenderer, 70, 20, Text.literal("Name"));
             nameField.setText(category.name());
             nameField.setChangedListener(this::updateName);
+            ordered = CheckboxWidget.builder(Text.literal("Ordered"), client.textRenderer).checked(category.ordered()).callback((checkbox, checked) -> updateOrdered(checked)).build();
             buttonNewWaypoint = ButtonWidget.builder(Text.translatable("skyblocker.waypoints.new"), buttonNewWaypoint -> {
                 WaypointEntry waypointEntry = new WaypointEntry(this);
                 int entryIndex;
@@ -140,7 +142,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
                 WaypointsListWidget.this.children().remove(this);
                 waypoints.remove(category);
             }).width(38).build();
-            children = List.of(enabled, nameField, buttonNewWaypoint, buttonDelete);
+            children = List.of(enabled, nameField, ordered, buttonNewWaypoint, buttonDelete);
         }
 
         @Override
@@ -165,10 +167,19 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             }
         }
 
+        private void updateOrdered(boolean ordered) {
+            int index = waypoints.indexOf(category);
+            category = category.withOrdered(ordered);
+            if (index >= 0) {
+                waypoints.set(index, category);
+            }
+        }
+
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             enabled.setPosition(x, y + 1);
             nameField.setPosition(x + 22, y);
+            ordered.setPosition(x + entryWidth - 190, y + 1);
             buttonNewWaypoint.setPosition(x + entryWidth - 115, y);
             buttonDelete.setPosition(x + entryWidth - 38, y);
             for (ClickableWidget child : children) {
@@ -190,7 +201,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         private final ButtonWidget buttonDelete;
 
         public WaypointEntry(WaypointCategoryEntry category) {
-            this(category, new NamedWaypoint(getDefaultPos(), "New Waypoint", new float[]{0f, 1f, 0f}));
+            this(category, category.category.createWaypoint(getDefaultPos()));
         }
 
         public WaypointEntry(WaypointCategoryEntry category, NamedWaypoint waypoint) {
@@ -213,7 +224,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             zField.setTextPredicate(this::checkInt);
             zField.setChangedListener(this::updateZ);
             colorField = new TextFieldWidget(client.textRenderer, 56, 20, Text.literal("Color"));
-            colorField.setText(String.format("%02X%02X%02X%02X", (int) (waypoint.alpha * 255), (int) (waypoint.getColorComponents()[0] * 255), (int) (waypoint.getColorComponents()[1] * 255), (int) (waypoint.getColorComponents()[2] * 255)));
+            colorField.setText(String.format("%02X%02X%02X%02X", (int) (waypoint.alpha * 255), (int) (waypoint.colorComponents[0] * 255), (int) (waypoint.colorComponents[1] * 255), (int) (waypoint.colorComponents[2] * 255)));
             colorField.setChangedListener(this::updateColor);
             buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.deleteButton"), button -> {
                 category.category.waypoints().remove(waypoint);
@@ -282,7 +293,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
                 int colorInt = parseEmptiableInt(colorString, 16);
                 float[] colorComponents = {((colorInt & 0x00FF0000) >> 16) / 255f, ((colorInt & 0x0000FF00) >> 8) / 255f, (colorInt & 0x000000FF) / 255f};
                 float alpha = ((colorInt & 0xFF000000) >>> 24) / 255f;
-                if (Arrays.equals(waypoint.getColorComponents(), colorComponents) && waypoint.alpha == alpha) return;
+                if (Arrays.equals(waypoint.colorComponents, colorComponents) && waypoint.alpha == alpha) return;
                 waypoint = waypoint.withColor(colorComponents, alpha);
                 if (index >= 0) {
                     category.category.waypoints().set(index, waypoint);

@@ -18,11 +18,11 @@ public class Waypoint implements Renderable {
     public final BlockPos pos;
     final Box box;
     final Supplier<Type> typeSupplier;
-    protected final float[] colorComponents;
+    public final float[] colorComponents;
     public final float alpha;
     public final float lineWidth;
     public final boolean throughWalls;
-    private boolean shouldRender;
+    private boolean enabled;
 
     public Waypoint(BlockPos pos, Type type, float[] colorComponents) {
         this(pos, type, colorComponents, DEFAULT_HIGHLIGHT_ALPHA);
@@ -48,7 +48,7 @@ public class Waypoint implements Renderable {
         this(pos, typeSupplier, colorComponents, alpha, lineWidth, throughWalls, true);
     }
 
-    public Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls, boolean shouldRender) {
+    public Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls, boolean enabled) {
         this.pos = pos;
         this.box = new Box(pos);
         this.typeSupplier = typeSupplier;
@@ -56,76 +56,80 @@ public class Waypoint implements Renderable {
         this.alpha = alpha;
         this.lineWidth = lineWidth;
         this.throughWalls = throughWalls;
-        this.shouldRender = shouldRender;
+        this.enabled = enabled;
     }
 
     public Waypoint withX(int x) {
-        return new Waypoint(new BlockPos(x, pos.getY(), pos.getZ()), typeSupplier, getColorComponents(), alpha, lineWidth, throughWalls, shouldRender());
+        return new Waypoint(new BlockPos(x, pos.getY(), pos.getZ()), typeSupplier, colorComponents, alpha, lineWidth, throughWalls, enabled);
     }
 
     public Waypoint withY(int y) {
-        return new Waypoint(pos.withY(y), typeSupplier, getColorComponents(), alpha, lineWidth, throughWalls, shouldRender());
+        return new Waypoint(pos.withY(y), typeSupplier, colorComponents, alpha, lineWidth, throughWalls, enabled);
     }
 
     public Waypoint withZ(int z) {
-        return new Waypoint(new BlockPos(pos.getX(), pos.getY(), z), typeSupplier, getColorComponents(), alpha, lineWidth, throughWalls, shouldRender());
+        return new Waypoint(new BlockPos(pos.getX(), pos.getY(), z), typeSupplier, colorComponents, alpha, lineWidth, throughWalls, enabled);
     }
 
     public Waypoint withColor(float[] colorComponents, float alpha) {
-        return new Waypoint(pos, typeSupplier, colorComponents, alpha, lineWidth, throughWalls, shouldRender());
+        return new Waypoint(pos, typeSupplier, colorComponents, alpha, lineWidth, throughWalls, enabled);
     }
 
     public boolean shouldRender() {
-        return shouldRender;
+        return enabled;
     }
 
     public void setFound() {
-        this.shouldRender = false;
+        this.enabled = false;
     }
 
     public void setMissing() {
-        this.shouldRender = true;
+        this.enabled = true;
     }
 
     public void toggle() {
-        this.shouldRender = !this.shouldRender;
+        this.enabled = !this.enabled;
     }
 
-    public void setShouldRender(boolean shouldRender) {
-        this.shouldRender = shouldRender;
+    public final boolean isEnabled() {
+        return enabled;
     }
 
-    public float[] getColorComponents() {
+    public final void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public float[] getRenderColorComponents() {
         return colorComponents;
     }
 
     @Override
     public void render(WorldRenderContext context) {
         switch (typeSupplier.get()) {
-            case WAYPOINT -> RenderHelper.renderFilledWithBeaconBeam(context, pos, getColorComponents(), alpha, throughWalls);
+            case WAYPOINT -> RenderHelper.renderFilledWithBeaconBeam(context, pos, getRenderColorComponents(), alpha, throughWalls);
             case OUTLINED_WAYPOINT -> {
-                float[] colorComponents = getColorComponents();
+                float[] colorComponents = getRenderColorComponents();
                 RenderHelper.renderFilledWithBeaconBeam(context, pos, colorComponents, alpha, throughWalls);
                 RenderHelper.renderOutline(context, box, colorComponents, lineWidth, throughWalls);
             }
-            case HIGHLIGHT -> RenderHelper.renderFilled(context, pos, getColorComponents(), alpha, throughWalls);
+            case HIGHLIGHT -> RenderHelper.renderFilled(context, pos, getRenderColorComponents(), alpha, throughWalls);
             case OUTLINED_HIGHLIGHT -> {
-                float[] colorComponents = getColorComponents();
+                float[] colorComponents = getRenderColorComponents();
                 RenderHelper.renderFilled(context, pos, colorComponents, alpha, throughWalls);
                 RenderHelper.renderOutline(context, box, colorComponents, lineWidth, throughWalls);
             }
-            case OUTLINE -> RenderHelper.renderOutline(context, box, getColorComponents(), lineWidth, throughWalls);
+            case OUTLINE -> RenderHelper.renderOutline(context, box, getRenderColorComponents(), lineWidth, throughWalls);
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pos, typeSupplier.get(), Arrays.hashCode(colorComponents), alpha, lineWidth, throughWalls, shouldRender);
+        return Objects.hash(pos, typeSupplier.get(), Arrays.hashCode(colorComponents), alpha, lineWidth, throughWalls, enabled);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj) || obj instanceof Waypoint other && pos.equals(other.pos) && typeSupplier.get() == other.typeSupplier.get() && Arrays.equals(colorComponents, other.colorComponents) && alpha == other.alpha && lineWidth == other.lineWidth && throughWalls == other.throughWalls && shouldRender == other.shouldRender;
+        return super.equals(obj) || obj instanceof Waypoint other && pos.equals(other.pos) && typeSupplier.get() == other.typeSupplier.get() && Arrays.equals(colorComponents, other.colorComponents) && alpha == other.alpha && lineWidth == other.lineWidth && throughWalls == other.throughWalls && enabled == other.enabled;
     }
 
     public enum Type implements StringIdentifiable {
