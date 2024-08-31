@@ -957,7 +957,7 @@
   "skyblocker.waypoints.importWaypointsSkytils": "Import Waypoints (Skytils)",
   "skyblocker.waypoints.importWaypointsSkytils.tooltip": "Import Waypoints from Clipboard (Skytils Format)",
   "skyblocker.waypoints.importWaypointsSnoopy": "Import Waypoints (Snoopy)",
-  "skyblocker.waypoints.importWaypointsSnoopy.tooltip": "Import Waypoints from Clipboard (Snoopy Format) (Coming Soon)",
+  "skyblocker.waypoints.importWaypointsSnoopy.tooltip": "Import Waypoints from Clipboard (Snoopy Format)",
   "skyblocker.waypoints.exportWaypointsSkytils": "Export Waypoints (Skytils)",
   "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Export Waypoints to Clipboard (Skytils Format)",
   "skyblocker.waypoints.importSuccess": "Waypoints Imported",

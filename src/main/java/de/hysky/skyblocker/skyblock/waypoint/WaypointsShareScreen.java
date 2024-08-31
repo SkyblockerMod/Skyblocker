@@ -44,6 +44,16 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
             }
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importWaypointsSkytils.tooltip"))).build());
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.importWaypointsSnoopy"), buttonImport -> {
+            try {
+                WaypointCategory waypointCategory = Waypoints.fromColeweightJson(client.keyboard.getClipboard(), island);
+                selectedWaypoints.addAll(waypointCategory.waypoints());
+                waypoints.put(waypointCategory.island(), waypointCategory);
+                waypointsListWidget.updateEntries();
+                SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.importSuccess"), Text.translatable("skyblocker.waypoints.importSuccessText", waypointCategory.waypoints().size(), 1));
+            } catch (Exception e) {
+                Waypoints.LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Snoopy waypoint data", e);
+                SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.importError"), Text.translatable("skyblocker.waypoints.importErrorText"));
+            }
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importWaypointsSnoopy.tooltip"))).build());
         adder.add(ButtonWidget.builder(ScreenTexts.BACK, buttonBack -> close()).build());
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.exportWaypointsSkytils"), buttonExport -> {
