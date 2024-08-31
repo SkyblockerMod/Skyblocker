@@ -91,7 +91,7 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
         }).tooltip(Tooltip.of(Text.translatable("skyblocker.waypoints.importWaypointsSnoopy.tooltip"))).build());
         adder.add(ButtonWidget.builder(ScreenTexts.DONE, buttonBack -> close()).build());
         gridWidget.refreshPositions();
-        SimplePositioningWidget.setPos(gridWidget, 0, this.height - 64, this.width, 64);
+        SimplePositioningWidget.setPos(gridWidget, 0, this.height - 76, this.width, 64);
         gridWidget.forEachChild(this::addDrawableChild);
     }
 
