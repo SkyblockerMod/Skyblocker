@@ -22,10 +22,10 @@ public class WaypointCategoryTest {
     @Test
     void testCodecEncode() {
         WaypointCategory category = new WaypointCategory("category", "hub", List.of(new NamedWaypoint(BlockPos.ORIGIN, "waypoint", new float[]{0f, 0.5f, 1f}, false), new NamedWaypoint(new BlockPos(-1, 0, 1), "waypoint", new float[]{0f, 0f, 0f}, true)));
-        Object categoryJson = WaypointCategory.CODEC.encodeStart(JsonOps.INSTANCE, category).result().orElseThrow();
-        String expectedJson = "{\"name\":\"category\",\"island\":\"hub\",\"waypoints\":[{\"colorComponents\":[0.0,0.5,1.0],\"alpha\":0.5,\"shouldRender\":false,\"pos\":[0,0,0],\"name\":\"waypoint\"},{\"colorComponents\":[0.0,0.0,0.0],\"alpha\":0.5,\"shouldRender\":true,\"pos\":[-1,0,1],\"name\":\"waypoint\"}]}";
+        JsonElement categoryJson = WaypointCategory.CODEC.encodeStart(JsonOps.INSTANCE, category).result().orElseThrow();
+        JsonElement expectedJson = SkyblockerMod.GSON.fromJson("{\"name\":\"category\",\"island\":\"hub\",\"waypoints\":[{\"colorComponents\":[0.0,0.5,1.0],\"alpha\":0.5,\"shouldRender\":false,\"pos\":[0,0,0],\"name\":\"waypoint\"},{\"colorComponents\":[0.0,0.0,0.0],\"alpha\":0.5,\"shouldRender\":true,\"pos\":[-1,0,1],\"name\":\"waypoint\"}]}", JsonElement.class);
 
-        Assertions.assertEquals(expectedJson, categoryJson.toString());
+        Assertions.assertEquals(expectedJson, categoryJson);
     }
 
     @Test

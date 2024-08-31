@@ -6,6 +6,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.waypoint.OrderedWaypoints;
+import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -15,7 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class NamedWaypoint extends Waypoint {
@@ -37,6 +39,15 @@ public class NamedWaypoint extends Waypoint {
             Codec.INT.optionalFieldOf("color", ColorHelper.getArgb(128, 0, 255, 0)).forGetter(waypoint -> (int) (waypoint.alpha * 255) << 24 | (int) (waypoint.colorComponents[0] * 255) << 16 | (int) (waypoint.colorComponents[1] * 255) << 8 | (int) (waypoint.colorComponents[2] * 255)),
             Codec.BOOL.fieldOf("enabled").forGetter(Waypoint::isEnabled)
     ).apply(instance, NamedWaypoint::fromSkytils));
+    static final Codec<NamedWaypoint> COLEWEIGHT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.fieldOf("x").forGetter(waypoint -> waypoint.pos.getX()),
+            Codec.INT.fieldOf("y").forGetter(waypoint -> waypoint.pos.getY()),
+            Codec.INT.fieldOf("z").forGetter(waypoint -> waypoint.pos.getZ()),
+            CodecUtils.optionalDouble(Codec.DOUBLE.optionalFieldOf("r")).forGetter(waypoint -> OptionalDouble.of(waypoint.colorComponents[0])),
+            CodecUtils.optionalDouble(Codec.DOUBLE.optionalFieldOf("g")).forGetter(waypoint -> OptionalDouble.of(waypoint.colorComponents[1])),
+            CodecUtils.optionalDouble(Codec.DOUBLE.optionalFieldOf("b")).forGetter(waypoint -> OptionalDouble.of(waypoint.colorComponents[2])),
+            OrderedWaypoints.ColeWeightWaypoint.Options.CODEC.optionalFieldOf("options").forGetter(waypoint -> Optional.of(new OrderedWaypoints.ColeWeightWaypoint.Options(Optional.of(waypoint.name.getString()))))
+    ).apply(instance, NamedWaypoint::fromColeweight));
     public final Text name;
     public final Vec3d centerPos;
 
@@ -76,6 +87,11 @@ public class NamedWaypoint extends Waypoint {
             alpha = DEFAULT_HIGHLIGHT_ALPHA;
         }
         return new NamedWaypoint(new BlockPos(x, y, z), name, ColorUtils.getFloatComponents(color), alpha, enabled);
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public static NamedWaypoint fromColeweight(int x, int y, int z, OptionalDouble r, OptionalDouble g, OptionalDouble b, Optional<OrderedWaypoints.ColeWeightWaypoint.Options> options) {
+        return new NamedWaypoint(new BlockPos(x, y, z), options.flatMap(OrderedWaypoints.ColeWeightWaypoint.Options::name).orElse("New Waypoint"), new float[]{(float) r.orElse(0), (float) g.orElse(1), (float) b.orElse(0)}, DEFAULT_HIGHLIGHT_ALPHA, true);
     }
 
     /**

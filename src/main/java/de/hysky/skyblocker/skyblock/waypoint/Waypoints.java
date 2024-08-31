@@ -3,10 +3,7 @@ package de.hysky.skyblocker.skyblock.waypoint;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Multimaps;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
@@ -115,6 +112,10 @@ public class Waypoints {
         JsonObject waypointCategoriesJson = new JsonObject();
         waypointCategoriesJson.add("categories", SKYTILS_CODEC.encodeStart(JsonOps.INSTANCE, waypointCategories).resultOrPartial(LOGGER::error).orElseThrow());
         return SkyblockerMod.GSON_COMPACT.toJson(waypointCategoriesJson);
+    }
+
+    public static WaypointCategory fromColeweightJson(String waypointsJson, String defaultIsland) {
+        return WaypointCategory.COLEWEIGHT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(waypointsJson)).resultOrPartial(LOGGER::error).orElseThrow().withIsland(defaultIsland);
     }
 
     public static void saveWaypoints(MinecraftClient client) {
