@@ -66,7 +66,7 @@ public class OrderedWaypoints {
 	private static final Map<String, OrderedWaypointGroup> WAYPOINTS = new Object2ObjectOpenHashMap<>();
 	private static final Semaphore SEMAPHORE = new Semaphore(1);
 	private static final Object2IntOpenHashMap<String> INDEX_STORE = new Object2IntOpenHashMap<>();
-	private static final int RADIUS = 2;
+	public static final int RADIUS = 2;
 	private static final float[] LIGHT_GRAY = { 192 / 255f, 192 / 255f, 192 / 255f };
 
 	private static CompletableFuture<Void> loaded;
@@ -399,10 +399,11 @@ public class OrderedWaypoints {
 		}
 
 		@Override
-		public float[] getColorComponents() {
+		public float[] getRenderColorComponents() {
 			if (this.colorComponents.length != 3) {
 				return switch (this.relativeIndex) {
-					case PREVIOUS -> RED;
+                    case NONE -> this.colorComponents;
+                    case PREVIOUS -> RED;
 					case CURRENT -> WHITE;
 					case NEXT -> GREEN;
 				};
@@ -445,9 +446,14 @@ public class OrderedWaypoints {
 		}
 	}
 
-	private enum RelativeIndex {
+	public enum RelativeIndex {
+		NONE,
 		PREVIOUS,
 		CURRENT,
-		NEXT
+		NEXT;
+
+		public boolean shouldRender() {
+			return this != NONE;
+		}
 	}
 }

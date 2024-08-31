@@ -48,7 +48,7 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
         adder.add(ButtonWidget.builder(ScreenTexts.BACK, buttonBack -> close()).build());
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.exportWaypointsSkytils"), buttonExport -> {
             try {
-                List<WaypointCategory> waypointCategories = waypoints.values().stream().filter(waypointCategory -> waypointCategory.island().equals(island)).map(WaypointCategory.filter(selectedWaypoints::contains)).filter(waypointCategory -> !waypointCategory.waypoints().isEmpty()).toList();
+                List<WaypointCategory> waypointCategories = waypoints.values().stream().filter(waypointCategory -> waypointCategory.island().equals(island)).map(waypointCategory -> waypointCategory.filterWaypoints(selectedWaypoints::contains)).filter(waypointCategory -> !waypointCategory.waypoints().isEmpty()).toList();
                 client.keyboard.setClipboard(Waypoints.toSkytilsBase64(waypointCategories));
                 SystemToast.show(client.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Text.translatable("skyblocker.waypoints.exportSuccess"), Text.translatable("skyblocker.waypoints.exportSuccessText", waypointCategories.stream().map(WaypointCategory::waypoints).mapToInt(List::size).sum(), waypointCategories.size()));
             } catch (Exception e) {
