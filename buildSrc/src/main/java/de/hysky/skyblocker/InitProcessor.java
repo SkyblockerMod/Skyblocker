@@ -129,16 +129,11 @@ public abstract class InitProcessor implements Plugin<Project> {
 
 				// Inject calls to each found @Init annotated method
 				for (MethodReference methodCall : methodSignatures) {
-					MethodInsnNode methodInsnNode = new MethodInsnNode(Opcodes.INVOKESTATIC, methodCall.className(), methodCall.methodName(), methodCall.descriptor(), methodCall.itf());
-
-					insnList.add(methodInsnNode);
+					methodNode.visitMethodInsn(Opcodes.INVOKESTATIC, methodCall.className(), methodCall.methodName(), methodCall.descriptor(), methodCall.itf());
 				}
 
 				// Return from the method
-				insnList.add(new InsnNode(Opcodes.RETURN));
-
-				// Put our instructions in the method node
-				methodNode.instructions = insnList;
+				methodNode.visitInsn(Opcodes.RETURN);
 
 				// Apply our new method node to the visitor to replace the original one
 				methodNode.accept(methodVisitor);
