@@ -55,7 +55,9 @@
     "accessors.SkullBlockEntityAccessor",
     "accessors.SlotAccessor",
     "accessors.WorldRendererAccessor",
-    "discordipc.ConnectionMixin"
+    "discordipc.ConnectionMixin",
+    "repoparser.NEUItemsMixin",
+    "repoparser.NEURepoFileMixin"
   ],
   "injectors": {
     "defaultRequire": 1
