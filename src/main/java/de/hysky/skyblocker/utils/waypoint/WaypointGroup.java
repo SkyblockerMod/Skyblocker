@@ -2,7 +2,6 @@ package de.hysky.skyblocker.utils.waypoint;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.skyblock.waypoint.OrderedWaypoints;
 import de.hysky.skyblocker.utils.InstancedUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
@@ -26,6 +25,7 @@ public class WaypointGroup {
             NamedWaypoint.SKYTILS_CODEC.listOf().fieldOf("waypoints").forGetter(WaypointGroup::waypoints)
     ).apply(instance, WaypointGroup::new));
     public static final Codec<WaypointGroup> COLEWEIGHT_CODEC = NamedWaypoint.COLEWEIGHT_CODEC.listOf().xmap(coleWeightWaypoints -> new WaypointGroup("Coleweight", "", coleWeightWaypoints, true), WaypointGroup::waypoints);
+    public static final int WAYPOINT_ACTIVATION_RADIUS = 2;
 
     private final String name;
     private final String island;
@@ -109,7 +109,7 @@ public class WaypointGroup {
         if (ordered) {
             for (int i = 0; i < waypoints.size(); i++) {
                 NamedWaypoint waypoint = waypoints.get(i);
-                if (waypoint.pos.isWithinDistance(MinecraftClient.getInstance().player.getPos(), OrderedWaypoints.RADIUS)) {
+                if (waypoint.pos.isWithinDistance(MinecraftClient.getInstance().player.getPos(), WAYPOINT_ACTIVATION_RADIUS)) {
                     currentIndex = i;
                 }
             }
@@ -121,13 +121,13 @@ public class WaypointGroup {
                 if (waypoint instanceof OrderedNamedWaypoint orderedNamedWaypoint) {
                     orderedNamedWaypoint.index = i;
                     if (i == previousIndex) {
-                        orderedNamedWaypoint.relativeIndex = OrderedWaypoints.RelativeIndex.PREVIOUS;
+                        orderedNamedWaypoint.relativeIndex = OrderedNamedWaypoint.RelativeIndex.PREVIOUS;
                     } else if (i == nextIndex) {
-                        orderedNamedWaypoint.relativeIndex = OrderedWaypoints.RelativeIndex.NEXT;
+                        orderedNamedWaypoint.relativeIndex = OrderedNamedWaypoint.RelativeIndex.NEXT;
                     } else if (i == currentIndex) {
-                        orderedNamedWaypoint.relativeIndex = OrderedWaypoints.RelativeIndex.CURRENT;
+                        orderedNamedWaypoint.relativeIndex = OrderedNamedWaypoint.RelativeIndex.CURRENT;
                     } else {
-                        orderedNamedWaypoint.relativeIndex = OrderedWaypoints.RelativeIndex.NONE;
+                        orderedNamedWaypoint.relativeIndex = OrderedNamedWaypoint.RelativeIndex.NONE;
                     }
                 }
             }

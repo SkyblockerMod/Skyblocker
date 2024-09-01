@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.utils.waypoint;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.waypoint.OrderedWaypoints;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
@@ -16,7 +15,7 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 	private static final float[] GREEN_COLOR_COMPONENTS = {0f, 1f, 0f};
 
 	int index;
-	OrderedWaypoints.RelativeIndex relativeIndex;
+	RelativeIndex relativeIndex;
 
 	public OrderedNamedWaypoint(NamedWaypoint namedWaypoint) {
 		this(namedWaypoint.pos, namedWaypoint.name, namedWaypoint.typeSupplier, namedWaypoint.colorComponents, namedWaypoint.alpha, namedWaypoint.isEnabled());
@@ -80,6 +79,14 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 		super.render(context);
 		if (shouldRenderName()) {
 			RenderHelper.renderText(context, Text.of(String.valueOf(index)), centerPos.add(0, 1, 0), 1, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
+		}
+	}
+
+	public enum RelativeIndex {
+		NONE, PREVIOUS, CURRENT, NEXT;
+
+		public boolean shouldRender() {
+			return this != NONE;
 		}
 	}
 }
