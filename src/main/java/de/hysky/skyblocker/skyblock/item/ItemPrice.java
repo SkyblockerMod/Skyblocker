@@ -4,6 +4,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -31,13 +32,29 @@ public class ItemPrice {
             "key.categories.skyblocker"
     ));
 
+    public static void init() {}
+
     public static void itemPriceLookup(ClientPlayerEntity player, @NotNull Slot slot) {
-        ItemStack stack = ItemRepository.getItemStack(slot.getStack().getNeuName());
-        if (stack != null && !stack.isEmpty()) {
-            String itemName = Formatting.strip(stack.getName().getString()).replaceFirst("\\[Lvl \\d+ ➡ \\d+] ", "");
-            if (TooltipInfoType.BAZAAR.getData() != null) {
+        ItemStack stack = slot.getStack();
+        String skyblockApiId = stack.getSkyblockApiId();
+        ItemStack neuStack = ItemRepository.getItemStack(stack.getNeuName());
+        if (neuStack != null && !neuStack.isEmpty()) {
+            String itemName = Formatting.strip(neuStack.getName().getString());
+
+            // Handle Pets
+            if (stack.getSkyblockId().equals("PET")) {
+                itemName = itemName.replaceFirst("\\[Lvl \\d+ ➡ \\d+] ", "");
+            }
+
+            // Handle Enchanted Books
+            if (itemName.equals("Enchanted Book")) {
+                itemName = SearchOverManager.capitalizeFully(skyblockApiId.replace("ENCHANTMENT_", "").replaceAll("_\\d+", ""));
+            }
+
+            // Search up the item in the bazaar or auction house
+            if (TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
                 MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName);
-            } else if (TooltipInfoType.LOWEST_BINS.getData() != null) {
+            } else if (TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId)) {
                 MessageScheduler.INSTANCE.sendMessageAfterCooldown("/ahsearch " + itemName);
             }
         } else {

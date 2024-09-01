@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 public class BazaarHelper extends SimpleSlotTextAdder {
 	private static final Pattern FILLED_PATTERN = Pattern.compile("Filled: \\S+ \\(?([\\d.]+)%\\)?!?");
@@ -28,9 +27,6 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 	public BazaarHelper() {
 		super("(?:Co-op|Your) Bazaar Orders");
 	}
-
-	@Init
-	public static void init() {}
 
 	@Override
 	public boolean isEnabled() {

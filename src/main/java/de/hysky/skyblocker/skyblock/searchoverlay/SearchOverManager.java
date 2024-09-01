@@ -183,7 +183,7 @@ public class SearchOverManager {
      *
      * @param str string to capitalize
      */
-    private static String capitalizeFully(String str) {
+    public static String capitalizeFully(String str) {
         if (str == null || str.isEmpty()) {
             return str;
         }
