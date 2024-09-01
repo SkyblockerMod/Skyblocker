@@ -6,7 +6,6 @@ import org.gradle.api.tasks.compile.JavaCompile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.*;
-import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.io.File;
@@ -27,11 +26,11 @@ import java.util.Objects;
 public abstract class InitProcessor implements Plugin<Project> {
 	@Override
 	public void apply(Project project) {
-		project.getTasks().withType(JavaCompile.class).configureEach(task -> task.doLast(t -> {
-			if (!task.getName().equals("compileJava")) return;
-
+		// https://docs.gradle.org/current/userguide/task_configuration_avoidance.html
+		// This only configures the `compileJava` task and not other `JavaCompile` tasks such as `compileTestJava`. https://stackoverflow.com/a/77047012
+        project.getTasks().withType(JavaCompile.class).named("compileJava").get().doLast(task -> {
 			long start = System.currentTimeMillis();
-			File classesDir = task.getDestinationDirectory().get().getAsFile();
+			File classesDir = ((JavaCompile) task).getDestinationDirectory().get().getAsFile();
 			Map<MethodReference, Integer> methodSignatures = new HashMap<>();
 
 			//Find all methods with the @Init annotation
@@ -48,7 +47,7 @@ public abstract class InitProcessor implements Plugin<Project> {
 			injectInitCalls(classesDir, sortedMethodSignatures);
 
 			System.out.println("Injecting init methods took: " + (System.currentTimeMillis() - start) + "ms");
-		}));
+		});
 	}
 
 	public void findInitMethods(@NotNull File directory, Map<MethodReference, Integer> methodSignatures) {
@@ -121,9 +120,6 @@ public abstract class InitProcessor implements Plugin<Project> {
 			if ((access & Opcodes.ACC_PRIVATE) != 0 && (access & Opcodes.ACC_STATIC) != 0 && name.equals("init") && descriptor.equals("()V")) {
 				// Method node that we will overwrite the init method with
 				MethodNode methodNode = new MethodNode(Opcodes.ASM9, access, name, descriptor, signature, exceptions);
-
-				// The instructions that will replace the content of the init method
-				InsnList insnList = new InsnList();
 
 				// Inject calls to each found @Init annotated method
 				for (MethodReference methodCall : methodSignatures) {
