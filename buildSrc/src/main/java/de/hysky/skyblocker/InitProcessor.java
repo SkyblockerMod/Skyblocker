@@ -7,8 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.io.File;
@@ -41,10 +39,10 @@ public abstract class InitProcessor implements Plugin<Project> {
 
 			//Sort the methods by their priority. It's also converted to a list because the priority values are useless from here on
 			List<MethodReference> sortedMethodSignatures = methodSignatures.entrySet()
-			                                                               .stream()
-			                                                               .sorted(Map.Entry.comparingByValue())
-			                                                               .map(Map.Entry::getKey)
-			                                                               .toList();
+					.stream()
+					.sorted(Map.Entry.<MethodReference, Integer>comparingByValue().thenComparing(entry -> entry.getKey().className()))
+					.map(Map.Entry::getKey)
+					.toList();
 
 			//Inject calls to the @Init annotated methods in the SkyblockerMod class
 			injectInitCalls(classesDir, sortedMethodSignatures);
@@ -209,10 +207,10 @@ public abstract class InitProcessor implements Plugin<Project> {
 	}
 
 	/**
-	 * @param className the class name (e.g. de/hysky/skyblocker/skyblock/ChestValue)
+	 * @param className  the class name (e.g. de/hysky/skyblocker/skyblock/ChestValue)
 	 * @param methodName the method's name (e.g. init)
 	 * @param descriptor the method's descriptor (only ()V for now)
-	 * @param itf whether the target class is an {@code interface} or not
+	 * @param itf        whether the target class is an {@code interface} or not
 	 */
 	public record MethodReference(String className, String methodName, String descriptor, boolean itf) {}
 }
