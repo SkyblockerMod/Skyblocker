@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.skyblock.item;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -15,9 +16,8 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public class ItemPrice {
     public static final KeyBinding ITEM_PRICE_LOOKUP = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -47,14 +47,10 @@ public class ItemPrice {
 
     public static void refreshItemPrices(ClientPlayerEntity player) {
         player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshingItemPrices")));
-        List<CompletableFuture<Void>> futureList = new ArrayList<>();
-        TooltipInfoType.NPC.downloadIfEnabled(futureList);
-        TooltipInfoType.BAZAAR.downloadIfEnabled(futureList);
-        TooltipInfoType.LOWEST_BINS.downloadIfEnabled(futureList);
-        TooltipInfoType.ONE_DAY_AVERAGE.downloadIfEnabled(futureList);
-        TooltipInfoType.THREE_DAY_AVERAGE.downloadIfEnabled(futureList);
-        CompletableFuture.allOf(futureList.toArray(CompletableFuture[]::new))
-                .thenRun(() -> player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshedItemPrices"))))
+        CompletableFuture.allOf(Stream.of(TooltipInfoType.NPC, TooltipInfoType.BAZAAR, TooltipInfoType.LOWEST_BINS, TooltipInfoType.ONE_DAY_AVERAGE, TooltipInfoType.THREE_DAY_AVERAGE)
+                        .map(DataTooltipInfoType::downloadIfEnabled)
+                        .toArray(CompletableFuture[]::new)
+                ).thenRun(() -> player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshedItemPrices"))))
                 .exceptionally(e -> {
                     ItemTooltip.LOGGER.error("[Skyblocker Item Price] Failed to refresh item prices", e);
                     player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed")));
