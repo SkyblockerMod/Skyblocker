@@ -1,3 +1,17 @@
+# Release 1.22.2
+
+# Highlight
+* Fix Egg Finder bugs
+* Backend stuff
+
+## What's Changed
+* Fix Egg Finder bugs by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/978
+* Block JGit from loading the system Git config by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/980
+* mod publish upload changes  by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/977
+* Update NEU repo parser to 1.6.0 by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/982
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.22.1...v1.22.2
+___
 # Release 1.22.1
 
 ## Highlight
