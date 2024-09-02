@@ -1,6 +1,6 @@
 # Release 1.22.2
 
-# Highlight
+## Highlight
 * Fix Egg Finder bugs
 * Backend stuff
 
