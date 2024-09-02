@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.command.argumenttypes.EggTypeArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
+import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
@@ -55,7 +56,14 @@ public class EggFinder {
 	private EggFinder() {}
 
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> isLocationCorrect = false);
+		ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> {
+			isLocationCorrect = false;
+
+			for (EggType type : EggType.entries) {
+				type.collected = false;
+				type.egg = null;
+			}
+		});
 		SkyblockEvents.LOCATION_CHANGE.register(EggFinder::handleLocationChange);
 		ClientReceiveMessageEvents.GAME.register(EggFinder::onChatMessage);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(EggFinder::renderWaypoints);
@@ -64,7 +72,7 @@ public class EggFinder {
 			if (!isLocationCorrect || SkyblockTime.skyblockSeason.get() != SkyblockTime.Season.SPRING) return;
 			for (EggType type : EggType.entries) {
 				Egg egg = type.egg;
-				if (egg != null && !egg.seen && client.player.canSee(egg.entity)) {
+				if (egg != null && !egg.seen && FrustumUtils.isVisible(egg.entity.getBoundingBox()) && client.player.canSee(egg.entity)) {
 					type.setSeen();
 				}
 			}
