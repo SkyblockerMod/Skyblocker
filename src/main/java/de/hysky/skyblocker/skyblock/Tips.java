@@ -5,6 +5,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
@@ -76,6 +77,7 @@ public class Tips {
         return () -> Text.translatable(key).styled(style -> style.withClickEvent(new ClickEvent(clickAction, value)));
     }
 
+    @Init
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register(Tips::registerTipsCommand);
         SkyblockEvents.JOIN.register(Tips::sendNextTip);

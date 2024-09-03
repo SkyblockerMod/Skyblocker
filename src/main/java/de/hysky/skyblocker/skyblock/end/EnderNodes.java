@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.end;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -28,6 +29,7 @@ public class EnderNodes {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static final Map<BlockPos, EnderNode> enderNodes = new HashMap<>();
 
+    @Init
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(EnderNodes::update, 20);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(EnderNodes::render);

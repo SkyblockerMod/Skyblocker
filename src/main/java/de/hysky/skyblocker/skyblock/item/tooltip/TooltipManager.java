@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
@@ -47,6 +48,7 @@ public class TooltipManager {
 	private TooltipManager() {
 	}
 
+	@Init
 	public static void init() {
 		ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
 			if (MinecraftClient.getInstance().currentScreen instanceof HandledScreen<?> handledScreen) {

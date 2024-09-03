@@ -2,6 +2,7 @@ plugins {
 	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
 	id "me.modmuss50.mod-publish-plugin" version "0.7.2"
+	id "de.hysky.skyblocker.annotation-processor"
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -226,7 +227,7 @@ java {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${base.archivesName.get()}"}
+		rename { "${it}_${base.archivesName.get()}" }
 	}
 }
 

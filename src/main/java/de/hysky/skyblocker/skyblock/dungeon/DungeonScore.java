@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -62,6 +63,7 @@ public class DungeonScore {
 	private static int deathCount;
 	private static int score;
 
+	@Init
     public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(DungeonScore::tick, 20);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());

@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
@@ -37,6 +38,7 @@ public class SecretsTracker {
 	private static volatile TrackedRun lastRun = null;
 	private static volatile long lastRunEnded = 0L;
 
+	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.GAME.register(SecretsTracker::onMessage);
 	}

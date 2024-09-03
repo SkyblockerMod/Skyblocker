@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.waypoint;
 
 import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -56,6 +57,7 @@ public class MythologicalRitual {
     private static BlockPos lastDugBurrowPos;
     private static GriffinBurrow previousBurrow = new GriffinBurrow(BlockPos.ORIGIN);
 
+    @Init
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(MythologicalRitual::render);
         AttackBlockCallback.EVENT.register(MythologicalRitual::onAttackBlock);

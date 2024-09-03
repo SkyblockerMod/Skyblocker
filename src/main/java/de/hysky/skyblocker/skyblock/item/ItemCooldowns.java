@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.PetCache.PetInfo;
@@ -39,6 +40,7 @@ public class ItemCooldowns {
     private static int monkeyLevel = 1;
     private static double monkeyExp = 0;
 
+    @Init
     public static void init() {
         ClientPlayerBlockBreakEvents.AFTER.register(ItemCooldowns::afterBlockBreak);
         UseItemCallback.EVENT.register(ItemCooldowns::onItemInteract);

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
@@ -55,6 +56,7 @@ public class SlotTextManager {
 	private SlotTextManager() {
 	}
 
+	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
 			if ((screen instanceof HandledScreen<?> && Utils.isOnSkyblock()) || screen instanceof ProfileViewerScreen) {

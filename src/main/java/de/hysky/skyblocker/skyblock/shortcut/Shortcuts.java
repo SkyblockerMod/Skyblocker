@@ -7,6 +7,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -44,6 +45,7 @@ public class Shortcuts {
         return shortcutsLoaded != null && shortcutsLoaded.isDone();
     }
 
+    @Init
     public static void init() {
         loadShortcuts();
         ClientLifecycleEvents.CLIENT_STOPPING.register(Shortcuts::saveShortcuts);

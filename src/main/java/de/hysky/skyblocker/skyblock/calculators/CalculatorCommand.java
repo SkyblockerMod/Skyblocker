@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Calculator;
 import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -25,6 +26,7 @@ public class CalculatorCommand {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final NumberFormat FORMATTER = NumberFormat.getInstance(Locale.US);
 
+    @Init
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register(CalculatorCommand::calculate);
     }

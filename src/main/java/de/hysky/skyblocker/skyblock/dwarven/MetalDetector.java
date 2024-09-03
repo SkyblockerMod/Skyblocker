@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
@@ -90,6 +91,7 @@ public class MetalDetector {
     private static boolean startedLooking = false;
     protected static List<Vec3i> possibleBlocks = new ArrayList<>();
 
+    @Init
     public static void init() {
         ClientReceiveMessageEvents.GAME.register(MetalDetector::getDistanceMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(MetalDetector::render);

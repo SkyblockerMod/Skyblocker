@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.BeaconBlockEntityRendererInvoker;
 import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.utils.Boxes;
@@ -51,6 +52,7 @@ public class RenderHelper {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final BufferAllocator ALLOCATOR = new BufferAllocator(1536);
 
+    @Init
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.addPhaseOrdering(Event.DEFAULT_PHASE, TRANSLUCENT_DRAW);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(TRANSLUCENT_DRAW, RenderHelper::drawTranslucents);

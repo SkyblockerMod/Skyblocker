@@ -1,8 +1,6 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
@@ -12,11 +10,15 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SkyblockXpMessages {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Pattern SKYBLOCK_XP_PATTERN = Pattern.compile("§b\\+\\d+ SkyBlock XP §7\\([^()]+§7\\)§b \\(\\d+\\/\\d+\\)");
 	private static final IntOpenHashSet RECENT_MESSAGES = new IntOpenHashSet();
 
+	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.GAME.register(SkyblockXpMessages::onMessage);
 	}

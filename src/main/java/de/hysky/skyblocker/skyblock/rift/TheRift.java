@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.rift;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -8,6 +9,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public class TheRift {
+    @Init
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(MirrorverseWaypoints::render);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(EffigyWaypoints::render);

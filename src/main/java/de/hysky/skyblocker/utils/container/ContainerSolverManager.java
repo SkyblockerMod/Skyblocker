@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.container;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
@@ -63,6 +64,7 @@ public class ContainerSolverManager {
 		return currentSolver;
 	}
 
+	@Init
 	public static void init() {
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {

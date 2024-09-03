@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -67,6 +68,7 @@ public class DojoManager {
     public static boolean inArena = false;
     protected static long ping = -1;
 
+    @Init
     public static void init() {
         ClientReceiveMessageEvents.GAME.register(DojoManager::onMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(DojoManager::render);

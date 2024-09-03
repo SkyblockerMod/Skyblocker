@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
@@ -46,6 +47,7 @@ public class ChestValue {
 	private static final Pattern MINION_PATTERN = Pattern.compile("Minion (I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII)$");
 	private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
 
+	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {

@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.fancybars;
 
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
@@ -51,6 +52,7 @@ public class FancyStatusBars {
         return experience.anchor != null || experience.inMouse;
     }
 
+    @Init
     public static void init() {
         statusBars.put("health", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/health"),
                 new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)},

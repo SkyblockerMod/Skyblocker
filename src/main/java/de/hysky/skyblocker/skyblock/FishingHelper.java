@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -25,6 +26,7 @@ public class FishingHelper {
     private static long startTimeFish;
     private static Vec3d normalYawVector;
 
+    @Init
     public static void init() {
         UseItemCallback.EVENT.register((player, world, hand) -> {
             ItemStack stack = player.getStackInHand(hand);

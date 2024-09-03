@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -26,6 +27,7 @@ public class ItemRepository {
     private static final List<SkyblockCraftingRecipe> recipes = new ArrayList<>();
     private static boolean filesImported = false;
 
+    @Init
     public static void init() {
         NEURepoManager.runAsyncAfterLoad(ItemStackBuilder::loadPetNums);
         NEURepoManager.runAsyncAfterLoad(ItemRepository::importItemFiles);

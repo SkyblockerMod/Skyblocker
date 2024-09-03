@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -11,6 +9,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Http.ApiResponse;
@@ -29,7 +28,6 @@ import net.minecraft.nbt.*;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +43,8 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+
 public class MuseumItemCache {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MuseumItemCache.class);
 	private static final Path CACHE_FILE = SkyblockerMod.CONFIG_DIR.resolve("museum_item_cache.json");
@@ -55,6 +55,7 @@ public class MuseumItemCache {
 
 	private static CompletableFuture<Void> loaded;
 
+	@Init
 	public static void init() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(MuseumItemCache::load);
 		ClientCommandRegistrationCallback.EVENT.register(MuseumItemCache::registerCommands);

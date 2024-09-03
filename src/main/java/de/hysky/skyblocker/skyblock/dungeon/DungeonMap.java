@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -25,6 +26,7 @@ public class DungeonMap {
     private static final MapIdComponent DEFAULT_MAP_ID_COMPONENT = new MapIdComponent(1024);
     private static MapIdComponent cachedMapIdComponent = null;
 
+    @Init
     public static void init() {
     	HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> render(context));
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")

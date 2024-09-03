@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.utils.Utils;
@@ -28,6 +29,7 @@ public class CrystalsHud {
 
     public static boolean visible = false;
 
+    @Init
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
                 .then(ClientCommandManager.literal("hud")

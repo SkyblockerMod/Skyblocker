@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.chat;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.barn.HungryHiker;
 import de.hysky.skyblocker.skyblock.barn.TreasureHunter;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
@@ -33,6 +34,7 @@ public interface ChatMessageListener {
     /**
      * Registers {@link ChatMessageListener}s to {@link ChatMessageListener#EVENT} and registers {@link ChatMessageListener#EVENT} to {@link ClientReceiveMessageEvents#ALLOW_GAME}
      */
+    @Init
     static void init() {
         ChatMessageListener[] listeners = new ChatMessageListener[]{
                 // Features
