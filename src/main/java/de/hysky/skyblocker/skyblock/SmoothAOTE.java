@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -41,6 +42,7 @@ public class SmoothAOTE {
     private static long lastTeleportTime;
     private static boolean teleportDisabled;
 
+    @Init
     public static void init() {
         UseItemCallback.EVENT.register(SmoothAOTE::onItemInteract);
         UseBlockCallback.EVENT.register(SmoothAOTE::onBlockInteract);
