@@ -670,6 +670,12 @@
   "skyblocker.config.slayer.highlightBosses.GLOW": "Glow",
   "skyblocker.config.slayer.highlightBosses.HITBOX": "Hitbox",
 
+  "skyblocker.config.slayer.bossSpawnAlert": "Boss Spawn Alert",
+  "skyblocker.config.slayer.bossSpawnAlert.@Tooltip[0]": "\nDisplays a warning when a slayer boss spawns",
+
+  "skyblocker.config.slayer.miniBossSpawnAlert": "MiniBoss Spawn Alert",
+  "skyblocker.config.slayer.miniBossSpawnAlert.@Tooltip[0]": "\nDisplays a warning when a slayer miniboss spawns",
+
   "skyblocker.config.slayer.vampireSlayer": "Vampire Slayer",
   "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "Compact Effigy Waypoints",
   "skyblocker.config.slayer.vampireSlayer.effigyUpdateFrequency": "Effigy Waypoints Update Frequency (Ticks)",
@@ -886,6 +892,9 @@
   "skyblocker.end.hud.protectorLocations.back": "Back",
   "skyblocker.end.hud.protectorLocations.rightFront": "Right Front",
   "skyblocker.end.hud.protectorLocations.rightBack": "Right Back",
+
+  "skyblocker.slayer.bossSpawnAlert": "Boss Spawned!",
+  "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss Spawned!",
 
   "skyblocker.events.startsNow": "%s starts now!",
   "skyblocker.events.startsSoon": "%s starts soon!",

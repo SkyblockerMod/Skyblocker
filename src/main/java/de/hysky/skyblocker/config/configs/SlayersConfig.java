@@ -20,6 +20,12 @@ public class SlayersConfig {
     }
 
     @SerialEntry
+    public boolean bossSpawnAlert = false;
+
+    @SerialEntry
+    public boolean miniBossSpawnAlert = false;
+
+    @SerialEntry
     public EndermanSlayer endermanSlayer = new EndermanSlayer();
 
     @SerialEntry

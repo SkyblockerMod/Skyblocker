@@ -3,8 +3,6 @@ package de.hysky.skyblocker.skyblock.slayers;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -145,7 +143,7 @@ public class SlayerEntitiesGlow {
      */
     private static void recalculateMobGlow(ArmorStandEntity armorStand, Class<? extends MobEntity> entityClass, UUID oldUUID) {
         MobEntity entity = findClosestMobEntity(entityClass, armorStand);
-        if (entity.getUuid() != oldUUID) {
+        if (entity != null && entity.getUuid() != oldUUID) {
             RenderHelper.runOnRenderThread(() -> {
                 MOBS_TO_GLOW.add(entity.getUuid());
                 MOBS_TO_GLOW.remove(ARMORSTAND_TO_MOBS_TO_GLOW.put(armorStand.getUuid(), entity.getUuid()));

@@ -42,6 +42,24 @@ public class SlayersCategory {
                                 newValue -> config.slayers.highlightBosses = newValue)
                         .controller(ConfigUtils::createEnumCyclingListController)
                         .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.slayer.bossSpawnAlert"))
+                        .description(OptionDescription.of(
+                                Text.translatable("skyblocker.config.slayer.bossSpawnAlert.@Tooltip[0]")))
+                        .binding(defaults.slayers.bossSpawnAlert,
+                                () -> config.slayers.bossSpawnAlert,
+                                newValue -> config.slayers.bossSpawnAlert = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.slayer.miniBossSpawnAlert"))
+                        .description(OptionDescription.of(
+                                Text.translatable("skyblocker.config.slayer.miniBossSpawnAlert.@Tooltip[0]")))
+                        .binding(defaults.slayers.miniBossSpawnAlert,
+                                () -> config.slayers.miniBossSpawnAlert,
+                                newValue -> config.slayers.miniBossSpawnAlert = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
 
                 //Enderman Slayer
                 .group(OptionGroup.createBuilder()
