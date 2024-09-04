@@ -612,6 +612,7 @@
   "skyblocker.config.otherLocations.end.screen": "End HUD Config...",
   "skyblocker.config.otherLocations.end.waypoint": "End Protector Waypoint",
   "skyblocker.config.otherLocations.end.zealotKillsEnabled": "Show Zealot Kills Information",
+  "skyblocker.config.otherLocations.end.muteEndermanSounds": "Mute Enderman Sounds",
 
   "skyblocker.config.otherLocations.rift": "The Rift",
   "skyblocker.config.otherLocations.rift.blobbercystGlow": "Blobbercyst Glow",
@@ -894,7 +895,7 @@
   "skyblocker.end.hud.protectorLocations.rightBack": "Right Back",
 
   "skyblocker.slayer.bossSpawnAlert": "Boss Spawned!",
-  "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss Spawned!",
+  "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss",
 
   "skyblocker.events.startsNow": "%s starts now!",
   "skyblocker.events.startsSoon": "%s starts soon!",
