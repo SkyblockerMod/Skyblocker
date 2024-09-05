@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.chat.chatcoords;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
@@ -24,6 +25,7 @@ public class ChatWaypointLocation {
     private static final Pattern SKYHANNI_DIANA_PATTERN = Pattern.compile("A MINOS INQUISITOR has spawned near \\[(?<area>[^]]*)] at Coords (?<x>-?[0-9]+) (?<y>[0-9]+) (?<z>-?[0-9]+)");
     private static final List<Pattern> PATTERNS = List.of(SKYBLOCKER_COORDS_PATTERN, SKYHANNI_DIANA_PATTERN, GENERIC_COORDS_PATTERN);
 
+    @Init
     public static void init() {
         ClientReceiveMessageEvents.GAME.register(ChatWaypointLocation::onMessage);
     }
