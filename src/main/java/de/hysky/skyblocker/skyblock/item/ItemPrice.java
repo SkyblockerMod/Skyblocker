@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -32,6 +33,7 @@ public class ItemPrice {
             "key.categories.skyblocker"
     ));
 
+    @Init
     public static void init() {}
 
     public static void itemPriceLookup(ClientPlayerEntity player, @NotNull Slot slot) {
