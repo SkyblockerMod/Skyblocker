@@ -182,10 +182,10 @@ public class UIAndVisualsConfig {
         public LegacyBarPosition manaBarPosition = LegacyBarPosition.LAYER1;
 
         @SerialEntry
-        public LegacyBarPosition defenceBarPosition = LegacyBarPosition.LAYER1;
+        public LegacyBarPosition defenceBarPosition = LegacyBarPosition.RIGHT;
 
         @SerialEntry
-        public LegacyBarPosition experienceBarPosition = LegacyBarPosition.LAYER1;
+        public LegacyBarPosition experienceBarPosition = LegacyBarPosition.LAYER2;
     }
 
     /**
