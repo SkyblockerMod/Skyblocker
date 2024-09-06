@@ -6,7 +6,5 @@
     "text.skyblocker.open": "Open",
     "skyblocker.config.title": "Skyblocker-instellingen",
     "text.skyblocker.modrinth": "Modrinth",
-    "argument.color.rgb.incomplete": "Onvolledig (3 kleurwaarden verwacht).",
-    "key.bazaarRefresh": "Bazaar Ververs",
-    "key.bazaarLookup": "Bazaar Opzoeken"
+    "argument.color.rgb.incomplete": "Onvolledig (3 kleurwaarden verwacht)."
 }

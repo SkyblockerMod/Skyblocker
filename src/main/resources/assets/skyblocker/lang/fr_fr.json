@@ -291,8 +291,6 @@
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.OUTLINED_HIGHLIGHT": "Surlignage entouré",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.OUTLINE": "Contour",
     "skyblocker.config.dungeons.dungeonScore": "Score de donjon",
-    "key.bazaarRefresh": "Actualisation du Bazar",
-    "key.bazaarLookup": "Recherche dans le bazaar",
     "skyblocker.config.dungeons.dungeonChestProfit.profitColor": "Couleur de profit",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Brillance de Kuudra",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Entoure Kuudra d'un orange profond.",

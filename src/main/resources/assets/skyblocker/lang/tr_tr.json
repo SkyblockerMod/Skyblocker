@@ -115,8 +115,6 @@
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Bir tentakül vuruşu ya da TNT'nin tehlike menzilinde iken bir uyarı gösterir. Uyarının rengi, tehlike rengine adapte olur!",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra Parıltısı",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Kuudra'yı koyu bir turuncu tonuyla çevreler.",
-    "key.bazaarLookup": "Pazar Araması",
-    "key.bazaarRefresh": "Pazarı Yenile",
     "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Tıklanılması gereken kaldıracı kırmızıyla işaretler",
     "skyblocker.config.dungeons.devices.solveSimonSays": "Simon Says'i Çöz",
     "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Tıklanması gereken doğru butonu yeşil renkle, bir sonraki butonu ise sarı renkle vurgular.",
