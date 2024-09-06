@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
@@ -81,6 +82,7 @@ public class GardenPlotsWidget extends ClickableWidget {
 
 	private static final GardenPlot[] gardenPlots = new GardenPlot[25];
 
+	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (screen instanceof GenericContainerScreen containerScreen && screen.getTitle().getString().trim().equals("Configure Plots")) {
@@ -257,10 +259,8 @@ public class GardenPlotsWidget extends ClickableWidget {
 	private void updateInfestedFromTab() {
 		infectedPlots.clear();
 		for (int i = 0; i < PlayerListMgr.getSize(); i++) {
-			Text displayName = PlayerListMgr.getRaw(i).getDisplayName();
-			if (displayName == null) continue;
-			String string = displayName.getString();
-			if (string.startsWith(" Plots:")) {
+			String string = PlayerListMgr.getPlayerStringList().get(i);
+			if (string.startsWith("Plots:")) {
 				String[] split = string.split(":")[1].split(",");
 				for (String s : split) {
 					try {
