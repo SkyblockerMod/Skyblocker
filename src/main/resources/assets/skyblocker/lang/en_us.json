@@ -11,8 +11,8 @@
   "key.wikiLookup": "Wiki Lookup",
   "key.itemProtection": "Protect Item",
   "key.skyblocker.slottext": "Slot Text",
-  "key.bazaarLookup": "Bazaar Lookup",
-  "key.bazaarRefresh": "Bazaar Refresh",
+  "key.itemPriceLookup": "Bazaar Lookup",
+  "key.itemPriceRefresh": "Bazaar Refresh",
 
 
   "text.skyblocker.open": "Open",
@@ -338,14 +338,6 @@
   "skyblocker.config.helpers.bazaar": "Bazaar",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Draws icons on top of orders to explain the current state of the order.\n\n%s: Order is going to expire soon\n%s: Order has expired\n%s: Order is filled to some degree and there are items/coins to claim\n%s: Order is filled",
-  "skyblocker.config.helpers.bazaar.enableBazaarLookup": "Enable Bazaar Lookup",
-  "skyblocker.config.helpers.bazaar.enableBazaarLookup.@Tooltip": "Searches the Bazaar for the current hovered item with the F6 key.",
-  "skyblocker.config.helpers.bazaar.bazaarLookupFailed": "Failed to find item in the Bazaar",
-  "skyblocker.config.helpers.bazaar.enableRefreshItemPrices": "Enable Bazaar Refresh",
-  "skyblocker.config.helpers.bazaar.enableRefreshItemPrices.@Tooltip": "Refresh the Bazaar prices with the Z key.",
-  "skyblocker.config.helpers.bazaar.refreshingItemPrices": "Refreshing Item Prices...",
-  "skyblocker.config.helpers.bazaar.refreshedItemPrices": "Refreshed Item Prices",
-  "skyblocker.config.helpers.bazaar.refreshItemPricesFailed": "Item Prices Refresh Failed.",
 
   "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",
@@ -386,10 +378,18 @@
   "skyblocker.config.helpers.fishing.hideOtherPlayers": "Hide Other Players Rods",
   "skyblocker.config.helpers.fishing.hideOtherPlayers.@Tooltip": "Hide other players' fishing rods from showing for you",
 
+  "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "Enable Item Price Lookup",
+  "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Searches the Bazaar and AH for the current hovered item with the F6 key.",
+  "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "Failed to find item in the Bazaar and Auction House",
+  "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "Enable Item Price Refresh",
+  "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "Refresh the Bazaar and AH prices with the Z key.",
+  "skyblocker.config.helpers.itemPrice.refreshingItemPrices": "Refreshing Item Prices...",
+  "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "Refreshed Item Prices",
+  "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "Item Prices Refresh Failed.",
+
   "skyblocker.config.helpers.jerry": "Jerry",
   "skyblocker.config.helpers.jerry.enableJerryTimer": "Enable Jerry Timer",
   "skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip": "Sends a message in chat and plays a sound when the hidden jerry spawn cooldown is over.",
-
 
   "skyblocker.config.helpers.mythologicalRitual": "Mythological Ritual Helper",
   "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "Enable Mythological Ritual Helper",

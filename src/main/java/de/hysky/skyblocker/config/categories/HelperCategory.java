@@ -220,19 +220,19 @@ public class HelperCategory {
                                  .controller(ConfigUtils::createBooleanController)
                                  .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarLookup"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarLookup.@Tooltip")))
-                                .binding(defaults.helpers.bazaar.enableBazaarLookup,
-                                        () -> config.helpers.bazaar.enableBazaarLookup,
-                                        newValue -> config.helpers.bazaar.enableBazaarLookup = newValue)
+                                .name(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip")))
+                                .binding(defaults.helpers.itemPrice.enableItemPriceLookup,
+                                        () -> config.helpers.itemPrice.enableItemPriceLookup,
+                                        newValue -> config.helpers.itemPrice.enableItemPriceLookup = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.helpers.bazaar.enableRefreshItemPrices"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.enableRefreshItemPrices.@Tooltip")))
-                                .binding(defaults.helpers.bazaar.enableBazaarRefresh,
-                                        () -> config.helpers.bazaar.enableBazaarRefresh,
-                                        newValue -> config.helpers.bazaar.enableBazaarRefresh = newValue)
+                                .name(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip")))
+                                .binding(defaults.helpers.itemPrice.enableItemPriceRefresh,
+                                        () -> config.helpers.itemPrice.enableItemPriceRefresh,
+                                        newValue -> config.helpers.itemPrice.enableItemPriceRefresh = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(ConfigUtils.createShortcutToKeybindsScreen())

@@ -7,15 +7,11 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.PetCache;
-import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
-import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
-import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
-import de.hysky.skyblocker.skyblock.item.WikiLookup;
+import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
@@ -128,13 +124,13 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			if (ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
 				ItemProtection.handleKeyPressed(this.focusedSlot.getStack());
 			}
-			//Bazaar Lookup
-			if (config.helpers.bazaar.enableBazaarLookup && BazaarHelper.BAZAAR_LOOKUP.matchesKey(keyCode, scanCode)) {
-				BazaarHelper.bazaarLookup(client.player, this.focusedSlot);
+			//Item Price Lookup
+			if (config.helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(keyCode, scanCode)) {
+				ItemPrice.itemPriceLookup(client.player, this.focusedSlot);
 			}
 			//Refresh Item Prices
-			if (config.helpers.bazaar.enableBazaarRefresh && BazaarHelper.BAZAAR_REFRESH.matchesKey(keyCode, scanCode)) {
-				BazaarHelper.refreshItemPrices(this.client.player);
+			if (config.helpers.itemPrice.enableItemPriceRefresh && ItemPrice.ITEM_PRICE_REFRESH.matchesKey(keyCode, scanCode)) {
+				ItemPrice.refreshItemPrices(this.client.player);
 			}
 		}
 	}

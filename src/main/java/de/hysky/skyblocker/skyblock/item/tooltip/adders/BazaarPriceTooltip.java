@@ -14,15 +14,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class BazaarPriceTooltip extends SimpleTooltipAdder {
-	public static boolean bazaarExist = false;
-
-	public BazaarPriceTooltip(int priority) {
+    public BazaarPriceTooltip(int priority) {
 		super(priority);
 	}
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		bazaarExist = false;
         String skyblockApiId = stack.getSkyblockApiId();
 
 		if (TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
@@ -46,7 +43,6 @@ public class BazaarPriceTooltip extends SimpleTooltipAdder {
 			              .append(product.sellPrice().isEmpty()
 					             ? Text.literal("No data").formatted(Formatting.RED)
 					              : ItemTooltip.getCoinsMessage(product.sellPrice().getAsDouble(), amount)));
-			bazaarExist = true;
 		}
 	}
 
