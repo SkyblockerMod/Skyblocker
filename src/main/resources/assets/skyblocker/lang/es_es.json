@@ -117,8 +117,6 @@
     "skyblocker.config.dungeons.doorHighlight": "Destacador de Puerta",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType": "Tipo de Destacado de Puerta",
     "skyblocker.config.dungeons.dungeonChestProfit": "Calculador de Ganancias para Cofres de Mazmorras",
-    "key.bazaarLookup": "Buscar en el Bazar",
-    "key.bazaarRefresh": "Refrescar el Bazar",
     "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Te advierte cuando seleccionas un arco y no tienes Veneno Tóxico para Flechas en tu inventario. Sólo funciona en la fase de daño.",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Advertencia de Peligro",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Muestra una advertencia cuando estás en riesgo de un tentaculazo o de la explosión de TNT. El color de la advertencia se adapta al nivel del peligro!",
