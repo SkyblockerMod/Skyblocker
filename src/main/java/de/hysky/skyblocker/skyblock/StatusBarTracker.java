@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 import java.util.regex.Matcher;
@@ -18,6 +20,7 @@ public class StatusBarTracker {
 
     private Resource health = new Resource(100, 100, 0);
     private Resource mana = new Resource(100, 100, 0);
+    private Resource speed = new Resource(100, 400, 0);
     private int defense = 0;
 
     public void init() {
@@ -37,6 +40,11 @@ public class StatusBarTracker {
         return this.defense;
     }
 
+    public Resource getSpeed() {
+        updateSpeed();
+        return this.speed;
+    }
+
     private int parseInt(Matcher m, int group) {
         return Integer.parseInt(m.group(group).replace(",", ""));
     }
@@ -46,6 +54,38 @@ public class StatusBarTracker {
         int max = parseInt(m, 3);
         int overflow = m.group(5) == null ? 0 : parseInt(m, 5);
         this.mana = new Resource(value, max, overflow);
+    }
+
+    private void updateSpeed() {
+        // Black cat and racing helm are untested - I don't have the money to test atm, but no reason why they shouldn't work
+        var player = MinecraftClient.getInstance().player;
+        int value = (int) (player.isSprinting() ? (player.getMovementSpeed() / 1.3f) * 1000 : player.getMovementSpeed() * 1000);
+        int max = 400; // hardcoded limit (except for with cactus knife, black cat, snail, racing helm, young drag)
+        if (player.getMainHandStack().getName().getString().contains("Cactus Knife") && Utils.getLocation() == Location.GARDEN) {
+            max = 500;
+        }
+        Iterable<ItemStack> armor = player.getArmorItems();
+        int youngDragCount = 0;
+        for (ItemStack armorPiece : armor) {
+            if (armorPiece.getName().getString().contains("Racing Helmet")) {
+                max = 500;
+            } else if (armorPiece.getName().getString().contains("Young Dragon")) {
+                youngDragCount++;
+            }
+        }
+        if (youngDragCount == 4) {
+            max = 500;
+        }
+
+        PetCache.PetInfo pet = PetCache.getCurrentPet();
+        if (pet != null) {
+            if (pet.type().contains("BLACK_CAT")) {
+                max = 500;
+            } else if (pet.type().contains("SNAIL")) {
+                max = 100;
+            }
+        }
+        this.speed = new Resource(value, max, 0);
     }
 
     private void updateHealth(Matcher m) {
