@@ -924,5 +924,12 @@
     "key.itemPriceLookup": "Bazaar查询",
     "skyblocker.config.helpers.itemPrice.refreshingItemPrices": "正在刷新物品价格……",
     "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "成功刷新物品价格",
-    "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "物品价格刷新失败"
+    "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "物品价格刷新失败",
+    "skyblocker.config.chat.waypoints.display": "[显示路径点]",
+    "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "使用F6键在集市和拍卖行中搜索当前鼠标所指的物品。",
+    "key.itemPriceRefresh": "集市刷新",
+    "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "启用物品价格查找",
+    "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "在集市和拍卖行中找不到该物品",
+    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "启用物品价格刷新",
+    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "使用Z键刷新集市和拍卖行价格。"
 }
