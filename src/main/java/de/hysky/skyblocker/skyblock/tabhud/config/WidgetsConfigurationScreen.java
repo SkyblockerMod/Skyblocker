@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.config.preview.PreviewTab;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.Screen;
@@ -22,7 +23,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerListener {
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -114,8 +118,8 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
     @Override
     protected void init() {
-        previewTab = new PreviewTab(this.client, this, false);
-        PreviewTab previewDungeons = new PreviewTab(this.client, this, true);
+        previewTab = new PreviewTab(this.client, this, noHandler ? PreviewTab.Mode.EDITABLE_LOCATION : PreviewTab.Mode.NORMAL);
+        PreviewTab previewDungeons = new PreviewTab(this.client, this, PreviewTab.Mode.DUNGEON);
         if (noHandler)  {
             this.tabNavigation = TabNavigationWidget.builder(this.tabManager, this.width)
                     .tabs(this.previewTab, previewDungeons)
@@ -240,5 +244,14 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
     @Override
     public boolean shouldPause() {
         return false;
+    }
+
+    public DropdownWidget<Location> createLocationDropdown(Consumer<Location> onLocationChanged) {
+        List<Location> locations = new ArrayList<>(List.of(Location.hudLocations()));
+        locations.remove(Location.DUNGEON); // there's already a tab for that
+        return new DropdownWidget<>(client, 0, 0, 50, 50, locations, location -> {
+            this.currentLocation = location;
+            onLocationChanged.accept(location);
+        }, locations.contains(currentLocation) ? currentLocation : Location.HUB);
     }
 }
