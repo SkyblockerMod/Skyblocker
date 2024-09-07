@@ -931,5 +931,6 @@
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "启用物品价格查找",
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "在集市和拍卖行中找不到该物品",
     "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "启用物品价格刷新",
-    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "使用Z键刷新集市和拍卖行价格。"
+    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "使用Z键刷新集市和拍卖行价格。",
+    "skyblocker.config.dungeons.professor": "教授"
 }
