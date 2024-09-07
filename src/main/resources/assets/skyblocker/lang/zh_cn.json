@@ -918,5 +918,6 @@
     "skyblocker.config.general.updateChannel.@Tooltip": "选择接收哪种更新的通知，可在正式版、测试版和开发版中选择。",
     "skyblocker.updateNotifications.newUpdateToast.title": "Skyblocker有新版本可用！",
     "skyblocker.updateNotifications.newUpdateMessage": "Skyblocker有新的更新！ %s",
-    "skyblocker.updateNotifications.newUpdateToast.description": "下载版本%s！"
+    "skyblocker.updateNotifications.newUpdateToast.description": "下载版本%s！",
+    "skyblocker.config.crimsonIsle.kuudra": "Kuudra"
 }
