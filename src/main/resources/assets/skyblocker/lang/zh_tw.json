@@ -13,7 +13,7 @@
     "skyblocker.config.chat.filter.hideAbility": "隱藏技能冷卻",
     "skyblocker.config.chat.filter.hideHeal": "隱藏治療訊息",
     "skyblocker.config.chat.filter.hideMana": "在動作欄中隱藏魔力消耗的提示訊息",
-    "skyblocker.config.uiAndVisuals.bars": "血量，魔力，防御以及經驗計量條",
+    "skyblocker.config.uiAndVisuals.bars": "血量，魔力，防御，速度以及經驗計量條",
     "skyblocker.config.chat": "訊息",
     "skyblocker.config.general.itemTooltip.avg": "平均類型",
     "skyblocker.config.uiAndVisuals.bars.enableBars": "啟用計量條",
@@ -917,5 +917,17 @@
     "skyblocker.updateNotifications.newUpdateToast.title": "Skyblocker有新版本可用！",
     "skyblocker.updateNotifications.newUpdateToast.description": "下載版本%s！",
     "skyblocker.config.general.updateChannel": "更新頻道",
-    "skyblocker.config.general.updateChannel.@Tooltip": "選擇接收哪一種更新的通知，可在正式版、測試版和開發版中選擇。"
+    "skyblocker.config.general.updateChannel.@Tooltip": "選擇接收哪一種更新的通知，可在正式版、測試版和開發版中選擇。",
+    "skyblocker.bars.config.speed": "速度",
+    "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "使用F6鍵在集市和拍賣行中搜尋目前滑鼠所指的物品。",
+    "key.itemPriceLookup": "集市查找",
+    "key.itemPriceRefresh": "集市刷新",
+    "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "啟用物品價格查找",
+    "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "在集市和拍賣行中找不到該物品",
+    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "啟用物品價格刷新",
+    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "使用Z鍵刷新集市和拍賣行價格。",
+    "skyblocker.config.helpers.itemPrice.refreshingItemPrices": "正在刷新物品價格……",
+    "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "成功刷新物品價格",
+    "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "物品價格刷新失敗。",
+    "skyblocker.config.chat.waypoints.display": "[顯示路徑點]"
 }
