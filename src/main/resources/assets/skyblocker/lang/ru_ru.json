@@ -262,7 +262,7 @@
     "skyblocker.config.uiAndVisuals.teleportOverlay.enableTeleportOverlays": "Включить оверлеи телепортации",
     "skyblocker.config.slayer.vampireSlayer.maniaUpdateFrequency": "Частота обновления индикатора Mania (тики)",
     "text.skyblocker.quit_config": "Изменения не сохранены",
-    "text.skyblocker.quit_config_sure": "Вы уверены, что хотите прекратить редактировать настройки? Изменения не будут сохранены!",
+    "text.skyblocker.quit_config_sure": "Вы уверены, что хотите прекратить редактирование настроек? Изменения не будут сохранены!",
     "text.skyblocker.open": "Открыть",
     "text.skyblocker.quit_discard": "Выйти и отменить изменения",
     "skyblocker.config.general.shortcuts.config": "Настройка сокращений...",
