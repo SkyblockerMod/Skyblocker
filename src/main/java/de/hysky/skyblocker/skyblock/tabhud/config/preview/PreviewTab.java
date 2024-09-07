@@ -1,7 +1,8 @@
-package de.hysky.skyblocker.skyblock.tabhud.config;
+package de.hysky.skyblocker.skyblock.tabhud.config.preview;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.InGameHudInvoker;
+import de.hysky.skyblocker.skyblock.tabhud.config.DungeonsTabPlaceholder;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
@@ -11,6 +12,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -23,7 +25,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ScrollableWidget;
 import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScoreHolder;
 import net.minecraft.scoreboard.Scoreboard;
@@ -36,11 +37,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -49,27 +48,28 @@ public class PreviewTab implements Tab {
 
     public static final int RIGHT_SIDE_WIDTH = 120;
 
-    private final MinecraftClient client;
+    final MinecraftClient client;
     private final PreviewWidget previewWidget;
-    private final WidgetsConfigurationScreen parent;
+    final WidgetsConfigurationScreen parent;
     private final WidgetOptionsScrollable widgetOptions;
-    private final boolean dungeon;
+    private final Mode mode;
     private final ButtonWidget restorePositioning;
     private ScreenMaster.ScreenLayer currentScreenLayer = ScreenMaster.ScreenLayer.MAIN_TAB;
     private final ButtonWidget[] layerButtons;
     private final TextWidget textWidget;
-    private final ScoreboardObjective placeHolderObjective;
+    final ScoreboardObjective placeHolderObjective;
+    final DropdownWidget<Location> locationDropdown;
 
-    public PreviewTab(MinecraftClient client, WidgetsConfigurationScreen parent, boolean dungeon) {
+    public PreviewTab(MinecraftClient client, WidgetsConfigurationScreen parent, Mode mode) {
         this.client = client;
         this.parent = parent;
-        this.dungeon = dungeon;
+        this.mode = mode;
         this.textWidget = new TextWidget(
                 Text.literal("This tab is specifically for dungeons, as it currently doesn't have hypixel's system"),
                 client.textRenderer
         );
 
-        previewWidget = new PreviewWidget();
+        previewWidget = new PreviewWidget(this);
         widgetOptions = new WidgetOptionsScrollable();
         widgetOptions.setWidth(RIGHT_SIDE_WIDTH - 10);
 
@@ -119,6 +119,7 @@ public class PreviewTab implements Tab {
         scoreboard.getOrCreateScore(createHolder(Text.literal("NEVER GONNA GIVE Y-")), placeHolderObjective).setScore(-10);
 
         ScreenMaster.getScreenBuilder(getCurrentLocation()).positionWidgets(client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight());
+        locationDropdown = parent.createLocationDropdown(location -> updateWidgets());
     }
 
     private ScoreHolder createHolder(Text name) {
@@ -143,34 +144,44 @@ public class PreviewTab implements Tab {
 
     @Override
     public Text getTitle() {
-        return Text.literal(dungeon ? "Dungeons Editing" : "Preview");
+        return Text.literal(mode == Mode.DUNGEON ? "Dungeons Editing" : "Preview");
     }
 
     @Override
     public void forEachChild(Consumer<ClickableWidget> consumer) {
+        if (mode == Mode.EDITABLE_LOCATION) consumer.accept(locationDropdown);
         consumer.accept(previewWidget);
         for (ButtonWidget layerButton : layerButtons) {
             consumer.accept(layerButton);
         }
         consumer.accept(widgetOptions);
         consumer.accept(restorePositioning);
-        if (dungeon) consumer.accept(textWidget);
+        if (mode == Mode.DUNGEON) consumer.accept(textWidget);
     }
 
     @Override
     public void refreshGrid(ScreenRect tabArea) {
         float ratio = Math.min((tabArea.height() - 35) / (float) (parent.height), (tabArea.width() - RIGHT_SIDE_WIDTH - 5) / (float) (parent.width));
+
         previewWidget.setPosition(5, tabArea.getTop() + 5);
         previewWidget.setWidth((int) (parent.width * ratio));
         previewWidget.setHeight((int) (parent.height * ratio));
         previewWidget.ratio = ratio;
         updateWidgets();
 
+        int startY = tabArea.getTop() + 10;
+        if (mode == Mode.EDITABLE_LOCATION) {
+            locationDropdown.setWidth(RIGHT_SIDE_WIDTH - 5);
+            locationDropdown.setPosition(tabArea.getRight() - locationDropdown.getWidth() - 2, startY);
+            locationDropdown.setMaxHeight(Math.min(180, tabArea.height() - 20));
+            startY += DropdownWidget.ENTRY_HEIGHT + 4 + 10;
+        }
+
         for (int i = 0; i < layerButtons.length; i++) {
             ButtonWidget layerButton = layerButtons[i];
-            layerButton.setPosition(tabArea.width() - layerButton.getWidth() - 10, tabArea.getTop() + 10 + i * 15);
+            layerButton.setPosition(tabArea.width() - layerButton.getWidth() - 10, startY + i * 15);
         }
-        int optionsY = tabArea.getTop() + 10 + layerButtons.length * 15 + 5;
+        int optionsY = startY + layerButtons.length * 15 + 5;
         widgetOptions.setPosition(tabArea.width() - widgetOptions.getWidth() - 5, optionsY);
         widgetOptions.setHeight(tabArea.height() - optionsY - 5);
         textWidget.setWidth(tabArea.width());
@@ -181,7 +192,7 @@ public class PreviewTab implements Tab {
     }
 
     private void updatePlayerListFromPreview() {
-        if (dungeon) {
+        if (mode == Mode.DUNGEON) {
             PlayerListMgr.updateDungeons(DungeonsTabPlaceholder.get());
             return;
         }
@@ -233,6 +244,12 @@ public class PreviewTab implements Tab {
         updatePlayerListFromPreview();
         float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
         screenBuilder.positionWidgets((int) (parent.width / scale), (int) (parent.height / scale));
+    }
+
+    public enum Mode {
+        NORMAL,
+        DUNGEON,
+        EDITABLE_LOCATION
     }
 
     void onHudWidgetSelected(@Nullable HudWidget hudWidget) {
@@ -322,7 +339,7 @@ public class PreviewTab implements Tab {
             widgetOptions.addWidget(new AnchorSelectionWidget(width, Text.literal("Parent anchor"), true));
 
             // apply to all locations
-            if (dungeon) return;
+            if (mode == Mode.DUNGEON) return;
             // padding thing
             widgetOptions.addWidget(new ClickableWidget(0, 0, width, 20, Text.empty()) {
                 @Override
@@ -352,276 +369,12 @@ public class PreviewTab implements Tab {
         }
     }
 
-    private Location getCurrentLocation() {
-        return dungeon ? Location.DUNGEON : parent.getCurrentLocation();
+    public Location getCurrentLocation() {
+        return mode == Mode.DUNGEON ? Location.DUNGEON : parent.getCurrentLocation();
     }
 
-    /**
-     * The preview widget that captures clicks and displays the current state of the widgets.
-     */
-    public class PreviewWidget extends ClickableWidget {
-
-        private float ratio = 1f;
-        private float scaledRatio = 1f;
-        private float scaledScreenWidth = parent.width;
-        private float scaledScreenHeight = parent.height;
-        /**
-         * The widget the user is hovering with the mouse
-         */
-        private @Nullable HudWidget hoveredWidget = null;
-        /**
-         * The selected widget, settings for it show on the right, and it can be dragged around
-         */
-        private @Nullable HudWidget selectedWidget = null;
-        /**
-         * The original pos, of the selected widget, it is set when you click on it. So when it's done being dragged it can be compared.
-         * Effectively, if this ain't null, the user is dragging a widget around.
-         */
-        private @Nullable ScreenPos selectedOriginalPos = null;
-        protected boolean pickParent = false;
-
-        public PreviewWidget() {
-            super(0, 0, 0, 0, Text.literal("Preview widget"));
-        }
-
-        @Override
-        protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-            hoveredWidget = null;
-            float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
-            scaledRatio = ratio * scale;
-            scaledScreenWidth = parent.width / scale;
-            scaledScreenHeight = parent.height / scale;
-
-            ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
-            context.drawBorder(getX() - 1, getY() - 1, getWidth() + 2, getHeight() + 2, -1);
-            context.enableScissor(getX(), getY(), getRight(), getBottom());
-            MatrixStack matrices = context.getMatrices();
-            matrices.push();
-            matrices.translate(getX(), getY(), 0f);
-            matrices.scale(scaledRatio, scaledRatio, 1f);
-
-            screenBuilder.renderWidgets(context, PreviewTab.this.currentScreenLayer);
-
-            float localMouseX = (mouseX - getX()) / scaledRatio;
-            float localMouseY = (mouseY - getY()) / scaledRatio;
-
-            if (selectedWidget != null && selectedWidget.isMouseOver(localMouseX, localMouseY)) {
-                hoveredWidget = selectedWidget;
-            } else for (HudWidget hudWidget : screenBuilder.getHudWidgets(PreviewTab.this.currentScreenLayer)) {
-                if (hudWidget.isMouseOver(localMouseX, localMouseY)) {
-                    hoveredWidget = hudWidget;
-                    break;
-                }
-            }
-
-            // Counter-attack the translation in the widgets
-            matrices.translate(0.f, 0.f, 350.f);
-
-            // HOVERED
-            if (hoveredWidget != null && !hoveredWidget.equals(selectedWidget)) {
-                context.drawBorder(
-                        hoveredWidget.getX() - 1,
-                        hoveredWidget.getY() - 1,
-                        hoveredWidget.getWidth() + 2,
-                        hoveredWidget.getHeight() + 2,
-                        Colors.LIGHT_YELLOW);
-            }
-
-            // SELECTED
-            if (selectedWidget != null) {
-                //noinspection DataFlowIssue
-                context.drawBorder(
-                        selectedWidget.getX() - 1,
-                        selectedWidget.getY() - 1,
-                        selectedWidget.getWidth() + 2,
-                        selectedWidget.getHeight() + 2,
-                        Formatting.GREEN.getColorValue() | 0xFF000000);
-
-                PositionRule rule = screenBuilder.getPositionRule(selectedWidget.getInternalID());
-                if (rule != null) {
-                    // TODO: rename that maybe that's a bit wack
-                    int relativeX = 0;
-                    int relativeY = 0;
-                    if (selectedOriginalPos != null) {
-                        relativeX = selectedWidget.getX() - selectedOriginalPos.x();
-                        relativeY = selectedWidget.getY() - selectedOriginalPos.y();
-                    }
-                    int thisAnchorX = (int) (selectedWidget.getX() + rule.thisPoint().horizontalPoint().getPercentage() * selectedWidget.getWidth());
-                    int thisAnchorY = (int) (selectedWidget.getY() + rule.thisPoint().verticalPoint().getPercentage() * selectedWidget.getHeight());
-
-                    int translatedX = Math.min(thisAnchorX - rule.relativeX() - relativeX, (int) scaledScreenWidth - 2);
-                    int translatedY = Math.min(thisAnchorY - rule.relativeY() - relativeY, (int) scaledScreenHeight - 2);
-
-                    renderUnits(context, relativeX, rule, thisAnchorX, thisAnchorY, relativeY, translatedX, translatedY);
-
-                    context.drawHorizontalLine(translatedX, thisAnchorX, thisAnchorY + 1, 0xAAAA0000);
-                    context.drawVerticalLine(translatedX + 1, translatedY, thisAnchorY, 0xAAAA0000);
-
-
-                    context.drawHorizontalLine(translatedX, thisAnchorX, thisAnchorY, Colors.RED);
-                    context.drawVerticalLine(translatedX, translatedY, thisAnchorY, Colors.RED);
-                }
-            }
-
-            matrices.pop();
-            matrices.push();
-            matrices.translate(getX(), getY(), 0.f);
-            matrices.scale(ratio, ratio, 1.f);
-            ((InGameHudInvoker) MinecraftClient.getInstance().inGameHud).skyblocker$renderSidebar(context, placeHolderObjective);
-            matrices.pop();
-            context.disableScissor();
-        }
-
-        private void renderUnits(DrawContext context, int relativeX, PositionRule rule, int thisAnchorX, int thisAnchorY, int relativeY, int translatedX, int translatedY) {
-            boolean xUnitOnTop = rule.relativeY() > 0;
-            if (xUnitOnTop && thisAnchorY < 10) xUnitOnTop = false;
-            if (!xUnitOnTop && thisAnchorY > scaledScreenHeight - 10) xUnitOnTop = true;
-
-            String yUnitText = String.valueOf(rule.relativeY() + relativeY);
-            int yUnitTextWidth = client.textRenderer.getWidth(yUnitText);
-            boolean yUnitOnRight = rule.relativeX() > 0;
-            if (yUnitOnRight && translatedX + 2 + yUnitTextWidth >= scaledScreenWidth) yUnitOnRight = false;
-            if (!yUnitOnRight && translatedX - 2 - yUnitTextWidth <= 0) yUnitOnRight = true;
-
-            // X
-            context.drawCenteredTextWithShadow(client.textRenderer, String.valueOf(relativeX + rule.relativeX()), thisAnchorX - (relativeX + rule.relativeX()) / 2, xUnitOnTop ? thisAnchorY - 9 : thisAnchorY + 2, Colors.LIGHT_RED);
-            // Y
-            context.drawText(client.textRenderer, yUnitText, yUnitOnRight ? translatedX + 2 : translatedX - 1 - yUnitTextWidth, thisAnchorY - (relativeY + rule.relativeY() - 9) / 2, Colors.LIGHT_RED, true);
-        }
-
-        @Override
-        protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-        }
-
-        private double bufferedDeltaX = 0;
-        private double bufferedDeltaY = 0;
-
-        @Override
-        protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-            double localDeltaX = deltaX / scaledRatio + bufferedDeltaX;
-            double localDeltaY = deltaY / scaledRatio + bufferedDeltaY;
-
-            bufferedDeltaX = localDeltaX - (int) localDeltaX;
-            bufferedDeltaY = localDeltaY - (int) localDeltaY;
-
-            if (selectedWidget != null && selectedOriginalPos != null) {
-                selectedWidget.setX(selectedWidget.getX() + (int) localDeltaX);
-                selectedWidget.setY(selectedWidget.getY() + (int) localDeltaY);
-            }
-        }
-
-        @Override
-        public void onRelease(double mouseX, double mouseY) {
-            if (pickParent) {
-                pickParent = false;
-                return;
-            }
-            if (!Objects.equals(hoveredWidget, selectedWidget)) {
-                PreviewTab.this.onHudWidgetSelected(hoveredWidget);
-            }
-            // TODO releasing a widget outside of the area causes weird behavior, might wanna look into that
-            // Update positioning real
-            if (selectedWidget != null && selectedOriginalPos != null) {
-                ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
-                PositionRule oldRule = screenBuilder.getPositionRule(selectedWidget.getInternalID());
-                if (oldRule == null) oldRule = PositionRule.DEFAULT;
-                int relativeX = selectedWidget.getX() - selectedOriginalPos.x();
-                int relativeY = selectedWidget.getY() - selectedOriginalPos.y();
-                screenBuilder.setPositionRule(selectedWidget.getInternalID(), new PositionRule(
-                        oldRule.parent(),
-                        oldRule.parentPoint(),
-                        oldRule.thisPoint(),
-                        oldRule.relativeX() + relativeX,
-                        oldRule.relativeY() + relativeY,
-                        oldRule.screenLayer()));
-                updateWidgets();
-            }
-
-            selectedWidget = hoveredWidget;
-            selectedOriginalPos = null;
-            super.onRelease(mouseX, mouseY);
-        }
-
-        @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            if (!(this.active && this.visible && isMouseOver(mouseX, mouseY))) return false;
-            double localMouseX = (mouseX - getX()) / scaledRatio;
-            double localMouseY = (mouseY - getY()) / scaledRatio;
-            if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
-                List<HudWidget> hoveredThingies = new ArrayList<>();
-                for (HudWidget hudWidget : ScreenMaster.getScreenBuilder(getCurrentLocation()).getHudWidgets(currentScreenLayer)) {
-                    if (hudWidget.isMouseOver(localMouseX, localMouseY)) hoveredThingies.add(hudWidget);
-                }
-                if (hoveredThingies.size() == 1) selectedWidget = hoveredThingies.getFirst();
-                else if (!hoveredThingies.isEmpty()) {
-                    for (int i = 0; i < hoveredThingies.size(); i++) {
-                        if (hoveredThingies.get(i).equals(hoveredWidget)) {
-                            selectedWidget = hoveredThingies.get((i + 1) % hoveredThingies.size());
-                        }
-                    }
-                }
-                return true;
-            }
-            ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
-            if (pickParent && selectedWidget != null && !selectedWidget.equals(hoveredWidget)) {
-                PositionRule oldRule = screenBuilder.getPositionRule(selectedWidget.getInternalID());
-                if (oldRule == null) oldRule = PositionRule.DEFAULT;
-
-                int thisAnchorX = (int) (selectedWidget.getX() + oldRule.thisPoint().horizontalPoint().getPercentage() * selectedWidget.getWidth());
-                int thisAnchorY = (int) (selectedWidget.getY() + oldRule.thisPoint().verticalPoint().getPercentage() * selectedWidget.getHeight());
-
-                int otherAnchorX = hoveredWidget == null ? 0 : hoveredWidget.getX();
-                int otherAnchorY = hoveredWidget == null ? 0 : hoveredWidget.getY();
-
-                PositionRule newRule = new PositionRule(
-                        hoveredWidget == null ? "screen" : hoveredWidget.getInternalID(),
-                        PositionRule.Point.DEFAULT,
-                        oldRule.thisPoint(),
-                        thisAnchorX - otherAnchorX,
-                        thisAnchorY - otherAnchorY,
-                        oldRule.screenLayer()
-                );
-                screenBuilder.setPositionRule(selectedWidget.getInternalID(), newRule);
-                updateWidgets();
-                PreviewTab.this.onHudWidgetSelected(selectedWidget);
-                return true;
-            }
-
-
-
-            if (selectedWidget != null && selectedWidget.isMouseOver(localMouseX, localMouseY) &&
-                    screenBuilder.getPositionRule(selectedWidget.getInternalID()) != null) {
-                selectedOriginalPos = new ScreenPos(selectedWidget.getX(), selectedWidget.getY());
-            }
-            return true;
-        }
-
-        @Override
-        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-            if (hoveredWidget != null && hoveredWidget.equals(selectedWidget)) {
-                int multiplier = (modifiers & GLFW.GLFW_MOD_CONTROL) != 0 ? 5 : 1;
-                int x = 0, y = 0;
-                switch (keyCode) {
-                    case GLFW.GLFW_KEY_UP -> y = -multiplier;
-                    case GLFW.GLFW_KEY_DOWN -> y = multiplier;
-                    case GLFW.GLFW_KEY_LEFT -> x = -multiplier;
-                    case GLFW.GLFW_KEY_RIGHT -> x = multiplier;
-                }
-                ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
-                PositionRule oldRule = screenBuilder.getPositionRuleOrDefault(selectedWidget.getInternalID());
-
-                screenBuilder.setPositionRule(selectedWidget.getInternalID(), new PositionRule(
-                        oldRule.parent(),
-                        oldRule.parentPoint(),
-                        oldRule.thisPoint(),
-                        oldRule.relativeX() + x,
-                        oldRule.relativeY() + y,
-                        oldRule.screenLayer()));
-                updateWidgets();
-                return true;
-            }
-            return super.keyPressed(keyCode, scanCode, modifiers);
-        }
+    public ScreenMaster.ScreenLayer getCurrentScreenLayer() {
+        return currentScreenLayer;
     }
 
     private static class WidgetOptionsScrollable extends ScrollableWidget {
