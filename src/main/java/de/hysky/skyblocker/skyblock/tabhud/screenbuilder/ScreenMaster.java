@@ -153,16 +153,16 @@ public class ScreenMaster {
     public static void init() {
         SkyblockEvents.LOCATION_CHANGE.register(location -> ScreenBuilder.positionsNeedsUpdating = true);
 
-		instantiateWidgets();
-
-		for (int i = 1; i < 6; i++) {
-			DungeonPlayerWidget widget = new DungeonPlayerWidget(i);
-			addWidgetInstance(widget);
-			PlayerListMgr.tabWidgetInstances.put(widget.getHypixelWidgetName(), widget);
-		}
-
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-            fillDefaultConfig();
+
+			instantiateWidgets();
+			for (int i = 1; i < 6; i++) {
+				DungeonPlayerWidget widget = new DungeonPlayerWidget(i);
+				addWidgetInstance(widget);
+				PlayerListMgr.tabWidgetInstances.put(widget.getHypixelWidgetName(), widget);
+			}
+
+			fillDefaultConfig();
             loadConfig();
 
         });
