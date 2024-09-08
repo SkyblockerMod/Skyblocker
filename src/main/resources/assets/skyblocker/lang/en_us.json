@@ -653,6 +653,9 @@
   "skyblocker.config.slayer.blazeSlayer.attunementHighlights" : "Attunement Highlights",
   "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "If Boss Highlighting is on, applies a color matching the current attunement to the selected effect.",
 
+  "skyblocker.config.slayer.bossbar": "Slayer Bossbar",
+  "skyblocker.config.slayer.bossbar.@Tooltip": "Displays a bossbar for your active slayer boss",
+
   "skyblocker.config.slayer.endermanSlayer": "Enderman Slayer",
   "skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification": "Enable Yang Glyphs notification",
   "skyblocker.config.slayer.endermanSlayer.highlightBeacons": "Beacon Highlighting",

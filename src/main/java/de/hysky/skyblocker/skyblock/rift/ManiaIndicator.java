@@ -22,11 +22,11 @@ public class ManiaIndicator {
             return;
         }
 
-        Entity slayerEntity = SlayerUtils.getSlayerEntity();
+        Entity slayerEntity = SlayerUtils.getSlayerArmorStandEntity();
         if (slayerEntity == null) return;
 
         boolean anyMania = false;
-        for (Entity entity : SlayerUtils.getEntityArmorStands(slayerEntity)) {
+        for (Entity entity : SlayerUtils.getEntityArmorStands(slayerEntity, 2.5f)) {
             if (entity.getDisplayName().toString().contains("MANIA")) {
                 anyMania = true;
                 BlockPos pos = MinecraftClient.getInstance().player.getBlockPos().down();

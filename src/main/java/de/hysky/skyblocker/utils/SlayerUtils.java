@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 //TODO Slayer Packet system that can provide information about the current slayer boss, abstract so that different bosses can have different info
 public class SlayerUtils {
+    private static ArmorStandEntity slayerArmorStandEntity;
     public static final String REVENANT = "Revenant Horror";
     public static final String TARA = "Tarantula Broodfather";
     public static final String SVEN = "Sven Packmaster";
@@ -19,15 +20,20 @@ public class SlayerUtils {
     public static final String VAMPIRE = "Riftstalker Bloodfiend";
     public static final String DEMONLORD = "Inferno Demonlord";
     private static final Logger LOGGER = LoggerFactory.getLogger(SlayerUtils.class);
-    private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend");
+    public static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend");
 
     //TODO: Cache this, probably included in Packet system
-    public static List<Entity> getEntityArmorStands(Entity entity) {
-        return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.3F, 2.5F, 0.3F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
+    public static List<Entity> getEntityArmorStands(Entity entity, float expandY) {
+        return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.3F, expandY, 0.3F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
     }
 
     //Eventually this should be modified so that if you hit a slayer boss all slayer features will work on that boss.
-    public static Entity getSlayerEntity() {
+    public static ArmorStandEntity getSlayerArmorStandEntity() {
+		// TODO: This should be set when the system to detect isInSlayer is made event-driven
+        if (slayerArmorStandEntity != null && slayerArmorStandEntity.isAlive()) {
+            return slayerArmorStandEntity;
+        }
+
         if (MinecraftClient.getInstance().world != null) {
             for (Entity entity : MinecraftClient.getInstance().world.getEntities()) {
                 if (entity.hasCustomName()) {
@@ -35,22 +41,27 @@ public class SlayerUtils {
                     Matcher matcher = SLAYER_PATTERN.matcher(entityName);
                     if (matcher.find()) {
                         String username = MinecraftClient.getInstance().getSession().getUsername();
-                        for (Entity armorStand : getEntityArmorStands(entity)) {
+                        for (Entity armorStand : getEntityArmorStands(entity, 1.5f)) {
                             if (armorStand.getDisplayName().getString().contains(username)) {
-                                return entity;
+                                slayerArmorStandEntity = (ArmorStandEntity) entity;
+                                return slayerArmorStandEntity;
                             }
                         }
                     }
                 }
             }
         }
+
+        slayerArmorStandEntity = null;
         return null;
     }
 
     public static boolean isInSlayer() {
         try {
             for (String line : Utils.STRING_SCOREBOARD) {
-                if (line.contains("Slay the boss!")) return true;
+                if (line.contains("Slay the boss!")) {
+					return true;
+				}
             }
         } catch (NullPointerException e) {
             LOGGER.error("[Skyblocker] Error while checking if player is in slayer", e);

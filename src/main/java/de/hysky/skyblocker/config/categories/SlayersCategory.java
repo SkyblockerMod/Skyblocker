@@ -42,6 +42,15 @@ public class SlayersCategory {
                                 newValue -> config.slayers.highlightBosses = newValue)
                         .controller(ConfigUtils::createEnumCyclingListController)
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.bossbar"))
+						.description(OptionDescription.of(
+								Text.translatable("skyblocker.config.slayer.bossbar.@Tooltip")))
+						.binding(defaults.slayers.displayBossbar,
+								() -> config.slayers.displayBossbar,
+								newValue -> config.slayers.displayBossbar = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
                 //Enderman Slayer
                 .group(OptionGroup.createBuilder()

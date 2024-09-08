@@ -17,7 +17,7 @@ public class AttunementColors {
      */
     public static int getColor(LivingEntity e) {
         if (!SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights) return 0xf57738;
-        for (Entity entity : SlayerUtils.getEntityArmorStands(e)) {
+        for (Entity entity : SlayerUtils.getEntityArmorStands(e, 2.5f)) {
             Matcher matcher = COLOR_PATTERN.matcher(entity.getDisplayName().getString());
             if (matcher.find()) {
                 String matchedColour = matcher.group();

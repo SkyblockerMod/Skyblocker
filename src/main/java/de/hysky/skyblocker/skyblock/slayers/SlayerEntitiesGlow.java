@@ -66,7 +66,7 @@ public class SlayerEntitiesGlow {
     }
 
     public static boolean isSlayer(LivingEntity e) {
-        return SlayerUtils.isInSlayer() && SlayerUtils.getEntityArmorStands(e).stream().anyMatch(entity ->
+        return SlayerUtils.isInSlayer() && SlayerUtils.getEntityArmorStands(e, 2.5f).stream().anyMatch(entity ->
                 entity.getDisplayName().getString().contains(MinecraftClient.getInstance().getSession().getUsername()));
     }
 
