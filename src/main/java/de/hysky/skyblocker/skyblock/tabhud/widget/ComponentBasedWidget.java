@@ -83,7 +83,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public final void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         MatrixStack ms = context.getMatrices();
 
         // not sure if this is the way to go, but it fixes Z-layer issues
@@ -145,6 +145,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
         // min width is dependent on title
         w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + txtRend.getWidth(title) + 4 + 4 + 1);
+		// update the positions so it doesn't wait for the next tick or something
         if (h != prevH || w != prevW) ScreenBuilder.positionsNeedsUpdating = true;
         prevW = w;
         prevH = h;
