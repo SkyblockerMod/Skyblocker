@@ -81,7 +81,7 @@ public class CrystalsHudWidget extends HudWidget {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         float scale = SkyblockerConfigManager.get().mining.crystalsHud.mapScaling;
 
         //make sure the map renders infront of some stuff - improve this in the future with better layering (1.20.5?)
