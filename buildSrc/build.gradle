@@ -16,7 +16,7 @@ gradlePlugin {
 		simplePlugin {
 			id = 'de.hysky.skyblocker.annotation-processor'
 			// The plugin entry point could be changed to a different class that then appropriately calls the different processors when there's more than one.
-			implementationClass = 'de.hysky.skyblocker.init.InitProcessor'
+			implementationClass = 'de.hysky.skyblocker.Processor'
 		}
 	}
 }
