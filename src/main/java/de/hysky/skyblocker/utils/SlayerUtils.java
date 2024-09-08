@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 //TODO Slayer Packet system that can provide information about the current slayer boss, abstract so that different bosses can have different info
 public class SlayerUtils {
-    private static ArmorStandEntity slayerArmorstandEntity;
+    private static ArmorStandEntity slayerArmorStandEntity;
     public static final String REVENANT = "Revenant Horror";
     public static final String TARA = "Tarantula Broodfather";
     public static final String SVEN = "Sven Packmaster";
@@ -23,15 +23,15 @@ public class SlayerUtils {
     public static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend");
 
     //TODO: Cache this, probably included in Packet system
-    public static List<Entity> getEntityArmorStands(Entity entity, float scanHeight) {
-        return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.3F, scanHeight, 0.3F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
+    public static List<Entity> getEntityArmorStands(Entity entity, float expandY) {
+        return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.3F, expandY, 0.3F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
     }
 
     //Eventually this should be modified so that if you hit a slayer boss all slayer features will work on that boss.
-    public static ArmorStandEntity getSlayerArmorstandEntity() {
+    public static ArmorStandEntity getSlayerArmorStandEntity() {
 		// TODO: This should be set when the system to detect isInSlayer is made event-driven
-        if (slayerArmorstandEntity != null && slayerArmorstandEntity.isAlive()) {
-            return slayerArmorstandEntity;
+        if (slayerArmorStandEntity != null && slayerArmorStandEntity.isAlive()) {
+            return slayerArmorStandEntity;
         }
 
         if (MinecraftClient.getInstance().world != null) {
@@ -43,8 +43,8 @@ public class SlayerUtils {
                         String username = MinecraftClient.getInstance().getSession().getUsername();
                         for (Entity armorStand : getEntityArmorStands(entity, 1.5f)) {
                             if (armorStand.getDisplayName().getString().contains(username)) {
-                                slayerArmorstandEntity = (ArmorStandEntity) entity;
-                                return slayerArmorstandEntity;
+                                slayerArmorStandEntity = (ArmorStandEntity) entity;
+                                return slayerArmorStandEntity;
                             }
                         }
                     }
@@ -52,7 +52,7 @@ public class SlayerUtils {
             }
         }
 
-        slayerArmorstandEntity = null;
+        slayerArmorStandEntity = null;
         return null;
     }
 

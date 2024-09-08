@@ -22,7 +22,7 @@ public class ManiaIndicator {
             return;
         }
 
-        Entity slayerEntity = SlayerUtils.getSlayerArmorstandEntity();
+        Entity slayerEntity = SlayerUtils.getSlayerArmorStandEntity();
         if (slayerEntity == null) return;
 
         boolean anyMania = false;

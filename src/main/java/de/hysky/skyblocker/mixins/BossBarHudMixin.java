@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerBossBars;
 import net.minecraft.client.MinecraftClient;
@@ -29,7 +28,7 @@ public abstract class BossBarHudMixin {
     private void onRender(DrawContext context, CallbackInfo ci) {
 
         if (SkyblockerConfigManager.get().slayers.displayBossbar && SlayerBossBars.shouldRenderBossBar()) {
-            ClientBossBar bar = SlayerBossBars.getBossBar();
+            ClientBossBar bar = SlayerBossBars.updateBossBar();
 
             int textWidth = this.client.textRenderer.getWidth(bar.getName());
             context.drawTextWithShadow(this.client.textRenderer, bar.getName(), context.getScaledWindowWidth() / 2 - textWidth / 2, 3, 16777215);

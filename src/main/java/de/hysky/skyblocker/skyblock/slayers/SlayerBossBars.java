@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SlayerBossBars {
-
     private static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d+(?:\\.\\d+)?[kM]?)(?=❤)");
     private static int bossMaxHealth = -1;
     private static long lastUpdateTime = 0;
@@ -19,41 +18,50 @@ public class SlayerBossBars {
     private static ClientBossBar bossBar;
     public static final UUID uuid = UUID.randomUUID();
 
+	/**
+	 * Determines if the boss bar should be rendered and updates the max health of the boss.
+	 * Has a 400ms cooldown built-in.
+	 */
     public static boolean shouldRenderBossBar() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastUpdateTime < UPDATE_INTERVAL) {
             return bossBar != null;
         }
-
         lastUpdateTime = currentTime;
 
+        // Reset if no slayer
         if (!SlayerUtils.isInSlayer()) {
             bossMaxHealth = -1;
             bossBar = null;
             return false;
         }
 
-        if (SlayerUtils.getSlayerArmorstandEntity() != null && bossMaxHealth == -1) {
-            Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(SlayerUtils.getSlayerArmorstandEntity().getDisplayName().getString());
+        // Update boss max health
+        if (SlayerUtils.getSlayerArmorStandEntity() != null && bossMaxHealth == -1) {
+            Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(SlayerUtils.getSlayerArmorStandEntity().getName().getString());
             if (maxHealthMatcher.find()) bossMaxHealth = convertToInt(maxHealthMatcher.group(0));
         }
 
-        return bossBar != null || SlayerUtils.getSlayerArmorstandEntity() != null;
+        return bossBar != null || SlayerUtils.getSlayerArmorStandEntity() != null;
     }
 
-    public static ClientBossBar getBossBar() {
-        ArmorStandEntity slayer = SlayerUtils.getSlayerArmorstandEntity();
+	/**
+	 * Updates the boss bar with the current slayer's health, called every frame.
+	 * @return The updated boss bar.
+	 */
+    public static ClientBossBar updateBossBar() {
+        ArmorStandEntity slayer = SlayerUtils.getSlayerArmorStandEntity();
         if (bossBar == null) bossBar = new ClientBossBar(uuid, slayer != null ? slayer.getDisplayName() : Text.of("Attempting to Locate Slayer..."), 1f, BossBar.Color.PURPLE, BossBar.Style.PROGRESS, false, false, false);
 
+		// If no slayer armor stand is found, display a red progress bar
         if (slayer == null) {
-            if (SlayerUtils.isInSlayer()){
-                bossBar.setStyle(BossBar.Style.PROGRESS);
-                bossBar.setColor(BossBar.Color.RED);
-            }
+            bossBar.setStyle(BossBar.Style.PROGRESS);
+            bossBar.setColor(BossBar.Color.RED);
             return bossBar;
         }
 
-        Matcher healthMatcher = HEALTH_PATTERN.matcher(slayer.getCustomName().getString());
+		// Update the boss bar with the current slayer's health
+        Matcher healthMatcher = HEALTH_PATTERN.matcher(slayer.getName().getString());
         if (healthMatcher.find() && slayer.isAlive()) {
             bossBar.setPercent(bossMaxHealth == -1 ? 1f : (float) convertToInt(healthMatcher.group(1)) / bossMaxHealth);
             bossBar.setColor(BossBar.Color.PINK);
