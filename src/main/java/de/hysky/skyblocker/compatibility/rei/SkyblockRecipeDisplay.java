@@ -9,6 +9,9 @@ import net.minecraft.util.Identifier;
 
 import java.util.List;
 
+/**
+ * Skyblock Crafting Recipe display class for REI
+ */
 public class SkyblockRecipeDisplay implements Display {
 
     private final Identifier category;
