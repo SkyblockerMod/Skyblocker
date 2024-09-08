@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.end;
 
 import com.mojang.authlib.properties.PropertyMap;
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
@@ -18,10 +19,11 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Optional;
 
+@RegisterWidget
 public class EndHudWidget extends ComponentBasedWidget {
     private static final MutableText TITLE = Text.literal("The End").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
 
-    public static final EndHudWidget INSTANCE = new EndHudWidget(TITLE, Formatting.DARK_PURPLE.getColorValue());
+    public static final EndHudWidget INSTANCE = new EndHudWidget();
     private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
     private static final ItemStack ENDERMAN_HEAD = new ItemStack(Items.PLAYER_HEAD);
     private static final ItemStack POPPY = new ItemStack(Items.POPPY);
@@ -34,8 +36,8 @@ public class EndHudWidget extends ComponentBasedWidget {
         POPPY.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
     }
 
-    public EndHudWidget(MutableText title, Integer colorValue) {
-        super(title, colorValue, "hud_end");
+    public EndHudWidget() {
+        super(TITLE, Formatting.DARK_PURPLE.getColorValue(), "hud_end");
         this.update();
     }
     @Override

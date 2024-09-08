@@ -151,9 +151,12 @@ public class ScreenMaster {
 
     }
 
-    @Init
+	// we probably want this to run pretty early?
+    @Init(priority = -1)
     public static void init() {
         SkyblockEvents.LOCATION_CHANGE.register(location -> ScreenBuilder.positionsNeedsUpdating = true);
+
+		instantiateWidgets();
 
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
             try {
@@ -186,6 +189,15 @@ public class ScreenMaster {
 
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
     }
+
+
+	private static void instantiateWidgets() {}
+
+	@SuppressWarnings("unused")
+	public static void addWidgetInstance(HudWidget widget) {
+		HudWidget put = widgetInstances.put(widget.getInternalID(), widget);
+		if (put != null) LOGGER.warn("[Skyblocker] Duplicate hud widget found: {}", widget);
+	}
 
     /**
      * @implNote !! The 3 first ones shouldn't be moved, ordinal is used in some places
