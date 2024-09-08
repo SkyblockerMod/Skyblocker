@@ -766,6 +766,7 @@
 
   "skyblocker.config.uiAndVisuals.inventorySearch": "Inventory Search",
   "skyblocker.config.uiAndVisuals.inventorySearch.ctrlK": "Use CTRL + K for inventory search instead of CTRL + F",
+  "skyblocker.config.uiAndVisuals.inventorySearch.cmdK": "Use CMD + K for inventory search instead of CMD + F",
   "skyblocker.config.uiAndVisuals.inventorySearch.enabled": "Enabled",
   "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText": "Show clickable text",
   "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText.@Tooltip": "Shows a clickable text at the top of the screen to open the search field.",

@@ -131,7 +131,7 @@ public class UIAndVisualsCategory {
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.ctrlK"))
+                                .name(MinecraftClient.IS_SYSTEM_MAC ? Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.cmdK") : Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.ctrlK"))
                                 .binding(defaults.uiAndVisuals.inventorySearch.ctrlK,
                                         () -> config.uiAndVisuals.inventorySearch.ctrlK,
                                         newValue -> config.uiAndVisuals.inventorySearch.ctrlK = newValue)

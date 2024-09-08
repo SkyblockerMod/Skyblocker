@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -20,11 +21,11 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 public class InventorySearch {
-
 	private static HandledScreen<?> openedHandledScreen = null;
 	private static final Int2BooleanMap slotToMatch = new Int2BooleanOpenHashMap();
 	private static String search = "";
 
+	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			UIAndVisualsConfig.InventorySearchConfig inventorySearchConfig = SkyblockerConfigManager.get().uiAndVisuals.inventorySearch;
@@ -33,7 +34,7 @@ public class InventorySearch {
 			if (inventorySearchConfig.clickableText) Screens.getButtons(handledScreen).add(new SearchTextWidget(handledScreen));
 
 			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((screen1, key, scancode, modifiers) -> {
-				if (key == (inventorySearchConfig.ctrlK ? GLFW.GLFW_KEY_K : GLFW.GLFW_KEY_F) && (modifiers & GLFW.GLFW_MOD_CONTROL) != 0) {
+				if (key == (inventorySearchConfig.ctrlK ? GLFW.GLFW_KEY_K : GLFW.GLFW_KEY_F) && (modifiers & (GLFW.GLFW_MOD_CONTROL | GLFW.GLFW_MOD_SUPER)) != 0) {
 					InventorySearch.showSearchBar(handledScreen);
 					return false;
 				}
@@ -61,7 +62,7 @@ public class InventorySearch {
 			public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 				// Makes the widget catch all key presses (except escape) to fix closing the inventory when pressing E
 				// also check that the widget is focused and active
-				return super.keyPressed(keyCode, scanCode, modifiers) || (keyCode != 256 && this.isNarratable() && this.isFocused());
+				return super.keyPressed(keyCode, scanCode, modifiers) || (keyCode != GLFW.GLFW_KEY_ESCAPE && this.isNarratable() && this.isFocused());
 			}
 
 			// Unfocus when clicking outside
