@@ -7,10 +7,13 @@ import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.text.Text;
+
+import java.awt.*;
 
 public class SlayersCategory {
 
@@ -42,6 +45,14 @@ public class SlayersCategory {
                                 newValue -> config.slayers.highlightBosses = newValue)
                         .controller(ConfigUtils::createEnumCyclingListController)
                         .build())
+				.option(Option.<Color>createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.highlightColor"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.slayer.highlightColor.@Tooltip")))
+						.binding(defaults.slayers.slayerHighlightColor,
+								() -> config.slayers.slayerHighlightColor,
+								newValue -> config.slayers.slayerHighlightColor = newValue)
+						.controller(v -> ColorControllerBuilder.create(v).allowAlpha(false))
+						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.bossbar"))
 						.description(OptionDescription.of(

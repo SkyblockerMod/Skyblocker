@@ -17,6 +17,7 @@ import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
+import de.hysky.skyblocker.skyblock.slayers.Slayer;
 import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.utils.SlayerUtils;
@@ -50,7 +51,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onBlockUpdate", at = @At("RETURN"))
     private void skyblocker$onBlockUpdate(BlockUpdateS2CPacket packet, CallbackInfo ci) {
-        if (Utils.isInTheEnd() && SlayerUtils.isInSlayer()) {
+        if (Utils.isInTheEnd() && Slayer.getInstance().isInSlayerFight()) {
             BeaconHighlighter.beaconPositions.remove(packet.getPos());
             if (packet.getState().isOf(Blocks.BEACON)) {
                 BeaconHighlighter.beaconPositions.add(packet.getPos());

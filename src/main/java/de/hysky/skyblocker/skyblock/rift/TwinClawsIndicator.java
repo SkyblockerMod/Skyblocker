@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.rift;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.slayers.Slayer;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -15,12 +16,12 @@ public class TwinClawsIndicator {
     private static boolean scheduled = false;
 
     protected static void updateIce() {
-        if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableHolyIceIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getIslandArea().contains("Stillgore Château")) || !SlayerUtils.isInSlayer()) {
+        if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableHolyIceIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getIslandArea().contains("Stillgore Château")) || !Slayer.getInstance().isInSlayerFight()) {
             TitleContainer.removeTitle(title);
             return;
         }
 
-        Entity slayerEntity = SlayerUtils.getSlayerArmorStandEntity();
+        Entity slayerEntity = Slayer.getInstance().getSlayerArmorStand();
         if (slayerEntity == null) return;
 
         boolean anyClaws = false;

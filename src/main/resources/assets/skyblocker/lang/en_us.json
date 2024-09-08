@@ -675,6 +675,9 @@
   "skyblocker.config.slayer.highlightBosses.GLOW": "Glow",
   "skyblocker.config.slayer.highlightBosses.HITBOX": "Hitbox",
 
+  "skyblocker.config.slayer.highlightColor": "Slayer Highlight Color",
+  "skyblocker.config.slayer.highlightColor.@Tooltip": "Dictates the color that will be applied to the active glow effect",
+
   "skyblocker.config.slayer.vampireSlayer": "Vampire Slayer",
   "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "Compact Effigy Waypoints",
   "skyblocker.config.slayer.vampireSlayer.effigyUpdateFrequency": "Effigy Waypoints Update Frequency (Ticks)",

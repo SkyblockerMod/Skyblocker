@@ -1,116 +1,62 @@
 package de.hysky.skyblocker.utils;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.minecraft.entity.mob.*;
+import net.minecraft.entity.passive.WolfEntity;
 
 import java.util.List;
-import java.util.regex.Matcher;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-//TODO Slayer Packet system that can provide information about the current slayer boss, abstract so that different bosses can have different info
 public class SlayerUtils {
-    private static ArmorStandEntity slayerArmorStandEntity;
-    public static final String REVENANT = "Revenant Horror";
-    public static final String TARA = "Tarantula Broodfather";
-    public static final String SVEN = "Sven Packmaster";
-    public static final String VOIDGLOOM = "Voidgloom Seraph";
-    public static final String VAMPIRE = "Riftstalker Bloodfiend";
-    public static final String DEMONLORD = "Inferno Demonlord";
-    private static final Logger LOGGER = LoggerFactory.getLogger(SlayerUtils.class);
-    public static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend");
+	public static final String REVENANT = "Revenant Horror";
+	public static final String TARA = "Tarantula Broodfather";
+	public static final String SVEN = "Sven Packmaster";
+	public static final String VOIDGLOOM = "Voidgloom Seraph";
+	public static final String VAMPIRE = "Riftstalker Bloodfiend";
+	public static final String DEMONLORD = "Inferno Demonlord";
+	public static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d+(?:\\.\\d+)?[kM]?)(?=❤)");
+	public static final Pattern SLAYER_PATTERN = Pattern.compile("(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend) (X|IX|VIII|VII|VI|IV|V|III|II|I)");
+	public static final Map<String, String> SLAYER_MINI_NAMES = Map.ofEntries(
+			Map.entry("Revenant Sycophant", REVENANT),
+			Map.entry("Revenant Champion", REVENANT),
+			Map.entry("Deformed Revenant", REVENANT),
+			Map.entry("Atoned Champion", REVENANT),
+			Map.entry("Atoned Revenant", REVENANT),
+			Map.entry("Tarantula Vermin", TARA),
+			Map.entry("Tarantula Beast", TARA),
+			Map.entry("Mutant Tarantula", TARA),
+			Map.entry("Pack Enforcer", SVEN),
+			Map.entry("Sven Follower", SVEN),
+			Map.entry("Sven Alpha", SVEN),
+			Map.entry("Voidling Devotee", VOIDGLOOM),
+			Map.entry("Voidling Radical", VOIDGLOOM),
+			Map.entry("Voidcrazed Maniac", VOIDGLOOM),
+			Map.entry("Flare Demon", DEMONLORD),
+			Map.entry("Kindleheart Demon", DEMONLORD),
+			Map.entry("Burningsoul Demon", DEMONLORD)
+	);
 
-    //TODO: Cache this, probably included in Packet system
-    public static List<Entity> getEntityArmorStands(Entity entity, float expandY) {
-        return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.3F, expandY, 0.3F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
-    }
+	public static final Map<String, long[]> SLAYER_MOB_MAX_HP = Map.of(
+			REVENANT, new long[]{500, 20_000L, 400_000, 1_500_000, 10_000_000},
+			TARA, new long[]{750, 30_000, 900_000, 2_400_000},
+			SVEN, new long[]{2000, 40_000, 750_000, 2_000_000},
+			VOIDGLOOM, new long[]{300_000, 12_000_000, 50_000_000, 210_000_000},
+			VAMPIRE, new long[]{625, 1100, 1800, 2400, 3000},
+			DEMONLORD, new long[]{2_500_000, 10_000_000, 45_000_000, 150_000_000}
+	);
 
-    //Eventually this should be modified so that if you hit a slayer boss all slayer features will work on that boss.
-    public static ArmorStandEntity getSlayerArmorStandEntity() {
-		// TODO: This should be set when the system to detect isInSlayer is made event-driven
-        if (slayerArmorStandEntity != null && slayerArmorStandEntity.isAlive()) {
-            return slayerArmorStandEntity;
-        }
+	public static final Map<String, Class<? extends MobEntity>> SLAYER_MOB_TYPE = Map.of(
+			REVENANT, ZombieEntity.class,
+			TARA, SpiderEntity.class,
+			SVEN, WolfEntity.class,
+			VOIDGLOOM, EndermanEntity.class,
+			DEMONLORD, BlazeEntity.class
+	);
 
-        if (MinecraftClient.getInstance().world != null) {
-            for (Entity entity : MinecraftClient.getInstance().world.getEntities()) {
-                if (entity.hasCustomName()) {
-                    String entityName = entity.getCustomName().getString();
-                    Matcher matcher = SLAYER_PATTERN.matcher(entityName);
-                    if (matcher.find()) {
-                        String username = MinecraftClient.getInstance().getSession().getUsername();
-                        for (Entity armorStand : getEntityArmorStands(entity, 1.5f)) {
-                            if (armorStand.getDisplayName().getString().contains(username)) {
-                                slayerArmorStandEntity = (ArmorStandEntity) entity;
-                                return slayerArmorStandEntity;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+	public static List<Entity> getEntityArmorStands(Entity entity, float expandY) {
+		return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.3F, expandY, 0.3F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
+	}
 
-        slayerArmorStandEntity = null;
-        return null;
-    }
-
-    public static boolean isInSlayer() {
-        try {
-            for (String line : Utils.STRING_SCOREBOARD) {
-                if (line.contains("Slay the boss!")) {
-					return true;
-				}
-            }
-        } catch (NullPointerException e) {
-            LOGGER.error("[Skyblocker] Error while checking if player is in slayer", e);
-        }
-        return false;
-    }
-
-    public static boolean isInSlayerType(String slayer) {
-        try {
-            boolean inFight = false;
-            boolean type = false;
-            for (String line : Utils.STRING_SCOREBOARD) {
-                switch (line) {
-                    case String a when a.contains("Slay the boss!") -> inFight = true;
-                    case String b when b.contains(slayer) -> type = true;
-                    default -> { continue; }
-                }
-                if (inFight && type) return true;
-            }
-        } catch (NullPointerException e) {
-            LOGGER.error("[Skyblocker] Error while checking if player is in slayer", e);
-        }
-        return false;
-    }
-
-    public static boolean isInSlayerQuestType(String slayer) {
-        try {
-            boolean quest = false;
-            boolean type = false;
-            for (String line : Utils.STRING_SCOREBOARD) {
-                if (line.contains("Slayer Quest")) quest = true;
-                if (line.contains(slayer)) type = true;
-                if (quest && type) return true;
-            }
-        } catch (NullPointerException e) {
-            LOGGER.error("[Skyblocker] Error while checking if player is in slayer quest type", e);
-        }
-        return false;
-    }
-
-    public static String getSlayerType() {
-        try {
-            for (String line : Utils.STRING_SCOREBOARD) {
-                Matcher matcher = SLAYER_PATTERN.matcher(line);
-                if (matcher.find()) return matcher.group();
-            }
-        } catch (NullPointerException | IndexOutOfBoundsException e) {
-            LOGGER.error("[Skyblocker] Error while checking slayer type", e);
-        }
-        return "";
-    }
 }

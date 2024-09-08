@@ -58,11 +58,11 @@ public class MobBoundingBoxes {
 
 		return false;
 	}
-	
+
 	public static float[] getBoxColor(Entity entity) {
 		int color = MobGlow.getGlowColor(entity);
 
-		return new float[] { ((color >> 16) & 0xFF) / 255f, ((color >> 8) & 0xFF) / 255f, (color & 0xFF) / 255f };
+		return new float[]{((color >> 16) & 0xFF) / 255f, ((color >> 8) & 0xFF) / 255f, (color & 0xFF) / 255f};
 	}
 
 	public static void submitBox2BeRendered(Box box, float[] colorComponents) {
