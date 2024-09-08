@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -20,6 +21,7 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.Map;
 
+@RegisterWidget
 public class FarmingHudWidget extends ComponentBasedWidget {
     private static final MutableText TITLE = Text.literal("Farming").formatted(Formatting.YELLOW, Formatting.BOLD);
     public static final Map<String, String> FARMING_TOOLS = Map.ofEntries(
