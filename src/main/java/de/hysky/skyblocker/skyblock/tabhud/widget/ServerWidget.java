@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
@@ -14,7 +15,7 @@ import java.util.List;
 // this widget shows info about "generic" servers.
 // a server is "generic", when only name, server ID and gems are shown
 // in the third column of the tab HUD
-
+@RegisterWidget
 public class ServerWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Server Info").formatted(Formatting.DARK_AQUA,

@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.TableComponent;
 
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -12,7 +12,7 @@ import net.minecraft.util.Formatting;
 import java.util.List;
 
 // this widget shows your dungeon essences (dungeon hub only)
-
+@RegisterWidget
 public class EssenceWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Essences").formatted(Formatting.DARK_AQUA,
