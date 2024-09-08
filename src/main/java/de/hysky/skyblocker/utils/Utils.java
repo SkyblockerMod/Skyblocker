@@ -7,6 +7,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
+import de.hysky.skyblocker.skyblock.slayers.Slayer;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -38,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.regex.Matcher;
 
 /**
  * Utility variables and methods for retrieving Skyblock related information.
@@ -306,52 +308,81 @@ public class Utils {
         return bits;
     }
 
-    private static void updateScoreboard(MinecraftClient client) {
-        try {
-            TEXT_SCOREBOARD.clear();
-            STRING_SCOREBOARD.clear();
+	private static void updateScoreboard(MinecraftClient client) {
+		try {
+			TEXT_SCOREBOARD.clear();
+			STRING_SCOREBOARD.clear();
 
-            ClientPlayerEntity player = client.player;
-            if (player == null) return;
+			ClientPlayerEntity player = client.player;
+			if (player == null) return;
 
-            Scoreboard scoreboard = player.getScoreboard();
-            ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
-            ObjectArrayList<Text> textLines = new ObjectArrayList<>();
-            ObjectArrayList<String> stringLines = new ObjectArrayList<>();
+			Scoreboard scoreboard = player.getScoreboard();
+			ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.FROM_ID.apply(1));
+			ObjectArrayList<Text> textLines = new ObjectArrayList<>();
+			ObjectArrayList<String> stringLines = new ObjectArrayList<>();
 
-            for (ScoreHolder scoreHolder : scoreboard.getKnownScoreHolders()) {
-                //Limit to just objectives displayed in the scoreboard (specifically sidebar objective)
-                if (scoreboard.getScoreHolderObjectives(scoreHolder).containsKey(objective)) {
-                    Team team = scoreboard.getScoreHolderTeam(scoreHolder.getNameForScoreboard());
+			boolean slayerQuest = false;
+			boolean slayerInFight = false;
+			String bossType = null;
+			String bossTier = null;
 
-                    if (team != null) {
-                        Text textLine = Text.empty().append(team.getPrefix().copy()).append(team.getSuffix().copy());
-                        String strLine = team.getPrefix().getString() + team.getSuffix().getString();
+			for (ScoreHolder scoreHolder : scoreboard.getKnownScoreHolders()) {
+				if (scoreboard.getScoreHolderObjectives(scoreHolder).containsKey(objective)) {
+					Team team = scoreboard.getScoreHolderTeam(scoreHolder.getNameForScoreboard());
 
-                        if (!strLine.trim().isEmpty()) {
-                            String formatted = Formatting.strip(strLine);
+					if (team != null) {
+						Text textLine = Text.empty().append(team.getPrefix().copy()).append(team.getSuffix().copy());
+						String strLine = team.getPrefix().getString() + team.getSuffix().getString();
 
-                            textLines.add(textLine);
-                            stringLines.add(formatted);
-                        }
-                    }
-                }
-            }
+						if (!strLine.trim().isEmpty()) {
+							String formatted = Formatting.strip(strLine);
 
-            if (objective != null) {
-                stringLines.add(objective.getDisplayName().getString());
-                textLines.add(Text.empty().append(objective.getDisplayName().copy()));
+							textLines.add(textLine);
+							stringLines.add(formatted);
 
-                Collections.reverse(stringLines);
-                Collections.reverse(textLines);
-            }
+							if (formatted.equals("Slayer Quest")) {
+								slayerQuest = true;
+								continue;
+							}
 
-            TEXT_SCOREBOARD.addAll(textLines);
-            STRING_SCOREBOARD.addAll(stringLines);
-        } catch (NullPointerException e) {
-            //Do nothing
-        }
-    }
+							if (formatted.equals("Slay the boss!")) {
+								slayerInFight = true;
+								continue;
+							}
+
+							Matcher matcher = SlayerUtils.SLAYER_PATTERN.matcher(formatted);
+							if (matcher.find()) {
+								bossType = matcher.group();
+								bossTier = bossType.substring(bossType.length() - 1);
+							}
+						}
+					}
+				}
+			}
+
+			// Update Slayer information
+			Slayer slayer = Slayer.getInstance();
+			slayer.setInSlayerQuest(slayerQuest);
+			slayer.setInSlayerFight(slayerInFight);
+			slayer.setBossType(bossType);
+			slayer.setBossTier(bossTier);
+
+			System.out.println("QUEST " + slayerQuest + " FIGHT "+ slayerInFight + " TYPE " + bossType);
+
+			if (objective != null) {
+				stringLines.add(objective.getDisplayName().getString());
+				textLines.add(Text.empty().append(objective.getDisplayName().copy()));
+
+				Collections.reverse(stringLines);
+				Collections.reverse(textLines);
+			}
+
+			TEXT_SCOREBOARD.addAll(textLines);
+			STRING_SCOREBOARD.addAll(stringLines);
+		} catch (NullPointerException e) {
+			// Do nothing
+		}
+	}
 
     // TODO: Combine with `ChocolateFactorySolver.formatTime` and move into `SkyblockTime`.
     public static Text getDurationText(int timeInSeconds) {

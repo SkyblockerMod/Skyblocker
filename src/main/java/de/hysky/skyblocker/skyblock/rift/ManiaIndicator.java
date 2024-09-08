@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.rift;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.slayers.Slayer;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -17,12 +18,12 @@ public class ManiaIndicator {
     private static final Title title = new Title("skyblocker.rift.mania", Formatting.RED);
 
     protected static void updateMania() {
-        if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getIslandArea().contains("Stillgore Château")) || !SlayerUtils.isInSlayer()) {
+        if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getIslandArea().contains("Stillgore Château")) || !Slayer.getInstance().isInSlayerFight()) {
             TitleContainer.removeTitle(title);
             return;
         }
 
-        Entity slayerEntity = SlayerUtils.getSlayerArmorStandEntity();
+        Entity slayerEntity = Slayer.getInstance().getSlayerArmorStand();
         if (slayerEntity == null) return;
 
         boolean anyMania = false;

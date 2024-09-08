@@ -66,18 +66,18 @@ public class SlayerEntitiesGlow {
     }
 
     public static boolean isSlayer(LivingEntity e) {
-        return SlayerUtils.isInSlayer() && SlayerUtils.getEntityArmorStands(e, 2.5f).stream().anyMatch(entity ->
+        return Slayer.getInstance().isInSlayerFight() && SlayerUtils.getEntityArmorStands(e, 2.5f).stream().anyMatch(entity ->
                 entity.getDisplayName().getString().contains(MinecraftClient.getInstance().getSession().getUsername()));
     }
 
     public static boolean isSlayerMiniMob(LivingEntity entity) {
         if (entity.getCustomName() == null) return false;
         String entityName = entity.getCustomName().getString();
-        return SLAYER_MINI_NAMES.keySet().stream().anyMatch(slayerMobName -> entityName.contains(slayerMobName) && SlayerUtils.isInSlayerQuestType(SLAYER_MINI_NAMES.get(slayerMobName)));
+        return SLAYER_MINI_NAMES.keySet().stream().anyMatch(slayerMobName -> entityName.contains(slayerMobName) && Slayer.getInstance().isBossType(SLAYER_MINI_NAMES.get(slayerMobName)));
     }
 
     public static Box getSlayerMobBoundingBox(LivingEntity entity) {
-        return switch (SlayerUtils.getSlayerType()) {
+        return switch (Slayer.getInstance().getBossType()) {
             case SlayerUtils.REVENANT -> new Box(entity.getX() - 0.4, entity.getY() - 0.1, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 2.2, entity.getZ() + 0.4);
             case SlayerUtils.TARA -> new Box(entity.getX() - 0.9, entity.getY() - 0.2, entity.getZ() - 0.9, entity.getX() + 0.9, entity.getY() - 1.2, entity.getZ() + 0.9);
             case SlayerUtils.VOIDGLOOM -> new Box(entity.getX() - 0.4, entity.getY() - 0.2, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 3, entity.getZ() + 0.4);
@@ -125,7 +125,7 @@ public class SlayerEntitiesGlow {
      * @param armorStand the entity that contains the display name of the Slayer (mini)boss
      */
     public static void setSlayerMobGlow(ArmorStandEntity armorStand) {
-        String slayerType = SlayerUtils.getSlayerType();
+        String slayerType = Slayer.getInstance().getBossType();
         Class<? extends MobEntity> entityClass = SLAYER_MOB_TYPE.get(slayerType);
         if (entityClass != null) {
             MobEntity closestEntity = findClosestMobEntity(entityClass, armorStand);

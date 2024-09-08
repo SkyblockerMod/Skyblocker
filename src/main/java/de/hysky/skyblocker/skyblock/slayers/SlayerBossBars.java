@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
-import de.hysky.skyblocker.utils.SlayerUtils;
 import net.minecraft.client.gui.hud.ClientBossBar;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -30,19 +29,19 @@ public class SlayerBossBars {
         lastUpdateTime = currentTime;
 
         // Reset if no slayer
-        if (!SlayerUtils.isInSlayer()) {
+        if (!Slayer.getInstance().isInSlayerFight()) {
             bossMaxHealth = -1;
             bossBar = null;
             return false;
         }
 
         // Update boss max health
-        if (SlayerUtils.getSlayerArmorStandEntity() != null && bossMaxHealth == -1) {
-            Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(SlayerUtils.getSlayerArmorStandEntity().getName().getString());
+        if (Slayer.getInstance().getSlayerArmorStand() != null && bossMaxHealth == -1) {
+            Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(Slayer.getInstance().getSlayerArmorStand().getName().getString());
             if (maxHealthMatcher.find()) bossMaxHealth = convertToInt(maxHealthMatcher.group(0));
         }
 
-        return bossBar != null || SlayerUtils.getSlayerArmorStandEntity() != null;
+        return bossBar != null || Slayer.getInstance().getSlayerArmorStand() != null;
     }
 
 	/**
@@ -50,7 +49,7 @@ public class SlayerBossBars {
 	 * @return The updated boss bar.
 	 */
     public static ClientBossBar updateBossBar() {
-        ArmorStandEntity slayer = SlayerUtils.getSlayerArmorStandEntity();
+        ArmorStandEntity slayer = Slayer.getInstance().getSlayerArmorStand();
         if (bossBar == null) bossBar = new ClientBossBar(uuid, slayer != null ? slayer.getDisplayName() : Text.of("Attempting to Locate Slayer..."), 1f, BossBar.Color.PURPLE, BossBar.Style.PROGRESS, false, false, false);
 
 		// If no slayer armor stand is found, display a red progress bar
