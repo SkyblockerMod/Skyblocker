@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 
@@ -15,7 +16,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 // this widget shows info about minions placed on the home island
-
+@RegisterWidget
 public class MinionWidget extends TabHudWidget {
     private static final MutableText TITLE = Text.literal("Minions").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -15,7 +16,7 @@ import net.minecraft.util.Formatting;
 
 // this widget shows info about fire sales when in the hub.
 // or not, if there isn't one going on
-
+@RegisterWidget
 public class FireSaleWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Fire Sales").formatted(Formatting.DARK_AQUA,

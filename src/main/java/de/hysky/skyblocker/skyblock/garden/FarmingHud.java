@@ -64,7 +64,7 @@ public class FarmingHud {
                     counterType = CounterType.NONE;
                 }
 
-                FarmingHudWidget.INSTANCE.update();
+                FarmingHudWidget.getInstance().update();
             }
         });
         ClientPlayerBlockBreakEvents.AFTER.register((world, player, pos, state) -> {

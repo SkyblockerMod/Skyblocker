@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
@@ -13,7 +14,7 @@ import java.util.List;
 
 // this widget shows how much mithril and gemstone powder you have
 // (dwarven mines and crystal hollows)
-
+@RegisterWidget
 public class PowderWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Powders").formatted(Formatting.DARK_AQUA,

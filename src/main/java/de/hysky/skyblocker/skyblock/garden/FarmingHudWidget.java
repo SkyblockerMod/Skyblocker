@@ -50,11 +50,18 @@ public class FarmingHudWidget extends ComponentBasedWidget {
             Map.entry("PUMPKIN_DICER_3", "PUMPKIN"),
             Map.entry("COCO_CHOPPER", "INK_SACK:3")
     );
-    public static final FarmingHudWidget INSTANCE = new FarmingHudWidget();
+    private static FarmingHudWidget instance = null;
+
+	public static FarmingHudWidget getInstance() {
+		if (instance == null) instance = new FarmingHudWidget();
+		return instance;
+	}
+
     private final MinecraftClient client = MinecraftClient.getInstance();
 
     public FarmingHudWidget() {
         super(TITLE, Formatting.YELLOW.getColorValue(), "hud_farming");
+		instance = this;
         update();
     }
 

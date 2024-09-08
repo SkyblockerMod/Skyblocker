@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 // this widget shows info about the secrets of the dungeon
-
+@RegisterWidget
 public class DungeonSecretWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Discoveries").formatted(Formatting.DARK_PURPLE, Formatting.BOLD);

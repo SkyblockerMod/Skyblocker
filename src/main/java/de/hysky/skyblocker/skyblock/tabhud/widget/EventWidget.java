@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import net.minecraft.text.MutableText;
@@ -9,7 +10,7 @@ import net.minecraft.util.Formatting;
 import java.util.List;
 
 // this widget shows info about ongoing events (e.g. election)
-
+@RegisterWidget
 public class EventWidget extends TabHudWidget {
     private static final MutableText TITLE = Text.literal("Event Info").formatted(Formatting.YELLOW, Formatting.BOLD);
 

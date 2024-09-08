@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
@@ -11,7 +12,7 @@ import java.util.List;
 
 // this widget shows info about... something?
 // related to downed people in dungeons, not sure what this is supposed to show
-
+@RegisterWidget
 public class DungeonDownedWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Downed").formatted(Formatting.DARK_PURPLE,
