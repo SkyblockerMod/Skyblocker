@@ -65,7 +65,12 @@ public class FarmingHudWidget extends ComponentBasedWidget {
         update();
     }
 
-    @Override
+	@Override
+	protected boolean shouldUpdateBeforeRendering() {
+		return true;
+	}
+
+	@Override
     public void updateContent() {
         if (client.player == null) {
             addComponent(new PlainTextComponent(Text.literal("Nothing to show :p")));
