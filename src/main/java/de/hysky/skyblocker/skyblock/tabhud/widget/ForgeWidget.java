@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoFatTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
@@ -14,7 +14,7 @@ import java.util.List;
 
 // this widget shows what you're forging right now.
 // for locked slots, the unlock requirement is shown
-
+@RegisterWidget
 public class ForgeWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Forges").formatted(Formatting.DARK_AQUA,

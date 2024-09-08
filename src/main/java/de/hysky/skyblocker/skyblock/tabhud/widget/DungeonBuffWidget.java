@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import net.minecraft.text.MutableText;
@@ -11,7 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 
 // this widget shows a list of obtained dungeon buffs
-
+@RegisterWidget
 public class DungeonBuffWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Dungeon Buffs").formatted(Formatting.DARK_PURPLE,

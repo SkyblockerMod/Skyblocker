@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -15,7 +16,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 // this widget shows the status or results of the current election
-
+@RegisterWidget
 public class ElectionWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Election Info").formatted(Formatting.YELLOW,

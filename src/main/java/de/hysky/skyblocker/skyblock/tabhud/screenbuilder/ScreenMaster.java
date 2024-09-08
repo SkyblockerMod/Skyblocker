@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
-import com.google.common.reflect.ClassPath;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
@@ -15,7 +14,6 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -26,7 +24,6 @@ import org.slf4j.Logger;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -158,30 +155,13 @@ public class ScreenMaster {
 
 		instantiateWidgets();
 
-        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-            try {
-                ClassPath.from(TabHudWidget.class.getClassLoader()).getTopLevelClasses("de.hysky.skyblocker.skyblock.tabhud.widget").iterator().forEachRemaining(classInfo -> {
-                    try {
-                        Class<?> load = Class.forName(classInfo.getName());
-                        if (!load.getSuperclass().equals(TabHudWidget.class)) return;
-                        if (load.equals(DungeonPlayerWidget.class)) {
-                            for (int i = 1; i < 6; i++) {
-                                DungeonPlayerWidget widget = new DungeonPlayerWidget(i);
-                                PlayerListMgr.tabWidgetInstances.put(widget.getHypixelWidgetName(), widget);
-                            }
-                        } else {
-                            TabHudWidget tabHudWidget = (TabHudWidget) load.getDeclaredConstructor().newInstance();
-                            PlayerListMgr.tabWidgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
-                        }
-                    } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
-                             IllegalAccessException | ClassNotFoundException e) {
-                        LOGGER.error("[Skyblocker] Failed to load {} hud widget", classInfo.getName(), e);
-                    }
+		for (int i = 1; i < 6; i++) {
+			DungeonPlayerWidget widget = new DungeonPlayerWidget(i);
+			addWidgetInstance(widget);
+			PlayerListMgr.tabWidgetInstances.put(widget.getHypixelWidgetName(), widget);
+		}
 
-                });
-            } catch (Exception e) {
-                LOGGER.error("[Skyblocker] Failed to get instances of hud widgets", e);
-            }
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
             fillDefaultConfig();
             loadConfig();
 

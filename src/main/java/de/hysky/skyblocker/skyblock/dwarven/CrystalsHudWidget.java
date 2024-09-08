@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.Location;
@@ -16,16 +17,23 @@ import org.joml.Vector2ic;
 import java.util.List;
 import java.util.Map;
 
+@RegisterWidget
 public class CrystalsHudWidget extends HudWidget {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     protected static final Identifier MAP_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png");
     private static final Identifier MAP_ICON = Identifier.ofVanilla("textures/map/decorations/player.png");
     private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Unknown");
 
-    public static final CrystalsHudWidget INSTANCE = new CrystalsHudWidget();
+    private static CrystalsHudWidget instance = null;
+
+	public static CrystalsHudWidget getInstance() {
+		if (instance == null) new CrystalsHudWidget();
+		return instance;
+	}
 
     public CrystalsHudWidget() {
         super("hud_crystals");
+		instance = this;
     }
 
     /**
