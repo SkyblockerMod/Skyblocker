@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
@@ -44,6 +45,7 @@ public class CorpseFinder {
     private static final Logger LOGGER = LoggerFactory.getLogger(CorpseFinder.class);
     private static final Map<String, List<Corpse>> corpsesByType = new HashMap<>();
 
+    @Init
     public static void init() {
         ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> isLocationCorrect = false);
         SkyblockEvents.LOCATION_CHANGE.register(CorpseFinder::handleLocationChange);
