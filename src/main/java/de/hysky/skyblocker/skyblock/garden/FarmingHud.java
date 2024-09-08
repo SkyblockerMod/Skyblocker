@@ -63,8 +63,6 @@ public class FarmingHud {
                 if (stack == null || !tryGetCounter(stack, CounterType.CULTIVATING) && !tryGetCounter(stack, CounterType.COUNTER)) {
                     counterType = CounterType.NONE;
                 }
-
-                FarmingHudWidget.getInstance().update();
             }
         });
         ClientPlayerBlockBreakEvents.AFTER.register((world, player, pos, state) -> {

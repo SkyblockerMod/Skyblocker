@@ -1,22 +1,15 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.Widget;
 
-public abstract class HudWidget implements Element, Widget, Drawable {
+public abstract class HudWidget extends AbstractWidget {
     private final String internalID;
-    protected int w = 0, h = 0;
-    protected int x = 0, y = 0;
+
 
 
     /**
@@ -25,80 +18,44 @@ public abstract class HudWidget implements Element, Widget, Drawable {
      */
     public HudWidget(String internalID) {
         this.internalID = internalID;
-        ScreenMaster.widgetInstances.put(internalID, this);
     }
 
 
+	/**
+	 * Whether the widget should render in this location. This should check any config if need be.
+	 * This method is used in the WidgetsConfigScreen, hence the location parameter.
+	 * {@link de.hysky.skyblocker.utils.Utils#getLocation()} should not be used unless you know what you're doing.
+	 * @param location the location
+	 * @return true if the widget should render in the specified location
+	 */
     public abstract boolean shouldRender(Location location);
 
+	/**
+	 * Perform all your logic here. Or in the {@link #renderWidget(DrawContext, int, int, float)} method if you feel like it.
+	 * But this will be called much less often. See usages of it.
+	 * @see #shouldUpdateBeforeRendering()
+	 */
     public abstract void update();
+
+	/**
+	 * Returns true if the update method should be called right before rendering.
+	 * @return true if it should update
+	 */
+	protected boolean shouldUpdateBeforeRendering() {
+		return false;
+	}
 
     public void render(DrawContext context) {
         render(context, -1, -1, MinecraftClient.getInstance().getRenderTickCounter().getLastFrameDuration());
     }
 
+	@Override
+	public final void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		if (shouldUpdateBeforeRendering()) update();
+		renderWidget(context, mouseX, mouseY, delta);
+	}
 
-
-    public final int getX() {
-        return this.x;
-    }
-
-    public final void setX(int x) {
-        this.x = x;
-    }
-
-    public final int getY() {
-        return this.y;
-    }
-
-    public final void setY(int y) {
-        this.y = y;
-    }
-
-    public final int getWidth() {
-        return this.w;
-    }
-
-    public void setWidth(int width) {
-        this.w = width;
-    }
-
-    public final int getHeight() {
-        return this.h;
-    }
-
-    @Override
-    public void forEachChild(Consumer<ClickableWidget> consumer) {}
-
-    public void setHeight(int height) {
-        this.h = height;
-    }
-
-    public void setDimensions(int size) {
-        setDimensions(size, size);
-    }
-
-    public void setDimensions(int width, int height) {
-        this.w = width;
-        this.h = height;
-    }
-
-    private boolean focused = false;
-
-    @Override
-    public void setFocused(boolean focused) {
-        this.focused = focused;
-    }
-
-    @Override
-    public boolean isFocused() {
-        return focused;
-    }
-
-    @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseX >= getX() && mouseX <= getX() + getWidth() && mouseY >= getY() && mouseY <= getY() + getHeight();
-    }
+	protected abstract void renderWidget(DrawContext context, int mouseX, int mouseY, float delta);
 
     /**
      *
@@ -112,11 +69,6 @@ public abstract class HudWidget implements Element, Widget, Drawable {
 
         HudWidget widget = (HudWidget) object;
         return Objects.equals(getInternalID(), widget.getInternalID());
-    }
-
-    @Override
-    public ScreenRect getNavigationFocus() {
-        return Element.super.getNavigationFocus();
     }
 
     public String getInternalID() {
