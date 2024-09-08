@@ -325,5 +325,19 @@
     "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Surligne les coffres avec le meilleur profit au PNJ Croesus.\n\n\nLe meilleur coffre sera surligné en vert.\nS'il y a un coffre valant l'utilisation d'une dungeon key, il sera surligné en jaune",
     "skyblocker.config.dungeons.allowDroppingProtectedItems": "Drop d'objets protégés et/ou dans un slot verrouillé activé",
     "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Surligne en vert le bon bouton à cliquer, et le prochain en jaune.",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nNote : Les waypoints des secrets de donjon doivent être activés pour que cela fonctionne."
+    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nNote : Les waypoints des secrets de donjon doivent être activés pour que cela fonctionne.",
+    "skyblocker.bars.config.speed": "Vitesse",
+    "skyblocker.config.slayer.bossbar.@Tooltip": "Affiche une barre de boss pour votre boss de slayer actif",
+    "skyblocker.config.slayer.bossbar": "Barre de boss de slayer",
+    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Permet de changer d'armure depuis la penderie en appuyant sur les touches 1 à 9 lorsque le menu est ouvert. Le set correspondant dans le menu de la penderie sera équipée.",
+    "skyblocker.config.helpers.enableWardrobeHelper": "Active l'assistant de penderie",
+    "skyblocker.profileviewer.inventory.backpack": "Sac à dos",
+    "skyblocker.profileviewer.inventory.enderchest": "Coffre de l'Ender",
+    "skyblocker.profileviewer.inventory.inactive.description.backpack": "Le sac à dos sélectionné",
+    "skyblocker.profileviewer.inventory.inactive.description.general": "ne contient pas ce slot",
+    "skyblocker.profileviewer.inventory.inactive": "Slot verrouillé",
+    "skyblocker.profileviewer.inventory.accessoryBag": "Sac d'accessoires",
+    "skyblocker.profileviewer.inventory.equipment": "Equipement",
+    "skyblocker.profileviewer.inventory.wardrobe": "Pendrie",
+    "skyblocker.profileviewer.inventory.pets": "Compagnons"
 }
