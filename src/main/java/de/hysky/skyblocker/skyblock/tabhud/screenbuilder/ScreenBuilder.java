@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
-import com.google.gson.JsonObject;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.*;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
@@ -59,7 +58,6 @@ public class ScreenBuilder {
         if (positioningBackup == null) return;
         positioning.clear();
         positioning.putAll(positioningBackup);
-        positioningBackup = null;
     }
 
     /**
