@@ -176,6 +176,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
         EggFinder.checkIfEgg(armorStandEntity);
+		CorpseFinder.checkIfCorpse(armorStandEntity);
         try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
             CompactDamage.compactDamage(armorStandEntity);
         } catch (Exception e) {
