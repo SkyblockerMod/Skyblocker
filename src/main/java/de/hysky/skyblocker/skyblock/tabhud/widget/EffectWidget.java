@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoFatTextComponent;
@@ -16,7 +17,7 @@ import java.util.regex.Pattern;
 // this widgte shows, how many active effects you have.
 // it also shows one of those in detail.
 // the parsing is super suspect and should be replaced by some regexes sometime later
-
+@RegisterWidget
 public class EffectWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Active Effects").formatted(Formatting.DARK_PURPLE,

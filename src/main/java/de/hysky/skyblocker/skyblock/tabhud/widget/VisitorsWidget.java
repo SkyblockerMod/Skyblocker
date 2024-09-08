@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
-
+@RegisterWidget
 public class VisitorsWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Visitors").formatted(Formatting.AQUA,
