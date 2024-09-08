@@ -4,7 +4,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
-import de.hysky.skyblocker.utils.ItemUtils;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -34,7 +33,7 @@ public class SkyblockerEMIPlugin implements EmiPlugin {
     public void register(EmiRegistry registry) {
         ItemRepository.getItemsStream().map(EmiStack::of).forEach(emiStack -> {
             registry.addEmiStack(emiStack);
-            registry.setDefaultComparison(emiStack, Comparison.compareData(emiStack1 -> ItemUtils.getItemId(emiStack1.getItemStack())));
+            registry.setDefaultComparison(emiStack, Comparison.compareData(emiStack1 -> emiStack1.getItemStack().getSkyblockId()));
         });
         registry.addCategory(SKYBLOCK_CRAFTING);
         registry.addCategory(SKYBLOCK_FORGE);

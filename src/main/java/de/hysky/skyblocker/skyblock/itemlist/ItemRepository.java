@@ -61,13 +61,7 @@ public class ItemRepository {
     }
 
     private static void loadRecipes(NEUItem item) {
-        for (NEURecipe recipe : item.getRecipes()) {
-            switch (recipe) {
-                case NEUCraftingRecipe craftingRecipe -> recipes.add(new SkyblockCraftingRecipe(craftingRecipe));
-                case NEUForgeRecipe forgeRecipe -> recipes.add(new SkyblockForgeRecipe(forgeRecipe));
-                case null, default -> {}
-            }
-        }
+        item.getRecipes().stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull).forEach(recipes::add);
     }
 
     public static String getWikiLink(String neuId) {
@@ -114,11 +108,6 @@ public class ItemRepository {
     @Nullable
     public static ItemStack getItemStack(String neuId) {
         return itemsMap.get(neuId);
-    }
-
-    @Deprecated
-    public static Stream<SkyblockCraftingRecipe> getRecipesStreamOld() {
-        return Stream.of();
     }
 
     public static Stream<SkyblockRecipe> getRecipesStream() {return recipes.stream(); }

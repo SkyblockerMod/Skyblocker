@@ -9,8 +9,6 @@ import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -20,6 +18,9 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Skyblock recipe category class for REI
+ */
 public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDisplay> {
 
     private final Identifier identifier;
@@ -54,6 +55,12 @@ public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDis
         return EntryStacks.of(icon);
     }
 
+    /**
+     * Draws display for SkyblockCraftingDisplay
+     *
+     * @param display the display
+     * @param bounds  the bounds of the display, configurable with overriding the width, height methods.
+     */
     @Override
     public List<Widget> setupDisplay(SkyblockRecipeDisplay display, Rectangle bounds) {
         List<Widget> out = new ArrayList<>();
@@ -71,20 +78,12 @@ public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDis
                     .backgroundEnabled(outputSlot.showBackground())
                     .entry(EntryStacks.of(outputSlot.stack())));
         }
-        out.add(Widgets.withBounds(new Widget() {
-            @Override
-            public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-                MatrixStack matrices = context.getMatrices();
-                matrices.push();
-                matrices.translate(bounds.getX(), bounds.getY(), 0.f);
-                recipe.render(context, bounds.getWidth(), bounds.getHeight(), mouseX - bounds.getX(), mouseY - bounds.getY());
-                matrices.pop();
-            }
-
-            @Override
-            public List<? extends Element> children() {
-                return List.of();
-            }
+        out.add(Widgets.wrapRenderer((Rectangle) null, (context, bounds1, mouseX, mouseY, delta) -> {
+            MatrixStack matrices = context.getMatrices();
+            matrices.push();
+            matrices.translate(bounds.getX(), bounds.getY(), 0.f);
+            recipe.render(context, bounds.getWidth(), bounds.getHeight(), mouseX - bounds.getX(), mouseY - bounds.getY());
+            matrices.pop();
         }));
         ScreenPos arrowLocation = recipe.getArrowLocation(bounds.getWidth(), bounds.getHeight());
         if (arrowLocation != null)

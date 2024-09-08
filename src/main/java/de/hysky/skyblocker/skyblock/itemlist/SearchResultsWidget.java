@@ -161,9 +161,6 @@ public class SearchResultsWidget implements Drawable, Element {
             if (arrowLocation != null) context.drawGuiTexture(ARROW_TEXTURE, arrowLocation.x(), arrowLocation.y(), 24, 16);
 
             matrices.pop();
-
-            //Arrow pointing to result item from the recipe
-            //context.drawTextWithShadow(textRenderer, "▶", this.parentX + 96, this.parentY + 90, 0xaaffffff);
         }
         for (ResultButtonWidget button : resultButtons)
             button.render(context, mouseX, mouseY, delta);
@@ -214,7 +211,7 @@ public class SearchResultsWidget implements Drawable, Element {
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        for (ResultButtonWidget button : resultButtons)
+        for (ResultButtonWidget button : resultButtons) {
             if (button.mouseClicked(mouseX, mouseY, mouseButton)) {
                 String internalName = ItemUtils.getItemId(button.itemStack);
                 if (internalName.isEmpty()) {
@@ -223,6 +220,7 @@ public class SearchResultsWidget implements Drawable, Element {
                 fetchRecipesAndUpdate(button.itemStack);
                 return true;
             }
+        }
         for (SkyblockRecipe.RecipeSlot recipeSlot : recipeSlots) {
             int shiftedMouseX = (int) (mouseX - parentX - 11);
             int shiftedMouseY = (int) (mouseY - parentY - 31 - 25);
