@@ -20,38 +20,15 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static de.hysky.skyblocker.utils.SlayerUtils.SLAYER_MINI_NAMES;
+import static de.hysky.skyblocker.utils.SlayerUtils.SLAYER_MOB_TYPE;
+
 public class SlayerEntitiesGlow {
-    private static final Map<String, String> SLAYER_MINI_NAMES = Map.ofEntries(
-            Map.entry("Revenant Sycophant", SlayerUtils.REVENANT),
-            Map.entry("Revenant Champion", SlayerUtils.REVENANT),
-            Map.entry("Deformed Revenant", SlayerUtils.REVENANT),
-            Map.entry("Atoned Champion", SlayerUtils.REVENANT),
-            Map.entry("Atoned Revenant", SlayerUtils.REVENANT),
-            Map.entry("Tarantula Vermin", SlayerUtils.TARA),
-            Map.entry("Tarantula Beast", SlayerUtils.TARA),
-            Map.entry("Mutant Tarantula", SlayerUtils.TARA),
-            Map.entry("Pack Enforcer", SlayerUtils.SVEN),
-            Map.entry("Sven Follower", SlayerUtils.SVEN),
-            Map.entry("Sven Alpha", SlayerUtils.SVEN),
-            Map.entry("Voidling Devotee", SlayerUtils.VOIDGLOOM),
-            Map.entry("Voidling Radical", SlayerUtils.VOIDGLOOM),
-            Map.entry("Voidcrazed Maniac", SlayerUtils.VOIDGLOOM),
-            Map.entry("Flare Demon", SlayerUtils.DEMONLORD),
-            Map.entry("Kindleheart Demon", SlayerUtils.DEMONLORD),
-            Map.entry("Burningsoul Demon", SlayerUtils.DEMONLORD)
-    );
 
     @Init
     public static void init() {
         ClientPlayConnectionEvents.JOIN.register((ignore, ignore2, ignore3) -> clearGlow());
     }
-    private static final Map<String, Class<? extends MobEntity>> SLAYER_MOB_TYPE = Map.of(
-            SlayerUtils.REVENANT, ZombieEntity.class,
-            SlayerUtils.TARA, SpiderEntity.class,
-            SlayerUtils.SVEN, WolfEntity.class,
-            SlayerUtils.VOIDGLOOM, EndermanEntity.class,
-            SlayerUtils.DEMONLORD, BlazeEntity.class
-    );
 
     private static final Set<UUID> MOBS_TO_GLOW = new HashSet<>();
 

@@ -3,14 +3,14 @@ package de.hysky.skyblocker.utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.minecraft.entity.mob.*;
+import net.minecraft.entity.passive.WolfEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//TODO Slayer Packet system that can provide information about the current slayer boss, abstract so that different bosses can have different info
 public class SlayerUtils {
     public static final String REVENANT = "Revenant Horror";
     public static final String TARA = "Tarantula Broodfather";
@@ -18,10 +18,36 @@ public class SlayerUtils {
     public static final String VOIDGLOOM = "Voidgloom Seraph";
     public static final String VAMPIRE = "Riftstalker Bloodfiend";
     public static final String DEMONLORD = "Inferno Demonlord";
-    private static final Logger LOGGER = LoggerFactory.getLogger(SlayerUtils.class);
     public static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend");
 
-    //TODO: Cache this, probably included in Packet system
+	public static final Map<String, String> SLAYER_MINI_NAMES = Map.ofEntries(
+			Map.entry("Revenant Sycophant", REVENANT),
+			Map.entry("Revenant Champion", REVENANT),
+			Map.entry("Deformed Revenant", REVENANT),
+			Map.entry("Atoned Champion", REVENANT),
+			Map.entry("Atoned Revenant", REVENANT),
+			Map.entry("Tarantula Vermin", TARA),
+			Map.entry("Tarantula Beast", TARA),
+			Map.entry("Mutant Tarantula", TARA),
+			Map.entry("Pack Enforcer", SVEN),
+			Map.entry("Sven Follower", SVEN),
+			Map.entry("Sven Alpha", SVEN),
+			Map.entry("Voidling Devotee", VOIDGLOOM),
+			Map.entry("Voidling Radical", VOIDGLOOM),
+			Map.entry("Voidcrazed Maniac", VOIDGLOOM),
+			Map.entry("Flare Demon", DEMONLORD),
+			Map.entry("Kindleheart Demon", DEMONLORD),
+			Map.entry("Burningsoul Demon", DEMONLORD)
+	);
+
+	public static final Map<String, Class<? extends MobEntity>> SLAYER_MOB_TYPE = Map.of(
+			REVENANT, ZombieEntity.class,
+			TARA, SpiderEntity.class,
+			SVEN, WolfEntity.class,
+			VOIDGLOOM, EndermanEntity.class,
+			DEMONLORD, BlazeEntity.class
+	);
+
     public static List<Entity> getEntityArmorStands(Entity entity, float expandY) {
         return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.3F, expandY, 0.3F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
     }

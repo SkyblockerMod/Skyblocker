@@ -366,9 +366,7 @@ public class Utils {
 			slayer.setInSlayerFight(slayerInFight);
 			slayer.setBossType(bossType);
 			slayer.setBossTier(bossTier);
-
-			System.out.println("QUEST " + slayerQuest + " FIGHT "+ slayerInFight + " TYPE " + bossType);
-
+			
 			if (objective != null) {
 				stringLines.add(objective.getDisplayName().getString());
 				textLines.add(Text.empty().append(objective.getDisplayName().copy()));
