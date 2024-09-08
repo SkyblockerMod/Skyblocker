@@ -41,9 +41,10 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
         super(TITLE_PATTERN);
     }
 
-    private Map<String, ObjectLongImmutablePair <String>> categoryOutput = new HashMap<>();
-    private int bestSlotIndexSelling = -1;
-    private int bestSlotIndexAll = -1;
+    private Map<String, ObjectLongImmutablePair<String>> categoryOutput = new HashMap<>();
+    private int bestSlotIndexSelling = -1;  // index of slot that has the best item from "white list" of good selling items (= items that sell quick)
+    private int bestSlotIndexAll = -1;  // index of slot that has the best item overall. May has same result as bestSlotIndexSelling - it is intended
+    private boolean megamindInLogs = false; // comedy
 
     @Override
     public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
@@ -69,8 +70,8 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 
     /**
      * Why there is no simpler way to get those?
+	 * upd: there is, but I don't wanna touch code that already works just fine
      */
-    private boolean megamindInLogs = false;
     private Int2ObjectMap<ItemStack> getSlots() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.currentScreen instanceof HandledScreen) {
@@ -106,19 +107,17 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 
     @Override
     public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-        if (focusedSlot == null) return;
-
         String lore = ItemUtils.concatenateLore(lines);
         Matcher bitsMatcher = BITS_PATTERN.matcher(lore);
         long coinsPerBit = 0L;
         String itemID = "";
-
         boolean isGreen = false;
-        if (!CATEGORY_PATTERN.matcher(lore).find()) {
+		if (focusedSlot == null) return;
+
+		if (!CATEGORY_PATTERN.matcher(lore).find()) {
             if (!bitsMatcher.find()) return;
 
             long bitsCost = Long.parseLong(bitsMatcher.group("amount").replace(",", ""));
-            //double itemCost = getPrice(stack) * stack.getCount();
             double itemCost = ItemUtils.getItemPrice(stack).keyDouble() * stack.getCount();
 
             if (itemCost == 0) return;
@@ -134,7 +133,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
             innerMapGreen = categoryOutput.get(outerKey + "GREEN");
 
             if (innerMap != null) {
-//                LOGGER.info(LOGS_PREFIX + "innerMap STATE: {}, {}", innerMap.left(), innerMap.rightLong());
+//                LOGGER.info(LOGS_PREFIX + "innerMap STATE: {}, {}", innerMap.left(), innerMap.rightLong());	// debug
                 if (isGreen) {  // this is here so green highlighted category won't show yellow stuff
                     itemID = innerMapGreen.left();
                     coinsPerBit = innerMapGreen.rightLong();
@@ -144,7 +143,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
                 }
             }
         }
-//        LOGGER.info(LOGS_PREFIX + "itemID and coinsPerBit: {}, {}", itemID, coinsPerBit);
+//        LOGGER.info(LOGS_PREFIX + "itemID and coinsPerBit: {}, {}", itemID, coinsPerBit);	// debug
         ItemStack foundItemStack = ItemRepository.getItemStack(itemID);
         if (itemID.isEmpty()) {   // a bit dirty, but basically if itemID is empty then it is normal item and NOT category
             lines.add(Text.empty()
@@ -176,8 +175,8 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
         categoryOutput.put(catName, ObjectLongImmutablePair.of("", 0L));
         categoryOutput.put(catName + "GREEN", ObjectLongImmutablePair.of("", 0L));
         Object2LongMap<String> categoryResults = processCategory(stack);
-//        LOGGER.info(LOGS_PREFIX + "TRIGGERED INNER CODE FOR PROCESSING: {}", catName);
-//        LOGGER.info(LOGS_PREFIX + "categoryResults: {}", categoryResults.toString());
+//        LOGGER.info(LOGS_PREFIX + "TRIGGERED INNER CODE FOR PROCESSING: {}", catName);	// debug
+//        LOGGER.info(LOGS_PREFIX + "categoryResults: {}", categoryResults.toString());	// debug
 
         for (Map.Entry<String, Long> categoryEntry : categoryResults.object2LongEntrySet()) {
             String itemID = categoryEntry.getKey();
@@ -193,7 +192,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
                 bestCoinsPerBitAll = coinsPerBit;
             }
         }
-//        LOGGER.info(LOGS_PREFIX + "CURRENT STATE OF categoryOutput: {}, {}", categoryOutput.get(catName).left(), categoryOutput.get(catName).rightLong());
+//        LOGGER.info(LOGS_PREFIX + "CURRENT STATE OF categoryOutput: {}, {}", categoryOutput.get(catName).left(), categoryOutput.get(catName).rightLong());	// debug
         return categoryOutput.get(catName);
     }
 
@@ -212,7 +211,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
             if (CATEGORY_PATTERN.matcher(ItemUtils.concatenateLore(ItemUtils.getLore(stack))).find()) {
                 String catName = stack.getName().getString();
                 ObjectLongImmutablePair<String> categoryResults = calculateBestInCategory(stack);
-//                LOGGER.info(LOGS_PREFIX + "TRIGGERED OUTER CODE FOR PROCESSING: {}", catName);
+//                LOGGER.info(LOGS_PREFIX + "TRIGGERED OUTER CODE FOR PROCESSING: {}", catName);	// debug
 
                 String itemID = categoryResults.left();
                 long coinsPerBit = categoryResults.rightLong();
@@ -231,12 +230,11 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 
         for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
             ItemStack stack = entry.getValue();
-            if (stack == null || stack.isEmpty()) continue;
-
             String itemId = stack.getSkyblockApiId();
             String lore = ItemUtils.concatenateLore(ItemUtils.getLore(stack));
             Matcher bitsMatcher = BITS_PATTERN.matcher(lore);
-            if (!bitsMatcher.find()) continue;
+
+			if (stack == null || stack.isEmpty() || !bitsMatcher.find()) continue;
 
             long bitsCost = Long.parseLong(bitsMatcher.group("amount").replace(",", ""));
             double itemCost = ItemUtils.getItemPrice(stack).keyDouble() * stack.getCount();
@@ -259,10 +257,10 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 
     private Object2LongMap<String> processCategory(ItemStack stack) {
         String categoryName = stack.getName().getString();
-//      LOGGER.info(LOGS_PREFIX + "Detected category name: {}", categoryName);
+//      LOGGER.info(LOGS_PREFIX + "Detected category name: {}", categoryName);	// debug
 
         if (categories.containsKey(categoryName)) {
-//          LOGGER.info(LOGS_PREFIX + "Key matched for: {}", categoryName);
+//          LOGGER.info(LOGS_PREFIX + "Key matched for: {}", categoryName);	// debug
             Object2LongMap<String> results = new Object2LongOpenHashMap<>();
             Map<String, Integer> category = categories.get(categoryName);
 
