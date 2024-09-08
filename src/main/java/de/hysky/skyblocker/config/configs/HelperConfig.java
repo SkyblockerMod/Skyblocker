@@ -9,6 +9,9 @@ public class HelperConfig {
     public boolean enableNewYearCakesHelper = true;
 
     @SerialEntry
+    public boolean enableWardrobeHelper = true;
+
+    @SerialEntry
     public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
     @SerialEntry
