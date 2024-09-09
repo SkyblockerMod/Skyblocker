@@ -35,7 +35,7 @@ public enum PurseChangeCause {
             }
             return UNKNOWN_GAIN;
         } else {
-            // implement slayer quest loss
+            // TODO: implement slayer quest loss
             if (diff == -6666666 || diff == -666666) {
                 return DICE_ROLL;
             }
