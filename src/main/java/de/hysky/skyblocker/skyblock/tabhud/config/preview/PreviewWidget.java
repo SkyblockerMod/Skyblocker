@@ -109,20 +109,20 @@ public class PreviewWidget extends ClickableWidget {
 
 			PositionRule rule = screenBuilder.getPositionRule(selectedWidget.getInternalID());
 			if (rule != null) {
-				// TODO: rename that maybe that's a bit wack
-				int relativeX = 0;
-				int relativeY = 0;
+				// This is the difference between the position before dragging and the current position
+				int deltaX = 0;
+				int deltaY = 0;
 				if (selectedOriginalPos != null) {
-					relativeX = selectedWidget.getX() - selectedOriginalPos.x();
-					relativeY = selectedWidget.getY() - selectedOriginalPos.y();
+					deltaX = selectedWidget.getX() - selectedOriginalPos.x();
+					deltaY = selectedWidget.getY() - selectedOriginalPos.y();
 				}
 				int thisAnchorX = (int) (selectedWidget.getX() + rule.thisPoint().horizontalPoint().getPercentage() * selectedWidget.getWidth());
 				int thisAnchorY = (int) (selectedWidget.getY() + rule.thisPoint().verticalPoint().getPercentage() * selectedWidget.getHeight());
 
-				int translatedX = Math.min(thisAnchorX - rule.relativeX() - relativeX, (int) scaledScreenWidth - 2);
-				int translatedY = Math.min(thisAnchorY - rule.relativeY() - relativeY, (int) scaledScreenHeight - 2);
+				int translatedX = Math.min(thisAnchorX - rule.relativeX() - deltaX, (int) scaledScreenWidth - 2);
+				int translatedY = Math.min(thisAnchorY - rule.relativeY() - deltaY, (int) scaledScreenHeight - 2);
 
-				renderUnits(context, relativeX, rule, thisAnchorX, thisAnchorY, relativeY, translatedX, translatedY);
+				renderUnits(context, rule, deltaX, deltaY, thisAnchorX, thisAnchorY, translatedX, translatedY);
 
 				context.drawHorizontalLine(translatedX, thisAnchorX, thisAnchorY + 1, 0xAAAA0000);
 				context.drawVerticalLine(translatedX + 1, translatedY, thisAnchorY, 0xAAAA0000);
@@ -142,21 +142,29 @@ public class PreviewWidget extends ClickableWidget {
 		context.disableScissor();
 	}
 
-	private void renderUnits(DrawContext context, int relativeX, PositionRule rule, int thisAnchorX, int thisAnchorY, int relativeY, int translatedX, int translatedY) {
+	private void renderUnits(DrawContext context, PositionRule rule, int deltaX, int deltaY, int thisAnchorX, int thisAnchorY, int translatedX, int translatedY) {
 		boolean xUnitOnTop = rule.relativeY() > 0;
 		if (xUnitOnTop && thisAnchorY < 10) xUnitOnTop = false;
 		if (!xUnitOnTop && thisAnchorY > scaledScreenHeight - 10) xUnitOnTop = true;
 
-		String yUnitText = String.valueOf(rule.relativeY() + relativeY);
+		int xUnit = rule.relativeX() + deltaX;
+		int yUnit = rule.relativeY() + deltaY;
+		String xUnitText = String.valueOf(xUnit);
+		String yUnitText = String.valueOf(yUnit);
 		int yUnitTextWidth = tab.client.textRenderer.getWidth(yUnitText);
 		boolean yUnitOnRight = rule.relativeX() > 0;
 		if (yUnitOnRight && translatedX + 2 + yUnitTextWidth >= scaledScreenWidth) yUnitOnRight = false;
 		if (!yUnitOnRight && translatedX - 2 - yUnitTextWidth <= 0) yUnitOnRight = true;
 
+		if (Math.abs(xUnit) < 15 || Math.abs(yUnit) < 15) {
+			String text = "x: " + xUnitText + " y: " + yUnitText;
+			int textX = thisAnchorX < scaledScreenWidth / 2 ? (int) (scaledScreenWidth - tab.client.textRenderer.getWidth(text) - 5) : 5;
+			context.drawTextWithShadow(tab.client.textRenderer, text, textX, 2, Colors.RED);
+		}
 		// X
-		context.drawCenteredTextWithShadow(tab.client.textRenderer, String.valueOf(relativeX + rule.relativeX()), thisAnchorX - (relativeX + rule.relativeX()) / 2, xUnitOnTop ? thisAnchorY - 9 : thisAnchorY + 2, Colors.LIGHT_RED);
+		context.drawCenteredTextWithShadow(tab.client.textRenderer, xUnitText, thisAnchorX - (xUnit) / 2, xUnitOnTop ? thisAnchorY - 9 : thisAnchorY + 2, Colors.LIGHT_RED);
 		// Y
-		context.drawText(tab.client.textRenderer, yUnitText, yUnitOnRight ? translatedX + 2 : translatedX - 1 - yUnitTextWidth, thisAnchorY - (relativeY + rule.relativeY() - 9) / 2, Colors.LIGHT_RED, true);
+		context.drawText(tab.client.textRenderer, yUnitText, yUnitOnRight ? translatedX + 2 : translatedX - 1 - yUnitTextWidth, thisAnchorY - (yUnit - 9) / 2, Colors.LIGHT_RED, true);
 	}
 
 	@Override
