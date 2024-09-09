@@ -9,17 +9,17 @@ import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
-import de.hysky.skyblocker.skyblock.crimson.slayer.FirePillarAnnouncer;
+import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
-import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
+import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
-import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
+import de.hysky.skyblocker.skyblock.slayers.features.SlayerEntitiesGlow;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
-import de.hysky.skyblocker.utils.SlayerUtils;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -50,7 +50,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onBlockUpdate", at = @At("RETURN"))
     private void skyblocker$onBlockUpdate(BlockUpdateS2CPacket packet, CallbackInfo ci) {
-        if (Utils.isInTheEnd() && SlayerUtils.isInSlayer()) {
+        if (Utils.isInTheEnd() && SlayerManager.isInSlayer()) {
             BeaconHighlighter.beaconPositions.remove(packet.getPos());
             if (packet.getState().isOf(Blocks.BEACON)) {
                 BeaconHighlighter.beaconPositions.add(packet.getPos());

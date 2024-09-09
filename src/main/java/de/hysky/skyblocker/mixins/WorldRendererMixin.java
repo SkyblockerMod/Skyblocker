@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.mixins;
 
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
-import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
+import de.hysky.skyblocker.skyblock.slayers.features.SlayerEntitiesGlow;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -3,7 +3,6 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.util.UndashedUuid;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
@@ -27,7 +26,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.scoreboard.*;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
@@ -55,8 +53,6 @@ public class Utils {
     public static final String PROFILE_ID_PREFIX = "Profile ID: ";
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
-    private static boolean isFightingSlayer = false;
-    private static boolean isInSlayerQuest = false;
     /**
      * The player's rank.
      */
@@ -144,14 +140,6 @@ public class Utils {
 
     public static boolean isInModernForagingIsland() {
         return location == Location.MODERN_FORAGING_ISLAND;
-    }
-
-    public static boolean isFightingSlayer() {
-        return isFightingSlayer;
-    }
-
-    public static boolean isInSlayerQuest() {
-        return isInSlayerQuest;
     }
 
     /**
@@ -243,7 +231,6 @@ public class Utils {
     public static void update() {
         MinecraftClient client = MinecraftClient.getInstance();
         updateScoreboard(client);
-        updateSlayerInfo();
         updatePlayerPresence(client);
         updateFromPlayerList(client);
     }
@@ -365,28 +352,6 @@ public class Utils {
             STRING_SCOREBOARD.addAll(stringLines);
         } catch (NullPointerException e) {
             //Do nothing
-        }
-    }
-
-    public static void updateSlayerInfo() {
-        try {
-            boolean inQuest = false;
-            boolean inFight = false;
-            for (String sidebarLine : STRING_SCOREBOARD) {
-                if (sidebarLine.contains("Slay the boss!")) {
-                    if(!isFightingSlayer){
-                        if(SkyblockerConfigManager.get().slayers.bossSpawnAlert) Utils.Warning(I18n.translate("skyblocker.slayer.bossSpawnAlert"));
-                    }
-                    inQuest = false;
-                    inFight = true;
-                }
-                if (sidebarLine.contains("Slayer Quest") && !inFight) inQuest = true;
-                if (inQuest) inFight = false;
-            }
-            isInSlayerQuest = inQuest;
-            isFightingSlayer = inFight;
-        } catch (IndexOutOfBoundsException e) {
-            LOGGER.error("[Skyblocker] Failed to update slayer info", e);
         }
     }
 
@@ -581,15 +546,15 @@ public class Utils {
         return UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
     }
 
-    public static void Warning(String text) {
+    public static void warn(String text) {
         long currentTime = System.currentTimeMillis();
         // Check if the cooldown period has passed since the last warning
         if (currentTime - lastWarningTime >= WARNING_COOLDOWN) {
             MinecraftClient client = MinecraftClient.getInstance();
             if(client.player != null) {
-                client.inGameHud.setTitleTicks(5, 20, 10);
+                client.inGameHud.setTitleTicks(5, 20, 0);
                 client.inGameHud.setTitle(Text.literal(text).formatted(Formatting.RED));
-                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
+                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
                 // Update the time of the last warning
                 lastWarningTime = currentTime;
             }

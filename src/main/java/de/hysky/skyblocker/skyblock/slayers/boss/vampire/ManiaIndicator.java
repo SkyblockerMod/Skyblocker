@@ -1,7 +1,7 @@
-package de.hysky.skyblocker.skyblock.rift;
+package de.hysky.skyblocker.skyblock.slayers.boss.vampire;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.SlayerUtils;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
@@ -16,17 +16,17 @@ import net.minecraft.util.math.BlockPos;
 public class ManiaIndicator {
     private static final Title title = new Title("skyblocker.rift.mania", Formatting.RED);
 
-    protected static void updateMania() {
-        if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getIslandArea().contains("Stillgore Château")) || !SlayerUtils.isInSlayer()) {
+    public static void updateMania() {
+        if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getIslandArea().contains("Stillgore Château")) || !SlayerManager.isInSlayer()) {
             TitleContainer.removeTitle(title);
             return;
         }
 
-        Entity slayerEntity = SlayerUtils.getSlayerEntity();
+        Entity slayerEntity = SlayerManager.getSlayerEntity();
         if (slayerEntity == null) return;
 
         boolean anyMania = false;
-        for (Entity entity : SlayerUtils.getEntityArmorStands(slayerEntity)) {
+        for (Entity entity : SlayerManager.getEntityArmorStands(slayerEntity)) {
             if (entity.getDisplayName().toString().contains("MANIA")) {
                 anyMania = true;
                 BlockPos pos = MinecraftClient.getInstance().player.getBlockPos().down();

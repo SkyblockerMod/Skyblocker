@@ -26,6 +26,12 @@ public class SlayersConfig {
     public boolean miniBossSpawnAlert = false;
 
     @SerialEntry
+    public boolean slainTime = true;
+
+    @SerialEntry
+    public SlayerHud slayerHud = new SlayerHud();
+
+    @SerialEntry
     public EndermanSlayer endermanSlayer = new EndermanSlayer();
 
     @SerialEntry
@@ -33,6 +39,17 @@ public class SlayersConfig {
 
     @SerialEntry
     public BlazeSlayer blazeSlayer = new BlazeSlayer();
+
+    public static class SlayerHud {
+        @SerialEntry
+        public boolean enableHud = true;
+
+        @SerialEntry
+        public int x;
+
+        @SerialEntry
+        public int y;
+    }
 
     public static class EndermanSlayer {
         @SerialEntry

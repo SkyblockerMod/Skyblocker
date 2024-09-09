@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.entity;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
-import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
+import de.hysky.skyblocker.skyblock.slayers.features.SlayerEntitiesGlow;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;

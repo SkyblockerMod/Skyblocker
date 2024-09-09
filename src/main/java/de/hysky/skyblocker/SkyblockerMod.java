@@ -26,7 +26,7 @@ import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretsTracker;
 import de.hysky.skyblocker.skyblock.dwarven.*;
-import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
+import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
@@ -48,7 +48,9 @@ import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.rift.TheRift;
 import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
 import de.hysky.skyblocker.skyblock.shortcut.Shortcuts;
-import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
+import de.hysky.skyblocker.skyblock.slayers.features.SlayerEntitiesGlow;
+import de.hysky.skyblocker.skyblock.slayers.hud.SlayerHud;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.special.SpecialEffects;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
@@ -109,6 +111,7 @@ public class SkyblockerMod implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
+        SlayerManager.init();
         ConfigDataFixer.apply();
         Utils.init();
         SkyblockerConfigManager.init();
@@ -216,6 +219,7 @@ public class SkyblockerMod implements ClientModInitializer {
         MobGlow.init();
         MayorUtils.init();
         SlayerEntitiesGlow.init();
+        SlayerHud.init();
 
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
         Scheduler.INSTANCE.scheduleCyclic(DiscordRPCManager::updateDataAndPresence, 200);

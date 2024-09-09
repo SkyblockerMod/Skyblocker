@@ -1,8 +1,8 @@
-package de.hysky.skyblocker.skyblock.crimson.slayer;
+package de.hysky.skyblocker.skyblock.slayers.boss.demonlord;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
-import de.hysky.skyblocker.utils.SlayerUtils;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
@@ -10,10 +10,9 @@ import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.PlainTextContent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +30,7 @@ public class FirePillarAnnouncer {
      * @param entity The updated entity that is checked to be a fire pillar
      */
     public static void checkFirePillar(Entity entity) {
-        if (Utils.isInCrimson() && SlayerUtils.isInSlayer() && entity instanceof ArmorStandEntity) {
+        if (Utils.isInCrimson() && SlayerManager.isInSlayer() && entity instanceof ArmorStandEntity) {
 
             String entityName = entity.getName().getString();
             Matcher matcher = FIRE_PILLAR_PATTERN.matcher(entityName);
@@ -42,7 +41,7 @@ public class FirePillarAnnouncer {
 
                 // There is an edge case where the slayer has entered demon phase and temporarily despawned with
                 //  an active fire pillar in play, So fallback to the player
-                Entity referenceEntity = SlayerUtils.getSlayerEntity();
+                Entity referenceEntity = SlayerManager.getSlayerEntity();
                 if (!(referenceEntity != null ? referenceEntity : MinecraftClient.getInstance().player).getBlockPos().isWithinDistance(entity.getPos(), 22)) return;
                 announceFirePillarDetails(entityName);
             }
