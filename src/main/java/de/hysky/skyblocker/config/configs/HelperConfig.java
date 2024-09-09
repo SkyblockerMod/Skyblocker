@@ -9,6 +9,9 @@ public class HelperConfig {
     public boolean enableNewYearCakesHelper = true;
 
     @SerialEntry
+    public boolean enableBitsTooltip = true;
+
+    @SerialEntry
     public boolean enableWardrobeHelper = true;
 
     @SerialEntry
@@ -34,9 +37,6 @@ public class HelperConfig {
 
     @SerialEntry
     public ItemPrice itemPrice = new ItemPrice();
-
-    @SerialEntry
-    public boolean enableBitsTooltip = true;
 
     public static class MythologicalRitual {
         @SerialEntry
