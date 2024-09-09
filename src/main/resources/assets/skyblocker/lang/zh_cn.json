@@ -932,5 +932,9 @@
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "在集市和拍卖行中找不到该物品",
     "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "启用物品价格刷新",
     "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "使用Z键刷新集市和拍卖行价格。",
-    "skyblocker.config.dungeons.professor": "教授"
+    "skyblocker.config.dungeons.professor": "教授（F3/M3）",
+    "skyblocker.config.slayer.bossbar": "杀手Boss栏",
+    "skyblocker.config.helpers.enableWardrobeHelper": "启用衣柜助手",
+    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "允许在衣柜菜单打开时通过热键1-9切换护甲。菜单中对应的护甲将被装备至身上。",
+    "skyblocker.config.slayer.bossbar.@Tooltip": "为当前你正战斗的Boss显示Boss栏"
 }
