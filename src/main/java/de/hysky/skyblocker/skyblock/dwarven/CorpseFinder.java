@@ -44,6 +44,12 @@ public class CorpseFinder {
     private static final String PREFIX = "[Skyblocker Corpse Finder] ";
     private static final Logger LOGGER = LoggerFactory.getLogger(CorpseFinder.class);
     private static final Map<String, List<Corpse>> corpsesByType = new HashMap<>();
+	private static final Set<String> ITEM_IDS = Set.of(
+			"LAPIS_ARMOR_HELMET",
+			"ARMOR_OF_YOG_HELMET",
+			"MINERAL_HELMET",
+			"VANGUARD_HELMET"
+	);
 
     @Init
     public static void init() {
@@ -162,43 +168,6 @@ public class CorpseFinder {
                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))));
     }
 
-    static class Corpse {
-        private final ArmorStandEntity entity;
-        private final Waypoint waypoint;
-        private boolean opened;
-        private boolean seen;
-        private long messageLastSent = 0;
-        private Formatting color = Formatting.YELLOW;
-        private float[] colors;
-        private String name;
-
-        Corpse(ArmorStandEntity entity, Waypoint waypoint, boolean opened) {
-            this.entity = entity;
-            this.waypoint = waypoint;
-            this.opened = opened;
-            this.seen = false;
-            this.color = getColor(entity);
-            this.colors = getColors(color);
-            this.name = getType(entity);
-        }
-        Corpse(ArmorStandEntity entity, Waypoint waypoint, boolean opened, Formatting color) {
-            this.entity = entity;
-            this.waypoint = waypoint;
-            this.opened = opened;
-            this.seen = false;
-            this.color = color;
-            this.colors = getColors(color);
-            this.name = getType(entity);
-        }
-    }
-
-    private static final Set<String> ITEM_IDS = Set.of(
-            "LAPIS_ARMOR_HELMET",
-            "ARMOR_OF_YOG_HELMET",
-            "MINERAL_HELMET",
-            "VANGUARD_HELMET"
-    );
-
     static String getType(ArmorStandEntity entity) {
         for (ItemStack stack : entity.getArmorItems()) {
             String itemId = ItemUtils.getItemId(stack);
@@ -267,4 +236,34 @@ public class CorpseFinder {
             }
         }
     }
+
+	static class Corpse {
+		private final ArmorStandEntity entity;
+		private final Waypoint waypoint;
+		private boolean opened;
+		private boolean seen;
+		private long messageLastSent = 0;
+		private Formatting color = Formatting.YELLOW;
+		private float[] colors;
+		private String name;
+
+		Corpse(ArmorStandEntity entity, Waypoint waypoint, boolean opened) {
+			this.entity = entity;
+			this.waypoint = waypoint;
+			this.opened = opened;
+			this.seen = false;
+			this.color = getColor(entity);
+			this.colors = getColors(color);
+			this.name = getType(entity);
+		}
+		Corpse(ArmorStandEntity entity, Waypoint waypoint, boolean opened, Formatting color) {
+			this.entity = entity;
+			this.waypoint = waypoint;
+			this.opened = opened;
+			this.seen = false;
+			this.color = color;
+			this.colors = getColors(color);
+			this.name = getType(entity);
+		}
+	}
 }
