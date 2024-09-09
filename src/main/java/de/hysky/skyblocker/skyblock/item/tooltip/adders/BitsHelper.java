@@ -70,7 +70,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 
     /**
      * Why there is no simpler way to get those?
-	 * upd: there is, but I don't wanna touch code that already works just fine
+	 * upd: there is, using `focusedSlot.inventory`, but I don't wanna touch code that already works just fine
      */
     private Int2ObjectMap<ItemStack> getSlots() {
         MinecraftClient client = MinecraftClient.getInstance();
