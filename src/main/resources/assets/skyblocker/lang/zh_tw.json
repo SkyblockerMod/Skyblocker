@@ -929,5 +929,9 @@
     "skyblocker.config.helpers.itemPrice.refreshingItemPrices": "正在刷新物品價格……",
     "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "成功刷新物品價格",
     "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "物品價格刷新失敗。",
-    "skyblocker.config.chat.waypoints.display": "[顯示路徑點]"
+    "skyblocker.config.chat.waypoints.display": "[顯示路徑點]",
+    "skyblocker.config.slayer.bossbar": "殺手Boss欄",
+    "skyblocker.config.slayer.bossbar.@Tooltip": "為目前你正戰鬥的Boss顯示Boss欄",
+    "skyblocker.config.helpers.enableWardrobeHelper": "啟用衣櫃助手",
+    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "允許在衣櫃選單開啟時透過熱鍵1-9切換護甲。選單中對應的護甲將裝備至身上。"
 }
