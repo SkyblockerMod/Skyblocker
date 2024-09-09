@@ -284,7 +284,7 @@ public class Utils {
             }
             if (purseString != null) {
                 // this is so that it correctly gets purse amount when the (+n) coins appears
-                purseString = purseString.replaceAll("\\(([+\\-])[0-9.]+\\)", "");
+                purseString = purseString.replaceAll("\\(([+\\-])[0-9,.]+\\)", "");
                 purse = Double.parseDouble(purseString.replaceAll("[^0-9.]", "").strip());
             } else purse = 0;
 
