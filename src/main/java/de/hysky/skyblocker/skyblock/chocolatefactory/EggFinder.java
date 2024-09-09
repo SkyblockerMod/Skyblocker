@@ -144,7 +144,7 @@ public class EggFinder {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		for (EggType type : EggType.entries) {
 			Egg egg = type.egg;
-			if (egg != null && egg.waypoint.shouldRender() && (egg.seen || Debug.debugEnabled())) egg.waypoint.render(context);
+			if (egg != null && egg.waypoint.shouldRender() && egg.seen) egg.waypoint.render(context);
 		}
 	}
 
