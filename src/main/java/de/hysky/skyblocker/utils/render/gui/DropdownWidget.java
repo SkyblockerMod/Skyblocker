@@ -8,10 +8,8 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.handler.PacketUnbundler;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -54,8 +52,8 @@ public class DropdownWidget<T> extends ContainerWidget {
 		matrices.translate(0, 0, 100);
 		dropdownList.visible = open;
 		dropdownList.render(context, mouseX, mouseY, delta);
-		context.fill(getX(), getY(), getRight(), getY() + ENTRY_HEIGHT + 4, 0xFF << 24);
-		context.drawBorder(getX(), getY(), getWidth(), ENTRY_HEIGHT + 4, -1);
+		context.fill(getX(), getY(), getRight(), getY() + ENTRY_HEIGHT + 5, 0xFF << 24);
+		context.drawBorder(getX(), getY(), getWidth(), ENTRY_HEIGHT + 5, -1);
 		drawScrollableText(context, client.textRenderer, Text.literal(
 				selected.toString()),
 				getX() + 2,
@@ -234,7 +232,8 @@ public class DropdownWidget<T> extends ContainerWidget {
 
 		@Override
 		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			drawScrollableText(context, client.textRenderer, Text.literal(entry.toString()).fillStyle(Style.EMPTY.withUnderline(hovered)), x + 10, y + 2, x + entryWidth, y + 11, -1);
+			// drawScrollableText does some weird stuff with the y value, so we put startY = y and endY = y + 11 which makes the text render on the same line as the tick mark below (y + 2).
+			drawScrollableText(context, client.textRenderer, Text.literal(entry.toString()).fillStyle(Style.EMPTY.withUnderline(hovered)), x + 10, y, x + entryWidth, y + 11, -1);
 			if (selected == this.entry) {
 				context.drawTextWithShadow(client.textRenderer, "✔", x, y + 2, 0xFFFFFFFF);
 			}
