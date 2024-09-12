@@ -13,14 +13,15 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -29,6 +30,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,6 +57,7 @@ public class SmoothAOTE {
     private static Vec3d debugPos1;
     private  static Vec3d debugPos2;
     private static Vec3d debugPos3;
+    private static List<Vec3d> debugRaycastChecks = new ArrayList<>();
 
     @Init
     public static void init() {
@@ -78,6 +81,11 @@ public class SmoothAOTE {
         }
         if (debugPos3 != null) {
             RenderHelper.renderFilled(context, BlockPos.ofFloored(debugPos3), new float[] {0,0,1},0.5f, true);
+        }
+        //raycast check pos things
+
+        for (Vec3d pos : debugRaycastChecks) {
+            RenderHelper.renderFilled(context,pos.add(0.05, 0.05, 0.05),new Vec3d(0.1,0.1,0.1), new float[] {1, 0, 0},1, true);
         }
     }
 
@@ -255,6 +263,7 @@ public class SmoothAOTE {
             startPos = CLIENT.player.getPos().add(0, 1.62, 0); // the eye poss should not be affected by crouching
             cameraStartPos = CLIENT.player.getEyePos();
             lastTeleportTime = System.currentTimeMillis();
+            debugLastStart = startPos;
         } else {
             //add to the end of the teleport sequence
             startPos = startPos.add(teleportVector);
@@ -278,6 +287,7 @@ public class SmoothAOTE {
             startPos = null;
             return;
         }
+        debugLastEnd = startPos.add(teleportVector);
         //round the vector values to 1dp
 
         //compensate for hypixel rounding the end position to x.5 y.62 z.5
@@ -287,7 +297,6 @@ public class SmoothAOTE {
         //add 1 to teleports ahead
         teleportsAhead += 1;
 
-        debugLastEnd = startPos.add(teleportVector);
         System.out.println(teleportsAhead);
     }
 
@@ -343,24 +352,54 @@ public class SmoothAOTE {
         if (CLIENT.world == null) {
             return null;
         }
+
         System.out.println(BlockPos.ofFloored(startPos.add(direction)));
-        for (double offset = 0; offset <= distance; offset ++) {
-            BlockPos checkPos = BlockPos.ofFloored(startPos.add(direction.multiply(offset)));
+        debugRaycastChecks.clear();
+        for (double offset = 0.2; offset <= distance; offset ++) {
+            Vec3d nextPos = startPos.add(direction.multiply(offset));
+            Vec3d lastPos = startPos.add(direction.multiply(offset-1));
+            System.out.println("next"+nextPos);
+            BlockPos checkPos = BlockPos.ofFloored(nextPos);
+            BlockPos lastCheck = BlockPos.ofFloored(lastPos);
+            debugRaycastChecks.add(startPos.add(direction.multiply(offset)));
 
             //there are block in the way return the last location
-            if (!CLIENT.world.getBlockState(checkPos).isAir() || !CLIENT.world.getBlockState(checkPos.up()).isAir()) { //todo some transparent blocks can be teleported in (Buttons, carpets could be more)
-                if (offset == 0) {
+            if (!canTeleportThrough(CLIENT.world.getBlockState(checkPos)) ) {
+                if (offset == 0.2) {
                     // no teleport can happen
                     return null;
                 }
                 debugPos1 = startPos.add(direction.multiply(offset));
-                debugPos2 = startPos.add(direction.multiply(offset -1)); //todo befoer foget spiral cheking? check +y then +x then +z ? idk tbh
+                debugPos2 = startPos.add(direction.multiply(offset -1));
+                return direction.multiply(offset - 1);
+            }
+            if (!CLIENT.world.getBlockState(checkPos.up()).isAir() && (nextPos.getY() - Math.floor(nextPos.getY())) >0.495  ) {
+                if (offset == 0.2) {
+                    // no teleport can happen
+                    return null;
+                }
+                debugPos1 = startPos.add(direction.multiply(offset));
+                debugPos2 = startPos.add(direction.multiply(offset -1));
                 return direction.multiply(offset - 1);
             }
 
 
+
+
+
         }
         return direction.multiply(distance);
+    }
+    /**
+     * Checks to see if a block is in the allowed list to teleport though
+     * Air, Buttons, carpets, water, lava, 3 or less snow layers
+     */
+    private static Boolean canTeleportThrough(BlockState blockState) {
+        if (blockState.isAir()) {
+            return true;
+        }
+        Block block = blockState.getBlock();
+        return block instanceof ButtonBlock || block instanceof CarpetBlock || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS)<=3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
     }
 
     /**
