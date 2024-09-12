@@ -8,12 +8,18 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -23,6 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,10 +49,36 @@ public class SmoothAOTE {
     private static long lastTeleportTime;
     private static boolean teleportDisabled;
 
+
+    private static Vec3d debugLastStart;
+    private static Vec3d debugLastEnd;
+    private static Vec3d debugPos1;
+    private  static Vec3d debugPos2;
+    private static Vec3d debugPos3;
+
     @Init
     public static void init() {
         UseItemCallback.EVENT.register(SmoothAOTE::onItemInteract);
         UseBlockCallback.EVENT.register(SmoothAOTE::onBlockInteract);
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(SmoothAOTE::render);
+    }
+
+    private static void render(WorldRenderContext context) {
+        //dev testing rendering
+        if (debugLastStart != null && debugLastEnd != null){
+            RenderHelper.renderLinesFromPoints(context, new Vec3d[]{debugLastStart, debugLastEnd} ,new float[]{1,1,1},1,4,true);
+        }
+
+        //render debug positions
+        if (debugPos1 != null) {
+            RenderHelper.renderFilled(context, BlockPos.ofFloored(debugPos1), new float[] {1,0,0},0.5f, true);
+        }
+        if (debugPos2 != null) {
+            RenderHelper.renderFilled(context, BlockPos.ofFloored(debugPos2), new float[] {0,1,0},0.5f, true);
+        }
+        if (debugPos3 != null) {
+            RenderHelper.renderFilled(context, BlockPos.ofFloored(debugPos3), new float[] {0,0,1},0.5f, true);
+        }
     }
 
     public static void playerTeleported() {
@@ -54,6 +87,8 @@ public class SmoothAOTE {
         //re-enable the animation if the player is teleported as this means they can teleport again. and reset timer for last teleport update
         lastTeleportTime = System.currentTimeMillis();
         teleportDisabled = false;
+
+        debugPos3 = CLIENT.player.getEyePos();
 
         //if the server is in sync in number of teleports
         if (teleportsAhead == 0) {
@@ -83,9 +118,36 @@ public class SmoothAOTE {
         return TypedActionResult.pass(CLIENT.player.getStackInHand(hand));
     }
 
+    /**
+     * Allows shovel teleport items to be used when aiming at interactable blocks
+     * @param playerEntity player
+     * @param world world
+     * @param hand hand item
+     * @param blockHitResult target block
+     * @return always pass
+     */
     private static ActionResult onBlockInteract(PlayerEntity playerEntity, World world, Hand hand, BlockHitResult blockHitResult) {
-        calculateTeleportUse(hand);
+        ItemStack itemStack = playerEntity.getStackInHand(hand);
+        if (isShovel(itemStack) && canShovelActOnBlock(world.getBlockState(blockHitResult.getBlockPos()).getBlock())) {
+            calculateTeleportUse(hand);
+        }
         return ActionResult.PASS;
+    }
+
+    private static boolean isShovel(ItemStack itemStack) {
+        return itemStack.isOf(Items.WOODEN_SHOVEL) ||
+                itemStack.isOf(Items.STONE_SHOVEL) ||
+                itemStack.isOf(Items.IRON_SHOVEL) ||
+                itemStack.isOf(Items.GOLDEN_SHOVEL) ||
+                itemStack.isOf(Items.DIAMOND_SHOVEL);
+    }
+
+    // Helper method to check if the block is one that the shovel can turn into a path (e.g., grass or dirt)
+    private static boolean canShovelActOnBlock(Block block) {
+        return block == Blocks.GRASS_BLOCK ||
+                block == Blocks.DIRT ||
+                block == Blocks.COARSE_DIRT ||
+                block == Blocks.PODZOL;
     }
 
     /**
@@ -95,6 +157,7 @@ public class SmoothAOTE {
      */
 
     private static void calculateTeleportUse(Hand hand) {
+        System.out.println(System.currentTimeMillis()+"staring");
         //stop checking if player does not exist
         if (CLIENT.player == null || CLIENT.world == null) {
             return;
@@ -104,6 +167,7 @@ public class SmoothAOTE {
 
         //make sure it's not disabled
         if (teleportDisabled) {
+            System.out.println("disabled not teleporting");
             return;
         }
 
@@ -183,6 +247,7 @@ public class SmoothAOTE {
                 return;
             }
         }
+        System.out.println("starting the teleport");
 
         //work out start pos of warp and set start time. if there is an active warp going on make the end of that the start of the next one
         if (teleportsAhead == 0 || startPos == null || teleportVector == null) {
@@ -193,6 +258,7 @@ public class SmoothAOTE {
         } else {
             //add to the end of the teleport sequence
             startPos = startPos.add(teleportVector);
+            debugLastStart = startPos;
             //set the camera start pos to how far though the teleport the player is to make is smoother
             cameraStartPos = getInterpolatedPos();
         }
@@ -220,6 +286,9 @@ public class SmoothAOTE {
         teleportVector = teleportVector.subtract(offsetVec);
         //add 1 to teleports ahead
         teleportsAhead += 1;
+
+        debugLastEnd = startPos.add(teleportVector);
+        System.out.println(teleportsAhead);
     }
 
     private static double roundToCenter(double input) {
@@ -274,17 +343,21 @@ public class SmoothAOTE {
         if (CLIENT.world == null) {
             return null;
         }
+        System.out.println(BlockPos.ofFloored(startPos.add(direction)));
         for (double offset = 0; offset <= distance; offset ++) {
             BlockPos checkPos = BlockPos.ofFloored(startPos.add(direction.multiply(offset)));
 
             //there are block in the way return the last location
-            if (!CLIENT.world.getBlockState(checkPos).isAir() || !CLIENT.world.getBlockState(checkPos.up()).isAir()) { //todo some transparent blocks can be teleported in (Buttons could be more)
+            if (!CLIENT.world.getBlockState(checkPos).isAir() || !CLIENT.world.getBlockState(checkPos.up()).isAir()) { //todo some transparent blocks can be teleported in (Buttons, carpets could be more)
                 if (offset == 0) {
                     // no teleport can happen
                     return null;
                 }
+                debugPos1 = startPos.add(direction.multiply(offset));
+                debugPos2 = startPos.add(direction.multiply(offset -1)); //todo befoer foget spiral cheking? check +y then +x then +z ? idk tbh
                 return direction.multiply(offset - 1);
             }
+
 
         }
         return direction.multiply(distance);
@@ -319,4 +392,4 @@ public class SmoothAOTE {
     }
 
 
-}
+    }
