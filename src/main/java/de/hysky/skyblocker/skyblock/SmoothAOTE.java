@@ -21,7 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -55,7 +54,7 @@ public class SmoothAOTE {
     private static Vec3d debugLastStart;
     private static Vec3d debugLastEnd;
     private static Vec3d debugPos1;
-    private  static Vec3d debugPos2;
+    private static Vec3d debugPos2;
     private static Vec3d debugPos3;
     private static List<Vec3d> debugRaycastChecks = new ArrayList<>();
 
@@ -68,24 +67,24 @@ public class SmoothAOTE {
 
     private static void render(WorldRenderContext context) {
         //dev testing rendering
-        if (debugLastStart != null && debugLastEnd != null){
-            RenderHelper.renderLinesFromPoints(context, new Vec3d[]{debugLastStart, debugLastEnd} ,new float[]{1,1,1},1,4,true);
+        if (debugLastStart != null && debugLastEnd != null) {
+            RenderHelper.renderLinesFromPoints(context, new Vec3d[]{debugLastStart, debugLastEnd}, new float[]{1, 1, 1}, 1, 4, true);
         }
 
         //render debug positions
         if (debugPos1 != null) {
-            RenderHelper.renderFilled(context, BlockPos.ofFloored(debugPos1), new float[] {1,0,0},0.5f, true);
+            RenderHelper.renderFilled(context, BlockPos.ofFloored(debugPos1), new float[]{1, 0, 0}, 0.5f, true);
         }
         if (debugPos2 != null) {
-            RenderHelper.renderFilled(context, BlockPos.ofFloored(debugPos2), new float[] {0,1,0},0.5f, true);
+            RenderHelper.renderFilled(context, BlockPos.ofFloored(debugPos2), new float[]{0, 1, 0}, 0.5f, true);
         }
         if (debugPos3 != null) {
-            RenderHelper.renderFilled(context, BlockPos.ofFloored(debugPos3), new float[] {0,0,1},0.5f, true);
+            RenderHelper.renderFilled(context, BlockPos.ofFloored(debugPos3), new float[]{0, 0, 1}, 0.5f, true);
         }
         //raycast check pos things
 
         for (Vec3d pos : debugRaycastChecks) {
-            RenderHelper.renderFilled(context,pos.add(0.05, 0.05, 0.05),new Vec3d(0.1,0.1,0.1), new float[] {1, 0, 0},1, true);
+            RenderHelper.renderFilled(context, pos.add(0.05, 0.05, 0.05), new Vec3d(0.1, 0.1, 0.1), new float[]{1, 0, 0}, 1, true);
         }
     }
 
@@ -128,9 +127,10 @@ public class SmoothAOTE {
 
     /**
      * Allows shovel teleport items to be used when aiming at interactable blocks
-     * @param playerEntity player
-     * @param world world
-     * @param hand hand item
+     *
+     * @param playerEntity   player
+     * @param world          world
+     * @param hand           hand item
      * @param blockHitResult target block
      * @return always pass
      */
@@ -165,7 +165,7 @@ public class SmoothAOTE {
      */
 
     private static void calculateTeleportUse(Hand hand) {
-        System.out.println(System.currentTimeMillis()+"staring");
+        System.out.println(System.currentTimeMillis() + "staring");
         //stop checking if player does not exist
         if (CLIENT.player == null || CLIENT.world == null) {
             return;
@@ -251,7 +251,9 @@ public class SmoothAOTE {
         //make sure the player has enough mana to do the teleport
         Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem, MANA_LORE);
         if (manaNeeded != null && manaNeeded.matches()) {
-            if (SkyblockerMod.getInstance().statusBarTracker.getMana().value() < Integer.parseInt(manaNeeded.group(1))) { // todo the players mana can lag behind as it is updated server side. client side mana calculations would help with this
+            int manaCost = Integer.parseInt(manaNeeded.group(1));
+            int predictedMana = SkyblockerMod.getInstance().statusBarTracker.getMana().value() - teleportsAhead * manaCost ;
+            if ( predictedMana< manaCost) { // todo the players mana can lag behind as it is updated server side. client side mana calculations would help with this
                 return;
             }
         }
@@ -355,41 +357,39 @@ public class SmoothAOTE {
 
         System.out.println(BlockPos.ofFloored(startPos.add(direction)));
         debugRaycastChecks.clear();
-        for (double offset = 0.2; offset <= distance; offset ++) {
+        for (double offset = 0.2; offset <= distance; offset++) {
             Vec3d nextPos = startPos.add(direction.multiply(offset));
-            Vec3d lastPos = startPos.add(direction.multiply(offset-1));
-            System.out.println("next"+nextPos);
+            Vec3d lastPos = startPos.add(direction.multiply(offset - 1));
+            System.out.println("next" + nextPos);
             BlockPos checkPos = BlockPos.ofFloored(nextPos);
             BlockPos lastCheck = BlockPos.ofFloored(lastPos);
             debugRaycastChecks.add(startPos.add(direction.multiply(offset)));
 
             //there are block in the way return the last location
-            if (!canTeleportThrough(CLIENT.world.getBlockState(checkPos)) ) {
+            if (!canTeleportThrough(CLIENT.world.getBlockState(checkPos))) {
                 if (offset == 0.2) {
                     // no teleport can happen
                     return null;
                 }
                 debugPos1 = startPos.add(direction.multiply(offset));
-                debugPos2 = startPos.add(direction.multiply(offset -1));
+                debugPos2 = startPos.add(direction.multiply(offset - 1));
                 return direction.multiply(offset - 1);
             }
-            if (!CLIENT.world.getBlockState(checkPos.up()).isAir() && (nextPos.getY() - Math.floor(nextPos.getY())) >0.495  ) {
+            if (!CLIENT.world.getBlockState(checkPos.up()).isAir() && (nextPos.getY() - Math.floor(nextPos.getY())) > 0.495) {
                 if (offset == 0.2) {
                     // no teleport can happen
                     return null;
                 }
                 debugPos1 = startPos.add(direction.multiply(offset));
-                debugPos2 = startPos.add(direction.multiply(offset -1));
+                debugPos2 = startPos.add(direction.multiply(offset - 1));
                 return direction.multiply(offset - 1);
             }
-
-
-
 
 
         }
         return direction.multiply(distance);
     }
+
     /**
      * Checks to see if a block is in the allowed list to teleport though
      * Air, Buttons, carpets, water, lava, 3 or less snow layers
@@ -399,7 +399,7 @@ public class SmoothAOTE {
             return true;
         }
         Block block = blockState.getBlock();
-        return block instanceof ButtonBlock || block instanceof CarpetBlock || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS)<=3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
+        return block instanceof ButtonBlock || block instanceof CarpetBlock || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
     }
 
     /**
@@ -431,4 +431,4 @@ public class SmoothAOTE {
     }
 
 
-    }
+}
