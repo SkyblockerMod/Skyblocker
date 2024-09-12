@@ -375,11 +375,12 @@ public class SmoothAOTE {
                 debugPos2 = startPos.add(direction.multiply(offset - 1));
                 return direction.multiply(offset - 1);
             }
-            if (!CLIENT.world.getBlockState(checkPos.up()).isAir() && (nextPos.getY() - Math.floor(nextPos.getY())) > 0.495) {
+            if (!CLIENT.world.getBlockState(checkPos.up()).isAir() && (offset != 0.2 ||( nextPos.getY() - Math.floor(nextPos.getY())) > 0.495)) {
                 if (offset == 0.2) {
                     // no teleport can happen
                     return null;
                 }
+                System.out.println("checking head");
                 debugPos1 = startPos.add(direction.multiply(offset));
                 debugPos2 = startPos.add(direction.multiply(offset - 1));
                 return direction.multiply(offset - 1);
