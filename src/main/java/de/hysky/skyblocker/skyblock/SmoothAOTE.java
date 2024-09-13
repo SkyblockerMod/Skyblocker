@@ -29,6 +29,7 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -365,6 +366,7 @@ public class SmoothAOTE {
         //based on which way the ray is going get the needed vector for checking diagonals
         BlockPos xDiagonalOffset;
         BlockPos zDiagonalOffset;
+        System.out.println(direction.getX());
         if (direction.getX() > 0) {
             xDiagonalOffset = new BlockPos(-1, 0, 0);
         } else {
@@ -411,17 +413,17 @@ public class SmoothAOTE {
             }
 
             //check the diagonals to make sure player is not going through diagonal wall (block in the way on both sides at either height)
-            System.out.println((checkPos.add(xDiagonalOffset))+"||"+checkPos.add(zDiagonalOffset));
-            if (offset != 0 && (!canTeleportThrough(checkPos.add(xDiagonalOffset)) || !canTeleportThrough(checkPos.up().add(xDiagonalOffset))) && (!canTeleportThrough(checkPos.add(zDiagonalOffset)) || !canTeleportThrough(checkPos.up().add(zDiagonalOffset)))){
+            System.out.println((checkPos.add(xDiagonalOffset)) + "||" + checkPos.add(zDiagonalOffset));
+            if (offset != 0 && (!canTeleportThrough(checkPos.add(xDiagonalOffset)) || !canTeleportThrough(checkPos.up().add(xDiagonalOffset))) && (!canTeleportThrough(checkPos.add(zDiagonalOffset)) || !canTeleportThrough(checkPos.up().add(zDiagonalOffset)))) {
                 System.out.println("diagonal block");
                 return direction.multiply(offset - 1);
             }
 
-                //if the player is close to the floor (including diagonally) save Y and when player goes bellow this y teleport them to old pos
-                if ((!canTeleportThrough(checkPos.down()) || !canTeleportThrough(checkPos.down().add(xDiagonalOffset)) || !canTeleportThrough(checkPos.down().add(zDiagonalOffset))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
-                    System.out.println("found close floor");
-                    closeFloorY = checkPos.getY() - 1;
-                }
+            //if the player is close to the floor (including diagonally) save Y and when player goes bellow this y teleport them to old pos
+            if (offset != 0 && (isBlockFloor(checkPos.down()) || isBlockFloor(checkPos.down().subtract(xDiagonalOffset)) || isBlockFloor(checkPos.down().subtract(zDiagonalOffset))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
+                System.out.println("found close floor");
+                closeFloorY = checkPos.getY() - 1;
+            }
 
             //if the checking Y is same as closeY finish
             if (closeFloorY == checkPos.getY()) {
@@ -437,6 +439,8 @@ public class SmoothAOTE {
     /**
      * Checks to see if a block is in the allowed list to teleport though
      * Air, Buttons, carpets, water, lava, 3 or less snow layers
+     * @param blockPos block location
+     * @return if a block location can be teleported though
      */
     private static Boolean canTeleportThrough(BlockPos blockPos) {
         if (CLIENT.world == null) {
@@ -449,6 +453,24 @@ public class SmoothAOTE {
         }
         Block block = blockState.getBlock();
         return block instanceof ButtonBlock || block instanceof CarpetBlock || block.equals(Blocks.FIRE) || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
+    }
+
+    /**
+     * Checks to see if a block goes to the top if so class it as a floor
+     * @param blockPos block location
+     * @return if it's a floor block
+     */
+    private static Boolean isBlockFloor(BlockPos blockPos) {
+        if (CLIENT.world == null) {
+            return false;
+        }
+
+        BlockState blockState = CLIENT.world.getBlockState(blockPos);
+        VoxelShape shape = blockState.getOutlineShape(CLIENT.world, blockPos);
+        if (shape.isEmpty()) {
+            return false;
+        }
+        return shape.getBoundingBox().maxY == 1;
     }
 
     /**
