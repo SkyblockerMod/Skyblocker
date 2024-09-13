@@ -8,9 +8,6 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.*;
@@ -21,9 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
@@ -32,8 +27,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,42 +46,10 @@ public class SmoothAOTE {
     private static long lastTeleportTime;
     private static boolean teleportDisabled;
 
-
-    private static Vec3d debugLastStart;
-    private static Vec3d debugLastEnd;
-    private static Vec3d debugPos1;
-    private static Vec3d debugPos2;
-    private static Vec3d debugPos3;
-    private static List<Vec3d> debugRaycastChecks = new ArrayList<>();
-
     @Init
     public static void init() {
         UseItemCallback.EVENT.register(SmoothAOTE::onItemInteract);
         UseBlockCallback.EVENT.register(SmoothAOTE::onBlockInteract);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(SmoothAOTE::render);
-    }
-
-    private static void render(WorldRenderContext context) {
-        //dev testing rendering
-        if (debugLastStart != null && debugLastEnd != null) {
-            RenderHelper.renderLinesFromPoints(context, new Vec3d[]{debugLastStart, debugLastEnd}, new float[]{1, 1, 1}, 1, 4, true);
-        }
-
-        //render debug positions
-        if (debugPos1 != null) {
-            RenderHelper.renderFilled(context, BlockPos.ofFloored(debugPos1), new float[]{1, 0, 0}, 0.5f, true);
-        }
-        if (debugPos2 != null) {
-            RenderHelper.renderFilled(context, BlockPos.ofFloored(debugPos2), new float[]{0, 1, 0}, 0.5f, true);
-        }
-        if (debugPos3 != null) {
-            RenderHelper.renderFilled(context, BlockPos.ofFloored(debugPos3), new float[]{0, 0, 1}, 0.5f, true);
-        }
-        //raycast check pos things
-
-        for (Vec3d pos : debugRaycastChecks) {
-            RenderHelper.renderFilled(context, pos.add(0.05, 0.05, 0.05), new Vec3d(0.1, 0.1, 0.1), new float[]{1, 0, 0}, 1, true);
-        }
     }
 
     /**
@@ -100,12 +61,6 @@ public class SmoothAOTE {
         //re-enable the animation if the player is teleported as this means they can teleport again. and reset timer for last teleport update
         lastTeleportTime = System.currentTimeMillis();
         teleportDisabled = false;
-
-        debugPos3 = CLIENT.player.getEyePos();
-
-        if (startPos != null && teleportVector != null && CLIENT.player.getEyePos().subtract(startPos.add(teleportVector)).length() > 0.1) {
-            CLIENT.player.sendMessage(Text.literal("FAIL:" + CLIENT.player.getEyePos().subtract(startPos.add(teleportVector)).length()).formatted(Formatting.RED));
-        }
 
         //if the server is in sync in number of teleports
         if (teleportsAhead == 0) {
@@ -128,9 +83,10 @@ public class SmoothAOTE {
 
     /**
      * When an item is right-clicked send of to calculate teleport with the clicked item
+     *
      * @param playerEntity player
-     * @param world world
-     * @param hand held item
+     * @param world        world
+     * @param hand         held item
      * @return pass
      */
     private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
@@ -168,6 +124,7 @@ public class SmoothAOTE {
 
     /**
      * Checks if the block is one that the shovel can turn into a path (e.g., grass or dirt)
+     *
      * @param block block to check
      * @return if block can be turned into path
      */
@@ -185,7 +142,6 @@ public class SmoothAOTE {
      */
 
     private static void calculateTeleportUse(Hand hand) {
-        System.out.println(System.currentTimeMillis() + "staring");
         //stop checking if player does not exist
         if (CLIENT.player == null || CLIENT.world == null) {
             return;
@@ -195,7 +151,6 @@ public class SmoothAOTE {
 
         //make sure it's not disabled
         if (teleportDisabled) {
-            System.out.println("disabled not teleporting");
             return;
         }
 
@@ -277,7 +232,6 @@ public class SmoothAOTE {
                 return;
             }
         }
-        System.out.println("starting the teleport");
 
         //work out start pos of warp and set start time. if there is an active warp going on make the end of that the start of the next one
         if (teleportsAhead == 0 || startPos == null || teleportVector == null) {
@@ -285,11 +239,9 @@ public class SmoothAOTE {
             startPos = CLIENT.player.getPos().add(0, 1.62, 0); // the eye poss should not be affected by crouching
             cameraStartPos = CLIENT.player.getEyePos();
             lastTeleportTime = System.currentTimeMillis();
-            debugLastStart = startPos;
         } else {
             //add to the end of the teleport sequence
             startPos = startPos.add(teleportVector);
-            debugLastStart = startPos;
             //set the camera start pos to how far though the teleport the player is to make is smoother
             cameraStartPos = getInterpolatedPos();
         }
@@ -309,9 +261,6 @@ public class SmoothAOTE {
             startPos = null;
             return;
         }
-        debugPos1 = startPos.add(teleportVector);
-        debugLastEnd = startPos.add(teleportVector);
-        //round the vector values to 1dp
 
         //compensate for hypixel rounding the end position to x.5 y.62 z.5
         Vec3d predictedEnd = startPos.add(teleportVector);
@@ -319,8 +268,6 @@ public class SmoothAOTE {
         teleportVector = teleportVector.subtract(offsetVec);
         //add 1 to teleports ahead
         teleportsAhead += 1;
-
-        System.out.println(teleportsAhead);
     }
 
     /**
@@ -385,7 +332,6 @@ public class SmoothAOTE {
         //based on which way the ray is going get the needed vector for checking diagonals
         BlockPos xDiagonalOffset;
         BlockPos zDiagonalOffset;
-        System.out.println(direction.getX());
         if (direction.getX() > 0) {
             xDiagonalOffset = new BlockPos(-1, 0, 0);
         } else {
@@ -397,17 +343,13 @@ public class SmoothAOTE {
             zDiagonalOffset = new BlockPos(0, 0, 1);
         }
 
-        //initilise the closest floor value outside of possible values
+        //initialise the closest floor value outside of possible values
         int closeFloorY = 1000;
 
-        debugRaycastChecks.clear();
         //loop though each block of a teleport checking each block if there are blocks in the way
         for (double offset = 0; offset <= distance; offset++) {
             Vec3d pos = startPos.add(direction.multiply(offset));
             BlockPos checkPos = BlockPos.ofFloored(pos);
-
-            System.out.println(startPos.add(direction.multiply(offset)));
-            debugRaycastChecks.add(startPos.add(direction.multiply(offset)));
 
             //check if there is a block at the check location
             if (!canTeleportThrough(checkPos)) {
@@ -429,26 +371,21 @@ public class SmoothAOTE {
                     // no teleport can happen
                     return null;
                 }
-                System.out.println("checking head");
                 return direction.multiply(offset - 1);
             }
 
             //check the diagonals to make sure player is not going through diagonal wall (full height block in the way on both sides at either height)
-            System.out.println((checkPos.add(xDiagonalOffset)) + "||" + checkPos.add(zDiagonalOffset));
             if (offset != 0 && (isBlockFloor(checkPos.add(xDiagonalOffset)) || isBlockFloor(checkPos.up().add(xDiagonalOffset))) && (isBlockFloor(checkPos.add(zDiagonalOffset)) || isBlockFloor(checkPos.up().add(zDiagonalOffset)))) {
-                System.out.println("diagonal block");
                 return direction.multiply(offset - 1);
             }
 
             //if the player is close to the floor (including diagonally) save Y and when player goes bellow this y finish teleport
             if (offset != 0 && (isBlockFloor(checkPos.down()) || (isBlockFloor(checkPos.down().subtract(xDiagonalOffset)) && isBlockFloor(checkPos.down().subtract(zDiagonalOffset)))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
-                System.out.println("found close floor");
                 closeFloorY = checkPos.getY() - 1;
             }
 
             //if the checking Y is same as closeY finish
             if (closeFloorY == checkPos.getY()) {
-                System.out.println("went bellow close floor");
                 return direction.multiply(offset - 1);
             }
         }
