@@ -262,7 +262,7 @@ public class SmoothAOTE {
             return;
         }
 
-        //compensate for hypixel rounding the end position to x.5 y.62 z.5
+        //compensate for hypixel round to center of block (to x.5 y.62 z.5)
         Vec3d predictedEnd = startPos.add(teleportVector);
         Vec3d offsetVec = new Vec3d(predictedEnd.x - roundToCenter(predictedEnd.x), predictedEnd.y - (Math.ceil(predictedEnd.y) + 0.62), predictedEnd.z - roundToCenter(predictedEnd.z));
         teleportVector = teleportVector.subtract(offsetVec);
@@ -396,7 +396,7 @@ public class SmoothAOTE {
 
     /**
      * Checks to see if a block is in the allowed list to teleport though
-     * Air, Buttons, carpets, crops, mushrooms, nether wart, redstone, ladder, water, fire, lava, 3 or less snow layers
+     * Air, Buttons, carpets, crops, pots, mushrooms, nether wart, redstone, ladder, water, fire, lava, 3 or less snow layers
      *
      * @param blockPos block location
      * @return if a block location can be teleported though
@@ -411,7 +411,7 @@ public class SmoothAOTE {
             return true;
         }
         Block block = blockState.getBlock();
-        return block instanceof ButtonBlock || block instanceof CarpetBlock || block instanceof CropBlock || block.equals(Blocks.BROWN_MUSHROOM) || block.equals(Blocks.RED_MUSHROOM) || block.equals(Blocks.NETHER_WART) || block.equals(Blocks.REDSTONE_WIRE) || block.equals(Blocks.LADDER) || block.equals(Blocks.FIRE) || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
+        return block instanceof ButtonBlock || block instanceof CarpetBlock || block instanceof CropBlock || block instanceof FlowerPotBlock         || block.equals(Blocks.BROWN_MUSHROOM) || block.equals(Blocks.RED_MUSHROOM) || block.equals(Blocks.NETHER_WART) || block.equals(Blocks.REDSTONE_WIRE) || block.equals(Blocks.LADDER) || block.equals(Blocks.FIRE) || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
     }
 
     /**
