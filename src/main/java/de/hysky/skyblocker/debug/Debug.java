@@ -55,23 +55,23 @@ public class Debug {
 		KeyBinding dumpNearbyEntitiesKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, "key.categories.skyblocker"));
 		KeyBinding dumpHoveredItemKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, "key.categories.skyblocker"));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
-				literal(SkyblockerMod.NAMESPACE)
-						.then(literal("debug")
-								.then(dumpPlayersCommand())
-								.then(ItemUtils.dumpHeldItemCommand())
-								.then(ItemUtils.dumpHeldItemNetworthCalculationsCommand())
-								.then(toggleShowingInvisibleArmorStands())
-								.then(dumpArmorStandHeadTextures())
-								.then(toggleWebSocketDebug())
-						)));
+				literal(SkyblockerMod.NAMESPACE).then(literal("debug")
+						.then(dumpPlayersCommand())
+						.then(ItemUtils.dumpHeldItemCommand())
+						.then(ItemUtils.dumpHeldItemNetworthCalculationsCommand())
+						.then(toggleShowingInvisibleArmorStands())
+						.then(dumpArmorStandHeadTextures())
+						.then(toggleWebSocketDebug())
+				)
+		));
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.player == null || client.world == null) return;
 			if (dumpNearbyEntitiesKey.wasPressed() && !keyDown) {
 				client.world.getOtherEntities(client.player, client.player.getBoundingBox().expand(SkyblockerConfigManager.get().debug.dumpRange))
-				            .stream()
-				            .map(entity -> entity.writeNbt(new NbtCompound()))
-				            .map(NbtHelper::toPrettyPrintedText)
-				            .forEach(client.player::sendMessage);
+						.stream()
+						.map(entity -> entity.writeNbt(new NbtCompound()))
+						.map(NbtHelper::toPrettyPrintedText)
+						.forEach(client.player::sendMessage);
 				keyDown = true;
 			} else if (!dumpNearbyEntitiesKey.wasPressed() && keyDown) {
 				keyDown = false;
