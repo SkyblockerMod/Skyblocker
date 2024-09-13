@@ -99,8 +99,8 @@ public class SmoothAOTE {
 
         debugPos3 = CLIENT.player.getEyePos();
 
-        if (startPos != null && teleportVector!= null && CLIENT.player.getEyePos().subtract(startPos.add(teleportVector)).length()>0.1){
-            CLIENT.player.sendMessage(Text.literal("FAIL:"+CLIENT.player.getEyePos().subtract(startPos.add(teleportVector)).length()).formatted(Formatting.RED));
+        if (startPos != null && teleportVector != null && CLIENT.player.getEyePos().subtract(startPos.add(teleportVector)).length() > 0.1) {
+            CLIENT.player.sendMessage(Text.literal("FAIL:" + CLIENT.player.getEyePos().subtract(startPos.add(teleportVector)).length()).formatted(Formatting.RED));
         }
 
         //if the server is in sync in number of teleports
@@ -362,7 +362,7 @@ public class SmoothAOTE {
             return null;
         }
 
-        int closeFloorY = 1000  ;
+        int closeFloorY = 1000;
         System.out.println(BlockPos.ofFloored(startPos.add(direction)));
         debugRaycastChecks.clear();
         for (double offset = 0; offset <= distance; offset++) {
@@ -421,7 +421,7 @@ public class SmoothAOTE {
             return true;
         }
         Block block = blockState.getBlock();
-        return block instanceof ButtonBlock || block instanceof CarpetBlock || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
+        return block instanceof ButtonBlock || block instanceof CarpetBlock || block.equals(Blocks.FIRE) || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
     }
 
     /**
