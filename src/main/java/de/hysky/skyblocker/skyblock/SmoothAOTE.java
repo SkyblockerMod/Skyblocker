@@ -418,9 +418,8 @@ public class SmoothAOTE {
                 System.out.println("diagonal block");
                 return direction.multiply(offset - 1);
             }
-
             //if the player is close to the floor (including diagonally) save Y and when player goes bellow this y teleport them to old pos
-            if (offset != 0 && (isBlockFloor(checkPos.down()) || isBlockFloor(checkPos.down().subtract(xDiagonalOffset)) || isBlockFloor(checkPos.down().subtract(zDiagonalOffset))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
+            if (offset != 0 && (isBlockFloor(checkPos.down()) || (isBlockFloor(checkPos.down().subtract(xDiagonalOffset)) && isBlockFloor(checkPos.down().subtract(zDiagonalOffset)))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
                 System.out.println("found close floor");
                 closeFloorY = checkPos.getY() - 1;
             }
@@ -438,7 +437,8 @@ public class SmoothAOTE {
 
     /**
      * Checks to see if a block is in the allowed list to teleport though
-     * Air, Buttons, carpets, water, lava, 3 or less snow layers
+     * Air, Buttons, carpets, crops, mushrooms, nether wart, redstone, ladder, water, fire, lava, 3 or less snow layers
+     *
      * @param blockPos block location
      * @return if a block location can be teleported though
      */
@@ -452,11 +452,12 @@ public class SmoothAOTE {
             return true;
         }
         Block block = blockState.getBlock();
-        return block instanceof ButtonBlock || block instanceof CarpetBlock || block.equals(Blocks.FIRE) || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
+        return block instanceof ButtonBlock || block instanceof CarpetBlock || block instanceof CropBlock || block.equals(Blocks.BROWN_MUSHROOM) || block.equals(Blocks.RED_MUSHROOM) || block.equals(Blocks.NETHER_WART) || block.equals(Blocks.REDSTONE_WIRE)|| block.equals(Blocks.LADDER)  || block.equals(Blocks.FIRE) || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
     }
 
     /**
      * Checks to see if a block goes to the top if so class it as a floor
+     *
      * @param blockPos block location
      * @return if it's a floor block
      */
@@ -466,7 +467,7 @@ public class SmoothAOTE {
         }
 
         BlockState blockState = CLIENT.world.getBlockState(blockPos);
-        VoxelShape shape = blockState.getOutlineShape(CLIENT.world, blockPos);
+        VoxelShape shape = blockState.getCollisionShape(CLIENT.world, blockPos);
         if (shape.isEmpty()) {
             return false;
         }
