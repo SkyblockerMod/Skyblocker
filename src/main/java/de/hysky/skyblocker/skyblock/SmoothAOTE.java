@@ -362,8 +362,22 @@ public class SmoothAOTE {
             return null;
         }
 
+        //based on which way the ray is going get the needed vector for checking diagonals
+        BlockPos xDiagonalOffset;
+        BlockPos zDiagonalOffset;
+        if (direction.getX() > 0) {
+            xDiagonalOffset = new BlockPos(-1, 0, 0);
+        } else {
+            xDiagonalOffset = new BlockPos(1, 0, 0);
+        }
+        if (direction.getZ() > 0) {
+            zDiagonalOffset = new BlockPos(0, 0, -1);
+        } else {
+            zDiagonalOffset = new BlockPos(0, 0, 1);
+        }
+
         int closeFloorY = 1000;
-        System.out.println(BlockPos.ofFloored(startPos.add(direction)));
+
         debugRaycastChecks.clear();
         for (double offset = 0; offset <= distance; offset++) {
             Vec3d pos = startPos.add(direction.multiply(offset));
@@ -373,15 +387,16 @@ public class SmoothAOTE {
             debugRaycastChecks.add(startPos.add(direction.multiply(offset)));
 
             //there are block in the way return the last location
-            if (!canTeleportThrough(CLIENT.world.getBlockState(checkPos))) {
+            if (!canTeleportThrough(checkPos)) {
                 if (offset == 0) {
                     // no teleport can happen
                     return null;
                 }
                 return direction.multiply(offset - 1);
             }
+
             //check if the block at head height is free
-            if (!canTeleportThrough(CLIENT.world.getBlockState(checkPos.up()))) {
+            if (!canTeleportThrough(checkPos.up())) {
                 if (offset == 0) {
                     //cancel the check if starting height is to low
                     Vec3d justAhead = startPos.add(direction.multiply(0.2));
@@ -395,11 +410,18 @@ public class SmoothAOTE {
                 return direction.multiply(offset - 1);
             }
 
-            //if the player is close to the floor save Y and when player goes bellow this y teleport them to old pos
-            if (!canTeleportThrough(CLIENT.world.getBlockState(checkPos.down())) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
-                System.out.println("found close floor");
-                closeFloorY = checkPos.getY() - 1;
+            //check the diagonals to make sure player is not going through diagonal wall (block in the way on both sides at either height)
+            System.out.println((checkPos.add(xDiagonalOffset))+"||"+checkPos.add(zDiagonalOffset));
+            if (offset != 0 && (!canTeleportThrough(checkPos.add(xDiagonalOffset)) || !canTeleportThrough(checkPos.up().add(xDiagonalOffset))) && (!canTeleportThrough(checkPos.add(zDiagonalOffset)) || !canTeleportThrough(checkPos.up().add(zDiagonalOffset)))){
+                System.out.println("diagonal block");
+                return direction.multiply(offset - 1);
             }
+
+                //if the player is close to the floor (including diagonally) save Y and when player goes bellow this y teleport them to old pos
+                if ((!canTeleportThrough(checkPos.down()) || !canTeleportThrough(checkPos.down().add(xDiagonalOffset)) || !canTeleportThrough(checkPos.down().add(zDiagonalOffset))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
+                    System.out.println("found close floor");
+                    closeFloorY = checkPos.getY() - 1;
+                }
 
             //if the checking Y is same as closeY finish
             if (closeFloorY == checkPos.getY()) {
@@ -416,7 +438,12 @@ public class SmoothAOTE {
      * Checks to see if a block is in the allowed list to teleport though
      * Air, Buttons, carpets, water, lava, 3 or less snow layers
      */
-    private static Boolean canTeleportThrough(BlockState blockState) {
+    private static Boolean canTeleportThrough(BlockPos blockPos) {
+        if (CLIENT.world == null) {
+            return false;
+        }
+
+        BlockState blockState = CLIENT.world.getBlockState(blockPos);
         if (blockState.isAir()) {
             return true;
         }
