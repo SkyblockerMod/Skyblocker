@@ -21,7 +21,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
@@ -96,6 +98,10 @@ public class SmoothAOTE {
         teleportDisabled = false;
 
         debugPos3 = CLIENT.player.getEyePos();
+
+        if (startPos != null && teleportVector!= null && CLIENT.player.getEyePos().subtract(startPos.add(teleportVector)).length()>0.1){
+            CLIENT.player.sendMessage(Text.literal("FAIL:"+CLIENT.player.getEyePos().subtract(startPos.add(teleportVector)).length()).formatted(Formatting.RED));
+        }
 
         //if the server is in sync in number of teleports
         if (teleportsAhead == 0) {
@@ -289,6 +295,7 @@ public class SmoothAOTE {
             startPos = null;
             return;
         }
+        debugPos1 = startPos.add(teleportVector);
         debugLastEnd = startPos.add(teleportVector);
         //round the vector values to 1dp
 
@@ -355,10 +362,12 @@ public class SmoothAOTE {
             return null;
         }
 
+        int closeFloorY = 1000  ;
         System.out.println(BlockPos.ofFloored(startPos.add(direction)));
         debugRaycastChecks.clear();
         for (double offset = 0; offset <= distance; offset++) {
-            BlockPos checkPos = BlockPos.ofFloored(startPos.add(direction.multiply(offset)));
+            Vec3d pos = startPos.add(direction.multiply(offset));
+            BlockPos checkPos = BlockPos.ofFloored(pos);
 
             System.out.println(startPos.add(direction.multiply(offset)));
             debugRaycastChecks.add(startPos.add(direction.multiply(offset)));
@@ -369,12 +378,10 @@ public class SmoothAOTE {
                     // no teleport can happen
                     return null;
                 }
-                debugPos1 = startPos.add(direction.multiply(offset));
-                debugPos2 = startPos.add(direction.multiply(offset - 1));
                 return direction.multiply(offset - 1);
             }
             //check if the block at head height is free
-            if (!CLIENT.world.getBlockState(checkPos.up()).isAir() ){
+            if (!canTeleportThrough(CLIENT.world.getBlockState(checkPos.up()))) {
                 if (offset == 0) {
                     //cancel the check if starting height is to low
                     Vec3d justAhead = startPos.add(direction.multiply(0.2));
@@ -385,8 +392,18 @@ public class SmoothAOTE {
                     return null;
                 }
                 System.out.println("checking head");
-                debugPos1 = startPos.add(direction.multiply(offset));
-                debugPos2 = startPos.add(direction.multiply(offset - 1));
+                return direction.multiply(offset - 1);
+            }
+
+            //if the player is close to the floor save Y and when player goes bellow this y teleport them to old pos
+            if (!canTeleportThrough(CLIENT.world.getBlockState(checkPos.down())) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
+                System.out.println("found close floor");
+                closeFloorY = checkPos.getY() - 1;
+            }
+
+            //if the checking Y is same as closeY finish
+            if (closeFloorY == checkPos.getY()) {
+                System.out.println("went bellow close floor");
                 return direction.multiply(offset - 1);
             }
 
