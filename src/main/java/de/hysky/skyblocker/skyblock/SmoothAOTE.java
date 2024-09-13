@@ -414,7 +414,7 @@ public class SmoothAOTE {
 
             //check the diagonals to make sure player is not going through diagonal wall (block in the way on both sides at either height)
             System.out.println((checkPos.add(xDiagonalOffset)) + "||" + checkPos.add(zDiagonalOffset));
-            if (offset != 0 && (!canTeleportThrough(checkPos.add(xDiagonalOffset)) || !canTeleportThrough(checkPos.up().add(xDiagonalOffset))) && (!canTeleportThrough(checkPos.add(zDiagonalOffset)) || !canTeleportThrough(checkPos.up().add(zDiagonalOffset)))) {
+            if (offset != 0 && (isBlockFloor(checkPos.add(xDiagonalOffset)) || isBlockFloor(checkPos.up().add(xDiagonalOffset))) && (isBlockFloor(checkPos.add(zDiagonalOffset)) || isBlockFloor(checkPos.up().add(zDiagonalOffset)))) {
                 System.out.println("diagonal block");
                 return direction.multiply(offset - 1);
             }
