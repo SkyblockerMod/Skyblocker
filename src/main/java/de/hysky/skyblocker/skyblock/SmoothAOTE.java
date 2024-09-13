@@ -91,6 +91,9 @@ public class SmoothAOTE {
         }
     }
 
+    /**
+     * When a player receives a teleport packet finish a teleport
+     */
     public static void playerTeleported() {
         //the player has been teleported so 1 less teleport ahead
         teleportsAhead = Math.max(0, teleportsAhead - 1);
@@ -123,7 +126,13 @@ public class SmoothAOTE {
         return customData != null && customData.contains("tuned_transmission") ? baseRange + customData.getInt("tuned_transmission") : baseRange;
     }
 
-
+    /**
+     * When an item is right-clicked send of to calculate teleport with the clicked item
+     * @param playerEntity player
+     * @param world world
+     * @param hand held item
+     * @return pass
+     */
     private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
         if (CLIENT.player == null) {
             return null;
@@ -157,7 +166,11 @@ public class SmoothAOTE {
                 itemStack.isOf(Items.DIAMOND_SHOVEL);
     }
 
-    // Helper method to check if the block is one that the shovel can turn into a path (e.g., grass or dirt)
+    /**
+     * Checks if the block is one that the shovel can turn into a path (e.g., grass or dirt)
+     * @param block block to check
+     * @return if block can be turned into path
+     */
     private static boolean canShovelActOnBlock(Block block) {
         return block == Blocks.GRASS_BLOCK ||
                 block == Blocks.DIRT ||
@@ -310,6 +323,12 @@ public class SmoothAOTE {
         System.out.println(teleportsAhead);
     }
 
+    /**
+     * Rounds a value to the nearest 0.5
+     *
+     * @param input number to round
+     * @return rounded number
+     */
     private static double roundToCenter(double input) {
         return Math.round(input - 0.5) + 0.5;
     }
@@ -353,7 +372,7 @@ public class SmoothAOTE {
     }
 
     /**
-     * custom raycast hopefully more like hypxiels checks the player can be at every block of the raycast then when one is hit set pos to block before
+     * Custom raycast for teleporting checks for blocks for each 1 block forward in teleport. (very similar to hypixels method)
      *
      * @param distance maximum distance
      * @return teleport vector
@@ -378,9 +397,11 @@ public class SmoothAOTE {
             zDiagonalOffset = new BlockPos(0, 0, 1);
         }
 
+        //initilise the closest floor value outside of possible values
         int closeFloorY = 1000;
 
         debugRaycastChecks.clear();
+        //loop though each block of a teleport checking each block if there are blocks in the way
         for (double offset = 0; offset <= distance; offset++) {
             Vec3d pos = startPos.add(direction.multiply(offset));
             BlockPos checkPos = BlockPos.ofFloored(pos);
@@ -388,7 +409,7 @@ public class SmoothAOTE {
             System.out.println(startPos.add(direction.multiply(offset)));
             debugRaycastChecks.add(startPos.add(direction.multiply(offset)));
 
-            //there are block in the way return the last location
+            //check if there is a block at the check location
             if (!canTeleportThrough(checkPos)) {
                 if (offset == 0) {
                     // no teleport can happen
@@ -412,13 +433,14 @@ public class SmoothAOTE {
                 return direction.multiply(offset - 1);
             }
 
-            //check the diagonals to make sure player is not going through diagonal wall (block in the way on both sides at either height)
+            //check the diagonals to make sure player is not going through diagonal wall (full height block in the way on both sides at either height)
             System.out.println((checkPos.add(xDiagonalOffset)) + "||" + checkPos.add(zDiagonalOffset));
             if (offset != 0 && (isBlockFloor(checkPos.add(xDiagonalOffset)) || isBlockFloor(checkPos.up().add(xDiagonalOffset))) && (isBlockFloor(checkPos.add(zDiagonalOffset)) || isBlockFloor(checkPos.up().add(zDiagonalOffset)))) {
                 System.out.println("diagonal block");
                 return direction.multiply(offset - 1);
             }
-            //if the player is close to the floor (including diagonally) save Y and when player goes bellow this y teleport them to old pos
+
+            //if the player is close to the floor (including diagonally) save Y and when player goes bellow this y finish teleport
             if (offset != 0 && (isBlockFloor(checkPos.down()) || (isBlockFloor(checkPos.down().subtract(xDiagonalOffset)) && isBlockFloor(checkPos.down().subtract(zDiagonalOffset)))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
                 System.out.println("found close floor");
                 closeFloorY = checkPos.getY() - 1;
@@ -429,9 +451,9 @@ public class SmoothAOTE {
                 System.out.println("went bellow close floor");
                 return direction.multiply(offset - 1);
             }
-
-
         }
+
+        //return full distance if no collision found
         return direction.multiply(distance);
     }
 
@@ -452,7 +474,7 @@ public class SmoothAOTE {
             return true;
         }
         Block block = blockState.getBlock();
-        return block instanceof ButtonBlock || block instanceof CarpetBlock || block instanceof CropBlock || block.equals(Blocks.BROWN_MUSHROOM) || block.equals(Blocks.RED_MUSHROOM) || block.equals(Blocks.NETHER_WART) || block.equals(Blocks.REDSTONE_WIRE)|| block.equals(Blocks.LADDER)  || block.equals(Blocks.FIRE) || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
+        return block instanceof ButtonBlock || block instanceof CarpetBlock || block instanceof CropBlock || block.equals(Blocks.BROWN_MUSHROOM) || block.equals(Blocks.RED_MUSHROOM) || block.equals(Blocks.NETHER_WART) || block.equals(Blocks.REDSTONE_WIRE) || block.equals(Blocks.LADDER) || block.equals(Blocks.FIRE) || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
     }
 
     /**
