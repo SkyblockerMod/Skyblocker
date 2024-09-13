@@ -252,8 +252,8 @@ public class SmoothAOTE {
         Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem, MANA_LORE);
         if (manaNeeded != null && manaNeeded.matches()) {
             int manaCost = Integer.parseInt(manaNeeded.group(1));
-            int predictedMana = SkyblockerMod.getInstance().statusBarTracker.getMana().value() - teleportsAhead * manaCost ;
-            if ( predictedMana< manaCost) { // todo the players mana can lag behind as it is updated server side. client side mana calculations would help with this
+            int predictedMana = SkyblockerMod.getInstance().statusBarTracker.getMana().value() - teleportsAhead * manaCost;
+            if (predictedMana < manaCost) { // todo the players mana can lag behind as it is updated server side. client side mana calculations would help with this
                 return;
             }
         }
@@ -357,17 +357,15 @@ public class SmoothAOTE {
 
         System.out.println(BlockPos.ofFloored(startPos.add(direction)));
         debugRaycastChecks.clear();
-        for (double offset = 0.2; offset <= distance; offset++) {
-            Vec3d nextPos = startPos.add(direction.multiply(offset));
-            Vec3d lastPos = startPos.add(direction.multiply(offset - 1));
-            System.out.println("next" + nextPos);
-            BlockPos checkPos = BlockPos.ofFloored(nextPos);
-            BlockPos lastCheck = BlockPos.ofFloored(lastPos);
+        for (double offset = 0; offset <= distance; offset++) {
+            BlockPos checkPos = BlockPos.ofFloored(startPos.add(direction.multiply(offset)));
+
+            System.out.println(startPos.add(direction.multiply(offset)));
             debugRaycastChecks.add(startPos.add(direction.multiply(offset)));
 
             //there are block in the way return the last location
             if (!canTeleportThrough(CLIENT.world.getBlockState(checkPos))) {
-                if (offset == 0.2) {
+                if (offset == 0) {
                     // no teleport can happen
                     return null;
                 }
@@ -375,8 +373,14 @@ public class SmoothAOTE {
                 debugPos2 = startPos.add(direction.multiply(offset - 1));
                 return direction.multiply(offset - 1);
             }
-            if (!CLIENT.world.getBlockState(checkPos.up()).isAir() && (offset != 0.2 ||( nextPos.getY() - Math.floor(nextPos.getY())) > 0.495)) {
-                if (offset == 0.2) {
+            //check if the block at head height is free
+            if (!CLIENT.world.getBlockState(checkPos.up()).isAir() ){
+                if (offset == 0) {
+                    //cancel the check if starting height is to low
+                    Vec3d justAhead = startPos.add(direction.multiply(0.2));
+                    if ((justAhead.getY() - Math.floor(justAhead.getY())) <= 0.495) {
+                        continue;
+                    }
                     // no teleport can happen
                     return null;
                 }
