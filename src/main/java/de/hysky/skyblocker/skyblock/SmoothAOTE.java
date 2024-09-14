@@ -404,14 +404,14 @@ public class SmoothAOTE {
     private static Boolean canTeleportThrough(BlockPos blockPos) {
         if (CLIENT.world == null) {
             return false;
-        }
+        }       
 
         BlockState blockState = CLIENT.world.getBlockState(blockPos);
         if (blockState.isAir()) {
             return true;
         }
         Block block = blockState.getBlock();
-        return block instanceof ButtonBlock || block instanceof CarpetBlock || block instanceof CropBlock || block instanceof FlowerPotBlock         || block.equals(Blocks.BROWN_MUSHROOM) || block.equals(Blocks.RED_MUSHROOM) || block.equals(Blocks.NETHER_WART) || block.equals(Blocks.REDSTONE_WIRE) || block.equals(Blocks.LADDER) || block.equals(Blocks.FIRE) || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
+        return block instanceof ButtonBlock || block instanceof CarpetBlock || block instanceof CropBlock || block instanceof FlowerPotBlock || block.equals(Blocks.BROWN_MUSHROOM) || block.equals(Blocks.RED_MUSHROOM) || block.equals(Blocks.NETHER_WART) || block.equals(Blocks.REDSTONE_WIRE) || block.equals(Blocks.LADDER) || block.equals(Blocks.FIRE) || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
     }
 
     /**
