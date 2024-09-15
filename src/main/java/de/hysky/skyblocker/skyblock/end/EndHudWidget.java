@@ -18,6 +18,7 @@ import net.minecraft.util.Formatting;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 @RegisterWidget
 public class EndHudWidget extends ComponentBasedWidget {
@@ -48,11 +49,22 @@ public class EndHudWidget extends ComponentBasedWidget {
         this.update();
     }
     @Override
-    public boolean shouldRender(Location location) {
+    public boolean isEnabledIn(Location location) {
         return location.equals(Location.THE_END) && SkyblockerConfigManager.get().otherLocations.end.hudEnabled;
     }
 
-    @Override
+	@Override
+	public void setEnabledIn(Location location, boolean enabled) {
+		if (!location.equals(Location.THE_END)) return;
+		SkyblockerConfigManager.get().otherLocations.end.hudEnabled = enabled;
+	}
+
+	@Override
+	public Set<Location> availableLocations() {
+		return Set.of(Location.THE_END);
+	}
+
+	@Override
     public void updateContent() {
         // Zealots
         if (SkyblockerConfigManager.get().otherLocations.end.zealotKillsEnabled) {
@@ -80,8 +92,8 @@ public class EndHudWidget extends ComponentBasedWidget {
     }
 
     @Override
-    public String getNiceName() {
-        return "End Hud";
+    public Text getDisplayName() {
+        return Text.literal("End Hud");
     }
 
 }
