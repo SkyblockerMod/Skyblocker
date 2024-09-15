@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.config;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -13,15 +13,17 @@ import java.util.List;
 /**
  * A screen for configuring the positions of HUD widgets.
  * <p>
+ * Note: This is currently only used for title container. There is a new system for other HUD widgets, see {@link de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen}
+ * <p>
  * This class takes care of rendering the widgets, dragging them, and resetting their positions.
  * Create one subclass for each collection of HUD widgets that are displayed at the same time.
  * (i.e. one for dwarven mines, one for the end, etc.) See an implementation for an example.
  */
 public abstract class HudConfigScreen extends Screen {
     protected final Screen parent;
-    protected final List<HudWidget> widgets;
+    protected final List<AbstractWidget> widgets;
 
-    private HudWidget draggingWidget;
+    private AbstractWidget draggingWidget;
     private double mouseClickRelativeX;
     private double mouseClickRelativeY;
 
@@ -31,7 +33,7 @@ public abstract class HudConfigScreen extends Screen {
      * @param parent the parent screen
      * @param widget the widget to configure
      */
-    public HudConfigScreen(Text title, Screen parent, HudWidget widget) {
+    public HudConfigScreen(Text title, Screen parent, AbstractWidget widget) {
         this(title, parent, List.of(widget));
     }
 
@@ -41,7 +43,7 @@ public abstract class HudConfigScreen extends Screen {
      * @param parent the parent screen
      * @param widgets the widgets to configure
      */
-    public HudConfigScreen(Text title, Screen parent, List<HudWidget> widgets) {
+    public HudConfigScreen(Text title, Screen parent, List<AbstractWidget> widgets) {
         super(title);
         this.parent = parent;
         this.widgets = widgets;
@@ -56,13 +58,13 @@ public abstract class HudConfigScreen extends Screen {
     }
 
     /**
-     * Renders the widgets using the default {@link HudWidget#render(DrawContext)} method. Override to change the behavior.
+     * Renders the widgets using the default {@link AbstractWidget#render(DrawContext, int, int, float)} method. Override to change the behavior.
      * @param context the context to render in
      * @param widgets the widgets to render
      */
-    protected void renderWidget(DrawContext context, List<HudWidget> widgets, float delta) {
-        for (HudWidget widget : widgets) {
-            widget.render(context);
+    protected void renderWidget(DrawContext context, List<AbstractWidget> widgets, float delta) {
+        for (AbstractWidget widget : widgets) {
+            widget.render(context, -1, -1, delta);
         }
     }
 
@@ -78,7 +80,7 @@ public abstract class HudConfigScreen extends Screen {
     @Override
     public final boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            for (HudWidget widget : widgets) {
+            for (AbstractWidget widget : widgets) {
                 if (RenderHelper.pointIsInArea(mouseX, mouseY, widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
                     draggingWidget = widget;
                     mouseClickRelativeX = mouseX - widget.getX() - getWidgetXOffset(widget);
@@ -98,7 +100,7 @@ public abstract class HudConfigScreen extends Screen {
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
-    protected int getWidgetXOffset(HudWidget widget) {
+    protected int getWidgetXOffset(AbstractWidget widget) {
         return 0;
     }
 
@@ -111,7 +113,7 @@ public abstract class HudConfigScreen extends Screen {
             throw new IllegalStateException("The number of positions (" + configPositions.size() + ") does not match the number of widgets (" + widgets.size() + ")");
         }
         for (int i = 0; i < widgets.size(); i++) {
-            HudWidget widget = widgets.get(i);
+            AbstractWidget widget = widgets.get(i);
             IntIntMutablePair configPos = configPositions.get(i);
             widget.setX(configPos.leftInt());
             widget.setY(configPos.rightInt());
@@ -141,5 +143,5 @@ public abstract class HudConfigScreen extends Screen {
      * @param configManager the config so you don't have to get it
      * @param widgets the widgets to save
      */
-    protected abstract void savePos(SkyblockerConfig configManager, List<HudWidget> widgets);
+    protected abstract void savePos(SkyblockerConfig configManager, List<AbstractWidget> widgets);
 }
