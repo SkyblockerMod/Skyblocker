@@ -82,7 +82,7 @@ public class SmoothAOTE {
     }
 
     /**
-     * When an item is right-clicked send of to calculate teleport with the clicked item
+     * When an item is right-clicked send off to calculate teleport with the clicked item
      *
      * @param playerEntity player
      * @param world        world
@@ -363,7 +363,7 @@ public class SmoothAOTE {
             //check if the block at head height is free
             if (!canTeleportThrough(checkPos.up())) {
                 if (offset == 0) {
-                    //cancel the check if starting height is to low
+                    //cancel the check if starting height is too low
                     Vec3d justAhead = startPos.add(direction.multiply(0.2));
                     if ((justAhead.getY() - Math.floor(justAhead.getY())) <= 0.495) {
                         continue;
