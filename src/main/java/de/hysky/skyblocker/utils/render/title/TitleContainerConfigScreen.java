@@ -6,14 +6,13 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.tabhud.widget.EmptyWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.gui.YACLScreen;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
@@ -50,7 +49,7 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
     }
 
     @Override
-    protected void renderWidget(DrawContext context, List<HudWidget> widgets, float delta) {
+    protected void renderWidget(DrawContext context, List<AbstractWidget> widgets, float delta) {
         super.renderWidget(context, widgets, delta);
         TitleContainer.render(context, EXAMPLES, widgets.getFirst().getX(), widgets.getFirst().getY(), delta);
         UIAndVisualsConfig.Direction direction = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction;
@@ -122,7 +121,7 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
     }
 
     @Override
-    protected int getWidgetXOffset(HudWidget widget) {
+    protected int getWidgetXOffset(AbstractWidget widget) {
         return switch (SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment) {
             case LEFT -> 0;
             case MIDDLE -> - getSelectionWidth() / 2;
@@ -137,14 +136,14 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
     }
 
     @Override
-    protected void savePos(SkyblockerConfig configManager, List<HudWidget> widgets) {
+    protected void savePos(SkyblockerConfig configManager, List<AbstractWidget> widgets) {
         SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x = widgets.getFirst().getX();
         SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y = widgets.getFirst().getY();
 
         //TODO Come up with a better, less hacky solution for this in the future (:
         if (changedScale && parent instanceof YACLScreen yaclScreen) {
             ConfigCategory category = yaclScreen.config.categories().stream().filter(cat -> ((TranslatableTextContent) cat.name().getContent()).getKey().equals("skyblocker.config.uiAndVisuals")).findFirst().orElseThrow();
-            OptionGroup group = category.groups().stream().filter(grp -> grp.name().getString().equals(I18n.translate("skyblocker.config.uiAndVisuals.titleContainer"))).findFirst().orElseThrow();
+			OptionGroup group = category.groups().stream().filter(grp -> ((TranslatableTextContent) grp.name().getContent()).getKey().equals("skyblocker.config.uiAndVisuals.titleContainer")).findFirst().orElseThrow();
 
             // Refresh the value in the config with the bound value
             group.options().getFirst().forgetPendingValue();
