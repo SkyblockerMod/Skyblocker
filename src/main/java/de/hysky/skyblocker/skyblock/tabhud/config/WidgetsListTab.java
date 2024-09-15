@@ -1,8 +1,12 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.*;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.*;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.tab.Tab;
@@ -12,26 +16,52 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
 // TODO: recommend disabling spacing and enabling wrapping
-public class WidgetsOrderingTab implements Tab {
+public class WidgetsListTab implements Tab {
     private final WidgetsElementList widgetsElementList;
     private final ButtonWidget back;
     private final ButtonWidget previousPage;
     private final ButtonWidget nextPage;
     private final ButtonWidget thirdColumnButton;
-    private GenericContainerScreenHandler handler;
+    private @Nullable GenericContainerScreenHandler handler;
     private final MinecraftClient client;
     private boolean waitingForServer = false;
 
-    public WidgetsOrderingTab(MinecraftClient client, GenericContainerScreenHandler handler) {
+	private final Int2ObjectMap<WidgetsListSlotEntry> entries = new Int2ObjectOpenHashMap<>();
+	private final List<WidgetEntry> widgetEntries = new ArrayList<>();
+	private boolean listNeedsUpdate = false;
+	private boolean shouldShowEntries = false;
+
+
+	public void setEntries(Collection<WidgetEntry> entries) {
+		this.widgetEntries.clear();
+		this.widgetEntries.addAll(entries);
+	}
+
+	public List<WidgetEntry> getWidgetEntries() {
+		return widgetEntries;
+	}
+
+	public boolean listNeedsUpdate() {
+		boolean b = listNeedsUpdate;
+		listNeedsUpdate = false;
+		return b;
+	}
+
+	public ObjectSet<Int2ObjectMap.Entry<WidgetsListSlotEntry>> getEntries() {
+		return entries.int2ObjectEntrySet();
+	}
+
+	public WidgetsListTab(MinecraftClient client, @Nullable GenericContainerScreenHandler handler) {
         widgetsElementList = new WidgetsElementList(this, client, 0, 0, 0);
         this.client = client;
         this.handler = handler;
@@ -48,6 +78,7 @@ public class WidgetsOrderingTab implements Tab {
         nextPage = ButtonWidget.builder(Text.literal("Next Page"), button -> clickAndWaitForServer(53, 0))
                 .size(100, 15)
                 .build();
+		if (handler == null) back.visible = false;
     }
 
     @Override
@@ -65,14 +96,14 @@ public class WidgetsOrderingTab implements Tab {
     }
 
     public void clickAndWaitForServer(int slot, int button) {
-        if (waitingForServer) return;
+        if (waitingForServer || handler == null) return;
         if (client.interactionManager == null || this.client.player == null) return;
         client.interactionManager.clickSlot(handler.syncId, slot, button, SlotActionType.PICKUP, this.client.player);
         waitingForServer = true;
     }
 
     public void shiftClickAndWaitForServer(int slot, int button) {
-        if (waitingForServer) return;
+        if (waitingForServer || handler == null) return;
         if (client.interactionManager == null || this.client.player == null) return;
         client.interactionManager.clickSlot(handler.syncId, slot, button, SlotActionType.QUICK_MOVE, this.client.player);
         // When moving a widget down it gets stuck sometimes
@@ -82,6 +113,9 @@ public class WidgetsOrderingTab implements Tab {
 
     public void updateHandler(GenericContainerScreenHandler newHandler) {
         this.handler = newHandler;
+		back.visible = handler != null;
+		entries.clear();
+		listNeedsUpdate = true;
     }
 
     public void hopper(@Nullable List<Text> hopperTooltip) {
@@ -105,41 +139,49 @@ public class WidgetsOrderingTab implements Tab {
         widgetsElementList.setEditingPosition(editing - start);
     }
 
-    public void updateEntries(String titleLowercase) {
-        waitingForServer = false;
-        widgetsElementList.clearEntries();
-        for (int i = titleLowercase.equals("tablist widgets") ? 9: 18; i < handler.getRows() * 9 - 9; i++) {
-            Slot slot = handler.getSlot(i);
-            ItemStack stack = slot.getStack();
-            if (stack.isEmpty() || stack.isOf(Items.BLACK_STAINED_GLASS_PANE)) continue;
-            String lowerCase = stack.getName().getString().trim().toLowerCase();
-            List<Text> lore = ItemUtils.getLore(stack);
-            String lastLowerCase = lore.getLast().getString().toLowerCase();
-            if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.isOf(Items.RED_STAINED_GLASS_PANE)) {
-                widgetsElementList.addEntry(new EditableEntry(this, i, stack));
-            } else if (lowerCase.endsWith("widget")) {
-                widgetsElementList.addEntry(new WidgetEntry(this, i, stack));
-            } else if (lastLowerCase.contains("enable") || lastLowerCase.contains("disable")) {
-                widgetsElementList.addEntry(new BooleanEntry(this, i, stack));
-            } else {
-                widgetsElementList.addEntry(new DefaultEntry(this, i, stack));
-            }
-        }
-        // Force it to update the scrollbar (it is stupid)
-        widgetsElementList.setScrollAmount(widgetsElementList.getScrollAmount());
-        previousPage.visible = handler.getRows() == 6 && handler.getSlot(45).getStack().isOf(Items.ARROW);
-        nextPage.visible = handler.getRows() == 6 && handler.getSlot(53).getStack().isOf(Items.ARROW);
-        thirdColumnButton.visible = handler.getRows() == 6 && (handler.getSlot(50).getStack().isOf(Items.BOOKSHELF) || handler.getSlot(50).getStack().isOf(Items.STONE_BUTTON));
-        if (thirdColumnButton.visible) {
-            ItemStack stack = handler.getSlot(50).getStack();
-            if (stack.isOf(Items.STONE_BUTTON))
-                thirdColumnButton.setMessage(Text.literal("Apply to all locations"));
-            else if (ItemUtils.getLoreLineIf(stack, s -> s.contains("DISABLED")) == null)
-                thirdColumnButton.setMessage(Text.literal("3rd Column: ").append(WidgetsListEntry.ENABLED_TEXT));
-            else
-                thirdColumnButton.setMessage(Text.literal("3rd Column: ").append(WidgetsListEntry.DISABLED_TEXT));
-        }
-    }
+	public void onSlotChange(int slot, ItemStack stack) {
+		waitingForServer = false;
+		listNeedsUpdate = true;
+		switch (slot) {
+			case 45 -> {previousPage.visible = stack.isOf(Items.ARROW); return;}
+			case 53 -> {nextPage.visible = stack.isOf(Items.ARROW); return;}
+			case 50 -> {
+				thirdColumnButton.visible = stack.isOf(Items.BOOKSHELF) || stack.isOf(Items.STONE_BUTTON);
+				if (thirdColumnButton.visible) {
+					if (stack.isOf(Items.STONE_BUTTON))
+						thirdColumnButton.setMessage(Text.literal("Apply to all locations"));
+					else if (ItemUtils.getLoreLineIf(stack, s -> s.contains("DISABLED")) == null)
+						thirdColumnButton.setMessage(Text.literal("3rd Column: ").append(WidgetsListSlotEntry.ENABLED_TEXT));
+					else
+						thirdColumnButton.setMessage(Text.literal("3rd Column: ").append(WidgetsListSlotEntry.DISABLED_TEXT));
+				}
+				return;
+			}
+		}
+
+		if (stack.isEmpty() || stack.isOf(Items.BLACK_STAINED_GLASS_PANE)) {
+			entries.remove(slot);
+			return;
+		}
+
+
+		String lowerCase = stack.getName().getString().trim().toLowerCase();
+		List<Text> lore = ItemUtils.getLore(stack);
+		String lastLowerCase = lore.getLast().getString().toLowerCase();
+
+		WidgetsListSlotEntry entry;
+		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.isOf(Items.RED_STAINED_GLASS_PANE)) {
+			entry = new EditableSlotEntry(this, slot, stack);
+		} else if (lowerCase.endsWith("widget")) {
+			entry = new WidgetSlotEntry(this, slot, stack);
+		} else if (lastLowerCase.contains("enable") || lastLowerCase.contains("disable")) {
+			entry = new BooleanSlotEntry(this, slot, stack);
+		} else {
+			entry = new DefaultSlotEntry(this, slot, stack);
+		}
+		entries.put(slot, entry);
+
+	}
 
     @Override
     public void refreshGrid(ScreenRect tabArea) {
@@ -150,4 +192,12 @@ public class WidgetsOrderingTab implements Tab {
         nextPage.setPosition(widgetsElementList.getScrollbarX() - 100, widgetsElementList.getBottom() + 4);
         thirdColumnButton.setPosition(widgetsElementList.getScrollbarX() + 5, widgetsElementList.getBottom() + 4);
     }
+
+	public boolean shouldShowEntries() {
+		return shouldShowEntries;
+	}
+
+	public void setShouldShowEntries(boolean shouldShowEntries) {
+		this.shouldShowEntries = shouldShowEntries;
+	}
 }

@@ -16,8 +16,6 @@ import org.jetbrains.annotations.Nullable;
 public class ScreenBuilder {
 
     public static boolean positionsNeedsUpdating = true;
-    // maps alias -> widget instance
-    private final HashMap<String, HudWidget> objectMap = new HashMap<>();
 
     //private final String builderName;
 
@@ -60,21 +58,11 @@ public class ScreenBuilder {
         positioning.putAll(positioningBackup);
     }
 
-    /**
-     * Lookup Widget instance from alias name
-     */
-    public HudWidget getInstance(String name) {
-        if (!this.objectMap.containsKey(name)) {
-            throw new NoSuchElementException("No widget with alias " + name + " in screen ");
-        }
-        return this.objectMap.get(name);
-    }
-
     private final List<HudWidget> hudScreen = new ArrayList<>();
     private final List<HudWidget> mainTabScreen = new ArrayList<>();
     private final List<HudWidget> secondaryTabScreen = new ArrayList<>();
 
-    public void positionWidgets(int screenW, int screenH) {
+    public void positionWidgets(int screenW, int screenH, boolean config) {
         hudScreen.clear();
         mainTabScreen.clear();
         secondaryTabScreen.clear();
@@ -82,7 +70,8 @@ public class ScreenBuilder {
         WidgetPositioner newPositioner = SkyblockerConfigManager.get().uiAndVisuals.tabHud.defaultPositioning.getNewPositioner(screenW, screenH);
 
         for (HudWidget widget : ScreenMaster.widgetInstances.values()) {
-            if (widget.shouldRender(location)) { // TabHudWidget has this at false
+			widget.setVisible(false);
+            if (config ? widget.isEnabledIn(location) : widget.shouldRender(location)) { // TabHudWidget has this at false
                 // TODO maybe behavior to change? (having no position rule on a normal hud widget shouldn't quite be possible)
                 PositionRule rule = getPositionRule(widget.getInternalID());
                 if (rule == null) {
@@ -94,13 +83,15 @@ public class ScreenBuilder {
                         case null, default -> hudScreen.add(widget);
                     }
                 }
-                widget.update();
-                widget.setPositioned(false);
+				widget.setVisible(true);
+				widget.update();
+				widget.setPositioned(false);
             }
         }
 
         for (TabHudWidget widget : PlayerListMgr.tabWidgetsToShow) {
             PositionRule rule = getPositionRule(widget.getInternalID());
+			widget.setVisible(true);
             if (rule == null) {
                 mainTabScreen.add(widget);
             } else {
@@ -176,7 +167,7 @@ public class ScreenBuilder {
 
         if (positionsNeedsUpdating) {
             positionsNeedsUpdating = false;
-            positionWidgets(screenW, screenH);
+            positionWidgets(screenW, screenH, false);
         }
 
         renderWidgets(context, screenLayer);
