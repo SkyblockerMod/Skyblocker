@@ -1,6 +1,6 @@
-package de.hysky.skyblocker.skyblock.tabhud.config.entries;
+package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsOrderingTab;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -11,12 +11,12 @@ import net.minecraft.text.Text;
 
 import java.util.List;
 
-public class DefaultEntry extends WidgetsListEntry{
+public class DefaultSlotEntry extends WidgetsListSlotEntry {
 
     private final ButtonWidget leftClick;
     private final ButtonWidget rightClick;
 
-    public DefaultEntry(WidgetsOrderingTab parent, int slotId, ItemStack icon) {
+    public DefaultSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
         super(parent, slotId, icon);
         leftClick = ButtonWidget.builder(Text.literal("LEFT"),button -> this.parent.clickAndWaitForServer(this.slotId, 0))
                 .size(32, 12)

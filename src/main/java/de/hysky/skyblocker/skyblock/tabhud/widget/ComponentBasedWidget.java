@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -15,8 +17,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract base class for a component based Widget.
@@ -25,8 +29,12 @@ import java.util.ArrayList;
  * the position may be changed after construction.
  */
 public abstract class ComponentBasedWidget extends HudWidget {
+	public static final Logger LOGGER = LogUtils.getLogger();
 
     private static final TextRenderer txtRend = MinecraftClient.getInstance().textRenderer;
+
+	private String lastError = null;
+	private static final List<Component> ERROR_COMPONENTS = List.of(new PlainTextComponent(Text.literal("An error occurred! Please check logs.").withColor(0xFFFF0000)));
 
     private final ArrayList<Component> components = new ArrayList<>();
 
@@ -60,8 +68,17 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
     public final void update() {
         this.components.clear();
-        this.updateContent();
-        this.pack();
+		try {
+			this.updateContent();
+		} catch (Exception e) {
+			if (!e.getMessage().equals(lastError)) {
+				lastError = e.getMessage();
+				LOGGER.error("Failed to update contents of {}", this, e);
+			}
+			this.components.clear();
+			this.components.addAll(ERROR_COMPONENTS);
+		}
+		this.pack();
     }
 
     public abstract void updateContent();

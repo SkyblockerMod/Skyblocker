@@ -1,6 +1,6 @@
-package de.hysky.skyblocker.skyblock.tabhud.config.entries;
+package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsOrderingTab;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -14,12 +14,12 @@ import net.minecraft.util.Colors;
 
 import java.util.List;
 
-public class EditableEntry extends WidgetsListEntry {
+public class EditableSlotEntry extends WidgetsListSlotEntry {
 
     private final ButtonWidget editButton;
     private final boolean locked;
 
-    public EditableEntry(WidgetsOrderingTab parent, int slotId, ItemStack icon) {
+    public EditableSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
         super(parent, slotId, icon);
         editButton = ButtonWidget.builder(Text.literal("EDIT"), button -> this.parent.clickAndWaitForServer(this.slotId, 0))
                 .size(32, 12)
