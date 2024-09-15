@@ -83,7 +83,7 @@ public class Shortcuts {
         commands.put("/s", "/skyblock");
         commands.put("/i", "/is");
         commands.put("/h", "/hub");
-        commands.put("/g", "/garden");
+        commands.put("/g", "/warp garden");
 
         // Dungeon
         commands.put("/d", "/warp dungeon_hub");
