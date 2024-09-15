@@ -7,6 +7,7 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public abstract class TabHudWidget extends ComponentBasedWidget {
     private final String hypixelWidgetName;
@@ -23,8 +24,8 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
     }
 
     @Override
-    public String getNiceName() {
-        return getHypixelWidgetName();
+    public Text getDisplayName() {
+        return Text.literal(getHypixelWidgetName());
     }
 
     @Override
@@ -37,12 +38,31 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
         updateContent(lines);
     }
 
+	/**
+	 * Controlled by hypxiel and PlayerListMgr
+	 */
     @Override
-    public boolean shouldRender(Location location) {
+    public final boolean shouldRender(Location location) {
         return false;
     }
 
-    /**
+	/**
+	 * Controlled by hypxiel and PlayerListMgr
+	 */
+	@Override
+	public final Set<Location> availableLocations() {
+		return Set.of();
+	}
+
+	@Override
+	public final void setEnabledIn(Location location, boolean enabled) {}
+
+	@Override
+	public final boolean isEnabledIn(Location location) {
+		return false;
+	}
+
+	/**
      * Update the content from the hypixel widget's lines
      *
      * @param lines the lines, they are formatted and trimmed, no blank lines will be present.

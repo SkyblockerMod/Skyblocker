@@ -64,7 +64,10 @@ public class PlayerListMgr {
 	public static void updateList() {
 
 		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
-			if (!tabWidgetsToShow.isEmpty()) tabWidgetsToShow.clear();
+			if (!tabWidgetsToShow.isEmpty()) {
+				tabWidgetsToShow.clear();
+				ScreenBuilder.positionsNeedsUpdating = true;
+			}
 			return;
 		}
 

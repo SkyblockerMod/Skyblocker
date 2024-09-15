@@ -119,7 +119,7 @@ public class PreviewTab implements Tab {
 		scoreboard.getOrCreateScore(createHolder(Text.literal("enough lines bye")), placeHolderObjective).setScore(-9);
 		scoreboard.getOrCreateScore(createHolder(Text.literal("NEVER GONNA GIVE Y-")), placeHolderObjective).setScore(-10);
 
-		ScreenMaster.getScreenBuilder(getCurrentLocation()).positionWidgets(client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight());
+		ScreenMaster.getScreenBuilder(getCurrentLocation()).positionWidgets(client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight(), true);
 		locationDropdown = parent.createLocationDropdown(location -> updateWidgets());
 	}
 
@@ -244,7 +244,7 @@ public class PreviewTab implements Tab {
 		ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
 		updatePlayerListFromPreview();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
-		screenBuilder.positionWidgets((int) (parent.width / scale), (int) (parent.height / scale));
+		screenBuilder.positionWidgets((int) (parent.width / scale), (int) (parent.height / scale), true);
 	}
 
 	public enum Mode {
@@ -268,7 +268,7 @@ public class PreviewTab implements Tab {
 
 		// TODO localization
 
-		widgetOptions.addWidget(new TextWidget(width, 9, Text.literal(hudWidget.getNiceName()).formatted(Formatting.BOLD, Formatting.UNDERLINE), client.textRenderer));
+		widgetOptions.addWidget(new TextWidget(width, 9, hudWidget.getDisplayName().copy().formatted(Formatting.BOLD, Formatting.UNDERLINE), client.textRenderer));
 		if (positionRule == null) {
 			widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Positioning: Auto"), button -> {
 						PositionRule rule = new PositionRule(
@@ -321,17 +321,17 @@ public class PreviewTab implements Tab {
 
 			}).width(width).build());
 
-			String parentName;
+			Text parentName;
 			HudWidget parent;
 			if (positionRule.parent().equals("screen")) {
-				parentName = "Screen";
+				parentName = Text.literal("Screen");
 			} else if ((parent = ScreenMaster.widgetInstances.get(positionRule.parent())) == null) {
-				parentName = "Unloaded Widget";
+				parentName = Text.literal("Unloaded Widget");
 			} else {
-				parentName = parent.getNiceName();
+				parentName = parent.getDisplayName();
 			}
 
-			widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Parent: " + parentName), button -> {
+			widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Parent: ").append(parentName), button -> {
 				this.previewWidget.pickParent = true;
 				button.setMessage(Text.literal("Click on a widget"));
 			}).width(width).build());

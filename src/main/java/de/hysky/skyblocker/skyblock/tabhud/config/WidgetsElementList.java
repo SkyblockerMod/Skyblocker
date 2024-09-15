@@ -1,12 +1,19 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntComparators;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
@@ -15,7 +22,23 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
     static final Identifier MOVE_DOWN_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("transferable_list/move_down_highlighted");
     static final Identifier MOVE_DOWN_TEXTURE = Identifier.ofVanilla("transferable_list/move_down");
 
-    private final WidgetsOrderingTab parent;
+	static final WidgetsListEntry SEPARATOR = new WidgetsListEntry() {
+
+		@Override
+		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of("- Skyblocker Widgets -"), x + entryWidth / 2, y + (entryHeight - 9) / 2, 0xFFFFFF);
+		}
+
+		@Override
+		public List<? extends Element> children() {
+			return List.of();
+		}
+
+		@Override
+		public void drawBorder(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {}
+	};
+
+    private final WidgetsListTab parent;
     private boolean rightUpArrowHovered = false;
     private boolean rightDownArrowHovered = false;
     private boolean leftUpArrowHovered = false;
@@ -23,28 +46,30 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 
     private int editingPosition = - 1;
 
-    public WidgetsElementList(WidgetsOrderingTab parent, MinecraftClient minecraftClient, int width, int height, int y) {
+    public WidgetsElementList(WidgetsListTab parent, MinecraftClient minecraftClient, int width, int height, int y) {
         super(minecraftClient, width, height, y, 32);
         this.parent = parent;
-    }
-
-
-    @Override
-    public void clearEntries() {
-        super.clearEntries();
-    }
-
-    @Override
-    public int addEntry(WidgetsListEntry entry) {
-        return super.addEntry(entry);
     }
 
     private int x, y, entryWidth, entryHeight;
 
     @Override
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+		if (parent.listNeedsUpdate()) {
+			ArrayList<Int2ObjectMap.Entry<WidgetsListSlotEntry>> entries = new ArrayList<>(parent.getEntries());
+			clearEntries();
+			entries.stream()
+					.sorted((a, b) -> IntComparators.NATURAL_COMPARATOR.compare(a.getIntKey(), b.getIntKey()))
+					.map(Map.Entry::getValue)
+					.forEach(this::addEntry);
+			if (!parent.getWidgetEntries().isEmpty() && parent.shouldShowEntries()) {
+				if (!children().isEmpty()) addEntry(SEPARATOR);
+				parent.getWidgetEntries().forEach(this::addEntry);
+			}
+			setScrollAmount(getScrollAmount());
+		}
         super.renderWidget(context, mouseX, mouseY, delta);
-        WidgetsListEntry hoveredEntry = getHoveredEntry();
+		WidgetsListEntry hoveredEntry = getHoveredEntry();
         if (hoveredEntry != null) hoveredEntry.renderTooltip(context, x, y, entryWidth, entryHeight, mouseX, mouseY);
         if (rightUpArrowHovered || rightDownArrowHovered) {
             context.drawTooltip(client.textRenderer, Text.literal("Move widget"), mouseX, mouseY);

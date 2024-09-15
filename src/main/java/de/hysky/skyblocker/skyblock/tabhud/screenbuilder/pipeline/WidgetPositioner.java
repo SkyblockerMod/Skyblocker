@@ -41,25 +41,25 @@ public abstract class WidgetPositioner {
             if (parentWidget == null) return;
             if (!parentWidget.isPositioned()) applyRuleToWidget(parentWidget, screenWidth, screenHeight, ruleProvider);
 
-            startX = parentWidget.getX() + (int) (rule.parentPoint().horizontalPoint().getPercentage() * parentWidget.getWidth());
-            startY = parentWidget.getY() + (int) (rule.parentPoint().verticalPoint().getPercentage() * parentWidget.getHeight());
+			// size 0 part 2
+			if (parentWidget.isVisible()) {
+				startX = parentWidget.getX() + (int) (rule.parentPoint().horizontalPoint().getPercentage() * parentWidget.getWidth());
+				startY = parentWidget.getY() + (int) (rule.parentPoint().verticalPoint().getPercentage() * parentWidget.getHeight());
+			} else {
+				startX = parentWidget.getX();
+				startY = parentWidget.getY();
+			}
 
         }
 
-        // TODO: adapt to use getPercentage()
-        final int relativeX = rule.relativeX();
-        widget.setX(switch (rule.thisPoint().horizontalPoint()) {
-            case LEFT -> startX + relativeX;
-            case CENTER -> startX + relativeX - widget.getWidth() / 2;
-            case RIGHT -> startX + relativeX - widget.getWidth();
-        });
-
-        final int relativeY = rule.relativeY();
-        widget.setY(switch (rule.thisPoint().verticalPoint()) {
-            case TOP -> startY + relativeY;
-            case CENTER -> startY + relativeY - widget.getHeight() / 2;
-            case BOTTOM -> startY + relativeY - widget.getHeight();
-        });
+		// Effectively make the widget size 0
+		if (widget.isVisible()) {
+			widget.setX(startX + rule.relativeX() - (int) (rule.thisPoint().horizontalPoint().getPercentage() * widget.getWidth()));
+			widget.setY(startY + rule.relativeY() - (int) (rule.thisPoint().verticalPoint().getPercentage() * widget.getHeight()));
+		} else {
+			widget.setX(startX + rule.relativeX());
+			widget.setY(startY + rule.relativeY());
+		}
     }
 
     /**

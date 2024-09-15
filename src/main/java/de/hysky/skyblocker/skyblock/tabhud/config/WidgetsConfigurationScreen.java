@@ -1,9 +1,12 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.preview.PreviewTab;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -73,7 +76,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
     private final TabManager tabManager = new TabManager(this::addDrawableChild, this::remove);
     @Nullable
     private TabNavigationWidget tabNavigation;
-    private WidgetsOrderingTab widgetsOrderingTab;
+    private WidgetsListTab widgetsListTab;
 
     private boolean switchingToPopup = false;
 
@@ -126,10 +129,12 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
                     .build();
             previewTab.goToLayer(ScreenMaster.getScreenBuilder(currentLocation).getPositionRuleOrDefault(widgetsLayer).screenLayer());
         } else {
-            widgetsOrderingTab = new WidgetsOrderingTab(this.client, this.handler);
+            widgetsListTab = new WidgetsListTab(this.client, this.handler);
             this.tabNavigation = TabNavigationWidget.builder(this.tabManager, this.width)
-                    .tabs(this.widgetsOrderingTab, this.previewTab, previewDungeons)
+                    .tabs(this.widgetsListTab, this.previewTab, previewDungeons)
                     .build();
+			widgetsListTab.setShouldShowEntries(titleLowercase.startsWith("widgets "));
+			updateCustomWidgets();
         }
         this.tabNavigation.selectTab(0, false);
         switchingToPopup = false;
@@ -155,24 +160,40 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
         handler.addListener(this);
         this.titleLowercase = titleLowercase;
         parseLocation();
-        widgetsOrderingTab.updateHandler(handler);
+        widgetsListTab.updateHandler(handler);
     }
 
+	public void updateCustomWidgets() {
+		List<WidgetEntry> entries = new ArrayList<>();
+		for (HudWidget value : ScreenMaster.widgetInstances.values()) {
+			if (!value.availableLocations().contains(currentLocation)) continue;
+			entries.add(new WidgetEntry(value, currentLocation));
+		}
+		widgetsListTab.setEntries(entries);
+	}
+
+	public void setCurrentLocation(Location location) {
+		Location old = this.currentLocation;
+		currentLocation = location;
+		if (old != currentLocation) {
+			ScreenMaster.getScreenBuilder(currentLocation).backupPositioning();
+			updateCustomWidgets();
+		}
+	}
+
     private void parseLocation() {
-        String trim = this.titleLowercase
+		boolean b = titleLowercase.startsWith("widgets ");
+		if (widgetsListTab != null) widgetsListTab.setShouldShowEntries(b);
+		String trim = this.titleLowercase
                 .replace("widgets in", "")
                 .replace("widgets on", "")
                 .trim();
 
         if (nameToLocation.containsKey(trim)) {
-            Location old = currentLocation;
-            currentLocation = nameToLocation.get(trim);
-            if (old != currentLocation) {
-                ScreenMaster.getScreenBuilder(currentLocation).backupPositioning();
-            }
+            setCurrentLocation(nameToLocation.get(trim));
         } else {
             //currentLocation = Utils.getLocation();
-            if (this.titleLowercase.startsWith("widgets "))
+            if (b)
                 LOGGER.warn("[Skyblocker] Couldn't find location for {} (trimmed: {})", this.titleLowercase, trim);
         }
     }
@@ -189,19 +210,19 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
         if (slotId == 4) {
             tabPreview = stack.isOf(Items.PLAYER_HEAD);
         }
-        if (widgetsOrderingTab == null) {
+        if (widgetsListTab == null) {
             if (slotId == 13) slotThirteenBacklog = stack.copy();
             return;
         }
         if (slotId == 13) {
             if (stack.isOf(Items.HOPPER)) {
-                widgetsOrderingTab.hopper(ItemUtils.getLore(stack));
+                widgetsListTab.hopper(ItemUtils.getLore(stack));
             } else {
-                widgetsOrderingTab.hopper(null);
+                widgetsListTab.hopper(null);
             }
         }
-        if (slotId > 9 && slotId < this.handler.getRows() * 9 - 9 || slotId == 45 || slotId == 53) {
-            widgetsOrderingTab.updateEntries(titleLowercase);
+        if (slotId > (titleLowercase.startsWith("tablist widgets") ? 9 : 18) && slotId < this.handler.getRows() * 9 - 9 || slotId == 45 || slotId == 53 || slotId == 50) {
+            widgetsListTab.onSlotChange(slotId, stack);
         }
     }
 
@@ -209,8 +230,8 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
     public void tick() {
         super.tick();
         if (noHandler) return;
-        if (slotThirteenBacklog != null && widgetsOrderingTab != null) {
-            widgetsOrderingTab.hopper(ItemUtils.getLore(slotThirteenBacklog));
+        if (slotThirteenBacklog != null && widgetsListTab != null) {
+            widgetsListTab.hopper(ItemUtils.getLore(slotThirteenBacklog));
             slotThirteenBacklog = null;
         }
         if (!this.client.player.isAlive() || this.client.player.isRemoved()) {
@@ -239,6 +260,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
         }
         handler.removeListener(this);
         Scheduler.INSTANCE.schedule(PlayerListMgr::updateList, 1);
+		SkyblockerConfigManager.save();
     }
 
     @Override
@@ -250,7 +272,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
         List<Location> locations = new ArrayList<>(List.of(Location.hudLocations()));
         locations.remove(Location.DUNGEON); // there's already a tab for that
         return new DropdownWidget<>(client, 0, 0, 50, 50, locations, location -> {
-            this.currentLocation = location;
+            setCurrentLocation(location);
             onLocationChanged.accept(location);
         }, locations.contains(currentLocation) ? currentLocation : Location.HUB);
     }

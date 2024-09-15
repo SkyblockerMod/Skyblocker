@@ -9,6 +9,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector2i;
@@ -16,6 +17,7 @@ import org.joml.Vector2ic;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RegisterWidget
 public class CrystalsHudWidget extends HudWidget {
@@ -66,12 +68,23 @@ public class CrystalsHudWidget extends HudWidget {
         return (clipped * 360f) / 16f;
     }
 
-    @Override
-    public boolean shouldRender(Location location) {
+	@Override
+	public Set<Location> availableLocations() {
+		return Set.of(Location.CRYSTAL_HOLLOWS);
+	}
+
+	@Override
+    public boolean isEnabledIn(Location location) {
         return location.equals(Location.CRYSTAL_HOLLOWS) && SkyblockerConfigManager.get().mining.crystalsHud.enabled;
     }
 
-    public void update() {
+	@Override
+	public void setEnabledIn(Location location, boolean enabled) {
+		if (!location.equals(Location.CRYSTAL_HOLLOWS)) return;
+		SkyblockerConfigManager.get().mining.crystalsHud.enabled = enabled;
+	}
+
+	public void update() {
         if (CLIENT.player == null || CLIENT.getNetworkHandler() == null || !SkyblockerConfigManager.get().mining.crystalsHud.enabled) return;
 
 
@@ -134,4 +147,9 @@ public class CrystalsHudWidget extends HudWidget {
         context.drawTexture(RenderLayer::getGuiTextured, MAP_ICON, 0, 0, 2, 0, 5, 7, 8, 8);
         matrices.pop();
     }
+
+	@Override
+	public Text getDisplayName() {
+		return Text.of("Crystals HUD");
+	}
 }

@@ -20,6 +20,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.Map;
+import java.util.Set;
 
 @RegisterWidget
 public class FarmingHudWidget extends ComponentBasedWidget {
@@ -119,12 +120,23 @@ public class FarmingHudWidget extends ComponentBasedWidget {
     }
 
     @Override
-    public boolean shouldRender(Location location) {
+    public boolean isEnabledIn(Location location) {
         return location.equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud;
     }
 
-    @Override
-    public String getNiceName() {
-        return "Farming Hud";
+	@Override
+	public void setEnabledIn(Location location, boolean enabled) {
+		if (!location.equals(Location.GARDEN)) return;
+		SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud = enabled;
+	}
+
+	@Override
+	public Set<Location> availableLocations() {
+		return Set.of(Location.GARDEN);
+	}
+
+	@Override
+    public Text getDisplayName() {
+        return Text.literal("Farming HUD");
     }
 }

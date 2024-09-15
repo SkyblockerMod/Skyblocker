@@ -1,6 +1,6 @@
-package de.hysky.skyblocker.skyblock.tabhud.config.entries;
+package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsOrderingTab;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -11,11 +11,11 @@ import net.minecraft.text.Text;
 
 import java.util.List;
 
-public class BooleanEntry extends WidgetsListEntry {
+public class BooleanSlotEntry extends WidgetsListSlotEntry {
 
     private final ButtonWidget enableButton;
 
-    public BooleanEntry(WidgetsOrderingTab parent, int slotId, ItemStack icon) {
+    public BooleanSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
         super(parent, slotId, icon);
         boolean enabled = !ItemUtils.getLore(icon).getLast().getString().toLowerCase().contains("enable");
         enableButton = ButtonWidget.builder(enabled ? ENABLED_TEXT : DISABLED_TEXT, button -> this.parent.clickAndWaitForServer(this.slotId, 0))

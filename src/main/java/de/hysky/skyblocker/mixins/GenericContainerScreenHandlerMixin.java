@@ -42,13 +42,14 @@ public abstract class GenericContainerScreenHandlerMixin extends ScreenHandler {
             }
             case null, default -> {}
         }
-        onContentChanged(slots.get(slot).inventory); // this should be default behavior
+        sendContentUpdates();
     }
 
     @Override
     public void updateSlotStacks(int revision, List<ItemStack> stacks, ItemStack cursorStack) {
         super.updateSlotStacks(revision, stacks, cursorStack);
         ContainerSolverManager.markHighlightsDirty();
+		sendContentUpdates();
         if (MinecraftClient.getInstance().currentScreen instanceof PartyFinderScreen screen) {
             screen.markDirty();
         }
