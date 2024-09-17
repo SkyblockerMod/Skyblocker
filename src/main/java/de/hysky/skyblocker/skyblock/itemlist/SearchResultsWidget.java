@@ -160,6 +160,8 @@ public class SearchResultsWidget implements Drawable, Element {
             ScreenPos arrowLocation = recipe.getArrowLocation(125, 75);
             if (arrowLocation != null) context.drawGuiTexture(ARROW_TEXTURE, arrowLocation.x(), arrowLocation.y(), 24, 16);
 
+			recipe.render(context, 125, 75, mouseX, mouseY);
+
             matrices.pop();
         }
         for (ResultButtonWidget button : resultButtons)
