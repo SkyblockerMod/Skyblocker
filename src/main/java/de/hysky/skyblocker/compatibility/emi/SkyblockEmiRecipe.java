@@ -65,5 +65,6 @@ public class SkyblockEmiRecipe implements EmiRecipe {
         for (SkyblockRecipe.RecipeSlot outputSlot : recipe.getOutputSlots(getDisplayWidth(), getDisplayHeight())) {
             widgets.addSlot(EmiStack.of(outputSlot.stack()), outputSlot.x(), outputSlot.y()).recipeContext(this);
         }
+		widgets.addDrawable(0, 0, getDisplayWidth(), getDisplayHeight(), (draw, mouseX, mouseY, delta) -> recipe.render(draw, getDisplayWidth(), getDisplayHeight(), mouseX, mouseY));
     }
 }
