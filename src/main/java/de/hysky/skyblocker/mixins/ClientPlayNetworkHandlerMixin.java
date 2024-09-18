@@ -162,14 +162,14 @@ public abstract class ClientPlayNetworkHandlerMixin {
         SmoothAOTE.playerTeleported();
     }
 
-    @WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;shouldShowPacketSizeAndPingCharts()Z"))
-    private boolean shouldShowPacketSizeAndPingCharts(DebugHud instance, Operation<Boolean> original) {
+    @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;shouldShowPacketSizeAndPingCharts()Z"))
+    private boolean shouldShowPacketSizeAndPingCharts(boolean original) {
         //make the f3+3 screen always send ping packets even when closed
         //this is needed to make smooth AOTE work
         if (Utils.isOnSkyblock()) {
             return true;
         }
-        return original.call(instance);
+        return original;
 
     }
 }
