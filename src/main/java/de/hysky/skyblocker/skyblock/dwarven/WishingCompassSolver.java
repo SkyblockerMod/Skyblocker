@@ -251,6 +251,8 @@ public class WishingCompassSolver {
      * using the stating locations and line direction solve for where the location must be
      */
     protected static Vec3d solve(Vec3d startPosOne, Vec3d startPosTwo, Vec3d directionOne, Vec3d directionTwo) {
+		if (directionOne.equals(directionTwo)) return null;
+
         //convert format to get lines for the intersection solving
         Vector3D lineOneStart = new Vector3D(startPosOne.x, startPosOne.y, startPosOne.z);
         Vector3D lineOneEnd = new Vector3D(directionOne.x, directionOne.y, directionOne.z).add(lineOneStart);
