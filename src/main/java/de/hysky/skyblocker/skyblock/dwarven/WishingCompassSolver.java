@@ -263,8 +263,6 @@ public class WishingCompassSolver {
 		Vector3D closeTwo = lineTwo.closestPoint(line);
 		double distance = close.distance(closeTwo);
 
-		System.out.println("Distance: " + distance);
-
 		Vec3d intersection = null;
 		if (distance < DISTANCE_TOLERANCE) {
 			//average the two closest points
