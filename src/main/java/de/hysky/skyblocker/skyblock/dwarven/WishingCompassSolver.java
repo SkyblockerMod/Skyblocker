@@ -265,15 +265,13 @@ public class WishingCompassSolver {
 
 		System.out.println("Distance: " + distance);
 
-		Vec3d intersection;
+		Vec3d intersection = null;
 		if (distance < DISTANCE_TOLERANCE) {
 			//average the two closest points
 			Vec3d c1 = new Vec3d(close.getX(), close.getY(), close.getZ());
 			Vec3d c2 = new Vec3d(close.getX(), close.getY(), close.getZ());
 
 			intersection = c1.add(c2).multiply(0.5);
-		} else {
-			intersection = null;
 		}
 
         //return final target location
