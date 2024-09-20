@@ -338,7 +338,7 @@ public final class ItemUtils {
         if (stack.getSkyblockId().equals("PICKONIMBUS")) {
             int pickonimbusDurability = customData.getInt("pickonimbus_durability");
 
-            return IntIntPair.of(customData.contains("pickonimbus_durability") ? pickonimbusDurability : 5000, 5000);
+            return IntIntPair.of(customData.contains("pickonimbus_durability") ? pickonimbusDurability : 2000, 2000);
         }
 
         String drillFuel = Formatting.strip(getLoreLineIf(stack, FUEL_PREDICATE));
