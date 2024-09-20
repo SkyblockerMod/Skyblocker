@@ -31,7 +31,7 @@ public class WsMessageHandler {
 	 * Useful for sending simple state updates with an optional message
 	 */
 	static void sendSimple(Type type, Service service, String serverId, Optional<Message<? extends Message<?>>> message) {
-		send(type, service, serverId, message.isPresent() ? Optional.of(encodeMessage(message.get())) : Optional.empty());
+		send(type, service, serverId, message.map(WsMessageHandler::encodeMessage));
 	}
 
 	private static void send(Type type, Service service, String serverId, Optional<Dynamic<?>> message) {
