@@ -46,7 +46,7 @@ public class FirePillarAnnouncer {
 				float healthBound = (float) (slayer.getBossTier() < 4 ? 0.5 : 0.66);
 				int distance = PROXIMITY_CHECK;
 				Entity referenceEntity = slayer.getSlayerArmorStand();
-				if (slayer.getSlayerArmorStand() == null) {
+				if (referenceEntity == null) {
 					referenceEntity = MinecraftClient.getInstance().player;
 					distance += 5;
 				}

@@ -373,11 +373,7 @@ public class Utils {
 			}
 
 			// Update Slayer information
-			Slayer slayer = Slayer.getInstance();
-			slayer.setInSlayerQuest(slayerQuest);
-			slayer.setInSlayerFight(slayerInFight);
-			slayer.setBossType(bossType);
-			slayer.setBossTier(bossTier);
+			Slayer.getInstance().updateSlayerInfo(slayerQuest, slayerInFight, bossType, bossTier);
 
 			if (objective != null) {
 				stringLines.add(objective.getDisplayName().getString());
