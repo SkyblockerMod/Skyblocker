@@ -588,7 +588,7 @@
     "skyblocker.config.mining.crystalHollows": "水晶洞窟",
     "skyblocker.config.otherLocations.end.protectorLocationEnable": "启用保护者位置",
     "skyblocker.config.uiAndVisuals.waypoints.waypointType": "路径点类型",
-    "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "不完整的颜色",
+    "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "存在物品价格信息缺失时的颜色",
     "skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip": "当价格数据不完整时显示的颜色。",
     "skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip": "路径点：高亮显示并使用信标光束。\n\n边框路径点：显示路径点和边框。\n\n高亮：只显示高亮。\n\n边框+高亮：显示高亮与边框。\n\n边框：只显示边框。",
     "skyblocker.config.general.itemTooltip.enableExoticTooltip.@Tooltip": "当护甲是异域风情时，在物品名称下方显示异域风情的类型。",
