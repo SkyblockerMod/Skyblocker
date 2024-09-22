@@ -66,7 +66,7 @@ public class ItemUtilsTest {
 		Assertions.assertEquals("CRIMSON_CHESTPLATE", ItemUtils.getItemId(CRIMSON_CHESTPLATE));
 		Assertions.assertEquals("AURORA_CHESTPLATE", ItemUtils.getItemId(AURORA_CHESTPLATE));
 		Assertions.assertEquals("TERROR_CHESTPLATE", ItemUtils.getItemId(TERROR_CHESTPLATE));
-		Assertions.assertEquals("WITHER_SKELETON", ItemUtils.getItemId(WITHER_SKELETON_PET));
+		Assertions.assertEquals("PET", ItemUtils.getItemId(WITHER_SKELETON_PET));
 	}
 
 	@Test
