@@ -5,7 +5,7 @@ import net.minecraft.client.MinecraftClient;
 
 public enum PurseChangeCause {
     // Gain
-    MOB_KILL(),
+    MOB_KILL,
     TALISMAN_OF_COINS,
     DICE_SIX,
     TAKE_BANK,
