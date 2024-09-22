@@ -38,6 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Utility variables and methods for retrieving Skyblock related information.
@@ -49,6 +51,7 @@ public class Utils {
     private static final String PROFILE_PREFIX = "Profile: ";
     private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
     public static final String PROFILE_ID_PREFIX = "Profile ID: ";
+	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
     /**
@@ -91,7 +94,7 @@ public class Utils {
     @NotNull
     private static String map = "";
     @NotNull
-    public static double currPurse = -1;
+    public static double purse = 0;
 
     /**
      * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
@@ -276,37 +279,9 @@ public class Utils {
         return "Unknown";
     }
 
-    public static double getPurse() {
-        String purseString = null;
-        double purse = 0;
-
-        try {
-            for (String sidebarLine : STRING_SCOREBOARD) {
-                if (sidebarLine.contains("Piggy:") || sidebarLine.contains("Purse:")) purseString = sidebarLine;
-            }
-            if (purseString != null) {
-                // this is so that it correctly gets purse amount when the (+n) coins appears
-                purseString = purseString.replaceAll("\\(([+\\-])[0-9,.]+\\)", "");
-                purse = Double.parseDouble(purseString.replaceAll("[^0-9.]", "").strip());
-            } else purse = 0;
-
-        } catch (IndexOutOfBoundsException e) {
-            LOGGER.error("[Skyblocker] Failed to get purse from sidebar", e);
-        }
-        return purse;
-    }
-
-    public static void updatePurse() {
-        if (currPurse == -1) {
-            currPurse = Utils.getPurse();
-            return;
-        }
-        double newPurse = Utils.getPurse();
-        double diff = newPurse - currPurse;
-        if (diff == 0) return;
-        currPurse = newPurse;
-        SkyblockEvents.PURSE_CHANGE.invoker().onPurseChange(diff, PurseChangeCause.getCause(diff));
-    }
+	public static double getPurse() {
+		return purse;
+	}
 
     public static int getBits() {
         int bits = 0;
@@ -366,11 +341,24 @@ public class Utils {
 
             TEXT_SCOREBOARD.addAll(textLines);
             STRING_SCOREBOARD.addAll(stringLines);
-            updatePurse();
+            Utils.updatePurse();
         } catch (NullPointerException e) {
             //Do nothing
         }
     }
+
+	public static void updatePurse() {
+		STRING_SCOREBOARD.stream().filter(s -> s.contains("Piggy:") || s.contains("Purse:")).findFirst().ifPresent(purseString -> {
+			Matcher matcher = PURSE.matcher(purseString);
+			if (matcher.find()) {
+				double newPurse = Double.parseDouble(matcher.group("purse").replaceAll(",", ""));
+				double changeSinceLast = newPurse - Utils.purse;
+				if (changeSinceLast == 0) return;
+				SkyblockEvents.PURSE_CHANGE.invoker().onPurseChange(changeSinceLast, PurseChangeCause.getCause(changeSinceLast));
+				Utils.purse = newPurse;
+			}
+		});
+	}
 
 	private static void updateFromPlayerList(MinecraftClient client) {
         if (client.getNetworkHandler() == null) {
