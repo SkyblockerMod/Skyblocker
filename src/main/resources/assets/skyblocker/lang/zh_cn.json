@@ -717,7 +717,7 @@
     "skyblocker.waypoints.ordered.export.fail": "§c路径点导出失败，请检查latest.log以获取更多信息。",
     "skyblocker.config.general.itemInfoDisplay.attributeShardInfo.@Tooltip": "在物品槽位上显示Attribute Ahard的等级及首字母缩写。",
     "skyblocker.config.otherLocations.rift": "裂域",
-    "skyblocker.config.mining.commissionHighlight": "高亮显示已完成的任务",
+    "skyblocker.config.mining.commissionHighlight": "高亮已完成的任务",
     "skyblocker.tips.contribute": "欢迎对模组做出贡献！请参阅 https://github.com/SkyblockerMod/Skyblocker/wiki/contribute 了解更多信息。",
     "skyblocker.tips.waypoints": "你可以使用 /skyblocker waypoints 命令在任何岛屿上导入（包括skytils）、添加、删除和切换路径点。",
     "skyblocker.museum.cannotResync": "无法重新同步你的博物馆物品捐赠！请注意，此操作每两天仅可执行一次。",
@@ -936,5 +936,6 @@
     "skyblocker.config.slayer.bossbar": "杀手Boss栏",
     "skyblocker.config.helpers.enableWardrobeHelper": "启用衣柜助手",
     "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "允许在衣柜菜单打开时通过热键1-9切换护甲。菜单中对应的护甲将被装备至身上。",
-    "skyblocker.config.slayer.bossbar.@Tooltip": "为当前你正战斗的Boss显示Boss栏"
+    "skyblocker.config.slayer.bossbar.@Tooltip": "为当前你正战斗的Boss显示Boss栏",
+    "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "紧凑 Effigy 路径点"
 }
