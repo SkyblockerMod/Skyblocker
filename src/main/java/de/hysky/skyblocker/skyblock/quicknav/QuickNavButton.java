@@ -98,8 +98,11 @@ public class QuickNavButton extends ClickableWidget {
         if (!this.temporaryToggled) {
             this.temporaryToggled = true;
             this.toggleTime = System.currentTimeMillis();
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(command);
-            // TODO : add null check with log error
+            if (command == null || command.isEmpty()) {
+                MinecraftClient.getInstance().player.sendMessage(Text.literal("Quick Nav button index " + index + " has no command"), false);
+            } else {
+                MessageScheduler.INSTANCE.sendMessageAfterCooldown(command);
+            }
             this.alpha = 0.5f;
         }
     }
