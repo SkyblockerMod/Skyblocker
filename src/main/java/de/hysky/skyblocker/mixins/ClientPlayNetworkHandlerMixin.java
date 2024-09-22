@@ -130,7 +130,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
                 || SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerEntitiesGlow.isSlayer(armorStandEntity)) {
             if (armorStandEntity.isDead()) {
                 SlayerEntitiesGlow.cleanupArmorstand(armorStandEntity);
-            } else {
+            } else {;
                 SlayerEntitiesGlow.setSlayerMobGlow(armorStandEntity);
             }
         }

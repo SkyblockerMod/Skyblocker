@@ -362,7 +362,7 @@ public class Utils {
 							}
 
 							Matcher matcher = SlayerUtils.SLAYER_PATTERN.matcher(formatted);
-							if (matcher.matches()) {
+							if (matcher.find()) {
 								bossType = matcher.group(1);
 								bossTier = matcher.group(2);
 							}

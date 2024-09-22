@@ -13,8 +13,8 @@ import static de.hysky.skyblocker.utils.SlayerUtils.*;
 import static de.hysky.skyblocker.utils.Utils.abbrNumberStringToLong;
 
 public class Slayer {
-	private boolean isInSlayerQuest;
-	private boolean isInSlayerFight;
+	private boolean isInSlayerQuest = false;
+	private boolean isInSlayerFight = false;
 	private String bossType;
 	private int bossTier;
 	private long maxHealth = -1;
@@ -99,7 +99,7 @@ public class Slayer {
 	}
 
 	public boolean isBossType(String slayer) {
-		return isInSlayerQuest && bossType.equals(slayer);
+		return isInSlayerQuest && bossType != null && bossType.equals(slayer);
 	}
 
 	public int getBossTier() {

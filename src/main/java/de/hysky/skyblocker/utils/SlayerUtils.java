@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.utils;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -14,10 +16,10 @@ public class SlayerUtils {
 	public static final String TARA = "Tarantula Broodfather";
 	public static final String SVEN = "Sven Packmaster";
 	public static final String VOIDGLOOM = "Voidgloom Seraph";
-	public static final String VAMPIRE = "Riftstalker Bloodfiend";
+	public static final String VAMPIRE = "Bloodfiend";
 	public static final String DEMONLORD = "Inferno Demonlord";
 	public static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d+(?:\\.\\d+)?[kM]?)(?=❤)");
-	public static final Pattern SLAYER_PATTERN = Pattern.compile("(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend) (X|IX|VIII|VII|VI|IV|V|III|II|I)");
+	public static final Pattern SLAYER_PATTERN = Pattern.compile("(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Bloodfiend) (X|IX|VIII|VII|VI|IV|V|III|II|I)");
 	public static final Map<String, String> SLAYER_MINI_NAMES = Map.ofEntries(
 			Map.entry("Revenant Sycophant", REVENANT),
 			Map.entry("Revenant Champion", REVENANT),
@@ -47,12 +49,13 @@ public class SlayerUtils {
 			DEMONLORD, new long[]{2_500_000, 10_000_000, 45_000_000, 150_000_000}
 	);
 
-	public static final Map<String, Class<? extends MobEntity>> SLAYER_MOB_TYPE = Map.of(
+	public static final Map<String, Class<? extends LivingEntity>> SLAYER_MOB_TYPE = Map.of(
 			REVENANT, ZombieEntity.class,
 			TARA, SpiderEntity.class,
 			SVEN, WolfEntity.class,
 			VOIDGLOOM, EndermanEntity.class,
-			DEMONLORD, BlazeEntity.class
+			DEMONLORD, BlazeEntity.class,
+			VAMPIRE, PlayerEntity.class
 	);
 
 	public static List<Entity> getEntityArmorStands(Entity entity, float expandY) {

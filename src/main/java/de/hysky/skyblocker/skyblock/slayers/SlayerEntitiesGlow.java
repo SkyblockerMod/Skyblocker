@@ -10,7 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.CaveSpiderEntity;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.math.Box;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +39,7 @@ public class SlayerEntitiesGlow {
 
 	public static boolean isSlayer(LivingEntity e) {
 		return Slayer.getInstance().isInSlayerFight() && SlayerUtils.getEntityArmorStands(e, 2.5f).stream().anyMatch(entity ->
-				entity.getDisplayName().getString().contains(MinecraftClient.getInstance().getSession().getUsername()));
+				entity.getName().getString().contains(MinecraftClient.getInstance().getSession().getUsername()));
 	}
 
 	public static boolean isSlayerMiniMob(LivingEntity entity) {
@@ -66,8 +65,8 @@ public class SlayerEntitiesGlow {
 	 * @param entityClass the mob type of the Slayer (i.e. ZombieEntity.class)
 	 * @param armorStand  the entity that contains the display name of the Slayer (mini)boss
 	 */
-	private static MobEntity findClosestMobEntity(Class<? extends MobEntity> entityClass, ArmorStandEntity armorStand) {
-		List<MobEntity> mobEntities = armorStand.getWorld().getEntitiesByClass(entityClass, armorStand.getDimensions(null)
+	private static LivingEntity findClosestMobEntity(Class<? extends LivingEntity> entityClass, ArmorStandEntity armorStand) {
+		List<LivingEntity> mobEntities = armorStand.getWorld().getEntitiesByClass(entityClass, armorStand.getDimensions(null)
 						.getBoxAt(armorStand.getPos()).expand(0.3f, 1.5f, 0.3f), entity -> !entity.isDead())
 				.stream()
 				.filter(SlayerEntitiesGlow::isValidSlayerMob)
@@ -88,7 +87,7 @@ public class SlayerEntitiesGlow {
 	 * Use this func to add checks to prevent accidental highlights
 	 * i.e. Cavespider extends spider and thus will highlight the broodfather's head pet instead and
 	 */
-	private static boolean isValidSlayerMob(MobEntity entity) {
+	private static boolean isValidSlayerMob(LivingEntity entity) {
 		return !(entity instanceof CaveSpiderEntity) && !(entity.isBaby());
 	}
 
@@ -99,9 +98,9 @@ public class SlayerEntitiesGlow {
 	 */
 	public static void setSlayerMobGlow(ArmorStandEntity armorStand) {
 		String slayerType = Slayer.getInstance().getBossType();
-		Class<? extends MobEntity> entityClass = SLAYER_MOB_TYPE.get(slayerType);
+		Class<? extends LivingEntity> entityClass = SLAYER_MOB_TYPE.get(slayerType);
 		if (entityClass != null) {
-			MobEntity closestEntity = findClosestMobEntity(entityClass, armorStand);
+			LivingEntity closestEntity = findClosestMobEntity(entityClass, armorStand);
 			if (closestEntity != null) {
 				UUID uuid = ARMORSTAND_TO_MOBS_TO_GLOW.putIfAbsent(armorStand.getUuid(), closestEntity.getUuid());
 				if (uuid != null && closestEntity.getUuid() != uuid && closestEntity.age < 80) {
@@ -119,8 +118,8 @@ public class SlayerEntitiesGlow {
 	 * @param entityClass the java class of the entity we know the armor stand to belong to
 	 * @param oldUUID     the uuid of the first detected slayer mob
 	 */
-	private static void recalculateMobGlow(ArmorStandEntity armorStand, Class<? extends MobEntity> entityClass, UUID oldUUID) {
-		MobEntity entity = findClosestMobEntity(entityClass, armorStand);
+	private static void recalculateMobGlow(ArmorStandEntity armorStand, Class<? extends LivingEntity> entityClass, UUID oldUUID) {
+		LivingEntity entity = findClosestMobEntity(entityClass, armorStand);
 		if (entity.getUuid() != oldUUID) {
 			RenderHelper.runOnRenderThread(() -> {
 				MOBS_TO_GLOW.add(entity.getUuid());
