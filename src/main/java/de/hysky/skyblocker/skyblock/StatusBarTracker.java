@@ -14,10 +14,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StatusBarTracker {
-	private static final Pattern STATUS_HEALTH = Pattern.compile("§[6c](?<health>[0-9,]+)/(?<max>[0-9,]+)❤ *(?<healing>\\+§c([0-9,]+). *)?");
-	private static final Pattern DEFENSE_STATUS = Pattern.compile("§a(\\d+(,\\d\\d\\d)*)§a❈ Defense *");
-	private static final Pattern MANA_USE = Pattern.compile("§b-(\\d+(,\\d\\d\\d)*) Mana \\(§\\S+(?:\\s\\S+)* *");
-	private static final Pattern MANA_STATUS = Pattern.compile("§b(\\d+(,\\d\\d\\d)*)/(\\d+(,\\d\\d\\d)*)✎ (?:Mana|§3(\\d+(,\\d\\d\\d)*)ʬ) *");
+	private static final Pattern STATUS_HEALTH = Pattern.compile("§[6c](?<health>[\\d,]+)/(?<max>[\\d,]+)❤ *(?<healing>\\+§c([\\d,]+). *)?");
+	private static final Pattern DEFENSE_STATUS = Pattern.compile("§a(?<defense>[\\d,]+)§a❈ Defense *");
+	private static final Pattern MANA_USE = Pattern.compile("§b-([\\d,]+) Mana \\(§.*?\\) *");
+	private static final Pattern MANA_STATUS = Pattern.compile("§b(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|§3(?<overflow>[\\d,]+)ʬ) *");
 
 	private final MinecraftClient client = MinecraftClient.getInstance();
 	private Resource health = new Resource(100, 100, 0);
@@ -80,7 +80,7 @@ public class StatusBarTracker {
 
 		// Match defense or mana use and don't add it to the string builder
 		if (matcher.usePattern(DEFENSE_STATUS).find()) {
-			defense = RegexUtils.parseIntFromMatcher(matcher, 1);
+			defense = RegexUtils.parseIntFromMatcher(matcher, "defense");
 			matcher.appendReplacement(sb, "");
 		} else if (filterManaUse && matcher.usePattern(MANA_USE).find()) {
 			matcher.appendReplacement(sb, "");
@@ -113,11 +113,10 @@ public class StatusBarTracker {
 	}
 
 	private void updateMana(Matcher m) {
-		int value = RegexUtils.parseIntFromMatcher(m, 1);
-		int max = RegexUtils.parseIntFromMatcher(m, 3);
-		int overflow;
-		overflow = m.group(5) == null ? 0 : RegexUtils.parseIntFromMatcher(m, 5);
-		this.mana = new Resource(value, max, overflow);
+		int mana = RegexUtils.parseIntFromMatcher(m, "mana");
+		int max = RegexUtils.parseIntFromMatcher(m, "max");
+		int overflow = m.group("overflow") == null ? 0 : RegexUtils.parseIntFromMatcher(m, "overflow");
+		this.mana = new Resource(mana, max, overflow);
 	}
 
 	private void updateSpeed() {
