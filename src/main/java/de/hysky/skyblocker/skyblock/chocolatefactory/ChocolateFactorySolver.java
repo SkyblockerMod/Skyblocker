@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
+import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
@@ -364,26 +365,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	}
 
 	private MutableText formatTime(double seconds) {
-		seconds = Math.ceil(seconds);
-		if (seconds <= 0) return Text.literal("Now").formatted(Formatting.GREEN);
-
-		StringBuilder builder = new StringBuilder();
-		if (seconds >= 86400) {
-			builder.append((int) (seconds / 86400)).append("d ");
-			seconds %= 86400;
-		}
-		if (seconds >= 3600) {
-			builder.append((int) (seconds / 3600)).append("h ");
-			seconds %= 3600;
-		}
-		if (seconds >= 60) {
-			builder.append((int) (seconds / 60)).append("m ");
-			seconds %= 60;
-		}
-		if (seconds >= 1) {
-			builder.append((int) seconds).append("s");
-		}
-		return Text.literal(builder.toString()).formatted(Formatting.GOLD);
+		return SkyblockTime.formatTime(seconds).formatted(Formatting.GOLD);
 	}
 
 	@Override

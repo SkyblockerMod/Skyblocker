@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.itemlist;
 import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -105,10 +105,10 @@ public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
             if (events.isEmpty()) {
                 context.drawText(textRenderer, Text.literal(" ").append(Text.translatable("skyblocker.events.tab.noMore")), x, y + textRenderer.fontHeight, Colors.GRAY, false);
             } else if (events.peekFirst().start() > time) {
-                MutableText formatted = Text.literal(" ").append(Text.translatable("skyblocker.events.tab.startsIn", Utils.getDurationText((int) (events.peekFirst().start() - time)))).formatted(Formatting.YELLOW);
+                MutableText formatted = Text.literal(" ").append(Text.translatable("skyblocker.events.tab.startsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() - time)))).formatted(Formatting.YELLOW);
                 context.drawText(textRenderer, formatted, x, y + textRenderer.fontHeight, -1, true);
             } else {
-                MutableText formatted = Text.literal(" ").append(Text.translatable( "skyblocker.events.tab.endsIn", Utils.getDurationText((int) (events.peekFirst().start() + events.peekFirst().duration() - time)))).formatted(Formatting.GREEN);
+                MutableText formatted = Text.literal(" ").append(Text.translatable( "skyblocker.events.tab.endsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() + events.peekFirst().duration() - time)))).formatted(Formatting.GREEN);
                 context.drawText(textRenderer, formatted, x, y + textRenderer.fontHeight, -1, true);
             }
 

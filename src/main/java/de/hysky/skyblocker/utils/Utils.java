@@ -28,7 +28,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.*;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
@@ -353,24 +352,7 @@ public class Utils {
         }
     }
 
-    // TODO: Combine with `ChocolateFactorySolver.formatTime` and move into `SkyblockTime`.
-    public static Text getDurationText(int timeInSeconds) {
-        int seconds = timeInSeconds % 60;
-        int minutes = (timeInSeconds / 60) % 60;
-        int hours = (timeInSeconds / 3600);
-
-        MutableText time = Text.empty();
-        if (hours > 0) {
-            time.append(hours + "h").append(" ");
-        }
-        if (hours > 0 || minutes > 0) {
-            time.append(minutes + "m").append(" ");
-        }
-        time.append(seconds + "s");
-        return time;
-    }
-
-    private static void updateFromPlayerList(MinecraftClient client) {
+	private static void updateFromPlayerList(MinecraftClient client) {
         if (client.getNetworkHandler() == null) {
             return;
         }

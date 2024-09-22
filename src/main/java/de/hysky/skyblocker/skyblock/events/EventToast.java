@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.events;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.SkyblockTime;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -71,7 +71,7 @@ public class EventToast implements Toast {
         started = timeTillEvent < 0;
         if (started) return;
 
-        Text time = Utils.getDurationText(timeTillEvent);
+        Text time = SkyblockTime.formatTime(timeTillEvent);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         context.drawText(textRenderer, time, x, y, Colors.LIGHT_YELLOW, false);
