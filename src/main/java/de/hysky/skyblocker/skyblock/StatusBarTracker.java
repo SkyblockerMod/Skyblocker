@@ -53,6 +53,65 @@ public class StatusBarTracker {
 		updateSpeed();
 	}
 
+	private boolean allowOverlayMessage(Text text, boolean overlay) {
+		onOverlayMessage(text, overlay);
+		return true;
+	}
+
+	private Text onOverlayMessage(Text text, boolean overlay) {
+		if (!overlay || !Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars || Utils.isInTheRift()) {
+			return text;
+		}
+		return Text.of(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));
+	}
+
+	public String update(String actionBar, boolean filterManaUse) {
+		var sb = new StringBuilder();
+
+		// Match health and don't add it to the string builder
+		// Append healing to the string builder if there is any healing
+		Matcher matcher = STATUS_HEALTH.matcher(actionBar);
+		if (!matcher.find()) return actionBar;
+		updateHealth(matcher);
+		if (matcher.group("healing") != null) {
+			sb.append("§c❤");
+		}
+		matcher.appendReplacement(sb, "$3");
+
+		// Match defense or mana use and don't add it to the string builder
+		if (matcher.usePattern(DEFENSE_STATUS).find()) {
+			defense = RegexUtils.parseIntFromMatcher(matcher, 1);
+			matcher.appendReplacement(sb, "");
+		} else if (filterManaUse && matcher.usePattern(MANA_USE).find()) {
+			matcher.appendReplacement(sb, "");
+		}
+
+		// Match mana and don't add it to the string builder
+		if (matcher.usePattern(MANA_STATUS).find()) {
+			updateMana(matcher);
+			matcher.appendReplacement(sb, "");
+		}
+
+		// Append the rest of the message to the string builder
+		matcher.appendTail(sb);
+		String res = sb.toString().trim();
+		return res.isEmpty() ? null : res;
+	}
+
+	private void updateHealth(Matcher matcher) {
+		int health = RegexUtils.parseIntFromMatcher(matcher, "health");
+		int max = RegexUtils.parseIntFromMatcher(matcher, "max");
+		updateHealth(health, max, Math.max(0, health - max));
+	}
+
+	private void updateHealth(int value, int max, int overflow) {
+		if (client != null && client.player != null) {
+			value = (int) (client.player.getHealth() * max / client.player.getMaxHealth());
+			overflow = (int) (client.player.getAbsorptionAmount() * max / client.player.getMaxHealth());
+		}
+		health = new Resource(Math.min(value, max), max, Math.min(overflow, max));
+	}
+
 	private void updateMana(Matcher m) {
 		int value = RegexUtils.parseIntFromMatcher(m, 1);
 		int max = RegexUtils.parseIntFromMatcher(m, 3);
@@ -91,69 +150,6 @@ public class StatusBarTracker {
 			}
 		}
 		this.speed = new Resource(value, max, 0);
-	}
-
-	private void updateHealth(Matcher matcher) {
-		int health = RegexUtils.parseIntFromMatcher(matcher, "health");
-		int max = RegexUtils.parseIntFromMatcher(matcher, "max");
-		updateHealth(health, max, Math.max(0, health - max));
-	}
-
-	private void updateHealth(int value, int max, int overflow) {
-		if (client != null && client.player != null) {
-			value = (int) (client.player.getHealth() * max / client.player.getMaxHealth());
-			overflow = (int) (client.player.getAbsorptionAmount() * max / client.player.getMaxHealth());
-		}
-		health = new Resource(Math.min(value, max), max, Math.min(overflow, max));
-	}
-
-	private String reset(String str, Matcher m) {
-		str = str.substring(m.end());
-		m.reset(str);
-		return str;
-	}
-
-	private boolean allowOverlayMessage(Text text, boolean overlay) {
-		onOverlayMessage(text, overlay);
-		return true;
-	}
-
-	private Text onOverlayMessage(Text text, boolean overlay) {
-		if (!overlay || !Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars || Utils.isInTheRift()) {
-			return text;
-		}
-		return Text.of(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));
-	}
-
-	public String update(String actionBar, boolean filterManaUse) {
-		var sb = new StringBuilder();
-		Matcher matcher = STATUS_HEALTH.matcher(actionBar);
-		if (!matcher.lookingAt()) return actionBar;
-		updateHealth(matcher);
-		if (matcher.group("healing") != null) {
-			sb.append("§c❤");
-			sb.append(matcher.group("healing"));
-		}
-		actionBar = reset(actionBar, matcher);
-		if (matcher.usePattern(MANA_STATUS).lookingAt()) {
-			defense = 0;
-			updateMana(matcher);
-			actionBar = reset(actionBar, matcher);
-		} else {
-			if (matcher.usePattern(DEFENSE_STATUS).lookingAt()) {
-				defense = RegexUtils.parseIntFromMatcher(matcher, 1);
-				actionBar = reset(actionBar, matcher);
-			} else if (filterManaUse && matcher.usePattern(MANA_USE).lookingAt()) {
-				actionBar = reset(actionBar, matcher);
-			}
-			if (matcher.usePattern(MANA_STATUS).find()) {
-				updateMana(matcher);
-				matcher.appendReplacement(sb, "");
-			}
-		}
-		matcher.appendTail(sb);
-		String res = sb.toString().trim();
-		return res.isEmpty() ? null : res;
 	}
 
 	public record Resource(int value, int max, int overflow) {}
