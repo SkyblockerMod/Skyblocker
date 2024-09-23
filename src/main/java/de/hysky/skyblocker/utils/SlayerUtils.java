@@ -18,7 +18,7 @@ public class SlayerUtils {
 	public static final String VOIDGLOOM = "Voidgloom Seraph";
 	public static final String VAMPIRE = "Bloodfiend";
 	public static final String DEMONLORD = "Inferno Demonlord";
-	public static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d+(?:\\.\\d+)?[kM]?)(?=❤)");
+	public static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d+(?:[.,]\\d+)?[kM]?)(?=❤)");
 	public static final Pattern SLAYER_PATTERN = Pattern.compile("(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Bloodfiend) (X|IX|VIII|VII|VI|IV|V|III|II|I)");
 	public static final Map<String, String> SLAYER_MINI_NAMES = Map.ofEntries(
 			Map.entry("Revenant Sycophant", REVENANT),
@@ -41,7 +41,7 @@ public class SlayerUtils {
 	);
 
 	public static final Map<String, long[]> SLAYER_MOB_MAX_HP = Map.of(
-			REVENANT, new long[]{500, 20_000L, 400_000, 1_500_000, 10_000_000},
+			REVENANT, new long[]{500, 20_000, 400_000, 1_500_000, 10_000_000},
 			TARA, new long[]{750, 30_000, 900_000, 2_400_000},
 			SVEN, new long[]{2000, 40_000, 750_000, 2_000_000},
 			VOIDGLOOM, new long[]{300_000, 12_000_000, 50_000_000, 210_000_000},

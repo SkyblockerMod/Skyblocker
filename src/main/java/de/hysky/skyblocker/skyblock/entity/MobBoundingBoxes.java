@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
+import de.hysky.skyblocker.skyblock.slayers.Slayer;
 import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
@@ -52,8 +53,8 @@ public class MobBoundingBoxes {
 
 		if (SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.HITBOX
 				&& entity instanceof ArmorStandEntity le) {
-			return le.getDisplayName().getString().contains(MinecraftClient.getInstance().getSession().getUsername()) ||
-					entity.getDisplayName().getString().contains("Ⓣ") || entity.getDisplayName().getString().contains("Ⓐ");
+			return Slayer.getInstance().isInSlayerFight() && (le.getName().getString().contains(MinecraftClient.getInstance().getSession().getUsername()) ||
+					entity.getName().getString().contains("Ⓣ") || entity.getName().getString().contains("Ⓐ"));
 		}
 
 		return false;

@@ -125,7 +125,7 @@ public class Slayer {
 			maxHealth = SLAYER_MOB_MAX_HP.get(bossType)[bossTier - 1];
 		} catch (Exception ignored) {
 			Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(getInstance().getSlayerArmorStand().getName().getString());
-			maxHealth = maxHealthMatcher.find() ? abbrNumberStringToLong(maxHealthMatcher.group(0)) : -1;
+			maxHealth = maxHealthMatcher.find() ? abbrNumberStringToLong(maxHealthMatcher.group(0).replace(",", "")) : -1;
 		}
 
 		return maxHealth;
@@ -133,7 +133,7 @@ public class Slayer {
 
 	private void updateCurrentHealth() {
 		if (getSlayerArmorStand() != null && slayerArmorStand.isAlive()) {
-			Matcher healthMatcher = HEALTH_PATTERN.matcher(slayerArmorStand.getName().getString());
+			Matcher healthMatcher = HEALTH_PATTERN.matcher(slayerArmorStand.getName().getString().replace(",", ""));
 			if (healthMatcher.find()) {
 				currentHealth = abbrNumberStringToLong(healthMatcher.group(1));
 			}
