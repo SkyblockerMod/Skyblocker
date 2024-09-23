@@ -26,4 +26,6 @@ public abstract class InventoryScreenMixin {
     private int skyblocker$moveButtonWhenPressed(int x) {
         return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory ? x + 21 : x;
     }
+
+
 }

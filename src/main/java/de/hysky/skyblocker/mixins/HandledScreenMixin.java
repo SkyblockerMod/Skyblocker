@@ -17,6 +17,8 @@ import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
+import de.hysky.skyblocker.skyblock.todolist.TodoList;
+import de.hysky.skyblocker.skyblock.todolist.TodoListScroll;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
@@ -110,6 +112,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				addSelectableChild(quickNavButton);
 			}
 		}
+
+		if(Utils.isOnSkyblock() && client != null && client.player != null && !client.player.isCreative())
+		{
+			addDrawableChild(new TodoListScroll(((HandledScreen<?>)(Object)this), client, this.width, this.height - 112, 48, 36));
+		}
+
 	}
 
 	@Inject(at = @At("HEAD"), method = "keyPressed")
