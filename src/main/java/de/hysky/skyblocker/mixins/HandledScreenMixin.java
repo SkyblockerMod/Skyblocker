@@ -3,6 +3,7 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -37,6 +38,7 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -101,23 +103,28 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@Unique
 	private List<QuickNavButton> quickNavButtons;
 
+	@Unique
+	private TodoListScroll todoListScroll;
+
 	protected HandledScreenMixin(Text title) {
 		super(title);
 	}
 
 	@Inject(method = "init", at = @At("RETURN"))
 	private void skyblocker$initQuickNav(CallbackInfo ci) {
+		System.out.println("Init Quick Nav");
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().quickNav.enableQuickNav && client != null && client.player != null && !client.player.isCreative()) {
 			for (QuickNavButton quickNavButton : quickNavButtons = QuickNav.init(getTitle().getString().trim())) {
+				LogUtils.getLogger().error("Adding addSelectableChild to screen");
 				addSelectableChild(quickNavButton);
 			}
 		}
 
 		if(Utils.isOnSkyblock() && client != null && client.player != null && !client.player.isCreative())
 		{
-			addDrawableChild(new TodoListScroll(((HandledScreen<?>)(Object)this), client, this.width, this.height - 112, 48, 36));
+			System.out.println("Init Todo List");
+			todoListScroll = addDrawableChild(new TodoListScroll(((HandledScreen<?>)(Object)this), client, this.width, this.height - 112, 48, 36));
 		}
-
 	}
 
 	@Inject(at = @At("HEAD"), method = "keyPressed")
@@ -153,6 +160,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	/**
 	 * Draws the unselected tabs in front of the background blur, but behind the main inventory, similar to creative inventory tabs
 	 */
+
 	@Inject(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawBackground(Lnet/minecraft/client/gui/DrawContext;FII)V"))
 	private void skyblocker$drawUnselectedQuickNavButtons(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		if (quickNavButtons != null) for (QuickNavButton quickNavButton : quickNavButtons) {
@@ -160,6 +168,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				quickNavButton.render(context, mouseX, mouseY, delta);
 			}
 		}
+		todoListScroll.render(context, mouseX, mouseY, delta);
 	}
 
 	/**
