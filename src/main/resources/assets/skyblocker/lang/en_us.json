@@ -13,6 +13,7 @@
   "key.skyblocker.slottext": "Slot Text",
   "key.itemPriceLookup": "Bazaar Lookup",
   "key.itemPriceRefresh": "Bazaar Refresh",
+  "key.skyblocker.addToTodoList": "Add to Todo List",
 
 
   "text.skyblocker.open": "Open",
@@ -1125,6 +1126,9 @@
   "skyblocker.profileviewer.inventory.inactive": "Locked Slot",
   "skyblocker.profileviewer.inventory.inactive.description.backpack": "The selected backpack",
   "skyblocker.profileviewer.inventory.inactive.description.general": "does not contain this slot",
+
+  "skyblocker.todolist.name": "Todo List",
+  "skyblocker.todolist.tab.noTasks": "No tasks!",
 
   "emi.category.skyblocker.skyblock": "Skyblock"
 }

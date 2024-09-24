@@ -70,7 +70,7 @@ public class ItemListWidget extends RecipeBookWidget {
         ));
 
 		TodoListTab todoListTab = new TodoListTab(x + 9, y + 9, this.client);
-		SideTabButtonWidget todoListTabButton = new SideTabButtonWidget(x - 30, y + 3 + (27 * 2), currentTab == 2, new ItemStack(Items.OAK_SIGN));
+		SideTabButtonWidget todoListTabButton = new SideTabButtonWidget(x - 30, y + 3 + (27 * 2), currentTab == 2, new ItemStack(Items.COMPASS));
 		todoListTabButton.setTooltip(Tooltip.of(Text.literal("Todo List")));
 		if (currentTab == 2) currentTabContent = todoListTab;
 		tabs.add(new ObjectObjectImmutablePair<>(

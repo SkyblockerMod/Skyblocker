@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.todolist;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.itemlist.ItemListWidget;
 import de.hysky.skyblocker.skyblock.itemlist.UpcomingEventsTab;
@@ -11,6 +12,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
@@ -18,6 +20,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -29,10 +32,23 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 	private final MinecraftClient client;
 	private final List<TaskRenderer> tasks;
 
+	private final TextFieldWidget searchField;
+
+	private int thisX;
+	private int thisY;
+
 	public TodoListTab(int x, int y, MinecraftClient client) {
 		super(x, y, Text.literal("Todo List Tab"));
+		thisX = x;
+		thisY = y;
 		this.client = client;
 		tasks = TodoList.getTasks().values().stream().map(TaskRenderer::new).toList();
+		this.searchField = new TextFieldWidget(this.client.textRenderer, x + 16, y + 4, 81, 14, Text.translatable("itemGroup.search"));
+		this.searchField.setMaxLength(50);
+		this.searchField.setVisible(true);
+		this.searchField.setEditableColor(16777215);
+		this.searchField.setText("");
+		this.searchField.setPlaceholder(Text.translatable("skyblocker.todolist.name").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
 	}
 
 	@Override
@@ -49,15 +65,23 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 		int x = getX();
 		int y = getY();
+
+
 		context.enableScissor(x, y, getRight(), getBottom());
 
-		context.drawItem(new ItemStack(Items.CLOCK), x, y + 4);
-		context.drawText(this.client.textRenderer, "Todo List", x + 17, y + 7, -1, true);
+		searchField.render(context, mouseX, mouseY, delta);
 
 		int tasksY = y + 7 + 24;
-		for (TaskRenderer eventRenderer : tasks) {
+
+		if (tasks == null || tasks.isEmpty()) {
+			context.drawText(client.textRenderer, Text.literal(" ").append(Text.translatable("skyblocker.todolist.tab.noTasks")), x + 2, tasksY + 6, Colors.GRAY, false);
+		}
+		else
+		{
+			for (TaskRenderer eventRenderer : tasks) {
 			eventRenderer.render(context, x + 1, tasksY, mouseX, mouseY);
 			tasksY += eventRenderer.getHeight();
+			}
 		}
 
 		context.disableScissor();
@@ -66,6 +90,25 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 	@Override
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (searchField.mouseClicked(mouseX, mouseY, button)) {
+			this.searchField.setFocused(true);
+			return true;
+		}
+		return false;
+	}@
+			Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (this.searchField.keyPressed(keyCode, scanCode, modifiers)) {
+			//this.refreshSearchResults();
+			return true;
+		}
+
+
+		return false;
 	}
 
 	public static class TaskRenderer
@@ -83,9 +126,6 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
 			context.drawText(textRenderer, Text.literal(Long.toString(time)).fillStyle(Style.EMPTY.withUnderline(isMouseOver(mouseX, mouseY, x, y))), x, y, -1, true);
-			if (task == null) {
-				context.drawText(textRenderer, Text.literal(" ").append(Text.translatable("skyblocker.events.tab.noMore")), x, y + textRenderer.fontHeight, Colors.GRAY, false);
-			}
 
 		}
 
