@@ -112,17 +112,14 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	@Inject(method = "init", at = @At("RETURN"))
 	private void skyblocker$initQuickNav(CallbackInfo ci) {
-		System.out.println("Init Quick Nav");
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().quickNav.enableQuickNav && client != null && client.player != null && !client.player.isCreative()) {
 			for (QuickNavButton quickNavButton : quickNavButtons = QuickNav.init(getTitle().getString().trim())) {
-				LogUtils.getLogger().error("Adding addSelectableChild to screen");
 				addSelectableChild(quickNavButton);
 			}
 		}
 
 		if(Utils.isOnSkyblock() && client != null && client.player != null && !client.player.isCreative())
 		{
-			System.out.println("Init Todo List");
 			todoListScroll = addDrawableChild(new TodoListScroll(((HandledScreen<?>)(Object)this), client, this.width, this.height - 112, 48, 36));
 		}
 	}
@@ -168,7 +165,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				quickNavButton.render(context, mouseX, mouseY, delta);
 			}
 		}
-		todoListScroll.render(context, mouseX, mouseY, delta);
 	}
 
 	/**
@@ -181,6 +177,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				quickNavButton.render(context, mouseX, mouseY, delta);
 			}
 		}
+		if (todoListScroll != null)
+			todoListScroll.render(context, mouseX, mouseY, delta);
 	}
 
 	@SuppressWarnings("DataFlowIssue")

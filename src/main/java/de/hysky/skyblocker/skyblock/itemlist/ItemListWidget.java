@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.mixins.accessors.RecipeBookWidgetAccessor;
+import de.hysky.skyblocker.skyblock.todolist.TodoListTab;
 import de.hysky.skyblocker.utils.render.gui.SideTabButtonWidget;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
@@ -27,7 +28,7 @@ public class ItemListWidget extends RecipeBookWidget {
     private int leftOffset;
 
     private TabContainerWidget currentTabContent;
-    private final List<Pair<SideTabButtonWidget, TabContainerWidget>> tabs = new ArrayList<>(2);
+    private final List<Pair<SideTabButtonWidget, TabContainerWidget>> tabs = new ArrayList<>(3);
     private ItemListTab itemListTab;
 
     private static int currentTab = 0;
@@ -68,6 +69,14 @@ public class ItemListWidget extends RecipeBookWidget {
                 upcomingEventsTab
         ));
 
+		TodoListTab todoListTab = new TodoListTab(x + 9, y + 9, this.client);
+		SideTabButtonWidget todoListTabButton = new SideTabButtonWidget(x - 30, y + 3 + (27 * 2), currentTab == 2, new ItemStack(Items.OAK_SIGN));
+		todoListTabButton.setTooltip(Tooltip.of(Text.literal("Todo List")));
+		if (currentTab == 2) currentTabContent = todoListTab;
+		tabs.add(new ObjectObjectImmutablePair<>(
+				todoListTabButton,
+				todoListTab
+		));
     }
 
     @Override
