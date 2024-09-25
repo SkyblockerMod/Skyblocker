@@ -1,46 +1,36 @@
-package de.hysky.skyblocker.skyblock.todolist;
+package de.hysky.skyblocker.skyblock.todolist.ui;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.itemlist.ItemListWidget;
-import de.hysky.skyblocker.skyblock.itemlist.UpcomingEventsTab;
+import de.hysky.skyblocker.skyblock.todolist.TodoList;
 import de.hysky.skyblocker.skyblock.todolist.tasks.Task;
-import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 
 public class TodoListTab extends ItemListWidget.TabContainerWidget {
 	private final MinecraftClient client;
-	private final List<TaskRenderer> tasks;
+	private List<TaskRenderer> tasks;
 
 	private final TextFieldWidget searchField;
+	private final ButtonWidget addButton;
 
-	private int thisX;
-	private int thisY;
 
 	public TodoListTab(int x, int y, MinecraftClient client) {
 		super(x, y, Text.literal("Todo List Tab"));
-		thisX = x;
-		thisY = y;
 		this.client = client;
 		tasks = TodoList.getTasks().values().stream().map(TaskRenderer::new).toList();
 		this.searchField = new TextFieldWidget(this.client.textRenderer, x + 16, y + 4, 81, 14, Text.translatable("itemGroup.search"));
@@ -48,13 +38,24 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 		this.searchField.setVisible(true);
 		this.searchField.setEditableColor(16777215);
 		this.searchField.setText("");
-		this.searchField.setPlaceholder(Text.translatable("skyblocker.todolist.name").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
+		this.searchField.setPlaceholder(Text.translatable("skyblocker.todolist.searchText").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
+
+		addButton = ButtonWidget.builder(Text.of("+"), (button) -> {
+			this.client.setScreen(new AddTaskScreen(client.currentScreen));
+			this.updateTaskList();
+		}).size(16, 16).position(x + 16 + 81 + 5, y + 3).tooltip(Tooltip.of(Text.translatable("skyblocker.todolist.addTask"))).build();
+	}
+
+	private void updateTaskList() {
+		tasks = TodoList.getTasks().values().stream().map(TaskRenderer::new).toList();
 	}
 
 	@Override
 	public void drawTooltip(DrawContext context, int mouseX, int mouseY) {
 
 	}
+
+
 
 	@Override
 	public List<? extends Element> children() {
@@ -70,6 +71,8 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 		context.enableScissor(x, y, getRight(), getBottom());
 
 		searchField.render(context, mouseX, mouseY, delta);
+
+		addButton.render(context, mouseX, mouseY, delta);
 
 		int tasksY = y + 7 + 24;
 
@@ -98,6 +101,13 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 			this.searchField.setFocused(true);
 			return true;
 		}
+		else if (addButton.mouseClicked(mouseX, mouseY, button)) {
+			addButton.onClick(mouseX, mouseY);
+			return true;
+		}
+		else {
+			this.searchField.setFocused(false);
+		}
 		return false;
 	}@
 			Override
@@ -107,9 +117,10 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 			return true;
 		}
 
-
 		return false;
 	}
+
+
 
 	public static class TaskRenderer
 	{

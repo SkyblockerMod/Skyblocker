@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.mixins.accessors.RecipeBookWidgetAccessor;
-import de.hysky.skyblocker.skyblock.todolist.TodoListTab;
+import de.hysky.skyblocker.skyblock.todolist.ui.TodoListTab;
 import de.hysky.skyblocker.utils.render.gui.SideTabButtonWidget;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;

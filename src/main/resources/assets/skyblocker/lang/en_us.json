@@ -1127,8 +1127,11 @@
   "skyblocker.profileviewer.inventory.inactive.description.backpack": "The selected backpack",
   "skyblocker.profileviewer.inventory.inactive.description.general": "does not contain this slot",
 
+  "emi.category.skyblocker.skyblock": "Skyblock",
+
+  "skyblocker.todolist.searchText": "Search Tasks",
   "skyblocker.todolist.name": "Todo List",
   "skyblocker.todolist.tab.noTasks": "No tasks!",
-
-  "emi.category.skyblocker.skyblock": "Skyblock"
+  "skyblocker.todolist.addTask": "Add a Task",
+  "skyblocker.todolist.addTaskScreen.title": "Add Task"
 }
