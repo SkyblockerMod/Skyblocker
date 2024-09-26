@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.utils.config;
 
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.SkyblockTime;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.utils.Dimension;
 import dev.isxander.yacl3.gui.AbstractWidget;
@@ -18,7 +18,7 @@ public record DurationController(Option<Integer> option) implements IStringContr
 
     @Override
     public String getString() {
-        return Utils.getDurationText(option.pendingValue()).getString();
+		return SkyblockTime.formatTime(option.pendingValue()).getString();
     }
 
 

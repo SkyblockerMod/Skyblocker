@@ -4,6 +4,9 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,6 +123,29 @@ public class SkyblockTime {
 		}
 		TIME_UPDATE.invoker().onTimeUpdate(year, season, month, day, hour);
 		LOGGER.info("[Skyblocker Time] Skyblock time updated to Year {}, Season {}, Month {}, Day {}, Hour {}", year, season, month, day, hour);
+	}
+
+	public static MutableText formatTime(double seconds) {
+		seconds = Math.ceil(seconds);
+		if (seconds <= 0) return Text.literal("Now").formatted(Formatting.GREEN);
+
+		StringBuilder builder = new StringBuilder();
+		if (seconds >= 86400) {
+			builder.append((int) (seconds / 86400)).append("d ");
+			seconds %= 86400;
+		}
+		if (seconds >= 3600) {
+			builder.append((int) (seconds / 3600)).append("h ");
+			seconds %= 3600;
+		}
+		if (seconds >= 60) {
+			builder.append((int) (seconds / 60)).append("m ");
+			seconds %= 60;
+		}
+		if (seconds >= 1) {
+			builder.append((int) seconds).append("s");
+		}
+		return Text.literal(builder.toString());
 	}
 
 	public enum Season {

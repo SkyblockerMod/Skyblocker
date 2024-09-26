@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
+import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
@@ -144,19 +145,19 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		getCoach(slots.get(COACH_SLOT)).ifPresent(cpsIncreaseFactors::add);
 
 		//The clickable chocolate is in slot 13, holds the total chocolate
-		RegexUtils.getLongFromMatcher(CHOCOLATE_PATTERN.matcher(slots.get(CHOCOLATE_SLOT).getName().getString())).ifPresent(l -> totalChocolate = l);
+		RegexUtils.findLongFromMatcher(CHOCOLATE_PATTERN.matcher(slots.get(CHOCOLATE_SLOT).getName().getString())).ifPresent(l -> totalChocolate = l);
 
 		//Cps item (cocoa bean) is in slot 45
 		String cpsItemLore = ItemUtils.getConcatenatedLore(slots.get(CPS_SLOT));
 		Matcher cpsMatcher = CPS_PATTERN.matcher(cpsItemLore);
-		RegexUtils.getDoubleFromMatcher(cpsMatcher).ifPresent(d -> totalCps = d);
+		RegexUtils.findDoubleFromMatcher(cpsMatcher).ifPresent(d -> totalCps = d);
 		Matcher multiplierMatcher = TOTAL_MULTIPLIER_PATTERN.matcher(cpsItemLore);
-		RegexUtils.getDoubleFromMatcher(multiplierMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0).ifPresent(d -> totalCpsMultiplier = d);
+		RegexUtils.findDoubleFromMatcher(multiplierMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0).ifPresent(d -> totalCpsMultiplier = d);
 
 		//Prestige item is in slot 28
 		String prestigeLore = ItemUtils.getConcatenatedLore(slots.get(PRESTIGE_SLOT));
 		Matcher prestigeMatcher = PRESTIGE_REQUIREMENT_PATTERN.matcher(prestigeLore);
-		OptionalLong currentChocolate = RegexUtils.getLongFromMatcher(prestigeMatcher);
+		OptionalLong currentChocolate = RegexUtils.findLongFromMatcher(prestigeMatcher);
 		if (currentChocolate.isPresent()) {
 			String requirement = prestigeMatcher.group(2); //If the first one matched, we can assume the 2nd one is also matched since it's one whole regex
 			//Since the last character is either M or B we can just try to replace both characters. Only the correct one will actually replace anything.
@@ -177,7 +178,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		isTimeTowerMaxed = StringUtils.substringAfterLast(slots.get(TIME_TOWER_SLOT).getName().getString(), ' ').equals("XV");
 		String timeTowerLore = ItemUtils.getConcatenatedLore(slots.get(TIME_TOWER_SLOT));
 		Matcher timeTowerMultiplierMatcher = TIME_TOWER_MULTIPLIER_PATTERN.matcher(timeTowerLore);
-		RegexUtils.getDoubleFromMatcher(timeTowerMultiplierMatcher).ifPresent(d -> timeTowerMultiplier = d);
+		RegexUtils.findDoubleFromMatcher(timeTowerMultiplierMatcher).ifPresent(d -> timeTowerMultiplier = d);
 		Matcher timeTowerStatusMatcher = TIME_TOWER_STATUS_PATTERN.matcher(timeTowerLore);
 		if (timeTowerStatusMatcher.find(timeTowerMultiplierMatcher.hasMatch() ? timeTowerMultiplierMatcher.end() : 0)) {
 			isTimeTowerActive = timeTowerStatusMatcher.group(1).equals("ACTIVE");
@@ -198,10 +199,10 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		if (totalCps < 0 || totalCpsMultiplier < 0) return Optional.empty(); //We need these 2 to calculate the increase in cps.
 
 		Matcher multiplierIncreaseMatcher = MULTIPLIER_INCREASE_PATTERN.matcher(coachLore);
-		OptionalDouble currentCpsMultiplier = RegexUtils.getDoubleFromMatcher(multiplierIncreaseMatcher);
+		OptionalDouble currentCpsMultiplier = RegexUtils.findDoubleFromMatcher(multiplierIncreaseMatcher);
 		if (currentCpsMultiplier.isEmpty()) return Optional.empty();
 
-		OptionalDouble nextCpsMultiplier = RegexUtils.getDoubleFromMatcher(multiplierIncreaseMatcher);
+		OptionalDouble nextCpsMultiplier = RegexUtils.findDoubleFromMatcher(multiplierIncreaseMatcher);
 		if (nextCpsMultiplier.isEmpty()) { //This means that the coach isn't hired yet.
 			nextCpsMultiplier = currentCpsMultiplier; //So the first instance of the multiplier is actually the amount we'll get upon upgrading.
 			currentCpsMultiplier = OptionalDouble.of(0.0); //And so, we can re-assign values to the variables to make the calculation more readable.
@@ -209,7 +210,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 
 		Matcher costMatcher = COST_PATTERN.matcher(coachLore);
 		Matcher levelMatcher = COACH_LEVEL_PATTERN.matcher(coachItem.getName().getString());
-		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher, multiplierIncreaseMatcher.hasMatch() ? multiplierIncreaseMatcher.end() : 0); //Cost comes after the multiplier line
+		OptionalLong cost = RegexUtils.findLongFromMatcher(costMatcher, multiplierIncreaseMatcher.hasMatch() ? multiplierIncreaseMatcher.end() : 0); //Cost comes after the multiplier line
 		int level = -1;
 		if (levelMatcher.find()) {
 			level = RomanNumerals.romanToDecimal(levelMatcher.group(1));
@@ -221,18 +222,18 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
     private Optional<Rabbit> getRabbit(ItemStack item, int slot) {
 		String lore = ItemUtils.getConcatenatedLore(item);
 		Matcher cpsMatcher = CPS_INCREASE_PATTERN.matcher(lore);
-		OptionalInt currentCps = RegexUtils.getIntFromMatcher(cpsMatcher);
+		OptionalInt currentCps = RegexUtils.findIntFromMatcher(cpsMatcher);
 		if (currentCps.isEmpty()) return Optional.empty();
-		OptionalInt nextCps = RegexUtils.getIntFromMatcher(cpsMatcher);
+		OptionalInt nextCps = RegexUtils.findIntFromMatcher(cpsMatcher);
 		if (nextCps.isEmpty()) {
 			nextCps = currentCps; //This means that the rabbit isn't hired yet.
 			currentCps = OptionalInt.of(0); //So the first instance of the cps is actually the amount we'll get upon hiring.
 		}
 
 		Matcher costMatcher = COST_PATTERN.matcher(lore);
-		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0); //Cost comes after the cps line
+		OptionalLong cost = RegexUtils.findLongFromMatcher(costMatcher, cpsMatcher.hasMatch() ? cpsMatcher.end() : 0); //Cost comes after the cps line
 		Matcher levelMatcher = LEVEL_PATTERN.matcher(lore);
-		int level = RegexUtils.getIntFromMatcher(levelMatcher).orElse(0) - 1;
+		int level = RegexUtils.findIntFromMatcher(levelMatcher).orElse(0) - 1;
 		if (cost.isEmpty()) return Optional.empty();
 		return Optional.of(new Rabbit((nextCps.getAsInt() - currentCps.getAsInt()) * (totalCpsMultiplier < 0 ? 1 : totalCpsMultiplier), cost.getAsLong(), slot, level));
 	}
@@ -271,7 +272,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 
 		String lore = ItemUtils.concatenateLore(lines);
 		Matcher costMatcher = COST_PATTERN.matcher(lore);
-		OptionalLong cost = RegexUtils.getLongFromMatcher(costMatcher);
+		OptionalLong cost = RegexUtils.findLongFromMatcher(costMatcher);
 		//Available on all items with a chocolate cost
 		if (cost.isPresent()) shouldAddLine |= addUpgradeTimerToLore(lines, cost.getAsLong());
 
@@ -364,26 +365,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	}
 
 	private MutableText formatTime(double seconds) {
-		seconds = Math.ceil(seconds);
-		if (seconds <= 0) return Text.literal("Now").formatted(Formatting.GREEN);
-
-		StringBuilder builder = new StringBuilder();
-		if (seconds >= 86400) {
-			builder.append((int) (seconds / 86400)).append("d ");
-			seconds %= 86400;
-		}
-		if (seconds >= 3600) {
-			builder.append((int) (seconds / 3600)).append("h ");
-			seconds %= 3600;
-		}
-		if (seconds >= 60) {
-			builder.append((int) (seconds / 60)).append("m ");
-			seconds %= 60;
-		}
-		if (seconds >= 1) {
-			builder.append((int) seconds).append("s");
-		}
-		return Text.literal(builder.toString()).formatted(Formatting.GOLD);
+		return SkyblockTime.formatTime(seconds).formatted(Formatting.GOLD);
 	}
 
 	@Override
