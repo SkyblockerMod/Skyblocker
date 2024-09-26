@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.config.configs.GeneralConfig.Average;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -21,8 +21,9 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		String skyblockApiId = stack.getSkyblockApiId();
 		String neuName = stack.getNeuName();
+		Average type = ItemTooltip.config.avg;
 
-        if (TooltipInfoType.ONE_DAY_AVERAGE.getData() == null || TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
+        if ((TooltipInfoType.ONE_DAY_AVERAGE.getData() == null && type != Average.THREE_DAY) || (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null && type != Average.ONE_DAY)) {
 			ItemTooltip.nullWarning();
 		} else {
                 /*
@@ -30,10 +31,9 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
                   and enchanted books because there is no data for their in API.
                  */
 			if (!neuName.isEmpty() && TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId)) {
-				GeneralConfig.Average type = ItemTooltip.config.avg;
 
 				// "No data" line because of API not keeping old data, it causes NullPointerException
-				if (type == GeneralConfig.Average.ONE_DAY || type == GeneralConfig.Average.BOTH) {
+				if (type == Average.ONE_DAY || type == Average.BOTH) {
 					lines.add(
 							Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
 							    .formatted(Formatting.GOLD)
@@ -43,7 +43,7 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 							    )
 					);
 				}
-				if (type == GeneralConfig.Average.THREE_DAY || type == GeneralConfig.Average.BOTH) {
+				if (type == Average.THREE_DAY || type == Average.BOTH) {
 					lines.add(
 							Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
 							    .formatted(Formatting.GOLD)
