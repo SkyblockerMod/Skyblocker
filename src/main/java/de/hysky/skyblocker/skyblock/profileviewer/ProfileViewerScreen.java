@@ -5,9 +5,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.util.UndashedUuid;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.mixins.accessors.SkullBlockEntityAccessor;
 import de.hysky.skyblocker.skyblock.profileviewer.collections.CollectionsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.dungeons.DungeonsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.InventoryPage;
@@ -22,6 +23,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -146,35 +148,46 @@ public class ProfileViewerScreen extends Screen {
             }
         });
 
-        CompletableFuture<Void> minecraftProfileFuture = SkullBlockEntityAccessor.invokeFetchProfileByName(username).thenAccept(profile -> {
-            this.playerName = profile.get().getName();
-            entity = new OtherClientPlayerEntity(MinecraftClient.getInstance().world, profile.get()) {
-                @Override
-                public SkinTextures getSkinTextures() {
-                    PlayerListEntry playerListEntry = new PlayerListEntry(profile.get(), false);
-                    return playerListEntry.getSkinTextures();
-                }
+        CompletableFuture<Void> playerFuture = CompletableFuture.runAsync(() -> {
+    		String stringifiedUuid = ApiUtils.name2Uuid(username);
 
-                @Override
-                public boolean isPartVisible(PlayerModelPart modelPart) {
-                    return !(modelPart.getName().equals(PlayerModelPart.CAPE.getName()));
-                }
+    		if (stringifiedUuid.isEmpty()) {
+                this.playerName = "User not found";
+                this.profileNotFound = true;
+    		}
 
-                @Override
-                public boolean isInvisibleTo(PlayerEntity player) {
-                    return true;
-                }
-            };
-            entity.setCustomNameVisible(false);
-        }).exceptionally(ex -> {
-            this.playerName = "User not found";
-            this.profileNotFound = true;
-            return null;
-        });
+    		UUID uuid = UndashedUuid.fromStringLenient(stringifiedUuid);
 
-        return CompletableFuture.allOf(profileFuture, minecraftProfileFuture);
+    		//The fetch by name method can sometimes fail in weird cases and return a fake offline player
+    		SkullBlockEntity.fetchProfileByUuid(uuid).thenAccept(profile -> {
+                this.playerName = profile.get().getName();
+                entity = new OtherClientPlayerEntity(MinecraftClient.getInstance().world, profile.get()) {
+                    @Override
+                    public SkinTextures getSkinTextures() {
+                        PlayerListEntry playerListEntry = new PlayerListEntry(profile.get(), false);
+                        return playerListEntry.getSkinTextures();
+                    }
+
+                    @Override
+                    public boolean isPartVisible(PlayerModelPart modelPart) {
+                        return !(modelPart.getName().equals(PlayerModelPart.CAPE.getName()));
+                    }
+
+                    @Override
+                    public boolean isInvisibleTo(PlayerEntity player) {
+                        return true;
+                    }
+                };
+                entity.setCustomNameVisible(false);
+    		}).exceptionally(ex -> {
+                this.playerName = "User not found";
+                this.profileNotFound = true;
+                return null;
+            }).join();
+    	});
+
+        return CompletableFuture.allOf(profileFuture, playerFuture);
     }
-
 
     public void onNavButtonClick(ProfileViewerNavButton clickedButton) {
         if (profileViewerPages[activePage] != null) profileViewerPages[activePage].markWidgetsAsInvisible();
