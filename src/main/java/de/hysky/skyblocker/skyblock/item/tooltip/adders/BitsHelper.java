@@ -127,27 +127,27 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 		map.put("TALISMAN_ENRICHMENT_ATTACK_SPEED", 5000);
 	});
 
-	private static final Map<String, Map<String, Integer>> CATEGORIES = Util.make(new HashMap<>(), map -> {
-		map.put("Kat Items", CAT_KAT);
-		map.put("Upgrade Components", CAT_UPGRADE_COMPONENTS);
-		map.put("Sacks", CAT_SACKS);
-		map.put("Abiphone Supershop", CAT_ABIPHONE);
-		map.put("Dyes", CAT_DYES);
-		map.put("Stacking Enchants", CAT_ENCHANTS);
-		map.put("Enrichments", CAT_ENRICHMENTS);
-	});
+	private static final Map<String, Map<String, Integer>> CATEGORIES = Map.of(
+			"Kat Items", CAT_KAT,
+			"Upgrade Components", CAT_UPGRADE_COMPONENTS,
+			"Sacks", CAT_SACKS,
+			"Abiphone Supershop", CAT_ABIPHONE,
+			"Dyes", CAT_DYES,
+			"Stacking Enchants", CAT_ENCHANTS,
+			"Enrichments", CAT_ENRICHMENTS
+	);
 	//endregion
 
 	public static final BitsHelper INSTANCE = new BitsHelper();
 
-	private BitsHelper() {
-		super(TITLE_PATTERN);
-	}
-
-	private Map<String, ObjectLongImmutablePair<String>> categoryOutput = new HashMap<>();
+	private final Map<String, ObjectLongImmutablePair<String>> categoryOutput = new HashMap<>();
 	private int bestSlotIndexSelling = -1;  // index of slot that has the best item from "white list" of good selling items (= items that sell quick)
 	private int bestSlotIndexAll = -1;  // index of slot that has the best item overall. May has same result as bestSlotIndexSelling - it is intended
 	private boolean megamindInLogs = false; // comedy
+
+	private BitsHelper() {
+		super(TITLE_PATTERN);
+	}
 
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
@@ -381,13 +381,6 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 		return new Object2LongOpenHashMap<>();
 	}
 
-	private record BestItemsResult(
-			int bestSlotIndexSelling,
-			int bestSlotIndexAll,
-			long bestCoinsPerBitSelling,
-			long bestCoinsPerBitAll
-	) {}
-
 	@Override
 	public boolean isEnabled() {
 		return SkyblockerConfigManager.get().helpers.enableBitsTooltip;
@@ -397,4 +390,6 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	public int getPriority() {
 		return 0; // Intended to show first
 	}
+
+	private record BestItemsResult(int bestSlotIndexSelling, int bestSlotIndexAll, long bestCoinsPerBitSelling, long bestCoinsPerBitAll) {}
 }
