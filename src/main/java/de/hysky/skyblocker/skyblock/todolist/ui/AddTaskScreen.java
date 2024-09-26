@@ -4,20 +4,24 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
+import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class AddTaskScreen extends Screen
 {
-	private final Screen parent;
+	private static Logger LOGGER = LoggerFactory.getLogger(AddTaskScreen.class);
 
-	protected AddTaskScreen(Screen parent) {
-		// The parameter is the title of the screen,
-		// which will be narrated when you enter the screen.
+	protected AddTaskScreen() {
 		super(Text.translatable("skyblocker.todolist.addTaskScreen.title"));
-		this.parent = parent;
+
+
 	}
 
 	@Override
@@ -49,8 +53,11 @@ public class AddTaskScreen extends Screen
 	}
 
 	@Override
-	public void close() {
-		client.setScreen(parent);
+	public void close()
+	{
+		if(client != null) {
+			client.setScreen(new InventoryScreen(Objects.requireNonNull(client.player)));
+		}
 	}
 }
 

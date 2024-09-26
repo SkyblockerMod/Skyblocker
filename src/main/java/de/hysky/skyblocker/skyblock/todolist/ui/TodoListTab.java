@@ -7,15 +7,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 
 	private final TextFieldWidget searchField;
 	private final ButtonWidget addButton;
-
+	private ElementListWidget<TodoListScroll.Entry> scroll;
 
 	public TodoListTab(int x, int y, MinecraftClient client) {
 		super(x, y, Text.literal("Todo List Tab"));
@@ -40,10 +39,15 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 		this.searchField.setText("");
 		this.searchField.setPlaceholder(Text.translatable("skyblocker.todolist.searchText").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
 
+		var currentScreen = client.currentScreen;
+
 		addButton = ButtonWidget.builder(Text.of("+"), (button) -> {
-			this.client.setScreen(new AddTaskScreen(client.currentScreen));
+			this.client.setScreen(new AddTaskScreen());
 			this.updateTaskList();
 		}).size(16, 16).position(x + 16 + 81 + 5, y + 3).tooltip(Tooltip.of(Text.translatable("skyblocker.todolist.addTask"))).build();
+
+		scroll = new TodoListScroll(client, 125, 115, y + 3 + 24, 20);
+		scroll.setX(x + 2);
 	}
 
 	private void updateTaskList() {
@@ -55,8 +59,6 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 
 	}
 
-
-
 	@Override
 	public List<? extends Element> children() {
 		return List.of();
@@ -67,25 +69,15 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 		int x = getX();
 		int y = getY();
 
-
 		context.enableScissor(x, y, getRight(), getBottom());
 
 		searchField.render(context, mouseX, mouseY, delta);
 
 		addButton.render(context, mouseX, mouseY, delta);
 
-		int tasksY = y + 7 + 24;
+		scroll.render(context, mouseX, mouseY, delta);
 
-		if (tasks == null || tasks.isEmpty()) {
-			context.drawText(client.textRenderer, Text.literal(" ").append(Text.translatable("skyblocker.todolist.tab.noTasks")), x + 2, tasksY + 6, Colors.GRAY, false);
-		}
-		else
-		{
-			for (TaskRenderer eventRenderer : tasks) {
-			eventRenderer.render(context, x + 1, tasksY, mouseX, mouseY);
-			tasksY += eventRenderer.getHeight();
-			}
-		}
+
 
 		context.disableScissor();
 	}

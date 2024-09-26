@@ -6,7 +6,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ElementListWidget;
 
 import java.util.List;
@@ -14,11 +13,9 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class TodoListScroll extends ElementListWidget<TodoListScroll.Entry>
 {
-	private final HandledScreen<?> parent;
 
-	public TodoListScroll(HandledScreen<?> parent, MinecraftClient client, int width, int height, int y, int itemHeight) {
+	public TodoListScroll(MinecraftClient client, int width, int height, int y, int itemHeight) {
 		super(client, width, height, y, itemHeight);
-		this.parent = parent;
 	}
 
 
