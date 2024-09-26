@@ -6,8 +6,7 @@ public abstract class RecipeTask extends Task {
 	public NEURecipe recipe;
 	public int amount;
 
-	public RecipeTask(NEURecipe recipe, int amount) {
-		this.recipe = recipe;
-		this.amount = amount;
+	public RecipeTask(String name, TaskType type) {
+		super(name, type);
 	}
 }

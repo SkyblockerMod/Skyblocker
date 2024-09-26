@@ -1,4 +1,9 @@
 package de.hysky.skyblocker.skyblock.todolist.tasks;
 
-public class PetTask {
+import io.github.moulberry.repo.data.NEURecipe;
+
+public class PetTask extends RecipeTask {
+	public PetTask(String name) {
+		super(name, TaskType.PET);
+	}
 }

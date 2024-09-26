@@ -1,16 +1,18 @@
 package de.hysky.skyblocker.skyblock.todolist.ui;
 
+import de.hysky.skyblocker.skyblock.todolist.tasks.Task;
+import de.hysky.skyblocker.skyblock.waypoint.DropdownWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.toast.SystemToast;
+import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+import java.util.List;
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
@@ -20,36 +22,63 @@ public class AddTaskScreen extends Screen
 
 	protected AddTaskScreen() {
 		super(Text.translatable("skyblocker.todolist.addTaskScreen.title"));
-
-
 	}
 
 	@Override
 	protected void init() {
-		ButtonWidget buttonWidget = ButtonWidget.builder(Text.of("Hello World"), (btn) -> {
-			// When the button is clicked, we can display a toast to the screen.
-			this.client.getToastManager().add(
-					SystemToast.create(this.client, SystemToast.Type.NARRATOR_TOGGLE, Text.of("Hello World!"), Text.of("This is a toast."))
-			);
-		}).dimensions(40, 40, 120, 20).build();
-		// x, y, width, height
-		// It's recommended to use the fixed height of 20 to prevent rendering issues with the button
-		// textures.
+		GridWidget gridWidget = new GridWidget();
+		gridWidget.getMainPositioner().margin(4, 4, 4, 4);
 
-		// Register the button widget.
-		this.addDrawableChild(buttonWidget);
+		List<Task.TaskType> taskSubclasses = Task.taskTypeClassMap.keySet().stream().toList();
+		selectedTaskType = taskSubclasses.getFirst();
 
+
+		int row = 0;
+
+		gridWidget.add(new TextWidget(204, 20, Text.of("Select the type of task"), client.textRenderer), row , 0);
+
+		DropdownWidget<Task.TaskType> dropdownWidget = new DropdownWidget<>(client, 0, 0, 204, 100, taskSubclasses, this::selectTaskType, taskSubclasses.getFirst());
+		gridWidget.add(dropdownWidget, row, 0, gridWidget.copyPositioner().marginTop(20));
+
+		gridWidget.add(new TextWidget(204, 20, Text.of("Enter the task name"), client.textRenderer), ++row , 0);
+
+		var nameField = new TextFieldWidget(204, 20, Text.of("New Task"), client.textRenderer);
+
+
+		gridWidget.add(new TextWidget(204, 20, Text.of("Enter the task description"), client.textRenderer), ++row , 0);
+
+		gridWidget.add(ButtonWidget.builder(Text.of("Create Task"), button -> {
+			try {
+				var clazz = Task.taskTypeClassMap.get(selectedTaskType);
+				var task = clazz.getDeclaredConstructor(String.class).newInstance("New Task");
+				LOGGER.error("Created task: {}", task);
+			} catch (Exception e) {
+				LOGGER.error("Failed to create task", e);
+			}
+
+
+		}).width(204).build(), ++row, 0);
+
+		gridWidget.add(ButtonWidget.builder(Text.of("Exit Without Saving"), button -> {
+			close();
+		}).width(204).build(), ++row, 0);
+
+		gridWidget.refreshPositions();
+	    SimplePositioningWidget.setPos(gridWidget, 0, 0, this.width, this.height, 0.5F, 0.25F);
+		gridWidget.forEachChild(this::addDrawableChild);
 	}
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 
-		// Minecraft doesn't have a "label" widget, so we'll have to draw our own text.
-		// We'll subtract the font height from the Y position to make the text appear above the button.
-		// Subtracting an extra 10 pixels will give the text some padding.
-		// textRenderer, text, x, y, color, hasShadow
-		context.drawText(this.textRenderer, "Special Button", 40, 40 - this.textRenderer.fontHeight - 10, 0xFFFFFFFF, true);
+	}
+
+	private Task.TaskType selectedTaskType;
+
+	private void selectTaskType(Task.TaskType taskType) {
+		LOGGER.info("Selected task type: " + taskType);
+		selectedTaskType = taskType;
 	}
 
 	@Override
