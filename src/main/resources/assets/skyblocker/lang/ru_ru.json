@@ -653,7 +653,7 @@
     "skyblocker.bars.config.mainColor": "Основной цвет",
     "skyblocker.bars.config.overflowColor": "Переходный цвет",
     "skyblocker.bars.config.textColor": "Цвет текста",
-    "skyblocker.bars.config.showValue": "Показываемое значение",
+    "skyblocker.bars.config.text": "Показываемое значение",
     "skyblocker.bars.config.icon": "Иконка",
     "skyblocker.config.uiAndVisuals.bars.openScreen": "Экран настройки полос эффектов",
     "skyblocker.bars.config.explanationTitle": "Что это?",
