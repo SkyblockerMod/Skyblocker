@@ -62,9 +62,9 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 					.sorted((a, b) -> IntComparators.NATURAL_COMPARATOR.compare(a.getIntKey(), b.getIntKey()))
 					.map(Map.Entry::getValue)
 					.forEach(this::addEntry);
-			if (!parent.getWidgetEntries().isEmpty() && parent.shouldShowEntries()) {
+			if (!parent.getCustomWidgetEntries().isEmpty() && parent.shouldShowCustomWidgetEntries()) {
 				if (!children().isEmpty()) addEntry(SEPARATOR);
-				parent.getWidgetEntries().forEach(this::addEntry);
+				parent.getCustomWidgetEntries().forEach(this::addEntry);
 			}
 			setScrollAmount(getScrollAmount());
 		}

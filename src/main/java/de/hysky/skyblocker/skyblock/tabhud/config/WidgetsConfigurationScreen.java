@@ -34,10 +34,10 @@ import java.util.function.Consumer;
 public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerListener {
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    private GenericContainerScreenHandler handler;
+    private @Nullable GenericContainerScreenHandler handler;
     private String titleLowercase;
     public final boolean noHandler;
-    private String widgetsLayer = null;
+    private ScreenMaster.ScreenLayer widgetsLayer = null;
     private Screen parent = null;
 
     private boolean tabPreview = false;
@@ -74,7 +74,6 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
     // Tabs and stuff
     private final TabManager tabManager = new TabManager(this::addDrawableChild, this::remove);
-    @Nullable
     private TabNavigationWidget tabNavigation;
     private WidgetsListTab widgetsListTab;
 
@@ -85,7 +84,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
      * @param handler the container handler
      * @param titleLowercase the title in lowercase
      */
-    private WidgetsConfigurationScreen(@Nullable GenericContainerScreenHandler handler, String titleLowercase, Location targetLocation, @Nullable String widgetLayerToGoTo) {
+    private WidgetsConfigurationScreen(@Nullable GenericContainerScreenHandler handler, String titleLowercase, Location targetLocation, @Nullable ScreenMaster.ScreenLayer widgetLayerToGoTo) {
         super(Text.literal("Widgets Configuration"));
         this.handler = handler;
         this.titleLowercase = titleLowercase;
@@ -115,27 +114,33 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
      * @param widgetLayerToGoTo go to this widget's layer
      */
     public WidgetsConfigurationScreen(Location targetLocation, String widgetLayerToGoTo, Screen parent) {
-        this(null, "", targetLocation, widgetLayerToGoTo);
+        this(null, "", targetLocation, ScreenMaster.getScreenBuilder(targetLocation).getPositionRuleOrDefault(widgetLayerToGoTo).screenLayer());
         this.parent = parent;
     }
+	/**
+	 * Create the screen specifically for the config screen, the widgets tab will be unavailable
+	 * @param targetLocation open the preview to this location
+	 * @param layerToGo go to this layer
+	 */
+	public WidgetsConfigurationScreen(Location targetLocation, ScreenMaster.ScreenLayer layerToGo, Screen parent) {
+		this(null, "", targetLocation, layerToGo);
+		this.parent = parent;
+	}
 
     @Override
     protected void init() {
-        previewTab = new PreviewTab(this.client, this, noHandler ? PreviewTab.Mode.EDITABLE_LOCATION : PreviewTab.Mode.NORMAL);
+		previewTab = new PreviewTab(this.client, this, noHandler ? PreviewTab.Mode.EDITABLE_LOCATION : PreviewTab.Mode.NORMAL);
         PreviewTab previewDungeons = new PreviewTab(this.client, this, PreviewTab.Mode.DUNGEON);
         if (noHandler)  {
-            this.tabNavigation = TabNavigationWidget.builder(this.tabManager, this.width)
-                    .tabs(this.previewTab, previewDungeons)
-                    .build();
-            previewTab.goToLayer(ScreenMaster.getScreenBuilder(currentLocation).getPositionRuleOrDefault(widgetsLayer).screenLayer());
-        } else {
-            widgetsListTab = new WidgetsListTab(this.client, this.handler);
-            this.tabNavigation = TabNavigationWidget.builder(this.tabManager, this.width)
-                    .tabs(this.widgetsListTab, this.previewTab, previewDungeons)
-                    .build();
-			widgetsListTab.setShouldShowEntries(titleLowercase.startsWith("widgets "));
-			updateCustomWidgets();
+            previewTab.goToLayer(widgetsLayer);
         }
+		widgetsListTab = new WidgetsListTab(this.client, this.handler);
+		this.tabNavigation = TabNavigationWidget.builder(this.tabManager, this.width)
+				.tabs(this.widgetsListTab, this.previewTab, previewDungeons)
+				.build();
+		widgetsListTab.setShouldShowCustomWidgetEntries(titleLowercase.startsWith("widgets ") || noHandler);
+		updateCustomWidgets();
+
         this.tabNavigation.selectTab(0, false);
         switchingToPopup = false;
         this.addDrawableChild(tabNavigation);
@@ -153,8 +158,8 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
         }
     }
 
-    public void updateHandler(GenericContainerScreenHandler newHandler, String titleLowercase) {
-        if (noHandler) return;
+    public void updateHandler(@NotNull GenericContainerScreenHandler newHandler, String titleLowercase) {
+        if (handler == null) return;
         handler.removeListener(this);
         handler = newHandler;
         handler.addListener(this);
@@ -169,7 +174,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 			if (!value.availableLocations().contains(currentLocation)) continue;
 			entries.add(new WidgetEntry(value, currentLocation));
 		}
-		widgetsListTab.setEntries(entries);
+		widgetsListTab.setCustomWidgetEntries(entries);
 	}
 
 	public void setCurrentLocation(Location location) {
@@ -183,7 +188,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
     private void parseLocation() {
 		boolean b = titleLowercase.startsWith("widgets ");
-		if (widgetsListTab != null) widgetsListTab.setShouldShowEntries(b);
+		if (widgetsListTab != null) widgetsListTab.setShouldShowCustomWidgetEntries(b);
 		String trim = this.titleLowercase
                 .replace("widgets in", "")
                 .replace("widgets on", "")
@@ -198,7 +203,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
         }
     }
 
-    public GenericContainerScreenHandler getHandler() {
+    public @Nullable GenericContainerScreenHandler getHandler() {
         return handler;
     }
 
@@ -206,7 +211,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
     @Override
     public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
-        if (noHandler) return;
+        if (this.handler == null) return;
         if (slotId == 4) {
             tabPreview = stack.isOf(Items.PLAYER_HEAD);
         }
@@ -234,18 +239,22 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
             widgetsListTab.hopper(ItemUtils.getLore(slotThirteenBacklog));
             slotThirteenBacklog = null;
         }
-        if (!this.client.player.isAlive() || this.client.player.isRemoved()) {
+		assert this.client != null;
+		assert this.client.player != null;
+		if (!this.client.player.isAlive() || this.client.player.isRemoved()) {
             this.client.player.closeHandledScreen();
         }
     }
 
     @Override
     public void close() {
-        if (!noHandler) {
-            this.client.player.closeHandledScreen();
+		assert this.client != null;
+		if (handler != null) {
+			assert this.client.player != null;
+			this.client.player.closeHandledScreen();
             super.close();
         } else {
-            client.setScreen(parent);
+			client.setScreen(parent);
         }
     }
 
@@ -254,7 +263,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
     @Override
     public void removed() {
-        if (noHandler) return;
+        if (handler == null) return;
         if (!switchingToPopup && this.client != null && this.client.player != null) {
             this.handler.onClosed(this.client.player);
         }
