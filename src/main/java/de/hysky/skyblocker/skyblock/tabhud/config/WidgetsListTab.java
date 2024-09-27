@@ -37,18 +37,19 @@ public class WidgetsListTab implements Tab {
     private boolean waitingForServer = false;
 
 	private final Int2ObjectMap<WidgetsListSlotEntry> entries = new Int2ObjectOpenHashMap<>();
-	private final List<WidgetEntry> widgetEntries = new ArrayList<>();
+	private final List<WidgetEntry> customWidgetEntries = new ArrayList<>();
 	private boolean listNeedsUpdate = false;
-	private boolean shouldShowEntries = false;
+	private boolean shouldShowCustomWidgetEntries = false;
 
 
-	public void setEntries(Collection<WidgetEntry> entries) {
-		this.widgetEntries.clear();
-		this.widgetEntries.addAll(entries);
+	public void setCustomWidgetEntries(Collection<WidgetEntry> entries) {
+		this.customWidgetEntries.clear();
+		this.customWidgetEntries.addAll(entries);
+		listNeedsUpdate = true;
 	}
 
-	public List<WidgetEntry> getWidgetEntries() {
-		return widgetEntries;
+	public List<WidgetEntry> getCustomWidgetEntries() {
+		return customWidgetEntries;
 	}
 
 	public boolean listNeedsUpdate() {
@@ -78,7 +79,12 @@ public class WidgetsListTab implements Tab {
         nextPage = ButtonWidget.builder(Text.literal("Next Page"), button -> clickAndWaitForServer(53, 0))
                 .size(100, 15)
                 .build();
-		if (handler == null) back.visible = false;
+		if (handler == null) {
+			back.visible = false;
+			previousPage.visible = false;
+			nextPage.visible = false;
+			thirdColumnButton.visible = false;
+		}
     }
 
     @Override
@@ -193,11 +199,11 @@ public class WidgetsListTab implements Tab {
         thirdColumnButton.setPosition(widgetsElementList.getScrollbarX() + 5, widgetsElementList.getBottom() + 4);
     }
 
-	public boolean shouldShowEntries() {
-		return shouldShowEntries;
+	public boolean shouldShowCustomWidgetEntries() {
+		return shouldShowCustomWidgetEntries;
 	}
 
-	public void setShouldShowEntries(boolean shouldShowEntries) {
-		this.shouldShowEntries = shouldShowEntries;
+	public void setShouldShowCustomWidgetEntries(boolean shouldShowCustomWidgetEntries) {
+		this.shouldShowCustomWidgetEntries = shouldShowCustomWidgetEntries;
 	}
 }
