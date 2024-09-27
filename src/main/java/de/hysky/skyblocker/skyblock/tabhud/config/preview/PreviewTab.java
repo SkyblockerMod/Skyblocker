@@ -197,7 +197,7 @@ public class PreviewTab implements Tab {
 			PlayerListMgr.updateDungeons(DungeonsTabPlaceholder.get());
 			return;
 		}
-		if (!parent.isPreviewVisible()) return;
+		if (!parent.isPreviewVisible() || parent.getHandler() == null) return;
 		List<Text> lines = new ArrayList<>();
 
 		// Preview doesn't include any players, so adding this as default

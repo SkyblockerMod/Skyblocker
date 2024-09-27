@@ -171,6 +171,9 @@ public class ScreenMaster {
     }
 
 
+	/**
+	 * Filled at compile item with ASM. Do not fill this.
+	 */
 	private static void instantiateWidgets() {}
 
 	public static void addWidgetInstance(HudWidget widget) {

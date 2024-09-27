@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.utils;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.mojang.serialization.Codec;
 import net.minecraft.util.StringIdentifiable;
 
@@ -135,9 +137,7 @@ public enum Location implements StringIdentifiable {
     }
 
     public static Location[] locationsWithout(Location... locations) {
-        ArrayList<Location> locationList = new ArrayList<>(List.of(values()));
-        locationList.removeAll(List.of(locations));
-        return locationList.toArray(new Location[0]);
+        return ArrayUtils.removeElements(values(), locations);
     }
 
     private static Location[] hudLocations = null;
