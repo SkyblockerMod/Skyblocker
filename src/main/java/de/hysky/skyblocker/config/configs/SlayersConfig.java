@@ -3,12 +3,17 @@ package de.hysky.skyblocker.config.configs;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import net.minecraft.client.resource.language.I18n;
 
+import java.awt.*;
+
 public class SlayersConfig {
     @SerialEntry
     public HighlightSlayerEntities highlightMinis = HighlightSlayerEntities.OFF;
 
     @SerialEntry
     public HighlightSlayerEntities highlightBosses = HighlightSlayerEntities.OFF;
+
+	@SerialEntry
+	public Color slayerHighlightColor = new Color(246, 81, 58, 255);
 
 	@SerialEntry
 	public boolean displayBossbar = true;
