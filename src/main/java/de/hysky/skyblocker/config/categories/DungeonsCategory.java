@@ -35,6 +35,14 @@ public class DungeonsCategory {
                                 newValue -> config.dungeons.croesusHelper = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.salvageHelper"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.salvageHelper.@Tooltip")))
+						.binding(defaults.dungeons.salvageHelper,
+						() -> config.dungeons.salvageHelper,
+						newValue -> config.dungeons.salvageHelper = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.dungeons.playerSecretsTracker"))
                         .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.playerSecretsTracker.@Tooltip")))

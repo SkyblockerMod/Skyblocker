@@ -12,6 +12,9 @@ public class DungeonsConfig {
     @SerialEntry
     public boolean croesusHelper = true;
 
+	@SerialEntry
+	public boolean salvageHelper = true;
+
     @SerialEntry
     public boolean playerSecretsTracker = false;
 
