@@ -52,6 +52,9 @@ public class MiningConfig {
         public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
 
         @SerialEntry
+        public boolean showNumbers = false;
+
+        @SerialEntry
         public int commissionsX = 10;
 
         @SerialEntry
