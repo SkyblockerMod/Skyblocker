@@ -572,7 +572,7 @@
     "skyblocker.bars.config.mainColor": "主颜色",
     "skyblocker.bars.config.overflowColor": "溢出颜色",
     "skyblocker.bars.config.textColor": "文本颜色",
-    "skyblocker.bars.config.showValue": "显示价值",
+    "skyblocker.bars.config.text": "显示价值",
     "skyblocker.bars.config.icon": "图标",
     "skyblocker.config.uiAndVisuals.bars.openScreen": "状态栏配置屏幕",
     "skyblocker.bars.config.explanationTitle": "这是什么？",
