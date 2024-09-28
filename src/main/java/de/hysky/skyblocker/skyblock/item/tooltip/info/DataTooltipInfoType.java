@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.info;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.Nullable;

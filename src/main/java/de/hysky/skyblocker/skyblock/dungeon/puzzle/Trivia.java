@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.waypoint.FairySouls;
+import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
@@ -24,6 +25,8 @@ public class Trivia extends ChatPatternListener {
     private List<String> solutions = Collections.emptyList();
 
     public Trivia() {
+        //FIXME I think its worth replacing this with something less fragile and is capable of handing multiple lines
+        //perhaps manual incremental reading based off the start of a question
         super("^ +(?:([A-Za-z,' ]*\\?)| ([ⓐⓑⓒ]) ([a-zA-Z0-9 ]+))$");
     }
 
@@ -50,9 +53,7 @@ public class Trivia extends ChatPatternListener {
         try {
             String trimmedQuestion = question.trim();
             if (trimmedQuestion.equals("What SkyBlock year is it?")) {
-                long currentTime = System.currentTimeMillis() / 1000L;
-                long diff = currentTime - 1560276000;
-                int year = (int) (diff / 446400 + 1);
+                int year = SkyblockTime.skyblockYear.get();
                 solutions = Collections.singletonList("Year " + year);
             } else {
                 String[] questionAnswers = answers.get(trimmedQuestion);
@@ -79,7 +80,9 @@ public class Trivia extends ChatPatternListener {
         answers.put("What is the status of Maxor, Storm, Goldor, and Necron?", new String[]{"The Wither Lords"});
         answers.put("Which brother is on the Spider's Den?", new String[]{"Rick"});
         answers.put("What is the name of Rick's brother?", new String[]{"Pat"});
-        answers.put("What is the name of the Painter in the Hub?", new String[]{"Marco"});
+        //Full Question: "What is the name of the vendor in the Hub who sells stained glass?"
+        //The solver cannot handle multiple lines right now and just sees "glass?" as the question
+        answers.put("glass?", new String[]{"Wool Weaver"});
         answers.put("What is the name of the person that upgrades pets?", new String[]{"Kat"});
         answers.put("What is the name of the lady of the Nether?", new String[]{"Elle"});
         answers.put("Which villager in the Village gives you a Rogue Sword?", new String[]{"Jamie"});
