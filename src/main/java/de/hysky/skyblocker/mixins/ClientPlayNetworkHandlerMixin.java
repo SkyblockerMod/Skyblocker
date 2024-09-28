@@ -12,6 +12,7 @@ import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.crimson.slayer.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dwarven.CorpseFinder;
 import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
 import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
@@ -137,6 +138,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
         if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
         EggFinder.checkIfEgg(armorStandEntity);
+		CorpseFinder.checkIfCorpse(armorStandEntity);
         try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
             CompactDamage.compactDamage(armorStandEntity);
         } catch (Exception e) {
@@ -147,5 +149,6 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
     private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
         EggFinder.checkIfEgg(entity);
+        CorpseFinder.checkIfCorpse(entity);
     }
 }
