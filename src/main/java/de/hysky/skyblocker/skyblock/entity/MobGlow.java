@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.crimson.slayer.AttunementColors;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -85,7 +86,7 @@ public class MobGlow {
 			return switch (entity) {
 
 				// Minibosses
-				case PlayerEntity p when name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy") -> SkyblockerConfigManager.get().dungeons.starredMobGlow;
+				case PlayerEntity p when (name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy")) && !DungeonManager.getBoss().isFloor(4) -> SkyblockerConfigManager.get().dungeons.starredMobGlow;
 				case PlayerEntity p when entity.getId() == LividColor.getCorrectLividId() -> LividColor.shouldGlow(name);
 
 				// Bats
