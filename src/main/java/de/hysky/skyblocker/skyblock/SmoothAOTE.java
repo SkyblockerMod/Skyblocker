@@ -44,7 +44,7 @@ public class SmoothAOTE {
 	private static long lastPing;
 	private static int teleportsAhead;
 	private static long lastTeleportTime;
-	private static boolean teleportDisabled;
+	public static boolean teleportDisabled;
 
 	@Init
 	public static void init() {

@@ -2,11 +2,10 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
 import de.hysky.skyblocker.skyblock.SmoothAOTE;
@@ -25,7 +24,6 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -162,14 +160,15 @@ public abstract class ClientPlayNetworkHandlerMixin {
         SmoothAOTE.playerTeleported();
     }
 
-    @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;shouldShowPacketSizeAndPingCharts()Z"))
-    private boolean shouldShowPacketSizeAndPingCharts(boolean original) {
-        //make the f3+3 screen always send ping packets even when closed
-        //this is needed to make smooth AOTE work
-        if (Utils.isOnSkyblock()) {
-            return true;
-        }
-        return original;
+	@ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;shouldShowPacketSizeAndPingCharts()Z"))
+	private boolean shouldShowPacketSizeAndPingCharts(boolean original) {
+		//make the f3+3 screen always send ping packets even when closed
+		//this is needed to make smooth AOTE work so check if its enabled
+		UIAndVisualsConfig.SmoothAOTE options = SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE;
+		if (Utils.isOnSkyblock() && !SmoothAOTE.teleportDisabled && (options.enableWeirdTransmission || options.enableEtherTransmission || options.enableInstantTransmission || options.enableSinrecallTransmission || options.enableWitherImpact)) {
+			return true;
+		}
+		return original;
 
-    }
+	}
 }
