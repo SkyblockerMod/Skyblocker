@@ -28,7 +28,7 @@ public abstract class Task {
 		this.name = name;
 	}
 
-	public List<ClickableWidget> getCustomEditWidgets(AddTaskScreen addTaskScreen) {
+	public List<ClickableWidget> getCustomWidgets(AddTaskScreen addTaskScreen) {
 		return List.of(new TextWidget(204, 20, Text.of(type.name()), MinecraftClient.getInstance().textRenderer));
 	}
 
@@ -48,6 +48,11 @@ public abstract class Task {
 		public Supplier<Task> getTaskSupplier() {
 			return taskSupplier;
 		}
+	}
+
+	public void readCustomData(java.util.List<net.minecraft.client.gui.widget.Widget> customWidgets)
+	{
+
 	}
 
 	@Override

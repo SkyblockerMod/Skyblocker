@@ -18,7 +18,7 @@ public class MessageTask extends Task
 	}
 
 	@Override
-	public List<ClickableWidget> getCustomEditWidgets(AddTaskScreen addTaskScreen) {
+	public List<ClickableWidget> getCustomWidgets(AddTaskScreen addTaskScreen) {
 		var client = MinecraftClient.getInstance();
 		var label = new TextWidget(204, 20, Text.of("Enter the message"),client.textRenderer);
 

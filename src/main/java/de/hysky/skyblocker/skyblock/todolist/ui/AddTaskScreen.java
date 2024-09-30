@@ -15,9 +15,7 @@ import net.minecraft.text.Text;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
@@ -98,7 +96,7 @@ public class AddTaskScreen extends Screen
 
 		customTaskInput.reset();
 
-		for(var widget : tempTask.getCustomEditWidgets( this)) {
+		for(var widget : tempTask.getCustomWidgets( this)) {
 			customTaskInput.add(widget);
 		}
 
@@ -140,6 +138,10 @@ public class AddTaskScreen extends Screen
 			grid.refreshPositions();
 		}
 
+		public void readCustomData(Task task)
+		{
+			task.readCustomData(grid.children);
+		}
 	}
 }
 

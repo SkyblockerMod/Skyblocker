@@ -19,7 +19,7 @@ public class CraftTask extends RecipeTask {
 	}
 
 	@Override
-	public List<ClickableWidget> getCustomEditWidgets(AddTaskScreen addTaskScreen) {
+	public List<ClickableWidget> getCustomWidgets(AddTaskScreen addTaskScreen) {
 		return List.of(new TextWidget(204, 20, Text.of("craft text"), MinecraftClient.getInstance().textRenderer));
 	}
 }
