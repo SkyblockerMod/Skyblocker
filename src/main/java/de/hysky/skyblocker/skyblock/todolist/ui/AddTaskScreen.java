@@ -1,92 +1,145 @@
 package de.hysky.skyblocker.skyblock.todolist.ui;
 
+import de.hysky.skyblocker.skyblock.todolist.TodoList;
 import de.hysky.skyblocker.skyblock.todolist.tasks.Task;
 import de.hysky.skyblocker.skyblock.waypoint.DropdownWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.navigation.NavigationAxis;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class AddTaskScreen extends Screen
 {
-	private static Logger LOGGER = LoggerFactory.getLogger(AddTaskScreen.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AddTaskScreen.class);
+
+	DirectionalLayoutWidget verticalLayout = DirectionalLayoutWidget.vertical();
+
+	private final ScrollableDirectionalLayoutWidget customTaskInput = new ScrollableDirectionalLayoutWidget();
+
+	private Task tempTask;
 
 	protected AddTaskScreen() {
 		super(Text.translatable("skyblocker.todolist.addTaskScreen.title"));
 	}
 
 	@Override
-	protected void init() {
-		GridWidget gridWidget = new GridWidget();
-		gridWidget.getMainPositioner().margin(4, 4, 4, 4);
+	protected void init()
+	{
+		super.init();
 
-		List<Task.TaskType> taskSubclasses = Task.taskTypeClassMap.keySet().stream().toList();
-		selectedTaskType = taskSubclasses.getFirst();
+		verticalLayout.spacing(4).getMainPositioner().alignHorizontalCenter().alignVerticalCenter();
+
+		verticalLayout.add(new TextWidget(204, 20, Text.of("Select the type of task"), client.textRenderer));
+
+		DropdownWidget<Task.TaskType> dropdownWidget = new DropdownWidget<>(client, 0, 0, 204, 80, Arrays.stream(Task.TaskType.values()).toList(), this::updateSelectedTaskType, Task.TaskType.values()[0]);
+		verticalLayout.add(dropdownWidget);
+
+		verticalLayout.add(new TextWidget(204, 20, Text.of("Enter the task name"), client.textRenderer));
+
+		var nameField = new TextFieldWidget(client.textRenderer, 204, 20, Text.of("New Task name"));
+
+		verticalLayout.add(nameField);
+
+		verticalLayout.add(customTaskInput);
 
 
-		int row = 0;
-
-		gridWidget.add(new TextWidget(204, 20, Text.of("Select the type of task"), client.textRenderer), row , 0);
-
-		DropdownWidget<Task.TaskType> dropdownWidget = new DropdownWidget<>(client, 0, 0, 204, 100, taskSubclasses, this::selectTaskType, taskSubclasses.getFirst());
-		gridWidget.add(dropdownWidget, row, 0, gridWidget.copyPositioner().marginTop(20));
-
-		gridWidget.add(new TextWidget(204, 20, Text.of("Enter the task name"), client.textRenderer), ++row , 0);
-
-		var nameField = new TextFieldWidget(204, 20, Text.of("New Task"), client.textRenderer);
-
-
-		gridWidget.add(new TextWidget(204, 20, Text.of("Enter the task description"), client.textRenderer), ++row , 0);
-
-		gridWidget.add(ButtonWidget.builder(Text.of("Create Task"), button -> {
+		verticalLayout.add(ButtonWidget.builder(Text.of("Create Task"), button -> {
 			try {
-				var clazz = Task.taskTypeClassMap.get(selectedTaskType);
-				var task = clazz.getDeclaredConstructor(String.class).newInstance("New Task");
-				LOGGER.error("Created task: {}", task);
+				if(tempTask == null) {
+					this.client.getToastManager().add(
+							SystemToast.create(this.client, SystemToast.Type.NARRATOR_TOGGLE, Text.of("Error creating a new task!"), Text.of("Task type cannot be null")));
+					return;
+				}
+
+				tempTask.setName(nameField.getText());
+				if(tempTask.getName() == null || tempTask.getName().isEmpty())
+				{
+					this.client.getToastManager().add(
+							SystemToast.create(this.client, SystemToast.Type.NARRATOR_TOGGLE, Text.of("Error creating a new task!"), Text.of("Task name cannot be empty")));
+					return;
+				}
+
+				TodoList.getTasks().put(tempTask.getName(), tempTask);
+
+				LOGGER.error("Created task: {}", tempTask);
 			} catch (Exception e) {
-				LOGGER.error("Failed to create task", e);
+				this.client.getToastManager().add(
+						SystemToast.create(this.client, SystemToast.Type.NARRATOR_TOGGLE, Text.of("Error creating a new task!"), Text.of(e.getLocalizedMessage())));
+						LOGGER.error("Failed to create task", e);
 			}
-
-
-		}).width(204).build(), ++row, 0);
-
-		gridWidget.add(ButtonWidget.builder(Text.of("Exit Without Saving"), button -> {
 			close();
-		}).width(204).build(), ++row, 0);
+		}).width(204).build());
 
-		gridWidget.refreshPositions();
-	    SimplePositioningWidget.setPos(gridWidget, 0, 0, this.width, this.height, 0.5F, 0.25F);
-		gridWidget.forEachChild(this::addDrawableChild);
+		verticalLayout.add(ButtonWidget.builder(Text.of("Exit Without Saving"), button -> {
+			close();
+		}).width(204).build());
+
+		verticalLayout.refreshPositions();
+		SimplePositioningWidget.setPos(verticalLayout, ScreenRect.of(NavigationAxis.VERTICAL, 0, 0, height, width));
+		verticalLayout.forEachChild(this::addDrawableChild);
+		updateSelectedTaskType(Task.TaskType.values()[0]);
+	}
+
+	private void updateSelectedTaskType(Task.TaskType taskType) {
+		tempTask = taskType.getTaskSupplier().get();
+
+		customTaskInput.reset();
+
+		for(var widget : tempTask.getCustomEditWidgets( this)) {
+			customTaskInput.add(widget);
+		}
+
+		customTaskInput.add(new TextWidget(204, 10, Text.of(""), client.textRenderer));
+
+		customTaskInput.refreshPositions();
+		customTaskInput.forEachChild(this::addDrawableChild);
+
+		verticalLayout.refreshPositions();
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
-
-	}
-
-	private Task.TaskType selectedTaskType;
-
-	private void selectTaskType(Task.TaskType taskType) {
-		LOGGER.info("Selected task type: " + taskType);
-		selectedTaskType = taskType;
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
 	@Override
 	public void close()
 	{
+		tempTask = null;
 		if(client != null) {
 			client.setScreen(new InventoryScreen(Objects.requireNonNull(client.player)));
 		}
+	}
+
+
+	public class ScrollableDirectionalLayoutWidget extends DirectionalLayoutWidget
+	{
+		public ScrollableDirectionalLayoutWidget() {
+			super(0,0, DisplayAxis.VERTICAL);
+		}
+
+		public void reset() {
+			forEachChild(AddTaskScreen.this::remove);
+			grid.children.clear();
+			grid.grids.clear();
+			grid.height = 0;
+			currentIndex = 0;
+			grid.refreshPositions();
+		}
+
 	}
 }
 

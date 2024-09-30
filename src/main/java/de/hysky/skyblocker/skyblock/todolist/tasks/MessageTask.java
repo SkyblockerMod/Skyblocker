@@ -1,25 +1,31 @@
 package de.hysky.skyblocker.skyblock.todolist.tasks;
 
 import de.hysky.skyblocker.skyblock.todolist.ui.AddTaskScreen;
-import io.github.moulberry.repo.data.NEURecipe;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.List;
 
-public class CraftTask extends RecipeTask {
+public class MessageTask extends Task
+{
+	private String message;
 
-	public CraftTask(String name) {
-		super(name, TaskType.CRAFT);
+	public MessageTask(String name) {
+		super(name, TaskType.MESSAGE);
 	}
 
 	@Override
 	public List<ClickableWidget> getCustomEditWidgets(AddTaskScreen addTaskScreen) {
-		return List.of(new TextWidget(204, 20, Text.of("craft text"), MinecraftClient.getInstance().textRenderer));
+		var client = MinecraftClient.getInstance();
+		var label = new TextWidget(204, 20, Text.of("Enter the message"),client.textRenderer);
+
+		var messageField = new TextFieldWidget(client.textRenderer, 204, 20, Text.of("New Task message"));
+
+		messageField.setChangedListener((s) -> message = s);
+
+		return List.of(label, messageField);
 	}
 }

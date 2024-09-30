@@ -109,7 +109,36 @@ public class ItemListWidget extends RecipeBookWidget {
         }
     }
 
-    @Override
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+		if (this.isOpen() && this.client.player != null && !this.client.player.isSpectator() && this.currentTabContent != null) {
+			return this.currentTabContent.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+		} else return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+	}
+
+	@Override
+	public boolean charTyped(char chr, int modifiers) {
+		if (this.isOpen() && this.client.player != null && !this.client.player.isSpectator() && this.currentTabContent != null) {
+			return this.currentTabContent.charTyped(chr, modifiers);
+		} else return super.charTyped(chr, modifiers);
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (this.isOpen() && this.client.player != null && !this.client.player.isSpectator() && this.currentTabContent != null) {
+			return this.currentTabContent.keyPressed(keyCode, scanCode, modifiers);
+		} else return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+		if (this.isOpen() && this.client.player != null && !this.client.player.isSpectator() && this.currentTabContent != null) {
+			return this.currentTabContent.keyReleased(keyCode, scanCode, modifiers);
+		} else return super.keyReleased(keyCode, scanCode, modifiers);
+	}
+
+
+	@Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (this.isOpen() && this.client.player != null && !this.client.player.isSpectator()) {
             // check if a tab is clicked

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.todolist.ui;
 
+import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.skyblock.itemlist.ItemListWidget;
 import de.hysky.skyblocker.skyblock.todolist.TodoList;
 import de.hysky.skyblocker.skyblock.todolist.tasks.Task;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +28,17 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 
 	private final TextFieldWidget searchField;
 	private final ButtonWidget addButton;
-	private ElementListWidget<TodoListScroll.Entry> scroll;
+	private final ElementListWidget<TodoListScroll.Entry> scroll;
 
 	public TodoListTab(int x, int y, MinecraftClient client) {
 		super(x, y, Text.literal("Todo List Tab"));
 		this.client = client;
 		tasks = TodoList.getTasks().values().stream().map(TaskRenderer::new).toList();
+
 		this.searchField = new TextFieldWidget(this.client.textRenderer, x + 16, y + 4, 81, 14, Text.translatable("itemGroup.search"));
 		this.searchField.setMaxLength(50);
 		this.searchField.setVisible(true);
+		this.searchField.setEditable(true);
 		this.searchField.setEditableColor(16777215);
 		this.searchField.setText("");
 		this.searchField.setPlaceholder(Text.translatable("skyblocker.todolist.searchText").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
@@ -48,6 +52,7 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 
 		scroll = new TodoListScroll(client, 125, 115, y + 3 + 24, 20);
 		scroll.setX(x + 2);
+
 	}
 
 	private void updateTaskList() {
@@ -101,18 +106,50 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 			this.searchField.setFocused(false);
 		}
 		return false;
-	}@
-			Override
+	}
+
+	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (this.searchField.keyPressed(keyCode, scanCode, modifiers)) {
-			//this.refreshSearchResults();
+			return true;
+		}
+		else if (this.searchField.isFocused() && this.searchField.isVisible() && keyCode != GLFW.GLFW_KEY_ESCAPE) {
+			return true;
+		}
+		else if (this.client.options.chatKey.matchesKey(keyCode, scanCode) && !this.searchField.isFocused()) {
+			this.searchField.setFocused(true);
 			return true;
 		}
 
-		return false;
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
+	@Override
+	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+		if(this.searchField.keyReleased(keyCode, scanCode, modifiers)) {
+			//this.refreshSearchResults();
+			return true;
+		}
+		return super.keyReleased(keyCode, scanCode, modifiers);
+	}
 
+	@Override
+	public boolean charTyped(char chr, int modifiers) {
+		if (this.searchField.charTyped(chr, modifiers)) {
+			//this.refreshSearchResults();
+			return true;
+		} else {
+			return super.charTyped(chr, modifiers);
+		}
+	}
+
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+		if(scroll.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
+			return true;
+		}
+		return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+	}
 
 	public static class TaskRenderer
 	{

@@ -1,19 +1,19 @@
 package de.hysky.skyblocker.skyblock.todolist.tasks;
 
+import de.hysky.skyblocker.skyblock.todolist.ui.AddTaskScreen;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.text.Text;
+
 import java.util.List;
-import java.util.Map;
+import java.util.function.Supplier;
 
 public abstract class Task {
 	public Task(String name, TaskType type) {
 		this.name = name;
 		this.type = type;
 	}
-
-	public static Map<TaskType, Class<?>> taskTypeClassMap = Map.of(
-				TaskType.CRAFT, CraftTask.class,
-				TaskType.FORGE, ForgeTask.class,
-				TaskType.PET, PetTask.class,
-				TaskType.TEXT, TextTask.class);
 
 	public float percentageComplete;
 
@@ -28,12 +28,26 @@ public abstract class Task {
 		this.name = name;
 	}
 
+	public List<ClickableWidget> getCustomEditWidgets(AddTaskScreen addTaskScreen) {
+		return List.of(new TextWidget(204, 20, Text.of(type.name()), MinecraftClient.getInstance().textRenderer));
+	}
+
 	public enum TaskType
 	{
-		CRAFT,
-		FORGE,
-		PET,
-		TEXT
+		CRAFT(() -> new CraftTask("Craft Task")),
+		FORGE(() -> new ForgeTask("Forge Task")),
+		PET(() -> new PetTask("Pet Task")),
+		MESSAGE(() -> new MessageTask("Message Task"));
+
+		private final Supplier<Task> taskSupplier;
+
+		TaskType(Supplier<Task> taskSupplier) {
+			this.taskSupplier = taskSupplier;
+		}
+
+		public Supplier<Task> getTaskSupplier() {
+			return taskSupplier;
+		}
 	}
 
 	@Override
@@ -43,5 +57,7 @@ public abstract class Task {
 				", type=" + type +
 				'}';
 	}
+
+
 }
 

@@ -36,7 +36,7 @@ public class Debug {
 	private static boolean webSocketDebug = false;
 
 	public static boolean debugEnabled() {
-		return DEBUG_ENABLED /*|| FabricLoader.getInstance().isDevelopmentEnvironment()*/;
+		return DEBUG_ENABLED || FabricLoader.getInstance().isDevelopmentEnvironment();
 	}
 
 	public static boolean shouldShowInvisibleArmorStands() {

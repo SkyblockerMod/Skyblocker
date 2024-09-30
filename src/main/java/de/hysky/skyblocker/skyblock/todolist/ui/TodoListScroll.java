@@ -19,6 +19,7 @@ public class TodoListScroll extends ElementListWidget<TodoListScroll.Entry>
 	}
 
 
+
 	@Environment(EnvType.CLIENT)
 	public static class Entry extends ElementListWidget.Entry<TodoListScroll.Entry>
 	{

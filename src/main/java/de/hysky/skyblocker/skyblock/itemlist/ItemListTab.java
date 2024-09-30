@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -9,6 +10,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -85,7 +87,43 @@ public class ItemListTab extends ItemListWidget.TabContainerWidget {
         return false;
     }
 
-    @Override
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		LogUtils.getLogger().error("Key pressed: {}", keyCode);
+		if (this.searchField.keyPressed(keyCode, scanCode, modifiers)) {
+			return true;
+		}
+		else if (this.searchField.isFocused() && this.searchField.isVisible() && keyCode != GLFW.GLFW_KEY_ESCAPE) {
+			return true;
+		}
+		else if (this.client.options.chatKey.matchesKey(keyCode, scanCode) && !this.searchField.isFocused()) {
+			this.searchField.setFocused(true);
+			return true;
+		}
+
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+		if(this.searchField.keyReleased(keyCode, scanCode, modifiers)) {
+			//this.refreshSearchResults();
+			return true;
+		}
+		return super.keyReleased(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean charTyped(char chr, int modifiers) {
+		if (this.searchField.charTyped(chr, modifiers)) {
+			//this.refreshSearchResults();
+			return true;
+		} else {
+			return super.charTyped(chr, modifiers);
+		}
+	}
+
+	@Override
     public void drawTooltip(DrawContext context, int mouseX, int mouseY) {
         if (this.results != null) this.results.drawTooltip(context, mouseX, mouseY);
     }

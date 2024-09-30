@@ -18,6 +18,10 @@ public class DropdownWidget<T> extends ElementListWidget<DropdownWidget.Entry<T>
     protected final Consumer<T> selectCallback;
     protected T prevSelected;
     protected T selected;
+	public T getSelected() {
+		return selected;
+
+	}
     protected boolean open;
 
     public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
