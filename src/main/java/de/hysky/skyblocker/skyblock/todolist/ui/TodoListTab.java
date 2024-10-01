@@ -43,8 +43,6 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 		this.searchField.setText("");
 		this.searchField.setPlaceholder(Text.translatable("skyblocker.todolist.searchText").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
 
-		var currentScreen = client.currentScreen;
-
 		addButton = ButtonWidget.builder(Text.of("+"), (button) -> {
 			this.client.setScreen(new AddTaskScreen());
 			this.updateTaskList();
@@ -52,7 +50,6 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 
 		scroll = new TodoListScroll(client, 125, 115, y + 3 + 24, 20);
 		scroll.setX(x + 2);
-
 	}
 
 	private void updateTaskList() {
@@ -81,8 +78,6 @@ public class TodoListTab extends ItemListWidget.TabContainerWidget {
 		addButton.render(context, mouseX, mouseY, delta);
 
 		scroll.render(context, mouseX, mouseY, delta);
-
-
 
 		context.disableScissor();
 	}

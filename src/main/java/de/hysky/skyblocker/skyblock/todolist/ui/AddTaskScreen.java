@@ -53,7 +53,6 @@ public class AddTaskScreen extends Screen
 
 		verticalLayout.add(customTaskInput);
 
-
 		verticalLayout.add(ButtonWidget.builder(Text.of("Create Task"), button -> {
 			try {
 				if(tempTask == null) {
