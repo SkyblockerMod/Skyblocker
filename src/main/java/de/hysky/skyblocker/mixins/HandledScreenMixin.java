@@ -114,11 +114,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				addSelectableChild(quickNavButton);
 			}
 		}
-
-		if(Utils.isOnSkyblock() && client != null && client.player != null && !client.player.isCreative())
-		{
-			todoListScroll = addDrawableChild(new TodoListScroll(client, this.width/4, this.height - 112, 48, 36));
-		}
 	}
 
 	@Inject(at = @At("HEAD"), method = "keyPressed")

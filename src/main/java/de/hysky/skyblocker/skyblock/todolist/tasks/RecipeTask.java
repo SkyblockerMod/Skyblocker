@@ -12,4 +12,6 @@ public abstract class RecipeTask extends Task {
 	public RecipeTask(String name, TaskType type) {
 		super(name, type);
 	}
+
+
 }

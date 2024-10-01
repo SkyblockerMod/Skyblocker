@@ -58,7 +58,7 @@ public class AddTaskScreen extends Screen
 			try {
 				if(tempTask == null) {
 					this.client.getToastManager().add(
-							SystemToast.create(this.client, SystemToast.Type.NARRATOR_TOGGLE, Text.of("Error creating a new task!"), Text.of("Task type cannot be null")));
+							SystemToast.create(this.client, SystemToast.Type.NARRATOR_TOGGLE, Text.of("Error creating a new task!"), Text.of("tempTask cannot be null")));
 					return;
 				}
 
@@ -73,6 +73,7 @@ public class AddTaskScreen extends Screen
 				TodoList.getTasks().put(tempTask.getName(), tempTask);
 
 				LOGGER.error("Created task: {}", tempTask);
+				TodoList.save(client);
 			} catch (Exception e) {
 				this.client.getToastManager().add(
 						SystemToast.create(this.client, SystemToast.Type.NARRATOR_TOGGLE, Text.of("Error creating a new task!"), Text.of(e.getLocalizedMessage())));

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.todolist.tasks;
 
+import com.google.gson.JsonObject;
 import de.hysky.skyblocker.skyblock.todolist.ui.AddTaskScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -18,7 +19,7 @@ public abstract class Task {
 	public float percentageComplete;
 
 	protected String name;
-	protected final TaskType type;
+	public TaskType type;
 
 	public String getName() {
 		return name;
@@ -53,6 +54,26 @@ public abstract class Task {
 	public void readCustomData(java.util.List<net.minecraft.client.gui.widget.Widget> customWidgets)
 	{
 
+	}
+
+	public void toJson(JsonObject taskObject)
+	{
+		taskObject.addProperty("name", name);
+		taskObject.addProperty("type", type.name());
+	}
+
+	public void fromJson(JsonObject taskObject)
+	{
+		name = taskObject.get("name").getAsString();
+		type = TaskType.valueOf(taskObject.get("type").getAsString());
+
+	}
+
+
+	public static Task createFromJson(JsonObject taskObject) {
+		TaskType type = TaskType.valueOf(taskObject.get("type").getAsString());
+		Task task = type.getTaskSupplier().get();
+		return task;
 	}
 
 	@Override

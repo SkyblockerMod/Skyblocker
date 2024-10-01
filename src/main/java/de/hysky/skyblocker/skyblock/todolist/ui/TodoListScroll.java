@@ -13,16 +13,19 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class TodoListScroll extends ElementListWidget<TodoListScroll.Entry>
 {
-
 	public TodoListScroll(MinecraftClient client, int width, int height, int y, int itemHeight) {
 		super(client, width, height, y, itemHeight);
 	}
 
+	public void addTask() {
+		addEntry(new Entry());
+	}
 
 
 	@Environment(EnvType.CLIENT)
 	public static class Entry extends ElementListWidget.Entry<TodoListScroll.Entry>
 	{
+
 		@Override
 		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta)
 		{
