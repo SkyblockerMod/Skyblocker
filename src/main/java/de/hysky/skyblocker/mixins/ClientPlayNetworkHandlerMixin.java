@@ -7,6 +7,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
+import de.hysky.skyblocker.skyblock.HealthBars;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
@@ -59,6 +60,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
 		EggFinder.checkIfEgg(armorStandEntity);
 		CorpseFinder.checkIfCorpse(armorStandEntity);
+		HealthBars.HeathBar(armorStandEntity);
 		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
 			CompactDamage.compactDamage(armorStandEntity);
 		} catch (Exception e) {
