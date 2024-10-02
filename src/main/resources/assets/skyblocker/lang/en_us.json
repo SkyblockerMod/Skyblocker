@@ -561,6 +561,7 @@
   "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver": "Wishing Compass Solver",
   "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.@Tooltip": "Calculates and adds a waypoint at the location indicated by wishing compasses.",
   "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabMessage": "Enable crystals in the /tab to allow the compass to identify discovered items",
+  "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabEffectsMessage": "Enable effects in the /tab to allow the compass to identify queen coordinates",
   "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage": "Wishing compass used. Move to another location and use a second compass to triangulate the target",
   "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.somethingWentWrongMessage": "The lines did not intersect (Something went wrong) please try again.",
   "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.targetLocationToFar": "The target location is too far away to identify the structure, possibly due to a missing structure in the lobby.",

@@ -103,11 +103,15 @@ public class WishingCompassSolver {
     }
 
     private static boolean isKingsScentPresent() {
-        String footer = PlayerListMgr.getFooter();
-        if (footer == null) {
-            return false;
-        }
-        return footer.contains("King's Scent I");
+		if (CLIENT.player == null) {
+			return false;
+		}
+		//make sure the data is in tab and if not tell the user
+		if (PlayerListMgr.getPlayerStringList().stream().noneMatch(entry -> entry.startsWith("Active Effects:"))) {
+			CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabEffectsMessage")), false);
+			return false;
+		}
+        return PlayerListMgr.getPlayerStringList().stream().anyMatch(entry -> entry.startsWith("King's Scent"));
     }
 
     private static boolean isKeyInInventory() {
