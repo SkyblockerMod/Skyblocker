@@ -85,5 +85,9 @@
     "skyblocker.config.dungeons.livid.enableLividColorTitle": "Włącz tytuł w żywych kolorach",
     "skyblocker.config.dungeons.livid.enableLividColorTitle.@Tooltip": "Wyświetlaj żywy kolor w tytule podczas walki z Livid.",
     "skyblocker.config.dungeons.livid.lividColorText": "kolor tekstu Livid",
-    "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Tekst, który zostanie wysłany na czacie podczas walki z bossem Livid. Ciąg \"[kolor]\" zostanie zastąpiony kolorem."
+    "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Tekst, który zostanie wysłany na czacie podczas walki z bossem Livid. Ciąg \"[kolor]\" zostanie zastąpiony kolorem.",
+    "argument.color.hex.invalidString": "Liczba szesnastkowa musi mieć dokładnie 6 znaków, znaleziono %d znaków.",
+    "argument.color.hex.invalidChar": "Nieprawidłowy znak dla liczby szesnastkowej: %s. Dozwolone znaki: [0-9a-fA-F]",
+    "skyblocker.skyblockerScreen": "Główny ekran Skyblocker",
+    "key.itemPriceRefresh": "Odśwież Bazar"
 }
