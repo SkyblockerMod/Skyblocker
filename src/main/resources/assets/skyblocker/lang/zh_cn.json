@@ -42,7 +42,7 @@
     "skyblocker.config.dungeons": "地牢",
     "skyblocker.config.dungeons.croesusHelper": "Croesus助手",
     "skyblocker.config.dungeons.croesusHelper.@Tooltip": "将打开过的箱子标记为灰色。",
-    "skyblocker.config.dungeons.map.enableMap": "启用地牢地图",
+    "skyblocker.config.dungeons.map.enableMap": "启用地图",
     "skyblocker.config.dungeons.puzzle.solveThreeWeirdos": "解决三怪人迷题",
     "skyblocker.config.dungeons.puzzle.blazeSolver": "烈焰人迷题助手",
     "skyblocker.config.dungeons.puzzle.solveTrivia": "常识问答谜题助手",
