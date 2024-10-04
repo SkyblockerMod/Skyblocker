@@ -27,7 +27,7 @@
     "skyblocker.config.general.hitbox.oldFarmlandHitbox": "啟用1.8的耕地判定箱",
     "skyblocker.config.quickNav": "快速導航",
     "skyblocker.config.quickNav.enableQuickNav": "啟用快速導航",
-    "skyblocker.config.dungeons.map.enableMap": "啟用 Dungeon 地圖",
+    "skyblocker.config.dungeons.map.enableMap": "啟用地圖",
     "skyblocker.config.otherLocations.barn.solveTreasureHunter": "寶藏獵人助手",
     "skyblocker.config.mining.enableDrillFuel": "顯示鑽頭燃料",
     "skyblocker.config.otherLocations.barn": "農業島嶼",
