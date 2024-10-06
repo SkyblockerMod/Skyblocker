@@ -285,7 +285,7 @@ public class RenderHelper {
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 	
-	public static void renderTextureQuad(WorldRenderContext context, Vec3d pos, float width, float height, float textureWidth, float textureHeight, Vec3d renderOffset, Identifier texture, boolean throughWalls) {
+	public static void renderTextureQuad(WorldRenderContext context, Vec3d pos, float width, float height, float textureWidth, float textureHeight, Vec3d renderOffset, Identifier texture, Color shaderColor, boolean throughWalls) {
 		Matrix4f positionMatrix = new Matrix4f();
 		Camera camera = context.camera();
 		Vec3d cameraPos = camera.getPos();
@@ -297,6 +297,7 @@ public class RenderHelper {
 		Tessellator tessellator = RenderSystem.renderThreadTesselator();
 
 		RenderSystem.setShaderTexture(0, texture);
+		RenderSystem.setShaderColor(shaderColor.getRed() / 255f, shaderColor.getGreen() / 255f, shaderColor.getBlue() / 255f, shaderColor.getAlpha() / 255f);
 		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
@@ -311,6 +312,7 @@ public class RenderHelper {
 
 		BufferRenderer.drawWithGlobalProgram(buffer.end());
 
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.enableCull();
 		RenderSystem.depthFunc(GL11.GL_LEQUAL);
 	}

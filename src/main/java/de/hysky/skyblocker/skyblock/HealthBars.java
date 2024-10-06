@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
@@ -16,17 +17,18 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
+import java.awt.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HealthBars {
 
-	private static final Identifier HEALTH_BAR_BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/purple_background.png");
-	private static final Identifier HEALTH_BAR_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/purple_progress.png");
+	private static final Identifier HEALTH_BAR_BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/white_background.png");
+	private static final Identifier HEALTH_BAR_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/white_progress.png");
 	private static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?)/(\\d{1,3}(,\\d{3})*(\\.\\d+)?)❤");
 
-	private static Object2FloatOpenHashMap<ArmorStandEntity> healthValues = new Object2FloatOpenHashMap<>();
+	private static final Object2FloatOpenHashMap<ArmorStandEntity> healthValues = new Object2FloatOpenHashMap<>();
 
 	@Init
 	public static void init() {
@@ -51,8 +53,7 @@ public class HealthBars {
 	}
 
 	public static void HeathBar(ArmorStandEntity armorStand) {
-		//todo return based on enabled
-		if (!armorStand.isInvisible() || !armorStand.hasCustomName() || !armorStand.isCustomNameVisible()) {
+		if (!armorStand.isInvisible() || !armorStand.hasCustomName() || !armorStand.isCustomNameVisible() || !SkyblockerConfigManager.get().uiAndVisuals.healthBars.enabled) {
 			return;
 		}
 
@@ -63,7 +64,9 @@ public class HealthBars {
 		}
 
 		//check to see if the armour stand is a mob label with health
-
+		if (armorStand.getCustomName() == null) {
+			return;
+		}
 		Matcher healthMatcher = HEALTH_PATTERN.matcher(armorStand.getCustomName().getString());
 		if (!healthMatcher.find()) {
 			return;
@@ -71,41 +74,64 @@ public class HealthBars {
 
 		//work out health value and save to hashMap
 		System.out.println(healthMatcher.group(1));
-		int firstValue = Integer.parseInt(healthMatcher.group(1).replace(",",""));
-		int secondValue = Integer.parseInt(healthMatcher.group(4).replace(",",""));
+		int firstValue = Integer.parseInt(healthMatcher.group(1).replace(",", ""));
+		int secondValue = Integer.parseInt(healthMatcher.group(4).replace(",", ""));
 		float health = (float) firstValue / secondValue;
 		healthValues.put(armorStand, health);
 
-		//edit armour stand name to remove health todo if enabled or only show total and not max
+		//edit armour stand name to remove health
+		boolean removeValue = SkyblockerConfigManager.get().uiAndVisuals.healthBars.removeHealthFromName;
+		boolean removeMax = SkyblockerConfigManager.get().uiAndVisuals.healthBars.removeMaxHealthFromName;
+		//if both disabled no need to edit name
+		if (!removeValue && !removeMax) {
+			return;
+		}
 		MutableText cleanedText = Text.empty();
 		List<Text> parts = armorStand.getCustomName().getSiblings();
-		for (int i = 0; i < parts.size() - 3; i++) { //todo is health always at the end or do i need to add after that
-			//found health remove stop adding
-			if (parts.get(i).getString().equals(healthMatcher.group(1)) && parts.get(i + 1).getString().equals("/") && parts.get(i + 2).getString().equals(healthMatcher.group(4)) && parts.get(i + 3).getString().equals("❤")) {
-				break;
+		for (int i = 0; i < parts.size(); i++) {
+			//remove value from name
+			if (removeValue && i < parts.size() - 3 && parts.get(i).getString().equals(healthMatcher.group(1)) && parts.get(i + 1).getString().equals("/") && parts.get(i + 2).getString().equals(healthMatcher.group(4)) && parts.get(i + 3).getString().equals("❤")) {
+				continue;
+			}
+			//remove slash from max
+			if (removeMax && i < parts.size() - 2 && parts.get(i).getString().equals("/") && parts.get(i + 1).getString().equals(healthMatcher.group(4)) && parts.get(i + 2).getString().equals("❤")) {
+				continue;
+			}
+			//remove max
+			if (removeMax && i < parts.size() - 1 && parts.get(i).getString().equals(healthMatcher.group(4)) && parts.get(i + 1).getString().equals("❤")) {
+				continue;
+			}
+			//if both enabled remove "❤"
+			if (removeValue && removeMax && parts.get(i).getString().equals("❤")) {
+				continue;
 			}
 			cleanedText.append(parts.get(i));
 		}
 		armorStand.setCustomName(cleanedText);
-
 	}
 
 	/**
-	 * Loops though armor stands with health bars and renders a bar for each of them just bellow
+	 * Loops though armor stands with health bars and renders a bar for each of them just bellow the name label
 	 *
 	 * @param context render context
 	 */
 	private static void render(WorldRenderContext context) {
-
-		for (Object2FloatMap.Entry<ArmorStandEntity> healthValue : healthValues.object2FloatEntrySet()) {
-			ArmorStandEntity armorStand = healthValue.getKey();
-
-			// Render the health bar texture with scaling based on health percentage
-			RenderHelper.renderTextureQuad(context, armorStand.getCameraPosVec(context.tickCounter().getTickDelta(false)).add(0, 0.15, 0), 1f, 0.1f, 1f, 1f, new Vec3d(-0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, false);
-			RenderHelper.renderTextureQuad(context, armorStand.getCameraPosVec(context.tickCounter().getTickDelta(false)).add(0, 0.15, 0), healthValue.getFloatValue(), 0.1f, healthValue.getFloatValue(), 1f, new Vec3d(-0.5f, 0, 0.003f), HEALTH_BAR_TEXTURE, false);
-
+		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.enabled || healthValues.isEmpty()) {
+			return;
 		}
+		Color barColor = SkyblockerConfigManager.get().uiAndVisuals.healthBars.barColor;
+		boolean hideFullHealth = SkyblockerConfigManager.get().uiAndVisuals.healthBars.hideFullHealth;
+		float scale = SkyblockerConfigManager.get().uiAndVisuals.healthBars.scale;
+		for (Object2FloatMap.Entry<ArmorStandEntity> healthValue : healthValues.object2FloatEntrySet()) {
+			//if the health bar is full and the setting is enabled to hide it stop rendering it
+			if (hideFullHealth && healthValue.getFloatValue() == 1) {
+				continue;
+			}
 
+			ArmorStandEntity armorStand = healthValue.getKey();
+			// Render the health bar texture with scaling based on health percentage
+			RenderHelper.renderTextureQuad(context, armorStand.getCameraPosVec(context.tickCounter().getTickDelta(false)).add(0, 0.25 - (0.1f * scale), 0), scale, 0.1f * scale, 1f, 1f, new Vec3d(-0.5f * scale, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, barColor, false);
+			RenderHelper.renderTextureQuad(context, armorStand.getCameraPosVec(context.tickCounter().getTickDelta(false)).add(0, 0.25 - (0.1f * scale), 0), healthValue.getFloatValue() * scale, 0.1f * scale, healthValue.getFloatValue(), 1f, new Vec3d(-0.5f * scale, 0, 0.003f), HEALTH_BAR_TEXTURE, barColor, false);
+		}
 	}
-
 }
