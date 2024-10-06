@@ -820,8 +820,13 @@
   "skyblocker.config.uiAndVisuals.healthBars.enabled": "Enabled",
   "skyblocker.config.uiAndVisuals.healthBars.scale": "Scale",
   "skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName": "Remove Health From Name",
+  "skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName.@Tooltip": "Remove the current health of mobs from their nametag",
   "skyblocker.config.uiAndVisuals.healthBars.removeMaxHealthFromName": "Remove Max Health From Name",
+  "skyblocker.config.uiAndVisuals.healthBars.removeMaxHealthFromName.@Tooltip": "Remove the maximum health of mobs from their nametag",
+  "skyblocker.config.uiAndVisuals.healthBars.applyToHealthOnlyMobs": "Apply to Health Only Mobs",
+  "skyblocker.config.uiAndVisuals.healthBars.applyToHealthOnlyMobs.@Tooltip": "Also add health bars to mobs with only a current health value (will sometimes be wrong if mob is damaged before loading in)",
   "skyblocker.config.uiAndVisuals.healthBars.hideFullHealth": "Hide Full Health Bars",
+  "skyblocker.config.uiAndVisuals.healthBars.hideFullHealth.@Tooltip": "Don't show the health bar when its full",
   "skyblocker.config.uiAndVisuals.healthBars.barColor": "Health Bar Color",
 
   "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",

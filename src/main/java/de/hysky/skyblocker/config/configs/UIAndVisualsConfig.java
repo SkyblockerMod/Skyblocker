@@ -407,7 +407,10 @@ public class UIAndVisualsConfig {
 		public boolean removeMaxHealthFromName = true;
 
 		@SerialEntry
-		public boolean hideFullHealth = true;
+		public boolean applyToHealthOnlyMobs = true;
+
+		@SerialEntry
+		public boolean hideFullHealth = false;
 
 		@SerialEntry
 		public Color barColor = new Color(0xFFFFFF);

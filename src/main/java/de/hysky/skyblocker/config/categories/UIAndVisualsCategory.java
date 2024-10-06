@@ -567,6 +567,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName.@Tooltip")))
 								.binding(defaults.uiAndVisuals.healthBars.removeHealthFromName,
 										() -> config.uiAndVisuals.healthBars.removeHealthFromName,
 										newValue -> config.uiAndVisuals.healthBars.removeHealthFromName = newValue)
@@ -574,13 +575,23 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.removeMaxHealthFromName"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.removeMaxHealthFromName.@Tooltip")))
 								.binding(defaults.uiAndVisuals.healthBars.removeMaxHealthFromName,
 										() -> config.uiAndVisuals.healthBars.removeMaxHealthFromName,
 										newValue -> config.uiAndVisuals.healthBars.removeMaxHealthFromName = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.applyToHealthOnlyMobs"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.applyToHealthOnlyMobs.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.applyToHealthOnlyMobs,
+										() -> config.uiAndVisuals.healthBars.applyToHealthOnlyMobs,
+										newValue -> config.uiAndVisuals.healthBars.applyToHealthOnlyMobs = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.hideFullHealth"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.hideFullHealth.@Tooltip")))
 								.binding(defaults.uiAndVisuals.healthBars.hideFullHealth,
 										() -> config.uiAndVisuals.healthBars.hideFullHealth,
 										newValue -> config.uiAndVisuals.healthBars.hideFullHealth = newValue)

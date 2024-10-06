@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -27,8 +28,10 @@ public class HealthBars {
 	private static final Identifier HEALTH_BAR_BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/white_background.png");
 	private static final Identifier HEALTH_BAR_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/white_progress.png");
 	private static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?)/(\\d{1,3}(,\\d{3})*(\\.\\d+)?)❤");
+	private static final Pattern HEALTH_ONLY_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?)❤");
 
 	private static final Object2FloatOpenHashMap<ArmorStandEntity> healthValues = new Object2FloatOpenHashMap<>();
+	private static final Object2IntOpenHashMap<ArmorStandEntity> mobStartingHealth = new Object2IntOpenHashMap<>();
 
 	@Init
 	public static void init() {
@@ -39,6 +42,7 @@ public class HealthBars {
 
 	private static void reset() {
 		healthValues.clear();
+		mobStartingHealth.clear();
 	}
 
 	/**
@@ -49,6 +53,7 @@ public class HealthBars {
 	public static void onEntityDespawn(Entity entity, ClientWorld clientWorld) {
 		if (entity instanceof ArmorStandEntity armorStandEntity) {
 			healthValues.removeFloat(armorStandEntity);
+			mobStartingHealth.removeInt(armorStandEntity);
 		}
 	}
 
@@ -59,7 +64,10 @@ public class HealthBars {
 
 		//check if armour stand is dead and remove it from list
 		if (armorStand.isDead()) {
+			System.out.println("somthing");
 			healthValues.removeFloat(armorStand);
+			mobStartingHealth.removeInt(armorStand);
+
 			return;
 		}
 
@@ -68,12 +76,13 @@ public class HealthBars {
 			return;
 		}
 		Matcher healthMatcher = HEALTH_PATTERN.matcher(armorStand.getCustomName().getString());
+		//if a health ratio can not be found send onto health only pattern
 		if (!healthMatcher.find()) {
+			HealthOnlyCheck(armorStand);
 			return;
 		}
 
 		//work out health value and save to hashMap
-		System.out.println(healthMatcher.group(1));
 		int firstValue = Integer.parseInt(healthMatcher.group(1).replace(",", ""));
 		int secondValue = Integer.parseInt(healthMatcher.group(4).replace(",", ""));
 		float health = (float) firstValue / secondValue;
@@ -103,6 +112,50 @@ public class HealthBars {
 			}
 			//if both enabled remove "❤"
 			if (removeValue && removeMax && parts.get(i).getString().equals("❤")) {
+				continue;
+			}
+			cleanedText.append(parts.get(i));
+		}
+		armorStand.setCustomName(cleanedText);
+	}
+
+	private static void HealthOnlyCheck(ArmorStandEntity armorStand) {
+		//todo setting for this
+		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.applyToHealthOnlyMobs	 || armorStand.getCustomName() == null) {
+			return;
+		}
+		Matcher healthOnlyMatcher = HEALTH_ONLY_PATTERN.matcher(armorStand.getCustomName().getString());
+		//if not found return
+		if (!healthOnlyMatcher.find()) {
+			return;
+		}
+
+		//get the current health of the mob
+		int currentHealth = Integer.parseInt(healthOnlyMatcher.group(1).replace(",", ""));
+
+		//if it's a new health only armor stand add to starting health lookup (not always full health if already damaged but best that can be done)
+		if (!mobStartingHealth.containsKey(armorStand)) {
+			mobStartingHealth.put(armorStand,currentHealth);
+		}
+
+		//add to health bar values
+		float health = (float) currentHealth / mobStartingHealth.getInt(armorStand);
+		healthValues.put(armorStand, health);
+
+		//if enabled remove from name
+		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.removeHealthFromName) {
+			return;
+		}
+		MutableText cleanedText = Text.empty();
+		List<Text> parts = armorStand.getCustomName().getSiblings();
+		for (int i = 0; i < parts.size(); i++) {
+			//remove value from name
+			if (i < parts.size() - 1 && parts.get(i).getString().equals(healthOnlyMatcher.group(1)) && parts.get(i + 1).getString().equals("❤")) {
+				continue;
+			}
+
+			//remove "❤"
+			if (parts.get(i).getString().equals("❤")) {
 				continue;
 			}
 			cleanedText.append(parts.get(i));
