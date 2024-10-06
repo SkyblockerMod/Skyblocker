@@ -290,7 +290,7 @@ public class RenderHelper {
 		RenderSystem.depthFunc(GL11.GL_LEQUAL);
 	}
 
-	public static void renderTextureQuad(WorldRenderContext context, Vec3d pos, float width, float height, float textureWidth, float textureHeight, Vec3d renderOffset, Identifier texture, boolean throughWalls) {
+	public static void renderTextureQuad(WorldRenderContext context, Vec3d pos, float width, float height, float textureWidth, float textureHeight, Vec3d renderOffset, Identifier texture, Color shaderColor, boolean throughWalls) {
 		Matrix4f positionMatrix = new Matrix4f();
 		Camera camera = context.camera();
 		Vec3d cameraPos = camera.getPos();
@@ -302,6 +302,7 @@ public class RenderHelper {
 		Tessellator tessellator = RenderSystem.renderThreadTesselator();
 
 		RenderSystem.setShaderTexture(0, texture);
+		RenderSystem.setShaderColor(shaderColor.getRed() / 255f, shaderColor.getGreen() / 255f, shaderColor.getBlue() / 255f, shaderColor.getAlpha() / 255f);
 		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
@@ -309,13 +310,14 @@ public class RenderHelper {
 		RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 		BufferBuilder buffer = tessellator.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
 
-		buffer.vertex(positionMatrix, (float) renderOffset.getX()			, (float) renderOffset.getY()				, (float) renderOffset.getZ()).texture(1, 1 - textureHeight);
-		buffer.vertex(positionMatrix, (float) renderOffset.getX()			, (float) renderOffset.getY() + height	, (float) renderOffset.getZ()).texture(1, 1);
-		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY() + height	, (float) renderOffset.getZ()).texture(1 - textureWidth, 1);
-		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY()				, (float) renderOffset.getZ()).texture(1 - textureWidth, 1 - textureHeight);
+		buffer.vertex(positionMatrix, (float) renderOffset.getX(), (float) renderOffset.getY(), (float) renderOffset.getZ()).texture(1, 1 - textureHeight);
+		buffer.vertex(positionMatrix, (float) renderOffset.getX(), (float) renderOffset.getY() + height, (float) renderOffset.getZ()).texture(1, 1);
+		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY() + height, (float) renderOffset.getZ()).texture(1 - textureWidth, 1);
+		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY(), (float) renderOffset.getZ()).texture(1 - textureWidth, 1 - textureHeight);
 
 		BufferRenderer.drawWithGlobalProgram(buffer.end());
 
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.enableCull();
 		RenderSystem.depthFunc(GL11.GL_LEQUAL);
 	}
