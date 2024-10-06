@@ -816,6 +816,14 @@
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips": "Hide empty item tooltips in menus",
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "Hides the tooltip of an item if it doesn't have any information to display. Also blocks clicks on filler items like glass panes.",
 
+  "skyblocker.config.uiAndVisuals.healthBars": "Custom Mob Health Bars",
+  "skyblocker.config.uiAndVisuals.healthBars.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.healthBars.scale": "Scale",
+  "skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName": "Remove Health From Name",
+  "skyblocker.config.uiAndVisuals.healthBars.removeMaxHealthFromName": "Remove Max Health From Name",
+  "skyblocker.config.uiAndVisuals.healthBars.hideFullHealth": "Hide Full Health Bars",
+  "skyblocker.config.uiAndVisuals.healthBars.barColor": "Health Bar Color",
+
   "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "Enable Sign Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "Enables the ability for you to do calculations when inputting values such as price for the ah.\n Key:\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\n purse/P = current purse value",
