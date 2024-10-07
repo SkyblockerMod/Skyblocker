@@ -50,7 +50,7 @@ public class EssenceShopPrice extends SimpleTooltipAdder {
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		String lore = ItemUtils.concatenateLore(lines);
 		Matcher essenceMatcher = ESSENCE_PATTERN.matcher(lore);
-		OptionalLong cost = RegexUtils.getLongFromMatcher(essenceMatcher);
+		OptionalLong cost = RegexUtils.findLongFromMatcher(essenceMatcher);
 		if (cost.isEmpty()) return;
 
 		String type = essenceMatcher.group("type");

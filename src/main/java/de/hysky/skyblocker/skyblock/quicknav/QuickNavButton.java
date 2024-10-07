@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -18,6 +19,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.time.Duration;
@@ -98,8 +100,11 @@ public class QuickNavButton extends ClickableWidget {
         if (!this.temporaryToggled) {
             this.temporaryToggled = true;
             this.toggleTime = System.currentTimeMillis();
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(command);
-            // TODO : add null check with log error
+            if (command == null || command.isEmpty()) {
+                MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.literal("Quick Nav button index " + (index + 1) + " has no command!").formatted(Formatting.RED)), false);
+            } else {
+                MessageScheduler.INSTANCE.sendMessageAfterCooldown(command);
+            }
             this.alpha = 0.5f;
         }
     }
