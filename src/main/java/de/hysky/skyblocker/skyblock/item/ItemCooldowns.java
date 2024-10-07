@@ -24,6 +24,8 @@ public class ItemCooldowns {
     private static final String JUNGLE_AXE_ID = "JUNGLE_AXE";
     private static final String TREECAPITATOR_ID = "TREECAPITATOR_AXE";
     private static final String GRAPPLING_HOOK_ID = "GRAPPLING_HOOK";
+	private static final String ROGUE_SWORD_ID = "ROGUE_SWORD";
+	private static final String INK_WAND_ID = "INK_WAND";
     private static final List<String> BAT_ARMOR_IDS = List.of("BAT_PERSON_HELMET", "BAT_PERSON_CHESTPLATE", "BAT_PERSON_LEGGINGS", "BAT_PERSON_BOOTS");
     private static final Map<String, CooldownEntry> ITEM_COOLDOWNS = new HashMap<>();
     private static final int[] EXPERIENCE_LEVELS = {
@@ -93,6 +95,16 @@ public class ItemCooldowns {
                 ITEM_COOLDOWNS.put(GRAPPLING_HOOK_ID, new CooldownEntry(2000));
             }
         }
+		if (usedItemId.equals(ROGUE_SWORD_ID)) {
+			if (!isOnCooldown(ROGUE_SWORD_ID)) {
+				ITEM_COOLDOWNS.put(ROGUE_SWORD_ID, new CooldownEntry(5000));
+			}
+		}
+		if (usedItemId.equals(INK_WAND_ID)) {
+			if (!isOnCooldown(INK_WAND_ID)) {
+				ITEM_COOLDOWNS.put(INK_WAND_ID, new CooldownEntry(30000));
+			}
+		}
 
         return TypedActionResult.pass(ItemStack.EMPTY);
     }
