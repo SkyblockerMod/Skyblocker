@@ -11,6 +11,7 @@ import de.hysky.skyblocker.skyblock.dwarven.CrystalsHud;
 import de.hysky.skyblocker.skyblock.dwarven.DwarvenHud;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.utils.ApiAuthentication;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -20,6 +21,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 

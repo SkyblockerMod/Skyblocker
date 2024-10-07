@@ -1,3 +1,8 @@
 accessWidener v2 named
 
 accessible field net/minecraft/command/argument/BlockPosArgumentType EXAMPLES Ljava/util/Collection;
+accessible field net/minecraft/client/gui/widget/DirectionalLayoutWidget grid Lnet/minecraft/client/gui/widget/GridWidget;
+accessible field net/minecraft/client/gui/widget/GridWidget children Ljava/util/List;
+accessible field net/minecraft/client/gui/widget/DirectionalLayoutWidget currentIndex I
+accessible field net/minecraft/client/gui/widget/WrapperWidget height I
+accessible field net/minecraft/client/gui/widget/GridWidget grids Ljava/util/List;
