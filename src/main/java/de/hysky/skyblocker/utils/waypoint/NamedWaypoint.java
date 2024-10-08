@@ -68,6 +68,10 @@ public class NamedWaypoint extends Waypoint {
         this(pos, Text.of(name), colorComponents, alpha, enabled);
     }
 
+    public NamedWaypoint(BlockPos pos, Text name, float[] colorComponents, boolean enabled) {
+        this(pos, name, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, enabled);
+    }
+
     public NamedWaypoint(BlockPos pos, Text name, float[] colorComponents, float alpha, boolean enabled) {
         this(pos, name, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, colorComponents, alpha, enabled);
     }
@@ -131,7 +135,7 @@ public class NamedWaypoint extends Waypoint {
     }
 
     protected boolean shouldRenderName() {
-        return true;
+        return shouldRender();
     }
 
     @Override

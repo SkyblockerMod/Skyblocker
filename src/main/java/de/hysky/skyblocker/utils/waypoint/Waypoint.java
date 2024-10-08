@@ -108,6 +108,8 @@ public class Waypoint implements Renderable {
     /**
      * Whether the waypoint should be rendered.
      * <p>
+     * Checked in {@link #render(WorldRenderContext)} before rendering.
+     * <p>
      * Override this method for custom behavior.
      */
     public boolean shouldRender() {
@@ -166,12 +168,13 @@ public class Waypoint implements Renderable {
     /**
      * Renders the waypoint.
      * <p>
-     * Does not check if the waypoint {@link #shouldRender() should be rendered}.
+     * Checks if the waypoint {@link #shouldRender() should be rendered}.
      * <p>
      * Override this method for custom behavior.
      */
     @Override
     public void render(WorldRenderContext context) {
+        if (!shouldRender()) return;
         switch (typeSupplier.get()) {
             case WAYPOINT -> RenderHelper.renderFilledWithBeaconBeam(context, pos, getRenderColorComponents(), alpha, throughWalls);
             case OUTLINED_WAYPOINT -> {
