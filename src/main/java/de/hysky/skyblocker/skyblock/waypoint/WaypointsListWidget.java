@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
 import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
@@ -21,7 +22,7 @@ import java.util.Optional;
 
 public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.AbstractWaypointEntry> {
     private final AbstractWaypointsScreen<?> screen;
-    private String island;
+    private Location island;
     private List<WaypointGroup> waypoints;
 
     public WaypointsListWidget(MinecraftClient client, AbstractWaypointsScreen<?> screen, int width, int height, int y, int itemHeight) {
@@ -49,7 +50,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         return Optional.empty();
     }
 
-    void setIsland(String island) {
+    void setIsland(Location island) {
         this.island = island;
         waypoints = (List<WaypointGroup>) screen.waypoints.get(island);
         updateEntries();

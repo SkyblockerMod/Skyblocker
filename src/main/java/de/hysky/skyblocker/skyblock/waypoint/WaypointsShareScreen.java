@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
 import com.google.common.collect.Multimap;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import net.minecraft.client.gui.DrawContext;
@@ -19,7 +20,7 @@ import java.util.Set;
 public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScreen> {
     private final Set<NamedWaypoint> selectedWaypoints = new HashSet<>();
 
-    protected WaypointsShareScreen(WaypointsScreen parent, Multimap<String, WaypointGroup> waypoints) {
+    protected WaypointsShareScreen(WaypointsScreen parent, Multimap<Location, WaypointGroup> waypoints) {
         super(Text.translatable("skyblocker.waypoints.shareWaypoints"), parent, waypoints, parent.island);
     }
 

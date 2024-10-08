@@ -12,6 +12,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.OrderedNamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
@@ -116,7 +117,7 @@ public class OrderedWaypoints {
      */
 	private static void migrateOrderedWaypoints(Map<String, OrderedWaypointGroup> orderedWaypoints) {
 		for (OrderedWaypointGroup legacyGroup : orderedWaypoints.values()) {
-			WaypointGroup group = new WaypointGroup(legacyGroup.name, "", legacyGroup.waypoints.stream().map(waypoint -> new OrderedNamedWaypoint(waypoint.pos, "", new float[]{0, 1, 0})).collect(Collectors.toList()), true);
+			WaypointGroup group = new WaypointGroup(legacyGroup.name, Location.UNKNOWN, legacyGroup.waypoints.stream().map(waypoint -> new OrderedNamedWaypoint(waypoint.pos, "", new float[]{0, 1, 0})).collect(Collectors.toList()), true);
 			Waypoints.waypoints.put(group.island(), group);
 		}
 	}
