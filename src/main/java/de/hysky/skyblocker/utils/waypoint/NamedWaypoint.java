@@ -8,7 +8,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.text.Text;
@@ -67,6 +66,10 @@ public class NamedWaypoint extends Waypoint {
 
     public NamedWaypoint(BlockPos pos, String name, float[] colorComponents, float alpha, boolean enabled) {
         this(pos, Text.of(name), colorComponents, alpha, enabled);
+    }
+
+    public NamedWaypoint(BlockPos pos, Text name, float[] colorComponents, boolean enabled) {
+        this(pos, name, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, enabled);
     }
 
     public NamedWaypoint(BlockPos pos, Text name, float[] colorComponents, float alpha, boolean enabled) {
@@ -132,7 +135,7 @@ public class NamedWaypoint extends Waypoint {
     }
 
     protected boolean shouldRenderName() {
-        return true;
+        return shouldRender();
     }
 
     @Override
