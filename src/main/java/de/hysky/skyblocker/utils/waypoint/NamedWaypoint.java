@@ -138,7 +138,7 @@ public class NamedWaypoint extends Waypoint {
     public void render(WorldRenderContext context) {
         super.render(context);
         if (shouldRenderName()) {
-            float scale = (float) (context.camera().getPos().distanceTo(centerPos) / 10);
+            float scale = Math.max((float) context.camera().getPos().distanceTo(centerPos) / 10, 1);
             RenderHelper.renderText(context, name, centerPos.add(0, 1, 0), scale, true);
         }
     }
