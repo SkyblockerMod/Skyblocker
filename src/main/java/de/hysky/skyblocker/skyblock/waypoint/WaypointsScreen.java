@@ -25,7 +25,7 @@ public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
         gridWidget.getMainPositioner().marginX(5).marginY(2);
         GridWidget.Adder adder = gridWidget.createAdder(2);
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.share"), buttonShare -> client.setScreen(new WaypointsShareScreen(this, waypoints))).build());
-        buttonNew = adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.newCategory"), buttonNew -> waypointsListWidget.addWaypointCategoryAfterSelected()).build());
+        buttonNew = adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.newGroup"), buttonNew -> waypointsListWidget.addWaypointGroupAfterSelected()).build());
         adder.add(ButtonWidget.builder(ScreenTexts.CANCEL, button -> close()).build());
         buttonDone = adder.add(ButtonWidget.builder(ScreenTexts.DONE, button -> {
             saveWaypoints();
@@ -45,12 +45,12 @@ public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
 
     @Override
     protected boolean isEnabled(NamedWaypoint waypoint) {
-        return waypoint.shouldRender();
+        return waypoint.isEnabled();
     }
 
     @Override
     protected void enabledChanged(NamedWaypoint waypoint, boolean enabled) {
-        waypoint.setShouldRender(enabled);
+        waypoint.setEnabled(enabled);
     }
 
     private void saveWaypoints() {

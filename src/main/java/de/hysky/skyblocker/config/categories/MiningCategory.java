@@ -181,14 +181,6 @@ public class MiningCategory {
                                         newValue -> config.mining.crystalsWaypoints.enabled = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
-                        .option(Option.<Float>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.crystalsWaypoints.textScale"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalsWaypoints.textScale.@Tooltip")))
-                                .binding(defaults.mining.crystalsWaypoints.textScale,
-                                        () -> config.mining.crystalsWaypoints.textScale,
-                                        newValue -> config.mining.crystalsWaypoints.textScale = newValue)
-                                .controller(FloatFieldControllerBuilder::create)
-                                .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.crystalsWaypoints.findInChat"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalsWaypoints.findInChat.@Tooltip")))
@@ -223,14 +215,6 @@ public class MiningCategory {
                                         () -> config.mining.commissionWaypoints.mode,
                                         newValue -> config.mining.commissionWaypoints.mode = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
-                                .build())
-                        .option(Option.<Float>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.commissionWaypoints.textScale"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.commissionWaypoints.textScale.@Tooltip")))
-                                .binding(defaults.mining.commissionWaypoints.textScale,
-                                        () -> config.mining.commissionWaypoints.textScale,
-                                        newValue -> config.mining.commissionWaypoints.textScale = newValue)
-                                .controller(FloatFieldControllerBuilder::create)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.commissionWaypoints.useColor"))
