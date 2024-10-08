@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.waypoint;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.utils.InstancedUtils;
+import de.hysky.skyblocker.utils.Location;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
@@ -14,34 +15,34 @@ import java.util.stream.Collectors;
 public class WaypointGroup {
     public static final Codec<WaypointGroup> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("name").forGetter(WaypointGroup::name),
-            Codec.STRING.fieldOf("island").forGetter(WaypointGroup::island),
+            Codec.STRING.fieldOf("island").xmap(Location::from, Location::id).forGetter(WaypointGroup::island),
             NamedWaypoint.CODEC.listOf().fieldOf("waypoints").forGetter(WaypointGroup::waypoints),
             Codec.BOOL.lenientOptionalFieldOf("ordered", false).forGetter(WaypointGroup::ordered),
             Codec.INT.lenientOptionalFieldOf("currentIndex", 0).forGetter(group -> group.currentIndex)
     ).apply(instance, WaypointGroup::new));
     public static final Codec<WaypointGroup> SKYTILS_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("name").forGetter(WaypointGroup::name),
-            Codec.STRING.fieldOf("island").forGetter(WaypointGroup::island),
+            Codec.STRING.fieldOf("island").xmap(Location::from, Location::id).forGetter(WaypointGroup::island),
             NamedWaypoint.SKYTILS_CODEC.listOf().fieldOf("waypoints").forGetter(WaypointGroup::waypoints)
     ).apply(instance, WaypointGroup::new));
-    public static final Codec<WaypointGroup> COLEWEIGHT_CODEC = NamedWaypoint.COLEWEIGHT_CODEC.listOf().xmap(coleWeightWaypoints -> new WaypointGroup("Coleweight", "", coleWeightWaypoints, true), WaypointGroup::waypoints);
+    public static final Codec<WaypointGroup> COLEWEIGHT_CODEC = NamedWaypoint.COLEWEIGHT_CODEC.listOf().xmap(coleWeightWaypoints -> new WaypointGroup("Coleweight", Location.UNKNOWN, coleWeightWaypoints, true), WaypointGroup::waypoints);
     public static final int WAYPOINT_ACTIVATION_RADIUS = 2;
 
     private final String name;
-    private final String island;
+    private final Location island;
     private final List<NamedWaypoint> waypoints;
     private final boolean ordered;
     protected int currentIndex;
 
-    public WaypointGroup(String name, String island, List<NamedWaypoint> waypoints) {
+    public WaypointGroup(String name, Location island, List<NamedWaypoint> waypoints) {
         this(name, island, waypoints, false);
     }
 
-    public WaypointGroup(String name, String island, List<NamedWaypoint> waypoints, boolean ordered) {
+    public WaypointGroup(String name, Location island, List<NamedWaypoint> waypoints, boolean ordered) {
         this(name, island, waypoints, ordered, 0);
     }
 
-    public WaypointGroup(String name, String island, List<NamedWaypoint> waypoints, boolean ordered, int currentIndex) {
+    public WaypointGroup(String name, Location island, List<NamedWaypoint> waypoints, boolean ordered, int currentIndex) {
         this.name = name;
         this.island = island;
         // Set ordered first since convertWaypoint depends on it
@@ -54,7 +55,7 @@ public class WaypointGroup {
         return name;
     }
 
-    public String island() {
+    public Location island() {
         return island;
     }
 
@@ -70,7 +71,7 @@ public class WaypointGroup {
         return new WaypointGroup(name, island, waypoints, ordered, currentIndex);
     }
 
-    public WaypointGroup withIsland(String island) {
+    public WaypointGroup withIsland(Location island) {
         return new WaypointGroup(name, island, waypoints, ordered, currentIndex);
     }
 

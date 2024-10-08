@@ -45,7 +45,7 @@ public class Waypoints {
     protected static final SystemToast.Type WAYPOINTS_TOAST_TYPE = new SystemToast.Type();
 
     private static final Path waypointsFile = FabricLoader.getInstance().getConfigDir().resolve(SkyblockerMod.NAMESPACE).resolve("waypoints.json");
-    protected static final Multimap<String, WaypointGroup> waypoints = MultimapBuilder.hashKeys().arrayListValues().build();
+    protected static final Multimap<Location, WaypointGroup> waypoints = MultimapBuilder.enumKeys(Location.class).arrayListValues().build();
 
     @Init
     public static void init() {
@@ -97,7 +97,7 @@ public class Waypoints {
         return PREFIX + new String(Base64.getEncoder().encode(output.toByteArray()));
     }
 
-    public static List<WaypointGroup> fromSkytils(String waypointsString, String defaultIsland) {
+    public static List<WaypointGroup> fromSkytils(String waypointsString, Location defaultIsland) {
         try {
             if (waypointsString.startsWith("<Skytils-Waypoint-Data>(V")) {
                 int version = Integer.parseInt(waypointsString.substring(25, waypointsString.indexOf(')')));
@@ -118,7 +118,7 @@ public class Waypoints {
         return Collections.emptyList();
     }
 
-    public static List<WaypointGroup> fromSkytilsJson(String waypointGroupsString, String defaultIsland) {
+    public static List<WaypointGroup> fromSkytilsJson(String waypointGroupsString, Location defaultIsland) {
         JsonArray waypointGroupsJson;
         try {
             waypointGroupsJson = SkyblockerMod.GSON.fromJson(waypointGroupsString, JsonObject.class).getAsJsonArray("categories");
@@ -126,13 +126,13 @@ public class Waypoints {
             // Handle the case where there is only a single json list of waypoints and no group data.
             JsonObject waypointGroupJson = new JsonObject();
             waypointGroupJson.addProperty("name", "New Group");
-            waypointGroupJson.addProperty("island", defaultIsland);
+            waypointGroupJson.addProperty("island", defaultIsland.id());
             waypointGroupJson.add("waypoints", SkyblockerMod.GSON.fromJson(waypointGroupsString, JsonArray.class));
             waypointGroupsJson = new JsonArray();
             waypointGroupsJson.add(waypointGroupJson);
         }
         List<WaypointGroup> waypointGroups = SKYTILS_CODEC.parse(JsonOps.INSTANCE, waypointGroupsJson).resultOrPartial(LOGGER::error).orElseThrow();
-        return waypointGroups.stream().map(waypointGroup -> Location.from(waypointGroup.island()) == Location.UNKNOWN ? waypointGroup.withIsland(defaultIsland) : waypointGroup).toList();
+        return waypointGroups.stream().map(waypointGroup -> waypointGroup.island() == Location.UNKNOWN ? waypointGroup.withIsland(defaultIsland) : waypointGroup).toList();
     }
 
     public static String toSkytilsBase64(List<WaypointGroup> waypointGroups) {
@@ -145,23 +145,23 @@ public class Waypoints {
         return SkyblockerMod.GSON_COMPACT.toJson(waypointGroupsJson);
     }
 
-    public static WaypointGroup fromColeweightJson(String waypointsJson, String defaultIsland) {
+    public static WaypointGroup fromColeweightJson(String waypointsJson, Location defaultIsland) {
         return WaypointGroup.COLEWEIGHT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(waypointsJson)).resultOrPartial(LOGGER::error).orElseThrow().withIsland(defaultIsland);
     }
 
-    public static Multimap<String, WaypointGroup> waypointsDeepCopy() {
-        return waypoints.values().stream().map(WaypointGroup::deepCopy).collect(Multimaps.toMultimap(WaypointGroup::island, Function.identity(), () -> MultimapBuilder.hashKeys().arrayListValues().build()));
+    public static Multimap<Location, WaypointGroup> waypointsDeepCopy() {
+        return waypoints.values().stream().map(WaypointGroup::deepCopy).collect(Multimaps.toMultimap(WaypointGroup::island, Function.identity(), () -> MultimapBuilder.enumKeys(Location.class).arrayListValues().build()));
     }
 
     public static void render(WorldRenderContext context) {
         if (SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
-            for (WaypointGroup group : waypoints.get(Utils.getLocationRaw())) {
+            for (WaypointGroup group : waypoints.get(Utils.getLocation())) {
                 if (group != null) {
                     group.render(context);
                 }
             }
             if (Utils.getLocationRaw().isEmpty()) return;
-            for (WaypointGroup group : waypoints.get("")) {
+            for (WaypointGroup group : waypoints.get(Location.UNKNOWN)) {
                 if (group != null) {
                     group.render(context);
                 }
