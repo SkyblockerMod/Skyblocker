@@ -80,6 +80,18 @@ public class ItemCooldowns {
         return baseCooldown - monkeyPetCooldownReduction;
     }
 
+	// Method to handle item cooldowns with optional condition
+	private static void handleItemCooldown(String itemId, int cooldownTime, boolean additionalCondition) {
+		if (!isOnCooldown(itemId) && additionalCondition) {
+			ITEM_COOLDOWNS.put(itemId, new CooldownEntry(cooldownTime));
+		}
+	}
+
+	// Overloaded method for cases without additional conditions
+	private static void handleItemCooldown(String itemId, int cooldownTime) {
+		handleItemCooldown(itemId, cooldownTime, true);
+	}
+
     public static void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state) {
         if (!SkyblockerConfigManager.get().uiAndVisuals.itemCooldown.enableItemCooldowns) return;
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
@@ -95,55 +107,40 @@ public class ItemCooldowns {
     }
 
     private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity player, World world, Hand hand) {
-        if (!SkyblockerConfigManager.get().uiAndVisuals.itemCooldown.enableItemCooldowns)
-            return TypedActionResult.pass(ItemStack.EMPTY);
-        String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
-        if (usedItemId.equals(GRAPPLING_HOOK_ID) && player.fishHook != null) {
-            if (!isOnCooldown(GRAPPLING_HOOK_ID) && !isWearingBatArmor(player)) {
-                ITEM_COOLDOWNS.put(GRAPPLING_HOOK_ID, new CooldownEntry(2000));
-            }
-        }
-		if (usedItemId.equals(ROGUE_SWORD_ID)) {
-			if (!isOnCooldown(ROGUE_SWORD_ID)) {
-				ITEM_COOLDOWNS.put(ROGUE_SWORD_ID, new CooldownEntry(5000));
-			}
+		if (!SkyblockerConfigManager.get().uiAndVisuals.itemCooldown.enableItemCooldowns)
+			return TypedActionResult.pass(ItemStack.EMPTY);
+		String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
+		switch (usedItemId) {
+			case GRAPPLING_HOOK_ID:
+				if (player.fishHook != null) {
+					handleItemCooldown(GRAPPLING_HOOK_ID, 2000, !isWearingBatArmor(player));
+				}
+				break;
+			case ROGUE_SWORD_ID:
+			case SPIRIT_LEAP_ID:
+			case LIVID_DAGGER_ID:
+				handleItemCooldown(usedItemId, 5000);
+				break;
+			case SILK_EDGE_SWORD_ID:
+			case LEAPING_SWORD_ID:
+				handleItemCooldown(usedItemId, 1000);
+				break;
+			case INK_WAND_ID:
+				handleItemCooldown(INK_WAND_ID, 30000);
+				break;
+			case GREAT_SPOOK_STAFF_ID:
+				handleItemCooldown(GREAT_SPOOK_STAFF_ID, 60000);
+				break;
+			case GIANTS_SWORD_ID:
+				handleItemCooldown(GIANTS_SWORD_ID, 30000);
+				break;
+			case SHADOW_FURY_ID:
+				handleItemCooldown(SHADOW_FURY_ID, 15000);
+				break;
+			default:
+				// Handle any unlisted items if necessary
+				break;
 		}
-		if (usedItemId.equals(INK_WAND_ID)) {
-			if (!isOnCooldown(INK_WAND_ID)) {
-				ITEM_COOLDOWNS.put(INK_WAND_ID, new CooldownEntry(30000));
-			}
-		}
-		if (usedItemId.equals(SILK_EDGE_SWORD_ID) || usedItemId.equals(LEAPING_SWORD_ID)) {
-			if (!isOnCooldown(SILK_EDGE_SWORD_ID) || !isOnCooldown(LEAPING_SWORD_ID)) {
-				ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry(1000));
-			}
-		}
-		if (usedItemId.equals(GREAT_SPOOK_STAFF_ID)) {
-			if (!isOnCooldown(GREAT_SPOOK_STAFF_ID)) {
-				ITEM_COOLDOWNS.put(GREAT_SPOOK_STAFF_ID, new CooldownEntry(60000));
-			}
-		}
-		if (usedItemId.equals(SPIRIT_LEAP_ID)) {
-			if (!isOnCooldown(SPIRIT_LEAP_ID)) {
-				ITEM_COOLDOWNS.put(SPIRIT_LEAP_ID, new CooldownEntry(5000));
-			}
-		}
-		if (usedItemId.equals(SHADOW_FURY_ID)) {
-			if (!isOnCooldown(SHADOW_FURY_ID)) {
-				ITEM_COOLDOWNS.put(SHADOW_FURY_ID, new CooldownEntry(15000));
-			}
-		}
-		if (usedItemId.equals(GIANTS_SWORD_ID)) {
-			if (!isOnCooldown(GIANTS_SWORD_ID)) {
-				ITEM_COOLDOWNS.put(GIANTS_SWORD_ID, new CooldownEntry(30000));
-			}
-		}
-		if (usedItemId.equals(LIVID_DAGGER_ID)) {
-			if (!isOnCooldown(LIVID_DAGGER_ID)) {
-				ITEM_COOLDOWNS.put(LIVID_DAGGER_ID, new CooldownEntry(5000));
-			}
-		}
-
         return TypedActionResult.pass(ItemStack.EMPTY);
     }
 
