@@ -25,7 +25,15 @@ public class ItemCooldowns {
     private static final String TREECAPITATOR_ID = "TREECAPITATOR_AXE";
     private static final String GRAPPLING_HOOK_ID = "GRAPPLING_HOOK";
 	private static final String ROGUE_SWORD_ID = "ROGUE_SWORD";
+	private static final String LEAPING_SWORD_ID = "LEAPING_SWORD";
+	private static final String SILK_EDGE_SWORD_ID = "SILK_EDGE_SWORD";
+	private static final String GREAT_SPOOK_STAFF_ID = "GREAT_SPOOK_STAFF";
+	private static final String SPIRIT_LEAP_ID = "SPIRIT_LEAP";
+	private static final String GIANTS_SWORD_ID = "GIANTS_SWORD";
+	private static final String SHADOW_FURY_ID = "SHADOW_FURY";
+	private static final String LIVID_DAGGER_ID = "LIVID_DAGGER";
 	private static final String INK_WAND_ID = "INK_WAND";
+
     private static final List<String> BAT_ARMOR_IDS = List.of("BAT_PERSON_HELMET", "BAT_PERSON_CHESTPLATE", "BAT_PERSON_LEGGINGS", "BAT_PERSON_BOOTS");
     private static final Map<String, CooldownEntry> ITEM_COOLDOWNS = new HashMap<>();
     private static final int[] EXPERIENCE_LEVELS = {
@@ -103,6 +111,36 @@ public class ItemCooldowns {
 		if (usedItemId.equals(INK_WAND_ID)) {
 			if (!isOnCooldown(INK_WAND_ID)) {
 				ITEM_COOLDOWNS.put(INK_WAND_ID, new CooldownEntry(30000));
+			}
+		}
+		if (usedItemId.equals(SILK_EDGE_SWORD_ID) || usedItemId.equals(LEAPING_SWORD_ID)) {
+			if (!isOnCooldown(SILK_EDGE_SWORD_ID) || !isOnCooldown(LEAPING_SWORD_ID)) {
+				ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry(1000));
+			}
+		}
+		if (usedItemId.equals(GREAT_SPOOK_STAFF_ID)) {
+			if (!isOnCooldown(GREAT_SPOOK_STAFF_ID)) {
+				ITEM_COOLDOWNS.put(GREAT_SPOOK_STAFF_ID, new CooldownEntry(60000));
+			}
+		}
+		if (usedItemId.equals(SPIRIT_LEAP_ID)) {
+			if (!isOnCooldown(SPIRIT_LEAP_ID)) {
+				ITEM_COOLDOWNS.put(SPIRIT_LEAP_ID, new CooldownEntry(5000));
+			}
+		}
+		if (usedItemId.equals(SHADOW_FURY_ID)) {
+			if (!isOnCooldown(SHADOW_FURY_ID)) {
+				ITEM_COOLDOWNS.put(SHADOW_FURY_ID, new CooldownEntry(15000));
+			}
+		}
+		if (usedItemId.equals(GIANTS_SWORD_ID)) {
+			if (!isOnCooldown(GIANTS_SWORD_ID)) {
+				ITEM_COOLDOWNS.put(GIANTS_SWORD_ID, new CooldownEntry(30000));
+			}
+		}
+		if (usedItemId.equals(LIVID_DAGGER_ID)) {
+			if (!isOnCooldown(LIVID_DAGGER_ID)) {
+				ITEM_COOLDOWNS.put(LIVID_DAGGER_ID, new CooldownEntry(5000));
 			}
 		}
 
