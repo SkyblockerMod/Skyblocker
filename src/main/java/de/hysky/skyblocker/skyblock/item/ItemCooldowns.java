@@ -80,18 +80,6 @@ public class ItemCooldowns {
         return baseCooldown - monkeyPetCooldownReduction;
     }
 
-	// Method to handle item cooldowns with optional condition
-	private static void handleItemCooldown(String itemId, int cooldownTime, boolean additionalCondition) {
-		if (!isOnCooldown(itemId) && additionalCondition) {
-			ITEM_COOLDOWNS.put(itemId, new CooldownEntry(cooldownTime));
-		}
-	}
-
-	// Overloaded method for cases without additional conditions
-	private static void handleItemCooldown(String itemId, int cooldownTime) {
-		handleItemCooldown(itemId, cooldownTime, true);
-	}
-
     public static void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state) {
         if (!SkyblockerConfigManager.get().uiAndVisuals.itemCooldown.enableItemCooldowns) return;
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
@@ -111,31 +99,27 @@ public class ItemCooldowns {
 			return TypedActionResult.pass(ItemStack.EMPTY);
 		String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
 		switch (usedItemId) {
+			case SILK_EDGE_SWORD_ID:
+			case LEAPING_SWORD_ID:
+				handleItemCooldown(usedItemId, 1000);
+				break;
 			case GRAPPLING_HOOK_ID:
-				if (player.fishHook != null) {
-					handleItemCooldown(GRAPPLING_HOOK_ID, 2000, !isWearingBatArmor(player));
-				}
+					handleItemCooldown(GRAPPLING_HOOK_ID, 2000, player.fishHook != null && !isWearingBatArmor(player));
 				break;
 			case ROGUE_SWORD_ID:
 			case SPIRIT_LEAP_ID:
 			case LIVID_DAGGER_ID:
 				handleItemCooldown(usedItemId, 5000);
 				break;
-			case SILK_EDGE_SWORD_ID:
-			case LEAPING_SWORD_ID:
-				handleItemCooldown(usedItemId, 1000);
+			case SHADOW_FURY_ID:
+				handleItemCooldown(SHADOW_FURY_ID, 15000);
 				break;
 			case INK_WAND_ID:
-				handleItemCooldown(INK_WAND_ID, 30000);
+			case GIANTS_SWORD_ID:
+				handleItemCooldown(usedItemId, 30000);
 				break;
 			case GREAT_SPOOK_STAFF_ID:
 				handleItemCooldown(GREAT_SPOOK_STAFF_ID, 60000);
-				break;
-			case GIANTS_SWORD_ID:
-				handleItemCooldown(GIANTS_SWORD_ID, 30000);
-				break;
-			case SHADOW_FURY_ID:
-				handleItemCooldown(SHADOW_FURY_ID, 15000);
 				break;
 			default:
 				// Handle any unlisted items if necessary
@@ -143,6 +127,18 @@ public class ItemCooldowns {
 		}
         return TypedActionResult.pass(ItemStack.EMPTY);
     }
+
+	// Method to handle item cooldowns with optional condition
+	private static void handleItemCooldown(String itemId, int cooldownTime, boolean additionalCondition) {
+		if (!isOnCooldown(itemId) && additionalCondition) {
+			ITEM_COOLDOWNS.put(itemId, new CooldownEntry(cooldownTime));
+		}
+	}
+
+	// Overloaded method for cases without additional conditions
+	private static void handleItemCooldown(String itemId, int cooldownTime) {
+		handleItemCooldown(itemId, cooldownTime, true);
+	}
 
     public static boolean isOnCooldown(ItemStack itemStack) {
         return isOnCooldown(ItemUtils.getItemId(itemStack));
