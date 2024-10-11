@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -43,6 +44,7 @@ public class FarmingHud {
     private static final Queue<FloatLongPair> farmingXp = new ArrayDeque<>();
     private static float farmingXpPercentProgress;
 
+    @Init
     public static void init() {
         HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
             if (shouldRender()) {

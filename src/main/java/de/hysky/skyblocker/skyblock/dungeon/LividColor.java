@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -56,6 +57,7 @@ public class LividColor {
     private static final long OFFSET_DURATION = 2000;
     private static long toggleTime = 0;
 
+    @Init
     public static void init() {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> LividColor.reset());
         WorldRenderEvents.AFTER_ENTITIES.register(LividColor::update);

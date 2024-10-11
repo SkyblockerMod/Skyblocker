@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -58,7 +59,8 @@ public class GoldorWaypointsManager {
     // The current set of terminals, each phase is delimited by a gate
     private static short currentPhase = 0;
 
-    public static void init() {
+	@Init
+	public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(GoldorWaypointsManager::render);
         ClientLifecycleEvents.CLIENT_STARTED.register(GoldorWaypointsManager::load);
         ClientReceiveMessageEvents.GAME.register(GoldorWaypointsManager::onChatMessage);

@@ -7,6 +7,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
@@ -53,6 +54,7 @@ public class EventNotifications {
             Map.entry("Traveling Zoo", new ItemStack(Items.HAY_BLOCK)) // change to the custom head one day
     );
 
+    @Init
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(EventNotifications::timeUpdate, 20);
 

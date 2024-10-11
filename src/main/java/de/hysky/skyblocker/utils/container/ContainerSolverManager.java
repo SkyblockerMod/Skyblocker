@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.container;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
@@ -63,6 +64,7 @@ public class ContainerSolverManager {
 		return currentSolver;
 	}
 
+	@Init
 	public static void init() {
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
@@ -111,6 +113,10 @@ public class ContainerSolverManager {
 
 	public static void markHighlightsDirty() {
 		highlights = null;
+
+		if (currentSolver != null) {
+			currentSolver.markDirty();
+		}
 	}
 
 	/**
@@ -133,7 +139,7 @@ public class ContainerSolverManager {
 		RenderSystem.colorMask(true, true, true, true);
 	}
 
-	private static Int2ObjectMap<ItemStack> slotMap(List<Slot> slots) {
+	public static Int2ObjectMap<ItemStack> slotMap(List<Slot> slots) {
 		Int2ObjectMap<ItemStack> slotMap = new Int2ObjectRBTreeMap<>();
 		for (int i = 0; i < slots.size(); i++) {
 			slotMap.put(i, slots.get(i).getStack());

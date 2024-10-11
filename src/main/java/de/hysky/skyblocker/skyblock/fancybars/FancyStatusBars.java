@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.fancybars;
 
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
@@ -27,8 +28,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class FancyStatusBars {
@@ -51,6 +52,7 @@ public class FancyStatusBars {
         return experience.anchor != null || experience.inMouse;
     }
 
+    @Init
     public static void init() {
         statusBars.put("health", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/health"),
                 new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)},
@@ -64,18 +66,24 @@ public class FancyStatusBars {
         statusBars.put("experience", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/experience"),
                 new Color[]{new Color(100, 230, 70)},
                 false, new Color(128, 255, 32), Text.translatable("skyblocker.bars.config.experience")));
+        statusBars.put("speed", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/speed"),
+                new Color[]{new Color(255, 255, 255)},
+                false, new Color(185, 185, 185), Text.translatable("skyblocker.bars.config.speed")));
 
         // Fetch from old status bar config
         int[] counts = new int[3]; // counts for RIGHT, LAYER1, LAYER2
         StatusBar health = statusBars.get("health");
-        UIAndVisualsConfig.OldBarPositions barPositions = SkyblockerConfigManager.get().uiAndVisuals.bars.barPositions;
-        loadOldBarPosition(health, counts, barPositions.healthBarPosition);
+        @SuppressWarnings("deprecation")
+        UIAndVisualsConfig.LegacyBarPositions barPositions = SkyblockerConfigManager.get().uiAndVisuals.bars.barPositions;
+        initBarPosition(health, counts, barPositions.healthBarPosition);
         StatusBar intelligence = statusBars.get("intelligence");
-        loadOldBarPosition(intelligence, counts, barPositions.manaBarPosition);
+        initBarPosition(intelligence, counts, barPositions.manaBarPosition);
         StatusBar defense = statusBars.get("defense");
-        loadOldBarPosition(defense, counts, barPositions.defenceBarPosition);
+        initBarPosition(defense, counts, barPositions.defenceBarPosition);
         StatusBar experience = statusBars.get("experience");
-        loadOldBarPosition(experience, counts, barPositions.experienceBarPosition);
+        initBarPosition(experience, counts, barPositions.experienceBarPosition);
+        StatusBar speed = statusBars.get("speed");
+        initBarPosition(speed, counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
 
         CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig).thenAccept(object -> {
             if (object != null) {
@@ -108,12 +116,12 @@ public class FancyStatusBars {
     }
 
     /**
-     * Loads the bar position from the old config
+     * Loads the bar position from the old config. Should be used to initialize new bars too.
      * @param bar the bar to load the position for
      * @param counts the counts for each bar position (LAYER1, LAYER2, RIGHT)
      * @param position the position to load
      */
-    private static void loadOldBarPosition(StatusBar bar, int[] counts, UIAndVisualsConfig.OldBarPosition position) {
+    private static void initBarPosition(StatusBar bar, int[] counts, UIAndVisualsConfig.LegacyBarPosition position) {
         switch (position) {
             case RIGHT:
                 bar.anchor = BarPositioner.BarAnchor.HOTBAR_RIGHT;
@@ -304,6 +312,8 @@ public class FancyStatusBars {
         statusBars.get("intelligence").updateValues(intelligence.value() / (float) intelligence.max(), intelligence.overflow() / (float) intelligence.max(), intelligence.value());
         int defense = statusBarTracker.getDefense();
         statusBars.get("defense").updateValues(defense / (defense + 100.f), 0, defense);
+        StatusBarTracker.Resource speed = statusBarTracker.getSpeed();
+        statusBars.get("speed").updateValues(speed.value() / (float) speed.max(), 0, speed.value());
         statusBars.get("experience").updateValues(player.experienceProgress, 0, player.experienceLevel);
         return true;
     }

@@ -11,8 +11,8 @@
   "key.wikiLookup": "Wiki Lookup",
   "key.itemProtection": "Protect Item",
   "key.skyblocker.slottext": "Slot Text",
-  "key.bazaarLookup": "Bazaar Lookup",
-  "key.bazaarRefresh": "Bazaar Refresh",
+  "key.itemPriceLookup": "Bazaar Lookup",
+  "key.itemPriceRefresh": "Bazaar Refresh",
 
 
   "text.skyblocker.open": "Open",
@@ -343,14 +343,6 @@
   "skyblocker.config.helpers.bazaar": "Bazaar",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Draws icons on top of orders to explain the current state of the order.\n\n%s: Order is going to expire soon\n%s: Order has expired\n%s: Order is filled to some degree and there are items/coins to claim\n%s: Order is filled",
-  "skyblocker.config.helpers.bazaar.enableBazaarLookup": "Enable Bazaar Lookup",
-  "skyblocker.config.helpers.bazaar.enableBazaarLookup.@Tooltip": "Searches the Bazaar for the current hovered item with the F6 key.",
-  "skyblocker.config.helpers.bazaar.bazaarLookupFailed": "Failed to find item in the Bazaar",
-  "skyblocker.config.helpers.bazaar.enableRefreshItemPrices": "Enable Bazaar Refresh",
-  "skyblocker.config.helpers.bazaar.enableRefreshItemPrices.@Tooltip": "Refresh the Bazaar prices with the Z key.",
-  "skyblocker.config.helpers.bazaar.refreshingItemPrices": "Refreshing Item Prices...",
-  "skyblocker.config.helpers.bazaar.refreshedItemPrices": "Refreshed Item Prices",
-  "skyblocker.config.helpers.bazaar.refreshItemPricesFailed": "Item Prices Refresh Failed.",
 
   "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",
@@ -368,6 +360,9 @@
 
   "skyblocker.config.helpers.enableNewYearCakesHelper": "Enable New Year Cakes Helper",
   "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "Highlights the missing new year cakes green and the cakes you have already red.\n\nRequires you to open your cake bag at least once to work.",
+
+  "skyblocker.config.helpers.enableWardrobeHelper": "Enable Wardrobe Helper",
+  "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing armor from the wardrobe by pressing hotbar keys 1-9 while the menu is open. The corresponding armor set in the wardrobe menu will be equipped.",
 
   "skyblocker.config.helpers.experiments": "Experiments Solver",
   "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Enable Chronomatron Solver",
@@ -391,10 +386,18 @@
   "skyblocker.config.helpers.fishing.hideOtherPlayers": "Hide Other Players Rods",
   "skyblocker.config.helpers.fishing.hideOtherPlayers.@Tooltip": "Hide other players' fishing rods from showing for you",
 
+  "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "Enable Item Price Lookup",
+  "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Searches the Bazaar and AH for the current hovered item with the F6 key.",
+  "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "Failed to find item in the Bazaar and Auction House",
+  "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "Enable Item Price Refresh",
+  "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "Refresh the Bazaar and AH prices with the Z key.",
+  "skyblocker.config.helpers.itemPrice.refreshingItemPrices": "Refreshing Item Prices...",
+  "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "Refreshed Item Prices",
+  "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "Item Prices Refresh Failed.",
+
   "skyblocker.config.helpers.jerry": "Jerry",
   "skyblocker.config.helpers.jerry.enableJerryTimer": "Enable Jerry Timer",
   "skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip": "Sends a message in chat and plays a sound when the hidden jerry spawn cooldown is over.",
-
 
   "skyblocker.config.helpers.mythologicalRitual": "Mythological Ritual Helper",
   "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "Enable Mythological Ritual Helper",
@@ -451,6 +454,8 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling": "Pling",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie": "Zombie",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.true": "True",
+  "skyblocker.config.chat.waypoints.display": "[Display Waypoint]",
+
 
   "skyblocker.config.chat.filter": "Filter",
   "skyblocker.config.chat.filter.chatFilterResult.ACTION_BAR": "Move to action bar",
@@ -656,6 +661,9 @@
   "skyblocker.config.slayer.blazeSlayer.attunementHighlights" : "Attunement Highlights",
   "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "If Boss Highlighting is on, applies a color matching the current attunement to the selected effect.",
 
+  "skyblocker.config.slayer.bossbar": "Slayer Bossbar",
+  "skyblocker.config.slayer.bossbar.@Tooltip": "Displays a bossbar for your active slayer boss",
+
   "skyblocker.config.slayer.endermanSlayer": "Enderman Slayer",
   "skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification": "Enable Yang Glyphs notification",
   "skyblocker.config.slayer.endermanSlayer.highlightBeacons": "Beacon Highlighting",
@@ -699,7 +707,7 @@
 
   "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "Hide Status Effect Overlay",
 
-  "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defence & XP Bars",
+  "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defence, Speed & XP Bars",
   "skyblocker.config.uiAndVisuals.bars.enableBars": "Enable Bars",
 
   "skyblocker.config.uiAndVisuals.chestValue": "Chest Value",
@@ -818,6 +826,7 @@
   "skyblocker.bars.config.defense": "Defense",
   "skyblocker.bars.config.intelligence": "Intelligence",
   "skyblocker.bars.config.experience": "Experience",
+  "skyblocker.bars.config.speed": "Speed",
   "skyblocker.bars.config.mainColor": "Main Color",
   "skyblocker.bars.config.overflowColor": "Overflow Color",
   "skyblocker.bars.config.textColor": "Text Color",
@@ -1027,7 +1036,7 @@
   "skyblocker.tips.eventNotifications": "Check out the customizable event notifications in the config.",
   "skyblocker.tips.signCalculator": "Type an math expression in a sign to have the mod calculate it for you.",
   "skyblocker.tips.calculateCommand": "Enter an expression after /skyblocker calculate to have the mod calculate it for you.",
-  "skyblocker.tips.fancierBars": "Customize the look of your health, mana, defense, and experience bars with /skyblocker bars. You can snap and resize bars too!",
+  "skyblocker.tips.fancierBars": "Customize the look of your health, mana, defense, speed, and experience bars with /skyblocker bars. You can snap and resize bars too!",
   "skyblocker.tips.crystalWaypointsShare": "Share Crystal Hollows Waypoints with /skyblocker crystalWaypoints share.",
   "skyblocker.tips.gardenMouseLock": "Lock your mouse while farming in the Skyblocker Garden config.",
   "skyblocker.tips.newYearCakesHelper": "Open your New Year Cake Bag and Skyblocker will remember them and highlight duplicate cakes red and missing cakes green.",

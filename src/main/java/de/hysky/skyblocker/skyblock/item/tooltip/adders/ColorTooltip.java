@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.component.DataComponentTypes;
@@ -13,13 +13,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 
 public class ColorTooltip extends SimpleTooltipAdder {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ColorTooltip.class);
 	private static final long WITHER_GLITCHED_AFTER_DATE = 1605830400000L;
 
 	public ColorTooltip(int priority) {
@@ -69,12 +65,11 @@ public class ColorTooltip extends SimpleTooltipAdder {
 	}
 
 	private static String getExpectedHex(String id) {
-		String color = TooltipInfoType.COLOR.getData().get(id).getAsString();
+		String color = TooltipInfoType.COLOR.getData().get(id);
 		if (color != null) {
 			String[] RGBValues = color.split(",");
 			return String.format("%02X%02X%02X", Integer.parseInt(RGBValues[0]), Integer.parseInt(RGBValues[1]), Integer.parseInt(RGBValues[2]));
 		} else {
-			LOGGER.warn("[Skyblocker Exotics] No expected color data found for id {}", id);
 			return null;
 		}
 	}

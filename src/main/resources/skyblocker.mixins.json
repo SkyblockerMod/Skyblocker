@@ -7,6 +7,7 @@
     "AbstractInventoryScreenMixin",
     "BackgroundRendererMixin",
     "BatEntityMixin",
+    "BossBarHudMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldMixin",
@@ -55,7 +56,8 @@
     "accessors.SkullBlockEntityAccessor",
     "accessors.SlotAccessor",
     "accessors.WorldRendererAccessor",
-    "discordipc.ConnectionMixin"
+    "discordipc.ConnectionMixin",
+    "jgit.SystemReaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

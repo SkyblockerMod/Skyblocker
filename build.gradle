@@ -1,7 +1,8 @@
 plugins {
 	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
-	id "me.modmuss50.mod-publish-plugin" version "0.5.1"
+	id "me.modmuss50.mod-publish-plugin" version "0.7.2"
+	id "de.hysky.skyblocker.annotation-processor"
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -226,7 +227,7 @@ java {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${base.archivesName.get()}"}
+		rename { "${it}_${base.archivesName.get()}" }
 	}
 }
 
@@ -248,7 +249,8 @@ publishMods {
 		minecraftVersions.add(minecraft_version)
 		announcementTitle = "<:modrinth:1237114573354438696> Download from Modrinth"
 		requires("fabric-api")
-		optional("modmenu", "rei", "emi")
+		optional("modmenu", "rei", "emi", "jei")
+		embeds("yacl")
 	}
 
 	curseforge {
@@ -258,13 +260,14 @@ publishMods {
 		announcementTitle = "<:curseforge:900697838453936149> Download from CurseForge"
 		projectSlug = "skyblocker"
 		requires("fabric-api")
-		optional("roughly-enough-items", "emi")
+		optional("roughly-enough-items", "emi", "jei")
+		embeds("yacl")
 	}
 
 	discord {
 		webhookUrl = System.getenv("DISCORD_WEBHOOK")
 		username = "Changelog"
-		content = changelog.map { "<@&1134565945482948638>\n## ${displayName}\n" + it}
+		content = changelog.map { "<@&1134565945482948638>\n## Skyblocker v${mod_version} for ${minecraft_version}\n" + it}
 	}
 }
 

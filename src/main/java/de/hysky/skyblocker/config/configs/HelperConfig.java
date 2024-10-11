@@ -9,6 +9,9 @@ public class HelperConfig {
     public boolean enableNewYearCakesHelper = true;
 
     @SerialEntry
+    public boolean enableWardrobeHelper = true;
+
+    @SerialEntry
     public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
     @SerialEntry
@@ -28,6 +31,9 @@ public class HelperConfig {
 
     @SerialEntry
     public Bazaar bazaar = new Bazaar();
+
+    @SerialEntry
+    public ItemPrice itemPrice = new ItemPrice();
 
     public static class MythologicalRitual {
         @SerialEntry
@@ -101,11 +107,13 @@ public class HelperConfig {
     public static class Bazaar {
         @SerialEntry
         public boolean enableBazaarHelper = true;
+    }
+
+    public static class ItemPrice {
+        @SerialEntry
+        public boolean enableItemPriceLookup = true;
 
         @SerialEntry
-        public boolean enableBazaarLookup = true;
-
-        @SerialEntry
-        public boolean enableBazaarRefresh = true;
+        public boolean enableItemPriceRefresh = true;
     }
 }

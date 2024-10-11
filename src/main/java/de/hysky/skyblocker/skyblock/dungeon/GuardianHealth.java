@@ -1,9 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -19,12 +16,17 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class GuardianHealth {
     private static final Box bossRoom = new Box(34, 65, -32, -32, 100, 36);
     private static final Pattern guardianRegex = Pattern.compile("^(.*?) Guardian (.*?)([A-Za-z])❤$");
     private static final Pattern professorRegex = Pattern.compile("^﴾ The Professor (.*?)([A-za-z])❤ ﴿$");
     private static boolean inBoss;
 
+    @Init
     public static void init() {
         ClientReceiveMessageEvents.GAME.register(GuardianHealth::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> GuardianHealth.reset());

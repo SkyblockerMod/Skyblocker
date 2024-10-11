@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.OtherLocationsConfig;
 import de.hysky.skyblocker.utils.ColorUtils;
@@ -49,6 +50,7 @@ public class Relics {
     private static int totalRelics = 0;
     private static final Map<BlockPos, ProfileAwareWaypoint> relics = new HashMap<>();
 
+    @Init
     public static void init() {
         ClientLifecycleEvents.CLIENT_STARTED.register(Relics::loadRelics);
         ClientLifecycleEvents.CLIENT_STOPPING.register(Relics::saveFoundRelics);

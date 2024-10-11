@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -37,6 +38,7 @@ public class CrystalsChestHighlighter {
     private static int currentLockCount = 0;
     private static int neededLockCount = 0;
 
+    @Init
     public static void init() {
         ClientReceiveMessageEvents.GAME.register(CrystalsChestHighlighter::extractLocationFromMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(CrystalsChestHighlighter::render);

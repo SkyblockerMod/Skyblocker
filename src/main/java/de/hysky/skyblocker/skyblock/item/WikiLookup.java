@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -21,6 +22,7 @@ public class WikiLookup {
     private static final Logger LOGGER = LoggerFactory.getLogger(WikiLookup.class);
     public static KeyBinding wikiLookup;
 
+    @Init
     public static void init() {
         wikiLookup = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.wikiLookup",

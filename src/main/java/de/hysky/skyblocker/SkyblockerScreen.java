@@ -1,5 +1,6 @@
 package de.hysky.skyblocker;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.Tips;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -45,6 +46,7 @@ public class SkyblockerScreen extends Screen {
 		super(TITLE);
 	}
 
+	@Init
 	public static void initClass() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)

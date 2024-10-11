@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.MinecraftClient;
@@ -26,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen.fetchCollectionsData;
 import static de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils.COMMA_FORMATTER;
 
 public class GenericCategory implements ProfileViewerPage {
@@ -45,16 +45,13 @@ public class GenericCategory implements ProfileViewerPage {
     private final String[] ROMAN_NUMERALS = {"-", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
 
     public GenericCategory(JsonObject hProfile, JsonObject pProfile, String collection) {
-        Map<String, Map<String, ?>> fetchedData = fetchCollectionsData();
-        //noinspection unchecked
-        collectionsMap = (Map<String, String[]>) fetchedData.get("COLLECTIONS");
-        //noinspection unchecked
-        tierRequirementsMap = (Map<String, IntList>) fetchedData.get("TIER_REQS");
+        collectionsMap = ProfileViewerScreen.getCollections();
+        tierRequirementsMap = ProfileViewerScreen.getTierRequirements();
         this.category = collection;
         setupItemStacks(hProfile, pProfile);
     }
 
-    private int calculateTier(int achieved, IntList requirements) {
+    private int calculateTier(long achieved, IntList requirements) {
         return (int) requirements.intStream().filter(req -> achieved >= req).count();
     }
 
@@ -75,13 +72,13 @@ public class GenericCategory implements ProfileViewerPage {
             itemStack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(Formatting.strip(itemStack.getComponents().get(DataComponentTypes.CUSTOM_NAME).getString())).setStyle(style));
 
 
-            int personalColl = playerCollection != null && playerCollection.has(collection) ? playerCollection.get(collection).getAsInt() : 0;
+            long personalColl = playerCollection != null && playerCollection.has(collection) ? playerCollection.get(collection).getAsLong() : 0;
 
-            int totalCollection = 0;
+            long totalCollection = 0;
             for (String member : hProfile.get("members").getAsJsonObject().keySet()) {
                 if (!hProfile.getAsJsonObject("members").getAsJsonObject(member).has("collection")) continue;
                 JsonObject memberColl = hProfile.getAsJsonObject("members").getAsJsonObject(member).getAsJsonObject("collection");
-                totalCollection += memberColl.has(collection) ? memberColl.get(collection).getAsInt() : 0;
+                totalCollection += memberColl.has(collection) ? memberColl.get(collection).getAsLong() : 0;
             }
 
             int collectionTier = calculateTier(totalCollection, tierRequirementsMap.get(collection));
@@ -93,7 +90,7 @@ public class GenericCategory implements ProfileViewerPage {
 
             if (hProfile.get("members").getAsJsonObject().keySet().size() > 1) {
                 lore.add(Text.literal("Personal: " + COMMA_FORMATTER.format(personalColl)).setStyle(style).formatted(Formatting.GOLD));
-                lore.add(Text.literal("Co-op Collection: " + COMMA_FORMATTER.format(totalCollection-personalColl)).setStyle(style).formatted(Formatting.AQUA));
+                lore.add(Text.literal("Co-op: " + COMMA_FORMATTER.format(totalCollection-personalColl)).setStyle(style).formatted(Formatting.AQUA));
             }
             lore.add(Text.literal("Collection: " + COMMA_FORMATTER.format(totalCollection)).setStyle(style).formatted(Formatting.YELLOW));
 

@@ -1,17 +1,19 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.util.NEUId;
 import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.block.entity.SignBlockEntity;
@@ -68,6 +70,7 @@ public class SearchOverManager {
     /**
      * uses the skyblock api and Moulberry auction to load a list of items in bazaar and auction house
      */
+    @Init
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register(SearchOverManager::registerSearchCommands);
         NEURepoManager.runAsyncAfterLoad(SearchOverManager::loadItems);
@@ -100,41 +103,39 @@ public class SearchOverManager {
         try {
             if (TooltipInfoType.BAZAAR.getData() == null) TooltipInfoType.BAZAAR.run();
 
-            JsonObject products = TooltipInfoType.BAZAAR.getData();
-            for (Map.Entry<String, JsonElement> entry : products.entrySet()) {
-                if (entry.getValue().isJsonObject()) {
-                    JsonObject product = entry.getValue().getAsJsonObject();
-                    String id = product.get("id").getAsString();
-                    int sellVolume = product.get("sellVolume").getAsInt();
-                    if (sellVolume == 0)
-                        continue; //do not add items that do not sell e.g. they are not actual in the bazaar
-                    Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(id);
-                    if (matcher.matches()) {//format enchantments
-                        //remove ultimate if in name
-                        String name = matcher.group(1);
-                        if (!name.contains("WISE")) { //only way found to remove ultimate from everything but ultimate wise
-                            name = name.replace("ULTIMATE_", "");
-                        }
-                        name = name.replace("_", " ");
-                        name = capitalizeFully(name);
-                        int enchantLevel = Integer.parseInt(matcher.group(2));
-                        String level = "";
-                        if (enchantLevel > 0) {
-                            level = ROMAN_NUMERALS[enchantLevel - 1];
-                        }
-                        bazaarItems.add(name + " " + level);
-                        namesToId.put(name + " " + level, matcher.group(1) + ";" + matcher.group(2));
-                        continue;
-                    }
-                    //look up id for name
-                    NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
-                    if (neuItem != null) {
-                        String name = Formatting.strip(neuItem.getDisplayName());
-                        bazaarItems.add(name);
-                        namesToId.put(name, id);
-                        continue;
-                    }
-                }
+            Object2ObjectMap<String, BazaarProduct> products = TooltipInfoType.BAZAAR.getData();
+            for (Map.Entry<String, BazaarProduct> entry : products.entrySet()) {
+                BazaarProduct product = entry.getValue();
+            	String id = product.id();
+            	int sellVolume = product.sellVolume();
+            	if (sellVolume == 0)
+            		continue; //do not add items that do not sell e.g. they are not actual in the bazaar
+            	Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(id);
+            	if (matcher.matches()) {//format enchantments
+            		//remove ultimate if in name
+            		String name = matcher.group(1);
+            		if (!name.contains("WISE")) { //only way found to remove ultimate from everything but ultimate wise
+            			name = name.replace("ULTIMATE_", "");
+            		}
+            		name = name.replace("_", " ");
+            		name = capitalizeFully(name);
+            		int enchantLevel = Integer.parseInt(matcher.group(2));
+            		String level = "";
+            		if (enchantLevel > 0) {
+            			level = ROMAN_NUMERALS[enchantLevel - 1];
+            		}
+            		bazaarItems.add(name + " " + level);
+            		namesToId.put(name + " " + level, matcher.group(1) + ";" + matcher.group(2));
+            		continue;
+            	}
+            	//look up id for name
+            	NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
+            	if (neuItem != null) {
+            		String name = Formatting.strip(neuItem.getDisplayName());
+            		bazaarItems.add(name);
+            		namesToId.put(name, id);
+            		continue;
+            	}
             }
         } catch (Exception e) {
             LOGGER.error("[Skyblocker] Failed to load bazaar item list! ", e);
@@ -146,7 +147,7 @@ public class SearchOverManager {
             if (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
                 TooltipInfoType.THREE_DAY_AVERAGE.run();
             }
-            for (Map.Entry<String, JsonElement> entry : TooltipInfoType.THREE_DAY_AVERAGE.getData().entrySet()) {
+            for (Object2DoubleMap.Entry<String> entry : TooltipInfoType.THREE_DAY_AVERAGE.getData().object2DoubleEntrySet()) {
                 String id = entry.getKey();
                 //look up in NEU repo.
                 id = id.split("[+-]")[0];
@@ -182,7 +183,7 @@ public class SearchOverManager {
      *
      * @param str string to capitalize
      */
-    private static String capitalizeFully(String str) {
+    public static String capitalizeFully(String str) {
         if (str == null || str.isEmpty()) {
             return str;
         }

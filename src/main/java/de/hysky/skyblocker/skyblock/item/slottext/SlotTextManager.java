@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -11,6 +13,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.math.MatrixStack;
@@ -53,10 +56,11 @@ public class SlotTextManager {
 	private SlotTextManager() {
 	}
 
+	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-			if (screen instanceof HandledScreen<?> handledScreen && Utils.isOnSkyblock()) {
-				onScreenChange(handledScreen);
+			if ((screen instanceof HandledScreen<?> && Utils.isOnSkyblock()) || screen instanceof ProfileViewerScreen) {
+				onScreenChange(screen);
 				ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
 			}
 			ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
@@ -73,7 +77,7 @@ public class SlotTextManager {
 		});
 	}
 
-	private static void onScreenChange(HandledScreen<?> screen) {
+	private static void onScreenChange(Screen screen) {
 		for (SlotTextAdder adder : adders) {
 			if (adder.isEnabled() && adder.test(screen)) {
 				currentScreenAdders.add(adder);

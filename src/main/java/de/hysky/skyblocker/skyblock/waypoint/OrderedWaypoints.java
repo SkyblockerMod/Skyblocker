@@ -11,6 +11,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.ColorUtils;
@@ -71,6 +72,7 @@ public class OrderedWaypoints {
 	private static CompletableFuture<Void> loaded;
 	private static boolean showAll;
 
+	@Init
 	public static void init() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(_client -> load());
 		ClientLifecycleEvents.CLIENT_STOPPING.register(_client -> save());

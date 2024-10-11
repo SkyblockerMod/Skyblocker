@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
@@ -69,6 +70,7 @@ public class CrystalsLocationsManager {
     protected static List<String> verifiedWaypoints = new ArrayList<>();
     private static List<MiningLocationLabel.CrystalHollowsLocationsCategory> waypointsSent2Socket = new ArrayList<>();
 
+    @Init
     public static void init() {
         // Crystal Hollows Waypoints
         Scheduler.INSTANCE.scheduleCyclic(CrystalsLocationsManager::update, 40);
@@ -322,12 +324,12 @@ public class CrystalsLocationsManager {
     }
 
     public static void addCustomWaypointFromSocket(MiningLocationLabel.CrystalHollowsLocationsCategory category, BlockPos pos) {
-        if (activeWaypoints.containsKey(category.name())) return;
+        if (activeWaypoints.containsKey(category.getName())) return;
 
         removeUnknownNear(pos);
         MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
         waypointsSent2Socket.add(category);
-        activeWaypoints.put(category.name(), waypoint);
+        activeWaypoints.put(category.getName(), waypoint);
         CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.webSocket.receivedCrystalsWaypoint", Text.literal(category.getName()).withColor(category.getColor()))));
     }
 

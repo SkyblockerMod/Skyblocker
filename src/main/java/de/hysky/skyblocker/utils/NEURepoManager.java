@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils;
 
 import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -42,6 +43,7 @@ public class NEURepoManager {
      * <p></p>
      * TODO A button could be added to the settings menu that will trigger this command.
      */
+    @Init
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
                 dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)

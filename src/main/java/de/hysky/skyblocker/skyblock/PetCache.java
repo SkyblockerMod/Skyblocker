@@ -6,6 +6,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -41,6 +43,7 @@ public class PetCache {
 	 */
 	private static boolean shouldLook4Pets;
 
+	@Init
 	public static void init() {
 		load();
 
@@ -135,9 +138,6 @@ public class PetCache {
 	}
 
 	public record PetInfo(String type, double exp, String tier, Optional<String> uuid, Optional<String> item, Optional<String> skin) {
-		// TODO: Combine with SkyblockItemRarity
-		private static final String[] TIER_INDEX = {"COMMON", "UNCOMMON", "RARE", "EPIC", "LEGENDARY", "MYTHIC"};
-
 		public static final Codec<PetInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("type").forGetter(PetInfo::type),
 				Codec.DOUBLE.fieldOf("exp").forGetter(PetInfo::exp),
@@ -151,7 +151,7 @@ public class PetCache {
 		).xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new);
 
 		public int tierIndex() {
-			return ArrayUtils.indexOf(TIER_INDEX, tier);
+			return SkyblockItemRarity.valueOf(tier).ordinal();
 		}
 	}
 }

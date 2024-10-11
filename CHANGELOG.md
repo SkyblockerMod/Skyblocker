@@ -1,3 +1,39 @@
+# Release 1.22.2
+
+## Highlight
+* Fix Egg Finder bugs
+* Backend stuff
+
+## What's Changed
+* Fix Egg Finder bugs by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/978
+* Block JGit from loading the system Git config by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/980
+* mod publish upload changes  by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/977
+* Update NEU repo parser to 1.6.0 by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/982
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.22.1...v1.22.2
+___
+# Release 1.22.1
+
+## Highlight
+* Display Slot Text and Protected Items in PV
+* Request Profile Id if we don't receive it
+* Fix Ultrasequencer Bugs
+* Fix NoSuchElementException with modelless Abicases
+* Fix PV Collections Crash
+* Fix WebSocket bugs
+
+## What's Changed
+* Fix Ultrasequencer Bugs by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/942
+* Fix NoSuchElementException with modelless Abicases by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/953
+* Slot Text and Item Protection support for the PV by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/954
+* Request Profile Id if we don't receive it by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/947
+* [Pv & SlayerHighlight] Fixes and improvements by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/952
+* Tooltip Info Rework + Performance improvements by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/957
+* Fix PV Collections Crash by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/959
+* Fix WebSocket bugs by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/964
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.22.0...v1.22.1
+___
 # Release 1.22.0
 
 ## Highlight

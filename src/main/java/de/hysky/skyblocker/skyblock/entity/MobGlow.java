@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.entity;
 
 import com.google.common.collect.Streams;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
@@ -39,6 +40,7 @@ public class MobGlow {
 	private static final ConcurrentHashMap<Entity, CacheEntry> glowCache = new ConcurrentHashMap<>();
 	private static final ConcurrentHashMap<Entity, CacheEntry> canSeeCache = new ConcurrentHashMap<>();
 
+	@Init
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(MobGlow::clearCache, 300 * 20);
 	}
@@ -75,10 +77,11 @@ public class MobGlow {
 	}
 
 	private static boolean computeShouldMobGlow(Entity entity) {
-		String name = entity.getName().getString();
 
 		// Dungeons
 		if (Utils.isInDungeons()) {
+			String name = entity.getName().getString();
+
 			return switch (entity) {
 
 				// Minibosses
@@ -99,7 +102,7 @@ public class MobGlow {
 		return switch (entity) {
 
 			// Rift Blobbercyst
-			case PlayerEntity p when Utils.isInTheRift() && name.equals("Blobbercyst ") -> SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow;
+			case PlayerEntity p when Utils.isInTheRift() && p.getName().getString().equals("Blobbercyst ") -> SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow;
 
 			// Dojo Helpers
 			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmorStandName(zombie));

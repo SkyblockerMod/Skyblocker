@@ -1,32 +1,31 @@
 package de.hysky.skyblocker.utils;
 
+import com.google.gson.JsonParser;
+import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.mixins.accessors.MinecraftClientAccessor;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.minecraft.SharedConstants;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.session.ProfileKeys;
+import net.minecraft.network.encryption.PlayerKeyPair;
+import net.minecraft.text.Text;
+import net.minecraft.util.Uuids;
+import net.minecraft.util.dynamic.Codecs;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+
 import java.nio.ByteBuffer;
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.UUID;
-
-import de.hysky.skyblocker.mixins.accessors.MinecraftClientAccessor;
-import net.minecraft.client.session.ProfileKeys;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-
-import com.google.gson.JsonParser;
-import com.mojang.logging.LogUtils;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.SharedConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.encryption.PlayerKeyPair;
-import net.minecraft.text.Text;
-import net.minecraft.util.Uuids;
-import net.minecraft.util.dynamic.Codecs;
 
 /**
  * This class is responsible for communicating with the API to retrieve a fully custom token used to gain access to more privileged APIs
@@ -43,6 +42,7 @@ public class ApiAuthentication {
 
 	private static TokenInfo tokenInfo = null;
 
+	@Init
 	public static void init() {
 		//Update token after the profileKeys instance is initialized
 		ClientLifecycleEvents.CLIENT_STARTED.register(_client -> updateToken());

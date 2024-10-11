@@ -1,5 +1,13 @@
 package de.hysky.skyblocker.utils.ws;
 
+import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.ApiAuthentication;
+import de.hysky.skyblocker.utils.Http;
+import org.slf4j.Logger;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
@@ -15,16 +23,6 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.slf4j.Logger;
-
-import com.mojang.logging.LogUtils;
-
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.ApiAuthentication;
-import de.hysky.skyblocker.utils.Http;
-import net.minecraft.util.Util;
-
 public class SkyblockerWebSocket {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final String WS_URL = "wss://ws.hysky.de";
@@ -39,6 +37,7 @@ public class SkyblockerWebSocket {
 
 	private static volatile WebSocket socket;
 
+	@Init
 	public static void init() {
 		SkyblockEvents.JOIN.register(() -> {
 			if (!isConnectionOpen()) setupSocket();
@@ -130,8 +129,7 @@ public class SkyblockerWebSocket {
 		}
 
 		private void handleWholeMessage(List<CharSequence> parts) {
-			StringBuilder builder = Util.make(new StringBuilder(), sb -> parts.forEach(sb::append));
-			String message = builder.toString();
+			String message = String.join("", parts);
 
 			if (Debug.debugEnabled() && Debug.webSocketDebug()) LOGGER.info("[Skyblocker WebSocket] Received Message: {}", message);
 

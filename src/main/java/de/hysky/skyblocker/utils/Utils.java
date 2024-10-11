@@ -3,9 +3,12 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.util.UndashedUuid;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.azureaaron.hmapi.data.rank.PackageRank;
@@ -25,7 +28,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.*;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
@@ -68,6 +70,11 @@ public class Utils {
      */
     @NotNull
     private static String profileId = "";
+    /**
+     * The server from which we last received the profile id message from.
+     */
+    @NotNull
+    private static int profileIdRequest = 0;
     /**
      * The following fields store data returned from the Mod API: {@link #environment}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
      */
@@ -202,6 +209,7 @@ public class Utils {
         return rank;
     }
 
+    @Init
     public static void init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
@@ -344,24 +352,7 @@ public class Utils {
         }
     }
 
-    // TODO: Combine with `ChocolateFactorySolver.formatTime` and move into `SkyblockTime`.
-    public static Text getDurationText(int timeInSeconds) {
-        int seconds = timeInSeconds % 60;
-        int minutes = (timeInSeconds / 60) % 60;
-        int hours = (timeInSeconds / 3600);
-
-        MutableText time = Text.empty();
-        if (hours > 0) {
-            time.append(hours + "h").append(" ");
-        }
-        if (hours > 0 || minutes > 0) {
-            time.append(minutes + "m").append(" ");
-        }
-        time.append(seconds + "s");
-        return time;
-    }
-
-    private static void updateFromPlayerList(MinecraftClient client) {
+	private static void updateFromPlayerList(MinecraftClient client) {
         if (client.getNetworkHandler() == null) {
             return;
         }
@@ -408,6 +399,7 @@ public class Utils {
 
                 if (Utils.gameType.equals("SKYBLOCK")) {
                     isOnSkyblock = true;
+                    tickProfileId();
 
                     if (!previousServerType.equals("SKYBLOCK")) SkyblockEvents.JOIN.invoker().onSkyblockJoin();
                 } else if (previousServerType.equals("SKYBLOCK")) {
@@ -438,6 +430,23 @@ public class Utils {
 
             default -> {} //Do Nothing
         }
+    }
+
+    /**
+     * After 8 seconds of having swapped servers we check if we've been sent the profile id message on
+     * this server and if we haven't then we send the /profileid command.
+     */
+    private static void tickProfileId() {
+        profileIdRequest++;
+
+        Scheduler.INSTANCE.schedule(new Runnable() {
+            private final int requestId = profileIdRequest;
+
+		    @Override
+		    public void run() {
+		        if (requestId == profileIdRequest) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid");
+		    }
+        }, 20 * 8); //8 seconds
     }
 
     /**
@@ -488,6 +497,8 @@ public class Utils {
             } else if (message.startsWith(PROFILE_ID_PREFIX)) {
                 String prevProfileId = profileId;
                 profileId = message.substring(PROFILE_ID_PREFIX.length());
+                profileIdRequest++;
+
                 if (!prevProfileId.equals(profileId)) {
                     SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
                 }

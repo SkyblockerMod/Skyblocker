@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonParser;
 import com.mojang.util.UndashedUuid;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Http.ApiResponse;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -20,6 +21,7 @@ public class ApiUtils {
 	 */
 	private static final Object2ObjectOpenHashMap<String, String> NAME_2_UUID_CACHE = new Object2ObjectOpenHashMap<>();
 
+	@Init
 	public static void init() {
 		//Clear cache every 20 minutes
 		Scheduler.INSTANCE.scheduleCyclic(NAME_2_UUID_CACHE::clear, 24_000, true);

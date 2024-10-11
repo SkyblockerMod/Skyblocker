@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -18,6 +19,7 @@ public class GlaciteColdOverlay {
     private static int cold = 0;
     private static long resetTime = System.currentTimeMillis();
 
+    @Init
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(GlaciteColdOverlay::update, 20);
         ClientReceiveMessageEvents.GAME.register(GlaciteColdOverlay::coldReset);

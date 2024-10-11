@@ -5,8 +5,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.util.UndashedUuid;
+
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.mixins.accessors.SkullBlockEntityAccessor;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.profileviewer.collections.CollectionsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.dungeons.DungeonsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.InventoryPage;
@@ -16,12 +18,12 @@ import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntImmutableList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -34,12 +36,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -50,10 +50,11 @@ public class ProfileViewerScreen extends Screen {
     public static final Logger LOGGER = LoggerFactory.getLogger(ProfileViewerScreen.class);
     private static final Text TITLE = Text.of("Skyblocker Profile Viewer");
     private static final String HYPIXEL_COLLECTIONS = "https://api.hypixel.net/v2/resources/skyblock/collections";
-    private static final Object2ObjectOpenHashMap<String, Map<String, ?>> COLLECTIONS_CACHE = new Object2ObjectOpenHashMap<>();
     private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/base_plate.png");
     private static final int GUI_WIDTH = 322;
     private static final int GUI_HEIGHT = 180;
+    private static Map<String, String[]> COLLECTIONS;
+    private static Map<String, IntList> TIER_REQUIREMENTS;
 
     private String playerName;
     private JsonObject hypixelProfile;
@@ -147,35 +148,46 @@ public class ProfileViewerScreen extends Screen {
             }
         });
 
-        CompletableFuture<Void> minecraftProfileFuture = SkullBlockEntityAccessor.invokeFetchProfileByName(username).thenAccept(profile -> {
-            this.playerName = profile.get().getName();
-            entity = new OtherClientPlayerEntity(MinecraftClient.getInstance().world, profile.get()) {
-                @Override
-                public SkinTextures getSkinTextures() {
-                    PlayerListEntry playerListEntry = new PlayerListEntry(profile.get(), false);
-                    return playerListEntry.getSkinTextures();
-                }
+        CompletableFuture<Void> playerFuture = CompletableFuture.runAsync(() -> {
+    		String stringifiedUuid = ApiUtils.name2Uuid(username);
 
-                @Override
-                public boolean isPartVisible(PlayerModelPart modelPart) {
-                    return !(modelPart.getName().equals(PlayerModelPart.CAPE.getName()));
-                }
+    		if (stringifiedUuid.isEmpty()) {
+                this.playerName = "User not found";
+                this.profileNotFound = true;
+    		}
 
-                @Override
-                public boolean isInvisibleTo(PlayerEntity player) {
-                    return true;
-                }
-            };
-            entity.setCustomNameVisible(false);
-        }).exceptionally(ex -> {
-            this.playerName = "User not found";
-            this.profileNotFound = true;
-            return null;
-        });
+    		UUID uuid = UndashedUuid.fromStringLenient(stringifiedUuid);
 
-        return CompletableFuture.allOf(profileFuture, minecraftProfileFuture);
+    		//The fetch by name method can sometimes fail in weird cases and return a fake offline player
+    		SkullBlockEntity.fetchProfileByUuid(uuid).thenAccept(profile -> {
+                this.playerName = profile.get().getName();
+                entity = new OtherClientPlayerEntity(MinecraftClient.getInstance().world, profile.get()) {
+                    @Override
+                    public SkinTextures getSkinTextures() {
+                        PlayerListEntry playerListEntry = new PlayerListEntry(profile.get(), false);
+                        return playerListEntry.getSkinTextures();
+                    }
+
+                    @Override
+                    public boolean isPartVisible(PlayerModelPart modelPart) {
+                        return !(modelPart.getName().equals(PlayerModelPart.CAPE.getName()));
+                    }
+
+                    @Override
+                    public boolean isInvisibleTo(PlayerEntity player) {
+                        return true;
+                    }
+                };
+                entity.setCustomNameVisible(false);
+    		}).exceptionally(ex -> {
+                this.playerName = "User not found";
+                this.profileNotFound = true;
+                return null;
+            }).join();
+    	});
+
+        return CompletableFuture.allOf(profileFuture, playerFuture);
     }
-
 
     public void onNavButtonClick(ProfileViewerNavButton clickedButton) {
         if (profileViewerPages[activePage] != null) profileViewerPages[activePage].markWidgetsAsInvisible();
@@ -198,11 +210,12 @@ public class ProfileViewerScreen extends Screen {
         }
     }
 
+    @Init
     public static void initClass() {
         fetchCollectionsData(); // caching on launch
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            LiteralArgumentBuilder<FabricClientCommandSource> literalArgumentBuilder =  ClientCommandManager.literal("pv")
+            LiteralArgumentBuilder<FabricClientCommandSource> literalArgumentBuilder = ClientCommandManager.literal("pv")
                     .then(ClientCommandManager.argument("username", StringArgumentType.string())
                             .suggests((source, builder) -> CommandSource.suggestMatching(getPlayerSuggestions(source.getSource()), builder))
                             .executes(Scheduler.queueOpenScreenFactoryCommand(context -> new ProfileViewerScreen(StringArgumentType.getString(context, "username"))))
@@ -213,35 +226,41 @@ public class ProfileViewerScreen extends Screen {
         });
     }
 
-    @NotNull
-    public static Map<String, Map<String, ?>> fetchCollectionsData() {
-        if (!COLLECTIONS_CACHE.isEmpty()) return COLLECTIONS_CACHE;
-        try {
-            JsonObject jsonObject = JsonParser.parseString(Http.sendGetRequest(HYPIXEL_COLLECTIONS)).getAsJsonObject();
-            if (jsonObject.get("success").getAsBoolean()) {
-                Map<String, String[]> collectionsMap = new HashMap<>();
-                Map<String, IntList> tierRequirementsMap = new HashMap<>();
-                JsonObject collections = jsonObject.getAsJsonObject("collections");
-                collections.entrySet().forEach(entry -> {
-                    String category = entry.getKey();
-                    JsonObject itemsObject = entry.getValue().getAsJsonObject().getAsJsonObject("items");
-                    String[] items = itemsObject.keySet().toArray(new String[0]);
-                    collectionsMap.put(category, items);
-                    itemsObject.entrySet().forEach(itemEntry -> {
-                        IntList tierReqs = new IntArrayList();
-                        itemEntry.getValue().getAsJsonObject().getAsJsonArray("tiers").forEach(req ->
-                                tierReqs.add(req.getAsJsonObject().get("amountRequired").getAsInt()));
-                        tierRequirementsMap.put(itemEntry.getKey(), tierReqs);
+    private static void fetchCollectionsData() {
+        CompletableFuture.runAsync(() -> {
+            try {
+                JsonObject jsonObject = JsonParser.parseString(Http.sendGetRequest(HYPIXEL_COLLECTIONS)).getAsJsonObject();
+                if (jsonObject.get("success").getAsBoolean()) {
+                    Map<String, String[]> collectionsMap = new HashMap<>();
+                    Map<String, IntList> tierRequirementsMap = new HashMap<>();
+                    JsonObject collections = jsonObject.getAsJsonObject("collections");
+                    collections.entrySet().forEach(entry -> {
+                        String category = entry.getKey();
+                        JsonObject itemsObject = entry.getValue().getAsJsonObject().getAsJsonObject("items");
+                        String[] items = itemsObject.keySet().toArray(new String[0]);
+                        collectionsMap.put(category, items);
+                        itemsObject.entrySet().forEach(itemEntry -> {
+                            IntImmutableList tierReqs = IntImmutableList.toList(itemEntry.getValue().getAsJsonObject().getAsJsonArray("tiers").asList().stream()
+                                    .mapToInt(tier -> tier.getAsJsonObject().get("amountRequired").getAsInt())
+                            );
+                            tierRequirementsMap.put(itemEntry.getKey(), tierReqs);
+                        });
                     });
-                });
-                COLLECTIONS_CACHE.put("COLLECTIONS", collectionsMap);
-                COLLECTIONS_CACHE.put("TIER_REQS", tierRequirementsMap);
-                return COLLECTIONS_CACHE;
+                    COLLECTIONS = collectionsMap;
+                    TIER_REQUIREMENTS = tierRequirementsMap;
+                }
+            } catch (Exception e) {
+                LOGGER.error("[Skyblocker Profile Viewer] Failed to fetch collections data", e);
             }
-        } catch (IOException | InterruptedException e) {
-            LOGGER.error("[Skyblocker Profile Viewer] Failed to fetch collections data", e);
-        }
-        return Collections.emptyMap();
+        });
+    }
+
+    public static Map<String, String[]> getCollections() {
+        return COLLECTIONS;
+    }
+
+    public static Map<String, IntList> getTierRequirements() {
+        return TIER_REQUIREMENTS;
     }
 
     /**

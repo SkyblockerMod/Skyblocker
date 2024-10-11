@@ -7,6 +7,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.text.Text;
@@ -114,7 +115,8 @@ public class NamedWaypoint extends Waypoint {
     public void render(WorldRenderContext context) {
         super.render(context);
         if (shouldRenderName()) {
-            RenderHelper.renderText(context, name, centerPos.add(0, 1, 0), true);
+            float scale = (float) (context.camera().getPos().distanceTo(centerPos) / 10);
+            RenderHelper.renderText(context, name, centerPos.add(0, 1, 0), scale, true);
         }
     }
 

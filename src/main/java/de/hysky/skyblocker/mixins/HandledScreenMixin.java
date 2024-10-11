@@ -2,19 +2,16 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.PetCache;
-import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
-import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
-import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
-import de.hysky.skyblocker.skyblock.item.WikiLookup;
+import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
@@ -127,13 +124,13 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			if (ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
 				ItemProtection.handleKeyPressed(this.focusedSlot.getStack());
 			}
-			//Bazaar Lookup
-			if (config.helpers.bazaar.enableBazaarLookup && BazaarHelper.BAZAAR_LOOKUP.matchesKey(keyCode, scanCode)) {
-				BazaarHelper.bazaarLookup(client.player, this.focusedSlot);
+			//Item Price Lookup
+			if (config.helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(keyCode, scanCode)) {
+				ItemPrice.itemPriceLookup(client.player, this.focusedSlot);
 			}
 			//Refresh Item Prices
-			if (config.helpers.bazaar.enableBazaarRefresh && BazaarHelper.BAZAAR_REFRESH.matchesKey(keyCode, scanCode)) {
-				BazaarHelper.refreshItemPrices(this.client.player);
+			if (config.helpers.itemPrice.enableItemPriceRefresh && ItemPrice.ITEM_PRICE_REFRESH.matchesKey(keyCode, scanCode)) {
+				ItemPrice.refreshItemPrices(this.client.player);
 			}
 		}
 	}
@@ -201,7 +198,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	}
 
 	@ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)
-	private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, DrawContext context, Slot slot) {
+	private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, @Local(argsOnly = true) Slot slot) {
 		return skyblocker$experimentSolvers$getStack(slot, stack);
 	}
 
@@ -219,8 +216,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 */
 	@Unique
 	private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack, ContainerSolver currentSolver) {
-		if ((currentSolver instanceof SuperpairsSolver || currentSolver instanceof UltrasequencerSolver) && ((ExperimentSolver) currentSolver).getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
-			ItemStack itemStack = ((ExperimentSolver) currentSolver).getSlots().get(slot.getIndex());
+		if (currentSolver instanceof ExperimentSolver experimentSolver && (experimentSolver instanceof SuperpairsSolver || experimentSolver instanceof UltrasequencerSolver) && experimentSolver.getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
+			ItemStack itemStack = experimentSolver.getSlots().get(slot.getIndex());
 			return itemStack == null ? stack : itemStack;
 		}
 		return stack;
