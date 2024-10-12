@@ -104,7 +104,7 @@ public class GoldorWaypointsManager {
     }
 
     /**
-     * Given a list of waypoints to operate on and a player name, hide the visible waypoint that is closest to the player
+     * Given a list of waypoints to operate on and a player name, hides the visible waypoint that is closest to the player
      *
      * @param waypoints  The list of waypoints to operate on
      * @param playerName The name of the player to check against

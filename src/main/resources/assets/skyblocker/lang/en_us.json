@@ -67,7 +67,6 @@
   "skyblocker.config.dungeons.goldorWaypoints": "Goldor Tasks Waypoints (F7/M7)",
   "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Enable waypoints for terminals/devices/levers during Goldor",
   "skyblocker.config.dungeons.goldorWaypoints.waypointType": "Task waypoint type",
-  "skyblocker.config.dungeons.goldorWaypoints.waypointType.@Tooltip": "Waypoint: Displays a highlight and a beacon beam.\n\nOutlined Waypoint: Displays both a waypoint and an outline.\n\nHighlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
 
   "skyblocker.config.dungeons.devices": "Device Solvers (F7/M7)",
   "skyblocker.config.dungeons.devices.solveLightsOn": "Solve Lights On",

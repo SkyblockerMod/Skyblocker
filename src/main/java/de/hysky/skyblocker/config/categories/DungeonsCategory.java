@@ -319,7 +319,7 @@ public class DungeonsCategory {
                                 .build())
                         .option(Option.<Type>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.goldorWaypoints.waypointType"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.goldorWaypoints.waypointType.@Tooltip")))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip")))
                                 .binding(defaults.dungeons.goldor.waypointType,
                                         () -> config.dungeons.goldor.waypointType,
                                         newValue -> config.dungeons.goldor.waypointType = newValue)
