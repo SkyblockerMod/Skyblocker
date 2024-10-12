@@ -7,8 +7,10 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,16 +54,24 @@ public class GlaciteColdOverlay {
         cold = 0;
     }
 
+    /**
+     * @see InGameHud#renderOverlay as this is a carbon copy of it
+     */
     private static void renderOverlay(DrawContext context, Identifier texture, float opacity) {
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthMask(false);
-        RenderSystem.enableBlend();
-        context.setShaderColor(1.0f, 1.0f, 1.0f, opacity);
-        context.drawTexture(texture, 0, 0, -90, 0.0f, 0.0f, context.getScaledWindowWidth(), context.getScaledWindowHeight(), context.getScaledWindowWidth(), context.getScaledWindowHeight());
-        RenderSystem.disableBlend();
-        RenderSystem.depthMask(true);
-        RenderSystem.enableDepthTest();
-        context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+		int i = ColorHelper.getWhite(opacity);
+		context.drawTexture(
+			RenderLayer::getGuiTexturedOverlay,
+			texture,
+			0,
+			0,
+			0.0F,
+			0.0F,
+			context.getScaledWindowWidth(),
+			context.getScaledWindowHeight(),
+			context.getScaledWindowWidth(),
+			context.getScaledWindowHeight(),
+			i
+		);
     }
 
     public static void render(DrawContext context) {

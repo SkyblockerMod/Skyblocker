@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
@@ -134,7 +135,8 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         for (Slot equipmentSlot : equipmentSlots) {
             drawSlot(context, equipmentSlot);
-            if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) drawSlotHighlight(context, equipmentSlot.x, equipmentSlot.y, 0);
+            //FIXME maybe this is not needed?
+            //if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) drawSlotHighlight(context, equipmentSlot.x, equipmentSlot.y, 0);
         }
 
         super.drawForeground(context, mouseX, mouseY);
@@ -164,7 +166,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
         super.drawBackground(context, delta, mouseX, mouseY);
         for (int i = 0; i < 4; i++) {
-            context.drawGuiTexture(SLOT_TEXTURE, x + 76 + (i == 3 ? 21 : 0), y + 7 + i * 18, 18, 18);
+            context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, x + 76 + (i == 3 ? 21 : 0), y + 7 + i * 18, 18, 18);
         }
     }
 
@@ -172,7 +174,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     protected void drawSlot(DrawContext context, Slot slot) {
         super.drawSlot(context, slot);
         if (slot instanceof EquipmentSlot && !slot.hasStack()) {
-            context.drawGuiTexture(EMPTY_SLOT, slot.x, slot.y, 16, 16);
+            context.drawGuiTexture(RenderLayer::getGuiTextured, EMPTY_SLOT, slot.x, slot.y, 16, 16);
         }
     }
 

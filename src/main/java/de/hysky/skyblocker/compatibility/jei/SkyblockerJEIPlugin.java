@@ -47,7 +47,8 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(@NotNull IRecipeRegistration registration) {
-        registration.getIngredientManager().addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ItemRepository.getItems());
+    	//FIXME no clue what to replace any of this with, we can't use items as that does not work
+        /*registration.getIngredientManager().addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ItemRepository.getItems());
         registration.addRecipes(skyblockCraftingRecipeCategory.getRecipeType(), ItemRepository.getRecipesStream().map(recipe ->
                 new RecipeEntry<CraftingRecipe>(recipe.getId(), new ShapedRecipe("", CraftingRecipeCategory.MISC, RawShapedRecipe.create(Map.of(
                         'a', Ingredient.ofStacks(recipe.getGrid().get(0)),
@@ -60,6 +61,6 @@ public class SkyblockerJEIPlugin implements IModPlugin {
                         'h', Ingredient.ofStacks(recipe.getGrid().get(7)),
                         'i', Ingredient.ofStacks(recipe.getGrid().get(8))
                 ), "abc", "def", "ghi"), recipe.getResult()))
-        ).toList());
+        ).toList());*/
     }
 }

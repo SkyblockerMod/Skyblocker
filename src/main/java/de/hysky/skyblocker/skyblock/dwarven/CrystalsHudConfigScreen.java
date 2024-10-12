@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class CrystalsHudConfigScreen extends HudConfigScreen {
     protected void renderWidget(DrawContext context, List<Widget> widgets) {
         int size = CrystalsHud.getDimensionsForConfig();
         WIDGET.setDimensions(size);
-        context.drawTexture(CrystalsHud.MAP_TEXTURE, WIDGET.getX(), WIDGET.getY(), 0, 0, size, size, size, size);
+        context.drawTexture(RenderLayer::getGuiTextured, CrystalsHud.MAP_TEXTURE, WIDGET.getX(), WIDGET.getY(), 0, 0, size, size, size, size);
     }
 
     @Override

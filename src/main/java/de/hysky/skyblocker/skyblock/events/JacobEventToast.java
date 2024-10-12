@@ -4,7 +4,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.toast.ToastManager;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -23,11 +23,10 @@ public class JacobEventToast extends EventToast {
     }
 
     @Override
-    public Visibility draw(DrawContext context, ToastManager manager, long startTime) {
-        context.drawGuiTexture(TEXTURE, 0, 0, getWidth(), getHeight());
+    public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
+        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 0, 0, getWidth(), getHeight());
 
         int y = (getHeight() - getInnerContentsHeight()) / 2;
-        TextRenderer textRenderer = manager.getClient().textRenderer;
         MatrixStack matrices = context.getMatrices();
         if (startTime < 3_000) {
             int k = MathHelper.floor(Math.clamp((3_000 - startTime) / 200.0f, 0.0f, 1.0f) * 255.0f) << 24 | 0x4000000;
@@ -55,6 +54,6 @@ public class JacobEventToast extends EventToast {
 
         context.drawItemWithoutEntity(icon, 8, getHeight() / 2 - 8);
         matrices.pop();
-        return startTime > 5_000 ? Visibility.HIDE : Visibility.SHOW;
+        //return startTime > 5_000 ? Visibility.HIDE : Visibility.SHOW;
     }
 }

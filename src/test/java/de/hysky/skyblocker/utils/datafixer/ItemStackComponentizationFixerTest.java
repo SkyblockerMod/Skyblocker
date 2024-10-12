@@ -26,7 +26,7 @@ public class ItemStackComponentizationFixerTest {
 	private final ItemStack TEST_STACK = Util.make(new ItemStack(Items.DIAMOND_SWORD, 1), item -> {
 		ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(ItemEnchantmentsComponent.DEFAULT);
 
-		builder.add(ItemStackComponentizationFixer.getRegistryLookup().getWrapperOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
+		builder.add(ItemStackComponentizationFixer.getRegistryLookup().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
 		item.set(DataComponentTypes.ENCHANTMENTS, builder.build());
 	});
 

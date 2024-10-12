@@ -72,13 +72,13 @@ public class Reparty extends ChatPatternListener {
 
 					Scheduler.INSTANCE.schedule(() -> this.repartying = false, count * BASE_DELAY);
 				} else {
-					CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.reparty.notInPartyOrNotLeader")));
+					CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.reparty.notInPartyOrNotLeader")), false);
 					this.repartying = false;
 				}
 			}
 
 			case ErrorS2CPacket(var id, var error) when id.equals(PartyInfoS2CPacket.ID) && this.repartying -> {
-				CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.reparty.error")));
+				CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.reparty.error")), false);
 				LOGGER.error("[Skyblocker Reparty] The party info packet returned an unexpected error! {}", error);
 
 				this.repartying = false;

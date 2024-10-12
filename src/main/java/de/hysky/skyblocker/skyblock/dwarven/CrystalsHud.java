@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
@@ -70,7 +71,7 @@ public class CrystalsHud {
         matrices.scale(scale, scale, 0f);
 
         //draw map texture
-        context.drawTexture(MAP_TEXTURE, 0, 0, 0, 0, 62, 62, 62, 62);
+        context.drawTexture(RenderLayer::getGuiTextured, MAP_TEXTURE, 0, 0, 0, 0, 62, 62, 62, 62);
 
         //if enabled add waypoint locations to map
         if (SkyblockerConfigManager.get().mining.crystalsHud.showLocations) {
@@ -109,7 +110,7 @@ public class CrystalsHud {
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(yaw2Cardinal(playerRotation)), 2.5f, 3.5f, 0);
 
         //draw marker on map
-        context.drawTexture(MAP_ICON, 0, 0, 2, 0, 5, 7, 8, 8);
+        context.drawTexture(RenderLayer::getGuiTextured, MAP_ICON, 0, 0, 2, 0, 5, 7, 8, 8);
         matrices.pop();
     }
 

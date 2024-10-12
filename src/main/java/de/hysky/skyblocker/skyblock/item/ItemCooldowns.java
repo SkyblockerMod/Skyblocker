@@ -11,8 +11,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -94,38 +94,21 @@ public class ItemCooldowns {
         }
     }
 
-    private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity player, World world, Hand hand) {
+    private static ActionResult onItemInteract(PlayerEntity player, World world, Hand hand) {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.itemCooldown.enableItemCooldowns)
-			return TypedActionResult.pass(ItemStack.EMPTY);
+			return ActionResult.PASS;
 		String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
 		switch (usedItemId) {
-			case SILK_EDGE_SWORD_ID:
-			case LEAPING_SWORD_ID:
-				handleItemCooldown(usedItemId, 1000);
-				break;
-			case GRAPPLING_HOOK_ID:
-					handleItemCooldown(GRAPPLING_HOOK_ID, 2000, player.fishHook != null && !isWearingBatArmor(player));
-				break;
-			case ROGUE_SWORD_ID:
-			case SPIRIT_LEAP_ID:
-			case LIVID_DAGGER_ID:
-				handleItemCooldown(usedItemId, 5000);
-				break;
-			case SHADOW_FURY_ID:
-				handleItemCooldown(SHADOW_FURY_ID, 15000);
-				break;
-			case INK_WAND_ID:
-			case GIANTS_SWORD_ID:
-				handleItemCooldown(usedItemId, 30000);
-				break;
-			case GREAT_SPOOK_STAFF_ID:
-				handleItemCooldown(GREAT_SPOOK_STAFF_ID, 60000);
-				break;
-			default:
-				// Handle any unlisted items if necessary
-				break;
+			case SILK_EDGE_SWORD_ID, LEAPING_SWORD_ID -> handleItemCooldown(usedItemId, 1000);
+			case GRAPPLING_HOOK_ID -> handleItemCooldown(GRAPPLING_HOOK_ID, 2000, player.fishHook != null && !isWearingBatArmor(player));
+			case ROGUE_SWORD_ID, SPIRIT_LEAP_ID, LIVID_DAGGER_ID -> handleItemCooldown(usedItemId, 5000);
+			case SHADOW_FURY_ID -> handleItemCooldown(SHADOW_FURY_ID, 15000);
+			case INK_WAND_ID, GIANTS_SWORD_ID -> handleItemCooldown(usedItemId, 30000);
+			case GREAT_SPOOK_STAFF_ID -> handleItemCooldown(GREAT_SPOOK_STAFF_ID, 60000);
+			// Handle any unlisted items if necessary
+			default -> {}
 		}
-        return TypedActionResult.pass(ItemStack.EMPTY);
+        return ActionResult.PASS;
     }
 
 	// Method to handle item cooldowns with optional condition

@@ -118,7 +118,7 @@ public class EggFinder {
 	public static void checkIfEgg(ArmorStandEntity armorStand) {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		if (SkyblockTime.skyblockSeason.get() != SkyblockTime.Season.SPRING) return;
-		if (armorStand.hasCustomName() || !armorStand.isInvisible() || !armorStand.shouldHideBasePlate()) return;
+		if (armorStand.hasCustomName() || !armorStand.isInvisible() || armorStand.shouldShowBasePlate()) return;
 		if (Utils.getLocation() == Location.UNKNOWN) { //The location is unknown upon world change and will be changed via location change packets soon, so we can queue it for now
 			armorStandQueue.add(armorStand);
 			return;
@@ -229,7 +229,7 @@ public class EggFinder {
 					                            .withColor(color))
 					                .append(" at " + egg.entity.getBlockPos().up(2).toShortString() + "!")
 					                .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker eggFinder shareLocation " + PosUtils.toSpaceSeparatedString(egg.waypoint.pos) + " " + this))
-					                                      .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))));
+					                                      .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))), false);
 		}
 
 		@Override

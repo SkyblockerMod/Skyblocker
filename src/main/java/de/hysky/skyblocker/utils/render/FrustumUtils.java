@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.utils.render;
 
+import org.joml.FrustumIntersection;
+
 import de.hysky.skyblocker.mixins.accessors.FrustumInvoker;
 import de.hysky.skyblocker.mixins.accessors.WorldRendererAccessor;
 import net.minecraft.client.MinecraftClient;
@@ -16,6 +18,8 @@ public class FrustumUtils {
     }
 
     public static boolean isVisible(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return ((FrustumInvoker) getFrustum()).invokeIsVisible(minX, minY, minZ, maxX, maxY, maxZ);
+        int plane = ((FrustumInvoker) getFrustum()).invokeIntersectAab(minX, minY, minZ, maxX, maxY, maxZ);
+
+        return plane == FrustumIntersection.INSIDE || plane == FrustumIntersection.INTERSECT;
     }
 }

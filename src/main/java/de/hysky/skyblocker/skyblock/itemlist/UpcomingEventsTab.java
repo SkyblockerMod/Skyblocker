@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+@Deprecated(forRemoval = true)
 public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
     private static final ItemStack CLOCK = new ItemStack(Items.CLOCK);
     private final MinecraftClient client;
@@ -44,7 +45,7 @@ public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
     @Override
     public void drawTooltip(DrawContext context, int mouseX, int mouseY) {
         if (hovered != null) {
-            ((DrawContextInvoker) context).invokeDrawTooltip(this.client.textRenderer, hovered.getTooltip(), mouseX, mouseY, HoveredTooltipPositioner.INSTANCE);
+            ((DrawContextInvoker) context).invokeDrawTooltip(this.client.textRenderer, hovered.getTooltip(), mouseX, mouseY, HoveredTooltipPositioner.INSTANCE, null);
         }
     }
 
@@ -143,11 +144,10 @@ public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
     }
 
     private record JacobsTooltip(String[] crops) implements TooltipComponent {
-
         private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 
         @Override
-        public int getHeight() {
+        public int getHeight(TextRenderer textRenderer) {
             return 20;
         }
 
@@ -157,7 +157,7 @@ public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
         }
 
         @Override
-        public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
+        public void drawItems(TextRenderer textRenderer, int x, int y, int width, int height, DrawContext context) {
             for (int i = 0; i < crops.length; i++) {
                 String crop = crops[i];
                 context.drawItem(JacobsContestWidget.FARM_DATA.getOrDefault(crop, BARRIER), x + 18 * i, y + 2);

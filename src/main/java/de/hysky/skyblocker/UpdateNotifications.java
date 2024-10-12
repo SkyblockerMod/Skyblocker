@@ -106,7 +106,7 @@ public class UpdateNotifications {
 							.withUnderline(true)
 							.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, downloadLink)));
 
-					CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updateNotifications.newUpdateMessage", versionText)));
+					CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.updateNotifications.newUpdateMessage", versionText)), false);
 					SystemToast.add(CLIENT.getToastManager(), TOAST_TYPE, Text.translatable("skyblocker.updateNotifications.newUpdateToast.title"), Text.stringifiedTranslatable("skyblocker.updateNotifications.newUpdateToast.description", newVersion.version()));
 				}
 			} catch (Exception e) {

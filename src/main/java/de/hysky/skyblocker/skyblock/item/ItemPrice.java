@@ -60,19 +60,19 @@ public class ItemPrice {
                 MessageScheduler.INSTANCE.sendMessageAfterCooldown("/ahsearch " + itemName);
             }
         } else {
-            player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.itemPriceLookupFailed")));
+            player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.itemPriceLookupFailed")), false);
         }
     }
 
     public static void refreshItemPrices(ClientPlayerEntity player) {
-        player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshingItemPrices")));
+        player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshingItemPrices")), false);
         CompletableFuture.allOf(Stream.of(TooltipInfoType.NPC, TooltipInfoType.BAZAAR, TooltipInfoType.LOWEST_BINS, TooltipInfoType.ONE_DAY_AVERAGE, TooltipInfoType.THREE_DAY_AVERAGE)
                         .map(DataTooltipInfoType::downloadIfEnabled)
                         .toArray(CompletableFuture[]::new)
-                ).thenRun(() -> player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshedItemPrices"))))
+                ).thenRun(() -> player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshedItemPrices")), false))
                 .exceptionally(e -> {
                     ItemTooltip.LOGGER.error("[Skyblocker Item Price] Failed to refresh item prices", e);
-                    player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed")));
+                    player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed")), false);
                     return null;
                 });
     }

@@ -16,6 +16,7 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
@@ -144,7 +145,7 @@ public class QuickNavButton extends ClickableWidget {
         Identifier tabTexture = Identifier.ofVanilla("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (toggled() ? "selected" : "unselected") + "_" + (index % 7 + 1));
 
         // Render the button texture
-        context.drawGuiTexture(tabTexture, this.getX(), this.getY(), this.width, this.height);
+        context.drawGuiTexture(RenderLayer::getGuiTextured, tabTexture, this.getX(), this.getY(), this.width, this.height);
         // Render the button icon
         int yOffset = this.index < 7 ? 1 : -1;
         context.drawItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
