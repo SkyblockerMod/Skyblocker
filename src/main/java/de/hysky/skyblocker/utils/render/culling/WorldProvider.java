@@ -18,7 +18,7 @@ public class WorldProvider implements DataProvider {
 	@Override
 	public boolean isOpaqueFullCube(int x, int y, int z) {
 		BlockPos pos = new BlockPos(x, y, z);
-		return this.world.getBlockState(pos).isOpaqueFullCube(this.world, pos);
+		return this.world.getBlockState(pos).isOpaqueFullCube();
 	}
 
 	@Override

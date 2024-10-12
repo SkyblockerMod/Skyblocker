@@ -6,6 +6,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -29,7 +30,7 @@ public class DungeonFloorRunsWidget {
     }
 
     public void render(DrawContext context, int mouseX ,int mouseY, int x, int y) {
-        context.drawTexture(TEXTURE, x, y, 0, 0, 109, 110, 109, 110);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, 109, 110, 109, 110);
         context.drawText(textRenderer, Text.literal("Floor Runs").formatted(Formatting.BOLD), x + 6, y + 4, Color.WHITE.getRGB(), true);
 
         int columnX = x + 4;

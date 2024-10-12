@@ -17,6 +17,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
@@ -150,8 +151,8 @@ public class BackpackPreview {
         matrices.translate(0f, 0f, 400f);
 
         RenderSystem.enableDepthTest();
-        context.drawTexture(TEXTURE, x, y, 0, 0, 176, rows * 18 + 17);
-        context.drawTexture(TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, 176, rows * 18 + 17, 256, 256);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7, 256, 256);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         context.drawText(textRenderer, storages[index].name(), x + 8, y + 6, 0x404040, false);
@@ -168,12 +169,12 @@ public class BackpackPreview {
 
             if (ItemProtection.isItemProtected(currentStack)) {
                 RenderSystem.enableBlend();
-                context.drawTexture(ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
+                context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
                 RenderSystem.disableBlend();
             }
 
             context.drawItem(currentStack, itemX, itemY);
-            context.drawItemInSlot(textRenderer, currentStack, itemX, itemY);
+            context.drawStackOverlay(textRenderer, currentStack, itemX, itemY);
             SlotTextManager.renderSlotText(context, textRenderer, null, currentStack, i, itemX, itemY);
         }
 

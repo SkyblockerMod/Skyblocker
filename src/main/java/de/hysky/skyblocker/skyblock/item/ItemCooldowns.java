@@ -11,8 +11,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -84,9 +84,9 @@ public class ItemCooldowns {
         }
     }
 
-    private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity player, World world, Hand hand) {
+    private static ActionResult onItemInteract(PlayerEntity player, World world, Hand hand) {
         if (!SkyblockerConfigManager.get().uiAndVisuals.itemCooldown.enableItemCooldowns)
-            return TypedActionResult.pass(ItemStack.EMPTY);
+            return ActionResult.PASS;
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId.equals(GRAPPLING_HOOK_ID) && player.fishHook != null) {
             if (!isOnCooldown(GRAPPLING_HOOK_ID) && !isWearingBatArmor(player)) {
@@ -94,7 +94,7 @@ public class ItemCooldowns {
             }
         }
 
-        return TypedActionResult.pass(ItemStack.EMPTY);
+        return ActionResult.PASS;
     }
 
     public static boolean isOnCooldown(ItemStack itemStack) {

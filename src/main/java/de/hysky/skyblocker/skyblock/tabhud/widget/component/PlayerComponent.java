@@ -32,7 +32,7 @@ public class PlayerComponent extends Component {
 
     @Override
     public void render(DrawContext context, int x, int y) {
-        PlayerSkinDrawer.draw(context, tex, x, y, SKIN_ICO_DIM);
+        PlayerSkinDrawer.draw(context, tex, x, y, SKIN_ICO_DIM, true, false, -1);
         context.drawText(txtRend, name, x + SKIN_ICO_DIM + PAD_S, y, 0xffffffff, false);
     }
 

@@ -12,6 +12,7 @@ import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.PopupScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.Window;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -56,7 +57,7 @@ public class StatusBarsConfigScreen extends Screen {
             context.fillGradient(screenRect.position().x(), screenRect.position().y(), screenRect.position().x() + screenRect.width(), screenRect.position().y() + screenRect.height(), 0xFFFF0000, 0xFF0000FF);
         }*/
         super.render(context, mouseX, mouseY, delta);
-        context.drawGuiTexture(HOTBAR_TEXTURE, width / 2 - HOTBAR_WIDTH / 2, height - 22, HOTBAR_WIDTH, 22);
+        context.drawGuiTexture(RenderLayer::getGuiTextured, HOTBAR_TEXTURE, width / 2 - HOTBAR_WIDTH / 2, height - 22, HOTBAR_WIDTH, 22);
         editBarWidget.render(context, mouseX, mouseY, delta);
 
         ScreenRect mouseRect = new ScreenRect(new ScreenPos(mouseX - 1, mouseY - 1), 3, 3);

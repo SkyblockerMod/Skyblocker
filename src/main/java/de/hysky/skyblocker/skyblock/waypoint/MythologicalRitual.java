@@ -32,7 +32,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -240,12 +239,12 @@ public class MythologicalRitual {
         return ActionResult.PASS;
     }
 
-    public static TypedActionResult<ItemStack> onUseItem(PlayerEntity player, World world, Hand hand) {
+    public static ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
         if (isActive() && ItemUtils.getItemId(stack).equals("ANCESTRAL_SPADE")) {
             lastEchoTime = System.currentTimeMillis();
         }
-        return TypedActionResult.pass(stack);
+        return ActionResult.PASS;
     }
 
     public static void onChatMessage(Text message, boolean overlay) {

@@ -16,6 +16,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
@@ -27,6 +28,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -123,7 +125,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
-        context.drawTexture(TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
     }
 
     @Override
@@ -148,20 +150,20 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         // Scrollbar
         if (prevPageVisible) {
             if (onScrollbarTop(mouseX, mouseY))
-                context.drawSprite(159, 13, 0, 6, 3, UP_ARROW.get());
-            else context.drawSprite(159, 13, 0, 6, 3, UP_ARROW.get(), 0.54f, 0.54f, 0.54f, 1);
+                context.drawSprite(RenderLayer::getGuiTextured, UP_ARROW.get(), 159, 13, 6, 3);
+            else context.drawSprite(RenderLayer::getGuiTextured, UP_ARROW.get(), 159, 13, 6, 3, ColorHelper.getArgb(137, 137, 137));
         }
 
         if (nextPageVisible) {
             if (onScrollbarBottom(mouseX, mouseY))
-                context.drawSprite(159, 72, 0, 6, 3, DOWN_ARROW.get());
-            else context.drawSprite(159, 72, 0, 6, 3, DOWN_ARROW.get(), 0.54f, 0.54f, 0.54f, 1);
+                context.drawSprite(RenderLayer::getGuiTextured, DOWN_ARROW.get(), 159, 72, 6, 3);
+            else context.drawSprite(RenderLayer::getGuiTextured, DOWN_ARROW.get(), 159, 72, 6, 3, ColorHelper.getArgb(137, 137, 137));
         }
         context.drawText(textRenderer, String.format("%d/%d", currentPage, totalPages), 111, 6, Colors.GRAY, false);
         if (totalPages <= 1)
-            context.drawGuiTexture(SCROLLER_TEXTURE, 156, 18, 12, 15);
+            context.drawGuiTexture(RenderLayer::getGuiTextured, SCROLLER_TEXTURE, 156, 18, 12, 15);
         else
-            context.drawGuiTexture(SCROLLER_TEXTURE, 156, (int) (18 + (float) (Math.min(currentPage, totalPages) - 1) / (totalPages - 1) * 37), 12, 15);
+            context.drawGuiTexture(RenderLayer::getGuiTextured, SCROLLER_TEXTURE, 156, (int) (18 + (float) (Math.min(currentPage, totalPages) - 1) / (totalPages - 1) * 37), 12, 15);
 
         matrices.pop();
 

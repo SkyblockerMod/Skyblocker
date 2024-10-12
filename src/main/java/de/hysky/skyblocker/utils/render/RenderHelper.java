@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormat.DrawMode;
@@ -97,7 +98,7 @@ public class RenderHelper {
         VertexConsumerProvider consumers = context.consumers();
         VertexConsumer buffer = consumers.getBuffer(throughWalls ? SkyblockerRenderLayers.FILLED_THROUGH_WALLS : SkyblockerRenderLayers.FILLED);
 
-        WorldRenderer.renderFilledBox(matrices, buffer, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
+        VertexRendering.drawFilledBox(matrices, buffer, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
 
         matrices.pop();
     }
@@ -110,7 +111,7 @@ public class RenderHelper {
             matrices.push();
             matrices.translate(pos.getX() - camera.getX(), pos.getY() - camera.getY(), pos.getZ() - camera.getZ());
 
-            BeaconBlockEntityRendererInvoker.renderBeam(matrices, context.consumers(), context.tickCounter().getTickDelta(true), context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, ColorHelper.Argb.fromFloats(1f, colorComponents[0], colorComponents[1], colorComponents[2]));
+            BeaconBlockEntityRendererInvoker.renderBeam(matrices, context.consumers(), context.tickCounter().getTickDelta(true), context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, ColorHelper.fromFloats(1f, colorComponents[0], colorComponents[1], colorComponents[2]));
 
             matrices.pop();
         }
@@ -136,7 +137,7 @@ public class RenderHelper {
             Vec3d camera = context.camera().getPos();
             Tessellator tessellator = RenderSystem.renderThreadTesselator();
 
-            RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+            RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             RenderSystem.enableBlend();
             RenderSystem.lineWidth(lineWidth);
@@ -148,7 +149,7 @@ public class RenderHelper {
             matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
 
             BufferBuilder buffer = tessellator.begin(DrawMode.LINES, VertexFormats.LINES);
-            WorldRenderer.drawBox(matrices, buffer, box, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
+            VertexRendering.drawBox(matrices, buffer, box, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
             BufferRenderer.drawWithGlobalProgram(buffer.end());
 
             matrices.pop();
@@ -188,7 +189,7 @@ public class RenderHelper {
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 
-        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.lineWidth(lineWidth);
         RenderSystem.enableBlend();
@@ -230,7 +231,7 @@ public class RenderHelper {
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 
-        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.lineWidth(lineWidth);
         RenderSystem.enableBlend();
@@ -273,7 +274,7 @@ public class RenderHelper {
 
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -404,14 +405,14 @@ public class RenderHelper {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
 
-    private static void drawSprite(DrawContext context, Sprite sprite, int i, int j, int k, int l, int x, int y, int z, int width, int height, float red, float green, float blue, float alpha) {
+    private static void drawSprite(DrawContext context, Sprite sprite, int i, int j, int k, int l, int x, int y, int width, int height, int color) {
         if (width == 0 || height == 0) {
             return;
         }
-        ((DrawContextInvoker) context).invokeDrawTexturedQuad(sprite.getAtlasId(), x, x + width, y, y + height, z, sprite.getFrameU((float) k / (float) i), sprite.getFrameU((float) (k + width) / (float) i), sprite.getFrameV((float) l / (float) j), sprite.getFrameV((float) (l + height) / (float) j), red, green, blue, alpha);
+        ((DrawContextInvoker) context).invokeDrawTexturedQuad(RenderLayer::getGuiTextured, sprite.getAtlasId(), x, x + width, y, y + height, sprite.getFrameU((float) k / (float) i), sprite.getFrameU((float) (k + width) / (float) i), sprite.getFrameV((float) l / (float) j), sprite.getFrameV((float) (l + height) / (float) j), color);
     }
 
-    private static void drawSpriteTiled(DrawContext context, Sprite sprite, int x, int y, int z, int width, int height, int i, int j, int tileWidth, int tileHeight, int k, int l, float red, float green, float blue, float alpha) {
+    private static void drawSpriteTiled(DrawContext context, Sprite sprite, int x, int y, int width, int height, int i, int j, int tileWidth, int tileHeight, int k, int l, int color) {
         if (width <= 0 || height <= 0) {
             return;
         }
@@ -422,7 +423,7 @@ public class RenderHelper {
             int n = Math.min(tileWidth, width - m);
             for (int o = 0; o < height; o += tileHeight) {
                 int p = Math.min(tileHeight, height - o);
-                drawSprite(context, sprite, k, l, i, j, x + m, y + o, z, n, p, red, green, blue, alpha);
+                drawSprite(context, sprite, k, l, i, j, x + m, y + o, n, p, color);
             }
         }
     }
@@ -432,37 +433,37 @@ public class RenderHelper {
         Scaling scaling = MinecraftClient.getInstance().getGuiAtlasManager().getScaling(sprite);
         if (!(scaling instanceof Scaling.NineSlice nineSlice)) return;
         Scaling.NineSlice.Border border = nineSlice.border();
-        int z = 0;
 
+        int color = ColorHelper.fromFloats(alpha, red, green, blue);
         int i = Math.min(border.left(), width / 2);
         int j = Math.min(border.right(), width / 2);
         int k = Math.min(border.top(), height / 2);
         int l = Math.min(border.bottom(), height / 2);
         if (width == nineSlice.width() && height == nineSlice.height()) {
-            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, z, width, height, red, green, blue, alpha);
+            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, width, height, color);
             return;
         }
         if (height == nineSlice.height()) {
-            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, z, i, height, red, green, blue, alpha);
-            drawSpriteTiled(context, sprite, x + i, y, z, width - j - i, height, i, 0, nineSlice.width() - j - i, nineSlice.height(), nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
-            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), nineSlice.width() - j, 0, x + width - j, y, z, j, height, red, green, blue, alpha);
+            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, i, height, color);
+            drawSpriteTiled(context, sprite, x + i, y, width - j - i, height, i, 0, nineSlice.width() - j - i, nineSlice.height(), nineSlice.width(), nineSlice.height(), color);
+            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), nineSlice.width() - j, 0, x + width - j, y, j, height, color);
             return;
         }
         if (width == nineSlice.width()) {
-            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, z, width, k, red, green, blue, alpha);
-            drawSpriteTiled(context, sprite, x, y + k, z, width, height - l - k, 0, k, nineSlice.width(), nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
-            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, nineSlice.height() - l, x, y + height - l, z, width, l, red, green, blue, alpha);
+            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, width, k, color);
+            drawSpriteTiled(context, sprite, x, y + k, width, height - l - k, 0, k, nineSlice.width(), nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), color);
+            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, nineSlice.height() - l, x, y + height - l, width, l, color);
             return;
         }
-        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, z, i, k, red, green, blue, alpha);
-        drawSpriteTiled(context, sprite, x + i, y, z, width - j - i, k, i, 0, nineSlice.width() - j - i, k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
-        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), nineSlice.width() - j, 0, x + width - j, y, z, j, k, red, green, blue, alpha);
-        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, nineSlice.height() - l, x, y + height - l, z, i, l, red, green, blue, alpha);
-        drawSpriteTiled(context, sprite, x + i, y + height - l, z, width - j - i, l, i, nineSlice.height() - l, nineSlice.width() - j - i, l, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
-        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), nineSlice.width() - j, nineSlice.height() - l, x + width - j, y + height - l, z, j, l, red, green, blue, alpha);
-        drawSpriteTiled(context, sprite, x, y + k, z, i, height - l - k, 0, k, i, nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
-        drawSpriteTiled(context, sprite, x + i, y + k, z, width - j - i, height - l - k, i, k, nineSlice.width() - j - i, nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
-        drawSpriteTiled(context, sprite, x + width - j, y + k, z, i, height - l - k, nineSlice.width() - j, k, j, nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
+        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, i, k, color);
+        drawSpriteTiled(context, sprite, x + i, y, width - j - i, k, i, 0, nineSlice.width() - j - i, k, nineSlice.width(), nineSlice.height(), color);
+        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), nineSlice.width() - j, 0, x + width - j, y, j, k, color);
+        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, nineSlice.height() - l, x, y + height - l, i, l, color);
+        drawSpriteTiled(context, sprite, x + i, y + height - l, width - j - i, l, i, nineSlice.height() - l, nineSlice.width() - j - i, l, nineSlice.width(), nineSlice.height(), color);
+        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), nineSlice.width() - j, nineSlice.height() - l, x + width - j, y + height - l, j, l, color);
+        drawSpriteTiled(context, sprite, x, y + k, i, height - l - k, 0, k, i, nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), color);
+        drawSpriteTiled(context, sprite, x + i, y + k, width - j - i, height - l - k, i, k, nineSlice.width() - j - i, nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), color);
+        drawSpriteTiled(context, sprite, x + width - j, y + k, i, height - l - k, nineSlice.width() - j, k, j, nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), color);
     }
 
     private static final float[] colorBuffer = new float[4];

@@ -65,9 +65,9 @@ public class Debug {
 						Slot focusedSlot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
 						if (key == GLFW.GLFW_KEY_U && client.player != null && focusedSlot != null && focusedSlot.hasStack()) {
 							if (!Screen.hasShiftDown()) {
-								client.player.sendMessage(Text.literal("[Skyblocker Debug] Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), focusedSlot.getStack()).getOrThrow())));
+								client.player.sendMessage(Text.literal("[Skyblocker Debug] Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), focusedSlot.getStack()).getOrThrow())), false);
 							} else {
-								client.player.sendMessage(Text.literal("[Skyblocker Debug] Held Item NW Calcs: " + SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getStack()).calculations()).getOrThrow())));
+								client.player.sendMessage(Text.literal("[Skyblocker Debug] Held Item NW Calcs: " + SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getStack()).calculations()).getOrThrow())), false);
 							}
 						}
 					});

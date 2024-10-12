@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.NbtComponent;
@@ -118,7 +119,7 @@ public class GenericCategory implements ProfileViewerPage {
             int y = rootY + 19 + (i / COLUMNS) * ROW_GAP;
 
             context.fill(x - 3, y - 3, x + 19, y + 19, Color.BLACK.getRGB());
-            context.drawTexture(BUTTON_TEXTURE, x - 2, y - 2, 0, 0, 20, 20, 20, 20);
+            context.drawTexture(RenderLayer::getGuiTextured, BUTTON_TEXTURE, x - 2, y - 2, 0, 0, 20, 20, 20, 20);
             context.drawItem(collections.get(i), x, y);
 
             ItemStack itemStack = collections.get(i);

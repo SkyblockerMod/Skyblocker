@@ -87,12 +87,12 @@ public class ItemProtection {
 			return;
 		}
 		if (!Utils.isOnSkyblock()) {
-			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.unableToProtect")));
+			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.unableToProtect")), false);
 			return;
 		}
 
         if (heldItem.isEmpty()) {
-			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")));
+			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")), false);
             return;
         }
 
@@ -104,15 +104,15 @@ public class ItemProtection {
 				protectedItems.add(itemUuid);
 				SkyblockerConfigManager.save();
 
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())));
+				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())), false);
 			} else {
 				protectedItems.remove(itemUuid);
 				SkyblockerConfigManager.save();
 
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())));
+				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())), false);
 			}
 		} else {
-			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")));
+			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")), false);
 		}
 	}
 

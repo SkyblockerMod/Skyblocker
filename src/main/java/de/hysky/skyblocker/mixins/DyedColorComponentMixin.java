@@ -23,10 +23,10 @@ public class DyedColorComponentMixin {
 			String itemUuid = ItemUtils.getItemUuid(stack);
 
 			if (SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(itemUuid)) {
-				return ColorHelper.Argb.fullAlpha(CustomArmorAnimatedDyes.animateColorTransition(SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid)));
+				return ColorHelper.fullAlpha(CustomArmorAnimatedDyes.animateColorTransition(SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid)));
 			}
 
-			return ColorHelper.Argb.fullAlpha(SkyblockerConfigManager.get().general.customDyeColors.getOrDefault(itemUuid, originalColor));
+			return ColorHelper.fullAlpha(SkyblockerConfigManager.get().general.customDyeColors.getOrDefault(itemUuid, originalColor));
 		}
 
 		return originalColor;

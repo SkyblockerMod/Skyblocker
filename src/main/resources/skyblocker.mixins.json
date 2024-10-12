@@ -53,7 +53,6 @@
     "accessors.PlayerListHudAccessor",
     "accessors.RecipeBookWidgetAccessor",
     "accessors.ScreenAccessor",
-    "accessors.SkullBlockEntityAccessor",
     "accessors.SlotAccessor",
     "accessors.WorldRendererAccessor",
     "discordipc.ConnectionMixin",

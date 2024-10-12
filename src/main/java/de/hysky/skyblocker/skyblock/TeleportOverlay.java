@@ -83,7 +83,7 @@ public class TeleportOverlay {
     private static void render(WorldRenderContext wrc, int range) {
         if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK && client.crosshairTarget instanceof BlockHitResult blockHitResult && client.crosshairTarget.squaredDistanceTo(client.player) < range * range) {
             render(wrc, blockHitResult);
-        } else if (client.interactionManager != null && range > client.player.getAttributeInstance(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE).getValue()) {
+        } else if (client.interactionManager != null && range > client.player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).getValue()) {
             HitResult result = client.player.raycast(range, wrc.tickCounter().getTickDelta(true), false);
             if (result.getType() == HitResult.Type.BLOCK && result instanceof BlockHitResult blockHitResult) {
                 render(wrc, blockHitResult);

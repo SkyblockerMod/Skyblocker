@@ -12,6 +12,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.List;
 
+@Deprecated(forRemoval = true)
 public class ItemListTab extends ItemListWidget.TabContainerWidget {
 
     private SearchResultsWidget results;

@@ -41,8 +41,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
-    @Shadow
-    private ClientWorld world;
+	@Shadow
+	private ClientWorld world;
 
     @Shadow
     @Final
@@ -58,7 +58,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
         }
     }
 
-    @Inject(method = "method_37472", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V"))
+    @Inject(method = "method_64896", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V"))
     private void skyblocker$onItemDestroy(int entityId, CallbackInfo ci) {
         if (world.getEntityById(entityId) instanceof ItemEntity itemEntity) {
             DungeonManager.onItemPickup(itemEntity);

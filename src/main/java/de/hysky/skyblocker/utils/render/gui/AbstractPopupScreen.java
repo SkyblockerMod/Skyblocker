@@ -2,11 +2,11 @@ package de.hysky.skyblocker.utils.render.gui;
 
 import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +34,7 @@ public class AbstractPopupScreen extends Screen {
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
         this.backgroundScreen.render(context, -1, -1, delta);
         context.draw();
-        RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, MinecraftClient.IS_SYSTEM_MAC);
+        RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT);
         this.renderInGameBackground(context);
     }
 
@@ -42,17 +42,17 @@ public class AbstractPopupScreen extends Screen {
      * These are the inner positions and size of the popup, not outer
      */
     public static void drawPopupBackground(DrawContext context, int x, int y, int width, int height) {
-        context.drawGuiTexture(BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
+        context.drawGuiTexture(RenderLayer::getGuiTextured, BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
     }
 
     @Override
     protected void init() {
         super.init();
-        initTabNavigation();
+        refreshWidgetPositions();
     }
 
     @Override
-    protected void initTabNavigation() {
+    protected void refreshWidgetPositions() {
         this.backgroundScreen.resize(this.client, this.width, this.height);
     }
 

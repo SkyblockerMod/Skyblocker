@@ -62,11 +62,11 @@ public class PlayerSkinTextureMixin {
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				int color = image.getColor(x, y);
-				float[] hsb = Color.RGBtoHSB(ColorHelper.Abgr.getRed(color), ColorHelper.Abgr.getGreen(color), ColorHelper.Abgr.getBlue(color), null);
+				int color = image.getColorArgb(x, y);
+				float[] hsb = Color.RGBtoHSB((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, null);
 
 				//Work around "fake" transparent pixels - Thanks Hypixel I totally appreciate this!
-				if (hsb[2] <= BRIGHTNESS_THRESHOLD) image.setColor(x, y, ColorHelper.Abgr.withAlpha(0x00, color & 0x00FFFFFF));
+				if (hsb[2] <= BRIGHTNESS_THRESHOLD) image.setColorArgb(x, y, ColorHelper.withAlpha(0x00, color & 0x00FFFFFF));
 			}
 		}
 	}
