@@ -1,12 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.mojang.authlib.GameProfile;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
@@ -21,22 +14,23 @@ import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
-import net.minecraft.text.Style;
-import net.minecraft.util.Formatting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class may be used to get data from the player list. It doesn't get its
@@ -57,6 +51,7 @@ public class PlayerListMgr {
 	 * The player list in tab, but a list of strings instead of {@link PlayerListEntry}s.
 	 */
 	private static List<String> playerStringList = new ArrayList<>();
+	@Nullable
 	private static String footer;
 	public static final Map<String, TabHudWidget> tabWidgetInstances = new Object2ObjectOpenHashMap<>();
 	public static final List<TabHudWidget> tabWidgetsToShow = new ObjectArrayList<>(5);
@@ -83,16 +78,14 @@ public class PlayerListMgr {
 
 		if (Utils.isInDungeons()) {
 			updateDungeons(null);
-		}
-		else {
+		} else {
 			updateWidgetsFrom(playerList.stream().map(PlayerListEntry::getDisplayName).filter(Objects::nonNull).toList());
 		}
-
-
 	}
 
 	/**
 	 * Update specifically for dungeons cuz they don't use the new system I HATE THEM
+	 *
 	 * @param lines used for the config screen
 	 */
 	public static void updateDungeons(List<Text> lines) {
@@ -120,6 +113,7 @@ public class PlayerListMgr {
 
 	/**
 	 * Update the tab widgets using a list of text representing the lines of the in-game TAB
+	 *
 	 * @param lines in-game TAB
 	 */
 	public static void updateWidgetsFrom(List<Text> lines) {
@@ -228,7 +222,6 @@ public class PlayerListMgr {
 	}
 
 	/**
-	 *
 	 * @param text a line of text that contains a : from the tab
 	 * @return a pair containing:
 	 * <ul>
@@ -279,9 +272,13 @@ public class PlayerListMgr {
 			footer = null;
 		} else {
 			footer = f.getString();
+			if (footer.isEmpty()) {
+				footer = null;
+			}
 		}
 	}
 
+	@Nullable
 	public static String getFooter() {
 		return footer;
 	}
@@ -340,7 +337,6 @@ public class PlayerListMgr {
 	 * Gets the display name at some index of the player list
 	 *
 	 * @return the text or null, if the display name is null
-	 *
 	 * @implNote currently designed specifically for crimson isles faction quests
 	 *           widget and the rift widgets, might not work correctly without
 	 *           modification for other stuff. you've been warned!
