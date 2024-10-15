@@ -31,7 +31,6 @@
     "MouseMixin",
     "PingMeasurerMixin",
     "PlayerInventoryMixin",
-    "PlayerListHudMixin",
     "PlayerSkinProviderMixin",
     "PlayerSkinTextureMixin",
     "RenderFishMixin",
