@@ -172,10 +172,15 @@ public class ScreenMaster {
 
 
 	/**
-	 * Filled at compile item with ASM. Do not fill this.
+	 * Filled at compile item with ASM.
+	 * Do not fill this method or change the signature unless you know what you're doing
 	 */
 	private static void instantiateWidgets() {}
 
+	/**
+	 * Called by the ASM generated code to add a widget instance to the map.
+	 * Do not change the signature unless you know what you're doing.
+	 */
 	public static void addWidgetInstance(HudWidget widget) {
 		HudWidget put = widgetInstances.put(widget.getInternalID(), widget);
 		if (widget instanceof TabHudWidget tabHudWidget) {

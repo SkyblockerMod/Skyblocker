@@ -1,13 +1,9 @@
 package de.hysky.skyblocker.utils;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.mojang.serialization.Codec;
 import net.minecraft.util.StringIdentifiable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * All Skyblock locations
@@ -134,21 +130,5 @@ public enum Location implements StringIdentifiable {
      */
     public static Location from(String id) {
         return Arrays.stream(Location.values()).filter(loc -> id.equals(loc.id())).findFirst().orElse(UNKNOWN);
-    }
-
-    public static Location[] locationsWithout(Location... locations) {
-        return ArrayUtils.removeElements(values(), locations);
-    }
-
-    private static Location[] hudLocations = null;
-
-	/**
-	 * @return All the locations available for the hud
-	 */
-    public static Location[] hudLocations() {
-        if (hudLocations == null) {
-            hudLocations = locationsWithout(UNKNOWN);
-        }
-        return hudLocations;
     }
 }

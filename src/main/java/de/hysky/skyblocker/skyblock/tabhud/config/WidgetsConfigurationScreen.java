@@ -22,11 +22,13 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.text.Text;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -278,8 +280,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
     }
 
     public DropdownWidget<Location> createLocationDropdown(Consumer<Location> onLocationChanged) {
-        List<Location> locations = new ArrayList<>(List.of(Location.hudLocations()));
-        locations.remove(Location.DUNGEON); // there's already a tab for that
+        List<Location> locations = Arrays.asList(ArrayUtils.removeElements(Location.values(), Location.UNKNOWN, Location.DUNGEON));  // there's already a tab for dungeons
         return new DropdownWidget<>(client, 0, 0, 50, 50, locations, location -> {
             setCurrentLocation(location);
             onLocationChanged.accept(location);
