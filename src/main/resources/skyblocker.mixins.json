@@ -31,7 +31,6 @@
     "MushroomPlantBlockMixin",
     "PingMeasurerMixin",
     "PlayerInventoryMixin",
-    "PlayerListHudMixin",
     "PlayerSkinProviderMixin",
     "PlayerSkinTextureDownloaderMixin",
     "RenderFishMixin",
