@@ -40,13 +40,13 @@ public class DungeonsConfig {
     public Livid livid = new Livid();
 
     @SerialEntry
-    public Goldor goldor = new Goldor();
-
-    @SerialEntry
     public Terminals terminals = new Terminals();
 
     @SerialEntry
     public Devices devices = new Devices();
+
+	@SerialEntry
+    public Goldor goldor = new Goldor();
 
     @SerialEntry
     public SecretWaypoints secretWaypoints = new SecretWaypoints();
