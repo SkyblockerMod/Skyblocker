@@ -118,11 +118,7 @@ public class GoldorWaypointsManager {
         if (posOptional.isPresent()) {
             Vec3d pos = posOptional.get();
 
-            waypoints.stream().filter(GoldorWaypoint::shouldRender).min((a, b) -> {
-                double distA = a.centerPos.distanceTo(pos);
-                double distB = b.centerPos.distanceTo(pos);
-                return Double.compare(distA, distB);
-            }).map(waypoint -> {
+            waypoints.stream().filter(GoldorWaypoint::shouldRender).min(Comparator.comparingDouble(waypoint -> waypoint.centerPos.squaredDistanceTo(pos))).map(waypoint -> {
                 waypoint.setShouldRender(false);
                 return null;
             });
