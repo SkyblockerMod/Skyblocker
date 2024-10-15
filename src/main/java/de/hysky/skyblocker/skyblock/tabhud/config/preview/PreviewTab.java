@@ -357,8 +357,8 @@ public class PreviewTab implements Tab {
 					if (this.previewWidget.selectedWidget == null) return;
 					PositionRule toCopy = ScreenMaster.getScreenBuilder(getCurrentLocation()).getPositionRule(this.previewWidget.selectedWidget.getInternalID());
 					if (toCopy == null && !(this.previewWidget.selectedWidget instanceof TabHudWidget)) return;
-					for (Location value : Location.hudLocations()) {
-						if (value == getCurrentLocation() || value == Location.DUNGEON) continue;
+					for (Location value : Location.values()) {
+						if (value == getCurrentLocation() || value == Location.DUNGEON || value == Location.UNKNOWN) continue;
 						ScreenMaster.getScreenBuilder(value).setPositionRule(
 								this.previewWidget.selectedWidget.getInternalID(),
 								toCopy
