@@ -60,9 +60,9 @@ public class Waypoints {
     }
 
     public static void loadWaypoints() {
-        waypoints.clear();
         try (BufferedReader reader = Files.newBufferedReader(waypointsFile)) {
             List<WaypointCategory> waypoints = CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
+        	Waypoints.waypoints.clear();
             waypoints.forEach(waypointCategory -> Waypoints.waypoints.put(waypointCategory.island(), waypointCategory));
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading waypoints", e);
