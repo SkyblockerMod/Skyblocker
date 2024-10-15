@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.IntComparators;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -11,10 +10,7 @@ import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
     static final Identifier MOVE_UP_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("transferable_list/move_up_highlighted");
@@ -59,7 +55,7 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 			ArrayList<Int2ObjectMap.Entry<WidgetsListSlotEntry>> entries = new ArrayList<>(parent.getEntries());
 			clearEntries();
 			entries.stream()
-					.sorted((a, b) -> IntComparators.NATURAL_COMPARATOR.compare(a.getIntKey(), b.getIntKey()))
+					.sorted(Comparator.comparingInt(Int2ObjectMap.Entry::getIntKey))
 					.map(Map.Entry::getValue)
 					.forEach(this::addEntry);
 			if (!parent.getCustomWidgetEntries().isEmpty() && parent.shouldShowCustomWidgetEntries()) {
