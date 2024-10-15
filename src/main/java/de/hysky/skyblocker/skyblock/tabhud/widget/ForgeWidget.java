@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoFatTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
@@ -10,44 +10,30 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.List;
+
 // this widget shows what you're forging right now.
 // for locked slots, the unlock requirement is shown
+@RegisterWidget
+public class ForgeWidget extends TabHudWidget {
 
-public class ForgeWidget extends Widget {
-
-    private static final MutableText TITLE = Text.literal("Forge Status").formatted(Formatting.DARK_AQUA,
+    private static final MutableText TITLE = Text.literal("Forges").formatted(Formatting.DARK_AQUA,
             Formatting.BOLD);
 
     public ForgeWidget() {
-        super(TITLE, Formatting.DARK_AQUA.getColorValue());
+        super("Forges", TITLE, Formatting.DARK_AQUA.getColorValue());
     }
 
     @Override
-    public void updateContent() {
-        int forgestart = 54;
-        // why is it forges and not looms >:(
-        String pos = PlayerListMgr.strAt(53);
-        if (pos == null) {
-            this.addComponent(new IcoTextComponent());
-            return;
-        }
+    public void updateContent(List<Text> lines) {
+        boolean b = lines.getFirst().getString().trim().startsWith("(");
+        for (int i = b ? 1 : 0, slot = 1; i < lines.size(); i++, slot++) {
+            String trim = lines.get(i).getString().trim();
 
-        if (!pos.startsWith("Forges")) {
-            forgestart += 2;
-        }
-
-        for (int i = forgestart, slot = 1; i < forgestart + 5 && i < 60; i++, slot++) {
-            String fstr = PlayerListMgr.strAt(i);
-            if (fstr == null || fstr.length() < 3) {
-                if (i == forgestart) {
-                    this.addComponent(new IcoTextComponent());
-                }
-                break;
-            }
             Component c;
             Text l1, l2;
 
-            switch (fstr.substring(3)) {
+            switch (trim.substring(3)) {
                 case "LOCKED" -> {
                     l1 = Text.literal("Locked").formatted(Formatting.RED);
                     l2 = switch (slot) {
@@ -64,7 +50,7 @@ public class ForgeWidget extends Widget {
                     c = new IcoTextComponent(Ico.FURNACE, l1);
                 }
                 default -> {
-                    String[] parts = fstr.split(": ");
+                    String[] parts = trim.split(": ");
                     if (parts.length != 2) {
                         c = new IcoFatTextComponent();
                     } else {
