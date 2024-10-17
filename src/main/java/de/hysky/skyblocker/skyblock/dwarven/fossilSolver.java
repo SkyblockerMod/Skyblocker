@@ -12,6 +12,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.OptionalDouble;
 
 public class fossilSolver extends SimpleContainerSolver {
 	public fossilSolver() {
@@ -20,15 +21,13 @@ public class fossilSolver extends SimpleContainerSolver {
 
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
-		System.out.println("sdf");
+		System.out.println("update");
 		//convert to container
 		container mainContainer = convertItemsToTiles(slots);
 		//get chance for each
 		double[] probability = getFossilChance(mainContainer);
 		//get the highlight amount and return
-
-
-		return convertChanceToColor(probability, 0, 0, 255);
+		return convertChanceToColor(probability, 0, 0, 255); //todo better colour
 	}
 
 	@Override
@@ -40,8 +39,19 @@ public class fossilSolver extends SimpleContainerSolver {
 	private static List<ColorHighlight> convertChanceToColor(double[] chances, int maxR, int maxG, int maxB) {
 		List<ColorHighlight> outputColors = new ArrayList<>();
 		//loop though all the chance values and set the color to match probability. full color means that its 100%
+		OptionalDouble highProbability = Arrays.stream(chances).max();
+		System.out.println("max persent:"+highProbability);
+		System.out.println(Arrays.toString(chances));
 		for (int i = 0; i < chances.length; i ++) {
-			outputColors.add(new ColorHighlight(i, new Color((int) (maxR * chances[i]),(int) (maxG * chances[i]),(int) (maxB * chances[i])).getRGB())); //todo more efficent conversion
+			double chance = chances[i];
+			if (Double.isNaN(chances[i]) || chances[i] == 0) {
+				continue;
+			}
+			if (chances[i] == highProbability.getAsDouble()){
+				outputColors.add(ColorHighlight.green(i));
+				continue;
+			}
+			outputColors.add(new ColorHighlight(i, 128 << 24 | (int)(maxR * chance) << 16| (int)(maxG * chance) << 8| (int)(maxB * chance)));
 		}
 		return  outputColors;
 	}
@@ -77,7 +87,7 @@ public class fossilSolver extends SimpleContainerSolver {
 		FLIP_ROTATED_270;
 	}
 
-	protected enum fossilTypes {
+	protected enum fossilTypes { //todo add percentages so shape can be guessed
 		CLAW(new tileState[][]{
 				{tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY},
 				{tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY},
@@ -97,7 +107,7 @@ public class fossilSolver extends SimpleContainerSolver {
 				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY},
 				{tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL},
 				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY}
-		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.FLIP_ROTATED_270)),
+		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270)),
 		HELIX(new tileState[][]{
 				{tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL}, // helix
 				{tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL},
@@ -116,18 +126,18 @@ public class fossilSolver extends SimpleContainerSolver {
 				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY},
 				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY},
 				{tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY}
-		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_180, transformationOptions.FLIP_ROTATED_0, transformationOptions.FLIP_ROTATED_180)),
+		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270)),
 		CLUBBED(new tileState[][]{
 				{tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL}, // clubbed fossil
 				{tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL},
 				{tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY},
 				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY}
-		},  List.of(transformationOptions.ROTATED_0)),
+		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_180, transformationOptions.FLIP_ROTATED_0, transformationOptions.FLIP_ROTATED_180)),
 		SPINE(new tileState[][]{
 				{tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY}, // spine fossil
 				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY},
 				{tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL}
-		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.FLIP_ROTATED_270));
+		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270));
 
 		final List<transformationOptions> rotations;
 		final tileState[][] grid;
@@ -154,6 +164,7 @@ public class fossilSolver extends SimpleContainerSolver {
 						continue;
 					}
 					tileState predictedState = grid.getSlot(x, y);
+
 					//if this screen state does not line up with the actual state it can not be valid
 					if (predictedState != knownState) {
 						return false;
@@ -164,9 +175,9 @@ public class fossilSolver extends SimpleContainerSolver {
 			return true;
 		}
 
-		public boolean isFossil(Vector2i position) {
-			int x = position.x - offset.x;
-			int y = position.y - offset.y;
+		public boolean isFossil(int positionX, int positionY) {
+			int x = positionX - offset.x;
+			int y = positionY - offset.y;
 			//if they are not in range of the grid they are not a fossil
 			if (x < 0 || x >= grid.width() || y < 0 || y >= grid.height()) {
 				return false;
@@ -185,7 +196,7 @@ public class fossilSolver extends SimpleContainerSolver {
 	 */
 
 	protected static double[] getFossilChance(container tiles) {
-		int[] total = new int[56];
+		int[] total = new int[54];
 		//convert the current state to a 2d array of tiles
 		//tileState[][] tiles = convertItemsToTiles(currentState); todo somewere else
 
@@ -197,15 +208,20 @@ public class fossilSolver extends SimpleContainerSolver {
 			}
 		}
 		//from all the valid states work out the chance of each tile being a fossil
-		for (int x = 0; x < 6; x++) {
-			for (int y = 0; y < 9; y++) {
-				for (screenState state : validStates) {
-					if (state.isFossil(new Vector2i(x, y))) {
-						total[x * 9 + y] += 1;
+		int index = 0;
+		for (int y = 0; y < 6; y++) {
+			for (int x = 0; x < 9; x++) {
+				if (tiles.getSlot(x, y) == tileState.UNKNOWN) {
+					for (screenState state : validStates) {
+						if (state.isFossil(x, y)) {
+							total[index] += 1;
+						}
 					}
 				}
+				index ++;
 			}
 		}
+
 
 		return Arrays.stream(total).mapToDouble(x -> (double) x / validStates.size()).toArray();
 
@@ -218,22 +234,23 @@ public class fossilSolver extends SimpleContainerSolver {
 	 * @return input contatainer converted into 2d {@link tileState} array
 	 */
 	private static container convertItemsToTiles(Int2ObjectMap<ItemStack> currentState) {
-		tileState[][] output = new tileState[6][9];
-
-		//go though each slot and work out its state
-		for (int x = 0; x < 6; x++) {
-			for (int y = 0; y < 9; y++) {
-				Item item = currentState.get(x * 6 + y).getItem();
+		container output =new container(new tileState[6][9]);
+		//go through each slot and work out its state
+		int index = 0;
+		for (int y = 0; y < 6; y++) {
+			for (int x = 0; x < 9; x++) {
+				Item item = currentState.get(index).getItem();
 				if (item == Items.WHITE_STAINED_GLASS_PANE) {
-					output[x][y] = tileState.FOSSIL;
-				} else if (item == Items.GRAY_STAINED_GLASS_PANE) {
-					output[x][y] = tileState.UNKNOWN;
+					output.updateSlot(x, y,  tileState.FOSSIL);
+				} else if (item == Items.BROWN_STAINED_GLASS_PANE) {
+					output.updateSlot(x, y,  tileState.UNKNOWN);
 				} else {
-					output[x][y] = tileState.EMPTY;
+					output.updateSlot(x, y,  tileState.EMPTY);
 				}
+				index ++;
 			}
 		}
-		return new container(output);
+		return output;
 	}
 
 	/**
@@ -252,8 +269,8 @@ public class fossilSolver extends SimpleContainerSolver {
 				//get the rotated grid of the fossil
 				container grid = transformGrid(new container(fossil.grid), rotation);
 				//get possible offsets for the grid based on width an height
-				int maxXOffset = 9 - grid.width() - 1;
-				int maxYOffset = 6 - grid.height() - 1;
+				int maxXOffset = 9 - grid.width();
+				int maxYOffset = 6 - grid.height();
 				//loop though possible offsets and for each of them create a screen state and return the value
 				for (int x = 0; x <= maxXOffset; x++) {
 					for (int y = 0; y <= maxYOffset; y++) {
@@ -304,13 +321,15 @@ public class fossilSolver extends SimpleContainerSolver {
 		return output;
 	}
 
-	private static container rotateGrid(container grid, int roation) { // todo have i fliped x and y and comment on what its doing
+	private static container rotateGrid(container grid, int roation) { // todo have i flipped x and y and comment on what its doing
+		int startingWidth = grid.width() -1;
+		int startingHeight = grid.height() -1;
 		switch (roation) {
 			case 90 -> {
-				container output = new container(new tileState[grid.width()][grid.height()]);
-				for (int x = 0; x < grid.height(); x++) {
-					for (int y = 0; y < grid.width(); y++) {
-						output.updateSlot(x, y, grid.getSlot(y, x)) ;
+				container output = new container(new tileState[grid.height()][grid.width()]);
+				for (int x = 0; x < grid.width(); x++) {
+					for (int y = 0; y < grid.height(); y++) {
+						output.updateSlot(startingWidth - x, y, grid.getSlot(x,y)) ;
 					}
 				}
 				return output;
@@ -319,16 +338,16 @@ public class fossilSolver extends SimpleContainerSolver {
 				container output = new container(new tileState[grid.height()][grid.width()]);
 				for (int x = 0; x < grid.width(); x++) {
 					for (int y = 0; y < grid.height(); y++) {
-						output.updateSlot(x, y, grid.getSlot(grid.width() - 1 - x, grid.height() - 1 - y) ) ;
+						output.updateSlot(startingWidth - x, startingHeight - y, grid.getSlot(x, y) ) ;
 					}
 				}
 				return output;
 			}
 			case 270 -> {
-				container output = new container(new tileState[grid.width()][grid.height()]);
-				for (int x = 0; x < grid.height(); x++) {
-					for (int y = 0; y < grid.width(); y++) {
-						output.updateSlot(x, y, grid.getSlot(grid.width() - 1 - y, x)) ;
+				container output = new container(new tileState[grid.height()][grid.width()]);
+				for (int x = 0; x < grid.width(); x++) {
+					for (int y = 0; y < grid.height(); y++) {
+						output.updateSlot(x, startingHeight - y, grid.getSlot(x, y)) ;
 					}
 				}
 				return output;

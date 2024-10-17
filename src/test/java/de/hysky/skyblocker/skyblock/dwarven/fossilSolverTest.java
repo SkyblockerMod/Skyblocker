@@ -13,7 +13,7 @@ public class fossilSolverTest {
 	@Test
 	void testGetPossibleStates() {
 		//check there is the right amount
-		Assertions.assertEquals(fossilSolver.getAllPossibleStates().size(),152);
+		Assertions.assertEquals(fossilSolver.getAllPossibleStates().size(),458);
 	}
 
 	@Test
@@ -26,7 +26,11 @@ public class fossilSolverTest {
 			}
 		}
 
-		//check if count is correct for certain tiles
+		//check if count is correct start
 		Assertions.assertEquals(fossilSolver.getFossilChance(new fossilSolver.container(tileState))[22], 0.54);
+
+		//check second if fossil at first
+		tileState[2][4] = fossilSolver.tileState.FOSSIL;
+		Assertions.assertEquals(fossilSolver.getFossilChance(new fossilSolver.container(tileState))[31], 0.65);
 	}
 }
