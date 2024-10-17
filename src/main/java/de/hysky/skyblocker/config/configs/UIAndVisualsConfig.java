@@ -398,7 +398,7 @@ public class UIAndVisualsConfig {
 		public boolean enabled = true;
 
 		@SerialEntry
-		public float scale = 1f;
+		public float scale = 1.5f;
 
 		@SerialEntry
 		public boolean removeHealthFromName = true;
