@@ -57,6 +57,11 @@ public class HealthBars {
 		}
 	}
 
+	/**
+	 * Processes armourtand updates and if it's a mob with health get the value of its health and save it the hashmap
+	 *
+	 * @param armorStand updated armourstand
+	 */
 	public static void HeathBar(ArmorStandEntity armorStand) {
 		if (!armorStand.isInvisible() || !armorStand.hasCustomName() || !armorStand.isCustomNameVisible() || !SkyblockerConfigManager.get().uiAndVisuals.healthBars.enabled) {
 			return;
@@ -64,10 +69,8 @@ public class HealthBars {
 
 		//check if armour stand is dead and remove it from list
 		if (armorStand.isDead()) {
-			System.out.println("somthing");
 			healthValues.removeFloat(armorStand);
 			mobStartingHealth.removeInt(armorStand);
-
 			return;
 		}
 
@@ -102,12 +105,10 @@ public class HealthBars {
 			if (removeValue && i < parts.size() - 3 && parts.get(i).getString().equals(healthMatcher.group(1)) && parts.get(i + 1).getString().equals("/") && parts.get(i + 2).getString().equals(healthMatcher.group(4)) && parts.get(i + 3).getString().equals("❤")) {
 				continue;
 			}
-			//remove slash from max
+			//remove slash from max and skip over the value
 			if (removeMax && i < parts.size() - 2 && parts.get(i).getString().equals("/") && parts.get(i + 1).getString().equals(healthMatcher.group(4)) && parts.get(i + 2).getString().equals("❤")) {
-				continue;
-			}
-			//remove max
-			if (removeMax && i < parts.size() - 1 && parts.get(i).getString().equals(healthMatcher.group(4)) && parts.get(i + 1).getString().equals("❤")) {
+				//remove the value as well
+				i += 1;
 				continue;
 			}
 			//if both enabled remove "❤"
@@ -119,9 +120,13 @@ public class HealthBars {
 		armorStand.setCustomName(cleanedText);
 	}
 
+	/**
+	 * Processes armour stands that only have a health value and no max health
+	 *
+	 * @param armorStand armorstand to check the name of
+	 */
 	private static void HealthOnlyCheck(ArmorStandEntity armorStand) {
-		//todo setting for this
-		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.applyToHealthOnlyMobs	 || armorStand.getCustomName() == null) {
+		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.applyToHealthOnlyMobs || armorStand.getCustomName() == null) {
 			return;
 		}
 		Matcher healthOnlyMatcher = HEALTH_ONLY_PATTERN.matcher(armorStand.getCustomName().getString());
@@ -135,7 +140,7 @@ public class HealthBars {
 
 		//if it's a new health only armor stand add to starting health lookup (not always full health if already damaged but best that can be done)
 		if (!mobStartingHealth.containsKey(armorStand)) {
-			mobStartingHealth.put(armorStand,currentHealth);
+			mobStartingHealth.put(armorStand, currentHealth);
 		}
 
 		//add to health bar values
@@ -149,13 +154,10 @@ public class HealthBars {
 		MutableText cleanedText = Text.empty();
 		List<Text> parts = armorStand.getCustomName().getSiblings();
 		for (int i = 0; i < parts.size(); i++) {
-			//remove value from name
+			//remove value from name and skip over heart
 			if (i < parts.size() - 1 && parts.get(i).getString().equals(healthOnlyMatcher.group(1)) && parts.get(i + 1).getString().equals("❤")) {
-				continue;
-			}
-
-			//remove "❤"
-			if (parts.get(i).getString().equals("❤")) {
+				//skip the heart
+				i += 1;
 				continue;
 			}
 			cleanedText.append(parts.get(i));
@@ -175,16 +177,21 @@ public class HealthBars {
 		Color barColor = SkyblockerConfigManager.get().uiAndVisuals.healthBars.barColor;
 		boolean hideFullHealth = SkyblockerConfigManager.get().uiAndVisuals.healthBars.hideFullHealth;
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.healthBars.scale;
+		float tickDelta = context.tickCounter().getTickDelta(false);
+
 		for (Object2FloatMap.Entry<ArmorStandEntity> healthValue : healthValues.object2FloatEntrySet()) {
 			//if the health bar is full and the setting is enabled to hide it stop rendering it
-			if (hideFullHealth && healthValue.getFloatValue() == 1) {
+			float health = healthValue.getFloatValue();
+			if (hideFullHealth && health == 1) {
 				continue;
 			}
 
 			ArmorStandEntity armorStand = healthValue.getKey();
 			// Render the health bar texture with scaling based on health percentage
-			RenderHelper.renderTextureQuad(context, armorStand.getCameraPosVec(context.tickCounter().getTickDelta(false)).add(0, 0.25 - (0.1f * scale), 0), scale, 0.1f * scale, 1f, 1f, new Vec3d(-0.5f * scale, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, barColor, false);
-			RenderHelper.renderTextureQuad(context, armorStand.getCameraPosVec(context.tickCounter().getTickDelta(false)).add(0, 0.25 - (0.1f * scale), 0), healthValue.getFloatValue() * scale, 0.1f * scale, healthValue.getFloatValue(), 1f, new Vec3d(-0.5f * scale, 0, 0.003f), HEALTH_BAR_TEXTURE, barColor, false);
+			float width = scale;
+			float height = scale * 0.1f;
+			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, barColor, false);
+			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, 0.003f), HEALTH_BAR_TEXTURE, barColor, false);
 		}
 	}
 }

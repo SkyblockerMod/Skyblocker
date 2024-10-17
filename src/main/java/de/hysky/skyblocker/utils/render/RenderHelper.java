@@ -292,7 +292,20 @@ public class RenderHelper {
         RenderSystem.disableDepthTest();
     }
 	
-	public static void renderTextureQuad(WorldRenderContext context, Vec3d pos, float width, float height, float textureWidth, float textureHeight, Vec3d renderOffset, Identifier texture, Color shaderColor, boolean throughWalls) {
+	/**
+	 * Renders a texture in world space facing the player (like a name tag)
+	 * @param context world render context
+	 * @param pos world position
+	 * @param width rendered width
+	 * @param height rendered height
+	 * @param textureWidth amount of texture rendered width
+	 * @param textureHeight amount of texture rendered height
+	 * @param renderOffset offset once it's been placed in the world facing the player
+	 * @param texture reference to texture to render
+	 * @param shaderColor color to apply to the texture
+	 * @param throughWalls if it should render though walls
+	 */
+	public static void renderTextureInWorld(WorldRenderContext context, Vec3d pos, float width, float height, float textureWidth, float textureHeight, Vec3d renderOffset, Identifier texture, Color shaderColor, boolean throughWalls) {
 		Matrix4f positionMatrix = new Matrix4f();
 		Camera camera = context.camera();
 		Vec3d cameraPos = camera.getPos();
