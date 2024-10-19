@@ -120,6 +120,7 @@ public abstract class InGameHudMixin {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay) ci.cancel();
     }
 
+	// TODO switch to fabric event when available
     @Inject(method = "renderMiscOverlays", at = @At("TAIL"))
     private void skyblocker$afterMiscOverlays(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
         GlaciteColdOverlay.render(context);
@@ -165,6 +166,7 @@ public abstract class InGameHudMixin {
         this.layeredDrawer.addLayer(HudRenderEvents.LAST.invoker()::onRender);
     }
 
+	// TODO switch to fabric event when available
     @Inject(method = "renderPlayerList", at = @At("HEAD"))
     private void skyblocker$renderHud(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
         if (!Utils.isOnSkyblock()) return;

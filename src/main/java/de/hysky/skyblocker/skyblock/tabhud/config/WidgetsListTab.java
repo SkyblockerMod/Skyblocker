@@ -113,7 +113,7 @@ public class WidgetsListTab implements Tab {
         if (client.interactionManager == null || this.client.player == null) return;
         client.interactionManager.clickSlot(handler.syncId, slot, button, SlotActionType.QUICK_MOVE, this.client.player);
         // When moving a widget down it gets stuck sometimes
-        Scheduler.INSTANCE.schedule(() -> this.waitingForServer = false, 1);
+        Scheduler.INSTANCE.schedule(() -> this.waitingForServer = false, 4);
         waitingForServer = true;
     }
 
