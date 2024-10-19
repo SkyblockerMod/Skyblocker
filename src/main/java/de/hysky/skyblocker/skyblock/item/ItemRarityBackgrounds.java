@@ -97,7 +97,7 @@ public class ItemRarityBackgrounds {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 
-		context.drawSprite(RenderLayer::getGuiTextured, SPRITE.get(), x, y, 16, 16, ColorHelper.fromFloats(SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgroundsOpacity, rarity.r, rarity.g, rarity.b));
+		context.drawSpriteStretched(RenderLayer::getGuiTextured, SPRITE.get(), x, y, 16, 16, ColorHelper.fromFloats(SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgroundsOpacity, rarity.r, rarity.g, rarity.b));
 
 		RenderSystem.disableBlend();
 	}

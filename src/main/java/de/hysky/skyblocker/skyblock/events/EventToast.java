@@ -55,7 +55,6 @@ public class EventToast implements Toast {
         drawTimer(context, 30, y);
 
         context.drawItemWithoutEntity(icon, 8, getHeight()/2 - 8);
-        //return startTime > 5_000 ? Visibility.HIDE: Visibility.SHOW;
     }
 
     protected int drawMessage(DrawContext context, int x, int y, int color) {
@@ -92,8 +91,6 @@ public class EventToast implements Toast {
     public int getHeight() {
         return Math.max(getInnerContentsHeight() + 12 + 2, 32);
     }
-    
-    //FIXME no clue if this works as intended
 
 	@Override
 	public Visibility getVisibility() {

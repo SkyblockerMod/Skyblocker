@@ -150,14 +150,14 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         // Scrollbar
         if (prevPageVisible) {
             if (onScrollbarTop(mouseX, mouseY))
-                context.drawSprite(RenderLayer::getGuiTextured, UP_ARROW.get(), 159, 13, 6, 3);
-            else context.drawSprite(RenderLayer::getGuiTextured, UP_ARROW.get(), 159, 13, 6, 3, ColorHelper.getArgb(137, 137, 137));
+                context.drawSpriteStretched(RenderLayer::getGuiTextured, UP_ARROW.get(), 159, 13, 6, 3);
+            else context.drawSpriteStretched(RenderLayer::getGuiTextured, UP_ARROW.get(), 159, 13, 6, 3, ColorHelper.getArgb(137, 137, 137));
         }
 
         if (nextPageVisible) {
             if (onScrollbarBottom(mouseX, mouseY))
-                context.drawSprite(RenderLayer::getGuiTextured, DOWN_ARROW.get(), 159, 72, 6, 3);
-            else context.drawSprite(RenderLayer::getGuiTextured, DOWN_ARROW.get(), 159, 72, 6, 3, ColorHelper.getArgb(137, 137, 137));
+                context.drawSpriteStretched(RenderLayer::getGuiTextured, DOWN_ARROW.get(), 159, 72, 6, 3);
+            else context.drawSpriteStretched(RenderLayer::getGuiTextured, DOWN_ARROW.get(), 159, 72, 6, 3, ColorHelper.getArgb(137, 137, 137));
         }
         context.drawText(textRenderer, String.format("%d/%d", currentPage, totalPages), 111, 6, Colors.GRAY, false);
         if (totalPages <= 1)

@@ -11,6 +11,8 @@ import de.hysky.skyblocker.mixins.accessors.RecipeBookWidgetAccessor;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.navigation.NavigationAxis;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.recipebook.GhostRecipe;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
@@ -66,6 +68,8 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 		this.searchField.setEditableColor(0xFFFFFF);
 		this.searchField.setText(defaultSearchText);
 		this.searchField.setPlaceholder(SEARCH_HINT_TEXT);
+		//This field's name is misleading, the rectangle is actually the area of the magnifying glass icon rather than the entire search field
+		this.searchFieldRect = ScreenRect.of(NavigationAxis.HORIZONTAL, left + 8, this.searchField.getY(), this.searchField.getX() - left, this.searchField.getHeight());
 
 		//Setup Tabs
 		this.tabButtons.clear();
@@ -100,10 +104,10 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		if (this.isOpen()) {
 			context.getMatrices().push();
-			context.getMatrices().translate(0.0F, 0.0F, 100.0F);
+			context.getMatrices().translate(0.0f, 0.0f, 100.0f);
 			int left = accessor().invokeGetLeft();
 			int top = accessor().invokeGetTop();
-			context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, left, top, 1.0F, 1.0F, IMAGE_WIDTH, IMAGE_HEIGHT, 256, 256);
+			context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, left, top, 1.0f, 1.0f, IMAGE_WIDTH, IMAGE_HEIGHT, 256, 256);
 
 			for (Pair<RecipeTab, SkyblockRecipeTabButton> tabButton : this.tabButtons) {
 				tabButton.right().render(context, mouseX, mouseY, delta);
@@ -187,11 +191,10 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 		return (RecipeBookWidgetAccessor) this;
 	}
 
-	/**
-	 * No-op as we don't use this, the logic just crashes the game.
-	 */
 	@Override
-	protected void refreshResults(boolean resetCurrentPage, boolean filteringCraftable) {}
+	protected void refreshResults(boolean resetCurrentPage, boolean filteringCraftable) {
+		this.currentTab.left().updateSearchResults(this.searchField.getText());
+	}
 
 	/**
 	 * Sets the "Toggle Craftable" Button texture.

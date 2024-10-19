@@ -54,6 +54,5 @@ public class JacobEventToast extends EventToast {
 
         context.drawItemWithoutEntity(icon, 8, getHeight() / 2 - 8);
         matrices.pop();
-        //return startTime > 5_000 ? Visibility.HIDE : Visibility.SHOW;
     }
 }

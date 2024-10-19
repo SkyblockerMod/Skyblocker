@@ -44,7 +44,7 @@
     "fabric-api": ">=0.106.0+1.21.2",
     "yet_another_config_lib_v3": ">=3.5.0+1.21",
     "hm-api": ">=1.0.1+1.21.1",
-    "minecraft": "~1.21.2-beta.3",
+    "minecraft": "~1.21.2-rc.1",
     "java": ">=21"
   },
   "conflicts": {

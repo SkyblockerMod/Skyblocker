@@ -57,8 +57,6 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
             this.addDrawableChild(moreCraftsButton);
         }
         assert (client != null ? client.player : null) != null;
-        //FIXME remove this - it appears it is no longer the case that the recipe book replaces the screen handler in 1.21.2?
-        client.player.currentScreenHandler = handler; // recipe book replaces it with the Dummy one fucking DUMBASS
         this.addSelectableChild(this.recipeBook);
         this.setInitialFocus(this.recipeBook);
         this.titleX = 29;
@@ -67,7 +65,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
     @Override
     public void handledScreenTick() {
         super.handledScreenTick();
-        //this.recipeBook.update();
+        this.recipeBook.update();
         if (moreCraftsButton == null) return;
         ItemStack stack = handler.slots.get(26).getStack();
         moreCraftsButton.active = stack.isEmpty() || stack.isOf(Items.PLAYER_HEAD);

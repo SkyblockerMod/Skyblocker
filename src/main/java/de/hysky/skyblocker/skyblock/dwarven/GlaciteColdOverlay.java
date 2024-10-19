@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -58,7 +57,7 @@ public class GlaciteColdOverlay {
      * @see InGameHud#renderOverlay as this is a carbon copy of it
      */
     private static void renderOverlay(DrawContext context, Identifier texture, float opacity) {
-		int i = ColorHelper.getWhite(opacity);
+		int white = ColorHelper.getWhite(opacity);
 		context.drawTexture(
 			RenderLayer::getGuiTexturedOverlay,
 			texture,
@@ -70,7 +69,7 @@ public class GlaciteColdOverlay {
 			context.getScaledWindowHeight(),
 			context.getScaledWindowWidth(),
 			context.getScaledWindowHeight(),
-			i
+			white
 		);
     }
 

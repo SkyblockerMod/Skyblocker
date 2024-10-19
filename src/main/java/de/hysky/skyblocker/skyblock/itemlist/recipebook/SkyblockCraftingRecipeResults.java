@@ -110,7 +110,7 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 		if (this.nextPageButton.active) this.nextPageButton.render(context, mouseX, mouseY, delta);
 	}
 
-	//TODO enable scissor
+	//TODO enable scissor?
 	private void drawRecipeDisplay(DrawContext context, TextRenderer textRenderer, int x, int y, int mouseX, int mouseY) {
 		//Render the "Craft Text" which is usually a requirement (e.g. Wolf Slayer 7)
 		String craftText = this.recipeResults.get(this.currentPage).getCraftText();
@@ -198,6 +198,8 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 			}
 
 			closeRecipeView();
+		} else {
+			hideShowPageButtons(); //This branch is called when the recipe book is reinitialized (usually from resizing)
 		}
 	}
 
@@ -242,6 +244,13 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 			}
 		}
 
+		hideShowPageButtons();
+	}
+
+	/**
+	 * Hides or shows the page buttons.
+	 */
+	private void hideShowPageButtons() {
 		//Show the previous page button if the page count is greater than 0
 		this.prevPageButton.active = this.currentPage > 0;
 		//Show the next page button if the current page is less than the highest possible page

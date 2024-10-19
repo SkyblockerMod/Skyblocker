@@ -5,6 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * The Skyblock Crafting Tab which handles the mouse clicks & rendering for the results page and the search field.
@@ -34,7 +35,9 @@ record SkyblockCraftingTab(SkyblockRecipeBookWidget recipeBook, ItemStack icon, 
 			return true;
 		} else {
 			if (recipeBook.searchField != null) {
-				if (recipeBook.searchField.mouseClicked(mouseX, mouseY, button)) {
+				boolean magnifyingGlassClicked = recipeBook.searchFieldRect != null && recipeBook.searchFieldRect.contains(MathHelper.floor(mouseX), MathHelper.floor(mouseY));
+
+				if (magnifyingGlassClicked || recipeBook.searchField.mouseClicked(mouseX, mouseY, button)) {
 					results.closeRecipeView();
 					recipeBook.searchField.setFocused(true);
 

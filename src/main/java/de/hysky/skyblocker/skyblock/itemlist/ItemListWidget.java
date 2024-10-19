@@ -33,7 +33,7 @@ public class ItemListWidget /*extends RecipeBookWidget*/ {
 
     private static int currentTab = 0;
 
-    public ItemListWidget() {//AbstractCraftingRecipeBookWidget
+    public ItemListWidget() {
         super();
     }
 

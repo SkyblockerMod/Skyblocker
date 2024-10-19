@@ -10,6 +10,7 @@ accessible field net/minecraft/client/gui/screen/recipebook/AnimatedResultButton
 accessible field net/minecraft/client/gui/screen/recipebook/RecipeGroupButtonWidget TEXTURES Lnet/minecraft/client/gui/screen/ButtonTextures;
 accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget SEARCH_HINT_TEXT Lnet/minecraft/text/Text;
 accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget searchField Lnet/minecraft/client/gui/widget/TextFieldWidget;
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget searchFieldRect Lnet/minecraft/client/gui/ScreenRect;
 accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget parentWidth I
 accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget parentHeight I
 accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget leftOffset I
