@@ -116,10 +116,12 @@ public class SlotTextManager {
 			matrices.translate(0.0f, 0.0f, 200.0f);
 			int length = textRenderer.getWidth(slotText.text());
 			if (length > 16) {
-				matrices.scale(16f / length, 16f / length, 1.0f);
+				float scale = 16f / length;
+				matrices.scale(scale, scale, 1.0f);
+				// Both of these translations translate by (-x, -y, 0) and then by the correct scaling and translation.
 				switch (slotText.position()) {
-					case TOP_LEFT, TOP_RIGHT -> matrices.translate(x * length / 16f - x, (y * length / 16.0f) - y, 0.0f);
-					case BOTTOM_LEFT, BOTTOM_RIGHT -> matrices.translate(x * length / 16f - x, ((y + 16f - textRenderer.fontHeight + 2f + 0.7f) * length / 16.0f) - y, 0.0f);
+					case TOP_LEFT, TOP_RIGHT -> matrices.translate(x / scale - x, y / scale - y, 0.0f);
+					case BOTTOM_LEFT, BOTTOM_RIGHT -> matrices.translate(x / scale - x, (y + 16f) / scale - textRenderer.fontHeight + 2f - y, 0.0f);
 				}
 			} else {
 				switch (slotText.position()) {
