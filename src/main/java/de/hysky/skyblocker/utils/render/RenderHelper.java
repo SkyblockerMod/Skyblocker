@@ -402,15 +402,12 @@ public class RenderHelper {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
 
-    public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, float red, float green, float blue, float alpha) {
-        context.drawGuiTexture(RenderLayer::getGuiTextured, texture, x, y, width, height, ColorHelper.fromFloats(alpha, red, green, blue));
+    public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, int argb) {
+        context.drawGuiTexture(RenderLayer::getGuiTextured, texture, x, y, width, height, argb);
     }
 
-    private static final float[] colorBuffer = new float[4];
-
     public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, Color color) {
-        color.getComponents(colorBuffer);
-        renderNineSliceColored(context, texture, x, y, width, height, colorBuffer[0], colorBuffer[1], colorBuffer[2], colorBuffer[3]);
+        renderNineSliceColored(context, texture, x, y, width, height, ColorHelper.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
     }
 
     // TODO Get rid of reflection once the new Sodium is released

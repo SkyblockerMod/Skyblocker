@@ -17,6 +17,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -54,7 +55,8 @@ public class KuudraWaypoints {
 	private static ObjectArrayList<Waypoint> fuelWaypoints = ObjectArrayList.of();
 	private static boolean loaded;
 
-	static void init() {
+	@Init
+	public static void init() {
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(KuudraWaypoints::render);
 		ClientLifecycleEvents.CLIENT_STARTED.register(KuudraWaypoints::load);
 		Scheduler.INSTANCE.scheduleCyclic(KuudraWaypoints::tick, 20);

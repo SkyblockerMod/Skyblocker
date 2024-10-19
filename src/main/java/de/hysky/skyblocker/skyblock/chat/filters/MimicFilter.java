@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.filters;
+package de.hysky.skyblocker.skyblock.chat.filters;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;

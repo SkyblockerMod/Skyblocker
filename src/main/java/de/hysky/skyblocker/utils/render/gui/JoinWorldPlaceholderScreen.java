@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils;
+package de.hysky.skyblocker.utils.render.gui;
 
 import net.minecraft.text.Text;
 

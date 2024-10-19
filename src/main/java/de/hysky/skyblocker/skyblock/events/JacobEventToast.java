@@ -9,6 +9,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Colors;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 
 public class JacobEventToast extends EventToast {
@@ -44,7 +45,7 @@ public class JacobEventToast extends EventToast {
             // IDK how to make the items transparent, so I just redraw the texture on top
             matrices.push();
             matrices.translate(0, 0, 400f);
-            RenderHelper.renderNineSliceColored(context, TEXTURE, 0, 0, getWidth(), getHeight(), 1f, 1f, 1f, (k >> 24) / 255f);
+            RenderHelper.renderNineSliceColored(context, TEXTURE, 0, 0, getWidth(), getHeight(), ColorHelper.fromFloats((k >> 24) / 255f, 1f, 1f, 1f));
             matrices.pop();
             y += textRenderer.fontHeight * message.size();
         }

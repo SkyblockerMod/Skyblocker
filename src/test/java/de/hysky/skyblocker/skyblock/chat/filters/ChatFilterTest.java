@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.filters;
+package de.hysky.skyblocker.skyblock.chat.filters;
 
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
