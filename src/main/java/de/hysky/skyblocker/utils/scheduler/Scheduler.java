@@ -8,6 +8,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.profiler.Profiler;
+import net.minecraft.util.profiler.Profilers;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,6 +132,9 @@ public class Scheduler {
     }
 
     public void tick() {
+    	Profiler profiler = Profilers.get();
+    	profiler.push("skyblockerSchedulerTick");
+
         if (tasks.containsKey(currentTick)) {
             List<ScheduledTask> currentTickTasks = tasks.get(currentTick);
             //noinspection ForLoopReplaceableByForEach (or else we get a ConcurrentModificationException)
@@ -140,7 +146,9 @@ public class Scheduler {
             }
             tasks.remove(currentTick);
         }
+
         currentTick += 1;
+        profiler.pop();
     }
 
     /**

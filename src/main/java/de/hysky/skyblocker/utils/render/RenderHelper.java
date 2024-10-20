@@ -30,6 +30,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.profiler.Profiler;
+import net.minecraft.util.profiler.Profilers;
+
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -334,8 +337,12 @@ public class RenderHelper {
      * This is called after all {@link WorldRenderEvents#AFTER_TRANSLUCENT} listeners have been called so that we can draw all remaining render layers.
      */
     private static void drawTranslucents(WorldRenderContext context) {
+    	Profiler profiler = Profilers.get();
+
+    	profiler.push("skyblockerTranslucentDraw");
         //Draw all render layers that haven't been drawn yet - drawing a specific layer does nothing and idk why
         ((VertexConsumerProvider.Immediate) context.consumers()).draw();
+        profiler.pop();
     }
 
     public static void runOnRenderThread(Runnable runnable) {
