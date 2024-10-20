@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.auction;
 
-import com.google.gson.JsonElement;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.auction.widgets.AuctionTypeWidget;

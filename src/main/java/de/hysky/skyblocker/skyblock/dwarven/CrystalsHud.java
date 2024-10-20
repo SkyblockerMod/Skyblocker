@@ -17,7 +17,6 @@ import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Map;
 

@@ -173,7 +173,8 @@ public class WishingCompassSolver {
         return ZONE_BOUNDING_BOXES.get(startingZone).expand(100, 0, 100).contains(pos);
     }
 
-    public static void onParticle(ParticleS2CPacket packet) {
+    @SuppressWarnings("incomplete-switch")
+	public static void onParticle(ParticleS2CPacket packet) {
         if (!Utils.isInCrystalHollows() || !ParticleTypes.HAPPY_VILLAGER.equals(packet.getParameters().getType())) {
             return;
         }
