@@ -21,7 +21,9 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -59,8 +61,7 @@ public class Shortcuts {
         }
         shortcutsLoaded = CompletableFuture.runAsync(() -> {
             try (BufferedReader reader = Files.newBufferedReader(SHORTCUTS_FILE)) {
-                Type shortcutsType = new TypeToken<Map<String, Map<String, String>>>() {
-                }.getType();
+                Type shortcutsType = new TypeToken<Map<String, Map<String, String>>>() {}.getType();
                 Map<String, Map<String, String>> shortcuts = SkyblockerMod.GSON.fromJson(reader, shortcutsType);
                 commands.clear();
                 commandArgs.clear();
@@ -84,6 +85,7 @@ public class Shortcuts {
         commands.put("/s", "/skyblock");
         commands.put("/i", "/is");
         commands.put("/h", "/hub");
+        commands.put("/g", "/warp garden");
 
         // Dungeon
         commands.put("/d", "/warp dungeon_hub");
@@ -170,8 +172,7 @@ public class Shortcuts {
                 }
                 if (redirectLocation == null) {
                     dispatcher.register(literal(set.getKey().substring(1)).then(argument("args", StringArgumentType.greedyString())));
-                }
-                else {
+                } else {
                     dispatcher.register(literal(set.getKey().substring(1)).redirect(redirectLocation));
                 }
             }
