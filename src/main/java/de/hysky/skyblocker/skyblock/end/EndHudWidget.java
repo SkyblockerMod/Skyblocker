@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.skyblock.end;
 
 import com.mojang.authlib.properties.PropertyMap;
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
@@ -16,11 +18,19 @@ import net.minecraft.util.Formatting;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
-public class EndHudWidget extends Widget {
+@RegisterWidget
+public class EndHudWidget extends ComponentBasedWidget {
     private static final MutableText TITLE = Text.literal("The End").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
 
-    public static final EndHudWidget INSTANCE = new EndHudWidget(TITLE, Formatting.DARK_PURPLE.getColorValue());
+    private static EndHudWidget instance = null;
+
+	public static EndHudWidget getInstance() {
+		if (instance == null) instance = new EndHudWidget();
+		return instance;
+	}
+
     private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
     private static final ItemStack ENDERMAN_HEAD = new ItemStack(Items.PLAYER_HEAD);
     private static final ItemStack POPPY = new ItemStack(Items.POPPY);
@@ -31,19 +41,30 @@ public class EndHudWidget extends Widget {
 
         ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap()));
         POPPY.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
-
-        INSTANCE.setX(SkyblockerConfigManager.get().otherLocations.end.x);
-        INSTANCE.setY(SkyblockerConfigManager.get().otherLocations.end.y);
     }
 
-    public EndHudWidget(MutableText title, Integer colorValue) {
-        super(title, colorValue);
-        this.setX(5);
-        this.setY(5);
+    public EndHudWidget() {
+        super(TITLE, Formatting.DARK_PURPLE.getColorValue(), "hud_end");
+		instance = this;
         this.update();
     }
-
     @Override
+    public boolean isEnabledIn(Location location) {
+        return location.equals(Location.THE_END) && SkyblockerConfigManager.get().otherLocations.end.hudEnabled;
+    }
+
+	@Override
+	public void setEnabledIn(Location location, boolean enabled) {
+		if (!location.equals(Location.THE_END)) return;
+		SkyblockerConfigManager.get().otherLocations.end.hudEnabled = enabled;
+	}
+
+	@Override
+	public Set<Location> availableLocations() {
+		return Set.of(Location.THE_END);
+	}
+
+	@Override
     public void updateContent() {
         // Zealots
         if (SkyblockerConfigManager.get().otherLocations.end.zealotKillsEnabled) {
@@ -69,4 +90,10 @@ public class EndHudWidget extends Widget {
             }
         }
     }
+
+    @Override
+    public Text getDisplayName() {
+        return Text.literal("End Hud");
+    }
+
 }
