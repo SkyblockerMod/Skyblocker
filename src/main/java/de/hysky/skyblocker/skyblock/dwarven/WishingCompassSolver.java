@@ -57,6 +57,10 @@ public class WishingCompassSolver {
      * the distance squared the player has to be from where they used the first compass to where they use the second
      */
     private static final long DISTANCE_BETWEEN_USES = 64;
+	/**
+	 * Arbitrary distance below which skyblocker will consider two compass trails to be intersecting
+	 */
+	private static final double DISTANCE_TOLERANCE = 5.0;
 
     private static SolverStates currentState = SolverStates.NOT_STARTED;
     private static Vec3d startPosOne = Vec3d.ZERO;
@@ -251,6 +255,8 @@ public class WishingCompassSolver {
      * using the stating locations and line direction solve for where the location must be
      */
     protected static Vec3d solve(Vec3d startPosOne, Vec3d startPosTwo, Vec3d directionOne, Vec3d directionTwo) {
+		if (directionOne.equals(directionTwo)) return null;
+
         //convert format to get lines for the intersection solving
         Vector3D lineOneStart = new Vector3D(startPosOne.x, startPosOne.y, startPosOne.z);
         Vector3D lineOneEnd = new Vector3D(directionOne.x, directionOne.y, directionOne.z).add(lineOneStart);
@@ -258,13 +264,22 @@ public class WishingCompassSolver {
         Vector3D lineTwoEnd = new Vector3D(directionTwo.x, directionTwo.y, directionTwo.z).add(lineTwoStart);
         Line line = new Line(lineOneStart, lineOneEnd, 1);
         Line lineTwo = new Line(lineTwoStart, lineTwoEnd, 1);
-        Vector3D intersection = line.intersection(lineTwo);
+
+        Vector3D close = line.closestPoint(lineTwo);
+		Vector3D closeTwo = lineTwo.closestPoint(line);
+		double distance = close.distance(closeTwo);
+
+		Vec3d intersection = null;
+		if (distance < DISTANCE_TOLERANCE) {
+			//average the two closest points
+			Vec3d c1 = new Vec3d(close.getX(), close.getY(), close.getZ());
+			Vec3d c2 = new Vec3d(close.getX(), close.getY(), close.getZ());
+
+			intersection = c1.add(c2).multiply(0.5);
+		}
 
         //return final target location
-        if (intersection == null || intersection.equals(new Vector3D(0, 0, 0))) {
-            return null;
-        }
-        return new Vec3d(intersection.getX(), intersection.getY(), intersection.getZ());
+        return intersection;
     }
 
     private static ActionResult onBlockInteract(PlayerEntity playerEntity, World world, Hand hand, BlockHitResult blockHitResult) {
