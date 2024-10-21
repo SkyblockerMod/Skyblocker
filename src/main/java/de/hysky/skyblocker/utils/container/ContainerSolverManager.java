@@ -130,7 +130,7 @@ public class ContainerSolverManager {
 
 	public static void onDraw(DrawContext context, GenericContainerScreen genericContainerScreen, List<Slot> slots) {
 		if (currentSolver == null) return;
-		if (highlights == null) highlights = currentSolver.getColors(slotMap(slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9)));
+		if (highlights == null) highlights = currentSolver.getColors(slotMap(currentSolver instanceof ContainerAndInventorySolver ? slots : slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9)));
 		RenderSystem.enableDepthTest();
 		RenderSystem.colorMask(true, true, true, false);
 		for (ColorHighlight highlight : highlights) {
