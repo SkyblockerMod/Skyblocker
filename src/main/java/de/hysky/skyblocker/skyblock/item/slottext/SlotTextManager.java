@@ -47,7 +47,9 @@ public class SlotTextManager {
 			new PowerStonesGuideAdder(),
 			new BazaarHelper(),
 			new StatsTuningAdder(),
-			ChocolateFactorySolver.INSTANCE
+			ChocolateFactorySolver.INSTANCE,
+			new EvolvingItemAdder(),
+			new NewYearCakeAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 	private static final KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, "key.categories.skyblocker"));
