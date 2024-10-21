@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item.slottext;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.WardrobeKeybinds;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
@@ -47,7 +48,10 @@ public class SlotTextManager {
 			new PowerStonesGuideAdder(),
 			new BazaarHelper(),
 			new StatsTuningAdder(),
-			ChocolateFactorySolver.INSTANCE
+			ChocolateFactorySolver.INSTANCE,
+			new EvolvingItemAdder(),
+			new NewYearCakeAdder(),
+			WardrobeKeybinds.INSTANCE
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 	private static final KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, "key.categories.skyblocker"));
