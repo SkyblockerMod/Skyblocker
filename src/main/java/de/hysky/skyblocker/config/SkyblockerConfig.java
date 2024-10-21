@@ -48,4 +48,7 @@ public class SkyblockerConfig {
 
     @SerialEntry
     public MiscConfig misc = new MiscConfig();
+
+    @SerialEntry
+    public DebugConfig debug = new DebugConfig();
 }
