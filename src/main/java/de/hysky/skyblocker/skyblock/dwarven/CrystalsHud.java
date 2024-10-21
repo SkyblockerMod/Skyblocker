@@ -74,19 +74,17 @@ public class CrystalsHud {
 
         //if enabled add waypoint locations to map
         if (SkyblockerConfigManager.get().mining.crystalsHud.showLocations) {
-            Map<String, MiningLocationLabel> ActiveWaypoints = CrystalsLocationsManager.activeWaypoints;
-
-            for (MiningLocationLabel waypoint : ActiveWaypoints.values()) {
-                int waypointColor = waypoint.category().getColor();
-                Vector2ic renderPos = transformLocation(waypoint.centerPos().getX(), waypoint.centerPos().getZ());
+            for (MiningLocationLabel waypoint : CrystalsLocationsManager.activeWaypoints.values()) {
+                MiningLocationLabel.Category category = waypoint.category();
+                Vector2ic renderPos = transformLocation(waypoint.centerPos.getX(), waypoint.centerPos.getZ());
                 int locationSize = SkyblockerConfigManager.get().mining.crystalsHud.locationSize;
 
-                if (SMALL_LOCATIONS.contains(waypoint.category().getName())) {//if small location half the location size
+                if (SMALL_LOCATIONS.contains(category.getName())) {//if small location half the location size
                     locationSize /= 2;
                 }
 
                 //fill square of size locationSize around the coordinates of the location
-                context.fill(renderPos.x() - locationSize / 2, renderPos.y() - locationSize / 2, renderPos.x() + locationSize / 2, renderPos.y() + locationSize / 2, waypointColor);
+                context.fill(renderPos.x() - locationSize / 2, renderPos.y() - locationSize / 2, renderPos.x() + locationSize / 2, renderPos.y() + locationSize / 2, category.getColor());
             }
         }
 

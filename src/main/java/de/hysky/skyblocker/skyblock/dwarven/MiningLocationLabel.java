@@ -1,49 +1,42 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.Renderable;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.client.MinecraftClient;
+import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 
-import com.mojang.serialization.Codec;
+public class MiningLocationLabel extends DistancedNamedWaypoint {
+    private final Category category;
 
-// TODO: Clean up into the waypoint system with a new `DistancedWaypoint` that extends `NamedWaypoint` for this and secret waypoints.
-public record MiningLocationLabel(Category category, Vec3d centerPos) implements Renderable {
     public MiningLocationLabel(Category category, BlockPos pos) {
-        this(category, pos.toCenterPos());
+        // Set enabled to false in order to prevent the waypoint from being rendered, but the name text and distance will still be rendered.
+        super(pos, getName(category), new float[]{0, 0, 0}, false);
+        this.category = category;
     }
 
-    private Text getName() {
+    private static Text getName(Category category) {
         if (SkyblockerConfigManager.get().mining.commissionWaypoints.useColor) {
             return Text.literal(category.getName()).withColor(category.getColor());
         }
         return Text.literal(category.getName());
     }
 
+    public Category category() {
+        return category;
+    }
+
     /**
-     * Renders the name and distance to the label scaled so can be seen at a distance
-     *
-     * @param context render context
+     * Override the {@link DistancedNamedWaypoint#shouldRenderName()} method to always return true,
+     * as the name should always be rendered, even though this waypoint is always disabled.
      */
     @Override
-    public void render(WorldRenderContext context) {
-        Vec3d posUp = centerPos.add(0, 1, 0);
-        double distance = context.camera().getPos().distanceTo(centerPos);
-        //set scale config based on if in crystals or not
-        float textScale = Utils.isInCrystalHollows() ? SkyblockerConfigManager.get().mining.crystalsWaypoints.textScale : SkyblockerConfigManager.get().mining.commissionWaypoints.textScale;
-        float scale = (float) (textScale * (distance / 10));
-        RenderHelper.renderText(context, getName(), posUp, scale, true);
-        RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
+    protected boolean shouldRenderName() {
+        return true;
     }
 
     public interface Category {

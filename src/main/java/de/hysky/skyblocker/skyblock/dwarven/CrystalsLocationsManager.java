@@ -294,8 +294,8 @@ public class CrystalsLocationsManager {
 
     public static int shareWaypoint(String place) {
         if (activeWaypoints.containsKey(place)) {
-            Vec3d pos = activeWaypoints.get(place).centerPos();
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + " " + place + ": " + (int) pos.getX() + ", " + (int) pos.getY() + ", " + (int) pos.getZ());
+            BlockPos pos = activeWaypoints.get(place).pos;
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + " " + place + ": " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
         } else {
             //send fail message
             if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
@@ -349,7 +349,7 @@ public class CrystalsLocationsManager {
         String name = MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN.getName();
         MiningLocationLabel unknownWaypoint = activeWaypoints.getOrDefault(name, null);
         if (unknownWaypoint != null) {
-            double distance = unknownWaypoint.centerPos().distanceTo(location.toCenterPos());
+            double distance = unknownWaypoint.centerPos.distanceTo(location.toCenterPos());
             if (distance < REMOVE_UNKNOWN_DISTANCE) {
                 activeWaypoints.remove(name);
             }
