@@ -936,5 +936,6 @@
     "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "允許在衣櫃選單開啟時透過熱鍵1-9切換護甲。選單中對應的護甲將裝備至身上。",
     "skyblocker.config.crimsonIsle.kuudra": "Kuudra",
     "skyblocker.config.dungeons.professor": "教授（F3/M3）",
-    "skyblocker.config.eventNotifications.monologue": "你能不能速速進入skyblock？能的話就太好了。如果你看到了這條訊息，這意味著：1. 你的配置被清除了2.你第一次使用本mod（如果是的話，感謝你選擇本mod，希望你能喜歡） 本mod允許你設定對skyblock所有事件的提醒，它們會在你遇到事件時被加入。所以，你需要先進入skyblock。希望你喜歡本mod"
+    "skyblocker.config.eventNotifications.monologue": "你能不能速速進入skyblock？能的話就太好了。如果你看到了這條訊息，這意味著：1. 你的配置被清除了2.你第一次使用本mod（如果是的話，感謝你選擇本mod，希望你能喜歡） 本mod允許你設定對skyblock所有事件的提醒，它們會在你遇到事件時被加入。所以，你需要先進入skyblock。希望你喜歡本mod",
+    "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabEffectsMessage": "在 /tab 中啟用效果以允許指南針識別女王座標"
 }
