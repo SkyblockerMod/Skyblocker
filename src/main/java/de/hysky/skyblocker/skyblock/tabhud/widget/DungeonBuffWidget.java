@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import net.minecraft.text.MutableText;
@@ -8,20 +9,21 @@ import net.minecraft.util.Formatting;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 // this widget shows a list of obtained dungeon buffs
-
-public class DungeonBuffWidget extends Widget {
+@RegisterWidget
+public class DungeonBuffWidget extends TabHudWidget {
 
     private static final MutableText TITLE = Text.literal("Dungeon Buffs").formatted(Formatting.DARK_PURPLE,
             Formatting.BOLD);
 
     public DungeonBuffWidget() {
-        super(TITLE, Formatting.DARK_PURPLE.getColorValue());
+        super("Dungeon Buffs", TITLE, Formatting.DARK_PURPLE.getColorValue());
     }
 
     @Override
-    public void updateContent() {
+    public void updateContent(List<Text> ignored) {
 
         String footertext = PlayerListMgr.getFooter();
 

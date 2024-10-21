@@ -1,14 +1,16 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -18,8 +20,10 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.Map;
+import java.util.Set;
 
-public class FarmingHudWidget extends Widget {
+@RegisterWidget
+public class FarmingHudWidget extends ComponentBasedWidget {
     private static final MutableText TITLE = Text.literal("Farming").formatted(Formatting.YELLOW, Formatting.BOLD);
     public static final Map<String, String> FARMING_TOOLS = Map.ofEntries(
             Map.entry("THEORETICAL_HOE_WHEAT_1", "WHEAT"),
@@ -47,23 +51,36 @@ public class FarmingHudWidget extends Widget {
             Map.entry("PUMPKIN_DICER_3", "PUMPKIN"),
             Map.entry("COCO_CHOPPER", "INK_SACK:3")
     );
-    public static final FarmingHudWidget INSTANCE = new FarmingHudWidget();
+    private static FarmingHudWidget instance = null;
+
+	public static FarmingHudWidget getInstance() {
+		if (instance == null) instance = new FarmingHudWidget();
+		return instance;
+	}
+
     private final MinecraftClient client = MinecraftClient.getInstance();
 
     public FarmingHudWidget() {
-        super(TITLE, Formatting.YELLOW.getColorValue());
-        setX(SkyblockerConfigManager.get().farming.garden.farmingHud.x);
-        setY(SkyblockerConfigManager.get().farming.garden.farmingHud.y);
+        super(TITLE, Formatting.YELLOW.getColorValue(), "hud_farming");
+		instance = this;
         update();
     }
 
-    @Override
+	@Override
+	protected boolean shouldUpdateBeforeRendering() {
+		return true;
+	}
+
+	@Override
     public void updateContent() {
-        if (client.player == null) return;
+        if (client.player == null) {
+            addComponent(new PlainTextComponent(Text.literal("Nothing to show :p")));
+            return;
+        }
         ItemStack farmingToolStack = client.player.getMainHandStack();
         if (farmingToolStack == null) return;
         String itemId = ItemUtils.getItemId(farmingToolStack);
-        String cropItemId = FARMING_TOOLS.containsKey(itemId) ? FARMING_TOOLS.get(itemId) : "";
+        String cropItemId = FARMING_TOOLS.getOrDefault(itemId, "");
         ItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
 
         String counterText = FarmingHud.counterText();
@@ -100,5 +117,26 @@ public class FarmingHudWidget extends Widget {
         // Return the formatted price if npc price is higher or bazaar price is present.
         // Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6.
         return shouldUseNpcPrice || itemBazaarPrice.rightBoolean() ? FarmingHud.NUMBER_FORMAT.format((int) (price * cropsPerMinute * 0.6) * 100) : "No Data";
+    }
+
+    @Override
+    public boolean isEnabledIn(Location location) {
+        return location.equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud;
+    }
+
+	@Override
+	public void setEnabledIn(Location location, boolean enabled) {
+		if (!location.equals(Location.GARDEN)) return;
+		SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud = enabled;
+	}
+
+	@Override
+	public Set<Location> availableLocations() {
+		return Set.of(Location.GARDEN);
+	}
+
+	@Override
+    public Text getDisplayName() {
+        return Text.literal("Farming HUD");
     }
 }
