@@ -17,6 +17,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
+import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 import java.util.List;
@@ -46,7 +47,7 @@ public class HealthBars {
 	}
 
 	/**
-	 * remove dead armour stands from health bars
+	 * remove dead armor stands from health bars
 	 *
 	 * @param entity dying entity
 	 */
@@ -58,23 +59,23 @@ public class HealthBars {
 	}
 
 	/**
-	 * Processes armourtand updates and if it's a mob with health get the value of its health and save it the hashmap
+	 * Processes armorstand updates and if it's a mob with health get the value of its health and save it the hashmap
 	 *
-	 * @param armorStand updated armourstand
+	 * @param armorStand updated armorstand
 	 */
 	public static void HeathBar(ArmorStandEntity armorStand) {
 		if (!armorStand.isInvisible() || !armorStand.hasCustomName() || !armorStand.isCustomNameVisible() || !SkyblockerConfigManager.get().uiAndVisuals.healthBars.enabled) {
 			return;
 		}
 
-		//check if armour stand is dead and remove it from list
+		//check if armor stand is dead and remove it from list
 		if (armorStand.isDead()) {
 			healthValues.removeFloat(armorStand);
 			mobStartingHealth.removeInt(armorStand);
 			return;
 		}
 
-		//check to see if the armour stand is a mob label with health
+		//check to see if the armor stand is a mob label with health
 		if (armorStand.getCustomName() == null) {
 			return;
 		}
@@ -91,7 +92,7 @@ public class HealthBars {
 		float health = (float) firstValue / secondValue;
 		healthValues.put(armorStand, health);
 
-		//edit armour stand name to remove health
+		//edit armor stand name to remove health
 		boolean removeValue = SkyblockerConfigManager.get().uiAndVisuals.healthBars.removeHealthFromName;
 		boolean removeMax = SkyblockerConfigManager.get().uiAndVisuals.healthBars.removeMaxHealthFromName;
 		//if both disabled no need to edit name
@@ -100,28 +101,52 @@ public class HealthBars {
 		}
 		MutableText cleanedText = Text.empty();
 		List<Text> parts = armorStand.getCustomName().getSiblings();
+		//loop though name and add every part to a new text skipping over the hidden health values
+		int healthStartIndex = -1;
+		System.out.println(healthMatcher.group(0).toString()+"testing");
 		for (int i = 0; i < parts.size(); i++) {
 			//remove value from name
-			if (removeValue && i < parts.size() - 3 && parts.get(i).getString().equals(healthMatcher.group(1)) && parts.get(i + 1).getString().equals("/") && parts.get(i + 2).getString().equals(healthMatcher.group(4)) && parts.get(i + 3).getString().equals("❤")) {
-				continue;
+				if (i < parts.size() - 4 && StringUtils.join(parts.subList(i+1, i + 5).stream().map(Text::getString).toArray(), "").equals(healthMatcher.group(0))) {
+				healthStartIndex = i;
 			}
-			//remove slash from max and skip over the value
-			if (removeMax && i < parts.size() - 2 && parts.get(i).getString().equals("/") && parts.get(i + 1).getString().equals(healthMatcher.group(4)) && parts.get(i + 2).getString().equals("❤")) {
-				//remove the value as well
-				i += 1;
-				continue;
+			if (healthStartIndex != -1) {
+				//skip parts of the health offset form staring index
+				switch (i - healthStartIndex) {
+					case 0 -> { // space before health
+						if (removeMax && removeValue) {
+							continue;
+						}
+					}
+					case 1 -> { // current health value
+						if (removeValue) {
+							continue;
+						}
+					}
+					case 2 -> { // "/" separating health values
+						if (removeMax) {
+							continue;
+						}
+					}
+					case 3 -> { // max health value
+						if (removeMax) {
+							continue;
+						}
+					}
+					case 4 -> { // "❤" at end of health
+						if (removeMax && removeValue) {
+							continue;
+						}
+					}
+				}
 			}
-			//if both enabled remove "❤"
-			if (removeValue && removeMax && parts.get(i).getString().equals("❤")) {
-				continue;
-			}
+
 			cleanedText.append(parts.get(i));
 		}
 		armorStand.setCustomName(cleanedText);
 	}
 
 	/**
-	 * Processes armour stands that only have a health value and no max health
+	 * Processes armor stands that only have a health value and no max health
 	 *
 	 * @param armorStand armorstand to check the name of
 	 */
@@ -153,11 +178,12 @@ public class HealthBars {
 		}
 		MutableText cleanedText = Text.empty();
 		List<Text> parts = armorStand.getCustomName().getSiblings();
+		//loop though name and add every part to a new text skipping over the health value
 		for (int i = 0; i < parts.size(); i++) {
-			//remove value from name and skip over heart
-			if (i < parts.size() - 1 && parts.get(i).getString().equals(healthOnlyMatcher.group(1)) && parts.get(i + 1).getString().equals("❤")) {
+			//skip space before value, value and heart from name
+			if (i < parts.size() - 2 && StringUtils.join(parts.subList(i+1, i + 3).stream().map(Text::getString).toArray(), "").equals(healthOnlyMatcher.group(0))) {
 				//skip the heart
-				i += 1;
+				i += 2;
 				continue;
 			}
 			cleanedText.append(parts.get(i));
