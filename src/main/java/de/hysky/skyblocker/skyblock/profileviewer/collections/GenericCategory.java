@@ -64,8 +64,6 @@ public class GenericCategory implements ProfileViewerPage {
 
             if (itemStack.getItem().getName().getString().equals("Barrier"))  {
                 itemStack.set(DataComponentTypes.CUSTOM_NAME, Text.of(collection));
-                System.out.println(collection);
-                System.out.println(this.category);
             }
 
             Style style = Style.EMPTY.withColor(Formatting.WHITE).withItalic(false);
