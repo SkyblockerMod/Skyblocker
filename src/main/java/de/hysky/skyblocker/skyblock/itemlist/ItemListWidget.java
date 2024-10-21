@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.mixins.accessors.RecipeBookWidgetAccessor;
+import de.hysky.skyblocker.skyblock.todolist.ui.TodoListTab;
 import de.hysky.skyblocker.utils.render.gui.SideTabButtonWidget;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
@@ -27,7 +28,7 @@ public class ItemListWidget extends RecipeBookWidget {
     private int leftOffset;
 
     private TabContainerWidget currentTabContent;
-    private final List<Pair<SideTabButtonWidget, TabContainerWidget>> tabs = new ArrayList<>(2);
+    private final List<Pair<SideTabButtonWidget, TabContainerWidget>> tabs = new ArrayList<>(3);
     private ItemListTab itemListTab;
 
     private static int currentTab = 0;
@@ -68,6 +69,14 @@ public class ItemListWidget extends RecipeBookWidget {
                 upcomingEventsTab
         ));
 
+		TodoListTab todoListTab = new TodoListTab(x + 9, y + 9, this.client);
+		SideTabButtonWidget todoListTabButton = new SideTabButtonWidget(x - 30, y + 3 + (27 * 2), currentTab == 2, new ItemStack(Items.COMPASS));
+		todoListTabButton.setTooltip(Tooltip.of(Text.literal("Todo List")));
+		if (currentTab == 2) currentTabContent = todoListTab;
+		tabs.add(new ObjectObjectImmutablePair<>(
+				todoListTabButton,
+				todoListTab
+		));
     }
 
     @Override
@@ -100,7 +109,36 @@ public class ItemListWidget extends RecipeBookWidget {
         }
     }
 
-    @Override
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+		if (this.isOpen() && this.client.player != null && !this.client.player.isSpectator() && this.currentTabContent != null) {
+			return this.currentTabContent.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+		} else return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+	}
+
+	@Override
+	public boolean charTyped(char chr, int modifiers) {
+		if (this.isOpen() && this.client.player != null && !this.client.player.isSpectator() && this.currentTabContent != null) {
+			return this.currentTabContent.charTyped(chr, modifiers);
+		} else return super.charTyped(chr, modifiers);
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (this.isOpen() && this.client.player != null && !this.client.player.isSpectator() && this.currentTabContent != null) {
+			return this.currentTabContent.keyPressed(keyCode, scanCode, modifiers);
+		} else return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+		if (this.isOpen() && this.client.player != null && !this.client.player.isSpectator() && this.currentTabContent != null) {
+			return this.currentTabContent.keyReleased(keyCode, scanCode, modifiers);
+		} else return super.keyReleased(keyCode, scanCode, modifiers);
+	}
+
+
+	@Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (this.isOpen() && this.client.player != null && !this.client.player.isSpectator()) {
             // check if a tab is clicked

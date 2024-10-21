@@ -17,6 +17,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
+import de.hysky.skyblocker.skyblock.todolist.ui.TodoListScroll;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
@@ -99,6 +100,9 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@Unique
 	private List<QuickNavButton> quickNavButtons;
 
+	@Unique
+	private TodoListScroll todoListScroll;
+
 	protected HandledScreenMixin(Text title) {
 		super(title);
 	}
@@ -145,6 +149,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	/**
 	 * Draws the unselected tabs in front of the background blur, but behind the main inventory, similar to creative inventory tabs
 	 */
+
 	@Inject(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawBackground(Lnet/minecraft/client/gui/DrawContext;FII)V"))
 	private void skyblocker$drawUnselectedQuickNavButtons(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		if (quickNavButtons != null) for (QuickNavButton quickNavButton : quickNavButtons) {
@@ -164,6 +169,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				quickNavButton.render(context, mouseX, mouseY, delta);
 			}
 		}
+		if (todoListScroll != null)
+			todoListScroll.render(context, mouseX, mouseY, delta);
 	}
 
 	@SuppressWarnings("DataFlowIssue")
