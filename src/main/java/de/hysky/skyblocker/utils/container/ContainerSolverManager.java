@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusHelper;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusProfit;
+import de.hysky.skyblocker.skyblock.dungeon.SalvageHelper;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.LightsOnTerminal;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
@@ -42,6 +43,7 @@ public class ContainerSolverManager {
 			new LightsOnTerminal(),
 			new CroesusHelper(),
 			new CroesusProfit(),
+			new SalvageHelper(),
 			new ChronomatronSolver(),
 			new CommissionHighlight(),
 			new SuperpairsSolver(),
@@ -72,7 +74,7 @@ public class ContainerSolverManager {
 					MatrixStack matrices = context.getMatrices();
 					matrices.push();
 					matrices.translate(((HandledScreenAccessor) genericContainerScreen).getX(), ((HandledScreenAccessor) genericContainerScreen).getY(), 300);
-					onDraw(context, genericContainerScreen.getScreenHandler().slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9));
+					onDraw(context, genericContainerScreen, genericContainerScreen.getScreenHandler().slots);
 					matrices.pop();
 				});
 				ScreenEvents.remove(screen).register(screen1 -> clearScreen());
@@ -126,9 +128,9 @@ public class ContainerSolverManager {
 		return currentSolver != null && currentSolver.onClickSlot(slot, stack, screenId);
 	}
 
-	public static void onDraw(DrawContext context, List<Slot> slots) {
+	public static void onDraw(DrawContext context, GenericContainerScreen genericContainerScreen, List<Slot> slots) {
 		if (currentSolver == null) return;
-		if (highlights == null) highlights = currentSolver.getColors(slotMap(slots));
+		if (highlights == null) highlights = currentSolver.getColors(slotMap(slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9)));
 		RenderSystem.enableDepthTest();
 		RenderSystem.colorMask(true, true, true, false);
 		for (ColorHighlight highlight : highlights) {
