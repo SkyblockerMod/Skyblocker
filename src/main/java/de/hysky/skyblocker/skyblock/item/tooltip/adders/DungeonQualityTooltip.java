@@ -20,22 +20,26 @@ public class DungeonQualityTooltip extends SimpleTooltipAdder {
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		NbtCompound customData = ItemUtils.getCustomData(stack);
-		if (customData == null || !customData.contains("baseStatBoostPercentage")) return;
+		if (customData.isEmpty() || !customData.contains("baseStatBoostPercentage")) return;
 		int baseStatBoostPercentage = customData.getInt("baseStatBoostPercentage");
 		boolean maxQuality = baseStatBoostPercentage == 50;
-		if (maxQuality) {
-			lines.add(Text.literal(String.format("%-17s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.RED).formatted(Formatting.BOLD));
-		} else {
-			lines.add(Text.literal(String.format("%-21s", "Item Quality:") + baseStatBoostPercentage + "/50").formatted(Formatting.BLUE));
-		}
+		lines.add(Text.literal("Item Quality:").formatted(Formatting.BLUE)
+		              .align(maxQuality
+		                     ? Text.literal(baseStatBoostPercentage + "/50")
+		                           .formatted(Formatting.RED, Formatting.BOLD)
+		                     : Text.literal(baseStatBoostPercentage + "/50")
+		                           .formatted(Formatting.BLUE),
+				              100));
 
 		if (customData.contains("item_tier")) {     // sometimes it just isn't here?
 			int itemTier = customData.getInt("item_tier");
-			if (maxQuality) {
-				lines.add(Text.literal(String.format("%-17s", "Floor Tier:") + itemTier + " (" + getItemTierFloor(itemTier) + ")").formatted(Formatting.RED).formatted(Formatting.BOLD));
-			} else {
-				lines.add(Text.literal(String.format("%-21s", "Floor Tier:") + itemTier + " (" + getItemTierFloor(itemTier) + ")").formatted(Formatting.BLUE));
-			}
+			lines.add(Text.literal("Floor Tier:").formatted(Formatting.BLUE)
+			              .align(maxQuality
+			                     ? Text.literal(itemTier + " (" + getItemTierFloor(itemTier) + ")")
+			                           .formatted(Formatting.RED, Formatting.BOLD)
+			                     : Text.literal(itemTier + " (" + getItemTierFloor(itemTier) + ")")
+			                           .formatted(Formatting.BLUE),
+					              100));
 		}
 	}
 

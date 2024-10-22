@@ -32,8 +32,12 @@ public abstract class DrawContextMixin {
 		List<TooltipComponent> result = new ArrayList<>();
 
 		for (Text text : list) {
-			if (text instanceof MutableText mutableText && mutableText.getAlignedText() != null) result.add(new AlignedTooltipComponent(mutableText));
-			else result.add(new OrderedTextTooltipComponent(text.asOrderedText()));
+			if (text instanceof MutableText mutableText) {
+				MutableText firstOfChain = mutableText.getFirstOfChain();
+				if (firstOfChain != null) result.add(new AlignedTooltipComponent(firstOfChain));
+				else if (mutableText.getAlignedText() != null) result.add(new AlignedTooltipComponent(mutableText));
+				else result.add(new OrderedTextTooltipComponent(mutableText.asOrderedText()));
+			} else result.add(new OrderedTextTooltipComponent(text.asOrderedText()));
 		}
 
 		return (R) result;

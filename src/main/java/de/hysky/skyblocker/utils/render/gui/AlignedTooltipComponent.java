@@ -4,27 +4,25 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import org.joml.Matrix4f;
 
 /**
- * Start a text with @align(x) as the first sibling to render the next line in the current line, off-set by x pixels.
+ * This class is used to display text at a certain x offset after the current text in tooltips.
  * Example:
  * <pre><code>
  * List<Text> lines; //Assuming you have a list of lines for the tooltip
  * lines.add(Text.literal("Left")
  *               .align(Text.literal("Right"), 50);</code></pre>
- * This will result in {@code Left<50px space>Right} (in the same line) being rendered.
+ * This will result in {@code Left<50px - the width of the "Left" text>Right} (in the same line) being rendered.
  */
 public class AlignedTooltipComponent implements TooltipComponent {
 	private final MutableText text;
 
 	public AlignedTooltipComponent(MutableText text) {
-		MutableText firstOfChain = text.getFirstOfChain();
-		if (firstOfChain != null) this.text = firstOfChain;
-		else this.text = text;
+		this.text = text;
 	}
 
+	//Same as the original OrderedTextTooltipComponent
 	@Override
 	public int getHeight() {
 		return 10;
@@ -32,10 +30,11 @@ public class AlignedTooltipComponent implements TooltipComponent {
 
 	@Override
 	public int getWidth(TextRenderer textRenderer) {
-		Text tmpText = this.text;
+		MutableText tmpText = this.text;
 		int width = 0;
 		while (tmpText != null) {
 			int offset = tmpText.getXOffset();
+			//If the offset would cause the following text to overlap with the previous text, the width of the previous text is used instead to append the following text to the previous text
 			width += offset != Integer.MIN_VALUE ? Math.max(textRenderer.getWidth(tmpText), tmpText.getXOffset()) : textRenderer.getWidth(tmpText);
 			tmpText = tmpText.getAlignedText();
 		}

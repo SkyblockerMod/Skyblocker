@@ -27,9 +27,10 @@ public class LBinTooltip extends SimpleTooltipAdder {
 
 		// Check for whether the item exist in bazaar price data, because Skytils keeps some bazaar item data in lbin api
 		if (TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId) && !TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
-			lines.add(Text.literal(String.format("%-19s", "Lowest BIN Price:"))
+			lines.add(Text.literal("Lowest BIN Price:")
 			              .formatted(Formatting.GOLD)
-			              .append(ItemTooltip.getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().getDouble(skyblockApiId), stack.getCount())));
+			              .align(ItemTooltip.getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().getDouble(skyblockApiId), stack.getCount()),
+					              100));
 		}
 	}
 }

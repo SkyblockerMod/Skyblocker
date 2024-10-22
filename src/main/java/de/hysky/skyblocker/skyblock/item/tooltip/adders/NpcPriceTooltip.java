@@ -36,9 +36,10 @@ public class NpcPriceTooltip extends SimpleTooltipAdder {
 			} else {
 				amount = stack.getCount();
 			}
-			lines.add(Text.literal(String.format("%-21s", "NPC Sell Price:"))
+			//noinspection DataFlowIssue --- The data's presence is checked above, so it's safe to assume it's present here
+			lines.add(Text.literal("NPC Sell Price:")
 			              .formatted(Formatting.YELLOW)
-			              .append(ItemTooltip.getCoinsMessage(TooltipInfoType.NPC.getData().getDouble(internalID), amount)));
+			              .align(ItemTooltip.getCoinsMessage(TooltipInfoType.NPC.getData().getDouble(internalID), amount), 100));
 		}
 	}
 }
