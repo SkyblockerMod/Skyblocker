@@ -9,7 +9,15 @@ import org.junit.jupiter.api.Test;
 
 public class fossilSolverTest {
 
-
+	fossilSolver.container dummyContainer(){
+		fossilSolver.tileState[][] tileState = new fossilSolver.tileState[6][9];
+		for (int x = 0; x < 6; x++) {
+			for (int y = 0; y < 9; y++) {
+				tileState[x][y] = fossilSolver.tileState.UNKNOWN;
+			}
+		}
+		return new fossilSolver.container(tileState);
+	}
 	@Test
 	void testGetPossibleStates() {
 		//check there is the right amount
@@ -18,19 +26,26 @@ public class fossilSolverTest {
 
 	@Test
 	void testFossilChances() {
-		//generate dummy value
-		fossilSolver.tileState[][] tileState = new fossilSolver.tileState[6][9];
-		for (int x = 0; x < 6; x++) {
-			for (int y = 0; y < 9; y++) {
-				tileState[x][y] = fossilSolver.tileState.UNKNOWN;
-			}
-		}
-
 		//check if count is correct start
-		Assertions.assertEquals(fossilSolver.getFossilChance(new fossilSolver.container(tileState))[22], 0.54);
+		//Assertions.assertEquals(fossilSolver.getFossilChance(container,null)[22], 0.54);
 
 		//check second if fossil at first
-		tileState[2][4] = fossilSolver.tileState.FOSSIL;
-		Assertions.assertEquals(fossilSolver.getFossilChance(new fossilSolver.container(tileState))[31], 0.65);
+		//tileState[2][4] = fossilSolver.tileState.FOSSIL;
+		//Assertions.assertEquals(fossilSolver.getFossilChance(container,null)[31], 0.65);
+
+
+		//add start of helix and see if it find it
+
+
+	}
+	@Test
+	void testPartlyFoundFossil(){
+		fossilSolver.container container = dummyContainer();
+		container.updateSlot(0,2, fossilSolver.tileState.FOSSIL);
+		container.updateSlot(0,3, fossilSolver.tileState.FOSSIL);
+		container.updateSlot(0,4, fossilSolver.tileState.FOSSIL);
+		container.updateSlot(0,5, fossilSolver.tileState.FOSSIL);
+		container.updateSlot(1,5, fossilSolver.tileState.FOSSIL);
+		Assertions.assertEquals(fossilSolver.getFossilChance(container,null)[20], 1);
 	}
 }

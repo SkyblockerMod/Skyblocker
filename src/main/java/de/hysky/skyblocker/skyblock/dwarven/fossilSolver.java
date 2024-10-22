@@ -3,31 +3,63 @@ package de.hysky.skyblocker.skyblock.dwarven;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import org.joml.Vector2i;
+import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.text.Text;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class fossilSolver extends SimpleContainerSolver {
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final List<screenState> POSSIBLE_STATES = getAllPossibleStates();
+	private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("Fossil Excavation Progress: (\\d{2}.\\d)%");
+
+
+	private String percentage = null;
+
 	public fossilSolver() {
 		super("Fossil Excavator");
+		percentage = null;
 	}
 
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
-		System.out.println("update");
 		//convert to container
 		container mainContainer = convertItemsToTiles(slots);
+		//get the fossil chance percentage
+		if (percentage == null) {
+			percentage = getFossilPercentage(slots);
+			System.out.println(percentage);
+		}
 		//get chance for each
-		double[] probability = getFossilChance(mainContainer);
+		double[] probability = getFossilChance(mainContainer, percentage);
 		//get the highlight amount and return
 		return convertChanceToColor(probability, 0, 0, 255); //todo better colour
+	}
+
+	/**
+	 * See if there is any found fossils then see if there is a fossil chance percentage in the tool tips
+	 * @param slots items to check tool tip of
+	 * @return null if there is none or the value of the percentage
+	 */
+	private String getFossilPercentage(Int2ObjectMap<ItemStack> slots) {
+		for (ItemStack item : slots.values()) {
+			for (Text line : item.getTooltip(Item.TooltipContext.DEFAULT, CLIENT.player, TooltipType.BASIC)) {
+				Matcher matcher = PERCENTAGE_PATTERN.matcher(line.getString());
+				if (matcher.matches()) {
+					return matcher.group(2);
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -87,123 +119,149 @@ public class fossilSolver extends SimpleContainerSolver {
 		FLIP_ROTATED_270;
 	}
 
-	protected enum fossilTypes { //todo add percentages so shape can be guessed
+	protected enum fossilTypes {
 		CLAW(new tileState[][]{
 				{tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY},
 				{tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY},
 				{tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY},
 				{tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL},
 				{tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY}
-		}, List.of(transformationOptions.values())),
+		}, List.of(transformationOptions.values()), "7.7"),
 		TUSK(new tileState[][]{
 				{tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL},
 				{tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL},
 				{tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL},
 				{tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY},
 				{tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY}
-		}, List.of(transformationOptions.values())),
+		}, List.of(transformationOptions.values()), "12.5"),
 		UGLY(new tileState[][]{
 				{tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY},
 				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY},
 				{tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL},
 				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY}
-		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270)),
+		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270), "6.2"),
 		HELIX(new tileState[][]{
 				{tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL}, // helix
 				{tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL},
 				{tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL},
 				{tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL}
-		},  List.of(transformationOptions.values())),
+		},  List.of(transformationOptions.values()), "7.1"),
 		WEBBED(new tileState[][]{
 				{tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY}, // webbed fossil
 				{tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL},
 				{tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY},
 				{tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY}
-		},  List.of(transformationOptions.ROTATED_0, transformationOptions.FLIP_ROTATED_0)),
+		},  List.of(transformationOptions.ROTATED_0, transformationOptions.FLIP_ROTATED_0), "10"),
 		FOOTPRINT(new tileState[][]{
 				{tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL}, // footprint fossil
 				{tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL},
 				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY},
 				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY},
 				{tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY}
-		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270)),
+		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270), "7.7"),
 		CLUBBED(new tileState[][]{
 				{tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL}, // clubbed fossil
 				{tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL},
 				{tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY},
 				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY}
-		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_180, transformationOptions.FLIP_ROTATED_0, transformationOptions.FLIP_ROTATED_180)),
+		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_180, transformationOptions.FLIP_ROTATED_0, transformationOptions.FLIP_ROTATED_180), "9.1"),
 		SPINE(new tileState[][]{
 				{tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY}, // spine fossil
 				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY},
 				{tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL}
-		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270));
+		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270), "8.3");
 
 		final List<transformationOptions> rotations;
 		final tileState[][] grid;
+		final String percentage;
 
-		fossilTypes(tileState[][] grid, List<transformationOptions> rotations) {
+		fossilTypes(tileState[][] grid, List<transformationOptions> rotations,String percentage) {
 			this.grid = grid;
 			this.rotations = rotations;
+			this.percentage = percentage;
 		}
 	}
 
-	protected record screenState(fossilTypes type, container grid, Vector2i offset) {
+	protected record screenState(fossilTypes type, container grid, int xOffset, int yOffset) {
 		/**
-		 * works out if this is a valid state based on the current state of the escevator window
+		 * works out if this is a valid state based on the current state of the excavator window
 		 *
-		 * @param currentState the state of the escevator window
+		 * @param currentState the state of the excavator window
 		 * @return if this screen state can exist depending on found tiles
 		 */
-		public boolean isValid(container currentState) {
-			for (int x = 0; x < grid.width(); x++) {
-				for (int y = 0; y < grid.height(); y++) {
-					tileState knownState = currentState.getSlot(x + offset.x, y + offset.y);
-					//still do not know if the tiles will match or not so do not check
-					if (knownState == tileState.UNKNOWN) {
-						continue;
-					}
-					tileState predictedState = grid.getSlot(x, y);
-
-					//if this screen state does not line up with the actual state it can not be valid
-					if (predictedState != knownState) {
-						return false;
+		public boolean isValid(container currentState, String percentage) {
+			//check the percentage
+			if (percentage != null && !percentage.equals(type.percentage)) {
+				return false;
+			}
+			//check conflicting tiles
+			for (int x = 0; x < currentState.width(); x++) {
+				for (int y = 0; y < currentState.height(); y++) {
+					tileState knownState = currentState.getSlot(x, y);
+					//if there is a miss match return false
+					switch (knownState){
+						case UNKNOWN -> {
+							//still do not know if the tiles will match or not so carry on
+							continue;
+						}
+						case FOSSIL -> {
+							if (!isFossilCollision(x,y)){
+								return false;
+							}
+						}
+						case EMPTY -> {
+							if (!isEmptyCollision(x,y)){
+								return false;
+							}
+						}
 					}
 				}
 			}
 			//if no conflicts return ture
 			return true;
 		}
+		public boolean isEmptyCollision(int positionX, int positionY) {
+			try {
+				return isState(positionX,positionY,tileState.EMPTY);
+			} catch (IndexOutOfBoundsException f){
+				return true;
+			}
+		}
 
-		public boolean isFossil(int positionX, int positionY) {
-			int x = positionX - offset.x;
-			int y = positionY - offset.y;
-			//if they are not in range of the grid they are not a fossil
-			if (x < 0 || x >= grid.width() || y < 0 || y >= grid.height()) {
+		public boolean isFossilCollision(int positionX, int positionY) {
+			try {
+				return isState(positionX,positionY,tileState.FOSSIL);
+			} catch (IndexOutOfBoundsException f){
 				return false;
 			}
+		}
+		private boolean isState(int positionX, int positionY, tileState state) {
+			int x = positionX - xOffset;
+			int y = positionY - yOffset;
+			//if they are not in range of the grid they are not a fossil
+			if (x < 0 || x >= grid.width() || y < 0 || y >= grid.height()) {
+				throw new IndexOutOfBoundsException("not in grid");
+			}
 			//return if position in grid is fossil
-			return grid.getSlot(x, y) == tileState.FOSSIL;
+			return grid.getSlot(x, y) == state;
 		}
 	}
 
 
 	/**
-	 * returnest a hash map of how likely a tile is to contain a fossil if its
+	 * returns a hash map of how likely a tile is to contain a fossil if its
 	 *
-	 * @param tiles the state of the escevator window
-	 * @return the probibility of a fossil being in a tile
+	 * @param tiles the state of the excavator window
+	 * @return the probability of a fossil being in a tile
 	 */
 
-	protected static double[] getFossilChance(container tiles) {
+	protected static double[] getFossilChance(container tiles, String percentage) {
 		int[] total = new int[54];
-		//convert the current state to a 2d array of tiles
-		//tileState[][] tiles = convertItemsToTiles(currentState); todo somewere else
 
 		//loop though tile options and if they are valid
 		List<screenState> validStates = new ArrayList<>();
-		for (screenState state : getAllPossibleStates()) { //todo cache possible states
-			if (state.isValid(tiles)) {
+		for (screenState state : POSSIBLE_STATES) {
+			if (state.isValid(tiles, percentage)) {
 				validStates.add(state);
 			}
 		}
@@ -213,7 +271,7 @@ public class fossilSolver extends SimpleContainerSolver {
 			for (int x = 0; x < 9; x++) {
 				if (tiles.getSlot(x, y) == tileState.UNKNOWN) {
 					for (screenState state : validStates) {
-						if (state.isFossil(x, y)) {
+						if (state.isFossilCollision(x, y)) {
 							total[index] += 1;
 						}
 					}
@@ -228,10 +286,10 @@ public class fossilSolver extends SimpleContainerSolver {
 	}
 
 	/**
-	 * converts a dictionry of item stacks to a 2d array representing if the slot is a fossil or not. assuming each row will be 9 tiles and there will be 6 rows
+	 * converts a dictionary of item stacks to a 2d array representing if the slot is a fossil or not. assuming each row will be 9 tiles and there will be 6 rows
 	 *
 	 * @param currentState dictionary of item in container
-	 * @return input contatainer converted into 2d {@link tileState} array
+	 * @return input container converted into 2d {@link tileState} array
 	 */
 	private static container convertItemsToTiles(Int2ObjectMap<ItemStack> currentState) {
 		container output =new container(new tileState[6][9]);
@@ -274,7 +332,7 @@ public class fossilSolver extends SimpleContainerSolver {
 				//loop though possible offsets and for each of them create a screen state and return the value
 				for (int x = 0; x <= maxXOffset; x++) {
 					for (int y = 0; y <= maxYOffset; y++) {
-						output.add(new screenState(fossil, grid, new Vector2i(x, y)));
+						output.add(new screenState(fossil, grid, x, y));
 					}
 				}
 			}
