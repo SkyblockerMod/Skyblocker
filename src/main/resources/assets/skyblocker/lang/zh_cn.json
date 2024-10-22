@@ -982,5 +982,7 @@
     "skyblocker.crimson.dojo.staminaHelper.@Tooltip": "在你穿过一面墙之后，高亮墙壁上逐渐变橙的洞。",
     "skyblocker.crimson.dojo.forceHelper.@Tooltip": "显示计时器，展示离僵尸消失还有多久，并框出减分的僵尸。",
     "skyblocker.waypoints.ordered.import.coleWeight.groupAlreadyExists": "在名称“%s”下已经有一个有序的路径点组，请选择另一个名称来导入你的路径点。",
-    "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabEffectsMessage": "在 /tab 中启用效果以允许指南针识别女王坐标"
+    "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabEffectsMessage": "在 /tab 中启用效果以允许指南针识别女王坐标",
+    "skyblocker.config.debug.showInvisibleArmorStands": "显示隐形盔甲架",
+    "skyblocker.config.debug.debugWebSockets": "启用Websocket调试消息"
 }
