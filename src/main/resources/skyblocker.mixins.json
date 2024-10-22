@@ -57,7 +57,8 @@
     "accessors.WorldRendererAccessor",
     "discordipc.ConnectionMixin",
     "jgit.SystemReaderMixin",
-    "rei.ScreenOverlayImplFabricMixin"
+    "rei.ScreenOverlayImplFabricMixin",
+    "emi.FakeScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
