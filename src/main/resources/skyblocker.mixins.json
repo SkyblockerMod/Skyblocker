@@ -29,6 +29,7 @@
     "LeverBlockMixin",
     "MinecraftClientMixin",
     "MouseMixin",
+    "MutableTextMixin",
     "PingMeasurerMixin",
     "PlayerInventoryMixin",
     "PlayerListHudMixin",
