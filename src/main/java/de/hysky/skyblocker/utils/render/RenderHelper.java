@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.render;
 
+import com.mojang.blaze3d.systems.RenderCall;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.BeaconBlockEntityRendererInvoker;
@@ -37,17 +37,11 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
-import org.slf4j.Logger;
 
 import java.awt.*;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 
 public class RenderHelper {
-    private static final Logger LOGGER = LogUtils.getLogger();
     private static final Identifier TRANSLUCENT_DRAW = Identifier.of(SkyblockerMod.NAMESPACE, "translucent_draw");
-    private static final MethodHandle SCHEDULE_DEFERRED_RENDER_TASK = getDeferredRenderTaskHandle();
     private static final Vec3d ONE = new Vec3d(1, 1, 1);
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -345,17 +339,11 @@ public class RenderHelper {
         profiler.pop();
     }
 
-    public static void runOnRenderThread(Runnable runnable) {
+    public static void runOnRenderThread(RenderCall renderCall) {
         if (RenderSystem.isOnRenderThread()) {
-            runnable.run();
-        } else if (SCHEDULE_DEFERRED_RENDER_TASK != null) { //Sodium
-            try {
-                SCHEDULE_DEFERRED_RENDER_TASK.invokeExact(runnable);
-            } catch (Throwable t) {
-                LOGGER.error("[Skyblocker] Failed to schedule a render task!", t);
-            }
-        } else { //Vanilla
-            RenderSystem.recordRenderCall(runnable::run);
+        	renderCall.execute();
+        } else {
+            RenderSystem.recordRenderCall(renderCall);
         }
     }
 
@@ -415,19 +403,5 @@ public class RenderHelper {
 
     public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, Color color) {
         renderNineSliceColored(context, texture, x, y, width, height, ColorHelper.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
-    }
-
-    // TODO Get rid of reflection once the new Sodium is released
-    private static MethodHandle getDeferredRenderTaskHandle() {
-        try {
-            Class<?> deferredTaskClass = Class.forName("me.jellysquid.mods.sodium.client.render.util.DeferredRenderTask");
-
-            MethodHandles.Lookup lookup = MethodHandles.publicLookup();
-            MethodType mt = MethodType.methodType(void.class, Runnable.class);
-
-            return lookup.findStatic(deferredTaskClass, "schedule", mt);
-        } catch (Throwable ignored) {}
-
-        return null;
     }
 }
