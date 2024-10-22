@@ -58,8 +58,8 @@ public class EssenceShopPrice extends SimpleTooltipAdder {
 		if (priceData == 0) return; //Default value for getLong is 0 if no value exists for that key
 
 		lines.add(Text.empty()
-				.append(Text.literal("Essence Cost:      ").formatted(Formatting.AQUA))
-				.append(Text.literal(DECIMAL_FORMAT.format(priceData * cost.getAsLong()) + " coins").formatted(Formatting.DARK_AQUA))
+				.append(Text.literal("Essence Cost:").formatted(Formatting.AQUA))
+				.align(Text.literal(DECIMAL_FORMAT.format(priceData * cost.getAsLong()) + " coins").formatted(Formatting.DARK_AQUA), 100)
 				.append(Text.literal(" (").formatted(Formatting.GRAY))
 				.append(Text.literal(DECIMAL_FORMAT.format(priceData) + " each").formatted(Formatting.GRAY))
 				.append(Text.literal(")").formatted(Formatting.GRAY))

@@ -23,7 +23,7 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 		String neuName = stack.getNeuName();
 		Average type = ItemTooltip.config.avg;
 
-        if ((TooltipInfoType.ONE_DAY_AVERAGE.getData() == null && type != Average.THREE_DAY) || (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null && type != Average.ONE_DAY)) {
+		if ((TooltipInfoType.ONE_DAY_AVERAGE.getData() == null && type != Average.THREE_DAY) || (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null && type != Average.ONE_DAY)) {
 			ItemTooltip.nullWarning();
 		} else {
                 /*
@@ -35,11 +35,13 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 				// "No data" line because of API not keeping old data, it causes NullPointerException
 				if (type == Average.ONE_DAY || type == Average.BOTH) {
 					lines.add(
-							Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
+							Text.literal("1 Day Avg. Price:")
 							    .formatted(Formatting.GOLD)
-							    .append(!TooltipInfoType.ONE_DAY_AVERAGE.getData().containsKey(neuName)
-									    ? Text.literal("No data").formatted(Formatting.RED)
-									    : ItemTooltip.getCoinsMessage(TooltipInfoType.ONE_DAY_AVERAGE.getData().getDouble(neuName), stack.getCount())
+
+							    .align(TooltipInfoType.ONE_DAY_AVERAGE.getData().containsKey(neuName)
+							           ? ItemTooltip.getCoinsMessage(TooltipInfoType.ONE_DAY_AVERAGE.getData().getDouble(neuName), stack.getCount())
+							           : Text.literal("No data").formatted(Formatting.RED),
+									    100
 							    )
 					);
 				}
@@ -47,9 +49,10 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 					lines.add(
 							Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
 							    .formatted(Formatting.GOLD)
-							    .append(!TooltipInfoType.THREE_DAY_AVERAGE.getData().containsKey(neuName)
-									    ? Text.literal("No data").formatted(Formatting.RED)
-									    : ItemTooltip.getCoinsMessage(TooltipInfoType.THREE_DAY_AVERAGE.getData().getDouble(neuName), stack.getCount())
+							    .align(TooltipInfoType.THREE_DAY_AVERAGE.getData().containsKey(neuName)
+							           ? ItemTooltip.getCoinsMessage(TooltipInfoType.THREE_DAY_AVERAGE.getData().getDouble(neuName), stack.getCount())
+							           : Text.literal("No data").formatted(Formatting.RED),
+									    100
 							    )
 					);
 				}
