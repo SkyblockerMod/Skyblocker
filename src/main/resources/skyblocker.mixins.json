@@ -56,7 +56,8 @@
     "accessors.SlotAccessor",
     "accessors.WorldRendererAccessor",
     "discordipc.ConnectionMixin",
-    "jgit.SystemReaderMixin"
+    "jgit.SystemReaderMixin",
+    "rei.ScreenOverlayImplFabricMixin"
   ],
   "injectors": {
     "defaultRequire": 1
