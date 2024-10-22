@@ -42,8 +42,10 @@ public class MuseumTooltip extends SimpleTooltipAdder {
 
 				lines.add(Text.literal("Museum (" + itemCategory + "):")
 				              .formatted(Formatting.LIGHT_PURPLE)
-				              .align(Text.literal(isInMuseum ? "✔" : "✖").formatted(donatedIndicatorFormatting, Formatting.BOLD), 100)
-				              .append(Text.literal(isInMuseum ? " Donated" : " Not Donated").formatted(donatedIndicatorFormatting)));
+				              .align(Text.empty()
+				                              .append(Text.literal(isInMuseum ? "✔" : "✖").formatted(donatedIndicatorFormatting, Formatting.BOLD))
+				                              .append(Text.literal(isInMuseum ? " Donated" : " Not Donated").formatted(donatedIndicatorFormatting)),
+						              100));
 			}
 		}
 	}
