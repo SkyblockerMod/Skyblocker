@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -134,9 +135,13 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     @Override
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         for (Slot equipmentSlot : equipmentSlots) {
+            boolean hovered = isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY);
+
+            if (hovered) context.drawGuiTexture(RenderLayer::getGuiTextured, HandledScreenAccessor.getSLOT_HIGHLIGHT_BACK_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);;
+
             drawSlot(context, equipmentSlot);
-            //FIXME maybe this is not needed?
-            //if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) drawSlotHighlight(context, equipmentSlot.x, equipmentSlot.y, 0);
+
+            if (hovered) context.drawGuiTexture(RenderLayer::getGuiTexturedOverlay, HandledScreenAccessor.getSLOT_HIGHLIGHT_FRONT_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
         }
 
         super.drawForeground(context, mouseX, mouseY);
