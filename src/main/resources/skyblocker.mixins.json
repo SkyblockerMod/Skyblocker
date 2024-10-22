@@ -58,7 +58,8 @@
     "discordipc.ConnectionMixin",
     "jgit.SystemReaderMixin",
     "rei.ScreenOverlayImplFabricMixin",
-    "emi.FakeScreenMixin"
+    "emi.FakeScreenMixin",
+    "jei.RenderHelperMixin"
   ],
   "injectors": {
     "defaultRequire": 1
