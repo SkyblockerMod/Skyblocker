@@ -42,9 +42,9 @@
   "depends": {
     "fabricloader": ">=0.16.7",
     "fabric-api": ">=0.106.0+1.21.2",
-    "yet_another_config_lib_v3": ">=3.6.0+1.21.2",
-    "hm-api": ">=1.0.1+1.21.1",
-    "minecraft": "~1.21.2-rc.1",
+    "yet_another_config_lib_v3": ">=3.6.1+1.21.2",
+    "hm-api": ">=1.0.1+1.21.2",
+    "minecraft": "~1.21.2",
     "java": ">=21"
   },
   "conflicts": {

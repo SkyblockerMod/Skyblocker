@@ -97,7 +97,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         int i = this.x;
         int j = (this.height - this.backgroundHeight) / 2;
         context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
-        if (!handler.mirrorverse) context.drawGuiTexture(RenderLayer::getGuiTextured, QUICK_CRAFT, i + 173, j, 0, 25, 84);
+        if (!handler.mirrorverse) context.drawGuiTexture(RenderLayer::getGuiTextured, QUICK_CRAFT, i + 173, j, 25, 84);
     }
 
     @Override
