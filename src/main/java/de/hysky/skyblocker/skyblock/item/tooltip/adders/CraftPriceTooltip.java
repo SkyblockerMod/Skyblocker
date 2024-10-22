@@ -59,8 +59,9 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
             } else amountInStack = stack.getCount();
 
             neuRecipes.getFirst().getAllOutputs().stream().findFirst().ifPresent(outputIngredient ->
-                    lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)
-                            .append(ItemTooltip.getCoinsMessage(totalCraftCost / outputIngredient.getAmount(), amountInStack))));
+                    lines.add(Text.literal("Crafting Price:")
+                                  .formatted(Formatting.GOLD)
+                                  .align(ItemTooltip.getCoinsMessage(totalCraftCost / outputIngredient.getAmount(), amountInStack), 100)));
 
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Craft Price] Error calculating craftprice tooltip for: " + stack.getNeuName(), e);

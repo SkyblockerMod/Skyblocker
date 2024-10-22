@@ -29,6 +29,7 @@
     "LeverBlockMixin",
     "MinecraftClientMixin",
     "MouseMixin",
+    "MutableTextMixin",
     "PingMeasurerMixin",
     "PlayerInventoryMixin",
     "PlayerListHudMixin",
@@ -57,7 +58,10 @@
     "accessors.SlotAccessor",
     "accessors.WorldRendererAccessor",
     "discordipc.ConnectionMixin",
-    "jgit.SystemReaderMixin"
+    "jgit.SystemReaderMixin",
+    "rei.ScreenOverlayImplFabricMixin",
+    "emi.FakeScreenMixin",
+    "jei.RenderHelperMixin"
   ],
   "injectors": {
     "defaultRequire": 1
