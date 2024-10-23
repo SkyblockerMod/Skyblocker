@@ -14,6 +14,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -53,10 +54,10 @@ public class Inventory implements ProfileViewerPage {
 
     public void render(DrawContext context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
         int rootYAdjusted = rootY + (26 - dimensions.leftInt() * 3);
-        context.drawTexture(TEXTURE, rootX, rootYAdjusted, 0, 0, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17);
-        context.drawTexture(TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted, 169, 0, 7, dimensions.leftInt() * 18 + 17);
-        context.drawTexture(TEXTURE, rootX, rootYAdjusted + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7);
-        context.drawTexture(TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, rootX, rootYAdjusted, 0, 0, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, rootX, rootYAdjusted + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7, 256, 256);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootYAdjusted + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
 
         context.drawText(textRenderer,  I18n.translate("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootYAdjusted + 7, Color.DARK_GRAY.getRGB(), false);
 
@@ -91,12 +92,12 @@ public class Inventory implements ProfileViewerPage {
 
             if (ItemProtection.isItemProtected(stack)) {
                 RenderSystem.enableBlend();
-                context.drawTexture(ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
+                context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
                 RenderSystem.disableBlend();
             }
 
             context.drawItem(stack, x, y);
-            context.drawItemInSlot(textRenderer, stack, x, y);
+            context.drawStackOverlay(textRenderer, stack, x, y);
             SlotTextManager.renderSlotText(context, textRenderer, null, stack, i, x, y);
 
             if (mouseX > x - 2 && mouseX < x + 16 + 1 && mouseY > y - 2 && mouseY < y + 16 + 1) {

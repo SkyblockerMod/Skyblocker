@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.crimson.kuudra;
 
 import java.util.function.Supplier;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -23,7 +24,8 @@ public class DangerWarning {
 	private static final Supplier<MutableText> DANGER_TEXT = () -> Text.translatable("skyblocker.crimson.kuudra.danger");
 	private static final Title TITLE = new Title(DANGER_TEXT.get());
 
-	static void init() {
+	@Init
+	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(DangerWarning::updateIndicator, 5);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 	}

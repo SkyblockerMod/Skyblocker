@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;

@@ -15,8 +15,8 @@ import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -31,7 +31,7 @@ public class FishingHelper {
         UseItemCallback.EVENT.register((player, world, hand) -> {
             ItemStack stack = player.getStackInHand(hand);
             if (!Utils.isOnSkyblock()) {
-                return TypedActionResult.pass(stack);
+                return ActionResult.PASS;
             }
             if (stack.getItem() instanceof FishingRodItem) {
                 if (player.fishHook == null) {
@@ -40,7 +40,7 @@ public class FishingHelper {
                     reset();
                 }
             }
-            return TypedActionResult.pass(stack);
+            return ActionResult.PASS;
         });
         WorldRenderEvents.AFTER_TRANSLUCENT.register(FishingHelper::render);
     }
@@ -62,7 +62,7 @@ public class FishingHelper {
     }
 
     public static void onSound(PlaySoundS2CPacket packet) {
-        String path = packet.getSound().value().getId().getPath();
+        String path = packet.getSound().value().id().getPath();
         if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper && startTimeFish != 0 && System.currentTimeMillis() >= startTimeFish + 2000 && ("entity.generic.splash".equals(path) || "entity.player.splash".equals(path))) {
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null && player.fishHook != null) {

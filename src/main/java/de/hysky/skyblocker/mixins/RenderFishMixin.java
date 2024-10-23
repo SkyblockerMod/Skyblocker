@@ -7,19 +7,15 @@ import net.minecraft.client.render.entity.FishingBobberEntityRenderer;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 
 @Mixin(FishingBobberEntityRenderer.class)
 public abstract class RenderFishMixin {
 
-    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) FishingBobberEntity fishingBobberEntity) {
+    @ModifyReturnValue(method = "shouldRender", at = @At("RETURN"))
+    private boolean skyblocker$render(boolean original, @Local(argsOnly = true) FishingBobberEntity fishingBobberEntity) {
         //if rendered bobber is not the players and option to hide  others is enabled do not render the bobber
-        if (Utils.isOnSkyblock() && fishingBobberEntity.getPlayerOwner() != MinecraftClient.getInstance().player && SkyblockerConfigManager.get().helpers.fishing.hideOtherPlayersRods) {
-            ci.cancel();
-        }
+        return Utils.isOnSkyblock() && SkyblockerConfigManager.get().helpers.fishing.hideOtherPlayersRods ? original && fishingBobberEntity.getPlayerOwner() != MinecraftClient.getInstance().player : original;
     }
 }

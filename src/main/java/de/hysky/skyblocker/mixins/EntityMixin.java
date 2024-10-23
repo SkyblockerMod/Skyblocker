@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
@@ -22,8 +22,8 @@ public abstract class EntityMixin {
 	@Shadow
 	public abstract boolean isInvisible();
 
-	@Inject(method = "isInvisibleTo", at = @At("HEAD"), cancellable = true)
-	public void skyblocker$showInvisibleArmorStands(PlayerEntity player, CallbackInfoReturnable<Boolean> cir) {
-		if (isInvisible() && Utils.isOnHypixel() && Debug.debugEnabled() && SkyblockerConfigManager.get().debug.showInvisibleArmorStands && type.equals(EntityType.ARMOR_STAND)) cir.setReturnValue(false);
+	@ModifyExpressionValue(method = "isInvisibleTo", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"))
+	public boolean skyblocker$showInvisibleArmorStands(boolean isSpectator, PlayerEntity player) {
+		return isSpectator || (isInvisible() && Utils.isOnHypixel() && Debug.debugEnabled() && SkyblockerConfigManager.get().debug.showInvisibleArmorStands && type.equals(EntityType.ARMOR_STAND));
 	}
 }

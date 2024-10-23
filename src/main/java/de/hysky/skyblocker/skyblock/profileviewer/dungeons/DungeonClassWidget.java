@@ -9,6 +9,7 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -54,13 +55,13 @@ public class DungeonClassWidget {
     }
 
     public void render(DrawContext context, int mouseX, int mouseY, int x, int y) {
-        context.drawTexture(TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
         context.drawItem(stack, x + 3, y + 5);
-        if (active) context.drawTexture(ACTIVE_TEXTURE, x + 3, y + 5, 0, 0, 16, 16, 16, 16);
+        if (active) context.drawTexture(RenderLayer::getGuiTextured, ACTIVE_TEXTURE, x + 3, y + 5, 0, 0, 16, 16, 16, 16);
 
         context.drawText(textRenderer, className + " " + classLevel.level, x + 31, y + 5, Color.WHITE.getRGB(), false);
         Color fillColor = classLevel.level >= CLASS_CAP ? Color.MAGENTA : Color.GREEN;
-        context.drawGuiTexture(BAR_BACK, x + 30, y + 15, 75, 6);
+        context.drawGuiTexture(RenderLayer::getGuiTextured, BAR_BACK, x + 30, y + 15, 75, 6);
         RenderHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 15, (int) (75 * classLevel.fill), 6, fillColor);
 
         if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22){

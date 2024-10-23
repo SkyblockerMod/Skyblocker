@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 
 import java.awt.*;
@@ -37,7 +38,7 @@ public class DungeonHeaderWidget {
     }
 
     public void render(DrawContext context, int x, int y) {
-        context.drawTexture(TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
 
         context.drawText(textRenderer, "§i§6§lCatacombs §r" + this.classLevel.level, x + 3, y + 4, Color.WHITE.getRGB(), true);
 

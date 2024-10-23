@@ -2,8 +2,8 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
 import com.mojang.authlib.properties.PropertyMap;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.mixins.accessors.SkullBlockEntityAccessor;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -11,6 +11,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
@@ -148,7 +149,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 if (matcher.find()) classLevel = Integer.parseInt(matcher.group(1));
                 Player player = new Player(playerName, className, classLevel);
 
-                SkullBlockEntityAccessor.invokeFetchProfileByName(playerNameTrim).thenAccept(
+                SkullBlockEntity.fetchProfileByName(playerNameTrim).thenAccept(
                         gameProfile -> gameProfile.ifPresent(profile -> player.skinTexture = (client.getSkinProvider().getSkinTextures(profile).texture())));
 
                 if (playerNameTrim.equals(partyHost)) {
@@ -173,7 +174,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             partyLeader = new Player(Text.literal("Error"), "Error", -1);
         }
 
-        SkullBlockEntityAccessor.invokeFetchProfileByName(partyLeader.name.getString()).thenAccept(
+        SkullBlockEntity.fetchProfileByName(partyLeader.name.getString()).thenAccept(
                 gameProfile -> gameProfile.ifPresent(profile -> partyLeaderSkin = client.getSkinProvider().getSkinTextures(profile).texture()));
     }
 
@@ -195,9 +196,9 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         if (hovered && !isLocked) {
-            context.drawTexture(PARTY_CARD_TEXTURE_HOVER, 0, 0, 0, 0, 336, 64, 336, 64);
+            context.drawTexture(RenderLayer::getGuiTextured, PARTY_CARD_TEXTURE_HOVER, 0, 0, 0, 0, 336, 64, 336, 64);
             if (!(this instanceof YourParty)) context.drawText(textRenderer, JOIN_TEXT, 148, 6, 0xFFFFFFFF, false);
-        } else context.drawTexture(PARTY_CARD_TEXTURE, 0, 0, 0, 0, 336, 64, 336, 64);
+        } else context.drawTexture(RenderLayer::getGuiTextured, PARTY_CARD_TEXTURE, 0, 0, 0, 0, 336, 64, 336, 64);
         int mouseXLocal = mouseX - x;
         int mouseYLocal = mouseY - y;
 
@@ -209,12 +210,12 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 context.drawText(textRenderer, "H", 160, 6, 0xFFFFFFFF, true);
             }
         }
-        PlayerSkinDrawer.draw(context, partyLeaderSkin, 6, 6, 8, true, false);
+        PlayerSkinDrawer.draw(context, partyLeaderSkin, 6, 6, 8, true, false, -1);
         for (int i = 0; i < partyMembers.length; i++) {
             Player partyMember = partyMembers[i];
             if (partyMember == null) continue;
             context.drawTextWithShadow(textRenderer, partyMember.toText(), 17 + 136 * (i % 2), 24 + 14 * (i / 2), 0xFFFFFFFF);
-            PlayerSkinDrawer.draw(context, partyMember.skinTexture, 6 + 136 * (i % 2), 24 + 14 * (i / 2), 8, true, false);
+            PlayerSkinDrawer.draw(context, partyMember.skinTexture, 6 + 136 * (i % 2), 24 + 14 * (i / 2), 8, true, false, -1);
         }
 
         if (minClassLevel > 0) {

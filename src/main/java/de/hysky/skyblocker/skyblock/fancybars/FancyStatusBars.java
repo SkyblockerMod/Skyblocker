@@ -52,7 +52,8 @@ public class FancyStatusBars {
         return experience.anchor != null || experience.inMouse;
     }
 
-    @Init
+    @SuppressWarnings("deprecation")
+	@Init
     public static void init() {
         statusBars.put("health", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/health"),
                 new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)},
@@ -73,7 +74,6 @@ public class FancyStatusBars {
         // Fetch from old status bar config
         int[] counts = new int[3]; // counts for RIGHT, LAYER1, LAYER2
         StatusBar health = statusBars.get("health");
-        @SuppressWarnings("deprecation")
         UIAndVisualsConfig.LegacyBarPositions barPositions = SkyblockerConfigManager.get().uiAndVisuals.bars.barPositions;
         initBarPosition(health, counts, barPositions.healthBarPosition);
         StatusBar intelligence = statusBars.get("intelligence");

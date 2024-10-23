@@ -51,7 +51,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	/**
 	 * Saves the shown items to {@link #slots the slot map}.
 	 */
-	@SuppressWarnings("JavadocReference")
+	@SuppressWarnings({ "JavadocReference", "incomplete-switch" })
 	@Override
 	protected void tick(GenericContainerScreen screen) {
 		switch (getState()) {

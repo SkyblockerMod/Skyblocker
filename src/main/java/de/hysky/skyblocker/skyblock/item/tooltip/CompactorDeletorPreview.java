@@ -50,7 +50,7 @@ public class CompactorDeletorPreview {
             int slotsCount = dimensions.leftInt() * dimensions.rightInt();
             components.add(targetIndex, TooltipComponent.of(Text.literal(slotsCount + (slotsCount == 1 ? " slot" : " slots")).formatted(Formatting.GRAY).asOrderedText()));
 
-            ((DrawContextInvoker) context).invokeDrawTooltip(client.textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE);
+            ((DrawContextInvoker) context).invokeDrawTooltip(client.textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE, null);
             return true;
         }
 
@@ -61,7 +61,7 @@ public class CompactorDeletorPreview {
             components.add(targetIndex, TooltipComponent.of(Text.literal("Active: ")
                     .append(customData.getBoolean("PERSONAL_DELETOR_ACTIVE") ? Text.literal("YES").formatted(Formatting.BOLD).formatted(Formatting.GREEN) : Text.literal("NO").formatted(Formatting.BOLD).formatted(Formatting.RED)).asOrderedText()));
         }
-        ((DrawContextInvoker) context).invokeDrawTooltip(client.textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE);
+        ((DrawContextInvoker) context).invokeDrawTooltip(client.textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE, null);
         return true;
     }
 

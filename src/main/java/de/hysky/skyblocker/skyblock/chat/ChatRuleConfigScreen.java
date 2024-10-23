@@ -80,10 +80,10 @@ public class ChatRuleConfigScreen extends Screen {
         if (chatRule.getCustomSound() == null) return -1; //if no sound just return -1
 
         List<SoundEvent> soundOptions = soundsLookup.values().stream().toList();
-        Identifier ruleSoundId = chatRule.getCustomSound().getId();
+        Identifier ruleSoundId = chatRule.getCustomSound().id();
 
         for (int i = 0; i < soundOptions.size(); i++) {
-            if (soundOptions.get(i).getId().compareTo(ruleSoundId) == 0) {
+            if (soundOptions.get(i).id().compareTo(ruleSoundId) == 0) {
                 return i;
             }
         }

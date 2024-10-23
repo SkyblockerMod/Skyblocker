@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+@Deprecated(forRemoval = true)
 public class SearchResultsWidget implements Drawable, Element {
     private static final ButtonTextures PAGE_FORWARD_TEXTURES = new ButtonTextures(Identifier.ofVanilla("recipe_book/page_forward"), Identifier.ofVanilla("recipe_book/page_forward_highlighted"));
     private static final ButtonTextures PAGE_BACKWARD_TEXTURES = new ButtonTextures(Identifier.ofVanilla("recipe_book/page_backward"), Identifier.ofVanilla("recipe_book/page_backward_highlighted"));
@@ -161,7 +162,7 @@ public class SearchResultsWidget implements Drawable, Element {
      */
     private void drawTooltip(TextRenderer textRenderer, DrawContext context, Text text, int textX, int textY, int mouseX, int mouseY){
         RenderSystem.disableDepthTest();
-            if (mouseX >= textX && mouseX <= textX + MAX_TEXT_WIDTH + 4 && mouseY >=  textY && mouseY <= textY + 9) {
+            if (mouseX >= textX && mouseX <= textX + MAX_TEXT_WIDTH + 4 && mouseY >= textY && mouseY <= textY + 9) {
                 context.drawTooltip(textRenderer, text, mouseX, mouseY);
             }
         RenderSystem.enableDepthTest();

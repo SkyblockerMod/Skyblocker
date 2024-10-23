@@ -32,6 +32,7 @@ public class ClientBlockPosArgumentType implements ArgumentType<ClientPosArgumen
 
 	public static BlockPos getLoadedBlockPos(CommandContext<FabricClientCommandSource> context, ClientWorld world, String name) throws CommandSyntaxException {
 		BlockPos blockPos = getBlockPos(context, name);
+		//FIXME Vanilla still uses this deprecated method, watch out in future updates in case this changes
 		if (!world.isChunkLoaded(blockPos)) throw UNLOADED_EXCEPTION.create();
 		if (!world.isInBuildLimit(blockPos)) throw OUT_OF_WORLD_EXCEPTION.create();
 

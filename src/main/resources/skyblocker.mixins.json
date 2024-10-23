@@ -4,7 +4,6 @@
   "plugin": "de.hysky.skyblocker.compatibility.MixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "AbstractInventoryScreenMixin",
     "BackgroundRendererMixin",
     "BatEntityMixin",
     "BossBarHudMixin",
@@ -53,7 +52,6 @@
     "accessors.PlayerListHudAccessor",
     "accessors.RecipeBookWidgetAccessor",
     "accessors.ScreenAccessor",
-    "accessors.SkullBlockEntityAccessor",
     "accessors.SlotAccessor",
     "accessors.WorldRendererAccessor",
     "discordipc.ConnectionMixin",

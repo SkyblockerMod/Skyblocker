@@ -14,9 +14,6 @@ public class Kuudra {
 
 	@Init
 	public static void init() {
-		KuudraWaypoints.init();
-		DangerWarning.init();
-
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 		ClientReceiveMessageEvents.GAME.register(Kuudra::onMessage);
 	}

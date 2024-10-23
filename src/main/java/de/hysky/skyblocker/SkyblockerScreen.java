@@ -11,6 +11,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
@@ -90,8 +91,8 @@ public class SkyblockerScreen extends Screen {
 	}
 
 	@Override
-	protected void initTabNavigation() {
-		super.initTabNavigation();
+	protected void refreshWidgetPositions() {
+		super.refreshWidgetPositions();
 		this.layout.refreshPositions();
 	}
 
@@ -101,7 +102,6 @@ public class SkyblockerScreen extends Screen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackground(context, mouseX, mouseY, delta);
 		super.render(context, mouseX, mouseY, delta);
 	}
 
@@ -130,7 +130,7 @@ public class SkyblockerScreen extends Screen {
 			int iconY = y - 13;
 
 			context.drawTextWithShadow(textRenderer, orderedText, x, y, this.getTextColor());
-			context.drawTexture(this.icon, iconX, iconY, 0, 0, 32, 32, 32, 32);
+			context.drawTexture(RenderLayer::getGuiTextured, this.icon, iconX, iconY, 0, 0, 32, 32, 32, 32);
 		}
 
 		private OrderedText trim(Text text, int width) {

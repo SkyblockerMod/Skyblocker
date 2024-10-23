@@ -128,7 +128,7 @@ public class ApiAuthentication {
 		LOGGER.error(logMessage, logArgs);
 		Scheduler.INSTANCE.schedule(ApiAuthentication::updateToken, retryAfter, true);
 
-		if (CLIENT.player != null) CLIENT.player.sendMessage(Constants.PREFIX.get().append(warningMessage));
+		if (CLIENT.player != null) CLIENT.player.sendMessage(Constants.PREFIX.get().append(warningMessage), false);
 	}
 
 	@Nullable

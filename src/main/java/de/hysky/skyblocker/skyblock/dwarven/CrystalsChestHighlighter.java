@@ -109,7 +109,7 @@ public class CrystalsChestHighlighter {
         if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
             return;
         }
-        String path = packet.getSound().value().getId().getPath();
+        String path = packet.getSound().value().id().getPath();
         //lock picked sound
         if (path.equals("entity.experience_orb.pickup") && packet.getPitch() == 1) {
             currentLockCount += 1;
