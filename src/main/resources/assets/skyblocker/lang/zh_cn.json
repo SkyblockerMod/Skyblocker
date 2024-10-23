@@ -989,5 +989,6 @@
     "skyblocker.config.dungeons.salvageHelper.@Tooltip": "高亮在地牢中捡起的可分解物品",
     "key.skyblocker.debug.dumpNearbyEntities": "导出附近实体",
     "key.skyblocker.debug.dumpHoveredItem": "导出指针悬停处的物品",
-    "skyblocker.config.debug.dumpRange": "实体导出范围"
+    "skyblocker.config.debug.dumpRange": "实体导出范围",
+    "skyblocker.config.debug": "调试"
 }
