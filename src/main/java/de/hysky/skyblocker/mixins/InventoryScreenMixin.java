@@ -4,6 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -30,5 +31,11 @@ public abstract class InventoryScreenMixin {
 	@WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/StatusEffectsDisplay;drawStatusEffects(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
 	private boolean skyblocker$dontDrawStatusEffects(StatusEffectsDisplay statusEffectsDisplay, DrawContext context, int mouseX, int mouseY, float tickDelta) {
 		return !(Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay);
+	}
+
+	//This makes it so that REI at least doesn't wrongly exclude the zone
+	@ModifyReturnValue(method = "shouldHideStatusEffectHud", at = @At("RETURN"))
+	private boolean skyblocker$markStatusEffectsHidden(boolean original) {
+		return Utils.isOnSkyblock() ? !SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay : original;
 	}
 }
