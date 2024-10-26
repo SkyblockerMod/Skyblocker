@@ -16,7 +16,7 @@ import net.minecraft.server.world.ServerWorld;
 public class NoopRecipeScreenHandler extends AbstractRecipeScreenHandler {
 
 	protected NoopRecipeScreenHandler() {
-		super(ScreenHandlerType.GENERIC_9X6, -88);
+		super(ScreenHandlerType.GENERIC_9X6, -1);
 	}
 
 	@Override

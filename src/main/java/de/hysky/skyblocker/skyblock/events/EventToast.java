@@ -94,7 +94,7 @@ public class EventToast implements Toast {
 
 	@Override
 	public Visibility getVisibility() {
-		return toastTime > 5_000 ? Visibility.HIDE: Visibility.SHOW;
+		return toastTime > 5_000 ? Visibility.HIDE : Visibility.SHOW;
 	}
 
 	@Override
