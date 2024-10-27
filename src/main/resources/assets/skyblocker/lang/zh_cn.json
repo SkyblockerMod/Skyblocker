@@ -940,7 +940,7 @@
     "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "紧凑的Effigy路径点",
     "skyblocker.dungeons.secrets.posMessage": "§r房间: %s, 方向: %s, X: %d, Y: %d, Z: %d",
     "skyblocker.tips.orderedWaypoints": "你使用/skyblocker waypoints ordered 导入（包括来自coleweight），加入，移除，和切换已有的路径点。",
-    "skyblocker.config.eventNotifications.notificationSound.sound.PLING": "噗灵",
+    "skyblocker.config.eventNotifications.notificationSound.sound.PLING": "音符盒-电钢琴",
     "skyblocker.config.eventNotifications.notificationSound.sound.GOAT": "山羊",
     "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "在火柱爆炸的前五秒倒计时。配置“标题容器”以自定义本项目在HUD上的位置。（注意：本功能使用了尚未成熟的距离检测，所以火柱有可能是另一位玩家的slayer召唤的）",
     "skyblocker.tips.fancierBars": "使用/skyblocker bars 自定义血量、法术值、防御值、速度、经验条。你也可以关闭和调整大小！",
