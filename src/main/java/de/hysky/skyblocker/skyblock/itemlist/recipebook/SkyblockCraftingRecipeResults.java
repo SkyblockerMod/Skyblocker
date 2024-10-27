@@ -149,7 +149,7 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 	public void drawTooltip(DrawContext context, int x, int y) {
 		if (this.client.currentScreen != null) {
 			//Draw the tooltip of the hovered result button if one is hovered over
-			if (this.hoveredResultButton != null) {
+			if (this.hoveredResultButton != null && !this.hoveredResultButton.getDisplayStack().isEmpty()) {
 				ItemStack stack = this.hoveredResultButton.getDisplayStack();
 				Identifier tooltipStyle = stack.get(DataComponentTypes.TOOLTIP_STYLE);
 
