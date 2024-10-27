@@ -28,7 +28,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
     );
 
     protected static final Identifier QUICK_CRAFT = Identifier.of(SkyblockerMod.NAMESPACE, "quick_craft/quick_craft_overlay");
-    private final SkyblockRecipeBookWidget recipeBook = new SkyblockRecipeBookWidget();
+    private final SkyblockRecipeBookWidget recipeBook = new SkyblockRecipeBookWidget(handler);
     private boolean narrow;
     private TexturedButtonWidget moreCraftsButton;
 

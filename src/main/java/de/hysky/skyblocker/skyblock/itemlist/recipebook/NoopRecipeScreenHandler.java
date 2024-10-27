@@ -14,9 +14,8 @@ import net.minecraft.server.world.ServerWorld;
  * Implementation of an {@link AbstractRecipeScreenHandler} that does not do anything.
  */
 public class NoopRecipeScreenHandler extends AbstractRecipeScreenHandler {
-
-	protected NoopRecipeScreenHandler() {
-		super(ScreenHandlerType.GENERIC_9X6, -1);
+	protected NoopRecipeScreenHandler(int syncId) {
+		super(ScreenHandlerType.GENERIC_9X6, syncId);
 	}
 
 	@Override

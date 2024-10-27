@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 import java.util.List;
 import java.util.Locale;
 
+import net.minecraft.screen.ScreenHandler;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.Lists;
@@ -45,8 +46,8 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	private final List<Pair<RecipeTab, SkyblockRecipeTabButton>> tabButtons = Lists.newArrayList();
 	private Pair<RecipeTab, SkyblockRecipeTabButton> currentTab;
 
-	public SkyblockRecipeBookWidget() {
-		super(new NoopRecipeScreenHandler(), List.of());
+	public SkyblockRecipeBookWidget(ScreenHandler screenHandler) {
+		super(new NoopRecipeScreenHandler(screenHandler.syncId), List.of());
 	}
 
 	@Override
