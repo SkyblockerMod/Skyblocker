@@ -9,6 +9,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -36,9 +37,9 @@ public class RarityWidget extends ClickableWidget {
         matrices.translate(getX(), getY(), 0);
         boolean onLeftArrow = isOnLeftArrow(mouseX);
         boolean onRightArrow = isOnRightArrow(mouseX);
-        context.drawTexture(TEXTURE, 0, 0, 0, 0, 48, 11, 48, 11);
-        if (onLeftArrow) context.drawTexture(HOVER_TEXTURE, 0, 0, 0, 0, 6, 11, 6, 11);
-        if (onRightArrow) context.drawTexture(HOVER_TEXTURE, 42, 0, 0, 0, 6, 11, 6, 11);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, 0, 0, 0, 0, 48, 11, 48, 11);
+        if (onLeftArrow) context.drawTexture(RenderLayer::getGuiTextured, HOVER_TEXTURE, 0, 0, 0, 0, 6, 11, 6, 11);
+        if (onRightArrow) context.drawTexture(RenderLayer::getGuiTextured, HOVER_TEXTURE, 42, 0, 0, 0, 6, 11, 6, 11);
 
         // Text
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;

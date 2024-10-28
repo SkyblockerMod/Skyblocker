@@ -5,6 +5,7 @@ import de.hysky.skyblocker.utils.SkyblockTime;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.item.ItemStack;
@@ -20,6 +21,7 @@ import java.util.List;
 public class EventToast implements Toast {
     protected static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "notification");
 
+    private long toastTime = 0;
     private final long eventStartTime;
 
     protected final List<OrderedText> message;
@@ -45,15 +47,14 @@ public class EventToast implements Toast {
 
     }
     @Override
-    public Visibility draw(DrawContext context, ToastManager manager, long startTime) {
-        context.drawGuiTexture(TEXTURE, 0, 0, getWidth(), getHeight());
+    public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
+        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 0, 0, getWidth(), getHeight());
 
         int y = (getHeight() - getInnerContentsHeight())/2;
         y = 2 + drawMessage(context, 30, y, Colors.WHITE);
         drawTimer(context, 30, y);
 
         context.drawItemWithoutEntity(icon, 8, getHeight()/2 - 8);
-        return startTime > 5_000 ? Visibility.HIDE: Visibility.SHOW;
     }
 
     protected int drawMessage(DrawContext context, int x, int y, int color) {
@@ -90,4 +91,14 @@ public class EventToast implements Toast {
     public int getHeight() {
         return Math.max(getInnerContentsHeight() + 12 + 2, 32);
     }
+
+	@Override
+	public Visibility getVisibility() {
+		return toastTime > 5_000 ? Visibility.HIDE : Visibility.SHOW;
+	}
+
+	@Override
+	public void update(ToastManager manager, long time) {
+		this.toastTime = time;
+	}
 }

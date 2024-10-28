@@ -1,10 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-
-import static net.minecraft.enchantment.Enchantments.PROTECTION;
 
 /**
  * Stores convenient shorthands for common ItemStack definitions

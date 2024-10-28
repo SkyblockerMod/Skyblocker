@@ -71,7 +71,7 @@ public class Debug {
 						.stream()
 						.map(entity -> entity.writeNbt(new NbtCompound()))
 						.map(NbtHelper::toPrettyPrintedText)
-						.forEach(client.player::sendMessage);
+						.forEach(text -> client.player.sendMessage(text, false));
 				keyDown = true;
 			} else if (!dumpNearbyEntitiesKey.wasPressed() && keyDown) {
 				keyDown = false;
@@ -83,9 +83,9 @@ public class Debug {
 				Slot focusedSlot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
 				if (dumpHoveredItemKey.matchesKey(key, scancode) && client.player != null && focusedSlot != null && focusedSlot.hasStack()) {
 					if (!Screen.hasShiftDown()) {
-						client.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), focusedSlot.getStack()).getOrThrow()))));
+						client.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), focusedSlot.getStack()).getOrThrow()))), false);
 					} else {
-						client.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Held Item NW Calcs: " + SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getStack()).calculations()).getOrThrow()))));
+						client.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Held Item NW Calcs: " + SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getStack()).calculations()).getOrThrow()))), false);
 					}
 				}
 			});

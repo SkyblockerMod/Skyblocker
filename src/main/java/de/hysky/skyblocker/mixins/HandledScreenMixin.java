@@ -24,6 +24,7 @@ import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -168,7 +169,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	@SuppressWarnings("DataFlowIssue")
 	// makes intellij be quiet about this.focusedSlot maybe being null. It's already null checked in mixined method.
-	@Inject(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;Ljava/util/Optional;II)V"), cancellable = true)
+	@Inject(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/util/Identifier;)V"), cancellable = true)
 	public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci, @Local(ordinal = 0) ItemStack stack) {
 		if (!Utils.isOnSkyblock()) return;
 
@@ -316,12 +317,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		// Item protection
 		if (ItemProtection.isItemProtected(slot.getStack())) {
 			RenderSystem.enableBlend();
-			context.drawTexture(ITEM_PROTECTION, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
+			context.drawTexture(RenderLayer::getGuiTextured, ITEM_PROTECTION, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
 			RenderSystem.disableBlend();
 		}
 	}
 
-	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V"))
+	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawStackOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V"))
 	private void skyblocker$drawSlotText(DrawContext context, Slot slot, CallbackInfo ci) {
 		if (Utils.isOnSkyblock()) {
 			SlotTextManager.renderSlotText(context, textRenderer, slot);

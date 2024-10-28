@@ -18,7 +18,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -174,7 +173,8 @@ public class WishingCompassSolver {
         return ZONE_BOUNDING_BOXES.get(startingZone).expand(100, 0, 100).contains(pos);
     }
 
-    public static void onParticle(ParticleS2CPacket packet) {
+    @SuppressWarnings("incomplete-switch")
+	public static void onParticle(ParticleS2CPacket packet) {
         if (!Utils.isInCrystalHollows() || !ParticleTypes.HAPPY_VILLAGER.equals(packet.getParameters().getType())) {
             return;
         }
@@ -298,20 +298,20 @@ public class WishingCompassSolver {
         return ActionResult.PASS;
     }
 
-    private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
+    private static ActionResult onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
         if (CLIENT.player == null) {
             return null;
         }
         ItemStack stack = CLIENT.player.getStackInHand(hand);
         //make sure the user is in the crystal hollows and holding the wishing compass
         if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.wishingCompassSolver || !stack.getSkyblockId().equals("WISHING_COMPASS")) {
-            return TypedActionResult.pass(stack);
+            return ActionResult.PASS;
         }
         if (useCompass()) {
-            return TypedActionResult.fail(stack);
+            return ActionResult.FAIL;
         }
 
-        return TypedActionResult.pass(stack);
+        return ActionResult.PASS;
     }
 
     /**

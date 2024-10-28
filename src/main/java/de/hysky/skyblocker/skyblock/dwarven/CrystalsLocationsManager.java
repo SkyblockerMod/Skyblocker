@@ -330,7 +330,7 @@ public class CrystalsLocationsManager {
         MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
         waypointsSent2Socket.add(category);
         activeWaypoints.put(category.getName(), waypoint);
-        CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.webSocket.receivedCrystalsWaypoint", Text.literal(category.getName()).withColor(category.getColor()))));
+        CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.webSocket.receivedCrystalsWaypoint", Text.literal(category.getName()).withColor(category.getColor()))), false);
     }
 
     protected static void addCustomWaypoint(String waypointName, BlockPos pos) {

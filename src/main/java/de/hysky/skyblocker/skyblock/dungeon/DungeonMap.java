@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.MapRenderState;
 import net.minecraft.client.render.MapRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
@@ -24,6 +25,7 @@ import net.minecraft.item.map.MapState;
 
 public class DungeonMap {
     private static final MapIdComponent DEFAULT_MAP_ID_COMPONENT = new MapIdComponent(1024);
+    private static final MapRenderState MAP_RENDER_STATE = new MapRenderState();
     private static MapIdComponent cachedMapIdComponent = null;
 
     @Init
@@ -52,12 +54,13 @@ public class DungeonMap {
         int y = SkyblockerConfigManager.get().dungeons.dungeonMap.mapY;
         float scaling = SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling;
         VertexConsumerProvider.Immediate vertices = client.getBufferBuilders().getEffectVertexConsumers();
-        MapRenderer mapRenderer = client.gameRenderer.getMapRenderer();
+        MapRenderer mapRenderer = client.getMapRenderer();
 
         matrices.push();
         matrices.translate(x, y, 0);
         matrices.scale(scaling, scaling, 0f);
-        mapRenderer.draw(matrices, vertices, mapId, state, false, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+        mapRenderer.update(mapId, state, MAP_RENDER_STATE);
+        mapRenderer.draw(MAP_RENDER_STATE, matrices, vertices, false, LightmapTextureManager.MAX_LIGHT_COORDINATE);
         vertices.draw();
         matrices.pop();
     }

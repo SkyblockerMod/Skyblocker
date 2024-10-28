@@ -418,7 +418,7 @@ public class Utils {
                 ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
                 if (player != null) {
-                    player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.utils.locationUpdateError").formatted(Formatting.RED)));
+                    player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.utils.locationUpdateError").formatted(Formatting.RED)), false);
                 }
 
                 LOGGER.error("[Skyblocker] Failed to update your current location! Some features of the mod may not work correctly :( - Error: {}", error);

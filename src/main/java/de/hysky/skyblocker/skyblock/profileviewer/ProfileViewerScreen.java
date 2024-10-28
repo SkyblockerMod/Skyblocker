@@ -30,6 +30,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.SkinTextures;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -105,7 +106,7 @@ public class ProfileViewerScreen extends Screen {
         int rootX = width / 2 - GUI_WIDTH / 2;
         int rootY = height / 2 - GUI_HEIGHT / 2 + 5;
 
-        context.drawTexture(TEXTURE, rootX, rootY, 0, 0, GUI_WIDTH, GUI_HEIGHT, GUI_WIDTH, GUI_HEIGHT);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, rootX, rootY, 0, 0, GUI_WIDTH, GUI_HEIGHT, GUI_WIDTH, GUI_HEIGHT);
         for (ProfileViewerNavButton button : profileViewerNavButtons) {
             button.setX(rootX + button.getIndex() * 28 + 4);
             button.setY(rootY - 28);

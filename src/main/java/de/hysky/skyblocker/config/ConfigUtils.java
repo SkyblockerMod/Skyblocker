@@ -31,7 +31,7 @@ public class ConfigUtils {
 
 	@SuppressWarnings("unchecked")
 	public static <E extends Enum<E>> EnumControllerBuilder<E> createEnumCyclingListController(Option<E> opt) {
-		return EnumControllerBuilder.create(opt).enumClass((Class<E>) opt.binding().defaultValue().getClass());
+		return EnumControllerBuilder.create(opt).enumClass((Class<E>) opt.stateManager().get().getClass());
 	}
 
 	/**

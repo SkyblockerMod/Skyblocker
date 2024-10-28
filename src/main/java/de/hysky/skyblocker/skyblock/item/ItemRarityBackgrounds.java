@@ -13,9 +13,11 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.ColorHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -95,7 +97,7 @@ public class ItemRarityBackgrounds {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 
-		context.drawSprite(x, y, 0, 16, 16, SPRITE.get(), rarity.r, rarity.g, rarity.b, SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgroundsOpacity);
+		context.drawSpriteStretched(RenderLayer::getGuiTextured, SPRITE.get(), x, y, 16, 16, ColorHelper.fromFloats(SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgroundsOpacity, rarity.r, rarity.g, rarity.b));
 
 		RenderSystem.disableBlend();
 	}

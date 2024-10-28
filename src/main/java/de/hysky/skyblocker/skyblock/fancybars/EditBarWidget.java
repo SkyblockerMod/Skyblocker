@@ -82,7 +82,7 @@ public class EditBarWidget extends ContainerWidget {
             int j = mouseY - insideMouseY;
             if (i * i + j * j > 30 * 30) visible = false;
         }
-        TooltipBackgroundRenderer.render(context, getX(), getY(), getWidth(), getHeight(), 0);
+        TooltipBackgroundRenderer.render(context, getX(), getY(), getWidth(), getHeight(), 0, null);
         MatrixStack matrices = context.getMatrices();
         matrices.push();
         matrices.translate(getX(), getY(), 0);
