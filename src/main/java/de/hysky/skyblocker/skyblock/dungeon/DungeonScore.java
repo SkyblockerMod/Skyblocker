@@ -168,7 +168,8 @@ public class DungeonScore {
 
 	private static int calculateSkillScore() {
 		int totalRooms = getTotalRooms(); //This is necessary to avoid division by 0 at the start of dungeons, which results in infinite score
-		return 20 + Math.clamp(Math.clamp((totalRooms != 0 ? (int) (80.0 * (getCompletedRooms() + getExtraCompletedRooms()) / totalRooms) : 0), 0, 80) - getPuzzlePenalty() - getDeathScorePenalty(), 0, 80);
+		int completedRoomScore = Math.clamp((totalRooms != 0 ? (int) (80.0 * (getCompletedRooms() + getExtraCompletedRooms()) / totalRooms) : 0), 0, 80);
+		return 20 + Math.clamp(completedRoomScore - getPuzzlePenalty() - getDeathScorePenalty(), 0, 80);
 	}
 
 	private static int calculateExploreScore() {
