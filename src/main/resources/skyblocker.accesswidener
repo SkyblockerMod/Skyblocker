@@ -20,3 +20,5 @@ extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget re
 extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget refreshTabButtons (Z)V
 extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget refreshSearchResults ()V
 extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget triggerPirateSpeakEasterEgg (Ljava/lang/String;)V
+accessible class net/minecraft/client/font/TextRenderer$Drawer
+accessible field net/minecraft/client/font/TextRenderer$Drawer x F

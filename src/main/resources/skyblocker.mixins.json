@@ -38,6 +38,7 @@
     "ScoreboardMixin",
     "SignEditScreenMixin",
     "SocialInteractionsPlayerListWidgetMixin",
+    "TextHandlerMixin",
     "WindowMixin",
     "WorldRendererMixin",
     "YggdrasilMinecraftSessionServiceMixin",
@@ -58,7 +59,6 @@
     "discordipc.ConnectionMixin",
     "jgit.SystemReaderMixin",
     "rei.ScreenOverlayImplFabricMixin",
-    "emi.FakeScreenMixin",
     "jei.RenderHelperMixin"
   ],
   "injectors": {

@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.injected;
 
-import de.hysky.skyblocker.utils.render.gui.AlignedTooltipComponent;
 import net.minecraft.text.MutableText;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +35,6 @@ public interface AlignedText {
 	 * @param xOffset The x offset to apply to the given {@code text},
 	 * 		relative to the start of the text object this method is called upon.
 	 * @return The {@code text} object passed in, for chaining purposes
-	 * @see AlignedTooltipComponent
 	 */
 	default @NotNull MutableText align(@NotNull MutableText text, int xOffset) {
 		return text;
@@ -47,11 +45,13 @@ public interface AlignedText {
 	}
 
 	/**
-	 * @return The x offset to apply to the text, or {@link Integer#MIN_VALUE } if there's no aligned text
+	 * @return The x offset to apply to the text, or {@link Integer#MIN_VALUE } if there's no aligned text or 0 if first of the chain
 	 */
 	default int getXOffset() {
 		return Integer.MIN_VALUE;
 	}
+
+	default void setXOffset(int xOffset) {}
 
 	default MutableText getFirstOfChain() {
 		return null;

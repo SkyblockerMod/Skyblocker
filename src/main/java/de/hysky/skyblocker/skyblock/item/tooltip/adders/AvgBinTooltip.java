@@ -47,7 +47,7 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 				}
 				if (type == Average.THREE_DAY || type == Average.BOTH) {
 					lines.add(
-							Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
+							Text.literal("3 Day Avg. Price:")
 							    .formatted(Formatting.GOLD)
 							    .align(TooltipInfoType.THREE_DAY_AVERAGE.getData().containsKey(neuName)
 							           ? ItemTooltip.getCoinsMessage(TooltipInfoType.THREE_DAY_AVERAGE.getData().getDouble(neuName), stack.getCount())

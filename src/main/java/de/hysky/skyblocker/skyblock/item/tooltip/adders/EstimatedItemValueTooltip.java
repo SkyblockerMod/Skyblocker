@@ -24,9 +24,9 @@ public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 		NetworthResult result = NetworthCalculator.getItemNetworth(stack);
 
 		if (result.price() > 0) {
-			lines.add(Text.literal(String.format("%-20s", "Est. Item Value:"))
-					.formatted(Formatting.GOLD)
-					.align(ItemTooltip.getCoinsMessage(result.price(), stack.getCount(), true), 100));
+			lines.add(Text.literal("Est. Item Value:")
+			              .formatted(Formatting.GOLD)
+			              .align(ItemTooltip.getCoinsMessage(result.price(), stack.getCount(), true), 100));
 		}
 	}
 
