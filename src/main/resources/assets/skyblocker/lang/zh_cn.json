@@ -990,5 +990,6 @@
     "key.skyblocker.debug.dumpNearbyEntities": "导出附近实体",
     "key.skyblocker.debug.dumpHoveredItem": "导出指针悬停处的物品",
     "skyblocker.config.debug.dumpRange": "实体导出范围",
-    "skyblocker.config.debug": "调试"
+    "skyblocker.config.debug": "调试",
+    "skyblocker.config.debug.dumpRange.@Tooltip": "玩家附近多少格范围内的实体可被导出"
 }
