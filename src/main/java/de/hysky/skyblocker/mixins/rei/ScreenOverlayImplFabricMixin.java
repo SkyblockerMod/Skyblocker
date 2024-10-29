@@ -14,7 +14,7 @@ import java.util.List;
 
 @Mixin(value = ScreenOverlayImplFabric.class)
 public class ScreenOverlayImplFabricMixin {
-	@WrapOperation(method = "lambda$renderTooltipInner$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextHandler;wrapLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/text/Style;)Ljava/util/List;"), require = 1)
+	@WrapOperation(method = "lambda$renderTooltipInner$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextHandler;wrapLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/text/Style;)Ljava/util/List;"), require = 0)
 	private static List<StringVisitable> renderTooltipInner(TextHandler instance, StringVisitable text, int maxWidth, Style style, Operation<List<StringVisitable>> original) {
 		if (text instanceof MutableText mutableText && mutableText.getXOffset() != Integer.MIN_VALUE) return List.of();
 
