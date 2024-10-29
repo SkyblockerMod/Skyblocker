@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.container.TooltipAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.MinecraftClient;
@@ -8,22 +10,29 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class fossilSolver extends SimpleContainerSolver {
+public class fossilSolver extends SimpleContainerSolver implements TooltipAdder {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final List<screenState> POSSIBLE_STATES = getAllPossibleStates();
 	private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("Fossil Excavation Progress: (\\d{2}.\\d)%");
 
 
 	private String percentage = null;
+	private static int permutations = -1;
+	private static int minimumTiles;
+	private static double[] probability;
 
 	public fossilSolver() {
 		super("Fossil Excavator");
@@ -37,16 +46,16 @@ public class fossilSolver extends SimpleContainerSolver {
 		//get the fossil chance percentage
 		if (percentage == null) {
 			percentage = getFossilPercentage(slots);
-			System.out.println(percentage);
 		}
 		//get chance for each
-		double[] probability = getFossilChance(mainContainer, percentage);
+		probability = getFossilChance(mainContainer, percentage);
 		//get the highlight amount and return
 		return convertChanceToColor(probability, 0, 0, 255); //todo better colour
 	}
 
 	/**
 	 * See if there is any found fossils then see if there is a fossil chance percentage in the tool tips
+	 *
 	 * @param slots items to check tool tip of
 	 * @return null if there is none or the value of the percentage
 	 */
@@ -72,20 +81,51 @@ public class fossilSolver extends SimpleContainerSolver {
 		List<ColorHighlight> outputColors = new ArrayList<>();
 		//loop though all the chance values and set the color to match probability. full color means that its 100%
 		OptionalDouble highProbability = Arrays.stream(chances).max();
-		System.out.println("max persent:"+highProbability);
-		System.out.println(Arrays.toString(chances));
-		for (int i = 0; i < chances.length; i ++) {
+		for (int i = 0; i < chances.length; i++) {
 			double chance = chances[i];
 			if (Double.isNaN(chances[i]) || chances[i] == 0) {
 				continue;
 			}
-			if (chances[i] == highProbability.getAsDouble()){
+			if (chances[i] == highProbability.getAsDouble()) {
 				outputColors.add(ColorHighlight.green(i));
 				continue;
 			}
-			outputColors.add(new ColorHighlight(i, 128 << 24 | (int)(maxR * chance) << 16| (int)(maxG * chance) << 8| (int)(maxB * chance)));
+			outputColors.add(new ColorHighlight(i, 128 << 24 | (int) (maxR * chance) << 16 | (int) (maxG * chance) << 8 | (int) (maxB * chance)));
 		}
-		return  outputColors;
+		return outputColors;
+	}
+
+	/**
+	 * add solver info to tooltips
+	 *
+	 * @param focusedSlot the slot focused by the player
+	 * @param stack       unused
+	 * @param lines       the lines for the tooltip
+	 */
+	@Override
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+		//add spacer
+		lines.add (LineSmoothener.createSmoothLine());
+
+		//if no permutation say this instead of other stats
+		if (permutations == 0) {
+			lines.add(Text.literal("No fossil found").formatted(Formatting.GOLD));
+			return;
+		}
+
+		//add permutation count
+		lines.add(Text.literal("Possible Patterns: ").append(Text.literal(String.valueOf(permutations)).formatted(Formatting.YELLOW)));
+		//add minimum tiles left count
+		lines.add(Text.literal("Minimum fossil left : ").append(Text.literal(String.valueOf(minimumTiles)).formatted(Formatting.YELLOW)));
+		//add probability if available and not uncovered
+		if (focusedSlot != null && probability != null && probability.length > focusedSlot.getIndex() && stack.getItem() == Items.BROWN_STAINED_GLASS_PANE) {
+			lines.add(Text.literal("Probability: ").append(Text.literal(Math.round(probability[focusedSlot.getIndex()] * 100) + "%").formatted(Formatting.YELLOW)));
+		}
+	}
+
+	@Override
+	public int getPriority() {
+		return 0;
 	}
 
 	protected enum tileState {
@@ -93,16 +133,20 @@ public class fossilSolver extends SimpleContainerSolver {
 		EMPTY,
 		FOSSIL
 	}
-	protected record container(tileState[][] state){
+
+	protected record container(tileState[][] state) {
 		public void updateSlot(int x, int y, tileState newState) {
 			state[y][x] = newState;
 		}
+
 		public tileState getSlot(int x, int y) {
 			return state[y][x];
 		}
+
 		public int width() {
 			return state[0].length;
 		}
+
 		public int height() {
 			return state.length;
 		}
@@ -126,59 +170,61 @@ public class fossilSolver extends SimpleContainerSolver {
 				{tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY},
 				{tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL},
 				{tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY}
-		}, List.of(transformationOptions.values()), "7.7"),
+		}, List.of(transformationOptions.values()), "7.7", 14),
 		TUSK(new tileState[][]{
-				{tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL},
-				{tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL},
-				{tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL},
-				{tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY},
-				{tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY}
-		}, List.of(transformationOptions.values()), "12.5"),
+				{tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL},
+				{tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL},
+				{tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL},
+				{tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY},
+				{tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY}
+		}, List.of(transformationOptions.values()), "12.5", 8),
 		UGLY(new tileState[][]{
-				{tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY},
-				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY},
-				{tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL},
-				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY}
-		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270), "6.2"),
+				{tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY},
+				{tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY},
+				{tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL},
+				{tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY}
+		}, List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270), "6.2", 16),
 		HELIX(new tileState[][]{
-				{tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL}, // helix
-				{tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL},
-				{tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL},
-				{tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL}
-		},  List.of(transformationOptions.values()), "7.1"),
+				{tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL}, // helix
+				{tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL},
+				{tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL},
+				{tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL}
+		}, List.of(transformationOptions.values()), "7.1", 14),
 		WEBBED(new tileState[][]{
-				{tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY}, // webbed fossil
-				{tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL},
-				{tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY},
-				{tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY}
-		},  List.of(transformationOptions.ROTATED_0, transformationOptions.FLIP_ROTATED_0), "10"),
+				{tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY}, // webbed fossil
+				{tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL},
+				{tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY},
+				{tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY}
+		}, List.of(transformationOptions.ROTATED_0, transformationOptions.FLIP_ROTATED_0), "10", 10),
 		FOOTPRINT(new tileState[][]{
-				{tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL}, // footprint fossil
-				{tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.FOSSIL},
-				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY},
-				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY},
-				{tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY}
-		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270), "7.7"),
+				{tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL}, // footprint fossil
+				{tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.FOSSIL},
+				{tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY},
+				{tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY},
+				{tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY}
+		}, List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270), "7.7", 13),
 		CLUBBED(new tileState[][]{
-				{tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL}, // clubbed fossil
-				{tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL},
-				{tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY},
-				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY,tileState.EMPTY}
-		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_180, transformationOptions.FLIP_ROTATED_0, transformationOptions.FLIP_ROTATED_180), "9.1"),
+				{tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL}, // clubbed fossil
+				{tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL},
+				{tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY},
+				{tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY, tileState.EMPTY}
+		}, List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_180, transformationOptions.FLIP_ROTATED_0, transformationOptions.FLIP_ROTATED_180), "9.1", 11),
 		SPINE(new tileState[][]{
-				{tileState.EMPTY,tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY,tileState.EMPTY}, // spine fossil
-				{tileState.EMPTY,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.EMPTY},
-				{tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL,tileState.FOSSIL}
-		},  List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270), "8.3");
+				{tileState.EMPTY, tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY, tileState.EMPTY}, // spine fossil
+				{tileState.EMPTY, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.EMPTY},
+				{tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL, tileState.FOSSIL}
+		}, List.of(transformationOptions.ROTATED_0, transformationOptions.ROTATED_90, transformationOptions.ROTATED_180, transformationOptions.ROTATED_270), "8.3", 12);
 
 		final List<transformationOptions> rotations;
 		final tileState[][] grid;
 		final String percentage;
+		final int tileCount;
 
-		fossilTypes(tileState[][] grid, List<transformationOptions> rotations,String percentage) {
+		fossilTypes(tileState[][] grid, List<transformationOptions> rotations, String percentage, int tileCount) {
 			this.grid = grid;
 			this.rotations = rotations;
 			this.percentage = percentage;
+			this.tileCount = tileCount; //todo just have tile count
 		}
 	}
 
@@ -199,18 +245,18 @@ public class fossilSolver extends SimpleContainerSolver {
 				for (int y = 0; y < currentState.height(); y++) {
 					tileState knownState = currentState.getSlot(x, y);
 					//if there is a miss match return false
-					switch (knownState){
+					switch (knownState) {
 						case UNKNOWN -> {
 							//still do not know if the tiles will match or not so carry on
 							continue;
 						}
 						case FOSSIL -> {
-							if (!isFossilCollision(x,y)){
+							if (!isFossilCollision(x, y)) {
 								return false;
 							}
 						}
 						case EMPTY -> {
-							if (!isEmptyCollision(x,y)){
+							if (!isEmptyCollision(x, y)) {
 								return false;
 							}
 						}
@@ -220,21 +266,23 @@ public class fossilSolver extends SimpleContainerSolver {
 			//if no conflicts return ture
 			return true;
 		}
+
 		public boolean isEmptyCollision(int positionX, int positionY) {
 			try {
-				return isState(positionX,positionY,tileState.EMPTY);
-			} catch (IndexOutOfBoundsException f){
+				return isState(positionX, positionY, tileState.EMPTY);
+			} catch (IndexOutOfBoundsException f) {
 				return true;
 			}
 		}
 
 		public boolean isFossilCollision(int positionX, int positionY) {
 			try {
-				return isState(positionX,positionY,tileState.FOSSIL);
-			} catch (IndexOutOfBoundsException f){
+				return isState(positionX, positionY, tileState.FOSSIL);
+			} catch (IndexOutOfBoundsException f) {
 				return false;
 			}
 		}
+
 		private boolean isState(int positionX, int positionY, tileState state) {
 			int x = positionX - xOffset;
 			int y = positionY - yOffset;
@@ -257,14 +305,26 @@ public class fossilSolver extends SimpleContainerSolver {
 
 	protected static double[] getFossilChance(container tiles, String percentage) {
 		int[] total = new int[54];
+		minimumTiles = 100;
+		AtomicInteger fossilCount = new AtomicInteger();
+		Arrays.stream(tiles.state()).forEach(row -> Arrays.stream(row).forEach(tile -> {if (tile.equals(tileState.FOSSIL)) fossilCount.getAndIncrement();}));
 
 		//loop though tile options and if they are valid
 		List<screenState> validStates = new ArrayList<>();
 		for (screenState state : POSSIBLE_STATES) {
 			if (state.isValid(tiles, percentage)) {
 				validStates.add(state);
+				//update minimum left if it's smaller than current value
+				int min = state.type.tileCount - fossilCount.get();
+				if (min < minimumTiles) {
+					minimumTiles = min;
+				}
 			}
 		}
+		//update permutations value
+		permutations = validStates.size();
+		;
+
 		//from all the valid states work out the chance of each tile being a fossil
 		int index = 0;
 		for (int y = 0; y < 6; y++) {
@@ -276,7 +336,7 @@ public class fossilSolver extends SimpleContainerSolver {
 						}
 					}
 				}
-				index ++;
+				index++;
 			}
 		}
 
@@ -292,20 +352,20 @@ public class fossilSolver extends SimpleContainerSolver {
 	 * @return input container converted into 2d {@link tileState} array
 	 */
 	private static container convertItemsToTiles(Int2ObjectMap<ItemStack> currentState) {
-		container output =new container(new tileState[6][9]);
+		container output = new container(new tileState[6][9]);
 		//go through each slot and work out its state
 		int index = 0;
 		for (int y = 0; y < 6; y++) {
 			for (int x = 0; x < 9; x++) {
 				Item item = currentState.get(index).getItem();
 				if (item == Items.WHITE_STAINED_GLASS_PANE) {
-					output.updateSlot(x, y,  tileState.FOSSIL);
+					output.updateSlot(x, y, tileState.FOSSIL);
 				} else if (item == Items.BROWN_STAINED_GLASS_PANE) {
-					output.updateSlot(x, y,  tileState.UNKNOWN);
+					output.updateSlot(x, y, tileState.UNKNOWN);
 				} else {
-					output.updateSlot(x, y,  tileState.EMPTY);
+					output.updateSlot(x, y, tileState.EMPTY);
 				}
-				index ++;
+				index++;
 			}
 		}
 		return output;
@@ -373,21 +433,21 @@ public class fossilSolver extends SimpleContainerSolver {
 		container output = new container(new tileState[grid.height()][grid.width()]);
 		for (int x = 0; x < grid.width(); x++) {
 			for (int y = 0; y < grid.height(); y++) {
-				output.updateSlot(x, y, grid.getSlot(x, grid.height() - 1 - y)) ;
+				output.updateSlot(x, y, grid.getSlot(x, grid.height() - 1 - y));
 			}
 		}
 		return output;
 	}
 
 	private static container rotateGrid(container grid, int roation) { // todo have i flipped x and y and comment on what its doing
-		int startingWidth = grid.width() -1;
-		int startingHeight = grid.height() -1;
+		int startingWidth = grid.width() - 1;
+		int startingHeight = grid.height() - 1;
 		switch (roation) {
 			case 90 -> {
 				container output = new container(new tileState[grid.height()][grid.width()]);
 				for (int x = 0; x < grid.width(); x++) {
 					for (int y = 0; y < grid.height(); y++) {
-						output.updateSlot(startingWidth - x, y, grid.getSlot(x,y)) ;
+						output.updateSlot(startingWidth - x, y, grid.getSlot(x, y));
 					}
 				}
 				return output;
@@ -396,7 +456,7 @@ public class fossilSolver extends SimpleContainerSolver {
 				container output = new container(new tileState[grid.height()][grid.width()]);
 				for (int x = 0; x < grid.width(); x++) {
 					for (int y = 0; y < grid.height(); y++) {
-						output.updateSlot(startingWidth - x, startingHeight - y, grid.getSlot(x, y) ) ;
+						output.updateSlot(startingWidth - x, startingHeight - y, grid.getSlot(x, y));
 					}
 				}
 				return output;
@@ -405,7 +465,7 @@ public class fossilSolver extends SimpleContainerSolver {
 				container output = new container(new tileState[grid.height()][grid.width()]);
 				for (int x = 0; x < grid.width(); x++) {
 					for (int y = 0; y < grid.height(); y++) {
-						output.updateSlot(x, startingHeight - y, grid.getSlot(x, y)) ;
+						output.updateSlot(x, startingHeight - y, grid.getSlot(x, y));
 					}
 				}
 				return output;
