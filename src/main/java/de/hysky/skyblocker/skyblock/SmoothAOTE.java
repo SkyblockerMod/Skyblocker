@@ -20,7 +20,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -89,12 +88,12 @@ public class SmoothAOTE {
 	 * @param hand         held item
 	 * @return pass
 	 */
-	private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
+	private static ActionResult onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
 		if (CLIENT.player == null) {
 			return null;
 		}
 		calculateTeleportUse(hand);
-		return TypedActionResult.pass(CLIENT.player.getStackInHand(hand));
+		return ActionResult.PASS;
 	}
 
 	/**
