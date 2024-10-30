@@ -204,6 +204,8 @@ public class HealthBars {
 		boolean hideFullHealth = SkyblockerConfigManager.get().uiAndVisuals.healthBars.hideFullHealth;
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.healthBars.scale;
 		float tickDelta = context.tickCounter().getTickDelta(false);
+		float width = scale;
+		float height = scale * 0.1f;
 
 		for (Object2FloatMap.Entry<ArmorStandEntity> healthValue : healthValues.object2FloatEntrySet()) {
 			//if the health bar is full and the setting is enabled to hide it stop rendering it
@@ -213,11 +215,13 @@ public class HealthBars {
 			}
 
 			ArmorStandEntity armorStand = healthValue.getKey();
+			//only render health bar if name is visible
+			if (!armorStand.shouldRenderName()) {
+				return;
+			}
 			// Render the health bar texture with scaling based on health percentage
-			float width = scale;
-			float height = scale * 0.1f;
-			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, barColor, false);
-			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, 0.003f), HEALTH_BAR_TEXTURE, barColor, false);
+			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, barColor, true);
+			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, 0.003f), HEALTH_BAR_TEXTURE, barColor, true);
 		}
 	}
 }

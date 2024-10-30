@@ -318,7 +318,7 @@ public class RenderHelper {
 
 		RenderSystem.setShaderTexture(0, texture);
 		RenderSystem.setShaderColor(shaderColor.getRed() / 255f, shaderColor.getGreen() / 255f, shaderColor.getBlue() / 255f, shaderColor.getAlpha() / 255f);
-		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+		RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.disableCull();
