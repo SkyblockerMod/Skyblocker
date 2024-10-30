@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossilSolver;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dwarven.fossilSolver.structures.tileGrid;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -73,13 +74,12 @@ public class fossilSolver extends SimpleContainerSolver implements TooltipAdder 
 
 	@Override
 	public boolean isEnabled() {
-		//todo is enabled toggle
-		return true;
+		return SkyblockerConfigManager.get().mining.glacite.fossilSolver;
 	}
 
 	private static List<ColorHighlight> convertChanceToColor(double[] chances) {
 		List<ColorHighlight> outputColors = new ArrayList<>();
-		Color gradientColor = Color.BLUE; //todo config
+		Color gradientColor = Color.BLUE;
 		//loop though all the chance values and set the color to match probability. full color means that its 100%
 		OptionalDouble highProbability = Arrays.stream(chances).max();
 		for (int i = 0; i < chances.length; i++) {

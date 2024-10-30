@@ -173,6 +173,9 @@ public class MiningConfig {
 
 		@SerialEntry
 	    public boolean autoShareCorpses = false;
+        
+		@SerialEntry
+		public boolean fossilSolver = true;
     }
 
 	/**

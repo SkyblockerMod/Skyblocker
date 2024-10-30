@@ -646,6 +646,8 @@
   "skyblocker.config.mining.glacite.autoShareCorpses": "Automatically Share Found Corpses In Chat",
   "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "Sends a message in party chat with the location of the found corpse when you find one.",
 
+  "skyblocker.config.mining.glacite.fossilSolver": "Fossil Solver",
+  
   "skyblocker.config.misc": "Misc",
 
   "skyblocker.config.misc.richPresence": "Discord RPC",
