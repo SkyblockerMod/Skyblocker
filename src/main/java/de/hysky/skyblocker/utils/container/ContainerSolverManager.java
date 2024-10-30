@@ -15,7 +15,7 @@ import de.hysky.skyblocker.skyblock.dungeon.terminal.LightsOnTerminal;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.StartsWithTerminal;
 import de.hysky.skyblocker.skyblock.dwarven.CommissionHighlight;
-import de.hysky.skyblocker.skyblock.dwarven.fossilSolver;
+import de.hysky.skyblocker.skyblock.dwarven.fossilSolver.fossilSolver;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;

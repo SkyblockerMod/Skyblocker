@@ -4,7 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
-import de.hysky.skyblocker.skyblock.dwarven.fossilSolver;
+import de.hysky.skyblocker.skyblock.dwarven.fossilSolver.fossilSolver;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
