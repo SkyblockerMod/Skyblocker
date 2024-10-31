@@ -157,7 +157,7 @@ public class EggFinder {
 				Egg egg = eggType.egg;
 				if (egg != null) egg.waypoint.setFound();
 			} catch (IllegalArgumentException e) {
-				logger.error("[Skyblocker Egg Finder] Failed to find egg type for egg found message. Tried to match against: " + matcher.group(0), e);
+				logger.error("[Skyblocker Egg Finder] Failed to find egg type for egg found message. Tried to match against: {}", matcher.group(0), e);
 			}
 		}
 
@@ -166,7 +166,7 @@ public class EggFinder {
 			try {
 				EggType.valueOf(matcher.group(1).toUpperCase());
 			} catch (IllegalArgumentException e) {
-				logger.error("[Skyblocker Egg Finder] Failed to find egg type for egg spawn message. Tried to match against: " + matcher.group(0), e);
+				logger.error("[Skyblocker Egg Finder] Failed to find egg type for egg spawn message. Tried to match against: {}", matcher.group(0), e);
 			}
 		}
 	}
