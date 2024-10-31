@@ -150,6 +150,7 @@ public class DungeonScore {
 	}
 
 	private static void onDungeonStart() {
+		reset();
 		setCurrentFloor();
 		dungeonStarted = true;
 		puzzleCount = getPuzzleCount();
@@ -167,14 +168,15 @@ public class DungeonScore {
 
 	private static int calculateSkillScore() {
 		int totalRooms = getTotalRooms(); //This is necessary to avoid division by 0 at the start of dungeons, which results in infinite score
-		return 20 + Math.max((totalRooms != 0 ? (int) (80.0 * (getCompletedRooms() + getExtraCompletedRooms()) / totalRooms) : 0) - getPuzzlePenalty() - getDeathScorePenalty(), 0); //Can't go below 20 skill score
+		int completedRoomScore = Math.clamp((totalRooms != 0 ? (int) (80.0 * (getCompletedRooms() + getExtraCompletedRooms()) / totalRooms) : 0), 0, 80);
+		return 20 + Math.clamp(completedRoomScore - getPuzzlePenalty() - getDeathScorePenalty(), 0, 80);
 	}
 
 	private static int calculateExploreScore() {
 		int totalRooms = getTotalRooms(); //This is necessary to avoid division by 0 at the start of dungeons, which results in infinite score
-		int completedRoomScore = totalRooms != 0 ? (int) (60.0 * (getCompletedRooms() + getExtraCompletedRooms()) / totalRooms) : 0;
-		int secretsScore = (int) (40 * Math.min(floorRequirement.percentage, getSecretsPercentage()) / floorRequirement.percentage);
-		return Math.max(completedRoomScore + secretsScore, 0);
+		int completedRoomScore = Math.clamp(totalRooms != 0 ? (int) (60.0 * (getCompletedRooms() + getExtraCompletedRooms()) / totalRooms) : 0, 0, 60);
+		int secretsScore = Math.clamp((int) (40 * Math.min(floorRequirement.percentage, getSecretsPercentage()) / floorRequirement.percentage), 0, 40);
+		return completedRoomScore + secretsScore; //Clamped between 0 and 100 due to the 2 clamps above
 	}
 
 	private static int calculateTimeScore() {
@@ -187,12 +189,13 @@ public class DungeonScore {
 		if (timePastRequirement < 40) return score - (int) (10 + (timePastRequirement - 20) / 4);
 		if (timePastRequirement < 50) return score - (int) (15 + (timePastRequirement - 40) / 5);
 		if (timePastRequirement < 60) return score - (int) (17 + (timePastRequirement - 50) / 6);
-		return Math.max(score - (int) (18 + (2.0 / 3.0) + (timePastRequirement - 60) / 7), 0); //This can theoretically go down to -20 if the time limit is one of the lower ones like 480, but individual score categories can't go below 0
+		//This can theoretically go down to -20 if the time limit is one of the lower ones like 480, but individual score categories can't go below 0, hence the clamp
+		return Math.clamp(score - (int) (18 + (2.0 / 3.0) + (timePastRequirement - 60) / 7), 0, 100);
 	}
 
 	private static int calculateBonusScore() {
 		int paulScore = isMayorPaul ? 10 : 0;
-		int cryptsScore = Math.min(getCrypts(), 5);
+		int cryptsScore = Math.clamp(getCrypts(), 0, 5);
 		int mimicScore = mimicKilled ? 2 : 0;
 		if (getSecretsPercentage() >= 100 && floorHasMimics) mimicScore = 2; //If mimic kill is not announced but all secrets are found, mimic must've been killed
 		return paulScore + cryptsScore + mimicScore;
