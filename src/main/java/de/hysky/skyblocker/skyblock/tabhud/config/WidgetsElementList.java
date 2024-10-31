@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ElementListWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -87,11 +88,11 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
             rightDownArrowHovered = rightXGood && isOnDown;
             leftUpArrowHovered = leftXGood && isOnUp;
             leftDownArrowHovered = leftXGood && isOnDown;
-            context.drawGuiTexture(rightUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, getRowRight() - 16, y, 32, 32);
-            context.drawGuiTexture(rightDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, getRowRight() - 16, y, 32, 32);
+            context.drawGuiTexture(RenderLayer::getGuiTextured, rightUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, getRowRight() - 16, y, 32, 32);
+            context.drawGuiTexture(RenderLayer::getGuiTextured, rightDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, getRowRight() - 16, y, 32, 32);
 
-            context.drawGuiTexture(leftUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, x - 33, y, 32, 32);
-            context.drawGuiTexture(leftDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, x - 33, y, 32, 32);
+            context.drawGuiTexture(RenderLayer::getGuiTextured, leftUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, x - 33, y, 32, 32);
+            context.drawGuiTexture(RenderLayer::getGuiTextured, leftDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, x - 33, y, 32, 32);
         }
         if (Objects.equals(getHoveredEntry(), getEntry(index))) {
             this.x = x;

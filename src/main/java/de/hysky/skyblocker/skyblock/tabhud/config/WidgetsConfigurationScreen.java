@@ -146,11 +146,11 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
         this.tabNavigation.selectTab(0, false);
         switchingToPopup = false;
         this.addDrawableChild(tabNavigation);
-        this.initTabNavigation();
+        this.refreshWidgetPositions();
     }
 
     @Override
-    protected void initTabNavigation() {
+    protected void refreshWidgetPositions() {
         if (this.tabNavigation != null) {
             this.tabNavigation.setWidth(this.width);
             this.tabNavigation.init();
