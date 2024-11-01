@@ -38,7 +38,7 @@ public abstract class EntityRideMixin {
 	@Shadow
 	public abstract @Nullable Entity getVehicle();
 
-	@Inject(method = "startRiding*", at = @At("RETURN"))
+	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("RETURN"))
 	private void onStartRiding(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
 		if (cir.getReturnValue()) {
 			if (SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer && SlayerManager.isBossSpawned() && (Object) this instanceof EndermanEntity && entity instanceof ArmorStandEntity) {
