@@ -183,6 +183,9 @@ public class MythologicalRitual {
             return;
         }
         Vector2D intersection = burrow.nextBurrowLineEstimation.intersection(burrow.echoBurrowLineEstimation);
+		if (intersection == null) {
+			return;
+		}
         burrow.nextBurrowEstimatedPos = BlockPos.ofFloored(intersection.getX(), 5, intersection.getY());
     }
 
