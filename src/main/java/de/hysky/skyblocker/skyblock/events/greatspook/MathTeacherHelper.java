@@ -41,11 +41,11 @@ public final class MathTeacherHelper {
 			              .append(Text.literal(result)
 			                          .formatted(Formatting.AQUA))
 			              .append(ScreenTexts.SPACE)
-			              .append(Text.translatable("text.skyblocker.clickToCopy")
+			              .append(Text.translatable("text.skyblocker.clickToSuggest")
 			                          .formatted(Formatting.GREEN)
 			                          .styled(style ->
-					                          style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, result))
-					                               .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Constants.PREFIX.get().append(Text.translatable("text.skyblocker.clickToCopy.@Tooltip"))))
+					                          style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, result))
+					                               .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Constants.PREFIX.get().append(Text.translatable("text.skyblocker.clickToSuggest.@Tooltip"))))
 			                          ));
 		} catch (Exception e) {
 			return message;
