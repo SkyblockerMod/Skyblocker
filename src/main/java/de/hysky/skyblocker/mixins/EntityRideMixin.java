@@ -5,7 +5,6 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.LazerTimer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.math.BlockPos;
@@ -41,7 +40,7 @@ public abstract class EntityRideMixin {
 	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("RETURN"))
 	private void onStartRiding(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
 		if (cir.getReturnValue()) {
-			if (SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer && SlayerManager.isBossSpawned() && (Object) this instanceof EndermanEntity && entity instanceof ArmorStandEntity) {
+			if (SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer && SlayerManager.isBossSpawned() && this.getType() == EntityType.ENDERMAN && entity.getType() == EntityType.ARMOR_STAND) {
 				MobEntity slayer = SlayerManager.getSlayerEntity(EndermanEntity.class);
 				if (slayer != null) {
 					if (slayer.getUuid().equals(getUuid()) && !LazerTimer.isRiding()) {
@@ -57,7 +56,7 @@ public abstract class EntityRideMixin {
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void onTick(CallbackInfo ci) {
-		if ((Object) this instanceof EndermanEntity) {
+		if (this.getType() == EntityType.ENDERMAN) {
 			if (LazerTimer.isRiding() && LazerTimer.BossUUID.equals(getUuid()) && getVehicle() == null) {
 				if (LazerTimer.remainingTime > 5.0) return;
 				LazerTimer.BossUUID = null;
