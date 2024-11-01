@@ -28,6 +28,8 @@
   "text.skyblocker.translate": "Translate",
   "text.skyblocker.modrinth": "Modrinth",
   "text.skyblocker.discord": "Discord",
+  "text.skyblocker.clickToCopy": "[Click To Copy]",
+  "text.skyblocker.clickToCopy.@Tooltip": "Click to copy to clipboard.",
 
   "skyblocker.skyblockerScreen": "Skyblocker Main Screen",
 
