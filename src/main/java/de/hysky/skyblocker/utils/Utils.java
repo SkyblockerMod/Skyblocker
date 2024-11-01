@@ -28,6 +28,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.*;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
@@ -50,6 +51,11 @@ public class Utils {
     public static final String PROFILE_ID_PREFIX = "Profile ID: ";
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
+
+	//maybe should be moved to different class in future
+	private static long lastWarningTime = 0;
+	private static final long WARNING_COOLDOWN = 1000;
+
     /**
      * The player's rank.
      */
@@ -526,4 +532,17 @@ public class Utils {
     public static String getUndashedUuid() {
         return UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
     }
+
+	public static void warn(String text) {
+		long currentTime = System.currentTimeMillis();
+		if (currentTime - lastWarningTime >= WARNING_COOLDOWN) {
+			MinecraftClient client = MinecraftClient.getInstance();
+			if(client.player != null) {
+				client.inGameHud.setTitleTicks(5, 20, 0);
+				client.inGameHud.setTitle(Text.literal(text).formatted(Formatting.RED));
+				client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
+				lastWarningTime = currentTime;
+			}
+		}
+	}
 }

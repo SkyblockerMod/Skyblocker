@@ -3,13 +3,12 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.OptionGroup;
+import de.hysky.skyblocker.skyblock.slayers.hud.SlayerHudConfigScreen;
+import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class SlayersCategory {
@@ -51,6 +50,47 @@ public class SlayersCategory {
 								newValue -> config.slayers.displayBossbar = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.bossSpawnAlert"))
+						.description(OptionDescription.of(
+								Text.translatable("skyblocker.config.slayer.bossSpawnAlert.@Tooltip[0]")))
+						.binding(defaults.slayers.bossSpawnAlert,
+								() -> config.slayers.bossSpawnAlert,
+								newValue -> config.slayers.bossSpawnAlert = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.miniBossSpawnAlert"))
+						.description(OptionDescription.of(
+								Text.translatable("skyblocker.config.slayer.miniBossSpawnAlert.@Tooltip[0]")))
+						.binding(defaults.slayers.miniBossSpawnAlert,
+								() -> config.slayers.miniBossSpawnAlert,
+								newValue -> config.slayers.miniBossSpawnAlert = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.slainTime"))
+						.description(OptionDescription.of(
+								Text.translatable("skyblocker.config.slayer.slainTime.@Tooltip[0]")))
+						.binding(defaults.slayers.slainTime,
+								() -> config.slayers.slainTime,
+								newValue -> config.slayers.slainTime = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.enableHud"))
+						.description(OptionDescription.of(
+								Text.translatable("skyblocker.config.slayer.enableHud.@Tooltip[0]")))
+						.binding(defaults.slayers.slayerHud.enableHud,
+								() -> config.slayers.slayerHud.enableHud,
+								newValue -> config.slayers.slayerHud.enableHud = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(ButtonOption.createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.slayerHud"))
+						.text(Text.translatable("text.skyblocker.open"))
+						.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new SlayerHudConfigScreen(screen)))
+						.build())
 
                 //Enderman Slayer
                 .group(OptionGroup.createBuilder()
@@ -77,6 +117,13 @@ public class SlayersCategory {
                                         newValue -> config.slayers.endermanSlayer.highlightNukekubiHeads = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.slayer.endermanSlayer.lazerTimer"))
+								.binding(defaults.slayers.endermanSlayer.lazerTimer,
+										() -> config.slayers.endermanSlayer.lazerTimer,
+										newValue -> config.slayers.endermanSlayer.lazerTimer = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 //Vampire Slayer

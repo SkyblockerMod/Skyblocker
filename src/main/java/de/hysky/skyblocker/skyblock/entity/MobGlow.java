@@ -6,13 +6,14 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
-import de.hysky.skyblocker.skyblock.crimson.slayer.AttunementColors;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
-import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
+import de.hysky.skyblocker.skyblock.slayers.SlayerConstants;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.AttunementColors;
+import de.hysky.skyblocker.skyblock.slayers.features.SlayerEntitiesGlow;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
@@ -113,17 +114,17 @@ public class MobGlow {
 
 			// Special Zealot && Slayer (Mini)Boss
 			case EndermanEntity enderman when Utils.isInTheEnd() -> TheEnd.isSpecialZealot(enderman) || SlayerEntitiesGlow.shouldGlow(enderman.getUuid());
-			case ZombieEntity zombie when !(zombie instanceof ZombifiedPiglinEntity) && SlayerUtils.isInSlayerQuestType(SlayerUtils.REVENANT) -> SlayerEntitiesGlow.shouldGlow(zombie.getUuid());
-			case SpiderEntity spider when SlayerUtils.isInSlayerQuestType(SlayerUtils.TARA) -> SlayerEntitiesGlow.shouldGlow(spider.getUuid());
-			case WolfEntity wolf when SlayerUtils.isInSlayerQuestType(SlayerUtils.SVEN) -> SlayerEntitiesGlow.shouldGlow(wolf.getUuid());
-			case BlazeEntity blaze when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) -> SlayerEntitiesGlow.shouldGlow(blaze.getUuid());
+			case ZombieEntity zombie when !(zombie instanceof ZombifiedPiglinEntity) && SlayerManager.isInSlayerQuestType(SlayerConstants.REVENANT) -> SlayerEntitiesGlow.shouldGlow(zombie.getUuid());
+			case SpiderEntity spider when SlayerManager.isInSlayerQuestType(SlayerConstants.TARA) -> SlayerEntitiesGlow.shouldGlow(spider.getUuid());
+			case WolfEntity wolf when SlayerManager.isInSlayerQuestType(SlayerConstants.SVEN) -> SlayerEntitiesGlow.shouldGlow(wolf.getUuid());
+			case BlazeEntity blaze when SlayerManager.isInSlayerQuestType(SlayerConstants.DEMONLORD) -> SlayerEntitiesGlow.shouldGlow(blaze.getUuid());
 
 			// Enderman Slayer's Nukekubi Skulls
-			case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerUtils.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
+			case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerManager.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
 
 			// Blaze Slayer's Demonic minions
-			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW -> SlayerUtils.isInSlayerType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15;
-			case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW -> SlayerUtils.isInSlayerType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15;
+			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW -> SlayerManager.isInSlayerType(SlayerConstants.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15;
+			case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW -> SlayerManager.isInSlayerType(SlayerConstants.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15;
 
 			default -> false;
 		};
@@ -178,10 +179,10 @@ public class MobGlow {
 			case MagmaCubeEntity magmaCube when Utils.isInKuudra() -> 0xf7510f;
 
 			// Blaze Slayer Attunement Colours
-			case ArmorStandEntity armorStand when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) -> AttunementColors.getColor(armorStand);
-			case BlazeEntity blaze when SlayerUtils.isInSlayer() -> AttunementColors.getColor(blaze);
-			case ZombifiedPiglinEntity piglin when SlayerUtils.isInSlayer() -> AttunementColors.getColor(piglin);
-			case WitherSkeletonEntity wSkelly when SlayerUtils.isInSlayer() -> AttunementColors.getColor(wSkelly);
+			case ArmorStandEntity armorStand when SlayerManager.isInSlayerQuestType(SlayerConstants.DEMONLORD) -> AttunementColors.getColor(armorStand);
+			case BlazeEntity blaze when SlayerManager.isInSlayer() -> AttunementColors.getColor(blaze);
+			case ZombifiedPiglinEntity piglin when SlayerManager.isInSlayer() -> AttunementColors.getColor(piglin);
+			case WitherSkeletonEntity wSkelly when SlayerManager.isInSlayer() -> AttunementColors.getColor(wSkelly);
 
 			default -> 0xf57738;
 		};

@@ -630,6 +630,7 @@
   "skyblocker.config.otherLocations.end.screen": "End HUD Config...",
   "skyblocker.config.otherLocations.end.waypoint": "End Protector Waypoint",
   "skyblocker.config.otherLocations.end.zealotKillsEnabled": "Show Zealot Kills Information",
+  "skyblocker.config.otherLocations.end.muteEndermanSounds": "Mute Enderman Sounds",
 
   "skyblocker.config.otherLocations.rift": "The Rift",
   "skyblocker.config.otherLocations.rift.blobbercystGlow": "Blobbercyst Glow",
@@ -676,6 +677,7 @@
   "skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification": "Enable Yang Glyphs notification",
   "skyblocker.config.slayer.endermanSlayer.highlightBeacons": "Beacon Highlighting",
   "skyblocker.config.slayer.endermanSlayer.highlightNukekubiHeads": "Nukekubi Head Highlighting",
+  "skyblocker.config.slayer.endermanSlayer.lazerTimer": "Lazer Timer",
 
   "skyblocker.config.slayer.highlightMinis": "Highlight Minibosses",
   "skyblocker.config.slayer.highlightMinis.@Tooltip[0]": "\nOFF: Do not highlight Slayer Minibosses.",
@@ -690,6 +692,19 @@
   "skyblocker.config.slayer.highlightBosses.OFF": "Off",
   "skyblocker.config.slayer.highlightBosses.GLOW": "Glow",
   "skyblocker.config.slayer.highlightBosses.HITBOX": "Hitbox",
+
+  "skyblocker.config.slayer.bossSpawnAlert": "Boss Spawn Alert",
+  "skyblocker.config.slayer.bossSpawnAlert.@Tooltip[0]": "\nDisplays a warning when a slayer boss spawns",
+
+  "skyblocker.config.slayer.miniBossSpawnAlert": "MiniBoss Spawn Alert",
+  "skyblocker.config.slayer.miniBossSpawnAlert.@Tooltip[0]": "\nDisplays a warning when a slayer miniboss spawns",
+
+  "skyblocker.config.slayer.slainTime": "Slayer kill time",
+  "skyblocker.config.slayer.slainTime.@Tooltip[0]": "Sends the amount of time spent to kill the slayer.",
+
+  "skyblocker.config.slayer.enableHud": "Slayer HUD",
+  "skyblocker.config.slayer.enableHud.@Tooltip[0]": "You may have to do 1 boss before all HUD elements show",
+  "skyblocker.config.slayer.slayerHud": "Slayer HUD Config...",
 
   "skyblocker.config.slayer.vampireSlayer": "Vampire Slayer",
   "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "Compact Effigy Waypoints",
@@ -908,6 +923,9 @@
   "skyblocker.end.hud.protectorLocations.back": "Back",
   "skyblocker.end.hud.protectorLocations.rightFront": "Right Front",
   "skyblocker.end.hud.protectorLocations.rightBack": "Right Back",
+
+  "skyblocker.slayer.bossSpawnAlert": "Boss Spawned!",
+  "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss",
 
   "skyblocker.events.startsNow": "%s starts now!",
   "skyblocker.events.startsSoon": "%s starts soon!",
