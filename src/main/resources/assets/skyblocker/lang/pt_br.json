@@ -330,5 +330,9 @@
     "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Destaca as alavancas corretas para clicar em vermelho",
     "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit": "Calculadora de Lucro do Báu de Croesus",
     "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight.@Tooltip": "Destaca as portas Wither e Blood em vermelho se bloqueadas e em verde se desbloqueadas.",
-    "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Destaca baús com melhor lucro no NPC Croesus.\n\n\nO melhor baú será destacado em verde.\nSe houver um baú no qual vale a pena usar a dungeon key, ele será destacado em amarelo"
+    "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Destaca baús com melhor lucro no NPC Croesus.\n\n\nO melhor baú será destacado em verde.\nSe houver um baú no qual vale a pena usar a dungeon key, ele será destacado em amarelo",
+    "skyblocker.config.debug": "Depurar",
+    "skyblocker.config.debug.showInvisibleArmorStands": "Mostrar Suportes de Armadura Invisíveis",
+    "skyblocker.config.debug.debugWebSockets": "Habilitar Mensagens de Depuração do Websocket",
+    "key.itemPriceLookup": "Pesquisa de Bazar"
 }
