@@ -15,7 +15,6 @@ import java.util.List;
 
 /**
  * <p>A helper class for the Math Teachers that can spawn after killing Primal Fears in the Great Spook event.</p>
- * <p>It only shows the result and allows for easily copying rather than sending the result to chat to not breach any hypixel rules.</p>
  */
 public final class MathTeacherHelper {
 	@Init
@@ -24,7 +23,7 @@ public final class MathTeacherHelper {
 	}
 
 	/**
-	 * Appends the result of the math expression to the message and a copy to clipboard text for, well, copying the result to the clipboard.
+	 * Appends the result of the math expression to the message and a send in chat text that, well, sends the result in chat.
 	 */
 	public static Text onMessage(Text message, boolean overlay) {
 		if (overlay) return message;
@@ -41,11 +40,11 @@ public final class MathTeacherHelper {
 			              .append(Text.literal(result)
 			                          .formatted(Formatting.AQUA))
 			              .append(ScreenTexts.SPACE)
-			              .append(Text.translatable("text.skyblocker.clickToSuggest")
+			              .append(Text.translatable("text.skyblocker.clickToSend")
 			                          .formatted(Formatting.GREEN)
 			                          .styled(style ->
-					                          style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, result))
-					                               .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Constants.PREFIX.get().append(Text.translatable("text.skyblocker.clickToSuggest.@Tooltip"))))
+					                          style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ac " + result))
+					                               .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Constants.PREFIX.get().append(Text.translatable("text.skyblocker.clickToSend.@Tooltip"))))
 			                          ));
 		} catch (Exception e) {
 			return message;
