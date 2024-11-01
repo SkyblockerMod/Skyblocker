@@ -10,6 +10,8 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.PlainTextContent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -17,6 +19,8 @@ import java.util.List;
  * <p>A helper class for the Math Teachers that can spawn after killing Primal Fears in the Great Spook event.</p>
  */
 public final class MathTeacherHelper {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MathTeacherHelper.class);
+
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.MODIFY_GAME.register(MathTeacherHelper::onMessage);
@@ -47,6 +51,7 @@ public final class MathTeacherHelper {
 					                               .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Constants.PREFIX.get().append(Text.translatable("text.skyblocker.clickToSend.@Tooltip"))))
 			                          ));
 		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Math Teacher Helper] Failed to calculate math expression: {}", expression, e);
 			return message;
 		}
 	}
