@@ -5,5 +5,17 @@
     "skyblocker.config.general": "Generelt",
     "key.categories.skyblocker": "SkyBlocker",
     "skyblocker.config.uiAndVisuals.bars": "Liv, mana, forsvar og XP-bar",
-    "skyblocker.config.uiAndVisuals.bars.enableBars": "Aktiver bar"
+    "skyblocker.config.uiAndVisuals.bars.enableBars": "Aktiver bar",
+    "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "Crimson Isleにいる時、バニラのネザーバイオームのように霧がプレイヤーの近くにできるのを防ぎます。",
+    "skyblocker.config.crimsonIsle.extendNetherFog": "ネザーのフォグを広げる",
+    "skyblocker.config.crimsonIsle": "Crimson Isle",
+    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Arrow Poisonの量での警告のしきい値",
+    "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "バリスタ構築におけるウェイポイントを表示",
+    "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "エンダーパールのウェイポイント",
+    "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning": "Arrow Poisonがない場合に警告を表示する",
+    "skyblocker.config.crimsonIsle.kuudra.safeSpotWaypoints": "安全なスポットのウェイポイントを表示",
+    "skyblocker.config.shortcutToKeybindsSettings.@Text": "クリック… (キーバインド設定を開く)",
+    "skyblocker.config.shortcutToKeybindsSettings": "キーバインドを編集",
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Kuudraのアウトラインを濃いオレンジ色で描きます。",
+    "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "危険時に警告を表示"
 }
