@@ -228,7 +228,6 @@
     "skyblocker.config.crimsonIsle.extendNetherFog": "ネザーの霧を広げる",
     "key.skyblocker.debug.dumpNearbyEntities": "近くのエンティティをダンプする",
     "key.skyblocker.debug.dumpHoveredItem": "ホバーしたアイテムをダンプする",
-    "skyblocker.config.debug": "",
     "skyblocker.config.debug.dumpRange": "エンティティをダンプする範囲",
     "skyblocker.config.debug.debugWebSockets": "WebSocketのデバッグメッセージを有効化",
     "skyblocker.config.debug.showInvisibleArmorStands": "透明なアーマースタンドを表示",
