@@ -264,7 +264,7 @@
     "skyblocker.config.mining.crystalsHud.showLocations": "Afficher les Waypoints",
     "skyblocker.config.mining.crystalsHud.showLocations.locationSize.@Tooltip": "A quelle taille la position est affiché sur la carte.",
     "skyblocker.config.mining.crystalsWaypoints": "Waypoints Crystal Hollows",
-    "skyblocker.config.crimsonIsle.extendNetherFog": "Etendre le brouillard du Nether",
+    "skyblocker.config.crimsonIsle.extendNetherFog": "Étendre le brouillard du Nether",
     "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "Lorsque dans la Crimson Isle, empêche le brouillard d'apparaître plus proche du joueur comme il le ferai dans les biomes du Nether en vanilla.",
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Alerte du seuil de flêches de poison",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage": "Message des cryptes de donjon",
@@ -390,5 +390,11 @@
     "skyblocker.shortcuts.commandArg.target": "Argument de commande de cible",
     "skyblocker.customAnimatedDyes.neverHad": "Cet item n'a pas de teinte animée custom appliquée, mais pourquoi ne pas lui en ajouter ? ;)",
     "skyblocker.dwarvenMines.metalDetectorHelper.foundTreasureMessage": "Trésor trouvé",
-    "skyblocker.events.tab.clickToWarp": "Cliquez pour vous téléporter !"
+    "skyblocker.events.tab.clickToWarp": "Cliquez pour vous téléporter !",
+    "skyblocker.profileviewer.inventory.armor": "Armure",
+    "skyblocker.profileviewer.inventory.inventory": "Inventaire",
+    "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage": "Wishing compass utilisée. Déplacez-vous vers un autre emplacement et utilisez un second wishing compass pour trianguler la cible",
+    "skyblocker.waypoints.type.OUTLINE": "Contour",
+    "skyblocker.waypoints.type.OUTLINED_HIGHLIGHT": "Surlignage entouré",
+    "skyblocker.waypoints.type.HIGHLIGHT": "Surlignage"
 }
