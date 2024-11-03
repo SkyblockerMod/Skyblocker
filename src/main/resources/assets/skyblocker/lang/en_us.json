@@ -818,6 +818,7 @@
 
   "skyblocker.config.uiAndVisuals.healthBars": "Custom Mob Health Bars",
   "skyblocker.config.uiAndVisuals.healthBars.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.healthBars.enabled.@Tooltip": "(only updates when health updates)",
   "skyblocker.config.uiAndVisuals.healthBars.scale": "Scale",
   "skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName": "Remove Health From Name",
   "skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName.@Tooltip": "Remove the current health of mobs from their nametag",
@@ -827,7 +828,12 @@
   "skyblocker.config.uiAndVisuals.healthBars.applyToHealthOnlyMobs.@Tooltip": "Also add health bars to mobs with only a current health value (will sometimes be wrong if mob is damaged before loading in)",
   "skyblocker.config.uiAndVisuals.healthBars.hideFullHealth": "Hide Full Health Bars",
   "skyblocker.config.uiAndVisuals.healthBars.hideFullHealth.@Tooltip": "Don't show the health bar when its full",
-  "skyblocker.config.uiAndVisuals.healthBars.barColor": "Health Bar Color",
+  "skyblocker.config.uiAndVisuals.healthBars.fullBarColor": "Full Health bar Color",
+  "skyblocker.config.uiAndVisuals.healthBars.fullBarColor.@Tooltip": "Color of health bar when mob is at full hp",
+  "skyblocker.config.uiAndVisuals.healthBars.halfBarColor": "Half Health Bar Color",
+  "skyblocker.config.uiAndVisuals.healthBars.halfBarColor.@Tooltip": "Color of health bar when mob is at half hp",
+  "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor": "Empty Health Bar Color",
+  "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip": "Color of health bar when mob is at full hp",
 
   "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "Enable Sign Calculator",

@@ -63,7 +63,7 @@ public class HealthBars {
 	 *
 	 * @param armorStand updated armorstand
 	 */
-	public static void HeathBar(ArmorStandEntity armorStand) {
+	public static void heathBar(ArmorStandEntity armorStand) {
 		if (!armorStand.isInvisible() || !armorStand.hasCustomName() || !armorStand.isCustomNameVisible() || !SkyblockerConfigManager.get().uiAndVisuals.healthBars.enabled) {
 			return;
 		}
@@ -82,7 +82,7 @@ public class HealthBars {
 		Matcher healthMatcher = HEALTH_PATTERN.matcher(armorStand.getCustomName().getString());
 		//if a health ratio can not be found send onto health only pattern
 		if (!healthMatcher.find()) {
-			HealthOnlyCheck(armorStand);
+			healthOnlyCheck(armorStand);
 			return;
 		}
 
@@ -103,10 +103,9 @@ public class HealthBars {
 		List<Text> parts = armorStand.getCustomName().getSiblings();
 		//loop though name and add every part to a new text skipping over the hidden health values
 		int healthStartIndex = -1;
-		System.out.println(healthMatcher.group(0).toString()+"testing");
 		for (int i = 0; i < parts.size(); i++) {
 			//remove value from name
-				if (i < parts.size() - 4 && StringUtils.join(parts.subList(i+1, i + 5).stream().map(Text::getString).toArray(), "").equals(healthMatcher.group(0))) {
+			if (i < parts.size() - 4 && StringUtils.join(parts.subList(i + 1, i + 5).stream().map(Text::getString).toArray(), "").equals(healthMatcher.group(0))) {
 				healthStartIndex = i;
 			}
 			if (healthStartIndex != -1) {
@@ -150,7 +149,7 @@ public class HealthBars {
 	 *
 	 * @param armorStand armorstand to check the name of
 	 */
-	private static void HealthOnlyCheck(ArmorStandEntity armorStand) {
+	private static void healthOnlyCheck(ArmorStandEntity armorStand) {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.applyToHealthOnlyMobs || armorStand.getCustomName() == null) {
 			return;
 		}
@@ -181,7 +180,7 @@ public class HealthBars {
 		//loop though name and add every part to a new text skipping over the health value
 		for (int i = 0; i < parts.size(); i++) {
 			//skip space before value, value and heart from name
-			if (i < parts.size() - 2 && StringUtils.join(parts.subList(i+1, i + 3).stream().map(Text::getString).toArray(), "").equals(healthOnlyMatcher.group(0))) {
+			if (i < parts.size() - 2 && StringUtils.join(parts.subList(i + 1, i + 3).stream().map(Text::getString).toArray(), "").equals(healthOnlyMatcher.group(0))) {
 				//skip the heart
 				i += 2;
 				continue;
@@ -200,7 +199,9 @@ public class HealthBars {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.enabled || healthValues.isEmpty()) {
 			return;
 		}
-		Color barColor = SkyblockerConfigManager.get().uiAndVisuals.healthBars.barColor;
+		Color fullColor = SkyblockerConfigManager.get().uiAndVisuals.healthBars.fullBarColor;
+		Color halfColor = SkyblockerConfigManager.get().uiAndVisuals.healthBars.halfBarColor;
+		Color emptyColor = SkyblockerConfigManager.get().uiAndVisuals.healthBars.emptyBarColor;
 		boolean hideFullHealth = SkyblockerConfigManager.get().uiAndVisuals.healthBars.hideFullHealth;
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.healthBars.scale;
 		float tickDelta = context.tickCounter().getTickDelta(false);
@@ -219,9 +220,47 @@ public class HealthBars {
 			if (!armorStand.shouldRenderName()) {
 				return;
 			}
+			//gets the mixed color of the health bar
+			Color mixedColor = fadeBetweenThreeColors(emptyColor, halfColor, fullColor, health);
 			// Render the health bar texture with scaling based on health percentage
-			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, barColor, true);
-			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, 0.003f), HEALTH_BAR_TEXTURE, barColor, true);
+			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, mixedColor, true);
+			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, 0.003f), HEALTH_BAR_TEXTURE, mixedColor, true);
 		}
 	}
+
+
+	/**
+	 * Interoperates between 3 colors
+	 *
+	 * @param color1 full color
+	 * @param color2 half color
+	 * @param color3 empty color
+	 * @param t      position between the colors from 0-1
+	 * @return the interpolated color
+	 */
+	public static Color fadeBetweenThreeColors(Color color1, Color color2, Color color3, double t) {
+		Color startColor;
+		Color endColor;
+		double subT;
+
+		if (t <= 0.5) {
+			// First half: color1 to color2
+			startColor = color1;
+			endColor = color2;
+			subT = t / 0.5;
+		} else {
+			// Second half: color2 to color3
+			startColor = color2;
+			endColor = color3;
+			subT = (t - 0.5) / 0.5;
+		}
+
+		// Interpolate each RGB component
+		int red = (int) (startColor.getRed() + (endColor.getRed() - startColor.getRed()) * subT);
+		int green = (int) (startColor.getGreen() + (endColor.getGreen() - startColor.getGreen()) * subT);
+		int blue = (int) (startColor.getBlue() + (endColor.getBlue() - startColor.getBlue()) * subT);
+
+		return new Color(red, green, blue);
+	}
+
 }

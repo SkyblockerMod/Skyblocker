@@ -412,7 +412,14 @@ public class UIAndVisualsConfig {
 		@SerialEntry
 		public boolean hideFullHealth = false;
 
+
 		@SerialEntry
-		public Color barColor = new Color(0xFFFFFF);
+		public Color fullBarColor = new Color(0x00FF00);
+
+		@SerialEntry
+		public Color halfBarColor = new Color(0xFF4600);
+
+		@SerialEntry
+		public Color emptyBarColor = new Color(0xFF0000);
 	}
 }

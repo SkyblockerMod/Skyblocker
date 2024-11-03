@@ -553,6 +553,7 @@ public class UIAndVisualsCategory {
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.enabled"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.enabled.@Tooltip")))
 								.binding(defaults.uiAndVisuals.healthBars.enabled,
 										() -> config.uiAndVisuals.healthBars.enabled,
 										newValue -> config.uiAndVisuals.healthBars.enabled = newValue)
@@ -598,10 +599,27 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.barColor"))
-								.binding(defaults.uiAndVisuals.healthBars.barColor,
-										() -> config.uiAndVisuals.healthBars.barColor,
-										newValue -> config.uiAndVisuals.healthBars.barColor = newValue)
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.fullBarColor"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.fullBarColor.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.fullBarColor,
+										() -> config.uiAndVisuals.healthBars.fullBarColor,
+										newValue -> config.uiAndVisuals.healthBars.fullBarColor = newValue)
+								.controller(ColorControllerBuilder::create)
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.halfBarColor"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.halfBarColor.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.halfBarColor,
+										() -> config.uiAndVisuals.healthBars.halfBarColor,
+										newValue -> config.uiAndVisuals.healthBars.halfBarColor = newValue)
+								.controller(ColorControllerBuilder::create)
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.emptyBarColor"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.emptyBarColor,
+										() -> config.uiAndVisuals.healthBars.emptyBarColor,
+										newValue -> config.uiAndVisuals.healthBars.emptyBarColor = newValue)
 								.controller(ColorControllerBuilder::create)
 								.build())
 						.build()
