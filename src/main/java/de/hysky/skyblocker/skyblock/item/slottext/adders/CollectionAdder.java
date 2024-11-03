@@ -16,6 +16,10 @@ import java.util.regex.Pattern;
 
 public class CollectionAdder extends SimpleSlotTextAdder {
     private static final Pattern COLLECTION = Pattern.compile("^[\\w -]+ (?<level>[IVXLCDM]+)$");
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"collection",
+			"skyblocker.config.uiAndVisuals.slotText.collectionLevel"
+			);
 
     public CollectionAdder() {
         super("^\\w+ Collections");
@@ -34,4 +38,9 @@ public class CollectionAdder extends SimpleSlotTextAdder {
         }
         return List.of();
     }
+
+	@Override
+	public ConfigInformation getConfigInformation() {
+		return CONFIG_INFORMATION;
+	}
 }

@@ -16,6 +16,9 @@ import java.util.regex.Pattern;
 
 public class MinionLevelAdder extends SimpleSlotTextAdder {
 	private static final Pattern MINION_PATTERN = Pattern.compile(".* Minion ([IVXLCDM]+)");
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"minion_level",
+			"skyblocker.config.uiAndVisuals.slotText.minionLevel");
 	public MinionLevelAdder() {
 		super();
 	}
@@ -29,5 +32,10 @@ public class MinionLevelAdder extends SimpleSlotTextAdder {
 		if (!RomanNumerals.isValidRomanNumeral(romanNumeral)) return List.of();
 		int level = RomanNumerals.romanToDecimal(romanNumeral);
 		return SlotText.topRightList(Text.literal(String.valueOf(level)).withColor(0xFFDDC1));
+	}
+
+	@Override
+	public ConfigInformation getConfigInformation() {
+		return CONFIG_INFORMATION;
 	}
 }

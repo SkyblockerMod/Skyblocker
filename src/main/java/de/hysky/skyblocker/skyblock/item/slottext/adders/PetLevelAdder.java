@@ -17,6 +17,9 @@ import java.util.regex.Pattern;
 
 public class PetLevelAdder extends SimpleSlotTextAdder {
 	private static final Pattern LEVEL_PATTERN = Pattern.compile("⭐? ?\\[Lvl (\\d+)].*");
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"pet_level",
+			"skyblocker.config.uiAndVisuals.slotText.petLevel");
 	public PetLevelAdder() {
 		super();
 	}
@@ -29,5 +32,10 @@ public class PetLevelAdder extends SimpleSlotTextAdder {
 		String level = matcher.group(1);
 		if (!NumberUtils.isDigits(level) || "100".equals(level) || "200".equals(level)) return List.of();
 		return SlotText.topLeftList(Text.literal(level).withColor(0xFFDDC1));
+	}
+
+	@Override
+	public ConfigInformation getConfigInformation() {
+		return CONFIG_INFORMATION;
 	}
 }

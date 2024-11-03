@@ -19,8 +19,14 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
     private static final Pattern UNLOCKED = Pattern.compile("UNLOCKED");
     private static final Pattern ESSENCE = Pattern.compile("Your \\w+ Essence: (?<essence>[\\d,]+)");
 
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"essence_shop",
+			"skyblocker.config.uiAndVisuals.slotText.essenceShop",
+			"skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip"
+	);
+
     public EssenceShopAdder() {
-        super("Essence Shop");
+        super(".*Essence Shop");
     }
 
     @Override
@@ -42,4 +48,9 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
 
         return SlotText.bottomRightList(Text.literal(YourEssenceAdder.COMPACT_NUMBER_FORMATTER.format(Integer.parseInt(essenceAmount))).withColor(0xFFDDC1));
     }
+
+	@Override
+	public ConfigInformation getConfigInformation() {
+		return CONFIG_INFORMATION;
+	}
 }

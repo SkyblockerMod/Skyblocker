@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -17,6 +16,10 @@ import java.util.List;
 
 public class AttributeShardAdder extends SimpleSlotTextAdder {
 	private static final Object2ObjectMap<String, String> ID_2_SHORT_NAME = new Object2ObjectOpenHashMap<>();
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"attribute_shard",
+			"skyblocker.config.uiAndVisuals.slotText.attributeShard",
+			"skyblocker.config.uiAndVisuals.slotText.attributeShard.@Tooltip");
 
 	static {
 		//Weapons
@@ -90,7 +93,7 @@ public class AttributeShardAdder extends SimpleSlotTextAdder {
 	}
 
 	@Override
-	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().general.itemInfoDisplay.attributeShardInfo;
+	public ConfigInformation getConfigInformation() {
+		return CONFIG_INFORMATION;
 	}
 }

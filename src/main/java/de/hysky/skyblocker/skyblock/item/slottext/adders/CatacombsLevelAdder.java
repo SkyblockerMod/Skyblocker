@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.RomanNumerals;
+import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -18,6 +19,11 @@ import java.util.regex.Pattern;
 //This class is split into 3 inner classes as there are multiple screens for showing catacombs levels, each with different slot ids or different style of showing the level.
 //It's still kept in 1 main class for organization purposes.
 public class CatacombsLevelAdder {
+
+	private static final SlotTextAdder.ConfigInformation CONFIG_INFORMATION = new SlotTextAdder.ConfigInformation(
+			"catacombs_level",
+			"skyblocker.config.uiAndVisuals.slotText.catacombsLevel");
+
 	private CatacombsLevelAdder() {
 	}
 
@@ -52,6 +58,11 @@ public class CatacombsLevelAdder {
 				}
 			}
 		}
+
+		@Override
+		public ConfigInformation getConfigInformation() {
+			return CONFIG_INFORMATION;
+		}
 	}
 
 	public static class DungeonClasses extends SimpleSlotTextAdder {
@@ -73,6 +84,11 @@ public class CatacombsLevelAdder {
 				}
 			}
 		}
+
+		@Override
+		public ConfigInformation getConfigInformation() {
+			return CONFIG_INFORMATION;
+		}
 	}
 
 	public static class ReadyUp extends SimpleSlotTextAdder {
@@ -93,6 +109,11 @@ public class CatacombsLevelAdder {
 					return List.of();
 				}
 			}
+		}
+
+		@Override
+		public ConfigInformation getConfigInformation() {
+			return CONFIG_INFORMATION;
 		}
 	}
 

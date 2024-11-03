@@ -15,6 +15,10 @@ import java.util.regex.Pattern;
 
 public class PowerStonesGuideAdder extends SimpleSlotTextAdder {
     private static final Pattern LEARNED = Pattern.compile("Learned: (Yes|Not Yet) (?<symbol>[✖✔])");
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"power_stones_guide",
+			"skyblocker.config.uiAndVisuals.slotText.powerStonesGuide",
+			"skyblocker.config.uiAndVisuals.slotText.powerStonesGuide.@Tooltip");
 
     public PowerStonesGuideAdder() {
         super("^Power Stones Guide");
@@ -31,4 +35,9 @@ public class PowerStonesGuideAdder extends SimpleSlotTextAdder {
 
         return SlotText.bottomRightList(text);
     }
+
+	@Override
+	public ConfigInformation getConfigInformation() {
+		return CONFIG_INFORMATION;
+	}
 }

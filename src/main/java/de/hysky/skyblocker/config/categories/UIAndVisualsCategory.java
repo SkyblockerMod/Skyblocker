@@ -3,7 +3,10 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
+import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -17,6 +20,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 public class UIAndVisualsCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
@@ -118,6 +123,23 @@ public class UIAndVisualsCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
+
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.slotText"))
+						.collapsed(true)
+						.option(Option.<SlotTextMode>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.slotText"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.slotText.@Tooltip")))
+								.binding(defaults.uiAndVisuals.slotText.slotTextMode,
+										() -> config.uiAndVisuals.slotText.slotTextMode,
+										newValue -> config.uiAndVisuals.slotText.slotTextMode = newValue)
+								.controller(ConfigUtils::createEnumCyclingListController)
+								.build())
+						.option(ConfigUtils.createShortcutToKeybindsScreen())
+						.option(LabelOption.create(Text.translatable("skyblocker.config.uiAndVisuals.slotText.separator")))
+						.options(createSlotTextToggles(config))
+						.build()
+				)
 
                 // Inventory Search
                 .group(OptionGroup.createBuilder()
@@ -467,4 +489,28 @@ public class UIAndVisualsCategory {
 
                 .build();
     }
+
+	private static Collection<Option<?>> createSlotTextToggles(SkyblockerConfig config) {
+		Set<String> ids = new HashSet<>();
+		List<Option<?>> options = new ArrayList<>();
+		SlotTextManager.getAdderStream().forEach(adder -> {
+			SlotTextAdder.ConfigInformation configInfo = adder.getConfigInformation();
+			if (configInfo == null) return;
+			String id = configInfo.id();
+			if (ids.contains(id)) return;
+
+			Option<Boolean> option = Option.<Boolean>createBuilder()
+					.name(configInfo.name())
+					.description(configInfo.description() != null ? OptionDescription.of(configInfo.description()) : OptionDescription.EMPTY)
+					.binding(true,
+							() -> config.uiAndVisuals.slotText.textEnabled.getOrDefault(id, true),
+							newValue -> config.uiAndVisuals.slotText.textEnabled.put(id, newValue))
+					.controller(ConfigUtils::createBooleanController)
+					.build();
+
+			ids.add(id);
+			options.add(option);
+		});
+		return options;
+	}
 }

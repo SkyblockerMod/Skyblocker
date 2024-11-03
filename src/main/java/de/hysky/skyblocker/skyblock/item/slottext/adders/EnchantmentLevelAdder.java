@@ -16,6 +16,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"enchantment_level",
+			"skyblocker.config.uiAndVisuals.slotText.enchantmentLevel");
+
 	public EnchantmentLevelAdder() {
 		super();
 	}
@@ -41,5 +45,10 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 	private static int getEnchantLevelFromString(String str) {
 		String romanNumeral = str.substring(str.lastIndexOf(' ') + 1); //+1 because we don't need the space itself
 		return RomanNumerals.romanToDecimal(romanNumeral); //Temporary line. The method will be moved out later.
+	}
+
+	@Override
+	public ConfigInformation getConfigInformation() {
+		return CONFIG_INFORMATION;
 	}
 }

@@ -16,6 +16,9 @@ import java.util.regex.Pattern;
 
 public class RancherBootsSpeedAdder extends SimpleSlotTextAdder {
 	private static final Pattern SPEED_PATTERN = Pattern.compile("Current Speed Cap: (\\d+) ?(\\d+)?");
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"rancher_boots",
+			"skyblocker.config.uiAndVisuals.slotText.rancherBoots");
 
 	public RancherBootsSpeedAdder() {
 		super();
@@ -29,5 +32,10 @@ public class RancherBootsSpeedAdder extends SimpleSlotTextAdder {
 		String speed = matcher.group(2);
 		if (speed == null) speed = matcher.group(1); //2nd group only matches when the speed cap is set to a number beyond the player's actual speed cap.
 		return SlotText.bottomLeftList(Text.literal(speed).withColor(0xFFDDC1));
+	}
+
+	@Override
+	public ConfigInformation getConfigInformation() {
+		return CONFIG_INFORMATION;
 	}
 }
