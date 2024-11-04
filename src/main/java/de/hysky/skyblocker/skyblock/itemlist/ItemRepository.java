@@ -9,6 +9,8 @@ import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,6 +89,22 @@ public class ItemRepository {
         }
         return null;
     }
+
+	/**
+	 * Returns the click command for the given NEU item id that will show the super craft recipe.
+	 * @param neuId NEU item id
+	 * @return The command with all arguments filled in
+	 */
+	@NotNull
+	public static String getClickCommand(String neuId) {
+		NEUItem item = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(neuId);
+		// Only skyblock items have supercraft recipes.
+		if (item == null || item.isVanilla()) return "";
+		String clickCommand = item.getClickcommand();
+		String skyblockId = item.getSkyblockItemId();
+
+		return StringUtils.isEmpty(clickCommand) || StringUtils.isEmpty(skyblockId) ? "" : "/" + clickCommand + " " + skyblockId;
+	}
 
     public static List<SkyblockCraftingRecipe> getRecipes(String neuId) {
         List<SkyblockCraftingRecipe> result = new ArrayList<>();

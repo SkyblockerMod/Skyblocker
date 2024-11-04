@@ -15,15 +15,20 @@ import java.util.List;
 public class SkyblockCraftingRecipe {
     private static final Logger LOGGER = LoggerFactory.getLogger(SkyblockCraftingRecipe.class);
     private final String craftText;
+	private final String clickCommand;
     private final List<ItemStack> grid = new ArrayList<>(9);
     private ItemStack result;
 
-    public SkyblockCraftingRecipe(String craftText) {
+    public SkyblockCraftingRecipe(String craftText, String clickCommand) {
         this.craftText = craftText;
+		this.clickCommand = clickCommand;
     }
 
     public static SkyblockCraftingRecipe fromNEURecipe(NEUCraftingRecipe neuCraftingRecipe) {
-        SkyblockCraftingRecipe recipe = new SkyblockCraftingRecipe(neuCraftingRecipe.getExtraText() != null ? neuCraftingRecipe.getExtraText() : "");
+        SkyblockCraftingRecipe recipe = new SkyblockCraftingRecipe(
+				neuCraftingRecipe.getExtraText() != null ? neuCraftingRecipe.getExtraText() : "",
+		        ItemRepository.getClickCommand(neuCraftingRecipe.getOutput().getItemId())
+        );
         for (NEUIngredient input : neuCraftingRecipe.getInputs()) {
             recipe.grid.add(getItemStack(input));
         }
@@ -42,6 +47,10 @@ public class SkyblockCraftingRecipe {
         }
         return Items.AIR.getDefaultStack();
     }
+
+	public String getClickCommand() {
+		return clickCommand;
+	}
 
     public List<ItemStack> getGrid() {
         return grid;
