@@ -39,9 +39,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * Opened here {@code de.hysky.skyblocker.mixins.MinecraftClientMixin#skyblocker$skyblockInventoryScreen}
- * <br>
- * Book button is moved here {@code de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker}
+ * <p>Adds equipment slots to the inventory screen and moves the offhand slot.</p>
+ * <p>Opened here {@link de.hysky.skyblocker.mixins.MinecraftClientMixin#skyblocker$skyblockInventoryScreen MinecraftClientMixin#skyblocker$skyblockInventoryScreen}</p>
+ * <p>Book button is moved here {@link de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker$moveButton InventoryScreenMixin#skyblocker$moveButton}</p>
  */
 public class SkyblockInventoryScreen extends InventoryScreen {
     private static final Logger LOGGER = LoggerFactory.getLogger("Equipment");
