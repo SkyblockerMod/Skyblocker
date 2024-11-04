@@ -91,7 +91,18 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         }));
     }
 
-    @Init
+	@Override
+	public void onDisplayed() {
+		SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);
+
+		Slot slot = handler.slots.get(45);
+		((SlotAccessor) slot).setX(slot.x + 21);
+		for (int i = 0; i < 4; i++) {
+			equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
+		}
+	}
+
+	@Init
     public static void initEquipment() {
         SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
             if (!prevProfileId.isEmpty()) CompletableFuture.runAsync(() -> save(prevProfileId)).thenRun(() -> load(profileId));
@@ -108,13 +119,6 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
     public SkyblockInventoryScreen(PlayerEntity player) {
         super(player);
-        SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);
-
-        Slot slot = handler.slots.get(45);
-        ((SlotAccessor) slot).setX(slot.x + 21);
-        for (int i = 0; i < 4; i++) {
-            equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
-        }
     }
 
     @Override
