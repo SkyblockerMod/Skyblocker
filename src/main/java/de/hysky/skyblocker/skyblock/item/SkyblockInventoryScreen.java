@@ -140,7 +140,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         for (Slot equipmentSlot : equipmentSlots) {
             boolean hovered = isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY);
 
-            if (hovered) context.drawGuiTexture(RenderLayer::getGuiTextured, HandledScreenAccessor.getSLOT_HIGHLIGHT_BACK_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);;
+            if (hovered) context.drawGuiTexture(RenderLayer::getGuiTextured, HandledScreenAccessor.getSLOT_HIGHLIGHT_BACK_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
 
             drawSlot(context, equipmentSlot);
 
