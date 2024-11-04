@@ -34,9 +34,9 @@ public class SlayerManager {
 	private static final Map<SlayerAction, Runnable> actions = new HashMap<>();
 	private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend");
 	private static final Pattern SLAYER_TIER_PATTERN = Pattern.compile("^(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend)\\s+(I|II|III|IV|V)$");
-	private static final Pattern patternFixed = Pattern.compile(".*(Your Slayer Quest has been cancelled!|SLAYER QUEST STARTED!|NICE! SLAYER BOSS SLAIN!|SLAYER QUEST FAILED!).*");
-	private static final Pattern patternXpNeeded = Pattern.compile(".*((Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [0-9] - (Next LVL in [0-9]{1,3}(,[0-9]{3})* XP!|LVL MAXED OUT!)).*");
-	private static final Pattern patternLvlUp = Pattern.compile(".*LVL UP! ➜ (Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [1-9].*");
+	private static final Pattern PATTERN_FIXED = Pattern.compile("\\s*(?:Your Slayer Quest has been cancelled!|SLAYER QUEST STARTED!|NICE! SLAYER BOSS SLAIN!|SLAYER QUEST FAILED!)\\s*");
+	private static final Pattern PATTERN_XP_NEEDED = Pattern.compile("\\s*(Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL ([0-9]) - (?:Next LVL in ([\\d,]+) XP!|LVL MAXED OUT!)\\s*");
+	private static final Pattern PATTERN_LVL_UP = Pattern.compile("\\s*LVL UP! ➜ (Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [1-9]\\s*");
 	public static String slayerType = "";
 	public static String slayerTier = "";
 	public static int xpRemaining = 0;
@@ -74,9 +74,9 @@ public class SlayerManager {
 
 	private static void onChatMessage(Text text, boolean b) {
 		String message = text.getString();
-		Matcher matcherFixed = patternFixed.matcher(message);
-		Matcher matcherNextLvl = patternXpNeeded.matcher(message);
-		Matcher matcherLvlUp = patternLvlUp.matcher(message);
+		Matcher matcherFixed = PATTERN_FIXED.matcher(message);
+		Matcher matcherNextLvl = PATTERN_XP_NEEDED.matcher(message);
+		Matcher matcherLvlUp = PATTERN_LVL_UP.matcher(message);
 
 		if (matcherFixed.matches()) {
 			for (SlayerAction action : SlayerAction.values()) {
@@ -114,7 +114,6 @@ public class SlayerManager {
 						bossSpawned = true;
 						quest.lfMinis = false;
 						startTime = Instant.now();
-						System.out.println("setting time");
 					}
 					return;
 				}

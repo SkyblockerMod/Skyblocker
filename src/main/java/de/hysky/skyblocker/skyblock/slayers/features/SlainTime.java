@@ -13,12 +13,7 @@ import java.time.Instant;
 public class SlainTime {
 
 	public static void onBossDeath(Instant startTime) {
-		if (SkyblockerConfigManager.get().slayers.slainTime) {
-			if (startTime == null) {
-				System.out.println("[Skyblocker] Slayer quest has not started yet.");
-				return;
-			}
-
+		if (SkyblockerConfigManager.get().slayers.slainTime & startTime != null) {
 			Instant slainTime = Instant.now();
 			Duration timeElapsed = Duration.between(startTime, slainTime);
 
