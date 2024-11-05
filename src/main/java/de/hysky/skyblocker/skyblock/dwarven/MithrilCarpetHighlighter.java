@@ -77,7 +77,7 @@ public final class MithrilCarpetHighlighter implements Renderable, Tickable, Res
 	private boolean checkForCarpet(BlockPos blockPos) {
 		@SuppressWarnings("DataFlowIssue") // Null check is already done in the run method
 		BlockState actualBlock = MinecraftClient.getInstance().world.getBlockState(blockPos);
-		if (!actualBlock.isOf(Blocks.GRAY_CARPET)) return false;
+		if (!actualBlock.isOf(Blocks.GRAY_CARPET) && !actualBlock.isOf(Blocks.LIGHT_BLUE_CARPET)) return false;
 		BlockState blockBelow = MinecraftClient.getInstance().world.getBlockState(blockPos.down());
 		return blockBelow.isOf(Blocks.SEA_LANTERN);
 	}
