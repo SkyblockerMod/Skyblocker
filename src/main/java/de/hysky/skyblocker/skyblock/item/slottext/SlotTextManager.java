@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
@@ -89,17 +90,17 @@ public class SlotTextManager {
 	 * The returned text is rendered on top of the slot. The text will be scaled if it doesn't fit in the slot,
 	 * but 3 characters should be seen as the maximum to keep it readable and in place as it tends to move around when scaled.
 	 *
-	 * @implNote Only the first adder that returns a non-null text will be used.
-	 * The order of the adders remains the same as they were added to the {@link SlotTextManager#adders} array.
+	 * @implNote The order of the adders remains the same as they were added to the {@link SlotTextManager#adders} array.
+	 *           It is the implementors' duty to ensure they do not add slot text to the same location as other adders on the same slot.
 	 */
 	@NotNull
 	public static List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		if (currentScreenAdders.isEmpty() || !isEnabled()) return List.of();
+		List<SlotText> text = new ObjectArrayList<>();
+		if (currentScreenAdders.isEmpty() || !isEnabled()) return text;
 		for (SlotTextAdder adder : currentScreenAdders) {
-			List<SlotText> text = adder.getText(slot, stack, slotId);
-			if (!text.isEmpty()) return text;
+			text.addAll(adder.getText(slot, stack, slotId));
 		}
-		return List.of();
+		return text;
 	}
 
 	public static void renderSlotText(DrawContext context, TextRenderer textRenderer, @NotNull Slot slot) {
