@@ -51,12 +51,12 @@ public class PersonalBest {
 		});
 	}
 
-	public static boolean isPersonalBest(String slayer, Duration time) {
+	public static Duration getPersonalBest(String slayer) {
 		String profileId = Utils.getProfileId();
 		Object2ObjectOpenHashMap<String, SlayerInfo> profileData = CACHED_SLAYER_STATS.computeIfAbsent(profileId, _uuid -> new Object2ObjectOpenHashMap<>());
 
 		SlayerInfo currentBest = profileData.get(slayer);
-		return currentBest == null || time.toMillis() < currentBest.bestTime().toMillis();
+		return currentBest != null ? currentBest.bestTime() : null;
 	}
 
 	public static void updateBestTime(String slayerType, Duration duration) {

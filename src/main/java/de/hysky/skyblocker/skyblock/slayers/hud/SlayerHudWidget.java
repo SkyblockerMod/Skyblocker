@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -32,24 +33,24 @@ public class SlayerHudWidget extends Widget {
 		addSimpleIcoText(Ico.NETHER_STAR, " ", Formatting.GOLD, type + " " + tier);
 		if (level != -1) {
 			boolean isMaxed = switch (type) {
-				case "Riftstalker Bloodfiend" -> level == 5;
+				case SlayerConstants.VAMPIRE -> level == 5;
 				default -> level == 9;
 			};
 			if (isMaxed) {
-				addSimpleIcoText(Ico.ENCHANTING_TABLE, "Level up in: ", Formatting.GREEN, "MAXED OUT");
+				addSimpleIcoText(Ico.ENCHANTING_TABLE, I18n.translate("skyblocker.slayer.hud.lvlUpIn"), Formatting.GREEN, I18n.translate("skyblocker.slayer.hud.lvlMaxed"));
 			} else {
 				int nextMilestone = switch (type) {
-					case "Revenant Horror" -> SlayerConstants.ZombieLevelMilestones[level];
-					case "Tarantula Broodfather" -> SlayerConstants.SpiderLevelMilestones[level];
-					case "Riftstalker Bloodfiend" -> SlayerConstants.VampireLevelMilestones[level];
+					case SlayerConstants.REVENANT -> SlayerConstants.ZombieLevelMilestones[level];
+					case SlayerConstants.TARA -> SlayerConstants.SpiderLevelMilestones[level];
+					case SlayerConstants.VAMPIRE -> SlayerConstants.VampireLevelMilestones[level];
 					default -> SlayerConstants.RegularLevelMilestones[level];
 				};
 				int currentXP = nextMilestone - SlayerManager.xpRemaining;
-				addSimpleIcoText(Ico.ENCHANTING_TABLE, "Level up in: ", Formatting.AQUA, numberFormat.format(currentXP) + "/" + numberFormat.format(nextMilestone));
+				addSimpleIcoText(Ico.ENCHANTING_TABLE, I18n.translate("skyblocker.slayer.hud.lvlUpIn"), Formatting.AQUA, numberFormat.format(currentXP) + "/" + numberFormat.format(nextMilestone));
 			}
 		}
 		if (SlayerManager.xpRemaining > 0) {
-			addSimpleIcoText(Ico.DIASWORD, "bosses until level up: ", Formatting.AQUA, numberFormat.format(SlayerManager.calculateBossesNeeded()));
+			addSimpleIcoText(Ico.DIASWORD, I18n.translate("skyblocker.slayer.hud.bossesNeeded"), Formatting.AQUA, numberFormat.format(SlayerManager.calculateBossesNeeded()));
 		}
 	}
 }

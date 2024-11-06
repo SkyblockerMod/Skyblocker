@@ -14,14 +14,14 @@ import java.util.UUID;
 
 public class LazerTimer {
 
-	public static UUID BossUUID = null;
-	public static Vec3d BossLocation = null;
+	public static UUID bossUUID = null;
+	public static Vec3d bossLocation = null;
 
 	public static double remainingTime = 0;
 	private static boolean isRiding = false;
 
 	@Init
-	public static void Init() {
+	public static void init() {
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(LazerTimer::render);
 		Scheduler.INSTANCE.scheduleCyclic(LazerTimer::updateTimer, 1);
 	}
@@ -38,8 +38,8 @@ public class LazerTimer {
 			if (remainingTime <= 0) {
 				remainingTime = 0;
 				isRiding = false;
-				BossUUID = null;
-				BossLocation = null;
+				bossUUID = null;
+				bossLocation = null;
 			}
 		}
 	}
@@ -52,8 +52,8 @@ public class LazerTimer {
 		return isRiding;
 	}
 
-	public static void setRiding(boolean Riding) {
-		isRiding = Riding;
+	public static void setRiding(boolean riding) {
+		isRiding = riding;
 	}
 
 	private static void render(WorldRenderContext context) {
@@ -62,7 +62,7 @@ public class LazerTimer {
 			Text renderText = Text.literal("Lazer: ").formatted(Formatting.WHITE)
 					.append(Text.literal(timeText).formatted(Formatting.GREEN).formatted(Formatting.BOLD));
 
-			RenderHelper.renderText(context, renderText, BossLocation.add(0, 2, 0), true);
+			RenderHelper.renderText(context, renderText, bossLocation.add(0, 2, 0), true);
 		}
 	}
 }

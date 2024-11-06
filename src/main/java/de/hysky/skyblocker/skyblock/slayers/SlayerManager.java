@@ -8,6 +8,8 @@ import de.hysky.skyblocker.skyblock.slayers.boss.vampire.TwinClawsIndicator;
 import de.hysky.skyblocker.skyblock.slayers.features.SlainTime;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.title.Title;
+import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
@@ -16,7 +18,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.CaveSpiderEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,8 +113,10 @@ public class SlayerManager {
 			for (String line : Utils.STRING_SCOREBOARD) {
 				if (line.contains("Slay the boss!")) {
 					if (quest != null && !bossSpawned && !quest.slain) {
-						if (SkyblockerConfigManager.get().slayers.bossSpawnAlert)
-							Utils.warn(I18n.translate("skyblocker.slayer.bossSpawnAlert"));
+						if (SkyblockerConfigManager.get().slayers.bossSpawnAlert) {
+							TitleContainer.addTitle(new Title(Text.literal(I18n.translate("skyblocker.slayer.bossSpawnAlert")).formatted(Formatting.RED)), 20);
+							MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
+						}
 						bossSpawned = true;
 						quest.lfMinis = false;
 						startTime = Instant.now();

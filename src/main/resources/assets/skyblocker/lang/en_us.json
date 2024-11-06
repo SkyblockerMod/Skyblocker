@@ -925,9 +925,6 @@
   "skyblocker.end.hud.protectorLocations.rightFront": "Right Front",
   "skyblocker.end.hud.protectorLocations.rightBack": "Right Back",
 
-  "skyblocker.slayer.bossSpawnAlert": "Boss Spawned!",
-  "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss",
-
   "skyblocker.events.startsNow": "%s starts now!",
   "skyblocker.events.startsSoon": "%s starts soon!",
   "skyblocker.events.tab.endsIn": "Ends in %s",
@@ -959,6 +956,15 @@
   "skyblocker.shortcuts.deleteWarning": "Shortcut '%s' will be lost forever! (A long time!)",
   "skyblocker.shortcuts.new": "New Shortcut",
   "skyblocker.shortcuts.commandSuggestionTooltip": "Due to limitations of Minecraft, command suggestions will only work after joining a new world.",
+
+  "skyblocker.slayer.bossSpawnAlert": "Boss Spawned!",
+  "skyblocker.slayer.hud.bossesNeeded": "Bosses until level up",
+  "skyblocker.slayer.hud.lvlMaxed": "MAXED OUT",
+  "skyblocker.slayer.hud.lvlUpIn": "Level up in",
+  "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss",
+  "skyblocker.slayer.personalBest": "PERSONAL BEST",
+  "skyblocker.slayer.previousPB": "Your previous Personal Best was ",
+  "skyblocker.slayer.slainTime": "Slayer has been killed in",
 
   "skyblocker.waypoints.config": "Waypoints Config",
   "skyblocker.waypoints.newCategory": "New Waypoint Category",
