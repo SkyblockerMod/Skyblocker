@@ -26,11 +26,6 @@ public class WorldRendererMixin {
 		return shouldMobGlow(original, entity, hasCustomGlow);
 	}
 
-	@ModifyExpressionValue(method = "getEntitiesToRender", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;hasOutline(Lnet/minecraft/entity/Entity;)Z"))
-	private boolean skyblocker$shouldMobGlow2(boolean original, @Local Entity entity, @Share("hasCustomGlow") LocalBooleanRef hasCustomGlow) {
-		return shouldMobGlow(original, entity, hasCustomGlow);
-	}
-
 	@WrapOperation(method = "renderEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getTeamColorValue()I"))
 	private int skyblocker$modifyGlowColor(Entity instance, Operation<Integer> original, @Local Entity entity, @Share("hasCustomGlow") LocalBooleanRef hasCustomGlow) {
 		return hasCustomGlow.get() ? MobGlow.getGlowColor(entity) : original.call(instance);
