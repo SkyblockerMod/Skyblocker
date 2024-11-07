@@ -991,5 +991,7 @@
     "key.skyblocker.debug.dumpHoveredItem": "导出指针悬停处的物品",
     "skyblocker.config.debug.dumpRange": "实体导出范围",
     "skyblocker.config.debug": "调试",
-    "skyblocker.config.debug.dumpRange.@Tooltip": "玩家附近多少格范围内的实体可被导出"
+    "skyblocker.config.debug.dumpRange.@Tooltip": "玩家附近多少格范围内的实体可被导出",
+    "text.skyblocker.clickToSend": "[点击发送至聊天栏]",
+    "text.skyblocker.clickToSend.@Tooltip": "点击将其发送至聊天栏。"
 }
