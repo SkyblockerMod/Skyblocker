@@ -50,7 +50,7 @@ public class SlayerHudWidget extends Widget {
 			}
 		}
 		if (SlayerManager.xpRemaining > 0) {
-			addSimpleIcoText(Ico.DIASWORD, I18n.translate("skyblocker.slayer.hud.bossesNeeded") + ": ", Formatting.AQUA, numberFormat.format(SlayerManager.calculateBossesNeeded()));
+			addSimpleIcoText(Ico.DIASWORD, I18n.translate("skyblocker.slayer.hud.bossesNeeded") + ": ", Formatting.AQUA, numberFormat.format(SlayerManager.bossesNeeded));
 		}
 	}
 }

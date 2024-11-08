@@ -21,13 +21,13 @@ public class SlainTime {
 
 			Duration currentPB = PersonalBest.getPersonalBest(SlayerManager.getSlayerType() + SlayerManager.getSlayerTier());
 
-			if(currentPB != null && (currentPB.toMillis() > timeElapsed.toMillis())) {
+			if (currentPB != null && (currentPB.toMillis() > timeElapsed.toMillis())) {
 				MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(I18n.translate("skyblocker.slayer.slainTime")).append(Text.literal(duration).formatted(Formatting.YELLOW)).append("! ").append(Text.literal(I18n.translate("skyblocker.slayer.personalBest")).formatted(Formatting.LIGHT_PURPLE)).append(Text.literal("!"))), false);
 				MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(I18n.translate("skyblocker.slayer.previousPB")).append(Text.literal(formatTime(currentPB)).formatted(Formatting.YELLOW)).append(".")), false);
 				PersonalBest.updateBestTime(SlayerManager.getSlayerType() + SlayerManager.getSlayerTier(), timeElapsed);
 			} else {
 				MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(I18n.translate("skyblocker.slayer.slainTime")).append(Text.literal(duration).formatted(Formatting.YELLOW)).append("!")), false);
-				if(currentPB == null) {
+				if (currentPB == null) {
 					PersonalBest.updateBestTime(SlayerManager.getSlayerType() + SlayerManager.getSlayerTier(), timeElapsed);
 				}
 			}

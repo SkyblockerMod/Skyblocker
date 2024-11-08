@@ -27,25 +27,22 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SlayerManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SlayerManager.class);
-	private static final Map<SlayerAction, Runnable> actions = new HashMap<>();
 	private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Bloodfiend");
 	private static final Pattern SLAYER_TIER_PATTERN = Pattern.compile("^(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend)\\s+(I|II|III|IV|V)$");
-	private static final Pattern PATTERN_FIXED = Pattern.compile("\\s*(?:Your Slayer Quest has been cancelled!|SLAYER QUEST STARTED!|NICE! SLAYER BOSS SLAIN!|SLAYER QUEST FAILED!)\\s*");
 	private static final Pattern PATTERN_XP_NEEDED = Pattern.compile("\\s*(Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL ([0-9]) - (?:Next LVL in ([\\d,]+) XP!|LVL MAXED OUT!)\\s*");
 	private static final Pattern PATTERN_LVL_UP = Pattern.compile("\\s*LVL UP! ➜ (Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [1-9]\\s*");
 	public static String slayerType = "";
 	public static String slayerTier = "";
 	public static int xpRemaining = 0;
 	public static int level = -1;
+	public static int bossesNeeded = -1;
 	public static boolean bossSpawned;
 	private static ArmorStandEntity slayerArmorStandEntity;
 	private static MobEntity slayerEntity;
@@ -54,21 +51,6 @@ public class SlayerManager {
 
 	@Init
 	public static void init() {
-		actions.put(SlayerAction.CANCELLED, () -> quest = null);
-		actions.put(SlayerAction.FAILED, () -> quest = null);
-		actions.put(SlayerAction.STARTED, () -> quest = new SlayerQuest());
-		actions.put(SlayerAction.SLAIN, () -> {
-			if (quest != null) {
-				quest.slain = true;
-				SlainTime.onBossDeath(startTime);
-			}
-		});
-		actions.put(SlayerAction.COMPLETE, () -> {
-			if (quest != null && !quest.slain)
-				SlainTime.onBossDeath(startTime);
-			quest = null;
-		});
-
 		ClientReceiveMessageEvents.GAME.register(SlayerManager::onChatMessage);
 		Scheduler.INSTANCE.scheduleCyclic(SlayerManager::getSlayerBossInfo, 20);
 		Scheduler.INSTANCE.scheduleCyclic(SlayerManager::bossSpawnAlert, 10);
@@ -79,18 +61,31 @@ public class SlayerManager {
 
 	private static void onChatMessage(Text text, boolean b) {
 		String message = text.getString();
-		Matcher matcherFixed = PATTERN_FIXED.matcher(message);
+
 		Matcher matcherNextLvl = PATTERN_XP_NEEDED.matcher(message);
 		Matcher matcherLvlUp = PATTERN_LVL_UP.matcher(message);
 
-		if (matcherFixed.matches()) {
-			for (SlayerAction action : SlayerAction.values()) {
-				if (message.toLowerCase().contains(action.name().toLowerCase())) {
-					actions.get(action).run();
-					break;
+		switch (message.replaceFirst("^\\s+", "")) {
+			case "Your Slayer Quest has been cancelled!", "SLAYER QUEST FAILED!":
+				quest = null;
+				return;
+			case "SLAYER QUEST STARTED!":
+				quest = new SlayerQuest();
+				return;
+			case "NICE! SLAYER BOSS SLAIN!":
+				if (quest != null) {
+					quest.slain = true;
+					SlainTime.onBossDeath(startTime);
 				}
-			}
-		} else if (matcherNextLvl.matches()) {
+				return;
+			case "SLAYER QUEST COMPLETE!":
+				if (quest != null && !quest.slain)
+					SlainTime.onBossDeath(startTime);
+				quest = null;
+				return;
+		}
+
+		if (matcherNextLvl.matches()) {
 			if (message.contains("LVL MAXED OUT")) {
 				level = message.contains("Vampire") ? 5 : 9;
 				xpRemaining = -1;
@@ -100,12 +95,11 @@ public class SlayerManager {
 				if (xpEndIndex != -1) {
 					level = Integer.parseInt(Pattern.compile("\\d+").matcher(message).results().map(m -> m.group()).findFirst().orElse(null));
 					xpRemaining = Integer.parseInt(message.substring(xpIndex, xpEndIndex).trim().replace(",", ""));
+					calculateBossesNeeded();
 				} else LOGGER.error("[Skyblocker] error getting xpNeeded (xpEndIndex == -1)");
 			}
-			actions.get(SlayerAction.COMPLETE).run();
 		} else if (matcherLvlUp.matches()) {
 			level = Integer.parseInt(message.replaceAll("(\\d+).+", "$1"));
-			actions.get(SlayerAction.COMPLETE).run();
 		}
 	}
 
@@ -134,7 +128,6 @@ public class SlayerManager {
 	private static void getSlayerBossInfo() {
 		try {
 			for (String line : Utils.STRING_SCOREBOARD) {
-				//if (line.equals("Boss slain!") && quest != null) quest.slain = true;
 				Matcher matcher = SLAYER_TIER_PATTERN.matcher(line);
 				if (matcher.find()) {
 					if (!slayerType.isEmpty() && !matcher.group(1).equals(slayerType)) {
@@ -151,10 +144,12 @@ public class SlayerManager {
 		}
 	}
 
-	//TODO: cache it (currently called every render tick)
-	public static int calculateBossesNeeded() {
+	public static void calculateBossesNeeded() {
 		int tier = RomanNumerals.romanToDecimal(slayerTier);
-		if (tier == 0) return -1;
+		if (tier == 0) {
+			bossesNeeded = -1;
+			return;
+		}
 
 		int xpPerTier;
 		if (slayerType.equals("Vampire")) {
@@ -167,7 +162,7 @@ public class SlayerManager {
 			xpPerTier = (int)(xpPerTier * 1.25);
 		}
 
-		return (int) Math.ceil((double) xpRemaining / xpPerTier);
+		bossesNeeded = (int) Math.ceil((double) xpRemaining / xpPerTier);
 	}
 
 	//TODO: Cache this, probably included in Packet system
@@ -287,24 +282,10 @@ public class SlayerManager {
 		return quest;
 	}
 
-	enum SlayerAction {
-		CANCELLED,
-		STARTED,
-		COMPLETE,
-		SLAIN,
-		FAILED,
-		NEXT_LVL,
-		MAXED_OUT,
-		LVL_UP
-	}
-
 	public static class SlayerQuest {
 
 		public boolean slain = false;
 		public boolean lfMinis = true;
-
-		public SlayerQuest() {
-		}
 
 		public boolean isSlain() {
 			return slain;
