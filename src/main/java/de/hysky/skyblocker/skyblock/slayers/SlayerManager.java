@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.slayers.boss.vampire.TwinClawsIndicator;
 import de.hysky.skyblocker.skyblock.slayers.features.SlainTime;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 public class SlayerManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SlayerManager.class);
 	private static final Map<SlayerAction, Runnable> actions = new HashMap<>();
-	private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend");
+	private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Bloodfiend");
 	private static final Pattern SLAYER_TIER_PATTERN = Pattern.compile("^(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend)\\s+(I|II|III|IV|V)$");
 	private static final Pattern PATTERN_FIXED = Pattern.compile("\\s*(?:Your Slayer Quest has been cancelled!|SLAYER QUEST STARTED!|NICE! SLAYER BOSS SLAIN!|SLAYER QUEST FAILED!)\\s*");
 	private static final Pattern PATTERN_XP_NEEDED = Pattern.compile("\\s*(Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL ([0-9]) - (?:Next LVL in ([\\d,]+) XP!|LVL MAXED OUT!)\\s*");
@@ -150,6 +151,7 @@ public class SlayerManager {
 		}
 	}
 
+	//TODO: cache it (currently called every render tick)
 	public static int calculateBossesNeeded() {
 		int tier = RomanNumerals.romanToDecimal(slayerTier);
 		if (tier == 0) return -1;
@@ -159,6 +161,10 @@ public class SlayerManager {
 			xpPerTier = SlayerConstants.vampireXpPerTier[tier - 1];
 		} else {
 			xpPerTier = SlayerConstants.regularXpPerTier[tier - 1];
+		}
+
+		if(MayorUtils.getMayor().perks().stream().anyMatch(perk -> perk.name().equals("Slayer XP Buff")) || MayorUtils.getMinister().perk().name().equals("Slayer XP Buff")) {
+			xpPerTier = (int)(xpPerTier * 1.25);
 		}
 
 		return (int) Math.ceil((double) xpRemaining / xpPerTier);
