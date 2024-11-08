@@ -28,10 +28,10 @@ public class SoundSystemMixin {
 	private void onPlayTail(SoundInstance soundInstance, CallbackInfo ci) {
 		if (SkyblockerConfigManager.get().slayers.miniBossSpawnAlert && Utils.isOnSkyblock() && soundInstance.getSound() != null && soundInstance.getId().equals(Identifier.ofVanilla("entity.generic.explode"))) {
 			if (SlayerManager.isInSlayer() && SlayerManager.getSlayerQuest().isLfMinis() && soundInstance.getPitch() == 9 / 7f && soundInstance.getVolume() == 0.6f) {
+				final Title title = new Title(Text.literal(I18n.translate("skyblocker.slayer.miniBossSpawnAlert")).formatted(Formatting.RED));
 				//Checks if MiniBoss is within a radius of the client's location
 				if (LocationUtils.isWithinRadius(BlockPos.ofFloored(soundInstance.getX(), soundInstance.getY(), soundInstance.getZ()), 15)) {
-					final Title title = new Title(Text.literal(I18n.translate("skyblocker.slayer.miniBossSpawnAlert")).formatted(Formatting.RED));
-					if (!TitleContainer.containsTitle(title)) {
+					if (!TitleContainer.containsTitle(title.getText())) {
 						TitleContainer.addTitle(title, 20);
 						MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
 					}
