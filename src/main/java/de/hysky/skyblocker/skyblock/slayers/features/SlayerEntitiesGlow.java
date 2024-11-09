@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Box;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,8 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SlayerEntitiesGlow {
 	private static final Set<UUID> MOBS_TO_GLOW = new HashSet<>();
 	/**
-	 * ARMORSTAND_TO_MOBS_TO_GLOW tracks if an armor stand already has an associated mob entity. This is used for trying to dedupe glows,
-	 * where an armor stand has detected multiple candidates as its associated mob entity -  in a vain attempt to reduce the amount of false positives
+	 * ARMORSTAND_TO_MOBS_TO_GLOW tracks if an armor stand already has an associated entity. This is used for trying to dedupe glows,
+	 * where an armor stand has detected multiple candidates as its associated entity -  in a vain attempt to reduce the amount of false positives
 	 */
 	private static final ConcurrentHashMap<UUID, UUID> ARMORSTAND_TO_MOBS_TO_GLOW = new ConcurrentHashMap<>();
 
@@ -62,9 +63,9 @@ public class SlayerEntitiesGlow {
 	 */
 	public static void setSlayerMobGlow(ArmorStandEntity armorStand) {
 		String slayerType = SlayerManager.getSlayerType();
-		Class<? extends MobEntity> entityClass = SlayerConstants.SLAYER_MOB_TYPE.get(slayerType);
+		Class<? extends Entity> entityClass = SlayerConstants.SLAYER_MOB_TYPE.get(slayerType);
 		if (entityClass != null) {
-			MobEntity closestEntity = SlayerManager.findClosestMobEntity(entityClass, armorStand);
+			Entity closestEntity = SlayerManager.findClosestMobEntity(entityClass, armorStand);
 			if (closestEntity != null) {
 				UUID uuid = ARMORSTAND_TO_MOBS_TO_GLOW.putIfAbsent(armorStand.getUuid(), closestEntity.getUuid());
 				if (uuid != null && closestEntity.getUuid() != uuid && closestEntity.age < 80) {
@@ -82,8 +83,8 @@ public class SlayerEntitiesGlow {
 	 * @param entityClass the java class of the entity we know the armor stand to belong to
 	 * @param oldUUID     the uuid of the first detected slayer mob
 	 */
-	private static void recalculateMobGlow(ArmorStandEntity armorStand, Class<? extends MobEntity> entityClass, UUID oldUUID) {
-		MobEntity entity = SlayerManager.findClosestMobEntity(entityClass, armorStand);
+	private static void recalculateMobGlow(ArmorStandEntity armorStand, Class<? extends Entity> entityClass, UUID oldUUID) {
+		Entity entity = SlayerManager.findClosestMobEntity(entityClass, armorStand);
 		if (entity != null && entity.getUuid() != oldUUID) {
 			RenderHelper.runOnRenderThread(() -> {
 				MOBS_TO_GLOW.add(entity.getUuid());

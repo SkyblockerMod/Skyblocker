@@ -118,6 +118,7 @@ public class MobGlow {
 			case SpiderEntity spider when SlayerManager.isInSlayerQuestType(SlayerConstants.TARA) -> SlayerEntitiesGlow.shouldGlow(spider.getUuid());
 			case WolfEntity wolf when SlayerManager.isInSlayerQuestType(SlayerConstants.SVEN) -> SlayerEntitiesGlow.shouldGlow(wolf.getUuid());
 			case BlazeEntity blaze when SlayerManager.isInSlayerQuestType(SlayerConstants.DEMONLORD) -> SlayerEntitiesGlow.shouldGlow(blaze.getUuid());
+			case PlayerEntity vampire when SlayerManager.isInSlayerQuestType(SlayerConstants.VAMPIRE) -> SlayerEntitiesGlow.shouldGlow(vampire.getUuid());
 
 			// Enderman Slayer's Nukekubi Skulls
 			case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerManager.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;

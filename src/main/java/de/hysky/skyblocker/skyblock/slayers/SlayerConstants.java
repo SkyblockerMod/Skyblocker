@@ -1,7 +1,9 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.Map;
 
@@ -43,11 +45,12 @@ public class SlayerConstants {
 			Map.entry("Burningsoul Demon", DEMONLORD)
 	);
 
-	public static final Map<String, Class<? extends MobEntity>> SLAYER_MOB_TYPE = Map.of(
+	public static final Map<String, Class<? extends Entity>> SLAYER_MOB_TYPE = Map.of(
 			REVENANT, ZombieEntity.class,
 			TARA, SpiderEntity.class,
 			SVEN, WolfEntity.class,
 			VOIDGLOOM, EndermanEntity.class,
-			DEMONLORD, BlazeEntity.class
+			DEMONLORD, BlazeEntity.class,
+			VAMPIRE, PlayerEntity.class
 	);
 }

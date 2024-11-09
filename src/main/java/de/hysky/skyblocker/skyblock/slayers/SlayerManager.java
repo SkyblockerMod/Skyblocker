@@ -45,7 +45,7 @@ public class SlayerManager {
 	public static int bossesNeeded = -1;
 	public static boolean bossSpawned;
 	private static ArmorStandEntity slayerArmorStandEntity;
-	private static MobEntity slayerEntity;
+	private static Entity slayerEntity;
 	private static Instant startTime;
 	private static SlayerQuest quest;
 
@@ -199,7 +199,7 @@ public class SlayerManager {
 		return null;
 	}
 
-	public static MobEntity getSlayerEntity(Class<? extends MobEntity> entityClass) {
+	public static Entity getSlayerEntity(Class<? extends MobEntity> entityClass) {
 		if (slayerEntity != null && slayerEntity.isAlive()) {
 			return slayerEntity;
 		}
@@ -215,15 +215,15 @@ public class SlayerManager {
 	}
 
 	/**
-	 * <p> Finds the closest matching MobEntity for the armorStand using entityClass and armorStand age difference to filter
-	 * out impossible candidates, returning the closest mob of those remaining in the search box by block distance </p>
+	 * <p> Finds the closest matching Entity for the armorStand using entityClass and armorStand age difference to filter
+	 * out impossible candidates, returning the closest entity of those remaining in the search box by block distance </p>
 	 *
-	 * @param entityClass the mob type of the Slayer (i.e. ZombieEntity.class)
+	 * @param entityClass the entity type of the Slayer (i.e. ZombieEntity.class)
 	 * @param armorStand  the entity that contains the display name of the Slayer (mini)boss
 	 */
-	public static MobEntity findClosestMobEntity(Class<? extends MobEntity> entityClass, ArmorStandEntity armorStand) {
-		List<MobEntity> mobEntities = armorStand.getWorld().getEntitiesByClass(entityClass, armorStand.getDimensions(null)
-						.getBoxAt(armorStand.getPos()).expand(0.3f, 1.5f, 0.3f), entity -> !entity.isDead())
+	public static Entity findClosestMobEntity(Class<? extends Entity> entityClass, ArmorStandEntity armorStand) {
+		List<Entity> mobEntities = armorStand.getWorld().getEntitiesByClass(entityClass, armorStand.getDimensions(null)
+						.getBoxAt(armorStand.getPos()).expand(0.3f, 1.5f, 0.3f), Entity::isAlive)
 				.stream()
 				.filter(SlayerManager::isValidSlayerMob)
 				.sorted(Comparator.comparingDouble(e -> e.squaredDistanceTo(armorStand)))
@@ -243,8 +243,9 @@ public class SlayerManager {
 	 * Use this func to add checks to prevent accidental highlights
 	 * i.e. Cavespider extends spider and thus will highlight the broodfather's head pet instead and
 	 */
-	private static boolean isValidSlayerMob(MobEntity entity) {
-		return !(entity instanceof CaveSpiderEntity) && !(entity.isBaby());
+	private static boolean isValidSlayerMob(Entity entity) {
+		if(entity instanceof MobEntity mob) return !(mob instanceof CaveSpiderEntity) && !(mob.isBaby());
+		return true;
 	}
 
 	/**
