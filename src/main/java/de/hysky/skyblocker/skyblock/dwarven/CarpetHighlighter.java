@@ -23,15 +23,19 @@ import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 
-public final class MithrilCarpetHighlighter implements Renderable, Tickable, Resettable {
-	public static final MithrilCarpetHighlighter INSTANCE = new MithrilCarpetHighlighter();
+/**
+ * Highlights unbreakable carpets within ore veins in the Dwarven Mines.
+ */
+public final class CarpetHighlighter implements Renderable, Tickable, Resettable {
+	public static final CarpetHighlighter INSTANCE = new CarpetHighlighter();
 
 	private static final Vec3d CARPET_BOUNDING_BOX = Boxes.getLengthVec(CarpetBlock.SHAPE.getBoundingBox());
 	private static final int SEARCH_RADIUS = 15;
-	private static float[] colorComponents;
 	private static final int TICK_INTERVAL = 15;
-	private static int tickCounter = 0;
 	private static final ObjectArraySet<BlockPos> CARPET_LOCATIONS = new ObjectArraySet<>();
+
+	private static float[] colorComponents;
+	private static int tickCounter = 0;
 	private static boolean isLocationValid = false;
 
 	@Init
@@ -70,14 +74,21 @@ public final class MithrilCarpetHighlighter implements Renderable, Tickable, Res
 
 	/**
 	 * @param blockPos The position to check for a carpet
-	 * @return Whether the block at the given position is a gray carpet with a sea lantern below it, which is how all mithril carpets are placed
+	 * @return Whether the block at the given position is a gray carpet with a sea lantern below it, which is how all unbreakable carpets are placed
 	 * @implNote <p>getBlockState is a heavy method, so this method will become a hot spot as the search radius increases || the tick interval decreases.</p>
-	 * 	         <p>Consider profiling this method if either of those values are changed.</p>
+	 * 		<p>Consider profiling this method if either of those values are changed.</p>
 	 */
 	private boolean checkForCarpet(BlockPos blockPos) {
 		@SuppressWarnings("DataFlowIssue") // Null check is already done in the run method
 		BlockState actualBlock = MinecraftClient.getInstance().world.getBlockState(blockPos);
-		if (!actualBlock.isOf(Blocks.GRAY_CARPET) && !actualBlock.isOf(Blocks.LIGHT_BLUE_CARPET)) return false;
+		// Gray/light blue - mithril
+		// Light gray - tungsten
+		// There are other colors for some ores in the royal mines,
+		// but since the actual ores don't include wool blocks
+		// they're not easily confused as ores so they are not accounted for here
+		if (!(actualBlock.isOf(Blocks.GRAY_CARPET) ||
+				actualBlock.isOf(Blocks.LIGHT_BLUE_CARPET) ||
+				actualBlock.isOf(Blocks.LIGHT_GRAY_CARPET))) return false;
 		BlockState blockBelow = MinecraftClient.getInstance().world.getBlockState(blockPos.down());
 		return blockBelow.isOf(Blocks.SEA_LANTERN);
 	}

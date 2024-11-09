@@ -4,7 +4,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
-import de.hysky.skyblocker.skyblock.dwarven.MithrilCarpetHighlighter;
+import de.hysky.skyblocker.skyblock.dwarven.CarpetHighlighter;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -71,7 +71,7 @@ public class MiningCategory {
 		                                () -> config.mining.dwarvenMines.carpetHighlightColor,
 		                                newValue -> {
 											config.mining.dwarvenMines.carpetHighlightColor = newValue;
-			                                MithrilCarpetHighlighter.INSTANCE.configCallback(newValue);
+			                                CarpetHighlighter.INSTANCE.configCallback(newValue);
 		                                })
                                 .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
                                 .build())
