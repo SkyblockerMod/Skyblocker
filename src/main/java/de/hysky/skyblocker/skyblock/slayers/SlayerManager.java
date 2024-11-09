@@ -131,7 +131,8 @@ public class SlayerManager {
 			for (String line : Utils.STRING_SCOREBOARD) {
 				Matcher matcher = SLAYER_TIER_PATTERN.matcher(line);
 				if (matcher.find()) {
-					if (!slayerType.isEmpty() && !matcher.group(1).equals(slayerType)) {
+					if ((!slayerType.isEmpty() && !matcher.group(1).equals(slayerType))
+							|| (!slayerTier.isEmpty() && !matcher.group(2).equals(slayerTier))) {
 						xpRemaining = 0;
 						level = -1;
 						bossesNeeded = -1;
@@ -167,14 +168,11 @@ public class SlayerManager {
 		bossesNeeded = (int) Math.ceil((double) xpRemaining / xpPerTier);
 	}
 
-	//TODO: Cache this, probably included in Packet system
 	public static List<Entity> getEntityArmorStands(Entity entity, float expandY) {
 		return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.3F, expandY, 0.3F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
 	}
 
-	//Eventually this should be modified so that if you hit a slayer boss all slayer features will work on that boss.
 	public static ArmorStandEntity getSlayerArmorStandEntity() {
-		// TODO: This should be set when the system to detect isInSlayer is made event-driven
 		if (slayerArmorStandEntity != null && slayerArmorStandEntity.isAlive()) {
 			return slayerArmorStandEntity;
 		}

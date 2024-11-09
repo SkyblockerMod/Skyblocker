@@ -37,7 +37,6 @@ public class SlayerBossBars {
 
 		// Update boss max health
 		ArmorStandEntity e = SlayerManager.getSlayerArmorStandEntity();
-		System.out.println(e);
 		if (e != null && bossMaxHealth == -1) {
 			Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(SlayerManager.getSlayerArmorStandEntity().getName().getString());
 			if (maxHealthMatcher.find()) bossMaxHealth = convertToInt(maxHealthMatcher.group(0));
