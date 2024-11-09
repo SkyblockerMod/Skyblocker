@@ -963,8 +963,8 @@
   "skyblocker.slayer.hud.lvlUpIn": "Level up in",
   "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss",
   "skyblocker.slayer.personalBest": "PERSONAL BEST",
-  "skyblocker.slayer.previousPB": "Your previous Personal Best was ",
-  "skyblocker.slayer.slainTime": "Slayer has been killed in ",
+  "skyblocker.slayer.previousPB": "Your previous Personal Best was",
+  "skyblocker.slayer.slainTime": "Slayer has been killed in",
 
   "skyblocker.waypoints.config": "Waypoints Config",
   "skyblocker.waypoints.newCategory": "New Waypoint Category",

@@ -5,6 +5,7 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerConstants;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
@@ -30,14 +31,14 @@ public class SlayerHudWidget extends Widget {
 		String type = SlayerManager.slayerType;
 		String tier = SlayerManager.slayerTier;
 		int level = SlayerManager.level;
-		addSimpleIcoText(Ico.NETHER_STAR, " ", Formatting.GOLD, type + " " + tier);
+		addSimpleIcoText(Ico.NETHER_STAR, " ", SlayerConstants.SLAYER_TIERS_COLORS.get(RomanNumerals.romanToDecimal(tier)), type + " " + tier);
 		if (level != -1) {
 			boolean isMaxed = switch (type) {
 				case SlayerConstants.VAMPIRE -> level == 5;
 				default -> level == 9;
 			};
 			if (isMaxed) {
-				addSimpleIcoText(Ico.ENCHANTING_TABLE, I18n.translate("skyblocker.slayer.hud.lvlUpIn") + ": ", Formatting.GREEN, I18n.translate("skyblocker.slayer.hud.lvlMaxed"));
+				addSimpleIcoText(Ico.ENCHANTING_TABLE, "XP: ", Formatting.GREEN, I18n.translate("skyblocker.slayer.hud.lvlMaxed"));
 			} else {
 				int nextMilestone = switch (type) {
 					case SlayerConstants.REVENANT -> SlayerConstants.ZombieLevelMilestones[level];
@@ -46,11 +47,11 @@ public class SlayerHudWidget extends Widget {
 					default -> SlayerConstants.RegularLevelMilestones[level];
 				};
 				int currentXP = nextMilestone - SlayerManager.xpRemaining;
-				addSimpleIcoText(Ico.ENCHANTING_TABLE, I18n.translate("skyblocker.slayer.hud.lvlUpIn") + ": ", Formatting.AQUA, numberFormat.format(currentXP) + "/" + numberFormat.format(nextMilestone));
+				addSimpleIcoText(Ico.ENCHANTING_TABLE, "XP: ", Formatting.LIGHT_PURPLE, numberFormat.format(currentXP) + "/" + numberFormat.format(nextMilestone));
 			}
 		}
-		if (SlayerManager.xpRemaining > 0) {
-			addSimpleIcoText(Ico.DIASWORD, I18n.translate("skyblocker.slayer.hud.bossesNeeded") + ": ", Formatting.AQUA, numberFormat.format(SlayerManager.bossesNeeded));
+		if (SlayerManager.bossesNeeded > 1) {
+			addSimpleIcoText(Ico.DIASWORD, I18n.translate("skyblocker.slayer.hud.lvlUpIn") + ": ", Formatting.LIGHT_PURPLE, numberFormat.format(SlayerManager.bossesNeeded) + " bosses");
 		}
 	}
 }

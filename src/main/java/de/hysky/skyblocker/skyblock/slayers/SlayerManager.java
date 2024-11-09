@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 
 public class SlayerManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SlayerManager.class);
-	private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Bloodfiend");
+	private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Atoned Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Bloodfiend");
 	private static final Pattern SLAYER_TIER_PATTERN = Pattern.compile("^(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend)\\s+(I|II|III|IV|V)$");
 	private static final Pattern PATTERN_XP_NEEDED = Pattern.compile("\\s*(Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL ([0-9]) - (?:Next LVL in ([\\d,]+) XP!|LVL MAXED OUT!)\\s*");
 	private static final Pattern PATTERN_LVL_UP = Pattern.compile("\\s*LVL UP! ➜ (Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [1-9]\\s*");
@@ -89,6 +89,7 @@ public class SlayerManager {
 			if (message.contains("LVL MAXED OUT")) {
 				level = message.contains("Vampire") ? 5 : 9;
 				xpRemaining = -1;
+				bossesNeeded = -1;
 			} else {
 				int xpIndex = message.indexOf("Next LVL in ") + "Next LVL in ".length();
 				int xpEndIndex = message.indexOf(" XP!", xpIndex);
@@ -133,6 +134,7 @@ public class SlayerManager {
 					if (!slayerType.isEmpty() && !matcher.group(1).equals(slayerType)) {
 						xpRemaining = 0;
 						level = -1;
+						bossesNeeded = -1;
 					} else if (slayerType.isEmpty()) quest = new SlayerQuest();
 					slayerType = matcher.group(1);
 					slayerTier = matcher.group(2);

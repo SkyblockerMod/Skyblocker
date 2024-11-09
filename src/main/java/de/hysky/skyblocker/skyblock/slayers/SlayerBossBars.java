@@ -28,15 +28,19 @@ public class SlayerBossBars {
 		}
 		lastUpdateTime = currentTime;
 
+		System.out.println("1");
 		// Reset if no slayer
 		if (!SlayerManager.isBossSpawned()) {
+			System.out.println("not spawned");
 			bossMaxHealth = -1;
 			bossBar = null;
 			return false;
 		}
 
 		// Update boss max health
-		if (SlayerManager.getSlayerArmorStandEntity() != null && bossMaxHealth == -1) {
+		ArmorStandEntity e = SlayerManager.getSlayerArmorStandEntity();
+		System.out.println(e);
+		if (e != null && bossMaxHealth == -1) {
 			Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(SlayerManager.getSlayerArmorStandEntity().getName().getString());
 			if (maxHealthMatcher.find()) bossMaxHealth = convertToInt(maxHealthMatcher.group(0));
 		}
