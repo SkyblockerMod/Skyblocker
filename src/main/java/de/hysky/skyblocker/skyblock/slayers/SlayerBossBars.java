@@ -28,10 +28,8 @@ public class SlayerBossBars {
 		}
 		lastUpdateTime = currentTime;
 
-		System.out.println("1");
 		// Reset if no slayer
 		if (!SlayerManager.isBossSpawned()) {
-			System.out.println("not spawned");
 			bossMaxHealth = -1;
 			bossBar = null;
 			return false;
