@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class SlayerBossBars {
 	public static final UUID uuid = UUID.randomUUID();
-	private static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d+(?:\\.\\d+)?[kM]?)(?=❤)");
+	private static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?[kM]?)(?=❤)");
 	private static final long UPDATE_INTERVAL = 400;
 	private static int bossMaxHealth = -1;
 	private static long lastUpdateTime = 0;
@@ -81,7 +81,7 @@ public class SlayerBossBars {
 			return 0;
 		}
 
-		value = value.trim().toLowerCase();
+		value = value.replace(",", "").trim().toLowerCase();
 		double multiplier = 1.0;
 
 		if (value.endsWith("m")) {

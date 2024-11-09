@@ -109,7 +109,7 @@ public class MobGlow {
 			// Dojo Helpers
 			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.shouldGlow(getArmorStandName(zombie));
 
-			//Kuudra
+			// Kuudra
 			case MagmaCubeEntity magmaCube when Utils.isInKuudra() -> SkyblockerConfigManager.get().crimsonIsle.kuudra.kuudraGlow && magmaCube.getSize() == Kuudra.KUUDRA_MAGMA_CUBE_SIZE;
 
 			// Special Zealot && Slayer (Mini)Boss
