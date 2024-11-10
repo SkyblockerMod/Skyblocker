@@ -647,7 +647,12 @@
   "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "Sends a message in party chat with the location of the found corpse when you find one.",
 
   "skyblocker.config.mining.glacite.fossilSolver": "Fossil Solver",
-  
+  "skyblocker.config.mining.glacite.toolTip.noFossilFound": "No fossil found",
+  "skyblocker.config.mining.glacite.toolTip.possiblePatterns": "Possible Patterns: ",
+  "skyblocker.config.mining.glacite.toolTip.minimumTilesLeft": "Minimum tiles left : ",
+  "skyblocker.config.mining.glacite.toolTip.probability": "Probability: ",
+  "skyblocker.config.mining.glacite.toolTip.foundFossil": "Found Fossil: ",
+
   "skyblocker.config.misc": "Misc",
 
   "skyblocker.config.misc.richPresence": "Discord RPC",

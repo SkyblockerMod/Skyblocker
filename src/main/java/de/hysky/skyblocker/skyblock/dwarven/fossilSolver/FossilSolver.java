@@ -139,21 +139,21 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 
 		//if no permutation say this instead of other stats
 		if (permutations == 0) {
-			lines.add(Text.literal("No fossil found").formatted(Formatting.GOLD));
+			lines.add(Text.translatable("skyblocker.config.mining.glacite.toolTip.noFossilFound").formatted(Formatting.GOLD));
 			return;
 		}
 
 		//add permutation count
-		lines.add(Text.literal("Possible Patterns: ").append(Text.literal(String.valueOf(permutations)).formatted(Formatting.YELLOW)));
+		lines.add(Text.translatable("skyblocker.config.mining.glacite.toolTip.possiblePatterns").append(Text.literal(String.valueOf(permutations)).formatted(Formatting.YELLOW)));
 		//add minimum tiles left count
-		lines.add(Text.literal("Minimum tiles left : ").append(Text.literal(String.valueOf(minimumTiles)).formatted(chiselLeft >= minimumTiles ? Formatting.YELLOW : Formatting.RED)));
+		lines.add(Text.translatable("skyblocker.config.mining.glacite.toolTip.minimumTilesLeft").append(Text.literal(String.valueOf(minimumTiles)).formatted(chiselLeft >= minimumTiles ? Formatting.YELLOW : Formatting.RED)));
 		//add probability if available and not uncovered
 		if (focusedSlot != null && probability != null && probability.length > focusedSlot.getIndex() && stack.getItem() == Items.BROWN_STAINED_GLASS_PANE) {
-			lines.add(Text.literal("Probability: ").append(Text.literal(Math.round(probability[focusedSlot.getIndex()] * 100) + "%").formatted(Formatting.YELLOW)));
+			lines.add(Text.translatable("skyblocker.config.mining.glacite.toolTip.probability").append(Text.literal(Math.round(probability[focusedSlot.getIndex()] * 100) + "%").formatted(Formatting.YELLOW)));
 		}
 		//if only 1 type of fossil left and a fossil is partially uncovered add the fossil name
 		if (fossilName != null && percentage != null) {
-			lines.add(Text.literal("Found Fossil: ").append(Text.literal(fossilName).formatted(Formatting.YELLOW)));
+			lines.add(Text.translatable("skyblocker.config.mining.glacite.toolTip.foundFossil").append(Text.literal(fossilName).formatted(Formatting.YELLOW)));
 		}
 	}
 
