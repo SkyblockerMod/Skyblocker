@@ -302,7 +302,7 @@
     "skyblocker.itemProtection.removed": "§f你的%s将§n不再受到保护！§f :( - §l小心一些！",
     "skyblocker.tips.shortcuts": "使用 /skyblocker shortcuts 创建和编辑命令和消息快捷方式。",
     "skyblocker.tips.discord": "请加入我们的Discord（https://discord.gg/aNNJHQykck）以了解 Skyblocker 的最新消息！",
-    "skyblocker.dungeons.secretsTracker.feedback": "%s§f找到的秘密个数：%s§f Secret(s) found by him.%s",
+    "skyblocker.dungeons.secretsTracker.feedback": "%s§f找到的秘密个数：%s",
     "skyblocker.dungeons.secretsTracker.failFeedback": "§c无法计算此次关卡中玩家找到的秘密数量！",
     "skyblocker.tips.protectItem": "使用 /skyblocker protectItem 防止意外掉落物品。",
     "skyblocker.customItemNames.removed": "§f移除该物品的自定义名称。",
