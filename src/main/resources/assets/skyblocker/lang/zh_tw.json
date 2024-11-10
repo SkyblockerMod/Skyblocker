@@ -72,7 +72,7 @@
     "skyblocker.end.hud.zealotsTotalKills": "總擊殺數：%d",
     "skyblocker.end.hud.stage": "階段：%s",
     "skyblocker.dungeons.secretsTracker.failFeedback": "§c無法計算此關卡中玩家找到的秘密數量！",
-    "skyblocker.dungeons.secretsTracker.feedback": "%s§f找到了%s§f個秘密。 %s",
+    "skyblocker.dungeons.secretsTracker.feedback": "%s§f找到的秘密個數：%s",
     "skyblocker.partyFinder.noParties": "未找到隊伍。 哭哭:(",
     "skyblocker.partyFinder.error.name": "隊伍查找器錯誤！",
     "skyblocker.config.dungeons": "地下城",
