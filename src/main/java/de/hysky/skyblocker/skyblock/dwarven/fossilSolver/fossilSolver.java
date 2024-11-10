@@ -29,7 +29,7 @@ import static de.hysky.skyblocker.skyblock.dwarven.fossilSolver.fossilCalculatio
 
 public class fossilSolver extends SimpleContainerSolver implements TooltipAdder {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("Fossil Excavation Progress: (\\d{2}.\\d)%");
+	private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("Fossil Excavation Progress: (\\d{1,2}.\\d)%");
 
 
 	private String percentage;
@@ -65,7 +65,7 @@ public class fossilSolver extends SimpleContainerSolver implements TooltipAdder 
 			for (Text line : item.getTooltip(Item.TooltipContext.DEFAULT, CLIENT.player, TooltipType.BASIC)) {
 				Matcher matcher = PERCENTAGE_PATTERN.matcher(line.getString());
 				if (matcher.matches()) {
-					return matcher.group(2);
+					return matcher.group(1);
 				}
 			}
 		}

@@ -4,12 +4,12 @@ import java.util.List;
 
 public enum fossilTypes {
 	CLAW(new structures.tileState[][]{
-			{structures.tileState.FOSSIL, structures.tileState.FOSSIL, structures.tileState.EMPTY, structures.tileState.EMPTY, structures.tileState.EMPTY, structures.tileState.EMPTY},
+			{structures.tileState.EMPTY, structures.tileState.FOSSIL, structures.tileState.EMPTY, structures.tileState.EMPTY, structures.tileState.EMPTY, structures.tileState.EMPTY},
 			{structures.tileState.FOSSIL, structures.tileState.FOSSIL, structures.tileState.FOSSIL, structures.tileState.FOSSIL, structures.tileState.EMPTY, structures.tileState.EMPTY},
 			{structures.tileState.EMPTY, structures.tileState.FOSSIL, structures.tileState.FOSSIL, structures.tileState.EMPTY, structures.tileState.FOSSIL, structures.tileState.EMPTY},
 			{structures.tileState.EMPTY, structures.tileState.FOSSIL, structures.tileState.EMPTY, structures.tileState.FOSSIL, structures.tileState.EMPTY, structures.tileState.FOSSIL},
-			{structures.tileState.EMPTY, structures.tileState.FOSSIL, structures.tileState.EMPTY, structures.tileState.EMPTY, structures.tileState.FOSSIL, structures.tileState.EMPTY}
-	}, List.of(structures.transformationOptions.values()), "7.7", 14),
+			{structures.tileState.EMPTY, structures.tileState.EMPTY, structures.tileState.FOSSIL, structures.tileState.EMPTY, structures.tileState.FOSSIL, structures.tileState.EMPTY}
+	}, List.of(structures.transformationOptions.values()), "7.7", 13),
 	TUSK(new structures.tileState[][]{
 			{structures.tileState.EMPTY, structures.tileState.EMPTY, structures.tileState.EMPTY, structures.tileState.EMPTY, structures.tileState.FOSSIL},
 			{structures.tileState.EMPTY, structures.tileState.FOSSIL, structures.tileState.EMPTY, structures.tileState.EMPTY, structures.tileState.FOSSIL},
