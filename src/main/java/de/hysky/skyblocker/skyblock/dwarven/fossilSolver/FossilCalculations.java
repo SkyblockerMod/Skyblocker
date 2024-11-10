@@ -25,6 +25,8 @@ public class FossilCalculations {
 	 */
 	protected static int minimumTiles;
 
+	protected static String fossilName;
+
 	/**
 	 * returns an array of how likely a slot is to contain a fossil assuming one has to exist
 	 *
@@ -52,7 +54,21 @@ public class FossilCalculations {
 		}
 		//update permutations value
 		permutations = validStates.size();
-		;
+
+		//update fossil name value
+		if (validStates.isEmpty()) {
+			fossilName = null;
+		} else {
+			//assume there is only one type of fossil and set name to value of first fossil
+			fossilName = validStates.getFirst().type().name;
+			for (Structures.permutation fossil : validStates) {
+				//if there is more than one type of fossil reset name to null
+				if (!fossil.type().name.equals(fossilName)) {
+					fossilName = null;
+					break;
+				}
+			}
+		}
 
 		//from all the valid states work out the chance of each tile being a fossil
 		int index = 0;
@@ -130,7 +146,8 @@ public class FossilCalculations {
 
 	/**
 	 * Transforms a grid for each of the options in {@link Structures.transformationOptions}
-	 * @param grid input grid
+	 *
+	 * @param grid           input grid
 	 * @param transformation transformation to perform on gird
 	 * @return transformed grid
 	 */
@@ -165,6 +182,7 @@ public class FossilCalculations {
 
 	/**
 	 * Flips the grid along the vertical axis
+	 *
 	 * @param grid input grid
 	 * @return flipped grid
 	 */
@@ -180,7 +198,8 @@ public class FossilCalculations {
 
 	/**
 	 * Applies a rotation to a grid
-	 * @param grid input grid
+	 *
+	 * @param grid     input grid
 	 * @param rotation rotation amount in degrees
 	 * @return rotated grid
 	 */

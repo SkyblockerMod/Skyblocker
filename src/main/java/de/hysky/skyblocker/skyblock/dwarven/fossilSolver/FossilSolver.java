@@ -30,20 +30,29 @@ import static de.hysky.skyblocker.skyblock.dwarven.fossilSolver.FossilCalculatio
 public class FossilSolver extends SimpleContainerSolver implements TooltipAdder {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("Fossil Excavation Progress: (\\d{1,2}.\\d)%");
+	private static final Pattern CHARGES_PATTERN = Pattern.compile("Chisel Charges Remaining: (\\d{1,2})");
 
 
 	private String percentage;
 	private static double[] probability;
+	private static int chiselLeft;
 
 	public FossilSolver() {
 		super("Fossil Excavator");
 		percentage = null;
+		chiselLeft = -1;
 	}
 
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		//convert to container
 		tileGrid mainTileGrid = convertItemsToTiles(slots);
+		//get how many chisels the player has left
+		if (!slots.values().isEmpty()) {
+			chiselLeft = getChiselLeft(slots.values().stream().findAny().get());
+		} else {
+			chiselLeft = -1;
+		}
 		//get the fossil chance percentage
 		if (percentage == null) {
 			percentage = getFossilPercentage(slots);
@@ -52,6 +61,22 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 		probability = getFossilChance(mainTileGrid, percentage);
 		//get the highlight amount and return
 		return convertChanceToColor(probability);
+	}
+
+	/**
+	 * Checks the tooltip of an item to see how many chisel uses a player has left
+	 *
+	 * @param itemStack item to use to check the tooltip
+	 * @return how many chisels are left and "-1" if not found
+	 */
+	private int getChiselLeft(ItemStack itemStack) {
+		for (Text line : itemStack.getTooltip(Item.TooltipContext.DEFAULT, CLIENT.player, TooltipType.BASIC)) {
+			Matcher matcher = CHARGES_PATTERN.matcher(line.getString());
+			if (matcher.find()) {
+				return Integer.parseInt(matcher.group(1));
+			}
+		}
+		return -1;
 	}
 
 	/**
@@ -121,10 +146,14 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 		//add permutation count
 		lines.add(Text.literal("Possible Patterns: ").append(Text.literal(String.valueOf(permutations)).formatted(Formatting.YELLOW)));
 		//add minimum tiles left count
-		lines.add(Text.literal("Minimum fossil left : ").append(Text.literal(String.valueOf(minimumTiles)).formatted(Formatting.YELLOW))); //todo go red if less than uses left
+		lines.add(Text.literal("Minimum tiles left : ").append(Text.literal(String.valueOf(minimumTiles)).formatted(chiselLeft >= minimumTiles ? Formatting.YELLOW : Formatting.RED)));
 		//add probability if available and not uncovered
 		if (focusedSlot != null && probability != null && probability.length > focusedSlot.getIndex() && stack.getItem() == Items.BROWN_STAINED_GLASS_PANE) {
 			lines.add(Text.literal("Probability: ").append(Text.literal(Math.round(probability[focusedSlot.getIndex()] * 100) + "%").formatted(Formatting.YELLOW)));
+		}
+		//if only 1 type of fossil left and a fossil is partially uncovered add the fossil name
+		if (fossilName != null && percentage != null) {
+			lines.add(Text.literal("Found Fossil: ").append(Text.literal(fossilName).formatted(Formatting.YELLOW)));
 		}
 	}
 
