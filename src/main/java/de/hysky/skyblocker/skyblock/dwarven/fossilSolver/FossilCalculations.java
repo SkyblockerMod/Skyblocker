@@ -10,18 +10,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class fossilCalculations {
-	private static final List<structures.permutation> POSSIBLE_STATES = getAllPossibleStates();
+public class FossilCalculations {
+	private static final List<Structures.permutation> POSSIBLE_STATES = getAllPossibleStates();
 	private static final int EXCAVATOR_WIDTH = 9;
 	private static final int EXCAVATOR_HEIGHT = 6;
 
 
 	/**
-	 * the number of still possible fossil permutations from last time {@link fossilCalculations#getFossilChance} was invoked
+	 * the number of still possible fossil permutations from last time {@link FossilCalculations#getFossilChance} was invoked
 	 */
 	protected static int permutations = -1;
 	/**
-	 * the least amount of clicks needed to uncover a fossil from last time {@link fossilCalculations#getFossilChance} was invoked
+	 * the least amount of clicks needed to uncover a fossil from last time {@link FossilCalculations#getFossilChance} was invoked
 	 */
 	protected static int minimumTiles;
 
@@ -32,15 +32,15 @@ public class fossilCalculations {
 	 * @return the probability of a fossil being in a tile
 	 */
 
-	protected static double[] getFossilChance(structures.tileGrid tiles, String percentage) {
+	protected static double[] getFossilChance(Structures.tileGrid tiles, String percentage) {
 		int[] total = new int[EXCAVATOR_WIDTH * EXCAVATOR_HEIGHT];
 		minimumTiles = EXCAVATOR_WIDTH * EXCAVATOR_HEIGHT;
 		AtomicInteger fossilCount = new AtomicInteger();
-		Arrays.stream(tiles.state()).forEach(row -> Arrays.stream(row).forEach(tile -> {if (tile.equals(structures.tileState.FOSSIL)) fossilCount.getAndIncrement();}));
+		Arrays.stream(tiles.state()).forEach(row -> Arrays.stream(row).forEach(tile -> {if (tile.equals(Structures.tileState.FOSSIL)) fossilCount.getAndIncrement();}));
 
 		//loop though tile options and if they are valid
-		List<structures.permutation> validStates = new ArrayList<>();
-		for (structures.permutation state : POSSIBLE_STATES) {
+		List<Structures.permutation> validStates = new ArrayList<>();
+		for (Structures.permutation state : POSSIBLE_STATES) {
 			if (state.isValid(tiles, percentage)) {
 				validStates.add(state);
 				//update minimum left if it's smaller than current value
@@ -58,8 +58,8 @@ public class fossilCalculations {
 		int index = 0;
 		for (int y = 0; y < EXCAVATOR_HEIGHT; y++) {
 			for (int x = 0; x < EXCAVATOR_WIDTH; x++) {
-				if (tiles.getSlot(x, y) == structures.tileState.UNKNOWN) {
-					for (structures.permutation state : validStates) {
+				if (tiles.getSlot(x, y) == Structures.tileState.UNKNOWN) {
+					for (Structures.permutation state : validStates) {
 						if (state.isFossilCollision(x, y)) {
 							total[index] += 1;
 						}
@@ -74,24 +74,24 @@ public class fossilCalculations {
 	}
 
 	/**
-	 * converts a dictionary of item stacks to{@link structures.tileGrid}. assuming each row will be 9 tiles and there will be 6 rows
+	 * converts a dictionary of item stacks to{@link Structures.tileGrid}. assuming each row will be 9 tiles and there will be 6 rows
 	 *
 	 * @param currentState dictionary of item in container
-	 * @return input container converted into 2d {@link structures.tileState} array
+	 * @return input container converted into 2d {@link Structures.tileState} array
 	 */
-	protected static structures.tileGrid convertItemsToTiles(Int2ObjectMap<ItemStack> currentState) {
-		structures.tileGrid output = new structures.tileGrid(new structures.tileState[EXCAVATOR_HEIGHT][EXCAVATOR_WIDTH]);
+	protected static Structures.tileGrid convertItemsToTiles(Int2ObjectMap<ItemStack> currentState) {
+		Structures.tileGrid output = new Structures.tileGrid(new Structures.tileState[EXCAVATOR_HEIGHT][EXCAVATOR_WIDTH]);
 		//go through each slot and work out its state
 		int index = 0;
 		for (int y = 0; y < EXCAVATOR_HEIGHT; y++) {
 			for (int x = 0; x < EXCAVATOR_WIDTH; x++) {
 				Item item = currentState.get(index).getItem();
 				if (item == Items.WHITE_STAINED_GLASS_PANE) {
-					output.updateSlot(x, y, structures.tileState.FOSSIL);
+					output.updateSlot(x, y, Structures.tileState.FOSSIL);
 				} else if (item == Items.BROWN_STAINED_GLASS_PANE) {
-					output.updateSlot(x, y, structures.tileState.UNKNOWN);
+					output.updateSlot(x, y, Structures.tileState.UNKNOWN);
 				} else {
-					output.updateSlot(x, y, structures.tileState.EMPTY);
+					output.updateSlot(x, y, Structures.tileState.EMPTY);
 				}
 				index++;
 			}
@@ -104,23 +104,23 @@ public class fossilCalculations {
 	 *
 	 * @return list of all possible fossil arrangements
 	 */
-	protected static List<structures.permutation> getAllPossibleStates() { //todo probaly could be arry as the amount should be known
-		List<structures.permutation> output = new ArrayList<>();
+	protected static List<Structures.permutation> getAllPossibleStates() { //todo probaly could be arry as the amount should be known
+		List<Structures.permutation> output = new ArrayList<>();
 		//loop though each fossil type and for each possible rotation add valid offset of add to output list
 
 		//loop through fossils
-		for (fossilTypes fossil : fossilTypes.values()) {
+		for (FossilTypes fossil : FossilTypes.values()) {
 			//loop though rotations
-			for (structures.transformationOptions rotation : fossil.rotations) {
+			for (Structures.transformationOptions rotation : fossil.rotations) {
 				//get the rotated grid of the fossil
-				structures.tileGrid grid = transformGrid(new structures.tileGrid(fossil.grid), rotation);
+				Structures.tileGrid grid = transformGrid(new Structures.tileGrid(fossil.grid), rotation);
 				//get possible offsets for the grid based on width and height
 				int maxXOffset = EXCAVATOR_WIDTH - grid.width();
 				int maxYOffset = EXCAVATOR_HEIGHT - grid.height();
 				//loop though possible offsets and for each of them create a screen state and return the value
 				for (int x = 0; x <= maxXOffset; x++) {
 					for (int y = 0; y <= maxYOffset; y++) {
-						output.add(new structures.permutation(fossil, grid, x, y));
+						output.add(new Structures.permutation(fossil, grid, x, y));
 					}
 				}
 			}
@@ -129,12 +129,12 @@ public class fossilCalculations {
 	}
 
 	/**
-	 * Transforms a grid for each of the options in {@link structures.transformationOptions}
+	 * Transforms a grid for each of the options in {@link Structures.transformationOptions}
 	 * @param grid input grid
 	 * @param transformation transformation to perform on gird
 	 * @return transformed grid
 	 */
-	private static structures.tileGrid transformGrid(structures.tileGrid grid, structures.transformationOptions transformation) {
+	private static Structures.tileGrid transformGrid(Structures.tileGrid grid, Structures.transformationOptions transformation) {
 		switch (transformation) {
 			case ROTATED_90 -> {
 				return rotateGrid(grid, 90);
@@ -168,8 +168,8 @@ public class fossilCalculations {
 	 * @param grid input grid
 	 * @return flipped grid
 	 */
-	private static structures.tileGrid flipGrid(structures.tileGrid grid) {
-		structures.tileGrid output = new structures.tileGrid(new structures.tileState[grid.height()][grid.width()]);
+	private static Structures.tileGrid flipGrid(Structures.tileGrid grid) {
+		Structures.tileGrid output = new Structures.tileGrid(new Structures.tileState[grid.height()][grid.width()]);
 		for (int x = 0; x < grid.width(); x++) {
 			for (int y = 0; y < grid.height(); y++) {
 				output.updateSlot(x, y, grid.getSlot(x, grid.height() - 1 - y));
@@ -184,12 +184,12 @@ public class fossilCalculations {
 	 * @param rotation rotation amount in degrees
 	 * @return rotated grid
 	 */
-	private static structures.tileGrid rotateGrid(structures.tileGrid grid, int rotation) {
+	private static Structures.tileGrid rotateGrid(Structures.tileGrid grid, int rotation) {
 		int startingWidth = grid.width() - 1;
 		int startingHeight = grid.height() - 1;
 		switch (rotation) {
 			case 90 -> {
-				structures.tileGrid output = new structures.tileGrid(new structures.tileState[grid.height()][grid.width()]);
+				Structures.tileGrid output = new Structures.tileGrid(new Structures.tileState[grid.height()][grid.width()]);
 				for (int x = 0; x < grid.width(); x++) {
 					for (int y = 0; y < grid.height(); y++) {
 						output.updateSlot(startingWidth - x, y, grid.getSlot(x, y));
@@ -198,7 +198,7 @@ public class fossilCalculations {
 				return output;
 			}
 			case 180 -> {
-				structures.tileGrid output = new structures.tileGrid(new structures.tileState[grid.height()][grid.width()]);
+				Structures.tileGrid output = new Structures.tileGrid(new Structures.tileState[grid.height()][grid.width()]);
 				for (int x = 0; x < grid.width(); x++) {
 					for (int y = 0; y < grid.height(); y++) {
 						output.updateSlot(startingWidth - x, startingHeight - y, grid.getSlot(x, y));
@@ -207,7 +207,7 @@ public class fossilCalculations {
 				return output;
 			}
 			case 270 -> {
-				structures.tileGrid output = new structures.tileGrid(new structures.tileState[grid.height()][grid.width()]);
+				Structures.tileGrid output = new Structures.tileGrid(new Structures.tileState[grid.height()][grid.width()]);
 				for (int x = 0; x < grid.width(); x++) {
 					for (int y = 0; y < grid.height(); y++) {
 						output.updateSlot(x, startingHeight - y, grid.getSlot(x, y));

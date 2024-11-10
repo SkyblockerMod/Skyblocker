@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossilSolver;
 
-public class structures {
+public class Structures {
 	protected enum tileState {
 		UNKNOWN,
 		EMPTY,
@@ -19,7 +19,7 @@ public class structures {
 	}
 
 	/**
-	 * Stores a grid of {@link structures.tileState} as a 2d array referencable with an x and y
+	 * Stores a grid of {@link Structures.tileState} as a 2d array referencable with an x and y
 	 *
 	 * @param state the starting state of the grid
 	 */
@@ -49,7 +49,7 @@ public class structures {
 	 * @param xOffset where it's positioned in the excavator window in the x direction
 	 * @param yOffset where it's positioned in the excavator window in the y direction
 	 */
-	protected record permutation(fossilTypes type, tileGrid grid, int xOffset, int yOffset) {
+	protected record permutation(FossilTypes type, tileGrid grid, int xOffset, int yOffset) {
 		/**
 		 * works out if this is a valid state based on the current state of the excavator window
 		 *

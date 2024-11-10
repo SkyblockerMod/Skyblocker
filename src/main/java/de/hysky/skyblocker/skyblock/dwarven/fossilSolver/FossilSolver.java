@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossilSolver;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dwarven.fossilSolver.structures.tileGrid;
+import de.hysky.skyblocker.skyblock.dwarven.fossilSolver.Structures.tileGrid;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
@@ -25,9 +25,9 @@ import java.util.OptionalDouble;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.hysky.skyblocker.skyblock.dwarven.fossilSolver.fossilCalculations.*;
+import static de.hysky.skyblocker.skyblock.dwarven.fossilSolver.FossilCalculations.*;
 
-public class fossilSolver extends SimpleContainerSolver implements TooltipAdder {
+public class FossilSolver extends SimpleContainerSolver implements TooltipAdder {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("Fossil Excavation Progress: (\\d{1,2}.\\d)%");
 
@@ -35,7 +35,7 @@ public class fossilSolver extends SimpleContainerSolver implements TooltipAdder 
 	private String percentage;
 	private static double[] probability;
 
-	public fossilSolver() {
+	public FossilSolver() {
 		super("Fossil Excavator");
 		percentage = null;
 	}
