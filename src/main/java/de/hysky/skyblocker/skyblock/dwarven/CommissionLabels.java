@@ -42,7 +42,7 @@ public class CommissionLabels {
         activeWaypoints.clear();
         String location = Utils.getIslandArea().substring(2);
         //find commission locations in glacite
-        if (location.equals("Dwarven Base Camp") || location.equals("Glacite Tunnels") || location.equals("Glacite Mineshafts") || location.equals("Glacite Lake")) {
+        if (location.equals("Dwarven Base Camp") || location.equals("Glacite Tunnels") || location.equals("Glacite Lake")) {
             if (currentMode != MiningConfig.CommissionWaypointMode.BOTH && currentMode != MiningConfig.CommissionWaypointMode.GLACITE) {
                 return;
             }
