@@ -114,6 +114,14 @@ public enum Location {
         return this.id;
     }
 
+	/**
+	 * Check if the player is in the island
+	 * @return true if the player is in the island
+	 */
+	public Boolean isInIsland(){
+		return this == Utils.location;
+	}
+
     /**
      * @param id location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
      * @return location object
