@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.entity;
 
 import com.google.common.collect.Streams;
-import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
@@ -14,7 +13,6 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -28,43 +26,23 @@ import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class MobGlow {
 	/**
 	 * The Nukekubi head texture id is eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3.
 	 */
 	private static final String NUKEKUBI_HEAD_TEXTURE = "eyJ0aW1lc3RhbXAiOjE1MzQ5NjM0MzU5NjIsInByb2ZpbGVJZCI6ImQzNGFhMmI4MzFkYTRkMjY5NjU1ZTMzYzE0M2YwOTZjIiwicHJvZmlsZU5hbWUiOiJFbmRlckRyYWdvbiIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=";
-	private static final long GLOW_CACHE_DURATION = 50;
-	private static final ConcurrentHashMap<Entity, CacheEntry> glowCache = new ConcurrentHashMap<>();
-
-	@Init
-	public static void init() {
-		Scheduler.INSTANCE.scheduleCyclic(MobGlow::clearCache, 300 * 20);
-	}
 
 	public static boolean shouldMobGlow(Entity entity) {
-		long currentTime = System.currentTimeMillis();
-		CacheEntry cachedGlow = glowCache.get(entity);
-
-		if (cachedGlow == null || (currentTime - cachedGlow.timestamp) > GLOW_CACHE_DURATION) {
-			boolean shouldGlow = computeShouldMobGlow(entity);
-			cachedGlow = new CacheEntry(shouldGlow, currentTime);
-
-			glowCache.put(entity, cachedGlow);
-		}
-
-		return cachedGlow.value;
+		return computeShouldMobGlow(entity);
 	}
 
 	private static boolean computeShouldMobGlow(Entity entity) {
-
 		// Dungeons
 		if (Utils.isInDungeons()) {
 			String name = entity.getName().getString();
 
 			return switch (entity) {
-
 				// Minibosses
 				case PlayerEntity p when (name.equals("Lost Adventurer") || name.equals("Shadow Assassin") || name.equals("Diamond Guy")) && !DungeonManager.getBoss().isFloor(4) -> SkyblockerConfigManager.get().dungeons.starredMobGlow;
 				case PlayerEntity p when entity.getId() == LividColor.getCorrectLividId() -> LividColor.shouldGlow(name);
@@ -81,7 +59,6 @@ public class MobGlow {
 		}
 
 		return switch (entity) {
-
 			// Rift Blobbercyst
 			case PlayerEntity p when Utils.isInTheRift() && p.getName().getString().equals("Blobbercyst ") -> SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow;
 
@@ -172,11 +149,5 @@ public class MobGlow {
 	 */
 	private static boolean isNukekubiHead(ArmorStandEntity entity) {
 		return Streams.stream(entity.getArmorItems()).map(ItemUtils::getHeadTexture).anyMatch(headTexture -> headTexture.contains(NUKEKUBI_HEAD_TEXTURE));
-	}
-
-	private record CacheEntry(boolean value, long timestamp) {}
-
-	private static void clearCache() {
-		glowCache.clear();
 	}
 }
