@@ -118,8 +118,8 @@ public enum Location {
 	 * Check if the player is in the island
 	 * @return true if the player is in the island
 	 */
-	public Boolean isInIsland(){
-		return this == Utils.location;
+	public boolean isInIsland() {
+		return this == Utils.getLocation();
 	}
 
     /**
