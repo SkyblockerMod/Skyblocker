@@ -915,5 +915,15 @@
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "Не удалость найти предмент на Базаре и Аукционе",
     "skyblocker.config.slayer.highlightMinis.@Tooltip[0]": "\nВыключено: Не подсвечивать Slayer мини боссов.",
     "skyblocker.config.chat.waypoints.display": "[Показывать метки]",
-    "skyblocker.config.eventNotifications.@Tooltip[1]": "Порядок не важен. Если хотите отключить уведомления, просто очистите список."
+    "skyblocker.config.eventNotifications.@Tooltip[1]": "Порядок не важен. Если хотите отключить уведомления, просто очистите список.",
+    "skyblocker.config.quickNav.button.tooltip.@Tooltip": "Подсказка, отображаемая при наведении курсора на кнопку.\n\nВы можете использовать текстовый формат json.\nОтсутствие значения приведет к тому, что подсказка не будет отображаться.",
+    "skyblocker.config.debug.debugWebSockets": "Включить Отладочные Сообщения Websocket",
+    "skyblocker.config.debug.showInvisibleArmorStands": "Показать Невидимые Стойки Для Брони",
+    "skyblocker.config.dungeons.salvageHelper": "Помощник Salvage",
+    "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Выделять предметы, найденные в подземельях, которые можно уничтожить.",
+    "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer": "Уведомления об Обратном Отсчете Времени Fire Pillar",
+    "skyblocker.config.helpers.enableWardrobeHelper": "Включить Помощник по Гардеробу",
+    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Позволяет менять броню из гардероба, нажимая клавиши хотбара 1-9, когда меню открыто. При этом будет экипирован соответствующий комплект брони из меню гардероба.",
+    "skyblocker.config.quickNav.button.item.components.@Tooltip": "Строка компонентов предмета, заключенная в квадратные скобки, в том же формате, что для команды /give.\n\nПример: [minecraft:enchantment_glint_override=true]",
+    "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabEffectsMessage": "Включите эффекты в /tab, чтобы компас мог определять координаты королевы"
 }
