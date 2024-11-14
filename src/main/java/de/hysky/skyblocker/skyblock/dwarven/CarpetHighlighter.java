@@ -6,10 +6,9 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Boxes;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Resettable;
-import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -26,7 +25,7 @@ import java.awt.*;
 /**
  * Highlights unbreakable carpets within ore veins in the Dwarven Mines.
  */
-public final class CarpetHighlighter implements Renderable, Tickable, Resettable {
+public final class CarpetHighlighter implements Renderable, Resettable {
 	public static final CarpetHighlighter INSTANCE = new CarpetHighlighter();
 
 	private static final Vec3d CARPET_BOUNDING_BOX = Boxes.getLengthVec(CarpetBlock.SHAPE.getBoundingBox());
@@ -43,7 +42,7 @@ public final class CarpetHighlighter implements Renderable, Tickable, Resettable
 		INSTANCE.configCallback(SkyblockerConfigManager.get().mining.dwarvenMines.carpetHighlightColor);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(INSTANCE::render);
 		SkyblockEvents.LOCATION_CHANGE.register(INSTANCE::onLocationChange);
-		ClientTickEvents.END_CLIENT_TICK.register(INSTANCE::tick);
+		Scheduler.INSTANCE.scheduleCyclic(INSTANCE::tick, TICK_INTERVAL);
 		ClientPlayConnectionEvents.JOIN.register(INSTANCE);
 	}
 
@@ -59,17 +58,14 @@ public final class CarpetHighlighter implements Renderable, Tickable, Resettable
 		isLocationValid = location == Location.DWARVEN_MINES;
 	}
 
-	@Override
-	public void tick(MinecraftClient client) {
+	public void tick() {
 		if (!isLocationValid || MinecraftClient.getInstance().world == null || MinecraftClient.getInstance().player == null) return;
-		if (tickCounter++ < TICK_INTERVAL) return; // Only search for carpets every TICK_INTERVAL ticks
 		Iterable<BlockPos> iterable = BlockPos.iterateOutwards(MinecraftClient.getInstance().player.getBlockPos(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS);
 		for (BlockPos blockPos : iterable) {
 			//The iterator contains a BlockPos.Mutable that it changes the position of to iterate over blocks,
 			// so it has to be converted to an immutable BlockPos or the position will change based on the player's position && the search radius
 			if (checkForCarpet(blockPos)) CARPET_LOCATIONS.add(blockPos.toImmutable());
 		}
-		tickCounter = 0;
 	}
 
 	/**
