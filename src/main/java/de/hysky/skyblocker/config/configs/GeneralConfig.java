@@ -249,6 +249,9 @@ public class GeneralConfig {
 
         @SerialEntry
         public boolean oldLeverHitbox = false;
+
+		@SerialEntry
+		public boolean oldMushroomHitbox = false;
     }
 
 }

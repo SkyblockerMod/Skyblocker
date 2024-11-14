@@ -380,6 +380,13 @@ public class GeneralCategory {
                                         newValue -> config.general.hitbox.oldLeverHitbox = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.hitbox.oldMushroomHitbox"))
+								.binding(defaults.general.hitbox.oldMushroomHitbox,
+										() -> config.general.hitbox.oldMushroomHitbox,
+										newValue -> config.general.hitbox.oldMushroomHitbox = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 .build();
