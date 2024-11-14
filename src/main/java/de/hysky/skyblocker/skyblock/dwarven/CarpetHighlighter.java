@@ -9,8 +9,8 @@ import de.hysky.skyblocker.utils.Resettable;
 import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -32,7 +32,7 @@ public final class CarpetHighlighter implements Renderable, Tickable, Resettable
 	private static final Vec3d CARPET_BOUNDING_BOX = Boxes.getLengthVec(CarpetBlock.SHAPE.getBoundingBox());
 	private static final int SEARCH_RADIUS = 15;
 	private static final int TICK_INTERVAL = 15;
-	private static final ObjectArraySet<BlockPos> CARPET_LOCATIONS = new ObjectArraySet<>();
+	private static final ObjectAVLTreeSet<BlockPos> CARPET_LOCATIONS = new ObjectAVLTreeSet<>();
 
 	private static float[] colorComponents;
 	private static int tickCounter = 0;
