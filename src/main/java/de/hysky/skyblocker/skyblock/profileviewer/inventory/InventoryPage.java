@@ -47,11 +47,11 @@ public class InventoryPage implements ProfileViewerPage {
             JsonObject inventoryData = pProfile.getAsJsonObject("inventory");
             if (inventoryData == null) return;
             inventorySubPages[0] = new PlayerInventory(inventoryData);
-            inventorySubPages[1] = new Inventory(INVENTORY_PAGES[1], IntIntPair.of(5, 9), inventoryData.getAsJsonObject("ender_chest_contents"));
-            inventorySubPages[2] = new Inventory(INVENTORY_PAGES[2], IntIntPair.of(5, 9), inventoryData.getAsJsonObject("backpack_contents"), new BackpackItemLoader());
-            inventorySubPages[3] = new Inventory(INVENTORY_PAGES[3], IntIntPair.of(4, 9), inventoryData.getAsJsonObject("wardrobe_contents"), new WardrobeInventoryItemLoader(inventoryData));
+            if (inventoryData.has("ender_chest_contents")) inventorySubPages[1] = new Inventory(INVENTORY_PAGES[1], IntIntPair.of(5, 9), inventoryData.getAsJsonObject("ender_chest_contents"));
+            if (inventoryData.has("backpack_contents")) inventorySubPages[2] = new Inventory(INVENTORY_PAGES[2], IntIntPair.of(5, 9), inventoryData.getAsJsonObject("backpack_contents"), new BackpackItemLoader());
+            if (inventoryData.has("wardrobe_contents")) inventorySubPages[3] = new Inventory(INVENTORY_PAGES[3], IntIntPair.of(4, 9), inventoryData.getAsJsonObject("wardrobe_contents"), new WardrobeInventoryItemLoader(inventoryData));
             inventorySubPages[4] = new Inventory(INVENTORY_PAGES[4], IntIntPair.of(4, 9), pProfile, new PetsInventoryItemLoader());
-            inventorySubPages[5] = new Inventory(INVENTORY_PAGES[5], IntIntPair.of(5, 9), inventoryData.getAsJsonObject("bag_contents").getAsJsonObject("talisman_bag"));
+            if (inventoryData.has("bag_contents") && inventoryData.getAsJsonObject("bag_contents").has("talisman_bag")) inventorySubPages[5] = new Inventory(INVENTORY_PAGES[5], IntIntPair.of(5, 9), inventoryData.getAsJsonObject("bag_contents").getAsJsonObject("talisman_bag"));
         } catch (Exception e) {
             ProfileViewerScreen.LOGGER.error("[Skyblocker Profile Viewer] Error while loading inventory data: ", e);
         }
