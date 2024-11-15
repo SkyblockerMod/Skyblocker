@@ -6,11 +6,15 @@ import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.block.*;
 import net.minecraft.util.shape.VoxelShape;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(MushroomPlantBlock.class)
-public class MushroomPlantBlockMixin extends Block {
+public abstract class MushroomPlantBlockMixin extends Block {
+	@Shadow
+	protected static VoxelShape SHAPE;
+
 	@Unique
 	private static final VoxelShape OLD_SHAPE = Block.createCuboidShape(4.8, 0.0, 4.8, 11.2, 6.4, 11.2);
 
@@ -25,6 +29,6 @@ public class MushroomPlantBlockMixin extends Block {
 
 	@Override
 	public VoxelShape getCullingShape(BlockState state) {
-		return OLD_SHAPE;
+		return SHAPE;
 	}
 }
