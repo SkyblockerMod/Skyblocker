@@ -2,19 +2,16 @@ package de.hysky.skyblocker.skyblock;
 
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -24,7 +21,6 @@ import java.io.BufferedWriter;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -101,30 +97,27 @@ public class PetCache {
 	}
 
 	private static void parsePet(ItemStack stack, boolean clicked) {
-		String id = ItemUtils.getItemId(stack);
 		String profileId = Utils.getProfileId();
 
-		if (id.equals("PET") && !profileId.isEmpty()) {
-			NbtCompound customData = ItemUtils.getCustomData(stack);
+		if (stack.getSkyblockId().equals("PET") && !profileId.isEmpty()) {
+			//I once hoped that all pets would have a petInfo field, but that turned out to be false ;(
+			PetInfo petInfo = stack.getPetInfo();
 
-			//Should never fail, all pets must have this but you never know with Hypixel
-			try {
-				PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
-				shouldLook4Pets = false;
+			//This probably shouldn't happen since I would imagine pets inside of a pet menu would have a pet info but you never know...
+			if (petInfo.isEmpty()) return;
 
-				Object2ObjectOpenHashMap<String, PetInfo> playerData = CACHED_PETS.computeIfAbsent(Utils.getUndashedUuid(), _uuid -> new Object2ObjectOpenHashMap<>());
+			shouldLook4Pets = false;
 
-				//Handle deselecting pets
-				if (clicked && getCurrentPet() != null && getCurrentPet().uuid().orElse("").equals(petInfo.uuid().orElse(""))) {
-					playerData.remove(profileId);
-				} else {
-					playerData.put(profileId, petInfo);
-				}
+			Object2ObjectOpenHashMap<String, PetInfo> playerData = CACHED_PETS.computeIfAbsent(Utils.getUndashedUuid(), _uuid -> new Object2ObjectOpenHashMap<>());
 
-				save();
-			} catch (Exception e) {
-				LOGGER.error(LogUtils.FATAL_MARKER, "[Skyblocker Pet Cache] Failed to parse pet's pet info!", e);
+			//Handle deselecting pets
+			if (clicked && getCurrentPet() != null && getCurrentPet().uuid().orElse("").equals(petInfo.uuid().orElse(""))) {
+				playerData.remove(profileId);
+			} else {
+				playerData.put(profileId, petInfo);
 			}
+
+			save();
 		}
 	}
 
@@ -134,23 +127,5 @@ public class PetCache {
 		String profileId = Utils.getProfileId();
 
 		return CACHED_PETS.containsKey(uuid) && CACHED_PETS.get(uuid).containsKey(profileId) ? CACHED_PETS.get(uuid).get(profileId) : null;
-	}
-
-	public record PetInfo(String type, double exp, String tier, Optional<String> uuid, Optional<String> item, Optional<String> skin) {
-		public static final Codec<PetInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.STRING.fieldOf("type").forGetter(PetInfo::type),
-				Codec.DOUBLE.fieldOf("exp").forGetter(PetInfo::exp),
-				Codec.STRING.fieldOf("tier").forGetter(PetInfo::tier),
-				Codec.STRING.optionalFieldOf("uuid").forGetter(PetInfo::uuid),
-				Codec.STRING.optionalFieldOf("heldItem").forGetter(PetInfo::item),
-				Codec.STRING.optionalFieldOf("skin").forGetter(PetInfo::skin)
-		).apply(instance, PetInfo::new));
-		private static final Codec<Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, PetInfo>>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING,
-				Codec.unboundedMap(Codec.STRING, CODEC).xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new)
-		).xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new);
-
-		public int tierIndex() {
-			return SkyblockItemRarity.valueOf(tier).ordinal();
-		}
 	}
 }
