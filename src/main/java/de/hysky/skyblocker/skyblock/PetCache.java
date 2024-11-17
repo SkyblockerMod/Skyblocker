@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock;
 
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -32,6 +33,9 @@ public class PetCache {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("pet_cache.json");
 	private static final Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, PetInfo>> CACHED_PETS = new Object2ObjectOpenHashMap<>();
+	public static final Codec<Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, PetInfo>>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING,
+			Codec.unboundedMap(Codec.STRING, PetInfo.CODEC).xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new)
+	).xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new);
 
 	/**
 	 * Used in case the server lags to prevent the screen tick check from overwriting the clicked pet logic
@@ -69,7 +73,7 @@ public class PetCache {
 	private static void load() {
 		CompletableFuture.runAsync(() -> {
 			try (BufferedReader reader = Files.newBufferedReader(FILE)) {
-				CACHED_PETS.putAll(PetInfo.SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow());
+				CACHED_PETS.putAll(SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow());
 			} catch (NoSuchFileException ignored) {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Pet Cache] Failed to load saved pet!", e);
@@ -80,7 +84,7 @@ public class PetCache {
 	private static void save() {
 		CompletableFuture.runAsync(() -> {
 			try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
-				SkyblockerMod.GSON.toJson(PetInfo.SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, CACHED_PETS).getOrThrow(), writer);
+				SkyblockerMod.GSON.toJson(SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, CACHED_PETS).getOrThrow(), writer);
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Pet Cache] Failed to save pet data to the cache!", e);
 			}
