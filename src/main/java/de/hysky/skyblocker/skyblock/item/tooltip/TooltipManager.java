@@ -29,6 +29,7 @@ public class TooltipManager {
 			new SupercraftReminder(),
 			ChocolateFactorySolver.INSTANCE,
 			new ReorderHelper(),
+			new SkyblockIdTooltip(0),
 			new NpcPriceTooltip(1),
 			new BazaarPriceTooltip(2),
 			new LBinTooltip(3),
