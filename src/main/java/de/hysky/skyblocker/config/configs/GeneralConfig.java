@@ -141,6 +141,9 @@ public class GeneralConfig {
 
         @SerialEntry
         public boolean enableSkyblockId = false;
+
+        @SerialEntry
+        public boolean enableStackingEnchantProgress = true;
     }
 
     public enum Average {

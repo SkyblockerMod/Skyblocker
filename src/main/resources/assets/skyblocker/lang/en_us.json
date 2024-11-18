@@ -311,6 +311,8 @@
   "skyblocker.config.general.itemTooltip.enableObtainedDate": "Enable Obtained Date",
   "skyblocker.config.general.itemTooltip.enableSkyblockId": "Enable Skyblock ID",
   "skyblocker.config.general.itemTooltip.enableSkyblockId.@Tooltip": "Displays the item's Skyblock ID.",
+  "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress": "Enable Stacking Enchant Progress",
+  "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress.@Tooltip": "Displays the progress to the next level of a stacking enchantment if it hasn't been maxed.",
   "skyblocker.config.general.itemTooltip.showEssenceCost": "Show Essence Cost",
 
   "skyblocker.config.general.quiverWarning": "Quiver Warning",

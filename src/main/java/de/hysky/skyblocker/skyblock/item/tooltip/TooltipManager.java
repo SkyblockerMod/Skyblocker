@@ -29,7 +29,8 @@ public class TooltipManager {
 			new SupercraftReminder(),
 			ChocolateFactorySolver.INSTANCE,
 			new ReorderHelper(),
-			new SkyblockIdTooltip(0),
+			new SkyblockIdTooltip(-1), //Would be great if it was under the minecraft id but there is limitations here...
+			new StackingEnchantProgressTooltip(0), //Would be best to have after the lore but the tech doesn't exist for that
 			new NpcPriceTooltip(1),
 			new BazaarPriceTooltip(2),
 			new LBinTooltip(3),
