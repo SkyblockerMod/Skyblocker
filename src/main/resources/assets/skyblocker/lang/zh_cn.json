@@ -993,5 +993,7 @@
     "skyblocker.config.debug": "调试",
     "skyblocker.config.debug.dumpRange.@Tooltip": "玩家附近多少格范围内的实体可被导出",
     "text.skyblocker.clickToSend": "[点击发送至聊天栏]",
-    "text.skyblocker.clickToSend.@Tooltip": "点击将其发送至聊天栏。"
+    "text.skyblocker.clickToSend.@Tooltip": "点击将其发送至聊天栏。",
+    "skyblocker.config.debug.dumpFormat": "导出格式",
+    "skyblocker.config.debug.dumpFormat.@Tooltip": "导出物品数据时所用的格式 ，SNBT格式文本已上色以增强可读性而JSON格式文本带有转义符（如部分双引号前）"
 }
