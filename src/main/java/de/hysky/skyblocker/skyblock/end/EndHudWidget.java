@@ -22,36 +22,37 @@ import java.util.Set;
 
 @RegisterWidget
 public class EndHudWidget extends ComponentBasedWidget {
-    private static final MutableText TITLE = Text.literal("The End").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
+	private static final MutableText TITLE = Text.literal("The End").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
 
-    private static EndHudWidget instance = null;
+	private static EndHudWidget instance = null;
 
 	public static EndHudWidget getInstance() {
 		if (instance == null) instance = new EndHudWidget();
 		return instance;
 	}
 
-    private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
-    private static final ItemStack ENDERMAN_HEAD = new ItemStack(Items.PLAYER_HEAD);
-    private static final ItemStack POPPY = new ItemStack(Items.POPPY);
+	private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
+	private static final ItemStack ENDERMAN_HEAD = new ItemStack(Items.PLAYER_HEAD);
+	private static final ItemStack POPPY = new ItemStack(Items.POPPY);
 
-    static {
-        DECIMAL_FORMAT.setMinimumFractionDigits(0);
-        DECIMAL_FORMAT.setMaximumFractionDigits(2);
+	static {
+		DECIMAL_FORMAT.setMinimumFractionDigits(0);
+		DECIMAL_FORMAT.setMaximumFractionDigits(2);
 
-        ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap()));
-        POPPY.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
-    }
+		ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap()));
+		POPPY.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
+	}
 
-    public EndHudWidget() {
-        super(TITLE, Formatting.DARK_PURPLE.getColorValue(), "hud_end");
+	public EndHudWidget() {
+		super(TITLE, Formatting.DARK_PURPLE.getColorValue(), "hud_end");
 		instance = this;
-        this.update();
-    }
-    @Override
-    public boolean isEnabledIn(Location location) {
-        return location.equals(Location.THE_END) && SkyblockerConfigManager.get().otherLocations.end.hudEnabled;
-    }
+		this.update();
+	}
+
+	@Override
+	public boolean isEnabledIn(Location location) {
+		return location.equals(Location.THE_END) && SkyblockerConfigManager.get().otherLocations.end.hudEnabled;
+	}
 
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
@@ -65,35 +66,35 @@ public class EndHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-    public void updateContent() {
-        // Zealots
-        if (SkyblockerConfigManager.get().otherLocations.end.zealotKillsEnabled) {
-            addComponent(new IcoTextComponent(ENDERMAN_HEAD, Text.literal("Zealots").formatted(Formatting.BOLD)));
-            addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsSinceLastEye", TheEnd.zealotsSinceLastEye)));
-            addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsTotalKills", TheEnd.zealotsKilled)));
-            String avg = TheEnd.eyes == 0 ? "???" : DECIMAL_FORMAT.format((float) TheEnd.zealotsKilled / TheEnd.eyes);
-            addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.avgKillsPerEye", avg)));
-        }
+	public void updateContent() {
+		// Zealots
+		if (SkyblockerConfigManager.get().otherLocations.end.zealotKillsEnabled) {
+			addComponent(new IcoTextComponent(ENDERMAN_HEAD, Text.literal("Zealots").formatted(Formatting.BOLD)));
+			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsSinceLastEye", TheEnd.zealotsSinceLastEye)));
+			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsTotalKills", TheEnd.zealotsKilled)));
+			String avg = TheEnd.eyes == 0 ? "???" : DECIMAL_FORMAT.format((float) TheEnd.zealotsKilled / TheEnd.eyes);
+			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.avgKillsPerEye", avg)));
+		}
 
-        // Endstone protector
-        if (SkyblockerConfigManager.get().otherLocations.end.protectorLocationEnabled) {
-            addComponent(new IcoTextComponent(POPPY, Text.literal("Endstone Protector").formatted(Formatting.BOLD)));
-            if (TheEnd.stage == 5) {
-                addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.stage", "IMMINENT")));
-            } else {
-                addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.stage", String.valueOf(TheEnd.stage))));
-            }
-            if (TheEnd.currentProtectorLocation == null) {
-                addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.location", "?")));
-            } else {
-                addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.location", TheEnd.currentProtectorLocation.name())));
-            }
-        }
-    }
+		// Endstone protector
+		if (SkyblockerConfigManager.get().otherLocations.end.protectorLocationEnabled) {
+			addComponent(new IcoTextComponent(POPPY, Text.literal("Endstone Protector").formatted(Formatting.BOLD)));
+			if (TheEnd.stage == 5) {
+				addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.stage", "IMMINENT")));
+			} else {
+				addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.stage", String.valueOf(TheEnd.stage))));
+			}
+			if (TheEnd.currentProtectorLocation == null) {
+				addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.location", "?")));
+			} else {
+				addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.location", TheEnd.currentProtectorLocation.name())));
+			}
+		}
+	}
 
-    @Override
-    public Text getDisplayName() {
-        return Text.literal("End Hud");
-    }
+	@Override
+	public Text getDisplayName() {
+		return Text.literal("End Hud");
+	}
 
 }

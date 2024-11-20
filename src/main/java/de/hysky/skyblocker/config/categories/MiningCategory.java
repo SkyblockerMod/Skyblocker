@@ -57,47 +57,6 @@ public class MiningCategory {
                                 .build())
                         .build())
 
-                //Dwarven HUD
-                // TODO remove
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.mining.dwarvenHud"))
-                        .collapsed(false)
-                        .option(LabelOption.create(Text.literal("Use the hypixel widget.")))
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.dwarvenHud.enabledCommissions"))
-                                .binding(defaults.mining.dwarvenHud.enabledCommissions,
-                                        () -> config.mining.dwarvenHud.enabledCommissions,
-                                        newValue -> config.mining.dwarvenHud.enabledCommissions = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .available(false)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.dwarvenHud.enabledPowder"))
-                                .binding(defaults.mining.dwarvenHud.enabledPowder,
-                                        () -> config.mining.dwarvenHud.enabledPowder,
-                                        newValue -> config.mining.dwarvenHud.enabledPowder = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .available(false)
-                                .build())
-                        .option(Option.<MiningConfig.DwarvenHudStyle>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.dwarvenHud.style"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[0]"),
-                                        Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[1]"),
-                                        Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[2]")))
-                                .binding(defaults.mining.dwarvenHud.style,
-                                        () -> config.mining.dwarvenHud.style,
-                                        newValue -> config.mining.dwarvenHud.style = newValue)
-                                .controller(ConfigUtils::createEnumCyclingListController)
-                                .available(false)
-                                .build())
-                        .option(ButtonOption.createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.dwarvenHud.screen"))
-                                .text(Text.translatable("text.skyblocker.open"))
-                                .action((screen, opt) -> screen.tick())
-                                .available(false)
-                                .build())
-                        .build())
-
                 //Crystal Hollows
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.mining.crystalHollows"))

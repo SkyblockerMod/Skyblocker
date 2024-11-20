@@ -310,7 +310,7 @@ public class PlayerListMgr {
 	 * Get the display name at some index of the player list as string
 	 *
 	 * @return the string or null, if the display name is null, empty or whitespace
-	 *         only
+	 * only
 	 */
 	public static String strAt(int idx) {
 
@@ -338,8 +338,8 @@ public class PlayerListMgr {
 	 *
 	 * @return the text or null, if the display name is null
 	 * @implNote currently designed specifically for crimson isles faction quests
-	 *           widget and the rift widgets, might not work correctly without
-	 *           modification for other stuff. you've been warned!
+	 * widget and the rift widgets, might not work correctly without
+	 * modification for other stuff. you've been warned!
 	 */
 	public static Text textAt(int idx) {
 

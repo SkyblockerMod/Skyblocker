@@ -45,7 +45,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class PreviewTab implements Tab {
-
 	public static final int RIGHT_SIDE_WIDTH = 120;
 
 	final MinecraftClient client;
@@ -438,7 +437,6 @@ public class PreviewTab implements Tab {
 	}
 
 	private class AnchorSelectionWidget extends ClickableWidget {
-
 		private final boolean other;
 		private @Nullable PositionRule.Point hoveredPoint = null;
 

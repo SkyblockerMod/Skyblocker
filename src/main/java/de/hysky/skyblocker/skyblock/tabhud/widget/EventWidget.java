@@ -12,17 +12,17 @@ import java.util.List;
 // this widget shows info about ongoing events (e.g. election)
 @RegisterWidget
 public class EventWidget extends TabHudWidget {
-    private static final MutableText TITLE = Text.literal("Event Info").formatted(Formatting.YELLOW, Formatting.BOLD);
+	private static final MutableText TITLE = Text.literal("Event Info").formatted(Formatting.YELLOW, Formatting.BOLD);
 
 
-    public EventWidget() {
-        super("Event", TITLE, Formatting.YELLOW.getColorValue());
-    }
+	public EventWidget() {
+		super("Event", TITLE, Formatting.YELLOW.getColorValue());
+	}
 
-    @Override
-    public void updateContent(List<Text> lines) {
-        this.addComponent(new IcoTextComponent(Ico.NTAG, lines.getFirst()));
-        this.addComponent(new IcoTextComponent(Ico.CLOCK, lines.get(1)));
-    }
+	@Override
+	public void updateContent(List<Text> lines) {
+		this.addComponent(new IcoTextComponent(Ico.NTAG, lines.getFirst()));
+		this.addComponent(new IcoTextComponent(Ico.CLOCK, lines.get(1)));
+	}
 
 }

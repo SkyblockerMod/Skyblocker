@@ -14,26 +14,26 @@ import java.util.List;
 @RegisterWidget
 public class ProfileWidget extends TabHudWidget {
 
-    private static final MutableText TITLE = Text.literal("Profile").formatted(Formatting.YELLOW, Formatting.BOLD);
+	private static final MutableText TITLE = Text.literal("Profile").formatted(Formatting.YELLOW, Formatting.BOLD);
 
-    public ProfileWidget() {
-        super("Profile", TITLE, Formatting.YELLOW.getColorValue());
+	public ProfileWidget() {
+		super("Profile", TITLE, Formatting.YELLOW.getColorValue());
 
-    }
+	}
 
-    @Override
-    public void updateContent(List<Text> lines) {
-        this.addComponent(new IcoTextComponent(Ico.SIGN, Text.literal("Profile: ").append(lines.getFirst())));
-        for (int i = 1; i < lines.size(); i++) {
-            Text text = lines.get(i);
-            switch (text.getString().toLowerCase()) {
-                case String s when s.contains("bank") -> this.addComponent(new IcoTextComponent(Ico.EMERALD, text));
-                case String s when s.contains("interest") -> this.addComponent(new IcoTextComponent(Ico.CLOCK, text));
-                case String s when s.contains("pet") -> this.addComponent(new IcoTextComponent(Ico.BONE, text));
-                default -> this.addComponent(new PlainTextComponent(text));
-            }
-        }
+	@Override
+	public void updateContent(List<Text> lines) {
+		this.addComponent(new IcoTextComponent(Ico.SIGN, Text.literal("Profile: ").append(lines.getFirst())));
+		for (int i = 1; i < lines.size(); i++) {
+			Text text = lines.get(i);
+			switch (text.getString().toLowerCase()) {
+				case String s when s.contains("bank") -> this.addComponent(new IcoTextComponent(Ico.EMERALD, text));
+				case String s when s.contains("interest") -> this.addComponent(new IcoTextComponent(Ico.CLOCK, text));
+				case String s when s.contains("pet") -> this.addComponent(new IcoTextComponent(Ico.BONE, text));
+				default -> this.addComponent(new PlainTextComponent(text));
+			}
+		}
 
-    }
+	}
 
 }
