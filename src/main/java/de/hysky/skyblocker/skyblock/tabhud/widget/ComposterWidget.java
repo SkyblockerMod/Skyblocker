@@ -15,24 +15,24 @@ import java.util.List;
 @RegisterWidget
 public class ComposterWidget extends TabHudWidget {
 
-    private static final MutableText TITLE = Text.literal("Composter").formatted(Formatting.GREEN,
-            Formatting.BOLD);
+	private static final MutableText TITLE = Text.literal("Composter").formatted(Formatting.GREEN,
+			Formatting.BOLD);
 
-    public ComposterWidget() {
-        super("Composter", TITLE, Formatting.GREEN.getColorValue());
-    }
+	public ComposterWidget() {
+		super("Composter", TITLE, Formatting.GREEN.getColorValue());
+	}
 
-    @Override
-    public void updateContent(List<Text> lines) {
+	@Override
+	public void updateContent(List<Text> lines) {
 
-        for (Text line : lines) {
-            switch (line.getString().toLowerCase()) {
-                case String s when s.contains("organic") -> this.addComponent(new IcoTextComponent(Ico.SAPLING, line));
-                case String s when s.contains("fuel") -> this.addComponent(new IcoTextComponent(Ico.FURNACE, line));
-                case String s when s.contains("time") -> this.addComponent(new IcoTextComponent(Ico.CLOCK, line));
-                case String s when s.contains("stored") -> this.addComponent(new IcoTextComponent(Ico.COMPOSTER, line));
-                default -> this.addComponent(new PlainTextComponent(line));
-            }
-        }
-    }
+		for (Text line : lines) {
+			switch (line.getString().toLowerCase()) {
+				case String s when s.contains("organic") -> this.addComponent(new IcoTextComponent(Ico.SAPLING, line));
+				case String s when s.contains("fuel") -> this.addComponent(new IcoTextComponent(Ico.FURNACE, line));
+				case String s when s.contains("time") -> this.addComponent(new IcoTextComponent(Ico.CLOCK, line));
+				case String s when s.contains("stored") -> this.addComponent(new IcoTextComponent(Ico.COMPOSTER, line));
+				default -> this.addComponent(new PlainTextComponent(line));
+			}
+		}
+	}
 }

@@ -10,7 +10,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import java.util.List;
 
 public class WidgetEntry extends WidgetsListEntry {
-
 	private final HudWidget widget;
 	private final Location currentLocation;
 	private final ButtonWidget enableButton;

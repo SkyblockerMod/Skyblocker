@@ -13,7 +13,6 @@ import net.minecraft.util.Formatting;
 import java.util.List;
 
 public abstract class WidgetsListEntry extends ElementListWidget.Entry<WidgetsListEntry> {
-
 	public static final Text ENABLED_TEXT = Text.literal("ENABLED").formatted(Formatting.GREEN);
 	public static final Text DISABLED_TEXT = Text.literal("DISABLED").formatted(Formatting.RED);
 
@@ -31,7 +30,7 @@ public abstract class WidgetsListEntry extends ElementListWidget.Entry<WidgetsLi
 
 	protected void renderIconAndText(DrawContext context, ItemStack icon, int y, int x, int entryHeight) {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		context.drawItem(icon, x + 2,  y + (entryHeight - 16) / 2);
+		context.drawItem(icon, x + 2, y + (entryHeight - 16) / 2);
 		context.drawText(textRenderer, icon.getName(), x + 20, y + (entryHeight - 9) / 2, Colors.WHITE, true);
 	}
 

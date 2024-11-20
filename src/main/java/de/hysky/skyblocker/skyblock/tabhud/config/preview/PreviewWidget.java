@@ -26,7 +26,6 @@ import java.util.Objects;
  * The preview widget that captures clicks and displays the current state of the widgets.
  */
 public class PreviewWidget extends ClickableWidget {
-
 	private final PreviewTab tab;
 	float ratio = 1f;
 	private float scaledRatio = 1f;
@@ -264,7 +263,6 @@ public class PreviewWidget extends ClickableWidget {
 			tab.onHudWidgetSelected(selectedWidget);
 			return true;
 		}
-
 
 
 		if (selectedWidget != null && selectedWidget.isMouseOver(localMouseX, localMouseY) &&

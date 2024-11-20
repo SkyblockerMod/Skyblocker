@@ -10,41 +10,41 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class TabHudWidget extends ComponentBasedWidget {
-    private final String hypixelWidgetName;
-    private final List<Component> cachedComponents = new ArrayList<>();
+	private final String hypixelWidgetName;
+	private final List<Component> cachedComponents = new ArrayList<>();
 
 
-    public TabHudWidget(String hypixelWidgetName, MutableText title, Integer colorValue) {
-        super(title, colorValue, hypixelWidgetName.toLowerCase().replace(' ', '_').replace("'", ""));
-        this.hypixelWidgetName = hypixelWidgetName;
-    }
+	public TabHudWidget(String hypixelWidgetName, MutableText title, Integer colorValue) {
+		super(title, colorValue, hypixelWidgetName.toLowerCase().replace(' ', '_').replace("'", ""));
+		this.hypixelWidgetName = hypixelWidgetName;
+	}
 
-    public String getHypixelWidgetName() {
-        return hypixelWidgetName;
-    }
+	public String getHypixelWidgetName() {
+		return hypixelWidgetName;
+	}
 
-    @Override
-    public Text getDisplayName() {
-        return Text.literal(getHypixelWidgetName());
-    }
+	@Override
+	public Text getDisplayName() {
+		return Text.literal(getHypixelWidgetName());
+	}
 
-    @Override
-    public void updateContent() {
-        cachedComponents.forEach(super::addComponent);
-    }
+	@Override
+	public void updateContent() {
+		cachedComponents.forEach(super::addComponent);
+	}
 
-    public void updateFromTab(List<Text> lines) {
-        cachedComponents.clear();
-        updateContent(lines);
-    }
+	public void updateFromTab(List<Text> lines) {
+		cachedComponents.clear();
+		updateContent(lines);
+	}
 
 	/**
 	 * Controlled by hypxiel and PlayerListMgr
 	 */
-    @Override
-    public final boolean shouldRender(Location location) {
-        return false;
-    }
+	@Override
+	public final boolean shouldRender(Location location) {
+		return false;
+	}
 
 	/**
 	 * Controlled by hypxiel and PlayerListMgr
@@ -63,16 +63,16 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	}
 
 	/**
-     * Update the content from the hypixel widget's lines
-     *
-     * @param lines the lines, they are formatted and trimmed, no blank lines will be present.
-     *              If the vanilla tab widget has text right after the : they will be put on the first line.
-     */
-    protected abstract void updateContent(List<Text> lines);
+	 * Update the content from the hypixel widget's lines
+	 *
+	 * @param lines the lines, they are formatted and trimmed, no blank lines will be present.
+	 *              If the vanilla tab widget has text right after the : they will be put on the first line.
+	 */
+	protected abstract void updateContent(List<Text> lines);
 
-    @Override
-    public final void addComponent(Component c) {
-        cachedComponents.add(c);
-    }
+	@Override
+	public final void addComponent(Component c) {
+		cachedComponents.add(c);
+	}
 
 }
