@@ -4,8 +4,8 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.ItemUtils;
+import it.unimi.dsi.fastutil.ints.Int2BooleanArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
-import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -22,7 +22,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class InventorySearch {
 	private static HandledScreen<?> openedHandledScreen = null;
-	private static final Int2BooleanMap slotToMatch = new Int2BooleanOpenHashMap();
+	private static final Int2BooleanMap slotToMatch = new Int2BooleanArrayMap(64);
 	private static String search = "";
 
 	@Init
@@ -113,7 +113,7 @@ public class InventorySearch {
 		private boolean hoveredState = false;
 
 		public SearchTextWidget(HandledScreen<?> handledScreen) {
-			super(Text.literal("Click here to search."), Screens.getTextRenderer(handledScreen));
+			super(Text.translatable("skyblocker.inventorySearch.clickHereToSearch"), Screens.getTextRenderer(handledScreen));
 			setPosition((handledScreen.width - this.getWidth()) / 2, 15);
 			underlinedText = getMessage().copy().formatted(Formatting.UNDERLINE);
 			normalText = getMessage().copy().formatted(Formatting.GRAY);

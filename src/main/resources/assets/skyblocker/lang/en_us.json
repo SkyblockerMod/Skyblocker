@@ -1017,6 +1017,8 @@
   "skyblocker.itemProtection.noItemUuid": "§cYou must be holding an item that has a uuid to protect it!",
   "skyblocker.itemProtection.unableToProtect": "§cUnable to protect this item :( (Are you in skyblock?, are you holding an item?)",
 
+  "skyblocker.inventorySearch.clickHereToSearch": "Click here to search.",
+
   "skyblocker.tips.enabled": "§aEnabled Tips.",
   "skyblocker.tips.disabled": "§cDisabled Tips.",
   "skyblocker.tips.previous": "Previous Tip",
