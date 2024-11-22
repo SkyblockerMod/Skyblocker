@@ -27,7 +27,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
             Identifier.of(SkyblockerMod.NAMESPACE, "quick_craft/more_button_highlighted")
     );
 
-    protected static final Identifier QUICK_CRAFT = Identifier.of(SkyblockerMod.NAMESPACE, "quick_craft/quick_craft_overlay");
+    protected static final Identifier QUICK_CRAFT = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/sprites/quick_craft/quick_craft_overlay.png");
     private final SkyblockRecipeBookWidget recipeBook = new SkyblockRecipeBookWidget(handler);
     private boolean narrow;
     private TexturedButtonWidget moreCraftsButton;
@@ -41,7 +41,7 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
         super.init();
         this.narrow = this.width < 379;
         this.recipeBook.initialize(this.width, this.height, this.client, this.narrow);
-        this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth) + 11;
+        this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth);
         this.addDrawableChild(new TexturedButtonWidget(this.x + 5, this.height / 2 - 49, 20, 18, RecipeBookWidget.BUTTON_TEXTURES, button -> {
             this.recipeBook.toggleOpen();
             this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth);
@@ -95,9 +95,9 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
         int i = this.x;
         int j = (this.height - this.backgroundHeight) / 2;
-        context.drawTexture(TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
+	    context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
         //4 px of margin to allow some space for custom resource packs that have size differences on the crafting table/inventory textures
-        if (!handler.mirrorverse) context.drawGuiTexture(RenderLayer::getGuiTextured, QUICK_CRAFT, i + 143, j - 3, 0, 37, 90);
+        if (!handler.mirrorverse) context.drawTexture(RenderLayer::getGuiTextured, QUICK_CRAFT, i + 143, j - 3, 0, 0, 37, 90, 37, 90);
     }
 
     @Override
