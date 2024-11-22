@@ -81,7 +81,7 @@ public class MobGlow {
 			case BlazeEntity blaze when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) -> SlayerEntitiesGlow.shouldGlow(blaze.getUuid());
 
 			// Enderman Slayer's Nukekubi Skulls
-			case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerUtils.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
+			case ArmorStandEntity armorStand when Utils.isInTheEnd() && armorStand.isMarker() && SlayerUtils.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
 
 			// Blaze Slayer's Demonic minions
 			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW -> SlayerUtils.isInSlayerType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15;
@@ -127,6 +127,7 @@ public class MobGlow {
 	public static int getGlowColor(Entity entity) {
 		String name = entity.getName().getString();
 
+		//TODO maybe make this more like the compute method where dungeons stuff is separate
 		return switch (entity) {
 			case PlayerEntity p when name.equals("Lost Adventurer") -> 0xfee15c;
 			case PlayerEntity p when name.equals("Shadow Assassin") -> 0x5b2cb2;
@@ -136,7 +137,7 @@ public class MobGlow {
 			case ArmorStandEntity as when Utils.isInDungeons() && ItemUtils.getHeadTexture(as.getEquippedStack(EquipmentSlot.HEAD)).equals(FEL_HEAD_TEXTURE)-> 0xcc00fa; //Enderman eye color
 
 			case EndermanEntity enderman when TheEnd.isSpecialZealot(enderman) -> Formatting.RED.getColorValue();
-			case ArmorStandEntity armorStand when isNukekubiHead(armorStand) -> 0x990099;
+			case ArmorStandEntity armorStand when armorStand.isMarker() && isNukekubiHead(armorStand) -> 0x990099;
 			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.getColor();
 			case MagmaCubeEntity magmaCube when Utils.isInKuudra() -> 0xf7510f;
 
