@@ -16,6 +16,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.logging.LogUtils;
@@ -72,8 +73,10 @@ public class SackItemAutocomplete {
 	private static LiteralCommandNode<FabricClientCommandSource> createCommandNode(String command, Set<String> sackItems) {
 		return literal(command)
 				.requires(fccs -> Utils.isOnSkyblock())
-				.then(argument("item", StringArgumentType.greedyString()) //I guess this can also cover the input of the amount
-						.suggests((context, builder) -> CommandSource.suggestMatching(sackItems, builder)))
+				.then(argument("item", StringArgumentType.greedyString())
+						.suggests((context, builder) -> CommandSource.suggestMatching(sackItems, builder))
+						.then(argument("amount", IntegerArgumentType.integer(0))) // Adds a nice <amount> text to the suggestion when any number is entered after the item string
+				)
 				.build();
 	}
 }
