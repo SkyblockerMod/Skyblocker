@@ -472,6 +472,8 @@
   "skyblocker.config.chat.waypoints.display": "[Click to Display Waypoint]",
   "skyblocker.config.chat.waypoints.displayed": "Displayed temporary waypoint at x: %d, y: %d, z: %d | %s",
 
+  "skyblocker.config.chat.confirmationPromptHelper": "Chat Confirmation Prompt Helper",
+  "skyblocker.config.chat.confirmationPromptHelper.@Tooltip": "Upon receiving a yes or no prompt in chat, you can click anywhere on the screen within 60 seconds to accept the prompt.\n\nAn example of this is Trevor the Trapper's tasks.",
 
   "skyblocker.config.chat.filter": "Filter",
   "skyblocker.config.chat.filter.chatFilterResult.ACTION_BAR": "Move to action bar",
@@ -1159,6 +1161,8 @@
   "skyblocker.profileviewer.inventory.inactive": "Locked Slot",
   "skyblocker.profileviewer.inventory.inactive.description.backpack": "The selected backpack",
   "skyblocker.profileviewer.inventory.inactive.description.general": "does not contain this slot",
+
+  "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
   "emi.category.skyblocker.skyblock": "Skyblock"
 }
