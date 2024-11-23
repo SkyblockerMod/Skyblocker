@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -9,7 +10,6 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.command.argumenttypes.CorpseTypeArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
-import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -65,16 +65,24 @@ public class CorpseFinder {
                 for (Corpse corpse : corpses) {
                     if (!corpse.seen && client.player.canSee(corpse.entity)) {
                         setSeen(corpse);
-                    }}}});
+                    }
+				}
+			}
+		});
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
             .then(literal("corpseHelper")
                 .then(literal("shareLocation")
                     .then(argument("blockPos", ClientBlockPosArgumentType.blockPos())
                         .then(argument("corpseType", CorpseTypeArgumentType.corpseType())
                             .executes(context -> {
-                                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + "[Skyblocker] " + "Corpse " + context.getArgument("corpseType", String.class) + " found at " + context.getArgument("blockPos", ClientPosArgument.class).toAbsoluteBlockPos(context.getSource()).toShortString());
+                                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + "[Skyblocker] " + "Corpse " + StringArgumentType.getString(context, "corpseType") + " found at " + ClientBlockPosArgumentType.getBlockPos(context, "blockPos").toShortString() + "!");
                                 return Command.SINGLE_SUCCESS;
-                            })))))));
+                            })
+                        )
+                    )
+                )
+            )
+        ));
     }
 
     private static boolean seenDebugWarning = false;
@@ -226,7 +234,9 @@ public class CorpseFinder {
                             Constants.PREFIX.get()
                                 .append("Parsed message from chat, adding corpse at ")
                                 .append(corpse.entity.getBlockPos().up(0).toShortString()));
-                    }}}
+                    }
+				}
+			}
             if (!foundCorpse) {
                 LOGGER.warn(PREFIX + "Did NOT find any match for corpses! corpsesByType.values(): {}", corpsesByType.values());
                 LOGGER.info(PREFIX + "Proceeding to iterate over all corpses!");
