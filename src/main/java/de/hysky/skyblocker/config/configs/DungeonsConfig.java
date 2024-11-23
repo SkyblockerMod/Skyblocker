@@ -48,6 +48,9 @@ public class DungeonsConfig {
     @SerialEntry
     public Devices devices = new Devices();
 
+	@SerialEntry
+    public Goldor goldor = new Goldor();
+
     @SerialEntry
     public SecretWaypoints secretWaypoints = new SecretWaypoints();
 
@@ -154,6 +157,14 @@ public class DungeonsConfig {
 
         @SerialEntry
         public boolean solveLightsOn = true;
+    }
+
+    public static class Goldor {
+        @SerialEntry
+        public boolean enableGoldorWaypoints = true;
+
+        @SerialEntry
+        public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
     }
 
     public static class SecretWaypoints {
