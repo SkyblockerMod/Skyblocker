@@ -42,6 +42,7 @@ public class CorpseFinder {
     private static final Location LOCATION = Location.GLACITE_MINESHAFT;
     private static boolean isLocationCorrect = false;
     private static final Pattern CORPSE_FOUND_PATTERN = Pattern.compile("([A-Z]+) CORPSE LOOT!");
+	private static final Pattern COORDS_PATTERN = Pattern.compile("x: (?<x>-?\\d+), y: (?<y>-?\\d+), z: (?<z>-?\\d+)(?:.+)?");
     private static final String PREFIX = "[Skyblocker Corpse Finder] ";
     private static final Logger LOGGER = LoggerFactory.getLogger(CorpseFinder.class);
     private static final Map<String, List<Corpse>> corpsesByType = new HashMap<>();
@@ -214,9 +215,8 @@ public class CorpseFinder {
     }
 
     private static void parseCords(Text text) {
-        Pattern cordsPattern = Pattern.compile("x: (?<x>-?\\d+), y: (?<y>-?\\d+), z: (?<z>-?\\d+)(?:.+)?");
         String message = text.getString();
-        Matcher matcher = cordsPattern.matcher(message);
+        Matcher matcher = COORDS_PATTERN.matcher(message);
         if (matcher.find()) {
             int x = Integer.parseInt(matcher.group("x"));
             int y = Integer.parseInt(matcher.group("y"));
