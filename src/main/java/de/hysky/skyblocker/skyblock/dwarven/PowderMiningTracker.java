@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
@@ -23,6 +24,8 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class PowderMiningTracker {
 	private static final Pattern GEMSTONE_SYMBOLS = Pattern.compile("[α☘☠✎✧❁❂❈❤⸕] ");
+	// This constructor takes in a comparator that is triggered to decide where to add the element in the tree map
+	// This causes it to be sorted at all times. This is for rendering them in a sort of easy-to-read manner.
 	private static final Object2IntAVLTreeMap<Text> REWARDS = new Object2IntAVLTreeMap<>((o1, o2) -> {
 				String o1String = GEMSTONE_SYMBOLS.matcher(o1.getString()).replaceAll("");
 				String o2String = GEMSTONE_SYMBOLS.matcher(o2.getString()).replaceAll("");
@@ -34,13 +37,17 @@ public class PowderMiningTracker {
 	);
 	private static final Object2ObjectMap<String, String> NAME2ID_MAP = new Object2ObjectArrayMap<>(50);
 	private static boolean insideChestMessage = false;
-	private static boolean accountForLootChestsAsWell = true; // TODO: Add a config option for this
 	private static double profit = 0;
+
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+	private static boolean isEnabled() {
+		return SkyblockerConfigManager.get().mining.crystalHollows.enablePowderTracker;
+	}
 
 	@Init
 	public static void init() {
 		ChatEvents.RECEIVE_TEXT.register(text -> {
-			if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS) return;
+			if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !isEnabled()) return;
 			List<Text> siblings = text.getSiblings();
 			switch (siblings.size()) {
 				// The separator message has 1 sibling: "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬" for which we can just use .getString on the main text
@@ -54,7 +61,7 @@ public class PowderMiningTracker {
 					String space = siblings.get(0).getString();
 					Text second = siblings.get(1);
 					String secondString = second.getString();
-					if (!insideChestMessage && space.equals("  ") && (secondString.equals("CHEST LOCKPICKED ") || (accountForLootChestsAsWell && secondString.equals("LOOT CHEST COLLECTED ")))) {
+					if (!insideChestMessage && space.equals("  ") && (secondString.equals("CHEST LOCKPICKED ") || (SkyblockerConfigManager.get().mining.crystalHollows.countNaturalChestsInTracker && secondString.equals("LOOT CHEST COLLECTED ")))) {
 						insideChestMessage = true;
 						return;
 					}
@@ -92,7 +99,7 @@ public class PowderMiningTracker {
 		});
 
 		HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
-			if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS) return;
+			if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !isEnabled()) return;
 			int y = MinecraftClient.getInstance().getWindow().getScaledHeight() / 2 - 100;
 			var set = REWARDS.object2IntEntrySet();
 			for (Object2IntMap.Entry<Text> entry : set) {
