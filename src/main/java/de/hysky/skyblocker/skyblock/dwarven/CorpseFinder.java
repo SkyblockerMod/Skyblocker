@@ -161,8 +161,7 @@ public class CorpseFinder {
             if (closestCorpse != null) {
                 LOGGER.info(PREFIX + "Found corpse, marking as found! {}", closestCorpse.entity);
                 closestCorpse.waypoint.setFound();
-                closestCorpse.opened = true;
-            } else LOGGER.warn(PREFIX + "Couldn't find closest corpse despite triggering onChatMessage!");
+            } else LOGGER.warn(PREFIX + "Couldn't find the closest corpse despite triggering onChatMessage!");
         }
     }
 
