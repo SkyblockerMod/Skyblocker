@@ -55,7 +55,10 @@ public class CorpseFinder {
 
     @Init
     public static void init() {
-        ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> isLocationCorrect = false);
+        ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> {
+			isLocationCorrect = false;
+			corpsesByType.clear();
+        });
         SkyblockEvents.LOCATION_CHANGE.register(CorpseFinder::handleLocationChange);
         ClientReceiveMessageEvents.GAME.register(CorpseFinder::onChatMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(CorpseFinder::renderWaypoints);
