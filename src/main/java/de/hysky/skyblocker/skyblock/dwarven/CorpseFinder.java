@@ -87,6 +87,7 @@ public class CorpseFinder {
     }
 
     private static boolean seenDebugWarning = false;
+
     private static void handleLocationChange(Location location) {
         isLocationCorrect = location == LOCATION;   // true if mineshafts else false
     }
@@ -104,17 +105,19 @@ public class CorpseFinder {
     private static void handleArmorStand(ArmorStandEntity armorStand) {
         for (ItemStack stack : armorStand.getArmorItems()) {
             String itemId = ItemUtils.getItemId(stack);
-            if (ITEM_IDS.contains(itemId)) {
-                LOGGER.info(PREFIX + "Triggered code for handleArmorStand and matched with ITEM_IDS");
-                List<Corpse> corpses = corpsesByType.computeIfAbsent(itemId, k -> new ArrayList<>());
-                if (corpses.stream().noneMatch(c -> c.entity.getBlockPos().equals(armorStand.getBlockPos()))) {
-                    Waypoint corpseWaypoint;
-                    float[] color = getColors(getColor(armorStand));
-                    corpseWaypoint = new Waypoint(armorStand.getBlockPos(), Waypoint.Type.OUTLINED_WAYPOINT, color);
-                    if (Debug.debugEnabled()) if (!seenDebugWarning && (seenDebugWarning = true)) LOGGER.warn(PREFIX + "Debug mode is active! Please use it only for sake of debugging corpse detection!");
-                    Corpse newCorpse = new Corpse(armorStand, corpseWaypoint, false);
-                    corpses.add(newCorpse);
-                }}}}
+            if (!ITEM_IDS.contains(itemId)) continue;
+            LOGGER.info(PREFIX + "Triggered code for handleArmorStand and matched with ITEM_IDS");
+            List<Corpse> corpses = corpsesByType.computeIfAbsent(itemId, k -> new ArrayList<>());
+            if (corpses.stream().noneMatch(c -> c.entity.getBlockPos().equals(armorStand.getBlockPos()))) {
+                Waypoint corpseWaypoint;
+                float[] color = getColors(getColor(armorStand));
+                corpseWaypoint = new Waypoint(armorStand.getBlockPos(), Waypoint.Type.OUTLINED_WAYPOINT, color);
+                if (Debug.debugEnabled() && !seenDebugWarning && (seenDebugWarning = true)) LOGGER.warn(PREFIX + "Debug mode is active! Please use it only for sake of debugging corpse detection!");
+                Corpse newCorpse = new Corpse(armorStand, corpseWaypoint);
+                corpses.add(newCorpse);
+            }
+		}
+	}
 
     private static void renderWaypoints(WorldRenderContext context) {
         if (!SkyblockerConfigManager.get().mining.glacite.enableCorpseFinder || !isLocationCorrect) return;
@@ -134,10 +137,10 @@ public class CorpseFinder {
             LOGGER.warn(PREFIX + "State of corpsesByType: {}", corpsesByType);
             String corpseType = matcherCorpse.group(1).toUpperCase();
             String key = switch (corpseType) {   // there is probably less stupid way to do this
-                case ("LAPIS") -> "LAPIS_ARMOR_HELMET";
-                case ("UMBER") -> "ARMOR_OF_YOG_HELMET";
-                case ("TUNGSTEN") -> "MINERAL_HELMET";
-                case ("VANGUARD") -> "VANGUARD_HELMET";
+                case "LAPIS" -> "LAPIS_ARMOR_HELMET";
+                case "UMBER" -> "ARMOR_OF_YOG_HELMET";
+                case "TUNGSTEN" -> "MINERAL_HELMET";
+                case "VANGUARD" -> "VANGUARD_HELMET";
                 default -> "";
             };
             if (MinecraftClient.getInstance().player == null) return;
