@@ -25,11 +25,13 @@ public class ConfirmationPromptHelper {
 	public static void init() {
 		ClientReceiveMessageEvents.GAME.register(ConfirmationPromptHelper::onMessage);
 		ScreenEvents.AFTER_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
-			if (Utils.isOnSkyblock() && screen instanceof ChatScreen && SkyblockerConfigManager.get().chat.confirmationPromptHelper && command != null && commandFoundAt + 60_000 > System.currentTimeMillis()) {
+			if (Utils.isOnSkyblock() && screen instanceof ChatScreen && SkyblockerConfigManager.get().chat.confirmationPromptHelper && hasCommand()) {
 				ScreenMouseEvents.beforeMouseClick(screen).register((_screen1, _mouseX, _mouseY, _button) -> {
-					MessageScheduler.INSTANCE.sendMessageAfterCooldown(command);
-					command = null;
-					commandFoundAt = 0;
+					if (hasCommand()) {
+						MessageScheduler.INSTANCE.sendMessageAfterCooldown(command);
+						command = null;
+						commandFoundAt = 0;
+					}
 				});
 			}
 		});
@@ -37,6 +39,10 @@ public class ConfirmationPromptHelper {
 			command = null;
 			commandFoundAt = 0;
 		});
+	}
+
+	private static boolean hasCommand() {
+		return command != null && commandFoundAt + 60_000 > System.currentTimeMillis();
 	}
 
 	private static void onMessage(Text message, boolean overlay) {
