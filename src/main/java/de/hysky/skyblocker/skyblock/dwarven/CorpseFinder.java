@@ -101,7 +101,7 @@ public class CorpseFinder {
 
     public static void checkIfCorpse(ArmorStandEntity armorStand) {
         if (!SkyblockerConfigManager.get().mining.glacite.enableCorpseFinder) return;
-        if (armorStand.hasCustomName() || armorStand.isInvisible() || !armorStand.shouldHideBasePlate()) return;
+        if (armorStand.hasCustomName() || armorStand.isInvisible() || armorStand.shouldShowBasePlate()) return;
         if (isLocationCorrect) handleArmorStand(armorStand);
     }
 
@@ -180,7 +180,7 @@ public class CorpseFinder {
                     .withColor(corpse.color.getColorValue()))
                 .append(" at " + corpse.entity.getBlockPos().up(0).toShortString() + "!")
                 .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker corpseHelper shareLocation " + PosUtils.toSpaceSeparatedString(corpse.waypoint.pos) + " " + corpse.name))
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))));
+                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))), false);
     }
 
     static String getType(ArmorStandEntity entity) {
@@ -238,7 +238,7 @@ public class CorpseFinder {
                         MinecraftClient.getInstance().player.sendMessage(
                             Constants.PREFIX.get()
                                 .append("Parsed message from chat, adding corpse at ")
-                                .append(corpse.entity.getBlockPos().up(0).toShortString()));
+                                .append(corpse.entity.getBlockPos().up(0).toShortString()), false);
                     }
 				}
 			}
