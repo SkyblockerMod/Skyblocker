@@ -228,7 +228,7 @@ public class CorpseFinder {
                                 .append(corpse.entity.getBlockPos().up(0).toShortString()));
                     }}}
             if (!foundCorpse) {
-                LOGGER.warn(PREFIX + "Did NOT found any match for corpses! corpsesByType.values(): {}", corpsesByType.values());
+                LOGGER.warn(PREFIX + "Did NOT find any match for corpses! corpsesByType.values(): {}", corpsesByType.values());
                 LOGGER.info(PREFIX + "Proceeding to iterate over all corpses!");
                 for (List<Corpse> corpses : corpsesByType.values()) {
                     for (Corpse corpse : corpses) {
@@ -242,20 +242,16 @@ public class CorpseFinder {
 	static class Corpse {
 		private final ArmorStandEntity entity;
 		private final Waypoint waypoint;
-		private boolean opened;
 		private boolean seen;
 		private long messageLastSent = 0;
-		private Formatting color = Formatting.YELLOW;
-		private float[] colors;
-		private String name;
+		private final Formatting color;
+		private final String name;
 
-		Corpse(ArmorStandEntity entity, Waypoint waypoint, boolean opened) {
+		Corpse(ArmorStandEntity entity, Waypoint waypoint) {
 			this.entity = entity;
 			this.waypoint = waypoint;
-			this.opened = opened;
 			this.seen = false;
 			this.color = getColor(entity);
-			this.colors = getColors(color);
 			this.name = getType(entity);
 		}
 	}
