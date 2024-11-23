@@ -83,6 +83,12 @@ public class MiningConfig {
 
         @SerialEntry
         public Color chestHighlightColor = new Color(0, 0, 255, 128);
+
+	    @SerialEntry
+	    public boolean enablePowderTracker = true;
+
+	    @SerialEntry
+	    public boolean countNaturalChestsInTracker = true;
     }
 
     public static class CrystalsHud {
