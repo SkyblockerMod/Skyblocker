@@ -20,6 +20,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.ClickEvent;
@@ -186,14 +187,15 @@ public class CorpseFinder {
     }
 
     private static Formatting getColor(ArmorStandEntity entity) {
-        for (ItemStack stack : entity.getArmorItems()) {
-            String itemId = ItemUtils.getItemId(stack);
-            if (ITEM_IDS.contains(itemId)) {
-                switch (itemId) {
-                    case ("LAPIS_ARMOR_HELMET"), ("VANGUARD_HELMET"): return Formatting.BLUE; // dark blue looks bad and those two never exist in same shaft
-                    case ("ARMOR_OF_YOG_HELMET"): return Formatting.RED;
-                    case ("MINERAL_HELMET"): return Formatting.GRAY;
-                }}}
+        String itemId = ItemUtils.getItemId(entity.getEquippedStack(EquipmentSlot.HEAD));
+        if (ITEM_IDS.contains(itemId)) {
+            switch (itemId) {
+	            case "LAPIS_ARMOR_HELMET", "VANGUARD_HELMET": return Formatting.BLUE; // dark blue looks bad and those two never exist in same shaft
+	            case "ARMOR_OF_YOG_HELMET": return Formatting.RED;
+	            case "MINERAL_HELMET": return Formatting.GRAY;
+            }
+		}
+
         LOGGER.warn(PREFIX + "Couldn't match a color! Something probably went very wrong!");
         return Formatting.YELLOW;
     }
