@@ -256,14 +256,5 @@ public class CorpseFinder {
 			this.colors = getColors(color);
 			this.name = getType(entity);
 		}
-		Corpse(ArmorStandEntity entity, Waypoint waypoint, boolean opened, Formatting color) {
-			this.entity = entity;
-			this.waypoint = waypoint;
-			this.opened = opened;
-			this.seen = false;
-			this.color = color;
-			this.colors = getColors(color);
-			this.name = getType(entity);
-		}
 	}
 }
