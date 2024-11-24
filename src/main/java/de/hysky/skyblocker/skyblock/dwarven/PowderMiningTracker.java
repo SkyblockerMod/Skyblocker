@@ -1,5 +1,9 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.UnboundedMapCodec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -13,6 +17,7 @@ import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.item.ItemStack;
@@ -24,6 +29,8 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -34,7 +41,8 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class PowderMiningTracker {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Powder Mining Tracker");
 	private static final Pattern GEMSTONE_SYMBOLS = Pattern.compile("[α☘☠✎✧❁❂❈❤⸕] ");
-	private static final Pattern REWARD_PATTERN = Pattern.compile(" +(.*?) ?x?(\\d*)");
+	private static final Pattern REWARD_PATTERN = Pattern.compile(" {4}(.*?) ?x?([\\d,]*)");
+	private static final UnboundedMapCodec<String, Integer> REWARDS_CODEC = Codec.unboundedMap(Codec.STRING, Codec.INT);
 	// This constructor takes in a comparator that is triggered to decide where to add the element in the tree map
 	// This causes it to be sorted at all times. This is for rendering them in a sort of easy-to-read manner.
 	private static final Object2IntAVLTreeMap<Text> SHOWN_REWARDS = new Object2IntAVLTreeMap<>((o1, o2) -> {
@@ -109,8 +117,11 @@ public class PowderMiningTracker {
 		});
 
 		ItemPrice.ON_PRICE_UPDATE.register(() -> {
-			if (isEnabled()) recalculateAll();
+			if (isEnabled()) recalculatePrices();
 		});
+
+		ClientLifecycleEvents.CLIENT_STARTED.register(PowderMiningTracker::loadRewards);
+		ClientLifecycleEvents.CLIENT_STOPPING.register(PowderMiningTracker::saveRewards);
 
 		//TODO: Sort out proper commands for this
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
@@ -185,18 +196,18 @@ public class PowderMiningTracker {
 	/**
 	 * When the bz/ah prices are updated, this method recalculates the profit for all rewards at once.
 	 */
-	private static void recalculateAll() {
+	private static void recalculatePrices() {
 		profit = 0;
 		ObjectSortedSet<Object2IntMap.Entry<Text>> set = SHOWN_REWARDS.object2IntEntrySet();
 		for (Object2IntMap.Entry<Text> entry : set) {
-			calculateProfitForItem(entry.getKey().getString(), entry.getIntValue());
+			calculateProfitForItem(getItemId(entry.getKey().getString()), entry.getIntValue());
 		}
 	}
 
 	/**
 	 * Resets the shown rewards and profit to 0 and recalculates them based on the config filter.
 	 */
-	public static void filterChangeCallback() {
+	public static void recalculateAll() {
 		SHOWN_REWARDS.clear();
 		ObjectSet<Object2IntMap.Entry<String>> set = ALL_REWARDS.object2IntEntrySet();
 		// The filters are actually item names so that they would look nice and not need a lot of mapping under the screen code
@@ -216,12 +227,41 @@ public class PowderMiningTracker {
 				SHOWN_REWARDS.put(stack.getName(), entry.getIntValue());
 			}
 		}
-		recalculateAll();
+		recalculatePrices();
 	}
 
 	@Unmodifiable
 	public static Object2ObjectMap<String, String> getName2IdMap() {
 		return Object2ObjectMaps.unmodifiable(NAME2ID_MAP);
+	}
+
+	private static void loadRewards(MinecraftClient client) {
+		if (Files.notExists(getRewardFilePath())) return;
+		try {
+			String jsonString = Files.readString(getRewardFilePath());
+			JsonElement json = SkyblockerMod.GSON.fromJson(jsonString, JsonElement.class);
+			ALL_REWARDS.clear();
+			ALL_REWARDS.putAll(REWARDS_CODEC.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst());
+			recalculateAll();
+			LOGGER.info("Loaded powder mining rewards from file.");
+		} catch (Exception e) {
+			LOGGER.error("Failed to load powder mining rewards from file!", e);
+		}
+
+	}
+
+	private static void saveRewards(MinecraftClient client) {
+		try {
+			String jsonString = REWARDS_CODEC.encodeStart(JsonOps.INSTANCE, ALL_REWARDS).getOrThrow().toString();
+			if (Files.notExists(getRewardFilePath())) {
+				Files.createDirectories(getRewardFilePath().getParent());
+				Files.createFile(getRewardFilePath());
+			}
+			Files.writeString(getRewardFilePath(), jsonString);
+			LOGGER.info("Saved powder mining rewards to file.");
+		} catch (Exception e) {
+			LOGGER.error("Failed to save powder mining rewards to file!", e);
+		}
 	}
 
 	static {
@@ -291,5 +331,9 @@ public class PowderMiningTracker {
 	@NotNull
 	private static String getItemId(String itemName) {
 		return NAME2ID_MAP.getOrDefault(itemName, "");
+	}
+
+	private static Path getRewardFilePath() {
+		return SkyblockerMod.CONFIG_DIR.resolve("reward-trackers/powder-mining.json");
 	}
 }
