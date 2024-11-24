@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
@@ -32,8 +32,8 @@ public class WikiLookup {
         ));
     }
 
-    public static void openWiki(@NotNull Slot slot, @NotNull PlayerEntity player) {
-        ItemUtils.getItemIdOptional(slot.getStack())
+    public static void openWiki(@NotNull ItemStack itemStack, @NotNull PlayerEntity player) {
+        ItemUtils.getItemIdOptional(itemStack)
                 .map(ItemRepository::getWikiLink)
                 .ifPresentOrElse(wikiLink -> CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink)).exceptionally(e -> {
                     LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);

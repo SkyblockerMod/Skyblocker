@@ -453,4 +453,17 @@ public final class ItemUtils {
         }
         return stringBuilder.toString();
     }
+
+	/**
+	 * Checks if the given item ID represents an equipment piece.
+	 */
+	public static boolean isEquipment(String itemId) {
+		return (itemId.contains("BELT") ||
+				itemId.contains("GLOVES") ||
+				itemId.contains("CLOAK") ||
+				itemId.contains("GAUNTLET") ||
+				itemId.contains("NECKLACE") ||
+				itemId.contains("BRACELET") ||
+				itemId.contains("HAT"));
+	}
 }

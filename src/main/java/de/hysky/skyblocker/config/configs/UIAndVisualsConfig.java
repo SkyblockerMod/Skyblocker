@@ -31,6 +31,9 @@ public class UIAndVisualsConfig {
     @SerialEntry
     public boolean showEquipmentInInventory = true;
 
+	@SerialEntry
+	public boolean museumOverlay = true;
+
     @SerialEntry
     public ChestValue chestValue = new ChestValue();
 
