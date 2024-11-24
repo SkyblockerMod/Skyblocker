@@ -134,8 +134,15 @@ public class UIAndVisualsConfig {
 
         @SerialEntry
         public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
+
+        @Deprecated
+        public boolean plainPlayerNames = false;
+
+        @Deprecated
+        public NameSorting nameSorting = NameSorting.DEFAULT;
     }
 
+    @Deprecated
     public enum NameSorting {
         DEFAULT, ALPHABETICAL;
 
