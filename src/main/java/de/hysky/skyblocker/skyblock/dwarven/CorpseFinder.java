@@ -119,7 +119,7 @@ public class CorpseFinder {
 		if (corpses.stream().noneMatch(c -> c.entity.getBlockPos().equals(armorStand.getBlockPos()))) {
 			Waypoint corpseWaypoint;
 			float[] color = getColors(getColor(armorStand));
-			corpseWaypoint = new Waypoint(armorStand.getBlockPos(), Waypoint.Type.OUTLINED_WAYPOINT, color);
+			corpseWaypoint = new Waypoint(armorStand.getBlockPos().up(), Waypoint.Type.OUTLINED_WAYPOINT, color);
 			if (Debug.debugEnabled() && SkyblockerConfigManager.get().debug.corpseFinderDebug && !seenDebugWarning && (seenDebugWarning = true)) {
 				MinecraftClient.getInstance().player.sendMessage(
 						Constants.PREFIX.get().append(
@@ -145,9 +145,11 @@ public class CorpseFinder {
 
 	private static void onChatMessage(Text text, boolean overlay) {
 		if (overlay || !isLocationCorrect || !SkyblockerConfigManager.get().mining.glacite.enableCorpseFinder || MinecraftClient.getInstance().player == null) return;
+		String string = text.getString();
+		if (string.contains(MinecraftClient.getInstance().getSession().getUsername())) return; // Ignore your own messages
 		if (SkyblockerConfigManager.get().mining.glacite.enableParsingChatCorpseFinder) parseCords(text);  // parsing cords from chat
 
-		Matcher matcherCorpse = CORPSE_FOUND_PATTERN.matcher(text.getString());
+		Matcher matcherCorpse = CORPSE_FOUND_PATTERN.matcher(string);
 		if (!matcherCorpse.find()) return;
 
 		LOGGER.debug(PREFIX + "Triggered code for onChatMessage");
@@ -163,8 +165,8 @@ public class CorpseFinder {
 		corpses.stream() // Since squared distance comparison will yield the same result as normal distance comparison, we can use squared distance to avoid square root calculation
 		       .min(Comparator.comparingDouble(corpse -> corpse.entity.squaredDistanceTo(MinecraftClient.getInstance().player)))
 		       .ifPresentOrElse(
-					   corpse -> {
-					       LOGGER.info(PREFIX + "Found corpse, marking as found! {}", corpse.entity);
+				       corpse -> {
+					       LOGGER.info(PREFIX + "Found corpse, marking as found! {}: {}", corpse.entity.getType(), corpse.entity.getBlockPos().toShortString());
 					       corpse.waypoint.setFound();
 				       },
 				       () -> LOGGER.warn(PREFIX + "Couldn't find the closest corpse despite triggering onChatMessage!")
@@ -175,7 +177,7 @@ public class CorpseFinder {
 	private static void setSeen(Corpse corpse) {
 		corpse.seen = true;
 		if (SkyblockerConfigManager.get().mining.glacite.autoShareCorpses) {
-			shareLocation(corpse.entity.getBlockPos(), corpse.name);
+			shareLocation(corpse.entity.getBlockPos().up(), corpse.name);
 			return; // There's no need to send the message twice, so we return here.
 		}
 		if (Util.getMeasuringTimeMs() - corpse.messageLastSent < 300) return;
@@ -187,7 +189,7 @@ public class CorpseFinder {
 				                .append("Found a ")
 				                .append(Text.literal(WordUtils.capitalizeFully(corpse.name) + " Corpse")
 				                            .withColor(corpse.color.getColorValue()))
-				                .append(" at " + corpse.entity.getBlockPos().toShortString() + "!")
+				                .append(" at " + corpse.entity.getBlockPos().up().toShortString() + "!")
 				                .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker corpseHelper shareLocation " + PosUtils.toSpaceSeparatedString(corpse.waypoint.pos) + " " + corpse.name))
 				                                      .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))), false);
 	}
@@ -221,40 +223,41 @@ public class CorpseFinder {
 	// Since read in their format, might as well send in their format too.
 	// Some other mods seem to send in this same format, so it'll help any other mods that might be listening for this format.
 	private static String toSkyhanniFormat(BlockPos pos) {
-		return String.format("x: %d, y: %d, z: %d", pos.getX(), pos.getY(), pos.getZ());
+		return String.format("x: %d, y: %d, z: %d", pos.getX() + 1, pos.getY(), pos.getZ() + 1);
 	}
 
 	private static void parseCords(Text text) {
 		String message = text.getString();
 		Matcher matcher = COORDS_PATTERN.matcher(message);
-		if (matcher.find()) {
-			int x = Integer.parseInt(matcher.group("x"));
-			int y = Integer.parseInt(matcher.group("y"));
-			int z = Integer.parseInt(matcher.group("z"));
-			LOGGER.debug(PREFIX + "Parsed message! X:{}, Y:{}, Z:{}", x, y, z);
-			boolean foundCorpse = false;
-			BlockPos parsedPos = new BlockPos(x - 1, y - 1, z - 1); // skyhanni cords format difference is -1, -1, -1
-			for (List<Corpse> corpses : corpsesByType.values()) {
-				for (Corpse corpse : corpses) {
-					if (corpse.waypoint.pos.equals(parsedPos)) {
-						corpse.seen = true;
-						foundCorpse = true;
-						LOGGER.info(PREFIX + "Setting corpse {} as seen!", corpse.entity);
-						MinecraftClient.getInstance().player.sendMessage(
-								Constants.PREFIX.get()
-								                .append("Parsed message from chat, adding corpse at ")
-								                .append(corpse.entity.getBlockPos().toShortString()), false);
-						break;
-					}
+		if (!matcher.find()) return;
+
+		int x = Integer.parseInt(matcher.group("x"));
+		int y = Integer.parseInt(matcher.group("y"));
+		int z = Integer.parseInt(matcher.group("z"));
+		LOGGER.debug(PREFIX + "Parsed message! X:{}, Y:{}, Z:{}", x, y, z);
+		boolean foundCorpse = false;
+		BlockPos parsedPos = new BlockPos(x - 1, y, z - 1); // skyhanni cords format difference is -1, 0, -1
+
+		for (List<Corpse> corpses : corpsesByType.values()) {
+			for (Corpse corpse : corpses) {
+				if (corpse.waypoint.pos.equals(parsedPos)) {
+					corpse.seen = true;
+					foundCorpse = true;
+					LOGGER.info(PREFIX + "Setting corpse {} as seen!", corpse.entity);
+					MinecraftClient.getInstance().player.sendMessage(
+							Constants.PREFIX.get()
+							                .append("Parsed message from chat, adding corpse at ")
+							                .append(corpse.entity.getBlockPos().toShortString()), false);
+					break;
 				}
 			}
-			if (!foundCorpse) {
-				LOGGER.warn(PREFIX + "Did NOT find any match for corpses! corpsesByType.values(): {}", corpsesByType.values());
-				LOGGER.info(PREFIX + "Proceeding to iterate over all corpses!");
-				for (List<Corpse> corpses : corpsesByType.values()) {
-					for (Corpse corpse : corpses) {
-						LOGGER.info(PREFIX + "Corpse: {}, BlockPos: {}", corpse.entity, corpse.entity.getBlockPos());
-					}
+		}
+		if (!foundCorpse) {
+			LOGGER.warn(PREFIX + "Did NOT find any match for corpses! corpsesByType.values(): {}", corpsesByType.values());
+			LOGGER.info(PREFIX + "Proceeding to iterate over all corpses!");
+			for (List<Corpse> corpses : corpsesByType.values()) {
+				for (Corpse corpse : corpses) {
+					LOGGER.info(PREFIX + "Corpse: {}, BlockPos: {}", corpse.entity, corpse.entity.getBlockPos());
 				}
 			}
 		}
@@ -262,6 +265,9 @@ public class CorpseFinder {
 
 	static class Corpse {
 		private final ArmorStandEntity entity;
+		/**
+		 * Waypoint position is always 1 above entity position
+		 */
 		private final Waypoint waypoint;
 		private boolean seen;
 		private long messageLastSent = 0;
