@@ -43,7 +43,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class CorpseFinder {
 	private static boolean isLocationCorrect = false;
 	private static final Pattern CORPSE_FOUND_PATTERN = Pattern.compile("([A-Z]+) CORPSE LOOT!");
-	private static final Pattern COORDS_PATTERN = Pattern.compile("x: (?<x>-?\\d+), y: (?<y>-?\\d+), z: (?<z>-?\\d+)(?:.+)?");
+	private static final Pattern COORDS_PATTERN = Pattern.compile("x: (?<x>-?\\d+), y: (?<y>-?\\d+), z: (?<z>-?\\d+)");
 	private static final String PREFIX = "[Skyblocker Corpse Finder] ";
 	private static final Logger LOGGER = LoggerFactory.getLogger(CorpseFinder.class);
 	private static final Map<String, List<Corpse>> corpsesByType = new HashMap<>();
@@ -84,7 +84,7 @@ public class CorpseFinder {
 								.then(argument("blockPos", ClientBlockPosArgumentType.blockPos())
 										.then(argument("corpseType", CorpseTypeArgumentType.corpseType())
 												.executes(context -> {
-													MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + "[Skyblocker] " + WordUtils.capitalizeFully(StringArgumentType.getString(context, "corpseType")) + " Corpse found at " + toSkyhanniFormat(ClientBlockPosArgumentType.getBlockPos(context, "blockPos")) + "!");
+													MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + toSkyhanniFormat(ClientBlockPosArgumentType.getBlockPos(context, "blockPos")) + " | (" + WordUtils.capitalizeFully(StringArgumentType.getString(context, "corpseType") + " Corpse)"), true);
 													return Command.SINGLE_SUCCESS;
 												})
 										)
@@ -234,7 +234,7 @@ public class CorpseFinder {
 						MinecraftClient.getInstance().player.sendMessage(
 								Constants.PREFIX.get()
 								                .append("Parsed message from chat, adding corpse at ")
-								                .append(corpse.entity.getBlockPos().up(0).toShortString()), false);
+								                .append(corpse.entity.getBlockPos().toShortString()), false);
 						break;
 					}
 				}
