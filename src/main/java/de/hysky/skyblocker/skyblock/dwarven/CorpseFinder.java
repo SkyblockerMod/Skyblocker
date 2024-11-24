@@ -105,9 +105,9 @@ public class CorpseFinder {
 	}
 
 	public static void checkIfCorpse(ArmorStandEntity armorStand) {
-		if (!SkyblockerConfigManager.get().mining.glacite.enableCorpseFinder) return;
+		if (!isLocationCorrect || !SkyblockerConfigManager.get().mining.glacite.enableCorpseFinder) return;
 		if (armorStand.hasCustomName() || armorStand.isInvisible() || armorStand.shouldShowBasePlate()) return;
-		if (isLocationCorrect) handleArmorStand(armorStand);
+		handleArmorStand(armorStand);
 	}
 
 	private static void handleArmorStand(ArmorStandEntity armorStand) {
