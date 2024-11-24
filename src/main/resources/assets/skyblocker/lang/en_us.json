@@ -23,6 +23,8 @@
   "text.skyblocker.quit_discard": "Quit & Discard Changes",
   "text.skyblocker.confirm": "Confirm",
   "text.skyblocker.config": "Open Config...",
+  "text.skyblocker.reset": "Reset",
+  "text.skyblocker.undo": "Undo",
   "text.skyblocker.source": "Source",
   "text.skyblocker.website": "Website",
   "text.skyblocker.translate": "Translate",
@@ -558,6 +560,8 @@
   "skyblocker.config.mining.crystalHollows.chestHighlighter.@Tooltip": "Highlight found treasure chests and lock pick locations when powder mining.",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "Chest Highlight Color",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "What color the treasure chests / lock pick should be highlighted.",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter": "Powder Tracker Shown Items",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip": "Choose which items to show & include in the profit calculation for the powder tracker.",
 
   "skyblocker.config.mining.crystalsHud": "Crystal Hollows Map",
   "skyblocker.config.mining.crystalsHud.enabled": "Enabled",

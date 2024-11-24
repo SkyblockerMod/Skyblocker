@@ -13,8 +13,11 @@ import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -26,15 +29,24 @@ public class PowderMiningTracker {
 	private static final Pattern GEMSTONE_SYMBOLS = Pattern.compile("[α☘☠✎✧❁❂❈❤⸕] ");
 	// This constructor takes in a comparator that is triggered to decide where to add the element in the tree map
 	// This causes it to be sorted at all times. This is for rendering them in a sort of easy-to-read manner.
-	private static final Object2IntAVLTreeMap<Text> REWARDS = new Object2IntAVLTreeMap<>((o1, o2) -> {
-				String o1String = GEMSTONE_SYMBOLS.matcher(o1.getString()).replaceAll("");
-				String o2String = GEMSTONE_SYMBOLS.matcher(o2.getString()).replaceAll("");
-				int priority1 = comparePriority(o1String);
-				int priority2 = comparePriority(o2String);
-				if (priority1 != priority2) return Integer.compare(priority1, priority2);
-				return o1String.compareTo(o2String);
-			}
-	);
+	private static final Object2IntAVLTreeMap<Text> SHOWN_REWARDS = new Object2IntAVLTreeMap<>((o1, o2) -> {
+		String o1String = GEMSTONE_SYMBOLS.matcher(o1.getString()).replaceAll("");
+		String o2String = GEMSTONE_SYMBOLS.matcher(o2.getString()).replaceAll("");
+		int priority1 = comparePriority(o1String);
+		int priority2 = comparePriority(o2String);
+		if (priority1 != priority2) return Integer.compare(priority1, priority2);
+		return o1String.compareTo(o2String);
+	});
+
+	/**
+	 * <p>
+	 * Holds the total amount of each reward obtained. If any items are filtered out, they are still added to this map but not to the {@link #SHOWN_REWARDS} map.
+	 * Once the filter is changed, the {@link #SHOWN_REWARDS} map is cleared and recalculated based on this map.
+	 * </p>
+	 * <p>This is similar to how {@link ChatHud#messages} and {@link ChatHud#visibleMessages} behave.</p>
+	 */
+	@SuppressWarnings("JavadocReference")
+	private static final Object2IntMap<Text> ALL_REWARDS = new Object2IntArrayMap<>();
 	private static final Object2ObjectMap<String, String> NAME2ID_MAP = new Object2ObjectArrayMap<>(50);
 	private static boolean insideChestMessage = false;
 	private static double profit = 0;
@@ -67,12 +79,12 @@ public class PowderMiningTracker {
 					}
 
 					if (insideChestMessage && space.equals("    ")) {
-						REWARDS.mergeInt(second, 1, Integer::sum);
+						incrementReward(second, 1);
 						calculateProfitForItem(second, 1);
 					}
 				}
 				// Reward message with more than 1 item count has 3 siblings: "    ", "item name ", "x<count>" (the space at the end of the item name is not a typo, it's there)
-				// For some reason the green goblin egg and 1 more that I can't figure out have an extra sibling that is always empty (at the 2nd position)
+				// For some reason the colored goblin eggs have an extra sibling that is always empty (at the 2nd position)
 				// To account for that, this case includes 4 size and there's a check for the 2nd sibling to be empty and the amount parsing has getLast() instead of hardcoded position
 				case 3, 4 -> {
 					if (!insideChestMessage) return;
@@ -80,18 +92,15 @@ public class PowderMiningTracker {
 					if (!space.equals("    ")) return;
 
 					Text itemName = siblings.get(1);
-					int amount;
+					if (itemName.getString().isEmpty()) itemName = siblings.get(2);
 
-					if (itemName.getString().isEmpty() && siblings.size() == 3) {
-						itemName = siblings.get(2);
-						amount = 1;
-					} else {
-						String nameTrimmed = itemName.getString().stripTrailing();
-						itemName = Text.literal(nameTrimmed).setStyle(itemName.getStyle());
-						amount = Integer.parseInt(siblings.getLast().getString().substring(1).replace(",", ""));
-					}
+					// If there's nothing to trim this will just do nothing
+					String nameTrimmed = itemName.getString().stripTrailing();
+					itemName = Text.literal(nameTrimmed).setStyle(itemName.getStyle());
+					// The failing of the conversion below when the amount is not included is intentional, saves some thinking
+					int amount = NumberUtils.toInt(siblings.getLast().getString().substring(1).replace(",", ""), 1);
 
-					REWARDS.mergeInt(itemName, amount, Integer::sum);
+					incrementReward(itemName, amount);
 					calculateProfitForItem(itemName, amount);
 				}
 				default -> {}
@@ -101,7 +110,7 @@ public class PowderMiningTracker {
 		HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
 			if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !isEnabled()) return;
 			int y = MinecraftClient.getInstance().getWindow().getScaledHeight() / 2 - 100;
-			var set = REWARDS.object2IntEntrySet();
+			var set = SHOWN_REWARDS.object2IntEntrySet();
 			for (Object2IntMap.Entry<Text> entry : set) {
 				context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, entry.getKey(), 5, y, 0xFFFFFF);
 				context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(String.valueOf(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, 0xFFFFFF);
@@ -111,11 +120,7 @@ public class PowderMiningTracker {
 		});
 
 		ItemPrice.ON_PRICE_UPDATE.register(() -> {
-			profit = 0;
-			ObjectSortedSet<Object2IntMap.Entry<Text>> set = REWARDS.object2IntEntrySet();
-			for (Object2IntMap.Entry<Text> entry : set) {
-				calculateProfitForItem(entry.getKey(), entry.getIntValue());
-			}
+			if (isEnabled()) recalculateAll();
 		});
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
@@ -123,14 +128,14 @@ public class PowderMiningTracker {
 						.then(
 								literal("clearrewards")
 										.executes(context -> {
-											REWARDS.clear();
+											SHOWN_REWARDS.clear();
 											return 1;
 										})
 						)
 						.then(
 								literal("listrewards")
 										.executes(context -> {
-											var set = REWARDS.object2IntEntrySet();
+											var set = SHOWN_REWARDS.object2IntEntrySet();
 											for (Object2IntMap.Entry<Text> entry : set) {
 												MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(entry.getKey().copy().append(" ").append(Text.of(String.valueOf(entry.getIntValue()))));
 											}
@@ -138,6 +143,11 @@ public class PowderMiningTracker {
 										})
 						)
 		));
+	}
+
+	private static void incrementReward(Text text, int amount) {
+		ALL_REWARDS.mergeInt(text, amount, Integer::sum);
+		if (!SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter.contains(text.getString())) SHOWN_REWARDS.mergeInt(text, amount, Integer::sum);
 	}
 
 	private static int comparePriority(String s) {
@@ -162,47 +172,81 @@ public class PowderMiningTracker {
 		return 8;
 	}
 
+	/**
+	 * Normally, the price is calculated on a per-reward basis as they are obtained. This is what this method does.
+	 */
 	private static void calculateProfitForItem(Text text, int amount) {
 		String id = getItemId(text);
 		DoubleBooleanPair price = ItemUtils.getItemPrice(id);
 		if (price.rightBoolean()) profit += price.leftDouble() * amount;
 	}
 
+	/**
+	 * When the bz/ah prices are updated, this method recalculates the profit for all rewards at once.
+	 */
+	private static void recalculateAll() {
+		profit = 0;
+		ObjectSortedSet<Object2IntMap.Entry<Text>> set = SHOWN_REWARDS.object2IntEntrySet();
+		for (Object2IntMap.Entry<Text> entry : set) {
+			calculateProfitForItem(entry.getKey(), entry.getIntValue());
+		}
+	}
+
+	/**
+	 * Resets the shown rewards and profit to 0 and recalculates them based on the config filter.
+	 */
+	public static void filterChangeCallback() {
+		SHOWN_REWARDS.clear();
+		profit = 0;
+		ObjectSet<Object2IntMap.Entry<Text>> set = ALL_REWARDS.object2IntEntrySet();
+		for (Object2IntMap.Entry<Text> entry : set) {
+			if (!SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter.contains(entry.getKey().getString())) {
+				SHOWN_REWARDS.put(entry.getKey(), entry.getIntValue());
+				calculateProfitForItem(entry.getKey(), entry.getIntValue());
+			}
+		}
+	}
+
+	@Unmodifiable
+	public static Object2ObjectMap<String, String> getName2IdMap() {
+		return Object2ObjectMaps.unmodifiable(NAME2ID_MAP);
+	}
+
 	static {
-		NAME2ID_MAP.put("Rough Ruby Gemstone", "ROUGH_RUBY_GEM");
-		NAME2ID_MAP.put("Flawed Ruby Gemstone", "FLAWED_RUBY_GEM");
-		NAME2ID_MAP.put("Fine Ruby Gemstone", "FINE_RUBY_GEM");
-		NAME2ID_MAP.put("Flawless Ruby Gemstone", "FLAWLESS_RUBY_GEM");
+		NAME2ID_MAP.put("❤ Rough Ruby Gemstone", "ROUGH_RUBY_GEM");
+		NAME2ID_MAP.put("❤ Flawed Ruby Gemstone", "FLAWED_RUBY_GEM");
+		NAME2ID_MAP.put("❤ Fine Ruby Gemstone", "FINE_RUBY_GEM");
+		NAME2ID_MAP.put("❤ Flawless Ruby Gemstone", "FLAWLESS_RUBY_GEM");
 
-		NAME2ID_MAP.put("Rough Amethyst Gemstone", "ROUGH_AMETHYST_GEM");
-		NAME2ID_MAP.put("Flawed Amethyst Gemstone", "FLAWED_AMETHYST_GEM");
-		NAME2ID_MAP.put("Fine Amethyst Gemstone", "FINE_AMETHYST_GEM");
-		NAME2ID_MAP.put("Flawless Amethyst Gemstone", "FLAWLESS_AMETHYST_GEM");
+		NAME2ID_MAP.put("❈ Rough Amethyst Gemstone", "ROUGH_AMETHYST_GEM");
+		NAME2ID_MAP.put("❈ Flawed Amethyst Gemstone", "FLAWED_AMETHYST_GEM");
+		NAME2ID_MAP.put("❈ Fine Amethyst Gemstone", "FINE_AMETHYST_GEM");
+		NAME2ID_MAP.put("❈ Flawless Amethyst Gemstone", "FLAWLESS_AMETHYST_GEM");
 
-		NAME2ID_MAP.put("Rough Jade Gemstone", "ROUGH_JADE_GEM");
-		NAME2ID_MAP.put("Flawed Jade Gemstone", "FLAWED_JADE_GEM");
-		NAME2ID_MAP.put("Fine Jade Gemstone", "FINE_JADE_GEM");
-		NAME2ID_MAP.put("Flawless Jade Gemstone", "FLAWLESS_JADE_GEM");
+		NAME2ID_MAP.put("☘ Rough Jade Gemstone", "ROUGH_JADE_GEM");
+		NAME2ID_MAP.put("☘ Flawed Jade Gemstone", "FLAWED_JADE_GEM");
+		NAME2ID_MAP.put("☘ Fine Jade Gemstone", "FINE_JADE_GEM");
+		NAME2ID_MAP.put("☘ Flawless Jade Gemstone", "FLAWLESS_JADE_GEM");
 
-		NAME2ID_MAP.put("Rough Amber Gemstone", "ROUGH_AMBER_GEM");
-		NAME2ID_MAP.put("Flawed Amber Gemstone", "FLAWED_AMBER_GEM");
-		NAME2ID_MAP.put("Fine Amber Gemstone", "FINE_AMBER_GEM");
-		NAME2ID_MAP.put("Flawless Amber Gemstone", "FLAWLESS_AMBER_GEM");
+		NAME2ID_MAP.put("⸕ Rough Amber Gemstone", "ROUGH_AMBER_GEM");
+		NAME2ID_MAP.put("⸕ Flawed Amber Gemstone", "FLAWED_AMBER_GEM");
+		NAME2ID_MAP.put("⸕ Fine Amber Gemstone", "FINE_AMBER_GEM");
+		NAME2ID_MAP.put("⸕ Flawless Amber Gemstone", "FLAWLESS_AMBER_GEM");
 
-		NAME2ID_MAP.put("Rough Sapphire Gemstone", "ROUGH_SAPPHIRE_GEM");
-		NAME2ID_MAP.put("Flawed Sapphire Gemstone", "FLAWED_SAPPHIRE_GEM");
-		NAME2ID_MAP.put("Fine Sapphire Gemstone", "FINE_SAPPHIRE_GEM");
-		NAME2ID_MAP.put("Flawless Sapphire Gemstone", "FLAWLESS_SAPPHIRE_GEM");
+		NAME2ID_MAP.put("✎ Rough Sapphire Gemstone", "ROUGH_SAPPHIRE_GEM");
+		NAME2ID_MAP.put("✎ Flawed Sapphire Gemstone", "FLAWED_SAPPHIRE_GEM");
+		NAME2ID_MAP.put("✎ Fine Sapphire Gemstone", "FINE_SAPPHIRE_GEM");
+		NAME2ID_MAP.put("✎ Flawless Sapphire Gemstone", "FLAWLESS_SAPPHIRE_GEM");
 
-		NAME2ID_MAP.put("Rough Topaz Gemstone", "ROUGH_TOPAZ_GEM");
-		NAME2ID_MAP.put("Flawed Topaz Gemstone", "FLAWED_TOPAZ_GEM");
-		NAME2ID_MAP.put("Fine Topaz Gemstone", "FINE_TOPAZ_GEM");
-		NAME2ID_MAP.put("Flawless Topaz Gemstone", "FLAWLESS_TOPAZ_GEM");
+		NAME2ID_MAP.put("✧ Rough Topaz Gemstone", "ROUGH_TOPAZ_GEM");
+		NAME2ID_MAP.put("✧ Flawed Topaz Gemstone", "FLAWED_TOPAZ_GEM");
+		NAME2ID_MAP.put("✧ Fine Topaz Gemstone", "FINE_TOPAZ_GEM");
+		NAME2ID_MAP.put("✧ Flawless Topaz Gemstone", "FLAWLESS_TOPAZ_GEM");
 
-		NAME2ID_MAP.put("Rough Jasper Gemstone", "ROUGH_JASPER_GEM");
-		NAME2ID_MAP.put("Flawed Jasper Gemstone", "FLAWED_JASPER_GEM");
-		NAME2ID_MAP.put("Fine Jasper Gemstone", "FINE_JASPER_GEM");
-		NAME2ID_MAP.put("Flawless Jasper Gemstone", "FLAWLESS_JASPER_GEM");
+		NAME2ID_MAP.put("❁ Rough Jasper Gemstone", "ROUGH_JASPER_GEM");
+		NAME2ID_MAP.put("❁ Flawed Jasper Gemstone", "FLAWED_JASPER_GEM");
+		NAME2ID_MAP.put("❁ Fine Jasper Gemstone", "FINE_JASPER_GEM");
+		NAME2ID_MAP.put("❁ Flawless Jasper Gemstone", "FLAWLESS_JASPER_GEM");
 
 		NAME2ID_MAP.put("Pickonimbus 2000", "PICKONIMBUS");
 		NAME2ID_MAP.put("Ascension Rope", "ASCENSION_ROPE");
@@ -231,6 +275,6 @@ public class PowderMiningTracker {
 	}
 
 	private static String getItemId(Text text) {
-		return NAME2ID_MAP.getOrDefault(GEMSTONE_SYMBOLS.matcher(text.getString()).replaceAll(""), "");
+		return NAME2ID_MAP.getOrDefault(text.getString(), "");
 	}
 }
