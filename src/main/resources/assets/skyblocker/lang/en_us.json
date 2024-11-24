@@ -69,6 +69,7 @@
   "skyblocker.config.debug.dumpRange.@Tooltip": "The range in blocks around the player to dump entities within.",
   "skyblocker.config.debug.showInvisibleArmorStands": "Show Invisible Armor Stands",
   "skyblocker.config.debug.debugWebSockets": "Enable Websocket Debug Messages",
+  "skyblocker.config.debug.corpseFinderDebug": "Debug Corpse Finder",
 
   "skyblocker.config.dungeons": "Dungeons",
 
