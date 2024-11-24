@@ -32,7 +32,7 @@ public class PowderFilterConfigScreen extends Screen {
 	protected void init() {
 		addDrawable((context, mouseX, mouseY, delta) -> {
 			assert client != null;
-			context.drawCenteredTextWithShadow(client.textRenderer, Text.literal("Shown Items").formatted(Formatting.BOLD), width / 2, (32 - client.textRenderer.fontHeight) / 2, 0xFFFFFF);
+			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter.screenTitle").formatted(Formatting.BOLD), width / 2, (32 - client.textRenderer.fontHeight) / 2, 0xFFFFFF);
 		});
 		ItemTickList itemTickList = addDrawableChild(new ItemTickList(MinecraftClient.getInstance(), width, height - 96, 32, 24, filters, allItems).init());
 		//Grid code gratuitously stolen from WaypointsScreen. Same goes for the y and heights above.
