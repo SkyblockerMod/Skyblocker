@@ -120,10 +120,10 @@ public class CorpseFinder {
 			Waypoint corpseWaypoint;
 			float[] color = getColors(getColor(armorStand));
 			corpseWaypoint = new Waypoint(armorStand.getBlockPos(), Waypoint.Type.OUTLINED_WAYPOINT, color);
-			if (Debug.debugEnabled() && !seenDebugWarning && (seenDebugWarning = true)) {
+			if (Debug.debugEnabled() && SkyblockerConfigManager.get().debug.corpseFinderDebug && !seenDebugWarning && (seenDebugWarning = true)) {
 				MinecraftClient.getInstance().player.sendMessage(
 						Constants.PREFIX.get().append(
-								Text.literal("Debug mode is active! Please use it only for the sake of debugging corpse detection!")
+								Text.literal("Corpse finder debug mode is active! Please use it only for the sake of debugging corpse detection!")
 								    .formatted(Formatting.GOLD, Formatting.BOLD)
 						), false);
 			}
@@ -136,7 +136,7 @@ public class CorpseFinder {
 		if (!SkyblockerConfigManager.get().mining.glacite.enableCorpseFinder || !isLocationCorrect) return;
 		for (List<Corpse> corpses : corpsesByType.values()) {
 			for (Corpse corpse : corpses) {
-				if (corpse.waypoint.shouldRender() && (corpse.seen || Debug.debugEnabled())) {
+				if (corpse.waypoint.shouldRender() && (corpse.seen || (Debug.debugEnabled() && SkyblockerConfigManager.get().debug.corpseFinderDebug))) {
 					corpse.waypoint.render(context);
 				}
 			}
