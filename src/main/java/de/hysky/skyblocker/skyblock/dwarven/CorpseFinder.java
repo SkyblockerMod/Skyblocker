@@ -40,7 +40,6 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.arg
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class CorpseFinder {
-    private static final Location LOCATION = Location.GLACITE_MINESHAFT;
     private static boolean isLocationCorrect = false;
     private static final Pattern CORPSE_FOUND_PATTERN = Pattern.compile("([A-Z]+) CORPSE LOOT!");
 	private static final Pattern COORDS_PATTERN = Pattern.compile("x: (?<x>-?\\d+), y: (?<y>-?\\d+), z: (?<z>-?\\d+)(?:.+)?");
@@ -93,7 +92,7 @@ public class CorpseFinder {
     private static boolean seenDebugWarning = false;
 
     private static void handleLocationChange(Location location) {
-        isLocationCorrect = location == LOCATION;   // true if mineshafts else false
+        isLocationCorrect = location == Location.GLACITE_MINESHAFT;
     }
 
     public static void checkIfCorpse(Entity entity) {
