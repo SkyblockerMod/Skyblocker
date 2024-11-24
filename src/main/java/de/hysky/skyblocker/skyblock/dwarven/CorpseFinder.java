@@ -28,6 +28,7 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +80,7 @@ public class CorpseFinder {
                     .then(argument("blockPos", ClientBlockPosArgumentType.blockPos())
                         .then(argument("corpseType", CorpseTypeArgumentType.corpseType())
                             .executes(context -> {
-                                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + "[Skyblocker] " + "Corpse " + StringArgumentType.getString(context, "corpseType") + " found at " + ClientBlockPosArgumentType.getBlockPos(context, "blockPos").toShortString() + "!");
+                                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + "[Skyblocker] " + WordUtils.capitalizeFully(StringArgumentType.getString(context, "corpseType")) + " Corpse found at " + ClientBlockPosArgumentType.getBlockPos(context, "blockPos").toShortString() + "!");
                                 return Command.SINGLE_SUCCESS;
                             })
                         )
