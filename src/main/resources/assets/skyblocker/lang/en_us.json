@@ -309,8 +309,6 @@
   "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "Displays an estimation of the item's total value in the tooltip, §lmight not be 100% accurate all the time.§r\n\nWhen selling items always do a manual check of the item price!",
   "skyblocker.config.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
   "skyblocker.config.general.itemTooltip.enableObtainedDate": "Enable Obtained Date",
-  "skyblocker.config.general.itemTooltip.enableSkyblockId": "Enable Skyblock ID",
-  "skyblocker.config.general.itemTooltip.enableSkyblockId.@Tooltip": "Displays the item's Skyblock ID.",
   "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress": "Enable Stacking Enchant Progress",
   "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress.@Tooltip": "Displays the progress to the next level of a stacking enchantment if it hasn't been maxed.",
   "skyblocker.config.general.itemTooltip.showEssenceCost": "Show Essence Cost",

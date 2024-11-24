@@ -256,14 +256,6 @@ public class GeneralCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.itemTooltip.enableSkyblockId"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemTooltip.enableSkyblockId.@Tooltip")))
-                                .binding(defaults.general.itemTooltip.enableSkyblockId,
-                                        () -> config.general.itemTooltip.enableSkyblockId,
-                                        newValue -> config.general.itemTooltip.enableSkyblockId = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.itemTooltip.enableStackingEnchantProgress"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemTooltip.enableStackingEnchantProgress.@Tooltip")))
                                 .binding(defaults.general.itemTooltip.enableStackingEnchantProgress,

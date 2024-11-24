@@ -140,9 +140,6 @@ public class GeneralConfig {
         public boolean enableEstimatedItemValue = true;
 
         @SerialEntry
-        public boolean enableSkyblockId = false;
-
-        @SerialEntry
         public boolean enableStackingEnchantProgress = true;
     }
 
