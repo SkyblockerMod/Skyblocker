@@ -147,6 +147,9 @@ public class MiningConfig {
 
         @SerialEntry
         public boolean enableParsingChatCorpseFinder = true;
+
+		@SerialEntry
+	    public boolean autoShareCorpses = false;
     }
 
     public enum DwarvenHudStyle {
