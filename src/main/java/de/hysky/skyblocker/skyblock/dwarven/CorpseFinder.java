@@ -84,7 +84,7 @@ public class CorpseFinder {
 								.then(argument("blockPos", ClientBlockPosArgumentType.blockPos())
 										.then(argument("corpseType", CorpseTypeArgumentType.corpseType())
 												.executes(context -> {
-													MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + toSkyhanniFormat(ClientBlockPosArgumentType.getBlockPos(context, "blockPos")) + " | (" + WordUtils.capitalizeFully(StringArgumentType.getString(context, "corpseType") + " Corpse)"), true);
+													shareLocation(ClientBlockPosArgumentType.getBlockPos(context, "blockPos"), StringArgumentType.getString(context, "corpseType"));
 													return Command.SINGLE_SUCCESS;
 												})
 										)
@@ -174,15 +174,20 @@ public class CorpseFinder {
 	@SuppressWarnings("DataFlowIssue")
 	private static void setSeen(Corpse corpse) {
 		corpse.seen = true;
+		if (SkyblockerConfigManager.get().mining.glacite.autoShareCorpses) {
+			shareLocation(corpse.entity.getBlockPos(), corpse.name);
+			return; // There's no need to send the message twice, so we return here.
+		}
 		if (Util.getMeasuringTimeMs() - corpse.messageLastSent < 300) return;
 
 		corpse.messageLastSent = Util.getMeasuringTimeMs();
+
 		MinecraftClient.getInstance().player.sendMessage(
 				Constants.PREFIX.get()
 				                .append("Found a ")
 				                .append(Text.literal(WordUtils.capitalizeFully(corpse.name) + " Corpse")
 				                            .withColor(corpse.color.getColorValue()))
-				                .append(" at " + corpse.entity.getBlockPos().up(0).toShortString() + "!")
+				                .append(" at " + corpse.entity.getBlockPos().toShortString() + "!")
 				                .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker corpseHelper shareLocation " + PosUtils.toSpaceSeparatedString(corpse.waypoint.pos) + " " + corpse.name))
 				                                      .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))), false);
 	}
@@ -202,6 +207,10 @@ public class CorpseFinder {
 
 		LOGGER.warn(PREFIX + "Couldn't match a color! Something probably went very wrong!");
 		return Formatting.YELLOW;
+	}
+
+	private static void shareLocation(BlockPos pos, String corpseType) {
+		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + toSkyhanniFormat(pos) + " | (" + WordUtils.capitalizeFully(corpseType) + " Corpse)", true);
 	}
 
 	@SuppressWarnings("DataFlowIssue")
