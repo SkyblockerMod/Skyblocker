@@ -4,6 +4,8 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import net.minecraft.client.resource.language.I18n;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MiningConfig {
     @SerialEntry
@@ -82,6 +84,9 @@ public class MiningConfig {
 
 	    @SerialEntry
 	    public boolean countNaturalChestsInTracker = true;
+
+		@SerialEntry
+	    public List<String> powderTrackerFilter = new ArrayList<>();
     }
 
     public static class CrystalsHud {
