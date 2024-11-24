@@ -6,6 +6,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -14,24 +15,31 @@ import it.unimi.dsi.fastutil.objects.*;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class PowderMiningTracker {
+	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Powder Mining Tracker");
 	private static final Pattern GEMSTONE_SYMBOLS = Pattern.compile("[α☘☠✎✧❁❂❈❤⸕] ");
+	private static final Pattern REWARD_PATTERN = Pattern.compile(" +(.*?) ?x?(\\d*)");
 	// This constructor takes in a comparator that is triggered to decide where to add the element in the tree map
 	// This causes it to be sorted at all times. This is for rendering them in a sort of easy-to-read manner.
 	private static final Object2IntAVLTreeMap<Text> SHOWN_REWARDS = new Object2IntAVLTreeMap<>((o1, o2) -> {
-		String o1String = GEMSTONE_SYMBOLS.matcher(o1.getString()).replaceAll("");
-		String o2String = GEMSTONE_SYMBOLS.matcher(o2.getString()).replaceAll("");
+		String o1String = o1.getString();
+		String o2String = o2.getString();
 		int priority1 = comparePriority(o1String);
 		int priority2 = comparePriority(o2String);
 		if (priority1 != priority2) return Integer.compare(priority1, priority2);
@@ -44,10 +52,12 @@ public class PowderMiningTracker {
 	 * Once the filter is changed, the {@link #SHOWN_REWARDS} map is cleared and recalculated based on this map.
 	 * </p>
 	 * <p>This is similar to how {@link ChatHud#messages} and {@link ChatHud#visibleMessages} behave.</p>
+	 *
+	 * @implNote This is a map of item IDs to the amount of that item obtained.
 	 */
 	@SuppressWarnings("JavadocReference")
-	private static final Object2IntMap<Text> ALL_REWARDS = new Object2IntArrayMap<>();
-	private static final Object2ObjectMap<String, String> NAME2ID_MAP = new Object2ObjectArrayMap<>(50);
+	private static final Object2IntMap<String> ALL_REWARDS = new Object2IntArrayMap<>();
+	private static final Object2ObjectArrayMap<String, String> NAME2ID_MAP = new Object2ObjectArrayMap<>(50);
 	private static boolean insideChestMessage = false;
 	private static double profit = 0;
 
@@ -58,53 +68,32 @@ public class PowderMiningTracker {
 
 	@Init
 	public static void init() {
-		ChatEvents.RECEIVE_TEXT.register(text -> {
+		ChatEvents.RECEIVE_STRING.register(text -> {
 			if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !isEnabled()) return;
-			List<Text> siblings = text.getSiblings();
-			switch (siblings.size()) {
-				// The separator message has 1 sibling: "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬" for which we can just use .getString on the main text
-				case 1 -> {
-					if (insideChestMessage && text.getString().equals("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")) insideChestMessage = false;
-				}
-				// CHEST LOCKPICKED message has 2 siblings: "  ", "CHEST LOCKPICKED "
-				// LOOT CHEST COLLECTED message has 2 siblings: "  ", "LOOT CHEST COLLECTED "
-				// Reward message with 1 item count has 2 siblings: "    ", "item name"
-				case 2 -> {
-					String space = siblings.get(0).getString();
-					Text second = siblings.get(1);
-					String secondString = second.getString();
-					if (!insideChestMessage && space.equals("  ") && (secondString.equals("CHEST LOCKPICKED ") || (SkyblockerConfigManager.get().mining.crystalHollows.countNaturalChestsInTracker && secondString.equals("LOOT CHEST COLLECTED ")))) {
-						insideChestMessage = true;
-						return;
-					}
-
-					if (insideChestMessage && space.equals("    ")) {
-						incrementReward(second, 1);
-						calculateProfitForItem(second, 1);
-					}
-				}
-				// Reward message with more than 1 item count has 3 siblings: "    ", "item name ", "x<count>" (the space at the end of the item name is not a typo, it's there)
-				// For some reason the colored goblin eggs have an extra sibling that is always empty (at the 2nd position)
-				// To account for that, this case includes 4 size and there's a check for the 2nd sibling to be empty and the amount parsing has getLast() instead of hardcoded position
-				case 3, 4 -> {
-					if (!insideChestMessage) return;
-					String space = siblings.get(0).getString();
-					if (!space.equals("    ")) return;
-
-					Text itemName = siblings.get(1);
-					if (itemName.getString().isEmpty()) itemName = siblings.get(2);
-
-					// If there's nothing to trim this will just do nothing
-					String nameTrimmed = itemName.getString().stripTrailing();
-					itemName = Text.literal(nameTrimmed).setStyle(itemName.getStyle());
-					// The failing of the conversion below when the amount is not included is intentional, saves some thinking
-					int amount = NumberUtils.toInt(siblings.getLast().getString().substring(1).replace(",", ""), 1);
-
-					incrementReward(itemName, amount);
-					calculateProfitForItem(itemName, amount);
-				}
-				default -> {}
+			// Reward messages end with a separator like so
+			if (insideChestMessage && text.equals("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")) {
+				insideChestMessage = false;
+				return;
 			}
+
+			if (!insideChestMessage && (text.equals("  CHEST LOCKPICKED ") || (SkyblockerConfigManager.get().mining.crystalHollows.countNaturalChestsInTracker && text.equals("  LOOT CHEST COLLECTED ")))) {
+				insideChestMessage = true;
+				return;
+			}
+
+			if (!insideChestMessage) return;
+			Matcher matcher = REWARD_PATTERN.matcher(text);
+			if (!matcher.matches()) return;
+			String itemName = matcher.group(1);
+			int amount = NumberUtils.toInt(matcher.group(2).replace(",", ""), 1);
+
+			String itemId = getItemId(itemName);
+			if (itemId.isEmpty()) {
+				LOGGER.error("No matching item id for name `{}`. Report this!", itemName);
+				return;
+			}
+			incrementReward(itemName, itemId, amount);
+			calculateProfitForItem(itemId, amount);
 		});
 
 		HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
@@ -123,6 +112,7 @@ public class PowderMiningTracker {
 			if (isEnabled()) recalculateAll();
 		});
 
+		//TODO: Sort out proper commands for this
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				literal(SkyblockerMod.NAMESPACE)
 						.then(
@@ -145,12 +135,24 @@ public class PowderMiningTracker {
 		));
 	}
 
-	private static void incrementReward(Text text, int amount) {
-		ALL_REWARDS.mergeInt(text, amount, Integer::sum);
-		if (!SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter.contains(text.getString())) SHOWN_REWARDS.mergeInt(text, amount, Integer::sum);
+	private static void incrementReward(String itemName, String itemId, int amount) {
+		ALL_REWARDS.mergeInt(itemId, amount, Integer::sum);
+		if (!SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter.contains(itemName)) {
+			if (itemId.equals("GEMSTONE_POWDER")) {
+				SHOWN_REWARDS.merge(Text.literal("Gemstone Powder").formatted(Formatting.LIGHT_PURPLE), amount, Integer::sum);
+			} else {
+				ItemStack stack = ItemRepository.getItemStack(itemId);
+				if (stack == null) {
+					LOGGER.warn("Item stack for id `{}` is null! This might be caused by failed item repository downloads.", itemId);
+					return;
+				}
+				SHOWN_REWARDS.merge(stack.getName(), amount, Integer::sum);
+			}
+		}
 	}
 
 	private static int comparePriority(String s) {
+		s = GEMSTONE_SYMBOLS.matcher(s).replaceAll(""); // Removes the gemstone symbol from the string to make it easier to compare
 		// Puts gemstone powder at the top of the list, then gold and diamond essence, then gemstones by ascending rarity and then whatever else.
 		switch (s) {
 			case "Gemstone Powder" -> {
@@ -175,9 +177,8 @@ public class PowderMiningTracker {
 	/**
 	 * Normally, the price is calculated on a per-reward basis as they are obtained. This is what this method does.
 	 */
-	private static void calculateProfitForItem(Text text, int amount) {
-		String id = getItemId(text);
-		DoubleBooleanPair price = ItemUtils.getItemPrice(id);
+	private static void calculateProfitForItem(String itemId, int amount) {
+		DoubleBooleanPair price = ItemUtils.getItemPrice(itemId);
 		if (price.rightBoolean()) profit += price.leftDouble() * amount;
 	}
 
@@ -188,7 +189,7 @@ public class PowderMiningTracker {
 		profit = 0;
 		ObjectSortedSet<Object2IntMap.Entry<Text>> set = SHOWN_REWARDS.object2IntEntrySet();
 		for (Object2IntMap.Entry<Text> entry : set) {
-			calculateProfitForItem(entry.getKey(), entry.getIntValue());
+			calculateProfitForItem(entry.getKey().getString(), entry.getIntValue());
 		}
 	}
 
@@ -197,14 +198,25 @@ public class PowderMiningTracker {
 	 */
 	public static void filterChangeCallback() {
 		SHOWN_REWARDS.clear();
-		profit = 0;
-		ObjectSet<Object2IntMap.Entry<Text>> set = ALL_REWARDS.object2IntEntrySet();
-		for (Object2IntMap.Entry<Text> entry : set) {
-			if (!SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter.contains(entry.getKey().getString())) {
-				SHOWN_REWARDS.put(entry.getKey(), entry.getIntValue());
-				calculateProfitForItem(entry.getKey(), entry.getIntValue());
+		ObjectSet<Object2IntMap.Entry<String>> set = ALL_REWARDS.object2IntEntrySet();
+		// The filters are actually item names so that they would look nice and not need a lot of mapping under the screen code
+		// Here they are converted to item IDs for comparison
+		List<String> filters = SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter.stream().map(PowderMiningTracker::getItemId).toList();
+		for (Object2IntMap.Entry<String> entry : set) {
+			if (filters.contains(entry.getKey())) continue;
+
+			if (entry.getKey().equals("GEMSTONE_POWDER")) {
+				SHOWN_REWARDS.put(Text.literal("Gemstone Powder").formatted(Formatting.LIGHT_PURPLE), entry.getIntValue());
+			} else {
+				ItemStack stack = ItemRepository.getItemStack(entry.getKey());
+				if (stack == null) {
+					LOGGER.warn("Item stack for id `{}` is null! This might be caused by failed item repository downloads.", entry.getKey());
+					continue;
+				}
+				SHOWN_REWARDS.put(stack.getName(), entry.getIntValue());
 			}
 		}
+		recalculateAll();
 	}
 
 	@Unmodifiable
@@ -213,6 +225,8 @@ public class PowderMiningTracker {
 	}
 
 	static {
+		NAME2ID_MAP.put("Gemstone Powder", "GEMSTONE_POWDER"); // Not an actual item, but since we're using IDs for mapping to colored text we need to have this here
+
 		NAME2ID_MAP.put("❤ Rough Ruby Gemstone", "ROUGH_RUBY_GEM");
 		NAME2ID_MAP.put("❤ Flawed Ruby Gemstone", "FLAWED_RUBY_GEM");
 		NAME2ID_MAP.put("❤ Fine Ruby Gemstone", "FINE_RUBY_GEM");
@@ -274,7 +288,8 @@ public class PowderMiningTracker {
 		NAME2ID_MAP.put("Superlite Motor", "SUPERLITE_MOTOR");
 	}
 
-	private static String getItemId(Text text) {
-		return NAME2ID_MAP.getOrDefault(text.getString(), "");
+	@NotNull
+	private static String getItemId(String itemName) {
+		return NAME2ID_MAP.getOrDefault(itemName, "");
 	}
 }
