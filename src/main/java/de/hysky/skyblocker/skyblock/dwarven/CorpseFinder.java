@@ -155,7 +155,7 @@ public class CorpseFinder {
 		LOGGER.debug(PREFIX + "Triggered code for onChatMessage");
 		LOGGER.debug(PREFIX + "State of corpsesByType: {}", corpsesByType);
 		String corpseType = matcherCorpse.group(1).toUpperCase();
-		String key = ITEM_IDS.inverse().getOrDefault(corpseType, null);
+		String key = ITEM_IDS.getOrDefault(corpseType, null);
 
 		List<Corpse> corpses = corpsesByType.get(key);
 		if (corpses == null) {
