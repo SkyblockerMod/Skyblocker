@@ -12,6 +12,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
@@ -43,11 +44,11 @@ public class ItemTooltip {
         }
     }
 
-    public static Text getCoinsMessage(double price, int count) {
+    public static MutableText getCoinsMessage(double price, int count) {
         return getCoinsMessage(price, count, false);
     }
 
-    public static Text getCoinsMessage(double price, int count, boolean preCounted) {
+    public static MutableText getCoinsMessage(double price, int count, boolean preCounted) {
         // Format the price string once
         String priceString = String.format(Locale.ENGLISH, "%1$,.1f", preCounted ? price / count : price);
 
