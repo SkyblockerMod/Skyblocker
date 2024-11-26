@@ -767,6 +767,17 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "Only show the calculator when the message starts with \"=\".",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
 
+
+  "skyblocker.config.uiAndVisuals.inventorySearch": "Inventory Search",
+  "skyblocker.config.uiAndVisuals.inventorySearch.ctrlK": "Use CTRL + K for inventory search instead of CTRL + F",
+  "skyblocker.config.uiAndVisuals.inventorySearch.cmdK": "Use CMD + K for inventory search instead of CMD + F",
+  "skyblocker.config.uiAndVisuals.inventorySearch.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText": "Show clickable text",
+  "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText.@Tooltip": "Shows a clickable text at the top of the screen to open the search field.",
+  "skyblocker.config.uiAndVisuals.inventorySearch.state.OFF": "Off",
+  "skyblocker.config.uiAndVisuals.inventorySearch.state.SKYBLOCK": "Skyblock Only",
+  "skyblocker.config.uiAndVisuals.inventorySearch.state.EVERYWHERE": "Everywhere",
+
   "skyblocker.config.uiAndVisuals.itemCooldown": "Item Cooldown",
   "skyblocker.config.uiAndVisuals.itemCooldown.enableItemCooldowns": "Enable Item Cooldown",
 
@@ -1009,6 +1020,8 @@
   "skyblocker.itemProtection.removed": "§fYour %s will §nno longer be protected§f :( - §lBeware of the dangers in doing this!",
   "skyblocker.itemProtection.noItemUuid": "§cYou must be holding an item that has a uuid to protect it!",
   "skyblocker.itemProtection.unableToProtect": "§cUnable to protect this item :( (Are you in skyblock?, are you holding an item?)",
+
+  "skyblocker.inventorySearch.clickHereToSearch": "Click here to search.",
 
   "skyblocker.tips.enabled": "§aEnabled Tips.",
   "skyblocker.tips.disabled": "§cDisabled Tips.",
