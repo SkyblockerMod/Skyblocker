@@ -138,6 +138,9 @@ public class GeneralConfig {
 
         @SerialEntry
         public boolean enableEstimatedItemValue = true;
+
+        @SerialEntry
+        public boolean enableStackingEnchantProgress = true;
     }
 
     public enum Average {
