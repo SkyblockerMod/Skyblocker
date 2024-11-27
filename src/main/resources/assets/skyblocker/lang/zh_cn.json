@@ -998,5 +998,16 @@
     "skyblocker.config.debug.dumpFormat.@Tooltip": "导出物品数据时所用的格式 ，SNBT格式文本已上色以增强可读性而JSON格式文本带有转义符（如部分双引号前）",
     "skyblocker.config.dungeons.goldorWaypoints": "Goldor任务路径点（F7/M7）",
     "skyblocker.config.dungeons.goldorWaypoints.waypointType": "任务路径点类型",
-    "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "在Goldor的期间启用终端/设备/控制杆的路径点"
+    "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "在Goldor的期间启用终端/设备/控制杆的路径点",
+    "skyblocker.config.general.hitbox.oldMushroomHitbox": "启用1.8版本蘑菇判定箱",
+    "skyblocker.inventorySearch.clickHereToSearch": "点击这里搜索。",
+    "skyblocker.config.uiAndVisuals.inventorySearch": "库存搜索",
+    "skyblocker.config.uiAndVisuals.inventorySearch.ctrlK": "使用CTRL + K代替CTRL + F进行库存搜索",
+    "skyblocker.config.uiAndVisuals.inventorySearch.cmdK": "使用CMD + K代替CMD + F进行库存搜索",
+    "skyblocker.config.uiAndVisuals.inventorySearch.enabled": "已启用",
+    "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText": "显示可点击的文本",
+    "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText.@Tooltip": "在屏幕顶部显示可点击的文本以打开搜索字段。",
+    "skyblocker.config.uiAndVisuals.inventorySearch.state.OFF": "关",
+    "skyblocker.config.uiAndVisuals.inventorySearch.state.SKYBLOCK": "仅限Skyblock",
+    "skyblocker.config.uiAndVisuals.inventorySearch.state.EVERYWHERE": "所有游戏"
 }
