@@ -948,5 +948,15 @@
     "skyblocker.config.dungeons.salvageHelper.@Tooltip": "突出顯示在地牢中撿起的可分解物品。",
     "skyblocker.config.debug": "除錯",
     "skyblocker.config.debug.showInvisibleArmorStands": "顯示隱形盔甲架",
-    "skyblocker.webSocket.receivedCrystalsWaypoint": "從Skyblocker WebSocket收到了%s的路徑點。"
+    "skyblocker.webSocket.receivedCrystalsWaypoint": "從Skyblocker WebSocket收到了%s的路徑點。",
+    "skyblocker.config.general.hitbox.oldMushroomHitbox": "啟用1.8版本蘑菇判定箱",
+    "skyblocker.config.uiAndVisuals.inventorySearch": "庫存搜尋",
+    "skyblocker.config.uiAndVisuals.inventorySearch.ctrlK": "使用CTRL + K代替CTRL + F進行庫存搜尋",
+    "skyblocker.config.uiAndVisuals.inventorySearch.cmdK": "使用CMD + K代替CMD + F進行庫存搜尋",
+    "skyblocker.config.uiAndVisuals.inventorySearch.enabled": "已啟用",
+    "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText": "顯示可點擊的文本",
+    "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText.@Tooltip": "在螢幕頂部顯示可點擊的文字以開啟搜尋欄位。",
+    "skyblocker.config.uiAndVisuals.inventorySearch.state.OFF": "關",
+    "skyblocker.config.uiAndVisuals.inventorySearch.state.SKYBLOCK": "僅限Skyblock",
+    "skyblocker.config.uiAndVisuals.inventorySearch.state.EVERYWHERE": "所有遊戲"
 }
