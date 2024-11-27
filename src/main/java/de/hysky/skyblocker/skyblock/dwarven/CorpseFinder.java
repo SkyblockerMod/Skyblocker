@@ -2,14 +2,14 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import com.google.common.collect.ImmutableBiMap;
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.*;
-import de.hysky.skyblocker.utils.command.argumenttypes.CorpseTypeArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -20,6 +20,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -27,6 +28,7 @@ import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.text.WordUtils;
@@ -82,9 +84,9 @@ public class CorpseFinder {
 				.then(literal("corpseHelper")
 						.then(literal("shareLocation")
 								.then(argument("blockPos", ClientBlockPosArgumentType.blockPos())
-										.then(argument("corpseType", CorpseTypeArgumentType.corpseType())
+										.then(argument("corpseType", CorpseType.CorpseTypeArgumentType.corpseType())
 												.executes(context -> {
-													shareLocation(ClientBlockPosArgumentType.getBlockPos(context, "blockPos"), StringArgumentType.getString(context, "corpseType"));
+													shareLocation(ClientBlockPosArgumentType.getBlockPos(context, "blockPos"), CorpseType.CorpseTypeArgumentType.getCorpseType(context, "corpseType"));
 													return Command.SINGLE_SUCCESS;
 												})
 										)
@@ -111,11 +113,11 @@ public class CorpseFinder {
 	}
 
 	private static void handleArmorStand(ArmorStandEntity armorStand) {
-		String itemId = ItemUtils.getItemId(armorStand.getEquippedStack(EquipmentSlot.HEAD));
-		if (!ITEM_IDS.containsValue(itemId)) return;
+		String helmetItemId = ItemUtils.getItemId(armorStand.getEquippedStack(EquipmentSlot.HEAD));
+		if (!ITEM_IDS.containsValue(helmetItemId)) return;
 
 		LOGGER.debug(PREFIX + "Triggered code for handleArmorStand and matched with ITEM_IDS");
-		List<Corpse> corpses = corpsesByType.computeIfAbsent(itemId, k -> new ArrayList<>());
+		List<Corpse> corpses = corpsesByType.computeIfAbsent(helmetItemId, k -> new ArrayList<>());
 		if (corpses.stream().noneMatch(c -> c.entity.getBlockPos().equals(armorStand.getBlockPos()))) {
 			Waypoint corpseWaypoint;
 			float[] color = getColors(getColor(armorStand));
@@ -124,10 +126,10 @@ public class CorpseFinder {
 				MinecraftClient.getInstance().player.sendMessage(
 						Constants.PREFIX.get().append(
 								Text.literal("Corpse finder debug mode is active! Please use it only for the sake of debugging corpse detection!")
-								    .formatted(Formatting.GOLD, Formatting.BOLD)
+										.formatted(Formatting.GOLD, Formatting.BOLD)
 						), false);
 			}
-			Corpse newCorpse = new Corpse(armorStand, corpseWaypoint, ITEM_IDS.inverse().getOrDefault(itemId, "UNKNOWN"));
+			Corpse newCorpse = new Corpse(armorStand, corpseWaypoint, CorpseType.fromHelmetItemId(helmetItemId));
 			corpses.add(newCorpse);
 		}
 	}
@@ -163,14 +165,14 @@ public class CorpseFinder {
 			return;
 		}
 		corpses.stream() // Since squared distance comparison will yield the same result as normal distance comparison, we can use squared distance to avoid square root calculation
-		       .min(Comparator.comparingDouble(corpse -> corpse.entity.squaredDistanceTo(MinecraftClient.getInstance().player)))
-		       .ifPresentOrElse(
-				       corpse -> {
-					       LOGGER.info(PREFIX + "Found corpse, marking as found! {}: {}", corpse.entity.getType(), corpse.entity.getBlockPos().toShortString());
-					       corpse.waypoint.setFound();
-				       },
-				       () -> LOGGER.warn(PREFIX + "Couldn't find the closest corpse despite triggering onChatMessage!")
-		       );
+				.min(Comparator.comparingDouble(corpse -> corpse.entity.squaredDistanceTo(MinecraftClient.getInstance().player)))
+				.ifPresentOrElse(
+						corpse -> {
+							LOGGER.info(PREFIX + "Found corpse, marking as found! {}: {}", corpse.entity.getType(), corpse.entity.getBlockPos().toShortString());
+							corpse.waypoint.setFound();
+						},
+						() -> LOGGER.warn(PREFIX + "Couldn't find the closest corpse despite triggering onChatMessage!")
+				);
 	}
 
 	@SuppressWarnings("DataFlowIssue")
@@ -186,12 +188,12 @@ public class CorpseFinder {
 
 		MinecraftClient.getInstance().player.sendMessage(
 				Constants.PREFIX.get()
-				                .append("Found a ")
-				                .append(Text.literal(WordUtils.capitalizeFully(corpse.name) + " Corpse")
-				                            .withColor(corpse.color.getColorValue()))
-				                .append(" at " + corpse.entity.getBlockPos().up().toShortString() + "!")
-				                .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker corpseHelper shareLocation " + PosUtils.toSpaceSeparatedString(corpse.waypoint.pos) + " " + corpse.name))
-				                                      .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))), false);
+						.append("Found a ")
+						.append(Text.literal(WordUtils.capitalizeFully(corpse.name.asString()) + " Corpse")
+								.withColor(corpse.color.getColorValue()))
+						.append(" at " + corpse.entity.getBlockPos().up().toShortString() + "!")
+						.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker corpseHelper shareLocation " + PosUtils.toSpaceSeparatedString(corpse.waypoint.pos) + " " + corpse.name))
+								.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))), false);
 	}
 
 	private static Formatting getColor(ArmorStandEntity entity) {
@@ -211,8 +213,8 @@ public class CorpseFinder {
 		return Formatting.YELLOW;
 	}
 
-	private static void shareLocation(BlockPos pos, String corpseType) {
-		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + toSkyhanniFormat(pos) + " | (" + WordUtils.capitalizeFully(corpseType) + " Corpse)", true);
+	private static void shareLocation(BlockPos pos, CorpseType corpseType) {
+		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + toSkyhanniFormat(pos) + " | (" + WordUtils.capitalizeFully(corpseType.asString()) + " Corpse)", true);
 	}
 
 	@SuppressWarnings("DataFlowIssue")
@@ -246,8 +248,8 @@ public class CorpseFinder {
 					LOGGER.info(PREFIX + "Setting corpse {} as seen!", corpse.entity);
 					MinecraftClient.getInstance().player.sendMessage(
 							Constants.PREFIX.get()
-							                .append("Parsed message from chat, adding corpse at ")
-							                .append(corpse.entity.getBlockPos().toShortString()), false);
+									.append("Parsed message from chat, adding corpse at ")
+									.append(corpse.entity.getBlockPos().toShortString()), false);
 					break;
 				}
 			}
@@ -263,21 +265,63 @@ public class CorpseFinder {
 		}
 	}
 
+	enum CorpseType implements StringIdentifiable {
+		LAPIS(LAPIS_HELMET),
+		UMBER(UMBER_HELMET),
+		TUNGSTEN(TUNGSTEN_HELMET),
+		VANGUARD(VANGUARD_HELMET),
+		UNKNOWN("UNKNOWN");
+		private static final Codec<CorpseType> CODEC = StringIdentifiable.createCodec(CorpseType::values);
+		private final String helmetItemId;
+
+		CorpseType(String helmetItemId) {
+			this.helmetItemId = helmetItemId;
+		}
+
+		static CorpseType fromHelmetItemId(String helmetItemId) {
+			for (CorpseType value : values()) {
+				if (value.helmetItemId.equals(helmetItemId)) {
+					return value;
+				}
+			}
+			return UNKNOWN;
+		}
+
+		@Override
+		public String asString() {
+			return name().toLowerCase();
+		}
+
+		static class CorpseTypeArgumentType extends EnumArgumentType<CorpseType> {
+			protected CorpseTypeArgumentType() {
+				super(CODEC, CorpseType::values);
+			}
+
+			static CorpseTypeArgumentType corpseType() {
+				return new CorpseTypeArgumentType();
+			}
+
+			static <S> CorpseType getCorpseType(CommandContext<S> context, String name) {
+				return context.getArgument(name, CorpseType.class);
+			}
+		}
+	}
+
 	static class Corpse {
 		private final ArmorStandEntity entity;
 		/**
 		 * Waypoint position is always 1 above entity position
 		 */
 		private final Waypoint waypoint;
-		private boolean seen;
-		private long messageLastSent = 0;
 		private final Formatting color;
 		/**
 		 * Type of the corpse, fully uppercased.
 		 */
-		private final String name;
+		private final CorpseType name;
+		private boolean seen;
+		private long messageLastSent = 0;
 
-		Corpse(ArmorStandEntity entity, Waypoint waypoint, String name) {
+		Corpse(ArmorStandEntity entity, Waypoint waypoint, CorpseType name) {
 			this.entity = entity;
 			this.waypoint = waypoint;
 			this.seen = false;
