@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import com.google.common.collect.ImmutableBiMap;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
@@ -48,17 +47,11 @@ public class CorpseFinder {
 	private static final Pattern COORDS_PATTERN = Pattern.compile("x: (?<x>-?\\d+), y: (?<y>-?\\d+), z: (?<z>-?\\d+)");
 	private static final String PREFIX = "[Skyblocker Corpse Finder] ";
 	private static final Logger LOGGER = LoggerFactory.getLogger(CorpseFinder.class);
-	private static final Map<String, List<Corpse>> corpsesByType = new HashMap<>();
+	private static final Map<CorpseType, List<Corpse>> corpsesByType = new EnumMap<>(CorpseType.class);
 	private static final String LAPIS_HELMET = "LAPIS_ARMOR_HELMET";
 	private static final String UMBER_HELMET = "ARMOR_OF_YOG_HELMET";
 	private static final String TUNGSTEN_HELMET = "MINERAL_HELMET";
 	private static final String VANGUARD_HELMET = "VANGUARD_HELMET";
-	private static final ImmutableBiMap<String, String> ITEM_IDS = ImmutableBiMap.of(
-			"LAPIS", LAPIS_HELMET,
-			"UMBER", UMBER_HELMET,
-			"TUNGSTEN", TUNGSTEN_HELMET,
-			"VANGUARD", VANGUARD_HELMET
-	);
 
 	@Init
 	public static void init() {
@@ -114,13 +107,14 @@ public class CorpseFinder {
 
 	private static void handleArmorStand(ArmorStandEntity armorStand) {
 		String helmetItemId = ItemUtils.getItemId(armorStand.getEquippedStack(EquipmentSlot.HEAD));
-		if (!ITEM_IDS.containsValue(helmetItemId)) return;
+		CorpseType corpseType = CorpseType.fromHelmetItemId(helmetItemId);
+		if (corpseType == CorpseType.UNKNOWN) return;
 
 		LOGGER.debug(PREFIX + "Triggered code for handleArmorStand and matched with ITEM_IDS");
-		List<Corpse> corpses = corpsesByType.computeIfAbsent(helmetItemId, k -> new ArrayList<>());
+		List<Corpse> corpses = corpsesByType.computeIfAbsent(corpseType, k -> new ArrayList<>());
 		if (corpses.stream().noneMatch(c -> c.entity.getBlockPos().equals(armorStand.getBlockPos()))) {
 			Waypoint corpseWaypoint;
-			float[] color = getColors(getColor(armorStand));
+			float[] color = getColors(corpseType.color);
 			corpseWaypoint = new Waypoint(armorStand.getBlockPos().up(), Waypoint.Type.OUTLINED_WAYPOINT, color);
 			if (Debug.debugEnabled() && SkyblockerConfigManager.get().debug.corpseFinderDebug && !seenDebugWarning && (seenDebugWarning = true)) {
 				MinecraftClient.getInstance().player.sendMessage(
@@ -129,7 +123,7 @@ public class CorpseFinder {
 										.formatted(Formatting.GOLD, Formatting.BOLD)
 						), false);
 			}
-			Corpse newCorpse = new Corpse(armorStand, corpseWaypoint, CorpseType.fromHelmetItemId(helmetItemId));
+			Corpse newCorpse = new Corpse(armorStand, corpseWaypoint, corpseType);
 			corpses.add(newCorpse);
 		}
 	}
@@ -156,12 +150,12 @@ public class CorpseFinder {
 
 		LOGGER.debug(PREFIX + "Triggered code for onChatMessage");
 		LOGGER.debug(PREFIX + "State of corpsesByType: {}", corpsesByType);
-		String corpseType = matcherCorpse.group(1).toUpperCase();
-		String key = ITEM_IDS.getOrDefault(corpseType, null);
+		String corpseTypeString = matcherCorpse.group(1).toLowerCase();
+		CorpseType corpseType = Arrays.stream(CorpseType.values()).filter(c -> c.asString().equals(corpseTypeString)).findFirst().orElse(CorpseType.UNKNOWN);
 
-		List<Corpse> corpses = corpsesByType.get(key);
+		List<Corpse> corpses = corpsesByType.get(corpseType);
 		if (corpses == null) {
-			LOGGER.warn(PREFIX + "Couldn't get corpses! corpseType: {}, key: {}", corpseType, key);
+			LOGGER.warn(PREFIX + "Couldn't get corpses! corpse type string: {}, parsed corpse type: {}", corpseTypeString, corpseType);
 			return;
 		}
 		corpses.stream() // Since squared distance comparison will yield the same result as normal distance comparison, we can use squared distance to avoid square root calculation
@@ -179,7 +173,7 @@ public class CorpseFinder {
 	private static void setSeen(Corpse corpse) {
 		corpse.seen = true;
 		if (SkyblockerConfigManager.get().mining.glacite.autoShareCorpses) {
-			shareLocation(corpse.entity.getBlockPos().up(), corpse.name);
+			shareLocation(corpse.entity.getBlockPos().up(), corpse.corpseType);
 			return; // There's no need to send the message twice, so we return here.
 		}
 		if (Util.getMeasuringTimeMs() - corpse.messageLastSent < 300) return;
@@ -189,28 +183,11 @@ public class CorpseFinder {
 		MinecraftClient.getInstance().player.sendMessage(
 				Constants.PREFIX.get()
 						.append("Found a ")
-						.append(Text.literal(WordUtils.capitalizeFully(corpse.name.asString()) + " Corpse")
-								.withColor(corpse.color.getColorValue()))
+						.append(Text.literal(WordUtils.capitalizeFully(corpse.corpseType.asString()) + " Corpse")
+								.withColor(corpse.corpseType.color.getColorValue()))
 						.append(" at " + corpse.entity.getBlockPos().up().toShortString() + "!")
-						.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker corpseHelper shareLocation " + PosUtils.toSpaceSeparatedString(corpse.waypoint.pos) + " " + corpse.name))
+						.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker corpseHelper shareLocation " + PosUtils.toSpaceSeparatedString(corpse.waypoint.pos) + " " + corpse.corpseType))
 								.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))), false);
-	}
-
-	private static Formatting getColor(ArmorStandEntity entity) {
-		String itemId = ItemUtils.getItemId(entity.getEquippedStack(EquipmentSlot.HEAD));
-		if (ITEM_IDS.containsValue(itemId)) {
-			switch (itemId) {
-				case LAPIS_HELMET, VANGUARD_HELMET:
-					return Formatting.BLUE; // dark blue looks bad and those two never exist in same shaft
-				case UMBER_HELMET:
-					return Formatting.RED;
-				case TUNGSTEN_HELMET:
-					return Formatting.GRAY;
-			}
-		}
-
-		LOGGER.warn(PREFIX + "Couldn't match a color! Something probably went very wrong!");
-		return Formatting.YELLOW;
 	}
 
 	private static void shareLocation(BlockPos pos, CorpseType corpseType) {
@@ -266,16 +243,18 @@ public class CorpseFinder {
 	}
 
 	enum CorpseType implements StringIdentifiable {
-		LAPIS(LAPIS_HELMET),
-		UMBER(UMBER_HELMET),
-		TUNGSTEN(TUNGSTEN_HELMET),
-		VANGUARD(VANGUARD_HELMET),
-		UNKNOWN("UNKNOWN");
+		LAPIS(LAPIS_HELMET, Formatting.BLUE), // dark blue looks bad and these two never exist in same shaft
+		UMBER(UMBER_HELMET, Formatting.RED),
+		TUNGSTEN(TUNGSTEN_HELMET, Formatting.GRAY),
+		VANGUARD(VANGUARD_HELMET, Formatting.BLUE),
+		UNKNOWN("UNKNOWN", Formatting.YELLOW);
 		private static final Codec<CorpseType> CODEC = StringIdentifiable.createCodec(CorpseType::values);
 		private final String helmetItemId;
+		private final Formatting color;
 
-		CorpseType(String helmetItemId) {
+		CorpseType(String helmetItemId, Formatting color) {
 			this.helmetItemId = helmetItemId;
+			this.color = color;
 		}
 
 		static CorpseType fromHelmetItemId(String helmetItemId) {
@@ -313,20 +292,18 @@ public class CorpseFinder {
 		 * Waypoint position is always 1 above entity position
 		 */
 		private final Waypoint waypoint;
-		private final Formatting color;
 		/**
 		 * Type of the corpse, fully uppercased.
 		 */
-		private final CorpseType name;
+		private final CorpseType corpseType;
 		private boolean seen;
 		private long messageLastSent = 0;
 
-		Corpse(ArmorStandEntity entity, Waypoint waypoint, CorpseType name) {
+		Corpse(ArmorStandEntity entity, Waypoint waypoint, CorpseType corpseType) {
 			this.entity = entity;
 			this.waypoint = waypoint;
 			this.seen = false;
-			this.color = getColor(entity);
-			this.name = name;
+			this.corpseType = corpseType;
 		}
 	}
 }
