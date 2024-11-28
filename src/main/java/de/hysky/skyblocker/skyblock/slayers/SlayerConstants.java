@@ -1,12 +1,7 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.BlazeEntity;
-import net.minecraft.entity.mob.EndermanEntity;
-import net.minecraft.entity.mob.SpiderEntity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.Formatting;
 
 import java.util.Map;
@@ -49,13 +44,13 @@ public class SlayerConstants {
 			Map.entry("Burningsoul Demon", DEMONLORD)
 	);
 
-	public static final Map<String, Class<? extends Entity>> SLAYER_MOB_TYPE = Map.of(
-			REVENANT, ZombieEntity.class,
-			TARA, SpiderEntity.class,
-			SVEN, WolfEntity.class,
-			VOIDGLOOM, EndermanEntity.class,
-			DEMONLORD, BlazeEntity.class,
-			VAMPIRE, PlayerEntity.class
+	public static final Map<String, EntityType<? extends Entity>> SLAYER_MOB_TYPE = Map.of(
+			REVENANT, EntityType.ZOMBIE,
+			TARA, EntityType.SPIDER,
+			SVEN, EntityType.WOLF,
+			VOIDGLOOM, EntityType.ENDERMAN,
+			DEMONLORD, EntityType.BLAZE,
+			VAMPIRE, EntityType.PLAYER
 	);
 
 	public static final Map<Integer, Formatting> SLAYER_TIERS_COLORS = Map.of(

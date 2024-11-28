@@ -14,8 +14,8 @@ import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.CaveSpiderEntity;
 import net.minecraft.entity.mob.MobEntity;
@@ -30,7 +30,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class SlayerManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SlayerManager.class);
@@ -38,6 +37,8 @@ public class SlayerManager {
 	private static final Pattern SLAYER_TIER_PATTERN = Pattern.compile("^(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend)\\s+(I|II|III|IV|V)$");
 	private static final Pattern PATTERN_XP_NEEDED = Pattern.compile("\\s*(Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL ([0-9]) - (?:Next LVL in ([\\d,]+) XP!|LVL MAXED OUT!)\\s*");
 	private static final Pattern PATTERN_LVL_UP = Pattern.compile("\\s*LVL UP! ➜ (Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [1-9]\\s*");
+	public static final Title MINIBOSS_SPAWN = new Title(Text.translatable("skyblocker.slayer.miniBossSpawnAlert").formatted(Formatting.RED));
+	private static final Title BOSS_SPAWN = new Title(Text.translatable("skyblocker.slayer.bossSpawnAlert").formatted(Formatting.RED));
 	public static String slayerType = "";
 	public static String slayerTier = "";
 	public static int xpRemaining = 0;
@@ -110,7 +111,7 @@ public class SlayerManager {
 				if (line.contains("Slay the boss!")) {
 					if (quest != null && !bossSpawned && !quest.slain) {
 						if (SkyblockerConfigManager.get().slayers.bossSpawnAlert) {
-							TitleContainer.addTitle(new Title(Text.literal(I18n.translate("skyblocker.slayer.bossSpawnAlert")).formatted(Formatting.RED)), 20);
+							TitleContainer.addTitle(BOSS_SPAWN, 20);
 							MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
 						}
 						bossSpawned = true;
@@ -161,8 +162,8 @@ public class SlayerManager {
 			xpPerTier = SlayerConstants.regularXpPerTier[tier - 1];
 		}
 
-		if(MayorUtils.getMayor().perks().stream().anyMatch(perk -> perk.name().equals("Slayer XP Buff")) || MayorUtils.getMinister().perk().name().equals("Slayer XP Buff")) {
-			xpPerTier = (int)(xpPerTier * 1.25);
+		if (MayorUtils.getMayor().perks().stream().anyMatch(perk -> perk.name().equals("Slayer XP Buff")) || MayorUtils.getMinister().perk().name().equals("Slayer XP Buff")) {
+			xpPerTier = (int) (xpPerTier * 1.25);
 		}
 
 		bossesNeeded = (int) Math.ceil((double) xpRemaining / xpPerTier);
@@ -179,15 +180,14 @@ public class SlayerManager {
 
 		if (MinecraftClient.getInstance().world != null) {
 			for (Entity entity : MinecraftClient.getInstance().world.getEntities()) {
-				if (entity.hasCustomName()) {
-					String entityName = entity.getCustomName().getString();
+				if (entity instanceof ArmorStandEntity armorStand && entity.hasCustomName()) {
+					String entityName = entity.getName().getString();
 					Matcher matcher = SLAYER_PATTERN.matcher(entityName);
 					if (matcher.find()) {
 						String username = MinecraftClient.getInstance().getSession().getUsername();
-						for (Entity armorStand : getEntityArmorStands(entity, 1.5f)) {
-							if (armorStand.getDisplayName().getString().contains(username)) {
-								slayerArmorStandEntity = (ArmorStandEntity) entity;
-								return slayerArmorStandEntity;
+						for (Entity otherArmorStands : getEntityArmorStands(entity, 1.5f)) {
+							if (otherArmorStands.getName().getString().contains(username)) {
+								return slayerArmorStandEntity = armorStand;
 							}
 						}
 					}
@@ -195,39 +195,32 @@ public class SlayerManager {
 			}
 		}
 
-		slayerArmorStandEntity = null;
-		return null;
+		return slayerArmorStandEntity = null;
 	}
 
-	public static Entity getSlayerEntity(Class<? extends MobEntity> entityClass) {
+	public static Entity getSlayerEntity(EntityType<? extends MobEntity> entityType) {
 		if (slayerEntity != null && slayerEntity.isAlive()) {
 			return slayerEntity;
 		}
 
 		ArmorStandEntity armorStand = getSlayerArmorStandEntity();
 		if (armorStand != null) {
-			slayerEntity = findClosestMobEntity(entityClass, armorStand);
-			return slayerEntity;
+			return slayerEntity = findClosestMobEntity(entityType, armorStand);
 		}
 
-		slayerEntity = null;
-		return null;
+		return slayerEntity = null;
 	}
 
 	/**
-	 * <p> Finds the closest matching Entity for the armorStand using entityClass and armorStand age difference to filter
+	 * <p> Finds the closest matching Entity for the armorStand using entityType and armorStand age difference to filter
 	 * out impossible candidates, returning the closest entity of those remaining in the search box by block distance </p>
 	 *
-	 * @param entityClass the entity type of the Slayer (i.e. ZombieEntity.class)
+	 * @param entityType the entity type of the Slayer (i.e. ZombieEntity.class)
 	 * @param armorStand  the entity that contains the display name of the Slayer (mini)boss
 	 */
-	public static Entity findClosestMobEntity(Class<? extends Entity> entityClass, ArmorStandEntity armorStand) {
-		List<Entity> mobEntities = armorStand.getWorld().getEntitiesByClass(entityClass, armorStand.getDimensions(null)
-						.getBoxAt(armorStand.getPos()).expand(0.3f, 1.5f, 0.3f), Entity::isAlive)
-				.stream()
-				.filter(SlayerManager::isValidSlayerMob)
-				.sorted(Comparator.comparingDouble(e -> e.squaredDistanceTo(armorStand)))
-				.collect(Collectors.toList());
+	public static <T extends Entity> T findClosestMobEntity(EntityType<T> entityType, ArmorStandEntity armorStand) {
+		List<T> mobEntities = armorStand.getWorld().getEntitiesByType(entityType, armorStand.getBoundingBox().expand(0.3f, 1.5f, 0.3f), SlayerManager::isValidSlayerMob);
+		mobEntities.sort(Comparator.comparingDouble(e -> e.squaredDistanceTo(armorStand)));
 
 		return switch (mobEntities.size()) {
 			case 0 -> null;
@@ -244,8 +237,9 @@ public class SlayerManager {
 	 * i.e. Cavespider extends spider and thus will highlight the broodfather's head pet instead and
 	 */
 	private static boolean isValidSlayerMob(Entity entity) {
-		if(entity instanceof MobEntity mob) return !(mob instanceof CaveSpiderEntity) && !(mob.isBaby());
-		return true;
+		return entity.isAlive() && // entity is alive
+				!(entity instanceof MobEntity mob && mob.isBaby()) && // entity is not a baby
+				!(entity instanceof CaveSpiderEntity); // entity is not a cave spider
 	}
 
 	/**

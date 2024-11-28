@@ -53,7 +53,7 @@ public class SlayersCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.bossSpawnAlert"))
 						.description(OptionDescription.of(
-								Text.translatable("skyblocker.config.slayer.bossSpawnAlert.@Tooltip[0]")))
+								Text.translatable("skyblocker.config.slayer.bossSpawnAlert.@Tooltip")))
 						.binding(defaults.slayers.bossSpawnAlert,
 								() -> config.slayers.bossSpawnAlert,
 								newValue -> config.slayers.bossSpawnAlert = newValue)
@@ -62,7 +62,7 @@ public class SlayersCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.miniBossSpawnAlert"))
 						.description(OptionDescription.of(
-								Text.translatable("skyblocker.config.slayer.miniBossSpawnAlert.@Tooltip[0]")))
+								Text.translatable("skyblocker.config.slayer.miniBossSpawnAlert.@Tooltip")))
 						.binding(defaults.slayers.miniBossSpawnAlert,
 								() -> config.slayers.miniBossSpawnAlert,
 								newValue -> config.slayers.miniBossSpawnAlert = newValue)
@@ -71,7 +71,7 @@ public class SlayersCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.slainTime"))
 						.description(OptionDescription.of(
-								Text.translatable("skyblocker.config.slayer.slainTime.@Tooltip[0]")))
+								Text.translatable("skyblocker.config.slayer.slainTime.@Tooltip")))
 						.binding(defaults.slayers.slainTime,
 								() -> config.slayers.slainTime,
 								newValue -> config.slayers.slainTime = newValue)
@@ -80,7 +80,7 @@ public class SlayersCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.enableHud"))
 						.description(OptionDescription.of(
-								Text.translatable("skyblocker.config.slayer.enableHud.@Tooltip[0]")))
+								Text.translatable("skyblocker.config.slayer.enableHud.@Tooltip")))
 						.binding(defaults.slayers.slayerHud.enableHud,
 								() -> config.slayers.slayerHud.enableHud,
 								newValue -> config.slayers.slayerHud.enableHud = newValue)

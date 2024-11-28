@@ -7,6 +7,7 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.util.math.Box;
@@ -61,13 +62,13 @@ public class SlayerEntitiesGlow {
 	 */
 	public static void setSlayerMobGlow(ArmorStandEntity armorStand) {
 		String slayerType = SlayerManager.getSlayerType();
-		Class<? extends Entity> entityClass = SlayerConstants.SLAYER_MOB_TYPE.get(slayerType);
-		if (entityClass != null) {
-			Entity closestEntity = SlayerManager.findClosestMobEntity(entityClass, armorStand);
+		EntityType<? extends Entity> entityType = SlayerConstants.SLAYER_MOB_TYPE.get(slayerType);
+		if (entityType != null) {
+			Entity closestEntity = SlayerManager.findClosestMobEntity(entityType, armorStand);
 			if (closestEntity != null) {
 				UUID uuid = ARMORSTAND_TO_MOBS_TO_GLOW.putIfAbsent(armorStand.getUuid(), closestEntity.getUuid());
 				if (uuid != null && closestEntity.getUuid() != uuid && closestEntity.age < 80) {
-					Scheduler.INSTANCE.schedule(() -> recalculateMobGlow(armorStand, entityClass, uuid), 30, true);
+					Scheduler.INSTANCE.schedule(() -> recalculateMobGlow(armorStand, entityType, uuid), 30, true);
 				}
 				MOBS_TO_GLOW.add(closestEntity.getUuid());
 			}
@@ -78,11 +79,11 @@ public class SlayerEntitiesGlow {
 	 * This method attempts self-correct by finding the true slayer mob if there's 2 candidates
 	 *
 	 * @param armorStand  the armor stand we know to be a slayer mob
-	 * @param entityClass the java class of the entity we know the armor stand to belong to
+	 * @param entityType the java class of the entity we know the armor stand to belong to
 	 * @param oldUUID     the uuid of the first detected slayer mob
 	 */
-	private static void recalculateMobGlow(ArmorStandEntity armorStand, Class<? extends Entity> entityClass, UUID oldUUID) {
-		Entity entity = SlayerManager.findClosestMobEntity(entityClass, armorStand);
+	private static void recalculateMobGlow(ArmorStandEntity armorStand, EntityType<? extends Entity> entityType, UUID oldUUID) {
+		Entity entity = SlayerManager.findClosestMobEntity(entityType, armorStand);
 		if (entity != null && entity.getUuid() != oldUUID) {
 			RenderHelper.runOnRenderThread(() -> {
 				MOBS_TO_GLOW.add(entity.getUuid());

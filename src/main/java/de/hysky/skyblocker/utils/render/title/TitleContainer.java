@@ -11,7 +11,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.text.MutableText;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.LinkedHashSet;
@@ -46,16 +45,6 @@ public class TitleContainer {
     public static boolean containsTitle(Title title) {
         return titles.contains(title);
     }
-
-	/**
-	 * Returns {@code true} if a title with the specified text content is currently shown.
-	 *
-	 * @param text the text content of the title to check
-	 * @return whether the title with the specified text content is currently shown
-	 */
-	public static boolean containsTitle(MutableText text) {
-		return titles.stream().anyMatch(title -> title.getText().equals(text));
-	}
 
     /**
      * Adds a title to be shown
