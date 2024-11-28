@@ -4,7 +4,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.Constants;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -22,11 +21,11 @@ public class SlainTime {
 			Duration currentPB = PersonalBest.getPersonalBest(SlayerManager.getSlayerType() + SlayerManager.getSlayerTier());
 
 			if (currentPB != null && (currentPB.toMillis() > timeElapsed.toMillis())) {
-				MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(I18n.translate("skyblocker.slayer.slainTime")).append(" ").append(Text.literal(duration).formatted(Formatting.YELLOW)).append("! ").append(Text.literal(I18n.translate("skyblocker.slayer.personalBest")).formatted(Formatting.LIGHT_PURPLE)).append(Text.literal("!"))), false);
-				MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(I18n.translate("skyblocker.slayer.previousPB")).append(" ").append(Text.literal(formatTime(currentPB)).formatted(Formatting.YELLOW)).append(".")), false);
+				MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW))).append(Text.translatable("skyblocker.slayer.personalBest").formatted(Formatting.LIGHT_PURPLE))), false);
+				MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.previousPB", Text.literal(formatTime(currentPB)).formatted(Formatting.YELLOW)))), false);
 				PersonalBest.updateBestTime(SlayerManager.getSlayerType() + SlayerManager.getSlayerTier(), timeElapsed);
 			} else {
-				MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(I18n.translate("skyblocker.slayer.slainTime")).append(" ").append(Text.literal(duration).formatted(Formatting.YELLOW)).append("!")), false);
+				MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW)))), false);
 				if (currentPB == null) {
 					PersonalBest.updateBestTime(SlayerManager.getSlayerType() + SlayerManager.getSlayerTier(), timeElapsed);
 				}

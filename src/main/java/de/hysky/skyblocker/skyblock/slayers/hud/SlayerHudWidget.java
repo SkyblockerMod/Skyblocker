@@ -5,9 +5,9 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerConstants;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -41,7 +41,7 @@ public class SlayerHudWidget extends Widget {
 				default -> level == 9;
 			};
 			if (isMaxed) {
-				addSimpleIcoText(Ico.ENCHANTING_TABLE, "XP: ", Formatting.GREEN, I18n.translate("skyblocker.slayer.hud.lvlMaxed"));
+				addComponent(new IcoTextComponent(Ico.ENCHANTING_TABLE, Text.literal("XP: ").append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));
 			} else {
 				int nextMilestone = switch (type) {
 					case SlayerConstants.REVENANT -> SlayerConstants.ZombieLevelMilestones[level];
@@ -55,7 +55,7 @@ public class SlayerHudWidget extends Widget {
 		}
 
 		if (SlayerManager.bossesNeeded > 1) {
-			addSimpleIcoText(Ico.DIASWORD, I18n.translate("skyblocker.slayer.hud.lvlUpIn") + ": ", Formatting.LIGHT_PURPLE, numberFormat.format(SlayerManager.bossesNeeded) + " bosses");
+			addComponent(new IcoTextComponent(Ico.DIASWORD, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal(numberFormat.format(SlayerManager.bossesNeeded)).formatted(Formatting.LIGHT_PURPLE))));
 		}
 	}
 }
