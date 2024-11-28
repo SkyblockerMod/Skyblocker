@@ -92,7 +92,7 @@ public class CommissionLabels {
      * @param context render context
      */
     private static void render(WorldRenderContext context) {
-		if (Location.DWARVEN_MINES != Utils.getLocation() || SkyblockerConfigManager.get().mining.commissionWaypoints.mode == MiningConfig.CommissionWaypointMode.OFF) {
+        if (Location.DWARVEN_MINES != Utils.getLocation() || SkyblockerConfigManager.get().mining.commissionWaypoints.mode == MiningConfig.CommissionWaypointMode.OFF) {
             return;
         }
         for (MiningLocationLabel MiningLocationLabel : activeWaypoints) {

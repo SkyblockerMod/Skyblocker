@@ -59,7 +59,7 @@ public class Utils {
      * Current Skyblock location (from the Mod API)
      */
     @NotNull
-	private static Location location = Location.UNKNOWN;
+    private static Location location = Location.UNKNOWN;
     /**
      * The profile name parsed from the player list.
      */
