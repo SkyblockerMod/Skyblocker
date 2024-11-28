@@ -94,7 +94,7 @@ public class EditBarWidget extends ContainerWidget {
 		MatrixStack matrices = context.getMatrices();
 		matrices.push();
 		matrices.translate(getX(), getY(), 200.f);
-		TooltipBackgroundRenderer.render(context, getX(), getY(), getWidth(), getHeight(), 0, null);
+		TooltipBackgroundRenderer.render(context, 0, 0, getWidth(), getHeight(), 0, null);
 		nameWidget.render(context, mouseX, mouseY, delta);
 		for (ClickableWidget option : options) option.render(context, mouseX - getX(), mouseY - getY(), delta);
 		matrices.pop();

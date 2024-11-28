@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.fancybars;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -120,27 +119,29 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		this(icon, colors, hasOverflow, textColor, Text.empty());
 	}
 
+	private int transparency(int color) {
+		if (inMouse) return (color & 0x00FFFFFF) | 0x44_000000;
+		return color;
+	}
+
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		if (width <= 0) return;
-		//FIXME dunno if the shader colour stuff still works
-        // half works lol. only puts transparency on the filler of the bar
-		if (inMouse) RenderSystem.setShaderColor(1f, 1f, 1f, 0.25f);
+		int transparency = transparency(-1);
 		switch (iconPosition) {
-			case LEFT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x, y, 9, 9);
-			case RIGHT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x + width - 9, y, 9, 9);
+			case LEFT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x, y, 9, 9, transparency);
+			case RIGHT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x + width - 9, y, 9, transparency);
 		}
 
 		int barWith = iconPosition.equals(IconPosition.OFF) ? width : width - 10;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? x + 10 : x;
-		context.drawGuiTexture(RenderLayer::getGuiTextured, BAR_BACK, barX, y + 1, barWith, 7);
-		RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * fill), 5, colors[0]);
+		context.drawGuiTexture(RenderLayer::getGuiTextured, BAR_BACK, barX, y + 1, barWith, 7, transparency);
+		RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
 
 
 		if (hasOverflow && overflowFill > 0) {
-			RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * overflowFill), 5, colors[1]);
+			RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * overflowFill), 5, transparency(colors[1].getRGB()));
 		}
-		if (inMouse) RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
 		if (showText()) {
 			context.getMatrices().push();
@@ -177,7 +178,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 			context.drawText(textRenderer, text, x + i, y, 0, false);
 			context.drawText(textRenderer, text, x, y + i, 0, false);
 		}
-		context.drawText(textRenderer, text, x, y, (textColor == null ? colors[0] : textColor).getRGB(), false);
+		context.drawText(textRenderer, text, x, y, transparency((textColor == null ? colors[0] : textColor).getRGB()), false);
 	}
 
 	public void renderCursor(DrawContext context, int mouseX, int mouseY, float delta) {
