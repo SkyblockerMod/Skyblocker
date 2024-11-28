@@ -246,14 +246,12 @@ public class ChestValue {
 		Screens.getButtons(genericContainerScreen).add(chestValueWidget);
 
 		ChestValueTextWidget chestTitleWidget = new ChestValueTextWidget(backgroundWidth - 8 - chestValueWidth - 2, textRenderer.fontHeight, title.copy().fillStyle(Style.EMPTY.withColor(4210752)), textRenderer);
-		chestTitleWidget.shadow = false;
 		chestTitleWidget.setPosition(x + 8, y + 6);
 		Screens.getButtons(genericContainerScreen).add(chestTitleWidget);
 	}
 
 	private static class ChestValueTextWidget extends TextWidget {
-
-		public boolean shadow = true;
+		public boolean shadow = false;
 
 		public ChestValueTextWidget(int width, int height, Text message, TextRenderer textRenderer) {
 			super(width, height, message, textRenderer);

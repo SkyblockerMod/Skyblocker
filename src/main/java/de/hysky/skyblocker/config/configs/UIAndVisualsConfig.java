@@ -38,6 +38,9 @@ public class UIAndVisualsConfig {
     public ItemCooldown itemCooldown = new ItemCooldown();
 
     @SerialEntry
+    public InventorySearchConfig inventorySearch = new InventorySearchConfig();
+
+    @SerialEntry
     public TitleContainer titleContainer = new TitleContainer();
 
     @SerialEntry
@@ -81,6 +84,36 @@ public class UIAndVisualsConfig {
     public static class ItemCooldown {
         @SerialEntry
         public boolean enableItemCooldowns = true;
+    }
+
+    public static class InventorySearchConfig {
+        @SerialEntry
+        public EnableState enabled = EnableState.SKYBLOCK;
+
+        @SerialEntry
+        public boolean ctrlK = false;
+
+        @SerialEntry
+        public boolean clickableText = false;
+
+        public enum EnableState {
+            OFF,
+            SKYBLOCK,
+            EVERYWHERE;
+
+            @Override
+            public String toString() {
+                return I18n.translate("skyblocker.config.uiAndVisuals.inventorySearch.state." + this.name());
+            }
+
+            public boolean isEnabled() {
+                return switch (this) {
+                    case OFF -> false;
+                    case SKYBLOCK -> de.hysky.skyblocker.utils.Utils.isOnSkyblock();
+                    case EVERYWHERE -> true;
+                };
+            }
+        }
     }
 
     public static class TitleContainer {

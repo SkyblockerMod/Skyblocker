@@ -28,6 +28,8 @@
   "text.skyblocker.translate": "Translate",
   "text.skyblocker.modrinth": "Modrinth",
   "text.skyblocker.discord": "Discord",
+  "text.skyblocker.clickToSend": "[Click To Send In Chat]",
+  "text.skyblocker.clickToSend.@Tooltip": "Click to send this in chat.",
 
   "skyblocker.skyblockerScreen": "Skyblocker Main Screen",
 
@@ -60,6 +62,8 @@
 
   "skyblocker.config.debug": "Debug",
 
+  "skyblocker.config.debug.dumpFormat": "Dump Format",
+  "skyblocker.config.debug.dumpFormat.@Tooltip": "The format to use when dumping items. SNBT is colored and easier to read while JSON has escaped string characters (double quotes).",
   "skyblocker.config.debug.dumpRange": "Entity Dump Range",
   "skyblocker.config.debug.dumpRange.@Tooltip": "The range in blocks around the player to dump entities within.",
   "skyblocker.config.debug.showInvisibleArmorStands": "Show Invisible Armor Stands",
@@ -72,6 +76,10 @@
 
   "skyblocker.config.dungeons.croesusHelper": "Croesus Helper",
   "skyblocker.config.dungeons.croesusHelper.@Tooltip": "Gray out chests that have already been opened.",
+
+  "skyblocker.config.dungeons.goldorWaypoints": "Goldor Tasks Waypoints (F7/M7)",
+  "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Enable waypoints for terminals/devices/levers during Goldor",
+  "skyblocker.config.dungeons.goldorWaypoints.waypointType": "Task waypoint type",
 
   "skyblocker.config.dungeons.devices": "Device Solvers (F7/M7)",
   "skyblocker.config.dungeons.devices.solveLightsOn": "Solve Lights On",
@@ -212,7 +220,7 @@
   "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
 
   "skyblocker.config.dungeons.starredMobGlow": "Starred Mob Glow",
-  "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.\n\nWARNING: This feature utilises ray casting on entities which may have an impact on performance.",
+  "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.\n\nNote that using this will result in the teammate glow no longer being visible through walls when a starred mob is present.",
   "skyblocker.config.dungeons.terminals": "Terminal Solvers (F7/M7)",
   "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "Block Incorrect Clicks",
   "skyblocker.config.dungeons.terminals.solveColor": "Solve Select Colored",
@@ -244,6 +252,7 @@
   "skyblocker.config.general.hitbox": "Hitboxes",
   "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Enable 1.8 farmland hitbox",
   "skyblocker.config.general.hitbox.oldLeverHitbox": "Enable 1.8 lever hitbox",
+  "skyblocker.config.general.hitbox.oldMushroomHitbox": "Enable 1.8 mushroom hitbox",
 
   "skyblocker.config.general.itemInfoDisplay": "Item Info Display",
   "skyblocker.config.general.itemInfoDisplay.attributeShardInfo": "Attribute Shard Info",
@@ -305,6 +314,8 @@
   "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "Displays an estimation of the item's total value in the tooltip, §lmight not be 100% accurate all the time.§r\n\nWhen selling items always do a manual check of the item price!",
   "skyblocker.config.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
   "skyblocker.config.general.itemTooltip.enableObtainedDate": "Enable Obtained Date",
+  "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress": "Enable Stacking Enchant Progress",
+  "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress.@Tooltip": "Displays the progress to the next level of a stacking enchantment if it hasn't been maxed.",
   "skyblocker.config.general.itemTooltip.showEssenceCost": "Show Essence Cost",
 
   "skyblocker.config.general.quiverWarning": "Quiver Warning",
@@ -775,6 +786,17 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "Only show the calculator when the message starts with \"=\".",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
 
+
+  "skyblocker.config.uiAndVisuals.inventorySearch": "Inventory Search",
+  "skyblocker.config.uiAndVisuals.inventorySearch.ctrlK": "Use CTRL + K for inventory search instead of CTRL + F",
+  "skyblocker.config.uiAndVisuals.inventorySearch.cmdK": "Use CMD + K for inventory search instead of CMD + F",
+  "skyblocker.config.uiAndVisuals.inventorySearch.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText": "Show clickable text",
+  "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText.@Tooltip": "Shows a clickable text at the top of the screen to open the search field.",
+  "skyblocker.config.uiAndVisuals.inventorySearch.state.OFF": "Off",
+  "skyblocker.config.uiAndVisuals.inventorySearch.state.SKYBLOCK": "Skyblock Only",
+  "skyblocker.config.uiAndVisuals.inventorySearch.state.EVERYWHERE": "Everywhere",
+
   "skyblocker.config.uiAndVisuals.itemCooldown": "Item Cooldown",
   "skyblocker.config.uiAndVisuals.itemCooldown.enableItemCooldowns": "Enable Item Cooldown",
 
@@ -1026,6 +1048,8 @@
   "skyblocker.itemProtection.removed": "§fYour %s will §nno longer be protected§f :( - §lBeware of the dangers in doing this!",
   "skyblocker.itemProtection.noItemUuid": "§cYou must be holding an item that has a uuid to protect it!",
   "skyblocker.itemProtection.unableToProtect": "§cUnable to protect this item :( (Are you in skyblock?, are you holding an item?)",
+
+  "skyblocker.inventorySearch.clickHereToSearch": "Click here to search.",
 
   "skyblocker.tips.enabled": "§aEnabled Tips.",
   "skyblocker.tips.disabled": "§cDisabled Tips.",

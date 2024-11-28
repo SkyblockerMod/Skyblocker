@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
-import de.hysky.skyblocker.skyblock.PetCache;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.itemlist.ItemFixerUpper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
@@ -68,7 +68,7 @@ public class Pet {
             6, Formatting.AQUA // DIVINE (future proofing, because why not)
     )));
 
-    public Pet(PetCache.PetInfo petData) {
+    public Pet(PetInfo petData) {
         LevelFinder.LevelInfo info = LevelFinder.getLevelInfo(petData.type().equals("GOLDEN_DRAGON") ? "PET_GREG" : "PET_" + petData.tier(), (long) petData.exp());
         this.name = petData.type();
         this.xp = petData.exp();
