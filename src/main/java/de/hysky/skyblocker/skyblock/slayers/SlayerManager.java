@@ -198,7 +198,7 @@ public class SlayerManager {
 		return slayerArmorStandEntity = null;
 	}
 
-	public static Entity getSlayerEntity(EntityType<? extends MobEntity> entityType) {
+	public static Entity getSlayerEntity(EntityType<? extends Entity> entityType) {
 		if (slayerEntity != null && slayerEntity.isAlive()) {
 			return slayerEntity;
 		}

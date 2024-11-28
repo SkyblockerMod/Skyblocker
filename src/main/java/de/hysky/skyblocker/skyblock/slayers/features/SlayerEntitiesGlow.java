@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+// TODO: a lot of this does the same thing as SlayerManger, need to refactor and use SlayerManager code
 public class SlayerEntitiesGlow {
 	private static final Set<UUID> MOBS_TO_GLOW = new HashSet<>();
 	/**
@@ -34,14 +35,15 @@ public class SlayerEntitiesGlow {
 		return MOBS_TO_GLOW.contains(entityUUID);
 	}
 
-	public static boolean isSlayer(LivingEntity e) {
-		return SlayerManager.isBossSpawned() && SlayerManager.getEntityArmorStands(e, 2.5f).stream().anyMatch(entity ->
+	// TODO: this is duplicate from SlayerManager's slayerEntity
+	public static boolean isSlayer(ArmorStandEntity armorStand) {
+		return SlayerManager.isBossSpawned() && SlayerManager.getEntityArmorStands(armorStand, 2.5f).stream().anyMatch(entity ->
 				entity.getDisplayName().getString().contains(MinecraftClient.getInstance().getSession().getUsername()));
 	}
 
-	public static boolean isSlayerMiniMob(LivingEntity entity) {
-		if (entity.getCustomName() == null) return false;
-		String entityName = entity.getCustomName().getString();
+	public static boolean isSlayerMiniMob(ArmorStandEntity armorStand) {
+		if (armorStand.getCustomName() == null) return false;
+		String entityName = armorStand.getCustomName().getString();
 		return SlayerConstants.SLAYER_MINI_NAMES.keySet().stream().anyMatch(slayerMobName -> entityName.contains(slayerMobName) && SlayerManager.isInSlayerQuestType(SlayerConstants.SLAYER_MINI_NAMES.get(slayerMobName)));
 	}
 

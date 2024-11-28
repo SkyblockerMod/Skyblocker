@@ -152,6 +152,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
     private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
         if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
 
+		// TODO: Very inefficient, should switch to SlayerManager
         if (SkyblockerConfigManager.get().slayers.highlightMinis == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerEntitiesGlow.isSlayerMiniMob(armorStandEntity)
                 || SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerEntitiesGlow.isSlayer(armorStandEntity)) {
             if (armorStandEntity.isDead()) {
