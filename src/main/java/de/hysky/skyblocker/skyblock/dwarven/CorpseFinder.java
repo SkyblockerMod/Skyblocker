@@ -30,6 +30,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,8 +151,8 @@ public class CorpseFinder {
 
 		LOGGER.debug(PREFIX + "Triggered code for onChatMessage");
 		LOGGER.debug(PREFIX + "State of corpsesByType: {}", corpsesByType);
-		String corpseTypeString = matcherCorpse.group(1).toLowerCase();
-		CorpseType corpseType = Arrays.stream(CorpseType.values()).filter(c -> c.asString().equals(corpseTypeString)).findFirst().orElse(CorpseType.UNKNOWN);
+		String corpseTypeString = matcherCorpse.group(1).toUpperCase();
+		CorpseType corpseType = EnumUtils.getEnum(CorpseType.class, corpseTypeString, CorpseType.UNKNOWN);
 
 		List<Corpse> corpses = corpsesByType.get(corpseType);
 		if (corpses == null) {
