@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.utils.Utils;
@@ -22,6 +23,7 @@ public class CommissionLabels {
 
     protected static List<MiningLocationLabel> activeWaypoints = new ArrayList<>();
 
+    @Init
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(CommissionLabels::render);
     }

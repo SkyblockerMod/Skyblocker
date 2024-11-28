@@ -34,7 +34,7 @@ public class NamedWaypoint extends Waypoint {
             Codec.INT.fieldOf("y").forGetter(waypoint -> waypoint.pos.getY()),
             Codec.INT.fieldOf("z").forGetter(waypoint -> waypoint.pos.getZ()),
             Codec.either(Codec.STRING, Codec.INT).xmap(either -> either.map(str -> str, Object::toString), Either::left).fieldOf("name").forGetter(waypoint -> waypoint.name.getString()),
-            Codec.INT.optionalFieldOf("color", ColorHelper.Argb.getArgb(128, 0, 255, 0)).forGetter(waypoint -> (int) (waypoint.alpha * 255) << 24 | (int) (waypoint.colorComponents[0] * 255) << 16 | (int) (waypoint.colorComponents[1] * 255) << 8 | (int) (waypoint.colorComponents[2] * 255)),
+            Codec.INT.optionalFieldOf("color", ColorHelper.getArgb(128, 0, 255, 0)).forGetter(waypoint -> (int) (waypoint.alpha * 255) << 24 | (int) (waypoint.colorComponents[0] * 255) << 16 | (int) (waypoint.colorComponents[1] * 255) << 8 | (int) (waypoint.colorComponents[2] * 255)),
             Codec.BOOL.fieldOf("enabled").forGetter(Waypoint::shouldRender)
     ).apply(instance, NamedWaypoint::fromSkytils));
     public final Text name;
@@ -114,7 +114,8 @@ public class NamedWaypoint extends Waypoint {
     public void render(WorldRenderContext context) {
         super.render(context);
         if (shouldRenderName()) {
-            RenderHelper.renderText(context, name, centerPos.add(0, 1, 0), true);
+            float scale = (float) (context.camera().getPos().distanceTo(centerPos) / 10);
+            RenderHelper.renderText(context, name, centerPos.add(0, 1, 0), scale, true);
         }
     }
 

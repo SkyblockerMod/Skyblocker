@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.entity;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
@@ -23,6 +24,7 @@ public class MobBoundingBoxes {
 	 */
 	private static final ObjectOpenHashSet<RenderableBox> BOXES_2_RENDER = new ObjectOpenHashSet<>();
 
+	@Init
 	public static void init() {
 		WorldRenderEvents.BEFORE_DEBUG_RENDER.register(MobBoundingBoxes::render);
 	}

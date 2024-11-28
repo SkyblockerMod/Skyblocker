@@ -14,7 +14,7 @@ import net.minecraft.component.ComponentHolder;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.trim.ArmorTrim;
+import net.minecraft.item.equipment.trim.ArmorTrim;
 
 @Mixin(ComponentHolder.class)
 public interface ComponentHolderMixin {

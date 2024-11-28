@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -38,7 +38,7 @@ public class NpcPriceTooltip extends SimpleTooltipAdder {
 			}
 			lines.add(Text.literal(String.format("%-21s", "NPC Sell Price:"))
 			              .formatted(Formatting.YELLOW)
-			              .append(ItemTooltip.getCoinsMessage(TooltipInfoType.NPC.getData().get(internalID).getAsDouble(), amount)));
+			              .append(ItemTooltip.getCoinsMessage(TooltipInfoType.NPC.getData().getDouble(internalID), amount)));
 		}
 	}
 }

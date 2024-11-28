@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils;
 
 import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -11,6 +12,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.SynchronizeRecipesS2CPacket;
+import net.minecraft.recipe.display.CuttingRecipeDisplay;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.function.Consumers;
 import org.eclipse.jgit.api.Git;
@@ -22,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -42,6 +45,7 @@ public class NEURepoManager {
      * <p></p>
      * TODO A button could be added to the settings menu that will trigger this command.
      */
+    @Init
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
                 dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
@@ -60,7 +64,8 @@ public class NEURepoManager {
     private static void handleRecipeSynchronization() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.world != null && client.getNetworkHandler() != null) {
-            SynchronizeRecipesS2CPacket packet = new SynchronizeRecipesS2CPacket(List.of());
+        	//FIXME not sure if we even need this - depends on how REI, EMI, and JEI adapt to the changes
+            SynchronizeRecipesS2CPacket packet = new SynchronizeRecipesS2CPacket(Map.of(), CuttingRecipeDisplay.Grouping.empty());
 
             try {
                 client.getNetworkHandler().onSynchronizeRecipes(packet);

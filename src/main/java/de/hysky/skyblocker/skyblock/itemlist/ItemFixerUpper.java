@@ -180,6 +180,8 @@ public class ItemFixerUpper {
     private final static Int2ObjectMap<String> SPAWN_EGG_VARIANTS = Int2ObjectMaps.unmodifiable(new Int2ObjectOpenHashMap<>(Map.ofEntries(
             //This entry 0 is technically not right but Hypixel decided to make it polar bear so well we use that
             Map.entry(0, "minecraft:polar_bear_spawn_egg"),
+            //This entry 4 does not actually exist, Hypixel uses it as a placeholder for elder guardians
+            Map.entry(4, "minecraft:elder_guardian_spawn_egg"),
             Map.entry(50, "minecraft:creeper_spawn_egg"),
             Map.entry(51, "minecraft:skeleton_spawn_egg"),
             Map.entry(52, "minecraft:spider_spawn_egg"),

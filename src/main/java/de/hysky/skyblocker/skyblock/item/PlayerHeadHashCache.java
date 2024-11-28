@@ -23,7 +23,7 @@ public class PlayerHeadHashCache {
 			.map(JsonElement::getAsJsonObject)
 			.filter(item -> item.get("material").getAsString().equals("SKULL_ITEM"))
 			.filter(item -> item.has("skin"))
-			.map(item -> Base64.getDecoder().decode(item.get("skin").getAsString()))
+			.map(item -> Base64.getDecoder().decode(item.getAsJsonObject("skin").get("value").getAsString()))
 			.map(String::new)
 			.map(profile -> JsonParser.parseString(profile).getAsJsonObject())
 			.map(profile -> profile.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString())

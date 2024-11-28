@@ -10,8 +10,6 @@ import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.PlainTextContent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import java.util.regex.Matcher;
@@ -42,7 +40,7 @@ public class FirePillarAnnouncer {
 
                 // There is an edge case where the slayer has entered demon phase and temporarily despawned with
                 //  an active fire pillar in play, So fallback to the player
-                Entity referenceEntity = SlayerUtils.getSlayerEntity();
+                Entity referenceEntity = SlayerUtils.getSlayerArmorStandEntity();
                 if (!(referenceEntity != null ? referenceEntity : MinecraftClient.getInstance().player).getBlockPos().isWithinDistance(entity.getPos(), 22)) return;
                 announceFirePillarDetails(entityName);
             }

@@ -10,6 +10,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -154,7 +155,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
-        context.drawTexture(BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        context.drawTexture(RenderLayer::getGuiTextured, BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
     }
 
     @Override
@@ -171,7 +172,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         //matrices.translate(0, 0, 100f);
         ItemStack stack = handler.getSlot(13).getStack();
         context.drawItem(stack, 0, 0);
-        context.drawItemInSlot(textRenderer, stack, 0, 0);
+        context.drawStackOverlay(textRenderer, stack, 0, 0);
         matrices.pop();
 
         if (!isBinAuction && buyState != BuyState.COLLECT_AUCTION) {

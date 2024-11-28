@@ -37,13 +37,15 @@ public class EventNotificationsCategory {
                                 sound -> config.eventNotifications.reminderSound = sound)
                         .controller(ConfigUtils::createEnumCyclingListController)
                         .name(Text.translatable("skyblocker.config.eventNotifications.notificationSound"))
-                        .listener((soundOption, sound) -> {
-                            if (!shouldPlaySound) {
-                                shouldPlaySound = true;
-                                return;
-                            }
-                            if (sound.getSoundEvent() != null)
-                                MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(sound.getSoundEvent(), 1f, 1f));
+                        .addListener((soundOption, event) -> {
+                        	if (event == OptionEventListener.Event.STATE_CHANGE) {
+                                if (!shouldPlaySound) {
+                                    shouldPlaySound = true;
+                                    return;
+                                }
+                                if (soundOption.pendingValue().getSoundEvent() != null)
+                                    MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(soundOption.pendingValue().getSoundEvent(), 1f, 1f));
+                        	}
                         })
                         .build())
                 .groups(createGroups(config))

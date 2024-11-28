@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerLocator;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -76,6 +77,7 @@ public class ScreenMaster {
 
     }
 
+    @Init
     public static void init() {
 
         // WHY MUST IT ALWAYS BE SUCH NESTED GARBAGE MINECRAFT KEEP THAT IN DFU FFS

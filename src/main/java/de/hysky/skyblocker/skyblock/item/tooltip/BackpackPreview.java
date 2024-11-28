@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
@@ -16,6 +17,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
@@ -42,7 +44,6 @@ import java.util.stream.Collectors;
 
 public class BackpackPreview {
     private static final Logger LOGGER = LoggerFactory.getLogger(BackpackPreview.class);
-    private static final Identifier ITEM_PROTECTION = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
     private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/generic_54.png");
     private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)");
     private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)");
@@ -58,6 +59,7 @@ public class BackpackPreview {
     private static String loaded;
     private static Path saveDir;
 
+    @Init
     public static void init() {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (screen instanceof HandledScreen<?> handledScreen) {
@@ -149,8 +151,8 @@ public class BackpackPreview {
         matrices.translate(0f, 0f, 400f);
 
         RenderSystem.enableDepthTest();
-        context.drawTexture(TEXTURE, x, y, 0, 0, 176, rows * 18 + 17);
-        context.drawTexture(TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, 176, rows * 18 + 17, 256, 256);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7, 256, 256);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         context.drawText(textRenderer, storages[index].name(), x + 8, y + 6, 0x404040, false);
@@ -167,12 +169,12 @@ public class BackpackPreview {
 
             if (ItemProtection.isItemProtected(currentStack)) {
                 RenderSystem.enableBlend();
-                context.drawTexture(ITEM_PROTECTION, itemX, itemY, 0, 0, 16, 16, 16, 16);
+                context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
                 RenderSystem.disableBlend();
             }
 
             context.drawItem(currentStack, itemX, itemY);
-            context.drawItemInSlot(textRenderer, currentStack, itemX, itemY);
+            context.drawStackOverlay(textRenderer, currentStack, itemX, itemY);
             SlotTextManager.renderSlotText(context, textRenderer, null, currentStack, i, itemX, itemY);
         }
 

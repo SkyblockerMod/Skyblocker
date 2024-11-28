@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.mojang.authlib.properties.PropertyMap;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.block.entity.SignBlockEntity;
@@ -14,6 +15,7 @@ import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Items;
@@ -104,6 +106,7 @@ public class PartyFinderScreen extends Screen {
     public static Map<String, PropertyMap> floorIconsNormal = null;
     public static Map<String, PropertyMap> floorIconsMaster = null;
 
+    @Init
     public static void initClass() {
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
             //Checking when this is loaded probably isn't necessary as the maps are always null checked
@@ -238,7 +241,7 @@ public class PartyFinderScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         if (searchField.visible) {
-            context.drawGuiTexture(SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
+            context.drawGuiTexture(RenderLayer::getGuiTextured, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
         }
         if (DEBUG) {
             context.drawText(textRenderer, "Truly a party finder", 20, 20, 0xFFFFFFFF, true);
@@ -263,7 +266,7 @@ public class PartyFinderScreen extends Screen {
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
         super.renderBackground(context, mouseX, mouseY, delta);
         int i = partyEntryListWidget.getRowWidth() + 16 + 6;
-        context.drawGuiTexture(BACKGROUND_TEXTURE, partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
+        context.drawGuiTexture(RenderLayer::getGuiTextured, BACKGROUND_TEXTURE, partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
     }
 
     @Override

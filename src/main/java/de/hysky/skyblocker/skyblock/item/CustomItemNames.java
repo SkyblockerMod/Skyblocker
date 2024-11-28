@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -17,6 +18,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
 public class CustomItemNames {
+	@Init
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register(CustomItemNames::registerCommands);
 	}

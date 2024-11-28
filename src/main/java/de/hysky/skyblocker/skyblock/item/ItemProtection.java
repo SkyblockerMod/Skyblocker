@@ -2,6 +2,9 @@ package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -18,11 +21,15 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+
 import org.lwjgl.glfw.GLFW;
 
 public class ItemProtection {
+	public static final Identifier ITEM_PROTECTION_TEX = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
 	public static KeyBinding itemProtection;
 
+	@Init
 	public static void init() {
 		itemProtection = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.itemProtection",
@@ -80,12 +87,12 @@ public class ItemProtection {
 			return;
 		}
 		if (!Utils.isOnSkyblock()) {
-			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.unableToProtect")));
+			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.unableToProtect")), false);
 			return;
 		}
 
         if (heldItem.isEmpty()) {
-			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")));
+			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")), false);
             return;
         }
 
@@ -97,15 +104,15 @@ public class ItemProtection {
 				protectedItems.add(itemUuid);
 				SkyblockerConfigManager.save();
 
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())));
+				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())), false);
 			} else {
 				protectedItems.remove(itemUuid);
 				SkyblockerConfigManager.save();
 
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())));
+				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())), false);
 			}
 		} else {
-			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")));
+			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")), false);
 		}
 	}
 

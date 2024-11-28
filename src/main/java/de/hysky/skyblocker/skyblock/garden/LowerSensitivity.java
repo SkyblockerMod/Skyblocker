@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -11,6 +12,7 @@ import net.minecraft.item.ItemStack;
 public class LowerSensitivity {
     private static boolean sensitivityLowered = false;
 
+    @Init
     public static void init() {
         ClientTickEvents.END_WORLD_TICK.register(world -> {
             if (Utils.getLocation() != Location.GARDEN || MinecraftClient.getInstance().player == null || !SkyblockerConfigManager.get().farming.garden.lockMouseTool) {

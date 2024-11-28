@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
@@ -28,6 +29,8 @@ public class TooltipManager {
 			new SupercraftReminder(),
 			ChocolateFactorySolver.INSTANCE,
 			new ReorderHelper(),
+			new SkyblockIdTooltip(-1), //Would be great if it was under the minecraft id but there is limitations here...
+			new StackingEnchantProgressTooltip(0), //Would be best to have after the lore but the tech doesn't exist for that
 			new NpcPriceTooltip(1),
 			new BazaarPriceTooltip(2),
 			new LBinTooltip(3),
@@ -47,6 +50,7 @@ public class TooltipManager {
 	private TooltipManager() {
 	}
 
+	@Init
 	public static void init() {
 		ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
 			if (MinecraftClient.getInstance().currentScreen instanceof HandledScreen<?> handledScreen) {

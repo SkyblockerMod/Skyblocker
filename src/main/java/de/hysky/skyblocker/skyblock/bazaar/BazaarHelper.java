@@ -3,15 +3,7 @@ package de.hysky.skyblocker.skyblock.bazaar;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.MutableText;
@@ -20,11 +12,8 @@ import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,22 +23,9 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 	private static final int YELLOW = 0xe6ba0b;
 	private static final int GREEN = 0x1ee60b;
 
-	public static final KeyBinding BAZAAR_LOOKUP = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.bazaarLookup",
-            GLFW.GLFW_KEY_F6,
-            "key.categories.skyblocker"
-    ));
-	public static final KeyBinding BAZAAR_REFRESH = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.bazaarRefresh",
-            GLFW.GLFW_KEY_Z,
-            "key.categories.skyblocker"
-    ));
-
-    public BazaarHelper() {
+	public BazaarHelper() {
 		super("(?:Co-op|Your) Bazaar Orders");
 	}
-
-	public static void init() {}
 
 	@Override
 	public boolean isEnabled() {
@@ -99,33 +75,5 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 	public static @NotNull MutableText getFilledIcon(int filled) {
 		if (filled < 100) return Text.literal("%").withColor(YELLOW).formatted(Formatting.BOLD);
 		return Text.literal("✅").withColor(GREEN).formatted(Formatting.BOLD);
-	}
-
-	// ======== Other Bazaar Features ========
-
-	public static void bazaarLookup(ClientPlayerEntity player, @NotNull Slot slot) {
-        ItemStack stack = ItemRepository.getItemStack(slot.getStack().getNeuName());
-		if (stack != null && !stack.isEmpty()) {
-			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + Formatting.strip(stack.getName().getString()));
-		} else {
-			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.bazaar.bazaarLookupFailed")));
-		}
-	}
-
-	public static void refreshItemPrices(ClientPlayerEntity player) {
-		player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.bazaar.refreshingItemPrices")));
-		List<CompletableFuture<Void>> futureList = new ArrayList<>();
-		TooltipInfoType.NPC.downloadIfEnabled(futureList);
-		TooltipInfoType.BAZAAR.downloadIfEnabled(futureList);
-		TooltipInfoType.LOWEST_BINS.downloadIfEnabled(futureList);
-		TooltipInfoType.ONE_DAY_AVERAGE.downloadIfEnabled(futureList);
-		TooltipInfoType.THREE_DAY_AVERAGE.downloadIfEnabled(futureList);
-		CompletableFuture.allOf(futureList.toArray(CompletableFuture[]::new))
-				.thenAccept(_void -> player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.bazaar.refreshedItemPrices"))))
-				.exceptionally(e -> {
-					ItemTooltip.LOGGER.error("[Skyblocker] Failed to refresh item prices", e);
-					player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.bazaar.refreshItemPricesFailed")));
-					return null;
-				});
 	}
 }

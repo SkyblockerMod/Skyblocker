@@ -3,7 +3,6 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -13,6 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,8 +27,8 @@ public class EntityRenderDispatcherMixin {
 		return Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.hideSoulweaverSkulls && entity instanceof ArmorStandEntity armorStand && entity.isInvisible() && armorStand.hasStackEquipped(EquipmentSlot.HEAD) ? !ItemUtils.getHeadTexture(armorStand.getEquippedStack(EquipmentSlot.HEAD)).equals(SOULWEAVER_SKULL_TEXTURE) : original;
 	}
 
-	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isInvisible()Z", ordinal = 1))
-	private <E extends Entity> boolean skyblocker$armorStandHitboxVisible(boolean invisible, E entity) {
-		return (!(entity instanceof ArmorStandEntity) || !Utils.isOnHypixel() || !Debug.debugEnabled() || !Debug.shouldShowInvisibleArmorStands()) && invisible;
+	@ModifyExpressionValue(method = "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/entity/state/EntityRenderState;invisible:Z", opcode = Opcodes.GETFIELD, ordinal = 1))
+	private <E extends Entity> boolean skyblocker$armorStandHitboxVisible(boolean invisible, @Local(argsOnly = true) E entity) {
+		return (!(entity instanceof ArmorStandEntity) || !Utils.isOnHypixel() || !Debug.debugEnabled() || !SkyblockerConfigManager.get().debug.showInvisibleArmorStands) && invisible;
 	}
 }

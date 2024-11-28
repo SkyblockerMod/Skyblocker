@@ -19,7 +19,7 @@ public class SkyblockerRenderLayers {
 	}, RenderSystem::disableBlend);
 	
 	public static final MultiPhase FILLED = RenderLayer.of("filled", VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP, RenderLayer.CUTOUT_BUFFER_SIZE, false, true, MultiPhaseParameters.builder()
-			.program(RenderPhase.COLOR_PROGRAM)
+			.program(RenderPhase.POSITION_COLOR_PROGRAM)
 			.cull(Cull.DISABLE_CULLING)
 			.layering(RenderPhase.POLYGON_OFFSET_LAYERING)
 			.transparency(DEFAULT_TRANSPARENCY)
@@ -27,7 +27,7 @@ public class SkyblockerRenderLayers {
 			.build(false));
 	
 	public static final MultiPhase FILLED_THROUGH_WALLS = RenderLayer.of("filled_through_walls", VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP, RenderLayer.CUTOUT_BUFFER_SIZE, false, true, MultiPhaseParameters.builder()
-			.program(RenderPhase.COLOR_PROGRAM)
+			.program(RenderPhase.POSITION_COLOR_PROGRAM)
 			.cull(Cull.DISABLE_CULLING)
 			.layering(RenderPhase.POLYGON_OFFSET_LAYERING)
 			.transparency(DEFAULT_TRANSPARENCY)

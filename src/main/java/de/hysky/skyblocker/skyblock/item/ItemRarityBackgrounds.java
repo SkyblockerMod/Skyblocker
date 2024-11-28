@@ -1,14 +1,8 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -19,9 +13,16 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.ColorHelper;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class ItemRarityBackgrounds {
 	private static final GeneralConfig.ItemInfoDisplay CONFIG = SkyblockerConfigManager.get().general.itemInfoDisplay;
@@ -40,6 +41,7 @@ public class ItemRarityBackgrounds {
 			Map.entry("COMMON", SkyblockItemRarity.COMMON));
 	private static final Int2ReferenceOpenHashMap<SkyblockItemRarity> CACHE = new Int2ReferenceOpenHashMap<>();
 
+	@Init
 	public static void init() {
 		//Clear the cache every 5 minutes, ints are very compact!
 		Scheduler.INSTANCE.scheduleCyclic(CACHE::clear, 4800);
@@ -67,23 +69,32 @@ public class ItemRarityBackgrounds {
 	private static SkyblockItemRarity getItemRarity(ItemStack stack, ClientPlayerEntity player) {
 		if (stack == null || stack.isEmpty()) return null;
 
-		String itemUuid = ItemUtils.getItemUuid(stack);
+		String itemUuid = stack.getUuid();
 
 		//If the item has an uuid, then use the hash code of the uuid otherwise use the identity hash code of the stack
 		int hashCode = itemUuid.isEmpty() ? System.identityHashCode(stack) : itemUuid.hashCode();
 
 		if (CACHE.containsKey(hashCode)) return CACHE.get(hashCode);
 
-		List<Text> lore = ItemUtils.getLore(stack);
-		String[] stringifiedTooltip = lore.stream().map(Text::getString).toArray(String[]::new);
+		//For regular items check the lore, for pets we use the rarity in the petInfo so that the rarity background work in the pets menu
+		if (!stack.getSkyblockId().equals("PET")) {
+			List<Text> lore = ItemUtils.getLore(stack);
+			String[] stringifiedTooltip = lore.stream().map(Text::getString).toArray(String[]::new);
 
-		for (String rarityString : LORE_RARITIES.keySet()) {
-			if (Arrays.stream(stringifiedTooltip).anyMatch(line -> line.contains(rarityString))) {
-				SkyblockItemRarity rarity = LORE_RARITIES.get(rarityString);
+			for (String rarityString : LORE_RARITIES.keySet()) {
+				if (Arrays.stream(stringifiedTooltip).anyMatch(line -> line.contains(rarityString))) {
+					SkyblockItemRarity rarity = LORE_RARITIES.get(rarityString);
 
-				CACHE.put(hashCode, rarity);
-				return rarity;
+					CACHE.put(hashCode, rarity);
+					return rarity;
+				}
 			}
+		} else {
+			PetInfo info = stack.getPetInfo();
+			SkyblockItemRarity rarity = info.rarity();
+
+			CACHE.put(hashCode, rarity);
+			return rarity;
 		}
 
 		CACHE.put(hashCode, null);
@@ -95,7 +106,7 @@ public class ItemRarityBackgrounds {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 
-		context.drawSprite(x, y, 0, 16, 16, SPRITE.get(), rarity.r, rarity.g, rarity.b, SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgroundsOpacity);
+		context.drawSpriteStretched(RenderLayer::getGuiTextured, SPRITE.get(), x, y, 16, 16, ColorHelper.fromFloats(SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgroundsOpacity, rarity.r, rarity.g, rarity.b));
 
 		RenderSystem.disableBlend();
 	}

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -32,8 +33,9 @@ public class TicTacToe extends DungeonPuzzle {
 		super("tic-tac-toe", "tic-tac-toe-1");
 	}
 
-	public static void init() {
-	}
+	@Init
+    public static void init() {
+    }
 
 	@Override
 	public void tick(MinecraftClient client) {

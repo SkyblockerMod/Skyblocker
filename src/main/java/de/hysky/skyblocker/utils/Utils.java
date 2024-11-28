@@ -3,9 +3,13 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.util.UndashedUuid;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
+import de.hysky.skyblocker.utils.purse.PurseChangeCause;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.azureaaron.hmapi.data.rank.PackageRank;
@@ -25,7 +29,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.*;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
@@ -35,6 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Utility variables and methods for retrieving Skyblock related information.
@@ -46,6 +51,7 @@ public class Utils {
     private static final String PROFILE_PREFIX = "Profile: ";
     private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
     public static final String PROFILE_ID_PREFIX = "Profile ID: ";
+	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
     /**
@@ -69,6 +75,11 @@ public class Utils {
     @NotNull
     private static String profileId = "";
     /**
+     * The server from which we last received the profile id message from.
+     */
+    @NotNull
+    private static int profileIdRequest = 0;
+    /**
      * The following fields store data returned from the Mod API: {@link #environment}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
      */
     @SuppressWarnings("JavadocDeclaration")
@@ -82,6 +93,8 @@ public class Utils {
     private static String locationRaw = "";
     @NotNull
     private static String map = "";
+    @NotNull
+    public static double purse = 0;
 
     /**
      * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
@@ -123,6 +136,7 @@ public class Utils {
     public static boolean isInKuudra() {
         return location == Location.KUUDRAS_HOLLOW;
     }
+
     public static boolean isInCrimson() {
         return location == Location.CRIMSON_ISLE;
     }
@@ -202,6 +216,7 @@ public class Utils {
         return rank;
     }
 
+    @Init
     public static void init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
         ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
@@ -264,22 +279,9 @@ public class Utils {
         return "Unknown";
     }
 
-    public static double getPurse() {
-        String purseString = null;
-        double purse = 0;
-
-        try {
-            for (String sidebarLine : STRING_SCOREBOARD) {
-                if (sidebarLine.contains("Piggy:") || sidebarLine.contains("Purse:")) purseString = sidebarLine;
-            }
-            if (purseString != null) purse = Double.parseDouble(purseString.replaceAll("[^0-9.]", "").strip());
-            else purse = 0;
-
-        } catch (IndexOutOfBoundsException e) {
-            LOGGER.error("[Skyblocker] Failed to get purse from sidebar", e);
-        }
-        return purse;
-    }
+	public static double getPurse() {
+		return purse;
+	}
 
     public static int getBits() {
         int bits = 0;
@@ -339,29 +341,26 @@ public class Utils {
 
             TEXT_SCOREBOARD.addAll(textLines);
             STRING_SCOREBOARD.addAll(stringLines);
+            Utils.updatePurse();
         } catch (NullPointerException e) {
             //Do nothing
         }
     }
 
-    // TODO: Combine with `ChocolateFactorySolver.formatTime` and move into `SkyblockTime`.
-    public static Text getDurationText(int timeInSeconds) {
-        int seconds = timeInSeconds % 60;
-        int minutes = (timeInSeconds / 60) % 60;
-        int hours = (timeInSeconds / 3600);
+	public static void updatePurse() {
+		STRING_SCOREBOARD.stream().filter(s -> s.contains("Piggy:") || s.contains("Purse:")).findFirst().ifPresent(purseString -> {
+			Matcher matcher = PURSE.matcher(purseString);
+			if (matcher.find()) {
+				double newPurse = Double.parseDouble(matcher.group("purse").replaceAll(",", ""));
+				double changeSinceLast = newPurse - Utils.purse;
+				if (changeSinceLast == 0) return;
+				SkyblockEvents.PURSE_CHANGE.invoker().onPurseChange(changeSinceLast, PurseChangeCause.getCause(changeSinceLast));
+				Utils.purse = newPurse;
+			}
+		});
+	}
 
-        MutableText time = Text.empty();
-        if (hours > 0) {
-            time.append(hours + "h").append(" ");
-        }
-        if (hours > 0 || minutes > 0) {
-            time.append(minutes + "m").append(" ");
-        }
-        time.append(seconds + "s");
-        return time;
-    }
-
-    private static void updateFromPlayerList(MinecraftClient client) {
+	private static void updateFromPlayerList(MinecraftClient client) {
         if (client.getNetworkHandler() == null) {
             return;
         }
@@ -408,6 +407,7 @@ public class Utils {
 
                 if (Utils.gameType.equals("SKYBLOCK")) {
                     isOnSkyblock = true;
+                    tickProfileId();
 
                     if (!previousServerType.equals("SKYBLOCK")) SkyblockEvents.JOIN.invoker().onSkyblockJoin();
                 } else if (previousServerType.equals("SKYBLOCK")) {
@@ -426,7 +426,7 @@ public class Utils {
                 ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
                 if (player != null) {
-                    player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.utils.locationUpdateError").formatted(Formatting.RED)));
+                    player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.utils.locationUpdateError").formatted(Formatting.RED)), false);
                 }
 
                 LOGGER.error("[Skyblocker] Failed to update your current location! Some features of the mod may not work correctly :( - Error: {}", error);
@@ -441,11 +441,27 @@ public class Utils {
     }
 
     /**
+     * After 8 seconds of having swapped servers we check if we've been sent the profile id message on
+     * this server and if we haven't then we send the /profileid command.
+     */
+    private static void tickProfileId() {
+        profileIdRequest++;
+
+        Scheduler.INSTANCE.schedule(new Runnable() {
+            private final int requestId = profileIdRequest;
+
+		    @Override
+		    public void run() {
+		        if (requestId == profileIdRequest) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid");
+		    }
+        }, 20 * 8); //8 seconds
+    }
+
+    /**
      * Parses /locraw chat message and updates {@link #server}, {@link #gameType}, {@link #locationRaw}, {@link #map}
      * and {@link #location}
      *
      * @param message json message from chat
-     * 
      * @deprecated Retained just in case the mod api doesn't work or gets disabled.
      */
     @Deprecated
@@ -488,6 +504,8 @@ public class Utils {
             } else if (message.startsWith(PROFILE_ID_PREFIX)) {
                 String prevProfileId = profileId;
                 profileId = message.substring(PROFILE_ID_PREFIX.length());
+                profileIdRequest++;
+
                 if (!prevProfileId.equals(profileId)) {
                     SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
                 }

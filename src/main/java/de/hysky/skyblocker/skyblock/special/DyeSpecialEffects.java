@@ -1,14 +1,7 @@
 package de.hysky.skyblocker.skyblock.special;
 
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.jetbrains.annotations.VisibleForTesting;
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
-
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Utils;
@@ -17,6 +10,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DyeSpecialEffects {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -24,7 +23,8 @@ public class DyeSpecialEffects {
 	@VisibleForTesting
 	protected static final Pattern DROP_PATTERN = Pattern.compile("WOW! (?:\\[[A-Z+]+\\] )?(?<player>[A-Za-z0-9_]+) found (?<dye>[A-Za-z ]+ Dye)(?: #[\\d,]+)?!");
 
-	static void init() {
+	@Init
+	public static void init() {
 		ClientReceiveMessageEvents.GAME.register(DyeSpecialEffects::displayDyeDropEffect);
 	}
 

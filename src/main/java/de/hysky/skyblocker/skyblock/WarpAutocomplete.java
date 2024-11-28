@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import de.hysky.skyblocker.annotations.Init;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
@@ -35,6 +36,7 @@ public class WarpAutocomplete {
     @Nullable
     public static LiteralCommandNode<FabricClientCommandSource> commandNode;
 
+    @Init
     public static void init() {
         CompletableFuture.supplyAsync(() -> {
             try {

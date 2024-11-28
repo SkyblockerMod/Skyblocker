@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.utils.render;
 
+import com.mojang.blaze3d.systems.RenderCall;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.BeaconBlockEntityRendererInvoker;
-import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.utils.Boxes;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.title.Title;
@@ -15,11 +15,10 @@ import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormat.DrawMode;
-import net.minecraft.client.texture.Scaling;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
@@ -31,26 +30,24 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.profiler.Profiler;
+import net.minecraft.util.profiler.Profilers;
+
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
-import org.slf4j.Logger;
 
 import java.awt.*;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 
 public class RenderHelper {
-    private static final Logger LOGGER = LogUtils.getLogger();
     private static final Identifier TRANSLUCENT_DRAW = Identifier.of(SkyblockerMod.NAMESPACE, "translucent_draw");
-    private static final MethodHandle SCHEDULE_DEFERRED_RENDER_TASK = getDeferredRenderTaskHandle();
     private static final Vec3d ONE = new Vec3d(1, 1, 1);
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final BufferAllocator ALLOCATOR = new BufferAllocator(1536);
 
+    @Init
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.addPhaseOrdering(Event.DEFAULT_PHASE, TRANSLUCENT_DRAW);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(TRANSLUCENT_DRAW, RenderHelper::drawTranslucents);
@@ -95,7 +92,7 @@ public class RenderHelper {
         VertexConsumerProvider consumers = context.consumers();
         VertexConsumer buffer = consumers.getBuffer(throughWalls ? SkyblockerRenderLayers.FILLED_THROUGH_WALLS : SkyblockerRenderLayers.FILLED);
 
-        WorldRenderer.renderFilledBox(matrices, buffer, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
+        VertexRendering.drawFilledBox(matrices, buffer, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
 
         matrices.pop();
     }
@@ -108,7 +105,7 @@ public class RenderHelper {
             matrices.push();
             matrices.translate(pos.getX() - camera.getX(), pos.getY() - camera.getY(), pos.getZ() - camera.getZ());
 
-            BeaconBlockEntityRendererInvoker.renderBeam(matrices, context.consumers(), context.tickCounter().getTickDelta(true), context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, ColorHelper.Argb.fromFloats(1f, colorComponents[0], colorComponents[1], colorComponents[2]));
+            BeaconBlockEntityRendererInvoker.renderBeam(matrices, context.consumers(), context.tickCounter().getTickDelta(true), context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, ColorHelper.fromFloats(1f, colorComponents[0], colorComponents[1], colorComponents[2]));
 
             matrices.pop();
         }
@@ -134,7 +131,7 @@ public class RenderHelper {
             Vec3d camera = context.camera().getPos();
             Tessellator tessellator = RenderSystem.renderThreadTesselator();
 
-            RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+            RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             RenderSystem.enableBlend();
             RenderSystem.lineWidth(lineWidth);
@@ -146,7 +143,7 @@ public class RenderHelper {
             matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
 
             BufferBuilder buffer = tessellator.begin(DrawMode.LINES, VertexFormats.LINES);
-            WorldRenderer.drawBox(matrices, buffer, box, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
+            VertexRendering.drawBox(matrices, buffer, box, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
             BufferRenderer.drawWithGlobalProgram(buffer.end());
 
             matrices.pop();
@@ -186,7 +183,7 @@ public class RenderHelper {
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 
-        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.lineWidth(lineWidth);
         RenderSystem.enableBlend();
@@ -228,7 +225,7 @@ public class RenderHelper {
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 
-        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.lineWidth(lineWidth);
         RenderSystem.enableBlend();
@@ -271,7 +268,7 @@ public class RenderHelper {
 
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -334,21 +331,19 @@ public class RenderHelper {
      * This is called after all {@link WorldRenderEvents#AFTER_TRANSLUCENT} listeners have been called so that we can draw all remaining render layers.
      */
     private static void drawTranslucents(WorldRenderContext context) {
+    	Profiler profiler = Profilers.get();
+
+    	profiler.push("skyblockerTranslucentDraw");
         //Draw all render layers that haven't been drawn yet - drawing a specific layer does nothing and idk why
         ((VertexConsumerProvider.Immediate) context.consumers()).draw();
+        profiler.pop();
     }
 
-    public static void runOnRenderThread(Runnable runnable) {
+    public static void runOnRenderThread(RenderCall renderCall) {
         if (RenderSystem.isOnRenderThread()) {
-            runnable.run();
-        } else if (SCHEDULE_DEFERRED_RENDER_TASK != null) { //Sodium
-            try {
-                SCHEDULE_DEFERRED_RENDER_TASK.invokeExact(runnable);
-            } catch (Throwable t) {
-                LOGGER.error("[Skyblocker] Failed to schedule a render task!", t);
-            }
-        } else { //Vanilla
-            RenderSystem.recordRenderCall(runnable::run);
+        	renderCall.execute();
+        } else {
+            RenderSystem.recordRenderCall(renderCall);
         }
     }
 
@@ -402,86 +397,11 @@ public class RenderHelper {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
 
-    private static void drawSprite(DrawContext context, Sprite sprite, int i, int j, int k, int l, int x, int y, int z, int width, int height, float red, float green, float blue, float alpha) {
-        if (width == 0 || height == 0) {
-            return;
-        }
-        ((DrawContextInvoker) context).invokeDrawTexturedQuad(sprite.getAtlasId(), x, x + width, y, y + height, z, sprite.getFrameU((float) k / (float) i), sprite.getFrameU((float) (k + width) / (float) i), sprite.getFrameV((float) l / (float) j), sprite.getFrameV((float) (l + height) / (float) j), red, green, blue, alpha);
+    public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, int argb) {
+        context.drawGuiTexture(RenderLayer::getGuiTextured, texture, x, y, width, height, argb);
     }
-
-    private static void drawSpriteTiled(DrawContext context, Sprite sprite, int x, int y, int z, int width, int height, int i, int j, int tileWidth, int tileHeight, int k, int l, float red, float green, float blue, float alpha) {
-        if (width <= 0 || height <= 0) {
-            return;
-        }
-        if (tileWidth <= 0 || tileHeight <= 0) {
-            throw new IllegalArgumentException("Tiled sprite texture size must be positive, got " + tileWidth + "x" + tileHeight);
-        }
-        for (int m = 0; m < width; m += tileWidth) {
-            int n = Math.min(tileWidth, width - m);
-            for (int o = 0; o < height; o += tileHeight) {
-                int p = Math.min(tileHeight, height - o);
-                drawSprite(context, sprite, k, l, i, j, x + m, y + o, z, n, p, red, green, blue, alpha);
-            }
-        }
-    }
-
-    public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, float red, float green, float blue, float alpha) {
-        Sprite sprite = MinecraftClient.getInstance().getGuiAtlasManager().getSprite(texture);
-        Scaling scaling = MinecraftClient.getInstance().getGuiAtlasManager().getScaling(sprite);
-        if (!(scaling instanceof Scaling.NineSlice nineSlice)) return;
-        Scaling.NineSlice.Border border = nineSlice.border();
-        int z = 0;
-
-        int i = Math.min(border.left(), width / 2);
-        int j = Math.min(border.right(), width / 2);
-        int k = Math.min(border.top(), height / 2);
-        int l = Math.min(border.bottom(), height / 2);
-        if (width == nineSlice.width() && height == nineSlice.height()) {
-            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, z, width, height, red, green, blue, alpha);
-            return;
-        }
-        if (height == nineSlice.height()) {
-            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, z, i, height, red, green, blue, alpha);
-            drawSpriteTiled(context, sprite, x + i, y, z, width - j - i, height, i, 0, nineSlice.width() - j - i, nineSlice.height(), nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
-            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), nineSlice.width() - j, 0, x + width - j, y, z, j, height, red, green, blue, alpha);
-            return;
-        }
-        if (width == nineSlice.width()) {
-            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, z, width, k, red, green, blue, alpha);
-            drawSpriteTiled(context, sprite, x, y + k, z, width, height - l - k, 0, k, nineSlice.width(), nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
-            drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, nineSlice.height() - l, x, y + height - l, z, width, l, red, green, blue, alpha);
-            return;
-        }
-        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, 0, x, y, z, i, k, red, green, blue, alpha);
-        drawSpriteTiled(context, sprite, x + i, y, z, width - j - i, k, i, 0, nineSlice.width() - j - i, k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
-        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), nineSlice.width() - j, 0, x + width - j, y, z, j, k, red, green, blue, alpha);
-        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), 0, nineSlice.height() - l, x, y + height - l, z, i, l, red, green, blue, alpha);
-        drawSpriteTiled(context, sprite, x + i, y + height - l, z, width - j - i, l, i, nineSlice.height() - l, nineSlice.width() - j - i, l, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
-        drawSprite(context, sprite, nineSlice.width(), nineSlice.height(), nineSlice.width() - j, nineSlice.height() - l, x + width - j, y + height - l, z, j, l, red, green, blue, alpha);
-        drawSpriteTiled(context, sprite, x, y + k, z, i, height - l - k, 0, k, i, nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
-        drawSpriteTiled(context, sprite, x + i, y + k, z, width - j - i, height - l - k, i, k, nineSlice.width() - j - i, nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
-        drawSpriteTiled(context, sprite, x + width - j, y + k, z, i, height - l - k, nineSlice.width() - j, k, j, nineSlice.height() - l - k, nineSlice.width(), nineSlice.height(), red, green, blue, alpha);
-    }
-
-    private static final float[] colorBuffer = new float[4];
 
     public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, Color color) {
-        color.getComponents(colorBuffer);
-        renderNineSliceColored(context, texture, x, y, width, height, colorBuffer[0], colorBuffer[1], colorBuffer[2], colorBuffer[3]);
-    }
-
-    // TODO Get rid of reflection once the new Sodium is released
-    private static MethodHandle getDeferredRenderTaskHandle() {
-        try {
-            Class<?> deferredTaskClass = Class.forName("me.jellysquid.mods.sodium.client.render.util.DeferredRenderTask");
-
-            MethodHandles.Lookup lookup = MethodHandles.publicLookup();
-            MethodType mt = MethodType.methodType(void.class, Runnable.class);
-
-            return lookup.findStatic(deferredTaskClass, "schedule", mt);
-        } catch (Throwable ignored) {
-        }
-
-        return null;
+        renderNineSliceColored(context, texture, x, y, width, height, ColorHelper.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
     }
 }

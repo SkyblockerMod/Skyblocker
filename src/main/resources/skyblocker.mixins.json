@@ -4,9 +4,9 @@
   "plugin": "de.hysky.skyblocker.compatibility.MixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "AbstractInventoryScreenMixin",
     "BackgroundRendererMixin",
     "BatEntityMixin",
+    "BossBarHudMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldMixin",
@@ -15,6 +15,7 @@
     "DataTrackerMixin",
     "DrawContextMixin",
     "DyedColorComponentMixin",
+    "EntityMixin",
     "EntityRenderDispatcherMixin",
     "FarmlandBlockMixin",
     "GenericContainerScreenHandlerMixin",
@@ -25,9 +26,9 @@
     "InventoryScreenMixin",
     "ItemStackMixin",
     "LeverBlockMixin",
-    "LivingEntityRendererMixin",
     "MinecraftClientMixin",
     "MouseMixin",
+    "MushroomPlantBlockMixin",
     "PingMeasurerMixin",
     "PlayerInventoryMixin",
     "PlayerListHudMixin",
@@ -52,10 +53,10 @@
     "accessors.PlayerListHudAccessor",
     "accessors.RecipeBookWidgetAccessor",
     "accessors.ScreenAccessor",
-    "accessors.SkullBlockEntityAccessor",
     "accessors.SlotAccessor",
     "accessors.WorldRendererAccessor",
-    "discordipc.ConnectionMixin"
+    "discordipc.ConnectionMixin",
+    "jgit.SystemReaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

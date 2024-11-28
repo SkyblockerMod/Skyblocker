@@ -23,7 +23,7 @@ public abstract class RegexContainerMatcher implements ContainerMatcher {
 	public final Pattern titlePattern;
 
 	@Nullable
-	public String[] groups = null;
+	protected String[] groups = null;
 
 	@Override
 	public boolean test(@NotNull Screen screen) {
@@ -60,9 +60,5 @@ public abstract class RegexContainerMatcher implements ContainerMatcher {
 
 	public @Nullable Pattern getTitlePattern() {
 		return titlePattern;
-	}
-
-	public final @Nullable String[] getGroups() {
-		return groups;
 	}
 }

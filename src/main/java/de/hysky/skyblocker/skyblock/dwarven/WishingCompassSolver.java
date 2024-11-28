@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.utils.Constants;
@@ -17,7 +18,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -56,6 +56,10 @@ public class WishingCompassSolver {
      * the distance squared the player has to be from where they used the first compass to where they use the second
      */
     private static final long DISTANCE_BETWEEN_USES = 64;
+	/**
+	 * Arbitrary distance below which skyblocker will consider two compass trails to be intersecting
+	 */
+	private static final double DISTANCE_TOLERANCE = 5.0;
 
     private static SolverStates currentState = SolverStates.NOT_STARTED;
     private static Vec3d startPosOne = Vec3d.ZERO;
@@ -67,7 +71,7 @@ public class WishingCompassSolver {
     private static long particleLastUpdate = System.currentTimeMillis();
     private static Vec3d particleLastPos = Vec3d.ZERO;
 
-
+    @Init
     public static void init() {
         UseItemCallback.EVENT.register(WishingCompassSolver::onItemInteract);
         UseBlockCallback.EVENT.register(WishingCompassSolver::onBlockInteract);
@@ -102,11 +106,15 @@ public class WishingCompassSolver {
     }
 
     private static boolean isKingsScentPresent() {
-        String footer = PlayerListMgr.getFooter();
-        if (footer == null) {
-            return false;
-        }
-        return footer.contains("King's Scent I");
+		if (CLIENT.player == null) {
+			return false;
+		}
+		//make sure the data is in tab and if not tell the user
+		if (PlayerListMgr.getPlayerStringList().stream().noneMatch(entry -> entry.startsWith("Active Effects:"))) {
+			CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabEffectsMessage")), false);
+			return false;
+		}
+        return PlayerListMgr.getPlayerStringList().stream().anyMatch(entry -> entry.startsWith("King's Scent"));
     }
 
     private static boolean isKeyInInventory() {
@@ -165,7 +173,8 @@ public class WishingCompassSolver {
         return ZONE_BOUNDING_BOXES.get(startingZone).expand(100, 0, 100).contains(pos);
     }
 
-    public static void onParticle(ParticleS2CPacket packet) {
+    @SuppressWarnings("incomplete-switch")
+	public static void onParticle(ParticleS2CPacket packet) {
         if (!Utils.isInCrystalHollows() || !ParticleTypes.HAPPY_VILLAGER.equals(packet.getParameters().getType())) {
             return;
         }
@@ -246,6 +255,8 @@ public class WishingCompassSolver {
      * using the stating locations and line direction solve for where the location must be
      */
     protected static Vec3d solve(Vec3d startPosOne, Vec3d startPosTwo, Vec3d directionOne, Vec3d directionTwo) {
+		if (directionOne.equals(directionTwo)) return null;
+
         //convert format to get lines for the intersection solving
         Vector3D lineOneStart = new Vector3D(startPosOne.x, startPosOne.y, startPosOne.z);
         Vector3D lineOneEnd = new Vector3D(directionOne.x, directionOne.y, directionOne.z).add(lineOneStart);
@@ -253,13 +264,22 @@ public class WishingCompassSolver {
         Vector3D lineTwoEnd = new Vector3D(directionTwo.x, directionTwo.y, directionTwo.z).add(lineTwoStart);
         Line line = new Line(lineOneStart, lineOneEnd, 1);
         Line lineTwo = new Line(lineTwoStart, lineTwoEnd, 1);
-        Vector3D intersection = line.intersection(lineTwo);
+
+        Vector3D close = line.closestPoint(lineTwo);
+		Vector3D closeTwo = lineTwo.closestPoint(line);
+		double distance = close.distance(closeTwo);
+
+		Vec3d intersection = null;
+		if (distance < DISTANCE_TOLERANCE) {
+			//average the two closest points
+			Vec3d c1 = new Vec3d(close.getX(), close.getY(), close.getZ());
+			Vec3d c2 = new Vec3d(close.getX(), close.getY(), close.getZ());
+
+			intersection = c1.add(c2).multiply(0.5);
+		}
 
         //return final target location
-        if (intersection == null || intersection.equals(new Vector3D(0, 0, 0))) {
-            return null;
-        }
-        return new Vec3d(intersection.getX(), intersection.getY(), intersection.getZ());
+        return intersection;
     }
 
     private static ActionResult onBlockInteract(PlayerEntity playerEntity, World world, Hand hand, BlockHitResult blockHitResult) {
@@ -278,20 +298,20 @@ public class WishingCompassSolver {
         return ActionResult.PASS;
     }
 
-    private static TypedActionResult<ItemStack> onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
+    private static ActionResult onItemInteract(PlayerEntity playerEntity, World world, Hand hand) {
         if (CLIENT.player == null) {
             return null;
         }
         ItemStack stack = CLIENT.player.getStackInHand(hand);
         //make sure the user is in the crystal hollows and holding the wishing compass
         if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.wishingCompassSolver || !stack.getSkyblockId().equals("WISHING_COMPASS")) {
-            return TypedActionResult.pass(stack);
+            return ActionResult.PASS;
         }
         if (useCompass()) {
-            return TypedActionResult.fail(stack);
+            return ActionResult.FAIL;
         }
 
-        return TypedActionResult.pass(stack);
+        return ActionResult.PASS;
     }
 
     /**

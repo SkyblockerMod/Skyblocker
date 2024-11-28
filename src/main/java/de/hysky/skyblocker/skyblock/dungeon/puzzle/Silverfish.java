@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
 import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -36,6 +37,7 @@ public class Silverfish extends DungeonPuzzle {
         super("silverfish", "ice-silverfish-room");
     }
 
+    @Init
     public static void init() {
         if (Debug.debugEnabled()) {
             ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)

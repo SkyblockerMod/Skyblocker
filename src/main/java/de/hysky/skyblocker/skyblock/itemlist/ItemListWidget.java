@@ -21,8 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Environment(value = EnvType.CLIENT)
-public class ItemListWidget extends RecipeBookWidget {
-    private int parentWidth;
+@Deprecated(forRemoval = true)
+public class ItemListWidget /*extends RecipeBookWidget*/ {
+    /*private int parentWidth;
     private int parentHeight;
     private int leftOffset;
 
@@ -119,7 +120,7 @@ public class ItemListWidget extends RecipeBookWidget {
             if (currentTabContent != null) return currentTabContent.mouseClicked(mouseX, mouseY, button);
             else return false;
         } else return false;
-    }
+    }*/
 
     /**
      * A container widget but with a fixed width and height and a drawTooltip method to implement

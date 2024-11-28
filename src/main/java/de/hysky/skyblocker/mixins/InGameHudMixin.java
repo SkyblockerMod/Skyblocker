@@ -3,7 +3,6 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.skyblock.dwarven.GlaciteColdOverlay;
@@ -19,6 +18,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.LayeredDrawer;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -41,9 +41,6 @@ import java.util.regex.Pattern;
 public abstract class InGameHudMixin {
     @Unique
     private static final Supplier<Identifier> SLOT_LOCK_ICON = () -> SkyblockerConfigManager.get().general.itemProtection.slotLockStyle.tex;
-
-    @Unique
-    private static final Identifier ITEM_PROTECTION = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
     @Unique
     private static final Pattern DICER_TITLE_BLACKLIST = Pattern.compile(".+? DROP!");
 
@@ -65,13 +62,13 @@ public abstract class InGameHudMixin {
             if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) ItemRarityBackgrounds.tryDraw(player.getInventory().main.get(index), context, x, y);
             if (HotbarSlotLock.isLocked(index)) {
                 RenderSystem.enableBlend();
-                context.drawTexture(SLOT_LOCK_ICON.get(), x, y, 0, 0, 16, 16, 16, 16);
+                context.drawTexture(RenderLayer::getGuiTextured, SLOT_LOCK_ICON.get(), x, y, 0, 0, 16, 16, 16, 16);
                 RenderSystem.disableBlend();
             }
             //item protection
             if (ItemProtection.isItemProtected(player.getInventory().main.get(index))) {
                 RenderSystem.enableBlend();
-                context.drawTexture(ITEM_PROTECTION, x, y, 0, 0, 16, 16, 16, 16);
+                context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
                 RenderSystem.disableBlend();
             }
         }
@@ -147,7 +144,7 @@ public abstract class InGameHudMixin {
         };
     }
 
-    @ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 1)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 5))
+    @ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 5))
     private LayeredDrawer.Layer skyblocker$beforeChat(LayeredDrawer.Layer beforeChatLayer) {
         return (context, tickCounter) -> {
             HudRenderEvents.BEFORE_CHAT.invoker().onRender(context, tickCounter);

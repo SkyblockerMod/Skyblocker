@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.itemlist;
 import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+@Deprecated(forRemoval = true)
 public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
     private static final ItemStack CLOCK = new ItemStack(Items.CLOCK);
     private final MinecraftClient client;
@@ -44,7 +45,7 @@ public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
     @Override
     public void drawTooltip(DrawContext context, int mouseX, int mouseY) {
         if (hovered != null) {
-            ((DrawContextInvoker) context).invokeDrawTooltip(this.client.textRenderer, hovered.getTooltip(), mouseX, mouseY, HoveredTooltipPositioner.INSTANCE);
+            ((DrawContextInvoker) context).invokeDrawTooltip(this.client.textRenderer, hovered.getTooltip(), mouseX, mouseY, HoveredTooltipPositioner.INSTANCE, null);
         }
     }
 
@@ -105,10 +106,10 @@ public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
             if (events.isEmpty()) {
                 context.drawText(textRenderer, Text.literal(" ").append(Text.translatable("skyblocker.events.tab.noMore")), x, y + textRenderer.fontHeight, Colors.GRAY, false);
             } else if (events.peekFirst().start() > time) {
-                MutableText formatted = Text.literal(" ").append(Text.translatable("skyblocker.events.tab.startsIn", Utils.getDurationText((int) (events.peekFirst().start() - time)))).formatted(Formatting.YELLOW);
+                MutableText formatted = Text.literal(" ").append(Text.translatable("skyblocker.events.tab.startsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() - time)))).formatted(Formatting.YELLOW);
                 context.drawText(textRenderer, formatted, x, y + textRenderer.fontHeight, -1, true);
             } else {
-                MutableText formatted = Text.literal(" ").append(Text.translatable( "skyblocker.events.tab.endsIn", Utils.getDurationText((int) (events.peekFirst().start() + events.peekFirst().duration() - time)))).formatted(Formatting.GREEN);
+                MutableText formatted = Text.literal(" ").append(Text.translatable( "skyblocker.events.tab.endsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() + events.peekFirst().duration() - time)))).formatted(Formatting.GREEN);
                 context.drawText(textRenderer, formatted, x, y + textRenderer.fontHeight, -1, true);
             }
 
@@ -143,11 +144,10 @@ public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
     }
 
     private record JacobsTooltip(String[] crops) implements TooltipComponent {
-
         private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 
         @Override
-        public int getHeight() {
+        public int getHeight(TextRenderer textRenderer) {
             return 20;
         }
 
@@ -157,7 +157,7 @@ public class UpcomingEventsTab extends ItemListWidget.TabContainerWidget {
         }
 
         @Override
-        public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
+        public void drawItems(TextRenderer textRenderer, int x, int y, int width, int height, DrawContext context) {
             for (int i = 0; i < crops.length; i++) {
                 String crop = crops[i];
                 context.drawItem(JacobsContestWidget.FARM_DATA.getOrDefault(crop, BARRIER), x + 18 * i, y + 2);

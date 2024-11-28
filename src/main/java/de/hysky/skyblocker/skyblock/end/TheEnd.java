@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.end;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
@@ -65,6 +66,7 @@ public class TheEnd {
     public static ProtectorLocation currentProtectorLocation = null;
     public static int stage = 0;
 
+    @Init
     public static void init() {
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (entity instanceof EndermanEntity enderman && isZealot(enderman)) {

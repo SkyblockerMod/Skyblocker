@@ -186,7 +186,9 @@ public class GeneralCategory {
                                 .binding(defaults.general.itemTooltip.enableCraftingCost,
                                         () -> config.general.itemTooltip.enableCraftingCost,
                                         newValue -> config.general.itemTooltip.enableCraftingCost = newValue)
-                                .listener((Option<GeneralConfig.Craft> ignored, GeneralConfig.Craft ignored2) -> CraftPriceTooltip.clearCache())
+                                .addListener((ignored, event) -> {
+                                	if (event == OptionEventListener.Event.STATE_CHANGE) CraftPriceTooltip.clearCache();
+                                })
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
@@ -251,6 +253,14 @@ public class GeneralCategory {
                                 .binding(defaults.general.itemTooltip.enableEstimatedItemValue,
                                         () -> config.general.itemTooltip.enableEstimatedItemValue,
                                         newValue -> config.general.itemTooltip.enableEstimatedItemValue = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.itemTooltip.enableStackingEnchantProgress"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemTooltip.enableStackingEnchantProgress.@Tooltip")))
+                                .binding(defaults.general.itemTooltip.enableStackingEnchantProgress,
+                                        () -> config.general.itemTooltip.enableStackingEnchantProgress,
+                                        newValue -> config.general.itemTooltip.enableStackingEnchantProgress = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
@@ -378,6 +388,13 @@ public class GeneralCategory {
                                         newValue -> config.general.hitbox.oldLeverHitbox = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.hitbox.oldMushroomHitbox"))
+								.binding(defaults.general.hitbox.oldMushroomHitbox,
+										() -> config.general.hitbox.oldMushroomHitbox,
+										newValue -> config.general.hitbox.oldMushroomHitbox = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 .build();

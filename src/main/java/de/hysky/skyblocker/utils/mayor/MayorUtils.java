@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.mayor;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.SkyblockTime;
@@ -33,6 +34,7 @@ public class MayorUtils {
 		return minister;
 	}
 
+	@Init
 	public static void init() {
 		SkyblockEvents.JOIN.register(() -> {
 			if (!mayorTickScheduled) {
@@ -52,8 +54,7 @@ public class MayorUtils {
 
 	private static void tickMayorCache() {
 		CompletableFuture.supplyAsync(() -> {
-			try {
-				Http.ApiResponse response = Http.sendCacheableGetRequest("https://api.hypixel.net/v2/resources/skyblock/election", null); //Authentication is not required for this endpoint
+			try (Http.ApiResponse response = Http.sendCacheableGetRequest("https://api.hypixel.net/v2/resources/skyblock/election", null)) { //Authentication is not required for this endpoint
 				if (!response.ok()) throw new HttpResponseException(response.statusCode(), response.content());
 				JsonObject json = JsonParser.parseString(response.content()).getAsJsonObject();
 				if (!json.get("success").getAsBoolean()) throw new RuntimeException("Request failed!"); //Can't find a more appropriate exception to throw here.

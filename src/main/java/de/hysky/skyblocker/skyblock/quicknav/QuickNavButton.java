@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -15,9 +16,11 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.time.Duration;
@@ -98,8 +101,11 @@ public class QuickNavButton extends ClickableWidget {
         if (!this.temporaryToggled) {
             this.temporaryToggled = true;
             this.toggleTime = System.currentTimeMillis();
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(command);
-            // TODO : add null check with log error
+            if (command == null || command.isEmpty()) {
+                MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.literal("Quick Nav button index " + (index + 1) + " has no command!").formatted(Formatting.RED)), false);
+            } else {
+                MessageScheduler.INSTANCE.sendMessageAfterCooldown(command);
+            }
             this.alpha = 0.5f;
         }
     }
@@ -139,7 +145,7 @@ public class QuickNavButton extends ClickableWidget {
         Identifier tabTexture = Identifier.ofVanilla("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (toggled() ? "selected" : "unselected") + "_" + (index % 7 + 1));
 
         // Render the button texture
-        context.drawGuiTexture(tabTexture, this.getX(), this.getY(), this.width, this.height);
+        context.drawGuiTexture(RenderLayer::getGuiTextured, tabTexture, this.getX(), this.getY(), this.width, this.height);
         // Render the button icon
         int yOffset = this.index < 7 ? 1 : -1;
         context.drawItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);

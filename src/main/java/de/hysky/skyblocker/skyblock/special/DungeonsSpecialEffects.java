@@ -1,11 +1,6 @@
 package de.hysky.skyblocker.skyblock.special;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Utils;
@@ -14,13 +9,19 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DungeonsSpecialEffects {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonsSpecialEffects.class);
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Pattern DROP_PATTERN = Pattern.compile("(?:\\[[A-Z+]+] )?(?<player>[A-Za-z0-9_]+) unlocked (?<item>.+)!");
 
-	static void init() {
+	@Init
+	public static void init() {
 		ClientReceiveMessageEvents.GAME.register(DungeonsSpecialEffects::displayRareDropEffect);
 	}
 

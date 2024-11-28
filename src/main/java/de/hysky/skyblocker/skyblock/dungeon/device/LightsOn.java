@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.device;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -27,6 +28,7 @@ public class LightsOn {
 	private static final BlockPos[] LEVERS = { TOP_LEFT, TOP_RIGHT, MIDDLE_TOP, MIDDLE_BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT };
 	private static final float[] RED = ColorUtils.getFloatComponents(DyeColor.RED);
 
+	@Init
 	public static void init() {
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(LightsOn::render);
 	}

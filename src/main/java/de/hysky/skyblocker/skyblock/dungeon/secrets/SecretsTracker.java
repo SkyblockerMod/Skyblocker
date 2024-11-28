@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
@@ -37,6 +38,7 @@ public class SecretsTracker {
 	private static volatile TrackedRun lastRun = null;
 	private static volatile long lastRunEnded = 0L;
 
+	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.GAME.register(SecretsTracker::onMessage);
 	}
@@ -103,9 +105,9 @@ public class SecretsTracker {
 		PlayerEntity playerEntity = MinecraftClient.getInstance().player;
 		if (playerEntity != null) {
 			if (success) {
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.feedback", Text.literal(player).withColor(0xf57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))));
+				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.feedback", Text.literal(player).withColor(0xf57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))), false);
 			} else {
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.failFeedback")));
+				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.failFeedback")), false);
 			}
 		}
 	}

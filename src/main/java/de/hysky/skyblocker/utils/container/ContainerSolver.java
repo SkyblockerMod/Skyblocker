@@ -8,6 +8,10 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
+/**
+ * A solver for a container without the inventory slots included.
+ * @see ContainerAndInventorySolver
+ */
 public interface ContainerSolver extends ContainerMatcher, Resettable {
 	List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots);
 
@@ -15,6 +19,11 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 
 	@Override
 	default void reset() {}
+
+	/**
+	 * Called upon marking highlights dirty in {@link ContainerSolverManager#markHighlightsDirty()}.
+	 */
+	default void markDirty() {}
 
 	/**
 	 * Called when the slot is clicked.

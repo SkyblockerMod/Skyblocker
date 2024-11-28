@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -27,7 +27,7 @@ public class MuseumTooltip extends SimpleTooltipAdder {
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		final String internalID = stack.getSkyblockId();
 		if (TooltipInfoType.MUSEUM.hasOrNullWarning(internalID)) {
-			String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID).getAsString();
+			String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID);
 			String format = switch (itemCategory) {
 				case "Weapons" -> "%-18s";
 				case "Armor" -> "%-19s";

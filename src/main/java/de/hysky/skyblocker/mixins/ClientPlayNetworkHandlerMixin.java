@@ -14,14 +14,11 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
-import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
-import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -41,24 +38,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
-    @Shadow
-    private ClientWorld world;
+	@Shadow
+	private ClientWorld world;
 
     @Shadow
     @Final
     private static Logger LOGGER;
 
-    @Inject(method = "onBlockUpdate", at = @At("RETURN"))
-    private void skyblocker$onBlockUpdate(BlockUpdateS2CPacket packet, CallbackInfo ci) {
-        if (Utils.isInTheEnd() && SlayerUtils.isInSlayer()) {
-            BeaconHighlighter.beaconPositions.remove(packet.getPos());
-            if (packet.getState().isOf(Blocks.BEACON)) {
-                BeaconHighlighter.beaconPositions.add(packet.getPos());
-            }
-        }
-    }
-
-    @Inject(method = "method_37472", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V"))
+    @Inject(method = "method_64896", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V"))
     private void skyblocker$onItemDestroy(int entityId, CallbackInfo ci) {
         if (world.getEntityById(entityId) instanceof ItemEntity itemEntity) {
             DungeonManager.onItemPickup(itemEntity);
@@ -127,7 +114,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
         if (SkyblockerConfigManager.get().slayers.highlightMinis == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerEntitiesGlow.isSlayerMiniMob(armorStandEntity)
                 || SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerEntitiesGlow.isSlayer(armorStandEntity)) {
-            SlayerEntitiesGlow.setSlayerMobGlow(armorStandEntity);
+            if (armorStandEntity.isDead()) {
+                SlayerEntitiesGlow.cleanupArmorstand(armorStandEntity);
+            } else {
+                SlayerEntitiesGlow.setSlayerMobGlow(armorStandEntity);
+            }
         }
 
         if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);

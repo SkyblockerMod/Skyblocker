@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.container;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
@@ -8,6 +9,7 @@ import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusHelper;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusProfit;
+import de.hysky.skyblocker.skyblock.dungeon.SalvageHelper;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.LightsOnTerminal;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
@@ -41,6 +43,7 @@ public class ContainerSolverManager {
 			new LightsOnTerminal(),
 			new CroesusHelper(),
 			new CroesusProfit(),
+			new SalvageHelper(),
 			new ChronomatronSolver(),
 			new CommissionHighlight(),
 			new SuperpairsSolver(),
@@ -63,6 +66,7 @@ public class ContainerSolverManager {
 		return currentSolver;
 	}
 
+	@Init
 	public static void init() {
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
@@ -70,7 +74,7 @@ public class ContainerSolverManager {
 					MatrixStack matrices = context.getMatrices();
 					matrices.push();
 					matrices.translate(((HandledScreenAccessor) genericContainerScreen).getX(), ((HandledScreenAccessor) genericContainerScreen).getY(), 300);
-					onDraw(context, genericContainerScreen.getScreenHandler().slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9));
+					onDraw(context, genericContainerScreen, genericContainerScreen.getScreenHandler().slots);
 					matrices.pop();
 				});
 				ScreenEvents.remove(screen).register(screen1 -> clearScreen());
@@ -111,6 +115,10 @@ public class ContainerSolverManager {
 
 	public static void markHighlightsDirty() {
 		highlights = null;
+
+		if (currentSolver != null) {
+			currentSolver.markDirty();
+		}
 	}
 
 	/**
@@ -120,9 +128,9 @@ public class ContainerSolverManager {
 		return currentSolver != null && currentSolver.onClickSlot(slot, stack, screenId);
 	}
 
-	public static void onDraw(DrawContext context, List<Slot> slots) {
+	public static void onDraw(DrawContext context, GenericContainerScreen genericContainerScreen, List<Slot> slots) {
 		if (currentSolver == null) return;
-		if (highlights == null) highlights = currentSolver.getColors(slotMap(slots));
+		if (highlights == null) highlights = currentSolver.getColors(slotMap(currentSolver instanceof ContainerAndInventorySolver ? slots : slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9)));
 		RenderSystem.enableDepthTest();
 		RenderSystem.colorMask(true, true, true, false);
 		for (ColorHighlight highlight : highlights) {
@@ -133,7 +141,7 @@ public class ContainerSolverManager {
 		RenderSystem.colorMask(true, true, true, true);
 	}
 
-	private static Int2ObjectMap<ItemStack> slotMap(List<Slot> slots) {
+	public static Int2ObjectMap<ItemStack> slotMap(List<Slot> slots) {
 		Int2ObjectMap<ItemStack> slotMap = new Int2ObjectRBTreeMap<>();
 		for (int i = 0; i < slots.size(); i++) {
 			slotMap.put(i, slots.get(i).getStack());

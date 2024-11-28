@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
@@ -19,15 +20,14 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.trim.ArmorTrim;
-import net.minecraft.item.trim.ArmorTrimMaterial;
-import net.minecraft.item.trim.ArmorTrimPattern;
+import net.minecraft.item.equipment.trim.ArmorTrim;
+import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
+import net.minecraft.item.equipment.trim.ArmorTrimPattern;
 import net.minecraft.registry.*;
 import net.minecraft.registry.entry.RegistryEntry.Reference;
 import net.minecraft.text.Text;
@@ -41,6 +41,7 @@ public class CustomArmorTrims {
 	public static final Object2ObjectOpenHashMap<ArmorTrimId, ArmorTrim> TRIMS_CACHE = new Object2ObjectOpenHashMap<>();
 	private static boolean trimsInitialized = false;
 
+	@Init
 	public static void init() {
 		SkyblockEvents.JOIN.register(CustomArmorTrims::initializeTrimCache);
 		ClientCommandRegistrationCallback.EVENT.register(CustomArmorTrims::registerCommand);
@@ -55,8 +56,8 @@ public class CustomArmorTrims {
 		try {
 			TRIMS_CACHE.clear();
 			RegistryWrapper.WrapperLookup wrapperLookup = getWrapperLookup(loader, client);
-			for (Reference<ArmorTrimMaterial> material : wrapperLookup.getWrapperOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries().toList()) {
-				for (Reference<ArmorTrimPattern> pattern : wrapperLookup.getWrapperOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries().toList()) {
+			for (Reference<ArmorTrimMaterial> material : wrapperLookup.getOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries().toList()) {
+				for (Reference<ArmorTrimPattern> pattern : wrapperLookup.getOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries().toList()) {
 					ArmorTrim trim = new ArmorTrim(material, pattern);
 
 					TRIMS_CACHE.put(new ArmorTrimId(material.registryKey().getValue(), pattern.registryKey().getValue()), trim);

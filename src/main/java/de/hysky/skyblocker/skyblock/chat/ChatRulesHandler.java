@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
@@ -58,6 +59,7 @@ public class ChatRulesHandler {
 
     protected static final List<ChatRule> chatRuleList = new ArrayList<>();
 
+    @Init
     public static void init() {
         CompletableFuture.runAsync(ChatRulesHandler::loadChatRules);
         ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle.boulder;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -22,7 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Boulder extends DungeonPuzzle {
-    private static final Boulder INSTANCE = new Boulder();
+    @SuppressWarnings("unused")
+	private static final Boulder INSTANCE = new Boulder();
     private static final float[] RED_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.RED);
     private static final float[] ORANGE_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.ORANGE);
     private static final int BASE_Y = 65;
@@ -33,6 +35,7 @@ public class Boulder extends DungeonPuzzle {
         super("boulder", "boxes-room");
     }
 
+    @Init
     public static void init() {
     }
 

@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
@@ -11,14 +9,16 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.PetCache;
-import de.hysky.skyblocker.skyblock.item.tooltip.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.component.ComponentChanges;
@@ -42,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -153,7 +154,7 @@ public final class ItemUtils {
             }
             case "PET" -> {
                 if (customData.contains("petInfo")) {
-                    PetCache.PetInfo petInfo = PetCache.PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
+                    PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
                     return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
                 }
             }
@@ -239,7 +240,7 @@ public final class ItemUtils {
             }
             case "PET" -> {
                 if (!customData.contains("petInfo")) yield id;
-                PetCache.PetInfo petInfo = PetCache.PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
+                PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
                 yield petInfo.type() + ';' + petInfo.tierIndex();
             }
             case "RUNE" -> {
@@ -254,6 +255,28 @@ public final class ItemUtils {
             case "PARTY_HAT_SLOTH" -> id + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ENGLISH);
             default -> id.replace(":", "-");
         };
+    }
+
+    /**
+     * Parses the {@code petInfo} field from a pet item that has it into the {@link PetInfo} record.
+     * 
+     * @return the parsed {@link PetInfo} if successful, or {@link PetInfo#EMPTY}
+     */
+    @NotNull
+    public static PetInfo getPetInfo(ComponentHolder stack) {
+    	if (!getItemId(stack).equals("PET")) return PetInfo.EMPTY;
+
+    	String petInfo = getCustomData(stack).getString("petInfo");
+
+    	if (!petInfo.isEmpty()) {
+    		try {
+        		return PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(petInfo))
+        				.setPartial(PetInfo.EMPTY)
+        				.getPartialOrThrow();
+    		} catch (Exception ignored) {}
+    	}
+
+		return PetInfo.EMPTY;
     }
 
     /**
@@ -280,19 +303,20 @@ public final class ItemUtils {
      * and the {@code right boolean} indicating if the price was based on complete data.
      */
     public static @NotNull DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice) {
-        JsonObject bazaarPrices = TooltipInfoType.BAZAAR.getData();
-        JsonObject lowestBinPrices = TooltipInfoType.LOWEST_BINS.getData();
+        Object2ObjectMap<String, BazaarProduct> bazaarPrices = TooltipInfoType.BAZAAR.getData();
+        Object2DoubleMap<String> lowestBinPrices = TooltipInfoType.LOWEST_BINS.getData();
 
         if (skyblockApiId == null || skyblockApiId.isEmpty() || bazaarPrices == null || lowestBinPrices == null) return DoubleBooleanPair.of(0, false);
 
-        if (bazaarPrices.has(skyblockApiId)) {
-            JsonElement price = bazaarPrices.get(skyblockApiId).getAsJsonObject().get(useBazaarBuyPrice ? "buyPrice" : "sellPrice");
-            boolean isPriceNull = price.isJsonNull();
-            return DoubleBooleanPair.of(isPriceNull ? 0 : price.getAsDouble(), !isPriceNull);
+        if (bazaarPrices.containsKey(skyblockApiId)) {
+            BazaarProduct product = bazaarPrices.get(skyblockApiId);
+            OptionalDouble price = useBazaarBuyPrice ? product.buyPrice() : product.sellPrice();
+
+            return DoubleBooleanPair.of(price.orElse(0d), price.isPresent());
         }
 
-        if (lowestBinPrices.has(skyblockApiId)) {
-            return DoubleBooleanPair.of(lowestBinPrices.get(skyblockApiId).getAsDouble(), true);
+        if (lowestBinPrices.containsKey(skyblockApiId)) {
+            return DoubleBooleanPair.of(lowestBinPrices.getDouble(skyblockApiId), true);
         }
 
         return DoubleBooleanPair.of(0, false);
@@ -336,7 +360,7 @@ public final class ItemUtils {
         if (stack.getSkyblockId().equals("PICKONIMBUS")) {
             int pickonimbusDurability = customData.getInt("pickonimbus_durability");
 
-            return IntIntPair.of(customData.contains("pickonimbus_durability") ? pickonimbusDurability : 5000, 5000);
+            return IntIntPair.of(customData.contains("pickonimbus_durability") ? pickonimbusDurability : 2000, 2000);
         }
 
         String drillFuel = Formatting.strip(getLoreLineIf(stack, FUEL_PREDICATE));

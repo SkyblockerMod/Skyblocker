@@ -3,8 +3,11 @@ package de.hysky.skyblocker.mixins;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.device.SimonSays;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
+import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
+import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,14 +24,19 @@ public class ClientWorldMixin {
 	 * @implNote The {@code pos} can be mutable when this is called by chunk delta updates, so if you want to copy it into memory
 	 * (e.g. store it in a field/list/map) make sure to duplicate it via {@link BlockPos#toImmutable()}.
 	 */
-    @Inject(method = "handleBlockUpdate", at = @At("RETURN"))
-    private void skyblocker$handleBlockUpdate(CallbackInfo ci, @Local(argsOnly = true) BlockPos pos, @Local(argsOnly = true) BlockState state) {
-        if (Utils.isInCrimson()) {
-            DojoManager.onBlockUpdate(pos.toImmutable(), state);
-        } else if (Utils.isInCrystalHollows()) {
-            CrystalsChestHighlighter.onBlockUpdate(pos.toImmutable(), state);
-        }
+	//TODO might be worth creating an event for this
+	@Inject(method = "handleBlockUpdate", at = @At("RETURN"))
+	private void skyblocker$handleBlockUpdate(CallbackInfo ci, @Local(argsOnly = true) BlockPos pos, @Local(argsOnly = true) BlockState state) {
+		if (Utils.isInCrimson()) {
+			DojoManager.onBlockUpdate(pos.toImmutable(), state);
+		} else if (Utils.isInCrystalHollows()) {
+			CrystalsChestHighlighter.onBlockUpdate(pos.toImmutable(), state);
+		} else if (Utils.isInTheEnd() && SlayerUtils.isInSlayer()) {
+			BeaconHighlighter.beaconPositions.remove(pos);
 
-        SimonSays.onBlockUpdate(pos, state);
-    }
+			if (state.isOf(Blocks.BEACON)) BeaconHighlighter.beaconPositions.add(pos.toImmutable());
+		}
+
+		SimonSays.onBlockUpdate(pos, state);
+	}
 }

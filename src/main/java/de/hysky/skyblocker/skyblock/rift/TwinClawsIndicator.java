@@ -20,11 +20,11 @@ public class TwinClawsIndicator {
             return;
         }
 
-        Entity slayerEntity = SlayerUtils.getSlayerEntity();
+        Entity slayerEntity = SlayerUtils.getSlayerArmorStandEntity();
         if (slayerEntity == null) return;
 
         boolean anyClaws = false;
-        for (Entity entity : SlayerUtils.getEntityArmorStands(slayerEntity)) {
+        for (Entity entity : SlayerUtils.getEntityArmorStands(slayerEntity, 2.5f)) {
             if (entity.getDisplayName().toString().contains("TWINCLAWS")) {
                 anyClaws = true;
                 if (!TitleContainer.containsTitle(title) && !scheduled) {

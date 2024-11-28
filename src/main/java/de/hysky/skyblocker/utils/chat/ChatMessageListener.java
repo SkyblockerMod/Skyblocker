@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.utils.chat;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.barn.HungryHiker;
 import de.hysky.skyblocker.skyblock.barn.TreasureHunter;
+import de.hysky.skyblocker.skyblock.chat.filters.*;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.Trivia;
 import de.hysky.skyblocker.skyblock.dwarven.Fetchur;
 import de.hysky.skyblocker.skyblock.dwarven.Puzzler;
-import de.hysky.skyblocker.skyblock.filters.*;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.Event;
@@ -33,6 +34,8 @@ public interface ChatMessageListener {
     /**
      * Registers {@link ChatMessageListener}s to {@link ChatMessageListener#EVENT} and registers {@link ChatMessageListener#EVENT} to {@link ClientReceiveMessageEvents#ALLOW_GAME}
      */
+    @SuppressWarnings("incomplete-switch")
+	@Init
     static void init() {
         ChatMessageListener[] listeners = new ChatMessageListener[]{
                 // Features
@@ -58,27 +61,35 @@ public interface ChatMessageListener {
                 new DeathFilter(),
                 new DicerFilter()
         };
+
         // Register all listeners to EVENT
         for (ChatMessageListener listener : listeners) {
             EVENT.register(listener);
         }
+
         // Register EVENT to ClientReceiveMessageEvents.ALLOW_GAME from fabric api
         ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
             if (!Utils.isOnSkyblock()) {
                 return true;
             }
+
             ChatFilterResult result = EVENT.invoker().onMessage(message, Formatting.strip(message.getString()));
+
             switch (result) {
                 case ACTION_BAR -> {
                     if (overlay) {
                         return true;
                     }
+
                     ClientPlayerEntity player = MinecraftClient.getInstance().player;
+
                     if (player != null) {
                         player.sendMessage(message, true);
+
                         return false;
                     }
                 }
+
                 case FILTER -> {
                     return false;
                 }

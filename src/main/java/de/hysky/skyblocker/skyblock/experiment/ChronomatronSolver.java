@@ -53,6 +53,7 @@ public final class ChronomatronSolver extends ExperimentSolver {
 		return experimentsConfig.enableChronomatronSolver;
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	@Override
 	protected void tick(GenericContainerScreen screen) {
 		switch (getState()) {

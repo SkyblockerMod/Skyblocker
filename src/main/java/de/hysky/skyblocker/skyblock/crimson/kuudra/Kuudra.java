@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.crimson.kuudra;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -11,10 +12,8 @@ public class Kuudra {
 
 	static KuudraPhase phase = KuudraPhase.OTHER;
 
+	@Init
 	public static void init() {
-		KuudraWaypoints.init();
-		DangerWarning.init();
-
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 		ClientReceiveMessageEvents.GAME.register(Kuudra::onMessage);
 	}

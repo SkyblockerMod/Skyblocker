@@ -38,6 +38,9 @@ public class UIAndVisualsConfig {
     public ItemCooldown itemCooldown = new ItemCooldown();
 
     @SerialEntry
+    public InventorySearchConfig inventorySearch = new InventorySearchConfig();
+
+    @SerialEntry
     public TitleContainer titleContainer = new TitleContainer();
 
     @SerialEntry
@@ -81,6 +84,36 @@ public class UIAndVisualsConfig {
     public static class ItemCooldown {
         @SerialEntry
         public boolean enableItemCooldowns = true;
+    }
+
+    public static class InventorySearchConfig {
+        @SerialEntry
+        public EnableState enabled = EnableState.SKYBLOCK;
+
+        @SerialEntry
+        public boolean ctrlK = false;
+
+        @SerialEntry
+        public boolean clickableText = false;
+
+        public enum EnableState {
+            OFF,
+            SKYBLOCK,
+            EVERYWHERE;
+
+            @Override
+            public String toString() {
+                return I18n.translate("skyblocker.config.uiAndVisuals.inventorySearch.state." + this.name());
+            }
+
+            public boolean isEnabled() {
+                return switch (this) {
+                    case OFF -> false;
+                    case SKYBLOCK -> de.hysky.skyblocker.utils.Utils.isOnSkyblock();
+                    case EVERYWHERE -> true;
+                };
+            }
+        }
     }
 
     public static class TitleContainer {
@@ -160,32 +193,38 @@ public class UIAndVisualsConfig {
         public boolean enableBars = true;
 
         // Kept in for backwards compatibility, remove if needed
+        @SuppressWarnings("DeprecatedIsStillUsed")
+        @Deprecated
         @SerialEntry
-        public OldBarPositions barPositions = new OldBarPositions();
+        public LegacyBarPositions barPositions = new LegacyBarPositions();
+    }
+
+    /**
+     * Backwards compat.
+     * <p>
+     * Used to load the legacy bar positions, which will not have an effect once the bars are saved in the new format at {@code /skyblocker/status_bars.json}.
+     * New bars do not need to be added here.
+     */
+    @SuppressWarnings("DeprecatedIsStillUsed")
+    @Deprecated
+    public static class LegacyBarPositions {
+        @SerialEntry
+        public LegacyBarPosition healthBarPosition = LegacyBarPosition.LAYER1;
+
+        @SerialEntry
+        public LegacyBarPosition manaBarPosition = LegacyBarPosition.LAYER1;
+
+        @SerialEntry
+        public LegacyBarPosition defenceBarPosition = LegacyBarPosition.RIGHT;
+
+        @SerialEntry
+        public LegacyBarPosition experienceBarPosition = LegacyBarPosition.LAYER2;
     }
 
     /**
      * Backwards compat
      */
-    public static class OldBarPositions {
-        @SerialEntry
-        public OldBarPosition healthBarPosition = OldBarPosition.LAYER1;
-
-        @SerialEntry
-        public OldBarPosition manaBarPosition = OldBarPosition.LAYER1;
-
-        @SerialEntry
-        public OldBarPosition defenceBarPosition = OldBarPosition.LAYER1;
-
-        @SerialEntry
-        public OldBarPosition experienceBarPosition = OldBarPosition.LAYER1;
-
-    }
-
-    /**
-     * Backwards compat
-     */
-    public enum OldBarPosition {
+    public enum LegacyBarPosition {
         LAYER1, LAYER2, RIGHT, NONE
     }
 

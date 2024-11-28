@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.device;
 
-import java.util.Objects;
-
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -31,6 +30,8 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import java.util.Objects;
+
 public class SimonSays {
 	private static final Box BOARD_AREA = Box.enclosing(new BlockPos(111, 123, 92), new BlockPos(111, 120, 95));
 	private static final Box BUTTONS_AREA = Box.enclosing(new BlockPos(110, 123, 92), new BlockPos(110, 120, 95));
@@ -40,6 +41,7 @@ public class SimonSays {
 	private static final ObjectSet<BlockPos> CLICKED_BUTTONS = new ObjectOpenHashSet<>();
 	private static final ObjectList<BlockPos> SIMON_PATTERN = new ObjectArrayList<>();
 
+	@Init
 	public static void init() {
 		UseBlockCallback.EVENT.register(SimonSays::onBlockInteract);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());

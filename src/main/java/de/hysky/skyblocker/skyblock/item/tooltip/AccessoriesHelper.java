@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
@@ -8,6 +7,8 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
@@ -53,6 +54,7 @@ public class AccessoriesHelper {
 	//remove??
 	private static CompletableFuture<Void> loaded;
 
+	@Init
 	public static void init() {
 		ClientLifecycleEvents.CLIENT_STARTED.register((_client) -> load());
 		ClientLifecycleEvents.CLIENT_STOPPING.register((_client) -> save());
@@ -165,12 +167,8 @@ public class AccessoriesHelper {
 		return Pair.of(AccessoryReport.MISSING, String.format("(%d/%d)", accessory.tier(), highestTierInFamily));
 	}
 
-	static void refreshData(JsonObject data) {
-		try {
-			ACCESSORY_DATA = Accessory.MAP_CODEC.parse(JsonOps.INSTANCE, data).getOrThrow();
-		} catch (Exception e) {
-			LOGGER.error("[Skyblocker Accessory Helper] Failed to parse data!", e);
-		}
+	public static void refreshData(Map<String, Accessory> data) {
+		ACCESSORY_DATA = data;
 	}
 
 	private record ProfileAccessoryData(Int2ObjectOpenHashMap<ObjectOpenHashSet<String>> pages) {
@@ -191,13 +189,13 @@ public class AccessoriesHelper {
 	 * @author AzureAaron
 	 * @implSpec <a href="https://github.com/AzureAaron/aaron-mod/blob/1.20/src/main/java/net/azureaaron/mod/commands/MagicalPowerCommand.java#L475">Aaron's Mod</a>
 	 */
-	private record Accessory(String id, Optional<String> family, int tier) {
+	public record Accessory(String id, Optional<String> family, int tier) {
 		private static final Codec<Accessory> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("id").forGetter(Accessory::id),
 				Codec.STRING.optionalFieldOf("family").forGetter(Accessory::family),
 				Codec.INT.optionalFieldOf("tier", 0).forGetter(Accessory::tier)
 		).apply(instance, Accessory::new));
-		private static final Codec<Map<String, Accessory>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC);
+		public static final Codec<Map<String, Accessory>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC);
 
 		private boolean hasFamily() {
 			return family.isPresent();

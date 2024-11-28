@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.discord;
 
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiscConfig;
 import de.hysky.skyblocker.events.SkyblockEvents;
@@ -26,6 +27,7 @@ public class DiscordRPCManager {
     public static long startTimeStamp;
     public static int cycleCount;
 
+    @Init
     public static void init() {
         SkyblockEvents.LEAVE.register(DiscordRPCManager::initAndUpdatePresence);
         SkyblockEvents.JOIN.register(() -> {

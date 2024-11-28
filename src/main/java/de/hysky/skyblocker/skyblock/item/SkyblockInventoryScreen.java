@@ -2,7 +2,9 @@ package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -11,6 +13,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
@@ -36,9 +39,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * Opened here {@code de.hysky.skyblocker.mixins.MinecraftClientMixin#skyblocker$skyblockInventoryScreen}
- * <br>
- * Book button is moved here {@code de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker}
+ * <p>Adds equipment slots to the inventory screen and moves the offhand slot.</p>
+ * <p>Opened here {@link de.hysky.skyblocker.mixins.MinecraftClientMixin#skyblocker$skyblockInventoryScreen MinecraftClientMixin#skyblocker$skyblockInventoryScreen}</p>
+ * <p>Book button is moved here {@link de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker$moveButton InventoryScreenMixin#skyblocker$moveButton}</p>
  */
 public class SkyblockInventoryScreen extends InventoryScreen {
     private static final Logger LOGGER = LoggerFactory.getLogger("Equipment");
@@ -88,8 +91,14 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         }));
     }
 
-    public static void initEquipment() {
+	@Override
+	public void onDisplayed() {
+		Slot slot = handler.slots.get(45);
+		((SlotAccessor) slot).setX(slot.x + 21);
+	}
 
+	@Init
+    public static void initEquipment() {
         SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
             if (!prevProfileId.isEmpty()) CompletableFuture.runAsync(() -> save(prevProfileId)).thenRun(() -> load(profileId));
             else load(profileId);
@@ -105,13 +114,10 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
     public SkyblockInventoryScreen(PlayerEntity player) {
         super(player);
-        SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);
-
-        Slot slot = handler.slots.get(45);
-        ((SlotAccessor) slot).setX(slot.x + 21);
-        for (int i = 0; i < 4; i++) {
-            equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
-        }
+	    SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);
+	    for (int i = 0; i < 4; i++) {
+		    equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
+	    }
     }
 
     @Override
@@ -132,8 +138,13 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     @Override
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         for (Slot equipmentSlot : equipmentSlots) {
+            boolean hovered = isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY);
+
+            if (hovered) context.drawGuiTexture(RenderLayer::getGuiTextured, HandledScreenAccessor.getSLOT_HIGHLIGHT_BACK_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
+
             drawSlot(context, equipmentSlot);
-            if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) drawSlotHighlight(context, equipmentSlot.x, equipmentSlot.y, 0);
+
+            if (hovered) context.drawGuiTexture(RenderLayer::getGuiTexturedOverlay, HandledScreenAccessor.getSLOT_HIGHLIGHT_FRONT_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
         }
 
         super.drawForeground(context, mouseX, mouseY);
@@ -163,7 +174,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
         super.drawBackground(context, delta, mouseX, mouseY);
         for (int i = 0; i < 4; i++) {
-            context.drawGuiTexture(SLOT_TEXTURE, x + 76 + (i == 3 ? 21 : 0), y + 7 + i * 18, 18, 18);
+            context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, x + 76 + (i == 3 ? 21 : 0), y + 7 + i * 18, 18, 18);
         }
     }
 
@@ -171,7 +182,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     protected void drawSlot(DrawContext context, Slot slot) {
         super.drawSlot(context, slot);
         if (slot instanceof EquipmentSlot && !slot.hasStack()) {
-            context.drawGuiTexture(EMPTY_SLOT, slot.x, slot.y, 16, 16);
+            context.drawGuiTexture(RenderLayer::getGuiTextured, EMPTY_SLOT, slot.x, slot.y, 16, 16);
         }
     }
 
