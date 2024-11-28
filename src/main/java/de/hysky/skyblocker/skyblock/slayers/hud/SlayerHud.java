@@ -26,6 +26,6 @@ public class SlayerHud {
 	}
 
 	private static boolean shouldRender() {
-		return SkyblockerConfigManager.get().slayers.slayerHud.enableHud && Utils.isOnSkyblock() && SlayerManager.isInSlayer();
+		return SkyblockerConfigManager.get().slayers.slayerHud.enableHud && Utils.isOnSkyblock() && SlayerManager.isInSlayer() && !SlayerManager.slayerType.isBlank() && !SlayerManager.slayerTier.isBlank();
 	}
 }

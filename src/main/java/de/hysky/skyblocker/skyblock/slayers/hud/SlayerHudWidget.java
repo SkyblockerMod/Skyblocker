@@ -28,10 +28,13 @@ public class SlayerHudWidget extends Widget {
 	@Override
 	public void updateContent() {
 		if (client.player == null) return;
+
 		String type = SlayerManager.slayerType;
 		String tier = SlayerManager.slayerTier;
 		int level = SlayerManager.level;
+
 		addSimpleIcoText(Ico.NETHER_STAR, " ", SlayerConstants.SLAYER_TIERS_COLORS.get(RomanNumerals.romanToDecimal(tier)), type + " " + tier);
+
 		if (level != -1) {
 			boolean isMaxed = switch (type) {
 				case SlayerConstants.VAMPIRE -> level == 5;
@@ -50,6 +53,7 @@ public class SlayerHudWidget extends Widget {
 				addSimpleIcoText(Ico.ENCHANTING_TABLE, "XP: ", Formatting.LIGHT_PURPLE, numberFormat.format(currentXP) + "/" + numberFormat.format(nextMilestone));
 			}
 		}
+
 		if (SlayerManager.bossesNeeded > 1) {
 			addSimpleIcoText(Ico.DIASWORD, I18n.translate("skyblocker.slayer.hud.lvlUpIn") + ": ", Formatting.LIGHT_PURPLE, numberFormat.format(SlayerManager.bossesNeeded) + " bosses");
 		}
