@@ -173,12 +173,16 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		}
 		int y = this.y - 3;
 
-		final int[] offsets = new int[]{-1, 1};
-		for (int i : offsets) {
-			context.drawText(textRenderer, text, x + i, y, 0, false);
-			context.drawText(textRenderer, text, x, y + i, 0, false);
-		}
-		context.drawText(textRenderer, text, x, y, transparency((textColor == null ? colors[0] : textColor).getRGB()), false);
+		context.draw(vertex -> textRenderer.drawWithOutline(
+				Text.of(text).asOrderedText(),
+				x,
+				y,
+				transparency((textColor == null ? colors[0] : textColor).getRGB()),
+				transparency(0),
+				context.getMatrices().peek().getPositionMatrix(),
+				vertex,
+				15728880
+				));
 	}
 
 	public void renderCursor(DrawContext context, int mouseX, int mouseY, float delta) {
