@@ -236,7 +236,7 @@
   "skyblocker.config.farming.garden.enableHud": "Enable Farming HUD",
   "skyblocker.config.farming.garden.farmingHud": "Farming HUD Config...",
   "skyblocker.config.farming.garden.gardenPlotsWidget": "Enable Garden Plots Widget",
-  "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "While in the garden, in your on the right of your inventory there will be a widget to quickly teleport to plots. It will also show plots that have pests.",
+  "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "While in the garden, on the right of your inventory there will be a widget to quickly teleport to plots. It will also show plots that have pests (this requires the Pests widget to be enabled and visible in the Tab).",
   "skyblocker.config.farming.garden.lockMouseGround": "Only lock camera when on the ground",
   "skyblocker.config.farming.garden.lockMouseTool": "Lock camera when holding a farming tool",
   "skyblocker.config.farming.garden.visitorHelper": "Visitor helper",

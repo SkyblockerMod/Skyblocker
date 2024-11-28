@@ -19,6 +19,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
@@ -129,7 +130,7 @@ public class GardenPlotsWidget extends ClickableWidget {
 			Arrays.stream(gardenPlots).map(gardenPlot -> {
 				if (gardenPlot == null) return null;
 				JsonObject jsonObject = new JsonObject();
-				jsonObject.add("icon", ItemStack.ITEM_CODEC.encodeStart(JsonOps.INSTANCE, gardenPlot.item.getRegistryEntry()).getOrThrow());
+				jsonObject.add("icon", Item.ENTRY_CODEC.encodeStart(JsonOps.INSTANCE, gardenPlot.item.getRegistryEntry()).getOrThrow());
 				jsonObject.addProperty("name", gardenPlot.name);
 				return jsonObject;
 			}).forEach(elements::add);
@@ -147,7 +148,7 @@ public class GardenPlotsWidget extends ClickableWidget {
 				return SkyblockerMod.GSON.fromJson(reader, JsonArray.class).asList().stream().map(jsonElement -> {
 							if (jsonElement == null || jsonElement.isJsonNull()) return null;
 							JsonObject jsonObject = jsonElement.getAsJsonObject();
-							return new GardenPlot(ItemStack.ITEM_CODEC.decode(JsonOps.INSTANCE, jsonObject.get("icon")).getOrThrow().getFirst().value(), jsonObject.get("name").getAsString());
+							return new GardenPlot(Item.ENTRY_CODEC.decode(JsonOps.INSTANCE, jsonObject.get("icon")).getOrThrow().getFirst().value(), jsonObject.get("name").getAsString());
 						}
 				).toArray(GardenPlot[]::new);
 			} catch (NoSuchFileException ignored) {
@@ -192,7 +193,7 @@ public class GardenPlotsWidget extends ClickableWidget {
 		matrices.push();
 		matrices.translate(getX(), getY(), 0);
 
-		context.drawTexture(BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
+		context.drawTexture(RenderLayer::getGuiTextured, BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
 
 		context.drawText(textRenderer, getMessage(), 8, 6, 4210752, false);
 
