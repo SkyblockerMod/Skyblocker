@@ -17,7 +17,7 @@ public class StakeIndicator {
             TitleContainer.removeTitle(title);
             return;
         }
-		Entity slayerEntity = SlayerManager.getSlayerArmorStandEntity();
+		Entity slayerEntity = SlayerManager.getSlayerBossArmorStand();
         if (slayerEntity != null && slayerEntity.getDisplayName().toString().contains("҉")) {
             RenderHelper.displayInTitleContainerAndPlaySound(title);
         } else {

@@ -31,6 +31,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -97,7 +98,7 @@ public class SlayerManager {
 				int xpIndex = message.indexOf("Next LVL in ") + "Next LVL in ".length();
 				int xpEndIndex = message.indexOf(" XP!", xpIndex);
 				if (xpEndIndex != -1) {
-					level = Integer.parseInt(Pattern.compile("\\d+").matcher(message).results().map(m -> m.group()).findFirst().orElse(null));
+					level = Integer.parseInt(Pattern.compile("\\d+").matcher(message).results().map(MatchResult::group).findFirst().orElse(null));
 					xpRemaining = Integer.parseInt(message.substring(xpIndex, xpEndIndex).trim().replace(",", ""));
 					calculateBossesNeeded();
 				} else LOGGER.error("[Skyblocker] error getting xpNeeded (xpEndIndex == -1)");
@@ -273,14 +274,6 @@ public class SlayerManager {
 	}
 
 	public static ArmorStandEntity getSlayerBossArmorStand() {
-		return quest.bossArmorStand;
-	}
-
-	/**
-	 * @deprecated Use {@link #getSlayerBossArmorStand()} instead.
-	 */
-	@Deprecated
-	public static ArmorStandEntity getSlayerArmorStandEntity() {
 		return quest.bossArmorStand;
 	}
 

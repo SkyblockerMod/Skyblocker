@@ -20,7 +20,7 @@ public class TwinClawsIndicator {
             return;
         }
 
-		Entity slayerEntity = SlayerManager.getSlayerArmorStandEntity();
+		Entity slayerEntity = SlayerManager.getSlayerBossArmorStand();
         if (slayerEntity == null) return;
 
         boolean anyClaws = false;
