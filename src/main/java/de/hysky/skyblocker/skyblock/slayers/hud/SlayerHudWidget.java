@@ -33,7 +33,7 @@ public class SlayerHudWidget extends Widget {
 		SlayerTier tier = SlayerManager.getSlayerTier();
 		int level = SlayerManager.level;
 
-		addSimpleIcoText(Ico.NETHER_STAR, " ", tier.color, type + " " + tier);
+		addSimpleIcoText(Ico.NETHER_STAR, " ", tier.color, type.bossName + " " + tier);
 
 		if (level != -1) {
 			if (level == type.maxLevel) {

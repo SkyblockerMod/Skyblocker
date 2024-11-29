@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -155,23 +156,21 @@ public class SlayerManager {
 	 */
 	public static void checkSlayerBoss(ArmorStandEntity armorStand) {
 		if (quest == null || !armorStand.hasCustomName() || !armorStand.isInRange(MinecraftClient.getInstance().player, 15)) return;
-		if (quest.waitingForMiniboss()) {
+		if (quest.waitingForBoss()) {
+			if (armorStand.getName().getString().contains(MinecraftClient.getInstance().getSession().getUsername())) {
+				for (Entity otherArmorStands : getEntityArmorStands(armorStand, 1.5f)) {
+					Matcher matcher = SLAYER_PATTERN.matcher(otherArmorStands.getName().getString());
+					if (matcher.find()) {
+						quest.onBoss((ArmorStandEntity) otherArmorStands);
+						return;
+					}
+				}
+			}
 			Arrays.stream(SlayerType.values()).forEach(type -> type.minibossNames.forEach((name) -> {
 				if (armorStand.getName().getString().contains(name) && isInSlayerQuestType(type)) {
 					quest.onMiniboss(armorStand, type);
 				}
 			}));
-		} else if (quest.waitingForBoss()) {
-			Matcher matcher = SLAYER_PATTERN.matcher(armorStand.getName().getString());
-			if (matcher.find()) {
-				String username = MinecraftClient.getInstance().getSession().getUsername();
-				for (Entity otherArmorStands : getEntityArmorStands(armorStand, 1.5f)) {
-					if (otherArmorStands.getName().getString().contains(username)) {
-						quest.onBoss(armorStand);
-						break;
-					}
-				}
-			}
 		}
 	}
 
@@ -179,7 +178,7 @@ public class SlayerManager {
 	 * Gets nearby armor stands with custom names. Used to find other armor stands showing a different line of text above a slayer boss.
 	 */
 	public static List<Entity> getEntityArmorStands(Entity entity, float expandY) {
-		return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0, expandY, 0), x -> x instanceof ArmorStandEntity && x.hasCustomName());
+		return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.1F, expandY, 0.1F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
 	}
 
 	/**
@@ -218,7 +217,7 @@ public class SlayerManager {
 	 */
 	public static boolean shouldGlow(Entity entity, SlayersConfig.HighlightSlayerEntities highlightType) {
 		if (!isInSlayer()) return false;
-		if (SkyblockerConfigManager.get().slayers.highlightMinis == highlightType && getSlayerQuest().miniboss == entity) return true;
+		if (SkyblockerConfigManager.get().slayers.highlightMinis == highlightType && getSlayerQuest().minibosses.contains(entity)) return true;
 		if (SkyblockerConfigManager.get().slayers.highlightBosses == highlightType && getSlayerQuest().boss == entity) return true;
 		return false;
 	}
@@ -285,24 +284,21 @@ public class SlayerManager {
 	public static class SlayerQuest {
 		public SlayerType slayerType = SlayerType.UNKNOWN;
 		public SlayerTier slayerTier = SlayerTier.UNKNOWN;
-		public ArmorStandEntity minibossArmorStand;
-		public Entity miniboss;
+		public List<ArmorStandEntity> minibossesArmorStand = new ArrayList<>();;
+		public List<Entity> minibosses = new ArrayList<>();
 		public ArmorStandEntity bossArmorStand;
 		public Entity boss;
 		public Instant bossSpawnTime;
 		public boolean slain = false;
-
-		public boolean waitingForMiniboss() {
-			return minibossArmorStand == null;
-		}
 
 		public boolean waitingForBoss() {
 			return bossArmorStand == null;
 		}
 
 		private void onMiniboss(ArmorStandEntity armorStand, SlayerType type) {
-			minibossArmorStand = armorStand;
-			miniboss = findClosestMobEntity(type.mobType, armorStand);
+			if (minibossesArmorStand.contains(armorStand)) return;
+			minibossesArmorStand.add(armorStand);
+			minibosses.add(findClosestMobEntity(type.mobType, armorStand));
 			if (SkyblockerConfigManager.get().slayers.miniBossSpawnAlert) {
 				TitleContainer.addTitle(SlayerManager.MINIBOSS_SPAWN, 20);
 				MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
