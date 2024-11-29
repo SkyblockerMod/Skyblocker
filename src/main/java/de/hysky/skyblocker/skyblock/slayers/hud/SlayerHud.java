@@ -12,7 +12,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class SlayerHud {
-
 	@Init
 	public static void init() {
 		HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
@@ -26,6 +25,6 @@ public class SlayerHud {
 	}
 
 	private static boolean shouldRender() {
-		return SkyblockerConfigManager.get().slayers.slayerHud.enableHud && Utils.isOnSkyblock() && SlayerManager.isInSlayer() && !SlayerManager.slayerType.isBlank() && !SlayerManager.slayerTier.isBlank();
+		return SkyblockerConfigManager.get().slayers.slayerHud.enableHud && Utils.isOnSkyblock() && SlayerManager.isInSlayer() && !SlayerManager.getSlayerType().isUnknown() && !SlayerManager.getSlayerTier().isUnknown();
 	}
 }

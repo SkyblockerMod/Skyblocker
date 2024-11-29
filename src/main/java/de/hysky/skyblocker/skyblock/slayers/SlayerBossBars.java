@@ -36,13 +36,13 @@ public class SlayerBossBars {
 		}
 
 		// Update boss max health
-		ArmorStandEntity e = SlayerManager.getSlayerArmorStandEntity();
-		if (e != null && bossMaxHealth == -1) {
-			Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(SlayerManager.getSlayerArmorStandEntity().getName().getString());
+		ArmorStandEntity bossArmorStand = SlayerManager.getSlayerBossArmorStand();
+		if (bossArmorStand != null && bossMaxHealth == -1) {
+			Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(bossArmorStand.getName().getString());
 			if (maxHealthMatcher.find()) bossMaxHealth = convertToInt(maxHealthMatcher.group(0));
 		}
 
-		return bossBar != null || SlayerManager.getSlayerArmorStandEntity() != null;
+		return bossBar != null || bossArmorStand != null;
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class SlayerBossBars {
 	 * @return The updated boss bar.
 	 */
 	public static ClientBossBar updateBossBar() {
-		ArmorStandEntity slayer = SlayerManager.getSlayerArmorStandEntity();
+		ArmorStandEntity slayer = SlayerManager.getSlayerBossArmorStand();
 		if (bossBar == null) bossBar = new ClientBossBar(uuid, slayer != null ? slayer.getDisplayName() : Text.of("Attempting to Locate Slayer..."), 1f, BossBar.Color.PURPLE, BossBar.Style.PROGRESS, false, false, false);
 
 		// If no slayer armor stand is found, display a red progress bar

@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.skyblock.slayers.hud;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.slayers.SlayerConstants;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerTier;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -29,26 +29,17 @@ public class SlayerHudWidget extends Widget {
 	public void updateContent() {
 		if (client.player == null) return;
 
-		String type = SlayerManager.slayerType;
-		String tier = SlayerManager.slayerTier;
+		SlayerType type = SlayerManager.getSlayerType();
+		SlayerTier tier = SlayerManager.getSlayerTier();
 		int level = SlayerManager.level;
 
-		addSimpleIcoText(Ico.NETHER_STAR, " ", SlayerConstants.SLAYER_TIERS_COLORS.get(RomanNumerals.romanToDecimal(tier)), type + " " + tier);
+		addSimpleIcoText(Ico.NETHER_STAR, " ", tier.color, type + " " + tier);
 
 		if (level != -1) {
-			boolean isMaxed = switch (type) {
-				case SlayerConstants.VAMPIRE -> level == 5;
-				default -> level == 9;
-			};
-			if (isMaxed) {
+			if (level == type.maxLevel) {
 				addComponent(new IcoTextComponent(Ico.ENCHANTING_TABLE, Text.literal("XP: ").append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));
 			} else {
-				int nextMilestone = switch (type) {
-					case SlayerConstants.REVENANT -> SlayerConstants.ZombieLevelMilestones[level];
-					case SlayerConstants.TARA -> SlayerConstants.SpiderLevelMilestones[level];
-					case SlayerConstants.VAMPIRE -> SlayerConstants.VampireLevelMilestones[level];
-					default -> SlayerConstants.RegularLevelMilestones[level];
-				};
+				int nextMilestone = type.levelMilestones[level];
 				int currentXP = nextMilestone - SlayerManager.xpRemaining;
 				addSimpleIcoText(Ico.ENCHANTING_TABLE, "XP: ", Formatting.LIGHT_PURPLE, numberFormat.format(currentXP) + "/" + numberFormat.format(nextMilestone));
 			}

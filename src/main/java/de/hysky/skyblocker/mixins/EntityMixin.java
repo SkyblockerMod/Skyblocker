@@ -58,7 +58,7 @@ public abstract class EntityMixin {
 	private void onStartRiding(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
 		if (cir.getReturnValue()) {
 			if (SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer && SlayerManager.isBossSpawned() && this.getType() == EntityType.ENDERMAN && entity.getType() == EntityType.ARMOR_STAND) {
-				Entity slayer = SlayerManager.getSlayerEntity(EntityType.ENDERMAN);
+				Entity slayer = SlayerManager.getSlayerBoss();
 				if (slayer != null) {
 					if (slayer.getUuid().equals(getUuid()) && !LazerTimer.isRiding()) {
 						LazerTimer.bossUUID = getUuid();

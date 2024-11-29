@@ -17,10 +17,8 @@ import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
-import de.hysky.skyblocker.skyblock.slayers.features.SlayerEntitiesGlow;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.client.network.ClientConnectionState;
@@ -87,19 +85,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
         CrystalsChestHighlighter.onSound(packet);
 		RegistryEntry<SoundEvent> sound = packet.getSound();
 
-		// Miniboss spawn alert
-		if (SkyblockerConfigManager.get().slayers.miniBossSpawnAlert && Utils.isOnSkyblock() && sound.matchesKey(SoundEvents.ENTITY_GENERIC_EXPLODE.registryKey())) {
-			if (SlayerManager.isInSlayer() && SlayerManager.getSlayerQuest().isLfMinis() && packet.getPitch() == 9 / 7f && packet.getVolume() == 0.6f) {
-				//Checks if MiniBoss is within a radius of the client's location
-				if (client.player.squaredDistanceTo(packet.getX(), packet.getY(), packet.getZ()) < 225) {
-					if (!TitleContainer.containsTitle(SlayerManager.MINIBOSS_SPAWN)) {
-						TitleContainer.addTitle(SlayerManager.MINIBOSS_SPAWN, 20);
-						client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
-					}
-				}
-			}
-		}
-
 		// Mute Enderman sounds in the End
 		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().otherLocations.end.muteEndermanSounds) {
 			// Check if the sound identifier matches any Enderman sound identifiers
@@ -143,7 +128,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
         if (packet.getStatus() == EntityStatuses.PLAY_DEATH_SOUND_OR_ADD_PROJECTILE_HIT_PARTICLES) {
             DungeonScore.handleEntityDeath(entity);
             TheEnd.onEntityDeath(entity);
-            SlayerEntitiesGlow.onEntityDeath(entity);
         }
         return entity;
     }
@@ -152,15 +136,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
     private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
         if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
 
-		// TODO: Very inefficient, should switch to SlayerManager
-        if (SkyblockerConfigManager.get().slayers.highlightMinis == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerEntitiesGlow.isSlayerMiniMob(armorStandEntity)
-                || SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerEntitiesGlow.isSlayer(armorStandEntity)) {
-            if (armorStandEntity.isDead()) {
-                SlayerEntitiesGlow.cleanupArmorstand(armorStandEntity);
-            } else {
-                SlayerEntitiesGlow.setSlayerMobGlow(armorStandEntity);
-            }
-        }
+		SlayerManager.checkSlayerBoss(armorStandEntity);
 
         if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
