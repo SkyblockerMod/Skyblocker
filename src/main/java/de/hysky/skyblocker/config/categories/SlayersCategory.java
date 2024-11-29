@@ -60,9 +60,9 @@ public class SlayersCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("skyblocker.config.slayer.miniBossSpawnAlert"))
+						.name(Text.translatable("skyblocker.config.slayer.minibossSpawnAlert"))
 						.description(OptionDescription.of(
-								Text.translatable("skyblocker.config.slayer.miniBossSpawnAlert.@Tooltip")))
+								Text.translatable("skyblocker.config.slayer.minibossSpawnAlert.@Tooltip")))
 						.binding(defaults.slayers.miniBossSpawnAlert,
 								() -> config.slayers.miniBossSpawnAlert,
 								newValue -> config.slayers.miniBossSpawnAlert = newValue)

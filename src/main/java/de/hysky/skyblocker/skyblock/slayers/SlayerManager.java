@@ -109,6 +109,7 @@ public class SlayerManager {
 	}
 
 	public static void calculateBossesNeeded() {
+		if (quest == null) return;
 		int tier = RomanNumerals.romanToDecimal(quest.slayerTier.name());
 		if (tier == 0) {
 			bossesNeeded = -1;
@@ -136,7 +137,7 @@ public class SlayerManager {
 						level = -1;
 						bossesNeeded = -1;
 					} else if (quest.slayerType.isUnknown()) quest = new SlayerQuest();
-					quest.slayerType = SlayerType.valueOf(matcher.group(1));
+					quest.slayerType = SlayerType.fromBossName(matcher.group(1));
 					quest.slayerTier = SlayerTier.valueOf(matcher.group(2));
 					return;
 				}
@@ -282,8 +283,8 @@ public class SlayerManager {
 	}
 
 	public static class SlayerQuest {
-		public SlayerType slayerType;
-		public SlayerTier slayerTier;
+		public SlayerType slayerType = SlayerType.UNKNOWN;
+		public SlayerTier slayerTier = SlayerTier.UNKNOWN;
 		public ArmorStandEntity minibossArmorStand;
 		public Entity miniboss;
 		public ArmorStandEntity bossArmorStand;

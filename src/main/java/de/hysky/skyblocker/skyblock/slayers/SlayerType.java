@@ -38,6 +38,15 @@ public enum SlayerType implements StringIdentifiable {
 		return this == UNKNOWN;
 	}
 
+	public static SlayerType fromBossName(String bossName) {
+		for (SlayerType type : values()) {
+			if (type.bossName.equalsIgnoreCase(bossName)) {
+				return type;
+			}
+		}
+		return UNKNOWN;
+	}
+
 	@Override
 	public String asString() {
 		return name;
