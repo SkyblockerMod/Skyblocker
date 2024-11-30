@@ -26,7 +26,7 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
 	);
 
     public EssenceShopAdder() {
-        super(".*Essence Shop");
+        super(".*Essence Shop", CONFIG_INFORMATION);
     }
 
     @Override
@@ -48,9 +48,4 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
 
         return SlotText.bottomRightList(Text.literal(YourEssenceAdder.COMPACT_NUMBER_FORMATTER.format(Integer.parseInt(essenceAmount))).withColor(0xFFDDC1));
     }
-
-	@Override
-	public ConfigInformation getConfigInformation() {
-		return CONFIG_INFORMATION;
-	}
 }

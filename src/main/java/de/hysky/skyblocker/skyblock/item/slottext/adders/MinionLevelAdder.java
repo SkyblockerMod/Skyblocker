@@ -20,7 +20,7 @@ public class MinionLevelAdder extends SimpleSlotTextAdder {
 			"minion_level",
 			"skyblocker.config.uiAndVisuals.slotText.minionLevel");
 	public MinionLevelAdder() {
-		super();
+		super(CONFIG_INFORMATION);
 	}
 
 	@Override
@@ -32,10 +32,5 @@ public class MinionLevelAdder extends SimpleSlotTextAdder {
 		if (!RomanNumerals.isValidRomanNumeral(romanNumeral)) return List.of();
 		int level = RomanNumerals.romanToDecimal(romanNumeral);
 		return SlotText.topRightList(Text.literal(String.valueOf(level)).withColor(0xFFDDC1));
-	}
-
-	@Override
-	public ConfigInformation getConfigInformation() {
-		return CONFIG_INFORMATION;
 	}
 }

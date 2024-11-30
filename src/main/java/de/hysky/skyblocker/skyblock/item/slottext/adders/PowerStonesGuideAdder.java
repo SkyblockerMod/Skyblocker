@@ -21,7 +21,7 @@ public class PowerStonesGuideAdder extends SimpleSlotTextAdder {
 			"skyblocker.config.uiAndVisuals.slotText.powerStonesGuide.@Tooltip");
 
     public PowerStonesGuideAdder() {
-        super("^Power Stones Guide");
+        super("^Power Stones Guide", CONFIG_INFORMATION);
     }
 
     @Override
@@ -35,9 +35,4 @@ public class PowerStonesGuideAdder extends SimpleSlotTextAdder {
 
         return SlotText.bottomRightList(text);
     }
-
-	@Override
-	public ConfigInformation getConfigInformation() {
-		return CONFIG_INFORMATION;
-	}
 }

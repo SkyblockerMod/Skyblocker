@@ -30,7 +30,7 @@ public class CatacombsLevelAdder {
 	public static class Dungeoneering extends SimpleSlotTextAdder {
 		private static final Pattern LEVEL_PATTERN = Pattern.compile(".*?(?:(?<arabic>\\d+)|(?<roman>\\S+))? ?✯?");
 		public Dungeoneering() {
-			super("^Dungeoneering");
+			super("^Dungeoneering", CONFIG_INFORMATION);
 		}
 
 		@Override
@@ -58,17 +58,12 @@ public class CatacombsLevelAdder {
 				}
 			}
 		}
-
-		@Override
-		public ConfigInformation getConfigInformation() {
-			return CONFIG_INFORMATION;
-		}
 	}
 
 	public static class DungeonClasses extends SimpleSlotTextAdder {
 
 		public DungeonClasses() {
-			super("^Dungeon Classes"); //Applies to both screens as they are same in both the placement and the style of the level text.
+			super("^Dungeon Classes", CONFIG_INFORMATION); //Applies to both screens as they are same in both the placement and the style of the level text.
 		}
 
 		@Override
@@ -84,17 +79,12 @@ public class CatacombsLevelAdder {
 				}
 			}
 		}
-
-		@Override
-		public ConfigInformation getConfigInformation() {
-			return CONFIG_INFORMATION;
-		}
 	}
 
 	public static class ReadyUp extends SimpleSlotTextAdder {
 
 		public ReadyUp() {
-			super("^Ready Up");
+			super("^Ready Up", CONFIG_INFORMATION);
 		}
 
 		@Override
@@ -109,11 +99,6 @@ public class CatacombsLevelAdder {
 					return List.of();
 				}
 			}
-		}
-
-		@Override
-		public ConfigInformation getConfigInformation() {
-			return CONFIG_INFORMATION;
 		}
 	}
 

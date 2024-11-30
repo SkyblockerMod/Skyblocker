@@ -21,7 +21,7 @@ public class RancherBootsSpeedAdder extends SimpleSlotTextAdder {
 			"skyblocker.config.uiAndVisuals.slotText.rancherBoots");
 
 	public RancherBootsSpeedAdder() {
-		super();
+		super(CONFIG_INFORMATION);
 	}
 
 	@Override
@@ -32,10 +32,5 @@ public class RancherBootsSpeedAdder extends SimpleSlotTextAdder {
 		String speed = matcher.group(2);
 		if (speed == null) speed = matcher.group(1); //2nd group only matches when the speed cap is set to a number beyond the player's actual speed cap.
 		return SlotText.bottomLeftList(Text.literal(speed).withColor(0xFFDDC1));
-	}
-
-	@Override
-	public ConfigInformation getConfigInformation() {
-		return CONFIG_INFORMATION;
 	}
 }

@@ -17,7 +17,7 @@ public class SkyblockLevelAdder extends SimpleSlotTextAdder {
 			"skyblock_level",
 			"skyblocker.config.uiAndVisuals.slotText.skyblockLevel");
 	public SkyblockLevelAdder() {
-		super("^SkyBlock Menu");
+		super("^SkyBlock Menu", CONFIG_INFORMATION);
 	}
 
 	@Override
@@ -30,9 +30,5 @@ public class SkyblockLevelAdder extends SimpleSlotTextAdder {
 		String levelText = siblings.get(2).getString(); //The 3rd child is the level text itself
 		if (!NumberUtils.isDigits(levelText)) return List.of();
 		return SlotText.bottomLeftList(Text.literal(levelText).withColor(0xFFDDC1));
-	}
-	@Override
-	public ConfigInformation getConfigInformation() {
-		return CONFIG_INFORMATION;
 	}
 }

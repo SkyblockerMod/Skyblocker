@@ -69,7 +69,7 @@ public class AttributeShardAdder extends SimpleSlotTextAdder {
 	}
 
 	public AttributeShardAdder() {
-		super();
+		super(CONFIG_INFORMATION);
 	}
 
 	@Override
@@ -90,10 +90,5 @@ public class AttributeShardAdder extends SimpleSlotTextAdder {
 				SlotText.bottomRight(Text.literal(String.valueOf(attributeLevel)).withColor(0xFFDDC1)),
 				SlotText.topLeft(Text.literal(attributeInitials).withColor(0xCFF8F8))
 		);
-	}
-
-	@Override
-	public ConfigInformation getConfigInformation() {
-		return CONFIG_INFORMATION;
 	}
 }

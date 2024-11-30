@@ -24,7 +24,7 @@ public class CommunityShopAdder extends SimpleSlotTextAdder {
 	private static byte currentScreen = -1; // 0 = city projects, 1 = upgrades, 2 = booster cookie, 3 = bits shop, 4 = fire sales, any other number = invalid
 
 	public CommunityShopAdder() {
-		super("^Community Shop");
+		super("^Community Shop", CONFIG_INFORMATION);
 	}
 
 	@Override
@@ -59,10 +59,5 @@ public class CommunityShopAdder extends SimpleSlotTextAdder {
 			}
 			default -> List.of();
 		};
-	}
-
-	@Override
-	public ConfigInformation getConfigInformation() {
-		return CONFIG_INFORMATION;
 	}
 }

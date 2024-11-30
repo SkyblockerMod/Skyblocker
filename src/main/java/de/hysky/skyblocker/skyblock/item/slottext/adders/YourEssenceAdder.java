@@ -29,7 +29,7 @@ public class YourEssenceAdder extends SimpleSlotTextAdder {
 			"skyblocker.config.uiAndVisuals.slotText.yourEssence");
 
 	public YourEssenceAdder() {
-		super("^(?:Your Essence|Essence Guide)");
+		super("^(?:Your Essence|Essence Guide)", CONFIG_INFORMATION);
 	}
 
 	@Override
@@ -57,9 +57,5 @@ public class YourEssenceAdder extends SimpleSlotTextAdder {
 			return Optional.of(essenceAmountMatcher);
 		}
 		return Optional.empty();
-	}
-	@Override
-	public ConfigInformation getConfigInformation() {
-		return CONFIG_INFORMATION;
 	}
 }

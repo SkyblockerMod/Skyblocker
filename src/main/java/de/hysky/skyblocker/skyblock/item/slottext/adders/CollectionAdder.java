@@ -22,7 +22,7 @@ public class CollectionAdder extends SimpleSlotTextAdder {
 			);
 
     public CollectionAdder() {
-        super("^\\w+ Collections");
+        super("^\\w+ Collections", CONFIG_INFORMATION);
     }
 
     @Override
@@ -38,9 +38,4 @@ public class CollectionAdder extends SimpleSlotTextAdder {
         }
         return List.of();
     }
-
-	@Override
-	public ConfigInformation getConfigInformation() {
-		return CONFIG_INFORMATION;
-	}
 }

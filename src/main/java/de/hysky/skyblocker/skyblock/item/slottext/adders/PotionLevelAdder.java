@@ -18,6 +18,10 @@ public class PotionLevelAdder extends SimpleSlotTextAdder {
 			"potion_level",
 			"skyblocker.config.uiAndVisuals.slotText.potionLevel");
 
+	public PotionLevelAdder() {
+		super(CONFIG_INFORMATION);
+	}
+
     @Override
     public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
         NbtCompound customData = ItemUtils.getCustomData(stack);
@@ -33,9 +37,4 @@ public class PotionLevelAdder extends SimpleSlotTextAdder {
         }
         return List.of();
     }
-
-	@Override
-	public ConfigInformation getConfigInformation() {
-		return CONFIG_INFORMATION;
-	}
 }

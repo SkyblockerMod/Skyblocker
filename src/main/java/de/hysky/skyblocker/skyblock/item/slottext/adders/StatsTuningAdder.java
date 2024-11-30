@@ -22,7 +22,7 @@ public class StatsTuningAdder extends SimpleSlotTextAdder {
 			"skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip");
 
     public StatsTuningAdder() {
-        super("^Stats Tuning");
+        super("^Stats Tuning", CONFIG_INFORMATION);
     }
 
     @Override
@@ -42,9 +42,4 @@ public class StatsTuningAdder extends SimpleSlotTextAdder {
         return SlotText.bottomRightList(Text.literal(assignedPoints).withColor(0xFFDDC1));
 
     }
-
-	@Override
-	public ConfigInformation getConfigInformation() {
-		return CONFIG_INFORMATION;
-	}
 }

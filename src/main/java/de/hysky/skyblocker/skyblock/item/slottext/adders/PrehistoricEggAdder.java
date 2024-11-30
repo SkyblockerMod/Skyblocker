@@ -20,6 +20,10 @@ public class PrehistoricEggAdder extends SimpleSlotTextAdder {
 			"skyblocker.config.uiAndVisuals.slotText.prehistoricEgg",
 			"skyblocker.config.uiAndVisuals.slotText.prehistoricEgg.@Tooltip");
 
+	public PrehistoricEggAdder() {
+		super(CONFIG_INFORMATION);
+	}
+
 	@Override
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
 		if (!stack.isOf(Items.PLAYER_HEAD) || !stack.getSkyblockId().equals("PREHISTORIC_EGG")) return List.of();
@@ -33,10 +37,5 @@ public class PrehistoricEggAdder extends SimpleSlotTextAdder {
 		else walkedStr = walked / 1000 + "k";
 
 		return SlotText.bottomLeftList(Text.literal(walkedStr).withColor(0xFFDDC1));
-	}
-
-	@Override
-	public ConfigInformation getConfigInformation() {
-		return CONFIG_INFORMATION;
 	}
 }

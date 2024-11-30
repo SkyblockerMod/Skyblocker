@@ -18,7 +18,7 @@ public class SkillLevelAdder extends SimpleSlotTextAdder {
 			"skill_level",
 			"skyblocker.config.uiAndVisuals.slotText.rancherBoots");
 	public SkillLevelAdder() {
-		super("^Your Skills");
+		super("^Your Skills", CONFIG_INFORMATION);
 	}
 
 	@Override
@@ -40,10 +40,5 @@ public class SkillLevelAdder extends SimpleSlotTextAdder {
 				return List.of();
 			}
 		}
-	}
-
-	@Override
-	public ConfigInformation getConfigInformation() {
-		return CONFIG_INFORMATION;
 	}
 }
