@@ -30,7 +30,6 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.*;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
@@ -79,20 +78,20 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
         return !Utils.isOnHypixel();
     }
 
-    @Inject(method = "onPlaySound", at = @At("RETURN"))
+    @Inject(method = "onPlaySound", at = @At("HEAD"), cancellable = true)
     private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
         FishingHelper.onSound(packet);
         CrystalsChestHighlighter.onSound(packet);
-		RegistryEntry<SoundEvent> sound = packet.getSound();
+		SoundEvent sound = packet.getSound().value();
 
 		// Mute Enderman sounds in the End
 		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().otherLocations.end.muteEndermanSounds) {
 			// Check if the sound identifier matches any Enderman sound identifiers
-			if (sound.matchesId(SoundEvents.ENTITY_ENDERMAN_AMBIENT.id()) ||
-					sound.matchesId(SoundEvents.ENTITY_ENDERMAN_DEATH.id()) ||
-					sound.matchesId(SoundEvents.ENTITY_ENDERMAN_HURT.id()) ||
-					sound.matchesId(SoundEvents.ENTITY_ENDERMAN_SCREAM.id()) ||
-					sound.matchesId(SoundEvents.ENTITY_ENDERMAN_STARE.id())) {
+			if (sound.id().equals(SoundEvents.ENTITY_ENDERMAN_AMBIENT.id()) ||
+					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_DEATH.id()) ||
+					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_HURT.id()) ||
+					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_SCREAM.id()) ||
+					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_STARE.id())) {
 				// Cancel the playback of Enderman sounds
 				ci.cancel();
 			}

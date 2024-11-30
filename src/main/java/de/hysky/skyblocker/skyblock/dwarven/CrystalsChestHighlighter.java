@@ -16,7 +16,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -115,9 +114,9 @@ public class CrystalsChestHighlighter {
 		if (player == null || !Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
 			return;
 		}
-		RegistryEntry<SoundEvent> sound = packet.getSound();
+		SoundEvent sound = packet.getSound().value();
 		//lock picked sound
-		if (sound.matchesId(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP.id()) && packet.getPitch() == 1 && !activeChests.isEmpty()) {
+		if (sound.id().equals(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP.id()) && packet.getPitch() == 1 && !activeChests.isEmpty()) {
 			Vec3d eyePos = player.getCameraPosVec(0);
 			Vec3d rotationVec = player.getRotationVec(0);
 			double range = player.getBlockInteractionRange();
@@ -128,11 +127,11 @@ public class CrystalsChestHighlighter {
 				activeParticles.clear();
 			}
 			//lock pick fail sound
-		} else if (sound.matchesId(SoundEvents.BLOCK_CHEST_LOCKED.id())) {
+		} else if (sound.id().equals(SoundEvents.BLOCK_CHEST_LOCKED.id())) {
 			currentLockCount = 0;
 			activeParticles.clear();
 			//lock pick finish sound
-		} else if (sound.matchesId(SoundEvents.BLOCK_CHEST_OPEN.id())) {
+		} else if (sound.id().equals(SoundEvents.BLOCK_CHEST_OPEN.id())) {
 			//set the needed lock count to the current, so we know how many locks a chest has
 			neededLockCount = Math.min(currentLockCount, 5);
 			currentLockCount = 0;

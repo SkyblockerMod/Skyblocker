@@ -14,7 +14,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -65,8 +64,8 @@ public class FishingHelper {
     }
 
     public static void onSound(PlaySoundS2CPacket packet) {
-		RegistryEntry<SoundEvent> sound = packet.getSound();
-        if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper && startTimeFish != 0 && System.currentTimeMillis() >= startTimeFish + 2000 && (sound.matchesId(SoundEvents.ENTITY_GENERIC_SPLASH.id()) || sound.matchesId(SoundEvents.ENTITY_PLAYER_SPLASH.id()))) {
+		SoundEvent sound = packet.getSound().value();
+        if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper && startTimeFish != 0 && System.currentTimeMillis() >= startTimeFish + 2000 && (sound.id().equals(SoundEvents.ENTITY_GENERIC_SPLASH.id()) || sound.id().equals(SoundEvents.ENTITY_PLAYER_SPLASH.id()))) {
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null && player.fishHook != null) {
                 Vec3d soundToFishHook = player.fishHook.getPos().subtract(packet.getX(), 0, packet.getZ());
