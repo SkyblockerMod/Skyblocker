@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -70,7 +71,10 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 		return Utils.isOnSkyblock() && original instanceof ItemEnchantmentsComponent component ? component.withShowInTooltip(false) : original;
 	}
 
-	@Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/component/MergedComponentMap;size()I"))
+	@Inject(method = "getTooltip",
+			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/registry/DefaultedRegistry;getId(Ljava/lang/Object;)Lnet/minecraft/util/Identifier;")),
+			at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.AFTER, ordinal = 0)
+	)
 	private void skyblocker$skyblockIdTooltip(CallbackInfoReturnable<List<Text>> cir, @Local List<Text> lines) {
 		if (Utils.isOnSkyblock()) {
 			String skyblockId = getSkyblockId();
