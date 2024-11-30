@@ -33,7 +33,7 @@
     "PlayerInventoryMixin",
     "PlayerListHudMixin",
     "PlayerSkinProviderMixin",
-    "PlayerSkinTextureMixin",
+    "PlayerSkinTextureDownloaderMixin",
     "RenderFishMixin",
     "ScoreboardMixin",
     "SignEditScreenMixin",

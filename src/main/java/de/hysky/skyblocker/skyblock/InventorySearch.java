@@ -68,7 +68,7 @@ public class InventorySearch {
 			// Unfocus when clicking outside
 			@Override
 			public boolean mouseClicked(double mouseX, double mouseY, int button) {
-				if (isFocused() && !clicked(mouseX, mouseY)) {
+				if (isFocused() && !isMouseOver(mouseX, mouseY)) {
 					setFocused(false);
 					return false;
 				}

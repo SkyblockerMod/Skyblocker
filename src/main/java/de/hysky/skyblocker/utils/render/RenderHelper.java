@@ -319,12 +319,8 @@ public class RenderHelper {
 
         VertexConsumerProvider.Immediate consumers = VertexConsumerProvider.immediate(ALLOCATOR);
 
-        RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
-
-        textRenderer.draw(text, xOffset, yOffset, 0xFFFFFFFF, false, positionMatrix, consumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+        textRenderer.draw(text, xOffset, yOffset, 0xFFFFFFFF, false, positionMatrix, consumers, throughWalls ? TextRenderer.TextLayerType.SEE_THROUGH : TextRenderer.TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
         consumers.draw();
-
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
     /**
