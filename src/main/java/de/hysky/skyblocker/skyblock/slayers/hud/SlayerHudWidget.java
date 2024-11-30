@@ -29,25 +29,28 @@ public class SlayerHudWidget extends Widget {
 	public void updateContent() {
 		if (client.player == null) return;
 
-		SlayerType type = SlayerManager.getSlayerType();
-		SlayerTier tier = SlayerManager.getSlayerTier();
-		int level = SlayerManager.getSlayerQuest().level;
-		int bossesNeeded = SlayerManager.getSlayerQuest().bossesNeeded;
+		if (SlayerManager.getSlayerQuest() != null) {
+			SlayerType type = SlayerManager.getSlayerType();
+			SlayerTier tier = SlayerManager.getSlayerTier();
+			int level = SlayerManager.getSlayerQuest().level;
+			int bossesNeeded = SlayerManager.getSlayerQuest().bossesNeeded;
 
-		addSimpleIcoText(Ico.NETHER_STAR, "", tier.color, type.bossName + " " + tier);
+			if (type == null || tier == null) return;
 
-		if (level > 0) {
-			if (level == type.maxLevel) {
-				addComponent(new IcoTextComponent(Ico.ENCHANTING_TABLE, Text.literal("XP: ").append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));
-			} else {
-				int nextMilestone = type.levelMilestones[level];
-				int currentXP = nextMilestone - SlayerManager.getSlayerQuest().xpRemaining;
-				addSimpleIcoText(Ico.ENCHANTING_TABLE, "XP: ", Formatting.LIGHT_PURPLE, numberFormat.format(currentXP) + "/" + numberFormat.format(nextMilestone));
+			addSimpleIcoText(Ico.NETHER_STAR, "", tier.color, type.bossName + " " + tier);
+			if (level > 0) {
+				if (level == type.maxLevel) {
+					addComponent(new IcoTextComponent(Ico.ENCHANTING_TABLE, Text.literal("XP: ").append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));
+				} else {
+					int nextMilestone = type.levelMilestones[level];
+					int currentXP = nextMilestone - SlayerManager.getSlayerQuest().xpRemaining;
+					addSimpleIcoText(Ico.ENCHANTING_TABLE, "XP: ", Formatting.LIGHT_PURPLE, numberFormat.format(currentXP) + "/" + numberFormat.format(nextMilestone));
+				}
 			}
-		}
 
-		if (bossesNeeded > 0) {
-			addComponent(new IcoTextComponent(Ico.DIASWORD, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal(numberFormat.format(bossesNeeded)).formatted(Formatting.LIGHT_PURPLE))));
+			if (bossesNeeded > 0) {
+				addComponent(new IcoTextComponent(Ico.DIASWORD, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal(numberFormat.format(bossesNeeded)).formatted(Formatting.LIGHT_PURPLE))));
+			}
 		}
 	}
 }

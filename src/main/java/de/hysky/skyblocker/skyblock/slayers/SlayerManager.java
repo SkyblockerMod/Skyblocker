@@ -73,13 +73,13 @@ public class SlayerManager {
 				}
 				return;
 			case "NICE! SLAYER BOSS SLAIN!":
-				if (bossFight != null) {
+				if (slayerQuest != null && bossFight != null) {
 					bossFight.slain = true;
 					SlayerTimer.onBossDeath(bossFight.bossSpawnTime);
 				}
 				return;
 			case "SLAYER QUEST COMPLETE!":
-				if (bossFight != null && !bossFight.slain)
+				if (slayerQuest != null && bossFight != null && !bossFight.slain)
 					SlayerTimer.onBossDeath(bossFight.bossSpawnTime);
 				bossFight = null;
 				return;
@@ -95,21 +95,11 @@ public class SlayerManager {
 					slayerQuest.xpRemaining = -1;
 					slayerQuest.bossesNeeded = -1;
 				} else {
-//					// TODO: turn below into a regex
-//					int xpIndex = message.indexOf("Next LVL in ") + "Next LVL in ".length();
-//					int xpEndIndex = message.indexOf(" XP!", xpIndex);
-//					if (xpEndIndex != -1) {
-//						slayer.level = Integer.parseInt(Pattern.compile("\\d+").matcher(message).results().map(MatchResult::group).findFirst().orElse(null));
-//						slayer.xpRemaining = Integer.parseInt(message.substring(xpIndex, xpEndIndex).trim().replace(",", ""));
-//						calculateBossesNeeded();
-//					} else LOGGER.error("[Skyblocker] error getting xpNeeded (xpEndIndex == -1)");
-					String xpRemainingStr = matcherNextLvl.group(3); // Group 3 corresponds to ([\\d,]+) in the regex
+					String xpRemainingStr = matcherNextLvl.group(3);
 					if (xpRemainingStr != null) {
-						slayerQuest.level = Integer.parseInt(matcherNextLvl.group(2)); // Group 2 corresponds to the Slayer level ([0-9])
+						slayerQuest.level = Integer.parseInt(matcherNextLvl.group(2));
 						slayerQuest.xpRemaining = Integer.parseInt(xpRemainingStr.replace(",", "").trim());
 						calculateBossesNeeded();
-					} else {
-						LOGGER.error("[Skyblocker] error getting xpNeeded (group 3 is null)");
 					}
 				}
 			} else if (matcherLvlUp.matches()) {
