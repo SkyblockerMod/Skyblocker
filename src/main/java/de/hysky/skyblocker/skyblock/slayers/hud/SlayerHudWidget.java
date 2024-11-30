@@ -31,22 +31,23 @@ public class SlayerHudWidget extends Widget {
 
 		SlayerType type = SlayerManager.getSlayerType();
 		SlayerTier tier = SlayerManager.getSlayerTier();
-		int level = SlayerManager.level;
+		int level = SlayerManager.getSlayerQuest().level;
+		int bossesNeeded = SlayerManager.getSlayerQuest().bossesNeeded;
 
-		addSimpleIcoText(Ico.NETHER_STAR, " ", tier.color, type.bossName + " " + tier);
+		addSimpleIcoText(Ico.NETHER_STAR, "", tier.color, type.bossName + " " + tier);
 
-		if (level != -1) {
+		if (level > 0) {
 			if (level == type.maxLevel) {
 				addComponent(new IcoTextComponent(Ico.ENCHANTING_TABLE, Text.literal("XP: ").append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));
 			} else {
 				int nextMilestone = type.levelMilestones[level];
-				int currentXP = nextMilestone - SlayerManager.xpRemaining;
+				int currentXP = nextMilestone - SlayerManager.getSlayerQuest().xpRemaining;
 				addSimpleIcoText(Ico.ENCHANTING_TABLE, "XP: ", Formatting.LIGHT_PURPLE, numberFormat.format(currentXP) + "/" + numberFormat.format(nextMilestone));
 			}
 		}
 
-		if (SlayerManager.bossesNeeded > 1) {
-			addComponent(new IcoTextComponent(Ico.DIASWORD, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal(numberFormat.format(SlayerManager.bossesNeeded)).formatted(Formatting.LIGHT_PURPLE))));
+		if (bossesNeeded > 0) {
+			addComponent(new IcoTextComponent(Ico.DIASWORD, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal(numberFormat.format(bossesNeeded)).formatted(Formatting.LIGHT_PURPLE))));
 		}
 	}
 }

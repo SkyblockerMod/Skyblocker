@@ -143,10 +143,10 @@ public class MobGlow {
 			case MagmaCubeEntity magmaCube when Utils.isInKuudra() -> 0xf7510f;
 
 			// Blaze Slayer Attunement Colours
-			case ArmorStandEntity armorStand when SlayerManager.isInSlayerQuestType(SlayerType.DEMONLORD) -> AttunementColors.getColor(armorStand);
-			case BlazeEntity blaze when SlayerManager.isInSlayer() -> AttunementColors.getColor(blaze);
-			case ZombifiedPiglinEntity piglin when SlayerManager.isInSlayer() -> AttunementColors.getColor(piglin);
-			case WitherSkeletonEntity wSkelly when SlayerManager.isInSlayer() -> AttunementColors.getColor(wSkelly);
+			case ArmorStandEntity armorStand when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(armorStand);
+			case BlazeEntity blaze when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(blaze);
+			case ZombifiedPiglinEntity piglin when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(piglin);
+			case WitherSkeletonEntity wSkelly when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(wSkelly);
 
 			default -> 0xf57738;
 		};
