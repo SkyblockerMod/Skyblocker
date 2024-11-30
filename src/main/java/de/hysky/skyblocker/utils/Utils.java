@@ -344,7 +344,7 @@ public class Utils {
             TEXT_SCOREBOARD.addAll(textLines);
             STRING_SCOREBOARD.addAll(stringLines);
             Utils.updatePurse();
-			SlayerManager.getSlayerBossInfo();
+			SlayerManager.getSlayerBossInfo(true);
         } catch (NullPointerException e) {
             //Do nothing
         }
@@ -411,6 +411,7 @@ public class Utils {
                 if (Utils.gameType.equals("SKYBLOCK")) {
                     isOnSkyblock = true;
                     tickProfileId();
+					SlayerManager.getSlayerInfoOnJoin();
 
                     if (!previousServerType.equals("SKYBLOCK")) SkyblockEvents.JOIN.invoker().onSkyblockJoin();
                 } else if (previousServerType.equals("SKYBLOCK")) {

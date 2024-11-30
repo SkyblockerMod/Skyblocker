@@ -124,13 +124,13 @@ public class SlayerManager {
 		slayerQuest.bossesNeeded = (int) Math.ceil((double) slayerQuest.xpRemaining / xpPerTier);
 	}
 
-	public static void getSlayerBossInfo() {
-		if (slayerQuest == null) return;
+	public static void getSlayerBossInfo(boolean checkStatus) {
+		if (checkStatus && slayerQuest == null) return;
 		try {
 			for (String line : Utils.STRING_SCOREBOARD) {
 				Matcher matcher = SLAYER_TIER_PATTERN.matcher(line);
 				if (matcher.find()) {
-					if (!matcher.group(1).equals(slayerQuest.slayerType.bossName) || !matcher.group(2).equals(slayerQuest.slayerTier.name())) {
+					if (slayerQuest == null || !matcher.group(1).equals(slayerQuest.slayerType.bossName) || !matcher.group(2).equals(slayerQuest.slayerTier.name())) {
 						slayerQuest = new SlayerQuest();
 					}
 					slayerQuest.slayerType = SlayerType.fromBossName(matcher.group(1));
@@ -141,6 +141,13 @@ public class SlayerManager {
 		} catch (IndexOutOfBoundsException e) {
 			LOGGER.error("[Skyblocker] Failed to get slayer boss info", e);
 		}
+	}
+
+	/**
+	 * Gets The slayer info from scoreboard when player joins SkyBlock
+	 */
+	public static void getSlayerInfoOnJoin() {
+		Scheduler.INSTANCE.schedule(() -> getSlayerBossInfo(false), 20 * 2); //2 seconds
 	}
 
 	/**

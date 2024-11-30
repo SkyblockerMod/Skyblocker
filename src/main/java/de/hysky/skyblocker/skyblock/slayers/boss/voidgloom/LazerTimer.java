@@ -21,7 +21,7 @@ public class LazerTimer {
 
 	public static void updateTimer() {
 		if (isRiding) {
-			if (!SlayerManager.isBossSpawned()) {//in case player died in lazer phase
+			if (!SlayerManager.isBossSpawned()) {
 				isRiding = false;
 				return;
 			}
