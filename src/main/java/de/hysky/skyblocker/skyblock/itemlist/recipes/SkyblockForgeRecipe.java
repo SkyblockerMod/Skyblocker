@@ -30,6 +30,10 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
         duration = forgeRecipe.getDuration();
     }
 
+	public ItemStack getResult() {
+		return output;
+	}
+
 
     @Override
     public List<RecipeSlot> getInputSlots(int width, int height) {
@@ -37,7 +41,7 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
         int centerX = width / 2;
         int centerY = height / 2;
 
-        Vector2i radius = getRadius();
+        Vector2i radius = getGridSize();
         int startX = (int) (centerX / 2.f - (radius.x / 2.f) * 18);
         int startY = (int) (centerY - (radius.y / 2.f) * 18);
 
@@ -49,7 +53,7 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
         return out;
     }
 
-    private Vector2i getRadius() {
+    public Vector2i getGridSize() {
         int gridWidth;
         int gridHeight;
 

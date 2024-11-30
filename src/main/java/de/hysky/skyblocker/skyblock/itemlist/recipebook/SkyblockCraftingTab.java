@@ -10,7 +10,7 @@ import net.minecraft.util.math.MathHelper;
 /**
  * The Skyblock Crafting Tab which handles the mouse clicks & rendering for the results page and the search field.
  */
-record SkyblockCraftingTab(SkyblockRecipeBookWidget recipeBook, ItemStack icon, SkyblockCraftingRecipeResults results) implements RecipeTab {
+record SkyblockCraftingTab(SkyblockRecipeBookWidget recipeBook, ItemStack icon, SkyblockRecipeResults results) implements RecipeTab {
 	static final ItemStack CRAFTING_TABLE = new ItemStack(Items.CRAFTING_TABLE);
 
 	@Override

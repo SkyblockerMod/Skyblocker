@@ -3,11 +3,14 @@ package de.hysky.skyblocker.compatibility.rei;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.display.DisplaySerializer;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Skyblock Crafting Recipe display class for REI
@@ -40,4 +43,14 @@ public class SkyblockRecipeDisplay implements Display {
     public CategoryIdentifier<?> getCategoryIdentifier() {
         return CategoryIdentifier.of(category);
     }
+
+	@Override
+	public Optional<Identifier> getDisplayLocation() {
+		return Optional.empty();
+	}
+
+	@Override
+	public @Nullable DisplaySerializer<? extends Display> getSerializer() {
+		return null;
+	}
 }

@@ -77,12 +77,17 @@ public interface SkyblockRecipe {
 
     /**
      * Extra text like collection requirements
-     * @return the text
      */
     Text getExtraText();
 
+	/**
+	 * Identifier used for REI, EMI. Also used in the recipe book for the name
+	 */
     Identifier getCategoryIdentifier();
 
+	/**
+	 * Used for EMI.
+	 */
     Identifier getRecipeIdentifier();
 
     record RecipeSlot(int x, int y, ItemStack stack, boolean showBackground) {
