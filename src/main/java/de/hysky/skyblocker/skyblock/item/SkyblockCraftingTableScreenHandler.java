@@ -66,7 +66,7 @@ public class SkyblockCraftingTableScreenHandler extends GenericContainerScreenHa
             if (slot == 23) return new int[]{124, 35};
             if (slot == 16 || slot == 25 || slot == 34) {
                 int y = (slot / 9 - 1) * 18 + 8;
-                return new int[]{174, y};
+                return new int[]{152, y};
             }
             int gridX = slot % 9 - 1;
             int gridY = slot / 9 - 1;

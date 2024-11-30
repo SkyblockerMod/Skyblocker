@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 
-import de.hysky.skyblocker.skyblock.PetCache;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.Pet;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
@@ -47,7 +47,7 @@ public class ItemLoader {
             NbtCompound customData = ItemUtils.getCustomData(stack);
 
             if (itemId.equals("PET")) {
-                PetCache.PetInfo petInfo = PetCache.PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
+                PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
                 Pet pet = new Pet(petInfo);
                 itemList.add(pet.getIcon());
                 continue;

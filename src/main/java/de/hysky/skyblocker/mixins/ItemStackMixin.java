@@ -3,6 +3,7 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.injected.SkyblockerStack;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -24,13 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack {
-
-	@Shadow
-	public abstract int getDamage();
-
-	@Shadow
-	public abstract void setDamage(int damage);
-
 	@Unique
 	private int maxDamage;
 
@@ -42,6 +36,18 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@Unique
 	private String neuName;
+
+	@Unique
+	private String uuid;
+
+	@Unique
+	private PetInfo petInfo;
+
+	@Shadow
+	public abstract int getDamage();
+
+	@Shadow
+	public abstract void setDamage(int damage);
 
 	@ModifyReturnValue(method = "getName", at = @At("RETURN"))
 	private Text skyblocker$customItemNames(Text original) {
@@ -137,5 +143,19 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	public String getNeuName() {
 		if (neuName != null && !neuName.isEmpty()) return neuName;
 		return neuName = ItemUtils.getNeuId((ItemStack) (Object) this);
+	}
+
+	@Override
+	@NotNull
+	public String getUuid() {
+		if (uuid != null && !uuid.isEmpty()) return uuid;
+		return uuid = ItemUtils.getItemUuid(this);
+	}
+
+	@Override
+	@NotNull
+	public PetInfo getPetInfo() {
+		if (petInfo != null) return petInfo;
+		return petInfo = ItemUtils.getPetInfo(this);
 	}
 }

@@ -2,9 +2,11 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.debug.Debug;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
+import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.text.Text;
 
@@ -33,6 +35,14 @@ public class DebugCategory {
 								() -> config.debug.webSocketDebug,
 								newValue -> config.debug.webSocketDebug = newValue)
 						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Debug.DumpFormat>createBuilder()
+						.name(Text.translatable("skyblocker.config.debug.dumpFormat"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.debug.dumpFormat.@Tooltip")))
+						.binding(defaults.debug.dumpFormat,
+								() -> config.debug.dumpFormat,
+								newValue -> config.debug.dumpFormat = newValue)
+						.controller(opt -> EnumControllerBuilder.create(opt).enumClass(Debug.DumpFormat.class)) // ConfigUtils::createEnumCyclingListController causes a NPE for some reason
 						.build())
 				.build();
 	}
