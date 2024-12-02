@@ -24,9 +24,10 @@ public class SnapshotDebug {
 	}
 
 	private static void renderTest(WorldRenderContext wrc) {
-		RenderHelper.renderFilledWithBeaconBeam(wrc, new BlockPos(175, 63, -14), RED, ALPHA, true);
-		RenderHelper.renderLinesFromPoints(wrc, new Vec3d[] { new Vec3d(173, 66, -7.5), new Vec3d(178, 66, -7.5) }, RED, ALPHA, LINE_WIDTH, false);
-		RenderHelper.renderQuad(wrc, new Vec3d[] { new Vec3d(183, 66, -16), new Vec3d(183, 63, -16), new Vec3d(183, 63, -14), new Vec3d(183, 66, -14) }, RED, ALPHA, false);
-		RenderHelper.renderText(wrc, Text.of("Skyblocker on " + SharedConstants.getGameVersion().getName() + "!"), new Vec3d(175.5, 67.5, -7.5), false);
+		RenderHelper.renderFilledWithBeaconBeam(wrc, new BlockPos(-3, 63, 5), RED, ALPHA, true);
+		RenderHelper.renderLinesFromPoints(wrc, new Vec3d[] { new Vec3d(-2, 65, 6.5), new Vec3d(3, 65, 6.5) }, RED, ALPHA, LINE_WIDTH, false);
+		RenderHelper.renderLineFromCursor(wrc, new Vec3d(-2.5, 63.5, 5.5), RED, ALPHA, LINE_WIDTH);
+		RenderHelper.renderQuad(wrc, new Vec3d[] { new Vec3d(3, 66, 3), new Vec3d(3, 63, 3), new Vec3d(3, 63, 5), new Vec3d(3, 66, 5) }, RED, ALPHA, false);
+		RenderHelper.renderText(wrc, Text.of("Skyblocker on " + SharedConstants.getGameVersion().getName() + "!"), new Vec3d(0.5, 66.5, 6.5), false);
 	}
 }
