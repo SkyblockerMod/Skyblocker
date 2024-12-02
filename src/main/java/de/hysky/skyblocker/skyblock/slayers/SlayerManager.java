@@ -6,7 +6,6 @@ import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.ManiaIndicator;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.StakeIndicator;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.TwinClawsIndicator;
-import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.render.title.Title;
@@ -16,7 +15,6 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.CaveSpiderEntity;
 import net.minecraft.entity.mob.MobEntity;
@@ -108,7 +106,7 @@ public class SlayerManager {
 	}
 
 	public static void calculateBossesNeeded() {
-		int tier = RomanNumerals.romanToDecimal(slayerQuest.slayerTier.name());
+		int tier = slayerQuest.slayerTier.ordinal();
 		if (tier == 0) {
 			slayerQuest.bossesNeeded = -1;
 			return;
@@ -152,6 +150,7 @@ public class SlayerManager {
 	/**
 	 * Checks if the given armor stand is a slayer boss or miniboss and saves it to the corresponding field.
 	 * <p>This is the main mechanism for detecting slayer bosses and minibosses. All other features rely on information processed here.
+	 *
 	 * @implNote The resulting mob entity (not the armor stand entity) might not be entirely accurate.
 	 * {@link #findClosestMobEntity(EntityType, ArmorStandEntity)} could be modified and run more than once to ensure the correct entity is found.
 	 */
@@ -221,16 +220,17 @@ public class SlayerManager {
 	}
 
 	/**
-	 * Returns the highlight bounding box for the given slayer mob entity. It's slightly larger than the entity's bounding box.
+	 * Returns the highlight bounding box for the given slayer boss armor stand entity.
+	 * It's slightly larger and lower than the armor stand's bounding box.
 	 */
-	public static Box getSlayerMobBoundingBox(LivingEntity entity) {
+	public static Box getSlayerMobBoundingBox(ArmorStandEntity armorStand) {
 		return switch (getSlayerType()) {
-			case SlayerType.REVENANT -> new Box(entity.getX() - 0.4, entity.getY() - 0.1, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 2.2, entity.getZ() + 0.4);
-			case SlayerType.TARANTULA -> new Box(entity.getX() - 0.9, entity.getY() - 0.2, entity.getZ() - 0.9, entity.getX() + 0.9, entity.getY() - 1.2, entity.getZ() + 0.9);
-			case SlayerType.VOIDGLOOM -> new Box(entity.getX() - 0.4, entity.getY() - 0.2, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 3, entity.getZ() + 0.4);
-			case SlayerType.SVEN -> new Box(entity.getX() - 0.5, entity.getY() - 0.1, entity.getZ() - 0.5, entity.getX() + 0.5, entity.getY() - 1, entity.getZ() + 0.5);
+			case SlayerType.REVENANT -> new Box(armorStand.getX() - 0.4, armorStand.getY() - 0.1, armorStand.getZ() - 0.4, armorStand.getX() + 0.4, armorStand.getY() - 2.2, armorStand.getZ() + 0.4);
+			case SlayerType.TARANTULA -> new Box(armorStand.getX() - 0.9, armorStand.getY() - 0.2, armorStand.getZ() - 0.9, armorStand.getX() + 0.9, armorStand.getY() - 1.2, armorStand.getZ() + 0.9);
+			case SlayerType.VOIDGLOOM -> new Box(armorStand.getX() - 0.4, armorStand.getY() - 0.2, armorStand.getZ() - 0.4, armorStand.getX() + 0.4, armorStand.getY() - 3, armorStand.getZ() + 0.4);
+			case SlayerType.SVEN -> new Box(armorStand.getX() - 0.5, armorStand.getY() - 0.1, armorStand.getZ() - 0.5, armorStand.getX() + 0.5, armorStand.getY() - 1, armorStand.getZ() + 0.5);
 			case null -> null;
-			default -> entity.getBoundingBox();
+			default -> armorStand.getBoundingBox();
 		};
 	}
 
