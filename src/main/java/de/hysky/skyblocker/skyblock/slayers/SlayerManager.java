@@ -85,26 +85,25 @@ public class SlayerManager {
 				return;
 		}
 
-		if (slayerQuest != null) {
-			Matcher matcherNextLvl = PATTERN_XP_NEEDED.matcher(message);
-			Matcher matcherLvlUp = PATTERN_LVL_UP.matcher(message);
+		if (slayerQuest == null) return;
+		Matcher matcherNextLvl = PATTERN_XP_NEEDED.matcher(message);
+		Matcher matcherLvlUp = PATTERN_LVL_UP.matcher(message);
 
-			if (matcherNextLvl.matches()) {
-				if (message.contains("LVL MAXED OUT")) {
-					slayerQuest.level = message.contains("Vampire") ? 5 : 9;
-					slayerQuest.xpRemaining = -1;
-					slayerQuest.bossesNeeded = -1;
-				} else {
-					String xpRemainingStr = matcherNextLvl.group(3);
-					if (xpRemainingStr != null) {
-						slayerQuest.level = Integer.parseInt(matcherNextLvl.group(2));
-						slayerQuest.xpRemaining = Integer.parseInt(xpRemainingStr.replace(",", "").trim());
-						calculateBossesNeeded();
-					}
+		if (matcherNextLvl.matches()) {
+			if (message.contains("LVL MAXED OUT")) {
+				slayerQuest.level = message.contains("Vampire") ? 5 : 9;
+				slayerQuest.xpRemaining = -1;
+				slayerQuest.bossesNeeded = -1;
+			} else {
+				String xpRemainingStr = matcherNextLvl.group(3);
+				if (xpRemainingStr != null) {
+					slayerQuest.level = Integer.parseInt(matcherNextLvl.group(2));
+					slayerQuest.xpRemaining = Integer.parseInt(xpRemainingStr.replace(",", "").trim());
+					calculateBossesNeeded();
 				}
-			} else if (matcherLvlUp.matches()) {
-				slayerQuest.level = Integer.parseInt(message.replaceAll("(\\d+).+", "$1"));
 			}
+		} else if (matcherLvlUp.matches()) {
+			slayerQuest.level = Integer.parseInt(message.replaceAll("(\\d+).+", "$1"));
 		}
 	}
 
@@ -157,23 +156,21 @@ public class SlayerManager {
 	 * {@link #findClosestMobEntity(EntityType, ArmorStandEntity)} could be modified and run more than once to ensure the correct entity is found.
 	 */
 	public static void checkSlayerBoss(ArmorStandEntity armorStand) {
-		if (slayerQuest == null || !armorStand.hasCustomName() || !armorStand.isInRange(MinecraftClient.getInstance().player, 15)) return;
-		if (!isBossSpawned()) {
-			if (armorStand.getName().getString().contains(MinecraftClient.getInstance().getSession().getUsername())) {
-				for (Entity otherArmorStands : getEntityArmorStands(armorStand, 1.5f)) {
-					Matcher matcher = SLAYER_PATTERN.matcher(otherArmorStands.getName().getString());
-					if (matcher.find()) {
-						bossFight = new BossFight((ArmorStandEntity) otherArmorStands);
-						return;
-					}
+		if (slayerQuest == null || isBossSpawned() || !armorStand.hasCustomName() || !armorStand.isInRange(MinecraftClient.getInstance().player, 15)) return;
+		if (armorStand.getName().getString().contains(MinecraftClient.getInstance().getSession().getUsername())) {
+			for (Entity otherArmorStands : getEntityArmorStands(armorStand, 1.5f)) {
+				Matcher matcher = SLAYER_PATTERN.matcher(otherArmorStands.getName().getString());
+				if (matcher.find()) {
+					bossFight = new BossFight((ArmorStandEntity) otherArmorStands);
+					return;
 				}
 			}
-			Arrays.stream(SlayerType.values()).forEach(type -> type.minibossNames.forEach((name) -> {
-				if (armorStand.getName().getString().contains(name) && isInSlayerQuestType(type)) {
-					slayerQuest.onMiniboss(armorStand, type);
-				}
-			}));
 		}
+		Arrays.stream(SlayerType.values()).forEach(type -> type.minibossNames.forEach((name) -> {
+			if (armorStand.getName().getString().contains(name) && isInSlayerQuestType(type)) {
+				slayerQuest.onMiniboss(armorStand, type);
+			}
+		}));
 	}
 
 	/**
@@ -227,16 +224,14 @@ public class SlayerManager {
 	 * Returns the highlight bounding box for the given slayer mob entity. It's slightly larger than the entity's bounding box.
 	 */
 	public static Box getSlayerMobBoundingBox(LivingEntity entity) {
-		if (getSlayerType() != null) {
-			return switch (getSlayerType()) {
-				case SlayerType.REVENANT -> new Box(entity.getX() - 0.4, entity.getY() - 0.1, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 2.2, entity.getZ() + 0.4);
-				case SlayerType.TARANTULA -> new Box(entity.getX() - 0.9, entity.getY() - 0.2, entity.getZ() - 0.9, entity.getX() + 0.9, entity.getY() - 1.2, entity.getZ() + 0.9);
-				case SlayerType.VOIDGLOOM -> new Box(entity.getX() - 0.4, entity.getY() - 0.2, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 3, entity.getZ() + 0.4);
-				case SlayerType.SVEN -> new Box(entity.getX() - 0.5, entity.getY() - 0.1, entity.getZ() - 0.5, entity.getX() + 0.5, entity.getY() - 1, entity.getZ() + 0.5);
-				default -> entity.getBoundingBox();
-			};
-		}
-		return null;
+		return switch (getSlayerType()) {
+			case SlayerType.REVENANT -> new Box(entity.getX() - 0.4, entity.getY() - 0.1, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 2.2, entity.getZ() + 0.4);
+			case SlayerType.TARANTULA -> new Box(entity.getX() - 0.9, entity.getY() - 0.2, entity.getZ() - 0.9, entity.getX() + 0.9, entity.getY() - 1.2, entity.getZ() + 0.9);
+			case SlayerType.VOIDGLOOM -> new Box(entity.getX() - 0.4, entity.getY() - 0.2, entity.getZ() - 0.4, entity.getX() + 0.4, entity.getY() - 3, entity.getZ() + 0.4);
+			case SlayerType.SVEN -> new Box(entity.getX() - 0.5, entity.getY() - 0.1, entity.getZ() - 0.5, entity.getX() + 0.5, entity.getY() - 1, entity.getZ() + 0.5);
+			case null -> null;
+			default -> entity.getBoundingBox();
+		};
 	}
 
 	/**
@@ -248,7 +243,6 @@ public class SlayerManager {
 	public static boolean isInSlayer() {
 		return slayerQuest != null;
 	}
-
 
 	/**
 	 * Checks if a Slayer Boss has spawned for the current Slayer Quest.

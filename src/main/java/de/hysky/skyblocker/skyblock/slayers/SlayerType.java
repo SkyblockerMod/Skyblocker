@@ -34,10 +34,6 @@ public enum SlayerType implements StringIdentifiable {
 		this.minibossNames = minibossNames;
 	}
 
-	public boolean isUnknown() {
-		return this == UNKNOWN;
-	}
-
 	public static SlayerType fromBossName(String bossName) {
 		for (SlayerType type : values()) {
 			if (type.bossName.equalsIgnoreCase(bossName)) {
@@ -45,6 +41,10 @@ public enum SlayerType implements StringIdentifiable {
 			}
 		}
 		return UNKNOWN;
+	}
+
+	public boolean isUnknown() {
+		return this == UNKNOWN;
 	}
 
 	@Override

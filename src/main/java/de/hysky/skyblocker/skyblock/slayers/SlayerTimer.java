@@ -59,22 +59,21 @@ public class SlayerTimer {
 	}
 
 	public static void onBossDeath(Instant startTime) {
-		if (SkyblockerConfigManager.get().slayers.slainTime & startTime != null) {
-			Instant slainTime = Instant.now();
-			Duration timeElapsed = Duration.between(startTime, slainTime);
-			String duration = formatTime(timeElapsed);
+		if (!SkyblockerConfigManager.get().slayers.slainTime || startTime == null) return;
+		Instant slainTime = Instant.now();
+		Duration timeElapsed = Duration.between(startTime, slainTime);
+		String duration = formatTime(timeElapsed);
 
-			Duration currentPB = getPersonalBest(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier());
+		Duration currentPB = getPersonalBest(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier());
 
-			if (currentPB != null && (currentPB.toMillis() > timeElapsed.toMillis())) {
-				MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW))).append(" ").append(Text.translatable("skyblocker.slayer.personalBest").formatted(Formatting.LIGHT_PURPLE))), false);
-				MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.previousPB", Text.literal(formatTime(currentPB)).formatted(Formatting.YELLOW)))), false);
+		if (currentPB != null && (currentPB.toMillis() > timeElapsed.toMillis())) {
+			MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW))).append(" ").append(Text.translatable("skyblocker.slayer.personalBest").formatted(Formatting.LIGHT_PURPLE))), false);
+			MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.previousPB", Text.literal(formatTime(currentPB)).formatted(Formatting.YELLOW)))), false);
+			updateBestTime(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier(), timeElapsed);
+		} else {
+			MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW)))), false);
+			if (currentPB == null) {
 				updateBestTime(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier(), timeElapsed);
-			} else {
-				MinecraftClient.getInstance().player.sendMessage(Text.of(Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.slainTime", Text.literal(duration).formatted(Formatting.YELLOW)))), false);
-				if (currentPB == null) {
-					updateBestTime(SlayerManager.getSlayerType(), SlayerManager.getSlayerTier(), timeElapsed);
-				}
 			}
 		}
 	}
