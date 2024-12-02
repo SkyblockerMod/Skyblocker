@@ -32,8 +32,6 @@ import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.profiler.Profilers;
-
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -177,8 +175,7 @@ public class RenderHelper {
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
-        Matrix3f normalMatrix = matrices.peek().getNormalMatrix();
+        MatrixStack.Entry entry = matrices.peek();
 
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
@@ -196,11 +193,17 @@ public class RenderHelper {
 
         for (int i = 0; i < points.length; i++) {
             Vec3d nextPoint = points[i + 1 == points.length ? i - 1 : i + 1];
-            Vector3f normalVec = new Vector3f((float) nextPoint.getX(), (float) nextPoint.getY(), (float) nextPoint.getZ()).sub((float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ()).normalize().mul(normalMatrix);
+            Vector3f normalVec = nextPoint.toVector3f().sub((float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ()).normalize();
+            // If the last point, the normal is the previous point minus the current point.
+            // Negate the normal to make it point forward, away from the previous point.
+            if (i + 1 == points.length) {
+                normalVec.negate();
+            }
+
             buffer
-                    .vertex(positionMatrix, (float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ())
+                    .vertex(entry, (float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ())
                     .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
-                    .normal(normalVec.x, normalVec.y, normalVec.z);
+                    .normal(entry, normalVec);
         }
 
         BufferRenderer.drawWithGlobalProgram(buffer.end());
@@ -220,7 +223,7 @@ public class RenderHelper {
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+        MatrixStack.Entry entry = matrices.peek();
 
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
@@ -234,21 +237,21 @@ public class RenderHelper {
         RenderSystem.enableDepthTest();
         RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
-        Vec3d offset = Vec3d.fromPolar(context.camera().getPitch(), context.camera().getYaw());
-        Vec3d cameraPoint = camera.add(offset);
+        // Start drawing the line from a point slightly in front of the camera
+        Vec3d cameraPoint = camera.add(Vec3d.fromPolar(context.camera().getPitch(), context.camera().getYaw()));
 
         BufferBuilder buffer = tessellator.begin(DrawMode.LINES, VertexFormats.LINES);
 
-        Vector3f normal = new Vector3f((float) offset.x, (float) offset.y, (float) offset.z);
+        Vector3f normal = point.toVector3f().sub((float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z).normalize();
         buffer
-                .vertex(positionMatrix, (float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z)
+                .vertex(entry, (float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z)
                 .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
-                .normal(normal.x, normal.y, normal.z);
+                .normal(entry, normal);
 
         buffer
-                .vertex(positionMatrix, (float) point.getX(), (float) point.getY(), (float) point.getZ())
+                .vertex(entry, (float) point.getX(), (float) point.getY(), (float) point.getZ())
                 .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
-                .normal(normal.x, normal.y, normal.z);
+                .normal(entry, normal);
 
 
         BufferRenderer.drawWithGlobalProgram(buffer.end());
