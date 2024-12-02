@@ -40,7 +40,6 @@ import java.awt.*;
 
 public class RenderHelper {
     private static final Identifier TRANSLUCENT_DRAW = Identifier.of(SkyblockerMod.NAMESPACE, "translucent_draw");
-    private static final Vec3d ONE = new Vec3d(1, 1, 1);
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final BufferAllocator ALLOCATOR = new BufferAllocator(1536);
@@ -56,31 +55,31 @@ public class RenderHelper {
         renderBeaconBeam(context, pos, colorComponents);
     }
 
-    public static void renderFilled(WorldRenderContext context, Box box, float[] colorComponents, float alpha, boolean throughWalls) {
-        renderFilled(context, box.getMinPos(), Boxes.getLengthVec(box), colorComponents, alpha, throughWalls);
-    }
-
     public static void renderFilled(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha, boolean throughWalls) {
-        renderFilled(context, Vec3d.of(pos), ONE, colorComponents, alpha, throughWalls);
-    }
-
-    public static void renderFilled(WorldRenderContext context, BlockPos pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
-        renderFilled(context, Vec3d.of(pos), dimensions, colorComponents, alpha, throughWalls);
+        renderFilled(context, pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1, colorComponents, alpha, throughWalls);
     }
 
     public static void renderFilled(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
+        renderFilled(context, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents, alpha, throughWalls);
+    }
+
+    public static void renderFilled(WorldRenderContext context, Box box, float[] colorComponents, float alpha, boolean throughWalls) {
+        renderFilled(context, box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, colorComponents, alpha, throughWalls);
+    }
+
+    public static void renderFilled(WorldRenderContext context, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, float[] colorComponents, float alpha, boolean throughWalls) {
         if (throughWalls) {
-            if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + dimensions.x, pos.getY() + dimensions.y, pos.getZ() + dimensions.z)) {
-                renderFilledInternal(context, pos, dimensions, colorComponents, alpha, true);
+            if (FrustumUtils.isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
+                renderFilledInternal(context, minX, minY, minZ, maxX, maxY, maxZ, colorComponents, alpha, true);
             }
         } else {
-            if (OcclusionCulling.getRegularCuller().isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + dimensions.x, pos.getY() + dimensions.y, pos.getZ() + dimensions.z)) {
-                renderFilledInternal(context, pos, dimensions, colorComponents, alpha, false);
+            if (OcclusionCulling.getRegularCuller().isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
+                renderFilledInternal(context, minX, minY, minZ, maxX, maxY, maxZ, colorComponents, alpha, false);
             }
         }
     }
 
-    private static void renderFilledInternal(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
+    private static void renderFilledInternal(WorldRenderContext context, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, float[] colorComponents, float alpha, boolean throughWalls) {
         MatrixStack matrices = context.matrixStack();
         Vec3d camera = context.camera().getPos();
 
@@ -90,7 +89,7 @@ public class RenderHelper {
         VertexConsumerProvider consumers = context.consumers();
         VertexConsumer buffer = consumers.getBuffer(throughWalls ? SkyblockerRenderLayers.FILLED_THROUGH_WALLS : SkyblockerRenderLayers.FILLED);
 
-        VertexRendering.drawFilledBox(matrices, buffer, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
+        VertexRendering.drawFilledBox(matrices, buffer, minX, minY, minZ, maxX, maxY, maxZ, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
 
         matrices.pop();
     }
@@ -109,22 +108,24 @@ public class RenderHelper {
         }
     }
 
-    /**
-     * Renders the outline of a box with the specified color components and line width.
-     * This does not use renderer since renderer draws outline using debug lines with a fixed width.
-     */
+    public static void renderOutline(WorldRenderContext context, BlockPos pos, float[] colorComponents, float lineWidth, boolean throughWalls) {
+        renderOutline(context, pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1, colorComponents, 1f, lineWidth, throughWalls);
+    }
+
+    public static void renderOutline(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float lineWidth, boolean throughWalls) {
+        renderOutline(context, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents, 1f, lineWidth, throughWalls);
+    }
+
     public static void renderOutline(WorldRenderContext context, Box box, float[] colorComponents, float lineWidth, boolean throughWalls) {
         renderOutline(context, box, colorComponents, 1f, lineWidth, throughWalls);
     }
 
-    /**
-     * Renders the outline of a box with the specified color components and line width.
-     * This does not use renderer since renderer draws outline using debug lines with a fixed width.
-     *
-     * @param alpha the transparency of the lines for the box
-     */
     public static void renderOutline(WorldRenderContext context, Box box, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
-        if (FrustumUtils.isVisible(box)) {
+        renderOutline(context, box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, colorComponents, alpha, lineWidth, throughWalls);
+    }
+
+    public static void renderOutline(WorldRenderContext context, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
+        if (FrustumUtils.isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
             MatrixStack matrices = context.matrixStack();
             Vec3d camera = context.camera().getPos();
             Tessellator tessellator = RenderSystem.renderThreadTesselator();
@@ -141,7 +142,7 @@ public class RenderHelper {
             matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
 
             BufferBuilder buffer = tessellator.begin(DrawMode.LINES, VertexFormats.LINES);
-            VertexRendering.drawBox(matrices, buffer, box, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
+            VertexRendering.drawBox(matrices, buffer, minX, minY, minZ, maxX, maxY, maxZ, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
             BufferRenderer.drawWithGlobalProgram(buffer.end());
 
             matrices.pop();

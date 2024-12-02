@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.debug;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.SharedConstants;
@@ -25,6 +26,7 @@ public class SnapshotDebug {
 
 	private static void renderTest(WorldRenderContext wrc) {
 		RenderHelper.renderFilledWithBeaconBeam(wrc, new BlockPos(-3, 63, 5), RED, ALPHA, true);
+		RenderHelper.renderOutline(wrc, new BlockPos(-3, 63, 5), RED, 5, true); // Use waypoint default line width
 		RenderHelper.renderLinesFromPoints(wrc, new Vec3d[] { new Vec3d(-2, 65, 6.5), new Vec3d(3, 65, 6.5) }, RED, ALPHA, LINE_WIDTH, false);
 		RenderHelper.renderLineFromCursor(wrc, new Vec3d(-2.5, 63.5, 5.5), RED, ALPHA, LINE_WIDTH);
 		RenderHelper.renderQuad(wrc, new Vec3d[] { new Vec3d(3, 66, 3), new Vec3d(3, 63, 3), new Vec3d(3, 63, 5), new Vec3d(3, 66, 5) }, RED, ALPHA, false);
