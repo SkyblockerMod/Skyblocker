@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.compatibility.emi;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
@@ -31,6 +32,7 @@ public class SkyblockerEMIPlugin implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {
+		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
         ItemRepository.getItemsStream().map(EmiStack::of).forEach(emiStack -> {
             registry.addEmiStack(emiStack);
             registry.setDefaultComparison(emiStack, Comparison.compareData(emiStack1 -> emiStack1.getItemStack().getSkyblockId()));
