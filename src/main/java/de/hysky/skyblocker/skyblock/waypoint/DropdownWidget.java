@@ -42,16 +42,19 @@ public class DropdownWidget<T> extends ElementListWidget<DropdownWidget.Entry<T>
     }
 
     @Override
+    protected int getScrollbarX() {
+        return getRowRight() + 2;
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    	boolean superClicked = super.mouseClicked(mouseX, mouseY, button);
+        if (super.mouseClicked(mouseX, mouseY, button)) return true;
 
-    	if (!superClicked && this.getEntryAtPosition(mouseX, mouseY) == null) {
-    		if ((!open && this.isMouseOver(mouseX, mouseY)) || open) open = !open;
-
-    		return true;
-    	}
-
-    	return superClicked;
+        if (this.getEntryAtPosition(mouseX, mouseY) == null && (open || this.isMouseOver(mouseX, mouseY))) {
+            open = !open;
+            return true;
+        }
+        return false;
     }
 
     @Override

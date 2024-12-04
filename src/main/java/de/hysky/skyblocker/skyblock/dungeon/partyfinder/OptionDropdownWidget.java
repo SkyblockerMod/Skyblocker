@@ -73,13 +73,12 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
             return true;
         }
 
-        boolean superClicked = super.mouseClicked(mouseX, mouseY, button);
+        if (super.mouseClicked(mouseX, mouseY, button)) return true;
 
-        if (!superClicked && clickedHeader((int)(mouseX - (double)(this.getX() + this.width / 2 - this.getRowWidth() / 2)), (int)(mouseY - (double)this.getY()) + (int)this.getScrollY() - 4)) {
-        	return true;
+        if (clickedHeader((int) (mouseX - (double) (this.getX() + this.width / 2 - this.getRowWidth() / 2)), (int) (mouseY - (double) this.getY()) + (int) this.getScrollY() - 4)) {
+            return true;
         }
-
-        return superClicked;
+        return false;
     }
 
     @Override
