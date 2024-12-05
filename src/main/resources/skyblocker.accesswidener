@@ -20,3 +20,6 @@ extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget re
 extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget refreshTabButtons (Z)V
 extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget refreshSearchResults ()V
 extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget triggerPirateSpeakEasterEgg (Ljava/lang/String;)V
+
+# Block Shapes
+accessible field net/minecraft/block/CarpetBlock SHAPE Lnet/minecraft/util/shape/VoxelShape;
