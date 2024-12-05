@@ -57,24 +57,7 @@ public class InventorySearch {
 
 	private static @NotNull TextFieldWidget getTextFieldWidget(HandledScreen<?> handledScreen) {
 		// Slightly modified text field widget
-		TextFieldWidget textFieldWidget = new TextFieldWidget(Screens.getTextRenderer(handledScreen), 120, 20, Text.literal("Search Inventory")) {
-			@Override
-			public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-				// Makes the widget catch all key presses (except escape) to fix closing the inventory when pressing E
-				// also check that the widget is focused and active
-				return super.keyPressed(keyCode, scanCode, modifiers) || (keyCode != GLFW.GLFW_KEY_ESCAPE && this.isNarratable() && this.isFocused());
-			}
-
-			// Unfocus when clicking outside
-			@Override
-			public boolean mouseClicked(double mouseX, double mouseY, int button) {
-				if (isFocused() && !isMouseOver(mouseX, mouseY)) {
-					setFocused(false);
-					return false;
-				}
-				return super.mouseClicked(mouseX, mouseY, button);
-			}
-		};
+		TextFieldWidget textFieldWidget = new SearchTextFieldWidget(handledScreen);
 		textFieldWidget.setPosition((handledScreen.width - textFieldWidget.getWidth()) / 2, 15);
 		textFieldWidget.setPlaceholder(Text.translatable("gui.socialInteractions.search_hint"));
 		textFieldWidget.setText(search); // Restore previous search
@@ -106,7 +89,6 @@ public class InventorySearch {
 	 * Button to open the search bar, for accessibility reasons (pojav and general preferences)
 	 */
 	private static class SearchTextWidget extends TextWidget {
-
 		private final Text underlinedText;
 		private final Text normalText;
 		private final HandledScreen<?> screen;
@@ -135,6 +117,30 @@ public class InventorySearch {
 			}
 
 			super.renderWidget(context, mouseX, mouseY, delta);
+		}
+	}
+
+	public static class SearchTextFieldWidget extends TextFieldWidget {
+		public SearchTextFieldWidget(HandledScreen<?> handledScreen) {
+			super(Screens.getTextRenderer(handledScreen), 120, 20, Text.literal("Search Inventory"));
+		}
+
+		@Override
+		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+			// Makes the widget catch all key presses (except escape) to fix closing the inventory when pressing E
+			// also check that the widget is focused and active
+			return super.keyPressed(keyCode, scanCode, modifiers) || (keyCode != GLFW.GLFW_KEY_ESCAPE && this.isNarratable() && this.isFocused());
+		}
+
+		// Unfocus when clicking outside
+		@Override
+		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+			if (isFocused() && !isMouseOver(mouseX, mouseY)) {
+				setFocused(false);
+				return false;
+			}
+
+			return super.mouseClicked(mouseX, mouseY, button);
 		}
 	}
 }
