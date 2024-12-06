@@ -186,7 +186,6 @@
     "skyblocker.config.otherLocations.rift.enigmaSoulWaypoints.@Tooltip": "Nota: Molti enigma souls hanno un piccolo compito che devi completare per ottenerlo, quindi si consiglia di guardare anche un video su YouTube quando li cerchi.",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip": "Elenco delle località dove il filtro funzionerà. Separa ogni località con una “,” e usa un \"!\"1 se vuoi che funzioni ovunque tranne che in una località. Nomi delle Località:",
     "skyblocker.waypoints.ordered.import.skyblocker.unknownFormatHeader": "§cQuesto codice di importazione non sembra essere nel formato Skyblocker Ordered Waypoints, controlla di nuovo gli appunti per vedere se tutto è corretto.",
-    "skyblocker.waypoints.ordered.import.coleWeight.groupAlreadyExists": "§cEsiste già un gruppo di waypoints ordinati con il nome “%s”, scegli un altro nome per importare i tuoi waypoints.",
     "skyblocker.dungeons.secrets.customWaypointAdded": "§rAggiunto un waypoint personalizzato a X: %d, Y: %d, Z: %d per la stanza %s segreto #%d della categoria %s con nome ‘%s’.",
     "skyblocker.dungeons.secrets.customWaypointRemoved": "§rRimosso waypoint personalizzato a X: %d, Y: %d, Z: %d per la stanza %s segreto #%d della categoria %s con nome ‘%s’.",
     "skyblocker.tips.fairySoulsEnigmaSoulsRelics": "Non sai dove trovare Fairy Souls, Enigma Souls o Reliquie? Attiva gli aiutanti per aiutare la tua esplorazione, ricorderanno quali anime hai già trovato.",
