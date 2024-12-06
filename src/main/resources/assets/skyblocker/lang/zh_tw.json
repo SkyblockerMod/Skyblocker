@@ -958,5 +958,12 @@
     "skyblocker.config.uiAndVisuals.inventorySearch.showClickableText.@Tooltip": "在螢幕頂部顯示可點擊的文字以開啟搜尋欄位。",
     "skyblocker.config.uiAndVisuals.inventorySearch.state.OFF": "關",
     "skyblocker.config.uiAndVisuals.inventorySearch.state.SKYBLOCK": "僅限Skyblock",
-    "skyblocker.config.uiAndVisuals.inventorySearch.state.EVERYWHERE": "所有遊戲"
+    "skyblocker.config.uiAndVisuals.inventorySearch.state.EVERYWHERE": "所有遊戲",
+    "skyblocker.bars.config.commonPosition.LEFT": "左",
+    "skyblocker.bars.config.commonPosition.OFF": "關",
+    "skyblocker.bars.config.commonPosition.RIGHT": "右",
+    "skyblocker.bars.config.hide": "隱藏",
+    "skyblocker.bars.config.textPosition.CENTER": "中央",
+    "skyblocker.bars.config.textPosition.BAR_CENTER": "狀態欄中央",
+    "skyblocker.inventorySearch.clickHereToSearch": "點擊這裡搜尋。"
 }
