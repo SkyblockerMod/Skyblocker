@@ -54,15 +54,14 @@ public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
     }
 
     private void saveWaypoints() {
-        Waypoints.waypoints.clear();
-        Waypoints.waypoints.putAll(waypoints);
+        Waypoints.clearAndPutAllWaypoints(waypoints);
         Waypoints.saveWaypoints(client);
     }
 
     @Override
     public void close() {
         assert client != null;
-        if (!waypoints.equals(Waypoints.waypoints)) {
+        if (!Waypoints.areWaypointsEqual(waypoints)) {
             client.setScreen(new ConfirmScreen(confirmedAction -> client.setScreen(confirmedAction ? parent : this),
                     Text.translatable("text.skyblocker.quit_config"),
                     Text.translatable("text.skyblocker.quit_config_sure"),

@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -45,7 +46,7 @@ public class Waypoints {
     protected static final SystemToast.Type WAYPOINTS_TOAST_TYPE = new SystemToast.Type();
 
     private static final Path waypointsFile = FabricLoader.getInstance().getConfigDir().resolve(SkyblockerMod.NAMESPACE).resolve("waypoints.json");
-    protected static final Multimap<Location, WaypointGroup> waypoints = MultimapBuilder.enumKeys(Location.class).arrayListValues().build();
+    private static final Multimap<Location, WaypointGroup> waypoints = MultimapBuilder.enumKeys(Location.class).arrayListValues().build();
 
     @Init
     public static void init() {
@@ -59,7 +60,7 @@ public class Waypoints {
         waypoints.clear();
         try (BufferedReader reader = Files.newBufferedReader(waypointsFile)) {
             List<WaypointGroup> waypointGroups = CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
-            waypointGroups.forEach(waypointGroup -> waypoints.put(waypointGroup.island(), waypointGroup));
+            waypointGroups.forEach(Waypoints::putWaypointGroup);
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading waypoints", e);
         }
@@ -149,19 +150,36 @@ public class Waypoints {
         return WaypointGroup.COLEWEIGHT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(waypointsJson)).resultOrPartial(LOGGER::error).orElseThrow().withIsland(defaultIsland);
     }
 
+    public static Collection<WaypointGroup> getWaypointGroup(Location island) {
+        return waypoints.get(island);
+    }
+
+    public static boolean putWaypointGroup(WaypointGroup waypointGroup) {
+        return waypoints.put(waypointGroup.island(), waypointGroup);
+    }
+
+    public static boolean clearAndPutAllWaypoints(Multimap<Location, WaypointGroup> newWaypoints) {
+        waypoints.clear();
+        return waypoints.putAll(newWaypoints);
+    }
+
+    public static boolean areWaypointsEqual(Multimap<Location, WaypointGroup> otherWaypoints) {
+        return waypoints.equals(otherWaypoints);
+    }
+
     public static Multimap<Location, WaypointGroup> waypointsDeepCopy() {
         return waypoints.values().stream().map(WaypointGroup::deepCopy).collect(Multimaps.toMultimap(WaypointGroup::island, Function.identity(), () -> MultimapBuilder.enumKeys(Location.class).arrayListValues().build()));
     }
 
     public static void render(WorldRenderContext context) {
         if (SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
-            for (WaypointGroup group : waypoints.get(Utils.getLocation())) {
+            for (WaypointGroup group : getWaypointGroup(Utils.getLocation())) {
                 if (group != null) {
                     group.render(context);
                 }
             }
             if (Utils.getLocationRaw().isEmpty()) return;
-            for (WaypointGroup group : waypoints.get(Location.UNKNOWN)) {
+            for (WaypointGroup group : getWaypointGroup(Location.UNKNOWN)) {
                 if (group != null) {
                     group.render(context);
                 }

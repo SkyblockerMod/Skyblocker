@@ -117,10 +117,8 @@ public class OrderedWaypoints {
 	private static void migrateOrderedWaypoints(Map<String, OrderedWaypointGroup> orderedWaypoints) {
 		for (OrderedWaypointGroup legacyGroup : orderedWaypoints.values()) {
 			// Migrate waypoints to both the dwarven mines and the crystal hollows
-			WaypointGroup dwarvenGroup = new WaypointGroup(legacyGroup.name, Location.DWARVEN_MINES, legacyGroup.waypoints.stream().map(waypoint -> new OrderedNamedWaypoint(waypoint.pos, "", new float[]{0, 1, 0})).collect(Collectors.toList()), true);
-			Waypoints.waypoints.put(dwarvenGroup.island(), dwarvenGroup);
-			WaypointGroup crystalsGroup = new WaypointGroup(legacyGroup.name, Location.CRYSTAL_HOLLOWS, legacyGroup.waypoints.stream().map(waypoint -> new OrderedNamedWaypoint(waypoint.pos, "", new float[]{0, 1, 0})).collect(Collectors.toList()), true);
-			Waypoints.waypoints.put(crystalsGroup.island(), crystalsGroup);
+			Waypoints.putWaypointGroup(new WaypointGroup(legacyGroup.name, Location.DWARVEN_MINES, legacyGroup.waypoints.stream().map(waypoint -> new OrderedNamedWaypoint(waypoint.pos, "", new float[]{0, 1, 0})).collect(Collectors.toList()), true));
+			Waypoints.putWaypointGroup(new WaypointGroup(legacyGroup.name, Location.CRYSTAL_HOLLOWS, legacyGroup.waypoints.stream().map(waypoint -> new OrderedNamedWaypoint(waypoint.pos, "", new float[]{0, 1, 0})).collect(Collectors.toList()), true));
 		}
 	}
 
