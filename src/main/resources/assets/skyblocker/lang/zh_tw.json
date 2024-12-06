@@ -650,7 +650,7 @@
     "skyblocker.config.helpers.chocolateFactory.waypointType": "彩蛋路徑點類型",
     "skyblocker.config.mining.glacite": "極寒隧道",
     "skyblocker.config.mining.glacite.coldOverlay": "寒冷效果動畫修改",
-    "skyblocker.config.mining.glacite.coldOverlay@Tooltip": "顯示極寒隧道中的霜凍效果，隨著溫度的降低，霜凍效果會變得更強。",
+    "skyblocker.config.mining.glacite.coldOverlay.@Tooltip": "顯示極寒隧道中的霜凍效果，隨著溫度的降低，霜凍效果會變得更強。",
     "skyblocker.config.misc": "雜項",
     "skyblocker.config.general.searchOverlay.starsTooltip": "地下城物品的星星數量",
     "skyblocker.config.general.searchOverlay.maxPet": "最高寵物等級",

@@ -24,20 +24,24 @@ public class Waypoint implements Renderable {
     public final boolean throughWalls;
     private boolean shouldRender;
 
-    public Waypoint(BlockPos pos, Type type, float[] colorComponents) {
-        this(pos, type, colorComponents, DEFAULT_HIGHLIGHT_ALPHA);
+    public Waypoint(BlockPos pos, Type type,                   float[] colorComponents) { // @formatter:off
+        this(pos, type, colorComponents, DEFAULT_HIGHLIGHT_ALPHA); // @formatter:on
     }
 
     public Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents) {
         this(pos, typeSupplier, colorComponents, DEFAULT_HIGHLIGHT_ALPHA, DEFAULT_LINE_WIDTH);
     }
 
-    public Waypoint(BlockPos pos, Type type, float[] colorComponents, float alpha) {
-        this(pos, () -> type, colorComponents, alpha, DEFAULT_LINE_WIDTH);
+    public Waypoint(BlockPos pos, Type type,                   float[] colorComponents, float alpha) { // @formatter:off
+        this(pos, () -> type, colorComponents, alpha, DEFAULT_LINE_WIDTH); // @formatter:on
     }
 
     public Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, float lineWidth) {
         this(pos, typeSupplier, colorComponents, alpha, lineWidth, true);
+    }
+
+    public Waypoint(BlockPos pos, Type type,                   float[] colorComponents, boolean throughWalls) { // @formatter:off
+        this(pos, () -> type, colorComponents, throughWalls); // @formatter:on
     }
 
     public Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, boolean throughWalls) {

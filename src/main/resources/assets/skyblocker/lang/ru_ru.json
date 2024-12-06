@@ -876,7 +876,7 @@
     "skyblocker.profileviewer.inventory.pets": "Питомцы",
     "skyblocker.profileviewer.inventory.backpack": "Рюкзак",
     "skyblocker.profileviewer.inventory.accessoryBag": "Сумка для аксессуаров",
-    "skyblocker.config.mining.glacite.coldOverlay@Tooltip": "Показывает морозное наложение в шахтах Гласита, которое становится сильнее по мере того, как становится холоднее.",
+    "skyblocker.config.mining.glacite.coldOverlay.@Tooltip": "Показывает морозное наложение в шахтах Гласита, которое становится сильнее по мере того, как становится холоднее.",
     "skyblocker.crimson.dojo.controlHelper": "Включить помощник Control",
     "skyblocker.config.mining.crystalsWaypoints.getLocationHover.add": "Добавить локацию",
     "skyblocker.config.mining.crystalsWaypoints.getLocationHover.remove": "Удалить локацию",
