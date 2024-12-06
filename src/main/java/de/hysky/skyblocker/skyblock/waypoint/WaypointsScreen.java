@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
-import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -41,16 +40,6 @@ public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 16, 0xFFFFFF);
-    }
-
-    @Override
-    protected boolean isEnabled(NamedWaypoint waypoint) {
-        return waypoint.isEnabled();
-    }
-
-    @Override
-    protected void enabledChanged(NamedWaypoint waypoint, boolean enabled) {
-        waypoint.setEnabled(enabled);
     }
 
     private void saveWaypoints() {

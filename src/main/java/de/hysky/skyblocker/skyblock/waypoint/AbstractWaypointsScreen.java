@@ -63,9 +63,23 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
         waypointsListWidget.setIsland(island);
     }
 
-    protected abstract boolean isEnabled(NamedWaypoint waypoint);
+    /**
+     * Gets whether the waypoint is enabled in the current screen.
+     * Override for custom behavior such as using the checkbox for whether it should be included in the exported waypoints.
+     *
+     * @return whether the waypoint is enabled in the current screen
+     */
+    protected boolean isEnabled(NamedWaypoint waypoint) {
+        return waypoint.isEnabled();
+    }
 
-    protected abstract void enabledChanged(NamedWaypoint waypoint, boolean enabled);
+    /**
+     * Called when the enabled state of a waypoint checkbox changes.
+     * Override for custom behavior such as updating whether the waypoint should be included in the exported waypoints.
+     */
+    protected void enabledChanged(NamedWaypoint waypoint, boolean enabled) {
+        waypoint.setEnabled(enabled);
+    }
 
     protected void updateButtons() {
         waypointsListWidget.updateButtons();

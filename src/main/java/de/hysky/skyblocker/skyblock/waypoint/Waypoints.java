@@ -150,28 +150,44 @@ public class Waypoints {
         return WaypointGroup.COLEWEIGHT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(waypointsJson)).resultOrPartial(LOGGER::error).orElseThrow().withIsland(defaultIsland);
     }
 
+	/**
+	 * Gets the waypoint groups for the specified island.
+	 */
     public static Collection<WaypointGroup> getWaypointGroup(Location island) {
         return waypoints.get(island);
     }
 
+	/**
+	 * Puts the waypoint group into the waypoints map based on the group's island.
+	 */
     public static boolean putWaypointGroup(WaypointGroup waypointGroup) {
         return waypoints.put(waypointGroup.island(), waypointGroup);
     }
 
+	/**
+	 * Clears the waypoints map and puts all the new waypoints into it.
+	 */
     public static boolean clearAndPutAllWaypoints(Multimap<Location, WaypointGroup> newWaypoints) {
         waypoints.clear();
         return waypoints.putAll(newWaypoints);
     }
 
+	/**
+	 * Gets whether the waypoints map is equal to the given waypoints map.
+	 */
     public static boolean areWaypointsEqual(Multimap<Location, WaypointGroup> otherWaypoints) {
         return waypoints.equals(otherWaypoints);
     }
 
+	/**
+	 * Deep copies the waypoints map.
+	 * Used for copying waypoints to {@link WaypointsScreen} for editing.
+	 */
     public static Multimap<Location, WaypointGroup> waypointsDeepCopy() {
         return waypoints.values().stream().map(WaypointGroup::deepCopy).collect(Multimaps.toMultimap(WaypointGroup::island, Function.identity(), () -> MultimapBuilder.enumKeys(Location.class).arrayListValues().build()));
     }
 
-    public static void render(WorldRenderContext context) {
+    private static void render(WorldRenderContext context) {
         if (SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
             for (WaypointGroup group : getWaypointGroup(Utils.getLocation())) {
                 if (group != null) {
