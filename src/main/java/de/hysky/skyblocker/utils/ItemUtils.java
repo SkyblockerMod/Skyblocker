@@ -9,8 +9,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
@@ -156,7 +156,7 @@ public final class ItemUtils {
             }
             case "PET" -> {
                 if (customData.contains("petInfo")) {
-                    PetCache.PetInfo petInfo = PetCache.PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
+                    PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
                     return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
                 }
             }
@@ -242,7 +242,7 @@ public final class ItemUtils {
             }
             case "PET" -> {
                 if (!customData.contains("petInfo")) yield id;
-                PetCache.PetInfo petInfo = PetCache.PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
+                PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
                 yield petInfo.type() + ';' + petInfo.tierIndex();
             }
             case "RUNE" -> {
@@ -257,6 +257,28 @@ public final class ItemUtils {
             case "PARTY_HAT_SLOTH" -> id + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ENGLISH);
             default -> id.replace(":", "-");
         };
+    }
+
+    /**
+     * Parses the {@code petInfo} field from a pet item that has it into the {@link PetInfo} record.
+     * 
+     * @return the parsed {@link PetInfo} if successful, or {@link PetInfo#EMPTY}
+     */
+    @NotNull
+    public static PetInfo getPetInfo(ComponentHolder stack) {
+    	if (!getItemId(stack).equals("PET")) return PetInfo.EMPTY;
+
+    	String petInfo = getCustomData(stack).getString("petInfo");
+
+    	if (!petInfo.isEmpty()) {
+    		try {
+        		return PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(petInfo))
+        				.setPartial(PetInfo.EMPTY)
+        				.getPartialOrThrow();
+    		} catch (Exception ignored) {}
+    	}
+
+		return PetInfo.EMPTY;
     }
 
     /**

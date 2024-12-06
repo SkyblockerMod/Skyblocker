@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.skyblock.PetCache;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.Pet;
 import net.minecraft.item.ItemStack;
@@ -22,7 +22,7 @@ public class PetsInventoryItemLoader extends ItemLoader {
             JsonObject petsData = data.getAsJsonObject("pets_data");
             if (petsData != null && petsData.has("pets")) {
                 for (var petElement : petsData.get("pets").getAsJsonArray()) {
-                    PetCache.PetInfo petInfo = PetCache.PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(petElement.toString())).getOrThrow();
+                    PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(petElement.toString())).getOrThrow();
                     petList.add(new Pet(petInfo));
                 }
             }

@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
@@ -335,7 +336,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	}
 
 	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
-	private void skyblocker$drawItemRarityBackground(DrawContext context, Slot slot, CallbackInfo ci) {
+	private void skyblocker$drawOnItem(DrawContext context, Slot slot, CallbackInfo ci) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds)
 			ItemRarityBackgrounds.tryDraw(slot.getStack(), context, slot.x, slot.y);
 		// Item protection
@@ -343,6 +344,11 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			RenderSystem.enableBlend();
 			context.drawTexture(RenderLayer::getGuiTextured, ITEM_PROTECTION, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
 			RenderSystem.disableBlend();
+		}
+		// Search
+		// Darken the slots
+		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {
+			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 100, 0x88_000000);
 		}
 	}
 

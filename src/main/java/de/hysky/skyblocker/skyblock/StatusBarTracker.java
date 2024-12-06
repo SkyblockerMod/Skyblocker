@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -140,7 +141,7 @@ public class StatusBarTracker {
 			max = 500;
 		}
 
-		PetCache.PetInfo pet = PetCache.getCurrentPet();
+		PetInfo pet = PetCache.getCurrentPet();
 		if (pet != null) {
 			if (pet.type().contains("BLACK_CAT")) {
 				max = 500;

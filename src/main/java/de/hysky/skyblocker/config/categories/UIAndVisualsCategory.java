@@ -127,6 +127,34 @@ public class UIAndVisualsCategory {
                                 .build())
                         .build())
 
+                // Inventory Search
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch"))
+                        .collapsed(true)
+                        .option(Option.<UIAndVisualsConfig.InventorySearchConfig.EnableState>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.enabled"))
+                                .binding(defaults.uiAndVisuals.inventorySearch.enabled,
+                                        () -> config.uiAndVisuals.inventorySearch.enabled,
+                                        newValue -> config.uiAndVisuals.inventorySearch.enabled = newValue)
+                                .controller(ConfigUtils::createEnumCyclingListController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(MinecraftClient.IS_SYSTEM_MAC ? Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.cmdK") : Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.ctrlK"))
+                                .binding(defaults.uiAndVisuals.inventorySearch.ctrlK,
+                                        () -> config.uiAndVisuals.inventorySearch.ctrlK,
+                                        newValue -> config.uiAndVisuals.inventorySearch.ctrlK = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.showClickableText"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.inventorySearch.showClickableText.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.inventorySearch.clickableText,
+                                        () -> config.uiAndVisuals.inventorySearch.clickableText,
+                                        newValue -> config.uiAndVisuals.inventorySearch.clickableText = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .build())
+
                 //Title Container
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.titleContainer"))
