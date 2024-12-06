@@ -8,6 +8,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public class ItemFilter {
@@ -80,10 +81,10 @@ public class ItemFilter {
 		RARITIES(ItemRepository.getItemStack("JADERALD"), ItemFilter::filterRarities, "Rarities");
 
 		private final ItemStack associatedItem;
-		private final FilterFunction filterFunction;
+		private final UnaryOperator<List<Donation>> filterFunction;
 		private final String displayName;
 
-		FilterMode(ItemStack item, FilterFunction function, String displayName) {
+		FilterMode(ItemStack item, UnaryOperator<List<Donation>> function, String displayName) {
 			this.associatedItem = item;
 			this.filterFunction = function;
 			this.displayName = displayName;
@@ -99,12 +100,7 @@ public class ItemFilter {
 
 		public void applyFilter(List<Donation> items, List<Donation> filteredList) {
 			filteredList.clear();
-			filteredList.addAll(filterFunction.filter(items));
+			filteredList.addAll(filterFunction.apply(items));
 		}
-	}
-
-	@FunctionalInterface
-	public interface FilterFunction {
-		List<Donation> filter(List<Donation> items);
 	}
 }

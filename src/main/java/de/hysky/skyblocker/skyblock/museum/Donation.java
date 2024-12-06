@@ -1,23 +1,24 @@
 package de.hysky.skyblocker.skyblock.museum;
 
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import io.github.moulberry.repo.data.NEUItem;
+import net.minecraft.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Donation {
 	private final String category;
 	private final String id;
-	private final List<ArmorPiece> set;
-	private final int xp;
+	private final List<Pair<String, PriceData>> set;
 	private final List<String> upgrades;
-	private double price;
-	private double craftCost;
-	private double effectivePrice;
+	private List<String> downgrades;
+	private List<Pair<String, Integer>> countsTowards;// downgrades not donated
+	private PriceData priceData;
+	private Pair<String, Double> discount;
+	private final int xp;
+	private int totalXp;
+	private double xpCoinsRatio;
 
-	public Donation(String category, String id, List<ArmorPiece> set, int xp, List<String> upgrades) {
+	public Donation(String category, String id, List<Pair<String, PriceData>> set, int xp, List<String> upgrades) {
 		this.category = category;
 		this.id = id;
 		this.set = set;
@@ -25,22 +26,65 @@ public class Donation {
 		this.upgrades = upgrades;
 	}
 
-	public void initPriceData() {
-		this.price = 0;
-		this.craftCost = 0;
-		if (isArmorSet()) {
-			for (ArmorPiece piece : getSet()) {
-				double price = ItemUtils.getItemPrice(piece.getId()).leftDouble();
-				double craftCost = getCraftCost(piece.getId());
-				piece.setPrice(price);
-				piece.setCraftCost(craftCost);
-				this.price += price;
-				this.craftCost += craftCost;
+	public int getTotalXp() {
+		return totalXp;
+	}
+
+	public void setTotalXp(int totalXp) {
+		this.totalXp = totalXp;
+	}
+
+	public List<Pair<String, Integer>> getCountsTowards() {
+		return countsTowards;
+	}
+
+	public void setCountsTowards(List<Pair<String, Integer>> countsTowards) {
+		this.countsTowards = countsTowards;
+	}
+
+	public PriceData getPriceData() {
+		return priceData;
+	}
+
+	public void setPriceData() {
+		this.priceData = new PriceData(this);
+	}
+
+	public void setDowngrades() {
+		List<String> downgrades = new ArrayList<>();
+		for (List<String> list : MuseumItemCache.ORDERED_UPGRADES) {
+			int armorIndex = list.indexOf(id);
+			if (armorIndex > 0) {
+				for (int i = armorIndex - 1; i >= 0; i--) {
+					downgrades.add(list.get(i));
+				}
 			}
-		} else {
-			this.price = ItemUtils.getItemPrice(id).leftDouble();
-			this.craftCost = getCraftCost(id);
 		}
+		this.downgrades = downgrades;
+	}
+
+	public Pair<String, Double> getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(Pair<String, Double> discount) {
+		this.discount = discount;
+	}
+
+	public boolean hasDiscount() {
+		return discount != null && discount.getRight() > 0d;
+	}
+
+	public List<String> getDowngrades() {
+		return downgrades;
+	}
+
+	public double getXpCoinsRatio() {
+		return xpCoinsRatio;
+	}
+
+	public void setXpCoinsRatio(double xpCoinsRatio) {
+		this.xpCoinsRatio = xpCoinsRatio;
 	}
 
 	public String getCategory() {
@@ -51,12 +95,13 @@ public class Donation {
 		return id;
 	}
 
-	public List<ArmorPiece> getSet() {
-		return set;
+
+	public boolean isSet() {
+		return !set.isEmpty();
 	}
 
-	public boolean isArmorSet() {
-		return !set.isEmpty();
+	public List<Pair<String, PriceData>> getSet() {
+		return set;
 	}
 
 	public int getXp() {
@@ -67,39 +112,15 @@ public class Donation {
 		return upgrades;
 	}
 
-	public double getCraftCost() {
-		return craftCost;
-	}
-
-	public double getEffectivePrice() {
-		return effectivePrice;
-	}
-
-	public void setEffectivePrice(double effectivePrice) {
-		this.effectivePrice = effectivePrice;
-	}
-
-	public double getPrice() {
-		return price;
-	}
-
-	public boolean hasPrice() {
-		return effectivePrice > 0;
+	public boolean isCraftable() {
+		return this.priceData.getCraftCost() > 0;
 	}
 
 	public boolean hasLBinPrice() {
-		return price > 0;
+		return this.priceData.getLBinPrice() > 0;
 	}
 
-	public boolean isCraftable() {
-		return craftCost > 0;
-	}
-
-	private double getCraftCost(String id) {
-		NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
-		if (neuItem != null && !neuItem.getRecipes().isEmpty()) {
-			return CraftPriceTooltip.getItemCost(neuItem.getRecipes().getFirst(), 0);
-		}
-		return 0;
+	public boolean hasPrice() {
+		return this.priceData.getEffectivePrice() > 0;
 	}
 }

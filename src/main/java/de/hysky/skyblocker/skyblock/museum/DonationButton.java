@@ -1,11 +1,10 @@
 package de.hysky.skyblocker.skyblock.museum;
 
-import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.recipebook.AnimatedResultButton;
@@ -13,24 +12,25 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Style;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.Locale;
 
 public class DonationButton extends ClickableWidget {
-
 	private static final int SIZE = 33;
 	private static final int ITEM_OFFSET = 8;
-	private final Map<String, String> setEffectivePricesText = new Object2ObjectArrayMap<>();
-	List<Text> tooltip;
+
 	private Donation donation = null;
 	private ItemStack itemStack = null;
-	private String effectivePriceText = null;
+	private static final String WIKI_LOCKUP_KEY = WikiLookup.wikiLookup.getBoundKeyTranslationKey();
+	private static final TextRenderer TEXT_RENDERER = MinecraftClient.getInstance().textRenderer;
+	private String textToRender;
+	private List<Text> tooltip;
 
 	protected DonationButton(int x, int y) {
 		super(x, y, SIZE, SIZE + 2, ScreenTexts.EMPTY);
@@ -47,22 +47,17 @@ public class DonationButton extends ClickableWidget {
 	 */
 	public void init(Donation donation) {
 		this.donation = donation;
-		this.effectivePriceText = FormatingUtils.formatPrice(donation.getEffectivePrice());
-
-		// Populate effective prices for armor pieces in the set
-		if (donation.isArmorSet()) {
-			donation.getSet().forEach(piece -> setEffectivePricesText.put(piece.getId(), FormatingUtils.formatPrice(piece.getEffectivePrice())));
-		}
+		this.textToRender = MuseumUtils.formatPrice(donation.getPriceData().getEffectivePrice());
 
 		// Determine the item stack to display
-		this.itemStack = !donation.isArmorSet()
+		this.itemStack = !donation.isSet()
 				? ItemRepository.getItemStack(donation.getId())
 				: ItemRepository.getItemStack(
 				donation.getSet().stream()
-						.filter(piece -> piece.getId().toLowerCase().contains("helmet") || piece.getId().toLowerCase().contains("hat"))
+						.filter(piece -> piece.getLeft().toLowerCase(Locale.ENGLISH).contains("helmet") || piece.getLeft().toLowerCase(Locale.ENGLISH).contains("hat"))
 						.findFirst()
-						.orElse(donation.getSet().get(1)) // Get chestplate if helmet not found
-						.getId()
+						.orElse(donation.getSet().get(1)) // gets chestplate
+						.getLeft()
 		);
 
 		if (itemStack != null) {
@@ -76,33 +71,29 @@ public class DonationButton extends ClickableWidget {
 	 * Clears the display stack and resets the button state.
 	 */
 	protected void clearDisplayStack() {
-		this.visible = false; // Hides the button
+		this.visible = false;
 		this.itemStack = null;
 		this.tooltip = null;
-		this.effectivePriceText = null;
-		this.setEffectivePricesText.clear();
+		this.textToRender = null;
 	}
 
 	@Override
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		if (visible) {
-			MinecraftClient client = MinecraftClient.getInstance();
+		context.drawGuiTexture(RenderLayer::getGuiTextured, AnimatedResultButton.SLOT_CRAFTABLE_TEXTURE, this.getX(), this.getY(), this.width, this.height);
 
-			context.drawGuiTexture(RenderLayer::getGuiTextured, AnimatedResultButton.SLOT_CRAFTABLE_TEXTURE, this.getX(), this.getY(), this.width, this.height);
+		int yOffset = 8;
 
-			int yOffset = 8;
+		if (donation.hasPrice()) {
+			int textWidth = TEXT_RENDERER.getWidth(textToRender);
+			int centeredX = this.getX() + (this.width / 2) - (textWidth / 2);
+			int textY = this.getY() + ITEM_OFFSET + 13;
+			context.drawText(TEXT_RENDERER, textToRender, centeredX, textY, 0xFF00FF00, true);
 
-			// Draw effective price if available
-			if (donation.hasPrice()) {
-				int textWidth = client.textRenderer.getWidth(effectivePriceText);
-				int centeredX = this.getX() + (this.width / 2) - (textWidth / 2);
-				int textY = this.getY() + ITEM_OFFSET + 13;
-				context.drawText(client.textRenderer, effectivePriceText, centeredX, textY, 0xFF00FF00, true);
-				yOffset -= 4;
-			}
-
-			context.drawItemWithoutEntity(itemStack, this.getX() + ITEM_OFFSET, this.getY() + yOffset);
+			yOffset -= 4;
 		}
+
+		context.drawItemWithoutEntity(itemStack, this.getX() + ITEM_OFFSET, this.getY() + yOffset);
+
 	}
 
 	/**
@@ -110,41 +101,65 @@ public class DonationButton extends ClickableWidget {
 	 */
 	private void createTooltip() {
 		List<Text> tooltip = new ArrayList<>();
-		Style textStyle = Style.EMPTY;
 
-		if (donation.isArmorSet()) {
-			for (ArmorPiece piece : donation.getSet()) {
-				ItemStack stack = ItemRepository.getItemStack(piece.getId());
+		boolean soulbound = ItemUtils.isSoulbound(itemStack);
+		Pair<String, Double> discount = donation.getDiscount();
+		List<Pair<String, Integer>> countsTowards = donation.getCountsTowards();
+
+		// Display name
+		tooltip.add(MuseumUtils.getDisplayName(donation.getId(), donation.isSet()));
+
+		// Set pieces display names
+		if (donation.isSet()) {
+			for (Pair<String, PriceData> piece : donation.getSet()) {
+				ItemStack stack = ItemRepository.getItemStack(piece.getLeft());
 				if (stack != null) {
-					textStyle = stack.getName().getSiblings().getFirst().getStyle();
 					Text itemName = stack.getName().copy();
-					if (ItemUtils.getLore(stack).stream().anyMatch(lore -> lore.getString().toLowerCase().contains("soulbound"))) {
+					if (soulbound) {
 						tooltip.add(Text.literal("  ").append(itemName));
-					} else if (setEffectivePricesText.get(piece.getId()) != null) {
-						tooltip.add(Text.literal("  ").append(itemName).append(Text.literal(" (").formatted(Formatting.DARK_GRAY)).append(Text.literal(setEffectivePricesText.get(piece.getId())).formatted(Formatting.GOLD)).append(Text.literal(")").formatted(Formatting.DARK_GRAY)));
+					} else if (piece.getRight().getEffectivePrice() > 0) {
+						tooltip.add(Text.literal("  ").append(itemName).append(Text.literal(" (").formatted(Formatting.DARK_GRAY)).append(Text.literal(MuseumUtils.formatPrice(piece.getRight().getEffectivePrice())).formatted(Formatting.GOLD)).append(Text.literal(")").formatted(Formatting.DARK_GRAY)));
 					} else {
 						tooltip.add(Text.literal("  ").append(itemName).append(Text.literal(" (").formatted(Formatting.DARK_GRAY)).append(Text.literal("Unknown").formatted(Formatting.RED)).append(Text.literal(")").formatted(Formatting.DARK_GRAY)));
 					}
 				}
 			}
-			String armorName = MuseumItemCache.ARMOR_NAMES.get(donation.getId());
-			tooltip.addFirst(Text.literal(Objects.requireNonNullElseGet(armorName, () -> donation.getId().toLowerCase())).setStyle(textStyle));
+		}
+		tooltip.add(Text.empty());
+
+		Text xpText = Text.literal(String.valueOf(donation.getTotalXp())).append(" SkyBlock XP").formatted(Formatting.AQUA);
+		tooltip.add(Text.literal("Reward: ").formatted(Formatting.GRAY).append(xpText));
+
+		if (soulbound) {
+			tooltip.add(Text.literal("Untradable").formatted(Formatting.GRAY).append(Text.literal(" (Soulbound)").formatted(Formatting.DARK_GRAY)));
 		} else {
-			ItemStack stack = ItemRepository.getItemStack(donation.getId());
-			if (stack != null) tooltip.add(stack.getName());
+			PriceData priceData = donation.getPriceData();
+			Text lBinText = donation.hasLBinPrice() ? Text.literal(MuseumUtils.formatPrice(priceData.getLBinPrice())).append(" Coins").formatted(Formatting.GOLD) : Text.literal("Unknown").formatted(Formatting.RED);
+			MutableText craftCostText = donation.isCraftable() ? Text.literal(MuseumUtils.formatPrice(donation.hasDiscount() ? priceData.getCraftCost() - discount.getRight() : priceData.getCraftCost())).append(" Coins").formatted(Formatting.GOLD) : Text.literal("Unknown").formatted(Formatting.RED);
+			Text discountText = donation.hasDiscount() && donation.isCraftable() ? Text.literal(" (").formatted(Formatting.DARK_GRAY).append(Text.literal(MuseumUtils.formatPrice(priceData.getCraftCost())).formatted(Formatting.GOLD)).append(" - ").append(Text.literal(MuseumUtils.formatPrice(discount.getRight())).formatted(Formatting.GOLD)).append(Text.literal(")").formatted(Formatting.DARK_GRAY)) : Text.empty();
+			Text xpCoinsRatio = Text.literal(MuseumUtils.formatPrice(donation.getXpCoinsRatio())).append(" Coins per XP").formatted(Formatting.AQUA);
+
+			tooltip.add(Text.literal("Lowest BIN: ").formatted(Formatting.GRAY).append(lBinText));
+			tooltip.add(Text.literal("Craft Cost: ").formatted(Formatting.GRAY).append(craftCostText).append(discountText));
+			tooltip.add(Text.literal("Coins/XP ratio: ").formatted(Formatting.GRAY).append(xpCoinsRatio));
 		}
 
-		Text lbinText = donation.hasLBinPrice() ? Text.literal(FormatingUtils.formatPrice(donation.getPrice())).append(" Coins").formatted(Formatting.GOLD) : Text.literal("Unknown").formatted(Formatting.RED);
-		Text craftCostText = donation.isCraftable() ? Text.literal(FormatingUtils.formatPrice(donation.getCraftCost())).append(" Coins").formatted(Formatting.GOLD) : Text.literal("Unknown").formatted(Formatting.RED);
+		if (countsTowards.size() > 1) {
+			tooltip.add(Text.empty());
+			tooltip.add(Text.literal("Will count for:").formatted(Formatting.GRAY));
+			for (Pair<String, Integer> credit : countsTowards) {
+				tooltip.add(Text.literal(" ● ").formatted(Formatting.GRAY).append(MuseumUtils.getDisplayName(credit.getLeft(), donation.isSet())).append(Text.literal(" (" + credit.getRight() + " XP)").formatted(Formatting.AQUA)));
+			}
+		}
 
-		String wikiLookupKey = WikiLookup.wikiLookup.getBoundKeyTranslationKey();
+		if (donation.isCraftable() && donation.hasDiscount()) {
+			tooltip.add(Text.empty());
+			tooltip.add(Text.literal("Crafted with: ").formatted(Formatting.GRAY).append(Text.literal("(Donated Item)").formatted(Formatting.DARK_GRAY)));
+			tooltip.add(Text.literal(" - ").formatted(Formatting.GRAY).append(MuseumUtils.getDisplayName(discount.getLeft(), donation.isSet())).append(Text.literal(" ✔").formatted(Formatting.GREEN)).append(Text.literal(" (").formatted(Formatting.DARK_GRAY).append(Text.literal(MuseumUtils.formatPrice(discount.getRight())).formatted(Formatting.GOLD)).append(")").formatted(Formatting.DARK_GRAY)));
+		}
 
-		tooltip.add(Text.literal(""));
-		tooltip.add(Text.literal("Reward: ").formatted(Formatting.GRAY).append(Text.literal(String.valueOf(donation.getXp())).append(" SkyBlock XP").formatted(Formatting.AQUA)));
-		tooltip.add(Text.literal("Lowest BIN: ").formatted(Formatting.GRAY).append(lbinText));
-		tooltip.add(Text.literal("Craft Cost: ").formatted(Formatting.GRAY).append(craftCostText));
-		tooltip.add(Text.literal(""));
-		tooltip.add(Text.literal("Click on " + wikiLookupKey.substring(wikiLookupKey.lastIndexOf('.') + 1).toUpperCase() + " to open the wiki page!").formatted(Formatting.YELLOW));
+		tooltip.add(Text.empty());
+		tooltip.add(Text.literal("Click on " + WIKI_LOCKUP_KEY.substring(WIKI_LOCKUP_KEY.lastIndexOf('.') + 1).toUpperCase(Locale.ENGLISH) + " to open the wiki page!").formatted(Formatting.YELLOW));
 
 		this.tooltip = tooltip;
 	}

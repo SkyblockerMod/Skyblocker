@@ -1,11 +1,10 @@
 package de.hysky.skyblocker.skyblock.museum;
 
 import com.google.common.collect.Lists;
-import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
-import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -22,16 +21,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MuseumManager extends ClickableWidget {
 	private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/recipe_book.png");
 	private static final int BACKGROUND_WIDTH = 147;
 	private static final int BACKGROUND_HEIGHT = 166;
-
 	private static final int SEARCH_FIELD_WIDTH = 69;
 	private static final int SEARCH_FIELD_HEIGHT = 20;
 	private static final int BUTTON_SIZE = 20;
@@ -47,7 +47,7 @@ public class MuseumManager extends ClickableWidget {
 	private final ToggleButtonWidget nextPageButton;
 	private final ToggleButtonWidget prevPageButton;
 	private final TextFieldWidget searchField;
-	private final List<Donation> allDonations;
+	private static List<Donation> donations = new ArrayList<>();
 	private final List<Donation> filteredDonations = new ArrayList<>();
 	private final List<String> excludedDonationIds = new ArrayList<>();
 	private final List<DonationButton> donationButtons = Lists.newArrayListWithCapacity(BUTTONS_PER_PAGE);
@@ -57,7 +57,7 @@ public class MuseumManager extends ClickableWidget {
 	private int pageCount = 0;
 
 	public MuseumManager(Screen screen, int x, int y, int backgroundWidth) {
-		super(x, y, screen.width, screen.height, Text.of(""));
+		super(x, y, screen.width, screen.height, Text.empty());
 		this.layoutX = getX() + backgroundWidth + 2;
 		this.layoutY = y;
 
@@ -75,7 +75,7 @@ public class MuseumManager extends ClickableWidget {
 		this.prevPageButton = new ToggleButtonWidget(layoutX + 38, layoutY + 133, 12, 17, true);
 		this.prevPageButton.setTextures(RecipeBookResults.PAGE_BACKWARD_TEXTURES);
 
-		this.allDonations = MuseumItemCache.getDonations();
+		donations = MuseumItemCache.getDonations();
 
 		// Create donation buttons for pagination
 		for (int i = 0; i < BUTTONS_PER_PAGE; i++) {
@@ -84,7 +84,7 @@ public class MuseumManager extends ClickableWidget {
 		}
 
 		// Initialize sort button
-		this.sortButton = ButtonWidget.builder(Text.literal(""), button -> {
+		this.sortButton = ButtonWidget.builder(Text.empty(), button -> {
 					ITEM_SORTER.cycleSortMode(filteredDonations);
 					button.setTooltip(ITEM_SORTER.getTooltip());
 					CURRENT_PAGE = 0;
@@ -96,8 +96,8 @@ public class MuseumManager extends ClickableWidget {
 				.build();
 
 		// Initialize filter button
-		this.filterButton = ButtonWidget.builder(Text.literal(""), button -> {
-					ITEM_FILTER.cycleFilterMode(allDonations, filteredDonations);
+		this.filterButton = ButtonWidget.builder(Text.empty(), button -> {
+					ITEM_FILTER.cycleFilterMode(donations, filteredDonations);
 					ITEM_SORTER.applySort(filteredDonations);
 					button.setTooltip(ITEM_FILTER.getTooltip());
 					CURRENT_PAGE = 0;
@@ -108,12 +108,25 @@ public class MuseumManager extends ClickableWidget {
 				.size(BUTTON_SIZE, BUTTON_SIZE)
 				.build();
 
-		ITEM_FILTER.applyFilter(allDonations, filteredDonations);
+		ITEM_FILTER.applyFilter(donations, filteredDonations);
 		ITEM_SORTER.applySort(filteredDonations);
 		updateSearchResults(false);
 
-		((ScreenAccessor) screen).callAddDrawableChild(this);
+		Screens.getButtons(screen).add(this);
 		screen.setFocused(this);
+	}
+
+	/**
+	 * Retrieves the Donation object corresponding to a given ID.
+	 *
+	 * @param id the ID of the donation to retrieve
+	 * @return the Donation object associated with the given ID, or null if not found
+	 */
+	protected static Donation getDonation(String id) {
+		return donations.stream()
+				.filter(donation -> donation.getId().equals(id))
+				.findFirst()
+				.orElse(null);
 	}
 
 	/**
@@ -163,8 +176,9 @@ public class MuseumManager extends ClickableWidget {
 	 * @param resetPage Whether to reset to the first page.
 	 */
 	public void updateSearchResults(boolean resetPage) {
+		SEARCH_QUERY = this.searchField.getText();
 		excludedDonationIds.clear();
-		for (Donation item : allDonations) {
+		for (Donation item : donations) {
 			StringBuilder searchableContent = new StringBuilder();
 			ItemStack itemStack = ItemRepository.getItemStack(item.getId());
 			if (itemStack != null) {
@@ -172,13 +186,13 @@ public class MuseumManager extends ClickableWidget {
 						.append(ItemUtils.getConcatenatedLore(itemStack));
 			}
 			if (item.getSet() != null && !item.getSet().isEmpty()) {
-				for (ArmorPiece piece : item.getSet()) {
-					ItemStack pieceStack = ItemRepository.getItemStack(piece.getId());
+				for (Pair<String, PriceData> piece : item.getSet()) {
+					ItemStack pieceStack = ItemRepository.getItemStack(piece.getLeft());
 					if (pieceStack != null) searchableContent.append(pieceStack.getName().getString())
 							.append(ItemUtils.getConcatenatedLore(pieceStack));
 				}
 			}
-			if (!searchableContent.toString().toLowerCase().contains(SEARCH_QUERY.toLowerCase())) {
+			if (!searchableContent.toString().toLowerCase(Locale.ENGLISH).contains(SEARCH_QUERY.toLowerCase(Locale.ENGLISH))) {
 				excludedDonationIds.add(item.getId());
 			}
 		}
@@ -212,6 +226,7 @@ public class MuseumManager extends ClickableWidget {
 			int iconY = this.sortButton.getY() + (this.sortButton.getHeight() - 16) / 2;
 			ItemStack stack = ITEM_SORTER.getCurrentSortingItem();
 			context.drawItemWithoutEntity(stack, iconX, iconY);
+			this.sortButton.render(context, mouseX, mouseY, delta);
 		}
 
 		if (this.filterButton.active) {
@@ -219,14 +234,13 @@ public class MuseumManager extends ClickableWidget {
 			int iconY = this.filterButton.getY() + (this.filterButton.getHeight() - 16) / 2;
 			ItemStack stack = ITEM_FILTER.getCurrentFilterItem();
 			context.drawItemWithoutEntity(stack, iconX, iconY);
+			this.filterButton.render(context, mouseX, mouseY, delta);
 		}
 
 		// Render the page flip buttons
 		if (this.prevPageButton.active) this.prevPageButton.render(context, mouseX, mouseY, delta);
 		if (this.nextPageButton.active) this.nextPageButton.render(context, mouseX, mouseY, delta);
 
-		this.filterButton.render(context, mouseX, mouseY, delta);
-		this.sortButton.render(context, mouseX, mouseY, delta);
 		this.searchField.render(context, mouseX, mouseY, delta);
 
 		this.drawTooltip(context, mouseX, mouseY);
@@ -275,8 +289,7 @@ public class MuseumManager extends ClickableWidget {
 	@Override
 	public boolean charTyped(char chr, int modifiers) {
 		if (this.searchField.charTyped(chr, modifiers)) {
-			SEARCH_QUERY = this.searchField.getText();
-			this.updateSearchResults(true);
+			updateSearchResults(true);
 			return true;
 		}
 		return false;
@@ -286,10 +299,9 @@ public class MuseumManager extends ClickableWidget {
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if ((this.searchField.isActive() && keyCode == GLFW.GLFW_KEY_E)
 				|| this.searchField.keyPressed(keyCode, scanCode, modifiers)) {
-			SEARCH_QUERY = this.searchField.getText();
-			this.updateSearchResults(true);
+			updateSearchResults(true);
 			return true;
-		} else if (WikiLookup.wikiLookup.matchesKey(keyCode, scanCode) && CLIENT.player != null && hoveredDonationButton != null && hoveredDonationButton.getDisplayStack() != null) {
+		} else if (WikiLookup.wikiLookup.matchesKey(keyCode, scanCode) && hoveredDonationButton != null && hoveredDonationButton.getDisplayStack() != null) {
 			WikiLookup.openWiki(hoveredDonationButton.getDisplayStack(), CLIENT.player);
 			return true;
 		}

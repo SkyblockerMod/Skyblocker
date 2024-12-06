@@ -15,6 +15,7 @@ import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
+import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.museum.MuseumManager;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
@@ -97,9 +98,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	@Shadow
 	protected abstract List<Text> getTooltipFromItem(ItemStack stack);
-
-	@Shadow
-	public abstract T getScreenHandler();
 
 	@Shadow
 	protected int backgroundWidth;
@@ -318,10 +316,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				}
 			}
 
-			case GenericContainerScreenHandler genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> {
-				//Museum Item Cache donation tracking
-				MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
-			}
+			case GenericContainerScreenHandler genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> //Museum Item Cache donation tracking
+					MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
 
 			case null, default -> {}
 		}

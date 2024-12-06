@@ -762,8 +762,8 @@
   "skyblocker.config.uiAndVisuals.itemCooldown": "Item Cooldown",
   "skyblocker.config.uiAndVisuals.itemCooldown.enableItemCooldowns": "Enable Item Cooldown",
 
-  "skyblocker.config.uiAndVisuals.museumOverlay": "Museum Hud",
-  "skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip": "Shows uncontributed items including their prices and more.\n\nMake sure to enable your Museum API to work",
+  "skyblocker.config.uiAndVisuals.museumOverlay": "Museum Overlay",
+  "skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip": "Shows undonated items including their prices and more.\n\nMake sure to enable your Museum API to work!",
 
   "skyblocker.config.uiAndVisuals.searchOverlay": "Search Overlay",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",

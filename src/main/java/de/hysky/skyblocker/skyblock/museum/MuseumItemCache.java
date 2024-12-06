@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.item;
+package de.hysky.skyblocker.skyblock.museum;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -11,9 +11,6 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.museum.ArmorPiece;
-import de.hysky.skyblocker.skyblock.museum.Donation;
-import de.hysky.skyblocker.skyblock.museum.FormatingUtils;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.Http.ApiResponse;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
@@ -26,22 +23,22 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.*;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
+import net.minecraft.util.Pair;
 import net.minecraft.util.collection.DefaultedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -58,7 +55,8 @@ public class MuseumItemCache {
 	public static final Map<String, String> MAPPED_IDS = new Object2ObjectArrayMap<>();
 	private static CompletableFuture<Void> loaded;
 	private static final Path MUSEUM_INFO = NEURepoManager.NEU_REPO.file("constants/museum.json").getFsPath();
-	private static final List<Donation> MUSEUM_DONATIONS = new ArrayList<>();
+	public static final List<Donation> MUSEUM_DONATIONS = new ArrayList<>();
+	public static List<List<String>> ORDERED_UPGRADES = new ArrayList<>();
 
 	@Init
 	public static void init() {
@@ -107,7 +105,7 @@ public class MuseumItemCache {
 	}
 
 	/**
-	 * Loads museum data from a JSON file, processes it, and updates internal data structures.
+	 * Loads museum data from local repo.
 	 */
 	public static void loadMuseumItems() {
 		MUSEUM_DONATIONS.clear();
@@ -136,12 +134,12 @@ public class MuseumItemCache {
 
 				for (JsonElement element : array) {
 					String itemID = element.getAsString();
-					List<ArmorPiece> set = new ArrayList<>(List.of());
+					List<Pair<String, PriceData>> set = new ArrayList<>();
 					if (category.equals("armor")) {
 						boolean isEquipment = true;
 						for (JsonElement jsonElement : setsToItems.get(itemID).getAsJsonArray()) {
 							if (isEquipment) isEquipment = ItemUtils.isEquipment(jsonElement.getAsString());
-							set.add(new ArmorPiece(jsonElement.getAsString()));
+							set.add(new Pair<>(jsonElement.getAsString(), null));
 						}
 						String realId = itemID;
 						for (Map.Entry<String, JsonElement> exception : setExceptions.entrySet()) {
@@ -150,13 +148,40 @@ public class MuseumItemCache {
 								break;
 							}
 						}
-						ARMOR_NAMES.put(itemID, FormatingUtils.formatArmorName(realId, isEquipment));
+						ARMOR_NAMES.put(itemID, MuseumUtils.formatArmorName(realId, isEquipment));
 					}
 					int itemXP = itemToXp.get(itemID).getAsInt();
 					List<String> upgrades = getUpgrades(children, itemID);
+
+					if (!upgrades.isEmpty()) {
+						// Try to find an existing upgrade list that either contains itemID or overlaps with upgrades
+						Optional<List<String>> matchingUpgrade = ORDERED_UPGRADES.stream()
+								.filter(orderedUpgrade ->
+										orderedUpgrade.contains(itemID) ||
+												!Collections.disjoint(orderedUpgrade, upgrades))
+								.findFirst();
+
+						if (matchingUpgrade.isPresent()) {
+							List<String> orderedUpgrade = matchingUpgrade.get();
+							// If the matching list has fewer or equal items, replace it with the new upgrade list
+							if (orderedUpgrade.size() <= upgrades.size()) {
+								orderedUpgrade.clear();
+								orderedUpgrade.add(itemID);
+								orderedUpgrade.addAll(upgrades);
+							}
+						} else {
+							// If no match, add a new upgrade list with itemID and upgrades
+							List<String> newUpgrade = new ArrayList<>();
+							newUpgrade.add(itemID);
+							newUpgrade.addAll(upgrades);
+							ORDERED_UPGRADES.add(newUpgrade);
+						}
+					}
+
 					MUSEUM_DONATIONS.add(new Donation(category, itemID, set, itemXP, upgrades));
 				}
 			}
+			MUSEUM_DONATIONS.forEach(Donation::setDowngrades);
 
 			LOGGER.info("[Skyblocker] Loaded museum data");
 		} catch (Exception e) {
@@ -165,7 +190,7 @@ public class MuseumItemCache {
 	}
 
 	/**
-	 * Gets a list of all upgrades (parent items) for a given item.
+	 * Gets a list of all upgrades for a given item.
 	 */
 	public static List<String> getUpgrades(Map<String, JsonElement> children, String item) {
 		List<String> upgrades = new ArrayList<>();
@@ -203,15 +228,32 @@ public class MuseumItemCache {
 		if (MUSEUM_ITEM_CACHE.containsKey(uuid) && MUSEUM_ITEM_CACHE.get(uuid).containsKey(profileId)) {
 			ObjectOpenHashSet<String> items = MUSEUM_ITEM_CACHE.get(uuid).get(profileId).collectedItemIds();
 			for (Donation donation : MUSEUM_DONATIONS) {
-				// Check if the donation id is not present in the collected items
-				if (!items.contains(donation.getId()) && items.stream().noneMatch(donation.getUpgrades()::contains)) {
-					donation.initPriceData();
-					uncontributedItems.add(donation);
+				// Check if the donation id or his upgrades is not present in the collected items
+				//FIXME too many stream checks
+				//TODO: cache
+				if (!items.contains(MAPPED_IDS.entrySet().stream().filter(entry -> donation.getId().equals(entry.getValue())).map(Map.Entry::getKey).findFirst().orElse(null))) {
+					if (!items.contains(donation.getId()) && items.stream().noneMatch(donation.getUpgrades()::contains)) {
+						if (donation.isSet()) {
+							if (items.stream().anyMatch(i -> donation.getSet().stream().anyMatch(p -> p.getLeft().equals(i)))) continue;
+							if (items.stream().anyMatch(p -> donation.getUpgrades().stream().anyMatch(upgrade -> MuseumUtils.getPiecesBySetID(upgrade).contains(p)))) continue;
+						}
+						donation.setPriceData();
+						uncontributedItems.add(donation);
+					}
 				}
 			}
+
+			// Check if the item has a donated downgrade
+			uncontributedItems.forEach(donation -> donation.setDiscount(donation.getDowngrades().stream()
+					.filter(downgrade -> donation.isCraftable())
+					.filter(downgrade -> uncontributedItems.stream().noneMatch(item -> item.getId().equals(downgrade)))
+					.map(downgrade -> new Pair<>(
+							downgrade, MuseumUtils.getSetCraftCost(downgrade)))
+					.findFirst()
+					.orElse(null)));
 		}
 
-		uncontributedItems.sort(Comparator.comparing(Donation::getId));
+		uncontributedItems.sort(Comparator.comparing(Donation::getId)); //Sorting alphabetically
 		return uncontributedItems;
 	}
 
@@ -227,12 +269,14 @@ public class MuseumItemCache {
 
 					if (!itemId.isEmpty() && !profileId.isEmpty()) {
 						if (MAPPED_IDS.containsKey(itemId)) itemId = MAPPED_IDS.get(itemId);
+						String setId = MuseumUtils.getSetID(itemId);
 						String uuid = Utils.getUndashedUuid();
 						//Be safe about access to avoid NPEs
 						Map<String, ProfileMuseumData> playerData = MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
 						playerData.putIfAbsent(profileId, ProfileMuseumData.EMPTY.get());
 
 						playerData.get(profileId).collectedItemIds().add(itemId);
+						if (setId != null) playerData.get(profileId).collectedItemIds().add(setId);
 					}
 				}
 			}
@@ -259,7 +303,21 @@ public class MuseumItemCache {
 						//Set of all found item ids on profile
 						ObjectOpenHashSet<String> itemIds = new ObjectOpenHashSet<>();
 
-						donatedSets.forEach((s, jsonElement) -> itemIds.add(s));
+						for (Map.Entry<String, JsonElement> donatedSet : donatedSets.entrySet()) {
+							//Item is plural here because the nbt is a list
+							String itemsData = donatedSet.getValue().getAsJsonObject().get("items").getAsJsonObject().get("data").getAsString();
+							NbtList items = NbtIo.readCompressed(new ByteArrayInputStream(Base64.getDecoder().decode(itemsData)), NbtSizeTracker.ofUnlimitedBytes()).getList("i", NbtElement.COMPOUND_TYPE);
+
+							for (int i = 0; i < items.size(); i++) {
+								NbtCompound tag = items.getCompound(i).getCompound("tag");
+
+								if (tag.contains("ExtraAttributes")) {
+									NbtCompound extraAttributes = tag.getCompound("ExtraAttributes");
+
+									if (extraAttributes.contains("id")) itemIds.add(extraAttributes.getString("id"));
+								}
+							}
+						}
 
 						MUSEUM_ITEM_CACHE.get(uuid).put(profileId, new ProfileMuseumData(System.currentTimeMillis(), itemIds));
 						save();

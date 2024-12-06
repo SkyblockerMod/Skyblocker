@@ -5,75 +5,91 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Pair;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class ItemSorter {
+	// Sorting logic
+	private static final Consumer<List<Donation>> sortByLowestBIN = donations -> {
+		donations.forEach(donation -> updateDonationData(donation, false));
+		donations.sort(ItemSorter::compareEffectivePrices);
+	};
+	private static final Consumer<List<Donation>> sortByCraftCost = donations -> {
+		donations.forEach(donation -> updateDonationData(donation, true));
+		donations.sort(ItemSorter::compareEffectivePrices);
+	};
+	private static final Consumer<List<Donation>> sortByXpPerCoin = donations -> {
+		donations.forEach(donation -> updateDonationData(donation, true));
+		donations.sort(ItemSorter::compareCoinsPerXP);
+	};
 	private SortMode currentSortMode = SortMode.LowestBIN;
 
-	private static void sortByLowestBIN(List<Donation> donations) {
-		donations.forEach(donation -> setEffectivePrices(donation, false));
-		donations.sort(ItemSorter::compareEffectivePrices);
-	}
-
-	private static void sortByCraftCost(List<Donation> donations) {
-		donations.forEach(donation -> setEffectivePrices(donation, true));
-		donations.sort(ItemSorter::compareEffectivePrices);
-	}
-
-	private static void sortByXpPerCoin(List<Donation> donations) {
-		donations.forEach(donation -> setEffectivePrices(donation, true));
-		donations.sort(ItemSorter::compareXpPerCoin);
-	}
-
 	// Set effective prices for the donation and its armor set pieces
-	public static void setEffectivePrices(Donation donation, boolean useCraftCost) {
-		if (donation.isArmorSet()) {
-			donation.getSet().forEach(piece ->
-					piece.setEffectivePrice(resolveEffectivePrice(piece.getPrice(), useCraftCost ? piece.getCraftCost() : 0))
-			);
-		}
-		donation.setEffectivePrice(resolveEffectivePrice(donation.getPrice(), useCraftCost ? donation.getCraftCost() : 0));
+	public static void updateDonationData(Donation donation, boolean useCraftCost) {
+		// Gather all donations that this one counts towards
+		List<String> downgrades = donation.getDowngrades();
+		Pair<String, Double> discount = donation.getDiscount();
+		List<Donation> willCountFor = downgrades.stream()
+				.map(MuseumManager::getDonation)
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
+
+		willCountFor.addFirst(donation); // Ensure donation itself is part of the list
+
+		// Calculate cumulative XP
+		int totalXP = willCountFor.stream().mapToInt(Donation::getXp).sum();
+
+		// Calculate effective prices
+		double lBinPrice = donation.getPriceData().getLBinPrice();
+		double rawCraftCost = donation.isCraftable() ? donation.getPriceData().getCraftCost() : 0;
+		double craftCost = discount != null ? rawCraftCost - discount.getRight() : rawCraftCost;
+		double effectivePrice = useCraftCost
+				? (craftCost > 0 ? (lBinPrice == 0 ? craftCost : Math.min(craftCost, lBinPrice)) : lBinPrice)
+				: (lBinPrice > 0 ? lBinPrice : craftCost);
+		double ratio = totalXP > 0 && effectivePrice > 0 ? effectivePrice / totalXP : 0;
+
+		// Update donation with computed data
+		if (donation.isSet()) donation.getSet().forEach(pair -> pair.getRight().setEffectivePrice(effectivePrice == craftCost ? pair.getRight().getCraftCost() : pair.getRight().getLBinPrice()));
+		donation.getPriceData().setEffectivePrice(effectivePrice);
+		donation.setXpCoinsRatio(ratio);
+		donation.setTotalXp(totalXP);
+		donation.setCountsTowards(willCountFor.stream()
+				.map(d -> new Pair<>(d.getId(), d.getXp()))
+				.toList());
 	}
 
 	private static int compareEffectivePrices(Donation a, Donation b) {
-		double priceA = a.getEffectivePrice();
-		double priceB = b.getEffectivePrice();
+		double priceA = a.getPriceData().getEffectivePrice();
+		double priceB = b.getPriceData().getEffectivePrice();
 
-		if (priceA <= 0 && priceB <= 0) return 0; // Both prices are invalid
+		if (priceA <= 0 && priceB <= 0) {
+			// Both prices are invalid, sort by XP descending
+			return Integer.compare(b.getTotalXp(), a.getTotalXp());
+		}
 		if (priceA <= 0) return 1; // Move invalid price to the end
 		if (priceB <= 0) return -1; // Move invalid price to the end
-		return Double.compare(priceA, priceB); // Compare valid prices in ascending order
+
+		// Compare valid prices in ascending order
+		return Double.compare(priceA, priceB);
 	}
 
-	// Resolve the effective price based on price and craft cost
-	private static double resolveEffectivePrice(double price, double craftCost) {
-		if (price > 0 && craftCost > 0) {
-			return Math.min(price, craftCost);
+	private static int compareCoinsPerXP(Donation a, Donation b) {
+		double xpPerCoinA = a.getXpCoinsRatio();
+		double xpPerCoinB = b.getXpCoinsRatio();
+
+		if (xpPerCoinA == 0 && xpPerCoinB == 0) {
+			// Both ratios are 0, sort by XP descending
+			return Integer.compare(b.getTotalXp(), a.getTotalXp());
 		}
-		return price > 0 ? price : craftCost; // Choose whichever is valid
-	}
+		if (xpPerCoinA == 0) return 1; // Move items with 0 XP/coin to the end
+		if (xpPerCoinB == 0) return -1; // Move items with 0 XP/coin to the end
 
-	// Comparison logic for XP per Coin
-	private static int compareXpPerCoin(Donation a, Donation b) {
-		double xpPerCoinA = calculateXpPerCoin(a);
-		double xpPerCoinB = calculateXpPerCoin(b);
-
-		// If both ratios are 0, consider them equal
-		if (xpPerCoinA == 0 && xpPerCoinB == 0) return 0;
-
-		// Move items with 0 XP per Coin to the end
-		if (xpPerCoinA == 0) return 1;
-		if (xpPerCoinB == 0) return -1;
-
-		// Compare XP per Coin in descending order
-		return Double.compare(xpPerCoinB, xpPerCoinA);
-	}
-
-	// Helper method to calculate XP per Coin
-	private static double calculateXpPerCoin(Donation donation) {
-		double effectivePrice = donation.getEffectivePrice();
-		return effectivePrice > 0 ? donation.getXp() / effectivePrice : 0;
+		// Compare XP/coin ratios in descending order
+		return Double.compare(xpPerCoinA, xpPerCoinB);
 	}
 
 	// Method to cycle through sorting modes and apply the corresponding logic
@@ -81,11 +97,11 @@ public class ItemSorter {
 		// Cycle to the next sorting mode
 		currentSortMode = SortMode.values()[(currentSortMode.ordinal() + 1) % SortMode.values().length];
 		// Apply the sorting logic for the current mode
-		currentSortMode.applySort(donations);
+		applySort(donations);
 	}
 
 	public void applySort(List<Donation> donations) {
-		currentSortMode.applySort(donations);
+		currentSortMode.getSortFunction().accept(donations);
 	}
 
 	// Get the item associated with the current filter mode
@@ -101,7 +117,7 @@ public class ItemSorter {
 		Text tooltip = Text.literal("Item Sort\n\n").formatted(Formatting.GREEN)
 				.append(getSortText(SortMode.LowestBIN))
 				.append(getSortText(SortMode.CraftCost))
-				.append(getSortText(SortMode.XpPerCoin))
+				.append(getSortText(SortMode.CoinsPerXP))
 				.append(Text.literal("\nClick to switch sort!").formatted(Formatting.YELLOW));
 		return Tooltip.of(tooltip);
 	}
@@ -113,15 +129,15 @@ public class ItemSorter {
 	}
 
 	public enum SortMode {
-		LowestBIN(new ItemStack(Items.GOLD_INGOT), ItemSorter::sortByLowestBIN, "Lowest BIN"),
-		CraftCost(new ItemStack(Items.CRAFTING_TABLE), ItemSorter::sortByCraftCost, "Craft Cost"),
-		XpPerCoin(new ItemStack(Items.EXPERIENCE_BOTTLE), ItemSorter::sortByXpPerCoin, "Xp Per Coin");
+		LowestBIN(new ItemStack(Items.GOLD_INGOT), sortByLowestBIN, "Lowest BIN"),
+		CraftCost(new ItemStack(Items.CRAFTING_TABLE), sortByCraftCost, "Craft Cost"),
+		CoinsPerXP(new ItemStack(Items.EXPERIENCE_BOTTLE), sortByXpPerCoin, "Coins/XP Ratio");
 
 		private final ItemStack associatedItem;
-		private final SortFunction sortFunction;
+		private final Consumer<List<Donation>> sortFunction;
 		private final String displayName;
 
-		SortMode(ItemStack item, SortFunction function, String displayName) {
+		SortMode(ItemStack item, Consumer<List<Donation>> function, String displayName) {
 			this.associatedItem = item;
 			this.sortFunction = function;
 			this.displayName = displayName;
@@ -135,13 +151,8 @@ public class ItemSorter {
 			return displayName;
 		}
 
-		public void applySort(List<Donation> donations) {
-			sortFunction.sort(donations);
+		public Consumer<List<Donation>> getSortFunction() {
+			return sortFunction;
 		}
-	}
-
-	@FunctionalInterface
-	public interface SortFunction {
-		void sort(List<Donation> donations);
 	}
 }
