@@ -59,32 +59,32 @@ public class ItemFilter {
 	}
 
 	public Tooltip getTooltip() {
-		Text tooltip = Text.literal("Item Filter\n\n").formatted(Formatting.GREEN)
+		Text tooltip = Text.translatable("skyblocker.museum.hud.filter").append("\n\n").formatted(Formatting.GREEN)
 				.append(getFilterText(FilterMode.ALL))
 				.append(getFilterText(FilterMode.WEAPONS))
 				.append(getFilterText(FilterMode.ARMOR))
 				.append(getFilterText(FilterMode.RARITIES))
-				.append(Text.literal("\nClick to switch!").formatted(Formatting.YELLOW));
+				.append("\n").append(Text.translatable("skyblocker.museum.hud.filter.switch").formatted(Formatting.YELLOW));
 		return Tooltip.of(tooltip);
 	}
 
 	private Text getFilterText(FilterMode mode) {
 		boolean isCurrent = mode == currentFilterMode;
-		return Text.literal((isCurrent ? "➤ " : "  ") + mode.getDisplayName() + "\n")
+		return Text.literal((isCurrent ? "➤ " : "  ")).append(mode.getDisplayName()).append("\n")
 				.formatted(isCurrent ? Formatting.AQUA : Formatting.GRAY);
 	}
 
 	public enum FilterMode {
-		ALL(new ItemStack(Items.NETHER_STAR), ItemFilter::filterAll, "All"),
-		WEAPONS(new ItemStack(Items.DIAMOND_SWORD), ItemFilter::filterWeapons, "Weapons"),
-		ARMOR(new ItemStack(Items.DIAMOND_CHESTPLATE), ItemFilter::filterArmor, "Armor"),
-		RARITIES(ItemRepository.getItemStack("JADERALD"), ItemFilter::filterRarities, "Rarities");
+		ALL(new ItemStack(Items.NETHER_STAR), ItemFilter::filterAll, Text.translatable("skyblocker.museum.hud.filter.all")),
+		WEAPONS(new ItemStack(Items.DIAMOND_SWORD), ItemFilter::filterWeapons, Text.translatable("skyblocker.museum.hud.filter.weapons")),
+		ARMOR(new ItemStack(Items.DIAMOND_CHESTPLATE), ItemFilter::filterArmor, Text.translatable("skyblocker.museum.hud.filter.armor")),
+		RARITIES(ItemRepository.getItemStack("JADERALD"), ItemFilter::filterRarities, Text.translatable("skyblocker.museum.hud.filter.rarities"));
 
 		private final ItemStack associatedItem;
 		private final UnaryOperator<List<Donation>> filterFunction;
-		private final String displayName;
+		private final Text displayName;
 
-		FilterMode(ItemStack item, UnaryOperator<List<Donation>> function, String displayName) {
+		FilterMode(ItemStack item, UnaryOperator<List<Donation>> function, Text displayName) {
 			this.associatedItem = item;
 			this.filterFunction = function;
 			this.displayName = displayName;
@@ -94,7 +94,7 @@ public class ItemFilter {
 			return associatedItem;
 		}
 
-		public String getDisplayName() {
+		public Text getDisplayName() {
 			return displayName;
 		}
 

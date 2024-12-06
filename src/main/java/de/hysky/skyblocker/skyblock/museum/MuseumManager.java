@@ -62,12 +62,12 @@ public class MuseumManager extends ClickableWidget {
 		this.layoutY = y;
 
 		// Initialize search field
-		this.searchField = new TextFieldWidget(TEXT_RENDERER, layoutX + 25, layoutY + 11, SEARCH_FIELD_WIDTH, SEARCH_FIELD_HEIGHT, Text.of("Search"));
+		this.searchField = new TextFieldWidget(TEXT_RENDERER, layoutX + 25, layoutY + 11, SEARCH_FIELD_WIDTH, SEARCH_FIELD_HEIGHT, Text.empty());
 		this.searchField.setMaxLength(60);
 		this.searchField.setVisible(true);
 		this.searchField.setEditableColor(0xFFFFFF);
 		this.searchField.setText(SEARCH_QUERY);
-		this.searchField.setPlaceholder(Text.literal("Search...").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
+		this.searchField.setPlaceholder(Text.translatable("gui.recipebook.search_hint").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
 
 		// Initialize page navigation buttons
 		this.nextPageButton = new ToggleButtonWidget(layoutX + 93, layoutY + 133, 12, 17, false);

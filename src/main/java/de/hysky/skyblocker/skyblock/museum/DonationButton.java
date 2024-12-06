@@ -120,33 +120,33 @@ public class DonationButton extends ClickableWidget {
 					} else if (piece.getRight().getEffectivePrice() > 0) {
 						tooltip.add(Text.literal("  ").append(itemName).append(Text.literal(" (").formatted(Formatting.DARK_GRAY)).append(Text.literal(MuseumUtils.formatPrice(piece.getRight().getEffectivePrice())).formatted(Formatting.GOLD)).append(Text.literal(")").formatted(Formatting.DARK_GRAY)));
 					} else {
-						tooltip.add(Text.literal("  ").append(itemName).append(Text.literal(" (").formatted(Formatting.DARK_GRAY)).append(Text.literal("Unknown").formatted(Formatting.RED)).append(Text.literal(")").formatted(Formatting.DARK_GRAY)));
+						tooltip.add(Text.literal("  ").append(itemName).append(Text.literal(" (").formatted(Formatting.DARK_GRAY)).append(Text.translatable("skyblocker.museum.hud.unknownPrice").formatted(Formatting.RED)).append(Text.literal(")").formatted(Formatting.DARK_GRAY)));
 					}
 				}
 			}
 		}
 		tooltip.add(Text.empty());
 
-		Text xpText = Text.literal(String.valueOf(donation.getTotalXp())).append(" SkyBlock XP").formatted(Formatting.AQUA);
-		tooltip.add(Text.literal("Reward: ").formatted(Formatting.GRAY).append(xpText));
+		Text xpText = Text.literal(String.valueOf(donation.getTotalXp())).append(" ").append(Text.translatable("skyblocker.museum.hud.skyblockXp")).formatted(Formatting.AQUA);
+		tooltip.add(Text.translatable("skyblocker.museum.hud.xpReward").append(": ").formatted(Formatting.GRAY).append(xpText));
 
 		if (soulbound) {
-			tooltip.add(Text.literal("Untradable").formatted(Formatting.GRAY).append(Text.literal(" (Soulbound)").formatted(Formatting.DARK_GRAY)));
+			tooltip.add(Text.translatable("skyblocker.museum.hud.untradeableItem").formatted(Formatting.GRAY).append(Text.literal(" (").append(Text.translatable("skyblocker.museum.hud.soulboundItem")).append(")").formatted(Formatting.DARK_GRAY)));
 		} else {
 			PriceData priceData = donation.getPriceData();
-			Text lBinText = donation.hasLBinPrice() ? Text.literal(MuseumUtils.formatPrice(priceData.getLBinPrice())).append(" Coins").formatted(Formatting.GOLD) : Text.literal("Unknown").formatted(Formatting.RED);
-			MutableText craftCostText = donation.isCraftable() ? Text.literal(MuseumUtils.formatPrice(donation.hasDiscount() ? priceData.getCraftCost() - discount.getRight() : priceData.getCraftCost())).append(" Coins").formatted(Formatting.GOLD) : Text.literal("Unknown").formatted(Formatting.RED);
+			Text lBinText = donation.hasLBinPrice() ? Text.literal(MuseumUtils.formatPrice(priceData.getLBinPrice())).append(" Coins").formatted(Formatting.GOLD) : Text.translatable("skyblocker.museum.hud.unknownPrice").formatted(Formatting.RED);
+			MutableText craftCostText = donation.isCraftable() ? Text.literal(MuseumUtils.formatPrice(donation.hasDiscount() ? priceData.getCraftCost() - discount.getRight() : priceData.getCraftCost())).append(" ").append(Text.translatable("skyblocker.museum.hud.coin")).formatted(Formatting.GOLD) : Text.translatable("skyblocker.museum.hud.unknownPrice").formatted(Formatting.RED);
 			Text discountText = donation.hasDiscount() && donation.isCraftable() ? Text.literal(" (").formatted(Formatting.DARK_GRAY).append(Text.literal(MuseumUtils.formatPrice(priceData.getCraftCost())).formatted(Formatting.GOLD)).append(" - ").append(Text.literal(MuseumUtils.formatPrice(discount.getRight())).formatted(Formatting.GOLD)).append(Text.literal(")").formatted(Formatting.DARK_GRAY)) : Text.empty();
-			Text xpCoinsRatio = Text.literal(MuseumUtils.formatPrice(donation.getXpCoinsRatio())).append(" Coins per XP").formatted(Formatting.AQUA);
+			Text xpCoinsRatio = Text.literal(MuseumUtils.formatPrice(donation.getXpCoinsRatio())).append(" ").append(Text.translatable("skyblocker.museum.hud.ratioText")).formatted(Formatting.AQUA);
 
-			tooltip.add(Text.literal("Lowest BIN: ").formatted(Formatting.GRAY).append(lBinText));
-			tooltip.add(Text.literal("Craft Cost: ").formatted(Formatting.GRAY).append(craftCostText).append(discountText));
-			tooltip.add(Text.literal("Coins/XP ratio: ").formatted(Formatting.GRAY).append(xpCoinsRatio));
+			tooltip.add(Text.translatable("skyblocker.museum.hud.sorter.lBin").append(": ").formatted(Formatting.GRAY).append(lBinText));
+			tooltip.add(Text.translatable("skyblocker.museum.hud.sorter.craftCost").append(": ").formatted(Formatting.GRAY).append(craftCostText).append(discountText));
+			tooltip.add(Text.translatable("skyblocker.museum.hud.sorter.ratio").append(": ").formatted(Formatting.GRAY).append(xpCoinsRatio));
 		}
 
 		if (countsTowards.size() > 1) {
 			tooltip.add(Text.empty());
-			tooltip.add(Text.literal("Will count for:").formatted(Formatting.GRAY));
+			tooltip.add(Text.translatable("skyblocker.museum.hud.countsFor").append(":").formatted(Formatting.GRAY));
 			for (Pair<String, Integer> credit : countsTowards) {
 				tooltip.add(Text.literal(" ● ").formatted(Formatting.GRAY).append(MuseumUtils.getDisplayName(credit.getLeft(), donation.isSet())).append(Text.literal(" (" + credit.getRight() + " XP)").formatted(Formatting.AQUA)));
 			}
@@ -154,12 +154,12 @@ public class DonationButton extends ClickableWidget {
 
 		if (donation.isCraftable() && donation.hasDiscount()) {
 			tooltip.add(Text.empty());
-			tooltip.add(Text.literal("Crafted with: ").formatted(Formatting.GRAY).append(Text.literal("(Donated Item)").formatted(Formatting.DARK_GRAY)));
+			tooltip.add(Text.translatable("skyblocker.museum.hud.craftIngredient").append(": ").formatted(Formatting.GRAY).append(Text.literal("(").append(Text.translatable("skyblocker.museum.hud.alreadyDonatedItem").append(")")).formatted(Formatting.DARK_GRAY)));
 			tooltip.add(Text.literal(" - ").formatted(Formatting.GRAY).append(MuseumUtils.getDisplayName(discount.getLeft(), donation.isSet())).append(Text.literal(" ✔").formatted(Formatting.GREEN)).append(Text.literal(" (").formatted(Formatting.DARK_GRAY).append(Text.literal(MuseumUtils.formatPrice(discount.getRight())).formatted(Formatting.GOLD)).append(")").formatted(Formatting.DARK_GRAY)));
 		}
 
 		tooltip.add(Text.empty());
-		tooltip.add(Text.literal("Click on " + WIKI_LOCKUP_KEY.substring(WIKI_LOCKUP_KEY.lastIndexOf('.') + 1).toUpperCase(Locale.ENGLISH) + " to open the wiki page!").formatted(Formatting.YELLOW));
+		tooltip.add(Text.translatable("skyblocker.museum.hud.wikiLookup", WIKI_LOCKUP_KEY.substring(WIKI_LOCKUP_KEY.lastIndexOf('.') + 1).toUpperCase(Locale.ENGLISH)).formatted(Formatting.YELLOW));
 
 		this.tooltip = tooltip;
 	}

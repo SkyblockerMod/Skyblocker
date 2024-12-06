@@ -114,30 +114,30 @@ public class ItemSorter {
 	}
 
 	public Tooltip getTooltip() {
-		Text tooltip = Text.literal("Item Sort\n\n").formatted(Formatting.GREEN)
+		Text tooltip = Text.translatable("skyblocker.museum.hud.sorter").append("\n\n").formatted(Formatting.GREEN)
 				.append(getSortText(SortMode.LowestBIN))
 				.append(getSortText(SortMode.CraftCost))
 				.append(getSortText(SortMode.CoinsPerXP))
-				.append(Text.literal("\nClick to switch sort!").formatted(Formatting.YELLOW));
+				.append("\n").append(Text.translatable("skyblocker.museum.hud.sorter.switch").formatted(Formatting.YELLOW));
 		return Tooltip.of(tooltip);
 	}
 
 	private Text getSortText(SortMode mode) {
 		boolean isCurrent = mode == currentSortMode;
-		return Text.literal((isCurrent ? "➤ " : "  ") + mode.getDisplayName() + "\n")
+		return Text.literal((isCurrent ? "➤ " : "  ")).append(mode.getDisplayName()).append("\n")
 				.formatted(isCurrent ? Formatting.AQUA : Formatting.GRAY);
 	}
 
 	public enum SortMode {
-		LowestBIN(new ItemStack(Items.GOLD_INGOT), sortByLowestBIN, "Lowest BIN"),
-		CraftCost(new ItemStack(Items.CRAFTING_TABLE), sortByCraftCost, "Craft Cost"),
-		CoinsPerXP(new ItemStack(Items.EXPERIENCE_BOTTLE), sortByXpPerCoin, "Coins/XP Ratio");
+		LowestBIN(new ItemStack(Items.GOLD_INGOT), sortByLowestBIN, Text.translatable("skyblocker.museum.hud.sorter.lBin")),
+		CraftCost(new ItemStack(Items.CRAFTING_TABLE), sortByCraftCost, Text.translatable("skyblocker.museum.hud.sorter.craftCost")),
+		CoinsPerXP(new ItemStack(Items.EXPERIENCE_BOTTLE), sortByXpPerCoin, Text.translatable("skyblocker.museum.hud.sorter.ratio"));
 
 		private final ItemStack associatedItem;
 		private final Consumer<List<Donation>> sortFunction;
-		private final String displayName;
+		private final Text displayName;
 
-		SortMode(ItemStack item, Consumer<List<Donation>> function, String displayName) {
+		SortMode(ItemStack item, Consumer<List<Donation>> function, Text displayName) {
 			this.associatedItem = item;
 			this.sortFunction = function;
 			this.displayName = displayName;
@@ -147,7 +147,7 @@ public class ItemSorter {
 			return associatedItem;
 		}
 
-		public String getDisplayName() {
+		public Text getDisplayName() {
 			return displayName;
 		}
 
