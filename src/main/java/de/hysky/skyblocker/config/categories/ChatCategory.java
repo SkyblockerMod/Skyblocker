@@ -22,6 +22,14 @@ public class ChatCategory {
                                 newValue -> config.chat.skyblockXpMessages = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.chat.confirmationPromptHelper"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.chat.confirmationPromptHelper.@Tooltip")))
+                        .binding(defaults.chat.confirmationPromptHelper,
+                                () -> config.chat.confirmationPromptHelper,
+                                newValue -> config.chat.confirmationPromptHelper = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
 
                 //Uncategorized Options
                 .group(OptionGroup.createBuilder()
