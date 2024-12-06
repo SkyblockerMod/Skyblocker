@@ -56,5 +56,7 @@
     "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "Chest Highlight Colour",
     "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "What colour the treasure chests / lock pick should be highlighted.",
     "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "If Boss Highlighting is on, applies a colour matching the current attunement to the selected effect.",
-    "skyblocker.config.debug.dumpFormat.@Tooltip": "The format to use when dumping items. SNBT is coloured and easier to read while JSON has escaped string characters (double quotes)."
+    "skyblocker.config.debug.dumpFormat.@Tooltip": "The format to use when dumping items. SNBT is coloured and easier to read while JSON has escaped string characters (double quotes).",
+    "skyblocker.bars.config.textPosition.BAR_CENTER": "Bar Centre",
+    "skyblocker.bars.config.textPosition.CENTER": "Centre"
 }
