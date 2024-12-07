@@ -155,7 +155,7 @@ public class EventNotifications {
 
             for (Map.Entry<String, LinkedList<SkyblockEvent>> entry : newEvents.entrySet()) {
                 entry.getValue().sort(Comparator.comparingLong(SkyblockEvent::start)); // Sort just in case it's not in order for some reason in API
-                LOGGER.info("Next {} is at {}", entry.getKey(), entry.getValue().peekFirst());
+                //LOGGER.info("Next {} is at {}", entry.getKey(), entry.getValue().peekFirst());
             }
 
             for (String s : newEvents.keySet()) {
