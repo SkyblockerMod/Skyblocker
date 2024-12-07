@@ -23,7 +23,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
@@ -33,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -81,12 +79,12 @@ public class MuseumItemCache {
 
 	private static void load(MinecraftClient client) {
 		loaded = CompletableFuture.runAsync(() -> {
+			loadMuseumItems();
 			try (BufferedReader reader = Files.newBufferedReader(CACHE_FILE)) {
 				Map<String, Object2ObjectOpenHashMap<String, ProfileMuseumData>> cachedData = ProfileMuseumData.SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
 
 				MUSEUM_ITEM_CACHE.putAll(cachedData);
 				LOGGER.info("[Skyblocker] Loaded museum items cache");
-				loadMuseumItems();
 			} catch (NoSuchFileException ignored) {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to load cached museum items", e);
@@ -108,8 +106,6 @@ public class MuseumItemCache {
 	 * Loads museum data from local repo.
 	 */
 	public static void loadMuseumItems() {
-		MUSEUM_DONATIONS.clear();
-
 		try (BufferedReader reader = Files.newBufferedReader(MUSEUM_INFO)) {
 			// Parse the JSON file
 			JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
@@ -184,7 +180,8 @@ public class MuseumItemCache {
 			MUSEUM_DONATIONS.forEach(Donation::setDowngrades);
 
 			LOGGER.info("[Skyblocker] Loaded museum data");
-		} catch (Exception e) {
+		} catch (NoSuchFileException ignored) {
+		} catch (IOException e) {
 			LOGGER.error("[Skyblocker] Failed to load donations data", e);
 		}
 	}
@@ -229,28 +226,16 @@ public class MuseumItemCache {
 			ObjectOpenHashSet<String> items = MUSEUM_ITEM_CACHE.get(uuid).get(profileId).collectedItemIds();
 			for (Donation donation : MUSEUM_DONATIONS) {
 				// Check if the donation id or his upgrades is not present in the collected items
-				//FIXME too many stream checks
-				//TODO: cache
-				if (!items.contains(MAPPED_IDS.entrySet().stream().filter(entry -> donation.getId().equals(entry.getValue())).map(Map.Entry::getKey).findFirst().orElse(null))) {
-					if (!items.contains(donation.getId()) && items.stream().noneMatch(donation.getUpgrades()::contains)) {
-						if (donation.isSet()) {
-							if (items.stream().anyMatch(i -> donation.getSet().stream().anyMatch(p -> p.getLeft().equals(i)))) continue;
-							if (items.stream().anyMatch(p -> donation.getUpgrades().stream().anyMatch(upgrade -> MuseumUtils.getPiecesBySetID(upgrade).contains(p)))) continue;
-						}
-						donation.setPriceData();
-						uncontributedItems.add(donation);
+				if (!items.contains(donation.getId())) {
+					if (donation.isSet()) {
+						if (items.stream().anyMatch(i -> donation.getSet().stream().anyMatch(p -> p.getLeft().equals(i)))) continue;
+						//if (items.stream().anyMatch(p -> donation.getUpgrades().stream().anyMatch(upgrade -> MuseumUtils.getPiecesBySetID(upgrade).contains(p)))) continue;
 					}
+					donation.setPriceData();
+					uncontributedItems.add(donation);
 				}
-			}
 
-			// Check if the item has a donated downgrade
-			uncontributedItems.forEach(donation -> donation.setDiscount(donation.getDowngrades().stream()
-					.filter(downgrade -> donation.isCraftable())
-					.filter(downgrade -> uncontributedItems.stream().noneMatch(item -> item.getId().equals(downgrade)))
-					.map(downgrade -> new Pair<>(
-							downgrade, MuseumUtils.getSetCraftCost(downgrade)))
-					.findFirst()
-					.orElse(null)));
+			}
 		}
 
 		uncontributedItems.sort(Comparator.comparing(Donation::getId)); //Sorting alphabetically
@@ -303,21 +288,19 @@ public class MuseumItemCache {
 						//Set of all found item ids on profile
 						ObjectOpenHashSet<String> itemIds = new ObjectOpenHashSet<>();
 
-						for (Map.Entry<String, JsonElement> donatedSet : donatedSets.entrySet()) {
-							//Item is plural here because the nbt is a list
-							String itemsData = donatedSet.getValue().getAsJsonObject().get("items").getAsJsonObject().get("data").getAsString();
-							NbtList items = NbtIo.readCompressed(new ByteArrayInputStream(Base64.getDecoder().decode(itemsData)), NbtSizeTracker.ofUnlimitedBytes()).getList("i", NbtElement.COMPOUND_TYPE);
-
-							for (int i = 0; i < items.size(); i++) {
-								NbtCompound tag = items.getCompound(i).getCompound("tag");
-
-								if (tag.contains("ExtraAttributes")) {
-									NbtCompound extraAttributes = tag.getCompound("ExtraAttributes");
-
-									if (extraAttributes.contains("id")) itemIds.add(extraAttributes.getString("id"));
+						donatedSets.forEach((s, __) -> {
+							Optional<Donation> donation = MUSEUM_DONATIONS.stream().filter(d -> d.getId().equals(s)).findFirst();
+							donation.ifPresent(value -> itemIds.addAll(value.getDowngrades()));
+							if (donation.isPresent()) {
+								if (donation.get().isSet()) {
+									itemIds.addAll(donation.get().getSet().stream().map(Pair::getLeft).toList());
+									donation.get().getDowngrades().forEach(downgrade -> itemIds.addAll(MuseumUtils.getPiecesBySetID(downgrade)));
+								} else {
+									itemIds.add(donation.get().getId().replace("STARRED_", ""));
+									itemIds.addAll(donation.get().getDowngrades());
 								}
 							}
-						}
+						});
 
 						MUSEUM_ITEM_CACHE.get(uuid).put(profileId, new ProfileMuseumData(System.currentTimeMillis(), itemIds));
 						save();
@@ -389,7 +372,9 @@ public class MuseumItemCache {
 		}
 	}
 
+	//FIXME Called every frame while holding on undonated items only why?
 	public static boolean hasItemInMuseum(String id) {
+		id = id.replace("STARRED_", "");
 		String uuid = Utils.getUndashedUuid();
 		ObjectOpenHashSet<String> collectedItemIds = (!MUSEUM_ITEM_CACHE.containsKey(uuid) || Utils.getProfileId().isBlank() || !MUSEUM_ITEM_CACHE.get(uuid).containsKey(Utils.getProfileId())) ? null : MUSEUM_ITEM_CACHE.get(uuid).get(Utils.getProfileId()).collectedItemIds();
 
