@@ -11,6 +11,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -24,12 +25,15 @@ import net.minecraft.sound.SoundEvent;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 public class EventNotifications {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -37,8 +41,30 @@ public class EventNotifications {
     private static long currentTime = System.currentTimeMillis() / 1000;
 
     public static final String JACOBS = "Jacob's Farming Contest";
+    private static final String SPIDERS_DEN_RAIN = "Spider's Den Rain";
+    private static final String SPIDERS_DEN_THUNDERSTORM = "Spider's Den Thunderstorm";
 
-    public static final IntList DEFAULT_REMINDERS = IntList.of(60, 60 * 5);
+    private static final IntList DEFAULT_REMINDERS = IntList.of(60, 60 * 5);
+
+    private static boolean initialized = false;
+    private static final Duration EVENTS_UPDATE_PERIOD = Duration.ofHours(1);
+
+    private static final List<SkyblockPeriodicEvent> PERIODIC_EVENTS = List.of(
+            new SkyblockPeriodicEvent(
+                    SPIDERS_DEN_RAIN,
+                    40 * 60,
+                    60 * 60,
+                    20 * 60,
+                    "/warp spiders",
+                    IntList.of()),
+            new SkyblockPeriodicEvent(
+                    SPIDERS_DEN_THUNDERSTORM,
+                    40 * 60,
+                    3 * 60 * 60,
+                    20 * 60,
+                    "/warp spiders",
+                    IntList.of())
+    );
 
     public static final Map<String, ItemStack> eventIcons = Map.ofEntries(
             Map.entry("Dark Auction", new ItemStack(Items.NETHER_BRICK)),
@@ -51,14 +77,23 @@ public class EventNotifications {
             Map.entry("Spooky Festival", new ItemStack(Items.JACK_O_LANTERN)),
             Map.entry("Season of Jerry", new ItemStack(Items.SNOWBALL)),
             Map.entry("Jerry's Workshop Opens", new ItemStack(Items.SNOW_BLOCK)),
+            Map.entry(SPIDERS_DEN_RAIN, new ItemStack(Items.FISHING_ROD)),
+            Map.entry(SPIDERS_DEN_THUNDERSTORM, new ItemStack(Items.FISHING_ROD)),
             Map.entry("Traveling Zoo", new ItemStack(Items.HAY_BLOCK)) // change to the custom head one day
     );
+
+    private static void register() {
+        if (initialized) {
+            return;
+        }
+        Scheduler.INSTANCE.scheduleCyclic(EventNotifications::refreshEvents, 20 * (int) EVENTS_UPDATE_PERIOD.toSeconds());
+        initialized = true;
+    }
 
     @Init
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(EventNotifications::timeUpdate, 20);
-
-        SkyblockEvents.JOIN.register(EventNotifications::refreshEvents);
+        SkyblockEvents.JOIN.register(EventNotifications::register);
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
                 ClientCommandManager.literal("skyblocker").then(
                         ClientCommandManager.literal("debug").then(
@@ -85,10 +120,18 @@ public class EventNotifications {
         ));
     }
 
-    private static final Map<String, LinkedList<SkyblockEvent>> events = new ConcurrentHashMap<>();
+    private static final AtomicReference<Map<String, LinkedList<SkyblockEvent>>> events = new AtomicReference<>(Map.of());
 
     public static Map<String, LinkedList<SkyblockEvent>> getEvents() {
-        return events;
+        return events.get();
+    }
+
+    public static IntList getDefaultReminders(String eventName) {
+        var periodicEvent = PERIODIC_EVENTS.stream().filter(event -> event.name.equals(eventName)).findFirst();
+        if (periodicEvent.isPresent()) {
+            return periodicEvent.get().defaultReminders();
+        }
+        return DEFAULT_REMINDERS;
     }
 
     public static void refreshEvents() {
@@ -100,23 +143,40 @@ public class EventNotifications {
                 LOGGER.error("[Skyblocker] Failed to download events list", e);
             }
             return List.<JsonObject>of();
-        }).thenAccept(eventsList -> {
-            events.clear();
-            for (JsonObject object : eventsList) {
-                if (object.get("timestamp").getAsLong() + object.get("duration").getAsInt() < currentTime) continue;
-                SkyblockEvent skyblockEvent = SkyblockEvent.of(object);
-                events.computeIfAbsent(object.get("event").getAsString(), s -> new LinkedList<>()).add(skyblockEvent);
-            }
+        })
+        .thenAccept(objects -> {
+            long nowSeconds = System.currentTimeMillis() / 1000;
+            Map<String, LinkedList<SkyblockEvent>> newEvents = objects.stream()
+                    .map(SkyblockEvent::of)
+                    .filter(event -> event.start + event.duration >= nowSeconds)
+                    .collect(Collectors.groupingBy(SkyblockEvent::name, Collectors.toCollection(LinkedList::new)));
 
-            for (Map.Entry<String, LinkedList<SkyblockEvent>> entry : events.entrySet()) {
+            addFixedEvents(nowSeconds, newEvents);
+
+            for (Map.Entry<String, LinkedList<SkyblockEvent>> entry : newEvents.entrySet()) {
                 entry.getValue().sort(Comparator.comparingLong(SkyblockEvent::start)); // Sort just in case it's not in order for some reason in API
-                //LOGGER.info("Next {} is at {}", entry.getKey(), entry.getValue().peekFirst());
+                LOGGER.info("Next {} is at {}", entry.getKey(), entry.getValue().peekFirst());
             }
 
-            for (String s : events.keySet()) {
-                SkyblockerConfigManager.get().eventNotifications.eventsReminderTimes.computeIfAbsent(s, s1 -> DEFAULT_REMINDERS);
+            for (String s : newEvents.keySet()) {
+                SkyblockerConfigManager.get().eventNotifications.eventsReminderTimes.computeIfAbsent(s, EventNotifications::getDefaultReminders);
             }
+
+            events.set(newEvents);
         }).exceptionally(EventNotifications::itBorked);
+    }
+
+    private static void addFixedEvents(long nowSeconds, Map<String, LinkedList<SkyblockEvent>> events) {
+        PERIODIC_EVENTS.forEach(event -> {
+            long firstEvent = SkyblockTime.SKYBLOCK_EPOCH / 1000 + event.offsetFromSkyblockEpochSeconds;
+            long currentEvent = firstEvent + (nowSeconds - firstEvent + event.periodSeconds - 1) / event.periodSeconds * event.periodSeconds;
+            // Prepare events for next two update periods in case one is skipped for some reason, or at least one if event is rare.
+            long eventsToAdd = Math.max(1, 2 * EVENTS_UPDATE_PERIOD.toSeconds() / event.periodSeconds);
+            events.put(event.name, LongStream.range(0, eventsToAdd)
+                    .map(i -> currentEvent + i * event.periodSeconds)
+                    .mapToObj(ts -> new SkyblockEvent(event.name, ts, event.durationSeconds, new String[0], event.warpCommand))
+                    .collect(Collectors.toCollection(LinkedList::new)));
+        });
     }
 
     private static Void itBorked(Throwable throwable) {
@@ -124,11 +184,9 @@ public class EventNotifications {
         return null;
     }
 
-
     private static void timeUpdate() {
-
         long newTime = System.currentTimeMillis() / 1000;
-        for (Map.Entry<String, LinkedList<SkyblockEvent>> entry : events.entrySet()) {
+        for (Map.Entry<String, LinkedList<SkyblockEvent>> entry : getEvents().entrySet()) {
             LinkedList<SkyblockEvent> nextEvents = entry.getValue();
             SkyblockEvent skyblockEvent = nextEvents.peekFirst();
             if (skyblockEvent == null) continue;
@@ -141,7 +199,7 @@ public class EventNotifications {
             }
             String eventName = entry.getKey();
             // Cannot be changed to fast util due to casting issues
-            List<Integer> reminderTimes = SkyblockerConfigManager.get().eventNotifications.eventsReminderTimes.getOrDefault(eventName, DEFAULT_REMINDERS);
+            List<Integer> reminderTimes = SkyblockerConfigManager.get().eventNotifications.eventsReminderTimes.getOrDefault(eventName, getDefaultReminders(eventName));
             if (reminderTimes.isEmpty()) continue;
 
             for (int reminderTime : reminderTimes) {
@@ -175,14 +233,31 @@ public class EventNotifications {
         };
     }
 
-    public record SkyblockEvent(long start, int duration, String[] extras, @Nullable String warpCommand) {
+    public record SkyblockEvent(
+            String name,
+            long start,
+            int duration,
+            String[] extras,
+            @Nullable String warpCommand
+    ) {
         public static SkyblockEvent of(JsonObject jsonObject) {
             String location = jsonObject.get("location").getAsString();
             location = location.isBlank() ? null : location;
-            return new SkyblockEvent(jsonObject.get("timestamp").getAsLong(),
+            return new SkyblockEvent(
+                    jsonObject.get("event").getAsString(),
+                    jsonObject.get("timestamp").getAsLong(),
                     jsonObject.get("duration").getAsInt(),
                     jsonObject.get("extras").getAsJsonArray().asList().stream().map(JsonElement::getAsString).toArray(String[]::new),
                     location);
         }
     }
+
+    private record SkyblockPeriodicEvent(
+            String name,
+            long offsetFromSkyblockEpochSeconds,
+            int periodSeconds,
+            int durationSeconds,
+            @Nullable String warpCommand,
+            IntList defaultReminders
+    ) {}
 }
