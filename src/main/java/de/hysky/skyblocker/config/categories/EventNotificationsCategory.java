@@ -60,7 +60,7 @@ public class EventNotificationsCategory {
         for (Map.Entry<String, IntList> entry : eventsReminderTimes.entrySet()) {
             groups.add(ListOption.<Integer>createBuilder()
                     .name(Text.literal(entry.getKey()))
-                    .binding(EventNotifications.DEFAULT_REMINDERS, entry::getValue, integers -> entry.setValue(new IntImmutableList(integers)))
+                    .binding(EventNotifications.getDefaultReminders(entry.getKey()), entry::getValue, integers -> entry.setValue(new IntImmutableList(integers)))
                     .controller(option -> () -> new DurationController(option)) // yea
                             .description(OptionDescription.of(Text.translatable("skyblocker.config.eventNotifications.@Tooltip[0]"),
                                     Text.empty(),

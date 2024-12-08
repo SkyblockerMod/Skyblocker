@@ -14,7 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SkyblockTime {
-	private static final long SKYBLOCK_EPOCH = 1560275700000L;
+	// https://wiki.hypixel.net/SkyBlock_Time
+	public static final long SKYBLOCK_EPOCH = 1560275700000L;
 	public static final AtomicInteger skyblockYear = new AtomicInteger(0);
 	public static final AtomicReference<Season> skyblockSeason = new AtomicReference<>(Season.SPRING);
 	public static final AtomicReference<Month> skyblockMonth = new AtomicReference<>(Month.EARLY_SPRING);
