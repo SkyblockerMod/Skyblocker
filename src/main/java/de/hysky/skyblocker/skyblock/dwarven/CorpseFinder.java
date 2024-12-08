@@ -211,9 +211,16 @@ public class CorpseFinder {
 		Matcher matcher = COORDS_PATTERN.matcher(message);
 		if (!matcher.find()) return;
 
-		int x = Integer.parseInt(matcher.group("x"));
-		int y = Integer.parseInt(matcher.group("y"));
-		int z = Integer.parseInt(matcher.group("z"));
+		int x, y, z;
+		try {
+			x = Integer.parseInt(matcher.group("x"));
+			y = Integer.parseInt(matcher.group("y"));
+			z = Integer.parseInt(matcher.group("z"));
+		} catch (NumberFormatException e) {
+			LOGGER.warn(PREFIX + "Failed to parse message: `{}`, reason: {}", message, e.getMessage());
+			return;
+		}
+
 		LOGGER.debug(PREFIX + "Parsed message! X:{}, Y:{}, Z:{}", x, y, z);
 		boolean foundCorpse = false;
 		BlockPos parsedPos = new BlockPos(x - 1, y, z - 1); // skyhanni cords format difference is -1, 0, -1
