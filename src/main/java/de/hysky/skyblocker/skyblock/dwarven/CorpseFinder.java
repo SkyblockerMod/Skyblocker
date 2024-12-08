@@ -151,7 +151,7 @@ public class CorpseFinder {
 
 		LOGGER.debug(PREFIX + "Triggered code for onChatMessage");
 		LOGGER.debug(PREFIX + "State of corpsesByType: {}", corpsesByType);
-		String corpseTypeString = matcherCorpse.group(1).toUpperCase();
+		String corpseTypeString = matcherCorpse.group(1).toUpperCase(Locale.ENGLISH);
 		CorpseType corpseType = EnumUtils.getEnum(CorpseType.class, corpseTypeString, CorpseType.UNKNOWN);
 
 		List<Corpse> corpses = corpsesByType.get(corpseType);
