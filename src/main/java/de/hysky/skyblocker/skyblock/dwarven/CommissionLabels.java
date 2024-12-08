@@ -92,6 +92,7 @@ public class CommissionLabels {
      * @param context render context
      */
     private static void render(WorldRenderContext context) {
+        // Only render in the dwarven mines and not the mineshaft.
         if (Location.DWARVEN_MINES != Utils.getLocation() || SkyblockerConfigManager.get().mining.commissionWaypoints.mode == MiningConfig.CommissionWaypointMode.OFF) {
             return;
         }
