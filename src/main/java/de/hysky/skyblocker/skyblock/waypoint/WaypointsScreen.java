@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
-import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -25,7 +24,7 @@ public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
         gridWidget.getMainPositioner().marginX(5).marginY(2);
         GridWidget.Adder adder = gridWidget.createAdder(2);
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.share"), buttonShare -> client.setScreen(new WaypointsShareScreen(this, waypoints))).build());
-        buttonNew = adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.newCategory"), buttonNew -> waypointsListWidget.addWaypointCategoryAfterSelected()).build());
+        buttonNew = adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.newGroup"), buttonNew -> waypointsListWidget.addWaypointGroupAfterSelected()).build());
         adder.add(ButtonWidget.builder(ScreenTexts.CANCEL, button -> close()).build());
         buttonDone = adder.add(ButtonWidget.builder(ScreenTexts.DONE, button -> {
             saveWaypoints();
@@ -43,26 +42,15 @@ public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 16, 0xFFFFFF);
     }
 
-    @Override
-    protected boolean isEnabled(NamedWaypoint waypoint) {
-        return waypoint.shouldRender();
-    }
-
-    @Override
-    protected void enabledChanged(NamedWaypoint waypoint, boolean enabled) {
-        waypoint.setShouldRender(enabled);
-    }
-
     private void saveWaypoints() {
-        Waypoints.waypoints.clear();
-        Waypoints.waypoints.putAll(waypoints);
+        Waypoints.clearAndPutAllWaypoints(waypoints);
         Waypoints.saveWaypoints(client);
     }
 
     @Override
     public void close() {
         assert client != null;
-        if (!waypoints.equals(Waypoints.waypoints)) {
+        if (!Waypoints.areWaypointsEqual(waypoints)) {
             client.setScreen(new ConfirmScreen(confirmedAction -> client.setScreen(confirmedAction ? parent : this),
                     Text.translatable("text.skyblocker.quit_config"),
                     Text.translatable("text.skyblocker.quit_config_sure"),
