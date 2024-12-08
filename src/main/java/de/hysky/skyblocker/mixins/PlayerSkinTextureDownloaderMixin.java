@@ -15,7 +15,9 @@ import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.PlayerHeadHashCache;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.Utils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.PlayerSkinTextureDownloader;
 import net.minecraft.util.math.ColorHelper;
@@ -32,7 +34,7 @@ public class PlayerSkinTextureDownloaderMixin {
 
 	@Inject(method = "remapTexture", at = @At("HEAD"))
 	private static void skyblocker$determineSkinSource(NativeImage image, String uri, CallbackInfoReturnable<NativeImage> cir, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.dontStripSkinAlphaValues) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.dontStripSkinAlphaValues && (Utils.isOnSkyblock() || MinecraftClient.getInstance().currentScreen instanceof ProfileViewerScreen)) {
 			String skinTextureHash = PlayerHeadHashCache.getSkinHash(uri);
 			int skinHash = skinTextureHash.hashCode();
 			isSkyblockSkinTexture.set(PlayerHeadHashCache.contains(skinHash));
