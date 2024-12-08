@@ -16,24 +16,6 @@ import java.util.stream.Collectors;
 public class MuseumUtils {
 
 	/**
-	 * Calculates the total crafting cost for a set associated with a given ID.
-	 *
-	 * @param id the ID of the set for which the crafting cost is calculated
-	 * @return the total crafting cost of the set
-	 */
-	protected static double getSetCraftCost(String id) {
-		double cost = 0;
-		for (Donation donation : MuseumItemCache.MUSEUM_DONATIONS) {
-			if (donation.getId().equals(id)) {
-				for (Pair<String, PriceData> piece : donation.getSet()){
-					cost += ItemUtils.getCraftCost(piece.getLeft());
-				}
-			}
-		}
-		return cost;
-	}
-
-	/**
 	 * Retrieves the display name for an item or a set.
 	 * If the item is part of a set, it returns the set's name like "Divan's armor".
 	 *
