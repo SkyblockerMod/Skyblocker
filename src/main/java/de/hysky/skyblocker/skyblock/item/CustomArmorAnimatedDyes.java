@@ -9,6 +9,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
@@ -21,7 +22,6 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -102,25 +102,6 @@ public class CustomArmorAnimatedDyes {
 		return animatedDye.interpolate(trackedState);
 	}
 
-	//Credit to https://codepen.io/OliverBalfour/post/programmatically-making-gradients
-	public static int interpolate(int firstColor, int secondColor, double percentage) {
-		int r1 = MathHelper.square((firstColor >> 16) & 0xFF);
-		int g1 = MathHelper.square((firstColor >> 8) & 0xFF);
-		int b1 = MathHelper.square(firstColor & 0xFF);
-
-		int r2 = MathHelper.square((secondColor >> 16) & 0xFF);
-		int g2 = MathHelper.square((secondColor >> 8) & 0xFF);
-		int b2 = MathHelper.square(secondColor & 0xFF);
-
-		double inverse = 1d - percentage;
-
-		int r3 = (int) Math.floor(Math.sqrt(r1 * inverse + r2 * percentage));
-		int g3 = (int) Math.floor(Math.sqrt(g1 * inverse + g2 * percentage));
-		int b3 = (int) Math.floor(Math.sqrt(b1 * inverse + b2 * percentage));
-
-		return (r3 << 16) | (g3 << 8 ) | b3;
-	}
-
 	private static class AnimatedDyeStateTracker {
 		private int sampleCounter;
 		private boolean onBackCycle = false;
@@ -150,12 +131,12 @@ public class CustomArmorAnimatedDyes {
 			if (stateTracker.shouldCycleBack(samples, cycleBack)) stateTracker.onBackCycle = true;
 
 			if (stateTracker.onBackCycle) {
-				double percent = (1d / (double) samples) * stateTracker.getAndDecrement();
+				float percent = (1f / samples) * stateTracker.getAndDecrement();
 
 				//Go back to normal cycle once we've cycled all the way back
 				if (stateTracker.sampleCounter == 0) stateTracker.onBackCycle = false;
 
-				int interpolatedColor = CustomArmorAnimatedDyes.interpolate(color1, color2, percent);
+				int interpolatedColor = OkLabColor.interpolate(color1, color2, percent);
 				stateTracker.lastColor = interpolatedColor;
 
 				return interpolatedColor;
@@ -164,8 +145,8 @@ public class CustomArmorAnimatedDyes {
 			//This will only happen if cycleBack is false
 			if (stateTracker.sampleCounter == samples) stateTracker.sampleCounter = 0;
 
-			double percent = (1d / (double) samples) * stateTracker.getAndIncrement();
-			int interpolatedColor = CustomArmorAnimatedDyes.interpolate(color1, color2, percent);
+			float percent = (1f / samples) * stateTracker.getAndIncrement();
+			int interpolatedColor = OkLabColor.interpolate(color1, color2, percent);
 
 			stateTracker.lastColor = interpolatedColor;
 

@@ -3,9 +3,7 @@ package de.hysky.skyblocker.mixins;
 import java.awt.Color;
 import java.util.Set;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,13 +15,15 @@ import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.PlayerHeadHashCache;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.Utils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.PlayerSkinTexture;
+import net.minecraft.client.texture.PlayerSkinTextureDownloader;
 import net.minecraft.util.math.ColorHelper;
 
-@Mixin(PlayerSkinTexture.class)
-public class PlayerSkinTextureMixin {
+@Mixin(PlayerSkinTextureDownloader.class)
+public class PlayerSkinTextureDownloaderMixin {
 	@Unique
 	private static final Set<String> STRIP_DE_FACTO_TRANSPARENT_PIXELS = Set.of(
 			"4f3b91b6aa7124f30ed4ad1b2bb012a82985a33640555e18e792f96af8f58ec6", /*Titanium Necklace*/
@@ -32,14 +32,10 @@ public class PlayerSkinTextureMixin {
 	@Unique
 	private static final float BRIGHTNESS_THRESHOLD = 0.1f;
 
-	@Shadow
-	@Final
-	private String url;
-
 	@Inject(method = "remapTexture", at = @At("HEAD"))
-	private void skyblocker$determineSkinSource(NativeImage image, CallbackInfoReturnable<NativeImage> cir, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.dontStripSkinAlphaValues) {
-			String skinTextureHash = PlayerHeadHashCache.getSkinHash(this.url);
+	private static void skyblocker$determineSkinSource(NativeImage image, String uri, CallbackInfoReturnable<NativeImage> cir, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.dontStripSkinAlphaValues && (Utils.isOnSkyblock() || MinecraftClient.getInstance().currentScreen instanceof ProfileViewerScreen)) {
+			String skinTextureHash = PlayerHeadHashCache.getSkinHash(uri);
 			int skinHash = skinTextureHash.hashCode();
 			isSkyblockSkinTexture.set(PlayerHeadHashCache.contains(skinHash));
 
@@ -50,8 +46,8 @@ public class PlayerSkinTextureMixin {
 		}
 	}
 
-	@WrapWithCondition(method = "remapTexture", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/PlayerSkinTexture;stripAlpha(Lnet/minecraft/client/texture/NativeImage;IIII)V"))
-	private boolean skyblocker$dontStripAlphaValues(NativeImage image, int x1, int y1, int x2, int y2, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
+	@WrapWithCondition(method = "remapTexture", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/PlayerSkinTextureDownloader;stripAlpha(Lnet/minecraft/client/texture/NativeImage;IIII)V"))
+	private static boolean skyblocker$dontStripAlphaValues(NativeImage image, int x1, int y1, int x2, int y2, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
 		return !isSkyblockSkinTexture.get();
 	}
 
