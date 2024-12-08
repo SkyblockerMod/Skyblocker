@@ -5,6 +5,7 @@ import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import de.hysky.skyblocker.skyblock.SackItemAutocomplete;
+import de.hysky.skyblocker.skyblock.ViewstashAutocomplete;
 import de.hysky.skyblocker.skyblock.WarpAutocomplete;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.command.CommandSource;
@@ -20,7 +21,7 @@ public class CommandTreeS2CPacketMixin {
 				case String s when s.equals("warp") && WarpAutocomplete.commandNode != null -> WarpAutocomplete.commandNode;
 				case String s when s.equals("getfromsacks") && SackItemAutocomplete.longCommandNode != null -> SackItemAutocomplete.longCommandNode;
 				case String s when s.equals("gfs") && SackItemAutocomplete.shortCommandNode != null -> SackItemAutocomplete.shortCommandNode;
-
+				case String s when s.equals("viewstash") -> ViewstashAutocomplete.getCommandNode();
 				default -> original;
 			};
 		}
