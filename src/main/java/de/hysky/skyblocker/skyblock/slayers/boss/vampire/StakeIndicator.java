@@ -1,7 +1,7 @@
-package de.hysky.skyblocker.skyblock.rift;
+package de.hysky.skyblocker.skyblock.slayers.boss.vampire;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.SlayerUtils;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
@@ -12,12 +12,12 @@ import net.minecraft.util.Formatting;
 public class StakeIndicator {
     private static final Title title = new Title("skyblocker.rift.stakeNow", Formatting.RED);
 
-    protected static void updateStake() {
-        if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableSteakStakeIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getIslandArea().contains("Stillgore Château") || !SlayerUtils.isInSlayer()) {
+	public static void updateStake() {
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableSteakStakeIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !Utils.getIslandArea().contains("Stillgore Château") || !SlayerManager.isBossSpawned()) {
             TitleContainer.removeTitle(title);
             return;
         }
-        Entity slayerEntity = SlayerUtils.getSlayerArmorStandEntity();
+		Entity slayerEntity = SlayerManager.getSlayerBossArmorStand();
         if (slayerEntity != null && slayerEntity.getDisplayName().toString().contains("҉")) {
             RenderHelper.displayInTitleContainerAndPlaySound(title);
         } else {

@@ -9,23 +9,29 @@ import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
-import de.hysky.skyblocker.skyblock.crimson.slayer.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
+import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
-import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.utils.Utils;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientCommonNetworkHandler;
+import net.minecraft.client.network.ClientConnectionState;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.*;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
@@ -37,7 +43,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public abstract class ClientPlayNetworkHandlerMixin {
+public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkHandler {
 	@Shadow
 	private ClientWorld world;
 
@@ -45,7 +51,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Final
     private static Logger LOGGER;
 
-    @Inject(method = "method_64896", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V"))
+	protected ClientPlayNetworkHandlerMixin(MinecraftClient client, ClientConnection connection, ClientConnectionState connectionState) {
+		super(client, connection, connectionState);
+	}
+
+	@Inject(method = "method_64896", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V"))
     private void skyblocker$onItemDestroy(int entityId, CallbackInfo ci) {
         if (world.getEntityById(entityId) instanceof ItemEntity itemEntity) {
             DungeonManager.onItemPickup(itemEntity);
@@ -68,10 +78,24 @@ public abstract class ClientPlayNetworkHandlerMixin {
         return !Utils.isOnHypixel();
     }
 
-    @Inject(method = "onPlaySound", at = @At("RETURN"))
+    @Inject(method = "onPlaySound", at = @At("HEAD"), cancellable = true)
     private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
         FishingHelper.onSound(packet);
         CrystalsChestHighlighter.onSound(packet);
+		SoundEvent sound = packet.getSound().value();
+
+		// Mute Enderman sounds in the End
+		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().otherLocations.end.muteEndermanSounds) {
+			// Check if the sound identifier matches any Enderman sound identifiers
+			if (sound.id().equals(SoundEvents.ENTITY_ENDERMAN_AMBIENT.id()) ||
+					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_DEATH.id()) ||
+					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_HURT.id()) ||
+					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_SCREAM.id()) ||
+					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_STARE.id())) {
+				// Cancel the playback of Enderman sounds
+				ci.cancel();
+			}
+		}
     }
 
     @WrapWithCondition(method = "warnOnUnknownPayload", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
@@ -103,7 +127,6 @@ public abstract class ClientPlayNetworkHandlerMixin {
         if (packet.getStatus() == EntityStatuses.PLAY_DEATH_SOUND_OR_ADD_PROJECTILE_HIT_PARTICLES) {
             DungeonScore.handleEntityDeath(entity);
             TheEnd.onEntityDeath(entity);
-            SlayerEntitiesGlow.onEntityDeath(entity);
         }
         return entity;
     }
@@ -112,14 +135,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
         if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
 
-        if (SkyblockerConfigManager.get().slayers.highlightMinis == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerEntitiesGlow.isSlayerMiniMob(armorStandEntity)
-                || SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerEntitiesGlow.isSlayer(armorStandEntity)) {
-            if (armorStandEntity.isDead()) {
-                SlayerEntitiesGlow.cleanupArmorstand(armorStandEntity);
-            } else {
-                SlayerEntitiesGlow.setSlayerMobGlow(armorStandEntity);
-            }
-        }
+		SlayerManager.checkSlayerBoss(armorStandEntity);
 
         if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
