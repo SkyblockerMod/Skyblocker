@@ -94,7 +94,7 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
         if (children().isEmpty()) {
             Text string = Text.translatable("skyblocker.partyFinder.loadingError");
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-            context.drawTextWrapped(textRenderer, string, getRowLeft(), getY() + 10, getRowWidth(), 0xFFFFFFFF);
+            context.drawWrappedText(textRenderer, string, getRowLeft(), getY() + 10, getRowWidth(), 0xFFFFFFFF, false);
         } else super.renderWidget(context, mouseX, mouseY, delta);
     }
 

@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -21,7 +20,6 @@ public class Waypoint implements Renderable {
     protected static final float DEFAULT_HIGHLIGHT_ALPHA = 0.5f;
     protected static final float DEFAULT_LINE_WIDTH = 5f;
     public final BlockPos pos;
-    final Box box;
     final Supplier<Type> typeSupplier;
     /**
      * The color components of the waypoint.
@@ -64,7 +62,6 @@ public class Waypoint implements Renderable {
 
     public Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls, boolean enabled) {
         this.pos = pos;
-        this.box = new Box(pos);
         this.typeSupplier = typeSupplier;
         this.colorComponents = colorComponents;
         this.alpha = alpha;
@@ -180,15 +177,15 @@ public class Waypoint implements Renderable {
             case OUTLINED_WAYPOINT -> {
                 float[] colorComponents = getRenderColorComponents();
                 RenderHelper.renderFilledWithBeaconBeam(context, pos, colorComponents, alpha, throughWalls);
-                RenderHelper.renderOutline(context, box, colorComponents, lineWidth, throughWalls);
+                RenderHelper.renderOutline(context, pos, colorComponents, lineWidth, throughWalls);
             }
             case HIGHLIGHT -> RenderHelper.renderFilled(context, pos, getRenderColorComponents(), alpha, throughWalls);
             case OUTLINED_HIGHLIGHT -> {
                 float[] colorComponents = getRenderColorComponents();
                 RenderHelper.renderFilled(context, pos, colorComponents, alpha, throughWalls);
-                RenderHelper.renderOutline(context, box, colorComponents, lineWidth, throughWalls);
+                RenderHelper.renderOutline(context, pos, colorComponents, lineWidth, throughWalls);
             }
-            case OUTLINE -> RenderHelper.renderOutline(context, box, getRenderColorComponents(), lineWidth, throughWalls);
+            case OUTLINE -> RenderHelper.renderOutline(context, pos, getRenderColorComponents(), lineWidth, throughWalls);
         }
     }
 

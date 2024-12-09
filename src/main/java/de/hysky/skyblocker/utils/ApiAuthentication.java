@@ -41,6 +41,7 @@ public class ApiAuthentication {
 	private static final String ALGORITHM = "SHA256withRSA";
 
 	private static TokenInfo tokenInfo = null;
+	private static boolean sentWarningOnce;
 
 	@Init
 	public static void init() {
@@ -128,7 +129,10 @@ public class ApiAuthentication {
 		LOGGER.error(logMessage, logArgs);
 		Scheduler.INSTANCE.schedule(ApiAuthentication::updateToken, retryAfter, true);
 
-		if (CLIENT.player != null) CLIENT.player.sendMessage(Constants.PREFIX.get().append(warningMessage), false);
+		if (CLIENT.player != null && !sentWarningOnce) {
+			CLIENT.player.sendMessage(Constants.PREFIX.get().append(warningMessage), false);
+			sentWarningOnce = true;
+		}
 	}
 
 	@Nullable
