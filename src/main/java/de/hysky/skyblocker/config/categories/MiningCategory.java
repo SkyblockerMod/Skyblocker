@@ -197,7 +197,14 @@ public class MiningCategory {
                                         newValue -> config.mining.crystalsWaypoints.wishingCompassSolver = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
-
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto.@Tooltip")))
+								.binding(defaults.mining.crystalsWaypoints.shareFairyGrotto,
+										() -> config.mining.crystalsWaypoints.shareFairyGrotto,
+										newValue -> config.mining.crystalsWaypoints.shareFairyGrotto = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 //commission waypoints

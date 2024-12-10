@@ -111,6 +111,9 @@ public class MiningConfig {
 
         @SerialEntry
         public boolean wishingCompassSolver = true;
+
+		@SerialEntry
+		public boolean shareFairyGrotto = true;
     }
 
     public static class CommissionWaypoints {

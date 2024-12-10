@@ -578,6 +578,8 @@
   "skyblocker.config.mining.crystalsWaypoints.shareFail": "Can only share waypoints you have found.",
   "skyblocker.config.mining.crystalsWaypoints.removeSuccess": "Removed waypoint for ",
   "skyblocker.config.mining.crystalsWaypoints.removeFail": "Can only remove waypoints you have found.",
+  "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto": "Share Fairy Grotto",
+  "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto.@Tooltip": "Share Fairy Grotto locations to the web socket.",
   "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver": "Wishing Compass Solver",
   "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.@Tooltip": "Calculates and adds a waypoint at the location indicated by wishing compasses.",
   "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabMessage": "Enable crystals in the /tab to allow the compass to identify discovered items",
