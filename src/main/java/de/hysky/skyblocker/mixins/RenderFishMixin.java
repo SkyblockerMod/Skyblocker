@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.mixins;
 
+import java.util.Objects;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
@@ -16,6 +18,8 @@ public abstract class RenderFishMixin {
     @ModifyReturnValue(method = "shouldRender", at = @At("RETURN"))
     private boolean skyblocker$render(boolean original, @Local(argsOnly = true) FishingBobberEntity fishingBobberEntity) {
         //if rendered bobber is not the players and option to hide  others is enabled do not render the bobber
-        return Utils.isOnSkyblock() && SkyblockerConfigManager.get().helpers.fishing.hideOtherPlayersRods ? original && fishingBobberEntity.getPlayerOwner() != MinecraftClient.getInstance().player : original;
+        return Utils.isOnSkyblock() && SkyblockerConfigManager.get().helpers.fishing.hideOtherPlayersRods
+				? original && Objects.equals(MinecraftClient.getInstance().player, fishingBobberEntity.getPlayerOwner())
+				: original;
     }
 }
