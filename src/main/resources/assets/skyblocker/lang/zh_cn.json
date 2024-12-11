@@ -996,5 +996,10 @@
     "skyblocker.bars.config.commonPosition.RIGHT": "右",
     "skyblocker.bars.config.hide": "隐藏",
     "skyblocker.bars.config.textPosition.BAR_CENTER": "状态栏中央",
-    "skyblocker.bars.config.textPosition.CENTER": "中央"
+    "skyblocker.bars.config.textPosition.CENTER": "中央",
+    "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress": "启用 Stacking 附魔升级进度显示",
+    "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress.@Tooltip": "当物品上的 Stacking 附魔尚未满级时显示到达下一级的进度",
+    "skyblocker.waypoints.importWaypointsSkyblocker": "导入路径点（Skyblocker格式）",
+    "skyblocker.waypoints.newGroup": "新建路径点分组",
+    "skyblocker.waypoints.importWaypointsSkyblocker.tooltip": "从剪贴板导入路径点（Skyblocker格式）"
 }
