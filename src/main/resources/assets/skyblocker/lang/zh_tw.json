@@ -918,7 +918,7 @@
     "skyblocker.config.helpers.itemPrice.refreshingItemPrices": "正在刷新物品價格……",
     "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "成功刷新物品價格",
     "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "物品價格刷新失敗。",
-    "skyblocker.config.chat.waypoints.display": "[顯示路徑點]",
+    "skyblocker.config.chat.waypoints.display": "[點擊顯示路徑點]",
     "skyblocker.config.slayer.bossbar": "殺手Boss欄",
     "skyblocker.config.slayer.bossbar.@Tooltip": "為目前你正戰鬥的Boss顯示Boss欄",
     "skyblocker.config.helpers.enableWardrobeHelper": "啟用衣櫃助手",
@@ -954,5 +954,8 @@
     "skyblocker.bars.config.hide": "隱藏",
     "skyblocker.bars.config.textPosition.CENTER": "中央",
     "skyblocker.bars.config.textPosition.BAR_CENTER": "狀態欄中央",
-    "skyblocker.inventorySearch.clickHereToSearch": "點擊這裡搜尋。"
+    "skyblocker.inventorySearch.clickHereToSearch": "點擊這裡搜尋。",
+    "skyblocker.waypoints.ordered.import.skyblocker.success": "成功從Skyblocker Ordered Waypoints格式匯入路徑點！",
+    "skyblocker.waypoints.exportWaypointsSkyblocker": "匯出路徑點（Skyblocker格式）",
+    "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "從剪貼簿匯出路徑點（Skyblocker格式）"
 }
