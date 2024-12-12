@@ -324,6 +324,7 @@ public class CrystalsLocationsManager {
 
     public static void addCustomWaypointFromSocket(MiningLocationLabel.CrystalHollowsLocationsCategory category, BlockPos pos) {
         if (activeWaypoints.containsKey(category.getName())) return;
+        if (category == MiningLocationLabel.CrystalHollowsLocationsCategory.FAIRY_GROTTO && !SkyblockerConfigManager.get().mining.crystalsWaypoints.shareFairyGrotto) return;
 
         removeUnknownNear(pos);
         MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
