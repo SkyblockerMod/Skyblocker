@@ -21,8 +21,8 @@ public class EventWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent(List<Text> lines) {
-		this.addComponent(new IcoTextComponent(Ico.NTAG, lines.getFirst()));
-		this.addComponent(new IcoTextComponent(Ico.CLOCK, lines.get(1)));
+		if (!lines.isEmpty()) this.addComponent(new IcoTextComponent(Ico.NTAG, lines.getFirst()));
+		if (lines.size() > 1) this.addComponent(new IcoTextComponent(Ico.CLOCK, lines.get(1)));
 	}
 
 }

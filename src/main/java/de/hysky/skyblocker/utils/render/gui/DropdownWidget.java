@@ -111,6 +111,24 @@ public class DropdownWidget<T> extends ContainerWidget {
 		 return super.mouseClicked(mouseX, mouseY, button);
 	}
 
+	@Override
+	protected int getContentsHeightWithPadding() {
+		return getHeight();
+	}
+
+	@Override
+	protected double getDeltaYPerScroll() {
+		return 0;
+	}
+
+	// container widget doesn't make it go to children anymore cuz WHY NOT
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+		if (!visible) return false;
+		if (this.hoveredElement(mouseX, mouseY).filter(element -> element.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)).isPresent()) return true;
+		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+	}
+
 	private class DropdownList extends ElementListWidget<Entry> {
 
 
@@ -136,30 +154,13 @@ public class DropdownWidget<T> extends ContainerWidget {
 
 		// Custom scrollbar
 
-		@Override
-		protected void updateScrollingState(double mouseX, double mouseY, int button) {}
 
 		@Override
-		protected boolean isScrollbarVisible() {
-			return !overrideScrollbarVisible && super.isScrollbarVisible();
-		}
-
-		private boolean overrideScrollbarVisible = false;
-
-		@Override
-		public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			overrideScrollbarVisible = true;
-			super.renderWidget(context, mouseX, mouseY, delta);
-			overrideScrollbarVisible = false;
-			if (this.isScrollbarVisible()) {
+		protected void drawScrollbar(DrawContext context) {
+			if (this.overflows()) {
 				int i = this.getScrollbarX();
-				int j = (int) ((float) (this.height * this.height) / (float) this.getMaxPosition());
-				j = Math.clamp(j, 32, this.height - 8);
-				int k = (int) this.getScrollAmount() * (this.height - j) / this.getMaxScroll() + this.getY();
-				if (k < this.getY()) {
-					k = this.getY();
-				}
-
+				int j = this.getScrollbarThumbHeight();
+				int k = this.getScrollbarThumbY();
 				context.drawVerticalLine(i, k, k + j, -1);
 			}
 		}

@@ -257,7 +257,7 @@ public class PreviewTab implements Tab {
 		if (hudWidget == null) return;
 		ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
 		PositionRule positionRule = screenBuilder.getPositionRule(hudWidget.getInternalID());
-		int width = widgetOptions.getWidth() - widgetOptions.getScrollerWidth();
+		int width = widgetOptions.getWidth() - 6;
 
 		// Normal hud widgets don't have auto.
 		if (positionRule == null && !(hudWidget instanceof TabHudWidget)) {
@@ -387,7 +387,7 @@ public class PreviewTab implements Tab {
 		}
 
 		@Override
-		protected int getContentsHeight() {
+		protected int getContentsHeightWithPadding() {
 			return height;
 		}
 
@@ -396,15 +396,19 @@ public class PreviewTab implements Tab {
 			return 6;
 		}
 
+		protected boolean isNotVisible(int i, int j) {
+			return !((double) j - this.getScrollY() >= (double) this.getY()) || !((double) i - this.getScrollY() <= (double) (this.getY() + this.height));
+		}
+
 		@Override
-		protected void renderContents(DrawContext context, int mouseX, int mouseY, float delta) {
+		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 			height = 0;
 			for (ClickableWidget widget : widgets) {
 				widget.setX(getX() + 1);
 				widget.setY(getY() + 1 + height);
 
 				height += widget.getHeight() + 1;
-				if (!isVisible(widget.getY(), widget.getBottom())) continue;
+				if (isNotVisible(widget.getY(), widget.getBottom())) continue;
 				widget.render(context, mouseX, mouseY + (int) getScrollY(), delta);
 
 			}
@@ -413,14 +417,10 @@ public class PreviewTab implements Tab {
 		@Override
 		public boolean mouseClicked(double mouseX, double mouseY, int button) {
 			for (ClickableWidget widget : widgets) {
-				if (!isVisible(widget.getY(), widget.getBottom())) continue;
+				if (isNotVisible(widget.getY(), widget.getBottom())) continue;
 				if (widget.mouseClicked(mouseX, mouseY + getScrollY(), button)) return true;
 			}
 			return super.mouseClicked(mouseX, mouseY, button);
-		}
-
-		@Override
-		protected void drawBox(DrawContext context) {
 		}
 
 		@Override
