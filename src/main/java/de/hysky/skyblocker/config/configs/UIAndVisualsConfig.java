@@ -6,10 +6,15 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 
 import java.awt.*;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UIAndVisualsConfig {
+
+	@SerialEntry
+	public int nightVisionStrength = 100;
+
     @SerialEntry
     public boolean compactorDeletorPreview = true;
 

@@ -22,7 +22,13 @@ public class UIAndVisualsCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("skyblocker.config.uiAndVisuals"))
-
+				.option(Option.<Integer>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.nightVisionStrength"))
+						.binding(defaults.uiAndVisuals.nightVisionStrength,
+								() -> config.uiAndVisuals.nightVisionStrength,
+								newValue -> config.uiAndVisuals.nightVisionStrength = newValue)
+						.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 100).step(1))
+						.build())
                 //Ungrouped Options
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.compactorDeletorPreview"))
