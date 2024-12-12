@@ -140,7 +140,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 
 		if (hasOverflow && overflowFill > 0) {
-			RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * overflowFill), 5, transparency(colors[1].getRGB()));
+			RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
 		}
 		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
 		if (showText()) {

@@ -280,4 +280,14 @@ public class FinderSettingsContainer extends ContainerWidget {
 
     @Override
     protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+
+	@Override
+	protected int getContentsHeightWithPadding() {
+		return 0;
+	}
+
+	@Override
+	protected double getDeltaYPerScroll() {
+		return 0;
+	}
 }
