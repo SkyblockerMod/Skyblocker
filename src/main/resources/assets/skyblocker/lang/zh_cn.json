@@ -1003,5 +1003,6 @@
     "skyblocker.waypoints.newGroup": "新建路径点分组",
     "skyblocker.waypoints.importWaypointsSkyblocker.tooltip": "从剪贴板导入路径点（Skyblocker格式）",
     "skyblocker.waypoints.exportWaypointsSkyblocker": "导出路径点（Skyblocker格式）",
-    "skyblocker.config.chat.waypoints.displayed": "已在 x: %d, y: %d, z: %d 处显示临时路径点  | %s"
+    "skyblocker.config.chat.waypoints.displayed": "已在 x: %d, y: %d, z: %d 处显示临时路径点  | %s",
+    "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "从剪贴板导出路径点（Skyblocker格式）"
 }
