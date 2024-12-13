@@ -9,7 +9,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.HudRenderEvents;
-import de.hysky.skyblocker.skyblock.item.ItemPrice;
+import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -116,7 +116,7 @@ public class PowderMiningTracker {
 			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.literal("Gain: " + NumberFormat.getInstance().format(profit) + " coins").formatted(Formatting.GOLD), 5, y + 10, 0xFFFFFF);
 		});
 
-		ItemPrice.ON_PRICE_UPDATE.register(() -> {
+		ItemPriceUpdateEvent.ON_PRICE_UPDATE.register(() -> {
 			if (isEnabled()) recalculatePrices();
 		});
 

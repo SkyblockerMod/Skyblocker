@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -8,8 +9,6 @@ import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.item.ItemStack;
@@ -33,15 +32,6 @@ public class ItemPrice {
             GLFW.GLFW_KEY_Z,
             "key.categories.skyblocker"
     ));
-
-	/**
-	 * An event that is fired when all prices are updated.
-	 */
-	public static final Event<OnPriceUpdate> ON_PRICE_UPDATE = EventFactory.createArrayBacked(OnPriceUpdate.class, listeners -> () -> {
-		for (OnPriceUpdate listener : listeners) {
-			listener.onPriceUpdate();
-		}
-	});
 
     public static void itemPriceLookup(ClientPlayerEntity player, @NotNull Slot slot) {
         ItemStack stack = slot.getStack();
@@ -77,7 +67,7 @@ public class ItemPrice {
                         .map(DataTooltipInfoType::downloadIfEnabled)
                         .toArray(CompletableFuture[]::new)
         ).thenRun(() -> {
-	        ON_PRICE_UPDATE.invoker().onPriceUpdate();
+	        ItemPriceUpdateEvent.ON_PRICE_UPDATE.invoker().onPriceUpdate();
 	        player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshedItemPrices")), false);
 		}).exceptionally(e -> {
 			ItemTooltip.LOGGER.error("[Skyblocker Item Price] Failed to refresh item prices", e);
@@ -85,9 +75,4 @@ public class ItemPrice {
 			return null;
 		});
     }
-
-	@FunctionalInterface
-	public interface OnPriceUpdate {
-		void onPriceUpdate();
-	}
 }
