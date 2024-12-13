@@ -3,10 +3,7 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.garden.FarmingHudConfigScreen;
-import dev.isxander.yacl3.api.ButtonOption;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.api.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
@@ -58,6 +55,22 @@ public class FarmingCategory {
                                 .binding(defaults.farming.garden.lockMouseGroundOnly,
                                         () -> config.farming.garden.lockMouseGroundOnly,
                                         newValue -> config.farming.garden.lockMouseGroundOnly = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.farming.garden.gardenPlotsWidget"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip")))
+                                .binding(defaults.farming.garden.gardenPlotsWidget,
+                                        () -> config.farming.garden.gardenPlotsWidget,
+                                        newValue -> config.farming.garden.gardenPlotsWidget = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.farming.garden.closeScreenOnPlotClick"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.farming.garden.closeScreenOnPlotClick.@Tooltip")))
+                                .binding(defaults.farming.garden.closeScreenOnPlotClick,
+                                        () -> config.farming.garden.closeScreenOnPlotClick,
+                                        newValue -> config.farming.garden.closeScreenOnPlotClick = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
