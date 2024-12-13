@@ -39,18 +39,18 @@ import java.util.function.Supplier;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class MuseumItemCache {
+	public static final Map<String, String> ARMOR_NAMES = new Object2ObjectArrayMap<>();
+	public static final String DONATION_CONFIRMATION_SCREEN_TITLE = "Confirm Donation";
+	public static final Map<String, String> MAPPED_IDS = new Object2ObjectArrayMap<>();
+	public static final List<Donation> MUSEUM_DONATIONS = new ArrayList<>();
 	private static final Logger LOGGER = LoggerFactory.getLogger(MuseumItemCache.class);
 	private static final Path CACHE_FILE = SkyblockerMod.CONFIG_DIR.resolve("museum_item_cache.json");
-	public static final Map<String, String> ARMOR_NAMES = new Object2ObjectArrayMap<>();
 	private static final Map<String, Object2ObjectOpenHashMap<String, ProfileMuseumData>> MUSEUM_ITEM_CACHE = new Object2ObjectOpenHashMap<>();
 	private static final String ERROR_LOG_TEMPLATE = "[Skyblocker] Failed to refresh museum item data for profile {}";
-	public static final String DONATION_CONFIRMATION_SCREEN_TITLE = "Confirm Donation";
 	private static final int CONFIRM_DONATION_BUTTON_SLOT = 20;
-	public static final Map<String, String> MAPPED_IDS = new Object2ObjectArrayMap<>();
-	private static CompletableFuture<Void> loaded;
 	private static final Path MUSEUM_INFO = NEURepoManager.NEU_REPO.file("constants/museum.json").getFsPath();
-	public static final List<Donation> MUSEUM_DONATIONS = new ArrayList<>();
 	public static List<List<String>> ORDERED_UPGRADES = new ArrayList<>();
+	private static CompletableFuture<Void> loaded;
 
 	@Init
 	public static void init() {

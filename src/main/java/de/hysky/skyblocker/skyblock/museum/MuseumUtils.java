@@ -27,7 +27,7 @@ public class MuseumUtils {
 		double cost = 0;
 		for (Donation donation : MuseumItemCache.MUSEUM_DONATIONS) {
 			if (donation.getId().equals(id)) {
-				for (ObjectObjectMutablePair<String, PriceData> piece : donation.getSet()){
+				for (ObjectObjectMutablePair<String, PriceData> piece : donation.getSet()) {
 					cost += ItemUtils.getCraftCost(piece.left());
 				}
 			}
@@ -39,7 +39,7 @@ public class MuseumUtils {
 	 * Retrieves the display name for an item or a set.
 	 * If the item is part of a set, it returns the set's name like "Divan's armor".
 	 *
-	 * @param id the ID of the item or set
+	 * @param id    the ID of the item or set
 	 * @param isSet true if the ID refers to a set, false if it refers to an individual item
 	 * @return the display name of the item or set
 	 */
