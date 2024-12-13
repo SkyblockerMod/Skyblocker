@@ -24,9 +24,12 @@ public class YourEssenceAdder extends SimpleSlotTextAdder {
 	static {
 		COMPACT_NUMBER_FORMATTER.setMinimumFractionDigits(1);
 	}
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"your_essence",
+			"skyblocker.config.uiAndVisuals.slotText.yourEssence");
 
 	public YourEssenceAdder() {
-		super("^(?:Your Essence|Essence Guide)");
+		super("^(?:Your Essence|Essence Guide)", CONFIG_INFORMATION);
 	}
 
 	@Override

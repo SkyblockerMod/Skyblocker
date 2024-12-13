@@ -14,6 +14,6 @@ public enum SlotTextMode {
 
 	@Override
 	public String toString() {
-		return I18n.translate("skyblocker.config.general.itemInfoDisplay.slotText.mode." + name());
+		return I18n.translate("skyblocker.config.uiAndVisuals.slotText.mode." + name());
 	}
 }
