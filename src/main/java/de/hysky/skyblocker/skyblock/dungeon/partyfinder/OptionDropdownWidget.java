@@ -25,17 +25,15 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
     private float animationProgress = 0f;
 
     public OptionDropdownWidget(PartyFinderScreen screen, Text name, @Nullable Option selectedOption, int x, int y, int width, int height, int slotId) {
-        super(screen.getClient(), width, height, y, 15);
+        super(screen.getClient(), width, height, y, 15, 25);
         this.screen = screen;
         this.slotId = slotId;
         setX(x);
-        setRenderHeader(true, 25);
         this.name = name;
         this.selectedOption = selectedOption;
     }
 
-    @Override
-    protected boolean clickedHeader(int x, int y) {
+    private boolean clickedHeader(int x, int y) {
         if (!(x >= 0 && y >= 10 && x < getWidth() && y < 26)) return false;
         if (screen.isWaitingForServer()) return false;
         if (isOpen) {
@@ -74,7 +72,13 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
             screen.clickAndWaitForServer(backButtonId);
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+
+        if (super.mouseClicked(mouseX, mouseY, button)) return true;
+
+        if (clickedHeader((int) (mouseX - (double) (this.getX() + this.width / 2 - this.getRowWidth() / 2)), (int) (mouseY - (double) this.getY()) + (int) this.getScrollY() - 4)) {
+            return true;
+        }
+        return false;
     }
 
     @Override

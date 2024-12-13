@@ -102,6 +102,7 @@ public class MiningConfig {
         @SerialEntry
         public boolean enabled = true;
 
+		@Deprecated
         @SerialEntry
         public float textScale = 1;
 
@@ -110,12 +111,16 @@ public class MiningConfig {
 
         @SerialEntry
         public boolean wishingCompassSolver = true;
+
+		@SerialEntry
+		public boolean shareFairyGrotto = true;
     }
 
     public static class CommissionWaypoints {
         @SerialEntry
         public CommissionWaypointMode mode = CommissionWaypointMode.BOTH;
 
+		@Deprecated
         @SerialEntry
         public float textScale = 1;
 
