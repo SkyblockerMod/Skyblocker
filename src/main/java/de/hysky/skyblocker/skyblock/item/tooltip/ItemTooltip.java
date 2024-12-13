@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
-import de.hysky.skyblocker.skyblock.item.ItemPrice;
+import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -84,7 +84,7 @@ public class ItemTooltip {
                     .map(DataTooltipInfoType.class::cast)
                     .map(DataTooltipInfoType::downloadIfEnabled)
                     .toArray(CompletableFuture[]::new)
-            ).thenRun(() -> ItemPrice.ON_PRICE_UPDATE.invoker().onPriceUpdate()
+            ).thenRun(ItemPriceUpdateEvent.ON_PRICE_UPDATE.invoker()::onPriceUpdate
             ).exceptionally(e -> {
                 LOGGER.error("[Skyblocker] Encountered unknown error while downloading tooltip data", e);
                 return null;
