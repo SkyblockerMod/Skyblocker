@@ -14,6 +14,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
@@ -62,12 +64,12 @@ public class FishingHelper {
     }
 
     public static void onSound(PlaySoundS2CPacket packet) {
-        String path = packet.getSound().value().id().getPath();
-        if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper && startTimeFish != 0 && System.currentTimeMillis() >= startTimeFish + 2000 && ("entity.generic.splash".equals(path) || "entity.player.splash".equals(path))) {
+		SoundEvent sound = packet.getSound().value();
+        if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper && startTimeFish != 0 && System.currentTimeMillis() >= startTimeFish + 2000 && (sound.id().equals(SoundEvents.ENTITY_GENERIC_SPLASH.id()) || sound.id().equals(SoundEvents.ENTITY_PLAYER_SPLASH.id()))) {
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null && player.fishHook != null) {
                 Vec3d soundToFishHook = player.fishHook.getPos().subtract(packet.getX(), 0, packet.getZ());
-                if (Math.abs(normalYawVector.x * soundToFishHook.z - normalYawVector.z * soundToFishHook.x) < 0.2D && Math.abs(normalYawVector.dotProduct(soundToFishHook)) < 4D && player.getPos().squaredDistanceTo(packet.getX(), packet.getY(), packet.getZ()) > 1D) {
+                if (Math.abs(normalYawVector.x * soundToFishHook.z - normalYawVector.z * soundToFishHook.x) < 0.2D && Math.abs(normalYawVector.dotProduct(soundToFishHook)) < 4D && player.squaredDistanceTo(packet.getX(), packet.getY(), packet.getZ()) > 1D) {
                     RenderHelper.displayInTitleContainerAndPlaySound(title, 10);
                     resetFish();
                 }

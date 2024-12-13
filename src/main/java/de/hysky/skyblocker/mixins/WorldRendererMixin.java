@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,7 +19,6 @@ import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.DefaultFramebufferSet;
 import net.minecraft.client.render.WorldRenderer;
@@ -75,7 +75,7 @@ public class WorldRendererMixin {
 
 		if (shouldShowBoundingBox) {
 			MobBoundingBoxes.submitBox2BeRendered(
-					entity instanceof ArmorStandEntity e ? SlayerEntitiesGlow.getSlayerMobBoundingBox(e) : entity.getBoundingBox(),
+					entity instanceof ArmorStandEntity e ? SlayerManager.getSlayerMobBoundingBox(e) : entity.getBoundingBox(),
 					MobBoundingBoxes.getBoxColor(entity)
 			);
 		}
