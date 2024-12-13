@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -32,9 +32,6 @@ public class ItemPrice {
             GLFW.GLFW_KEY_Z,
             "key.categories.skyblocker"
     ));
-
-    @Init
-    public static void init() {}
 
     public static void itemPriceLookup(ClientPlayerEntity player, @NotNull Slot slot) {
         ItemStack stack = slot.getStack();
@@ -69,11 +66,13 @@ public class ItemPrice {
         CompletableFuture.allOf(Stream.of(TooltipInfoType.NPC, TooltipInfoType.BAZAAR, TooltipInfoType.LOWEST_BINS, TooltipInfoType.ONE_DAY_AVERAGE, TooltipInfoType.THREE_DAY_AVERAGE)
                         .map(DataTooltipInfoType::downloadIfEnabled)
                         .toArray(CompletableFuture[]::new)
-                ).thenRun(() -> player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshedItemPrices")), false))
-                .exceptionally(e -> {
-                    ItemTooltip.LOGGER.error("[Skyblocker Item Price] Failed to refresh item prices", e);
-                    player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed")), false);
-                    return null;
-                });
+        ).thenRun(() -> {
+	        ItemPriceUpdateEvent.ON_PRICE_UPDATE.invoker().onPriceUpdate();
+	        player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.refreshedItemPrices")), false);
+		}).exceptionally(e -> {
+			ItemTooltip.LOGGER.error("[Skyblocker Item Price] Failed to refresh item prices", e);
+			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed")), false);
+			return null;
+		});
     }
 }
