@@ -162,27 +162,19 @@ public class PowderMiningTracker {
 		}
 	}
 
-	private static int comparePriority(String s) {
-		s = GEMSTONE_SYMBOLS.matcher(s).replaceAll(""); // Removes the gemstone symbol from the string to make it easier to compare
+	private static int comparePriority(String string) {
+		string = GEMSTONE_SYMBOLS.matcher(string).replaceAll(""); // Removes the gemstone symbol from the string to make it easier to compare
 		// Puts gemstone powder at the top of the list, then gold and diamond essence, then gemstones by ascending rarity and then whatever else.
-		switch (s) {
-			case "Gemstone Powder" -> {
-				return 1;
-			}
-			case "Gold Essence" -> {
-				return 2;
-			}
-			case "Diamond Essence" -> {
-				return 3;
-			}
-			default -> {
-				if (s.startsWith("Rough")) return 4;
-				if (s.startsWith("Flawed")) return 5;
-				if (s.startsWith("Fine")) return 6;
-				if (s.startsWith("Flawless")) return 7;
-			}
-		}
-		return 8;
+		return switch (string) {
+			case "Gemstone Powder" -> 1;
+			case "Gold Essence" -> 2;
+			case "Diamond Essence" -> 3;
+			case String s when s.startsWith("Rough") -> 4;
+			case String s when s.startsWith("Flawed") -> 5;
+			case String s when s.startsWith("Fine") -> 6;
+			case String s when s.startsWith("Flawless") -> 7;
+			default -> 8;
+		};
 	}
 
 	/**
