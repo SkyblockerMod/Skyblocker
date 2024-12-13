@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
+import de.hysky.skyblocker.skyblock.SmoothAOTE;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.network.PingMeasurer;
@@ -15,6 +16,7 @@ public class PingMeasurerMixin {
         if (Utils.isInCrimson()) {
             DojoManager.onPingResult(ping);
         }
+        SmoothAOTE.updatePing(ping);
 
         return ping;
     }
