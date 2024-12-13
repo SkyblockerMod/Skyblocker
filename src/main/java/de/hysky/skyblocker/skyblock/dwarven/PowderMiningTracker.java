@@ -19,7 +19,9 @@ import it.unimi.dsi.fastutil.objects.*;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.ChatHud;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -76,45 +78,8 @@ public class PowderMiningTracker {
 
 	@Init
 	public static void init() {
-		ChatEvents.RECEIVE_STRING.register(text -> {
-			if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !isEnabled()) return;
-			// Reward messages end with a separator like so
-			if (insideChestMessage && text.equals("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")) {
-				insideChestMessage = false;
-				return;
-			}
-
-			if (!insideChestMessage && (text.equals("  CHEST LOCKPICKED ") || (SkyblockerConfigManager.get().mining.crystalHollows.countNaturalChestsInTracker && text.equals("  LOOT CHEST COLLECTED ")))) {
-				insideChestMessage = true;
-				return;
-			}
-
-			if (!insideChestMessage) return;
-			Matcher matcher = REWARD_PATTERN.matcher(text);
-			if (!matcher.matches()) return;
-			String itemName = matcher.group(1);
-			int amount = NumberUtils.toInt(matcher.group(2).replace(",", ""), 1);
-
-			String itemId = getItemId(itemName);
-			if (itemId.isEmpty()) {
-				LOGGER.error("No matching item id for name `{}`. Report this!", itemName);
-				return;
-			}
-			incrementReward(itemName, itemId, amount);
-			calculateProfitForItem(itemId, amount);
-		});
-
-		HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
-			if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !isEnabled()) return;
-			int y = MinecraftClient.getInstance().getWindow().getScaledHeight() / 2 - 100;
-			var set = SHOWN_REWARDS.object2IntEntrySet();
-			for (Object2IntMap.Entry<Text> entry : set) {
-				context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, entry.getKey(), 5, y, 0xFFFFFF);
-				context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(String.valueOf(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, 0xFFFFFF);
-				y += 10;
-			}
-			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.literal("Gain: " + NumberFormat.getInstance().format(profit) + " coins").formatted(Formatting.GOLD), 5, y + 10, 0xFFFFFF);
-		});
+		ChatEvents.RECEIVE_STRING.register(PowderMiningTracker::onChatMessage);
+		HudRenderEvents.AFTER_MAIN_HUD.register(PowderMiningTracker::render);
 
 		ItemPriceUpdateEvent.ON_PRICE_UPDATE.register(() -> {
 			if (isEnabled()) recalculatePrices();
@@ -144,6 +109,34 @@ public class PowderMiningTracker {
 										})
 						)
 		));
+	}
+
+	private static void onChatMessage(String text) {
+		if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !isEnabled()) return;
+		// Reward messages end with a separator like so
+		if (insideChestMessage && text.equals("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")) {
+			insideChestMessage = false;
+			return;
+		}
+
+		if (!insideChestMessage && (text.equals("  CHEST LOCKPICKED ") || (SkyblockerConfigManager.get().mining.crystalHollows.countNaturalChestsInTracker && text.equals("  LOOT CHEST COLLECTED ")))) {
+			insideChestMessage = true;
+			return;
+		}
+
+		if (!insideChestMessage) return;
+		Matcher matcher = REWARD_PATTERN.matcher(text);
+		if (!matcher.matches()) return;
+		String itemName = matcher.group(1);
+		int amount = NumberUtils.toInt(matcher.group(2).replace(",", ""), 1);
+
+		String itemId = getItemId(itemName);
+		if (itemId.isEmpty()) {
+			LOGGER.error("No matching item id for name `{}`. Report this!", itemName);
+			return;
+		}
+		incrementReward(itemName, itemId, amount);
+		calculateProfitForItem(itemId, amount);
 	}
 
 	private static void incrementReward(String itemName, String itemId, int amount) {
@@ -327,5 +320,17 @@ public class PowderMiningTracker {
 
 	private static Path getRewardFilePath() {
 		return SkyblockerMod.CONFIG_DIR.resolve("reward-trackers/powder-mining.json");
+	}
+
+	private static void render(DrawContext context, RenderTickCounter tickCounter) {
+		if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !isEnabled()) return;
+		int y = MinecraftClient.getInstance().getWindow().getScaledHeight() / 2 - 100;
+		var set = SHOWN_REWARDS.object2IntEntrySet();
+		for (Object2IntMap.Entry<Text> entry : set) {
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, entry.getKey(), 5, y, 0xFFFFFF);
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(String.valueOf(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, 0xFFFFFF);
+			y += 10;
+		}
+		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.literal("Gain: " + NumberFormat.getInstance().format(profit) + " coins").formatted(Formatting.GOLD), 5, y + 10, 0xFFFFFF);
 	}
 }
