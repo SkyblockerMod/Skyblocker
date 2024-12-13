@@ -265,6 +265,7 @@ public class MuseumItemCache {
 					if (!itemId.isEmpty() && !profileId.isEmpty()) {
 						if (MAPPED_IDS.containsKey(itemId)) itemId = MAPPED_IDS.get(itemId);
 						String setId = MuseumUtils.getSetID(itemId);
+						Donation donation = MuseumManager.getDonation(setId != null ? setId : itemId);
 						String uuid = Utils.getUndashedUuid();
 						//Be safe about access to avoid NPEs
 						Map<String, ProfileMuseumData> playerData = MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
@@ -272,6 +273,19 @@ public class MuseumItemCache {
 
 						playerData.get(profileId).collectedItemIds().add(itemId);
 						if (setId != null) playerData.get(profileId).collectedItemIds().add(setId);
+						System.out.println(itemId);
+						System.out.println(setId);
+						if (donation != null && !donation.getDowngrades().isEmpty()) {
+							for (String downgrade : donation.getDowngrades()) {
+								if (donation.isSet()) {
+									List<String> pieces = MuseumUtils.getPiecesBySetID(downgrade);
+									playerData.get(profileId).collectedItemIds().addAll(pieces);
+									System.out.println(pieces);
+								}
+								playerData.get(profileId).collectedItemIds().add(downgrade);
+								System.out.println(downgrade);
+							}
+						}
 					}
 				}
 			}
