@@ -114,7 +114,6 @@ public class MuseumManager extends ClickableWidget {
         updateSearchResults(false);
 
         Screens.getButtons(screen).add(this);
-        screen.setFocused(this);
     }
 
     /**
@@ -277,8 +276,7 @@ public class MuseumManager extends ClickableWidget {
         }
 
         this.searchField.setFocused(false);
-        this.filterButton.setFocused(false);
-        this.sortButton.setFocused(false);
+
         return false;
     }
 
