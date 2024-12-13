@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
+import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -15,14 +16,13 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +40,7 @@ public class MuseumManager extends ClickableWidget {
 	private static final ItemSorter ITEM_SORTER = new ItemSorter();
 	private static final ItemFilter ITEM_FILTER = new ItemFilter();
 	private static final TextRenderer TEXT_RENDERER = CLIENT.textRenderer;
+	private static final KeyBinding INVENTORY_OPEN_KEY = CLIENT.options.inventoryKey;
 	private static String SEARCH_QUERY = "";
 	private static int CURRENT_PAGE = 0;
 	private final int layoutX;
@@ -186,8 +187,8 @@ public class MuseumManager extends ClickableWidget {
 						.append(ItemUtils.getConcatenatedLore(itemStack));
 			}
 			if (item.getSet() != null && !item.getSet().isEmpty()) {
-				for (Pair<String, PriceData> piece : item.getSet()) {
-					ItemStack pieceStack = ItemRepository.getItemStack(piece.getLeft());
+				for (ObjectObjectMutablePair<String, PriceData> piece : item.getSet()) {
+					ItemStack pieceStack = ItemRepository.getItemStack(piece.left());
 					if (pieceStack != null) searchableContent.append(pieceStack.getName().getString())
 							.append(ItemUtils.getConcatenatedLore(pieceStack));
 				}
@@ -297,7 +298,7 @@ public class MuseumManager extends ClickableWidget {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if ((this.searchField.isActive() && keyCode == GLFW.GLFW_KEY_E)
+		if ((this.searchField.isActive() && INVENTORY_OPEN_KEY.matchesKey(keyCode, scanCode))
 				|| this.searchField.keyPressed(keyCode, scanCode, modifiers)) {
 			updateSearchResults(true);
 			return true;

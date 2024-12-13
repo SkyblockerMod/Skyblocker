@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.museum;
 
-import net.minecraft.util.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,22 +10,20 @@ import java.util.List;
 public class Donation {
 	private final String category;
 	private final String id;
-	private final List<Pair<String, PriceData>> set;
-	private final List<String> upgrades;
-	private List<String> downgrades;
-	private List<Pair<String, Integer>> countsTowards;// downgrades not donated
+	private final List<ObjectObjectMutablePair<String, PriceData>> set;
+	private final List<String> downgrades = new ArrayList<>();
+	private List<ObjectIntPair<String>> countsTowards;// downgrades not donated
 	private PriceData priceData;
-	private Pair<String, Double> discount;
+	private ObjectDoublePair<String> discount;
 	private final int xp;
 	private int totalXp;
 	private double xpCoinsRatio;
 
-	public Donation(String category, String id, List<Pair<String, PriceData>> set, int xp, List<String> upgrades) {
+	public Donation(String category, String id, List<ObjectObjectMutablePair<String, PriceData>> set, int xp) {
 		this.category = category;
 		this.id = id;
 		this.set = set;
 		this.xp = xp;
-		this.upgrades = upgrades;
 	}
 
 	public int getTotalXp() {
@@ -34,11 +34,11 @@ public class Donation {
 		this.totalXp = totalXp;
 	}
 
-	public List<Pair<String, Integer>> getCountsTowards() {
+	public List<ObjectIntPair<String>> getCountsTowards() {
 		return countsTowards;
 	}
 
-	public void setCountsTowards(List<Pair<String, Integer>> countsTowards) {
+	public void setCountsTowards(List<ObjectIntPair<String>> countsTowards) {
 		this.countsTowards = countsTowards;
 	}
 
@@ -50,29 +50,20 @@ public class Donation {
 		this.priceData = new PriceData(this);
 	}
 
-	public void setDowngrades() {
-		List<String> downgrades = new ArrayList<>();
-		for (List<String> list : MuseumItemCache.ORDERED_UPGRADES) {
-			int armorIndex = list.indexOf(id);
-			if (armorIndex > 0) {
-				for (int i = armorIndex - 1; i >= 0; i--) {
-					downgrades.add(list.get(i));
-				}
-			}
-		}
-		this.downgrades = downgrades;
-	}
-
-	public Pair<String, Double> getDiscount() {
+	public ObjectDoublePair<String> getDiscount() {
 		return discount;
 	}
 
-	public void setDiscount(Pair<String, Double> discount) {
+	public void setDiscount(ObjectDoublePair<String> discount) {
 		this.discount = discount;
 	}
 
 	public boolean hasDiscount() {
-		return discount != null && discount.getRight() > 0d;
+		return discount != null && discount.rightDouble() > 0d;
+	}
+
+	public void addDowngrade(String downgrade) {
+		this.downgrades.add(downgrade);
 	}
 
 	public List<String> getDowngrades() {
@@ -100,16 +91,12 @@ public class Donation {
 		return !set.isEmpty();
 	}
 
-	public List<Pair<String, PriceData>> getSet() {
+	public List<ObjectObjectMutablePair<String, PriceData>> getSet() {
 		return set;
 	}
 
 	public int getXp() {
 		return xp;
-	}
-
-	public List<String> getUpgrades() {
-		return upgrades;
 	}
 
 	public boolean isCraftable() {

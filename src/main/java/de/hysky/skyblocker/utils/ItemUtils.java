@@ -324,8 +324,8 @@ public final class ItemUtils {
         return DoubleBooleanPair.of(0, false);
     }
 
-	public static double getCraftCost(String id) {
-		NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
+	public static double getCraftCost(String neuId) {
+		NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(neuId);
 		if (neuItem != null && !neuItem.getRecipes().isEmpty()) {
 			return CraftPriceTooltip.getItemCost(neuItem.getRecipes().getFirst(), 0);
 		}

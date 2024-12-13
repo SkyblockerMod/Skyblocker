@@ -2,10 +2,10 @@ package de.hysky.skyblocker.skyblock.museum;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
+import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Pair;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -14,6 +14,26 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MuseumUtils {
+
+	private static final NumberFormat NUMBER_FORMATTER_S = NumberFormat.getCompactNumberInstance(Locale.CANADA, NumberFormat.Style.SHORT);
+
+	/**
+	 * Calculates the total crafting cost for a set associated with a given ID.
+	 *
+	 * @param id the ID of the set for which the crafting cost is calculated
+	 * @return the total crafting cost of the set
+	 */
+	protected static double getSetCraftCost(String id) {
+		double cost = 0;
+		for (Donation donation : MuseumItemCache.MUSEUM_DONATIONS) {
+			if (donation.getId().equals(id)) {
+				for (ObjectObjectMutablePair<String, PriceData> piece : donation.getSet()){
+					cost += ItemUtils.getCraftCost(piece.left());
+				}
+			}
+		}
+		return cost;
+	}
 
 	/**
 	 * Retrieves the display name for an item or a set.
@@ -31,7 +51,7 @@ public class MuseumUtils {
 				Optional<Donation> donation = MuseumItemCache.MUSEUM_DONATIONS.stream().filter(d -> d.getId().equals(id)).findFirst();
 				if (donation.isPresent()) {
 					if (!donation.get().getSet().isEmpty()) {
-						Text pieceName = getDisplayName(donation.get().getSet().getFirst().getLeft(), false);
+						Text pieceName = getDisplayName(donation.get().getSet().getFirst().left(), false);
 						if (pieceName != null) {
 							nameStyle = pieceName.getSiblings().getFirst().getStyle();
 						}
@@ -56,8 +76,8 @@ public class MuseumUtils {
 	 */
 	protected static String getSetID(String id) {
 		for (Donation donation : MuseumItemCache.MUSEUM_DONATIONS) {
-			for (Pair<String, PriceData> set : donation.getSet()) {
-				if (set.getLeft().equals(id)) {
+			for (ObjectObjectMutablePair<String, PriceData> set : donation.getSet()) {
+				if (set.left().equals(id)) {
 					return donation.getId();
 				}
 			}
@@ -70,7 +90,7 @@ public class MuseumUtils {
 				.filter(d -> d.getId().equals(donationId))
 				.map(Donation::getSet)
 				.flatMap(List::stream)
-				.map(Pair::getLeft)
+				.map(ObjectObjectMutablePair::left)
 				.collect(Collectors.toList());
 	}
 
@@ -112,7 +132,6 @@ public class MuseumUtils {
 	 * @return A formatted string (e.g., "10M", "5K", "1.2B").
 	 */
 	public static String formatPrice(double value) {
-		NumberFormat NUMBER_FORMATTER_S = NumberFormat.getCompactNumberInstance(Locale.CANADA, NumberFormat.Style.SHORT);
 		NUMBER_FORMATTER_S.setMaximumFractionDigits(1);
 		return NUMBER_FORMATTER_S.format(value);
 	}

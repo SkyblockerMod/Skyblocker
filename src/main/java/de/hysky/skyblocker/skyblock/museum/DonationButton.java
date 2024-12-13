@@ -3,6 +3,9 @@ package de.hysky.skyblocker.skyblock.museum;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
+import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -15,7 +18,6 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,6 @@ public class DonationButton extends ClickableWidget {
 
 	private Donation donation = null;
 	private ItemStack itemStack = null;
-	private static final String WIKI_LOCKUP_KEY = WikiLookup.wikiLookup.getBoundKeyTranslationKey();
 	private static final TextRenderer TEXT_RENDERER = MinecraftClient.getInstance().textRenderer;
 	private String textToRender;
 	private List<Text> tooltip;
@@ -54,10 +55,10 @@ public class DonationButton extends ClickableWidget {
 				? ItemRepository.getItemStack(donation.getId())
 				: ItemRepository.getItemStack(
 				donation.getSet().stream()
-						.filter(piece -> piece.getLeft().toLowerCase(Locale.ENGLISH).contains("helmet") || piece.getLeft().toLowerCase(Locale.ENGLISH).contains("hat"))
+						.filter(piece -> piece.left().toLowerCase(Locale.ENGLISH).contains("helmet") || piece.left().toLowerCase(Locale.ENGLISH).contains("hat"))
 						.findFirst()
 						.orElse(donation.getSet().get(1)) // gets chestplate
-						.getLeft()
+						.left()
 		);
 
 		if (itemStack != null) {
@@ -72,6 +73,7 @@ public class DonationButton extends ClickableWidget {
 	 */
 	protected void clearDisplayStack() {
 		this.visible = false;
+		this.donation = null;
 		this.itemStack = null;
 		this.tooltip = null;
 		this.textToRender = null;
@@ -100,25 +102,26 @@ public class DonationButton extends ClickableWidget {
 	 * Creates the tooltip for the button based on its associated donation data
 	 */
 	private void createTooltip() {
+		final String WIKI_LOCKUP_KEY = WikiLookup.wikiLookup.getBoundKeyTranslationKey();
 		List<Text> tooltip = new ArrayList<>();
 
 		boolean soulbound = ItemUtils.isSoulbound(itemStack);
-		Pair<String, Double> discount = donation.getDiscount();
-		List<Pair<String, Integer>> countsTowards = donation.getCountsTowards();
+		ObjectDoublePair<String> discount = donation.getDiscount();
+		List<ObjectIntPair<String>> countsTowards = donation.getCountsTowards();
 
 		// Display name
 		tooltip.add(MuseumUtils.getDisplayName(donation.getId(), donation.isSet()));
 
 		// Set pieces display names
 		if (donation.isSet()) {
-			for (Pair<String, PriceData> piece : donation.getSet()) {
-				ItemStack stack = ItemRepository.getItemStack(piece.getLeft());
+			for (ObjectObjectMutablePair<String, PriceData> piece : donation.getSet()) {
+				ItemStack stack = ItemRepository.getItemStack(piece.left());
 				if (stack != null) {
 					Text itemName = stack.getName().copy();
 					if (soulbound) {
 						tooltip.add(Text.literal("  ").append(itemName));
-					} else if (piece.getRight().getEffectivePrice() > 0) {
-						tooltip.add(Text.literal("  ").append(itemName).append(Text.literal(" (").formatted(Formatting.DARK_GRAY)).append(Text.literal(MuseumUtils.formatPrice(piece.getRight().getEffectivePrice())).formatted(Formatting.GOLD)).append(Text.literal(")").formatted(Formatting.DARK_GRAY)));
+					} else if (piece.right().getEffectivePrice() > 0) {
+						tooltip.add(Text.literal("  ").append(itemName).append(Text.literal(" (").formatted(Formatting.DARK_GRAY)).append(Text.literal(MuseumUtils.formatPrice(piece.right().getEffectivePrice())).formatted(Formatting.GOLD)).append(Text.literal(")").formatted(Formatting.DARK_GRAY)));
 					} else {
 						tooltip.add(Text.literal("  ").append(itemName).append(Text.literal(" (").formatted(Formatting.DARK_GRAY)).append(Text.translatable("skyblocker.museum.hud.unknownPrice").formatted(Formatting.RED)).append(Text.literal(")").formatted(Formatting.DARK_GRAY)));
 					}
@@ -135,8 +138,8 @@ public class DonationButton extends ClickableWidget {
 		} else {
 			PriceData priceData = donation.getPriceData();
 			Text lBinText = donation.hasLBinPrice() ? Text.literal(MuseumUtils.formatPrice(priceData.getLBinPrice())).append(" Coins").formatted(Formatting.GOLD) : Text.translatable("skyblocker.museum.hud.unknownPrice").formatted(Formatting.RED);
-			MutableText craftCostText = donation.isCraftable() ? Text.literal(MuseumUtils.formatPrice(donation.hasDiscount() ? priceData.getCraftCost() - discount.getRight() : priceData.getCraftCost())).append(" ").append(Text.translatable("skyblocker.museum.hud.coin")).formatted(Formatting.GOLD) : Text.translatable("skyblocker.museum.hud.unknownPrice").formatted(Formatting.RED);
-			Text discountText = donation.hasDiscount() && donation.isCraftable() ? Text.literal(" (").formatted(Formatting.DARK_GRAY).append(Text.literal(MuseumUtils.formatPrice(priceData.getCraftCost())).formatted(Formatting.GOLD)).append(" - ").append(Text.literal(MuseumUtils.formatPrice(discount.getRight())).formatted(Formatting.GOLD)).append(Text.literal(")").formatted(Formatting.DARK_GRAY)) : Text.empty();
+			MutableText craftCostText = donation.isCraftable() ? Text.literal(MuseumUtils.formatPrice(donation.hasDiscount() ? priceData.getCraftCost() - discount.rightDouble() : priceData.getCraftCost())).append(" ").append(Text.translatable("skyblocker.museum.hud.coin")).formatted(Formatting.GOLD) : Text.translatable("skyblocker.museum.hud.unknownPrice").formatted(Formatting.RED);
+			Text discountText = donation.hasDiscount() && donation.isCraftable() ? Text.literal(" (").formatted(Formatting.DARK_GRAY).append(Text.literal(MuseumUtils.formatPrice(priceData.getCraftCost())).formatted(Formatting.GOLD)).append(" - ").append(Text.literal(MuseumUtils.formatPrice(discount.rightDouble())).formatted(Formatting.GOLD)).append(Text.literal(")").formatted(Formatting.DARK_GRAY)) : Text.empty();
 			Text xpCoinsRatio = Text.literal(MuseumUtils.formatPrice(donation.getXpCoinsRatio())).append(" ").append(Text.translatable("skyblocker.museum.hud.ratioText")).formatted(Formatting.AQUA);
 
 			tooltip.add(Text.translatable("skyblocker.museum.hud.sorter.lBin").append(": ").formatted(Formatting.GRAY).append(lBinText));
@@ -147,15 +150,15 @@ public class DonationButton extends ClickableWidget {
 		if (countsTowards.size() > 1) {
 			tooltip.add(Text.empty());
 			tooltip.add(Text.translatable("skyblocker.museum.hud.countsFor").append(":").formatted(Formatting.GRAY));
-			for (Pair<String, Integer> credit : countsTowards) {
-				tooltip.add(Text.literal(" ● ").formatted(Formatting.GRAY).append(MuseumUtils.getDisplayName(credit.getLeft(), donation.isSet())).append(Text.literal(" (" + credit.getRight() + " XP)").formatted(Formatting.AQUA)));
+			for (ObjectIntPair<String> credit : countsTowards) {
+				tooltip.add(Text.literal(" ● ").formatted(Formatting.GRAY).append(MuseumUtils.getDisplayName(credit.left(), donation.isSet())).append(Text.literal(" (" + credit.rightInt() + " XP)").formatted(Formatting.AQUA)));
 			}
 		}
 
 		if (donation.isCraftable() && donation.hasDiscount()) {
 			tooltip.add(Text.empty());
 			tooltip.add(Text.translatable("skyblocker.museum.hud.craftIngredient").append(": ").formatted(Formatting.GRAY).append(Text.literal("(").append(Text.translatable("skyblocker.museum.hud.alreadyDonatedItem").append(")")).formatted(Formatting.DARK_GRAY)));
-			tooltip.add(Text.literal(" - ").formatted(Formatting.GRAY).append(MuseumUtils.getDisplayName(discount.getLeft(), donation.isSet())).append(Text.literal(" ✔").formatted(Formatting.GREEN)).append(Text.literal(" (").formatted(Formatting.DARK_GRAY).append(Text.literal(MuseumUtils.formatPrice(discount.getRight())).formatted(Formatting.GOLD)).append(")").formatted(Formatting.DARK_GRAY)));
+			tooltip.add(Text.literal(" - ").formatted(Formatting.GRAY).append(MuseumUtils.getDisplayName(discount.left(), donation.isSet())).append(Text.literal(" ✔").formatted(Formatting.GREEN)).append(Text.literal(" (").formatted(Formatting.DARK_GRAY).append(Text.literal(MuseumUtils.formatPrice(discount.rightDouble())).formatted(Formatting.GOLD)).append(")").formatted(Formatting.DARK_GRAY)));
 		}
 
 		tooltip.add(Text.empty());

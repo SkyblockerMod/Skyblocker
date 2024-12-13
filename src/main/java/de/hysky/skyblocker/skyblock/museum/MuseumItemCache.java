@@ -13,10 +13,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.Http.ApiResponse;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.*;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -25,7 +22,6 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import net.minecraft.util.Pair;
 import net.minecraft.util.collection.DefaultedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,12 +126,12 @@ public class MuseumItemCache {
 
 				for (JsonElement element : array) {
 					String itemID = element.getAsString();
-					List<Pair<String, PriceData>> set = new ArrayList<>();
+					List<ObjectObjectMutablePair<String, PriceData>> set = new ArrayList<>();
 					if (category.equals("armor")) {
 						boolean isEquipment = true;
 						for (JsonElement jsonElement : setsToItems.get(itemID).getAsJsonArray()) {
 							if (isEquipment) isEquipment = ItemUtils.isEquipment(jsonElement.getAsString());
-							set.add(new Pair<>(jsonElement.getAsString(), null));
+							set.add(new ObjectObjectMutablePair<>(jsonElement.getAsString(), null));
 						}
 						String realId = itemID;
 						for (Map.Entry<String, JsonElement> exception : setExceptions.entrySet()) {
@@ -174,10 +170,20 @@ public class MuseumItemCache {
 						}
 					}
 
-					MUSEUM_DONATIONS.add(new Donation(category, itemID, set, itemXP, upgrades));
+					MUSEUM_DONATIONS.add(new Donation(category, itemID, set, itemXP));
 				}
 			}
-			MUSEUM_DONATIONS.forEach(Donation::setDowngrades);
+
+			MUSEUM_DONATIONS.forEach(donation -> {
+				for (List<String> list : ORDERED_UPGRADES) {
+					int armorIndex = list.indexOf(donation.getId());
+					if (armorIndex > 0) {
+						for (int i = armorIndex - 1; i >= 0; i--) {
+							donation.addDowngrade(list.get(i));
+						}
+					}
+				}
+			});
 
 			LOGGER.info("[Skyblocker] Loaded museum data");
 		} catch (NoSuchFileException ignored) {
@@ -227,18 +233,22 @@ public class MuseumItemCache {
 			for (Donation donation : MUSEUM_DONATIONS) {
 				// Check if the donation id or his upgrades is not present in the collected items
 				if (!items.contains(donation.getId())) {
-					if (donation.isSet()) {
-						if (items.stream().anyMatch(i -> donation.getSet().stream().anyMatch(p -> p.getLeft().equals(i)))) continue;
-						//if (items.stream().anyMatch(p -> donation.getUpgrades().stream().anyMatch(upgrade -> MuseumUtils.getPiecesBySetID(upgrade).contains(p)))) continue;
-					}
+					if (donation.isSet() && items.stream().anyMatch(i -> donation.getSet().stream().anyMatch(p -> p.left().equals(i)))) continue;
 					donation.setPriceData();
 					uncontributedItems.add(donation);
 				}
-
 			}
-		}
 
-		uncontributedItems.sort(Comparator.comparing(Donation::getId)); //Sorting alphabetically
+			// Check if the item has a donated downgrade
+			uncontributedItems.forEach(donation -> donation.setDiscount(donation.getDowngrades().stream()
+					.filter(downgrade -> donation.isCraftable())
+					.filter(downgrade -> uncontributedItems.stream().noneMatch(item -> item.getId().equals(downgrade)))
+					.map(downgrade -> ObjectDoublePair.of(downgrade, MuseumUtils.getSetCraftCost(downgrade)))
+					.findFirst()
+					.orElse(null)));
+
+			uncontributedItems.sort(Comparator.comparing(Donation::getId)); //Sorting alphabetically
+		}
 		return uncontributedItems;
 	}
 
@@ -293,7 +303,7 @@ public class MuseumItemCache {
 							donation.ifPresent(value -> itemIds.addAll(value.getDowngrades()));
 							if (donation.isPresent()) {
 								if (donation.get().isSet()) {
-									itemIds.addAll(donation.get().getSet().stream().map(Pair::getLeft).toList());
+									itemIds.addAll(donation.get().getSet().stream().map(ObjectObjectMutablePair::left).toList());
 									donation.get().getDowngrades().forEach(downgrade -> itemIds.addAll(MuseumUtils.getPiecesBySetID(downgrade)));
 								} else {
 									itemIds.add(donation.get().getId().replace("STARRED_", ""));
@@ -372,7 +382,6 @@ public class MuseumItemCache {
 		}
 	}
 
-	//FIXME Called every frame while holding on undonated items only why?
 	public static boolean hasItemInMuseum(String id) {
 		id = id.replace("STARRED_", "");
 		String uuid = Utils.getUndashedUuid();

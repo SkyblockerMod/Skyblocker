@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.skyblock.museum;
 
+import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Pair;
 
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +33,7 @@ public class ItemSorter {
 	public static void updateDonationData(Donation donation, boolean useCraftCost) {
 		// Gather all donations that this one counts towards
 		List<String> downgrades = donation.getDowngrades();
-		Pair<String, Double> discount = donation.getDiscount();
+		ObjectDoublePair<String> discount = donation.getDiscount();
 		List<Donation> willCountFor = downgrades.stream()
 				.map(MuseumManager::getDonation)
 				.filter(Objects::nonNull)
@@ -46,19 +47,19 @@ public class ItemSorter {
 		// Calculate effective prices
 		double lBinPrice = donation.getPriceData().getLBinPrice();
 		double rawCraftCost = donation.isCraftable() ? donation.getPriceData().getCraftCost() : 0;
-		double craftCost = discount != null ? rawCraftCost - discount.getRight() : rawCraftCost;
+		double craftCost = discount != null ? rawCraftCost - discount.rightDouble() : rawCraftCost;
 		double effectivePrice = useCraftCost
 				? (craftCost > 0 ? (lBinPrice == 0 ? craftCost : Math.min(craftCost, lBinPrice)) : lBinPrice)
 				: (lBinPrice > 0 ? lBinPrice : craftCost);
 		double ratio = totalXP > 0 && effectivePrice > 0 ? effectivePrice / totalXP : 0;
 
 		// Update donation with computed data
-		if (donation.isSet()) donation.getSet().forEach(pair -> pair.getRight().setEffectivePrice(effectivePrice == craftCost ? pair.getRight().getCraftCost() : pair.getRight().getLBinPrice()));
+		if (donation.isSet()) donation.getSet().forEach(pair -> pair.right().setEffectivePrice(effectivePrice == craftCost ? pair.right().getCraftCost() : pair.right().getLBinPrice()));
 		donation.getPriceData().setEffectivePrice(effectivePrice);
 		donation.setXpCoinsRatio(ratio);
 		donation.setTotalXp(totalXP);
 		donation.setCountsTowards(willCountFor.stream()
-				.map(d -> new Pair<>(d.getId(), d.getXp()))
+				.map(d -> ObjectIntPair.of(d.getId(), d.getXp()))
 				.toList());
 	}
 
