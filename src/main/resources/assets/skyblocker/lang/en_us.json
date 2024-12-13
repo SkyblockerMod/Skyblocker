@@ -598,6 +598,8 @@
   "skyblocker.config.mining.dwarvenHud.enabledCommissions": "Enable Commissions",
   "skyblocker.config.mining.dwarvenHud.enabledPowder": "Enable Powder",
   "skyblocker.config.mining.dwarvenHud.screen": "Dwarven HUD Config...",
+  "skyblocker.config.mining.dwarvenHud.showNumbers": "Show Commission Numbers",
+  "skyblocker.config.mining.dwarvenHud.showNumbers.@Tooltip": "Show the number of actions for each commission instead of a percentage.",
   "skyblocker.config.mining.dwarvenHud.style": "Style for HUD",
   "skyblocker.config.mining.dwarvenHud.style.@Tooltip[0]": "Simple: Shows name and percentage.",
   "skyblocker.config.mining.dwarvenHud.style.@Tooltip[1]": "\nFancy: Shows name, percentage, progress bar and an icon.",
