@@ -70,6 +70,9 @@ public class UIAndVisualsConfig {
     @SerialEntry
     public CompactDamage compactDamage = new CompactDamage();
 
+	@SerialEntry
+	public HealthBars healthBars = new HealthBars();
+
     public static class ChestValue {
         @SerialEntry
         public boolean enableChestValue = true;
@@ -314,4 +317,34 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public Color critDamageGradientEnd = new Color(0xFF5555);
     }
+
+	public static class HealthBars {
+		@SerialEntry
+		public boolean enabled = true;
+
+		@SerialEntry
+		public float scale = 1.5f;
+
+		@SerialEntry
+		public boolean removeHealthFromName = true;
+
+		@SerialEntry
+		public boolean removeMaxHealthFromName = true;
+
+		@SerialEntry
+		public boolean applyToHealthOnlyMobs = true;
+
+		@SerialEntry
+		public boolean hideFullHealth = false;
+
+
+		@SerialEntry
+		public Color fullBarColor = new Color(0x00FF00);
+
+		@SerialEntry
+		public Color halfBarColor = new Color(0xFF4600);
+
+		@SerialEntry
+		public Color emptyBarColor = new Color(0xFF0000);
+	}
 }
