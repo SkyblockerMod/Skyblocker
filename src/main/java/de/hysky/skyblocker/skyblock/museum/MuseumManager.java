@@ -114,6 +114,7 @@ public class MuseumManager extends ClickableWidget {
         updateSearchResults(false);
 
         Screens.getButtons(screen).add(this);
+        screen.setFocused(this);
     }
 
     /**
