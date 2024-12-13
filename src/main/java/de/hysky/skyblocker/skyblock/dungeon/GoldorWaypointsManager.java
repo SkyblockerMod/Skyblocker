@@ -11,6 +11,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -110,20 +111,15 @@ public class GoldorWaypointsManager {
      * @param waypoints  The list of waypoints to operate on
      * @param playerName The name of the player to check against
      */
-    private static void removeNearestWaypoint(ObjectArrayList<GoldorWaypoint> waypoints, String playerName) {
+    private static void removeNearestWaypoint(List<GoldorWaypoint> waypoints, String playerName) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.world == null) return;
 
+		// Get the position of the player with the given name
         Optional<Vec3d> posOptional = client.world.getPlayers().stream().filter(player -> player.getGameProfile().getName().equals(playerName)).findAny().map(Entity::getPos);
 
-        if (posOptional.isPresent()) {
-            Vec3d pos = posOptional.get();
-
-            waypoints.stream().filter(GoldorWaypoint::shouldRender).min(Comparator.comparingDouble(waypoint -> waypoint.centerPos.squaredDistanceTo(pos))).map(waypoint -> {
-                waypoint.setShouldRender(false);
-                return null;
-            });
-        }
+		// Find the nearest waypoint to the player and hide it
+		posOptional.flatMap(pos -> waypoints.stream().filter(GoldorWaypoint::shouldRender).min(Comparator.comparingDouble(waypoint -> waypoint.centerPos.squaredDistanceTo(pos)))).ifPresent(Waypoint::setFound);
     }
 
     /**
@@ -143,7 +139,7 @@ public class GoldorWaypointsManager {
      * @param waypoints The set of waypoints to enable rendering for
      */
     private static void enableAll(ObjectArrayList<GoldorWaypoint> waypoints) {
-        waypoints.forEach(waypoint -> waypoint.setShouldRender(true));
+        waypoints.forEach(Waypoint::setMissing);
     }
 
     /**

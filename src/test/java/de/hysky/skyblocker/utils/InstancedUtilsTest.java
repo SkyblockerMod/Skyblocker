@@ -5,64 +5,65 @@ import org.junit.jupiter.api.Test;
 
 public class InstancedUtilsTest {
 
-	@Test
+	@SuppressWarnings("EqualsWithItself")
+    @Test
 	void testSameInstanceEqual() {
 		Vector3i vec1 = new Vector3i(8, 8, 8);
-		
+
 		Assertions.assertEquals(vec1, vec1);
 	}
-	
+
 	@Test
 	void testSameFieldValuesEqual() {
 		Vector3i vec1 = new Vector3i(8, 8, 8);
 		Vector3i vec2 = new Vector3i(8, 8, 8);
-		
+
 		Assertions.assertEquals(vec1, vec2);
 	}
-	
+
 	@Test
 	void testDifferentFieldValuesEqual() {
 		Vector3i vec1 = new Vector3i(8, 8, 8);
 		Vector3i vec2 = new Vector3i(-8, -8, -8);
-		
+
 		Assertions.assertNotEquals(vec1, vec2);
 	}
-	
+
 	@Test
 	void testHashCodeOfEqualFieldValues() {
 		Vector3i vec1 = new Vector3i(8, 8, 8);
 		Vector3i vec2 = new Vector3i(8, 8, 8);
-		
+
 		Assertions.assertEquals(vec1.hashCode(), vec2.hashCode());
 	}
-	
+
 	@Test
 	void testHashCodeOfDifferentFieldValues() {
 		Vector3i vec1 = new Vector3i(8, 8, 8);
 		Vector3i vec2 = new Vector3i(-8, -8, -8);
-		
+
 		Assertions.assertNotEquals(vec1.hashCode(), vec2.hashCode());
 	}
-	
+
 	@Test
 	void testToString() {
 		Vector3i vec1 = new Vector3i(8, 8, 8);
-		
+
 		Assertions.assertEquals(vec1.toString(), "Vector3i[x=8, y=8, z=8]");
 	}
-	
+
 	@SuppressWarnings("unused")
 	private static class Vector3i {
 		final int x;
 		final int y;
 		final int z;
-		
+
 		Vector3i(int x, int y, int z) {
 			this.x = x;
 			this.y = y;
 			this.z = z;
 		}
-		
+
 		@Override
 		public boolean equals(Object o) {
 			try {
@@ -71,7 +72,7 @@ public class InstancedUtilsTest {
 				return super.equals(o);
 			}
 		}
-		
+
 		@Override
 		public int hashCode() {
 			try {
@@ -80,7 +81,7 @@ public class InstancedUtilsTest {
 				return System.identityHashCode(this);
 			}
 		}
-		
+
 		@Override
 		public String toString() {
 			try {

@@ -21,12 +21,11 @@ public class DropdownWidget<T> extends ElementListWidget<DropdownWidget.Entry<T>
     protected boolean open;
 
     public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
-        super(minecraftClient, width, Math.min((entries.size() + 1) * ENTRY_HEIGHT + 8, maxHeight), y, ENTRY_HEIGHT);
+        super(minecraftClient, width, Math.min((entries.size() + 1) * ENTRY_HEIGHT + 8, maxHeight), y, ENTRY_HEIGHT, ENTRY_HEIGHT + 4);
         setX(x);
         this.entries = entries;
         this.selectCallback = selectCallback;
         this.selected = selected;
-        setRenderHeader(true, ENTRY_HEIGHT + 4);
         for (T entry : entries) {
             addEntry(new Entry<>(this, entry));
         }
@@ -43,9 +42,19 @@ public class DropdownWidget<T> extends ElementListWidget<DropdownWidget.Entry<T>
     }
 
     @Override
-    protected boolean clickedHeader(int x, int y) {
-        open = !open;
-        return true;
+    protected int getScrollbarX() {
+        return getRowRight() + 2;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (super.mouseClicked(mouseX, mouseY, button)) return true;
+
+        if (this.getEntryAtPosition(mouseX, mouseY) == null && (open || this.isMouseOver(mouseX, mouseY))) {
+            open = !open;
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -58,8 +67,8 @@ public class DropdownWidget<T> extends ElementListWidget<DropdownWidget.Entry<T>
         context.getMatrices().push();
         context.getMatrices().translate(0, 0, 100);
 
-        int y = getY() - (int) getScrollAmount();
-        int height = getMaxPosition();
+        int y = getY() - (int) getScrollY();
+        int height = getContentsHeightWithPadding();
 
         context.fill(getX(), y, getX() + width, y + headerHeight, 0xFF000000);
         context.drawHorizontalLine(getX(), getX() + width, y, 0xFFFFFFFF);
@@ -95,7 +104,7 @@ public class DropdownWidget<T> extends ElementListWidget<DropdownWidget.Entry<T>
     protected void select(T entry) {
         selected = entry;
         open = false;
-        setScrollAmount(0);
+        setScrollY(0);
         if (selected != prevSelected) {
             selectCallback.accept(entry);
             prevSelected = selected;

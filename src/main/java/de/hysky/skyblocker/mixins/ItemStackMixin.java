@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
@@ -14,6 +16,10 @@ import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipAppender;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,7 +27,9 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack {
@@ -61,6 +69,20 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	@ModifyVariable(method = "appendTooltip", at = @At("STORE"))
 	private TooltipAppender skyblocker$hideVanillaEnchants(TooltipAppender original) {
 		return Utils.isOnSkyblock() && original instanceof ItemEnchantmentsComponent component ? component.withShowInTooltip(false) : original;
+	}
+
+	@Inject(method = "getTooltip",
+			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/registry/DefaultedRegistry;getId(Ljava/lang/Object;)Lnet/minecraft/util/Identifier;")),
+			at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.AFTER, ordinal = 0)
+	)
+	private void skyblocker$skyblockIdTooltip(CallbackInfoReturnable<List<Text>> cir, @Local List<Text> lines) {
+		if (Utils.isOnSkyblock()) {
+			String skyblockId = getSkyblockId();
+
+			if (!skyblockId.isEmpty()) {
+				lines.add(Text.literal("skyblock:" + skyblockId).formatted(Formatting.DARK_GRAY));
+			}
+		}
 	}
 
 	/**

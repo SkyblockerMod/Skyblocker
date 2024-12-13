@@ -113,5 +113,15 @@ public class EditBarColorPopup extends AbstractPopupScreen {
             super.setY(y);
             textFieldWidget.setY(getY());
         }
+
+		@Override
+		protected int getContentsHeightWithPadding() {
+			return 0;
+		}
+
+		@Override
+		protected double getDeltaYPerScroll() {
+			return 0;
+		}
     }
 }
