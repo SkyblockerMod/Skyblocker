@@ -32,6 +32,7 @@
     "PingMeasurerMixin",
     "PlayerInventoryMixin",
     "PlayerListHudMixin",
+    "PlayerListHudMixin2",
     "PlayerSkinProviderMixin",
     "PlayerSkinTextureDownloaderMixin",
     "RenderFishMixin",
