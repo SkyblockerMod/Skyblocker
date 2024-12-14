@@ -190,21 +190,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		return superClicked;
 	}
 
-	@ModifyExpressionValue(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDI)Z"))
-	public boolean skyblocker$museumOverlayMouseClicked(boolean superClicked, double mouseX, double mouseY, int button) {
-		Optional<ClickableWidget> widget = Screens.getButtons(this).stream()
-				.filter(MuseumManager.class::isInstance)
-				.findFirst();
-
-		if (widget.isPresent()) {
-			return false;
-		}
-
-		return superClicked;
-	}
-
-
-
 	/**
 	 * Draws the unselected tabs in front of the background blur, but behind the main inventory, similar to creative inventory tabs
 	 */

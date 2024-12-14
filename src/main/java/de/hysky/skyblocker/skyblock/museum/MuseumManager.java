@@ -30,8 +30,6 @@ import java.util.Locale;
 
 public class MuseumManager extends ClickableWidget {
     private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/recipe_book.png");
-    private static final int BACKGROUND_WIDTH = 147;
-    private static final int BACKGROUND_HEIGHT = 166;
     private static final int SEARCH_FIELD_WIDTH = 69;
     private static final int SEARCH_FIELD_HEIGHT = 20;
     private static final int BUTTON_SIZE = 20;
@@ -44,8 +42,6 @@ public class MuseumManager extends ClickableWidget {
     private static String SEARCH_QUERY = "";
     private static int CURRENT_PAGE = 0;
     private static List<Donation> donations = new ArrayList<>();
-    private final int layoutX;
-    private final int layoutY;
     private final ToggleButtonWidget nextPageButton;
     private final ToggleButtonWidget prevPageButton;
     private final TextFieldWidget searchField;
@@ -58,12 +54,10 @@ public class MuseumManager extends ClickableWidget {
     private int pageCount = 0;
 
     public MuseumManager(Screen screen, int x, int y, int backgroundWidth) {
-        super(x, y, screen.width, screen.height, Text.empty());
-        this.layoutX = getX() + backgroundWidth + 2;
-        this.layoutY = y;
+        super(x + backgroundWidth + 2, y, 147, 160, Text.empty());
 
         // Initialize search field
-        this.searchField = new TextFieldWidget(TEXT_RENDERER, layoutX + 25, layoutY + 11, SEARCH_FIELD_WIDTH, SEARCH_FIELD_HEIGHT, Text.empty());
+        this.searchField = new TextFieldWidget(TEXT_RENDERER, getX() + 25, getY() + 11, SEARCH_FIELD_WIDTH, SEARCH_FIELD_HEIGHT, Text.empty());
         this.searchField.setMaxLength(60);
         this.searchField.setVisible(true);
         this.searchField.setEditableColor(0xFFFFFF);
@@ -71,16 +65,16 @@ public class MuseumManager extends ClickableWidget {
         this.searchField.setPlaceholder(Text.translatable("gui.recipebook.search_hint").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
 
         // Initialize page navigation buttons
-        this.nextPageButton = new ToggleButtonWidget(layoutX + 93, layoutY + 133, 12, 17, false);
+        this.nextPageButton = new ToggleButtonWidget(getX() + 93, getY() + 133, 12, 17, false);
         this.nextPageButton.setTextures(RecipeBookResults.PAGE_FORWARD_TEXTURES);
-        this.prevPageButton = new ToggleButtonWidget(layoutX + 38, layoutY + 133, 12, 17, true);
+        this.prevPageButton = new ToggleButtonWidget(getX() + 38, getY() + 133, 12, 17, true);
         this.prevPageButton.setTextures(RecipeBookResults.PAGE_BACKWARD_TEXTURES);
 
         donations = MuseumItemCache.getDonations();
 
         // Create donation buttons for pagination
         for (int i = 0; i < BUTTONS_PER_PAGE; i++) {
-            DonationButton button = new DonationButton(layoutX + 11 + 31 * (i % 4), layoutY + 34 + 31 * (i / 4));
+            DonationButton button = new DonationButton(getX() + 11 + 31 * (i % 4), getY() + 34 + 31 * (i / 4));
             this.donationButtons.add(button);
         }
 
@@ -92,7 +86,7 @@ public class MuseumManager extends ClickableWidget {
                     updateButtons();
                 })
                 .tooltip(ITEM_SORTER.getTooltip())
-                .position(layoutX + 95, layoutY + 11)
+                .position(getX() + 95, getY() + 11)
                 .size(BUTTON_SIZE, BUTTON_SIZE)
                 .build();
 
@@ -105,7 +99,7 @@ public class MuseumManager extends ClickableWidget {
                     updateButtons();
                 })
                 .tooltip(ITEM_FILTER.getTooltip())
-                .position(layoutX + 116, layoutY + 11)
+                .position(getX() + 116, getY() + 11)
                 .size(BUTTON_SIZE, BUTTON_SIZE)
                 .build();
 
@@ -204,14 +198,14 @@ public class MuseumManager extends ClickableWidget {
     @Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         // Render the background texture for the widget
-        context.drawTexture(RenderLayer::getGuiTextured, BACKGROUND_TEXTURE, layoutX, layoutY, 1.0f, 1.0f, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 256, 256 - 10);
+        context.drawTexture(RenderLayer::getGuiTextured, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
 
         // Render page count if multiple pages exist
         if (this.pageCount > 1) {
             Text text = Text.translatable("gui.recipebook.page", CURRENT_PAGE + 1, this.pageCount);
             int width = TEXT_RENDERER.getWidth(text);
 
-            context.drawText(TEXT_RENDERER, text, layoutX - width / 2 + 73, layoutY + 137, -1, false);
+            context.drawText(TEXT_RENDERER, text, getX() - width / 2 + 73, getY() + 137, -1, false);
         }
 
         // Render donation buttons
