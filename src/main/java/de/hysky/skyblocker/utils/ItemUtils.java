@@ -324,8 +324,8 @@ public final class ItemUtils {
         return DoubleBooleanPair.of(0, false);
     }
 
-	public static double getCraftCost(String neuId) {
-		NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(neuId);
+	public static double getCraftCost(String skyblockApiId) {
+		NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(skyblockApiId);
 		if (neuItem != null && !neuItem.getRecipes().isEmpty()) {
 			return CraftPriceTooltip.getItemCost(neuItem.getRecipes().getFirst(), 0);
 		}
@@ -489,14 +489,14 @@ public final class ItemUtils {
 	/**
 	 * Checks if the given item ID represents an equipment piece.
 	 */
-	public static boolean isEquipment(String itemId) {
-		return (itemId.contains("BELT") ||
-				itemId.contains("GLOVES") ||
-				itemId.contains("CLOAK") ||
-				itemId.contains("GAUNTLET") ||
-				itemId.contains("NECKLACE") ||
-				itemId.contains("BRACELET") ||
-				itemId.contains("HAT"));
+	public static boolean isEquipment(String skyblockApiId) {
+		return (skyblockApiId.contains("BELT") ||
+				skyblockApiId.contains("GLOVES") ||
+				skyblockApiId.contains("CLOAK") ||
+				skyblockApiId.contains("GAUNTLET") ||
+				skyblockApiId.contains("NECKLACE") ||
+				skyblockApiId.contains("BRACELET") ||
+				skyblockApiId.contains("HAT"));
 	}
 
 	public static boolean isSoulbound(ItemStack stack) {

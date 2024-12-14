@@ -13,7 +13,7 @@ public class Donation {
     private final List<ObjectObjectMutablePair<String, PriceData>> set;
     private final List<String> downgrades = new ArrayList<>();
     private final int xp;
-    private List<ObjectIntPair<String>> countsTowards;// downgrades not donated
+	private List<ObjectIntPair<String>> countsTowards;
     private PriceData priceData;
     private ObjectDoublePair<String> discount;
     private int totalXp;
