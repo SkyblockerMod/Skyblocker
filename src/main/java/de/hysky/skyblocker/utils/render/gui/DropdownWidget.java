@@ -161,13 +161,14 @@ public class DropdownWidget<T> extends ContainerWidget {
 				int i = this.getScrollbarX();
 				int j = this.getScrollbarThumbHeight();
 				int k = this.getScrollbarThumbY();
-				context.drawVerticalLine(i, k, k + j, -1);
+				// Modified from DrawContext#drawVerticalLine
+				context.fill(i, k + 1, i + 2, k + j, -1);
 			}
 		}
 
 		@Override
 		protected int getScrollbarX() {
-			return getRowLeft() + getRowWidth() + 1;
+			return getRowLeft() + getRowWidth();
 		}
 
 		// Visible
@@ -236,7 +237,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 			// drawScrollableText does some weird stuff with the y value, so we put startY = y and endY = y + 11 which makes the text render on the same line as the tick mark below (y + 2).
 			drawScrollableText(context, client.textRenderer, Text.literal(entry.toString()).fillStyle(Style.EMPTY.withUnderline(hovered)), x + 10, y, x + entryWidth, y + 11, -1);
 			if (selected == this.entry) {
-				context.drawTextWithShadow(client.textRenderer, "✔", x, y + 2, 0xFFFFFFFF);
+				context.drawTextWithShadow(client.textRenderer, "✔", x + 1, y + 2, 0xFFFFFFFF);
 			}
 		}
 
