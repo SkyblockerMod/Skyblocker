@@ -71,6 +71,7 @@ public class ProfileViewerScreen extends Screen {
 
     public ProfileViewerScreen(String username) {
         super(TITLE);
+
         fetchPlayerData(username).thenRun(this::initialisePagesAndWidgets);
 
         for (int i = 0; i < PAGE_NAMES.length; i++) {
@@ -132,6 +133,10 @@ public class ProfileViewerScreen extends Screen {
     }
 
     private CompletableFuture<Void> fetchPlayerData(String username) {
+        
+        if(username.isEmpty()){
+            username = CLIENT.getSession().getUsername();
+        }
         CompletableFuture<Void> profileFuture = ProfileUtils.fetchFullProfile(username).thenAccept(profiles -> {
             try {
                 Optional<JsonObject> selectedProfile = profiles.getAsJsonArray("profiles").asList().stream()
