@@ -168,9 +168,25 @@ public abstract class InGameHudMixin {
         this.layeredDrawer.addLayer(HudRenderEvents.LAST.invoker()::onRender);
     }
 
-	// TODO switch to fabric event when available
-    @Inject(method = "renderPlayerList", at = @At("HEAD"))
+    // Renders the hud (always on screen) widgets.
+    // Inject before the debug hud, this injection point is identical to the after main hud event
+    // z = 200
+    // TODO: Switch to fabric event when available
+    // TODO: The after sleep/before demo timer injection point gives z = 1600,
+    // 		 and due to the z offset that comes with item rendering, it still renders above the debug hud
+    @Inject(method = "renderMainHud", at = @At("RETURN"))
     private void skyblocker$renderHud(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
+        skyblocker$renderTabHudInternal(context, true);
+    }
+
+    // Renders the tab widgets
+    // TODO: Switch to fabric event when available
+    @Inject(method = "renderPlayerList", at = @At("HEAD"))
+    private void skyblocker$renderTabHud(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
+        skyblocker$renderTabHudInternal(context, false);
+    }
+
+    private void skyblocker$renderTabHudInternal(DrawContext context, boolean hud) {
         if (!Utils.isOnSkyblock()) return;
         MinecraftClient client = MinecraftClient.getInstance();
 
@@ -180,7 +196,7 @@ public abstract class InGameHudMixin {
         MatrixStack matrices = context.getMatrices();
         matrices.push();
         matrices.scale(scale, scale, 1.F);
-        ScreenMaster.render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale));
+        ScreenMaster.render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale), hud);
         matrices.pop();
     }
 

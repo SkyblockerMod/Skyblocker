@@ -59,22 +59,22 @@ public class ScreenMaster {
 	 * Top level render method.
 	 * Calls the appropriate ScreenBuilder with the screen's dimensions
 	 * Called in PlayerListHudMixin
+	 *
+	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
-	public static void render(DrawContext context, int w, int h) {
+	public static void render(DrawContext context, int w, int h, boolean hud) {
 		MinecraftClient client = MinecraftClient.getInstance();
-		ScreenLayer screenLayer;
+		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
 		if (client.options.playerListKey.isPressed()) {
-			if (TabHud.defaultTgl.isPressed()) return;
+			if (hud || TabHud.defaultTgl.isPressed()) return;
 			if (TabHud.toggleSecondary.isPressed()) {
-				screenLayer = ScreenLayer.SECONDARY_TAB;
+				screenBuilder.run(context, w, h, ScreenLayer.SECONDARY_TAB);
 			} else {
-				screenLayer = ScreenLayer.MAIN_TAB;
+				screenBuilder.run(context, w, h, ScreenLayer.MAIN_TAB);
 			}
-		} else {
-			screenLayer = ScreenLayer.HUD;
+		} else if (hud) {
+			screenBuilder.run(context, w, h, ScreenLayer.HUD);
 		}
-
-		getScreenBuilder(Utils.getLocation()).run(context, w, h, screenLayer);
 	}
 
 	public static void loadConfig() {

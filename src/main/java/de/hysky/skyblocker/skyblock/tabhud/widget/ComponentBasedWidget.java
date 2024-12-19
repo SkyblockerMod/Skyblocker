@@ -108,8 +108,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		RenderSystem.enableDepthTest();
 		ms.push();
 
-		// move above other UI elements
-		ms.translate(0, 0, 200);
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			GameOptions options = MinecraftClient.getInstance().options;
 			int textBackgroundColor = options.getTextBackgroundColor(DEFAULT_COL_BG_BOX);
