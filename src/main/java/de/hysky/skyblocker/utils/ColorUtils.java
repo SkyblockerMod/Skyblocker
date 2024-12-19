@@ -26,6 +26,14 @@ public class ColorUtils {
 	}
 
 	/**
+	 * @param pcnt Percentage between 0% and 100%, NOT 0-1!
+	 * @return an int representing a color, where 100% = green and 0% = red
+	 */
+	public static int percentToColor(float pcnt) {
+		return MathHelper.hsvToRgb(pcnt / 300, 1, 1);
+	}
+
+	/**
 	 * Interpolates linearly between two colours.
 	 */
 	//Credit to https://codepen.io/OliverBalfour/post/programmatically-making-gradients
