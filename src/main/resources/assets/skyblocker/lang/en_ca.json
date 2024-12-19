@@ -32,7 +32,6 @@
     "skyblocker.config.dungeons.livid.enableLividColorTitle": "Enable Livid Colour Title",
     "skyblocker.config.dungeons.livid.enableLividColorTitle.@Tooltip": "Display the livid colour in the title during the Livid boss fight.",
     "skyblocker.end.hud.protectorLocations.center": "Centre",
-    "skyblocker.waypoints.ordered.add.invalidHexColor": "§cInvalid HEX colour code!",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.replace.@Tooltip": "Input a new message to output (can be formatted using minecraft colour codes).",
     "skyblocker.tips.customAnimatedDyes": "You can apply a custom animated dye to your leather armour with /skyblocker custom animatedDye!",
     "skyblocker.customAnimatedDyes.invalidHex": "§cAn invalid HEX colour code was supplied!",
@@ -55,5 +54,8 @@
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Displays a warning when you're in danger from a tentacle slam or from TNT. The colour of the warning adapts to the danger level!",
     "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "Chest Highlight Colour",
     "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "What colour the treasure chests / lock pick should be highlighted.",
-    "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "If Boss Highlighting is on, applies a colour matching the current attunement to the selected effect."
+    "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "If Boss Highlighting is on, applies a colour matching the current attunement to the selected effect.",
+    "skyblocker.config.debug.dumpFormat.@Tooltip": "The format to use when dumping items. SNBT is coloured and easier to read while JSON has escaped string characters (double quotes).",
+    "skyblocker.bars.config.textPosition.BAR_CENTER": "Bar Centre",
+    "skyblocker.bars.config.textPosition.CENTER": "Centre"
 }
