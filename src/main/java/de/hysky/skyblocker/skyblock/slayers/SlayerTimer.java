@@ -101,11 +101,11 @@ public class SlayerTimer {
 
 	private static String formatTime(Duration duration) {
 		double seconds = duration.toMillis() / 1000.0;
-		return String.format("%.2fsc", seconds);
+		return String.format("%.2fseconds", seconds);
 	}
 
 	private static Duration parseTime(String formattedTime) {
-		double seconds = Double.parseDouble(formattedTime.replace("sc", ""));
+		double seconds = Double.parseDouble(formattedTime.replace("seconds", ""));
 		return Duration.ofMillis((long) (seconds * 1000));
 	}
 
