@@ -1,5 +1,5 @@
 {
-    "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defence & XP Bars",
+    "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defence, Speed & XP Bars",
     "skyblocker.config.dungeons.croesusHelper.@Tooltip": "Grey out chests that have already been opened.",
     "skyblocker.config.dungeons.livid": "Livid Colour",
     "skyblocker.config.dungeons.livid.enableLividColorText": "Enable Livid Colour Text",
@@ -9,7 +9,7 @@
     "skyblocker.config.dungeons.terminals.solveColor": "Solve Select Coloured",
     "skyblocker.customDyeColors.notDyeable": "§cThis item isn't a dyeable armour piece!",
     "skyblocker.customDyeColors.added": "§fSet a custom dye colour for your currently held item!",
-    "skyblocker.customDyeColors.noItemUuid": "§cYou must be holding an item that has a uuid in order to set a custom dye colour!",
+    "skyblocker.customDyeColors.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom dye colour!",
     "skyblocker.customArmorTrims.neverHad": "§fThis item doesn't have an armour trim set, but why not add one? ;)",
     "skyblocker.customArmorTrims.added": "§fSet a custom armour trim for your currently held item!",
     "skyblocker.customArmorTrims.unableToSetTrim": "§cUnable to set a custom armour trim :( (Are you in skyblock?, are you holding an item?)",
@@ -57,5 +57,6 @@
     "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "If Boss Highlighting is on, applies a colour matching the current attunement to the selected effect.",
     "skyblocker.config.debug.dumpFormat.@Tooltip": "The format to use when dumping items. SNBT is coloured and easier to read while JSON has escaped string characters (double quotes).",
     "skyblocker.bars.config.textPosition.BAR_CENTER": "Bar Centre",
-    "skyblocker.bars.config.textPosition.CENTER": "Centre"
+    "skyblocker.bars.config.textPosition.CENTER": "Centre",
+    "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Default Positioning Behaviour"
 }
