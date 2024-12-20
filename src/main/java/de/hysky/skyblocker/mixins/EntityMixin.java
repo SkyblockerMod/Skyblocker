@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
@@ -19,7 +20,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.UUID;
 
@@ -52,19 +52,21 @@ public abstract class EntityMixin {
 		return isSpectator || (isInvisible() && Utils.isOnHypixel() && Debug.debugEnabled() && SkyblockerConfigManager.get().debug.showInvisibleArmorStands && type.equals(EntityType.ARMOR_STAND));
 	}
 
-	@Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("RETURN"))
-	private void onStartRiding(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
-		if (cir.getReturnValue()) {
-			if (SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer && SlayerManager.isBossSpawned() && this.getType() == EntityType.ENDERMAN && entity.getType() == EntityType.ARMOR_STAND) {
+	@ModifyReturnValue(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("RETURN"))
+	private boolean modifyStartRidingReturnValue(boolean originalReturnValue, Entity entity, boolean force) {
+		if (originalReturnValue) {
+			if (SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer
+					&& SlayerManager.isBossSpawned()
+					&& this.getType() == EntityType.ENDERMAN
+					&& entity.getType() == EntityType.ARMOR_STAND) {
 				Entity slayer = SlayerManager.getSlayerBoss();
-				if (slayer != null) {
-					if (slayer.getUuid().equals(getUuid()) && !LazerTimer.isRiding()) {
-						LazerTimer.resetTimer();
-						LazerTimer.setRiding(true);
-					}
+				if (slayer != null && slayer.getUuid().equals(getUuid()) && !LazerTimer.isRiding()) {
+					LazerTimer.resetTimer();
+					LazerTimer.setRiding(true);
 				}
 			}
 		}
+		return originalReturnValue;
 	}
 
 	@Inject(method = "tick", at = @At("TAIL"))

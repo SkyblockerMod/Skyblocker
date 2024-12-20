@@ -58,29 +58,28 @@ public class SlayerManager {
 	}
 
 	private static void onChatMessage(Text text, boolean b) {
+		if (!Utils.isOnSkyblock() || b) return;
 		String message = text.getString();
 
 		switch (message.replaceFirst("^\\s+", "")) {
-			case "Your Slayer Quest has been cancelled!", "SLAYER QUEST FAILED!":
+			case "Your Slayer Quest has been cancelled!", "SLAYER QUEST FAILED!" -> {
 				slayerQuest = null;
 				bossFight = null;
-				return;
-			case "SLAYER QUEST STARTED!":
-				if (slayerQuest == null) {
-					slayerQuest = new SlayerQuest();
-				}
-				return;
-			case "NICE! SLAYER BOSS SLAIN!":
+			}
+			case "SLAYER QUEST STARTED!" -> {
+				if (slayerQuest == null) slayerQuest = new SlayerQuest();
+			}
+			case "NICE! SLAYER BOSS SLAIN!" -> {
 				if (slayerQuest != null && bossFight != null) {
 					bossFight.slain = true;
 					SlayerTimer.onBossDeath(bossFight.bossSpawnTime);
 				}
-				return;
-			case "SLAYER QUEST COMPLETE!":
+			}
+			case "SLAYER QUEST COMPLETE!" -> {
 				if (slayerQuest != null && bossFight != null && !bossFight.slain)
 					SlayerTimer.onBossDeath(bossFight.bossSpawnTime);
 				bossFight = null;
-				return;
+			}
 		}
 
 		if (slayerQuest == null) return;
@@ -189,7 +188,7 @@ public class SlayerManager {
 	 */
 	public static <T extends Entity> T findClosestMobEntity(EntityType<T> entityType, ArmorStandEntity armorStand) {
 		List<T> mobEntities = armorStand.getWorld().getEntitiesByType(entityType, armorStand.getBoundingBox().expand(0, 1.5f, 0), SlayerManager::isValidSlayerMob);
-		mobEntities.sort(Comparator.comparingDouble(e -> e.squaredDistanceTo(armorStand)));
+		mobEntities.sort(Comparator.comparingDouble(armorStand::squaredDistanceTo));
 
 		return switch (mobEntities.size()) {
 			case 0 -> null;

@@ -10,7 +10,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class LazerTimer {
-
 	public static double remainingTime = 0;
 	private static boolean isRiding = false;
 

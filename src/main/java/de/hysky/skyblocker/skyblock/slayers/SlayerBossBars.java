@@ -5,12 +5,13 @@ import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
 
+import java.util.Locale;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SlayerBossBars {
-	public static final UUID uuid = UUID.randomUUID();
+	public static final UUID UUID = java.util.UUID.randomUUID();
 	private static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?[kM]?)(?=❤)");
 	private static final long UPDATE_INTERVAL = 400;
 	private static int bossMaxHealth = -1;
@@ -52,7 +53,7 @@ public class SlayerBossBars {
 	 */
 	public static ClientBossBar updateBossBar() {
 		ArmorStandEntity slayer = SlayerManager.getSlayerBossArmorStand();
-		if (bossBar == null) bossBar = new ClientBossBar(uuid, slayer != null ? slayer.getDisplayName() : Text.of("Attempting to Locate Slayer..."), 1f, BossBar.Color.PURPLE, BossBar.Style.PROGRESS, false, false, false);
+		if (bossBar == null) bossBar = new ClientBossBar(UUID, slayer != null ? slayer.getDisplayName() : Text.of("Attempting to Locate Slayer..."), 1f, BossBar.Color.PURPLE, BossBar.Style.PROGRESS, false, false, false);
 
 		// If no slayer armor stand is found, display a red progress bar
 		if (slayer == null) {
@@ -82,7 +83,7 @@ public class SlayerBossBars {
 			return 0;
 		}
 
-		value = value.replace(",", "").trim().toLowerCase();
+		value = value.replace(",", "").trim().toLowerCase(Locale.ENGLISH);
 		double multiplier = 1.0;
 
 		if (value.endsWith("m")) {

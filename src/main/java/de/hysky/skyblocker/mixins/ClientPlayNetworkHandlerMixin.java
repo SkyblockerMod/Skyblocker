@@ -114,21 +114,23 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		return !Utils.isOnHypixel();
 	}
 
-	@Inject(method = "onPlaySound", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
+	@Inject(method = "onPlaySound", at = @At("RETURN"))
+	private void skyblocker$onSoundProcessing(PlaySoundS2CPacket packet, CallbackInfo ci) {
 		FishingHelper.onSound(packet);
 		CrystalsChestHighlighter.onSound(packet);
+	}
+
+	@Inject(method = "onPlaySound", at = @At("HEAD"), cancellable = true)
+	private void skyblocker$cancelEndermanSounds(PlaySoundS2CPacket packet, CallbackInfo ci) {
 		SoundEvent sound = packet.getSound().value();
 
 		// Mute Enderman sounds in the End
 		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().otherLocations.end.muteEndermanSounds) {
-			// Check if the sound identifier matches any Enderman sound identifiers
 			if (sound.id().equals(SoundEvents.ENTITY_ENDERMAN_AMBIENT.id()) ||
 					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_DEATH.id()) ||
 					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_HURT.id()) ||
 					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_SCREAM.id()) ||
 					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_STARE.id())) {
-				// Cancel the playback of Enderman sounds
 				ci.cancel();
 			}
 		}
