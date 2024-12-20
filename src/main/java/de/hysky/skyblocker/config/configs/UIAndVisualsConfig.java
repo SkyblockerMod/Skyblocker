@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UIAndVisualsConfig {
-
 	@SerialEntry
 	public int nightVisionStrength = 100;
 

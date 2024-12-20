@@ -28,6 +28,7 @@ public class UIAndVisualsCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
 				.name(Text.translatable("skyblocker.config.uiAndVisuals"))
+
                 //Ungrouped Options
 				.option(Option.<Integer>createBuilder()
 						.name(Text.translatable("skyblocker.config.uiAndVisuals.nightVisionStrength"))
