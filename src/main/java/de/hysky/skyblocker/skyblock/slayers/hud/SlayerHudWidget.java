@@ -5,24 +5,41 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerTier;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.text.NumberFormat;
+import java.util.Set;
 
-public class SlayerHudWidget extends Widget {
+public class SlayerHudWidget extends ComponentBasedWidget {
 	public static final SlayerHudWidget INSTANCE = new SlayerHudWidget();
 	private final MinecraftClient client = MinecraftClient.getInstance();
 	private final NumberFormat numberFormat = NumberFormat.getInstance();
 
 	public SlayerHudWidget() {
-		super(Text.literal("Slayer").formatted(Formatting.DARK_PURPLE, Formatting.BOLD), Formatting.DARK_PURPLE.getColorValue());
+		super(Text.literal("Slayer").formatted(Formatting.DARK_PURPLE, Formatting.BOLD), Formatting.DARK_PURPLE.getColorValue(), "hud_slayer");
 		setX(SkyblockerConfigManager.get().slayers.slayerHud.x);
 		setY(SkyblockerConfigManager.get().slayers.slayerHud.y);
 		update();
+	}
+
+	@Override
+	public Set<Location> availableLocations() {
+		return Set.of(Location.values());
+	}
+
+	@Override
+	public void setEnabledIn(Location location, boolean enabled) {
+		SkyblockerConfigManager.get().slayers.slayerHud.enableHud = enabled;
+	}
+
+	@Override
+	public boolean isEnabledIn(Location location) {
+		return SkyblockerConfigManager.get().slayers.slayerHud.enableHud;
 	}
 
 	@Override
@@ -50,5 +67,10 @@ public class SlayerHudWidget extends Widget {
 		if (bossesNeeded > 0) {
 			addComponent(new IcoTextComponent(Ico.DIASWORD, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal(numberFormat.format(bossesNeeded)).formatted(Formatting.LIGHT_PURPLE))));
 		}
+	}
+
+	@Override
+	public Text getDisplayName() {
+		return Text.literal("Slayer Hud");
 	}
 }
