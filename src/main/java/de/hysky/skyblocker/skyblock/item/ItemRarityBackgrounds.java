@@ -91,10 +91,11 @@ public class ItemRarityBackgrounds {
 			}
 		} else {
 			PetInfo info = stack.getPetInfo();
-			SkyblockItemRarity rarity = info.rarity();
-
-			CACHE.put(hashCode, rarity);
-			return rarity;
+			if (!info.isEmpty()) {
+				SkyblockItemRarity rarity = info.rarity();
+				CACHE.put(hashCode, rarity);
+				return rarity;
+			}
 		}
 
 		CACHE.put(hashCode, null);

@@ -34,7 +34,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -68,7 +67,7 @@ public class CrystalsLocationsManager {
 
     protected static Map<String, MiningLocationLabel> activeWaypoints = new HashMap<>();
     protected static List<String> verifiedWaypoints = new ArrayList<>();
-    private static List<MiningLocationLabel.CrystalHollowsLocationsCategory> waypointsSent2Socket = new ArrayList<>();
+    private static final List<MiningLocationLabel.CrystalHollowsLocationsCategory> waypointsSent2Socket = new ArrayList<>();
 
     @Init
     public static void init() {
@@ -325,6 +324,7 @@ public class CrystalsLocationsManager {
 
     public static void addCustomWaypointFromSocket(MiningLocationLabel.CrystalHollowsLocationsCategory category, BlockPos pos) {
         if (activeWaypoints.containsKey(category.getName())) return;
+        if (category == MiningLocationLabel.CrystalHollowsLocationsCategory.FAIRY_GROTTO && !SkyblockerConfigManager.get().mining.crystalsWaypoints.shareFairyGrotto) return;
 
         removeUnknownNear(pos);
         MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
@@ -396,9 +396,10 @@ public class CrystalsLocationsManager {
     }
 
     private static void trySendWaypoint2Socket(MiningLocationLabel.CrystalHollowsLocationsCategory category) {
-        if (!waypointsSent2Socket.contains(category)) {
-            WsMessageHandler.sendMessage(Service.CRYSTAL_WAYPOINTS, new CrystalsWaypointMessage(category, CLIENT.player.getBlockPos()));
-            waypointsSent2Socket.add(category);
-        }
+        if (waypointsSent2Socket.contains(category)) return;
+        if (category == MiningLocationLabel.CrystalHollowsLocationsCategory.FAIRY_GROTTO && !SkyblockerConfigManager.get().mining.crystalsWaypoints.shareFairyGrotto) return;
+
+        WsMessageHandler.sendMessage(Service.CRYSTAL_WAYPOINTS, new CrystalsWaypointMessage(category, CLIENT.player.getBlockPos()));
+        waypointsSent2Socket.add(category);
     }
 }
