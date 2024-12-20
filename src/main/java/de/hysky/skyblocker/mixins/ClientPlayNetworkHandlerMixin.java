@@ -44,17 +44,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkHandler {
+public abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
 	private ClientWorld world;
 
 	@Shadow
 	@Final
 	private static Logger LOGGER;
-
-	protected ClientPlayNetworkHandlerMixin(MinecraftClient client, ClientConnection connection, ClientConnectionState connectionState) {
-		super(client, connection, connectionState);
-	}
 
 	@Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
 	private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
