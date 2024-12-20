@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.slayers.hud;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerTier;
@@ -15,6 +16,7 @@ import net.minecraft.util.Formatting;
 import java.text.NumberFormat;
 import java.util.Set;
 
+@RegisterWidget
 public class SlayerHudWidget extends ComponentBasedWidget {
 	public static final SlayerHudWidget INSTANCE = new SlayerHudWidget();
 	private final MinecraftClient client = MinecraftClient.getInstance();
@@ -34,12 +36,13 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
+		if (!availableLocations().contains(location)) return;
 		SkyblockerConfigManager.get().slayers.slayerHud.enableHud = enabled;
 	}
 
 	@Override
 	public boolean isEnabledIn(Location location) {
-		return SkyblockerConfigManager.get().slayers.slayerHud.enableHud;
+		return availableLocations().contains(location) && SkyblockerConfigManager.get().slayers.slayerHud.enableHud && SlayerManager.isInSlayer() && !SlayerManager.getSlayerType().isUnknown() && !SlayerManager.getSlayerTier().isUnknown();
 	}
 
 	@Override
