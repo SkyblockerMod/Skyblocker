@@ -142,8 +142,8 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 
         //TODO Come up with a better, less hacky solution for this in the future (:
         if (changedScale && parent instanceof YACLScreen yaclScreen) {
-            ConfigCategory category = yaclScreen.config.categories().stream().filter(cat -> ((TranslatableTextContent) cat.name().getContent()).getKey().equals("skyblocker.config.uiAndVisuals")).findFirst().orElseThrow();
-			OptionGroup group = category.groups().stream().filter(grp -> ((TranslatableTextContent) grp.name().getContent()).getKey().equals("skyblocker.config.uiAndVisuals.titleContainer")).findFirst().orElseThrow();
+            ConfigCategory category = yaclScreen.config.categories().stream().filter(cat -> cat.name().getContent() instanceof TranslatableTextContent translatable && translatable.getKey().equals("skyblocker.config.uiAndVisuals")).findFirst().orElseThrow();
+			OptionGroup group = category.groups().stream().filter(grp -> grp.name().getContent() instanceof TranslatableTextContent translatable && translatable.getKey().equals("skyblocker.config.uiAndVisuals.titleContainer")).findFirst().orElseThrow();
 
             // Refresh the value in the config with the bound value
             group.options().getFirst().forgetPendingValue();
