@@ -12,7 +12,7 @@ public class MiningConfig {
     @SerialEntry
     public DwarvenMines dwarvenMines = new DwarvenMines();
 
-    @SerialEntry
+	@Deprecated
     public DwarvenHud dwarvenHud = new DwarvenHud();
 
     @SerialEntry
@@ -41,26 +41,27 @@ public class MiningConfig {
         public boolean solvePuzzler = true;
     }
 
+	@Deprecated
     public static class DwarvenHud {
-        @SerialEntry
+        @Deprecated
         public boolean enabledCommissions = true;
 
-        @SerialEntry
+        @Deprecated
         public boolean enabledPowder = true;
 
-        @SerialEntry
+        @Deprecated
         public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
 
-        @SerialEntry
+        @Deprecated
         public int commissionsX = 10;
 
-        @SerialEntry
+        @Deprecated
         public int commissionsY = 10;
 
-        @SerialEntry
+        @Deprecated
         public int powderX = 10;
 
-        @SerialEntry
+        @Deprecated
         public int powderY = 70;
     }
 

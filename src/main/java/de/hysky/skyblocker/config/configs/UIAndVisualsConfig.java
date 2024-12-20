@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import net.minecraft.client.resource.language.I18n;
@@ -162,12 +163,19 @@ public class UIAndVisualsConfig {
         public boolean enableHudBackground = true;
 
         @SerialEntry
-        public boolean plainPlayerNames = false;
+        public boolean effectsFromFooter = false;
 
         @SerialEntry
+        public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
+
+        @Deprecated
+        public boolean plainPlayerNames = false;
+
+        @Deprecated
         public NameSorting nameSorting = NameSorting.DEFAULT;
     }
 
+    @Deprecated
     public enum NameSorting {
         DEFAULT, ALPHABETICAL;
 

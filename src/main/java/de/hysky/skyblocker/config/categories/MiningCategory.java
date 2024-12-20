@@ -3,10 +3,11 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.MiningConfig;
-import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudConfigScreen;
-import de.hysky.skyblocker.skyblock.dwarven.DwarvenHudConfigScreen;
+import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
@@ -53,41 +54,6 @@ public class MiningCategory {
                                         () -> config.mining.dwarvenMines.solvePuzzler,
                                         newValue -> config.mining.dwarvenMines.solvePuzzler = newValue)
                                 .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .build())
-
-                //Dwarven HUD
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.mining.dwarvenHud"))
-                        .collapsed(false)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.dwarvenHud.enabledCommissions"))
-                                .binding(defaults.mining.dwarvenHud.enabledCommissions,
-                                        () -> config.mining.dwarvenHud.enabledCommissions,
-                                        newValue -> config.mining.dwarvenHud.enabledCommissions = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.dwarvenHud.enabledPowder"))
-                                .binding(defaults.mining.dwarvenHud.enabledPowder,
-                                        () -> config.mining.dwarvenHud.enabledPowder,
-                                        newValue -> config.mining.dwarvenHud.enabledPowder = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<MiningConfig.DwarvenHudStyle>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.dwarvenHud.style"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[0]"),
-                                        Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[1]"),
-                                        Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[2]")))
-                                .binding(defaults.mining.dwarvenHud.style,
-                                        () -> config.mining.dwarvenHud.style,
-                                        newValue -> config.mining.dwarvenHud.style = newValue)
-                                .controller(ConfigUtils::createEnumCyclingListController)
-                                .build())
-                        .option(ButtonOption.createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.dwarvenHud.screen"))
-                                .text(Text.translatable("text.skyblocker.open"))
-                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new DwarvenHudConfigScreen(screen)))
                                 .build())
                         .build())
 
@@ -142,7 +108,7 @@ public class MiningCategory {
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.crystalsHud.screen"))
                                 .text(Text.translatable("text.skyblocker.open"))
-                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new CrystalsHudConfigScreen(screen)))
+                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.CRYSTAL_HOLLOWS, CrystalsHudWidget.getInstance().getInternalID(), screen)))
                                 .build())
                         .option(Option.<Float>createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.crystalsHud.mapScaling"))

@@ -11,30 +11,30 @@ import net.minecraft.util.Formatting;
  */
 public class IcoTextComponent extends Component {
 
-    private ItemStack ico;
-    private Text text;
+	private ItemStack ico;
+	private Text text;
 
-    public IcoTextComponent(ItemStack ico, Text txt) {
-        this.ico = (ico == null) ? Ico.BARRIER : ico;
-        this.text = txt;
+	public IcoTextComponent(ItemStack ico, Text txt) {
+		this.ico = (ico == null) ? Ico.BARRIER : ico;
+		this.text = txt;
 
-        if (txt == null) {
-            this.ico = Ico.BARRIER;
-            this.text = Text.literal("No data").formatted(Formatting.GRAY);
-        }
+		if (txt == null) {
+			this.ico = Ico.BARRIER;
+			this.text = Text.literal("No data").formatted(Formatting.GRAY);
+		}
 
-        this.width = ICO_DIM + PAD_L + txtRend.getWidth(this.text);
-        this.height = ICO_DIM;
-    }
+		this.width = ICO_DIM + PAD_L + txtRend.getWidth(this.text);
+		this.height = ICO_DIM;
+	}
 
-    public IcoTextComponent() {
-        this(null, null);
-    }
+	public IcoTextComponent() {
+		this(null, null);
+	}
 
-    @Override
-    public void render(DrawContext context, int x, int y) {
-        context.drawItem(ico, x, y);
-        context.drawText(txtRend, text, x + ICO_DIM + PAD_L, y + 5, 0xffffffff, false);
-    }
+	@Override
+	public void render(DrawContext context, int x, int y) {
+		context.drawItem(ico, x, y);
+		context.drawText(txtRend, text, x + ICO_DIM + PAD_L, y + 5, 0xffffffff, false);
+	}
 
 }
