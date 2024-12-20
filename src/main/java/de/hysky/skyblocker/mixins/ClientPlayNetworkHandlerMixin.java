@@ -48,9 +48,9 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	@Shadow
 	private ClientWorld world;
 
-    @Shadow
-    @Final
-    private static Logger LOGGER;
+	@Shadow
+	@Final
+	private static Logger LOGGER;
 
 	protected ClientPlayNetworkHandlerMixin(MinecraftClient client, ClientConnection connection, ClientConnectionState connectionState) {
 		super(client, connection, connectionState);
@@ -73,22 +73,22 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	}
 
 	@Inject(method = "method_64896", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V"))
-    private void skyblocker$onItemDestroy(int entityId, CallbackInfo ci) {
-        if (world.getEntityById(entityId) instanceof ItemEntity itemEntity) {
-            DungeonManager.onItemPickup(itemEntity);
-        }
-    }
+	private void skyblocker$onItemDestroy(int entityId, CallbackInfo ci) {
+		if (world.getEntityById(entityId) instanceof ItemEntity itemEntity) {
+			DungeonManager.onItemPickup(itemEntity);
+		}
+	}
 
-    @ModifyVariable(method = "onItemPickupAnimation", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V", ordinal = 0))
-    private ItemEntity skyblocker$onItemPickup(ItemEntity itemEntity) {
-        DungeonManager.onItemPickup(itemEntity);
-        return itemEntity;
-    }
+	@ModifyVariable(method = "onItemPickupAnimation", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V", ordinal = 0))
+	private ItemEntity skyblocker$onItemPickup(ItemEntity itemEntity) {
+		DungeonManager.onItemPickup(itemEntity);
+		return itemEntity;
+	}
 
-    @WrapWithCondition(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;)V", remap = false))
-    private boolean skyblocker$cancelEntityPassengersWarning(Logger instance, String msg) {
-        return !Utils.isOnHypixel();
-    }
+	@WrapWithCondition(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;)V", remap = false))
+	private boolean skyblocker$cancelEntityPassengersWarning(Logger instance, String msg) {
+		return !Utils.isOnHypixel();
+	}
 
 	@ModifyExpressionValue(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/EntityStatusS2CPacket;getEntity(Lnet/minecraft/world/World;)Lnet/minecraft/entity/Entity;"))
 	private Entity skyblocker$onEntityDeath(Entity entity, @Local(argsOnly = true) EntityStatusS2CPacket packet) {
@@ -109,15 +109,15 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		PlayerListMgr.updateFooter(packet.footer());
 	}
 
-    @WrapWithCondition(method = "onPlayerList", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false))
-    private boolean skyblocker$cancelPlayerListWarning(Logger instance, String format, Object arg1, Object arg2) {
-        return !Utils.isOnHypixel();
-    }
+	@WrapWithCondition(method = "onPlayerList", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false))
+	private boolean skyblocker$cancelPlayerListWarning(Logger instance, String format, Object arg1, Object arg2) {
+		return !Utils.isOnHypixel();
+	}
 
-    @Inject(method = "onPlaySound", at = @At("HEAD"), cancellable = true)
-    private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
-        FishingHelper.onSound(packet);
-        CrystalsChestHighlighter.onSound(packet);
+	@Inject(method = "onPlaySound", at = @At("HEAD"), cancellable = true)
+	private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
+		FishingHelper.onSound(packet);
+		CrystalsChestHighlighter.onSound(packet);
 		SoundEvent sound = packet.getSound().value();
 
 		// Mute Enderman sounds in the End
@@ -132,29 +132,29 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 				ci.cancel();
 			}
 		}
-    }
+	}
 
-    @WrapWithCondition(method = "warnOnUnknownPayload", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
-    private boolean skyblocker$dropBadlionPacketWarnings(Logger instance, String message, Object identifier) {
-        return !(Utils.isOnHypixel() && ((Identifier) identifier).getNamespace().equals("badlion"));
-    }
+	@WrapWithCondition(method = "warnOnUnknownPayload", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
+	private boolean skyblocker$dropBadlionPacketWarnings(Logger instance, String message, Object identifier) {
+		return !(Utils.isOnHypixel() && ((Identifier) identifier).getNamespace().equals("badlion"));
+	}
 
-    @WrapWithCondition(method = {"onScoreboardScoreUpdate", "onScoreboardScoreReset"}, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
-    private boolean skyblocker$cancelUnknownScoreboardObjectiveWarnings(Logger instance, String message, Object objectiveName) {
-        return !Utils.isOnHypixel();
-    }
+	@WrapWithCondition(method = {"onScoreboardScoreUpdate", "onScoreboardScoreReset"}, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
+	private boolean skyblocker$cancelUnknownScoreboardObjectiveWarnings(Logger instance, String message, Object objectiveName) {
+		return !Utils.isOnHypixel();
+	}
 
-    @WrapWithCondition(method = "onTeam", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;[Ljava/lang/Object;)V", remap = false))
-    private boolean skyblocker$cancelTeamWarning(Logger instance, String format, Object... arg) {
-        return !Utils.isOnHypixel();
-    }
+	@WrapWithCondition(method = "onTeam", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;[Ljava/lang/Object;)V", remap = false))
+	private boolean skyblocker$cancelTeamWarning(Logger instance, String format, Object... arg) {
+		return !Utils.isOnHypixel();
+	}
 
-    @Inject(method = "onParticle", at = @At("RETURN"))
-    private void skyblocker$onParticle(ParticleS2CPacket packet, CallbackInfo ci) {
-        MythologicalRitual.onParticle(packet);
-        DojoManager.onParticle(packet);
-        CrystalsChestHighlighter.onParticle(packet);
-        EnderNodes.onParticle(packet);
-        WishingCompassSolver.onParticle(packet);
-    }
+	@Inject(method = "onParticle", at = @At("RETURN"))
+	private void skyblocker$onParticle(ParticleS2CPacket packet, CallbackInfo ci) {
+		MythologicalRitual.onParticle(packet);
+		DojoManager.onParticle(packet);
+		CrystalsChestHighlighter.onParticle(packet);
+		EnderNodes.onParticle(packet);
+		WishingCompassSolver.onParticle(packet);
+	}
 }
