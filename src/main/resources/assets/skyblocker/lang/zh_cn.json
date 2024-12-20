@@ -83,7 +83,7 @@
     "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Livid Boss战时发送到聊天栏的信息， 字段 “[color]” 将被替换为真Livid的颜色。",
     "key.skyblocker.defaultTgl": "将tab键所显示的列表改为默认空岛生存列表",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudEnabled": "启用更好的Tab HUD",
-    "skyblocker.config.uiAndVisuals.tabHud": "更好的Tab HUD（在地牢外临时禁用）",
+    "skyblocker.config.uiAndVisuals.tabHud": "更好的HUD和TAB",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudScale": "更好的Tab HUD缩放大小",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip": "相对于原版GUI的百分比大小",
     "skyblocker.config.mining.dwarvenHud.style": "HUD风格",
@@ -1002,5 +1002,6 @@
     "skyblocker.config.chat.waypoints.displayed": "已在 x: %d, y: %d, z: %d 处显示临时路径点 | %s",
     "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "从剪贴板导出路径点（Skyblocker格式）",
     "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto.@Tooltip": "将Fairy Grotto的位置分享到web socket",
-    "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto": "分享Fairy Grotto"
+    "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto": "分享Fairy Grotto",
+    "skyblocker.config.uiAndVisuals.tabHud.configScreen": "打开设置界面"
 }
