@@ -17,7 +17,7 @@ public class SlayerHud {
 		HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
 			if (shouldRender()) {
 				SlayerHudWidget.INSTANCE.update();
-				SlayerHudWidget.INSTANCE.render(context, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
+				SlayerHudWidget.INSTANCE.render(context);
 			}
 		});
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("hud").then(literal("slayers")
