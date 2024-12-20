@@ -57,8 +57,8 @@ public class SlayerManager {
 		Scheduler.INSTANCE.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfigManager.get().slayers.vampireSlayer.steakStakeUpdateFrequency);
 	}
 
-	private static void onChatMessage(Text text, boolean b) {
-		if (!Utils.isOnSkyblock() || b) return;
+	private static void onChatMessage(Text text, boolean overlay) {
+		if (!Utils.isOnSkyblock() || overlay) return;
 		String message = text.getString();
 
 		switch (message.replaceFirst("^\\s+", "")) {

@@ -20,16 +20,12 @@ import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientCommonNetworkHandler;
-import net.minecraft.client.network.ClientConnectionState;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -110,14 +106,10 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		return !Utils.isOnHypixel();
 	}
 
-	@Inject(method = "onPlaySound", at = @At("RETURN"))
-	private void skyblocker$onSoundProcessing(PlaySoundS2CPacket packet, CallbackInfo ci) {
+	@Inject(method = "onPlaySound", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
+	private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
 		FishingHelper.onSound(packet);
 		CrystalsChestHighlighter.onSound(packet);
-	}
-
-	@Inject(method = "onPlaySound", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$cancelEndermanSounds(PlaySoundS2CPacket packet, CallbackInfo ci) {
 		SoundEvent sound = packet.getSound().value();
 
 		// Mute Enderman sounds in the End
