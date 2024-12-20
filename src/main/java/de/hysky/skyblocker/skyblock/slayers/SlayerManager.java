@@ -65,20 +65,24 @@ public class SlayerManager {
 			case "Your Slayer Quest has been cancelled!", "SLAYER QUEST FAILED!" -> {
 				slayerQuest = null;
 				bossFight = null;
+				return;
 			}
 			case "SLAYER QUEST STARTED!" -> {
 				if (slayerQuest == null) slayerQuest = new SlayerQuest();
+				return;
 			}
 			case "NICE! SLAYER BOSS SLAIN!" -> {
 				if (slayerQuest != null && bossFight != null) {
 					bossFight.slain = true;
 					SlayerTimer.onBossDeath(bossFight.bossSpawnTime);
 				}
+				return;
 			}
 			case "SLAYER QUEST COMPLETE!" -> {
 				if (slayerQuest != null && bossFight != null && !bossFight.slain)
 					SlayerTimer.onBossDeath(bossFight.bossSpawnTime);
 				bossFight = null;
+				return;
 			}
 		}
 
