@@ -17,6 +17,7 @@ import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
@@ -55,6 +56,22 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		super(client, connection, connectionState);
 	}
 
+	@Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
+	private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
+		if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
+
+		SlayerManager.checkSlayerBoss(armorStandEntity);
+
+		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
+
+		EggFinder.checkIfEgg(armorStandEntity);
+		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
+			CompactDamage.compactDamage(armorStandEntity);
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Compact Damage] Failed to compact damage number", e);
+		}
+	}
+
 	@Inject(method = "method_64896", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V"))
     private void skyblocker$onItemDestroy(int entityId, CallbackInfo ci) {
         if (world.getEntityById(entityId) instanceof ItemEntity itemEntity) {
@@ -72,6 +89,25 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
     private boolean skyblocker$cancelEntityPassengersWarning(Logger instance, String msg) {
         return !Utils.isOnHypixel();
     }
+
+	@ModifyExpressionValue(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/EntityStatusS2CPacket;getEntity(Lnet/minecraft/world/World;)Lnet/minecraft/entity/Entity;"))
+	private Entity skyblocker$onEntityDeath(Entity entity, @Local(argsOnly = true) EntityStatusS2CPacket packet) {
+		if (packet.getStatus() == EntityStatuses.PLAY_DEATH_SOUND_OR_ADD_PROJECTILE_HIT_PARTICLES) {
+			DungeonScore.handleEntityDeath(entity);
+			TheEnd.onEntityDeath(entity);
+		}
+		return entity;
+	}
+
+	@Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
+	private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
+		EggFinder.checkIfEgg(entity);
+	}
+
+	@Inject(method = "onPlayerListHeader", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;setFooter(Lnet/minecraft/text/Text;)V"))
+	private void skyblocker$updatePlayerListFooter(PlayerListHeaderS2CPacket packet, CallbackInfo ci) {
+		PlayerListMgr.updateFooter(packet.footer());
+	}
 
     @WrapWithCondition(method = "onPlayerList", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false))
     private boolean skyblocker$cancelPlayerListWarning(Logger instance, String format, Object arg1, Object arg2) {
@@ -120,35 +156,5 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
         CrystalsChestHighlighter.onParticle(packet);
         EnderNodes.onParticle(packet);
         WishingCompassSolver.onParticle(packet);
-    }
-
-    @ModifyExpressionValue(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/EntityStatusS2CPacket;getEntity(Lnet/minecraft/world/World;)Lnet/minecraft/entity/Entity;"))
-    private Entity skyblocker$onEntityDeath(Entity entity, @Local(argsOnly = true) EntityStatusS2CPacket packet) {
-        if (packet.getStatus() == EntityStatuses.PLAY_DEATH_SOUND_OR_ADD_PROJECTILE_HIT_PARTICLES) {
-            DungeonScore.handleEntityDeath(entity);
-            TheEnd.onEntityDeath(entity);
-        }
-        return entity;
-    }
-
-    @Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
-    private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
-        if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
-
-		SlayerManager.checkSlayerBoss(armorStandEntity);
-
-        if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
-
-        EggFinder.checkIfEgg(armorStandEntity);
-        try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
-            CompactDamage.compactDamage(armorStandEntity);
-        } catch (Exception e) {
-            LOGGER.error("[Skyblocker Compact Damage] Failed to compact damage number", e);
-        }
-    }
-
-    @Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
-    private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
-        EggFinder.checkIfEgg(entity);
     }
 }

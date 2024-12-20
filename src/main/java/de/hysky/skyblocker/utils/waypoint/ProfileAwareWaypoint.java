@@ -38,7 +38,7 @@ public class ProfileAwareWaypoint extends Waypoint {
     }
 
     @Override
-    public float[] getColorComponents() {
+    public float[] getRenderColorComponents() {
         return foundProfiles.contains(Utils.getProfile()) ? foundColor : missingColor;
     }
 }

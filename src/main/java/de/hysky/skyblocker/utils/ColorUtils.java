@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils;
 
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.math.MathHelper;
 
 public class ColorUtils {
 	/**
@@ -22,5 +23,35 @@ public class ColorUtils {
 	 */
 	public static float[] getFloatComponents(DyeColor dye) {
 		return getFloatComponents(dye.getEntityColor());
+	}
+
+	/**
+	 * @param pcnt Percentage between 0% and 100%, NOT 0-1!
+	 * @return an int representing a color, where 100% = green and 0% = red
+	 */
+	public static int percentToColor(float pcnt) {
+		return MathHelper.hsvToRgb(pcnt / 300, 1, 1);
+	}
+
+	/**
+	 * Interpolates linearly between two colours.
+	 */
+	//Credit to https://codepen.io/OliverBalfour/post/programmatically-making-gradients
+	public static int interpolate(int firstColor, int secondColor, double percentage) {
+		int r1 = MathHelper.square((firstColor >> 16) & 0xFF);
+		int g1 = MathHelper.square((firstColor >> 8) & 0xFF);
+		int b1 = MathHelper.square(firstColor & 0xFF);
+
+		int r2 = MathHelper.square((secondColor >> 16) & 0xFF);
+		int g2 = MathHelper.square((secondColor >> 8) & 0xFF);
+		int b2 = MathHelper.square(secondColor & 0xFF);
+
+		double inverse = 1d - percentage;
+
+		int r3 = (int) Math.floor(Math.sqrt(r1 * inverse + r2 * percentage));
+		int g3 = (int) Math.floor(Math.sqrt(g1 * inverse + g2 * percentage));
+		int b3 = (int) Math.floor(Math.sqrt(b1 * inverse + b2 * percentage));
+
+		return (r3 << 16) | (g3 << 8 ) | b3;
 	}
 }
