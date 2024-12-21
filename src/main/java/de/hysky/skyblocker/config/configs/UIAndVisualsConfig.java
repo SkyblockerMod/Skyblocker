@@ -131,10 +131,14 @@ public class UIAndVisualsConfig {
         public int y = 10;
 
         @SerialEntry
-        public Direction direction = Direction.HORIZONTAL;
+        public Direction direction = Direction.VERTICAL;
 
         @SerialEntry
         public Alignment alignment = Alignment.MIDDLE;
+
+        public float getRenderScale() {
+            return titleContainerScale * 0.03f;
+        }
     }
 
     public enum Direction {
@@ -147,7 +151,7 @@ public class UIAndVisualsConfig {
     }
 
     public enum Alignment {
-        LEFT, RIGHT, MIDDLE;
+        LEFT, MIDDLE, RIGHT;
 
         @Override
         public String toString() {
