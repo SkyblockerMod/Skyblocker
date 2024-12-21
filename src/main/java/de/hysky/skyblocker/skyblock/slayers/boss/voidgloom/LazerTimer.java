@@ -48,7 +48,7 @@ public class LazerTimer {
 		if (isRiding) {
 			Entity boss = SlayerManager.getSlayerBoss();
 			if (boss != null) {
-				String timeText = String.format("%.2fsc", remainingTime);
+				String timeText = String.format("%.2fs", remainingTime);
 				Text renderText = Text.literal("Lazer: ").formatted(Formatting.WHITE)
 						.append(Text.literal(timeText).formatted(Formatting.GREEN).formatted(Formatting.BOLD));
 
