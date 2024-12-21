@@ -131,8 +131,6 @@
     "skyblocker.config.general.quiverWarning.enableQuiverWarningInDungeons": "Activer l'Avertissement du Carquois en Donjons",
     "skyblocker.config.uiAndVisuals.compactorDeletorPreview": "Activer l'Aperçu du Compacteur/Supprimeur",
     "skyblocker.config.general.enableTips": "Activer les Conseils",
-    "skyblocker.config.dungeons.secretWaypoints.waypointType.@Tooltip": "Waypoint : Affiche une accentuation et faisceau de beacon.\n\nWaypoint avec contour : Affiche un waypoint ET un contour.\n\nAccentuation : Affiche seulement une accentuation.\n\nAccentuation avec contour : Affiche une accentuation ET un contour.\n\nContour : Affiche seulement un contour.",
-    "skyblocker.config.dungeons.secretWaypoints.waypointType.generalNote": "\n\n\nCette option ne s'applique pas a tout les waypoints. Certains waypoints comme les waypoints pour secrets ont leur propre configuration.",
     "skyblocker.config.general.itemInfoDisplay": "Affichage des infos d'item",
     "skyblocker.config.general.itemTooltip.enableMotesPrice": "Activer le prix des motes",
     "skyblocker.config.general.chestValue.@Tooltip": "Calcule la valeur du contenant.",

@@ -79,7 +79,6 @@
     "skyblocker.config.uiAndVisuals.waypoints": "İşaret Noktaları",
     "skyblocker.config.uiAndVisuals.waypoints.enableWaypoints": "İşaret Noktalarını Etkinleştir",
     "skyblocker.config.dungeons.secretWaypoints.waypointType": "İşaret Noktası Tipi",
-    "skyblocker.config.dungeons.secretWaypoints.waypointType.@Tooltip": "Waypoint: İşaret noktasını renklendirir ve fener ışını gösterir\n\nOutlined Waypoint: İşaret noktasını ve kenar çizgilerini gösterir.\n\nHighlight: Sadece işaret noktasını renklendirir.\n\nOutlined Highlight: İşaret noktasını renklendirir ve kenar çizgilerini gösterir.\n\nOutline: Sadece kenar çizgilerini gösterir.",
     "skyblocker.config.uiAndVisuals.itemCooldown": "Eşya Bekleme Süresi",
     "skyblocker.config.uiAndVisuals.itemCooldown.enableItemCooldowns": "Eşya Bekleme Süresini Etkinleştir",
     "text.skyblocker.open": "Aç",
