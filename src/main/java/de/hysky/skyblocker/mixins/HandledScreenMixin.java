@@ -3,7 +3,6 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -13,10 +12,15 @@ import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
-import de.hysky.skyblocker.skyblock.item.*;
+import de.hysky.skyblocker.skyblock.item.ItemPrice;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
+import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
+import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
+import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
+import de.hysky.skyblocker.skyblock.museum.MuseumManager;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -102,6 +106,15 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@Shadow
 	protected abstract List<Text> getTooltipFromItem(ItemStack stack);
 
+	@Shadow
+	protected int backgroundWidth;
+
+	@Shadow
+	protected int x;
+
+	@Shadow
+	protected int y;
+
 	@Unique
 	private List<QuickNavButton> quickNavButtons;
 
@@ -118,13 +131,28 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
+	@Inject(method = "init", at = @At("TAIL"))
+	private void skyblocker$initMuseumOverlay(CallbackInfo ci) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && !client.player.isCreative() && getTitle().getString().contains("Museum")) {
+			new MuseumManager(this, this.x, this.y, this.backgroundWidth);
+		}
+	}
+
+	@Inject(method = "close", at = @At("HEAD"))
+	private void skyblocker$removeMuseumOverlay(CallbackInfo ci) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && !client.player.isCreative() && getTitle().getString().contains("Museum")) {
+			// Reset Overlay variables when no longer in Museum inventory
+			MuseumManager.reset();
+		}
+	}
+
 	@Inject(at = @At("HEAD"), method = "keyPressed")
 	public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
 		if (this.client != null && this.client.player != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 			//wiki lookup
 			if (config.general.wikiLookup.enableWikiLookup && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) {
-				WikiLookup.openWiki(this.focusedSlot, client.player);
+				WikiLookup.openWiki(this.focusedSlot.getStack(), client.player);
 			}
 			//item protection
 			if (ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
@@ -311,10 +339,9 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				}
 			}
 
-			case GenericContainerScreenHandler genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> {
-				//Museum Item Cache donation tracking
-				MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
-			}
+			//Museum Item Cache donation tracking
+			case GenericContainerScreenHandler genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) ->
+					MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
 
 			case null, default -> {}
 		}
