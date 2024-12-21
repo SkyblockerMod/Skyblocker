@@ -357,8 +357,8 @@ public class DungeonsCategory {
                                 .build())
                         .option(Option.<Type>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType.@Tooltip"),
-                                        Text.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType.generalNote")))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"),
+                                        Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote")))
                                 .binding(defaults.dungeons.secretWaypoints.waypointType,
                                         () -> config.dungeons.secretWaypoints.waypointType,
                                         newValue -> config.dungeons.secretWaypoints.waypointType = newValue)
