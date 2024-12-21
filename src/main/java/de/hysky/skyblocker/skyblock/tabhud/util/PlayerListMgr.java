@@ -79,7 +79,7 @@ public class PlayerListMgr {
 		if (Utils.isInDungeons()) {
 			updateDungeons(null);
 		} else {
-			updateWidgetsFrom(playerList.stream().map(PlayerListEntry::getDisplayName).filter(Objects::nonNull).toList());
+			updateWidgetsFrom(playerList);
 		}
 	}
 
@@ -116,7 +116,7 @@ public class PlayerListMgr {
 	 *
 	 * @param lines in-game TAB
 	 */
-	public static void updateWidgetsFrom(List<Text> lines) {
+	public static void updateWidgetsFrom(List<PlayerListEntry> lines) {
 		final Predicate<String> playersColumnPredicate = PLAYERS_COLUMN_PATTERN.asMatchPredicate();
 		final Predicate<String> infoColumnPredicate = INFO_COLUMN_PATTERN.asMatchPredicate();
 
@@ -124,9 +124,14 @@ public class PlayerListMgr {
 		boolean doingPlayers = false;
 		boolean playersDone = false;
 		IntObjectPair<String> hypixelWidgetName = IntObjectPair.of(0xFFFF00, "");
+		// These two lists should match each other.
+		// playerListEntries is only used for the player list widget
 		List<Text> contents = new ArrayList<>();
+		List<PlayerListEntry> playerListEntries = new ArrayList<>();
 
-		for (Text displayName : lines) {
+		for (PlayerListEntry playerListEntry : lines) {
+			Text displayName = playerListEntry.getDisplayName();
+			if (displayName == null) continue;
 			String string = displayName.getString();
 
 			if (string.isBlank()) continue;
@@ -143,8 +148,9 @@ public class PlayerListMgr {
 				// Check if info, if it is, dip out
 				if (infoColumnPredicate.test(string)) {
 					playersDone = true;
-					if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
+					if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents, playerListEntries));
 					contents.clear();
+					playerListEntries.clear();
 					continue;
 				}
 			} else {
@@ -153,18 +159,23 @@ public class PlayerListMgr {
 				// Now check for : because of the farming contest ACTIVE
 				// Check for mining event minutes CUZ THEY FUCKING FORGOT THE SPACE iefzeoifzeoifomezhif
 				if (!string.startsWith(" ") && string.contains(":") && (!hypixelWidgetName.right().startsWith("Mining Event") || !string.toLowerCase().startsWith("ends in"))) {
-					if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
+					if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents, playerListEntries));
 					contents.clear();
+					playerListEntries.clear();
 					Pair<IntObjectPair<String>, ? extends Text> nameAndInfo = getNameAndInfo(displayName);
 					hypixelWidgetName = nameAndInfo.left();
-					if (!nameAndInfo.right().getString().isBlank()) contents.add(trim(nameAndInfo.right()));
+					if (!nameAndInfo.right().getString().isBlank()) {
+						contents.add(trim(nameAndInfo.right()));
+						playerListEntries.add(playerListEntry);
+					}
 					continue;
 				}
 			}
 			// Add the line to the content
 			contents.add(trim(displayName));
+			playerListEntries.add(playerListEntry);
 		}
-		if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents));
+		if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents, playerListEntries));
 		if (!tabWidgetsToShow.contains(tabWidgetInstances.get("Active Effects")) && SkyblockerConfigManager.get().uiAndVisuals.tabHud.effectsFromFooter) {
 			tabWidgetsToShow.add(getTabHudWidget("Active Effects", List.of()));
 		}
@@ -203,23 +214,21 @@ public class PlayerListMgr {
 		return out;
 	}
 
-	private static TabHudWidget getTabHudWidget(IntObjectPair<String> hypixelWidgetName, List<Text> lines) {
+	private static TabHudWidget getTabHudWidget(IntObjectPair<String> hypixelWidgetName, List<Text> lines, @Nullable List<PlayerListEntry> playerListEntries) {
+		TabHudWidget tabHudWidget;
 		if (tabWidgetInstances.containsKey(hypixelWidgetName.right())) {
-			TabHudWidget tabHudWidget = tabWidgetInstances.get(hypixelWidgetName.right());
-			tabHudWidget.updateFromTab(lines);
-			tabHudWidget.update();
-			return tabHudWidget;
+			tabHudWidget = tabWidgetInstances.get(hypixelWidgetName.right());
 		} else {
-			DefaultTabHudWidget defaultTabHudWidget = new DefaultTabHudWidget(hypixelWidgetName.right(), Text.literal(hypixelWidgetName.right()).formatted(Formatting.BOLD), hypixelWidgetName.firstInt());
-			ScreenMaster.addWidgetInstance(defaultTabHudWidget);
-			defaultTabHudWidget.updateFromTab(lines);
-			defaultTabHudWidget.update();
-			return defaultTabHudWidget;
+			tabHudWidget = new DefaultTabHudWidget(hypixelWidgetName.right(), Text.literal(hypixelWidgetName.right()).formatted(Formatting.BOLD), hypixelWidgetName.firstInt());
+			ScreenMaster.addWidgetInstance(tabHudWidget);
 		}
+		tabHudWidget.updateFromTab(lines, playerListEntries);
+		tabHudWidget.update();
+		return tabHudWidget;
 	}
 
 	private static TabHudWidget getTabHudWidget(String hypixelWidgetName, List<Text> lines) {
-		return getTabHudWidget(IntObjectPair.of(0xFFFF0000, hypixelWidgetName), lines);
+		return getTabHudWidget(IntObjectPair.of(0xFFFF0000, hypixelWidgetName), lines, null);
 	}
 
 	/**
