@@ -1000,5 +1000,7 @@
     "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "从剪贴板导出路径点（Skyblocker格式）",
     "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto.@Tooltip": "将Fairy Grotto的位置分享到web socket",
     "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto": "分享Fairy Grotto",
-    "skyblocker.config.uiAndVisuals.tabHud.configScreen": "打开设置界面"
+    "skyblocker.config.uiAndVisuals.tabHud.configScreen": "打开设置界面",
+    "skyblocker.config.uiAndVisuals.nightVisionStrength": "夜视强度",
+    "skyblocker.nightVision.success": "将夜视强度更改为%d。"
 }
