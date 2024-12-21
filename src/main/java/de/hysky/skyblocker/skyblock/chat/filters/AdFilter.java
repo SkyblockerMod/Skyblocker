@@ -20,7 +20,7 @@ public class AdFilter extends ChatPatternListener {
 		// 1. Player name
 		// 2. Message
 		// (?:\[[0-9]+\] )?(?:[<INSERT EMBLEMS>] )?(?:\[[A-Z+]+\] )?([A-Za-z0-9_]+): (.+)
-		super("(?:\\[[0-9]+\\] )?(?:[" + Constants.LEVEL_EMBLEMS+ "] )?(?:\\[[A-Z+]+\\] )?([A-Za-z0-9_]+): (.+)");
+		super(Constants.PLAYER_NAME.pattern() + ": (.+)");
 	}
 
 	@Override

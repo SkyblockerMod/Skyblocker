@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.preview;
 
+import com.mojang.authlib.GameProfile;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.DungeonsTabPlaceholder;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -25,6 +26,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ScrollableWidget;
 import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScoreHolder;
 import net.minecraft.scoreboard.Scoreboard;
@@ -41,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
@@ -236,7 +239,11 @@ public class PreviewTab implements Tab {
 				}
 			}
 		}
-		PlayerListMgr.updateWidgetsFrom(lines);
+		PlayerListMgr.updateWidgetsFrom(lines.stream().map(line -> {
+			PlayerListEntry playerListEntry = new PlayerListEntry(new GameProfile(UUID.randomUUID(), ""), false);
+			playerListEntry.setDisplayName(line);
+			return playerListEntry;
+		}).toList());
 	}
 
 	void updateWidgets() {
