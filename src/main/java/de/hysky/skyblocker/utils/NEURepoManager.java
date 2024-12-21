@@ -6,6 +6,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import io.github.moulberry.repo.NEURecipeCache;
 import io.github.moulberry.repo.NEURepository;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -39,6 +40,7 @@ public class NEURepoManager {
     private static final Path LOCAL_REPO_DIR = SkyblockerMod.CONFIG_DIR.resolve("item-repo"); // TODO rename to NotEnoughUpdates-REPO
     private static CompletableFuture<Void> REPO_LOADING = loadRepository().thenAccept(Consumers.nop());
     public static final NEURepository NEU_REPO = NEURepository.of(LOCAL_REPO_DIR);
+    public static final NEURecipeCache RECIPE_CACHE = NEURecipeCache.forRepo(NEU_REPO);
 
     /**
      * Adds command to update repository manually from ingame.
