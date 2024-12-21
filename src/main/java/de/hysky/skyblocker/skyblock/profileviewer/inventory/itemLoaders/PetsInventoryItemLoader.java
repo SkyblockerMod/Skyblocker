@@ -13,8 +13,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PetsInventoryItemLoader extends ItemLoader {
-    private static final List<String> TIER_ORDER = List.of("MYTHIC", "LEGENDARY", "EPIC", "RARE", "UNCOMMON", "COMMON");
-
     @Override
     public List<ItemStack> loadItems(JsonObject data) {
         List<Pet> petList = new ArrayList<>();
@@ -31,7 +29,7 @@ public class PetsInventoryItemLoader extends ItemLoader {
         }
 
         // Sort pets by tier (in reverse order) and level (in reverse order)
-        petList.sort(Comparator.comparingInt((Pet pet) -> TIER_ORDER.indexOf(pet.getTierAsString())).reversed().thenComparingInt(Pet::getLevel).reversed());
+        petList.sort(Comparator.comparingInt(Pet::getTier).thenComparingInt(Pet::getLevel).reversed());
 
         List<ItemStack> itemList = new ArrayList<>();
         for (Pet pet : petList) {
