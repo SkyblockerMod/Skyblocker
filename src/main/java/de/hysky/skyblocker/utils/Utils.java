@@ -471,8 +471,8 @@ public class Utils {
         if (locRaw.has("server")) {
             server = locRaw.get("server").getAsString();
         }
-        if (locRaw.has("gameType")) {
-            gameType = locRaw.get("gameType").getAsString();
+        if (locRaw.has("gametype")) {
+            gameType = locRaw.get("gametype").getAsString();
             isOnSkyblock = gameType.equals("SKYBLOCK");
         }
         if (locRaw.has("mode")) {
@@ -492,6 +492,7 @@ public class Utils {
      * @return not display the message in chat if the command is sent by the mod
      */
     public static boolean onChatMessage(Text text, boolean overlay) {
+		if (overlay) return true;
         String message = text.getString();
 
         if (message.startsWith("{\"server\":") && message.endsWith("}")) {
