@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -15,7 +16,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.item.ItemStack;
@@ -57,32 +58,28 @@ public class EventNotifications {
     @Init
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(EventNotifications::timeUpdate, 20);
-
         SkyblockEvents.JOIN.register(EventNotifications::refreshEvents);
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
-                ClientCommandManager.literal("skyblocker").then(
-                        ClientCommandManager.literal("debug").then(
-                                ClientCommandManager.literal("toasts").then(
-                                        ClientCommandManager.argument("time", IntegerArgumentType.integer(0))
-                                                .then(ClientCommandManager.argument("jacob", BoolArgumentType.bool()).executes(context -> {
-                                                                    long time = System.currentTimeMillis() / 1000 + context.getArgument("time", int.class);
-                                                                    if (context.getArgument("jacob", Boolean.class)) {
-                                                                        MinecraftClient.getInstance().getToastManager().add(
-                                                                                new JacobEventToast(time, "Jacob's farming contest", new String[]{"Cactus", "Cocoa Beans", "Pumpkin"})
-                                                                        );
-                                                                    } else {
-                                                                        MinecraftClient.getInstance().getToastManager().add(
-                                                                                new EventToast(time, "Jacob's or something idk", new ItemStack(Items.PAPER))
-                                                                        );
-                                                                    }
-                                                                    return 0;
-                                                                }
-                                                        )
-                                                )
+    }
+
+    public static LiteralArgumentBuilder<FabricClientCommandSource> debugToasts() {
+        return ClientCommandManager.literal("toasts").then(
+                ClientCommandManager.argument("time", IntegerArgumentType.integer(0))
+                        .then(ClientCommandManager.argument("jacob", BoolArgumentType.bool()).executes(context -> {
+                                            long time = System.currentTimeMillis() / 1000 + context.getArgument("time", int.class);
+                                            if (context.getArgument("jacob", Boolean.class)) {
+                                                MinecraftClient.getInstance().getToastManager().add(
+                                                        new JacobEventToast(time, "Jacob's farming contest", new String[]{"Cactus", "Cocoa Beans", "Pumpkin"})
+                                                );
+                                            } else {
+                                                MinecraftClient.getInstance().getToastManager().add(
+                                                        new EventToast(time, "Jacob's or something idk", new ItemStack(Items.PAPER))
+                                                );
+                                            }
+                                            return 0;
+                                        }
                                 )
                         )
-                )
-        ));
+        );
     }
 
     private static final Map<String, LinkedList<SkyblockEvent>> events = new ConcurrentHashMap<>();
