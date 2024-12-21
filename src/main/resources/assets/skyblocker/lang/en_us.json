@@ -718,6 +718,9 @@
 
   "skyblocker.config.uiAndVisuals": "UI & Visuals",
 
+  "skyblocker.config.uiAndVisuals.nightVisionStrength": "Night Vision Strength",
+  "skyblocker.config.uiAndVisuals.nightVisionStrength.@Tooltip": "Determines the strength of the Night Vision effect.",
+
   "skyblocker.config.uiAndVisuals.backpackPreviewWithoutShift": "View backpack preview without holding Shift",
 
   "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "Hide Status Effect Overlay",
@@ -990,6 +993,8 @@
   "skyblocker.waypoints.exportErrorText": "Failed to export waypoints. See logs for details.",
   "skyblocker.waypoints.deleteQuestion": "Are you sure you want to remove this waypoint?",
   "skyblocker.waypoints.deleteWarning": "Waypoint '%s' will be lost forever! (A long time!)",
+
+  "skyblocker.nightVision.success": "Changed the strength of night vision to %d.",
 
   "skyblocker.customItemNames.removed": "§fRemoved this item's custom name.",
   "skyblocker.customItemNames.neverHad": "§fThis item doesn't have a custom name set, but why not add one? ;)",

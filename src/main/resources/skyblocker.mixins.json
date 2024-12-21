@@ -18,6 +18,7 @@
     "EntityMixin",
     "EntityRenderDispatcherMixin",
     "FarmlandBlockMixin",
+    "GameRendererMixin",
     "GenericContainerScreenHandlerMixin",
     "HandledScreenMixin",
     "HandledScreenProviderMixin",
