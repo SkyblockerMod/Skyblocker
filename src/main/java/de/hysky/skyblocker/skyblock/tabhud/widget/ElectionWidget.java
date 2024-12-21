@@ -74,7 +74,7 @@ public class ElectionWidget extends TabHudWidget {
 
 		} else {
 			// election is going on
-			this.addSimpleIcoText(Ico.CLOCK, "End in: ", Formatting.GOLD, lines.getFirst().getString().trim());
+			this.addSimpleIcoText(Ico.CLOCK, "Ends in: ", Formatting.GOLD, lines.getFirst().getString().trim());
 
 			for (int i = 1; i < lines.size(); i++) {
 				String string = lines.get(i).getString();
