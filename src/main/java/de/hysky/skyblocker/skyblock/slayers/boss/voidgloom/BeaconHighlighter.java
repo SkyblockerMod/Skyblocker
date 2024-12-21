@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.end;
+package de.hysky.skyblocker.skyblock.slayers.boss.voidgloom;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;

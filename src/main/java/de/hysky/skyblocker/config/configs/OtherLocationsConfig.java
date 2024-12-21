@@ -57,6 +57,9 @@ public class OtherLocationsConfig {
         @SerialEntry
         public boolean waypoint = true;
 
+		@SerialEntry
+		public boolean muteEndermanSounds = false;
+
         @SerialEntry
         public int x = 10;
 

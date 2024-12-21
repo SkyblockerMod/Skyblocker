@@ -140,6 +140,13 @@ public class OtherLocationsCategory {
                                     TheEnd.eyes = 0;
                                 })
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.otherLocations.end.muteEndermanSounds"))
+								.binding(defaults.otherLocations.end.muteEndermanSounds,
+										() -> config.otherLocations.end.muteEndermanSounds,
+										newValue -> config.otherLocations.end.muteEndermanSounds = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 //Spider's Den

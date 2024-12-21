@@ -59,7 +59,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
     }
 
     static Predicate<SecretWaypoint> getRangePredicate(Entity entity) {
-        return secretWaypoint -> entity.squaredDistanceTo(secretWaypoint.centerPos) <= 36D;
+        return secretWaypoint -> entity.getPos().isInRange(secretWaypoint.centerPos, 36);
     }
 
     @Override

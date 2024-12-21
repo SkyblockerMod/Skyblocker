@@ -1,7 +1,7 @@
-package de.hysky.skyblocker.skyblock.crimson.slayer;
+package de.hysky.skyblocker.skyblock.slayers.boss.demonlord;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.SlayerUtils;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 
@@ -17,7 +17,7 @@ public class AttunementColors {
      */
     public static int getColor(LivingEntity e) {
         if (!SkyblockerConfigManager.get().slayers.blazeSlayer.attunementHighlights) return 0xf57738;
-        for (Entity entity : SlayerUtils.getEntityArmorStands(e, 2.5f)) {
+		for (Entity entity : SlayerManager.getEntityArmorStands(e, 2.5f)) {
             Matcher matcher = COLOR_PATTERN.matcher(entity.getDisplayName().getString());
             if (matcher.find()) {
                 String matchedColour = matcher.group();

@@ -3,8 +3,8 @@ package de.hysky.skyblocker.mixins;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.device.SimonSays;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
-import de.hysky.skyblocker.skyblock.end.BeaconHighlighter;
-import de.hysky.skyblocker.utils.SlayerUtils;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.BeaconHighlighter;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -31,7 +31,7 @@ public class ClientWorldMixin {
 			DojoManager.onBlockUpdate(pos.toImmutable(), state);
 		} else if (Utils.isInCrystalHollows()) {
 			CrystalsChestHighlighter.onBlockUpdate(pos.toImmutable(), state);
-		} else if (Utils.isInTheEnd() && SlayerUtils.isInSlayer()) {
+		} else if (Utils.isInTheEnd() && SlayerManager.isBossSpawned()) {
 			BeaconHighlighter.beaconPositions.remove(pos);
 
 			if (state.isOf(Blocks.BEACON)) BeaconHighlighter.beaconPositions.add(pos.toImmutable());
