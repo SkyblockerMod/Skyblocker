@@ -156,7 +156,8 @@ public class ProfileViewerScreen extends Screen {
     		String stringifiedUuid = ApiUtils.name2Uuid(username);
 
     		if (stringifiedUuid.isEmpty()) {
-                this.playerName = "Player not found";
+				// "Player not found" doesn't fit on the screen lol
+                this.playerName = "User not found";
 				this.errorMessage = "Player UUID not found";
                 this.profileNotFound = true;
     		}
@@ -185,7 +186,8 @@ public class ProfileViewerScreen extends Screen {
                 };
                 entity.setCustomNameVisible(false);
     		}).exceptionally(ex -> {
-                this.playerName = "Player not found";
+				// "Player not found" doesn't fit on the screen lol
+                this.playerName = "User not found";
 				this.errorMessage = "Player skin not found";
                 this.profileNotFound = true;
                 return null;
