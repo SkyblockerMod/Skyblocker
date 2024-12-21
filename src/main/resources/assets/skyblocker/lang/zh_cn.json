@@ -194,7 +194,7 @@
     "skyblocker.config.dungeons.playerSecretsTracker": "玩家解谜追踪器",
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle": "物品稀有度背景样式",
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.@Tooltip": "选择圆形或方形背景样式！",
-    "skyblocker.config.dungeons.livid.enableLividColorGlow": "启用 Livid高亮",
+    "skyblocker.config.dungeons.livid.enableLividColorGlow": "启用Livid高亮",
     "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "末影珍珠路径点",
     "skyblocker.config.dungeons.puzzle.creeperSolver": "苦力怕光束谜题助手",
     "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight": "启用门的高亮",
