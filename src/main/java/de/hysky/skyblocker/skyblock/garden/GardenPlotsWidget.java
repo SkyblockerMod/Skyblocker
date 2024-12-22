@@ -259,7 +259,7 @@ public class GardenPlotsWidget extends ClickableWidget {
 
 	private void updateInfestedFromTab() {
 		infectedPlots.clear();
-		for (int i = 0; i < PlayerListMgr.getSize(); i++) {
+		for (int i = 0; i < PlayerListMgr.getPlayerStringList().size(); i++) {
 			String string = PlayerListMgr.getPlayerStringList().get(i);
 			if (string.startsWith("Plots:")) {
 				String[] split = string.split(":")[1].split(",");
