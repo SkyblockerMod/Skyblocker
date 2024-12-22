@@ -3,9 +3,11 @@ package de.hysky.skyblocker.skyblock.slayers;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.ManiaIndicator;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.StakeIndicator;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.TwinClawsIndicator;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.render.title.Title;
@@ -40,6 +42,7 @@ import java.util.regex.Pattern;
  */
 public class SlayerManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SlayerManager.class);
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Atoned Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Bloodfiend");
 	private static final Pattern SLAYER_TIER_PATTERN = Pattern.compile("^(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend)\\s+(I|II|III|IV|V)$");
 	private static final Pattern PATTERN_XP_NEEDED = Pattern.compile("\\s*(Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL ([0-9]) - (?:Next LVL in ([\\d,]+) XP!|LVL MAXED OUT!)\\s*");
@@ -52,9 +55,17 @@ public class SlayerManager {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.GAME.register(SlayerManager::onChatMessage);
+		SkyblockEvents.LOCATION_CHANGE.register(SlayerManager::onLocationChange);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayers.vampireSlayer.maniaUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfigManager.get().slayers.vampireSlayer.steakStakeUpdateFrequency);
+	}
+
+	private static void onLocationChange(Location location) {
+		if (isBossSpawned()) {
+			slayerQuest = null;
+			bossFight = null;
+		}
 	}
 
 	private static void onChatMessage(Text text, boolean overlay) {
@@ -69,6 +80,7 @@ public class SlayerManager {
 			}
 			case "SLAYER QUEST STARTED!" -> {
 				if (slayerQuest == null) slayerQuest = new SlayerQuest();
+				bossFight = null;
 				return;
 			}
 			case "NICE! SLAYER BOSS SLAIN!" -> {
@@ -135,7 +147,8 @@ public class SlayerManager {
 					}
 					slayerQuest.slayerType = SlayerType.fromBossName(matcher.group(1));
 					slayerQuest.slayerTier = SlayerTier.valueOf(matcher.group(2));
-					return;
+				} else if (line.equals("Slay the boss!") && !isBossSpawned()) {
+					bossFight = new BossFight(null);
 				}
 			}
 		} catch (IndexOutOfBoundsException e) {
@@ -158,16 +171,21 @@ public class SlayerManager {
 	 * {@link #findClosestMobEntity(EntityType, ArmorStandEntity)} could be modified and run more than once to ensure the correct entity is found.
 	 */
 	public static void checkSlayerBoss(ArmorStandEntity armorStand) {
-		if (slayerQuest == null || isBossSpawned() || !armorStand.hasCustomName() || !armorStand.isInRange(MinecraftClient.getInstance().player, 15)) return;
-		if (armorStand.getName().getString().contains(MinecraftClient.getInstance().getSession().getUsername())) {
+		if (slayerQuest == null || (isBossSpawned() && bossFight.boss != null) || !armorStand.hasCustomName()) return;
+		if (armorStand.getName().getString().contains(CLIENT.getSession().getUsername())) {
 			for (Entity otherArmorStands : getEntityArmorStands(armorStand, 1.5f)) {
 				Matcher matcher = SLAYER_PATTERN.matcher(otherArmorStands.getName().getString());
 				if (matcher.find()) {
+					if (bossFight.boss == null) {
+						bossFight.findBoss((ArmorStandEntity) otherArmorStands);
+						return;
+					}
 					bossFight = new BossFight((ArmorStandEntity) otherArmorStands);
 					return;
 				}
 			}
 		}
+		if (!armorStand.isInRange(CLIENT.player, 15)) return;
 		Arrays.stream(SlayerType.values()).forEach(type -> type.minibossNames.forEach((name) -> {
 			if (armorStand.getName().getString().contains(name) && isInSlayerQuestType(type)) {
 				slayerQuest.onMiniboss(armorStand, type);
@@ -338,13 +356,17 @@ public class SlayerManager {
 		public boolean slain = false;
 
 		private BossFight(ArmorStandEntity armorStand) {
-			bossArmorStand = armorStand;
-			boss = findClosestMobEntity(slayerQuest.slayerType.mobType, armorStand);
+			findBoss(armorStand);
 			bossSpawnTime = Instant.now();
 			if (SkyblockerConfigManager.get().slayers.bossSpawnAlert) {
 				TitleContainer.addTitle(BOSS_SPAWN, 20);
-				MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
+				CLIENT.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
 			}
+		}
+
+		public void findBoss(ArmorStandEntity armorStand) {
+			bossArmorStand = armorStand;
+			boss = armorStand != null ? findClosestMobEntity(slayerQuest.slayerType.mobType, armorStand) : null;
 		}
 	}
 
@@ -363,7 +385,7 @@ public class SlayerManager {
 			minibosses.add(findClosestMobEntity(type.mobType, armorStand));
 			if (SkyblockerConfigManager.get().slayers.miniBossSpawnAlert) {
 				TitleContainer.addTitle(SlayerManager.MINIBOSS_SPAWN, 20);
-				MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
+				CLIENT.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 0.5f, 0.1f);
 			}
 		}
 	}

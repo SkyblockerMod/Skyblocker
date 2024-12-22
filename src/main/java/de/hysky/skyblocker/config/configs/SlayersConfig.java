@@ -5,10 +5,10 @@ import net.minecraft.client.resource.language.I18n;
 
 public class SlayersConfig {
     @SerialEntry
-    public HighlightSlayerEntities highlightMinis = HighlightSlayerEntities.OFF;
+    public HighlightSlayerEntities highlightMinis = HighlightSlayerEntities.GLOW;
 
     @SerialEntry
-    public HighlightSlayerEntities highlightBosses = HighlightSlayerEntities.OFF;
+    public HighlightSlayerEntities highlightBosses = HighlightSlayerEntities.GLOW;
 
 	@SerialEntry
 	public boolean displayBossbar = true;
