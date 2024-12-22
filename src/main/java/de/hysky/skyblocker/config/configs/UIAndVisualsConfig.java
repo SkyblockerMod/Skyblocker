@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -13,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 public class UIAndVisualsConfig {
+	@SerialEntry
+	public int nightVisionStrength = 100;
+
     @SerialEntry
     public boolean compactorDeletorPreview = true;
 
@@ -181,12 +185,19 @@ public class UIAndVisualsConfig {
         public boolean enableHudBackground = true;
 
         @SerialEntry
-        public boolean plainPlayerNames = false;
+        public boolean effectsFromFooter = false;
 
         @SerialEntry
+        public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
+
+        @Deprecated
+        public boolean plainPlayerNames = false;
+
+        @Deprecated
         public NameSorting nameSorting = NameSorting.DEFAULT;
     }
 
+    @Deprecated
     public enum NameSorting {
         DEFAULT, ALPHABETICAL;
 

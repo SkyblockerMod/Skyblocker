@@ -103,7 +103,6 @@ public class Shortcuts {
         // Party
         commandArgs.put("/pa", "/p accept");
         commands.put("/pd", "/p disband");
-        commands.put("/rp", "/reparty");
 
         // Visit
         commandArgs.put("/v", "/visit");

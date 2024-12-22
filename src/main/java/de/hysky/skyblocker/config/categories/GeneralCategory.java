@@ -305,6 +305,14 @@ public class GeneralCategory {
                                         newValue -> config.general.itemProtection.slotLockStyle = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                        		.name(Text.translatable("skyblocker.config.general.itemProtection.protectValuableConsumables"))
+                        		.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip")))
+                        		.binding(defaults.general.itemProtection.protectValuableConsumables,
+                        				() -> config.general.itemProtection.protectValuableConsumables,
+                        				newValue -> config.general.itemProtection.protectValuableConsumables = newValue)
+                        		.controller(ConfigUtils::createBooleanController)
+                        		.build())
                         .build())
 
                 //Wiki Lookup
