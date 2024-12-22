@@ -274,6 +274,8 @@
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
 
   "skyblocker.config.general.itemProtection": "Item Protection",
+  "skyblocker.config.general.itemProtection.protectValuableConsumables": "Protect Valuable Consumables",
+  "skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip": "Prevents consuming items such as Bottles of Jyrre, Dark Cacao Truffles, and Discrite before they have evolved.",
   "skyblocker.config.general.itemProtection.slotLockStyle": "Slot Lock Icon Style",
   "skyblocker.config.general.itemProtection.slotLockStyle.@Tooltip": "Choose between the fancy or the classic slot lock icon.",
   "skyblocker.config.general.itemProtection.slotLockStyle.style.CLASSIC": "Classic",
