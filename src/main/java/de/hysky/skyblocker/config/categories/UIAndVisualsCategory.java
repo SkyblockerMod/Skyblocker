@@ -6,18 +6,16 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
-import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
-import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
@@ -28,7 +26,6 @@ import net.minecraft.util.Formatting;
 
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 public class UIAndVisualsCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
@@ -516,14 +513,10 @@ public class UIAndVisualsCategory {
                 .build();
     }
 
-	private static Collection<Option<?>> createSlotTextToggles(SkyblockerConfig config) {
+	private static Collection<Option<Boolean>> createSlotTextToggles(SkyblockerConfig config) {
 		Set<String> ids = new HashSet<>();
-		List<Option<?>> options = new ArrayList<>();
-		SlotTextManager.getAdderStream().forEach(adder -> {
-			SlotTextAdder.ConfigInformation configInfo = adder.getConfigInformation();
-			if (configInfo == null) return;
+		return SlotTextManager.getAdderStream().map(SlotTextAdder::getConfigInformation).filter(Objects::nonNull).filter(configInfo -> !ids.contains(configInfo.id())).map(configInfo -> {
 			String id = configInfo.id();
-			if (ids.contains(id)) return;
 
 			Option<Boolean> option = Option.<Boolean>createBuilder()
 					.name(configInfo.name())
@@ -535,8 +528,7 @@ public class UIAndVisualsCategory {
 					.build();
 
 			ids.add(id);
-			options.add(option);
-		});
-		return options;
+			return option;
+		}).sorted(Comparator.comparing(option -> option.name().getString())).toList();
 	}
 }
