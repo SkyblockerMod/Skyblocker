@@ -86,7 +86,6 @@ public class Donation {
         return id;
     }
 
-
     public boolean isSet() {
         return !set.isEmpty();
     }

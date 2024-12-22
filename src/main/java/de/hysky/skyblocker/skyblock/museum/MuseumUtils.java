@@ -53,7 +53,8 @@ public class MuseumUtils {
 					if (!donation.get().getSet().isEmpty()) {
 						Text pieceName = getDisplayName(donation.get().getSet().getFirst().left(), false);
 						if (pieceName != null) {
-							nameStyle = pieceName.getSiblings().getFirst().getStyle();
+							List<Text> siblings = pieceName.getSiblings();
+							nameStyle = siblings.isEmpty() ? Style.EMPTY : siblings.getFirst().getStyle();
 						}
 					}
 				}
