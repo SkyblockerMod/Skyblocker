@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.utils.OkLabColor;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -57,10 +57,10 @@ public class CompactDamage {
 			int length = prettifiedDmg.length();
 			for (int i = 0; i < length; i++) {
 				prettierCustomName.append(Text.literal(prettifiedDmg.substring(i, i + 1)).withColor(
-						CustomArmorAnimatedDyes.interpolate(
+						OkLabColor.interpolate(
 								SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientStart.getRGB() & 0x00FFFFFF,
 								SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientEnd.getRGB() & 0x00FFFFFF,
-								i / (length - 1.0)
+								i / (length - 1.0f)
 						)
 				));
 			}

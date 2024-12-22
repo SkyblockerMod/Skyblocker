@@ -212,6 +212,9 @@ public class GeneralConfig {
     public static class ItemProtection {
         @SerialEntry
         public SlotLockStyle slotLockStyle = SlotLockStyle.FANCY;
+
+        @SerialEntry
+        public boolean protectValuableConsumables = true;
     }
 
     public enum SlotLockStyle {

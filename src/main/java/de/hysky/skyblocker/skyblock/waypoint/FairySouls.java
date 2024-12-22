@@ -9,11 +9,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.PosUtils;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -76,7 +72,7 @@ public class FairySouls {
     private static void loadFairySouls() {
         fairySoulsLoaded = NEURepoManager.runAsyncAfterLoad(() -> {
             maxSouls = NEURepoManager.NEU_REPO.getConstants().getFairySouls().getMaxSouls();
-            NEURepoManager.NEU_REPO.getConstants().getFairySouls().getSoulLocations().forEach((location, fairiesForLocation) -> fairySouls.put(location, fairiesForLocation.stream().map(coordinate -> new BlockPos(coordinate.getX(), coordinate.getY(), coordinate.getZ())).collect(Collectors.toUnmodifiableMap(pos -> pos, pos -> new ProfileAwareWaypoint(pos, TYPE_SUPPLIER, ColorUtils.getFloatComponents(DyeColor.GREEN), ColorUtils.getFloatComponents(DyeColor.RED))))));
+            NEURepoManager.NEU_REPO.getConstants().getFairySouls().getSoulLocations().forEach((location, fairiesForLocation) -> fairySouls.put(location, fairiesForLocation.stream().map(coordinate -> new BlockPos(coordinate.getX(), coordinate.getY(), coordinate.getZ())).collect(Collectors.toUnmodifiableMap(pos -> pos, pos -> new FairySoul(pos, TYPE_SUPPLIER, ColorUtils.getFloatComponents(DyeColor.GREEN), ColorUtils.getFloatComponents(DyeColor.RED))))));
             LOGGER.debug("[Skyblocker] Loaded {} fairy souls across {} locations", fairySouls.values().stream().mapToInt(Map::size).sum(), fairySouls.size());
 
             try (BufferedReader reader = Files.newBufferedReader(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json"))) {
@@ -198,6 +194,20 @@ public class FairySouls {
         Map<BlockPos, ProfileAwareWaypoint> fairiesForLocation = fairySouls.get(Utils.getLocationRaw());
         if (fairiesForLocation != null) {
             fairiesForLocation.values().forEach(ProfileAwareWaypoint::setMissing);
+        }
+    }
+
+    private static class FairySoul extends ProfileAwareWaypoint {
+        public FairySoul(BlockPos pos, Supplier<Type> typeSupplier, float[] missingColor, float[] foundColor) {
+            super(pos, typeSupplier, missingColor, foundColor);
+        }
+
+        /**
+         * Less strict than the check {@link FairySouls#render(WorldRenderContext)} since this only needs to ensure found fairy souls are rendered if the config is enabled.
+         */
+        @Override
+        public boolean shouldRender() {
+            return super.shouldRender() || SkyblockerConfigManager.get().helpers.fairySouls.highlightFoundSouls;
         }
     }
 }

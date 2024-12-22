@@ -192,7 +192,7 @@ public class HelperCategory {
                                 .build())
                         .option(Option.<Waypoint.Type>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helpers.chocolateFactory.waypointType"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.chocolateFactory.waypointType.@Tooltip")))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip")))
                                 .binding(defaults.helpers.chocolateFactory.waypointType,
                                         () -> config.helpers.chocolateFactory.waypointType,
                                         newValue -> config.helpers.chocolateFactory.waypointType = newValue)

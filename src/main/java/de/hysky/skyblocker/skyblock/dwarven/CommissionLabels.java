@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiningConfig;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -34,7 +35,7 @@ public class CommissionLabels {
      * @param newCommissions the new commissions to get the waypoints from
      * @param completed      if there is a commission completed
      */
-    protected static void update(List<String> newCommissions, boolean completed) {
+    public static void update(List<String> newCommissions, boolean completed) {
         MiningConfig.CommissionWaypointMode currentMode = SkyblockerConfigManager.get().mining.commissionWaypoints.mode;
         if (currentMode == MiningConfig.CommissionWaypointMode.OFF) {
             return;
@@ -91,7 +92,8 @@ public class CommissionLabels {
      * @param context render context
      */
     private static void render(WorldRenderContext context) {
-        if (!Utils.isInDwarvenMines() || SkyblockerConfigManager.get().mining.commissionWaypoints.mode == MiningConfig.CommissionWaypointMode.OFF) {
+        // Only render in the dwarven mines and not the mineshaft.
+        if (Location.DWARVEN_MINES != Utils.getLocation() || SkyblockerConfigManager.get().mining.commissionWaypoints.mode == MiningConfig.CommissionWaypointMode.OFF) {
             return;
         }
         for (MiningLocationLabel MiningLocationLabel : activeWaypoints) {
