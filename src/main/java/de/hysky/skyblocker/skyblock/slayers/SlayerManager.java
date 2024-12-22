@@ -176,7 +176,7 @@ public class SlayerManager {
 			for (Entity otherArmorStands : getEntityArmorStands(armorStand, 1.5f)) {
 				Matcher matcher = SLAYER_PATTERN.matcher(otherArmorStands.getName().getString());
 				if (matcher.find()) {
-					if (bossFight.boss == null) {
+					if (bossFight != null && bossFight.boss == null) {
 						bossFight.findBoss((ArmorStandEntity) otherArmorStands);
 						return;
 					}
