@@ -36,6 +36,8 @@
     "PlayerSkinProviderMixin",
     "PlayerSkinTextureDownloaderMixin",
     "RenderFishMixin",
+    "RenderLayerMultiPhaseMixin",
+    "RenderPhaseDepthTestMixin",
     "ScoreboardMixin",
     "SignEditScreenMixin",
     "SocialInteractionsPlayerListWidgetMixin",

@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.utils.render;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayer.MultiPhase;
 import net.minecraft.client.render.RenderLayer.MultiPhaseParameters;
@@ -9,6 +11,8 @@ import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.render.VertexFormats;
 
 public class SkyblockerRenderLayers {
+	public static final DepthTest OUTLINE_ALWAYS = new DepthTest("outline_always", GL11.GL_ALWAYS);
+
 	public static final MultiPhase FILLED = RenderLayer.of("filled", VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP, RenderLayer.CUTOUT_BUFFER_SIZE, false, true, MultiPhaseParameters.builder()
 			.program(RenderPhase.POSITION_COLOR_PROGRAM)
 			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
