@@ -14,7 +14,8 @@ public class GameRendererMixin {
 	private static float onGetNightVisionStrength(float original) {
 		if (original == 1.0F && Utils.isOnSkyblock()) {
 			var strength = SkyblockerConfigManager.get().uiAndVisuals.nightVisionStrength;
-			return Math.clamp(strength / 100.0F, 0, 100);
+			if (strength == 0.0F) return 0.0F;
+			return Math.clamp(strength / 100.0F, 0, 1);
 		}
 		return original;
 	}
