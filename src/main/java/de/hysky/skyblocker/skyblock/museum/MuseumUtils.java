@@ -14,8 +14,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MuseumUtils {
-
 	private static final NumberFormat NUMBER_FORMATTER_S = NumberFormat.getCompactNumberInstance(Locale.CANADA, NumberFormat.Style.SHORT);
+
+	static {
+		NUMBER_FORMATTER_S.setMaximumFractionDigits(1);
+	}
 
 	/**
 	 * Calculates the total crafting cost for a set associated with a given ID.
@@ -133,7 +136,6 @@ public class MuseumUtils {
 	 * @return A formatted string (e.g., "10M", "5K", "1.2B").
 	 */
 	public static String formatPrice(double value) {
-		NUMBER_FORMATTER_S.setMaximumFractionDigits(1);
 		return NUMBER_FORMATTER_S.format(value);
 	}
 }
