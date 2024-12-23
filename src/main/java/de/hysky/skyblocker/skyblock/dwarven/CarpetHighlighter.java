@@ -32,9 +32,7 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 	private static final int SEARCH_RADIUS = 15;
 	private static final int TICK_INTERVAL = 15;
 	private static final ObjectAVLTreeSet<BlockPos> CARPET_LOCATIONS = new ObjectAVLTreeSet<>();
-
 	private static float[] colorComponents;
-	private static int tickCounter = 0;
 	private static boolean isLocationValid = false;
 
 	@Init
