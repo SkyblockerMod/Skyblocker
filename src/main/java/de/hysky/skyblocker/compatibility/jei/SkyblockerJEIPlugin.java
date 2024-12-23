@@ -1,23 +1,33 @@
 package de.hysky.skyblocker.compatibility.jei;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.library.ingredients.subtypes.SubtypeInterpreters;
 import mezz.jei.library.load.registration.SubtypeRegistration;
 import mezz.jei.library.plugins.vanilla.crafting.CraftingCategoryExtension;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.util.math.Rect2i;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.*;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @JeiPlugin
@@ -46,6 +56,11 @@ public class SkyblockerJEIPlugin implements IModPlugin {
     }
 
     @Override
+    public void registerGuiHandlers(@NotNull IGuiHandlerRegistration registration) {
+        registration.addGuiContainerHandler(InventoryScreen.class, new InventoryContainerHandler());
+    }
+
+    @Override
     public void registerRecipes(@NotNull IRecipeRegistration registration) {
     	//FIXME no clue what to replace any of this with, we can't use items as that does not work
         /*registration.getIngredientManager().addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ItemRepository.getItems());
@@ -62,5 +77,14 @@ public class SkyblockerJEIPlugin implements IModPlugin {
                         'i', Ingredient.ofStacks(recipe.getGrid().get(8))
                 ), "abc", "def", "ghi"), recipe.getResult()))
         ).toList());*/
+    }
+
+    private static class InventoryContainerHandler implements IGuiContainerHandler<InventoryScreen> {
+        @Override
+        public @NotNull List<Rect2i> getGuiExtraAreas(@NotNull InventoryScreen containerScreen) {
+            if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return List.of();
+            HandledScreenAccessor accessor = (HandledScreenAccessor) containerScreen;
+            return Collections.singletonList(new Rect2i(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
+        }
     }
 }
