@@ -215,5 +215,13 @@ public class Waypoint implements Renderable {
         public String toString() {
             return I18n.translate("skyblocker.waypoints.type." + name());
         }
+
+        public Type withoutBeacon() {
+            return switch (this) {
+                case WAYPOINT -> HIGHLIGHT;
+                case OUTLINED_WAYPOINT -> OUTLINED_HIGHLIGHT;
+                default -> this;
+            };
+        }
     }
 }
