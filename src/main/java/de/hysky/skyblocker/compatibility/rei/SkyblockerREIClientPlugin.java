@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.compatibility.rei;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
@@ -35,7 +34,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
         categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.IDENTIFIER), EntryStacks.of(Items.CRAFTING_TABLE));
         categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.IDENTIFIER), EntryStacks.of(Items.ANVIL));
         categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
-        categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_forge"), new ItemStack(Items.FURNACE), 84));
+        categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_forge"), new ItemStack(Items.LAVA_BUCKET), 84));
     }
 
     @Override

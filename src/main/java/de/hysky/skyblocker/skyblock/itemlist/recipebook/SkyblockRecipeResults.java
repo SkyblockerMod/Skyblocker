@@ -121,8 +121,9 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 
 	//TODO enable scissor?
 	private void drawRecipeDisplay(DrawContext context, TextRenderer textRenderer, int x, int y, int mouseX, int mouseY) {
+		SkyblockRecipe recipe = this.recipeResults.get(this.currentPage);
 		//Render the "Craft Text" which is usually a requirement (e.g. Wolf Slayer 7)
-		String craftText = this.recipeResults.get(this.currentPage).getExtraText().getString();
+		String craftText = recipe.getExtraText().getString();
 
 		if (!craftText.isEmpty()) {
 			if (textRenderer.getWidth(craftText) > MAX_TEXT_WIDTH) {
@@ -136,7 +137,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 		}
 
 		//Render the resulting item's name
-		Text itemName = this.recipeResults.get(this.currentPage).getOutputs().getFirst().getName();
+		Text itemName = recipe.getOutputs().getFirst().getName();
 
 		if (textRenderer.getWidth(itemName) > MAX_TEXT_WIDTH) {
 			StringVisitable trimmed = StringVisitable.concat(textRenderer.trimToWidth(itemName, MAX_TEXT_WIDTH), ScreenTexts.ELLIPSIS);
@@ -152,6 +153,9 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 
 		//Draw the arrow that points to the recipe's result
 		context.drawTextWithShadow(textRenderer, "▶", x + 96, y + 90, 0xaaffffff);
+		if (this.hoveredText == null && mouseX >= x + 86 && mouseY >= y + 81 && mouseX < x + 86 + 25 && mouseY < y + 81 + 25 && recipe instanceof SkyblockForgeRecipe forgeRecipe) {
+			this.hoveredText = Text.of(forgeRecipe.getDurationString());
+		}
 		if (recipeIcon != null) context.drawItem(recipeIcon, x + 115, y + 61);
 	}
 
@@ -247,7 +251,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 				}
 				case SkyblockForgeRecipe forgeRecipe -> {
 
-					recipeIcon = new ItemStack(Items.FURNACE);
+					recipeIcon = new ItemStack(Items.LAVA_BUCKET);
 
 
 					Vector2i gridSize = forgeRecipe.getGridSize();

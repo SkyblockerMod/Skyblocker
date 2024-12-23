@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.SkyblockTime;
 import io.github.moulberry.repo.data.NEUForgeRecipe;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -22,12 +23,13 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 
     private final List<ItemStack> inputs;
     private final ItemStack output;
-    private final int duration;
+	private final String durationString;
 
     public SkyblockForgeRecipe(NEUForgeRecipe forgeRecipe) {
         inputs = forgeRecipe.getInputs().stream().map(SkyblockRecipe::getItemStack).toList();
         output = SkyblockRecipe.getItemStack(forgeRecipe.getOutputStack());
-        duration = forgeRecipe.getDuration();
+		int duration = forgeRecipe.getDuration();
+		durationString = SkyblockTime.formatTimeString(duration);
     }
 
 	public ItemStack getResult() {
@@ -101,11 +103,15 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
         return new ScreenPos(width / 2, height / 2 - 9);
     }
 
-    @Override
+	public String getDurationString() {
+		return durationString;
+	}
+
+	@Override
     public void render(DrawContext context, int width, int height, double mouseX, double mouseY) {
         // Render the duration of the recipe in hours by dividing by 3600
         ScreenPos arrowLocation = getArrowLocation(width, height);
         if (arrowLocation != null)
-            context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, String.format("%d h", duration / 3600), arrowLocation.x() + 12, arrowLocation.y() - 10, 0xFFFFFF);
+            context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, durationString, arrowLocation.x() + 12, arrowLocation.y() - 10, 0xFFFFFF);
     }
 }
