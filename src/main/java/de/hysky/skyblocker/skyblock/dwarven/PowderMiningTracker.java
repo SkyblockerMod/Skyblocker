@@ -10,7 +10,9 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -44,7 +46,11 @@ public class PowderMiningTracker {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Powder Mining Tracker");
 	private static final Pattern GEMSTONE_SYMBOLS = Pattern.compile("[α☘☠✎✧❁❂❈❤⸕] ");
 	private static final Pattern REWARD_PATTERN = Pattern.compile(" {4}(.*?) ?x?([\\d,]*)");
-	private static final UnboundedMapCodec<String, Integer> REWARDS_CODEC = Codec.unboundedMap(Codec.STRING, Codec.INT);
+	private static final Codec<Object2IntMap<String>> REWARDS_CODEC = CodecUtils.object2IntMapCodec(Codec.STRING);
+	// Doesn't matter if the codec outputs a java map instead of a fastutils map, it's only used in #putAll anyway so the contents are copied over
+	private static final UnboundedMapCodec<String, Object2IntMap<String>> ALL_REWARDS_CODEC = Codec.unboundedMap(Codec.STRING, REWARDS_CODEC);
+	private static final Object2ObjectArrayMap<String, String> NAME2ID_MAP = new Object2ObjectArrayMap<>(50);
+
 	// This constructor takes in a comparator that is triggered to decide where to add the element in the tree map
 	// This causes it to be sorted at all times. This is for rendering them in a sort of easy-to-read manner.
 	private static final Object2IntAVLTreeMap<Text> SHOWN_REWARDS = new Object2IntAVLTreeMap<>((o1, o2) -> {
@@ -57,8 +63,16 @@ public class PowderMiningTracker {
 	});
 
 	/**
+	 * Holds the total reward maps for all accounts and profiles. {@link #currentProfileRewards} is a subset of this map, updated on profile change.
+	 *
+	 * @implNote This is a map from (account uuid + "+" + profile uuid) to itemId/amount map.
+	 */
+	private static final Object2ObjectArrayMap<String, Object2IntMap<String>> ALL_REWARDS = new Object2ObjectArrayMap<>();
+
+	/**
 	 * <p>
-	 * Holds the total amount of each reward obtained. If any items are filtered out, they are still added to this map but not to the {@link #SHOWN_REWARDS} map.
+	 * Holds the total amount of each reward obtained for the current profile.
+	 * If any items are filtered out, they are still added to this map but not to the {@link #SHOWN_REWARDS} map.
 	 * Once the filter is changed, the {@link #SHOWN_REWARDS} map is cleared and recalculated based on this map.
 	 * </p>
 	 * <p>This is similar to how {@link ChatHud#messages} and {@link ChatHud#visibleMessages} behave.</p>
@@ -66,8 +80,7 @@ public class PowderMiningTracker {
 	 * @implNote This is a map of item IDs to the amount of that item obtained.
 	 */
 	@SuppressWarnings("JavadocReference")
-	private static final Object2IntMap<String> ALL_REWARDS = new Object2IntArrayMap<>();
-	private static final Object2ObjectArrayMap<String, String> NAME2ID_MAP = new Object2ObjectArrayMap<>(50);
+	private static Object2IntMap<String> currentProfileRewards = new Object2IntOpenHashMap<>();
 	private static boolean insideChestMessage = false;
 	private static double profit = 0;
 
@@ -88,6 +101,9 @@ public class PowderMiningTracker {
 		ClientLifecycleEvents.CLIENT_STARTED.register(PowderMiningTracker::loadRewards);
 		ClientLifecycleEvents.CLIENT_STOPPING.register(PowderMiningTracker::saveRewards);
 
+		SkyblockEvents.PROFILE_CHANGE.register(PowderMiningTracker::onProfileChange);
+		SkyblockEvents.PROFILE_INIT.register(PowderMiningTracker::onProfileInit);
+
 		//TODO: Sort out proper commands for this
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				literal(SkyblockerMod.NAMESPACE)
@@ -95,6 +111,8 @@ public class PowderMiningTracker {
 								literal("clearrewards")
 										.executes(context -> {
 											SHOWN_REWARDS.clear();
+											currentProfileRewards.clear();
+											profit = 0;
 											return 1;
 										})
 						)
@@ -139,19 +157,28 @@ public class PowderMiningTracker {
 		calculateProfitForItem(itemId, amount);
 	}
 
+	private static void onProfileChange(String prevProfileId, String newProfileId) {
+		onProfileInit(newProfileId);
+	}
+
+	private static void onProfileInit(String profileId) {
+		if (!isEnabled()) return;
+		currentProfileRewards = ALL_REWARDS.computeIfAbsent(getCombinedId(profileId), k -> new Object2IntArrayMap<>());
+		recalculateAll();
+	}
+
 	private static void incrementReward(String itemName, String itemId, int amount) {
-		ALL_REWARDS.mergeInt(itemId, amount, Integer::sum);
-		if (!SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter.contains(itemName)) {
-			if (itemId.equals("GEMSTONE_POWDER")) {
-				SHOWN_REWARDS.merge(Text.literal("Gemstone Powder").formatted(Formatting.LIGHT_PURPLE), amount, Integer::sum);
-			} else {
-				ItemStack stack = ItemRepository.getItemStack(itemId);
-				if (stack == null) {
-					LOGGER.warn("Item stack for id `{}` is null! This might be caused by failed item repository downloads.", itemId);
-					return;
-				}
-				SHOWN_REWARDS.merge(stack.getName(), amount, Integer::sum);
+		currentProfileRewards.mergeInt(itemId, amount, Integer::sum);
+		if (SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter.contains(itemName)) return;
+		if (itemId.equals("GEMSTONE_POWDER")) {
+			SHOWN_REWARDS.merge(Text.literal("Gemstone Powder").formatted(Formatting.LIGHT_PURPLE), amount, Integer::sum);
+		} else {
+			ItemStack stack = ItemRepository.getItemStack(itemId);
+			if (stack == null) {
+				LOGGER.warn("Item stack for id `{}` is null! This might be caused by failed item repository downloads.", itemId);
+				return;
 			}
+			SHOWN_REWARDS.merge(stack.getName(), amount, Integer::sum);
 		}
 	}
 
@@ -190,11 +217,11 @@ public class PowderMiningTracker {
 	}
 
 	/**
-	 * Resets the shown rewards and profit to 0 and recalculates them based on the config filter.
+	 * Resets the shown rewards and profit to 0 and recalculates rewards for the current profile based on the config filter.
 	 */
 	public static void recalculateAll() {
 		SHOWN_REWARDS.clear();
-		ObjectSet<Object2IntMap.Entry<String>> set = ALL_REWARDS.object2IntEntrySet();
+		ObjectSet<Object2IntMap.Entry<String>> set = currentProfileRewards.object2IntEntrySet();
 		// The filters are actually item names so that they would look nice and not need a lot of mapping under the screen code
 		// Here they are converted to item IDs for comparison
 		List<String> filters = SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter.stream().map(PowderMiningTracker::getItemId).toList();
@@ -226,20 +253,18 @@ public class PowderMiningTracker {
 			String jsonString = Files.readString(getRewardFilePath());
 			JsonElement json = SkyblockerMod.GSON.fromJson(jsonString, JsonElement.class);
 			ALL_REWARDS.clear();
-			ALL_REWARDS.putAll(REWARDS_CODEC.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst());
-			recalculateAll();
+			ALL_REWARDS.putAll(ALL_REWARDS_CODEC.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst());
 			LOGGER.info("Loaded powder mining rewards from file.");
 		} catch (Exception e) {
 			LOGGER.error("Failed to load powder mining rewards from file!", e);
 		}
-
 	}
 
 	private static void saveRewards(MinecraftClient client) {
 		try {
-			String jsonString = REWARDS_CODEC.encodeStart(JsonOps.INSTANCE, ALL_REWARDS).getOrThrow().toString();
+			String jsonString = ALL_REWARDS_CODEC.encodeStart(JsonOps.INSTANCE, ALL_REWARDS).getOrThrow().toString();
 			if (Files.notExists(getRewardFilePath())) {
-				Files.createDirectories(getRewardFilePath().getParent());
+				Files.createDirectories(getRewardFilePath().getParent()); // Create all parent directories if they don't exist
 				Files.createFile(getRewardFilePath());
 			}
 			Files.writeString(getRewardFilePath(), jsonString);
@@ -320,6 +345,10 @@ public class PowderMiningTracker {
 
 	private static Path getRewardFilePath() {
 		return SkyblockerMod.CONFIG_DIR.resolve("reward-trackers/powder-mining.json");
+	}
+
+	private static String getCombinedId(String profileUuid) {
+		return Utils.getUndashedUuid() + "+" + profileUuid;
 	}
 
 	private static void render(DrawContext context, RenderTickCounter tickCounter) {
