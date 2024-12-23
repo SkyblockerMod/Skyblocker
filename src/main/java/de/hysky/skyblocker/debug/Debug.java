@@ -7,6 +7,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
@@ -64,6 +65,7 @@ public class Debug {
 						.then(toggleShowingInvisibleArmorStands())
 						.then(dumpArmorStandHeadTextures())
 						.then(toggleWebSocketDebug())
+						.then(EventNotifications.debugToasts())
 				)
 		));
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {

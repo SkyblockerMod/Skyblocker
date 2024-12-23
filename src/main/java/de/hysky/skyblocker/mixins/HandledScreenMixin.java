@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.mixins;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
@@ -21,9 +23,11 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
@@ -47,6 +51,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 
@@ -141,6 +146,22 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		if (SkyblockerConfigManager.get().farming.garden.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar"))) {
 			VisitorHelper.onMouseClicked(mouseX, mouseY, button, this.textRenderer);
 		}
+	}
+
+	@ModifyExpressionValue(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDI)Z"))
+	public boolean skyblocker$passThroughSearchFieldUnfocusedClicks(boolean superClicked, double mouseX, double mouseY, int button) {
+		//Handle Search Field clicks - as of 1.21.4 the game will only send clicks to the selected element rather than trying to send one to each and stopping when the first returns true (if any).
+		if (!superClicked) {
+			Optional<ClickableWidget> searchField = Screens.getButtons(this).stream()
+					.filter(InventorySearch.SearchTextFieldWidget.class::isInstance)
+					.findFirst();
+
+			if (searchField.isPresent() && searchField.get().mouseClicked(mouseX, mouseY, button)) {
+				return true;
+			}
+		}
+
+		return superClicked;
 	}
 
 	/**
@@ -311,7 +332,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	}
 
 	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
-	private void skyblocker$drawItemRarityBackground(DrawContext context, Slot slot, CallbackInfo ci) {
+	private void skyblocker$drawOnItem(DrawContext context, Slot slot, CallbackInfo ci) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds)
 			ItemRarityBackgrounds.tryDraw(slot.getStack(), context, slot.x, slot.y);
 		// Item protection
@@ -319,6 +340,11 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			RenderSystem.enableBlend();
 			context.drawTexture(RenderLayer::getGuiTextured, ITEM_PROTECTION, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
 			RenderSystem.disableBlend();
+		}
+		// Search
+		// Darken the slots
+		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {
+			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 100, 0x88_000000);
 		}
 	}
 

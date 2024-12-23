@@ -255,6 +255,14 @@ public class GeneralCategory {
                                         newValue -> config.general.itemTooltip.enableEstimatedItemValue = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.itemTooltip.enableStackingEnchantProgress"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemTooltip.enableStackingEnchantProgress.@Tooltip")))
+                                .binding(defaults.general.itemTooltip.enableStackingEnchantProgress,
+                                        () -> config.general.itemTooltip.enableStackingEnchantProgress,
+                                        newValue -> config.general.itemTooltip.enableStackingEnchantProgress = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .build())
 
                 //Item Info Display
@@ -315,6 +323,14 @@ public class GeneralCategory {
                                         newValue -> config.general.itemProtection.slotLockStyle = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                        		.name(Text.translatable("skyblocker.config.general.itemProtection.protectValuableConsumables"))
+                        		.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip")))
+                        		.binding(defaults.general.itemProtection.protectValuableConsumables,
+                        				() -> config.general.itemProtection.protectValuableConsumables,
+                        				newValue -> config.general.itemProtection.protectValuableConsumables = newValue)
+                        		.controller(ConfigUtils::createBooleanController)
+                        		.build())
                         .build())
 
                 //Wiki Lookup
@@ -380,6 +396,13 @@ public class GeneralCategory {
                                         newValue -> config.general.hitbox.oldLeverHitbox = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.hitbox.oldMushroomHitbox"))
+								.binding(defaults.general.hitbox.oldMushroomHitbox,
+										() -> config.general.hitbox.oldMushroomHitbox,
+										newValue -> config.general.hitbox.oldMushroomHitbox = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 .build();

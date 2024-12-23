@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.runtime.ObjectMethods;
 import java.util.Arrays;
 import java.util.Map;
@@ -92,7 +93,9 @@ public class InstancedUtils {
 		ObjectOpenHashSet<MethodHandle> handles = new ObjectOpenHashSet<>();
 
 		for (Field field : fields) {
-			field.setAccessible(true);				
+			if ((field.getModifiers() & Modifier.STATIC) != 0) continue;
+
+			field.setAccessible(true);
 
 			MethodHandle getter = MethodHandles.lookup().unreflectGetter(field);
 

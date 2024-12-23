@@ -138,6 +138,9 @@ public class GeneralConfig {
 
         @SerialEntry
         public boolean enableEstimatedItemValue = true;
+
+        @SerialEntry
+        public boolean enableStackingEnchantProgress = true;
     }
 
     public enum Average {
@@ -209,6 +212,9 @@ public class GeneralConfig {
     public static class ItemProtection {
         @SerialEntry
         public SlotLockStyle slotLockStyle = SlotLockStyle.FANCY;
+
+        @SerialEntry
+        public boolean protectValuableConsumables = true;
     }
 
     public enum SlotLockStyle {
@@ -249,6 +255,9 @@ public class GeneralConfig {
 
         @SerialEntry
         public boolean oldLeverHitbox = false;
+
+		@SerialEntry
+		public boolean oldMushroomHitbox = false;
     }
 
 }

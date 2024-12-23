@@ -5,14 +5,13 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.HudRenderEvents;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -75,14 +74,6 @@ public class TheEnd {
             return ActionResult.PASS;
         });
 
-
-        HudRenderEvents.AFTER_MAIN_HUD.register((drawContext, tickCounter) -> {
-            if (!Utils.isInTheEnd()) return;
-            if (!SkyblockerConfigManager.get().otherLocations.end.hudEnabled) return;
-
-            EndHudWidget.INSTANCE.render(drawContext, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
-        });
-
         ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
             String lowerCase = Utils.getIslandArea().toLowerCase();
             if (Utils.isInTheEnd() || lowerCase.contains("the end") || lowerCase.contains("dragon's nest")) {
@@ -101,12 +92,11 @@ public class TheEnd {
 
         });
         // Reset when changing island
-        // TODO: Replace when a changed island event is added
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+        SkyblockEvents.LOCATION_CHANGE.register(location -> {
             resetLocation();
             save();
             load();
-            EndHudWidget.INSTANCE.update();
+            EndHudWidget.getInstance().update();
         });
         // Save when leaving as well
         ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> save());
@@ -121,7 +111,7 @@ public class TheEnd {
             else if (lowerCase.contains("rises from below")) stage = 5;
             else if (lowerCase.contains("protector down") || lowerCase.contains("has risen")) resetLocation();
             else return;
-            EndHudWidget.INSTANCE.update();
+            EndHudWidget.getInstance().update();
         });
 
         WorldRenderEvents.AFTER_TRANSLUCENT.register(TheEnd::renderWaypoint);
@@ -148,7 +138,7 @@ public class TheEnd {
             if (world.getBlockState(new BlockPos(protectorLocation.x, i + 5, protectorLocation.z)).isOf(Blocks.PLAYER_HEAD)) {
                 stage = i + 1;
                 currentProtectorLocation = protectorLocation;
-                EndHudWidget.INSTANCE.update();
+                EndHudWidget.getInstance().update();
                 return true;
             }
         }
@@ -172,7 +162,7 @@ public class TheEnd {
             zealotsKilled++;
             dirty = true;
             hitZealots.remove(enderman.getUuid());
-            EndHudWidget.INSTANCE.update();
+            EndHudWidget.getInstance().update();
         }
     }
 
@@ -209,7 +199,7 @@ public class TheEnd {
             zealotsKilled = jsonElement1.getAsJsonObject().get("totalZealotKills").getAsInt();
             zealotsSinceLastEye = jsonElement1.getAsJsonObject().get("zealotsSinceLastEye").getAsInt();
             eyes = jsonElement1.getAsJsonObject().get("eyes").getAsInt();
-            EndHudWidget.INSTANCE.update();
+            EndHudWidget.getInstance().update();
         }
     }
 

@@ -338,7 +338,7 @@ public class WishingCompassSolver {
 
             case WAITING_FOR_SECOND -> {
                 //only continue if the player is far enough away from the first position to get a better reading
-                if (startPosOne.squaredDistanceTo(playerPos) < DISTANCE_BETWEEN_USES) {
+				if (startPosOne.isInRange(playerPos, DISTANCE_BETWEEN_USES)) {
                     CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.moveFurtherMessage")), false);
                     return true;
                 } else {

@@ -15,10 +15,12 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 
+import de.hysky.skyblocker.injected.CustomGlowInfo;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.DefaultFramebufferSet;
 import net.minecraft.client.render.WorldRenderer;
@@ -26,7 +28,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 
 @Mixin(WorldRenderer.class)
-public class WorldRendererMixin {
+public class WorldRendererMixin implements CustomGlowInfo {
 	@Shadow
 	@Final
 	private MinecraftClient client;
@@ -75,10 +77,15 @@ public class WorldRendererMixin {
 
 		if (shouldShowBoundingBox) {
 			MobBoundingBoxes.submitBox2BeRendered(
-					entity instanceof ArmorStandEntity e ? SlayerEntitiesGlow.getSlayerMobBoundingBox(e) : entity.getBoundingBox(),
+					entity instanceof ArmorStandEntity e ? SlayerManager.getSlayerMobBoundingBox(e) : entity.getBoundingBox(),
 					MobBoundingBoxes.getBoxColor(entity)
 			);
 		}
+	}
+
+	@Override
+	public boolean atLeastOneMobHasCustomGlow() {
+		return atLeastOneMobHasCustomGlow;
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))

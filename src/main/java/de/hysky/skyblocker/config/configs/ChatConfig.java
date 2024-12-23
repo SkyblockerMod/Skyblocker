@@ -8,6 +8,9 @@ public class ChatConfig {
     public boolean skyblockXpMessages = true;
 
     @SerialEntry
+    public boolean confirmationPromptHelper = false;
+
+    @SerialEntry
     public ChatFilterResult hideAbility = ChatFilterResult.PASS;
 
     @SerialEntry

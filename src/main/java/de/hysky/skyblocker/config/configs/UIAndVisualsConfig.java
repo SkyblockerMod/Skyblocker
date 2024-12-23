@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import net.minecraft.client.resource.language.I18n;
@@ -10,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UIAndVisualsConfig {
+	@SerialEntry
+	public int nightVisionStrength = 100;
+
     @SerialEntry
     public boolean compactorDeletorPreview = true;
 
@@ -36,6 +40,9 @@ public class UIAndVisualsConfig {
 
     @SerialEntry
     public ItemCooldown itemCooldown = new ItemCooldown();
+
+    @SerialEntry
+    public InventorySearchConfig inventorySearch = new InventorySearchConfig();
 
     @SerialEntry
     public TitleContainer titleContainer = new TitleContainer();
@@ -81,6 +88,36 @@ public class UIAndVisualsConfig {
     public static class ItemCooldown {
         @SerialEntry
         public boolean enableItemCooldowns = true;
+    }
+
+    public static class InventorySearchConfig {
+        @SerialEntry
+        public EnableState enabled = EnableState.SKYBLOCK;
+
+        @SerialEntry
+        public boolean ctrlK = false;
+
+        @SerialEntry
+        public boolean clickableText = false;
+
+        public enum EnableState {
+            OFF,
+            SKYBLOCK,
+            EVERYWHERE;
+
+            @Override
+            public String toString() {
+                return I18n.translate("skyblocker.config.uiAndVisuals.inventorySearch.state." + this.name());
+            }
+
+            public boolean isEnabled() {
+                return switch (this) {
+                    case OFF -> false;
+                    case SKYBLOCK -> de.hysky.skyblocker.utils.Utils.isOnSkyblock();
+                    case EVERYWHERE -> true;
+                };
+            }
+        }
     }
 
     public static class TitleContainer {
@@ -129,12 +166,19 @@ public class UIAndVisualsConfig {
         public boolean enableHudBackground = true;
 
         @SerialEntry
-        public boolean plainPlayerNames = false;
+        public boolean effectsFromFooter = false;
 
         @SerialEntry
+        public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
+
+        @Deprecated
+        public boolean plainPlayerNames = false;
+
+        @Deprecated
         public NameSorting nameSorting = NameSorting.DEFAULT;
     }
 
+    @Deprecated
     public enum NameSorting {
         DEFAULT, ALPHABETICAL;
 

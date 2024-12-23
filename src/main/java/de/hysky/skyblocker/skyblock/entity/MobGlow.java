@@ -5,16 +5,17 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
-import de.hysky.skyblocker.skyblock.crimson.slayer.AttunementColors;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
-import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
+import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.AttunementColors;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.SlayerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.BatEntity;
@@ -32,6 +33,7 @@ public class MobGlow {
 	 * The Nukekubi head texture id is eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3.
 	 */
 	private static final String NUKEKUBI_HEAD_TEXTURE = "eyJ0aW1lc3RhbXAiOjE1MzQ5NjM0MzU5NjIsInByb2ZpbGVJZCI6ImQzNGFhMmI4MzFkYTRkMjY5NjU1ZTMzYzE0M2YwOTZjIiwicHJvZmlsZU5hbWUiOiJFbmRlckRyYWdvbiIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=";
+	private static final String FEL_HEAD_TEXTURE = "ewogICJ0aW1lc3RhbXAiIDogMTcyMDAyNTQ4Njg2MywKICAicHJvZmlsZUlkIiA6ICIzZDIxZTYyMTk2NzQ0Y2QwYjM3NjNkNTU3MWNlNGJlZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJTcl83MUJsYWNrYmlyZCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jMjg2ZGFjYjBmMjE0NGQ3YTQxODdiZTM2YmJhYmU4YTk4ODI4ZjdjNzlkZmY1Y2UwMTM2OGI2MzAwMTU1NjYzIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=";
 
 	public static boolean shouldMobGlow(Entity entity) {
 		return computeShouldMobGlow(entity);
@@ -50,12 +52,20 @@ public class MobGlow {
 				// Bats
 				case BatEntity b -> SkyblockerConfigManager.get().dungeons.starredMobGlow || SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes;
 
+				//Fel Heads
+				case ArmorStandEntity as when SkyblockerConfigManager.get().dungeons.starredMobGlow && as.isMarker() && as.hasStackEquipped(EquipmentSlot.HEAD) -> ItemUtils.getHeadTexture(as.getEquippedStack(EquipmentSlot.HEAD)).equals(FEL_HEAD_TEXTURE);
+
 				// Armor Stands
 				case ArmorStandEntity _armorStand -> false;
 
 				// Regular Mobs
 				default -> SkyblockerConfigManager.get().dungeons.starredMobGlow && isStarred(entity);
 			};
+		}
+
+		// Slayer
+		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.GLOW)) {
+			return true;
 		}
 
 		return switch (entity) {
@@ -69,18 +79,14 @@ public class MobGlow {
 			case MagmaCubeEntity magmaCube when Utils.isInKuudra() -> SkyblockerConfigManager.get().crimsonIsle.kuudra.kuudraGlow && magmaCube.getSize() == Kuudra.KUUDRA_MAGMA_CUBE_SIZE;
 
 			// Special Zealot && Slayer (Mini)Boss
-			case EndermanEntity enderman when Utils.isInTheEnd() -> TheEnd.isSpecialZealot(enderman) || SlayerEntitiesGlow.shouldGlow(enderman.getUuid());
-			case ZombieEntity zombie when !(zombie instanceof ZombifiedPiglinEntity) && SlayerUtils.isInSlayerQuestType(SlayerUtils.REVENANT) -> SlayerEntitiesGlow.shouldGlow(zombie.getUuid());
-			case SpiderEntity spider when SlayerUtils.isInSlayerQuestType(SlayerUtils.TARA) -> SlayerEntitiesGlow.shouldGlow(spider.getUuid());
-			case WolfEntity wolf when SlayerUtils.isInSlayerQuestType(SlayerUtils.SVEN) -> SlayerEntitiesGlow.shouldGlow(wolf.getUuid());
-			case BlazeEntity blaze when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) -> SlayerEntitiesGlow.shouldGlow(blaze.getUuid());
+			case EndermanEntity enderman when Utils.isInTheEnd() -> TheEnd.isSpecialZealot(enderman);
 
 			// Enderman Slayer's Nukekubi Skulls
-			case ArmorStandEntity armorStand when Utils.isInTheEnd() && SlayerUtils.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
+			case ArmorStandEntity armorStand when Utils.isInTheEnd() && armorStand.isMarker() && SlayerManager.isInSlayer() && isNukekubiHead(armorStand) -> SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads;
 
 			// Blaze Slayer's Demonic minions
-			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW -> SlayerUtils.isInSlayerType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15;
-			case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW -> SlayerUtils.isInSlayerType(SlayerUtils.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15;
+			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW -> SlayerManager.isInSlayerType(SlayerType.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15;
+			case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW -> SlayerManager.isInSlayerType(SlayerType.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15;
 
 			default -> false;
 		};
@@ -122,23 +128,25 @@ public class MobGlow {
 	public static int getGlowColor(Entity entity) {
 		String name = entity.getName().getString();
 
+		//TODO maybe make this more like the compute method where dungeons stuff is separate
 		return switch (entity) {
 			case PlayerEntity p when name.equals("Lost Adventurer") -> 0xfee15c;
 			case PlayerEntity p when name.equals("Shadow Assassin") -> 0x5b2cb2;
 			case PlayerEntity p when name.equals("Diamond Guy") -> 0x57c2f7;
 			case PlayerEntity p when entity.getId() == LividColor.getCorrectLividId() -> LividColor.getGlowColor(name);
 			case PlayerEntity p when name.equals("Blobbercyst ") -> Formatting.GREEN.getColorValue();
+			case ArmorStandEntity as when Utils.isInDungeons() && ItemUtils.getHeadTexture(as.getEquippedStack(EquipmentSlot.HEAD)).equals(FEL_HEAD_TEXTURE)-> 0xcc00fa; //Enderman eye color
 
 			case EndermanEntity enderman when TheEnd.isSpecialZealot(enderman) -> Formatting.RED.getColorValue();
-			case ArmorStandEntity armorStand when isNukekubiHead(armorStand) -> 0x990099;
+			case ArmorStandEntity armorStand when armorStand.isMarker() && isNukekubiHead(armorStand) -> 0x990099;
 			case ZombieEntity zombie when Utils.isInCrimson() && DojoManager.inArena -> DojoManager.getColor();
 			case MagmaCubeEntity magmaCube when Utils.isInKuudra() -> 0xf7510f;
 
 			// Blaze Slayer Attunement Colours
-			case ArmorStandEntity armorStand when SlayerUtils.isInSlayerQuestType(SlayerUtils.DEMONLORD) -> AttunementColors.getColor(armorStand);
-			case BlazeEntity blaze when SlayerUtils.isInSlayer() -> AttunementColors.getColor(blaze);
-			case ZombifiedPiglinEntity piglin when SlayerUtils.isInSlayer() -> AttunementColors.getColor(piglin);
-			case WitherSkeletonEntity wSkelly when SlayerUtils.isInSlayer() -> AttunementColors.getColor(wSkelly);
+			case ArmorStandEntity armorStand when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(armorStand);
+			case BlazeEntity blaze when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(blaze);
+			case ZombifiedPiglinEntity piglin when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(piglin);
+			case WitherSkeletonEntity wSkelly when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(wSkelly);
 
 			default -> 0xf57738;
 		};
