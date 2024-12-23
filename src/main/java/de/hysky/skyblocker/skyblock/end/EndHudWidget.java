@@ -26,11 +26,6 @@ public class EndHudWidget extends ComponentBasedWidget {
 
 	private static EndHudWidget instance = null;
 
-	public static EndHudWidget getInstance() {
-		if (instance == null) instance = new EndHudWidget();
-		return instance;
-	}
-
 	private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
 	private static final ItemStack ENDERMAN_HEAD = new ItemStack(Items.PLAYER_HEAD);
 	private static final ItemStack POPPY = new ItemStack(Items.POPPY);
@@ -47,6 +42,10 @@ public class EndHudWidget extends ComponentBasedWidget {
 		super(TITLE, Formatting.DARK_PURPLE.getColorValue(), "hud_end");
 		instance = this;
 		this.update();
+	}
+
+	public static EndHudWidget getInstance() {
+		return instance;
 	}
 
 	@Override

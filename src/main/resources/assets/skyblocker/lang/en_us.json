@@ -639,6 +639,7 @@
   "skyblocker.config.otherLocations.end": "The End",
   "skyblocker.config.otherLocations.end.enableEnderNodeHelper": "Enable Ender Node Helper",
   "skyblocker.config.otherLocations.end.hudEnabled": "HUD Enabled",
+  "skyblocker.config.otherLocations.end.muteEndermanSounds": "Mute Enderman Sounds",
   "skyblocker.config.otherLocations.end.protectorLocationEnable": "Show Protector Location",
   "skyblocker.config.otherLocations.end.resetName": "Reset stored End stats",
   "skyblocker.config.otherLocations.end.resetText": "Reset",
@@ -675,6 +676,9 @@
 
   "skyblocker.config.slayer": "Slayers",
 
+  "skyblocker.config.slayer.enableHud": "Slayer HUD",
+  "skyblocker.config.slayer.enableHud.@Tooltip": "You may have to do 1 boss before all HUD elements show",
+
   "skyblocker.config.slayer.blazeSlayer": "Blaze Slayer",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer" : "Fire Pillar Countdown Notifications",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "Countdowns the last five seconds before the Fire Pillar explodes. Configure 'Title Container' to customise the location on the HUD (Note: This only uses a rudimentary distance check, so the Pillar may be spawned by another player's slayer)",
@@ -687,10 +691,14 @@
   "skyblocker.config.slayer.bossbar": "Slayer Bossbar",
   "skyblocker.config.slayer.bossbar.@Tooltip": "Displays a bossbar for your active slayer boss",
 
+  "skyblocker.config.slayer.bossSpawnAlert": "Boss Spawn Alert",
+  "skyblocker.config.slayer.bossSpawnAlert.@Tooltip": "\nDisplays a warning when a slayer boss spawns",
+
   "skyblocker.config.slayer.endermanSlayer": "Enderman Slayer",
   "skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification": "Enable Yang Glyphs notification",
   "skyblocker.config.slayer.endermanSlayer.highlightBeacons": "Beacon Highlighting",
   "skyblocker.config.slayer.endermanSlayer.highlightNukekubiHeads": "Nukekubi Head Highlighting",
+  "skyblocker.config.slayer.endermanSlayer.lazerTimer": "Lazer Timer",
 
   "skyblocker.config.slayer.highlightMinis": "Highlight Minibosses",
   "skyblocker.config.slayer.highlightMinis.@Tooltip[0]": "\nOFF: Do not highlight Slayer Minibosses.",
@@ -705,6 +713,14 @@
   "skyblocker.config.slayer.highlightBosses.OFF": "Off",
   "skyblocker.config.slayer.highlightBosses.GLOW": "Glow",
   "skyblocker.config.slayer.highlightBosses.HITBOX": "Hitbox",
+
+  "skyblocker.config.slayer.minibossSpawnAlert": "MiniBoss Spawn Alert",
+  "skyblocker.config.slayer.minibossSpawnAlert.@Tooltip": "\nDisplays a warning when a slayer miniboss spawns",
+
+  "skyblocker.config.slayer.slainTime": "Slayer kill time",
+  "skyblocker.config.slayer.slainTime.@Tooltip": "Sends the amount of time spent to kill the slayer.",
+
+  "skyblocker.config.slayer.slayerHud": "Slayer HUD Config...",
 
   "skyblocker.config.slayer.vampireSlayer": "Vampire Slayer",
   "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "Compact Effigy Waypoints",
@@ -975,6 +991,15 @@
   "skyblocker.shortcuts.deleteWarning": "Shortcut '%s' will be lost forever! (A long time!)",
   "skyblocker.shortcuts.new": "New Shortcut",
   "skyblocker.shortcuts.commandSuggestionTooltip": "Due to limitations of Minecraft, command suggestions will only work after joining a new world.",
+
+  "skyblocker.slayer.bossSpawnAlert": "Boss Spawned!",
+  "skyblocker.slayer.hud.bossesNeeded": "Bosses until level up",
+  "skyblocker.slayer.hud.levelMaxed": "MAXED OUT",
+  "skyblocker.slayer.hud.levelUpIn": "Level up in %d bosses",
+  "skyblocker.slayer.miniBossSpawnAlert": "MiniBoss",
+  "skyblocker.slayer.personalBest": "PERSONAL BEST!",
+  "skyblocker.slayer.previousPB": "Your previous Personal Best was %d.",
+  "skyblocker.slayer.slainTime": "Slayer has been killed in %d!",
 
   "skyblocker.waypoints.config": "Waypoints Config",
   "skyblocker.waypoints.newGroup": "New Waypoint Group",
