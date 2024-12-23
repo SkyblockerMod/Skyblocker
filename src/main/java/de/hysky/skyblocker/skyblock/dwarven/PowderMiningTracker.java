@@ -360,6 +360,6 @@ public class PowderMiningTracker {
 			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(String.valueOf(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, 0xFFFFFF);
 			y += 10;
 		}
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.literal("Gain: " + NumberFormat.getInstance().format(profit) + " coins").formatted(Formatting.GOLD), 5, y + 10, 0xFFFFFF);
+		if (!set.isEmpty()) context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.literal("Gain: " + NumberFormat.getInstance().format(profit) + " coins").formatted(Formatting.GOLD), 5, y + 10, 0xFFFFFF);
 	}
 }
