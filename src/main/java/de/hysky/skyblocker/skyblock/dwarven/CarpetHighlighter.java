@@ -50,7 +50,7 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 	public void render(WorldRenderContext context) {
 		if (!isLocationValid || !SkyblockerConfigManager.get().mining.dwarvenMines.enableCarpetHighlighter) return;
 		for (BlockPos carpetLocation : CARPET_LOCATIONS) {
-			RenderHelper.renderFilled(context, carpetLocation, CARPET_BOUNDING_BOX, colorComponents, colorComponents[3], false);
+			RenderHelper.renderFilled(context, Vec3d.of(carpetLocation), CARPET_BOUNDING_BOX, colorComponents, colorComponents[3], false);
 		}
 	}
 
