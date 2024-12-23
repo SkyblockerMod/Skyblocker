@@ -19,10 +19,7 @@ public class PlayerComponent extends Component {
 
 	public PlayerComponent(PlayerListEntry ple) {
 
-		boolean plainNames = false;
-		Team team = ple.getScoreboardTeam();
-		String username = ple.getProfile().getName();
-		name = (team != null && !plainNames) ? Text.empty().append(team.getPrefix()).append(Text.literal(username).formatted(team.getColor())).append(team.getSuffix()) : Text.of(username);
+		name = ple.getDisplayName();
 		tex = ple.getSkinTextures().texture();
 
 		this.width = SKIN_ICO_DIM + PAD_S + txtRend.getWidth(name);

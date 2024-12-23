@@ -2,8 +2,10 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.utils.Location;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +35,9 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 		cachedComponents.forEach(super::addComponent);
 	}
 
-	public void updateFromTab(List<Text> lines) {
+	public void updateFromTab(List<Text> lines, @Nullable List<PlayerListEntry> playerListEntries) {
 		cachedComponents.clear();
-		updateContent(lines);
+		updateContent(lines, playerListEntries);
 	}
 
 	/**
@@ -63,7 +65,18 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	}
 
 	/**
-	 * Update the content from the hypixel widget's lines
+	 * Same as {@link #updateContent(List)} but only override if you need access to {@code playerListEntries}.
+	 *
+	 * @param playerListEntries the player list entries, which should match the lines.
+	 *                          Null in dungeons.
+	 * @see #updateContent(List)
+	 */
+	protected void updateContent(List<Text> lines, @Nullable List<PlayerListEntry> playerListEntries) {
+		updateContent(lines);
+	}
+
+	/**
+	 * Updates the content from the hypixel widget's lines
 	 *
 	 * @param lines the lines, they are formatted and trimmed, no blank lines will be present.
 	 *              If the vanilla tab widget has text right after the : they will be put on the first line.
