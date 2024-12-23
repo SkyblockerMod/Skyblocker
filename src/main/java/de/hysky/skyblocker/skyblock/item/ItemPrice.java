@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
@@ -32,6 +33,22 @@ public class ItemPrice {
             GLFW.GLFW_KEY_Z,
             "key.categories.skyblocker"
     ));
+
+	/**
+	 * <h2>Crucial init method, do not remove.</h2>
+	 *
+	 * <p>This is required due to the way keybindings are registered via Fabric api and lazy static initialization.</p>
+	 * <p>
+	 *     Key bindings are required to be registered before {@link net.minecraft.client.MinecraftClient#options MinecraftClient#options} is initialized.
+	 *     This is probably due to how fabric adds key binding options to the key binding options screen.
+	 *     Since {@link #ITEM_PRICE_LOOKUP} and {@link #ITEM_PRICE_REFRESH} are static fields, they are initialized lazily, which means they are only initialized when the class is accessed for the first time.
+	 *     That first time is generally when the player is already in the game and tries to use the key bindings in a handled screen, which is much later than the possible initialization period.
+	 *     This causes an {@link IllegalStateException} to be thrown from {@link net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl#registerKeyBinding(KeyBinding) KeyBindingRegistryImpl#registerKeybinding} and the game to crash.
+	 * </p>
+	 */
+	@SuppressWarnings("UnstableApiUsage") //For the javadoc reference.
+	@Init
+	public static void init() {}
 
     public static void itemPriceLookup(ClientPlayerEntity player, @NotNull Slot slot) {
         ItemStack stack = slot.getStack();
