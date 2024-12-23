@@ -67,7 +67,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
         }
     }
 
-    private double getItemCost(NEURecipe recipe, int depth) {
+    public static double getItemCost(NEURecipe recipe, int depth) {
         if (depth >= MAX_RECURSION_DEPTH) return -1;
 
         double totalCraftCost = 0;
