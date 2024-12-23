@@ -357,7 +357,7 @@ public class PowderMiningTracker {
 		var set = SHOWN_REWARDS.object2IntEntrySet();
 		for (Object2IntMap.Entry<Text> entry : set) {
 			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, entry.getKey(), 5, y, 0xFFFFFF);
-			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(String.valueOf(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, 0xFFFFFF);
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(NumberFormat.getInstance().format(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, 0xFFFFFF);
 			y += 10;
 		}
 		if (!set.isEmpty()) context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.literal("Gain: " + NumberFormat.getInstance().format(profit) + " coins").formatted(Formatting.GOLD), 5, y + 10, 0xFFFFFF);
