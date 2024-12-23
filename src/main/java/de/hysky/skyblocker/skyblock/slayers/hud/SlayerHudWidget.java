@@ -18,13 +18,18 @@ import java.util.Set;
 
 @RegisterWidget
 public class SlayerHudWidget extends ComponentBasedWidget {
-	public static final SlayerHudWidget INSTANCE = new SlayerHudWidget();
+	private static SlayerHudWidget instance;
 	private final MinecraftClient client = MinecraftClient.getInstance();
 	private final NumberFormat numberFormat = NumberFormat.getInstance();
 
 	public SlayerHudWidget() {
 		super(Text.literal("Slayer").formatted(Formatting.DARK_PURPLE, Formatting.BOLD), Formatting.DARK_PURPLE.getColorValue(), "hud_slayer");
+		instance = this;
 		update();
+	}
+
+	public static SlayerHudWidget getInstance() {
+		return instance;
 	}
 
 	@Override
@@ -40,7 +45,12 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public boolean isEnabledIn(Location location) {
-		return availableLocations().contains(location) && SkyblockerConfigManager.get().slayers.enableHud && SlayerManager.isInSlayer() && !SlayerManager.getSlayerType().isUnknown() && !SlayerManager.getSlayerTier().isUnknown();
+		return availableLocations().contains(location) && SkyblockerConfigManager.get().slayers.enableHud;
+	}
+
+	@Override
+	public boolean shouldRender(Location location) {
+		return SlayerManager.isInSlayer() && !SlayerManager.getSlayerType().isUnknown() && !SlayerManager.getSlayerTier().isUnknown();
 	}
 
 	@Override

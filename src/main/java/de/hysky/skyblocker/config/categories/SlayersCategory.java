@@ -91,7 +91,7 @@ public class SlayersCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.enableHud"))
 						.text(Text.translatable("text.skyblocker.open"))
-						.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.INSTANCE.getInternalID(), screen)))
+						.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
 						.build())
 
 				//Enderman Slayer
