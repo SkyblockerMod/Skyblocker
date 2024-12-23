@@ -32,7 +32,7 @@ public class SlayersConfig {
 	public boolean slainTime = true;
 
 	@SerialEntry
-	public SlayerHud slayerHud = new SlayerHud();
+	public boolean enableHud = true;
 
     @SerialEntry
     public EndermanSlayer endermanSlayer = new EndermanSlayer();
@@ -42,17 +42,6 @@ public class SlayersConfig {
 
     @SerialEntry
     public BlazeSlayer blazeSlayer = new BlazeSlayer();
-
-	public static class SlayerHud {
-		@SerialEntry
-		public boolean enableHud = true;
-
-		@SerialEntry
-		public int x;
-
-		@SerialEntry
-		public int y;
-	}
 
     public static class EndermanSlayer {
         @SerialEntry

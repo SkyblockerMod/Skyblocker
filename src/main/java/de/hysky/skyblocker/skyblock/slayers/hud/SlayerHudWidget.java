@@ -24,8 +24,6 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 	public SlayerHudWidget() {
 		super(Text.literal("Slayer").formatted(Formatting.DARK_PURPLE, Formatting.BOLD), Formatting.DARK_PURPLE.getColorValue(), "hud_slayer");
-		setX(SkyblockerConfigManager.get().slayers.slayerHud.x);
-		setY(SkyblockerConfigManager.get().slayers.slayerHud.y);
 		update();
 	}
 
@@ -37,12 +35,12 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!availableLocations().contains(location)) return;
-		SkyblockerConfigManager.get().slayers.slayerHud.enableHud = enabled;
+		SkyblockerConfigManager.get().slayers.enableHud = enabled;
 	}
 
 	@Override
 	public boolean isEnabledIn(Location location) {
-		return availableLocations().contains(location) && SkyblockerConfigManager.get().slayers.slayerHud.enableHud && SlayerManager.isInSlayer() && !SlayerManager.getSlayerType().isUnknown() && !SlayerManager.getSlayerTier().isUnknown();
+		return availableLocations().contains(location) && SkyblockerConfigManager.get().slayers.enableHud && SlayerManager.isInSlayer() && !SlayerManager.getSlayerType().isUnknown() && !SlayerManager.getSlayerTier().isUnknown();
 	}
 
 	@Override

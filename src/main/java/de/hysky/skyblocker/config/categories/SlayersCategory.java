@@ -3,7 +3,9 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
-import de.hysky.skyblocker.skyblock.slayers.hud.SlayerHudConfigScreen;
+import de.hysky.skyblocker.skyblock.slayers.hud.SlayerHudWidget;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
@@ -81,15 +83,15 @@ public class SlayersCategory {
 						.name(Text.translatable("skyblocker.config.slayer.enableHud"))
 						.description(OptionDescription.of(
 								Text.translatable("skyblocker.config.slayer.enableHud.@Tooltip")))
-						.binding(defaults.slayers.slayerHud.enableHud,
-								() -> config.slayers.slayerHud.enableHud,
-								newValue -> config.slayers.slayerHud.enableHud = newValue)
+						.binding(defaults.slayers.enableHud,
+								() -> config.slayers.enableHud,
+								newValue -> config.slayers.enableHud = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
 				.option(ButtonOption.createBuilder()
-						.name(Text.translatable("skyblocker.config.slayer.slayerHud"))
+						.name(Text.translatable("skyblocker.config.slayer.enableHud"))
 						.text(Text.translatable("text.skyblocker.open"))
-						.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new SlayerHudConfigScreen(screen)))
+						.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.INSTANCE.getInternalID(), screen)))
 						.build())
 
                 //Enderman Slayer
