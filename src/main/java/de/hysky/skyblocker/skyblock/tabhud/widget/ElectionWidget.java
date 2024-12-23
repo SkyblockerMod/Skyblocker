@@ -24,8 +24,8 @@ public class ElectionWidget extends TabHudWidget {
 
 	private static final HashMap<String, ItemStack> MAYOR_DATA = new HashMap<>();
 
-	private static final Text EL_OVER = Text.literal("Election ")
-			.append(Text.literal("over!").formatted(Formatting.RED));
+	private static final Text EL_OVER = Text.literal("Election: ")
+			.append(Text.literal("Over!").formatted(Formatting.RED));
 
 	// pattern matching a candidate while people are voting
 	// group 1: name
