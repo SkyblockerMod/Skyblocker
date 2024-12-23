@@ -74,14 +74,6 @@ public class TheEnd {
             return ActionResult.PASS;
         });
 
-
-        /*HudRenderEvents.AFTER_MAIN_HUD.register((drawContext, tickCounter) -> {
-            if (!Utils.isInTheEnd()) return;
-            if (!SkyblockerConfigManager.get().otherLocations.end.hudEnabled) return;
-
-            EndHudWidget.INSTANCE.render(drawContext, SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground);
-        });*/
-
         ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
             String lowerCase = Utils.getIslandArea().toLowerCase();
             if (Utils.isInTheEnd() || lowerCase.contains("the end") || lowerCase.contains("dragon's nest")) {

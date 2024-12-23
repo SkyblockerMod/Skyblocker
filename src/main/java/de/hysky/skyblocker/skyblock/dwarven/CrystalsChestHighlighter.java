@@ -16,6 +16,8 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -112,9 +114,9 @@ public class CrystalsChestHighlighter {
 		if (player == null || !Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
 			return;
 		}
-		String path = packet.getSound().value().id().getPath();
+		SoundEvent sound = packet.getSound().value();
 		//lock picked sound
-		if (path.equals("entity.experience_orb.pickup") && packet.getPitch() == 1 && !activeChests.isEmpty()) {
+		if (sound.id().equals(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP.id()) && packet.getPitch() == 1 && !activeChests.isEmpty()) {
 			Vec3d eyePos = player.getCameraPosVec(0);
 			Vec3d rotationVec = player.getRotationVec(0);
 			double range = player.getBlockInteractionRange();
@@ -125,11 +127,11 @@ public class CrystalsChestHighlighter {
 				activeParticles.clear();
 			}
 			//lock pick fail sound
-		} else if (path.equals("entity.villager.no")) {
+		} else if (sound.id().equals(SoundEvents.BLOCK_CHEST_LOCKED.id())) {
 			currentLockCount = 0;
 			activeParticles.clear();
 			//lock pick finish sound
-		} else if (path.equals("block.chest.open")) {
+		} else if (sound.id().equals(SoundEvents.BLOCK_CHEST_OPEN.id())) {
 			//set the needed lock count to the current, so we know how many locks a chest has
 			neededLockCount = Math.min(currentLockCount, 5);
 			currentLockCount = 0;
@@ -172,7 +174,7 @@ public class CrystalsChestHighlighter {
 				//add up all particle within range of active block
 				int addedParticles = 0;
 				for (Vec3d particlePos : activeParticles.keySet()) {
-					if (particlePos.squaredDistanceTo(chestPos) <= 0.8) {
+					if (particlePos.isInRange(chestPos, 0.8)) {
 						highlightSpot = highlightSpot.add(particlePos);
 						addedParticles++;
 					}
