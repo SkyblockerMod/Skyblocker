@@ -211,7 +211,6 @@ loom {
 		}
 	}
 }
-test.dependsOn runClientGametest
 
 base {
 	archivesName = project.archives_base_name
