@@ -14,14 +14,14 @@ public class SnapshotDebug {
 	private static final float[] RED = { 1.0f, 0.0f, 0.0f };
 	private static final float ALPHA = 0.5f;
 	private static final float LINE_WIDTH = 8f;
-	private static final long AARON_WORLD_SEED = 5629719634239627355L;
+	public static final long AARON_WORLD_SEED = 5629719634239627355L;
 
-	private static boolean isInSnapshot() {
+	public static boolean isInSnapshot() {
 		return !SharedConstants.getGameVersion().isStable();
 	}
 
 	static void init() {
-		if (isInSnapshot()) {
+		if (Debug.debugEnabled()) {
 			WorldRenderEvents.AFTER_TRANSLUCENT.register(SnapshotDebug::renderTest);
 		}
 	}
@@ -32,7 +32,7 @@ public class SnapshotDebug {
 			RenderHelper.renderLinesFromPoints(wrc, new Vec3d[] { new Vec3d(173, 66, -7.5), new Vec3d(178, 66, -7.5) }, RED, ALPHA, LINE_WIDTH, false);
 			RenderHelper.renderQuad(wrc, new Vec3d[] { new Vec3d(183, 66, -16), new Vec3d(183, 63, -16), new Vec3d(183, 63, -14), new Vec3d(183, 66, -14) }, RED, ALPHA, false);
 			RenderHelper.renderText(wrc, Text.of("Skyblocker on " + SharedConstants.getGameVersion().getName() + "!"), new Vec3d(175.5, 67.5, -7.5), false);
-		} else {
+		} else if (isInSnapshot()) {
 			RenderHelper.renderFilledWithBeaconBeam(wrc, new BlockPos(-3, 63, 5), RED, ALPHA, true);
 			RenderHelper.renderOutline(wrc, new BlockPos(-3, 63, 5), RED, 5, true); // Use waypoint default line width
 			RenderHelper.renderLinesFromPoints(wrc, new Vec3d[] { new Vec3d(-2, 65, 6.5), new Vec3d(3, 65, 6.5) }, RED, ALPHA, LINE_WIDTH, false);

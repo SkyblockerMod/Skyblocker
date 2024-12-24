@@ -202,7 +202,16 @@ loom {
 	mixin {
 		useLegacyMixinAp = false
 	}
+
+	runs {
+		clientGametest {
+			inherit client
+			name "Client Game Test"
+			vmArg "-Dfabric.client.gametest"
+		}
+	}
 }
+test.dependsOn runClientGametest
 
 base {
 	archivesName = project.archives_base_name
