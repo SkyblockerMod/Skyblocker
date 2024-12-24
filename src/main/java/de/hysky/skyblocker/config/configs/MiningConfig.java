@@ -39,6 +39,12 @@ public class MiningConfig {
 
         @SerialEntry
         public boolean solvePuzzler = true;
+
+		@SerialEntry
+	    public boolean enableCarpetHighlighter = true;
+
+		@SerialEntry
+	    public Color carpetHighlightColor = new Color(255, 0, 0, 76);
     }
 
 	@Deprecated

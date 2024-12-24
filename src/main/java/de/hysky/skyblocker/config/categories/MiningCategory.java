@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
+import de.hysky.skyblocker.skyblock.dwarven.CarpetHighlighter;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -54,6 +55,25 @@ public class MiningCategory {
                                         () -> config.mining.dwarvenMines.solvePuzzler,
                                         newValue -> config.mining.dwarvenMines.solvePuzzler = newValue)
                                 .controller(ConfigUtils::createBooleanController)
+                                .build())
+		                .option(Option.<Boolean>createBuilder()
+				                .name(Text.translatable("skyblocker.config.mining.dwarvenMines.enableCarpetHighlight"))
+				                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.dwarvenMines.enableCarpetHighlight.@Tooltip")))
+                                .binding(defaults.mining.dwarvenMines.enableCarpetHighlighter,
+		                                () -> config.mining.dwarvenMines.enableCarpetHighlighter,
+                                       newValue -> config.mining.dwarvenMines.enableCarpetHighlighter = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+	                            .build())
+                        .option(Option.<Color>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.dwarvenMines.carpetHighlightColor"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip")))
+                                .binding(defaults.mining.dwarvenMines.carpetHighlightColor,
+		                                () -> config.mining.dwarvenMines.carpetHighlightColor,
+		                                newValue -> {
+											config.mining.dwarvenMines.carpetHighlightColor = newValue;
+			                                CarpetHighlighter.INSTANCE.configCallback(newValue);
+		                                })
+                                .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
                                 .build())
                         .build())
 

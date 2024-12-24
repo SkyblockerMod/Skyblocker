@@ -611,6 +611,11 @@
   "skyblocker.config.mining.dwarvenMines": "Dwarven Mines",
   "skyblocker.config.mining.dwarvenMines.solveFetchur": "Solve Fetchur",
   "skyblocker.config.mining.dwarvenMines.solvePuzzler": "Solve Puzzler Puzzle",
+  "skyblocker.config.mining.dwarvenMines.enableCarpetHighlight": "Enable Unbreakable Carpet Highlighter",
+  "skyblocker.config.mining.dwarvenMines.enableCarpetHighlight.@Tooltip": "Highlights unbreakable carpets within ore veins in the Dwarven Mines.",
+  "skyblocker.config.mining.dwarvenMines.carpetHighlightColor": "Carpet Highlight Color",
+  "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Sets the color of the highlight for the unbreakable carpets.",
+
 
   "skyblocker.config.mining.enableDrillFuel": "Enable Drill Fuel",
 
