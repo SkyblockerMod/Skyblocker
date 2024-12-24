@@ -5,8 +5,9 @@ import de.hysky.skyblocker.config.HudConfigScreen;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.skyblock.tabhud.widget.EmptyWidget;
+import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
+import de.hysky.skyblocker.utils.render.gui.EmptyWidget;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.gui.YACLScreen;
@@ -90,10 +91,10 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		switch (keyCode) {
-			case GLFW.GLFW_KEY_Q -> SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment = cycle(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment);
-			case GLFW.GLFW_KEY_E -> SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment = cycleBackwards(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment);
+			case GLFW.GLFW_KEY_Q -> SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment = EnumUtils.cycle(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment);
+			case GLFW.GLFW_KEY_E -> SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment = EnumUtils.cycleBackwards(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment);
 			case GLFW.GLFW_KEY_R -> {
-				SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction = cycle(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction);
+				SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction = EnumUtils.cycle(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.direction);
 				updateWidgetDimensions();
 			}
 			case GLFW.GLFW_KEY_EQUAL -> {
@@ -108,16 +109,6 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 			}
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
-	}
-
-	private <T extends Enum<T>> T cycle(T current) {
-		T[] values = current.getDeclaringClass().getEnumConstants();
-		return values[(current.ordinal() + 1) % values.length];
-	}
-
-	private <T extends Enum<T>> T cycleBackwards(T current) {
-		T[] values = current.getDeclaringClass().getEnumConstants();
-		return values[(current.ordinal() - 1 + values.length) % values.length];
 	}
 
 	@Override

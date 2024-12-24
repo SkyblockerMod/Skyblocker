@@ -1,6 +1,5 @@
-package de.hysky.skyblocker.skyblock.tabhud.widget;
+package de.hysky.skyblocker.utils.render.gui;
 
-import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import net.minecraft.client.gui.DrawContext;
 
 public class EmptyWidget extends AbstractWidget {
