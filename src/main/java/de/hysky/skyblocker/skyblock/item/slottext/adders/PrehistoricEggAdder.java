@@ -15,6 +15,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class PrehistoricEggAdder extends SimpleSlotTextAdder {
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"prehistoric_egg",
+			"skyblocker.config.uiAndVisuals.slotText.prehistoricEgg",
+			"skyblocker.config.uiAndVisuals.slotText.prehistoricEgg.@Tooltip");
+
+	public PrehistoricEggAdder() {
+		super(CONFIG_INFORMATION);
+	}
+
 	@Override
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
 		if (!stack.isOf(Items.PLAYER_HEAD) || !stack.getSkyblockId().equals("PREHISTORIC_EGG")) return List.of();

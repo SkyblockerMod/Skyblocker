@@ -14,6 +14,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class PotionLevelAdder extends SimpleSlotTextAdder {
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"potion_level",
+			"skyblocker.config.uiAndVisuals.slotText.potionLevel");
+
+	public PotionLevelAdder() {
+		super(CONFIG_INFORMATION);
+	}
+
     @Override
     public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
         NbtCompound customData = ItemUtils.getCustomData(stack);
