@@ -46,6 +46,7 @@ public class DonationButton extends ClickableWidget {
      * @param donation The donation to associate with this button.
      */
     public void init(Donation donation) {
+		this.visible = false;
         this.donation = donation;
         this.textToRender = MuseumUtils.formatPrice(donation.getPriceData().getEffectivePrice());
 
@@ -60,7 +61,7 @@ public class DonationButton extends ClickableWidget {
                         .left()
         );
 
-        if (itemStack != null) {
+        if (itemStack != null && !itemStack.isEmpty()) {
             this.visible = true;
             createTooltip();
         }
