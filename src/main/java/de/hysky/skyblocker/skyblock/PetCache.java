@@ -13,6 +13,7 @@ import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Doesn't work with auto pet right now because that's complicated.
@@ -61,7 +62,7 @@ public class PetCache {
 	}
 
 	private static void save() {
-		CACHED_PETS.save();
+		CompletableFuture.runAsync(CACHED_PETS::save);
 	}
 
 	public static void handlePetEquip(Slot slot, int slotId) {

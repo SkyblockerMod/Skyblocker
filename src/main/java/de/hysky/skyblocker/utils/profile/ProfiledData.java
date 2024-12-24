@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.util.Uuids;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,12 +31,15 @@ public class ProfiledData<T> {
 
 	public ProfiledData(Path file, Codec<T> codec) {
 		this.file = file;
-		this.codec = Codec.unboundedMap(Uuids.CODEC, Codec.unboundedMap(Codec.STRING, codec).xmap(Object2ObjectOpenHashMap::new, Function.identity())).xmap(Object2ObjectOpenHashMap::new, Function.identity());
+		// Mojang's internal Codec implementation uses ImmutableMaps so we'll just xmap those away and type safety while we're at it :')
+		this.codec = Codec.unboundedMap(Uuids.CODEC, Codec.unboundedMap(Codec.STRING, codec)
+				.xmap(Object2ObjectOpenHashMap::new, Function.identity())
+		).xmap(Object2ObjectOpenHashMap::new, Function.identity());
 	}
 
-	public void init() {
-		load();
+	public CompletableFuture<Void> init() {
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> save());
+		return load();
 	}
 
 	// Note: JsonOps.COMPRESSED must be used if you're using maps with non-string keys
@@ -67,10 +71,12 @@ public class ProfiledData<T> {
 		return getPlayerData(uuid).containsKey(profileId);
 	}
 
+	@Nullable
 	public T get() {
 		return get(Utils.getUuid(), Utils.getProfileId());
 	}
 
+	@Nullable
 	public T get(UUID uuid, String profileId) {
 		return getPlayerData(uuid).get(profileId);
 	}

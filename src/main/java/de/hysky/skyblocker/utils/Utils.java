@@ -515,8 +515,6 @@ public class Utils {
                 if (!prevProfileId.equals(profileId)) {
                     SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
                 }
-
-                MuseumItemCache.tick(profileId);
             }
         }
 
