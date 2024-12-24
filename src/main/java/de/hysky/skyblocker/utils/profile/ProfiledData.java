@@ -7,6 +7,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.minecraft.util.Uuids;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -23,12 +25,12 @@ import java.util.function.Supplier;
 public class ProfiledData<T> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProfiledData.class);
 	private final Path file;
-	private final Codec<Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, T>>> codec;
-	private Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, T>> data = new Object2ObjectOpenHashMap<>();
+	private final Codec<Object2ObjectOpenHashMap<UUID, Object2ObjectOpenHashMap<String, T>>> codec;
+	private Object2ObjectOpenHashMap<UUID, Object2ObjectOpenHashMap<String, T>> data = new Object2ObjectOpenHashMap<>();
 
 	public ProfiledData(Path file, Codec<T> codec) {
 		this.file = file;
-		this.codec = Codec.unboundedMap(Codec.STRING, Codec.unboundedMap(Codec.STRING, codec).xmap(Object2ObjectOpenHashMap::new, Function.identity())).xmap(Object2ObjectOpenHashMap::new, Function.identity());
+		this.codec = Codec.unboundedMap(Uuids.CODEC, Codec.unboundedMap(Codec.STRING, codec).xmap(Object2ObjectOpenHashMap::new, Function.identity())).xmap(Object2ObjectOpenHashMap::new, Function.identity());
 	}
 
 	public void init() {
@@ -58,54 +60,54 @@ public class ProfiledData<T> {
 	}
 
 	public boolean containsKey() {
-		return containsKey(Utils.getUndashedUuid(), Utils.getProfileId());
+		return containsKey(Utils.getUuid(), Utils.getProfileId());
 	}
 
-	public boolean containsKey(String uuid, String profileId) {
+	public boolean containsKey(UUID uuid, String profileId) {
 		return getPlayerData(uuid).containsKey(profileId);
 	}
 
 	public T get() {
-		return get(Utils.getUndashedUuid(), Utils.getProfileId());
+		return get(Utils.getUuid(), Utils.getProfileId());
 	}
 
-	public T get(String uuid, String profileId) {
+	public T get(UUID uuid, String profileId) {
 		return getPlayerData(uuid).get(profileId);
 	}
 
 	public T put(T value) {
-		return put(Utils.getUndashedUuid(), Utils.getProfileId(), value);
+		return put(Utils.getUuid(), Utils.getProfileId(), value);
 	}
 
-	public T put(String uuid, String profileId, T value) {
+	public T put(UUID uuid, String profileId, T value) {
 		return getPlayerData(uuid).put(profileId, value);
 	}
 
 	public T putIfAbsent(T value) {
-		return putIfAbsent(Utils.getUndashedUuid(), Utils.getProfileId(), value);
+		return putIfAbsent(Utils.getUuid(), Utils.getProfileId(), value);
 	}
 
-	public T putIfAbsent(String uuid, String profileId, T value) {
+	public T putIfAbsent(UUID uuid, String profileId, T value) {
 		return getPlayerData(uuid).putIfAbsent(profileId, value);
 	}
 
 	public T computeIfAbsent(Supplier<T> valueSupplier) {
-		return computeIfAbsent(Utils.getUndashedUuid(), Utils.getProfileId(), valueSupplier);
+		return computeIfAbsent(Utils.getUuid(), Utils.getProfileId(), valueSupplier);
 	}
 
-	public T computeIfAbsent(String uuid, String profileId, Supplier<T> valueSupplier) {
+	public T computeIfAbsent(UUID uuid, String profileId, Supplier<T> valueSupplier) {
 		return getPlayerData(uuid).computeIfAbsent(profileId, _profileId -> valueSupplier.get());
 	}
 
 	public T remove() {
-		return remove(Utils.getUndashedUuid(), Utils.getProfileId());
+		return remove(Utils.getUuid(), Utils.getProfileId());
 	}
 
-	public T remove(String uuid, String profileId) {
+	public T remove(UUID uuid, String profileId) {
 		return getPlayerData(uuid).remove(profileId);
 	}
 
-	private Map<String, T> getPlayerData(String uuid) {
+	private Map<String, T> getPlayerData(UUID uuid) {
 		return data.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
 	}
 }
