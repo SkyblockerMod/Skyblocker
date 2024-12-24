@@ -58,5 +58,7 @@
     "skyblocker.config.debug.dumpFormat.@Tooltip": "The format to use when dumping items. SNBT is coloured and easier to read while JSON has escaped string characters (double quotes).",
     "skyblocker.bars.config.textPosition.BAR_CENTER": "Bar Centre",
     "skyblocker.bars.config.textPosition.CENTER": "Centre",
-    "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Default Positioning Behaviour"
+    "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Default Positioning Behaviour",
+    "skyblocker.config.mining.dwarvenMines.carpetHighlightColor": "Carpet Highlight Colour",
+    "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Sets the colour of the highlight for the unbreakable carpets."
 }
