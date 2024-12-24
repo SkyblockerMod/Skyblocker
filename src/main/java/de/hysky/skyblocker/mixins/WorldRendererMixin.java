@@ -66,9 +66,4 @@ public class WorldRendererMixin {
 			);
 		}
 	}
-
-	@Inject(method = "render", at = @At("RETURN"))
-	private void skyblocker$clearCustomGlowCache(CallbackInfo ci) {
-		MobGlow.clearCache();
-	}
 }

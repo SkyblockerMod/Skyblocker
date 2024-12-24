@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.entity;
 
 import com.google.common.collect.Streams;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
@@ -15,6 +16,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -37,8 +39,15 @@ public class MobGlow {
 	private static final String FEL_HEAD_TEXTURE = "ewogICJ0aW1lc3RhbXAiIDogMTcyMDAyNTQ4Njg2MywKICAicHJvZmlsZUlkIiA6ICIzZDIxZTYyMTk2NzQ0Y2QwYjM3NjNkNTU3MWNlNGJlZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJTcl83MUJsYWNrYmlyZCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jMjg2ZGFjYjBmMjE0NGQ3YTQxODdiZTM2YmJhYmU4YTk4ODI4ZjdjNzlkZmY1Y2UwMTM2OGI2MzAwMTU1NjYzIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=";
 	/**
 	 * Cache for mob glow. Absence means the entity does not have custom glow.
+	 * If an entity is in the cache, it must have custom glow.
 	 */
 	private static final Object2IntMap<Entity> CACHE = new Object2IntOpenHashMap<>();
+
+	@Init
+	public static void init() {
+		// Clear the cache every tick
+		ClientTickEvents.END_WORLD_TICK.register(client -> clearCache());
+	}
 
 	public static boolean atLeastOneMobHasCustomGlow() {
 		return !CACHE.isEmpty();
@@ -68,6 +77,10 @@ public class MobGlow {
 		CACHE.clear();
 	}
 
+	/**
+	 * Computes the glow color for the given entity.
+	 * <p>Only non-zero colors are valid.
+	 */
 	private static int computeMobGlow(Entity entity) {
 		String name = entity.getName().getString();
 
