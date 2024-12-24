@@ -11,6 +11,7 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPosition
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
+import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
@@ -307,8 +308,7 @@ public class PreviewTab implements Tab {
 			widgetOptions.addWidget(ButtonWidget.builder(Text.literal(ye), button -> {
 				ScreenBuilder builder = ScreenMaster.getScreenBuilder(getCurrentLocation());
 				PositionRule rule = builder.getPositionRuleOrDefault(hudWidget.getInternalID());
-				ScreenMaster.ScreenLayer[] values = ScreenMaster.ScreenLayer.values();
-				ScreenMaster.ScreenLayer newLayer = values[(rule.screenLayer().ordinal() + 1) % values.length];
+				ScreenMaster.ScreenLayer newLayer = EnumUtils.cycle(rule.screenLayer());
 
 				PositionRule newRule = new PositionRule(
 						rule.parent(),
