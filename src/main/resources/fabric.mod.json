@@ -64,9 +64,6 @@
     "loom:injected_interfaces": {
       "net/minecraft/class_1799": [
         "de/hysky/skyblocker/injected/SkyblockerStack"
-      ],
-      "net/minecraft/class_761": [
-        "de/hysky/skyblocker/injected/CustomGlowInfo"
       ]
     }
   }

@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 
-import de.hysky.skyblocker.injected.CustomGlowInfo;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
@@ -25,7 +24,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 
 @Mixin(WorldRenderer.class)
-public class WorldRendererMixin implements CustomGlowInfo {
+public class WorldRendererMixin {
 	@Shadow
 	@Final
 	private MinecraftClient client;
