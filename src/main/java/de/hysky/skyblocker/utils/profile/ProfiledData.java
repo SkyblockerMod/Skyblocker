@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,20 +15,20 @@ import java.io.BufferedWriter;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ProfiledData<T> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProfiledData.class);
 	private final Path file;
-	private final Codec<Map<String, Map<String, T>>> codec;
-	private Map<String, Map<String, T>> data = new HashMap<>();
+	private final Codec<Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, T>>> codec;
+	private Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<String, T>> data = new Object2ObjectOpenHashMap<>();
 
 	public ProfiledData(Path file, Codec<T> codec) {
 		this.file = file;
-		this.codec = Codec.unboundedMap(Codec.STRING, Codec.unboundedMap(Codec.STRING, codec));
+		this.codec = Codec.unboundedMap(Codec.STRING, Codec.unboundedMap(Codec.STRING, codec).xmap(Object2ObjectOpenHashMap::new, Function.identity())).xmap(Object2ObjectOpenHashMap::new, Function.identity());
 	}
 
 	public void init() {
@@ -105,6 +106,6 @@ public class ProfiledData<T> {
 	}
 
 	private Map<String, T> getPlayerData(String uuid) {
-		return data.computeIfAbsent(uuid, _uuid -> new HashMap<>());
+		return data.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
 	}
 }
