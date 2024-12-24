@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
+import de.hysky.skyblocker.utils.EnumUtils;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -211,7 +212,7 @@ public class EditBarWidget extends ContainerWidget {
 
 		@Override
 		public void onClick(double mouseX, double mouseY) {
-			current = values[(current.ordinal() + 1) % values.length];
+			current = EnumUtils.cycle(current);
 			if (onChange != null) onChange.accept(current);
 			super.onClick(mouseX, mouseY);
 		}
