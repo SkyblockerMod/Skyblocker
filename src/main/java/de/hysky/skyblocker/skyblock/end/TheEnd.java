@@ -132,7 +132,7 @@ public class TheEnd {
     public static void onEntityDeath(Entity entity) {
         if (!(entity instanceof EndermanEntity enderman) || !isZealot(enderman)) return;
         if (hitZealots.contains(enderman.getUuid())) {
-			EndStats stats = PROFILES_STATS.get();
+			EndStats stats = PROFILES_STATS.putIfAbsent(EndStats.EMPTY);
             if (isSpecialZealot(enderman)) {
 				PROFILES_STATS.put(new EndStats(stats.totalZealotKills() + 1, 0, stats.eyes() + 1));
 			} else {
