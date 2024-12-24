@@ -134,11 +134,7 @@ public class OtherLocationsCategory {
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.otherLocations.end.resetName"))
                                 .text(Text.translatable("skyblocker.config.otherLocations.end.resetText"))
-                                .action((screen, opt) -> {
-                                    TheEnd.zealotsKilled = 0;
-                                    TheEnd.zealotsSinceLastEye = 0;
-                                    TheEnd.eyes = 0;
-                                })
+                                .action((screen, opt) -> TheEnd.PROFILES_STATS.put(TheEnd.EndStats.EMPTY))
                                 .build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.otherLocations.end.muteEndermanSounds"))

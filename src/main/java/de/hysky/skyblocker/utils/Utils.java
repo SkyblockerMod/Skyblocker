@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -514,8 +515,6 @@ public class Utils {
                 if (!prevProfileId.equals(profileId)) {
                     SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
                 }
-
-                MuseumItemCache.tick(profileId);
             }
         }
 
@@ -535,7 +534,11 @@ public class Utils {
         client.getNarratorManager().narrateSystemMessage(message);
     }
 
+	public static UUID getUuid() {
+		return MinecraftClient.getInstance().getSession().getUuidOrNull();
+	}
+
     public static String getUndashedUuid() {
-        return UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
+        return UndashedUuid.toString(getUuid());
     }
 }
