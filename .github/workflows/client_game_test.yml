@@ -39,8 +39,10 @@ jobs:
         with:
           validate-wrappers: true
 
-      - name: Run client gametest with Gradle
-        run: ./gradlew runClientGametest
+      - name: Run client gametest with Xvfb
+        uses: modmuss50/xvfb-action@v1
+        with:
+          run: ./gradlew runClientGametest
       - name: Upload test screenshots
         uses: actions/upload-artifact@v4
         with:
