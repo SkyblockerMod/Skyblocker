@@ -921,7 +921,7 @@
     "skyblocker.config.slayer.bossbar.@Tooltip": "为当前你正战斗的Boss显示Boss栏",
     "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "紧凑的Effigy路径点",
     "skyblocker.dungeons.secrets.posMessage": "§r房间: %s, 方向: %s, X: %d, Y: %d, Z: %d",
-    "skyblocker.tips.orderedWaypoints": "你使用/skyblocker waypoints ordered 导入（包括来自coleweight），加入，移除，和切换已有的路径点。",
+    "skyblocker.tips.orderedWaypoints": "你可以使用/skyblocker waypoints ordered 导入（包括来自coleweight）、添加、移除、切换已有的路径点。",
     "skyblocker.config.eventNotifications.notificationSound.sound.PLING": "音符盒-电钢琴",
     "skyblocker.config.eventNotifications.notificationSound.sound.GOAT": "山羊",
     "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "在火柱爆炸的前五秒倒计时。配置“标题容器”以自定义本项目在HUD上的位置。（注意：本功能使用了尚未成熟的距离检测，所以火柱有可能是另一位玩家的slayer召唤的）",
@@ -1002,5 +1002,18 @@
     "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto": "分享Fairy Grotto",
     "skyblocker.config.uiAndVisuals.tabHud.configScreen": "打开设置界面",
     "skyblocker.config.uiAndVisuals.nightVisionStrength": "夜视强度",
-    "skyblocker.nightVision.success": "将夜视强度更改为%d。"
+    "skyblocker.nightVision.success": "将夜视强度更改为%d。",
+    "skyblocker.config.general.itemProtection.protectValuableConsumables": "保护贵重消耗品",
+    "skyblocker.config.slayer.enableHud.@Tooltip": "在所有HUD元素显示出来之前，可能需要先击杀一次boss",
+    "skyblocker.config.otherLocations.end.muteEndermanSounds": "消除末影人音效",
+    "skyblocker.config.slayer.enableHud": "杀手HUD",
+    "skyblocker.config.slayer.bossSpawnAlert": "Boss生成警告",
+    "skyblocker.config.slayer.slayerHud": "杀手HUD配置",
+    "skyblocker.config.mining.dwarvenMines.enableCarpetHighlight": "启用不可破坏的地毯高亮",
+    "skyblocker.config.mining.dwarvenMines.enableCarpetHighlight.@Tooltip": "高亮矮人矿井中不可破坏的地毯。",
+    "skyblocker.config.mining.dwarvenMines.carpetHighlightColor": "地毯高亮颜色",
+    "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "设置不可破坏的地毯的高亮颜色。",
+    "skyblocker.slayer.personalBest": "最佳纪录！",
+    "skyblocker.slayer.previousPB": "之前的最佳纪录是%d。",
+    "skyblocker.config.chat.confirmationPromptHelper": "聊天确认提示助手"
 }
