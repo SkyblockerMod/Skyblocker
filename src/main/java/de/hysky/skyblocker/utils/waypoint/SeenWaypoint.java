@@ -10,6 +10,11 @@ import net.minecraft.world.RaycastContext;
 
 import java.util.function.Supplier;
 
+/**
+ * A waypoint that renders without beacon beams and does not render through walls until it is seen.
+ * <p>After being seen, it will render through walls and optionally render beacon beams based on the waypoint type.
+ * It is the caller's responsibility to call {@link #tick(MinecraftClient)} to check if the waypoint is seen.
+ */
 public class SeenWaypoint extends Waypoint implements Tickable {
 	private boolean seen = false;
 
