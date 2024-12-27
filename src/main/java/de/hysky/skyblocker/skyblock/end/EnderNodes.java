@@ -5,7 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
+import de.hysky.skyblocker.utils.waypoint.SeenWaypoint;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -88,7 +88,7 @@ public class EnderNodes {
     private static void update() {
         if (shouldProcess()) {
             for (EnderNode enderNode : enderNodes.values()) {
-                enderNode.updateParticles();
+                enderNode.updateWaypoint();
             }
         }
     }
@@ -111,7 +111,7 @@ public class EnderNodes {
         enderNodes.clear();
     }
 
-    public static class EnderNode extends Waypoint {
+    public static class EnderNode extends SeenWaypoint {
         private final Map<Direction, IntIntPair> particles = Map.of(
                 Direction.UP, new IntIntMutablePair(0, 0),
                 Direction.DOWN, new IntIntMutablePair(0, 0),
@@ -123,10 +123,11 @@ public class EnderNodes {
         private long lastConfirmed;
 
         private EnderNode(BlockPos pos) {
-            super(pos, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType.withoutBeacon(), ColorUtils.getFloatComponents(DyeColor.CYAN), false);
+            super(pos, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, ColorUtils.getFloatComponents(DyeColor.CYAN));
         }
 
-        private void updateParticles() {
+        private void updateWaypoint() {
+            tick(client);
             long currentTimeMillis = System.currentTimeMillis();
             if (lastConfirmed + 2000 > currentTimeMillis || client.world == null || !particles.entrySet().stream().allMatch(entry -> entry.getValue().leftInt() >= 5 && entry.getValue().rightInt() >= 5 || !client.world.getBlockState(pos.offset(entry.getKey())).isAir())) return;
             lastConfirmed = currentTimeMillis;
