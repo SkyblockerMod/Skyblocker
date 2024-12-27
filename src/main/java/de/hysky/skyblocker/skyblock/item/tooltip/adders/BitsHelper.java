@@ -192,9 +192,11 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 		} else {
 			String outerKey = stack.getName().getString();
 			ObjectLongPair<String> innerMap, innerMapGreen;
-			if (bestSlotIndexSelling != -1) if (bestSlotIndexSelling == focusedSlot.getIndex()) isGreen = true;
 
-			calculateBestItems(getSlots());
+			BestItemsResult bestItemsResult = calculateBestItems(getSlots());
+			bestSlotIndexSelling = bestItemsResult.bestSlotIndexSelling;
+			bestSlotIndexAll = bestItemsResult.bestSlotIndexAll;
+			if (bestSlotIndexSelling != -1 && bestSlotIndexSelling == focusedSlot.getIndex()) isGreen = true;
 			innerMap = categoryOutput.get(outerKey);
 			innerMapGreen = categoryOutput.get(outerKey + "GREEN");
 
@@ -271,8 +273,8 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	private BestItemsResult calculateBestItems(Int2ObjectMap<ItemStack> slots) {
 		long bestCoinsPerBitSelling = 0L;
 		long bestCoinsPerBitAll = 0L;
-		bestSlotIndexSelling = -1;
-		bestSlotIndexAll = -1;
+		int bestSlotIndexSelling = -1;
+		int bestSlotIndexAll = -1;
 		if (slots == null || slots.isEmpty()) return new BestItemsResult(bestSlotIndexSelling, bestSlotIndexAll, bestCoinsPerBitSelling, bestCoinsPerBitAll);
 
 		// process categories first
