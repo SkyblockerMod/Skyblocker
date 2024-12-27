@@ -26,6 +26,17 @@ public class HelperCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 
+                // Bits Helper
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.helpers.enableBitsHelper"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.enableBitsHelper.@Tooltip")))
+                        .binding(defaults.helpers.enableBitsTooltip,
+                                () -> config.helpers.enableBitsTooltip,
+                                newValue -> config.helpers.enableBitsTooltip = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
+
+				// Wardrobe Helper
 		        .option(Option.<Boolean>createBuilder()
 		                .name(Text.translatable("skyblocker.config.helpers.enableWardrobeHelper"))
 		                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.enableWardrobeHelper.@Tooltip")))
