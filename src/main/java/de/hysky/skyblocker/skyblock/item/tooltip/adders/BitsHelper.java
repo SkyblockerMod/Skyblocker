@@ -194,7 +194,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			ObjectLongPair<String> innerMap, innerMapGreen;
 			if (bestSlotIndexSelling != -1) if (bestSlotIndexSelling == focusedSlot.getIndex()) isGreen = true;
 
-			BestItemsResult result = calculateBestItems(getSlots());
+			calculateBestItems(getSlots());
 			innerMap = categoryOutput.get(outerKey);
 			innerMapGreen = categoryOutput.get(outerKey + "GREEN");
 
@@ -217,12 +217,12 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			lines.add(Text.empty()
 					.append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
 					.append(Text.literal(DECIMAL_FORMAT.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
-			lines.add(Text.literal("From " + ItemRepository.getItemStack(itemID).getName().getString()).formatted(Formatting.GREEN));
+			lines.add(Text.literal("From " + foundItemStack.getName().getString()).formatted(Formatting.GREEN));
 		} else if (foundItemStack != null) {
 			lines.add(Text.empty()
 					.append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
 					.append(Text.literal(DECIMAL_FORMAT.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
-			lines.add(Text.literal("From " + ItemRepository.getItemStack(itemID).getName().getString()).formatted(Formatting.DARK_AQUA));
+			lines.add(Text.literal("From " + foundItemStack.getName().getString()).formatted(Formatting.DARK_AQUA));
 		} else {    // if below so it won't clog logs with that cursed enchanted book
 			if (!stack.getName().getString().equals("Stacking Enchants")) LOGGER.warn(LOGS_PREFIX + "ItemStack not found for {}", itemID);
 			lines.add(Text.empty()
@@ -238,8 +238,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	 */
 	private Int2ObjectMap<ItemStack> getSlots() {
 		MinecraftClient client = MinecraftClient.getInstance();
-		if (client.currentScreen instanceof HandledScreen) {
-			HandledScreen<?> screen = (HandledScreen<?>) client.currentScreen;
+		if (client.currentScreen instanceof HandledScreen<?> screen) {
 			ScreenHandler handler = screen.getScreenHandler();
 
 			Int2ObjectMap<ItemStack> slots = new Int2ObjectOpenHashMap<>();
@@ -282,7 +281,6 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			if (stack == null || stack.isEmpty()) continue;
 
 			if (CATEGORY_PATTERN.matcher(ItemUtils.concatenateLore(ItemUtils.getLore(stack))).find()) {
-				String catName = stack.getName().getString();
 				ObjectLongImmutablePair<String> categoryResults = calculateBestInCategory(stack);
 
 				String itemID = categoryResults.left();
@@ -302,11 +300,12 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 
 		for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
 			ItemStack stack = entry.getValue();
+			if (stack == null || stack.isEmpty()) continue;
+
 			String itemId = stack.getSkyblockApiId();
 			String lore = ItemUtils.concatenateLore(ItemUtils.getLore(stack));
 			Matcher bitsMatcher = BITS_PATTERN.matcher(lore);
-
-			if (stack == null || stack.isEmpty() || !bitsMatcher.find()) continue;
+			if (!bitsMatcher.find()) continue;
 
 			long bitsCost = Long.parseLong(bitsMatcher.group("amount").replace(",", ""));
 			double itemCost = ItemUtils.getItemPrice(stack).keyDouble() * stack.getCount();
