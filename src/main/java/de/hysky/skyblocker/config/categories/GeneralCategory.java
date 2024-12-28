@@ -8,6 +8,7 @@ import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
+import de.hysky.skyblocker.skyblock.speedPreset.SpeedPresetsScreen;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
@@ -57,6 +58,23 @@ public class GeneralCategory {
                                 newValue -> config.general.acceptReparty = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.general.speedPresets"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.speedPresets.enableSpeedPresets"))
+								.binding(defaults.general.speedPresets.enableSpeedPresets,
+										() -> config.general.speedPresets.enableSpeedPresets,
+										newValue -> config.general.speedPresets.enableSpeedPresets = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.general.speedPresets.config"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new SpeedPresetsScreen(screen)))
+								.build())
+						.build())
 
                 //Shortcuts
                 .group(OptionGroup.createBuilder()

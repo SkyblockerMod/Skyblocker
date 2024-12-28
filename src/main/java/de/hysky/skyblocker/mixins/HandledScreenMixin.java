@@ -2,9 +2,7 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.systems.RenderSystem;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.InventorySearch;
@@ -28,7 +26,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -36,7 +33,6 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -62,9 +58,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 */
 	@Unique
 	private static final int OUT_OF_BOUNDS_SLOT = -999;
-
-	@Unique
-	private static final Identifier ITEM_PROTECTION = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
 
 	@Unique
 	private static final Set<String> FILLER_ITEMS = Set.of(
@@ -335,12 +328,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	private void skyblocker$drawOnItem(DrawContext context, Slot slot, CallbackInfo ci) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds)
 			ItemRarityBackgrounds.tryDraw(slot.getStack(), context, slot.x, slot.y);
-		// Item protection
-		if (ItemProtection.isItemProtected(slot.getStack())) {
-			RenderSystem.enableBlend();
-			context.drawTexture(RenderLayer::getGuiTextured, ITEM_PROTECTION, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
-			RenderSystem.disableBlend();
-		}
 		// Search
 		// Darken the slots
 		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {
