@@ -108,8 +108,7 @@ public class SpeedPresets {
 	public void loadPresets() {
 		try (var reader = Files.newReader(PRESETS_FILE, StandardCharsets.UTF_8)) {
 			var element = JsonParser.parseReader(reader);
-			var map = MAP_CODEC.decode(JsonOps.INSTANCE, element).resultOrPartial(LOGGER::warn);
-			map.ifPresent(mapResult -> this.presets.putAll(mapResult.getFirst()));
+			MAP_CODEC.parse(JsonOps.INSTANCE, element).resultOrPartial(LOGGER::error).ifPresent(this.presets::putAll);
 		} catch (FileNotFoundException e) {
 			LOGGER.warn("Couldn't find speed presets file, creating one automatically...");
 			this.loadDefaults();
