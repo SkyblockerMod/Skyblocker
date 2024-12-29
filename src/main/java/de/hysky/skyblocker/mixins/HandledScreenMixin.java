@@ -97,8 +97,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@Shadow
 	protected abstract List<Text> getTooltipFromItem(ItemStack stack);
 
-	@Shadow
-	private boolean touchIsRightClickDrag;
 	@Unique
 	private List<QuickNavButton> quickNavButtons;
 
