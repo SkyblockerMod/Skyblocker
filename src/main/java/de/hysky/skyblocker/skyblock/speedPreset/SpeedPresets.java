@@ -51,7 +51,7 @@ public class SpeedPresets {
 
 	public static CommandNode<FabricClientCommandSource> getCommandNode() {
 		return ClientCommandManager.literal("setmaxspeed")
-				.requires(client -> Utils.isOnSkyblock())
+				.requires(source -> Utils.isOnSkyblock())
 				.then(ClientCommandManager.argument("preset", StringArgumentType.string())
 						.suggests((ctx, builder) -> {
 							if (SkyblockerConfigManager.get().general.speedPresets.enableSpeedPresets) {
