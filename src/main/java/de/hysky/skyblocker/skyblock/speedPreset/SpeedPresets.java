@@ -110,7 +110,7 @@ public class SpeedPresets {
 			var element = JsonParser.parseReader(reader);
 			MAP_CODEC.parse(JsonOps.INSTANCE, element).resultOrPartial(LOGGER::error).ifPresent(this.presets::putAll);
 		} catch (FileNotFoundException e) {
-			LOGGER.warn("Couldn't find speed presets file, creating one automatically...");
+			LOGGER.warn("[Skyblocker Speed Presets] Couldn't find speed presets file, creating one automatically...");
 			this.loadDefaults();
 			this.savePresets();
 		} catch (IOException e) {
