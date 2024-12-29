@@ -114,7 +114,7 @@ public class SpeedPresets {
 			this.loadDefaults();
 			this.savePresets();
 		} catch (IOException e) {
-			LOGGER.warn("Couldn't load speed presets: ", e);
+			LOGGER.error("[Skyblocker Speed Presets] Couldn't load speed presets", e);
 		}
 	}
 
