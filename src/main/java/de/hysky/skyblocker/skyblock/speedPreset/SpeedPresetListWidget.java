@@ -107,7 +107,6 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 
 		@Override
 		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			var renderer = SpeedPresetListWidget.this.client.textRenderer;
 			// The line height is 25, the height of a single character is always 9.
 			// 25 - 9 = 16, 16 / 2 = 8, therefore the Y-offset should be 8.
 			context.drawCenteredTextWithShadow(renderer, Text.translatable("skyblocker.config.general.speedPresets.config.title"), width / 2 - 50, y + 8, 0xFFFFFF);
