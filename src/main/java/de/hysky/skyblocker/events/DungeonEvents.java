@@ -22,6 +22,9 @@ public class DungeonEvents {
 		}
 	});
 
+	/**
+	 * Note: This event fires after the tab has changed to include additional information about the run such as each player's class.
+	 */
 	public static final Event<DungeonStarted> DUNGEON_STARTED = EventFactory.createArrayBacked(DungeonStarted.class, callbacks -> () -> {
 		for (DungeonStarted callback : callbacks) {
 			callback.onDungeonStarted();
