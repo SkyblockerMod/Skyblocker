@@ -6,8 +6,10 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
@@ -32,6 +34,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class MobGlow {
+	public static final int NO_GLOW = 0;
 	/**
 	 * The Nukekubi head texture id is eb07594e2df273921a77c101d0bfdfa1115abed5b9b2029eb496ceba9bdbb4b3.
 	 */
@@ -58,7 +61,7 @@ public class MobGlow {
 			return true;
 		}
 		int color = computeMobGlow(entity);
-		if (color != 0) {
+		if (color != NO_GLOW) {
 			CACHE.put(entity, color);
 			return true;
 		}
@@ -93,6 +96,9 @@ public class MobGlow {
 				case PlayerEntity p when SkyblockerConfigManager.get().dungeons.starredMobGlow && !DungeonManager.getBoss().isFloor(4) && name.equals("Diamond Guy") -> 0x57c2f7;
 				case PlayerEntity p when entity.getId() == LividColor.getCorrectLividId() && LividColor.shouldGlow(name) -> LividColor.getGlowColor(name);
 
+				//Class-based glow
+				case PlayerEntity p when SkyblockerConfigManager.get().dungeons.classBasedPlayerGlow && DungeonScore.isDungeonStarted() -> DungeonPlayerManager.getClassFromPlayer(p).color();
+
 				// Bats
 				case BatEntity b when SkyblockerConfigManager.get().dungeons.starredMobGlow -> 0xf57738;
 
@@ -104,7 +110,7 @@ public class MobGlow {
 
 				// Regular Mobs
 				case Entity e when SkyblockerConfigManager.get().dungeons.starredMobGlow && isStarred(entity) -> 0xf57738;
-				default -> 0;
+				default -> NO_GLOW;
 			};
 		}
 
@@ -137,7 +143,7 @@ public class MobGlow {
 			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerManager.isInSlayerType(SlayerType.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15 -> AttunementColors.getColor(e);
 			case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerManager.isInSlayerType(SlayerType.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15 -> AttunementColors.getColor(e);
 
-			default -> 0;
+			default -> NO_GLOW;
 		};
 	}
 

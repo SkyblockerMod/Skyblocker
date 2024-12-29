@@ -19,6 +19,9 @@ public class DungeonsConfig {
     public boolean playerSecretsTracker = false;
 
     @SerialEntry
+    public boolean classBasedPlayerGlow = false;
+
+    @SerialEntry
     public boolean starredMobGlow = false;
 
     @SerialEntry
