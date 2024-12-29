@@ -34,7 +34,7 @@ public class SpeedPresetsScreen extends Screen {
 							assert this.client != null;
 							this.client.setScreen(parent);
 						})
-				.dimensions(0, 0, Math.max(textRenderer.getWidth(ScreenTexts.DONE) + 8, 100), 20)
+				.width(Math.max(textRenderer.getWidth(ScreenTexts.DONE) + 8, 100))
 				.build();
 		grid.add(doneButton, 0, 0, 1, 2);
 		var plusButton = ButtonWidget.builder(Text.literal("+"),
