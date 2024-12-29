@@ -39,7 +39,7 @@ public class SpeedPresetsScreen extends Screen {
 		grid.add(doneButton, 0, 0, 1, 2);
 		var plusButton = ButtonWidget.builder(Text.literal("+"),
 						button -> list.newEntry())
-				.dimensions(0, 0, 20, 20)
+				.width(20)
 				.build();
 		grid.add(plusButton, 0, 2, 1, 1);
 		grid.refreshPositions();
