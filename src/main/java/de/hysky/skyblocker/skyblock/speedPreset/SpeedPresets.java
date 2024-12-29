@@ -11,6 +11,8 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
@@ -22,9 +24,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 
@@ -33,15 +33,15 @@ public class SpeedPresets {
 	private static final Pattern COMMAND_PATTERN = Pattern.compile("^setmaxspeed\\s([a-zA-Z][a-zA-Z0-9_]*)$");
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpeedPresets.class);
-	private static final Codec<Map<String, Short>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, Codec.SHORT);
+	private static final Codec<Map<String, Integer>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, Codec.INT);
 	private static final File PRESETS_FILE = new File(SkyblockerMod.CONFIG_DIR.toFile(), "speed_presets.json");
 
 	private static SpeedPresets instance;
 
-	private final Map<String, Short> presets;
+	private final Object2IntMap<String> presets;
 
 	private SpeedPresets() {
-		this.presets = new LinkedHashMap<>();
+		this.presets = new Object2IntOpenHashMap<>();
 		this.loadPresets();
 	}
 
@@ -80,16 +80,12 @@ public class SpeedPresets {
 		this.presets.clear();
 	}
 
-	public Set<Map.Entry<String, Short>> entries() {
-		return this.presets.entrySet();
-	}
-
 	public boolean hasPreset(String name) {
 		return this.presets.containsKey(name);
 	}
 
-	public short getPreset(String name) {
-		return this.presets.getOrDefault(name, (short) 0);
+	public int getPreset(String name) {
+		return this.presets.getOrDefault(name, 0);
 	}
 
 	public void setPreset(String name, short value) {
@@ -97,8 +93,12 @@ public class SpeedPresets {
 		savePresets();
 	}
 
-	public void forEach(BiConsumer<String, Short> consumer) {
+	public void forEach(BiConsumer<String, Integer> consumer) {
 		this.presets.forEach(consumer);
+	}
+
+	public boolean compare(Map<String, Integer> presets) {
+		return this.presets.equals(presets);
 	}
 
 	public int getPresetCount() {

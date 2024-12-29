@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.speedPreset;
 
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
@@ -8,10 +10,10 @@ import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidget.AbstractEntry> {
@@ -19,7 +21,6 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 	private static final Pattern NUMBER = Pattern.compile("^-?\\d+(\\.\\d+)?$");
 	// Alphanumeric sequence that doesn't start with a number.
 	private static final Pattern TITLE = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*$");
-	private static final Logger LOGGER = LoggerFactory.getLogger(SpeedPresetListWidget.class);
 
 	public SpeedPresetListWidget(int width, int height, int y) {
 		super(MinecraftClient.getInstance(), width, height, y, 25);
@@ -38,12 +39,18 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 	}
 
 	public boolean hasBeenChanged() {
-		var presets = SpeedPresets.getInstance().getPresetCount();
+		var presets = SpeedPresets.getInstance();
 		// If there are fewer children than presets, some were removed, and all further checks are pointless
-		if (children().size() < presets) return true;
-		return presets != children().stream().filter(SpeedPresetEntry.class::isInstance)
-				.filter(preset -> !((SpeedPresetEntry) preset).isEmpty())
-				.count() || children().stream().filter(SpeedPresetEntry.class::isInstance).map(SpeedPresetEntry.class::cast).anyMatch(SpeedPresetEntry::hasBeenModified);
+		if (children().size() < presets.getPresetCount()) return true;
+		var childrenMap = new Object2IntOpenHashMap<String>();
+		this.children().stream()
+				.filter(SpeedPresetEntry.class::isInstance)
+				.map(SpeedPresetEntry.class::cast)
+				.filter(entry -> !entry.isEmpty())
+				.map(SpeedPresetEntry::getMapping)
+				.filter(Objects::nonNull)
+				.forEach(mapping -> childrenMap.put(mapping.first(), mapping.second()));
+		return !presets.compare(childrenMap);
 	}
 
 	public void updatePosition() {
@@ -67,11 +74,7 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 
 	public abstract static class AbstractEntry extends ElementListWidget.Entry<AbstractEntry> {
 
-		protected boolean hasBeenModified() {
-			return false;
-		}
-
-		protected void updatePosition(){}
+		protected void updatePosition() {}
 
 		@Override
 		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
@@ -111,14 +114,8 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 		protected final TextFieldWidget speedInput;
 		protected final ButtonWidget removeButton;
 
-		protected final String initialTitle;
-		protected final String initialSpeed;
-
 		public SpeedPresetEntry(String title, String speed) {
 			var client = SpeedPresetListWidget.this.client;
-
-			this.initialTitle = title;
-			this.initialSpeed = speed;
 
 			// All Xs and Ys are then set using the initPosition() method.
 			this.titleInput = new TextFieldWidget(client.textRenderer, 0, 0, 120, 20, Text.empty());
@@ -133,9 +130,10 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 			this.speedInput.setMaxLength(3);
 			this.speedInput.setPlaceholder(Text.literal("0").formatted(Formatting.DARK_GRAY));
 
-			this.removeButton = ButtonWidget.builder(Text.literal("-"), (btn) -> {
-				SpeedPresetListWidget.this.removeEntry(this);
-			}).dimensions(0, 0, 20, 20).build();
+			this.removeButton = ButtonWidget.builder(Text.literal("-"),
+							(btn) -> SpeedPresetListWidget.this.removeEntry(this))
+					.dimensions(0, 0, 20, 20)
+					.build();
 
 			this.updatePosition();
 		}
@@ -152,15 +150,10 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 
 		public void save() {
 			var presets = SpeedPresets.getInstance();
-			assert presets != null && children().size() == 3;
-			var title = ((TextFieldWidget) children().get(0)).getText();
-			var speed = ((TextFieldWidget) children().get(1)).getText();
-			if (title.isEmpty()) return;
-			try {
-				presets.setPreset(title, Short.parseShort(speed));
-			} catch (NumberFormatException e) {
-				LOGGER.warn("Couldn't save speed preset '{}' because of an invalid speed value: {}", title, speed);
-			}
+			if (this.isEmpty()) return;
+			var mapping = getMapping();
+			if (mapping != null)
+				presets.setPreset(mapping.first(), mapping.second());
 		}
 
 		protected boolean isEmpty() {
@@ -178,10 +171,13 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 			SimplePositioningWidget.setPos(grid, 0, 0, width, itemHeight, 0.5f, 0.5f);
 		}
 
-		@Override
-		protected boolean hasBeenModified() {
-			return !this.titleInput.getText().equals(this.initialTitle)
-					|| !this.speedInput.getText().equals(this.initialSpeed);
+		@Nullable
+		protected Pair<String, Short> getMapping() {
+			try {
+				return Pair.of(titleInput.getText(), Short.parseShort(speedInput.getText()));
+			} catch (NumberFormatException e) {
+				return null;
+			}
 		}
 	}
 }
