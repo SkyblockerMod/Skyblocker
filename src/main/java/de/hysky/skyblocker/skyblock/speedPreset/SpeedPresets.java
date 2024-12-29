@@ -123,7 +123,7 @@ public class SpeedPresets {
 		try {
 			if (!PRESETS_FILE.exists()) PRESETS_FILE.createNewFile();
 			try (var writer = Files.newWriter(PRESETS_FILE, StandardCharsets.UTF_8)) {
-				var element = MAP_CODEC.encodeStart(JsonOps.INSTANCE, this.presets).resultOrPartial(LOGGER::warn)
+				var element = MAP_CODEC.encodeStart(JsonOps.INSTANCE, this.presets).resultOrPartial(LOGGER::error)
 						.orElse(new JsonObject());
 				writer.write(SkyblockerMod.GSON.toJson(element) + "\n");
 			}
