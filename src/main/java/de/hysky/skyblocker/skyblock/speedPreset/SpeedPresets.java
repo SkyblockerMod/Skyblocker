@@ -129,7 +129,7 @@ public class SpeedPresets {
 				writer.write(SkyblockerMod.GSON.toJson(element) + "\n");
 			}
 		} catch (IOException e) {
-			LOGGER.warn("Couldn't create speed presets file: ", e);
+			LOGGER.error("[Skyblocker Speed Presets] Couldn't create speed presets file", e);
 		}
 	}
 
