@@ -60,8 +60,8 @@ public class SpeedPresetsScreen extends Screen {
 	public void close() {
 		assert this.client != null;
 		if (this.list.hasBeenChanged()) {
-			client.setScreen(new ConfirmScreen(callback -> {
-				if (callback) {
+			client.setScreen(new ConfirmScreen(confirmedAction -> {
+				if (confirmedAction) {
 					this.client.setScreen(parent);
 				} else {
 					this.client.setScreen(this);
