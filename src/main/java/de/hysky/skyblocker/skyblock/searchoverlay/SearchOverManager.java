@@ -385,7 +385,7 @@ public class SearchOverManager {
         } else {
             command = "/bz " + search;
         }
-        MessageScheduler.INSTANCE.sendMessageAfterCooldown(command);
+        MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
     }
 
     /**

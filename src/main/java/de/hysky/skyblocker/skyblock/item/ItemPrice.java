@@ -55,9 +55,9 @@ public class ItemPrice {
 
             // Search up the item in the bazaar or auction house
             if (TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
-                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName);
+                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName, true);
             } else if (TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId)) {
-                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/ahsearch " + itemName);
+                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/ahsearch " + itemName, true);
             }
         } else {
             player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.itemPriceLookupFailed")), false);

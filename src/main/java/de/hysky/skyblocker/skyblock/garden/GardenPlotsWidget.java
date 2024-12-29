@@ -281,8 +281,8 @@ public class GardenPlotsWidget extends ClickableWidget {
 		if (SkyblockerConfigManager.get().farming.garden.closeScreenOnPlotClick && MinecraftClient.getInstance().currentScreen != null)
 			MinecraftClient.getInstance().currentScreen.close();
 
-		if (hoveredSlot == 12) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/warp garden");
-		else MessageScheduler.INSTANCE.sendMessageAfterCooldown("/plottp " + gardenPlots[hoveredSlot].name);
+		if (hoveredSlot == 12) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/warp garden", true);
+		else MessageScheduler.INSTANCE.sendMessageAfterCooldown("/plottp " + gardenPlots[hoveredSlot].name, true);
 	}
 
 	@Override
