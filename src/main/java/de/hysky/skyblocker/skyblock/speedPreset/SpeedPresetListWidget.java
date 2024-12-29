@@ -80,10 +80,7 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 	public void save() {
 		var presets = SpeedPresets.getInstance();
 		presets.clear();
-		children().forEach(entry -> {
-			if (entry instanceof SpeedPresetEntry speedPresetEntry)
-				speedPresetEntry.save();
-		});
+		children().stream().filter(SpeedPresetEntry.class::isInstance).map(SpeedPresetEntry.class::cast).forEach(SpeedPresetEntry::save);
 		presets.savePresets(); // Write down the changes.
 	}
 
