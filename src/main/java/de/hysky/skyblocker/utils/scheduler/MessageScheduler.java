@@ -46,9 +46,11 @@ public class MessageScheduler extends Scheduler {
             return;
         }
         message = StringHelper.truncateChat(StringUtils.normalizeSpace(message.trim()));
+        boolean isCommand = message.startsWith("/");
 
-		if (!hide) client.inGameHud.getChatHud().addToMessageHistory(message);
-        if (message.startsWith("/")) {
+		if (!hide && !isCommand) client.inGameHud.getChatHud().addToMessageHistory(message);
+
+        if (isCommand) {
             client.player.networkHandler.sendCommand(message.substring(1));
         } else {
             client.player.networkHandler.sendChatMessage(message);
