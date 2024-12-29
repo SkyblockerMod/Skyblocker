@@ -88,7 +88,7 @@ public class SpeedPresets {
 		return this.presets.getOrDefault(name, 0);
 	}
 
-	public void setPreset(String name, short value) {
+	public void setPreset(String name, int value) {
 		this.presets.put(name, value);
 		savePresets();
 	}
@@ -97,7 +97,7 @@ public class SpeedPresets {
 		this.presets.forEach(consumer);
 	}
 
-	public boolean compare(Map<String, Integer> presets) {
+	public boolean arePresetsEqual(Map<String, Integer> presets) {
 		return this.presets.equals(presets);
 	}
 
@@ -135,12 +135,12 @@ public class SpeedPresets {
 	// According to: https://www.reddit.com/r/HypixelSkyblock/comments/14kkz07/speed_vs_farming_fortune/
 	public void loadDefaults() {
 		this.presets.clear();
-		this.presets.put("default", (short) 100);
-		this.presets.put("crops", (short) 93);
-		this.presets.put("cocoa", (short) 155);
-		this.presets.put("mushroom", (short) 233);
-		this.presets.put("cane", (short) 327);
-		this.presets.put("squash", (short) 327);
-		this.presets.put("cactus", (short) 464);
+		this.presets.put("default", 100);
+		this.presets.put("crops", 93);
+		this.presets.put("cocoa", 155);
+		this.presets.put("mushroom", 233);
+		this.presets.put("cane", 327);
+		this.presets.put("squash", 327);
+		this.presets.put("cactus", 464);
 	}
 }

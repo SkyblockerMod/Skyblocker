@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.speedPreset;
 
-import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
@@ -15,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidget.AbstractEntry> {
 
@@ -42,15 +42,13 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 		var presets = SpeedPresets.getInstance();
 		// If there are fewer children than presets, some were removed, and all further checks are pointless
 		if (children().size() < presets.getPresetCount()) return true;
-		var childrenMap = new Object2IntOpenHashMap<String>();
-		this.children().stream()
+		var childrenMap = this.children().stream()
 				.filter(SpeedPresetEntry.class::isInstance)
 				.map(SpeedPresetEntry.class::cast)
-				.filter(entry -> !entry.isEmpty())
 				.map(SpeedPresetEntry::getMapping)
 				.filter(Objects::nonNull)
-				.forEach(mapping -> childrenMap.put(mapping.first(), mapping.second()));
-		return !presets.compare(childrenMap);
+				.collect(Collectors.toMap(ObjectIntPair::key, ObjectIntPair::valueInt));
+		return !presets.arePresetsEqual(childrenMap);
 	}
 
 	public void updatePosition() {
@@ -149,11 +147,9 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 		}
 
 		public void save() {
-			var presets = SpeedPresets.getInstance();
-			if (this.isEmpty()) return;
 			var mapping = getMapping();
 			if (mapping != null)
-				presets.setPreset(mapping.first(), mapping.second());
+				SpeedPresets.getInstance().setPreset(mapping.key(), mapping.valueInt());
 		}
 
 		protected boolean isEmpty() {
@@ -172,9 +168,10 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 		}
 
 		@Nullable
-		protected Pair<String, Short> getMapping() {
+		protected ObjectIntPair<String> getMapping() {
+			if (isEmpty()) return null;
 			try {
-				return Pair.of(titleInput.getText(), Short.parseShort(speedInput.getText()));
+				return ObjectIntPair.of(titleInput.getText(), Integer.parseInt(speedInput.getText()));
 			} catch (NumberFormatException e) {
 				return null;
 			}
