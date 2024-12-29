@@ -37,32 +37,13 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 		return super.getRowWidth() + 104;
 	}
 
-	/**
-	 * Checks whether the state of the widget has been modified compared to the preset data.
-	 * <p>
-	 * This method determines if any of the following conditions are met:
-	 * <ul>
-	 *     <li>The number of children entries in the widget is less than the current number of presets.</li>
-	 *     <li>An entry has been modified.</li>
-	 *     <li>The number of entries worth saving does not match the number of presets.</li>
-	 * </ul>
-	 *
-	 * @return true if the state has been modified; false otherwise.
-	 */
 	public boolean hasBeenChanged() {
 		var presets = SpeedPresets.getInstance().getPresetCount();
-		// Accounting 1 for the title entry.
-		var children = children().size() - 1;
-		if (children < presets) return true;
-
-		children = 0;
-		for (var child : children()) {
-			if (child.hasBeenModified()) return true;
-			if (child instanceof SpeedPresetEntry entry) {
-				children = entry.isEmpty() ? children : children + 1;
-			}
-		}
-		return children != presets;
+		// If there are fewer children than presets, some were removed, and all further checks are pointless
+		if (children().size() < presets) return true;
+		return presets != children().stream().filter(SpeedPresetEntry.class::isInstance)
+				.filter(preset -> !((SpeedPresetEntry) preset).isEmpty())
+				.count() || children().stream().filter(SpeedPresetEntry.class::isInstance).map(SpeedPresetEntry.class::cast).anyMatch(SpeedPresetEntry::hasBeenModified);
 	}
 
 	public void updatePosition() {
@@ -130,10 +111,14 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 		protected final TextFieldWidget speedInput;
 		protected final ButtonWidget removeButton;
 
-		protected boolean hasBeenModified;
+		protected final String initialTitle;
+		protected final String initialSpeed;
 
 		public SpeedPresetEntry(String title, String speed) {
 			var client = SpeedPresetListWidget.this.client;
+
+			this.initialTitle = title;
+			this.initialSpeed = speed;
 
 			// All Xs and Ys are then set using the initPosition() method.
 			this.titleInput = new TextFieldWidget(client.textRenderer, 0, 0, 120, 20, Text.empty());
@@ -141,20 +126,17 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 			this.titleInput.setText(title);
 			this.titleInput.setMaxLength(16);
 			this.titleInput.setPlaceholder(Text.literal("newPreset").formatted(Formatting.DARK_GRAY));
-			this.titleInput.setChangedListener(str -> this.hasBeenModified = true);
 			this.speedInput = new TextFieldWidget(client.textRenderer, 0, 0, 50, 20, Text.empty());
 
 			this.speedInput.setTextPredicate(str -> str.isEmpty() || NUMBER.matcher(str).matches());
 			this.speedInput.setText(speed);
 			this.speedInput.setMaxLength(3);
 			this.speedInput.setPlaceholder(Text.literal("0").formatted(Formatting.DARK_GRAY));
-			this.speedInput.setChangedListener(str -> this.hasBeenModified = true);
 
 			this.removeButton = ButtonWidget.builder(Text.literal("-"), (btn) -> {
 				SpeedPresetListWidget.this.removeEntry(this);
 			}).dimensions(0, 0, 20, 20).build();
 
-			this.hasBeenModified = false;
 			this.updatePosition();
 		}
 
@@ -198,7 +180,8 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 
 		@Override
 		protected boolean hasBeenModified() {
-			return hasBeenModified;
+			return !this.titleInput.getText().equals(this.initialTitle)
+					|| !this.speedInput.getText().equals(this.initialSpeed);
 		}
 	}
 }
