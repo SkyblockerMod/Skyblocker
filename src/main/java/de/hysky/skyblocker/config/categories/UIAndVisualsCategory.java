@@ -90,6 +90,14 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip")))
+                        .binding(defaults.uiAndVisuals.cancelComponentUpdateAnimation,
+                                () -> config.uiAndVisuals.cancelComponentUpdateAnimation,
+                                newValue -> config.uiAndVisuals.cancelComponentUpdateAnimation = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
 
                 //Chest Value FIXME change dropdown to color controller
                 .group(OptionGroup.createBuilder()

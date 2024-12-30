@@ -769,6 +769,9 @@
   "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defence, Speed & XP Bars",
   "skyblocker.config.uiAndVisuals.bars.enableBars": "Enable Bars",
 
+  "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation": "Cancel Component Update Animation",
+  "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip": "Cancels the down-and-up animation in your hand that plays when an item's components are updated.",
+
   "skyblocker.config.uiAndVisuals.chestValue": "Chest Value",
   "skyblocker.config.uiAndVisuals.chestValue.color": "Chest Value Color",
   "skyblocker.config.uiAndVisuals.chestValue.enableChestValue": "Enable Chest Value",
