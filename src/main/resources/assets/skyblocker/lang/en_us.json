@@ -77,6 +77,9 @@
   "skyblocker.config.dungeons.croesusHelper": "Croesus Helper",
   "skyblocker.config.dungeons.croesusHelper.@Tooltip": "Gray out chests that have already been opened.",
 
+  "skyblocker.config.dungeons.classBasedPlayerGlow": "Class-based Player Glow",
+  "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "Changes the color of your teammates glow to be based on their class rather than their rank.",
+
   "skyblocker.config.dungeons.goldorWaypoints": "Goldor Tasks Waypoints (F7/M7)",
   "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Enable waypoints for terminals/devices/levers during Goldor",
   "skyblocker.config.dungeons.goldorWaypoints.waypointType": "Task waypoint type",

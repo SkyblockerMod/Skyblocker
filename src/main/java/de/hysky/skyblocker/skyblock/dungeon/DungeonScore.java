@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.utils.Constants;
@@ -67,12 +68,11 @@ public class DungeonScore {
     public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(DungeonScore::tick, 20);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+		DungeonEvents.DUNGEON_STARTED.register(DungeonScore::onDungeonStart);
 		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
 			if (overlay || !Utils.isInDungeons()) return;
 			String str = message.getString();
-			if (!dungeonStarted) {
-				checkMessageForMort(str);
-			} else {
+			if (dungeonStarted) {
 				checkMessageForDeaths(str);
 				checkMessageForWatcher(str);
 				if (floorHasMimics) checkMessageForMimic(str); //Only called when the message is not cancelled & isn't on the action bar, complementing MimicFilter
@@ -313,11 +313,6 @@ public class DungeonScore {
 
 	private static void checkMessageForWatcher(String message) {
 		if (message.equals("[BOSS] The Watcher: You have proven yourself. You may pass.")) bloodRoomCompleted = true;
-	}
-
-	private static void checkMessageForMort(String message) {
-		if (!message.equals("§e[NPC] §bMort§f: You should find it useful if you get lost.")) return;
-		onDungeonStart();
 	}
 
 	private static void checkMessageForMimic(String message) {
