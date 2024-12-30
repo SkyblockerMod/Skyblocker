@@ -5,6 +5,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -58,7 +59,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 		} else {
 
 			Text name = Text.literal("Name: ").append(Text.literal(m.group("name")).formatted(Formatting.YELLOW));
-			this.addComponent(new IcoTextComponent(Ico.PLAYER, name));
+			this.addComponent(new PlayerComponent(PlayerListMgr.getRaw(start), name));
 
 			String cl = m.group("class");
 			String level = m.group("level");

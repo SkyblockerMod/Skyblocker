@@ -3,9 +3,9 @@ package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.scoreboard.Team;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Component that consists of a player's skin icon and their name
@@ -18,11 +18,14 @@ public class PlayerComponent extends Component {
 	private final Identifier tex;
 
 	public PlayerComponent(PlayerListEntry ple) {
+		this(ple, null);
+	}
 
-		name = ple.getDisplayName();
-		tex = ple.getSkinTextures().texture();
+	public PlayerComponent(PlayerListEntry ple, @Nullable Text name) {
+		this.name = name == null ? ple.getDisplayName() : name;
+		this.tex = ple.getSkinTextures().texture();
 
-		this.width = SKIN_ICO_DIM + PAD_S + txtRend.getWidth(name);
+		this.width = SKIN_ICO_DIM + PAD_S + txtRend.getWidth(this.name);
 		this.height = txtRend.fontHeight;
 	}
 
