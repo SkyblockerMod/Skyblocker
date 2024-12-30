@@ -114,6 +114,6 @@ public class Reparty extends ChatPatternListener {
 	}
 
 	private void sendCommand(String command, int delay) {
-		MessageScheduler.INSTANCE.queueMessage(command, false, delay * BASE_DELAY);
+		MessageScheduler.INSTANCE.queueMessage(command, true, delay * BASE_DELAY);
 	}
 }

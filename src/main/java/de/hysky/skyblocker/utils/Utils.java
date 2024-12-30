@@ -456,7 +456,7 @@ public class Utils {
 
 		    @Override
 		    public void run() {
-		        if (requestId == profileIdRequest) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid");
+		        if (requestId == profileIdRequest) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid", true);
 		    }
         }, 20 * 8); //8 seconds
     }

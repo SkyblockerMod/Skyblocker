@@ -29,7 +29,7 @@ public class ConfirmationPromptHelper {
 			if (Utils.isOnSkyblock() && screen instanceof ChatScreen && SkyblockerConfigManager.get().chat.confirmationPromptHelper) {
 				ScreenMouseEvents.beforeMouseClick(screen).register((_screen1, _mouseX, _mouseY, _button) -> {
 					if (hasCommand()) {
-						MessageScheduler.INSTANCE.sendMessageAfterCooldown(command);
+						MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
 						command = null;
 						commandFoundAt = 0;
 					}

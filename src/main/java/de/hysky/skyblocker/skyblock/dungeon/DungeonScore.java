@@ -95,7 +95,7 @@ public class DungeonScore {
 		score = calculateScore();
 		if (!sent270 && !sent300 && score >= 270 && score < 300) {
 			if (SCORE_CONFIG.enableDungeonScore270Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270"));
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270"), false);
 			}
 			if (SCORE_CONFIG.enableDungeonScore270Title) {
 				client.inGameHud.setDefaultTitleFade();
@@ -110,14 +110,14 @@ public class DungeonScore {
 		int crypts = getCrypts();
 		if (!sentCrypts && score >= SCORE_CONFIG.dungeonCryptsMessageThreshold && crypts < 5) {
 			if (SCORE_CONFIG.enableDungeonCryptsMessage) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(crypts)));
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(crypts)), false);
 			}
 			sentCrypts = true;
 		}
 
 		if (!sent300 && score >= 300) {
 			if (SCORE_CONFIG.enableDungeonScore300Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300"));
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300"), false);
 			}
 			if (SCORE_CONFIG.enableDungeonScore300Title) {
 				client.inGameHud.setDefaultTitleFade();
@@ -215,7 +215,7 @@ public class DungeonScore {
 	public static void handleEntityDeath(Entity entity) {
 		if (mimicKilled) return;
 		if (!isEntityMimic(entity)) return;
-		if (MIMIC_MESSAGE_CONFIG.sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown(MIMIC_MESSAGE_CONFIG.mimicMessage);
+		if (MIMIC_MESSAGE_CONFIG.sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown(MIMIC_MESSAGE_CONFIG.mimicMessage, false);
 		mimicKilled = true;
 	}
 
