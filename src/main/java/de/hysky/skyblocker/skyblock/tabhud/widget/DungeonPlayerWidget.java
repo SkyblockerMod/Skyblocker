@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
@@ -9,8 +10,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,22 +30,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 	public static final Pattern PLAYER_PATTERN = Pattern
 			.compile("\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\\((?<class>\\S*) ?(?<level>[LXVI]*)\\)");
 
-	private static final HashMap<String, ItemStack> ICOS = new HashMap<>();
-	private static final ArrayList<String> MSGS = new ArrayList<>();
-
-	static {
-		ICOS.put("Tank", Ico.CHESTPLATE);
-		ICOS.put("Mage", Ico.B_ROD);
-		ICOS.put("Berserk", Ico.DIASWORD);
-		ICOS.put("Archer", Ico.BOW);
-		ICOS.put("Healer", Ico.POTION);
-
-		MSGS.add("???");
-		MSGS.add("PRESS A TO JOIN");
-		MSGS.add("Invite a friend!");
-		MSGS.add("But nobody came.");
-		MSGS.add("More is better!");
-	}
+	private static final List<String> MSGS = List.of("???", "PRESS A TO JOIN", "Invite a friend!", "But nobody came.", "More is better!");
 
 	private final int player;
 
@@ -84,11 +68,11 @@ public class DungeonPlayerWidget extends TabHudWidget {
 						Text.literal("Player is dead").formatted(Formatting.RED));
 				this.addComponent(ptc);
 			} else {
+				DungeonClass dungeonClass = DungeonClass.from(cl);
 
 				Formatting clf = Formatting.GRAY;
-				ItemStack cli = Ico.BARRIER;
-				if (!cl.equals("EMPTY")) {
-					cli = ICOS.get(cl);
+				ItemStack cli = dungeonClass.icon();
+				if (dungeonClass != DungeonClass.UNKNOWN) {
 					clf = Formatting.LIGHT_PURPLE;
 					cl += " " + m.group("level");
 				}
