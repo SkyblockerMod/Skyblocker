@@ -60,5 +60,6 @@
     "skyblocker.bars.config.textPosition.CENTER": "Centre",
     "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Default Positioning Behaviour",
     "skyblocker.config.mining.dwarvenMines.carpetHighlightColor": "Carpet Highlight Colour",
-    "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Sets the colour of the highlight for the unbreakable carpets."
+    "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Sets the colour of the highlight for the unbreakable carpets.",
+    "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "Changes the colour of your teammates glow to be based on their class rather than their rank."
 }
