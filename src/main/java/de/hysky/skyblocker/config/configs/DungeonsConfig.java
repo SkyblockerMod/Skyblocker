@@ -110,6 +110,9 @@ public class DungeonsConfig {
 
         @SerialEntry
         public boolean solveTrivia = true;
+
+		@SerialEntry
+		public boolean solveTeleportMaze = true;
     }
 
     public static class TheProfessor {
