@@ -969,5 +969,7 @@
     "skyblocker.config.uiAndVisuals.nightVisionStrength": "夜視強度",
     "skyblocker.nightVision.success": "將夜視強度改為%d。",
     "skyblocker.config.chat.confirmationPromptHelper": "聊天確認提示助手",
-    "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto": "分享Fairy Grotto"
+    "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto": "分享Fairy Grotto",
+    "skyblocker.config.dungeons.classBasedPlayerGlow": "基於職業的玩家光亮",
+    "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "根據隊友的職業而不是會員等級來更改隊友的發光顏色。"
 }
