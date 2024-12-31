@@ -6,6 +6,8 @@ import java.util.Locale;
 
 import com.google.common.collect.Lists;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -13,6 +15,7 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.component.DataComponentTypes;
@@ -181,19 +184,23 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 	 * @implNote The {@code query} is always passed as lower case.
 	 */
 	@Override
-	public void updateSearchResults(String query) {
-		if (!query.equals(this.lastSearchQuery)) {
+	public void updateSearchResults(String query, FilterOption filterOption, boolean refresh) {
+		if (!query.equals(this.lastSearchQuery) || refresh) {
 			this.lastSearchQuery = query;
 			this.searchResults.clear();
 
 			//Search for stacks which contain the search term
-			for (ItemStack stack : ItemRepository.getItems()) {
-				String name = stack.getName().getString().toLowerCase(Locale.ENGLISH);
-				List<Text> lore = ItemUtils.getLore(stack);
+			synchronized (this) {
+				for (ItemStack stack : ItemRepository.getItems()) {
+					String name = stack.getName().getString().toLowerCase(Locale.ENGLISH);
+					if (!filterOption.matches(name)) continue;
+					List<Text> lore = ItemUtils.getLore(stack);
 
-				//TODO turn lore lowercase
-				if (name.contains(query) || lore.stream().map(Text::getString).anyMatch(line -> line.contains(query))) {
-					this.searchResults.add(stack);
+					if (name.contains(query) || lore.stream().map(Text::getString)
+							.map(string -> string.toLowerCase(Locale.ENGLISH))
+							.anyMatch(line -> line.contains(query))) {
+						this.searchResults.add(stack);
+					}
 				}
 			}
 
@@ -271,6 +278,20 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 			return true;
 		}
 
+		if (this.recipeView && Screen.hasShiftDown()) {
+			// The crafting result button
+			var result = resultButtons.get(14);
+			var rawID = ItemUtils.getItemId(result.getDisplayStack());
+			if (result.isMouseOver(mouseX, mouseY)) {
+				var handler = client.getNetworkHandler();
+				if (handler != null) {
+					handler.sendChatCommand("viewrecipe " + rawID);
+					return true;
+				}
+				return false;
+			}
+		}
+
 		for (SkyblockRecipeResultButton resultButton : this.resultButtons) {
 			//If the result button was clicked then try and show a recipe if there is one
 			//for the item
@@ -295,6 +316,19 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 			}
 		}
 
+		return false;
+	}
+
+	@Override
+	public boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
+		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup
+			&& WikiLookup.wikiLookup.matchesKey(keyCode, scanCode))
+			return this.resultButtons.stream()
+					.filter(button -> button.isMouseOver(mouseX, mouseY))
+					.findFirst().map(button -> {
+						WikiLookup.openWiki(button.getDisplayStack(), client.player);
+						return true;
+					}).orElse(false);
 		return false;
 	}
 }

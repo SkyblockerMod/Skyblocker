@@ -280,6 +280,12 @@
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
 
+  "skyblocker.config.general.itemList.filter.all": "All",
+  "skyblocker.config.general.itemList.filter.entities": "Entities",
+  "skyblocker.config.general.itemList.filter.npcs": "NPCs",
+  "skyblocker.config.general.itemList.filter.mayors": "Mayors",
+  "skyblocker.config.general.itemList.filter.items": "Items",
+
   "skyblocker.config.general.itemProtection": "Item Protection",
   "skyblocker.config.general.itemProtection.protectValuableConsumables": "Protect Valuable Consumables",
   "skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip": "Prevents consuming items such as Bottles of Jyrre, Dark Cacao Truffles, and Discrite before they have evolved.",

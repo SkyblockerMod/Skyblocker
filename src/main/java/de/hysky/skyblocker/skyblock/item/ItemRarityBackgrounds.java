@@ -57,16 +57,12 @@ public class ItemRarityBackgrounds {
 	}
 
 	public static void tryDraw(ItemStack stack, DrawContext context, int x, int y) {
-		MinecraftClient client = MinecraftClient.getInstance();
-
-		if (client.player != null) {
-			SkyblockItemRarity itemRarity = getItemRarity(stack, client.player);
-
-			if (itemRarity != null) draw(context, x, y, itemRarity);
-		}
+		SkyblockItemRarity itemRarity = getItemRarity(stack);
+		if (itemRarity != null)
+			draw(context, x, y, itemRarity);
 	}
 
-	private static SkyblockItemRarity getItemRarity(ItemStack stack, ClientPlayerEntity player) {
+	private static SkyblockItemRarity getItemRarity(ItemStack stack) {
 		if (stack == null || stack.isEmpty()) return null;
 
 		String itemUuid = stack.getUuid();
