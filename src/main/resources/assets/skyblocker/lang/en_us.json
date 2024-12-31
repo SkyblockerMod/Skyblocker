@@ -241,6 +241,12 @@
   "skyblocker.config.farming.garden.lockMouseGround": "Only lock camera when on the ground",
   "skyblocker.config.farming.garden.lockMouseTool": "Lock camera when holding a farming tool",
   "skyblocker.config.farming.garden.visitorHelper": "Visitor helper",
+  "skyblocker.config.farming.garden.visitorHelper.@Tooltip": "Makes it easier to manage visitors by grouping similar requests, copying item amounts, and quickly opening the Bazaar to buy items.",
+  "skyblocker.config.farming.garden.visitorHelperGardenOnly": "Visitor helper (Garden Only)",
+  "skyblocker.config.farming.garden.visitorHelperGardenOnly.@Tooltip": "Locks the Visitor Helper so it only works on the Garden.\n§cRequires Visitor Helper to be enabled.",
+  "skyblocker.config.farming.garden.showStacksInVisitorHelper": "Show Stacks in Visitor Helper",
+  "skyblocker.config.farming.garden.showStacksInVisitorHelper.@Tooltip": "Show's the required items as (5 stacks + 4 [324]) rather than just a total number.",
+
 
   "skyblocker.config.foraging": "Foraging",
   "skyblocker.config.foraging.hunting": "Hunting",

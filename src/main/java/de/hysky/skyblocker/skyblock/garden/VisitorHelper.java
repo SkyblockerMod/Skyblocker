@@ -48,55 +48,134 @@ public class VisitorHelper {
 
     private static boolean shouldProcessVisitorItems = true;
 
-    @Init
-    public static void init() {
-        ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            String title = screen.getTitle().getString();
-            if (SkyblockerConfigManager.get().farming.garden.visitorHelper && screen instanceof HandledScreen<?> handledScreen && (Utils.getLocationRaw().equals("garden") && !title.contains("Logbook") || title.startsWith("Bazaar"))) {
-                ScreenEvents.afterRender(screen).register((screen_, context, mouseX, mouseY, delta) -> renderScreen(title, context, client.textRenderer, handledScreen.getScreenHandler(), mouseX, mouseY));
-                ScreenEvents.remove(screen).register(screen_ -> shouldProcessVisitorItems = true);
-            }
-        });
-    }
+	@Init
+	public static void init() {
+		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+
+			String title = screen.getTitle().getString();
+			boolean isGardenLocation = Utils.getLocationRaw().equals("garden");
+
+			if (SkyblockerConfigManager.get().farming.garden.visitorHelper &&
+					(!SkyblockerConfigManager.get().farming.garden.visitorHelperGardenOnly || isGardenLocation) &&
+					screen instanceof HandledScreen<?> handledScreen &&
+					(!title.contains("Logbook") || title.startsWith("Bazaar"))) {
+
+				ScreenEvents.afterRender(screen).register((screen_, context, mouseX, mouseY, delta) ->
+						renderScreen(title, context, client.textRenderer, handledScreen.getScreenHandler(), mouseX, mouseY));
+
+				ScreenEvents.remove(screen).register(screen_ -> shouldProcessVisitorItems = true);
+			}
+		});
+	}
 
     public static void renderScreen(String title, DrawContext context, TextRenderer textRenderer, ScreenHandler handler, int mouseX, int mouseY) {
         if (handler.getCursorStack() == ItemStack.EMPTY && shouldProcessVisitorItems) processVisitorItem(title, handler);
         drawScreenItems(context, textRenderer, mouseX, mouseY);
     }
 
-    public static void onMouseClicked(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
-        int yPosition = TEXT_START_Y;
-        for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
-            yPosition += LINE_SPACING + textRenderer.fontHeight;
+	// The location of copy amount, and item text seem to be overlapping so clicking on part of the itemText run copy amount.
+	public static void onMouseClicked(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
 
-            for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
-                String itemText = itemEntry.getKey();
-                int textWidth = textRenderer.getWidth(itemText + " x" + itemEntry.getIntValue());
+		int yPosition = TEXT_START_Y;
+		boolean showStacks = SkyblockerConfigManager.get().farming.garden.showStacksInVisitorHelper;
 
-                // Check if the mouse is over the item text
-                // The text starts at `TEXT_START_X + ENTRY_INDENT + ITEM_INDENT`
-                if (isMouseOverText(mouseX, mouseY, TEXT_START_X + ENTRY_INDENT + ITEM_INDENT, yPosition, textWidth, textRenderer.fontHeight)) {
-                    // Send command to buy the item from the bazaar
-                    MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText, true);
-                    return;
-                }
+		// Group visitors and items like in drawScreenItems
+		Map<String, List<String>> itemToVisitorsMap = new LinkedHashMap<>();
+		Map<String, Integer> itemToTotalAmountMap = new LinkedHashMap<>();
 
-                // Check if the mouse is over the copy amount text
-                // The copy amount text starts at `TEXT_START_X + ENTRY_INDENT + ITEM_INDENT + textWidth`
-                MinecraftClient client = MinecraftClient.getInstance();
-                if (client.player != null && isMouseOverText(mouseX, mouseY, TEXT_START_X + ENTRY_INDENT + ITEM_INDENT + textWidth, yPosition, textRenderer.getWidth(" [Copy Amount]"), textRenderer.fontHeight)) {
-                    // Copy the amount to the clipboard
-                    client.keyboard.setClipboard(String.valueOf(itemEntry.getIntValue()));
-                    client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
-                    return;
-                }
+		for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+			Pair<String, String> visitorName = visitorEntry.getKey();
+			Object2IntMap<String> visitorItems = visitorEntry.getValue();
 
-                yPosition += LINE_SPACING + textRenderer.fontHeight;
-            }
-        }
-    }
+			for (Object2IntMap.Entry<String> itemEntry : visitorItems.object2IntEntrySet()) {
+				String itemName = itemEntry.getKey();
+				int amount = itemEntry.getIntValue();
 
-    public static void onSlotClick(Slot slot, int slotId, String title, ItemStack visitorHeadStack) {
+				itemToVisitorsMap.computeIfAbsent(itemName, k -> new ArrayList<>()).add(visitorName.left());
+				itemToTotalAmountMap.put(itemName, itemToTotalAmountMap.getOrDefault(itemName, 0) + amount);
+			}
+		}
+
+		Set<String> processedVisitors = new HashSet<>();
+		for (Map.Entry<String, List<String>> groupedEntry : itemToVisitorsMap.entrySet()) {
+			String itemName = groupedEntry.getKey();
+			List<String> visitors = groupedEntry.getValue();
+			int totalAmount = itemToTotalAmountMap.get(itemName);
+
+			// Check grouped visitor names
+			for (String visitor : visitors) {
+				if (!processedVisitors.contains(visitor)) {
+					yPosition += LINE_SPACING + textRenderer.fontHeight;
+					processedVisitors.add(visitor);
+				}
+			}
+
+			// Adjust itemText and copy amount positions for stack-based display
+			String amountText = showStacks && totalAmount >= 64
+					? (totalAmount / 64) + " stacks" + (totalAmount % 64 > 0 ? " + " + (totalAmount % 64) : "")
+					: "" + totalAmount;
+
+			String combinedText = itemName + " x" + amountText;
+			int itemTextWidth = textRenderer.getWidth(combinedText);
+			int copyAmountX = TEXT_START_X + ENTRY_INDENT + itemTextWidth;
+			int copyAmountWidth = textRenderer.getWidth(" [Copy Amount]");
+
+			if (isMouseOverText(mouseX, mouseY, TEXT_START_X + ENTRY_INDENT, yPosition, itemTextWidth, textRenderer.fontHeight)) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName, true);
+				return;
+			}
+			if (isMouseOverText(mouseX, mouseY, copyAmountX, yPosition, copyAmountWidth, textRenderer.fontHeight)) {
+				MinecraftClient client = MinecraftClient.getInstance();
+				if (client.player != null) {
+					client.keyboard.setClipboard(String.valueOf(totalAmount));
+					client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
+				}
+				return;
+			}
+
+			yPosition += LINE_SPACING + textRenderer.fontHeight;
+		}
+
+		// Check remaining visitors with unshared items
+		for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+			Pair<String, String> visitorName = visitorEntry.getKey();
+			if (processedVisitors.contains(visitorName.left())) continue;
+
+			yPosition += LINE_SPACING + textRenderer.fontHeight;
+
+			for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
+				String itemName = itemEntry.getKey();
+				int amount = itemEntry.getIntValue();
+
+				String amountText = showStacks && amount >= 64
+						? (amount / 64) + " stacks" + (amount % 64 > 0 ? " + " + (amount % 64) : "")
+						: "" + amount;
+
+				String combinedText = itemName + " x" + amountText;
+				int itemTextX = TEXT_START_X + ENTRY_INDENT;
+				int itemTextWidth = textRenderer.getWidth(combinedText);
+				int copyAmountX = itemTextX + itemTextWidth;
+				int copyAmountWidth = textRenderer.getWidth(" [Copy Amount]");
+
+				if (isMouseOverText(mouseX, mouseY, itemTextX, yPosition, itemTextWidth, textRenderer.fontHeight)) {
+					MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName, true);
+					return;
+				}
+
+				if (isMouseOverText(mouseX, mouseY, copyAmountX, yPosition, copyAmountWidth, textRenderer.fontHeight)) {
+					MinecraftClient client = MinecraftClient.getInstance();
+					if (client.player != null) {
+						client.keyboard.setClipboard(amountText);
+						client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
+					}
+					return;
+				}
+				yPosition += LINE_SPACING + textRenderer.fontHeight;
+			}
+		}
+	}
+
+	public static void onSlotClick(Slot slot, int slotId, String title, ItemStack visitorHeadStack) {
         if ((slotId == 29 || slotId == 13 || slotId == 33) && slot.hasStack() && ItemUtils.getLoreLineIf(slot.getStack(), s -> s.equals("Click to give!") || s.equals("Click to refuse!")) != null) {
             itemMap.remove(new ObjectObjectImmutablePair<>(title, getTextureOrNull(visitorHeadStack)));
             shouldProcessVisitorItems = false;
@@ -151,8 +230,8 @@ public class VisitorHelper {
 		context.getMatrices().translate(0, 0, 200);
 
 		int index = 0;
+		boolean showStacks = SkyblockerConfigManager.get().farming.garden.showStacksInVisitorHelper;
 
-		// Process visitors grouped by their requested items
 		Map<String, List<String>> itemToVisitorsMap = new LinkedHashMap<>();
 		Map<String, Integer> itemToTotalAmountMap = new LinkedHashMap<>();
 
@@ -169,14 +248,12 @@ public class VisitorHelper {
 			}
 		}
 
-		// Draw grouped visitors and items at the top
 		Set<String> processedVisitors = new HashSet<>();
 		for (Map.Entry<String, List<String>> groupedEntry : itemToVisitorsMap.entrySet()) {
 			String itemName = groupedEntry.getKey();
 			List<String> visitors = groupedEntry.getValue();
 			int totalAmount = itemToTotalAmountMap.get(itemName);
 
-			// Draw visitor names grouped together
 			for (String visitor : visitors) {
 				if (!processedVisitors.contains(visitor)) {
 					drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitor), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
@@ -185,16 +262,18 @@ public class VisitorHelper {
 				}
 			}
 
-			// Draw the combined item line
+			String amountText = showStacks && totalAmount >= 64
+					? (totalAmount / 64) + " stacks" + (totalAmount % 64 > 0 ? " + " + (totalAmount % 64) : "")
+					: "" + totalAmount;
+
 			Text combinedText = Text.literal("  ")
-					.append(Text.literal(itemName + " x" + totalAmount))
+					.append(Text.literal(itemName + " x" + amountText))
 					.append(Text.literal(" [Copy Amount]").formatted(Formatting.YELLOW));
 
 			drawTextWithOptionalUnderline(context, textRenderer, combinedText, TEXT_START_X + ENTRY_INDENT, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
 			index++;
 		}
 
-		// Draw remaining visitors with unshared items below
 		for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
 			Pair<String, String> visitorName = visitorEntry.getKey();
 			if (processedVisitors.contains(visitorName.left())) continue;
@@ -206,8 +285,12 @@ public class VisitorHelper {
 				String itemName = itemEntry.getKey();
 				int amount = itemEntry.getIntValue();
 
+				String amountText = showStacks && amount >= 64
+						? (amount / 64) + " stacks" + (amount % 64 > 0 ? " + " + (amount % 64) : "")
+						: "" + amount;
+
 				Text itemText = Text.literal("  ")
-						.append(Text.literal(itemName + " x" + amount))
+						.append(Text.literal(itemName + " x" + amountText))
 						.append(Text.literal(" [Copy Amount]").formatted(Formatting.YELLOW));
 
 				drawTextWithOptionalUnderline(context, textRenderer, itemText, TEXT_START_X + ENTRY_INDENT, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
@@ -217,7 +300,6 @@ public class VisitorHelper {
 
 		context.getMatrices().pop();
 	}
-
 
 	private static int drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, Object2IntMap.Entry<String> itemEntry, int index, int mouseX, int mouseY) {
         String itemName = itemEntry.getKey();

@@ -40,11 +40,28 @@ public class FarmingCategory {
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.farming.garden.visitorHelper"))
-                                .binding(defaults.farming.garden.visitorHelper,
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.farming.garden.visitorHelper.@Tooltip")))
+								.binding(defaults.farming.garden.visitorHelper,
                                         () -> config.farming.garden.visitorHelper,
                                         newValue -> config.farming.garden.visitorHelper = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.farming.garden.showStacksInVisitorHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.farming.garden.showStacksInVisitorHelper.@Tooltip")))
+								.binding(defaults.farming.garden.showStacksInVisitorHelper,
+										() -> config.farming.garden.showStacksInVisitorHelper,
+										newValue -> config.farming.garden.showStacksInVisitorHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.farming.garden.visitorHelperGardenOnly"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.farming.garden.visitorHelperGardenOnly.@Tooltip")))
+								.binding(defaults.farming.garden.visitorHelperGardenOnly,
+										() -> config.farming.garden.visitorHelperGardenOnly,
+										newValue -> config.farming.garden.visitorHelperGardenOnly = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.farming.garden.lockMouseTool"))
                                 .binding(defaults.farming.garden.lockMouseTool,
