@@ -213,6 +213,7 @@ public class RenderHelper {
         RenderSystem.lineWidth(1f);
         RenderSystem.enableCull();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        RenderSystem.disableDepthTest();
     }
 
     public static void renderLineFromCursor(WorldRenderContext context, Vec3d point, float[] colorComponents, float alpha, float lineWidth) {
@@ -261,6 +262,7 @@ public class RenderHelper {
         RenderSystem.lineWidth(1f);
         RenderSystem.enableCull();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        RenderSystem.disableDepthTest();
     }
 
     public static void renderQuad(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, boolean throughWalls) {
@@ -276,6 +278,7 @@ public class RenderHelper {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
+        RenderSystem.enableDepthTest();
         RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 
         BufferBuilder buffer = tessellator.begin(DrawMode.QUADS, VertexFormats.POSITION_COLOR);
@@ -286,6 +289,7 @@ public class RenderHelper {
 
         RenderSystem.enableCull();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        RenderSystem.disableDepthTest();
     }
 
     public static void renderText(WorldRenderContext context, Text text, Vec3d pos, boolean throughWalls) {
@@ -323,11 +327,13 @@ public class RenderHelper {
         VertexConsumerProvider.Immediate consumers = VertexConsumerProvider.immediate(ALLOCATOR);
 
         //Don't trust the render layer to do this for you!
+        RenderSystem.enableDepthTest();
         RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 
         textRenderer.draw(text, xOffset, yOffset, 0xFFFFFFFF, false, positionMatrix, consumers, throughWalls ? TextRenderer.TextLayerType.SEE_THROUGH : TextRenderer.TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
         consumers.draw();
 
+        RenderSystem.disableDepthTest();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
@@ -338,8 +344,14 @@ public class RenderHelper {
     	Profiler profiler = Profilers.get();
 
     	profiler.push("skyblockerTranslucentDraw");
-        //Draw all render layers that haven't been drawn yet - drawing a specific layer does nothing and idk why
-        ((VertexConsumerProvider.Immediate) context.consumers()).draw();
+    	VertexConsumerProvider.Immediate immediate = (VertexConsumerProvider.Immediate) context.consumers();
+
+    	//Work around RenderLayer impl problems (DepthTest#ALWAYS not actually turning off depth testing)
+    	RenderSystem.disableDepthTest();
+    	immediate.draw(SkyblockerRenderLayers.FILLED_THROUGH_WALLS);
+
+    	//Draw all render layers that haven't been drawn yet - drawing a specific layer does nothing and idk why (IF bug maybe?)
+    	immediate.draw();
         profiler.pop();
     }
 
