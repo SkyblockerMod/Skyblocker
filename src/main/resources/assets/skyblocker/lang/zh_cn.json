@@ -1015,5 +1015,7 @@
     "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "设置不可破坏的地毯的高亮颜色。",
     "skyblocker.slayer.personalBest": "最佳纪录！",
     "skyblocker.slayer.previousPB": "之前的最佳纪录是%d。",
-    "skyblocker.config.chat.confirmationPromptHelper": "聊天确认提示助手"
+    "skyblocker.config.chat.confirmationPromptHelper": "聊天确认提示助手",
+    "skyblocker.config.dungeons.classBasedPlayerGlow": "基于职业的玩家光亮",
+    "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "根据队友的职业而不是会员等级来更改队友的发光颜色。"
 }
