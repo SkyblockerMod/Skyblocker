@@ -29,12 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-//TODO: check inventory items, sum all repeated items into one
+//TODO: check inventory items, sum all repeated items into one (should work)
+//TODO: Get visitors "rarity" and apply it to their name in the helper list
 public class VisitorHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Visitor Helper");
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
@@ -132,37 +130,96 @@ public class VisitorHelper {
         }
     }
 
-    private static void updateItemMap(String visitorName, @Nullable String visitorTexture, Text lore) {
-        String[] splitItemText = lore.getString().split(" x");
-        String itemName = splitItemText[0].trim();
-        if (itemName.isEmpty()) return;
-        try {
-            int amount = splitItemText.length == 2 ? NUMBER_FORMAT.parse(splitItemText[1].trim()).intValue() : 1;
-            Pair<String, String> key = Pair.of(visitorName, visitorTexture);
-            Object2IntMap<String> visitorMap = itemMap.computeIfAbsent(key, _key -> new Object2IntOpenHashMap<>());
-            visitorMap.put(itemName, amount);
-        } catch (Exception e) {
-            LOGGER.error("[Skyblocker Visitor Helper] Failed to parse item: {}", lore.getString(), e);
-        }
-    }
+	private static void updateItemMap(String visitorName, @Nullable String visitorTexture, Text lore) {
+		String[] splitItemText = lore.getString().split(" x");
+		String itemName = splitItemText[0].trim();
+		if (itemName.isEmpty()) return;
+		try {
+			int amount = splitItemText.length == 2 ? NUMBER_FORMAT.parse(splitItemText[1].trim()).intValue() : 1;
 
-    private static void drawScreenItems(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY) {
-        context.getMatrices().push();
-        context.getMatrices().translate(0, 0, 200);
-        int index = 0;
-        for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
-            Pair<String, String> visitorName = visitorEntry.getKey();
-            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left()), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
-            index++;
+			Pair<String, String> visitorKey = Pair.of(visitorName, visitorTexture);
+			Object2IntMap<String> visitorMap = itemMap.computeIfAbsent(visitorKey, _key -> new Object2IntOpenHashMap<>());
 
-            for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
-                index = drawItemEntryWithHover(context, textRenderer, itemEntry, index, mouseX, mouseY);
-            }
-        }
-        context.getMatrices().pop();
-    }
+			visitorMap.put(itemName, amount); // Replace instead of accumulating repeatedly
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Visitor Helper] Failed to parse item: {}", lore.getString(), e);
+		}
+	}
 
-    private static int drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, Object2IntMap.Entry<String> itemEntry, int index, int mouseX, int mouseY) {
+	private static void drawScreenItems(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY) {
+		context.getMatrices().push();
+		context.getMatrices().translate(0, 0, 200);
+
+		int index = 0;
+
+		// Process visitors grouped by their requested items
+		Map<String, List<String>> itemToVisitorsMap = new LinkedHashMap<>();
+		Map<String, Integer> itemToTotalAmountMap = new LinkedHashMap<>();
+
+		for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+			Pair<String, String> visitorName = visitorEntry.getKey();
+			Object2IntMap<String> visitorItems = visitorEntry.getValue();
+
+			for (Object2IntMap.Entry<String> itemEntry : visitorItems.object2IntEntrySet()) {
+				String itemName = itemEntry.getKey();
+				int amount = itemEntry.getIntValue();
+
+				itemToVisitorsMap.computeIfAbsent(itemName, k -> new ArrayList<>()).add(visitorName.left());
+				itemToTotalAmountMap.put(itemName, itemToTotalAmountMap.getOrDefault(itemName, 0) + amount);
+			}
+		}
+
+		// Draw grouped visitors and items at the top
+		Set<String> processedVisitors = new HashSet<>();
+		for (Map.Entry<String, List<String>> groupedEntry : itemToVisitorsMap.entrySet()) {
+			String itemName = groupedEntry.getKey();
+			List<String> visitors = groupedEntry.getValue();
+			int totalAmount = itemToTotalAmountMap.get(itemName);
+
+			// Draw visitor names grouped together
+			for (String visitor : visitors) {
+				if (!processedVisitors.contains(visitor)) {
+					drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitor), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
+					index++;
+					processedVisitors.add(visitor);
+				}
+			}
+
+			// Draw the combined item line
+			Text combinedText = Text.literal("  ")
+					.append(Text.literal(itemName + " x" + totalAmount))
+					.append(Text.literal(" [Copy Amount]").formatted(Formatting.YELLOW));
+
+			drawTextWithOptionalUnderline(context, textRenderer, combinedText, TEXT_START_X + ENTRY_INDENT, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
+			index++;
+		}
+
+		// Draw remaining visitors with unshared items below
+		for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+			Pair<String, String> visitorName = visitorEntry.getKey();
+			if (processedVisitors.contains(visitorName.left())) continue;
+
+			drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left()), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
+			index++;
+
+			for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
+				String itemName = itemEntry.getKey();
+				int amount = itemEntry.getIntValue();
+
+				Text itemText = Text.literal("  ")
+						.append(Text.literal(itemName + " x" + amount))
+						.append(Text.literal(" [Copy Amount]").formatted(Formatting.YELLOW));
+
+				drawTextWithOptionalUnderline(context, textRenderer, itemText, TEXT_START_X + ENTRY_INDENT, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
+				index++;
+			}
+		}
+
+		context.getMatrices().pop();
+	}
+
+
+	private static int drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, Object2IntMap.Entry<String> itemEntry, int index, int mouseX, int mouseY) {
         String itemName = itemEntry.getKey();
         int amount = itemEntry.getIntValue();
         ItemStack stack = getCachedItem(itemName);
