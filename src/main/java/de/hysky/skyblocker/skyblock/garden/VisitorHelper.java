@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import java.text.NumberFormat;
 import java.util.*;
 
-//TODO: check inventory items, sum all repeated items into one (should work)
 //TODO: Get visitors "rarity" and apply it to their name in the helper list
 public class VisitorHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Visitor Helper");
@@ -73,7 +72,7 @@ public class VisitorHelper {
         drawScreenItems(context, textRenderer, mouseX, mouseY);
     }
 
-	// The location of copy amount, and item text seem to be overlapping so clicking on part of the itemText run copy amount.
+	// The location of copy amount, and item text seem to be overlapping so clicking on part of the itemText will run copy amount.
 	public static void onMouseClicked(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
 
 		int yPosition = TEXT_START_Y;
@@ -266,11 +265,9 @@ public class VisitorHelper {
 					? (totalAmount / 64) + " stacks" + (totalAmount % 64 > 0 ? " + " + (totalAmount % 64) : "")
 					: "" + totalAmount;
 
-			Text combinedText = Text.literal("  ")
-					.append(Text.literal(itemName + " x" + amountText))
-					.append(Text.literal(" [Copy Amount]").formatted(Formatting.YELLOW));
+			ItemStack stack = getCachedItem(itemName);
+			drawItemEntryWithHover(context, textRenderer, stack, itemName, amountText, index, mouseX, mouseY);
 
-			drawTextWithOptionalUnderline(context, textRenderer, combinedText, TEXT_START_X + ENTRY_INDENT, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
 			index++;
 		}
 
@@ -289,11 +286,8 @@ public class VisitorHelper {
 						? (amount / 64) + " stacks" + (amount % 64 > 0 ? " + " + (amount % 64) : "")
 						: "" + amount;
 
-				Text itemText = Text.literal("  ")
-						.append(Text.literal(itemName + " x" + amountText))
-						.append(Text.literal(" [Copy Amount]").formatted(Formatting.YELLOW));
-
-				drawTextWithOptionalUnderline(context, textRenderer, itemText, TEXT_START_X + ENTRY_INDENT, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
+				ItemStack stack = getCachedItem(itemName);
+				drawItemEntryWithHover(context, textRenderer, stack, itemName + " x" + amountText, String.valueOf(amount), index, mouseX, mouseY);
 				index++;
 			}
 		}
@@ -305,11 +299,12 @@ public class VisitorHelper {
         String itemName = itemEntry.getKey();
         int amount = itemEntry.getIntValue();
         ItemStack stack = getCachedItem(itemName);
-        drawItemEntryWithHover(context, textRenderer, stack, itemName, amount, index, mouseX, mouseY);
+        drawItemEntryWithHover(context, textRenderer, stack, itemName, String.valueOf(amount), index, mouseX, mouseY);
         return index + 1;
     }
 
-    private static ItemStack getCachedItem(String displayName) {
+
+	private static ItemStack getCachedItem(String displayName) {
         String strippedName = Formatting.strip(displayName);
         ItemStack cachedStack = itemCache.get(strippedName);
         if (cachedStack != null) return cachedStack;
@@ -327,27 +322,33 @@ public class VisitorHelper {
         return stack;
     }
 
-    /**
-     * Draws the item entry, amount, and copy amount text with optional underline and the item icon
-     */
-    private static void drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, @Nullable ItemStack stack, String itemName, int amount, int index, int mouseX, int mouseY) {
-        Text text = stack != null ? stack.getName().copy().append(" x" + amount) : Text.literal(itemName + " x" + amount);
-        Text copyAmount = Text.literal(" [Copy Amount]");
+	/**
+	 * Draws the item entry, amount, and copy amount text with optional underline and the item icon.
+	 */
+	private static void drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, @Nullable ItemStack stack, String itemName, String amountText, int index, int mouseX, int mouseY) {
 
-        // Calculate the y position of the text with index as the line number
-        int y = TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight);
-        // Draw the item and amount text
-        drawTextWithOptionalUnderline(context, textRenderer, text, TEXT_START_X + ENTRY_INDENT + ITEM_INDENT, y, mouseX, mouseY);
-        // Draw the copy amount text separately after the item and amount text
-        drawTextWithOptionalUnderline(context, textRenderer, copyAmount, TEXT_START_X + ENTRY_INDENT + ITEM_INDENT + textRenderer.getWidth(text), y, mouseX, mouseY);
+		Text itemText = Text.literal(itemName).formatted(Formatting.GREEN)
+				.append(Text.literal(" x" + amountText).formatted(Formatting.WHITE));
+		Text copyAmountText = Text.literal(" [Copy Amount]").formatted(Formatting.YELLOW);
 
-        // drawItem adds 150 to the z, which puts our z at 350, above the item in the slot (250) and their text (300) and below the cursor stack (382) and their text (432)
-        if (stack != null) {
-            context.drawItem(stack, TEXT_START_X + ENTRY_INDENT, y - textRenderer.fontHeight + 5);
-        }
-    }
+		int y = TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight);
+		int itemTextX = TEXT_START_X + ENTRY_INDENT + ITEM_INDENT;
+		int itemIconX = TEXT_START_X + ENTRY_INDENT;
 
-    private static void drawTextWithOptionalUnderline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, int mouseX, int mouseY) {
+		drawTextWithOptionalUnderline(context, textRenderer, itemText, itemTextX, y, mouseX, mouseY);
+
+		int copyAmountX = itemTextX + textRenderer.getWidth(itemText.getString());
+
+		drawTextWithOptionalUnderline(context, textRenderer, copyAmountText, copyAmountX, y, mouseX, mouseY);
+
+		if (stack != null) {
+			context.drawItem(stack, itemIconX, y - textRenderer.fontHeight + 5);
+		}
+	}
+
+
+
+	private static void drawTextWithOptionalUnderline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, int mouseX, int mouseY) {
         context.getMatrices().push();
         context.getMatrices().translate(0, 0, 150); // This also puts our z at 350
         context.drawText(textRenderer, text, x, y, -1, true);
