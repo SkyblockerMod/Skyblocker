@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.BeaconBlockEntityRendererInvoker;
-import de.hysky.skyblocker.utils.Boxes;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
@@ -323,8 +322,13 @@ public class RenderHelper {
 
         VertexConsumerProvider.Immediate consumers = VertexConsumerProvider.immediate(ALLOCATOR);
 
+        //Don't trust the render layer to do this for you!
+        RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
+
         textRenderer.draw(text, xOffset, yOffset, 0xFFFFFFFF, false, positionMatrix, consumers, throughWalls ? TextRenderer.TextLayerType.SEE_THROUGH : TextRenderer.TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
         consumers.draw();
+
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
     /**
