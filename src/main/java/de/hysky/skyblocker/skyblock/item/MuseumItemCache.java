@@ -219,7 +219,7 @@ public class MuseumItemCache {
 				Codec.STRING.listOf()
 						.xmap(ObjectOpenHashSet::new, ObjectArrayList::new)
 						.fieldOf("collectedItemIds")
-						.forGetter(i -> new ObjectOpenHashSet<>(i.collectedItemIds()))
+						.forGetter(ProfileMuseumData::collectedItemIds)
 		).apply(instance, ProfileMuseumData::new));
 
 		private boolean canResync() {
