@@ -45,7 +45,7 @@ public class AccessoriesHelper {
 
 	@Init
 	public static void init() {
-		COLLECTED_ACCESSORIES.init();
+		loaded = COLLECTED_ACCESSORIES.init();
 		ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
 			if (Utils.isOnSkyblock() && TooltipInfoType.ACCESSORIES.isTooltipEnabled() && !Utils.getProfileId().isEmpty() && screen instanceof GenericContainerScreen genericContainerScreen) {
 				Matcher matcher = ACCESSORY_BAG_TITLE.matcher(genericContainerScreen.getTitle().getString());
