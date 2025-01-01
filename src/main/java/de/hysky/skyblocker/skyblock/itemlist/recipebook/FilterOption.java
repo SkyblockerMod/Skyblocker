@@ -9,7 +9,7 @@ public enum FilterOption implements Identifiable {
 
 	ALL(query -> true, Identifier.of("skyblocker", "textures/gui/filter/all.png")),
 	ENTITIES(query -> query.endsWith("(monster)") || query.endsWith("(miniboss)") || query.endsWith("(boss)")
-			|| query.endsWith("animal") || query.endsWith("pest") || query.endsWith("(sea creature)"),
+			|| query.endsWith("(animal)") || query.endsWith("(pest)") || query.endsWith("(sea creature)"),
 			Identifier.of("skyblocker", "textures/gui/filter/entities.png")),
 	NPCS(query -> query.endsWith("(npc)") || query.endsWith("(rift npc)"), Identifier.of("skyblocker", "textures/gui/filter/npcs.png")),
 	MAYORS(query -> query.endsWith("(mayor)") || query.endsWith("(retired mayor)"), Identifier.of("skyblocker", "textures/gui/filter/mayors.png")),
