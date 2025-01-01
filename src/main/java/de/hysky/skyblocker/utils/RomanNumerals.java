@@ -1,6 +1,28 @@
 package de.hysky.skyblocker.utils;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+
+import java.util.Map;
+
 public class RomanNumerals {
+	private static final Int2ObjectMap<String> ROMAN_NUMERALS = Int2ObjectMaps.unmodifiable(new Int2ObjectOpenHashMap<>(Map.ofEntries(
+			Map.entry(1, "I"),
+			Map.entry(4, "IV"),
+			Map.entry(5, "V"),
+			Map.entry(9, "IX"),
+			Map.entry(10, "X"),
+			Map.entry(40, "XL"),
+			Map.entry(50, "L"),
+			Map.entry(90, "XC"),
+			Map.entry(100, "C"),
+			Map.entry(400, "CD"),
+			Map.entry(500, "D"),
+			Map.entry(900, "CM"),
+			Map.entry(1000, "M")
+	)));
+
     private RomanNumerals() {}
 
 	private static int getDecimalValue(char romanChar) {
@@ -50,5 +72,19 @@ public class RomanNumerals {
 			lastNumber = number;
 		}
 		return decimal;
+	}
+
+	public static String decimalToRoman(int decimal) {
+		if (decimal <= 0 || decimal >= 4000) return "";
+		StringBuilder roman = new StringBuilder();
+		for (Int2ObjectMap.Entry<String> entry : ROMAN_NUMERALS.int2ObjectEntrySet()) {
+			int value = entry.getIntKey();
+			String numeral = entry.getValue();
+			while (decimal >= value) {
+				roman.append(numeral);
+				decimal -= value;
+			}
+		}
+		return roman.toString();
 	}
 }
