@@ -12,6 +12,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -283,12 +284,7 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 			var result = resultButtons.get(14);
 			var rawID = ItemUtils.getItemId(result.getDisplayStack());
 			if (result.isMouseOver(mouseX, mouseY)) {
-				var handler = client.getNetworkHandler();
-				if (handler != null) {
-					handler.sendChatCommand("viewrecipe " + rawID);
-					return true;
-				}
-				return false;
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown(String.format("/viewrecipe %s", rawID), true);
 			}
 		}
 
