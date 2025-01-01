@@ -56,7 +56,7 @@ public class SearchOverManager {
     private static HashSet<String> auctionItems = new HashSet<>();
     private static HashSet<String> auctionPets = new HashSet<>();
     private static HashSet<String> starableItems = new HashSet<>();
-    private static HashMap<String, String> namesToId = new HashMap<>();
+    private static HashMap<String, String> namesToNeuId = new HashMap<>();
 
     public static String[] suggestionsArray = {};
 
@@ -90,7 +90,7 @@ public class SearchOverManager {
         HashSet<String> auctionItems = new HashSet<>();
         HashSet<String> auctionPets = new HashSet<>();
         HashSet<String> starableItems = new HashSet<>();
-        HashMap<String, String> namesToId = new HashMap<>();
+        HashMap<String, String> namesToNeuId = new HashMap<>();
 
         //get bazaar items
         try {
@@ -113,7 +113,7 @@ public class SearchOverManager {
 
                     name += " " + RomanNumerals.decimalToRoman(Integer.parseInt(matcher.group(2)));
                     bazaarItems.add(name);
-                    namesToId.put(name, matcher.group(1) + ";" + matcher.group(2));
+                    namesToNeuId.put(name, id.substring(0, id.lastIndexOf('_')).replace("ENCHANTMENT_", "") + ";" + matcher.group(2));
                     continue;
                 }
                 //look up id for name
@@ -121,7 +121,7 @@ public class SearchOverManager {
                 if (neuItem != null) {
                     name = Formatting.strip(neuItem.getDisplayName());
                     bazaarItems.add(name);
-                    namesToId.put(name, id);
+                    namesToNeuId.put(name, id);
                     continue;
                 }
             }
@@ -152,7 +152,7 @@ public class SearchOverManager {
                         starableItems.add(name.toLowerCase());
                     }
                     auctionItems.add(name);
-                    namesToId.put(name, id);
+                    namesToNeuId.put(name, id);
                 }
             }
         } catch (Exception e) {
@@ -163,7 +163,7 @@ public class SearchOverManager {
         SearchOverManager.auctionItems = auctionItems;
         SearchOverManager.auctionPets = auctionPets;
         SearchOverManager.starableItems = starableItems;
-        SearchOverManager.namesToId = namesToId;
+        SearchOverManager.namesToNeuId = namesToNeuId;
     }
 
     /**
@@ -238,7 +238,7 @@ public class SearchOverManager {
     }
 
     protected static String getSuggestionId(int index) {
-        return namesToId.get(getSuggestion(index));
+        return namesToNeuId.get(getSuggestion(index));
     }
 
     /**
@@ -260,7 +260,7 @@ public class SearchOverManager {
     }
 
     protected static String getHistoryId(int index) {
-        return namesToId.get(getHistory(index));
+        return namesToNeuId.get(getHistory(index));
     }
 
     /**
