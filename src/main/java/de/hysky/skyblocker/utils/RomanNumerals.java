@@ -1,29 +1,16 @@
 package de.hysky.skyblocker.utils;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-
-import java.util.Map;
 
 public class RomanNumerals {
-	private static final Int2ObjectMap<String> ROMAN_NUMERALS = Int2ObjectMaps.unmodifiable(new Int2ObjectOpenHashMap<>(Map.ofEntries(
-			Map.entry(1, "I"),
-			Map.entry(4, "IV"),
-			Map.entry(5, "V"),
-			Map.entry(9, "IX"),
-			Map.entry(10, "X"),
-			Map.entry(40, "XL"),
-			Map.entry(50, "L"),
-			Map.entry(90, "XC"),
-			Map.entry(100, "C"),
-			Map.entry(400, "CD"),
-			Map.entry(500, "D"),
-			Map.entry(900, "CM"),
-			Map.entry(1000, "M")
-	)));
+	private static final Int2ObjectMap<String> ROMAN_NUMERALS = Int2ObjectMaps.unmodifiable(new Int2ObjectLinkedOpenHashMap<>(
+			new int[]{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1},
+			new String[]{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"}
+	));
 
-    private RomanNumerals() {}
+	private RomanNumerals() {}
 
 	private static int getDecimalValue(char romanChar) {
 		return switch (romanChar) {
@@ -41,6 +28,7 @@ public class RomanNumerals {
 	/**
 	 * Checks if a string is a valid roman numeral.
 	 * It's the caller's responsibility to clean up the string before calling this method (such as trimming it).
+	 *
 	 * @param romanNumeral The roman numeral to check.
 	 * @return True if the string is a valid roman numeral, false otherwise.
 	 * @implNote This will only check if the string contains valid roman numeral characters. It won't check if the numeral is well-formed.
@@ -74,6 +62,12 @@ public class RomanNumerals {
 		return decimal;
 	}
 
+	/**
+	 * Converts a decimal number to a roman numeral.
+	 *
+	 * @param decimal The decimal number to convert.
+	 * @return The roman numeral, or an empty string if the number is out of range.
+	 */
 	public static String decimalToRoman(int decimal) {
 		if (decimal <= 0 || decimal >= 4000) return "";
 		StringBuilder roman = new StringBuilder();
