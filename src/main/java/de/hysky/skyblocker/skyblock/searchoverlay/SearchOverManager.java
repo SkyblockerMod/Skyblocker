@@ -116,8 +116,14 @@ public class SearchOverManager {
                     namesToId.put(name, matcher.group(1) + ";" + matcher.group(2));
                     continue;
                 }
-                bazaarItems.add(name);
-                namesToId.put(name, id);
+                //look up id for name
+                NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
+                if (neuItem != null) {
+                    name = Formatting.strip(neuItem.getDisplayName());
+                    bazaarItems.add(name);
+                    namesToId.put(name, id);
+                    continue;
+                }
             }
         } catch (Exception e) {
             LOGGER.error("[Skyblocker] Failed to load bazaar item list! ", e);
