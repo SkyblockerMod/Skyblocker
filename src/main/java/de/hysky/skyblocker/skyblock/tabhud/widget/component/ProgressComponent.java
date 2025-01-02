@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -55,15 +56,16 @@ public class ProgressComponent extends Component {
 
 	@Override
 	public void render(DrawContext context, int x, int y) {
+		int textColor = (ColorUtils.isBright(this.color)) ? 0xff000000 : 0xffffffff;
+
 		context.drawItem(ico, x, y + ICO_OFFS);
-		context.drawText(txtRend, desc, x + ICO_DIM + PAD_L, y, 0xffffffff, false);
+		context.drawText(txtRend, desc, x + ICO_DIM + PAD_L, y, textColor, false);
 
 		int barX = x + ICO_DIM + PAD_L;
 		int barY = y + txtRend.fontHeight + PAD_S;
 		int endOffsX = ((int) (this.barW * (this.pcnt / 100f)));
 		context.fill(barX + endOffsX, barY, barX + this.barW, barY + BAR_HEIGHT, COL_BG_BAR);
-		context.fill(barX, barY, barX + endOffsX, barY + BAR_HEIGHT,
-				this.color);
-		context.drawTextWithShadow(txtRend, bar, barX + 3, barY + 2, 0xffffffff);
+		context.fill(barX, barY, barX + endOffsX, barY + BAR_HEIGHT, this.color);
+		context.drawTextWithShadow(txtRend, bar, barX + 3, barY + 2, textColor);
 	}
 }
