@@ -98,7 +98,6 @@
     "skyblocker.config.helpers.fairySouls.enableFairySoulsHelper": "Activer l'aide au Fairy Souls",
     "skyblocker.config.helpers.fairySouls": "Aide aux Fairy Souls",
     "skyblocker.config.general.shortcuts": "Raccourcis",
-    "key.skyblocker.toggleB": "Basculer l'onglet HUD vers l'écran B",
     "key.skyblocker.toggleA": "Basculer l'onglet HUD vers l'écran A",
     "skyblocker.config.general.shortcuts.enableShortcuts": "Activer les Raccourcis",
     "skyblocker.config.general.shortcuts.enableShortcuts.@Tooltip": "Marche partout, même en Vanilla ! Edite les raccourcis avec \"/skyblocker shortcuts\". Au moins une des options suivantes doit être activée pour que ceci prenne effet.",

@@ -54,7 +54,6 @@
     "skyblocker.config.helpers.fishing.enableFishingHelper": "Balık tutma yardımcısını aktifleştir",
     "skyblocker.config.chat": "Mesajlar",
     "skyblocker.config.chat.filter.hideImplosion": "Implosion mesajını filtrele",
-    "key.skyblocker.toggleB": "Tab HUD'unda B ekranını aç",
     "key.skyblocker.toggleA": "Tab HUD'unda A ekranını aç",
     "skyblocker.config.helpers.mythologicalRitual": "Mitolojik Ayin Yardımcısı",
     "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "Mitolojik Ayin Yardımcısını Etkinleştir",
