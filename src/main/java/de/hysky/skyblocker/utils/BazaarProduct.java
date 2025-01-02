@@ -7,9 +7,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 
-public record BazaarProduct(String id, OptionalDouble buyPrice, OptionalDouble sellPrice, int buyVolume, int sellVolume) {
+public record BazaarProduct(String id, String name, OptionalDouble buyPrice, OptionalDouble sellPrice, int buyVolume, int sellVolume) {
 	private static final Codec<BazaarProduct> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("id").forGetter(BazaarProduct::id),
+			Codec.STRING.fieldOf("name").forGetter(BazaarProduct::name),
 			CodecUtils.optionalDouble(Codec.DOUBLE.lenientOptionalFieldOf("buyPrice")).forGetter(BazaarProduct::buyPrice),
 			CodecUtils.optionalDouble(Codec.DOUBLE.lenientOptionalFieldOf("sellPrice")).forGetter(BazaarProduct::sellPrice),
 			Codec.INT.fieldOf("buyVolume").forGetter(BazaarProduct::buyVolume),
