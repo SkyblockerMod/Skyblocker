@@ -36,6 +36,9 @@ public class UIAndVisualsConfig {
     public boolean showEquipmentInInventory = true;
 
     @SerialEntry
+    public boolean cancelComponentUpdateAnimation = true;
+
+    @SerialEntry
     public ChestValue chestValue = new ChestValue();
 
     @SerialEntry
@@ -303,6 +306,9 @@ public class UIAndVisualsConfig {
 
         @SerialEntry
         public boolean requiresEquals = false;
+
+		@SerialEntry
+		public boolean closeSignsWithEnter = true;
     }
 
     public static class FlameOverlay {

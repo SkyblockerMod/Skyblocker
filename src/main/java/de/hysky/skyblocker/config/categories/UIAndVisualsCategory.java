@@ -90,6 +90,14 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip")))
+                        .binding(defaults.uiAndVisuals.cancelComponentUpdateAnimation,
+                                () -> config.uiAndVisuals.cancelComponentUpdateAnimation,
+                                newValue -> config.uiAndVisuals.cancelComponentUpdateAnimation = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
 
                 //Chest Value FIXME change dropdown to color controller
                 .group(OptionGroup.createBuilder()
@@ -423,6 +431,14 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.inputCalculator.requiresEquals = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter.@Tooltip")))
+								.binding(defaults.uiAndVisuals.inputCalculator.closeSignsWithEnter,
+										() -> config.uiAndVisuals.inputCalculator.closeSignsWithEnter,
+										newValue -> config.uiAndVisuals.inputCalculator.closeSignsWithEnter = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 //Flame Overlay
