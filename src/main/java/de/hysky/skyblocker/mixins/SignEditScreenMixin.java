@@ -5,19 +5,25 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import de.hysky.skyblocker.skyblock.speedPreset.SpeedPresets;
 import de.hysky.skyblocker.utils.Utils;
+import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.AbstractSignEditScreen;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractSignEditScreen.class)
 public abstract class SignEditScreenMixin extends Screen {
@@ -25,6 +31,17 @@ public abstract class SignEditScreenMixin extends Screen {
     @Shadow
     @Final
     private String[] messages;
+
+	@Shadow
+	@Final
+	protected SignBlockEntity blockEntity;
+
+	@Shadow
+	@Final
+	private boolean front;
+
+	@Shadow
+	public abstract void close();
 
 	protected SignEditScreenMixin(Text title) {
 		super(title);
@@ -42,11 +59,30 @@ public abstract class SignEditScreenMixin extends Screen {
 				}
 			}
 			//if the sign is being used to enter number send it to the sign calculator
-			if (messages[1].equals("^^^^^^^^^^^^^^^") && config.uiAndVisuals.inputCalculator.enabled) {
+			if (isInputSign() && config.uiAndVisuals.inputCalculator.enabled) {
 				SignCalculator.renderCalculator(context, messages[0], context.getScaledWindowWidth() / 2, 55);
 			}
 		}
     }
+
+	@Inject(method = "keyPressed", at = @At("HEAD"))
+	private void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+		// enter key
+		if (keyCode != 257 || !Utils.isOnSkyblock() || !isInputSign()) {
+			return;
+		}
+
+		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.closeSignsWithEnter) {
+			ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
+			if (handler != null) {
+				// call close() first so that the calculation gets run
+				this.close();
+				handler.sendPacket(
+						new UpdateSignC2SPacket(this.blockEntity.getPos(), this.front, messages[0], messages[1], messages[2], messages[3])
+				);
+			}
+		}
+	}
 
     @Inject(method = "finishEditing", at = @At("HEAD"))
     private void skyblocker$finishEditing(CallbackInfo ci) {
@@ -60,7 +96,7 @@ public abstract class SignEditScreenMixin extends Screen {
 				}
 			}
 			//if the sign is being used to enter number get number from calculator for if maths has been done
-			if (messages[1].equals("^^^^^^^^^^^^^^^") && config.uiAndVisuals.inputCalculator.enabled) {
+			if (isInputSign() && config.uiAndVisuals.inputCalculator.enabled) {
 				boolean isPrice = messages[2].contains("price");
 				String value = SignCalculator.getNewValue(isPrice);
 				if (value.length() >= 15) {
@@ -70,4 +106,9 @@ public abstract class SignEditScreenMixin extends Screen {
 			}
         }
     }
+
+	@Unique
+	private boolean isInputSign() {
+		return messages[1].equals("^^^^^^^^^^^^^^^");
+	}
 }
