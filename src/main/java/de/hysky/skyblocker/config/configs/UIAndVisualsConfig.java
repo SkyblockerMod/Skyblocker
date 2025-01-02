@@ -36,6 +36,9 @@ public class UIAndVisualsConfig {
     public boolean showEquipmentInInventory = true;
 
     @SerialEntry
+    public boolean cancelComponentUpdateAnimation = true;
+
+    @SerialEntry
     public ChestValue chestValue = new ChestValue();
 
     @SerialEntry
