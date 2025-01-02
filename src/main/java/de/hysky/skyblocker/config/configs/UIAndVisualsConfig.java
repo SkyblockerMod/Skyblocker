@@ -306,6 +306,9 @@ public class UIAndVisualsConfig {
 
         @SerialEntry
         public boolean requiresEquals = false;
+
+		@SerialEntry
+		public boolean closeSignsWithEnter = true;
     }
 
     public static class FlameOverlay {

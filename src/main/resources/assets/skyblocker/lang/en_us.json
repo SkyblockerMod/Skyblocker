@@ -815,6 +815,8 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "Enables the ability for you to do calculations when inputting values such as price for the ah.\n Key:\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\n purse/P = current purse value",
   "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals": "Only show with \"=\".",
   "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "Only show the calculator when the message starts with \"=\".",
+  "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter": "Close signs with enter",
+  "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter.@Tooltip": "Close the current open sign screen with the enter key",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
 
 
