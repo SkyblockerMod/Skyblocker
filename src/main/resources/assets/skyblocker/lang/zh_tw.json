@@ -55,7 +55,6 @@
     "skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip": "相對於原版GUI的百分比大小",
     "skyblocker.config.general.shortcuts.enableShortcuts": "啟用快捷指令",
     "skyblocker.config.helpers.fishing": "釣魚助手",
-    "key.skyblocker.toggleB": "將HUD分頁切換至顯示屏B",
     "key.skyblocker.toggleA": "將HUD分頁切換至顯示屏A",
     "skyblocker.config.quickNav.button.item.itemName": "物品",
     "skyblocker.config.quickNav.button.uiTitle": "UI標題",

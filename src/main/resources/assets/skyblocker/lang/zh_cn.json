@@ -170,7 +170,6 @@
     "skyblocker.config.general.quiverWarning.enableQuiverWarningAfterDungeon": "在地牢结束后启用箭袋提示",
     "skyblocker.config.dungeons.secretWaypoints.enableLeverWaypoints": "启用拉杆路径点",
     "key.skyblocker.toggleA": "将HUD标签页切换至显示屏A",
-    "key.skyblocker.toggleB": "将HUD标签页切换至显示屏B",
     "skyblocker.config.general.itemProtection.slotLockStyle.@Tooltip": "选择精美或经典的锁定图标。",
     "skyblocker.config.general.itemProtection": "物品保护",
     "skyblocker.config.general.itemProtection.slotLockStyle": "物品栏锁定图标样式",
