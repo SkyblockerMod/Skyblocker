@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils.container;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
@@ -133,14 +132,11 @@ public class ContainerSolverManager {
 	public static void onDraw(DrawContext context, GenericContainerScreen genericContainerScreen, List<Slot> slots) {
 		if (currentSolver == null) return;
 		if (highlights == null) highlights = currentSolver.getColors(slotMap(currentSolver instanceof ContainerAndInventorySolver ? slots : slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9)));
-		RenderSystem.enableDepthTest();
-		RenderSystem.colorMask(true, true, true, false);
 		for (ColorHighlight highlight : highlights) {
 			Slot slot = slots.get(highlight.slot());
 			int color = highlight.color();
 			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, color);
 		}
-		RenderSystem.colorMask(true, true, true, true);
 	}
 
 	public static Int2ObjectMap<ItemStack> slotMap(List<Slot> slots) {

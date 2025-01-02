@@ -189,6 +189,13 @@ public class DungeonsCategory {
                                         newValue -> config.dungeons.puzzleSolvers.solveTrivia = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.puzzle.solveTeleportMaze"))
+								.binding(defaults.dungeons.puzzleSolvers.solveTeleportMaze,
+										() -> config.dungeons.puzzleSolvers.solveTeleportMaze,
+										newValue -> config.dungeons.puzzleSolvers.solveTeleportMaze = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 // The Professor (F3/M3)
