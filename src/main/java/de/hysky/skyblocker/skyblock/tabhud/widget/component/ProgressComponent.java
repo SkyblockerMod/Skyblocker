@@ -24,6 +24,7 @@ public class ProgressComponent extends Component {
 	private final Text desc, bar;
 	private final float pcnt;
 	private final int color;
+	private final boolean colorIsBright;
 	private final int barW;
 
 	public ProgressComponent(ItemStack ico, Text d, Text b, float pcnt, int color) {
@@ -44,6 +45,7 @@ public class ProgressComponent extends Component {
 		this.barW = BAR_WIDTH;
 		this.width = ICO_DIM + PAD_L + Math.max(this.barW, txtRend.getWidth(this.desc));
 		this.height = txtRend.fontHeight + PAD_S + 2 + txtRend.fontHeight + 2;
+		this.colorIsBright = ColorUtils.isBright(this.color);
 	}
 
 	public ProgressComponent(ItemStack ico, Text text, float pcnt, int color) {
@@ -56,16 +58,16 @@ public class ProgressComponent extends Component {
 
 	@Override
 	public void render(DrawContext context, int x, int y) {
-		int textColor = (ColorUtils.isBright(this.color)) ? 0xff000000 : 0xffffffff;
-
 		context.drawItem(ico, x, y + ICO_OFFS);
-		context.drawText(txtRend, desc, x + ICO_DIM + PAD_L, y, textColor, false);
+		context.drawText(txtRend, desc, x + ICO_DIM + PAD_L, y, 0xffffffff, false);
 
 		int barX = x + ICO_DIM + PAD_L;
 		int barY = y + txtRend.fontHeight + PAD_S;
 		int endOffsX = ((int) (this.barW * (this.pcnt / 100f)));
 		context.fill(barX + endOffsX, barY, barX + this.barW, barY + BAR_HEIGHT, COL_BG_BAR);
 		context.fill(barX, barY, barX + endOffsX, barY + BAR_HEIGHT, this.color);
-		context.drawTextWithShadow(txtRend, bar, barX + 3, barY + 2, textColor);
+
+		int textColor = (this.colorIsBright) ? 0xff000000 : 0xffffffff;
+		context.drawText(txtRend, bar, barX + 3, barY + 2, textColor, !this.colorIsBright);
 	}
 }
