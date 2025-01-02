@@ -69,7 +69,6 @@
     "skyblocker.config.chat.filter.hideMana": "액션바에서 마나 사용 메시지 가리기",
     "skyblocker.config.chat.filter.hideMana.@Tooltip": "FancyBar 로 더 나은 기능을 사용합니다",
     "key.skyblocker.defaultTgl": "기본 보기로 탭 HUD 변경",
-    "key.skyblocker.toggleB": "B 스크린으로 탭 HUD 변경",
     "key.skyblocker.toggleA": "A 스크린으로 탭 HUD 변경",
     "skyblocker.config.uiAndVisuals.tabHud": "미려한 탭 HUD",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudEnabled": "미려한 탭 HUD 활성화",
