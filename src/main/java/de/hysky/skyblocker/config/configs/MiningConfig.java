@@ -4,6 +4,8 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import net.minecraft.client.resource.language.I18n;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MiningConfig {
     @SerialEntry
@@ -39,6 +41,12 @@ public class MiningConfig {
 
         @SerialEntry
         public boolean solvePuzzler = true;
+
+		@SerialEntry
+	    public boolean enableCarpetHighlighter = true;
+
+		@SerialEntry
+	    public Color carpetHighlightColor = new Color(255, 0, 0, 76);
     }
 
 	@Deprecated
@@ -77,6 +85,15 @@ public class MiningConfig {
 
         @SerialEntry
         public Color chestHighlightColor = new Color(0, 0, 255, 128);
+
+	    @SerialEntry
+	    public boolean enablePowderTracker = true;
+
+	    @SerialEntry
+	    public boolean countNaturalChestsInTracker = true;
+
+		@SerialEntry
+	    public List<String> powderTrackerFilter = new ArrayList<>();
     }
 
     public static class CrystalsHud {

@@ -52,6 +52,14 @@ public class DungeonsCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
                 .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.dungeons.classBasedPlayerGlow"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip")))
+                        .binding(defaults.dungeons.classBasedPlayerGlow,
+                                () -> config.dungeons.classBasedPlayerGlow,
+                                newValue -> config.dungeons.classBasedPlayerGlow = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
+                .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.dungeons.starredMobGlow"))
                         .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.starredMobGlow.@Tooltip")))
                         .binding(defaults.dungeons.starredMobGlow,

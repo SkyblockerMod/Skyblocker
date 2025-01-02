@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.serialization.Codec;
+import de.hysky.skyblocker.utils.EnumUtils;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
 
@@ -41,6 +42,6 @@ public enum SkyblockItemRarity implements StringIdentifiable {
 	}
 
 	public SkyblockItemRarity next() {
-		return values()[(ordinal() + 1) % values().length];
+		return EnumUtils.cycle(this);
 	}
 }

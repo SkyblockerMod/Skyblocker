@@ -7,6 +7,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import de.hysky.skyblocker.skyblock.SackItemAutocomplete;
 import de.hysky.skyblocker.skyblock.ViewstashAutocomplete;
 import de.hysky.skyblocker.skyblock.WarpAutocomplete;
+import de.hysky.skyblocker.skyblock.speedPreset.SpeedPresets;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.command.CommandSource;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,6 +19,7 @@ public class CommandTreeS2CPacketMixin {
 	public CommandNode<? extends CommandSource> modifyCommandSuggestions(CommandNode<CommandSource> original) {
 		if (Utils.isOnHypixel() && original instanceof LiteralCommandNode<?> literalCommandNode) {
 			return switch (literalCommandNode.getLiteral()) {
+				case String s when s.equals("setmaxspeed") -> SpeedPresets.getCommandNode();
 				case String s when s.equals("warp") && WarpAutocomplete.commandNode != null -> WarpAutocomplete.commandNode;
 				case String s when s.equals("getfromsacks") && SackItemAutocomplete.longCommandNode != null -> SackItemAutocomplete.longCommandNode;
 				case String s when s.equals("gfs") && SackItemAutocomplete.shortCommandNode != null -> SackItemAutocomplete.shortCommandNode;

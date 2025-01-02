@@ -23,6 +23,8 @@
   "text.skyblocker.quit_discard": "Quit & Discard Changes",
   "text.skyblocker.confirm": "Confirm",
   "text.skyblocker.config": "Open Config...",
+  "text.skyblocker.reset": "Reset",
+  "text.skyblocker.undo": "Undo",
   "text.skyblocker.source": "Source",
   "text.skyblocker.website": "Website",
   "text.skyblocker.translate": "Translate",
@@ -76,6 +78,9 @@
 
   "skyblocker.config.dungeons.croesusHelper": "Croesus Helper",
   "skyblocker.config.dungeons.croesusHelper.@Tooltip": "Gray out chests that have already been opened.",
+
+  "skyblocker.config.dungeons.classBasedPlayerGlow": "Class-based Player Glow",
+  "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "Changes the color of your teammates glow to be based on their class rather than their rank.",
 
   "skyblocker.config.dungeons.goldorWaypoints": "Goldor Tasks Waypoints (F7/M7)",
   "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Enable waypoints for terminals/devices/levers during Goldor",
@@ -332,6 +337,12 @@
   "skyblocker.config.general.searchOverlay.maxPet": "Max Pet Level",
   "skyblocker.config.general.searchOverlay.maxPet.@Tooltip": "Only show pets that are max level",
 
+  "skyblocker.config.general.speedPresets": "Speed Presets",
+  "skyblocker.config.general.speedPresets.config": "Speed Presets Config...",
+  "skyblocker.config.general.speedPresets.config.title": "Title",
+  "skyblocker.config.general.speedPresets.config.speed": "Speed",
+  "skyblocker.config.general.speedPresets.enableSpeedPresets": "Enable Speed Presets",
+
   "skyblocker.config.general.shortcuts": "Shortcuts",
   "skyblocker.config.general.shortcuts.config": "Shortcuts Config...",
   "skyblocker.config.general.shortcuts.enableCommandArgShortcuts": "Enable Command Argument Shortcuts",
@@ -381,6 +392,9 @@
 
   "skyblocker.config.helpers.enableNewYearCakesHelper": "Enable New Year Cakes Helper",
   "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "Highlights the missing new year cakes green and the cakes you have already red.\n\nRequires you to open your cake bag at least once to work.",
+  "skyblocker.config.helpers.enableBitsHelper": "Highlight best Community Store (Bits Shop) offer",
+  "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip",
+
 
   "skyblocker.config.helpers.enableWardrobeHelper": "Enable Wardrobe Helper",
   "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing armor from the wardrobe by pressing hotbar keys 1-9 while the menu is open. The corresponding armor set in the wardrobe menu will be equipped.",
@@ -558,6 +572,9 @@
   "skyblocker.config.mining.crystalHollows.chestHighlighter.@Tooltip": "Highlight found treasure chests and lock pick locations when powder mining.",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "Chest Highlight Color",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "What color the treasure chests / lock pick should be highlighted.",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter": "Powder Tracker Shown Items",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip": "Choose which items to show & include in the profit calculation for the powder tracker.",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter.screenTitle": "Shown Items",
 
   "skyblocker.config.mining.crystalsHud": "Crystal Hollows Map",
   "skyblocker.config.mining.crystalsHud.enabled": "Enabled",
@@ -611,6 +628,11 @@
   "skyblocker.config.mining.dwarvenMines": "Dwarven Mines",
   "skyblocker.config.mining.dwarvenMines.solveFetchur": "Solve Fetchur",
   "skyblocker.config.mining.dwarvenMines.solvePuzzler": "Solve Puzzler Puzzle",
+  "skyblocker.config.mining.dwarvenMines.enableCarpetHighlight": "Enable Unbreakable Carpet Highlighter",
+  "skyblocker.config.mining.dwarvenMines.enableCarpetHighlight.@Tooltip": "Highlights unbreakable carpets within ore veins in the Dwarven Mines.",
+  "skyblocker.config.mining.dwarvenMines.carpetHighlightColor": "Carpet Highlight Color",
+  "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Sets the color of the highlight for the unbreakable carpets.",
+
 
   "skyblocker.config.mining.enableDrillFuel": "Enable Drill Fuel",
 

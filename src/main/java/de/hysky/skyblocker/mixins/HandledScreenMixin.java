@@ -2,9 +2,8 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.systems.RenderSystem;
 
-import de.hysky.skyblocker.SkyblockerMod;
+import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.InventorySearch;
@@ -36,7 +35,6 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -62,9 +60,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 */
 	@Unique
 	private static final int OUT_OF_BOUNDS_SLOT = -999;
-
-	@Unique
-	private static final Identifier ITEM_PROTECTION = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
 
 	@Unique
 	private static final Set<String> FILLER_ITEMS = Set.of(
@@ -335,10 +330,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	private void skyblocker$drawOnItem(DrawContext context, Slot slot, CallbackInfo ci) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds)
 			ItemRarityBackgrounds.tryDraw(slot.getStack(), context, slot.x, slot.y);
-		// Item protection
+		// Item Protection
 		if (ItemProtection.isItemProtected(slot.getStack())) {
 			RenderSystem.enableBlend();
-			context.drawTexture(RenderLayer::getGuiTextured, ITEM_PROTECTION, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
+			context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
 			RenderSystem.disableBlend();
 		}
 		// Search

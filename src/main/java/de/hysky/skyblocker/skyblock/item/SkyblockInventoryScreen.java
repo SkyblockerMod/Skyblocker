@@ -124,7 +124,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (Slot equipmentSlot : equipmentSlots) {
             if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) {
-                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/equipment");
+                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/equipment", true);
                 return true;
             }
         }

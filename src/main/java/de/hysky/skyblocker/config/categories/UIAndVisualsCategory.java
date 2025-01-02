@@ -196,7 +196,7 @@ public class UIAndVisualsCategory {
 								.text(Text.translatable("text.skyblocker.open"))
 								.action((screen, opt) -> {
 									if (Utils.isOnSkyblock()) {
-										MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets");
+										MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
 									} else {
 										MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, ScreenMaster.ScreenLayer.MAIN_TAB, screen));
 									}

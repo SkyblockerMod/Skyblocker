@@ -104,7 +104,7 @@ public class QuickNavButton extends ClickableWidget {
             if (command == null || command.isEmpty()) {
                 MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.literal("Quick Nav button index " + (index + 1) + " has no command!").formatted(Formatting.RED)), false);
             } else {
-                MessageScheduler.INSTANCE.sendMessageAfterCooldown(command);
+                MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
             }
             this.alpha = 0.5f;
         }
