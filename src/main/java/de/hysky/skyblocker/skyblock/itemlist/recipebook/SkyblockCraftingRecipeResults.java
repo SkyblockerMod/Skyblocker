@@ -186,22 +186,21 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 	 */
 	@Override
 	public void updateSearchResults(String query, FilterOption filterOption, boolean refresh) {
+		if (!ItemRepository.filesImported()) return;
 		if (!query.equals(this.lastSearchQuery) || refresh) {
 			this.lastSearchQuery = query;
 			this.searchResults.clear();
 
 			//Search for stacks which contain the search term
-			synchronized (this) {
-				for (ItemStack stack : ItemRepository.getItems()) {
-					String name = stack.getName().getString().toLowerCase(Locale.ENGLISH);
-					if (!filterOption.matches(name)) continue;
-					List<Text> lore = ItemUtils.getLore(stack);
+			for (ItemStack stack : ItemRepository.getItems()) {
+				String name = stack.getName().getString().toLowerCase(Locale.ENGLISH);
+				if (!filterOption.test(name)) continue;
+				List<Text> lore = ItemUtils.getLore(stack);
 
-					if (name.contains(query) || lore.stream().map(Text::getString)
-							.map(string -> string.toLowerCase(Locale.ENGLISH))
-							.anyMatch(line -> line.contains(query))) {
-						this.searchResults.add(stack);
-					}
+				if (name.contains(query) || lore.stream().map(Text::getString)
+						.map(string -> string.toLowerCase(Locale.ENGLISH))
+						.anyMatch(line -> line.contains(query))) {
+					this.searchResults.add(stack);
 				}
 			}
 
@@ -279,12 +278,13 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 			return true;
 		}
 
-		if (this.recipeView && Screen.hasShiftDown()) {
+		if (this.recipeView && button == 1) {
 			// The crafting result button
 			var result = resultButtons.get(14);
 			var rawID = ItemUtils.getItemId(result.getDisplayStack());
 			if (result.isMouseOver(mouseX, mouseY)) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown(String.format("/viewrecipe %s", rawID), true);
+				return true;
 			}
 		}
 

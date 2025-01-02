@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import de.hysky.skyblocker.utils.Identifiable;
 import net.minecraft.util.Identifier;
 
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
-public enum FilterOption implements Identifiable {
+public enum FilterOption implements Supplier<Identifier>, Predicate<String> {
 
 	ALL(query -> true, Identifier.of("skyblocker", "textures/gui/filter/all.png")),
 	ENTITIES(query -> query.endsWith("(monster)") || query.endsWith("(miniboss)") || query.endsWith("(boss)")
@@ -15,7 +15,7 @@ public enum FilterOption implements Identifiable {
 	MAYORS(query -> query.endsWith("(mayor)") || query.endsWith("(retired mayor)"), Identifier.of("skyblocker", "textures/gui/filter/mayors.png")),
 
 	// Basically a negation on everything else.
-	ITEMS(query -> !ENTITIES.matches(query) && !NPCS.matches(query) && !MAYORS.matches(query),
+	ITEMS(query -> !ENTITIES.test(query) && !NPCS.test(query) && !MAYORS.test(query),
 			Identifier.of("skyblocker", "textures/gui/filter/items.png"));
 
 	final Predicate<String> matchingPredicate;
@@ -26,12 +26,12 @@ public enum FilterOption implements Identifiable {
 		this.texture = texture;
 	}
 
-	public boolean matches(String query) {
+	public boolean test(String query) {
 		return matchingPredicate.test(query);
 	}
 
 	@Override
-	public Identifier identify() {
+	public Identifier get() {
 		return texture;
 	}
 }

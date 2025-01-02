@@ -36,7 +36,7 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	//Corresponds to field_32410 in RecipeBookWidget
 	private static final int OFFSET_X_POSITION = 86;
 	// 81 is the search field's width, 4 is the space between it and the toggle crafting button, and 26 is the toggle crafting button's width, which we replace
-	// with the filtering button. (26 - 14) = 12 - 4 = 8
+	// with the filtering button. 26 - 14 - 4 = 12 - 4 = 8 (The additional space left to the search field.)
 	private static final int SEARCH_FIELD_WIDTH = 81 + 4 + 8;
 	/**
 	 * The tabs in the Skyblock recipe book.
@@ -76,15 +76,9 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 		//This field's name is misleading, the rectangle is actually the area of the magnifying glass icon rather than the entire search field
 		this.searchFieldRect = ScreenRect.of(NavigationAxis.HORIZONTAL, left + 8, this.searchField.getY(), this.searchField.getX() - left, this.searchField.getHeight());
 
-		this.filterOption = new CyclingTextureWidget<>(this.searchField.getRight() + 4, this.searchField.getY(), 14, 14, FilterOption.class);
+		this.filterOption = new CyclingTextureWidget<>(this.searchField.getRight() + 4, this.searchField.getY(), 14, 14, FilterOption.ALL);
 		this.filterOption.setCycleListener(this::refilterSearchResults);
-		this.filterOption.setTextSupplier(option -> switch (option){
-			case ALL -> Text.translatable("skyblocker.config.general.itemList.filter.all");
-			case NPCS -> Text.translatable("skyblocker.config.general.itemList.filter.npcs");
-			case ENTITIES -> Text.translatable("skyblocker.config.general.itemList.filter.entities");
-			case MAYORS -> Text.translatable("skyblocker.config.general.itemList.filter.mayors");
-			case ITEMS -> Text.translatable("skyblocker.config.general.itemList.filter.items");
-		});
+		this.filterOption.setTextSupplier(option -> Text.translatable("skyblocker.config.general.itemList.filter." + option.name().toLowerCase(Locale.ENGLISH)));
 
 		//Setup Tabs
 		this.tabButtons.clear();
