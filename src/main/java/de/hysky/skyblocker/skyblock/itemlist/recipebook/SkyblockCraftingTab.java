@@ -20,31 +20,38 @@ record SkyblockCraftingTab(SkyblockRecipeBookWidget recipeBook, ItemStack icon, 
 
 	@Override
 	public void draw(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
-		recipeBook.searchField.render(context, mouseX, mouseY, delta);
-		results.draw(context, x, y, mouseX, mouseY, delta);
+		if (ItemRepository.filesImported()) {
+			recipeBook.searchField.render(context, mouseX, mouseY, delta);
+			results.draw(context, x, y, mouseX, mouseY, delta);
+		} else {
+			//68 is from 137 / 2 and 137 is the height from which the page flip buttons are rendered
+			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "Loading...", x + (SkyblockRecipeBookWidget.IMAGE_WIDTH / 2), y + 68, 0xFFFFFFFF);
+		}
 	}
 
 	@Override
 	public void drawTooltip(DrawContext context, int x, int y) {
-		results.drawTooltip(context, x, y);
+		if (ItemRepository.filesImported()) results.drawTooltip(context, x, y);
 	}
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (results.mouseClicked(mouseX, mouseY, button)) {
-			return true;
-		} else {
-			if (recipeBook.searchField != null) {
-				boolean magnifyingGlassClicked = recipeBook.searchFieldRect != null && recipeBook.searchFieldRect.contains(MathHelper.floor(mouseX), MathHelper.floor(mouseY));
+		if (ItemRepository.filesImported()) {
+			if (results.mouseClicked(mouseX, mouseY, button)) {
+				return true;
+			} else {
+				if (recipeBook.searchField != null) {
+					boolean magnifyingGlassClicked = recipeBook.searchFieldRect != null && recipeBook.searchFieldRect.contains(MathHelper.floor(mouseX), MathHelper.floor(mouseY));
 
-				if (magnifyingGlassClicked || recipeBook.searchField.mouseClicked(mouseX, mouseY, button)) {
-					results.closeRecipeView();
-					recipeBook.searchField.setFocused(true);
+					if (magnifyingGlassClicked || recipeBook.searchField.mouseClicked(mouseX, mouseY, button)) {
+						results.closeRecipeView();
+						recipeBook.searchField.setFocused(true);
 
-					return true;
+						return true;
+					}
+
+					recipeBook.searchField.setFocused(false);
 				}
-
-				recipeBook.searchField.setFocused(false);
 			}
 		}
 
@@ -53,13 +60,8 @@ record SkyblockCraftingTab(SkyblockRecipeBookWidget recipeBook, ItemStack icon, 
 
 	@Override
 	public void updateSearchResults(String query) {
-		results.updateSearchResults(query);
-	}
-
-	@Override
-	public void initializeSearchResults(String query) {
 		if (ItemRepository.filesImported()) {
-			updateSearchResults(query);
+			results.updateSearchResults(query);
 		}
 	}
 }
