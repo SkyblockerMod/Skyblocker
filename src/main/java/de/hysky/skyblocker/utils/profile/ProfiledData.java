@@ -69,6 +69,12 @@ public class ProfiledData<T> {
 	}
 
 	public void save() {
+		try {
+			Files.createDirectories(file.getParent());
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Profiled Data] Failed to create directories for file: {}", file, e);
+		}
+
 		try (BufferedWriter writer = Files.newBufferedWriter(file)) {
 			SkyblockerMod.GSON.toJson(codec.encodeStart(compressed ? JsonOps.COMPRESSED : JsonOps.INSTANCE, data).getOrThrow(), writer);
 		} catch (Exception e) {
