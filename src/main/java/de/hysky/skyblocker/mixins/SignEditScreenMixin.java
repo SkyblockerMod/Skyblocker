@@ -33,14 +33,6 @@ public abstract class SignEditScreenMixin extends Screen {
     private String[] messages;
 
 	@Shadow
-	@Final
-	protected SignBlockEntity blockEntity;
-
-	@Shadow
-	@Final
-	private boolean front;
-
-	@Shadow
 	public abstract void close();
 
 	protected SignEditScreenMixin(Text title) {
@@ -73,14 +65,7 @@ public abstract class SignEditScreenMixin extends Screen {
 		}
 
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.closeSignsWithEnter) {
-			ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
-			if (handler != null) {
-				// call close() first so that the calculation gets run
-				this.close();
-				handler.sendPacket(
-						new UpdateSignC2SPacket(this.blockEntity.getPos(), this.front, messages[0], messages[1], messages[2], messages[3])
-				);
-			}
+			this.close();
 		}
 	}
 
