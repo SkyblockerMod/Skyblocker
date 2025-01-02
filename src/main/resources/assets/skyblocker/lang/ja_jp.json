@@ -53,7 +53,6 @@
     "skyblocker.config.chat.filter.hideAutopet": "Autopetのメッセージを非表示にする",
     "skyblocker.config.chat.filter.hideMana": "マナの使用表示をアクションバーから非表示にする",
     "skyblocker.config.chat.filter.hideMana.@Tooltip": "FancyBarでより良くできます",
-    "key.skyblocker.toggleB": "tabを開いたときのHUDの表示メニューを種別Bに変更する",
     "key.skyblocker.toggleA": "tabを開いたときのHUDの表示メニューを種別Aに変更する",
     "skyblocker.config.uiAndVisuals.teleportOverlay.enableTeleportOverlays": "テレポート先の表示を有効にする",
     "skyblocker.config.uiAndVisuals.teleportOverlay": "テレポート先の表示",

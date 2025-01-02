@@ -68,7 +68,6 @@
     "skyblocker.config.general.shortcuts": "Atajos",
     "skyblocker.config.uiAndVisuals.compactorDeletorPreview": "Habilitar la previsualización del compactador/eliminador",
     "key.skyblocker.toggleA": "Cambiar el HUD tab a la pantalla A",
-    "key.skyblocker.toggleB": "Cambiar el HUD tab a la pantalla B",
     "skyblocker.config.crimsonIsle": "Crimson Isle",
     "skyblocker.config.crimsonIsle.kuudra": "Kuudra",
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Si la cantidad de \"Toxic Arrow Poison\" que tienes en tu inventario está por debajo del umbral fijado recibirás un aviso.\n\nEl mínimo es de 16.\nCon al menos 32 tendrás una fase 'DPS' consistente con pre-disparo.",

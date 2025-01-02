@@ -35,7 +35,6 @@
     "skyblocker.config.chat.filter.hideAds": "Werbung im öffentlichen Chat ausblenden",
     "key.wikiLookup": "In der Wiki nachschlagen",
     "key.skyblocker.defaultTgl": "Tab-HUD auf Standard umstellen",
-    "key.skyblocker.toggleB": "HUD auf Tab B umschalten",
     "key.skyblocker.toggleA": "HUD auf Tab A umschalten",
     "skyblocker.config.helpers.experiments.enableSuperpairsSolver": "Superpairs Solver aktivieren",
     "skyblocker.config.helpers.experiments.enableUltrasequencerSolver": "Ultrasequencer Solver aktivieren",
