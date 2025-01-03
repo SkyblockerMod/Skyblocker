@@ -29,12 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-//TODO: check inventory items, sum all repeated items into one
+//TODO: Get visitors "rarity" and apply it to their name in the helper list
 public class VisitorHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Visitor Helper");
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
@@ -50,55 +47,134 @@ public class VisitorHelper {
 
     private static boolean shouldProcessVisitorItems = true;
 
-    @Init
-    public static void init() {
-        ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            String title = screen.getTitle().getString();
-            if (SkyblockerConfigManager.get().farming.garden.visitorHelper && screen instanceof HandledScreen<?> handledScreen && (Utils.getLocationRaw().equals("garden") && !title.contains("Logbook") || title.startsWith("Bazaar"))) {
-                ScreenEvents.afterRender(screen).register((screen_, context, mouseX, mouseY, delta) -> renderScreen(title, context, client.textRenderer, handledScreen.getScreenHandler(), mouseX, mouseY));
-                ScreenEvents.remove(screen).register(screen_ -> shouldProcessVisitorItems = true);
-            }
-        });
-    }
+	@Init
+	public static void init() {
+		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+
+			String title = screen.getTitle().getString();
+			boolean isGardenLocation = Utils.getLocationRaw().equals("garden");
+
+			if (SkyblockerConfigManager.get().farming.garden.visitorHelper &&
+					(!SkyblockerConfigManager.get().farming.garden.visitorHelperGardenOnly || isGardenLocation) &&
+					screen instanceof HandledScreen<?> handledScreen &&
+					(!title.contains("Logbook") || title.startsWith("Bazaar"))) {
+
+				ScreenEvents.afterRender(screen).register((screen_, context, mouseX, mouseY, delta) ->
+						renderScreen(title, context, client.textRenderer, handledScreen.getScreenHandler(), mouseX, mouseY));
+
+				ScreenEvents.remove(screen).register(screen_ -> shouldProcessVisitorItems = true);
+			}
+		});
+	}
 
     public static void renderScreen(String title, DrawContext context, TextRenderer textRenderer, ScreenHandler handler, int mouseX, int mouseY) {
         if (handler.getCursorStack() == ItemStack.EMPTY && shouldProcessVisitorItems) processVisitorItem(title, handler);
         drawScreenItems(context, textRenderer, mouseX, mouseY);
     }
 
-    public static void onMouseClicked(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
-        int yPosition = TEXT_START_Y;
-        for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
-            yPosition += LINE_SPACING + textRenderer.fontHeight;
+	// The location of copy amount, and item text seem to be overlapping so clicking on part of the itemText will run copy amount.
+	public static void onMouseClicked(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
 
-            for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
-                String itemText = itemEntry.getKey();
-                int textWidth = textRenderer.getWidth(itemText + " x" + itemEntry.getIntValue());
+		int yPosition = TEXT_START_Y;
+		boolean showStacks = SkyblockerConfigManager.get().farming.garden.showStacksInVisitorHelper;
 
-                // Check if the mouse is over the item text
-                // The text starts at `TEXT_START_X + ENTRY_INDENT + ITEM_INDENT`
-                if (isMouseOverText(mouseX, mouseY, TEXT_START_X + ENTRY_INDENT + ITEM_INDENT, yPosition, textWidth, textRenderer.fontHeight)) {
-                    // Send command to buy the item from the bazaar
-                    MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText, true);
-                    return;
-                }
+		// Group visitors and items like in drawScreenItems
+		Map<String, List<String>> itemToVisitorsMap = new LinkedHashMap<>();
+		Map<String, Integer> itemToTotalAmountMap = new LinkedHashMap<>();
 
-                // Check if the mouse is over the copy amount text
-                // The copy amount text starts at `TEXT_START_X + ENTRY_INDENT + ITEM_INDENT + textWidth`
-                MinecraftClient client = MinecraftClient.getInstance();
-                if (client.player != null && isMouseOverText(mouseX, mouseY, TEXT_START_X + ENTRY_INDENT + ITEM_INDENT + textWidth, yPosition, textRenderer.getWidth(" [Copy Amount]"), textRenderer.fontHeight)) {
-                    // Copy the amount to the clipboard
-                    client.keyboard.setClipboard(String.valueOf(itemEntry.getIntValue()));
-                    client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
-                    return;
-                }
+		for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+			Pair<String, String> visitorName = visitorEntry.getKey();
+			Object2IntMap<String> visitorItems = visitorEntry.getValue();
 
-                yPosition += LINE_SPACING + textRenderer.fontHeight;
-            }
-        }
-    }
+			for (Object2IntMap.Entry<String> itemEntry : visitorItems.object2IntEntrySet()) {
+				String itemName = itemEntry.getKey();
+				int amount = itemEntry.getIntValue();
 
-    public static void onSlotClick(Slot slot, int slotId, String title, ItemStack visitorHeadStack) {
+				itemToVisitorsMap.computeIfAbsent(itemName, k -> new ArrayList<>()).add(visitorName.left());
+				itemToTotalAmountMap.put(itemName, itemToTotalAmountMap.getOrDefault(itemName, 0) + amount);
+			}
+		}
+
+		Set<String> processedVisitors = new HashSet<>();
+		for (Map.Entry<String, List<String>> groupedEntry : itemToVisitorsMap.entrySet()) {
+			String itemName = groupedEntry.getKey();
+			List<String> visitors = groupedEntry.getValue();
+			int totalAmount = itemToTotalAmountMap.get(itemName);
+
+			// Check grouped visitor names
+			for (String visitor : visitors) {
+				if (!processedVisitors.contains(visitor)) {
+					yPosition += LINE_SPACING + textRenderer.fontHeight;
+					processedVisitors.add(visitor);
+				}
+			}
+
+			// Adjust itemText and copy amount positions for stack-based display
+			String amountText = showStacks && totalAmount >= 64
+					? (totalAmount / 64) + " stacks" + (totalAmount % 64 > 0 ? " + " + (totalAmount % 64) : "")
+					: "" + totalAmount;
+
+			String combinedText = itemName + " x" + amountText;
+			int itemTextWidth = textRenderer.getWidth(combinedText);
+			int copyAmountX = TEXT_START_X + ENTRY_INDENT + itemTextWidth;
+			int copyAmountWidth = textRenderer.getWidth(" [Copy Amount]");
+
+			if (isMouseOverText(mouseX, mouseY, TEXT_START_X + ENTRY_INDENT, yPosition, itemTextWidth, textRenderer.fontHeight)) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName, true);
+				return;
+			}
+			if (isMouseOverText(mouseX, mouseY, copyAmountX, yPosition, copyAmountWidth, textRenderer.fontHeight)) {
+				MinecraftClient client = MinecraftClient.getInstance();
+				if (client.player != null) {
+					client.keyboard.setClipboard(String.valueOf(totalAmount));
+					client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
+				}
+				return;
+			}
+
+			yPosition += LINE_SPACING + textRenderer.fontHeight;
+		}
+
+		// Check remaining visitors with unshared items
+		for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+			Pair<String, String> visitorName = visitorEntry.getKey();
+			if (processedVisitors.contains(visitorName.left())) continue;
+
+			yPosition += LINE_SPACING + textRenderer.fontHeight;
+
+			for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
+				String itemName = itemEntry.getKey();
+				int amount = itemEntry.getIntValue();
+
+				String amountText = showStacks && amount >= 64
+						? (amount / 64) + " stacks" + (amount % 64 > 0 ? " + " + (amount % 64) : "")
+						: "" + amount;
+
+				String combinedText = itemName + " x" + amountText;
+				int itemTextX = TEXT_START_X + ENTRY_INDENT;
+				int itemTextWidth = textRenderer.getWidth(combinedText);
+				int copyAmountX = itemTextX + itemTextWidth;
+				int copyAmountWidth = textRenderer.getWidth(" [Copy Amount]");
+
+				if (isMouseOverText(mouseX, mouseY, itemTextX, yPosition, itemTextWidth, textRenderer.fontHeight)) {
+					MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName, true);
+					return;
+				}
+
+				if (isMouseOverText(mouseX, mouseY, copyAmountX, yPosition, copyAmountWidth, textRenderer.fontHeight)) {
+					MinecraftClient client = MinecraftClient.getInstance();
+					if (client.player != null) {
+						client.keyboard.setClipboard(amountText);
+						client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
+					}
+					return;
+				}
+				yPosition += LINE_SPACING + textRenderer.fontHeight;
+			}
+		}
+	}
+
+	public static void onSlotClick(Slot slot, int slotId, String title, ItemStack visitorHeadStack) {
         if ((slotId == 29 || slotId == 13 || slotId == 33) && slot.hasStack() && ItemUtils.getLoreLineIf(slot.getStack(), s -> s.equals("Click to give!") || s.equals("Click to refuse!")) != null) {
             itemMap.remove(new ObjectObjectImmutablePair<>(title, getTextureOrNull(visitorHeadStack)));
             shouldProcessVisitorItems = false;
@@ -132,45 +208,103 @@ public class VisitorHelper {
         }
     }
 
-    private static void updateItemMap(String visitorName, @Nullable String visitorTexture, Text lore) {
-        String[] splitItemText = lore.getString().split(" x");
-        String itemName = splitItemText[0].trim();
-        if (itemName.isEmpty()) return;
-        try {
-            int amount = splitItemText.length == 2 ? NUMBER_FORMAT.parse(splitItemText[1].trim()).intValue() : 1;
-            Pair<String, String> key = Pair.of(visitorName, visitorTexture);
-            Object2IntMap<String> visitorMap = itemMap.computeIfAbsent(key, _key -> new Object2IntOpenHashMap<>());
-            visitorMap.put(itemName, amount);
-        } catch (Exception e) {
-            LOGGER.error("[Skyblocker Visitor Helper] Failed to parse item: {}", lore.getString(), e);
-        }
-    }
+	private static void updateItemMap(String visitorName, @Nullable String visitorTexture, Text lore) {
+		String[] splitItemText = lore.getString().split(" x");
+		String itemName = splitItemText[0].trim();
+		if (itemName.isEmpty()) return;
+		try {
+			int amount = splitItemText.length == 2 ? NUMBER_FORMAT.parse(splitItemText[1].trim()).intValue() : 1;
 
-    private static void drawScreenItems(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY) {
-        context.getMatrices().push();
-        context.getMatrices().translate(0, 0, 200);
-        int index = 0;
-        for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
-            Pair<String, String> visitorName = visitorEntry.getKey();
-            drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left()), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
-            index++;
+			Pair<String, String> visitorKey = Pair.of(visitorName, visitorTexture);
+			Object2IntMap<String> visitorMap = itemMap.computeIfAbsent(visitorKey, _key -> new Object2IntOpenHashMap<>());
 
-            for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
-                index = drawItemEntryWithHover(context, textRenderer, itemEntry, index, mouseX, mouseY);
-            }
-        }
-        context.getMatrices().pop();
-    }
+			visitorMap.put(itemName, amount); // Replace instead of accumulating repeatedly
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Visitor Helper] Failed to parse item: {}", lore.getString(), e);
+		}
+	}
 
-    private static int drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, Object2IntMap.Entry<String> itemEntry, int index, int mouseX, int mouseY) {
+	private static void drawScreenItems(DrawContext context, TextRenderer textRenderer, int mouseX, int mouseY) {
+		context.getMatrices().push();
+		context.getMatrices().translate(0, 0, 200);
+
+		int index = 0;
+		boolean showStacks = SkyblockerConfigManager.get().farming.garden.showStacksInVisitorHelper;
+
+		Map<String, List<String>> itemToVisitorsMap = new LinkedHashMap<>();
+		Map<String, Integer> itemToTotalAmountMap = new LinkedHashMap<>();
+
+		for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+			Pair<String, String> visitorName = visitorEntry.getKey();
+			Object2IntMap<String> visitorItems = visitorEntry.getValue();
+
+			for (Object2IntMap.Entry<String> itemEntry : visitorItems.object2IntEntrySet()) {
+				String itemName = itemEntry.getKey();
+				int amount = itemEntry.getIntValue();
+
+				itemToVisitorsMap.computeIfAbsent(itemName, k -> new ArrayList<>()).add(visitorName.left());
+				itemToTotalAmountMap.put(itemName, itemToTotalAmountMap.getOrDefault(itemName, 0) + amount);
+			}
+		}
+
+		Set<String> processedVisitors = new HashSet<>();
+		for (Map.Entry<String, List<String>> groupedEntry : itemToVisitorsMap.entrySet()) {
+			String itemName = groupedEntry.getKey();
+			List<String> visitors = groupedEntry.getValue();
+			int totalAmount = itemToTotalAmountMap.get(itemName);
+
+			for (String visitor : visitors) {
+				if (!processedVisitors.contains(visitor)) {
+					drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitor), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
+					index++;
+					processedVisitors.add(visitor);
+				}
+			}
+
+			String amountText = showStacks && totalAmount >= 64
+					? (totalAmount / 64) + " stacks" + (totalAmount % 64 > 0 ? " + " + (totalAmount % 64) : "")
+					: "" + totalAmount;
+
+			ItemStack stack = getCachedItem(itemName);
+			drawItemEntryWithHover(context, textRenderer, stack, itemName, amountText, index, mouseX, mouseY);
+
+			index++;
+		}
+
+		for (Map.Entry<Pair<String, String>, Object2IntMap<String>> visitorEntry : itemMap.entrySet()) {
+			Pair<String, String> visitorName = visitorEntry.getKey();
+			if (processedVisitors.contains(visitorName.left())) continue;
+
+			drawTextWithOptionalUnderline(context, textRenderer, Text.literal(visitorName.left()), TEXT_START_X, TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight), mouseX, mouseY);
+			index++;
+
+			for (Object2IntMap.Entry<String> itemEntry : visitorEntry.getValue().object2IntEntrySet()) {
+				String itemName = itemEntry.getKey();
+				int amount = itemEntry.getIntValue();
+
+				String amountText = showStacks && amount >= 64
+						? (amount / 64) + " stacks" + (amount % 64 > 0 ? " + " + (amount % 64) : "")
+						: "" + amount;
+
+				ItemStack stack = getCachedItem(itemName);
+				drawItemEntryWithHover(context, textRenderer, stack, itemName + " x" + amountText, String.valueOf(amount), index, mouseX, mouseY);
+				index++;
+			}
+		}
+
+		context.getMatrices().pop();
+	}
+
+	private static int drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, Object2IntMap.Entry<String> itemEntry, int index, int mouseX, int mouseY) {
         String itemName = itemEntry.getKey();
         int amount = itemEntry.getIntValue();
         ItemStack stack = getCachedItem(itemName);
-        drawItemEntryWithHover(context, textRenderer, stack, itemName, amount, index, mouseX, mouseY);
+        drawItemEntryWithHover(context, textRenderer, stack, itemName, String.valueOf(amount), index, mouseX, mouseY);
         return index + 1;
     }
 
-    private static ItemStack getCachedItem(String displayName) {
+
+	private static ItemStack getCachedItem(String displayName) {
         String strippedName = Formatting.strip(displayName);
         ItemStack cachedStack = itemCache.get(strippedName);
         if (cachedStack != null) return cachedStack;
@@ -188,27 +322,33 @@ public class VisitorHelper {
         return stack;
     }
 
-    /**
-     * Draws the item entry, amount, and copy amount text with optional underline and the item icon
-     */
-    private static void drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, @Nullable ItemStack stack, String itemName, int amount, int index, int mouseX, int mouseY) {
-        Text text = stack != null ? stack.getName().copy().append(" x" + amount) : Text.literal(itemName + " x" + amount);
-        Text copyAmount = Text.literal(" [Copy Amount]");
+	/**
+	 * Draws the item entry, amount, and copy amount text with optional underline and the item icon.
+	 */
+	private static void drawItemEntryWithHover(DrawContext context, TextRenderer textRenderer, @Nullable ItemStack stack, String itemName, String amountText, int index, int mouseX, int mouseY) {
 
-        // Calculate the y position of the text with index as the line number
-        int y = TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight);
-        // Draw the item and amount text
-        drawTextWithOptionalUnderline(context, textRenderer, text, TEXT_START_X + ENTRY_INDENT + ITEM_INDENT, y, mouseX, mouseY);
-        // Draw the copy amount text separately after the item and amount text
-        drawTextWithOptionalUnderline(context, textRenderer, copyAmount, TEXT_START_X + ENTRY_INDENT + ITEM_INDENT + textRenderer.getWidth(text), y, mouseX, mouseY);
+		Text itemText = Text.literal(itemName).formatted(Formatting.GREEN)
+				.append(Text.literal(" x" + amountText).formatted(Formatting.WHITE));
+		Text copyAmountText = Text.literal(" [Copy Amount]").formatted(Formatting.YELLOW);
 
-        // drawItem adds 150 to the z, which puts our z at 350, above the item in the slot (250) and their text (300) and below the cursor stack (382) and their text (432)
-        if (stack != null) {
-            context.drawItem(stack, TEXT_START_X + ENTRY_INDENT, y - textRenderer.fontHeight + 5);
-        }
-    }
+		int y = TEXT_START_Y + index * (LINE_SPACING + textRenderer.fontHeight);
+		int itemTextX = TEXT_START_X + ENTRY_INDENT + ITEM_INDENT;
+		int itemIconX = TEXT_START_X + ENTRY_INDENT;
 
-    private static void drawTextWithOptionalUnderline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, int mouseX, int mouseY) {
+		drawTextWithOptionalUnderline(context, textRenderer, itemText, itemTextX, y, mouseX, mouseY);
+
+		int copyAmountX = itemTextX + textRenderer.getWidth(itemText.getString());
+
+		drawTextWithOptionalUnderline(context, textRenderer, copyAmountText, copyAmountX, y, mouseX, mouseY);
+
+		if (stack != null) {
+			context.drawItem(stack, itemIconX, y - textRenderer.fontHeight + 5);
+		}
+	}
+
+
+
+	private static void drawTextWithOptionalUnderline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, int mouseX, int mouseY) {
         context.getMatrices().push();
         context.getMatrices().translate(0, 0, 150); // This also puts our z at 350
         context.drawText(textRenderer, text, x, y, -1, true);

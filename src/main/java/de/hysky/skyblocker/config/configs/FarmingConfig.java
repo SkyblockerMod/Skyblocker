@@ -17,6 +17,12 @@ public class FarmingConfig {
         @SerialEntry
         public boolean visitorHelper = true;
 
+		@SerialEntry
+		public boolean visitorHelperGardenOnly = true;
+
+		@SerialEntry
+		public boolean showStacksInVisitorHelper = false;
+
         @SerialEntry
         public boolean lockMouseTool = false;
 

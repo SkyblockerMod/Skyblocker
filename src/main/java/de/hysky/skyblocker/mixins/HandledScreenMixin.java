@@ -138,7 +138,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	@Inject(at = @At("HEAD"), method = "mouseClicked")
 	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		if (SkyblockerConfigManager.get().farming.garden.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar"))) {
+		if (SkyblockerConfigManager.get().farming.garden.visitorHelper && (!getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar"))) {
 			VisitorHelper.onMouseClicked(mouseX, mouseY, button, this.textRenderer);
 		}
 	}
