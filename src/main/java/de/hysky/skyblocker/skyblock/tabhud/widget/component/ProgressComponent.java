@@ -68,11 +68,9 @@ public class ProgressComponent extends Component {
 		context.fill(barX, barY, barX + endOffsX, barY + BAR_HEIGHT, this.color);
 
 		int textWidth = txtRend.getWidth(bar);
-		int textColor = 0xffffffff;
-		if (endOffsX >= textWidth) {
-			textColor = (this.colorIsBright) ? 0xff000000 : 0xffffffff;
-		}
-
-		context.drawText(txtRend, bar, barX + 3, barY + 2, textColor, textColor != 0xff000000);
+		// Only turn text dark when it is wider than the filled bar and the filled bar is bright.
+		// The + 4 is because the text is indented 3 pixels and 1 extra pixel to the right as buffer.
+		boolean textDark = endOffsX >= textWidth + 4 && this.colorIsBright;
+		context.drawText(txtRend, bar, barX + 3, barY + 2, textDark ? 0xff000000 : 0xffffffff, !textDark);
 	}
 }

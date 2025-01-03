@@ -81,7 +81,7 @@ public class ColorUtils {
 		double g = (green <= 0.04045F) ? green / 12.92F : Math.pow((green + 0.055F) / 1.055F, 2.4F);
 		double b = (blue <= 0.04045F) ? blue / 12.92F : Math.pow((blue + 0.055F) / 1.055F, 2.4F);
 
-		return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+		return Math.fma(0.2126, r, Math.fma(0.7152, g, 0.0722 * b));
 	}
 
 	/**
