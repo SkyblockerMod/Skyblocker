@@ -67,7 +67,12 @@ public class ProgressComponent extends Component {
 		context.fill(barX + endOffsX, barY, barX + this.barW, barY + BAR_HEIGHT, COL_BG_BAR);
 		context.fill(barX, barY, barX + endOffsX, barY + BAR_HEIGHT, this.color);
 
-		int textColor = (this.colorIsBright) ? 0xff000000 : 0xffffffff;
-		context.drawText(txtRend, bar, barX + 3, barY + 2, textColor, !this.colorIsBright);
+		int textWidth = txtRend.getWidth(bar);
+		int textColor = 0xffffffff;
+		if (endOffsX >= textWidth) {
+			textColor = (this.colorIsBright) ? 0xff000000 : 0xffffffff;
+		}
+
+		context.drawText(txtRend, bar, barX + 3, barY + 2, textColor, textColor != 0xff000000);
 	}
 }
