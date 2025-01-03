@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 import java.util.List;
 import java.util.Locale;
 
+import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
 import net.minecraft.screen.ScreenHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,8 +35,9 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	private static final int IMAGE_HEIGHT = RecipeBookWidget.field_32409;
 	//Corresponds to field_32410 in RecipeBookWidget
 	private static final int OFFSET_X_POSITION = 86;
-	//81 is the search field's width, 4 is the space between it and the toggle crafting button, and 26 is the toggle crafting button's width
-	private static final int SEARCH_FIELD_WIDTH = 81 + 4 + 26;
+	// 81 is the search field's width, 4 is the space between it and the toggle crafting button, and 26 is the toggle crafting button's width, which we replace
+	// with the filtering button. 26 - 14 - 4 = 12 - 4 = 8 (The additional space left to the search field.)
+	private static final int SEARCH_FIELD_WIDTH = 81 + 4 + 8;
 	/**
 	 * The tabs in the Skyblock recipe book.
 	 */
@@ -45,6 +47,8 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 			);
 	private final List<Pair<RecipeTab, SkyblockRecipeTabButton>> tabButtons = Lists.newArrayList();
 	private Pair<RecipeTab, SkyblockRecipeTabButton> currentTab;
+
+	protected CyclingTextureWidget<FilterOption> filterOption;
 
 	public SkyblockRecipeBookWidget(ScreenHandler screenHandler) {
 		super(new NoopRecipeScreenHandler(screenHandler.syncId), List.of());
@@ -71,6 +75,10 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 		this.searchField.setPlaceholder(SEARCH_HINT_TEXT);
 		//This field's name is misleading, the rectangle is actually the area of the magnifying glass icon rather than the entire search field
 		this.searchFieldRect = ScreenRect.of(NavigationAxis.HORIZONTAL, left + 8, this.searchField.getY(), this.searchField.getX() - left, this.searchField.getHeight());
+
+		this.filterOption = new CyclingTextureWidget<>(this.searchField.getRight() + 4, this.searchField.getY(), 14, 14, FilterOption.ALL);
+		this.filterOption.setCycleListener(this::refilterSearchResults);
+		this.filterOption.setTextSupplier(option -> Text.translatable("skyblocker.config.general.itemList.filter." + option.name().toLowerCase(Locale.ENGLISH)));
 
 		//Setup Tabs
 		this.tabButtons.clear();
@@ -150,6 +158,21 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 		return false;
 	}
 
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		var client = MinecraftClient.getInstance();
+		if (client.isWindowFocused()) {
+			var mouse = client.mouse;
+			var window = client.getWindow();
+			var mouseX = (mouse.getX() * ((double) window.getScaledWidth() / (double) window.getWidth()));
+			var mouseY = (mouse.getY() * ((double) window.getScaledHeight() / (double) window.getHeight()));
+			if (this.currentTab.left().keyPressed(mouseX, mouseY, keyCode, scanCode, modifiers)) {
+				return true;
+			}
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
 	/**
 	 * Same as the super classes implementation just that it checks for our custom tabs.
 	 */
@@ -179,13 +202,21 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 		}
 	}
 
+	protected void refilterSearchResults(FilterOption filterOption) {
+		assert this.searchField != null;
+		String query = this.searchField.getText().toLowerCase(Locale.ENGLISH);
+		// Doesn't trigger the pirate speak check since the query wasn't changed.
+		this.currentTab.left().updateSearchResults(query, filterOption, true);
+	}
+
 	@Override
 	protected void refreshSearchResults() {
+		assert this.searchField != null;
 		String query = this.searchField.getText().toLowerCase(Locale.ENGLISH);
 
 		this.triggerPirateSpeakEasterEgg(query);
 		//Note: The rest of the query checks are implemented by the results class
-		this.currentTab.left().updateSearchResults(query);
+		this.currentTab.left().updateSearchResults(query, this.filterOption.getCurrent());
 	}
 
 	private RecipeBookWidgetAccessor accessor() {
@@ -194,7 +225,9 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 
 	@Override
 	protected void refreshResults(boolean resetCurrentPage, boolean filteringCraftable) {
-		this.currentTab.left().updateSearchResults(this.searchField.getText());
+		assert this.searchField != null;
+		this.currentTab.left().updateSearchResults(this.searchField.getText().toLowerCase(Locale.ENGLISH),
+				this.filterOption.getCurrent());
 	}
 
 	/**

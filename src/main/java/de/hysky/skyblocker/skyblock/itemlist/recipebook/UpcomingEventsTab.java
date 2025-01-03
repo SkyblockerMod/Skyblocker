@@ -95,7 +95,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	}
 
 	@Override
-	public void updateSearchResults(String query) {}
+	public void updateSearchResults(String query, FilterOption filterOption, boolean refresh) {}
 
 	@Override
 	public void initializeSearchResults(String query) {}
