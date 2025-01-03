@@ -37,7 +37,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class FarmingHud {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
-	private static final Pattern FARMING_XP = Pattern.compile("§3\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?<percent>[\\d,]+(?:\\.\\d+)?%|[\\d,]+/[\\d,]+)\\)");
+	private static final Pattern FARMING_XP = Pattern.compile("§3\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?<percent>[\\d,]+(?:\\.\\d+)?)(?:%|/[\\d,]+)\\)");
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 	private static CounterType counterType = CounterType.NONE;
 	private static final Deque<IntLongPair> counter = new ArrayDeque<>();
