@@ -72,7 +72,8 @@ public abstract class SimpleSlotTextAdder extends RegexContainerMatcher implemen
 	}
 
 	@Override
-	public @Nullable ConfigInformation getConfigInformation() {
+	@Nullable
+	public ConfigInformation getConfigInformation() {
 		return configInformation;
 	}
 }

@@ -148,7 +148,7 @@ public class SlotTextManager {
 	}
 
 	public static boolean isEnabled(String adderId) {
-		return SkyblockerConfigManager.get().uiAndVisuals.slotText.textEnabled.getOrDefault(adderId, Boolean.TRUE);
+		return SkyblockerConfigManager.get().uiAndVisuals.slotText.textEnabled.getOrDefault(adderId, true);
 	}
 
 	public static boolean isEnabled() {

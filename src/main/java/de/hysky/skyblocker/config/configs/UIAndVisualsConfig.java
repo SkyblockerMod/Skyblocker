@@ -4,6 +4,7 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
@@ -11,7 +12,6 @@ import net.minecraft.util.Formatting;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class UIAndVisualsConfig {
 	@SerialEntry
@@ -102,7 +102,7 @@ public class UIAndVisualsConfig {
 		public SlotTextMode slotTextMode = SlotTextMode.ENABLED;
 
 		@SerialEntry
-		public Map<String, Boolean> textEnabled = new Object2BooleanOpenHashMap<>();
+		public Object2BooleanMap<String> textEnabled = new Object2BooleanOpenHashMap<>();
 
 		@SerialEntry
 		public boolean slotTextToggled = true;

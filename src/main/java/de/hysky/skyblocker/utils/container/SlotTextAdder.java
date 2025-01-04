@@ -35,7 +35,10 @@ public interface SlotTextAdder extends ContainerMatcher {
 		return SlotTextManager.isEnabled(getConfigInformation().id());
 	}
 
-	default @Nullable ConfigInformation getConfigInformation() {return null;}
+	@Nullable
+	default ConfigInformation getConfigInformation() {
+		return null;
+	}
 
 	record ConfigInformation(String id, Text name, @Nullable Text description) {
 		public ConfigInformation(String id, Text name) {
@@ -56,7 +59,7 @@ public interface SlotTextAdder extends ContainerMatcher {
 					.description(description != null ? OptionDescription.of(description) : OptionDescription.EMPTY)
 					.binding(true,
 							() -> config.uiAndVisuals.slotText.textEnabled.getOrDefault(id, true),
-							newValue -> config.uiAndVisuals.slotText.textEnabled.put(id, newValue))
+							newValue -> config.uiAndVisuals.slotText.textEnabled.put(id, (boolean) newValue))
 					.controller(ConfigUtils::createBooleanController)
 					.build();
 		}
