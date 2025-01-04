@@ -29,25 +29,40 @@ public class ProfiledData<T> {
 	private final Path file;
 	private final Codec<Object2ObjectOpenHashMap<UUID, Object2ObjectOpenHashMap<String, T>>> codec;
 	private final boolean compressed;
+	private final boolean loadAsync;
+	private final boolean saveAsync;
 	private Object2ObjectOpenHashMap<UUID, Object2ObjectOpenHashMap<String, T>> data = new Object2ObjectOpenHashMap<>();
 
 	public ProfiledData(Path file, Codec<T> codec) {
 		this(file, codec, false);
 	}
 
+	public ProfiledData(Path file, Codec<T> codec, boolean compressed) {
+		this(file, codec, compressed, true, false);
+	}
+
+	public ProfiledData(Path file, Codec<T> codec, boolean loadAsync, boolean saveAsync) {
+		this(file, codec, false, loadAsync, saveAsync);
+	}
+
 	/**
 	 * @param compressed Whether the {@link JsonOps#COMPRESSED} should be used.
 	 *                   When compressed, {@link net.minecraft.util.StringIdentifiable#createCodec(Supplier)} will use the ordinals instead of {@link StringIdentifiable#asString()}.
 	 *                   When compressed, codecs built with {@link com.mojang.serialization.codecs.RecordCodecBuilder} will be serialized as a list instead of a map.
-	 *                   This is required for maps with non-string keys.
+	 *                   {@link JsonOps#COMPRESSED} is required for maps with non-string keys.
+	 * @param loadAsync  Whether the data should be loaded asynchronously. Default true.
+	 * @param saveAsync  Whether the data should be saved asynchronously. Default false.
+	 *                   Do not save async if saving is done with {@link ClientLifecycleEvents#CLIENT_STOPPING}.
 	 */
-	public ProfiledData(Path file, Codec<T> codec, boolean compressed) {
+	public ProfiledData(Path file, Codec<T> codec, boolean compressed, boolean loadAsync, boolean saveAsync) {
 		this.file = file;
 		// Mojang's internal Codec implementation uses ImmutableMaps so we'll just xmap those away and type safety while we're at it :')
 		this.codec = Codec.unboundedMap(Uuids.CODEC, Codec.unboundedMap(Codec.STRING, codec)
 				.xmap(Object2ObjectOpenHashMap::new, Function.identity())
 		).xmap(Object2ObjectOpenHashMap::new, Function.identity());
 		this.compressed = compressed;
+		this.loadAsync = loadAsync;
+		this.saveAsync = saveAsync;
 	}
 
 	public CompletableFuture<Void> init() {
@@ -55,20 +70,36 @@ public class ProfiledData<T> {
 		return load();
 	}
 
-	// Note: JsonOps.COMPRESSED must be used if you're using maps with non-string keys
 	public CompletableFuture<Void> load() {
-		return CompletableFuture.runAsync(() -> {
-			try (BufferedReader reader = Files.newBufferedReader(file)) {
-				// Atomic operation to prevent concurrent modification
-				data = codec.parse(compressed ? JsonOps.COMPRESSED : JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonObject.class)).getOrThrow();
-			} catch (NoSuchFileException ignored) {
-			} catch (Exception e) {
-				LOGGER.error("[Skyblocker Profiled Data] Failed to load data from file: {}", file, e);
-			}
-		});
+		if (loadAsync) {
+			return CompletableFuture.runAsync(this::loadInternal);
+		} else {
+			loadInternal();
+			return CompletableFuture.completedFuture(null);
+		}
 	}
 
-	public void save() {
+	// Note: JsonOps.COMPRESSED must be used if you're using maps with non-string keys
+	private void loadInternal() {
+		try (BufferedReader reader = Files.newBufferedReader(file)) {
+			// Atomic operation to prevent concurrent modification
+			data = codec.parse(compressed ? JsonOps.COMPRESSED : JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonObject.class)).getOrThrow();
+		} catch (NoSuchFileException ignored) {
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Profiled Data] Failed to load data from file: {}", file, e);
+		}
+	}
+
+	public CompletableFuture<Void> save() {
+		if (saveAsync) {
+			return CompletableFuture.runAsync(this::saveInternal);
+		} else {
+			saveInternal();
+			return CompletableFuture.completedFuture(null);
+		}
+	}
+
+	private void saveInternal() {
 		try {
 			Files.createDirectories(file.getParent());
 		} catch (Exception e) {
