@@ -15,11 +15,11 @@ public class MessageHandlerMixin {
 	private void skyblocker$monitorGameMessage(Text message, boolean overlay, CallbackInfo ci) {
 		String stripped = Formatting.strip(message.getString());
 		if (overlay) {
-			ChatEvents.RECEIVE_TEXT.invoker().onMessage(message);
-			ChatEvents.RECEIVE_STRING.invoker().onMessage(stripped);
-		} else {
 			ChatEvents.RECEIVE_OVERLAY_TEXT.invoker().onMessage(message);
 			ChatEvents.RECEIVE_OVERLAY_STRING.invoker().onMessage(stripped);
+		} else {
+			ChatEvents.RECEIVE_TEXT.invoker().onMessage(message);
+			ChatEvents.RECEIVE_STRING.invoker().onMessage(stripped);
 		}
 	}
 }
