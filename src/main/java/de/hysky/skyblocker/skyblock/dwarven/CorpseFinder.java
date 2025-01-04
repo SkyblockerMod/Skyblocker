@@ -304,6 +304,7 @@ public class CorpseFinder {
 		 * Type of the corpse, fully uppercased.
 		 */
 		private final CorpseType corpseType;
+		// TODO: migrate to seen waypoint #1108
 		private boolean seen;
 		private long messageLastSent = 0;
 
