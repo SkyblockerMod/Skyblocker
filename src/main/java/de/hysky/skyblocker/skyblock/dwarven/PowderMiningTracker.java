@@ -1,9 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.UnboundedMapCodec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -16,10 +13,10 @@ import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.profile.ProfiledData;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.ChatHud;
@@ -33,9 +30,9 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.NumberFormat;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,27 +44,16 @@ public class PowderMiningTracker {
 	private static final Pattern GEMSTONE_SYMBOLS = Pattern.compile("[α☘☠✎✧❁❂❈❤⸕] ");
 	private static final Pattern REWARD_PATTERN = Pattern.compile(" {4}(.*?) ?x?([\\d,]*)");
 	private static final Codec<Object2IntMap<String>> REWARDS_CODEC = CodecUtils.object2IntMapCodec(Codec.STRING);
-	// Doesn't matter if the codec outputs a java map instead of a fastutils map, it's only used in #putAll anyway so the contents are copied over
-	private static final UnboundedMapCodec<String, Object2IntMap<String>> ALL_REWARDS_CODEC = Codec.unboundedMap(Codec.STRING, REWARDS_CODEC);
 	private static final Object2ObjectArrayMap<String, String> NAME2ID_MAP = new Object2ObjectArrayMap<>(50);
 
 	// This constructor takes in a comparator that is triggered to decide where to add the element in the tree map
 	// This causes it to be sorted at all times. This is for rendering them in a sort of easy-to-read manner.
-	private static final Object2IntAVLTreeMap<Text> SHOWN_REWARDS = new Object2IntAVLTreeMap<>((o1, o2) -> {
-		String o1String = o1.getString();
-		String o2String = o2.getString();
-		int priority1 = comparePriority(o1String);
-		int priority2 = comparePriority(o2String);
-		if (priority1 != priority2) return Integer.compare(priority1, priority2);
-		return o1String.compareTo(o2String);
-	});
+	private static final Object2IntAVLTreeMap<Text> SHOWN_REWARDS = new Object2IntAVLTreeMap<>(Comparator.<Text>comparingInt(text -> comparePriority(text.getString())).thenComparing(Text::getString));
 
 	/**
 	 * Holds the total reward maps for all accounts and profiles. {@link #currentProfileRewards} is a subset of this map, updated on profile change.
-	 *
-	 * @implNote This is a map from (account uuid + "+" + profile uuid) to itemId/amount map.
 	 */
-	private static final Object2ObjectArrayMap<String, Object2IntMap<String>> ALL_REWARDS = new Object2ObjectArrayMap<>();
+	private static final ProfiledData<Object2IntMap<String>> ALL_REWARDS = new ProfiledData<>(getRewardFilePath(), REWARDS_CODEC);
 
 	/**
 	 * <p>
@@ -98,8 +84,7 @@ public class PowderMiningTracker {
 			if (isEnabled()) recalculatePrices();
 		});
 
-		ClientLifecycleEvents.CLIENT_STARTED.register(PowderMiningTracker::loadRewards);
-		ClientLifecycleEvents.CLIENT_STOPPING.register(PowderMiningTracker::saveRewards);
+		ALL_REWARDS.init();
 
 		SkyblockEvents.PROFILE_CHANGE.register(PowderMiningTracker::onProfileChange);
 		SkyblockEvents.PROFILE_INIT.register(PowderMiningTracker::onProfileInit);
@@ -163,7 +148,7 @@ public class PowderMiningTracker {
 
 	private static void onProfileInit(String profileId) {
 		if (!isEnabled()) return;
-		currentProfileRewards = ALL_REWARDS.computeIfAbsent(getCombinedId(profileId), k -> new Object2IntArrayMap<>());
+		currentProfileRewards = ALL_REWARDS.computeIfAbsent(Object2IntArrayMap::new);
 		recalculateAll();
 	}
 
@@ -247,33 +232,6 @@ public class PowderMiningTracker {
 		return Object2ObjectMaps.unmodifiable(NAME2ID_MAP);
 	}
 
-	private static void loadRewards(MinecraftClient client) {
-		if (Files.notExists(getRewardFilePath())) return;
-		try {
-			String jsonString = Files.readString(getRewardFilePath());
-			JsonElement json = SkyblockerMod.GSON.fromJson(jsonString, JsonElement.class);
-			ALL_REWARDS.clear();
-			ALL_REWARDS.putAll(ALL_REWARDS_CODEC.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst());
-			LOGGER.info("Loaded powder mining rewards from file.");
-		} catch (Exception e) {
-			LOGGER.error("Failed to load powder mining rewards from file!", e);
-		}
-	}
-
-	private static void saveRewards(MinecraftClient client) {
-		try {
-			String jsonString = ALL_REWARDS_CODEC.encodeStart(JsonOps.INSTANCE, ALL_REWARDS).getOrThrow().toString();
-			if (Files.notExists(getRewardFilePath())) {
-				Files.createDirectories(getRewardFilePath().getParent()); // Create all parent directories if they don't exist
-				Files.createFile(getRewardFilePath());
-			}
-			Files.writeString(getRewardFilePath(), jsonString);
-			LOGGER.info("Saved powder mining rewards to file.");
-		} catch (Exception e) {
-			LOGGER.error("Failed to save powder mining rewards to file!", e);
-		}
-	}
-
 	static {
 		NAME2ID_MAP.put("Gemstone Powder", "GEMSTONE_POWDER"); // Not an actual item, but since we're using IDs for mapping to colored text we need to have this here
 
@@ -345,10 +303,6 @@ public class PowderMiningTracker {
 
 	private static Path getRewardFilePath() {
 		return SkyblockerMod.CONFIG_DIR.resolve("reward-trackers/powder-mining.json");
-	}
-
-	private static String getCombinedId(String profileUuid) {
-		return Utils.getUndashedUuid() + "+" + profileUuid;
 	}
 
 	private static void render(DrawContext context, RenderTickCounter tickCounter) {

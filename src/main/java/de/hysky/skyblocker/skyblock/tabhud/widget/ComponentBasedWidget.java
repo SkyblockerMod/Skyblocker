@@ -71,7 +71,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		try {
 			this.updateContent();
 		} catch (Exception e) {
-			if (!e.getMessage().equals(lastError)) {
+			if (e.getMessage() == null || !e.getMessage().equals(lastError)) {
 				lastError = e.getMessage();
 				LOGGER.error("Failed to update contents of {}", this, e);
 			}

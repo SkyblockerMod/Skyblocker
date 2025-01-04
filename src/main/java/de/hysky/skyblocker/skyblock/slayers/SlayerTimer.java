@@ -1,60 +1,29 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
-import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.profile.ProfiledData;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 public class SlayerTimer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SlayerTimer.class);
-	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("SlayerPb.json");
-	private static final Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>>> CACHED_SLAYER_STATS = new Object2ObjectOpenHashMap<>();
+	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("slayer_personal_best.json");
+	private static final ProfiledData<Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>>> CACHED_SLAYER_STATS = new ProfiledData<>(FILE, SlayerInfo.SERIALIZATION_CODEC, true, true);
 
 	@Init
 	public static void init() {
-		load();
-	}
-
-	private static void load() {
-		CompletableFuture.runAsync(() -> {
-			try (BufferedReader reader = Files.newBufferedReader(FILE)) {
-				CACHED_SLAYER_STATS.putAll(SlayerInfo.SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow());
-			} catch (NoSuchFileException ignored) {
-			} catch (Exception e) {
-				LOGGER.error("[Skyblocker Slayer Cache] Failed to load saved slayer data!", e);
-			}
-		});
-	}
-
-	private static void save() {
-		CompletableFuture.runAsync(() -> {
-			try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
-				SkyblockerMod.GSON.toJson(SlayerInfo.SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, CACHED_SLAYER_STATS).getOrThrow(), writer);
-			} catch (Exception e) {
-				LOGGER.error("[Skyblocker Slayer Cache] Failed to save slayer data to cache!", e);
-			}
-		});
+		CACHED_SLAYER_STATS.load();
 	}
 
 	public static void onBossDeath(Instant startTime) {
@@ -78,8 +47,7 @@ public class SlayerTimer {
 	}
 
 	private static long getPersonalBest(SlayerType slayerType, SlayerTier slayerTier) {
-		String profileId = Utils.getProfileId();
-		Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>> profileData = CACHED_SLAYER_STATS.computeIfAbsent(profileId, _uuid -> new Object2ObjectOpenHashMap<>());
+		Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>> profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
 		Object2ObjectOpenHashMap<SlayerTier, SlayerInfo> typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
 
 		SlayerInfo currentBest = typeData.get(slayerTier);
@@ -87,15 +55,14 @@ public class SlayerTimer {
 	}
 
 	private static void updateBestTime(SlayerType slayerType, SlayerTier slayerTier, long timeElapsed) {
-		String profileId = Utils.getProfileId();
 		long nowMillis = System.currentTimeMillis();
 
-		Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>> profileData = CACHED_SLAYER_STATS.computeIfAbsent(profileId, _uuid -> new Object2ObjectOpenHashMap<>());
+		Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>> profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
 		Object2ObjectOpenHashMap<SlayerTier, SlayerInfo> typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
 		SlayerInfo newInfo = new SlayerInfo(timeElapsed, nowMillis);
 
 		typeData.put(slayerTier, newInfo);
-		save();
+		CACHED_SLAYER_STATS.save();
 	}
 
 	private static String formatTime(long millis) {
@@ -108,10 +75,8 @@ public class SlayerTimer {
 				Codec.LONG.fieldOf("dateMillis").forGetter(SlayerInfo::dateMillis)
 		).apply(instance, SlayerInfo::new));
 
-		private static final Codec<Object2ObjectOpenHashMap<String, Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>>>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING,
-				Codec.unboundedMap(SlayerType.CODEC,
-						Codec.unboundedMap(SlayerTier.CODEC, CODEC).xmap(Object2ObjectOpenHashMap::new, Function.identity())
-				).xmap(Object2ObjectOpenHashMap::new, Function.identity())
+		private static final Codec<Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>>> SERIALIZATION_CODEC = Codec.unboundedMap(SlayerType.CODEC,
+				Codec.unboundedMap(SlayerTier.CODEC, CODEC).xmap(Object2ObjectOpenHashMap::new, Function.identity())
 		).xmap(Object2ObjectOpenHashMap::new, Function.identity());
 	}
 }

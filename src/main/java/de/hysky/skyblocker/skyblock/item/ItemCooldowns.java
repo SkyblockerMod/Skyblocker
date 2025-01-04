@@ -58,7 +58,7 @@ public class ItemCooldowns {
     public static void updateCooldown() {
         PetInfo pet = PetCache.getCurrentPet();
 
-        if (pet != null && pet.tier().equals("LEGENDARY")) {
+        if (pet != null && pet.tier().equals(SkyblockItemRarity.LEGENDARY)) {
             monkeyExp = pet.exp();
 
             monkeyLevel = 0;

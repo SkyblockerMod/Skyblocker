@@ -6,22 +6,22 @@ import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Http.ApiResponse;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import de.hysky.skyblocker.utils.profile.ProfiledData;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
@@ -31,15 +31,11 @@ import net.minecraft.util.collection.DefaultedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -48,7 +44,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class MuseumItemCache {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MuseumItemCache.class);
 	private static final Path CACHE_FILE = SkyblockerMod.CONFIG_DIR.resolve("museum_item_cache.json");
-	private static final Map<String, Object2ObjectOpenHashMap<String, ProfileMuseumData>> MUSEUM_ITEM_CACHE = new Object2ObjectOpenHashMap<>();
+	private static final ProfiledData<ProfileMuseumData> MUSEUM_ITEM_CACHE = new ProfiledData<>(CACHE_FILE, ProfileMuseumData.CODEC, true, true);
 	private static final String ERROR_LOG_TEMPLATE = "[Skyblocker] Failed to refresh museum item data for profile {}";
 	public static final String DONATION_CONFIRMATION_SCREEN_TITLE = "Confirm Donation";
 	private static final int CONFIRM_DONATION_BUTTON_SLOT = 20;
@@ -57,8 +53,9 @@ public class MuseumItemCache {
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(MuseumItemCache::load);
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loaded = MUSEUM_ITEM_CACHE.load());
 		ClientCommandRegistrationCallback.EVENT.register(MuseumItemCache::registerCommands);
+		SkyblockEvents.PROFILE_CHANGE.register((prev, profile) -> tick());
 	}
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
@@ -76,30 +73,6 @@ public class MuseumItemCache {
 								}))));
 	}
 
-	private static void load(MinecraftClient client) {
-		loaded = CompletableFuture.runAsync(() -> {
-			try (BufferedReader reader = Files.newBufferedReader(CACHE_FILE)) {
-				Map<String, Object2ObjectOpenHashMap<String, ProfileMuseumData>> cachedData = ProfileMuseumData.SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
-
-				MUSEUM_ITEM_CACHE.putAll(cachedData);
-				LOGGER.info("[Skyblocker] Loaded museum items cache");
-			} catch (NoSuchFileException ignored) {
-			} catch (IOException e) {
-				LOGGER.error("[Skyblocker] Failed to load cached museum items", e);
-			}
-		});
-	}
-
-	private static void save() {
-		CompletableFuture.runAsync(() -> {
-			try (BufferedWriter writer = Files.newBufferedWriter(CACHE_FILE)) {
-				SkyblockerMod.GSON.toJson(ProfileMuseumData.SERIALIZATION_CODEC.encodeStart(JsonOps.INSTANCE, MUSEUM_ITEM_CACHE).getOrThrow(), writer);
-			} catch (IOException e) {
-				LOGGER.error("[Skyblocker] Failed to save cached museum items!", e);
-			}
-		});
-	}
-
 	public static void handleClick(Slot slot, int slotId, DefaultedList<Slot> slots) {
 		if (slotId == CONFIRM_DONATION_BUTTON_SLOT) {
 			//Slots 0 to 17 can have items, well not all but thats the general range
@@ -111,24 +84,19 @@ public class MuseumItemCache {
 					String profileId = Utils.getProfileId();
 
 					if (!itemId.isEmpty() && !profileId.isEmpty()) {
-						String uuid = Utils.getUndashedUuid();
-						//Be safe about access to avoid NPEs
-						Map<String, ProfileMuseumData> playerData =  MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
-						playerData.putIfAbsent(profileId, ProfileMuseumData.EMPTY.get());
-
-						playerData.get(profileId).collectedItemIds().add(itemId);
-						save();
+						MUSEUM_ITEM_CACHE.putIfAbsent(ProfileMuseumData.EMPTY.get()).collectedItemIds().add(itemId);
+						MUSEUM_ITEM_CACHE.save();
 					}
 				}
 			}
 		}
 	}
 
-	private static void updateData4ProfileMember(String uuid, String profileId) {
+	private static void updateData4ProfileMember(UUID uuid, String profileId) {
 		updateData4ProfileMember(uuid, profileId, null);
 	}
 
-	private static void updateData4ProfileMember(String uuid, String profileId, FabricClientCommandSource source) {
+	private static void updateData4ProfileMember(UUID uuid, String profileId, FabricClientCommandSource source) {
 		CompletableFuture.runAsync(() -> {
 			try (ApiResponse response = Http.sendHypixelRequest("skyblock/museum", "?profile=" + profileId)) {
 				//The request was successful
@@ -136,8 +104,9 @@ public class MuseumItemCache {
 					JsonObject profileData = JsonParser.parseString(response.content()).getAsJsonObject();
 					JsonObject members = profileData.getAsJsonObject("members");
 
-					if (members.has(uuid)) {
-						JsonObject memberData = members.get(uuid).getAsJsonObject();
+					String uuidString = UndashedUuid.toString(uuid);
+					if (members.has(uuidString)) {
+						JsonObject memberData = members.get(uuidString).getAsJsonObject();
 
 						//We call them sets because it could either be a singular item or an entire armour set
 						Map<String, JsonElement> donatedSets = memberData.get("items").getAsJsonObject().asMap();
@@ -161,8 +130,8 @@ public class MuseumItemCache {
 							}
 						}
 
-						MUSEUM_ITEM_CACHE.get(uuid).put(profileId, new ProfileMuseumData(System.currentTimeMillis(), itemIds));
-						save();
+						MUSEUM_ITEM_CACHE.put(uuid, profileId, new ProfileMuseumData(System.currentTimeMillis(), itemIds));
+						MUSEUM_ITEM_CACHE.save();
 
 						if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncSuccess")));
 
@@ -194,21 +163,18 @@ public class MuseumItemCache {
 		});
 	}
 
-	private static void putEmpty(String uuid, String profileId) {
+	private static void putEmpty(UUID uuid, String profileId) {
 		//Only put new data if they didn't have any before
-		if (!MUSEUM_ITEM_CACHE.get(uuid).containsKey(profileId)) {
-			MUSEUM_ITEM_CACHE.get(uuid).put(profileId, new ProfileMuseumData(System.currentTimeMillis(), ObjectOpenHashSet.of()));
-		}
-
-		save();
+		MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, profileId, () -> new ProfileMuseumData(System.currentTimeMillis(), ObjectOpenHashSet.of()));
+		MUSEUM_ITEM_CACHE.save();
 	}
 
 	private static boolean tryResync(FabricClientCommandSource source) {
-		String uuid = Utils.getUndashedUuid();
+		UUID uuid = Utils.getUuid();
 		String profileId = Utils.getProfileId();
 
 		//Only allow resyncing if the data is actually present yet, otherwise the player needs to swap servers for the tick method to be called
-		if (loaded.isDone() && !profileId.isEmpty() && MUSEUM_ITEM_CACHE.containsKey(uuid) && MUSEUM_ITEM_CACHE.get(uuid).containsKey(profileId) && MUSEUM_ITEM_CACHE.get(uuid).get(profileId).canResync()) {
+		if (loaded.isDone() && !profileId.isEmpty() && MUSEUM_ITEM_CACHE.containsKey() && MUSEUM_ITEM_CACHE.get().canResync()) {
 			updateData4ProfileMember(uuid, profileId, source);
 
 			return true;
@@ -220,22 +186,18 @@ public class MuseumItemCache {
 	/**
 	 * The cache is ticked upon switching Skyblock servers. Only loads from the API if the profile wasn't cached yet.
 	 */
-	public static void tick(String profileId) {
-		String uuid = Utils.getUndashedUuid();
+	public static void tick() {
+		UUID uuid = Utils.getUuid();
 
-		if (loaded.isDone() && (!MUSEUM_ITEM_CACHE.containsKey(uuid) || !MUSEUM_ITEM_CACHE.getOrDefault(uuid, new Object2ObjectOpenHashMap<>()).containsKey(profileId))) {
-			Map<String, ProfileMuseumData> playerData = MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
-			playerData.putIfAbsent(profileId, ProfileMuseumData.EMPTY.get());
+		if (loaded.isDone() && !MUSEUM_ITEM_CACHE.containsKey()) {
+			MUSEUM_ITEM_CACHE.putIfAbsent(ProfileMuseumData.EMPTY.get());
 
-			updateData4ProfileMember(uuid, profileId);
+			updateData4ProfileMember(uuid, Utils.getProfileId());
 		}
 	}
 
 	public static boolean hasItemInMuseum(String id) {
-		String uuid = Utils.getUndashedUuid();
-		ObjectOpenHashSet<String> collectedItemIds = (!MUSEUM_ITEM_CACHE.containsKey(uuid) || Utils.getProfileId().isBlank() || !MUSEUM_ITEM_CACHE.get(uuid).containsKey(Utils.getProfileId())) ? null : MUSEUM_ITEM_CACHE.get(uuid).get(Utils.getProfileId()).collectedItemIds();
-
-		return collectedItemIds != null && collectedItemIds.contains(id);
+		return MUSEUM_ITEM_CACHE.containsKey() && MUSEUM_ITEM_CACHE.get().collectedItemIds().contains(id);
 	}
 
 	private record ProfileMuseumData(long lastResync, ObjectOpenHashSet<String> collectedItemIds) {
@@ -246,12 +208,8 @@ public class MuseumItemCache {
 				Codec.STRING.listOf()
 						.xmap(ObjectOpenHashSet::new, ObjectArrayList::new)
 						.fieldOf("collectedItemIds")
-						.forGetter(i -> new ObjectOpenHashSet<>(i.collectedItemIds()))
+						.forGetter(ProfileMuseumData::collectedItemIds)
 		).apply(instance, ProfileMuseumData::new));
-		//Mojang's internal Codec implementation uses ImmutableMaps so we'll just xmap those away and type safety while we're at it :')
-		private static final Codec<Map<String, Object2ObjectOpenHashMap<String, ProfileMuseumData>>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING, Codec.unboundedMap(Codec.STRING, CODEC)
-				.xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new)
-		).xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new);
 
 		private boolean canResync() {
 			return this.lastResync + TIME_BETWEEN_RESYNCING_ALLOWED < System.currentTimeMillis();
