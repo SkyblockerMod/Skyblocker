@@ -22,7 +22,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
@@ -36,7 +35,6 @@ import java.io.ByteArrayInputStream;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -46,7 +44,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class MuseumItemCache {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MuseumItemCache.class);
 	private static final Path CACHE_FILE = SkyblockerMod.CONFIG_DIR.resolve("museum_item_cache.json");
-	private static final ProfiledData<ProfileMuseumData> MUSEUM_ITEM_CACHE = new ProfiledData<>(CACHE_FILE, ProfileMuseumData.CODEC);
+	private static final ProfiledData<ProfileMuseumData> MUSEUM_ITEM_CACHE = new ProfiledData<>(CACHE_FILE, ProfileMuseumData.CODEC, true, true);
 	private static final String ERROR_LOG_TEMPLATE = "[Skyblocker] Failed to refresh museum item data for profile {}";
 	public static final String DONATION_CONFIRMATION_SCREEN_TITLE = "Confirm Donation";
 	private static final int CONFIRM_DONATION_BUTTON_SLOT = 20;
@@ -55,7 +53,7 @@ public class MuseumItemCache {
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(MuseumItemCache::load);
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loaded = MUSEUM_ITEM_CACHE.load());
 		ClientCommandRegistrationCallback.EVENT.register(MuseumItemCache::registerCommands);
 		SkyblockEvents.PROFILE_CHANGE.register((prev, profile) -> tick());
 	}
@@ -75,14 +73,6 @@ public class MuseumItemCache {
 								}))));
 	}
 
-	private static void load(MinecraftClient client) {
-		loaded = MUSEUM_ITEM_CACHE.load();
-	}
-
-	private static void save() {
-		CompletableFuture.runAsync(MUSEUM_ITEM_CACHE::save);
-	}
-
 	public static void handleClick(Slot slot, int slotId, DefaultedList<Slot> slots) {
 		if (slotId == CONFIRM_DONATION_BUTTON_SLOT) {
 			//Slots 0 to 17 can have items, well not all but thats the general range
@@ -95,7 +85,7 @@ public class MuseumItemCache {
 
 					if (!itemId.isEmpty() && !profileId.isEmpty()) {
 						MUSEUM_ITEM_CACHE.putIfAbsent(ProfileMuseumData.EMPTY.get()).collectedItemIds().add(itemId);
-						save();
+						MUSEUM_ITEM_CACHE.save();
 					}
 				}
 			}
@@ -141,7 +131,7 @@ public class MuseumItemCache {
 						}
 
 						MUSEUM_ITEM_CACHE.put(uuid, profileId, new ProfileMuseumData(System.currentTimeMillis(), itemIds));
-						save();
+						MUSEUM_ITEM_CACHE.save();
 
 						if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncSuccess")));
 
@@ -176,8 +166,7 @@ public class MuseumItemCache {
 	private static void putEmpty(UUID uuid, String profileId) {
 		//Only put new data if they didn't have any before
 		MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, profileId, () -> new ProfileMuseumData(System.currentTimeMillis(), ObjectOpenHashSet.of()));
-
-		save();
+		MUSEUM_ITEM_CACHE.save();
 	}
 
 	private static boolean tryResync(FabricClientCommandSource source) {

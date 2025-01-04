@@ -19,11 +19,11 @@ import java.util.function.Function;
 
 public class SlayerTimer {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("slayer_personal_best.json");
-	private static final ProfiledData<Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>>> CACHED_SLAYER_STATS = new ProfiledData<>(FILE, SlayerInfo.SERIALIZATION_CODEC);
+	private static final ProfiledData<Object2ObjectOpenHashMap<SlayerType, Object2ObjectOpenHashMap<SlayerTier, SlayerInfo>>> CACHED_SLAYER_STATS = new ProfiledData<>(FILE, SlayerInfo.SERIALIZATION_CODEC, true, true);
 
 	@Init
 	public static void init() {
-		CACHED_SLAYER_STATS.init();
+		CACHED_SLAYER_STATS.load();
 	}
 
 	public static void onBossDeath(Instant startTime) {

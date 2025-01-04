@@ -13,7 +13,6 @@ import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Doesn't work with auto pet right now because that's complicated.
@@ -22,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public class PetCache {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("pet_cache.json");
-	private static final ProfiledData<PetInfo> CACHED_PETS = new ProfiledData<>(FILE, PetInfo.CODEC);
+	private static final ProfiledData<PetInfo> CACHED_PETS = new ProfiledData<>(FILE, PetInfo.CODEC, true, true);
 
 	/**
 	 * Used in case the server lags to prevent the screen tick check from overwriting the clicked pet logic
@@ -31,7 +30,7 @@ public class PetCache {
 
 	@Init
 	public static void init() {
-		load();
+		CACHED_PETS.load();
 
 		ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
 			if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
@@ -55,14 +54,6 @@ public class PetCache {
 				}
 			}
 		});
-	}
-
-	private static void load() {
-		CACHED_PETS.load();
-	}
-
-	private static void save() {
-		CompletableFuture.runAsync(CACHED_PETS::save);
 	}
 
 	public static void handlePetEquip(Slot slot, int slotId) {
@@ -93,7 +84,7 @@ public class PetCache {
 				CACHED_PETS.put(petInfo);
 			}
 
-			save();
+			CACHED_PETS.save();
 		}
 	}
 
