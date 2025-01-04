@@ -5,6 +5,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
@@ -23,7 +24,7 @@ public class ChatEvents {
 
 	/**
 	 * This will be called when a game message is received, cancelled or not.
-	 * This method is called with the result of {@link Text#getString()} to avoid each listener having to call it.
+	 * This method is called with the result of {@link Text#getString} and {@link Formatting#strip} to avoid each listener having to call it.
 	 *
 	 * @implNote Not fired when {@code overlay} is {@code true}. See {@link de.hysky.skyblocker.mixins.MessageHandlerMixin#skyblocker$monitorGameMessage(Text, boolean, CallbackInfo) the mixin} for more information.
 	 */
