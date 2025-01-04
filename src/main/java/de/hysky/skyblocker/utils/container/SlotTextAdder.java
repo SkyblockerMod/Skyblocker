@@ -1,8 +1,12 @@
 package de.hysky.skyblocker.utils.container;
 
 import com.demonwav.mcdev.annotations.Translatable;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
+import dev.isxander.yacl3.api.Option;
+import dev.isxander.yacl3.api.OptionDescription;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -10,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 public interface SlotTextAdder extends ContainerMatcher {
 
@@ -43,6 +48,27 @@ public interface SlotTextAdder extends ContainerMatcher {
 
 		public ConfigInformation(String id, @Translatable String name, @Translatable String description) {
 			this(id, Text.translatable(name), Text.translatable(description));
+		}
+
+		public Option<Boolean> getOption(SkyblockerConfig config) {
+			return Option.<Boolean>createBuilder()
+					.name(name)
+					.description(description != null ? OptionDescription.of(description) : OptionDescription.EMPTY)
+					.binding(true,
+							() -> config.uiAndVisuals.slotText.textEnabled.getOrDefault(id, true),
+							newValue -> config.uiAndVisuals.slotText.textEnabled.put(id, newValue))
+					.controller(ConfigUtils::createBooleanController)
+					.build();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			return obj instanceof ConfigInformation other && Objects.equals(id, other.id);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hashCode(id);
 		}
 	}
 }

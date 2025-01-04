@@ -25,7 +25,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.awt.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Objects;
 
 public class UIAndVisualsCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
@@ -514,21 +516,8 @@ public class UIAndVisualsCategory {
     }
 
 	private static Collection<Option<Boolean>> createSlotTextToggles(SkyblockerConfig config) {
-		Set<String> ids = new HashSet<>();
-		return SlotTextManager.getAdderStream().map(SlotTextAdder::getConfigInformation).filter(Objects::nonNull).filter(configInfo -> !ids.contains(configInfo.id())).map(configInfo -> {
-			String id = configInfo.id();
-
-			Option<Boolean> option = Option.<Boolean>createBuilder()
-					.name(configInfo.name())
-					.description(configInfo.description() != null ? OptionDescription.of(configInfo.description()) : OptionDescription.EMPTY)
-					.binding(true,
-							() -> config.uiAndVisuals.slotText.textEnabled.getOrDefault(id, true),
-							newValue -> config.uiAndVisuals.slotText.textEnabled.put(id, newValue))
-					.controller(ConfigUtils::createBooleanController)
-					.build();
-
-			ids.add(id);
-			return option;
-		}).sorted(Comparator.comparing(option -> option.name().getString())).toList();
+		return SlotTextManager.getAdderStream().map(SlotTextAdder::getConfigInformation).filter(Objects::nonNull).distinct()
+				.map(configInfo -> configInfo.getOption(config))
+				.sorted(Comparator.comparing(option -> option.name().getString())).toList();
 	}
 }
