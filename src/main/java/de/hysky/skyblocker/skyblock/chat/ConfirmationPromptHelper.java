@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
@@ -23,7 +23,7 @@ public class ConfirmationPromptHelper {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(ConfirmationPromptHelper::onMessage);
+		ChatEvents.RECEIVE_TEXT.register(ConfirmationPromptHelper::onMessage);
 		ScreenEvents.AFTER_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
 			//Don't check for the command being present in case the user opens the chat before the prompt is sent
 			if (Utils.isOnSkyblock() && screen instanceof ChatScreen && SkyblockerConfigManager.get().chat.confirmationPromptHelper) {
@@ -46,12 +46,12 @@ public class ConfirmationPromptHelper {
 		return command != null && commandFoundAt + 60_000 > System.currentTimeMillis();
 	}
 
-	private static void onMessage(Text message, boolean overlay) {
-		if (Utils.isOnSkyblock() && !overlay && SkyblockerConfigManager.get().chat.confirmationPromptHelper && message.getString().contains("[YES]")) {
+	private static void onMessage(Text message) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().chat.confirmationPromptHelper && message.getString().contains("[YES]")) {
 			Optional<String> confirmationCommand = message.visit((style, asString) -> {
 				ClickEvent event = style.getClickEvent();
 
-				//Check to see if its a yes and has the proper command
+				//Check to see if it's a yes and has the proper command
 				if (asString.equals("§a§l[YES]") && event != null && event.getAction() == ClickEvent.Action.RUN_COMMAND && event.getValue().startsWith("/chatprompt")) {
 					return Optional.of(event.getValue());
 				}

@@ -2,12 +2,12 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 
@@ -23,14 +23,11 @@ public class GlaciteColdOverlay {
     @Init
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(GlaciteColdOverlay::update, 20);
-        ClientReceiveMessageEvents.GAME.register(GlaciteColdOverlay::coldReset);
+        ChatEvents.RECEIVE_STRING.register(GlaciteColdOverlay::coldReset);
     }
 
-    private static void coldReset(Text text, boolean b) {
-        if (!Utils.isInDwarvenMines() || b) {
-            return;
-        }
-        String message = text.getString();
+    private static void coldReset(String message) {
+        if (!Utils.isInDwarvenMines()) return;
         if (message.equals("The warmth of the campfire reduced your ❄ Cold to 0!")) {
             cold = 0;
             resetTime = System.currentTimeMillis();
@@ -56,6 +53,7 @@ public class GlaciteColdOverlay {
     /**
      * @see InGameHud#renderOverlay as this is a carbon copy of it
      */
+    @SuppressWarnings("JavadocReference")
     private static void renderOverlay(DrawContext context, Identifier texture, float opacity) {
 		int white = ColorHelper.getWhite(opacity);
 		context.drawTexture(

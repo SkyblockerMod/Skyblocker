@@ -2,15 +2,13 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.HudRenderEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 public class FireFreezeStaffTimer {
     private static long fireFreezeTimer;
@@ -18,7 +16,7 @@ public class FireFreezeStaffTimer {
     @Init
     public static void init() {
         HudRenderEvents.BEFORE_CHAT.register(FireFreezeStaffTimer::onDraw);
-        ClientReceiveMessageEvents.GAME.register(FireFreezeStaffTimer::onChatMessage);
+        ChatEvents.RECEIVE_STRING.register(FireFreezeStaffTimer::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> FireFreezeStaffTimer.reset());
     }
 
@@ -53,9 +51,9 @@ public class FireFreezeStaffTimer {
         fireFreezeTimer = 0;
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
-        if (!overlay && SkyblockerConfigManager.get().dungeons.theProfessor.fireFreezeStaffTimer && Formatting.strip(text.getString())
-                .equals("[BOSS] The Professor: Oh? You found my Guardians' one weakness?")) {
+    private static void onChatMessage(String message) {
+        if (SkyblockerConfigManager.get().dungeons.theProfessor.fireFreezeStaffTimer
+		            && message.equals("[BOSS] The Professor: Oh? You found my Guardians' one weakness?")) {
             fireFreezeTimer = System.currentTimeMillis() + 5000L;
         }
     }

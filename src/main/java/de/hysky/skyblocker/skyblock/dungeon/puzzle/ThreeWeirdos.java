@@ -2,10 +2,10 @@ package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.MinecraftClient;
@@ -32,12 +32,11 @@ public class ThreeWeirdos extends DungeonPuzzle {
 
     private ThreeWeirdos() {
         super("three-weirdos", "three-chests");
-        ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
+	    ChatEvents.RECEIVE_STRING.register(message -> {
             ClientWorld world = MinecraftClient.getInstance().world;
-            if (overlay || !shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveThreeWeirdos || world == null || !DungeonManager.isCurrentRoomMatched()) return;
+            if (!shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveThreeWeirdos || world == null || !DungeonManager.isCurrentRoomMatched()) return;
 
-            @SuppressWarnings("DataFlowIssue")
-            Matcher matcher = PATTERN.matcher(Formatting.strip(message.getString()));
+            Matcher matcher = PATTERN.matcher(message);
             if (!matcher.matches()) return;
             String name = matcher.group(1);
             Room room = DungeonManager.getCurrentRoom();

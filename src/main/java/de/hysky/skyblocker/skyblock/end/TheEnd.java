@@ -5,13 +5,13 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -101,9 +101,9 @@ public class TheEnd {
         // Save when leaving as well
         ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> save());
 
-        ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-            if (!Utils.isInTheEnd() || overlay) return;
-            String lowerCase = message.getString().toLowerCase();
+	    ChatEvents.RECEIVE_STRING.register(message -> {
+            if (!Utils.isInTheEnd()) return;
+            String lowerCase = message.toLowerCase();
             if (lowerCase.contains("tremor")) {
                 if (stage == 0) checkAllProtectorLocations();
                 else stage += 1;

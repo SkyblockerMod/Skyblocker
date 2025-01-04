@@ -9,13 +9,13 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
@@ -66,7 +66,7 @@ public class FairySouls {
         ClientLifecycleEvents.CLIENT_STOPPING.register(FairySouls::saveFoundFairySouls);
         ClientCommandRegistrationCallback.EVENT.register(FairySouls::registerCommands);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(FairySouls::render);
-        ClientReceiveMessageEvents.GAME.register(FairySouls::onChatMessage);
+	    ChatEvents.RECEIVE_STRING.register(FairySouls::onChatMessage);
     }
 
     private static void loadFairySouls() {
@@ -154,9 +154,8 @@ public class FairySouls {
         }
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
-        String message = text.getString();
-        if (message.equals("You have already found that Fairy Soul!") || message.equals("§d§lSOUL! §fYou found a §dFairy Soul§f!")) {
+    private static void onChatMessage(String message) {
+        if (message.equals("You have already found that Fairy Soul!") || message.equals("SOUL! You found a Fairy Soul!")) {
             markClosestFairyFound();
         }
     }

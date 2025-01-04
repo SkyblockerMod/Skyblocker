@@ -7,6 +7,7 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
@@ -22,7 +23,6 @@ import de.hysky.skyblocker.utils.ws.message.CrystalsWaypointMessage;
 import de.hysky.skyblocker.utils.ws.message.CrystalsWaypointSubscribeMessage;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -49,7 +49,7 @@ import static net.minecraft.command.CommandSource.suggestMatching;
 
 /**
  * Manager for Crystal Hollows waypoints that handles {@link #update() location detection},
- * {@link #extractLocationFromMessage(Text, Boolean) waypoints receiving}, {@link #shareWaypoint(String) sharing},
+ * {@link #extractLocationFromMessage(String) waypoints receiving}, {@link #shareWaypoint(String) sharing},
  * {@link #registerWaypointLocationCommands(CommandDispatcher, CommandRegistryAccess) commands}, and
  * {@link #render(WorldRenderContext) rendering}.
  */
@@ -74,7 +74,7 @@ public class CrystalsLocationsManager {
         // Crystal Hollows Waypoints
         Scheduler.INSTANCE.scheduleCyclic(CrystalsLocationsManager::update, 40);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(CrystalsLocationsManager::render);
-        ClientReceiveMessageEvents.GAME.register(CrystalsLocationsManager::extractLocationFromMessage);
+	    ChatEvents.RECEIVE_STRING.register(CrystalsLocationsManager::extractLocationFromMessage);
         ClientCommandRegistrationCallback.EVENT.register(CrystalsLocationsManager::registerWaypointLocationCommands);
         SkyblockEvents.LOCATION_CHANGE.register(CrystalsLocationsManager::onLocationChange);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
@@ -83,11 +83,10 @@ public class CrystalsLocationsManager {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(NucleusWaypoints::render);
     }
 
-    private static void extractLocationFromMessage(Text message, Boolean overlay) {
-        if (!SkyblockerConfigManager.get().mining.crystalsWaypoints.findInChat || !Utils.isInCrystalHollows() || overlay) {
-            return;
+    private static void extractLocationFromMessage(String text) {
+        if (!SkyblockerConfigManager.get().mining.crystalsWaypoints.findInChat || !Utils.isInCrystalHollows()) {
+	        return;
         }
-        String text = Formatting.strip(message.getString());
         try {
             //make sure that it is only reading user messages and not from skyblocker
             if (text.contains(":") && !text.startsWith(Constants.PREFIX.get().getString())) {

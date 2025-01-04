@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.garden;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -14,7 +15,6 @@ import it.unimi.dsi.fastutil.ints.IntLongPair;
 import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 import it.unimi.dsi.fastutil.longs.LongPriorityQueue;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -37,7 +37,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class FarmingHud {
     private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
     public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
-    private static final Pattern FARMING_XP = Pattern.compile("§3\\+(?<xp>\\d+.?\\d*) Farming \\((?<percent>[\\d,]+.?\\d*)%\\)");
+    private static final Pattern FARMING_XP = Pattern.compile("\\+(?<xp>\\d+.?\\d*) Farming \\((?<percent>[\\d,]+.?\\d*)%\\)");
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static CounterType counterType = CounterType.NONE;
     private static final Deque<IntLongPair> counter = new ArrayDeque<>();
@@ -70,9 +70,9 @@ public class FarmingHud {
                 blockBreaks.enqueue(System.currentTimeMillis());
             }
         });
-        ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-            if (shouldRender() && overlay) {
-                Matcher matcher = FARMING_XP.matcher(message.getString());
+        ChatEvents.RECEIVE_OVERLAY_STRING.register(message -> {
+            if (shouldRender()) {
+                Matcher matcher = FARMING_XP.matcher(message);
                 if (matcher.matches()) {
                     try {
                         farmingXp.offer(FloatLongPair.of(NUMBER_FORMAT.parse(matcher.group("xp")).floatValue(), System.currentTimeMillis()));

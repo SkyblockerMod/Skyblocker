@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.command.argumenttypes.EggTypeArgumentType;
@@ -15,7 +16,6 @@ import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -67,7 +67,7 @@ public class EggFinder {
 			}
 		});
 		SkyblockEvents.LOCATION_CHANGE.register(EggFinder::handleLocationChange);
-		ClientReceiveMessageEvents.GAME.register(EggFinder::onChatMessage);
+		ChatEvents.RECEIVE_STRING.register(EggFinder::onChatMessage);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(EggFinder::renderWaypoints);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder || client.player == null) return;
@@ -147,9 +147,9 @@ public class EggFinder {
 		}
 	}
 
-	private static void onChatMessage(Text text, boolean overlay) {
-		if (overlay || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
-		Matcher matcher = eggFoundPattern.matcher(text.getString());
+	private static void onChatMessage(String message) {
+		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
+		Matcher matcher = eggFoundPattern.matcher(message);
 		if (matcher.find()) {
 			try {
 				EggType eggType = EggType.valueOf(matcher.group(1).toUpperCase());

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
@@ -14,7 +15,6 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -69,18 +69,13 @@ public class DungeonScore {
 		Scheduler.INSTANCE.scheduleCyclic(DungeonScore::tick, 20);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 		DungeonEvents.DUNGEON_STARTED.register(DungeonScore::onDungeonStart);
-		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-			if (overlay || !Utils.isInDungeons()) return;
-			String str = message.getString();
+		ChatEvents.RECEIVE_STRING.register(str -> {
+			if (!Utils.isInDungeons()) return;
 			if (dungeonStarted) {
 				checkMessageForDeaths(str);
 				checkMessageForWatcher(str);
-				if (floorHasMimics) checkMessageForMimic(str); //Only called when the message is not cancelled & isn't on the action bar, complementing MimicFilter
+				if (floorHasMimics) checkMessageForMimic(str);
 			}
-		});
-		ClientReceiveMessageEvents.GAME_CANCELED.register((message, overlay) -> {
-			if (overlay || !Utils.isInDungeons() || !dungeonStarted) return;
-			checkMessageForDeaths(message.getString());
 		});
 	}
 
@@ -336,11 +331,6 @@ public class DungeonScore {
 
 	public static boolean isDungeonStarted() {
 		return dungeonStarted;
-	}
-
-	//Feel free to refactor this if you can think of a better name.
-	public static boolean isMimicOnCurrentFloor() {
-		return floorHasMimics;
 	}
 
 	enum FloorRequirement {

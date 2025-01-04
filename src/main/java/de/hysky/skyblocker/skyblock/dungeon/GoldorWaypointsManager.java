@@ -8,13 +8,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -65,8 +65,7 @@ public class GoldorWaypointsManager {
 	public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(GoldorWaypointsManager::render);
         ClientLifecycleEvents.CLIENT_STARTED.register(GoldorWaypointsManager::load);
-        ClientReceiveMessageEvents.GAME.register(GoldorWaypointsManager::onChatMessage);
-        ClientReceiveMessageEvents.GAME_CANCELED.register(GoldorWaypointsManager::onChatMessage);
+		ChatEvents.RECEIVE_STRING.register(GoldorWaypointsManager::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
     }
 
@@ -153,10 +152,8 @@ public class GoldorWaypointsManager {
         return matcher.matches() ? matcher.group("name") : null;
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
-        if (overlay || !shouldProcessMsgs()) return;
-        String message = text.getString();
-
+    private static void onChatMessage(String message) {
+        if (!shouldProcessMsgs()) return;
         if (active) {
             if (PHASE_COMPLETE.matcher(message).matches()) {
                 currentPhase++;

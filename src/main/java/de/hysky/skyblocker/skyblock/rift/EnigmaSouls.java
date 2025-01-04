@@ -22,7 +22,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
@@ -121,13 +120,10 @@ public class EnigmaSouls {
 		}
 	}
 
-	static void onMessage(Text text, boolean overlay) {
-		if (Utils.isInTheRift() && !overlay) {
-			String message = text.getString();
-
-			if (message.equals("You have already found that Enigma Soul!") || Formatting.strip(message).equals("SOUL! You unlocked an Enigma Soul!"))
-				markClosestSoulAsFound();
-		}
+	static void onMessage(String message) {
+		if (!Utils.isInTheRift()) return;
+		if (message.equals("You have already found that Enigma Soul!") || message.equals("SOUL! You unlocked an Enigma Soul!"))
+			markClosestSoulAsFound();
 	}
 
 	static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {

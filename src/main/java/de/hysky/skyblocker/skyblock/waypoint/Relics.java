@@ -9,6 +9,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.OtherLocationsConfig;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.PosUtils;
@@ -18,7 +19,6 @@ import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
@@ -56,7 +56,7 @@ public class Relics {
         ClientLifecycleEvents.CLIENT_STOPPING.register(Relics::saveFoundRelics);
         ClientCommandRegistrationCallback.EVENT.register(Relics::registerCommands);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(Relics::render);
-        ClientReceiveMessageEvents.GAME.register(Relics::onChatMessage);
+	    ChatEvents.RECEIVE_STRING.register(Relics::onChatMessage);
     }
 
     private static void loadRelics(MinecraftClient client) {
@@ -144,8 +144,7 @@ public class Relics {
         }
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
-        String message = text.getString();
+    private static void onChatMessage(String message) {
         if (message.equals("You've already found this relic!") || message.startsWith("+10,000 Coins! (") && message.endsWith("/28 Relics)")) {
             markClosestRelicFound();
         }

@@ -1,14 +1,13 @@
 package de.hysky.skyblocker.skyblock.chocolatefactory;
 
-import com.mojang.brigadier.Message;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -34,11 +33,11 @@ public class TimeTowerReminder {
 	@Init
 	public static void init() {
 		SkyblockEvents.JOIN.register(TimeTowerReminder::checkTempFile);
-		ClientReceiveMessageEvents.GAME.register(TimeTowerReminder::checkIfTimeTower);
+		ChatEvents.RECEIVE_STRING.register(TimeTowerReminder::checkIfTimeTower);
 	}
 
-	public static void checkIfTimeTower(Message message, boolean overlay) {
-		if (!TIME_TOWER_PATTERN.matcher(message.getString()).matches() || scheduled) return;
+	public static void checkIfTimeTower(String message) {
+		if (!TIME_TOWER_PATTERN.matcher(message).matches() || scheduled) return;
 		Scheduler.INSTANCE.schedule(TimeTowerReminder::sendMessage, 60 * 60 * 20); // 1 hour
 		scheduled = true;
 		File tempFile = SkyblockerMod.CONFIG_DIR.resolve(TIME_TOWER_FILE).toFile();
