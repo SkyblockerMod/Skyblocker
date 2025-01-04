@@ -11,7 +11,7 @@ import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.dwarven.CorpseHelper;
+import de.hysky.skyblocker.skyblock.dwarven.CorpseFinder;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
 import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
@@ -58,6 +58,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
 		EggFinder.checkIfEgg(armorStandEntity);
+		CorpseFinder.checkIfCorpse(armorStandEntity);
 		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
 			CompactDamage.compactDamage(armorStandEntity);
 		} catch (Exception e) {
@@ -95,7 +96,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
 	private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
 		EggFinder.checkIfEgg(entity);
-		CorpseHelper.checkIfCorpse(entity);
+		CorpseFinder.checkIfCorpse(entity);
 	}
 
 	@Inject(method = "onPlayerListHeader", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;setFooter(Lnet/minecraft/text/Text;)V"))
@@ -149,44 +150,4 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		EnderNodes.onParticle(packet);
 		WishingCompassSolver.onParticle(packet);
 	}
-
-	@ModifyExpressionValue(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/EntityStatusS2CPacket;getEntity(Lnet/minecraft/world/World;)Lnet/minecraft/entity/Entity;"))
-	private Entity skyblocker$onEntityDeath(Entity entity, @Local(argsOnly = true) EntityStatusS2CPacket packet) {
-		if (packet.getStatus() == EntityStatuses.PLAY_DEATH_SOUND_OR_ADD_PROJECTILE_HIT_PARTICLES) {
-			DungeonScore.handleEntityDeath(entity);
-			TheEnd.onEntityDeath(entity);
-			SlayerEntitiesGlow.onEntityDeath(entity);
-		}
-		return entity;
-	}
-
-	@Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
-	private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
-		if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
-
-		if (SkyblockerConfigManager.get().slayers.highlightMinis == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerEntitiesGlow.isSlayerMiniMob(armorStandEntity)
-				    || SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerEntitiesGlow.isSlayer(armorStandEntity)) {
-			if (armorStandEntity.isDead()) {
-				SlayerEntitiesGlow.cleanupArmorstand(armorStandEntity);
-			} else {
-				SlayerEntitiesGlow.setSlayerMobGlow(armorStandEntity);
-			}
-		}
-
-		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
-
-        EggFinder.checkIfEgg(armorStandEntity);
-		CorpseFinder.checkIfCorpse(armorStandEntity);
-        try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
-            CompactDamage.compactDamage(armorStandEntity);
-        } catch (Exception e) {
-            LOGGER.error("[Skyblocker Compact Damage] Failed to compact damage number", e);
-        }
-    }
-
-    @Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
-    private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
-        EggFinder.checkIfEgg(entity);
-        CorpseFinder.checkIfCorpse(entity);
-    }
 }
