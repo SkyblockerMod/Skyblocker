@@ -13,8 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MessageHandlerMixin {
 	@Inject(method = "onGameMessage", at = @At("HEAD"))
 	private void skyblocker$monitorGameMessage(Text message, boolean overlay, CallbackInfo ci) {
-		if (overlay) return; //Can add overlay-specific events in the future or incorporate it into the existing events. For now, it's not necessary.
-		ChatEvents.RECEIVE_TEXT.invoker().onMessage(message);
-		ChatEvents.RECEIVE_STRING.invoker().onMessage(Formatting.strip(message.getString()));
+		String stripped = Formatting.strip(message.getString());
+		if (overlay) {
+			ChatEvents.RECEIVE_TEXT.invoker().onMessage(message);
+			ChatEvents.RECEIVE_STRING.invoker().onMessage(stripped);
+		} else {
+			ChatEvents.RECEIVE_OVERLAY_TEXT.invoker().onMessage(message);
+			ChatEvents.RECEIVE_OVERLAY_STRING.invoker().onMessage(stripped);
+		}
 	}
 }
