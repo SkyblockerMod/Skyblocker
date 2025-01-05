@@ -54,4 +54,45 @@ public class ColorUtils {
 
 		return (r3 << 16) | (g3 << 8 ) | b3;
 	}
+
+	/**
+	 * Checks if the specified color is bright or dark.
+	 */
+	public static boolean isBright(int color) {
+		float[] components = getFloatComponents(color);
+
+		float red = components[0];
+		float green = components[1];
+		float blue = components[2];
+
+		double luminance = luminance(red, green, blue);
+		double whiteContrast = contrastRatio(luminance, 1.0);
+		double blackContrast = contrastRatio(luminance, 0.0);
+		return whiteContrast < blackContrast;
+	}
+
+	/**
+	 * Returns the luminance value of the color.
+	 *
+	 * @link <a href="https://stackoverflow.com/questions/596216/formula-to-determine-perceived-brightness-of-rgb-color/56678483#56678483">Stackoverflow explanation</a>
+	 */
+	private static double luminance(float red, float green, float blue) {
+		double r = (red <= 0.04045F) ? red / 12.92F : Math.pow((red + 0.055F) / 1.055F, 2.4F);
+		double g = (green <= 0.04045F) ? green / 12.92F : Math.pow((green + 0.055F) / 1.055F, 2.4F);
+		double b = (blue <= 0.04045F) ? blue / 12.92F : Math.pow((blue + 0.055F) / 1.055F, 2.4F);
+
+		return Math.fma(0.2126, r, Math.fma(0.7152, g, 0.0722 * b));
+	}
+
+	/**
+	 * Checks the contrast ratio between two luminance values.
+	 */
+	private static double contrastRatio(double background, double content) {
+		double brightest = Math.max(background, content);
+		double darkest = Math.min(background, content);
+
+		return (brightest + 0.05) / (darkest + 0.05);
+	}
+
+
 }
