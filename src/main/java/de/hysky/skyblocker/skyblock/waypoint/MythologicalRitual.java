@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -13,7 +14,6 @@ import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgumen
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -28,7 +28,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
@@ -66,7 +65,7 @@ public class MythologicalRitual {
         AttackBlockCallback.EVENT.register(MythologicalRitual::onAttackBlock);
         UseBlockCallback.EVENT.register(MythologicalRitual::onUseBlock);
         UseItemCallback.EVENT.register(MythologicalRitual::onUseItem);
-        ClientReceiveMessageEvents.GAME.register(MythologicalRitual::onChatMessage);
+	    ChatEvents.RECEIVE_STRING.register(MythologicalRitual::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("diana")
                 .then(literal("clearGriffinBurrows").executes(context -> {
@@ -250,8 +249,8 @@ public class MythologicalRitual {
         return ActionResult.PASS;
     }
 
-    public static void onChatMessage(Text message, boolean overlay) {
-        if (isActive() && GRIFFIN_BURROW_DUG.matcher(message.getString()).matches()) {
+    public static void onChatMessage(String message) {
+        if (isActive() && GRIFFIN_BURROW_DUG.matcher(message).matches()) {
             previousBurrow.confirmed = TriState.FALSE;
             previousBurrow = griffinBurrows.get(lastDugBurrowPos);
             previousBurrow.confirmed = TriState.DEFAULT;

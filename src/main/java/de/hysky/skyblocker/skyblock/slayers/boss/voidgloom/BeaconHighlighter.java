@@ -2,14 +2,13 @@ package de.hysky.skyblocker.skyblock.slayers.boss.voidgloom;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
 public class BeaconHighlighter {
@@ -24,17 +23,15 @@ public class BeaconHighlighter {
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(BeaconHighlighter::render);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-        ClientReceiveMessageEvents.GAME.register(BeaconHighlighter::onMessage);
+	    ChatEvents.RECEIVE_STRING.register(BeaconHighlighter::onMessage);
     }
 
     private static void reset() {
         beaconPositions.clear();
     }
 
-    private static void onMessage(Text text, boolean overlay) {
-        if (Utils.isInTheEnd() && !overlay) {
-            String message = text.getString();
-
+    private static void onMessage(String message) {
+        if (Utils.isInTheEnd()) {
             if (message.contains("SLAYER QUEST COMPLETE!") || message.contains("NICE! SLAYER BOSS SLAIN!")) reset();
         }
     }

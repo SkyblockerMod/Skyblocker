@@ -3,13 +3,13 @@ package de.hysky.skyblocker.skyblock.chat;
 import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
@@ -38,7 +38,7 @@ public class ChatPositionShare {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				ClientCommandManager.literal("skyblocker").then(ClientCommandManager.literal("sharePosition").executes(context -> sharePlayerPosition(context.getSource())))
 		));
-        ClientReceiveMessageEvents.GAME.register(ChatPositionShare::onMessage);
+	    ChatEvents.RECEIVE_STRING.register(ChatPositionShare::onMessage);
     }
 
 	private static int sharePlayerPosition(FabricClientCommandSource source) {
@@ -47,10 +47,8 @@ public class ChatPositionShare {
 		return Command.SINGLE_SUCCESS;
 	}
 
-    private static void onMessage(Text text, boolean overlay) {
+    private static void onMessage(String message) {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
-            String message = text.getString();
-
             for (Pattern pattern : PATTERNS) {
                 Matcher matcher = pattern.matcher(message);
                 if (matcher.find()) {

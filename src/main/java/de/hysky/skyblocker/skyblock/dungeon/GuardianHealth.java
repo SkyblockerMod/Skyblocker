@@ -2,9 +2,9 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -28,7 +28,7 @@ public class GuardianHealth {
 
     @Init
     public static void init() {
-        ClientReceiveMessageEvents.GAME.register(GuardianHealth::onChatMessage);
+        ChatEvents.RECEIVE_STRING.register(GuardianHealth::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> GuardianHealth.reset());
         WorldRenderEvents.AFTER_ENTITIES.register(GuardianHealth::onWorldRender);
     }
@@ -79,11 +79,9 @@ public class GuardianHealth {
         inBoss = false;
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
+    private static void onChatMessage(String message) {
         if (Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.theProfessor.floor3GuardianHealthDisplay && !inBoss) {
-            String unformatted = Formatting.strip(text.getString());
-
-            inBoss = unformatted.equals("[BOSS] The Professor: I was burdened with terrible news recently...");
+            inBoss = message.equals("[BOSS] The Professor: I was burdened with terrible news recently...");
         }
     }
 

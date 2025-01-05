@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
@@ -14,7 +15,6 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -69,18 +69,13 @@ public class DungeonScore {
 		Scheduler.INSTANCE.scheduleCyclic(DungeonScore::tick, 20);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 		DungeonEvents.DUNGEON_STARTED.register(DungeonScore::onDungeonStart);
-		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-			if (overlay || !Utils.isInDungeons()) return;
-			String str = message.getString();
+		ChatEvents.RECEIVE_STRING.register(str -> {
+			if (!Utils.isInDungeons()) return;
 			if (dungeonStarted) {
 				checkMessageForDeaths(str);
 				checkMessageForWatcher(str);
-				if (floorHasMimics) checkMessageForMimic(str); //Only called when the message is not cancelled & isn't on the action bar, complementing MimicFilter
+				if (floorHasMimics) checkMessageForMimic(str);
 			}
-		});
-		ClientReceiveMessageEvents.GAME_CANCELED.register((message, overlay) -> {
-			if (overlay || !Utils.isInDungeons() || !dungeonStarted) return;
-			checkMessageForDeaths(message.getString());
 		});
 	}
 
@@ -95,11 +90,11 @@ public class DungeonScore {
 		score = calculateScore();
 		if (!sent270 && !sent300 && score >= 270 && score < 300) {
 			if (SCORE_CONFIG.enableDungeonScore270Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270"), false);
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore270Message.replace("[score]", "270"), false);
 			}
 			if (SCORE_CONFIG.enableDungeonScore270Title) {
 				client.inGameHud.setDefaultTitleFade();
-				client.inGameHud.setTitle(Constants.PREFIX.get().append(SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270")));
+				client.inGameHud.setTitle(Constants.PREFIX.get().append(SCORE_CONFIG.dungeonScore270Message.replace("[score]", "270")));
 			}
 			if (SCORE_CONFIG.enableDungeonScore270Sound) {
 				client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
@@ -110,18 +105,18 @@ public class DungeonScore {
 		int crypts = getCrypts();
 		if (!sentCrypts && score >= SCORE_CONFIG.dungeonCryptsMessageThreshold && crypts < 5) {
 			if (SCORE_CONFIG.enableDungeonCryptsMessage) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(crypts)), false);
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonCryptsMessage.replace("[crypts]", String.valueOf(crypts)), false);
 			}
 			sentCrypts = true;
 		}
 
 		if (!sent300 && score >= 300) {
 			if (SCORE_CONFIG.enableDungeonScore300Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300"), false);
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore300Message.replace("[score]", "300"), false);
 			}
 			if (SCORE_CONFIG.enableDungeonScore300Title) {
 				client.inGameHud.setDefaultTitleFade();
-				client.inGameHud.setTitle(Constants.PREFIX.get().append(SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300")));
+				client.inGameHud.setTitle(Constants.PREFIX.get().append(SCORE_CONFIG.dungeonScore300Message.replace("[score]", "300")));
 			}
 			if (SCORE_CONFIG.enableDungeonScore300Sound) {
 				client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
@@ -336,11 +331,6 @@ public class DungeonScore {
 
 	public static boolean isDungeonStarted() {
 		return dungeonStarted;
-	}
-
-	//Feel free to refactor this if you can think of a better name.
-	public static boolean isMimicOnCurrentFloor() {
-		return floorHasMimics;
 	}
 
 	enum FloorRequirement {

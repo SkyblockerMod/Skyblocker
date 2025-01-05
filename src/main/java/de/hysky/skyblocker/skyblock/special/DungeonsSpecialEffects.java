@@ -2,13 +2,12 @@ package de.hysky.skyblocker.skyblock.special;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,16 +21,15 @@ public class DungeonsSpecialEffects {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(DungeonsSpecialEffects::displayRareDropEffect);
+		ChatEvents.RECEIVE_STRING.register(DungeonsSpecialEffects::displayRareDropEffect);
 	}
 
-	private static void displayRareDropEffect(Text message, boolean overlay) {
+	private static void displayRareDropEffect(String message) {
 		//We don't check if we're in dungeons because that check doesn't work in m7 which defeats the point of this
 		//It might also allow it to work with Croesus
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.specialEffects.rareDungeonDropEffects && !overlay) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.specialEffects.rareDungeonDropEffects) {
 			try {
-				String stringForm = message.getString();
-				Matcher matcher = DROP_PATTERN.matcher(stringForm);
+				Matcher matcher = DROP_PATTERN.matcher(message);
 
 				if (matcher.matches()) {
 					if (matcher.group("player").equals(CLIENT.getSession().getUsername())) {

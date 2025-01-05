@@ -2,11 +2,11 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.booleans.BooleanPredicate;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -19,9 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.hit.EntityHitResult;
@@ -70,7 +68,7 @@ public class DojoManager {
 
     @Init
     public static void init() {
-        ClientReceiveMessageEvents.GAME.register(DojoManager::onMessage);
+	    ChatEvents.RECEIVE_STRING.register(DojoManager::onMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(DojoManager::render);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
         ClientEntityEvents.ENTITY_LOAD.register(DojoManager::onEntitySpawn);
@@ -91,16 +89,13 @@ public class DojoManager {
     }
 
     /**
-     * works out if the player is in dojo and if so what challenge based on chat messages
-     *
-     * @param text    message
-     * @param overlay is overlay
+     * Works out if the player is in dojo and if so what challenge based on chat messages
      */
-    private static void onMessage(Text text, Boolean overlay) {
-        if (!Utils.isInCrimson() || overlay) {
+    private static void onMessage(String message) {
+        if (!Utils.isInCrimson()) {
             return;
         }
-        if (Objects.equals(Formatting.strip(text.getString()), START_MESSAGE)) {
+        if (Objects.equals(message, START_MESSAGE)) {
             inArena = true;
             //update the players ping
             getPing();
@@ -109,7 +104,7 @@ public class DojoManager {
         if (!inArena) {
             return;
         }
-        if (text.getString().matches(CHALLENGE_FINISHED_REGEX)) {
+        if (message.matches(CHALLENGE_FINISHED_REGEX)) {
             reset();
             return;
         }
@@ -118,7 +113,7 @@ public class DojoManager {
         if (currentChallenge != DojoChallenges.NONE) {
             return;
         }
-        Matcher nextChallenge = TEST_OF_PATTERN.matcher(text.getString());
+        Matcher nextChallenge = TEST_OF_PATTERN.matcher(message);
         if (nextChallenge.matches()) {
             currentChallenge = DojoChallenges.from(nextChallenge.group(1));
             if (!currentChallenge.enabled.test(true)) {

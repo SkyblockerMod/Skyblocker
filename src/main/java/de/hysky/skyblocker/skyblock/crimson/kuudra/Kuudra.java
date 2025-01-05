@@ -1,11 +1,9 @@
 package de.hysky.skyblocker.skyblock.crimson.kuudra;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 public class Kuudra { 
 	public static final int KUUDRA_MAGMA_CUBE_SIZE = 30;
@@ -15,13 +13,11 @@ public class Kuudra {
 	@Init
 	public static void init() {
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-		ClientReceiveMessageEvents.GAME.register(Kuudra::onMessage);
+		ChatEvents.RECEIVE_STRING.register(Kuudra::onMessage);
 	}
 
-	private static void onMessage(Text text, boolean overlay) {
-		if (Utils.isInKuudra() && !overlay) {
-			String message = Formatting.strip(text.getString());
-
+	private static void onMessage(String message) {
+		if (Utils.isInKuudra()) {
 			if (message.equals("[NPC] Elle: ARGH! All of the supplies fell into the lava! You need to retrieve them quickly!")) {
 				phase = KuudraPhase.RETRIEVE_SUPPLIES;
 			}

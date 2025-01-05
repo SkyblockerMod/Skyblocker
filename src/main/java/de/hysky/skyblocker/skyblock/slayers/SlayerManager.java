@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.slayers;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.ManiaIndicator;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.StakeIndicator;
@@ -13,7 +14,6 @@ import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -54,7 +54,7 @@ public class SlayerManager {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(SlayerManager::onChatMessage);
+		ChatEvents.RECEIVE_STRING.register(SlayerManager::onChatMessage);
 		SkyblockEvents.LOCATION_CHANGE.register(SlayerManager::onLocationChange);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayers.vampireSlayer.maniaUpdateFrequency);
@@ -68,9 +68,8 @@ public class SlayerManager {
 		}
 	}
 
-	private static void onChatMessage(Text text, boolean overlay) {
-		if (!Utils.isOnSkyblock() || overlay) return;
-		String message = text.getString();
+	private static void onChatMessage(String message) {
+		if (!Utils.isOnSkyblock()) return;
 
 		switch (message.replaceFirst("^\\s+", "")) {
 			case "Your Slayer Quest has been cancelled!", "SLAYER QUEST FAILED!" -> {

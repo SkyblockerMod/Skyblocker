@@ -3,13 +3,12 @@ package de.hysky.skyblocker.skyblock.special;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 
@@ -25,14 +24,13 @@ public class DyeSpecialEffects {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(DyeSpecialEffects::displayDyeDropEffect);
+		ChatEvents.RECEIVE_STRING.register(DyeSpecialEffects::displayDyeDropEffect);
 	}
 
-	private static void displayDyeDropEffect(Text message, boolean overlay) {
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.specialEffects.rareDyeDropEffects && !overlay) {
+	private static void displayDyeDropEffect(String message) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.specialEffects.rareDyeDropEffects) {
 			try {
-				String stringForm = message.getString();
-				Matcher matcher = DROP_PATTERN.matcher(stringForm);
+				Matcher matcher = DROP_PATTERN.matcher(message);
 
 				if (matcher.matches() && matcher.group("player").equals(CLIENT.getSession().getUsername())) {
 					ItemStack stack = findDyeStack(matcher.group("dye"));

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
@@ -13,12 +14,10 @@ import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Http.ApiResponse;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +40,7 @@ public class SecretsTracker {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(SecretsTracker::onMessage);
+		ChatEvents.RECEIVE_STRING.register(SecretsTracker::onMessage);
 		DungeonEvents.DUNGEON_STARTED.register(() -> calculate(RunPhase.START));
 	}
 
@@ -118,10 +117,8 @@ public class SecretsTracker {
 				new HoverEvent(HoverEvent.Action.SHOW_TEXT, cached ? Text.translatable("skyblocker.api.cache.HIT", cacheAge) : Text.translatable("skyblocker.api.cache.MISS"))));
 	}
 
-	private static void onMessage(Text text, boolean overlay) {
-		if (Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.playerSecretsTracker && !overlay) {
-			String message = Formatting.strip(text.getString());
-
+	private static void onMessage(String message) {
+		if (Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.playerSecretsTracker) {
 			try {
 				if (TEAM_SCORE_PATTERN.matcher(message).matches()) calculate(RunPhase.END);
 			} catch (Exception e) {

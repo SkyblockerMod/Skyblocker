@@ -2,10 +2,10 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -44,7 +44,7 @@ public class CrystalsChestHighlighter {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(CrystalsChestHighlighter::extractLocationFromMessage);
+		ChatEvents.RECEIVE_STRING.register(CrystalsChestHighlighter::extractLocationFromMessage);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(CrystalsChestHighlighter::render);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 	}
@@ -56,12 +56,12 @@ public class CrystalsChestHighlighter {
 		currentLockCount = 0;
 	}
 
-	private static void extractLocationFromMessage(Text text, boolean b) {
+	private static void extractLocationFromMessage(String message) {
 		if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
 			return;
 		}
 		//if a chest is spawned add chest to look for
-		if (text.getString().matches(CHEST_SPAWN_MESSAGE)) {
+		if (message.equals(CHEST_SPAWN_MESSAGE)) {
 			waitingForChest += 1;
 		}
 	}
