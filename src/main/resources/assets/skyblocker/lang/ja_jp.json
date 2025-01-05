@@ -53,7 +53,7 @@
     "skyblocker.config.chat.filter.hideAutopet": "Autopetのメッセージを非表示にする",
     "skyblocker.config.chat.filter.hideMana": "マナの使用表示をアクションバーから非表示にする",
     "skyblocker.config.chat.filter.hideMana.@Tooltip": "FancyBarでより良くできます",
-    "key.skyblocker.toggleA": "tabを開いたときのHUDの表示メニューを種別Aに変更する",
+    "key.skyblocker.toggleA": "TabのHUDのセカンダリビューを表示",
     "skyblocker.config.uiAndVisuals.teleportOverlay.enableTeleportOverlays": "テレポート先の表示を有効にする",
     "skyblocker.config.uiAndVisuals.teleportOverlay": "テレポート先の表示",
     "skyblocker.config.general.itemInfoDisplay": "アイテムの情報ディスプレイ",
@@ -252,5 +252,8 @@
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.OUTLINED_HIGHLIGHT": "ハイライト+アウトライン",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.OUTLINE": "アウトライン",
     "key.itemPriceLookup": "バザーから探す",
-    "key.itemPriceRefresh": "バザーを更新"
+    "key.itemPriceRefresh": "バザーを更新",
+    "skyblocker.config.debug": "デバッグ",
+    "text.skyblocker.undo": "戻す",
+    "text.skyblocker.reset": "リセット"
 }
