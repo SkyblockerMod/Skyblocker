@@ -19,7 +19,7 @@ public class SkyblockRecipeResultButton extends ClickableWidget {
 	private static final int SIZE = 25;
 	private static final int ITEM_OFFSET = 4;
 
-	private ItemStack itemStack = null;
+	private ItemStack itemStack = ItemStack.EMPTY;
 
 	protected SkyblockRecipeResultButton() {
 		super(0, 0, SIZE, SIZE, ScreenTexts.EMPTY);
@@ -37,7 +37,7 @@ public class SkyblockRecipeResultButton extends ClickableWidget {
 
 	protected void clearDisplayStack() {
 		this.visible = false;
-		this.itemStack = null;
+		this.itemStack = ItemStack.EMPTY;
 	}
 
 	@Override

@@ -273,6 +273,12 @@
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
 
+  "skyblocker.config.general.itemList.filter.all": "All",
+  "skyblocker.config.general.itemList.filter.entities": "Entities",
+  "skyblocker.config.general.itemList.filter.npcs": "NPCs",
+  "skyblocker.config.general.itemList.filter.mayors": "Mayors",
+  "skyblocker.config.general.itemList.filter.items": "Items",
+
   "skyblocker.config.general.itemProtection": "Item Protection",
   "skyblocker.config.general.itemProtection.protectValuableConsumables": "Protect Valuable Consumables",
   "skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip": "Prevents consuming items such as Bottles of Jyrre, Dark Cacao Truffles, and Discrite before they have evolved.",
@@ -1174,6 +1180,7 @@
   "skyblocker.tips.newYearCakesHelper": "Open your New Year Cake Bag and Skyblocker will remember them and highlight duplicate cakes red and missing cakes green.",
   "skyblocker.tips.accessoryHelper": "Open your accessory bag and Skyblocker will remember them. The accessory helper will tell you what accessories you have and what accessories are missing.",
   "skyblocker.tips.fancyAuctionHouseCheapHighlight": "Cheap BINs are highlighted in green in the Fancy Auction House.",
+  "skyblocker.tips.viewRecipe": "Right-Click on a recipe result in the recipe book to access the super-craft menu.",
 
   "skyblocker.partyFinder.tabs.partyFinder": "Party Finder",
   "skyblocker.partyFinder.tabs.searchSettings": "Search Filters",
