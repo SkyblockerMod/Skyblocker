@@ -16,9 +16,12 @@ import java.util.regex.Pattern;
 
 public class RancherBootsSpeedAdder extends SimpleSlotTextAdder {
 	private static final Pattern SPEED_PATTERN = Pattern.compile("Current Speed Cap: (\\d+) ?(\\d+)?");
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"rancher_boots",
+			"skyblocker.config.uiAndVisuals.slotText.rancherBoots");
 
 	public RancherBootsSpeedAdder() {
-		super();
+		super(CONFIG_INFORMATION);
 	}
 
 	@Override

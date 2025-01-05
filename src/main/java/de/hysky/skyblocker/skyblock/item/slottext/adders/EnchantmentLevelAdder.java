@@ -16,8 +16,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"enchantment_level",
+			"skyblocker.config.uiAndVisuals.slotText.enchantmentLevel");
+
 	public EnchantmentLevelAdder() {
-		super();
+		super(CONFIG_INFORMATION);
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import de.hysky.skyblocker.UpdateNotifications;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import de.hysky.skyblocker.skyblock.speedPreset.SpeedPresetsScreen;
@@ -287,23 +286,6 @@ public class GeneralCategory {
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.general.itemInfoDisplay"))
                         .collapsed(true)
-                        .option(Option.<SlotTextMode>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.slotText"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.slotText.@Tooltip")))
-                                .binding(defaults.general.itemInfoDisplay.slotTextMode,
-                                        () -> config.general.itemInfoDisplay.slotTextMode,
-                                        newValue -> config.general.itemInfoDisplay.slotTextMode = newValue)
-                                .controller(ConfigUtils::createEnumCyclingListController)
-                                .build())
-                        .option(ConfigUtils.createShortcutToKeybindsScreen())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.attributeShardInfo"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.attributeShardInfo.@Tooltip")))
-                                .binding(defaults.general.itemInfoDisplay.attributeShardInfo,
-                                        () -> config.general.itemInfoDisplay.attributeShardInfo,
-                                        newValue -> config.general.itemInfoDisplay.attributeShardInfo = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip")))
