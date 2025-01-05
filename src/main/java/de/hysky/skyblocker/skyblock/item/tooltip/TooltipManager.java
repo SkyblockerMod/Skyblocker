@@ -30,7 +30,6 @@ public class TooltipManager {
 			new SupercraftReminder(),
 			ChocolateFactorySolver.INSTANCE,
 			BitsHelper.INSTANCE,
-			new fossilSolver(),
 			new FossilSolver(),
 			new ReorderHelper(),
 			new StackingEnchantProgressTooltip(0), //Would be best to have after the lore but the tech doesn't exist for that

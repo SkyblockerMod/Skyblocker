@@ -56,7 +56,7 @@ public class ContainerSolverManager {
 			new ReorderHelper(),
 			BitsHelper.INSTANCE,
 			new RaffleTaskHighlight(),
-			new fossilSolver()
+			new FossilSolver()
 	};
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;
