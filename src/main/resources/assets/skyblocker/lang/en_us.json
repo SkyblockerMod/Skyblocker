@@ -69,6 +69,7 @@
   "skyblocker.config.debug.dumpRange.@Tooltip": "The range in blocks around the player to dump entities within.",
   "skyblocker.config.debug.showInvisibleArmorStands": "Show Invisible Armor Stands",
   "skyblocker.config.debug.debugWebSockets": "Enable Websocket Debug Messages",
+  "skyblocker.config.debug.corpseFinderDebug": "Debug Corpse Finder",
 
   "skyblocker.config.dungeons": "Dungeons",
 
@@ -639,7 +640,13 @@
 
   "skyblocker.config.mining.glacite": "Glacite Tunnels",
   "skyblocker.config.mining.glacite.coldOverlay": "Cold Overlay",
-  "skyblocker.config.mining.glacite.coldOverlay@Tooltip": "Shows a frosty overlay in the Glacite mines that gets stronger as you get colder.",
+  "skyblocker.config.mining.glacite.coldOverlay.@Tooltip": "Shows a frosty overlay in the Glacite mines that gets stronger as you get colder.",
+  "skyblocker.config.mining.glacite.enableCorpseFinder": "Corpse Finder",
+  "skyblocker.config.mining.glacite.enableCorpseFinder.@Tooltip": "Creates waypoints for corpses. Allows for sharing them.",
+  "skyblocker.config.mining.glacite.enableParsingChatCorpseFinder": "Parse Corpses from chat",
+  "skyblocker.config.mining.glacite.enableParsingChatCorpseFinder.@Tooltip": "If enabled, will listen to chat and process corpses shared by other players. Should be compatible with other mods.",
+  "skyblocker.config.mining.glacite.autoShareCorpses": "Automatically Share Found Corpses In Chat",
+  "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "Sends a message in party chat with the location of the found corpse when you find one.",
 
   "skyblocker.config.misc": "Misc",
 

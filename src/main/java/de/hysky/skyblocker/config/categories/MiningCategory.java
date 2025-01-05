@@ -250,12 +250,36 @@ public class MiningCategory {
                         .collapsed(false)
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.glacite.coldOverlay"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.coldOverlay@Tooltip")))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.coldOverlay.@Tooltip")))
                                 .binding(defaults.mining.glacite.coldOverlay,
                                         () -> config.mining.glacite.coldOverlay,
                                         newValue -> config.mining.glacite.coldOverlay = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.glacite.enableCorpseFinder"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.enableCorpseFinder.@Tooltip")))
+                                .binding(defaults.mining.glacite.enableCorpseFinder,
+                                        () -> config.mining.glacite.enableCorpseFinder,
+                                        newValue -> config.mining.glacite.enableCorpseFinder = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.glacite.enableParsingChatCorpseFinder"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.enableParsingChatCorpseFinder.@Tooltip")))
+                                .binding(defaults.mining.glacite.enableParsingChatCorpseFinder,
+                                        () -> config.mining.glacite.enableParsingChatCorpseFinder,
+                                        newValue -> config.mining.glacite.enableParsingChatCorpseFinder = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+		                .option(Option.<Boolean>createBuilder()
+		                        .name(Text.translatable("skyblocker.config.mining.glacite.autoShareCorpses"))
+		                        .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip")))
+		                        .binding(defaults.mining.glacite.autoShareCorpses,
+		                                () -> config.mining.glacite.autoShareCorpses,
+		                                newValue -> config.mining.glacite.autoShareCorpses = newValue)
+		                        .controller(ConfigUtils::createBooleanController)
+				                .build())
                         .build())
                 .build();
     }
