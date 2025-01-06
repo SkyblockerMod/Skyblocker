@@ -66,7 +66,7 @@ public class ScreenMaster {
 		MinecraftClient client = MinecraftClient.getInstance();
 		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
 		if (client.options.playerListKey.isPressed()) {
-			if (hud || TabHud.defaultTgl.isPressed()) return;
+			if (hud || TabHud.shouldNotRenderFancy()) return;
 			if (TabHud.toggleSecondary.isPressed()) {
 				screenBuilder.run(context, w, h, ScreenLayer.SECONDARY_TAB);
 			} else {

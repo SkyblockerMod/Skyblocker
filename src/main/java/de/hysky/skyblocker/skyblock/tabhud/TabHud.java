@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -8,7 +9,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class TabHud {
 	public static KeyBinding toggleSecondary;
-	public static KeyBinding defaultTgl;
+	private static KeyBinding defaultTgl;
 
 	@Init
 	public static void init() {
@@ -22,5 +23,9 @@ public class TabHud {
 						InputUtil.Type.KEYSYM,
 						GLFW.GLFW_KEY_M,
 						"key.categories.skyblocker"));
+	}
+
+	public static boolean shouldNotRenderFancy() {
+		return defaultTgl.isPressed() != SkyblockerConfigManager.get().uiAndVisuals.tabHud.showVanillaTabByDefault;
 	}
 }

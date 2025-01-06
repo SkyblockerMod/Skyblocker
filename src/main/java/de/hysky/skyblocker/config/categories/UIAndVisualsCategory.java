@@ -218,6 +218,14 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.tabHud.tabHudScale = newValue)
                                 .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(10, 200).step(1))
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault.@Tooltip")))
+								.binding(defaults.uiAndVisuals.tabHud.showVanillaTabByDefault,
+										() -> config.uiAndVisuals.tabHud.showVanillaTabByDefault,
+										newValue -> config.uiAndVisuals.tabHud.showVanillaTabByDefault = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip")))

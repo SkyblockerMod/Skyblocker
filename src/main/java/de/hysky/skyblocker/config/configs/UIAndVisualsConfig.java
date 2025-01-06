@@ -169,6 +169,9 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public int tabHudScale = 100;
 
+		@SerialEntry
+		public boolean showVanillaTabByDefault = false;
+
         @SerialEntry
         public boolean enableHudBackground = true;
 
