@@ -45,7 +45,7 @@ public class VacuumSolver {
 	}
 
 	public static void onParticle(ParticleS2CPacket packet) {
-		if (!Utils.isOnGarden() || SkyblockerConfigManager.get().farming.garden.vacuumSolver || !ParticleTypes.ANGRY_VILLAGER.equals(packet.getParameters().getType())) {
+		if (!Utils.isOnGarden() || !SkyblockerConfigManager.get().farming.garden.vacuumSolver || !ParticleTypes.ANGRY_VILLAGER.equals(packet.getParameters().getType())) {
 			return;
 		}
 
@@ -102,11 +102,17 @@ public class VacuumSolver {
 	}
 
 	private static void renderTrail(WorldRenderContext context) {
-		if (fixedDestination == null) return;
+		if (fixedDestination == null) {
+			return;
+		}
 
 		float[] color = {1f, 0f, 0f};
 
-		RenderHelper.renderFilled(context, new BlockPos((int) fixedDestination.getX(), (int) fixedDestination.getY(), (int) fixedDestination.getZ()), color, 2.0f, false);
+		RenderHelper.renderFilled(context, new BlockPos(
+				(int) fixedDestination.getX(),
+				(int) fixedDestination.getY(),
+				(int) fixedDestination.getZ()
+		), color, 2.0f, false);
 
 		linkedMarkers.entrySet().removeIf(entry -> entry.getKey().isRemoved());
 
@@ -114,9 +120,12 @@ public class VacuumSolver {
 			RenderHelper.renderFilled(context, pos, color, 2.0f, false);
 		}
 
-		if (linkedMarkers.isEmpty()) {
-			fixedDestination = null;
+		if (linkedMarkers.isEmpty() && fixedDestination != null) {
+			RenderHelper.renderFilled(context, new BlockPos(
+					(int) fixedDestination.getX(),
+					(int) fixedDestination.getY(),
+					(int) fixedDestination.getZ()
+			), color, 2.0f, false);
 		}
 	}
-
 }
