@@ -12,6 +12,7 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
@@ -132,12 +133,12 @@ public class ScreenMaster {
 		for (Location loc : new Location[]{Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES}) {
 			screenBuilder = getScreenBuilder(loc);
 			screenBuilder.setPositionRule(
-					"commissions",
+					CommsWidget.ID,
 					new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, 5, 5, ScreenMaster.ScreenLayer.HUD)
 			);
 			screenBuilder.setPositionRule(
 					"powders",
-					new PositionRule("commissions", new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, ScreenMaster.ScreenLayer.HUD)
+					new PositionRule(CommsWidget.ID, new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, ScreenMaster.ScreenLayer.HUD)
 			);
 
 		}

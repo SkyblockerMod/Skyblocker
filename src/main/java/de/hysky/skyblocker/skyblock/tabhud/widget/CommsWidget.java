@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 @RegisterWidget
 public class CommsWidget extends TabHudWidget {
-
+	public static final String ID = "commissions";
 	private static final MutableText TITLE = Text.literal("Commissions").formatted(Formatting.DARK_AQUA,
 			Formatting.BOLD);
 
