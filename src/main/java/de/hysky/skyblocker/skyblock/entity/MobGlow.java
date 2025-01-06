@@ -167,7 +167,7 @@ public class MobGlow {
 			// Enderman Slayer's Nukekubi Skulls
 			case ArmorStandEntity armorStand when SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads && Utils.isInTheEnd() && armorStand.isMarker() && SlayerManager.isInSlayer() && isNukekubiHead(armorStand) -> 0x990099;
 
-			// pests
+			// Pests
 			case ArmorStandEntity armorStand when SkyblockerConfigManager.get().farming.garden.pestHighlighter && Utils.isOnGarden() && isPestHead(armorStand) -> 0xb62f00;
 
 			// Blaze Slayer's Demonic minions
