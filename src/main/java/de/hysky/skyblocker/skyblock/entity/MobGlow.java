@@ -221,7 +221,6 @@ public class MobGlow {
 	/**
 	 * Compares the armor items of an armor stand to the Pest head texture to determine if it is a Pest head.
 	 */
-
 	private static boolean isPestHead(ArmorStandEntity entity) {
 		return Streams.stream(entity.getArmorItems())
 				.map(ItemUtils::getHeadTexture)
