@@ -172,6 +172,9 @@ public class UIAndVisualsConfig {
 		@SerialEntry
 		public boolean showVanillaTabByDefault = false;
 
+		@SerialEntry
+		public TabHudStyle style = TabHudStyle.FANCY;
+
         @SerialEntry
         public boolean enableHudBackground = true;
 
@@ -187,6 +190,23 @@ public class UIAndVisualsConfig {
         @Deprecated
         public NameSorting nameSorting = NameSorting.DEFAULT;
     }
+
+	public enum TabHudStyle {
+		SIMPLE, FANCY, CLASSIC;
+
+		public boolean isSimple() {
+			return this == SIMPLE;
+		}
+
+		public boolean isFancy() {
+			return this == FANCY;
+		}
+
+		@Override
+		public String toString() {
+			return I18n.translate("skyblocker.config.uiAndVisuals.tabHud.style." + name());
+		}
+	}
 
     @Deprecated
     public enum NameSorting {

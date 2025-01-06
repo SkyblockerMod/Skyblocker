@@ -43,7 +43,7 @@ public class FireSaleWidget extends TabHudWidget {
 				float total = Float.parseFloat(m.group("total")) * 1000;
 				Text prgressTxt = Text.literal(String.format("%s/%.0f", avail, total));
 				float pcnt = (Float.parseFloat(avail) / (total)) * 100f;
-				ProgressComponent pc = new ProgressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt, ColorUtils.percentToColor(pcnt));
+				ProgressComponent pc = new ProgressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt);
 				this.addComponent(pc);
 			} else if (text.getString().toLowerCase() instanceof String s && (s.contains("starts") || s.contains("starting"))) {
 				this.addComponent(new IcoTextComponent(Ico.CLOCK, text));

@@ -13,7 +13,6 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
@@ -225,6 +224,16 @@ public class UIAndVisualsCategory {
 										() -> config.uiAndVisuals.tabHud.showVanillaTabByDefault,
 										newValue -> config.uiAndVisuals.tabHud.showVanillaTabByDefault = newValue)
 								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<UIAndVisualsConfig.TabHudStyle>createBuilder()
+								.name(Text.translatable("skyblocker.config.mining.dwarvenHud.style"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[0]"),
+										Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[1]"),
+										Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[2]")))
+								.binding(defaults.uiAndVisuals.tabHud.style,
+										() -> config.uiAndVisuals.tabHud.style,
+										newValue -> config.uiAndVisuals.tabHud.style = newValue)
+								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground"))

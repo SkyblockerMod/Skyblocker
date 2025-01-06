@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -25,8 +26,8 @@ public class ProgressComponent extends Component {
 	private final int color;
 	private final int barW;
 
-	public ProgressComponent(ItemStack ico, Text d, Text b, float pcnt, int color) {
-		if (d == null || b == null) {
+	public ProgressComponent(ItemStack ico, Text description, Text bar, float percent, int color) {
+		if (description == null || bar == null) {
 			this.ico = Ico.BARRIER;
 			this.desc = Text.literal("No data").formatted(Formatting.GRAY);
 			this.bar = Text.literal("---").formatted(Formatting.GRAY);
@@ -34,9 +35,9 @@ public class ProgressComponent extends Component {
 			this.color = 0xff000000 | Formatting.DARK_GRAY.getColorValue();
 		} else {
 			this.ico = (ico == null) ? Ico.BARRIER : ico;
-			this.desc = d;
-			this.bar = b;
-			this.pcnt = Math.clamp(pcnt, 0f, 100f);
+			this.desc = description;
+			this.bar = bar;
+			this.pcnt = Math.clamp(percent, 0f, 100f);
 			this.color = 0xff000000 | color;
 		}
 
@@ -45,8 +46,16 @@ public class ProgressComponent extends Component {
 		this.height = txtRend.fontHeight + PAD_S + 2 + txtRend.fontHeight + 2;
 	}
 
-	public ProgressComponent(ItemStack ico, Text text, float pcnt, int color) {
-		this(ico, text, Text.of(pcnt + "%"), pcnt, color);
+	public ProgressComponent(ItemStack ico, Text description, Text bar, float percent) {
+		this(ico, description, bar, percent, ColorUtils.percentToColor(percent));
+	}
+
+	public ProgressComponent(ItemStack ico, Text description, float percent, int color) {
+		this(ico, description, Text.of(percent + "%"), percent, color);
+	}
+
+	public ProgressComponent(ItemStack ico, Text description, float percent) {
+		this(ico, description, percent, ColorUtils.percentToColor(percent));
 	}
 
 	public ProgressComponent() {

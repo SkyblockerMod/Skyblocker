@@ -166,6 +166,10 @@ public class MiningConfig {
         public boolean coldOverlay = true;
     }
 
+	/**
+	 * @deprecated See {@link UIAndVisualsConfig.TabHudStyle}.
+	 */
+	@Deprecated
     public enum DwarvenHudStyle {
         SIMPLE, FANCY, CLASSIC;
 

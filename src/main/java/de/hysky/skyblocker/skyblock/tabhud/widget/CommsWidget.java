@@ -3,8 +3,9 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.dwarven.CommissionLabels;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -49,7 +50,7 @@ public class CommsWidget extends TabHudWidget {
 		for (Text line : lines) {
 			Matcher m = COMM_PATTERN.matcher(line.getString());
 			if (m.matches()) {
-				ProgressComponent pc;
+				Component component;
 
 				String name = m.group("name");
 				String progress = m.group("progress");
@@ -57,13 +58,13 @@ public class CommsWidget extends TabHudWidget {
 				newCommissionsNames.add(name);
 
 				if (progress.equals("DONE")) {
-					pc = new ProgressComponent(Ico.BOOK, Text.of(name), Text.of(progress), 100f, ColorUtils.percentToColor(100));
+					component = Components.progressComponent(Text.literal(name + ": ").append(Text.literal(progress).withColor(ColorUtils.percentToColor(100))), Ico.BOOK, Text.of(name), Text.of(progress), 100f);
 					commissionDone = true;
 				} else {
-					float pcnt = Float.parseFloat(progress.substring(0, progress.length() - 1));
-					pc = new ProgressComponent(Ico.BOOK, Text.of(name), pcnt, ColorUtils.percentToColor(pcnt));
+					float percent = Float.parseFloat(progress.substring(0, progress.length() - 1));
+					component = Components.progressComponent(Text.literal(name + ": ").append(Text.literal(progress).withColor(ColorUtils.percentToColor(percent))), Ico.BOOK, Text.of(name), percent);
 				}
-				this.addComponent(pc);
+				this.addComponent(component);
 			}
 		}
 		if (!oldCommissionNames.equals(newCommissionsNames) || oldDone != commissionDone) {
