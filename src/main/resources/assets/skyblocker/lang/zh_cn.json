@@ -1033,9 +1033,9 @@
     "skyblocker.config.general.speedPresets.enableSpeedPresets": "启用速度预设",
     "skyblocker.config.general.itemList.filter.entities": "实体",
     "skyblocker.config.farming.garden.gardenPlotsWidget": "启用花园地块部件",
-    "skyblocker.config.farming.garden.closeScreenOnPlotClick": "关闭背包界面的地块传送",
-    "skyblocker.config.farming.garden.closeScreenOnPlotClick.@Tooltip": "使用花园地块部件传送到某个地块时，是否自动关闭背包界面",
-    "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "在花园时，背包界面右侧会出现一个小部件，用于快速传送到地块。它还会显示有害虫的地块（这需要启用害虫小部件并在Tab中可见）。",
+    "skyblocker.config.farming.garden.closeScreenOnPlotClick": "地块传送后关闭物品栏",
+    "skyblocker.config.farming.garden.closeScreenOnPlotClick.@Tooltip": "使用花园地块部件传送到某个地块时，是否自动关闭物品栏",
+    "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "在花园时，物品栏右侧会出现一个小部件，用于快速传送到地块。它还会显示有害虫的地块（这需要启用害虫小部件并在Tab中可见）。",
     "skyblocker.config.helpers.enableBitsHelper": "高亮显示最高性价比的社区商店（点数商店）物品",
     "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "高亮显示社区商店（点数商店）中性价比最高的物品，并显示每点数对应的金币。如果最佳报价位于快速销售的商品列表中，则为绿色。黄色表示整体最佳报价——可能包括一年只卖出一个的商品。\n\n二者的价格均可能是人工操作的结果。请使用常识或开启近期平均价格提示工具。"
 }
