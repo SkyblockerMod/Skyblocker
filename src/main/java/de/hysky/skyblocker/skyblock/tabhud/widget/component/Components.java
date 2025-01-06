@@ -10,6 +10,6 @@ public class Components {
 	}
 
 	public static Component progressComponent(Text text, ItemStack icon, Text description, Text bar, float percent) {
-		return SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isSimple() ? new PlainTextComponent(text) : new ProgressComponent(icon, description, bar, percent);
+		return SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isFancy() ? new ProgressComponent(icon, description, bar, percent) : new PlainTextComponent(text);
 	}
 }
