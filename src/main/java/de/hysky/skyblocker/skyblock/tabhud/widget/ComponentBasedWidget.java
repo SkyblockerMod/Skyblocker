@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -181,7 +181,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 */
 	public static Text simpleEntryText(int idx, String entryName, Formatting contentFmt) {
 
-		String src = PlayerListMgr.strAt(idx);
+		String src = PlayerListManager.strAt(idx);
 
 		if (src == null) {
 			return null;
@@ -207,7 +207,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 * @return the entry at idx as unformatted Text
 	 */
 	public static Text plainEntryText(int idx) {
-		String str = PlayerListMgr.strAt(idx);
+		String str = PlayerListManager.strAt(idx);
 		if (str == null) {
 			return null;
 		}

@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -34,7 +34,7 @@ public class DungeonServerWidget extends TabHudWidget {
 		this.addSimpleIcoText(Ico.SIGN, "Rooms Visited:", Formatting.DARK_PURPLE, 42);
 		this.addSimpleIcoText(Ico.SIGN, "Rooms Completed:", Formatting.LIGHT_PURPLE, 43);
 
-		Matcher m = PlayerListMgr.regexAt(44, SECRET_PATTERN);
+		Matcher m = PlayerListManager.regexAt(44, SECRET_PATTERN);
 		if (m == null) {
 			this.addComponent(new ProgressComponent());
 		} else {

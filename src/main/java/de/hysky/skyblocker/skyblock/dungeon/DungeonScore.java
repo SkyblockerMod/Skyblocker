@@ -7,7 +7,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -231,7 +231,7 @@ public class DungeonScore {
 	}
 
 	private static int getCompletedRooms() {
-		Matcher matcher = PlayerListMgr.regexAt(43, COMPLETED_ROOMS_PATTERN);
+		Matcher matcher = PlayerListManager.regexAt(43, COMPLETED_ROOMS_PATTERN);
 		return matcher != null ? Integer.parseInt(matcher.group("rooms")) : 0;
 	}
 
@@ -259,14 +259,14 @@ public class DungeonScore {
 	}
 
 	private static int getPuzzleCount() {
-		Matcher matcher = PlayerListMgr.regexAt(47, PUZZLE_COUNT_PATTERN);
+		Matcher matcher = PlayerListManager.regexAt(47, PUZZLE_COUNT_PATTERN);
 		return matcher != null ? Integer.parseInt(matcher.group("count")) : 0;
 	}
 
 	private static int getPuzzlePenalty() {
 		int incompletePuzzles = 0;
 		for (int index = 0; index < puzzleCount; index++) {
-			Matcher puzzleMatcher = PlayerListMgr.regexAt(48 + index, PUZZLES_PATTERN);
+			Matcher puzzleMatcher = PlayerListManager.regexAt(48 + index, PUZZLES_PATTERN);
 			if (puzzleMatcher == null) break;
 			if (puzzleMatcher.group("state").matches("[✖✦]")) incompletePuzzles++;
 		}
@@ -274,13 +274,13 @@ public class DungeonScore {
 	}
 
 	private static double getSecretsPercentage() {
-		Matcher matcher = PlayerListMgr.regexAt(44, SECRETS_PATTERN);
+		Matcher matcher = PlayerListManager.regexAt(44, SECRETS_PATTERN);
 		return matcher != null ? Double.parseDouble(matcher.group("secper")) : 0;
 	}
 
 	private static int getCrypts() {
-		Matcher matcher = PlayerListMgr.regexAt(33, CRYPTS_PATTERN);
-		if (matcher == null) matcher = PlayerListMgr.regexAt(32, CRYPTS_PATTERN); //If class milestone 9 is reached, crypts goes up by 1
+		Matcher matcher = PlayerListManager.regexAt(33, CRYPTS_PATTERN);
+		if (matcher == null) matcher = PlayerListManager.regexAt(32, CRYPTS_PATTERN); //If class milestone 9 is reached, crypts goes up by 1
 		return matcher != null ? Integer.parseInt(matcher.group("crypts")) : 0;
 	}
 

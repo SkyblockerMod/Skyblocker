@@ -7,7 +7,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import it.unimi.dsi.fastutil.ints.*;
@@ -259,8 +259,8 @@ public class GardenPlotsWidget extends ClickableWidget {
 
 	private void updateInfestedFromTab() {
 		infectedPlots.clear();
-		for (int i = 0; i < PlayerListMgr.getPlayerStringList().size(); i++) {
-			String string = PlayerListMgr.getPlayerStringList().get(i);
+		for (int i = 0; i < PlayerListManager.getPlayerStringList().size(); i++) {
+			String string = PlayerListManager.getPlayerStringList().get(i);
 			if (string.startsWith("Plots:")) {
 				String[] split = string.split(":")[1].split(",");
 				for (String s : split) {
