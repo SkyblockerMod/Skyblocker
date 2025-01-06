@@ -29,9 +29,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ScreenMaster {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -39,20 +42,12 @@ public class ScreenMaster {
 	private static final int VERSION = 2;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
-	private static Map<Location, ScreenBuilder> createBuilderMap() {
-		EnumMap<Location, ScreenBuilder> map = new EnumMap<>(Location.class);
-		for (Location value : Location.values()) {
-			map.put(value, new ScreenBuilder(value));
-		}
-		return map;
-	}
-
-	private static final Map<Location, ScreenBuilder> builderMap = createBuilderMap();
+	private static final Map<Location, ScreenBuilder> BUILDER_MAP = new EnumMap<>(Arrays.stream(Location.values()).collect(Collectors.toMap(Function.identity(), ScreenBuilder::new)));
 
 	public static final Map<String, HudWidget> widgetInstances = new HashMap<>();
 
 	public static ScreenBuilder getScreenBuilder(Location location) {
-		return builderMap.get(location);
+		return BUILDER_MAP.get(location);
 	}
 
 	/**
@@ -81,7 +76,7 @@ public class ScreenMaster {
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
 			JsonObject object = SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
 			JsonObject positions = object.getAsJsonObject("positions");
-			for (Map.Entry<Location, ScreenBuilder> builderEntry : builderMap.entrySet()) {
+			for (Map.Entry<Location, ScreenBuilder> builderEntry : BUILDER_MAP.entrySet()) {
 				Location location = builderEntry.getKey();
 				ScreenBuilder screenBuilder = builderEntry.getValue();
 				if (positions.has(location.id())) {
@@ -103,7 +98,7 @@ public class ScreenMaster {
 	public static void saveConfig() {
 		JsonObject output = new JsonObject();
 		JsonObject positions = new JsonObject();
-		for (Map.Entry<Location, ScreenBuilder> builderEntry : builderMap.entrySet()) {
+		for (Map.Entry<Location, ScreenBuilder> builderEntry : BUILDER_MAP.entrySet()) {
 			Location location = builderEntry.getKey();
 			ScreenBuilder screenBuilder = builderEntry.getValue();
 			JsonObject locationObject = new JsonObject();
