@@ -128,6 +128,10 @@ public class Utils {
         return location == Location.THE_RIFT;
     }
 
+	public static boolean isOnGarden() {
+		return location == Location.GARDEN;
+	}
+
     /**
      * @return if the player is in the end island
      */

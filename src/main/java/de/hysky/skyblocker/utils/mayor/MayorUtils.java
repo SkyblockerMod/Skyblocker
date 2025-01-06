@@ -92,10 +92,17 @@ public class MayorUtils {
 				}
 				try {
 					JsonObject ministerObject = result.getAsJsonObject("minister");
-					JsonObject ministerPerk = ministerObject.getAsJsonObject("perk");
-					minister = new Minister(ministerObject.get("key").getAsString(),
-							ministerObject.get("name").getAsString(),
-							new Perk(ministerPerk.get("name").getAsString(), ministerPerk.get("description").getAsString()));
+					if (ministerObject != null) { // Check if ministerObject is not null stops NPE caused by Derpy
+						JsonObject ministerPerk = ministerObject.getAsJsonObject("perk");
+						minister = new Minister(
+								ministerObject.get("key").getAsString(),
+								ministerObject.get("name").getAsString(),
+								new Perk(ministerPerk.get("name").getAsString(), ministerPerk.get("description").getAsString())
+						);
+					} else {
+						LOGGER.info("[Skyblocker] No minister data found for the current mayor.");
+						minister = Minister.EMPTY;
+					}
 				} catch (Exception e) {
 					LOGGER.warn("[Skyblocker] Failed to parse minister status from the API response. This might be due to a special mayor, in which case there are no ministers.", e);
 					minister = Minister.EMPTY;

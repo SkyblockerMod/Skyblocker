@@ -7,6 +7,9 @@ public class FarmingConfig {
     @SerialEntry
     public Garden garden = new Garden();
 
+	@SerialEntry
+	public visitorHelper visitorHelper = new visitorHelper();
+
     public static class Garden {
         @SerialEntry
         public FarmingHud farmingHud = new FarmingHud();
@@ -14,14 +17,11 @@ public class FarmingConfig {
         @SerialEntry
         public boolean dicerTitlePrevent = true;
 
-        @SerialEntry
-        public boolean visitorHelper = true;
+		@SerialEntry
+		public boolean pestHighlighter = true;
 
 		@SerialEntry
-		public boolean visitorHelperGardenOnly = true;
-
-		@SerialEntry
-		public boolean showStacksInVisitorHelper = false;
+		public boolean vacuumSolver = false;
 
         @SerialEntry
         public boolean lockMouseTool = false;
@@ -35,6 +35,17 @@ public class FarmingConfig {
         @SerialEntry
         public boolean closeScreenOnPlotClick = false;
     }
+
+	public static class visitorHelper {
+		@SerialEntry
+		public boolean visitorHelper = true;
+
+		@SerialEntry
+		public boolean visitorHelperGardenOnly = true;
+
+		@SerialEntry
+		public boolean showStacksInVisitorHelper = false;
+	}
 
     public static class FarmingHud {
         @SerialEntry

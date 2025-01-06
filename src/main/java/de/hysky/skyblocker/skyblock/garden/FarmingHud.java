@@ -44,8 +44,6 @@ public class FarmingHud {
 	private static final LongPriorityQueue blockBreaks = new LongArrayFIFOQueue();
 	private static final Queue<FloatLongPair> farmingXp = new ArrayDeque<>();
 	private static float farmingXpPercentProgress;
-	private static double smoothedBlocksPerSecond = 0.0;
-	private static double smoothedFarmingXpPerHour = 0.0;
 
 	@Init
 	public static void init() {
@@ -63,7 +61,7 @@ public class FarmingHud {
 
 				assert client.player != null;
 				ItemStack stack = client.player.getMainHandStack();
-				if (stack == null || !tryGetCounter(stack, CounterType.CULTIVATING) && !tryGetCounter(stack, CounterType.COUNTER)) {
+				if (stack == null || tryGetCounter(stack, CounterType.CULTIVATING) && tryGetCounter(stack, CounterType.COUNTER)) {
 					counterType = CounterType.NONE;
 				}
 			}
@@ -92,7 +90,7 @@ public class FarmingHud {
 
 	private static boolean tryGetCounter(ItemStack stack, CounterType counterType) {
 		NbtCompound customData = ItemUtils.getCustomData(stack);
-		if (customData == null || !customData.contains(counterType.nbtKey, NbtElement.NUMBER_TYPE)) return false;
+		if (customData == null || !customData.contains(counterType.nbtKey, NbtElement.NUMBER_TYPE)) return true;
 		int count = customData.getInt(counterType.nbtKey);
 		if (FarmingHud.counterType != counterType) {
 			counter.clear();
@@ -101,7 +99,7 @@ public class FarmingHud {
 		if (counter.isEmpty() || counter.peekLast().leftInt() != count) {
 			counter.offer(IntLongPair.of(count, System.currentTimeMillis()));
 		}
-		return true;
+		return false;
 	}
 
 	private static boolean shouldRender() {
@@ -133,33 +131,34 @@ public class FarmingHud {
 	}
 
 	public static double blockBreaks() {
-		long currentTime = System.currentTimeMillis();
-		while (!blockBreaks.isEmpty() && blockBreaks.firstLong() + 1000 < currentTime) {
-			blockBreaks.dequeueLong();
+		if (blockBreaks.isEmpty()) {
+			return 0.0;
 		}
 
-		double rawBlocksPerSecond = blockBreaks.size();
-		double t = 0.01;
-		smoothedBlocksPerSecond += (rawBlocksPerSecond - smoothedBlocksPerSecond) * t;
+		long firstTimestamp = blockBreaks.firstLong();
+		long lastTimestamp = System.currentTimeMillis();
 
-		return Math.round(smoothedBlocksPerSecond * 10) / 10.0;
+		double timeDifferenceInSeconds = (lastTimestamp - firstTimestamp) / 1000.0;
+
+		if (timeDifferenceInSeconds <= 0) {
+			return 0.0;
+		}
+
+		return Math.round((blockBreaks.size() / timeDifferenceInSeconds) * 100) / 100.0;
 	}
 
+
 	public static float farmingXpPercentProgress() {
-		return farmingXpPercentProgress;
+		return Math.min(Math.max(farmingXpPercentProgress, 0), 100);
 	}
 
 	public static double farmingXpPerHour() {
 		double xpPerCrop = farmingXp.isEmpty() ? 0 : farmingXp.peek().leftFloat();
 		double cropsPerSecond = blockBreaks();
 		double xpPerSecond = xpPerCrop * cropsPerSecond;
-		double t = 0.1;
 
-		smoothedFarmingXpPerHour += (xpPerSecond * 3600 - smoothedFarmingXpPerHour) * t;
-
-		return Math.round(smoothedFarmingXpPerHour * 10) / 10.0;
+		return Math.round(xpPerSecond * 3600 * 10) / 10.0;
 	}
-
 
 	public enum CounterType {
 		NONE("", "No Counter"),

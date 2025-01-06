@@ -94,7 +94,7 @@ public class RenderHelper {
         matrices.pop();
     }
 
-    private static void renderBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents) {
+    public static void renderBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents) {
         if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, MAX_OVERWORLD_BUILD_HEIGHT, pos.getZ() + 1)) {
             MatrixStack matrices = context.matrixStack();
             Vec3d camera = context.camera().getPos();

@@ -36,8 +36,8 @@ public class CrimsonIsleCategory {
                                 .build())
                         .option(Option.<Waypoint.Type>createBuilder()
                                 .name(Text.translatable("skyblocker.config.crimsonIsle.kuudra.suppliesAndFuelWaypointType"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType.@Tooltip"),
-                                        Text.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType.generalNote")))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"),
+                                        Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote")))
                                 .binding(defaults.crimsonIsle.kuudra.suppliesAndFuelWaypointType,
                                         () -> config.crimsonIsle.kuudra.suppliesAndFuelWaypointType,
                                         newValue -> config.crimsonIsle.kuudra.suppliesAndFuelWaypointType = newValue)

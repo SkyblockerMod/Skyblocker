@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 

@@ -11,7 +11,7 @@ import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
-import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
+import de.hysky.skyblocker.skyblock.garden.visitorhelper.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
@@ -133,13 +133,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			if (config.helpers.itemPrice.enableItemPriceRefresh && ItemPrice.ITEM_PRICE_REFRESH.matchesKey(keyCode, scanCode)) {
 				ItemPrice.refreshItemPrices(this.client.player);
 			}
-		}
-	}
-
-	@Inject(at = @At("HEAD"), method = "mouseClicked")
-	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		if (SkyblockerConfigManager.get().farming.garden.visitorHelper && (!getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar"))) {
-			VisitorHelper.onMouseClicked(mouseX, mouseY, button, this.textRenderer);
 		}
 	}
 
@@ -294,8 +287,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		switch (this.handler) {
 			case GenericContainerScreenHandler genericContainerScreenHandler when genericContainerScreenHandler.getRows() == 6 -> {
-				VisitorHelper.onSlotClick(slot, slotId, title, genericContainerScreenHandler.getSlot(13).getStack());
-
+				VisitorHelper.onSlotClick(slot, slotId, title);
 				// Prevent selling to NPC shops
 				ItemStack sellStack = this.handler.slots.get(49).getStack();
 				if (sellStack.getName().getString().equals("Sell Item") || ItemUtils.getLoreLineIf(sellStack, text -> text.contains("buyback")) != null) {
@@ -323,6 +315,13 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack);
 
 			if (disallowed) ci.cancel();
+		}
+	}
+
+	@Inject(at = @At("HEAD"), method = "mouseClicked")
+	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+		if (SkyblockerConfigManager.get().farming.visitorHelper.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar"))) {
+			VisitorHelper.handleMouseClick(mouseX, mouseY, button, this.textRenderer);
 		}
 	}
 
