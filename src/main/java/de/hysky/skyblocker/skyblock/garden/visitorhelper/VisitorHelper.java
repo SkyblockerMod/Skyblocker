@@ -115,16 +115,23 @@ public class VisitorHelper {
 	 * Draws the visitor items and their associated information.
 	 */
 	private static void drawVisitorItems(DrawContext context, TextRenderer textRenderer) {
+
 		int index = 0;
+
+		// Map of grouped items with their total amount and associated visitors
 		Map<Text, Integer> groupedItems = new LinkedHashMap<>();
 		Map<Text, List<Visitor>> visitorsByItem = new LinkedHashMap<>();
 
-		activeVisitors.keySet().forEach(visitor ->
-				visitor.requiredItems().forEach((itemName, amount) -> {
-					groupedItems.put(itemName, groupedItems.getOrDefault(itemName, 0) + amount);
-					visitorsByItem.computeIfAbsent(itemName, k -> new LinkedList<>()).add(visitor);
-				})
-		);
+		// Group items by their name and accumulate their counts
+		for (Visitor visitor : activeVisitors.keySet()) {
+			for (Map.Entry<Text, Integer> entry : visitor.requiredItems().entrySet()) {
+				Text itemName = entry.getKey();
+				int amount = entry.getValue();
+
+				groupedItems.put(itemName, groupedItems.getOrDefault(itemName, 0) + amount);
+				visitorsByItem.computeIfAbsent(itemName, k -> new LinkedList<>()).add(visitor);
+			}
+		}
 
 		context.getMatrices().push();
 		context.getMatrices().translate(0, 0, 200);
@@ -136,6 +143,7 @@ public class VisitorHelper {
 
 			if (visitors == null || visitors.isEmpty()) continue;
 
+			// Render visitors' heads for the shared item
 			for (Visitor visitor : visitors) {
 				int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
@@ -146,9 +154,11 @@ public class VisitorHelper {
 				context.getMatrices().pop();
 
 				context.drawText(textRenderer, visitor.name(), X_OFFSET + (int) (ICON_SIZE * 0.95f) + 4, yPosition, -1, true);
+
 				index++;
 			}
 
+			// Render the shared item with the total amount
 			int iconX = X_OFFSET + 12;
 			int textX = iconX + (int) (ICON_SIZE * 0.95f) + 4;
 			int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight);
@@ -168,7 +178,6 @@ public class VisitorHelper {
 					: cachedStack.getName().copy()
 					.append(" x" + totalAmount);
 
-
 			int itemTextWidth = textRenderer.getWidth(itemText);
 			int copyTextX = textX + itemTextWidth;
 
@@ -180,6 +189,7 @@ public class VisitorHelper {
 
 		context.getMatrices().pop();
 	}
+
 
 	/**
 	 * Handles mouse click events on the visitor UI.
