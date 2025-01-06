@@ -104,7 +104,7 @@ public class MayorUtils {
 						minister = Minister.EMPTY;
 					}
 				} catch (Exception e) {
-					LOGGER.warn("[Skyblocker] Failed to parse minister status from the API response. This might be due to a special mayor, in which case there are no ministers.", e);
+					LOGGER.warn("[Skyblocker] Failed to parse minister status from the API response.", e);
 					minister = Minister.EMPTY;
 				}
 				LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);

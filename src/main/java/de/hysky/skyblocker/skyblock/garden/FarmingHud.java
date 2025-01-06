@@ -20,6 +20,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class FarmingHud {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
-	private static final Pattern FARMING_XP = Pattern.compile("§3\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?<percent>[\\d,]+(?:\\.\\d+)?%|[\\d,]+/[\\d,]+)\\)");
+	private static final Pattern FARMING_XP = Pattern.compile("\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?<percent>[\\d,]+(?:\\.\\d+)?%|[\\d,]+/[\\d,]+)\\)");
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 	private static CounterType counterType = CounterType.NONE;
 	private static final Deque<IntLongPair> counter = new ArrayDeque<>();
@@ -73,7 +74,7 @@ public class FarmingHud {
 		});
 		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
 			if (shouldRender() && overlay) {
-				Matcher matcher = FARMING_XP.matcher(message.getString());
+				Matcher matcher = FARMING_XP.matcher(Formatting.strip(message.getString()));
 				if (matcher.matches()) {
 					try {
 						farmingXp.offer(FloatLongPair.of(NUMBER_FORMAT.parse(matcher.group("xp")).floatValue(), System.currentTimeMillis()));
