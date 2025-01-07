@@ -68,6 +68,7 @@ public class RomanNumerals {
 	 * @param decimal The decimal number to convert.
 	 * @return The roman numeral, or an empty string if the number is out of range.
 	 */
+	@NotNull
 	public static String decimalToRoman(int decimal) {
 		if (decimal <= 0 || decimal >= 4000) return "";
 		StringBuilder roman = new StringBuilder();
