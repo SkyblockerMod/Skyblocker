@@ -28,7 +28,7 @@ public class ProgressComponent extends Component {
 	private final int barW;
 
 	/**
-	 * @see Components#progressComponent(Text, ItemStack, Text, Text, float)
+	 * @see Components#progressComponent(ItemStack, Text, Text, float)
 	 */
 	public ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, @Nullable Text bar, float percent, int color) {
 		if (description == null || bar == null) {
@@ -51,21 +51,21 @@ public class ProgressComponent extends Component {
 	}
 
 	/**
-	 * @see Components#progressComponent(Text, ItemStack, Text, Text, float)
+	 * @see Components#progressComponent(ItemStack, Text, Text, float)
 	 */
 	public ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, @Nullable Text bar, float percent) {
 		this(ico, description, bar, percent, ColorUtils.percentToColor(percent));
 	}
 
 	/**
-	 * @see Components#progressComponent(Text, ItemStack, Text, float)
+	 * @see Components#progressComponent(ItemStack, Text, float)
 	 */
 	public ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, float percent, int color) {
 		this(ico, description, Text.of(percent + "%"), percent, color);
 	}
 
 	/**
-	 * @see Components#progressComponent(Text, ItemStack, Text, float)
+	 * @see Components#progressComponent(ItemStack, Text, float)
 	 */
 	public ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, float percent) {
 		this(ico, description, percent, ColorUtils.percentToColor(percent));

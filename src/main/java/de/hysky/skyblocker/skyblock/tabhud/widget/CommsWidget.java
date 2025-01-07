@@ -6,7 +6,6 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -58,11 +57,11 @@ public class CommsWidget extends TabHudWidget {
 				newCommissionsNames.add(name);
 
 				if (progress.equals("DONE")) {
-					component = Components.progressComponent(Text.literal(name + ": ").append(Text.literal(progress).withColor(ColorUtils.percentToColor(100))), Ico.BOOK, Text.of(name), Text.of(progress), 100f);
+					component = Components.progressComponent(Ico.BOOK, Text.of(name), Text.of(progress), 100f);
 					commissionDone = true;
 				} else {
 					float percent = Float.parseFloat(progress.substring(0, progress.length() - 1));
-					component = Components.progressComponent(Text.literal(name + ": ").append(Text.literal(progress).withColor(ColorUtils.percentToColor(percent))), Ico.BOOK, Text.of(name), percent);
+					component = Components.progressComponent(Ico.BOOK, Text.of(name), percent);
 				}
 				this.addComponent(component);
 			}
