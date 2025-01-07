@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import org.jetbrains.annotations.NotNull;
 
 public class RomanNumerals {
 	private static final Int2ObjectMap<String> ROMAN_NUMERALS = Int2ObjectMaps.unmodifiable(new Int2ObjectLinkedOpenHashMap<>(
