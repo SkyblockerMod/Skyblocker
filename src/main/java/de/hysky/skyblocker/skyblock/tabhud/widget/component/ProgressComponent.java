@@ -6,6 +6,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -26,7 +27,10 @@ public class ProgressComponent extends Component {
 	private final int color;
 	private final int barW;
 
-	public ProgressComponent(ItemStack ico, Text description, Text bar, float percent, int color) {
+	/**
+	 * @see Components#progressComponent(Text, ItemStack, Text, Text, float)
+	 */
+	public ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, @Nullable Text bar, float percent, int color) {
 		if (description == null || bar == null) {
 			this.ico = Ico.BARRIER;
 			this.desc = Text.literal("No data").formatted(Formatting.GRAY);
@@ -46,15 +50,24 @@ public class ProgressComponent extends Component {
 		this.height = txtRend.fontHeight + PAD_S + 2 + txtRend.fontHeight + 2;
 	}
 
-	public ProgressComponent(ItemStack ico, Text description, Text bar, float percent) {
+	/**
+	 * @see Components#progressComponent(Text, ItemStack, Text, Text, float)
+	 */
+	public ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, @Nullable Text bar, float percent) {
 		this(ico, description, bar, percent, ColorUtils.percentToColor(percent));
 	}
 
-	public ProgressComponent(ItemStack ico, Text description, float percent, int color) {
+	/**
+	 * @see Components#progressComponent(Text, ItemStack, Text, float)
+	 */
+	public ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, float percent, int color) {
 		this(ico, description, Text.of(percent + "%"), percent, color);
 	}
 
-	public ProgressComponent(ItemStack ico, Text description, float percent) {
+	/**
+	 * @see Components#progressComponent(Text, ItemStack, Text, float)
+	 */
+	public ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, float percent) {
 		this(ico, description, percent, ColorUtils.percentToColor(percent));
 	}
 
