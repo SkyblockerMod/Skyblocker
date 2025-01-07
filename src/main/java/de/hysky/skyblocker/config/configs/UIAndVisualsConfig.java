@@ -16,7 +16,7 @@ import java.util.List;
 public class UIAndVisualsConfig {
 
 	@SerialEntry
-	public boolean swingOnAbilities = true;
+	public boolean swingOnAbilities = false;
 
 	@SerialEntry
 	public int nightVisionStrength = 100;
