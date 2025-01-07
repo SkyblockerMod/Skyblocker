@@ -111,7 +111,7 @@ public class SearchOverManager {
                         name = name.replace("Ultimate ", "");
                     }
 
-                    int level = matcher.group(2);
+                    String level = matcher.group(2);
                     name += " " + RomanNumerals.decimalToRoman(Integer.parseInt(level));
                     bazaarItems.add(name);
                     namesToNeuId.put(name, id.substring(0, id.lastIndexOf('_')).replace("ENCHANTMENT_", "") + ";" + level);
