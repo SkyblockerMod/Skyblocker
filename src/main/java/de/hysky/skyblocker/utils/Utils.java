@@ -369,6 +369,7 @@ public class Utils {
         }
     }
 
+    //TODO add event in the future
     private static void updateArea() {
     	if (isOnSkyblock) {
         	String areaName = getIslandArea().replaceAll("[⏣ф]", "").strip();

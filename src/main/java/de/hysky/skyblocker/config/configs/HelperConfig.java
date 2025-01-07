@@ -112,10 +112,10 @@ public class HelperConfig {
 
     public static class Carnival {
     	@SerialEntry
-    	public boolean zombieShootoutHelper = true;
+    	public boolean catchAFishHelper = true;
 
     	@SerialEntry
-    	public boolean catchAFishHelper = true;
+    	public boolean zombieShootoutHelper = true;
     }
 
     public static class Bazaar {
