@@ -211,6 +211,10 @@ public class UIAndVisualsConfig {
 		 */
 		FANCY;
 
+		public boolean isMinimal() {
+			return this == MINIMAL;
+		}
+
 		@Override
 		public String toString() {
 			return I18n.translate("skyblocker.config.uiAndVisuals.tabHud.style." + name());

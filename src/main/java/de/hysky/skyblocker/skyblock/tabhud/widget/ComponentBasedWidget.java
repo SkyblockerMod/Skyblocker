@@ -45,6 +45,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	static final int BORDER_SZE_W = 4;
 	static final int BORDER_SZE_E = 4;
 	static final int DEFAULT_COL_BG_BOX = 0xc00c0c0c;
+	static final int MINIMAL_COL_BG_BOX = 0x64000000;
 
 	private final int color;
 	private final Text title;
@@ -110,7 +111,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			GameOptions options = MinecraftClient.getInstance().options;
-			int textBackgroundColor = options.getTextBackgroundColor(DEFAULT_COL_BG_BOX);
+			int textBackgroundColor = options.getTextBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
 			context.fill(x + 1, y, x + w - 1, y + h, textBackgroundColor);
 			context.fill(x, y + 1, x + 1, y + h - 1, textBackgroundColor);
 			context.fill(x + w - 1, y + 1, x + w, y + h - 1, textBackgroundColor);
@@ -123,12 +124,14 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 		context.drawText(txtRend, title, x + 8, y + 2, this.color, false);
 
-		this.drawHLine(context, x + 2, y + 1 + strHeightHalf, 4);
-		this.drawHLine(context, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
-		this.drawHLine(context, x + 2, y + h - 2, w - 4);
+		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal()) {
+			this.drawHLine(context, x + 2, y + 1 + strHeightHalf, 4);
+			this.drawHLine(context, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
+			this.drawHLine(context, x + 2, y + h - 2, w - 4);
 
-		this.drawVLine(context, x + 1, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
-		this.drawVLine(context, x + w - 2, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.drawVLine(context, x + 1, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.drawVLine(context, x + w - 2, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+		}
 
 		int yOffs = y + BORDER_SZE_N;
 
