@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -38,10 +39,9 @@ public class DungeonServerWidget extends TabHudWidget {
 		if (m == null) {
 			this.addComponent(new ProgressComponent());
 		} else {
-			ProgressComponent scp = new ProgressComponent(Ico.CHEST, Text.of("Secrets found:"),
+			this.addComponent(Components.progressComponent(Ico.CHEST, Text.of("Secrets found:"),
 					Float.parseFloat(m.group("secnum")),
-					Formatting.DARK_PURPLE.getColorValue());
-			this.addComponent(scp);
+					Formatting.DARK_PURPLE.getColorValue()));
 		}
 
 		this.addSimpleIcoText(Ico.CLOCK, "Time:", Formatting.GOLD, 45);
