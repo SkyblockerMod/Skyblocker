@@ -187,6 +187,12 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public int tabHudScale = 100;
 
+		@SerialEntry
+		public boolean showVanillaTabByDefault = false;
+
+		@SerialEntry
+		public TabHudStyle style = TabHudStyle.FANCY;
+
         @SerialEntry
         public boolean enableHudBackground = true;
 
@@ -202,6 +208,36 @@ public class UIAndVisualsConfig {
         @Deprecated
         public NameSorting nameSorting = NameSorting.DEFAULT;
     }
+
+	public enum TabHudStyle {
+		/**
+		 * The minimal style, with no decorations, icons, or custom components,
+		 * rendered in a minimal rectangle background,
+		 * or no background at all if {@link TabHudConf#enableHudBackground} is false.
+		 */
+		MINIMAL,
+		/**
+		 * The simple style, with no decorations, icons, or custom components.
+		 */
+		SIMPLE,
+		/**
+		 * The classic style, with decorations such as icons but no custom components.
+		 */
+		CLASSIC,
+		/**
+		 * The default style, with all custom components and decorations in use.
+		 */
+		FANCY;
+
+		public boolean isMinimal() {
+			return this == MINIMAL;
+		}
+
+		@Override
+		public String toString() {
+			return I18n.translate("skyblocker.config.uiAndVisuals.tabHud.style." + name());
+		}
+	}
 
     @Deprecated
     public enum NameSorting {

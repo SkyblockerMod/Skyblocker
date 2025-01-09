@@ -7,6 +7,7 @@ import de.hysky.skyblocker.config.screens.powdertracker.PowderFilterConfigScreen
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
 import de.hysky.skyblocker.skyblock.dwarven.CarpetHighlighter;
 import de.hysky.skyblocker.skyblock.dwarven.PowderMiningTracker;
+import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -41,6 +42,12 @@ public class MiningCategory {
                                 newValue -> config.mining.commissionHighlight = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+
+				.option(ButtonOption.createBuilder()
+						.name(Text.translatable("skyblocker.config.mining.dwarvenHud.screen"))
+						.text(Text.translatable("text.skyblocker.open"))
+						.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, CommsWidget.ID, screen)))
+						.build())
 
                 //Dwarven Mines
                 .group(OptionGroup.createBuilder()
