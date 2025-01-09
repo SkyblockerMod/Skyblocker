@@ -45,6 +45,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	static final int BORDER_SZE_W = 4;
 	static final int BORDER_SZE_E = 4;
 	static final int DEFAULT_COL_BG_BOX = 0xc00c0c0c;
+	// More transparent background for minimal style
 	static final int MINIMAL_COL_BG_BOX = 0x64000000;
 
 	private final int color;
@@ -124,6 +125,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 		context.drawText(txtRend, title, x + 8, y + 2, this.color, false);
 
+		// Only draw borders if not in minimal mode
 		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal()) {
 			this.drawHLine(context, x + 2, y + 1 + strHeightHalf, 4);
 			this.drawHLine(context, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
