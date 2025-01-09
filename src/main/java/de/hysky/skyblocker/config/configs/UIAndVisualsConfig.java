@@ -192,15 +192,7 @@ public class UIAndVisualsConfig {
     }
 
 	public enum TabHudStyle {
-		SIMPLE, FANCY, CLASSIC;
-
-		public boolean isSimple() {
-			return this == SIMPLE;
-		}
-
-		public boolean isFancy() {
-			return this == FANCY;
-		}
+		MINIMAL, SIMPLE, CLASSIC, FANCY;
 
 		@Override
 		public String toString() {

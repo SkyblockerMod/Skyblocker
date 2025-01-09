@@ -226,10 +226,11 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<UIAndVisualsConfig.TabHudStyle>createBuilder()
-								.name(Text.translatable("skyblocker.config.mining.dwarvenHud.style"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[0]"),
-										Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[1]"),
-										Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[2]")))
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]"),
+										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]"),
+										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]"),
+										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[3]")))
 								.binding(defaults.uiAndVisuals.tabHud.style,
 										() -> config.uiAndVisuals.tabHud.style,
 										newValue -> config.uiAndVisuals.tabHud.style = newValue)

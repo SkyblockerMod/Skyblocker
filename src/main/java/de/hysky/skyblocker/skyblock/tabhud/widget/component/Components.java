@@ -8,19 +8,35 @@ import net.minecraft.text.Text;
 
 public class Components {
 	public static Component progressComponent(ItemStack icon, Text description, float percent) {
-		return SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isFancy() ? new ProgressComponent(icon, description, percent) : new PlainTextComponent(appendColon(description).append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
+		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
+			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
+			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
+			case FANCY -> new ProgressComponent(icon, description, percent);
+		};
 	}
 
 	public static Component progressComponent(ItemStack icon, Text description, float percent, int color) {
-		return SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isFancy() ? new ProgressComponent(icon, description, percent, color) : new PlainTextComponent(appendColon(description).append(Text.literal(percent + "%").withColor(color)));
+		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
+			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(Text.literal(percent + "%").withColor(color)));
+			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(color)));
+			case FANCY -> new ProgressComponent(icon, description, percent, color);
+		};
 	}
 
 	public static Component progressComponent(ItemStack icon, Text description, Text bar, float percent) {
-		return SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isFancy() ? new ProgressComponent(icon, description, bar, percent) : new PlainTextComponent(appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
+		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
+			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
+			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
+			case FANCY -> new ProgressComponent(icon, description, bar, percent);
+		};
 	}
 
 	public static Component progressComponent(ItemStack icon, Text description, Text bar, float percent, int color) {
-		return SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isFancy() ? new ProgressComponent(icon, description, bar, percent, color) : new PlainTextComponent(appendColon(description).append(bar.copy().withColor(color)));
+		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
+			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(bar.copy().withColor(color)));
+			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(bar.copy().withColor(color)));
+			case FANCY -> new ProgressComponent(icon, description, bar, percent, color);
+		};
 	}
 
 	/**
