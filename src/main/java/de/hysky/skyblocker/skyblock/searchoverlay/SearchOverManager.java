@@ -8,6 +8,7 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.util.NEUId;
@@ -30,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
@@ -39,15 +39,8 @@ public class SearchOverManager {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Search Overlay");
 
-    private static final Pattern BAZAAR_ENCHANTMENT_PATTERN = Pattern.compile("ENCHANTMENT_(\\D*)_(\\d+)");
+    private static final Pattern BAZAAR_ENCHANTMENT_PATTERN = Pattern.compile("Enchantment (\\D*) (\\d+)");
     private static final String PET_NAME_START = "[Lvl {LVL}] ";
-    /**
-     * converts index (in array) +1 to a roman numeral
-     */
-    private static final String[] ROMAN_NUMERALS = new String[]{
-            "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI",
-            "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"
-    };
 
     private static @Nullable SignBlockEntity sign = null;
     private static boolean signFront = true;
@@ -63,7 +56,7 @@ public class SearchOverManager {
     private static HashSet<String> auctionItems = new HashSet<>();
     private static HashSet<String> auctionPets = new HashSet<>();
     private static HashSet<String> starableItems = new HashSet<>();
-    private static HashMap<String, String> namesToId = new HashMap<>();
+    private static HashMap<String, String> namesToNeuId = new HashMap<>();
 
     public static String[] suggestionsArray = {};
 
@@ -97,7 +90,7 @@ public class SearchOverManager {
         HashSet<String> auctionItems = new HashSet<>();
         HashSet<String> auctionPets = new HashSet<>();
         HashSet<String> starableItems = new HashSet<>();
-        HashMap<String, String> namesToId = new HashMap<>();
+        HashMap<String, String> namesToNeuId = new HashMap<>();
 
         //get bazaar items
         try {
@@ -106,36 +99,32 @@ public class SearchOverManager {
             Object2ObjectMap<String, BazaarProduct> products = TooltipInfoType.BAZAAR.getData();
             for (Map.Entry<String, BazaarProduct> entry : products.entrySet()) {
                 BazaarProduct product = entry.getValue();
-            	String id = product.id();
-            	int sellVolume = product.sellVolume();
-            	if (sellVolume == 0)
-            		continue; //do not add items that do not sell e.g. they are not actual in the bazaar
-            	Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(id);
-            	if (matcher.matches()) {//format enchantments
-            		//remove ultimate if in name
-            		String name = matcher.group(1);
-            		if (!name.contains("WISE")) { //only way found to remove ultimate from everything but ultimate wise
-            			name = name.replace("ULTIMATE_", "");
-            		}
-            		name = name.replace("_", " ");
-            		name = capitalizeFully(name);
-            		int enchantLevel = Integer.parseInt(matcher.group(2));
-            		String level = "";
-            		if (enchantLevel > 0) {
-            			level = ROMAN_NUMERALS[enchantLevel - 1];
-            		}
-            		bazaarItems.add(name + " " + level);
-            		namesToId.put(name + " " + level, matcher.group(1) + ";" + matcher.group(2));
-            		continue;
-            	}
-            	//look up id for name
-            	NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
-            	if (neuItem != null) {
-            		String name = Formatting.strip(neuItem.getDisplayName());
-            		bazaarItems.add(name);
-            		namesToId.put(name, id);
-            		continue;
-            	}
+                String id = product.id();
+                String name = product.name();
+                int sellVolume = product.sellVolume();
+                if (sellVolume == 0)
+                    continue; //do not add items that do not sell e.g. they are not actual in the bazaar
+                Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(name);
+                if (matcher.matches()) {//format enchantments
+                    name = matcher.group(1);
+                    if (!name.contains("Ultimate Wise")) {
+                        name = name.replace("Ultimate ", "");
+                    }
+
+                    String level = matcher.group(2);
+                    name += " " + RomanNumerals.decimalToRoman(Integer.parseInt(level));
+                    bazaarItems.add(name);
+                    namesToNeuId.put(name, id.substring(0, id.lastIndexOf('_')).replace("ENCHANTMENT_", "") + ";" + level);
+                    continue;
+                }
+                //look up id for name
+                NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
+                if (neuItem != null) {
+                    name = Formatting.strip(neuItem.getDisplayName());
+                    bazaarItems.add(name);
+                    namesToNeuId.put(name, id);
+                    continue;
+                }
             }
         } catch (Exception e) {
             LOGGER.error("[Skyblocker] Failed to load bazaar item list! ", e);
@@ -164,7 +153,7 @@ public class SearchOverManager {
                         starableItems.add(name.toLowerCase());
                     }
                     auctionItems.add(name);
-                    namesToId.put(name, id);
+                    namesToNeuId.put(name, id);
                 }
             }
         } catch (Exception e) {
@@ -175,22 +164,7 @@ public class SearchOverManager {
         SearchOverManager.auctionItems = auctionItems;
         SearchOverManager.auctionPets = auctionPets;
         SearchOverManager.starableItems = starableItems;
-        SearchOverManager.namesToId = namesToId;
-    }
-
-    /**
-     * Capitalizes the first letter off every word in a string
-     *
-     * @param str string to capitalize
-     */
-    public static String capitalizeFully(String str) {
-        if (str == null || str.isEmpty()) {
-            return str;
-        }
-
-        return Arrays.stream(str.split("\\s+"))
-                .map(t -> t.substring(0, 1).toUpperCase() + t.substring(1).toLowerCase())
-                .collect(Collectors.joining(" "));
+        SearchOverManager.namesToNeuId = namesToNeuId;
     }
 
     /**
@@ -265,7 +239,7 @@ public class SearchOverManager {
     }
 
     protected static String getSuggestionId(int index) {
-        return namesToId.get(getSuggestion(index));
+        return namesToNeuId.get(getSuggestion(index));
     }
 
     /**
@@ -287,7 +261,7 @@ public class SearchOverManager {
     }
 
     protected static String getHistoryId(int index) {
-        return namesToId.get(getHistory(index));
+        return namesToNeuId.get(getHistory(index));
     }
 
     /**
