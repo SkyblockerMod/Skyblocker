@@ -68,6 +68,11 @@ public class Utils {
     @NotNull
     private static Location location = Location.UNKNOWN;
     /**
+     * Current Skyblock island area.
+     */
+    @NotNull
+    private static Area area = Area.UNKNOWN;
+    /**
      * The profile name parsed from the player list.
      */
     @NotNull
@@ -169,6 +174,16 @@ public class Utils {
     @NotNull
     public static Location getLocation() {
         return location;
+    }
+
+    /**
+     * <b>Note: Under no circumstances should you skip checking the location if you also need the area.</b>
+     * 
+     * @return the area parsed from the scoreboard.
+     */
+    @NotNull
+    public static Area getArea() {
+        return area;
     }
 
     /**
@@ -348,9 +363,20 @@ public class Utils {
             STRING_SCOREBOARD.addAll(stringLines);
             Utils.updatePurse();
 			SlayerManager.getSlayerBossInfo(true);
+			updateArea();
         } catch (NullPointerException e) {
             //Do nothing
         }
+    }
+
+    //TODO add event in the future
+    private static void updateArea() {
+    	if (isOnSkyblock) {
+        	String areaName = getIslandArea().replaceAll("[⏣ф]", "").strip();
+        	area = Area.from(areaName);
+    	} else {
+    		area = Area.UNKNOWN;
+    	}
     }
 
 	public static void updatePurse() {
@@ -389,6 +415,7 @@ public class Utils {
         gameType = "";
         locationRaw = "";
         location = Location.UNKNOWN;
+        area = Area.UNKNOWN;
         map = "";
     }
 
