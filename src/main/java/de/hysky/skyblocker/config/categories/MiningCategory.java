@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.dwarven.CarpetHighlighter;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
 import de.hysky.skyblocker.skyblock.dwarven.PowderMiningTracker;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import de.hysky.skyblocker.utils.Location;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
