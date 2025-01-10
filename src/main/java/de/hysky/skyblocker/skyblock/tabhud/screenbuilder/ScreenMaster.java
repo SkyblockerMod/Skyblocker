@@ -11,7 +11,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
@@ -29,9 +30,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ScreenMaster {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -39,20 +43,12 @@ public class ScreenMaster {
 	private static final int VERSION = 2;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
-	private static Map<Location, ScreenBuilder> createBuilderMap() {
-		EnumMap<Location, ScreenBuilder> map = new EnumMap<>(Location.class);
-		for (Location value : Location.values()) {
-			map.put(value, new ScreenBuilder(value));
-		}
-		return map;
-	}
-
-	private static final Map<Location, ScreenBuilder> builderMap = createBuilderMap();
+	private static final Map<Location, ScreenBuilder> BUILDER_MAP = new EnumMap<>(Arrays.stream(Location.values()).collect(Collectors.toMap(Function.identity(), ScreenBuilder::new)));
 
 	public static final Map<String, HudWidget> widgetInstances = new HashMap<>();
 
 	public static ScreenBuilder getScreenBuilder(Location location) {
-		return builderMap.get(location);
+		return BUILDER_MAP.get(location);
 	}
 
 	/**
@@ -66,7 +62,7 @@ public class ScreenMaster {
 		MinecraftClient client = MinecraftClient.getInstance();
 		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
 		if (client.options.playerListKey.isPressed()) {
-			if (hud || TabHud.defaultTgl.isPressed()) return;
+			if (hud || TabHud.shouldRenderVanilla()) return;
 			if (TabHud.toggleSecondary.isPressed()) {
 				screenBuilder.run(context, w, h, ScreenLayer.SECONDARY_TAB);
 			} else {
@@ -81,7 +77,7 @@ public class ScreenMaster {
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
 			JsonObject object = SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
 			JsonObject positions = object.getAsJsonObject("positions");
-			for (Map.Entry<Location, ScreenBuilder> builderEntry : builderMap.entrySet()) {
+			for (Map.Entry<Location, ScreenBuilder> builderEntry : BUILDER_MAP.entrySet()) {
 				Location location = builderEntry.getKey();
 				ScreenBuilder screenBuilder = builderEntry.getValue();
 				if (positions.has(location.id())) {
@@ -103,7 +99,7 @@ public class ScreenMaster {
 	public static void saveConfig() {
 		JsonObject output = new JsonObject();
 		JsonObject positions = new JsonObject();
-		for (Map.Entry<Location, ScreenBuilder> builderEntry : builderMap.entrySet()) {
+		for (Map.Entry<Location, ScreenBuilder> builderEntry : BUILDER_MAP.entrySet()) {
 			Location location = builderEntry.getKey();
 			ScreenBuilder screenBuilder = builderEntry.getValue();
 			JsonObject locationObject = new JsonObject();
@@ -137,12 +133,12 @@ public class ScreenMaster {
 		for (Location loc : new Location[]{Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES}) {
 			screenBuilder = getScreenBuilder(loc);
 			screenBuilder.setPositionRule(
-					"commissions",
+					CommsWidget.ID,
 					new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, 5, 5, ScreenMaster.ScreenLayer.HUD)
 			);
 			screenBuilder.setPositionRule(
 					"powders",
-					new PositionRule("commissions", new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, ScreenMaster.ScreenLayer.HUD)
+					new PositionRule(CommsWidget.ID, new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, ScreenMaster.ScreenLayer.HUD)
 			);
 
 		}
@@ -184,7 +180,7 @@ public class ScreenMaster {
 	public static void addWidgetInstance(HudWidget widget) {
 		HudWidget put = widgetInstances.put(widget.getInternalID(), widget);
 		if (widget instanceof TabHudWidget tabHudWidget) {
-			PlayerListMgr.tabWidgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
+			PlayerListManager.tabWidgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
 		}
 		if (put != null) LOGGER.warn("[Skyblocker] Duplicate hud widget found: {}", widget);
 	}

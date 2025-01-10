@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -27,7 +27,7 @@ public class DungeonSecretWidget extends TabHudWidget {
 		if (!DungeonScore.isDungeonStarted()) {
 			this.addSimpleIcoText(Ico.CHEST, "Secrets:", Formatting.YELLOW, 30);
 			this.addSimpleIcoText(Ico.SKULL, "Crypts:", Formatting.YELLOW, 31);
-		} else if (PlayerListMgr.regexAt(31, DISCOVERIES) != null) {
+		} else if (PlayerListManager.regexAt(31, DISCOVERIES) != null) {
 			this.addSimpleIcoText(Ico.CHEST, "Secrets:", Formatting.YELLOW, 32);
 			this.addSimpleIcoText(Ico.SKULL, "Crypts:", Formatting.YELLOW, 33);
 		} else {

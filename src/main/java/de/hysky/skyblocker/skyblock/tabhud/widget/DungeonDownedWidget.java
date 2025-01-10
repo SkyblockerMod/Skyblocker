@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -24,7 +24,7 @@ public class DungeonDownedWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent(List<Text> ignored) {
-		String down = PlayerListMgr.strAt(21);
+		String down = PlayerListManager.strAt(21);
 		if (down == null) {
 			this.addComponent(new IcoTextComponent());
 		} else {

@@ -42,6 +42,12 @@ public class MiningCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 
+				.option(ButtonOption.createBuilder()
+						.name(Text.translatable("skyblocker.config.mining.dwarvenHud.screen"))
+						.text(Text.translatable("text.skyblocker.open"))
+						.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, CommsWidget.ID, screen)))
+						.build())
+
                 //Dwarven Mines
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.mining.dwarvenMines"))

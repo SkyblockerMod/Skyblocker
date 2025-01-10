@@ -8,7 +8,7 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.EnumUtils;
@@ -197,7 +197,7 @@ public class PreviewTab implements Tab {
 
 	private void updatePlayerListFromPreview() {
 		if (mode == Mode.DUNGEON) {
-			PlayerListMgr.updateDungeons(DungeonsTabPlaceholder.get());
+			PlayerListManager.updateDungeons(DungeonsTabPlaceholder.get());
 			return;
 		}
 		if (!parent.isPreviewVisible() || parent.getHandler() == null) return;
@@ -240,7 +240,7 @@ public class PreviewTab implements Tab {
 				}
 			}
 		}
-		PlayerListMgr.updateWidgetsFrom(lines.stream().map(line -> {
+		PlayerListManager.updateWidgetsFrom(lines.stream().map(line -> {
 			PlayerListEntry playerListEntry = new PlayerListEntry(new GameProfile(UUID.randomUUID(), ""), false);
 			playerListEntry.setDisplayName(line);
 			return playerListEntry;
