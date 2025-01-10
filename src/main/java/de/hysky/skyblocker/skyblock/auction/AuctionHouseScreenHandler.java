@@ -53,6 +53,5 @@ public class AuctionHouseScreenHandler extends GenericContainerScreenHandler {
     @Override
     public void setStackInSlot(int slot, int revision, ItemStack stack) {
         super.setStackInSlot(slot, revision, stack);
-        onContentChanged(slots.get(slot).inventory);
     }
 }

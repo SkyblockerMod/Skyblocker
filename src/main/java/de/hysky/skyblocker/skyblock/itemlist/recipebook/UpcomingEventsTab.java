@@ -1,12 +1,5 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
 import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
@@ -24,6 +17,12 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class UpcomingEventsTab implements RecipeTab {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -81,7 +80,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.hovered != null && this.hovered.getWarpCommand() != null) {
-			MessageScheduler.INSTANCE.sendMessageAfterCooldown(hovered.getWarpCommand());
+			MessageScheduler.INSTANCE.sendMessageAfterCooldown(hovered.getWarpCommand(), true);
 
 			return true;
 		}
@@ -95,7 +94,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	}
 
 	@Override
-	public void updateSearchResults(String query) {}
+	public void updateSearchResults(String query, FilterOption filterOption, boolean refresh) {}
 
 	@Override
 	public void initializeSearchResults(String query) {}

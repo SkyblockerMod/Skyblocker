@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -13,8 +13,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class SkyblockLevelAdder extends SimpleSlotTextAdder {
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"skyblock_level",
+			"skyblocker.config.uiAndVisuals.slotText.skyblockLevel");
 	public SkyblockLevelAdder() {
-		super("^SkyBlock Menu");
+		super("^SkyBlock Menu", CONFIG_INFORMATION);
 	}
 
 	@Override

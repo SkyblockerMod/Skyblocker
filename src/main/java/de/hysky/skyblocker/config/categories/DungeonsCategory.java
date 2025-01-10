@@ -52,6 +52,14 @@ public class DungeonsCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
                 .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.dungeons.classBasedPlayerGlow"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip")))
+                        .binding(defaults.dungeons.classBasedPlayerGlow,
+                                () -> config.dungeons.classBasedPlayerGlow,
+                                newValue -> config.dungeons.classBasedPlayerGlow = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
+                .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.dungeons.starredMobGlow"))
                         .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.starredMobGlow.@Tooltip")))
                         .binding(defaults.dungeons.starredMobGlow,
@@ -357,8 +365,8 @@ public class DungeonsCategory {
                                 .build())
                         .option(Option.<Type>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType.@Tooltip"),
-                                        Text.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType.generalNote")))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"),
+                                        Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote")))
                                 .binding(defaults.dungeons.secretWaypoints.waypointType,
                                         () -> config.dungeons.secretWaypoints.waypointType,
                                         newValue -> config.dungeons.secretWaypoints.waypointType = newValue)

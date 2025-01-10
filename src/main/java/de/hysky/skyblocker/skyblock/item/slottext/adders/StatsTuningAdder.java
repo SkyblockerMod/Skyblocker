@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -16,9 +16,13 @@ import java.util.regex.Pattern;
 public class StatsTuningAdder extends SimpleSlotTextAdder {
     private static final Pattern STATHAS = Pattern.compile("Stat has: (?<points>\\d+) (points|point)");
     private static final Pattern UNASSIGNEDPOINTS = Pattern.compile("Unassigned Points: (?<points>\\d+)!!!");
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"stats_tuning",
+			"skyblocker.config.uiAndVisuals.slotText.statsTuning",
+			"skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip");
 
     public StatsTuningAdder() {
-        super("^Stats Tuning");
+        super("^Stats Tuning", CONFIG_INFORMATION);
     }
 
     @Override

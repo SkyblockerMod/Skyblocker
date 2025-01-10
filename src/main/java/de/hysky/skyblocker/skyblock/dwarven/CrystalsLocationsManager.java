@@ -15,8 +15,8 @@ import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosAr
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import de.hysky.skyblocker.utils.ws.WsMessageHandler;
 import de.hysky.skyblocker.utils.ws.Service;
+import de.hysky.skyblocker.utils.ws.WsMessageHandler;
 import de.hysky.skyblocker.utils.ws.WsStateManager;
 import de.hysky.skyblocker.utils.ws.message.CrystalsWaypointMessage;
 import de.hysky.skyblocker.utils.ws.message.CrystalsWaypointSubscribeMessage;
@@ -294,7 +294,7 @@ public class CrystalsLocationsManager {
     public static int shareWaypoint(String place) {
         if (activeWaypoints.containsKey(place)) {
             BlockPos pos = activeWaypoints.get(place).pos;
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + " " + place + ": " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + " " + place + ": " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ(), false);
         } else {
             //send fail message
             if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {

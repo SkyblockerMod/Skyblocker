@@ -12,7 +12,6 @@ import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
@@ -57,16 +56,12 @@ public class ItemRarityBackgrounds {
 	}
 
 	public static void tryDraw(ItemStack stack, DrawContext context, int x, int y) {
-		MinecraftClient client = MinecraftClient.getInstance();
-
-		if (client.player != null) {
-			SkyblockItemRarity itemRarity = getItemRarity(stack, client.player);
-
-			if (itemRarity != null) draw(context, x, y, itemRarity);
-		}
+		SkyblockItemRarity itemRarity = getItemRarity(stack);
+		if (itemRarity != null)
+			draw(context, x, y, itemRarity);
 	}
 
-	private static SkyblockItemRarity getItemRarity(ItemStack stack, ClientPlayerEntity player) {
+	private static SkyblockItemRarity getItemRarity(ItemStack stack) {
 		if (stack == null || stack.isEmpty()) return null;
 
 		String itemUuid = stack.getUuid();

@@ -1,14 +1,17 @@
 package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonParser;
+import com.mojang.brigadier.Command;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.MinecraftClientAccessor;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
@@ -26,6 +29,8 @@ import java.security.Signature;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.UUID;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 /**
  * This class is responsible for communicating with the API to retrieve a fully custom token used to gain access to more privileged APIs
@@ -47,6 +52,14 @@ public class ApiAuthentication {
 	public static void init() {
 		//Update token after the profileKeys instance is initialized
 		ClientLifecycleEvents.CLIENT_STARTED.register(_client -> updateToken());
+		if (Debug.debugEnabled()) {
+			ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+					dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("updateToken").executes(context -> {
+						updateToken();
+						return Command.SINGLE_SUCCESS;
+					})))
+			);
+		}
 	}
 
 	/**

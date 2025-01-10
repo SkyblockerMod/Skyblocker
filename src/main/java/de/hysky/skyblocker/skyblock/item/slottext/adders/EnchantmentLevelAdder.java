@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
@@ -16,8 +16,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"enchantment_level",
+			"skyblocker.config.uiAndVisuals.slotText.enchantmentLevel");
+
 	public EnchantmentLevelAdder() {
-		super();
+		super(CONFIG_INFORMATION);
 	}
 
 	@Override

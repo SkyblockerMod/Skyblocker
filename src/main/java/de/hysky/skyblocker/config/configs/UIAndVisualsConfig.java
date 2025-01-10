@@ -1,7 +1,11 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 
@@ -10,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UIAndVisualsConfig {
+	@SerialEntry
+	public int nightVisionStrength = 100;
+
     @SerialEntry
     public boolean compactorDeletorPreview = true;
 
@@ -35,10 +42,16 @@ public class UIAndVisualsConfig {
 	public boolean museumOverlay = true;
 
     @SerialEntry
+    public boolean cancelComponentUpdateAnimation = true;
+
+    @SerialEntry
     public ChestValue chestValue = new ChestValue();
 
     @SerialEntry
     public ItemCooldown itemCooldown = new ItemCooldown();
+
+	@SerialEntry
+	public SlotText slotText = new SlotText();
 
     @SerialEntry
     public InventorySearchConfig inventorySearch = new InventorySearchConfig();
@@ -89,6 +102,19 @@ public class UIAndVisualsConfig {
         public boolean enableItemCooldowns = true;
     }
 
+	public static class SlotText {
+
+		@SerialEntry
+		public SlotTextMode slotTextMode = SlotTextMode.ENABLED;
+
+		@SerialEntry
+		public Object2BooleanMap<String> textEnabled = new Object2BooleanOpenHashMap<>();
+
+		@SerialEntry
+		public boolean slotTextToggled = true;
+
+	}
+
     public static class InventorySearchConfig {
         @SerialEntry
         public EnableState enabled = EnableState.SKYBLOCK;
@@ -130,10 +156,14 @@ public class UIAndVisualsConfig {
         public int y = 10;
 
         @SerialEntry
-        public Direction direction = Direction.HORIZONTAL;
+        public Direction direction = Direction.VERTICAL;
 
         @SerialEntry
         public Alignment alignment = Alignment.MIDDLE;
+
+        public float getRenderScale() {
+            return titleContainerScale * 0.03f;
+        }
     }
 
     public enum Direction {
@@ -146,7 +176,7 @@ public class UIAndVisualsConfig {
     }
 
     public enum Alignment {
-        LEFT, RIGHT, MIDDLE;
+        LEFT, MIDDLE, RIGHT;
 
         @Override
         public String toString() {
@@ -165,12 +195,19 @@ public class UIAndVisualsConfig {
         public boolean enableHudBackground = true;
 
         @SerialEntry
-        public boolean plainPlayerNames = false;
+        public boolean effectsFromFooter = false;
 
         @SerialEntry
+        public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
+
+        @Deprecated
+        public boolean plainPlayerNames = false;
+
+        @Deprecated
         public NameSorting nameSorting = NameSorting.DEFAULT;
     }
 
+    @Deprecated
     public enum NameSorting {
         DEFAULT, ALPHABETICAL;
 
@@ -291,6 +328,9 @@ public class UIAndVisualsConfig {
 
         @SerialEntry
         public boolean requiresEquals = false;
+
+		@SerialEntry
+		public boolean closeSignsWithEnter = true;
     }
 
     public static class FlameOverlay {

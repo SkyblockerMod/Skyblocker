@@ -117,11 +117,12 @@ public class ItemRepository {
     }
 
     public static Stream<ItemStack> getItemsStream() {
+		if (!filesImported) return Stream.empty();
         return items.stream();
     }
 
     /**
-     * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link ItemUtils#getNeuId(String, String) ItemTooltip#getNeuName(String, String)}
+     * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link ItemUtils#getNeuId(ItemStack) ItemTooltip#getNeuName(String, String)}
      */
     @Nullable
     public static ItemStack getItemStack(String neuId) {

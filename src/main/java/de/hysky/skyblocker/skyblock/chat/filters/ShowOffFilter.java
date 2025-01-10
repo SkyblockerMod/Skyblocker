@@ -9,7 +9,7 @@ public class ShowOffFilter extends SimpleChatFilter {
 
 	public ShowOffFilter() {
 		//(?:\[[0-9]+\] )?(?:[<INSERT EMBLEMS>] )?(?:\[[A-Z+]+\] )?([A-Za-z0-9_]+) (?:<INSERT SHOW TYPES>) \[(.+)\]
-		super("(?:\\[[0-9]+\\] )?(?:[" + Constants.LEVEL_EMBLEMS + "] )?(?:\\[[A-Z+]+\\] )?([A-Za-z0-9_]+) (?:" + String.join("|", SHOW_TYPES) + ") \\[(.+)\\]");
+		super(Constants.PLAYER_NAME.pattern() + " (?:" + String.join("|", SHOW_TYPES) + ") \\[(.+)\\]");
 	}
 
 	@Override

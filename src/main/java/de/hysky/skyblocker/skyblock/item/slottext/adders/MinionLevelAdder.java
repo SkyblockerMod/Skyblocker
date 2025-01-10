@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -16,8 +16,11 @@ import java.util.regex.Pattern;
 
 public class MinionLevelAdder extends SimpleSlotTextAdder {
 	private static final Pattern MINION_PATTERN = Pattern.compile(".* Minion ([IVXLCDM]+)");
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"minion_level",
+			"skyblocker.config.uiAndVisuals.slotText.minionLevel");
 	public MinionLevelAdder() {
-		super();
+		super(CONFIG_INFORMATION);
 	}
 
 	@Override

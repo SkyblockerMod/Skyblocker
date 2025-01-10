@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
 import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
@@ -9,12 +10,6 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.constants.PetNumbers;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.Rarity;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.ProfileComponent;
@@ -23,9 +18,13 @@ import net.minecraft.item.Items;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +36,7 @@ public class Pet {
 
     private final String name;
     private final double xp;
-    private final String tier;
+    private final SkyblockItemRarity tier;
     private final Optional<String> heldItem;
     private final Optional<String> skin;
     private final Optional<ProfileComponent> skinTexture;
@@ -46,20 +45,6 @@ public class Pet {
     private final long levelXP;
     private final long nextLevelXP;
     private final ItemStack icon;
-
-    private static final Object2IntMap<String> TIER_MAP = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(Map.of(
-            "COMMON", 0, "UNCOMMON", 1, "RARE", 2, "EPIC", 3, "LEGENDARY", 4, "MYTHIC", 5
-    )));
-
-    private static final Int2ObjectMap<Formatting> RARITY_COLOR_MAP = Int2ObjectMaps.unmodifiable(new Int2ObjectOpenHashMap<>(Map.of(
-            0, Formatting.WHITE, // COMMON
-            1, Formatting.GREEN, // UNCOMMON
-            2, Formatting.BLUE, // RARE
-            3, Formatting.DARK_PURPLE, // EPIC
-            4, Formatting.GOLD, // LEGENDARY
-            5, Formatting.LIGHT_PURPLE, // MYTHIC
-            6, Formatting.AQUA // DIVINE (future proofing, because why not)
-    )));
 
     public Pet(PetInfo petData) {
         LevelFinder.LevelInfo info = LevelFinder.getLevelInfo(petData.type().equals("GOLDEN_DRAGON") ? "PET_GREG" : "PET_" + petData.tier(), (long) petData.exp());
@@ -84,12 +69,12 @@ public class Pet {
         return (long) xp;
     }
 
-    private int getTier() {
-        return TIER_MAP.getOrDefault(tier, 0);
+    public SkyblockItemRarity getRarity() {
+        return tier;
     }
 
-    public String getTierAsString() {
-        return tier;
+    public int getTier() {
+        return tier.ordinal();
     }
 
     private Optional<ProfileComponent> calculateSkinTexture() {
@@ -167,12 +152,12 @@ public class Pet {
             petStack.set(DataComponentTypes.PROFILE, skinTexture.get());
         }
 
-        if ((boosted())) formattedLore.set(formattedLore.size() - 1, Text.literal(Rarity.values()[getTier() + 1].toString()).setStyle(style).formatted(Formatting.BOLD, RARITY_COLOR_MAP.get(getTier() + 1)));
+        if ((boosted())) formattedLore.set(formattedLore.size() - 1, Text.literal(getRarity().next().toString()).setStyle(style).formatted(Formatting.BOLD, getRarity().next().formatting));
 
         // Update the lore and name
         petStack.set(DataComponentTypes.LORE, new LoreComponent(formattedLore));
         String displayName = Formatting.strip(item.getDisplayName()).replace("[Lvl {LVL}]", "§7[Lvl " + this.level + "]§r");
-        petStack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(displayName).setStyle(style).formatted(RARITY_COLOR_MAP.get(this.getTier() + (boosted() ? 1 : 0))));
+        petStack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(displayName).setStyle(style).formatted((boosted() ? getRarity().next() : getRarity()).formatting));
         return petStack;
     }
 

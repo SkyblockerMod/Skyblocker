@@ -6,7 +6,6 @@ import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.util.UndashedUuid;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.profileviewer.collections.CollectionsPage;
@@ -14,6 +13,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.dungeons.DungeonsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.InventoryPage;
 import de.hysky.skyblocker.skyblock.profileviewer.skills.SkillsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayersPage;
+import de.hysky.skyblocker.utils.ApiAuthentication;
 import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.ProfileUtils;
@@ -61,6 +61,7 @@ public class ProfileViewerScreen extends Screen {
     private JsonObject hypixelProfile;
     private JsonObject playerProfile;
     private boolean profileNotFound = false;
+	private String errorMessage = "No Profile";
 
     private int activePage = 0;
     private static final String[] PAGE_NAMES = {"Skills", "Slayers", "Dungeons", "Inventories", "Collections"};
@@ -121,7 +122,7 @@ public class ProfileViewerScreen extends Screen {
             profileViewerPages[activePage].markWidgetsAsVisible();
             profileViewerPages[activePage].render(context, mouseX, mouseY, delta, rootX + 93, rootY + 7);
         } else {
-            context.drawText(textRenderer, profileNotFound ? "No Profile" : "Loading...", rootX + 180, rootY + 80, Color.WHITE.getRGB(), true);
+            context.drawCenteredTextWithShadow(textRenderer, profileNotFound ? errorMessage : "Loading...", rootX + 200, rootY + 80, Color.WHITE.getRGB());
         }
     }
 
@@ -144,6 +145,7 @@ public class ProfileViewerScreen extends Screen {
                     this.playerProfile = hypixelProfile.getAsJsonObject("members").get(ApiUtils.name2Uuid(username)).getAsJsonObject();
                 }
             } catch (Exception e) {
+				this.errorMessage = ApiAuthentication.getToken() == null ? "Invalid Skyblocker token" : "Skyblock profile not found";
                 this.profileNotFound = true;
                 LOGGER.warn("[Skyblocker Profile Viewer] Error while looking for profile", e);
             }
@@ -153,7 +155,9 @@ public class ProfileViewerScreen extends Screen {
     		String stringifiedUuid = ApiUtils.name2Uuid(username);
 
     		if (stringifiedUuid.isEmpty()) {
+				// "Player not found" doesn't fit on the screen lol
                 this.playerName = "User not found";
+				this.errorMessage = "Player UUID not found";
                 this.profileNotFound = true;
     		}
 
@@ -181,7 +185,9 @@ public class ProfileViewerScreen extends Screen {
                 };
                 entity.setCustomNameVisible(false);
     		}).exceptionally(ex -> {
+				// "Player not found" doesn't fit on the screen lol
                 this.playerName = "User not found";
+				this.errorMessage = "Player skin not found";
                 this.profileNotFound = true;
                 return null;
             }).join();

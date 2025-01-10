@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -15,9 +15,13 @@ import java.util.regex.Pattern;
 
 public class PowerStonesGuideAdder extends SimpleSlotTextAdder {
     private static final Pattern LEARNED = Pattern.compile("Learned: (Yes|Not Yet) (?<symbol>[✖✔])");
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"power_stones_guide",
+			"skyblocker.config.uiAndVisuals.slotText.powerStonesGuide",
+			"skyblocker.config.uiAndVisuals.slotText.powerStonesGuide.@Tooltip");
 
     public PowerStonesGuideAdder() {
-        super("^Power Stones Guide");
+        super("^Power Stones Guide", CONFIG_INFORMATION);
     }
 
     @Override

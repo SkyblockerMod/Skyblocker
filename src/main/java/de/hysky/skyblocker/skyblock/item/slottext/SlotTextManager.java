@@ -26,7 +26,9 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class SlotTextManager {
 	private static final SlotTextAdder[] adders = new SlotTextAdder[]{
@@ -70,7 +72,7 @@ public class SlotTextManager {
 			}
 			ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
 				if (keyBinding.matchesKey(key, scancode)) {
-					SkyblockerConfigManager.get().general.itemInfoDisplay.slotTextToggled = !SkyblockerConfigManager.get().general.itemInfoDisplay.slotTextToggled;
+					SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled = !SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled;
 					keyHeld = true;
 				}
 			});
@@ -141,11 +143,19 @@ public class SlotTextManager {
 		}
 	}
 
+	public static Stream<SlotTextAdder> getAdderStream() {
+		return Arrays.stream(adders);
+	}
+
+	public static boolean isEnabled(String adderId) {
+		return SkyblockerConfigManager.get().uiAndVisuals.slotText.textEnabled.getOrDefault(adderId, true);
+	}
+
 	public static boolean isEnabled() {
-		return switch (SkyblockerConfigManager.get().general.itemInfoDisplay.slotTextMode) {
+		return switch (SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextMode) {
 			case ENABLED -> true;
 			case DISABLED -> false;
-			case PRESS_TO_TOGGLE -> SkyblockerConfigManager.get().general.itemInfoDisplay.slotTextToggled;
+			case PRESS_TO_TOGGLE -> SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled;
 			case HOLD_TO_HIDE -> !keyHeld;
 			case HOLD_TO_SHOW -> keyHeld;
 		};

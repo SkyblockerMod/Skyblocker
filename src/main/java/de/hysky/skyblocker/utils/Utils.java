@@ -6,7 +6,7 @@ import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
-import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.purse.PurseChangeCause;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,6 +55,7 @@ public class Utils {
 	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
+
     /**
      * The player's rank.
      */
@@ -95,6 +97,8 @@ public class Utils {
     private static String map = "";
     @NotNull
     public static double purse = 0;
+
+	private static boolean firstProfileUpdate = true;
 
     /**
      * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
@@ -342,6 +346,7 @@ public class Utils {
             TEXT_SCOREBOARD.addAll(textLines);
             STRING_SCOREBOARD.addAll(stringLines);
             Utils.updatePurse();
+			SlayerManager.getSlayerBossInfo(true);
         } catch (NullPointerException e) {
             //Do nothing
         }
@@ -408,6 +413,7 @@ public class Utils {
                 if (Utils.gameType.equals("SKYBLOCK")) {
                     isOnSkyblock = true;
                     tickProfileId();
+					SlayerManager.getSlayerInfoOnJoin();
 
                     if (!previousServerType.equals("SKYBLOCK")) SkyblockEvents.JOIN.invoker().onSkyblockJoin();
                 } else if (previousServerType.equals("SKYBLOCK")) {
@@ -452,7 +458,7 @@ public class Utils {
 
 		    @Override
 		    public void run() {
-		        if (requestId == profileIdRequest) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid");
+		        if (requestId == profileIdRequest) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid", true);
 		    }
         }, 20 * 8); //8 seconds
     }
@@ -471,8 +477,8 @@ public class Utils {
         if (locRaw.has("server")) {
             server = locRaw.get("server").getAsString();
         }
-        if (locRaw.has("gameType")) {
-            gameType = locRaw.get("gameType").getAsString();
+        if (locRaw.has("gametype")) {
+            gameType = locRaw.get("gametype").getAsString();
             isOnSkyblock = gameType.equals("SKYBLOCK");
         }
         if (locRaw.has("mode")) {
@@ -492,6 +498,7 @@ public class Utils {
      * @return not display the message in chat if the command is sent by the mod
      */
     public static boolean onChatMessage(Text text, boolean overlay) {
+		if (overlay) return true;
         String message = text.getString();
 
         if (message.startsWith("{\"server\":") && message.endsWith("}")) {
@@ -508,9 +515,10 @@ public class Utils {
 
                 if (!prevProfileId.equals(profileId)) {
                     SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
+                } else if (firstProfileUpdate) {
+					SkyblockEvents.PROFILE_INIT.invoker().onSkyblockProfileInit(profileId);
+	                firstProfileUpdate = false;
                 }
-
-                MuseumItemCache.tick(profileId);
             }
         }
 
@@ -530,7 +538,11 @@ public class Utils {
         client.getNarratorManager().narrateSystemMessage(message);
     }
 
+	public static UUID getUuid() {
+		return MinecraftClient.getInstance().getSession().getUuidOrNull();
+	}
+
     public static String getUndashedUuid() {
-        return UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
+        return UndashedUuid.toString(getUuid());
     }
 }

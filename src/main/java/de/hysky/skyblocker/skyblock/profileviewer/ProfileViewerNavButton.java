@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.profileviewer;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.gui.DrawContext;
@@ -40,12 +39,8 @@ public class ProfileViewerNavButton extends ClickableWidget {
 
     @Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        RenderSystem.disableDepthTest();
-
         context.drawGuiTexture(RenderLayer::getGuiTextured, toggled ? BUTTON_TEXTURES_TOGGLED : BUTTON_TEXTURES, this.getX(), this.getY(), this.width, this.height - ((this.toggled) ? 0 : 4));
         context.drawItem(this.icon, this.getX() + 6, this.getY() + (this.toggled ? 7 : 9));
-
-        RenderSystem.enableDepthTest();
     }
 
     @Override

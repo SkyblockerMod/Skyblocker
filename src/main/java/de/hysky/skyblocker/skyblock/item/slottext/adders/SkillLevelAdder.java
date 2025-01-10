@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
@@ -14,8 +14,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class SkillLevelAdder extends SimpleSlotTextAdder {
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"skill_level",
+			"skyblocker.config.uiAndVisuals.slotText.rancherBoots");
 	public SkillLevelAdder() {
-		super("^Your Skills");
+		super("^Your Skills", CONFIG_INFORMATION);
 	}
 
 	@Override
