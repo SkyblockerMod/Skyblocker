@@ -2,10 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
-import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.*;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -43,8 +40,7 @@ public class FireSaleWidget extends TabHudWidget {
 				float total = Float.parseFloat(m.group("total")) * 1000;
 				Text prgressTxt = Text.literal(String.format("%s/%.0f", avail, total));
 				float pcnt = (Float.parseFloat(avail) / (total)) * 100f;
-				ProgressComponent pc = new ProgressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt, ColorUtils.percentToColor(pcnt));
-				this.addComponent(pc);
+				this.addComponent(Components.progressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt));
 			} else if (text.getString().toLowerCase() instanceof String s && (s.contains("starts") || s.contains("starting"))) {
 				this.addComponent(new IcoTextComponent(Ico.CLOCK, text));
 			} else {

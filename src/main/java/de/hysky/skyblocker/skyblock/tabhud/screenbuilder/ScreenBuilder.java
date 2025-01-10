@@ -5,7 +5,7 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.CenteredWidget
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.TopAlignedWidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
@@ -94,7 +94,7 @@ public class ScreenBuilder {
 			}
 		}
 
-		for (TabHudWidget widget : PlayerListMgr.tabWidgetsToShow) {
+		for (TabHudWidget widget : PlayerListManager.tabWidgetsToShow) {
 			PositionRule rule = getPositionRule(widget.getInternalID());
 			widget.setVisible(true);
 			if (rule == null) {

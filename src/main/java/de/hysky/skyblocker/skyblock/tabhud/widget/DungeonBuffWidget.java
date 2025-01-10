@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -25,7 +25,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 	@Override
 	public void updateContent(List<Text> ignored) {
 
-		String footertext = PlayerListMgr.getFooter();
+		String footertext = PlayerListManager.getFooter();
 
 		if (footertext == null || !footertext.contains("Dungeon Buffs")) {
 			this.addComponent(new PlainTextComponent(Text.literal("No data").formatted(Formatting.GRAY)));

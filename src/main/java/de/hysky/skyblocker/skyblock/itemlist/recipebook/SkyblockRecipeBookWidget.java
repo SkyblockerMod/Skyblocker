@@ -159,7 +159,7 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		var client = MinecraftClient.getInstance();
-		if (client.isWindowFocused()) {
+		if (client.isWindowFocused() && currentTab != null) {
 			var mouse = client.mouse;
 			var window = client.getWindow();
 			var mouseX = (mouse.getX() * ((double) window.getScaledWidth() / (double) window.getWidth()));

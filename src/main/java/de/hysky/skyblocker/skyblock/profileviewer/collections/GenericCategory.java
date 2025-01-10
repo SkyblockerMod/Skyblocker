@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.RomanNumerals;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -43,7 +44,6 @@ public class GenericCategory implements ProfileViewerPage {
     private final Map<String, IntList> tierRequirementsMap;
     private final Map<String, String> ICON_TRANSLATION = Map.ofEntries(
             Map.entry("MUSHROOM_COLLECTION", "RED_MUSHROOM"));
-    private final String[] ROMAN_NUMERALS = {"-", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
 
     public GenericCategory(JsonObject hProfile, JsonObject pProfile, String collection) {
         collectionsMap = ProfileViewerScreen.getCollections();
@@ -63,7 +63,7 @@ public class GenericCategory implements ProfileViewerPage {
             ItemStack itemStack = ItemRepository.getItemStack(ICON_TRANSLATION.getOrDefault(collection, collection).replace(':', '-'));
             itemStack = itemStack == null ? Ico.BARRIER.copy() : itemStack.copy();
 
-            if (itemStack.getItem().getName().getString().equals("Barrier"))  {
+            if (itemStack.getItem().getName().getString().equals("Barrier")) {
                 itemStack.set(DataComponentTypes.CUSTOM_NAME, Text.of(collection));
                 System.out.println(collection);
                 System.out.println(this.category);
@@ -91,7 +91,7 @@ public class GenericCategory implements ProfileViewerPage {
 
             if (hProfile.get("members").getAsJsonObject().keySet().size() > 1) {
                 lore.add(Text.literal("Personal: " + COMMA_FORMATTER.format(personalColl)).setStyle(style).formatted(Formatting.GOLD));
-                lore.add(Text.literal("Co-op: " + COMMA_FORMATTER.format(totalCollection-personalColl)).setStyle(style).formatted(Formatting.AQUA));
+                lore.add(Text.literal("Co-op: " + COMMA_FORMATTER.format(totalCollection - personalColl)).setStyle(style).formatted(Formatting.AQUA));
             }
             lore.add(Text.literal("Collection: " + COMMA_FORMATTER.format(totalCollection)).setStyle(style).formatted(Formatting.YELLOW));
 
@@ -133,7 +133,7 @@ public class GenericCategory implements ProfileViewerPage {
                         Color colour = itemStack.hasGlint() ? Color.MAGENTA : Color.darkGray;
                         //DO NOT CHANGE THIS METHOD CALL! Aaron's Mod mixes in here to provide chroma text for max collections
                         //and changing the method called here will break that! Consult Aaron before making any changes :)
-                        context.drawText(textRenderer, Text.literal(toRomanNumerals(cTier)), x + 9 - (textRenderer.getWidth(toRomanNumerals(cTier)) / 2), y + 21, colour.getRGB(), false);
+                        context.drawText(textRenderer, Text.literal(RomanNumerals.decimalToRoman(cTier)), x + 9 - (textRenderer.getWidth(RomanNumerals.decimalToRoman(cTier)) / 2), y + 21, colour.getRGB(), false);
                     }
                     break;
                 }
@@ -144,9 +144,5 @@ public class GenericCategory implements ProfileViewerPage {
                 context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
             }
         }
-    }
-
-    private String toRomanNumerals(int number) {
-        return number <= ROMAN_NUMERALS.length ? ROMAN_NUMERALS[number] : "Err";
     }
 }

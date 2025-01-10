@@ -175,6 +175,10 @@ public class MiningConfig {
 	    public boolean autoShareCorpses = false;
     }
 
+	/**
+	 * @deprecated See {@link UIAndVisualsConfig.TabHudStyle}.
+	 */
+	@Deprecated
     public enum DwarvenHudStyle {
         SIMPLE, FANCY, CLASSIC;
 

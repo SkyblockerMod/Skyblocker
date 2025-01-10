@@ -1,7 +1,17 @@
 package de.hysky.skyblocker.utils;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import org.jetbrains.annotations.NotNull;
+
 public class RomanNumerals {
-    private RomanNumerals() {}
+	private static final Int2ObjectMap<String> ROMAN_NUMERALS = Int2ObjectMaps.unmodifiable(new Int2ObjectLinkedOpenHashMap<>(
+			new int[]{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1},
+			new String[]{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"}
+	));
+
+	private RomanNumerals() {}
 
 	private static int getDecimalValue(char romanChar) {
 		return switch (romanChar) {
@@ -19,6 +29,7 @@ public class RomanNumerals {
 	/**
 	 * Checks if a string is a valid roman numeral.
 	 * It's the caller's responsibility to clean up the string before calling this method (such as trimming it).
+	 *
 	 * @param romanNumeral The roman numeral to check.
 	 * @return True if the string is a valid roman numeral, false otherwise.
 	 * @implNote This will only check if the string contains valid roman numeral characters. It won't check if the numeral is well-formed.
@@ -50,5 +61,26 @@ public class RomanNumerals {
 			lastNumber = number;
 		}
 		return decimal;
+	}
+
+	/**
+	 * Converts a decimal number to a roman numeral.
+	 *
+	 * @param decimal The decimal number to convert.
+	 * @return The roman numeral, or an empty string if the number is out of range.
+	 */
+	@NotNull
+	public static String decimalToRoman(int decimal) {
+		if (decimal <= 0 || decimal >= 4000) return "";
+		StringBuilder roman = new StringBuilder();
+		for (Int2ObjectMap.Entry<String> entry : ROMAN_NUMERALS.int2ObjectEntrySet()) {
+			int value = entry.getIntKey();
+			String numeral = entry.getValue();
+			while (decimal >= value) {
+				roman.append(numeral);
+				decimal -= value;
+			}
+		}
+		return roman.toString();
 	}
 }

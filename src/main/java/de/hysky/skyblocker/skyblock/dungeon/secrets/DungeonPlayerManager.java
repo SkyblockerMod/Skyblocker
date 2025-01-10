@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon.secrets;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
@@ -50,6 +50,6 @@ public class DungeonPlayerManager {
 	}
 
 	private static Matcher getPlayerFromTab(@Range(from = 1, to = 5) int index) {
-		return PlayerListMgr.regexAt(1 + (index - 1) * 4, PLAYER_TAB_PATTERN);
+		return PlayerListManager.regexAt(1 + (index - 1) * 4, PLAYER_TAB_PATTERN);
 	}
 }
