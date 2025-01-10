@@ -6,6 +6,8 @@ import com.google.gson.JsonParser;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
+import de.hysky.skyblocker.skyblock.carnival.CatchAFish;
+import de.hysky.skyblocker.skyblock.carnival.ZombieShootout;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
@@ -173,6 +175,10 @@ public class MobGlow {
 			// Blaze Slayer's Demonic minions
 			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerManager.isInSlayerType(SlayerType.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15 -> AttunementColors.getColor(e);
 			case ZombifiedPiglinEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerManager.isInSlayerType(SlayerType.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15 -> AttunementColors.getColor(e);
+
+			//Chivalrous Carnival
+			case ZombieEntity zombie when ZombieShootout.isInZombieShootout() -> ZombieShootout.getZombieGlowColor(zombie);
+			case ArmorStandEntity armorStand when CatchAFish.isInCatchAFish() -> CatchAFish.getFishGlowColor(armorStand);
 
 			default -> NO_GLOW;
 		};

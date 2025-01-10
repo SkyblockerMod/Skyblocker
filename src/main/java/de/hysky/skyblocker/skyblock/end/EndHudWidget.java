@@ -68,10 +68,11 @@ public class EndHudWidget extends ComponentBasedWidget {
 	public void updateContent() {
 		// Zealots
 		if (SkyblockerConfigManager.get().otherLocations.end.zealotKillsEnabled) {
+			TheEnd.EndStats endStats = TheEnd.PROFILES_STATS.putIfAbsent(TheEnd.EndStats.EMPTY);
 			addComponent(new IcoTextComponent(ENDERMAN_HEAD, Text.literal("Zealots").formatted(Formatting.BOLD)));
-			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsSinceLastEye", TheEnd.zealotsSinceLastEye)));
-			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsTotalKills", TheEnd.zealotsKilled)));
-			String avg = TheEnd.eyes == 0 ? "???" : DECIMAL_FORMAT.format((float) TheEnd.zealotsKilled / TheEnd.eyes);
+			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsSinceLastEye", endStats.zealotsSinceLastEye())));
+			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsTotalKills", endStats.totalZealotKills())));
+			String avg = endStats.eyes() == 0 ? "???" : DECIMAL_FORMAT.format((float) endStats.totalZealotKills() / endStats.eyes());
 			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.avgKillsPerEye", avg)));
 		}
 

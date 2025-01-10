@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
@@ -33,12 +34,16 @@ public class WikiLookup {
     }
 
     public static void openWiki(@NotNull Slot slot, @NotNull PlayerEntity player) {
-        ItemUtils.getItemIdOptional(slot.getStack())
-                .map(ItemRepository::getWikiLink)
-                .ifPresentOrElse(wikiLink -> CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink)).exceptionally(e -> {
-                    LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
-                    player.sendMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
-                    return null;
-                }), () -> player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.wikiLookup.noArticleFound")), false));
+        WikiLookup.openWiki(slot.getStack(), player);
     }
+
+	public static void openWiki(ItemStack stack, PlayerEntity player) {
+		ItemUtils.getItemIdOptional(stack)
+				.map(ItemRepository::getWikiLink)
+				.ifPresentOrElse(wikiLink -> CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink)).exceptionally(e -> {
+					LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
+					player.sendMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
+					return null;
+				}), () -> player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.wikiLookup.noArticleFound")), false));
+	}
 }

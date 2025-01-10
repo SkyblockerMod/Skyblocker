@@ -5,7 +5,7 @@ import com.google.gson.JsonParser;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Constants;
@@ -131,7 +131,7 @@ public class SecretsTracker {
 	}
 
 	private static String getPlayerNameAt(int index) {
-		Matcher matcher = PlayerListMgr.regexAt(1 + (index - 1) * 4, DungeonPlayerWidget.PLAYER_PATTERN);
+		Matcher matcher = PlayerListManager.regexAt(1 + (index - 1) * 4, DungeonPlayerWidget.PLAYER_PATTERN);
 
 		return matcher != null ? matcher.group("name") : "";
 	}

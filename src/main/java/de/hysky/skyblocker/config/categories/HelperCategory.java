@@ -227,6 +227,27 @@ public class HelperCategory {
                                 .build())
                         .build())
 
+                .group(OptionGroup.createBuilder()
+                		.name(Text.translatable("skyblocker.config.helpers.carnival"))
+                		.collapsed(true)
+                		.option(Option.<Boolean>createBuilder()
+                				.name(Text.translatable("skyblocker.config.helpers.carnival.catchAFishHelper"))
+                				.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.carnival.catchAFishHelper.@Tooltip")))
+                				.binding(defaults.helpers.carnival.catchAFishHelper,
+                						() -> config.helpers.carnival.catchAFishHelper,
+                						newValue -> config.helpers.carnival.catchAFishHelper = newValue)
+                				.controller(ConfigUtils::createBooleanController)
+                				.build())
+                		.option(Option.<Boolean>createBuilder()
+                				.name(Text.translatable("skyblocker.config.helpers.carnival.zombieShootoutHelper"))
+                				.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip")))
+                				.binding(defaults.helpers.carnival.zombieShootoutHelper,
+                						() -> config.helpers.carnival.zombieShootoutHelper,
+                						newValue -> config.helpers.carnival.zombieShootoutHelper = newValue)
+                				.controller(ConfigUtils::createBooleanController)
+                				.build())
+                		.build())
+
                 //Bazaar
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.helpers.bazaar"))

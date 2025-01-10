@@ -20,7 +20,9 @@ record SkyblockCraftingTab(SkyblockRecipeBookWidget recipeBook, ItemStack icon, 
 
 	@Override
 	public void draw(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
+		assert recipeBook.searchField != null;
 		recipeBook.searchField.render(context, mouseX, mouseY, delta);
+		recipeBook.filterOption.render(context, mouseX, mouseY, delta);
 		results.draw(context, x, y, mouseX, mouseY, delta);
 	}
 
@@ -43,8 +45,8 @@ record SkyblockCraftingTab(SkyblockRecipeBookWidget recipeBook, ItemStack icon, 
 
 					return true;
 				}
-
 				recipeBook.searchField.setFocused(false);
+				return recipeBook.filterOption.mouseClicked(mouseX, mouseY, button);
 			}
 		}
 
@@ -52,14 +54,19 @@ record SkyblockCraftingTab(SkyblockRecipeBookWidget recipeBook, ItemStack icon, 
 	}
 
 	@Override
-	public void updateSearchResults(String query) {
-		results.updateSearchResults(query);
+	public boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
+		return this.results.keyPressed(mouseX, mouseY, keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public void updateSearchResults(String query, FilterOption filterOption, boolean refresh) {
+		results.updateSearchResults(query, filterOption, refresh);
 	}
 
 	@Override
 	public void initializeSearchResults(String query) {
 		if (ItemRepository.filesImported()) {
-			updateSearchResults(query);
+			updateSearchResults(query, FilterOption.ALL);
 		}
 	}
 }

@@ -15,8 +15,16 @@ public interface RecipeAreaDisplay {
 
 	boolean mouseClicked(double mouseX, double mouseY, int button);
 
+	default boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
+		return false;
+	}
+
+	default void updateSearchResults(String query, FilterOption filterOption) {
+		updateSearchResults(query, filterOption, false);
+	}
+
 	/**
 	 * If this tab does not use the search bar then no-op this.
 	 */
-	void updateSearchResults(String query);
+	void updateSearchResults(String query, FilterOption filterOption, boolean refresh);
 }
