@@ -27,7 +27,7 @@ public class ItemSorter {
         donations.forEach(donation -> updateDonationData(donation, true));
         donations.sort(ItemSorter::compareCoinsPerXP);
     };
-    private SortMode currentSortMode = SortMode.LowestBIN;
+    private SortMode currentSortMode = SortMode.LOWEST_BIN;
 
     // Set effective prices for the donation and its armor set pieces
     public static void updateDonationData(Donation donation, boolean useCraftCost) {
@@ -112,14 +112,14 @@ public class ItemSorter {
     }
 
     public void resetSorting() {
-        this.currentSortMode = SortMode.LowestBIN;
+        this.currentSortMode = SortMode.LOWEST_BIN;
     }
 
     public Tooltip getTooltip() {
         Text tooltip = Text.translatable("skyblocker.museum.hud.sorter").append("\n\n").formatted(Formatting.GREEN)
-                .append(getSortText(SortMode.LowestBIN))
-                .append(getSortText(SortMode.CraftCost))
-                .append(getSortText(SortMode.CoinsPerXP))
+                .append(getSortText(SortMode.LOWEST_BIN))
+                .append(getSortText(SortMode.CRAFT_COST))
+                .append(getSortText(SortMode.COINS_PER_XP))
                 .append("\n").append(Text.translatable("skyblocker.museum.hud.sorter.switch").formatted(Formatting.YELLOW));
         return Tooltip.of(tooltip);
     }
@@ -131,9 +131,9 @@ public class ItemSorter {
     }
 
     public enum SortMode {
-        LowestBIN(new ItemStack(Items.GOLD_INGOT), sortByLowestBIN, Text.translatable("skyblocker.museum.hud.sorter.lBin")),
-        CraftCost(new ItemStack(Items.CRAFTING_TABLE), sortByCraftCost, Text.translatable("skyblocker.museum.hud.sorter.craftCost")),
-        CoinsPerXP(new ItemStack(Items.EXPERIENCE_BOTTLE), sortByXpPerCoin, Text.translatable("skyblocker.museum.hud.sorter.ratio"));
+        LOWEST_BIN(new ItemStack(Items.GOLD_INGOT), sortByLowestBIN, Text.translatable("skyblocker.museum.hud.sorter.lBin")),
+        CRAFT_COST(new ItemStack(Items.CRAFTING_TABLE), sortByCraftCost, Text.translatable("skyblocker.museum.hud.sorter.craftCost")),
+        COINS_PER_XP(new ItemStack(Items.EXPERIENCE_BOTTLE), sortByXpPerCoin, Text.translatable("skyblocker.museum.hud.sorter.ratio"));
 
         private final ItemStack associatedItem;
         private final Consumer<List<Donation>> sortFunction;

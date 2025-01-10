@@ -86,10 +86,7 @@ public class DonationButton extends ClickableWidget {
         int yOffset = 8;
 
         if (donation.hasPrice()) {
-            int textWidth = TEXT_RENDERER.getWidth(textToRender);
-            int centeredX = this.getX() + (this.width / 2) - (textWidth / 2);
-            int textY = this.getY() + ITEM_OFFSET + 13;
-            context.drawText(TEXT_RENDERER, textToRender, centeredX, textY, 0xFF00FF00, true);
+            context.drawCenteredTextWithShadow(TEXT_RENDERER, textToRender, this.getX() + (this.width / 2), this.getY() + ITEM_OFFSET + 13, 0xFF00FF00);
 
             yOffset -= 4;
         }

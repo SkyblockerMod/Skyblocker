@@ -133,7 +133,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
-	@Inject(method = "close", at = @At("HEAD"))
+	@Inject(method = "removed", at = @At("HEAD"))
 	private void skyblocker$removeMuseumOverlay(CallbackInfo ci) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && !client.player.isCreative() && getTitle().getString().contains("Museum")) {
 			// Reset Overlay variables when no longer in Museum inventory

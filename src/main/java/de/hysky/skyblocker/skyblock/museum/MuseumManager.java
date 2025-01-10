@@ -29,18 +29,18 @@ import java.util.List;
 import java.util.Locale;
 
 public class MuseumManager extends ClickableWidget {
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final TextRenderer TEXT_RENDERER = CLIENT.textRenderer;
+	private static final KeyBinding INVENTORY_OPEN_KEY = CLIENT.options.inventoryKey;
     private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/recipe_book.png");
     private static final int SEARCH_FIELD_WIDTH = 69;
     private static final int SEARCH_FIELD_HEIGHT = 20;
     private static final int BUTTON_SIZE = 20;
     private static final int BUTTONS_PER_PAGE = 12;
-    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final ItemSorter ITEM_SORTER = new ItemSorter();
     private static final ItemFilter ITEM_FILTER = new ItemFilter();
-    private static final TextRenderer TEXT_RENDERER = CLIENT.textRenderer;
-    private static final KeyBinding INVENTORY_OPEN_KEY = CLIENT.options.inventoryKey;
-    private static String SEARCH_QUERY = "";
-    private static int CURRENT_PAGE = 0;
+	private static String searchQuery = "";
+	private static int currentPage = 0;
     private static List<Donation> donations = new ArrayList<>();
     private final ToggleButtonWidget nextPageButton;
     private final ToggleButtonWidget prevPageButton;
@@ -61,7 +61,7 @@ public class MuseumManager extends ClickableWidget {
         this.searchField.setMaxLength(60);
         this.searchField.setVisible(true);
         this.searchField.setEditableColor(0xFFFFFF);
-        this.searchField.setText(SEARCH_QUERY);
+		this.searchField.setText(searchQuery);
         this.searchField.setPlaceholder(Text.translatable("gui.recipebook.search_hint").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
 
         // Initialize page navigation buttons
@@ -82,7 +82,7 @@ public class MuseumManager extends ClickableWidget {
         this.sortButton = ButtonWidget.builder(Text.empty(), button -> {
                     ITEM_SORTER.cycleSortMode(filteredDonations);
                     button.setTooltip(ITEM_SORTER.getTooltip());
-                    CURRENT_PAGE = 0;
+					currentPage = 0;
                     updateButtons();
                 })
                 .tooltip(ITEM_SORTER.getTooltip())
@@ -95,7 +95,7 @@ public class MuseumManager extends ClickableWidget {
                     ITEM_FILTER.cycleFilterMode(donations, filteredDonations);
                     ITEM_SORTER.applySort(filteredDonations);
                     button.setTooltip(ITEM_FILTER.getTooltip());
-                    CURRENT_PAGE = 0;
+					currentPage = 0;
                     updateButtons();
                 })
                 .tooltip(ITEM_FILTER.getTooltip())
@@ -128,8 +128,8 @@ public class MuseumManager extends ClickableWidget {
      * Resets the UI state including search text, current page, sorting, and filtering.
      */
     public static void reset() {
-        SEARCH_QUERY = "";
-        CURRENT_PAGE = 0;
+		searchQuery = "";
+		currentPage = 0;
         ITEM_SORTER.resetSorting();
         ITEM_FILTER.resetFilter();
     }
@@ -138,8 +138,8 @@ public class MuseumManager extends ClickableWidget {
      * Updates visibility and content of page navigation buttons.
      */
     private void updateNavigationButtons() {
-        this.prevPageButton.active = CURRENT_PAGE > 0;
-        this.nextPageButton.active = CURRENT_PAGE < pageCount - 1;
+		this.prevPageButton.active = currentPage > 0;
+		this.nextPageButton.active = currentPage < pageCount - 1;
     }
 
     /**
@@ -154,7 +154,7 @@ public class MuseumManager extends ClickableWidget {
         this.pageCount = (int) Math.ceil((double) buttonsSize / BUTTONS_PER_PAGE);
 
         for (int i = 0; i < donationButtons.size(); ++i) {
-            int index = CURRENT_PAGE * donationButtons.size() + i;
+			int index = currentPage * donationButtons.size() + i;
 
             if (index < buttonsSize) {
                 donationButtons.get(i).init(visibleDonations.get(index));
@@ -171,7 +171,7 @@ public class MuseumManager extends ClickableWidget {
      * @param resetPage Whether to reset to the first page.
      */
     public void updateSearchResults(boolean resetPage) {
-        SEARCH_QUERY = this.searchField.getText();
+		searchQuery = this.searchField.getText();
         excludedDonationIds.clear();
         for (Donation item : donations) {
             StringBuilder searchableContent = new StringBuilder();
@@ -187,11 +187,11 @@ public class MuseumManager extends ClickableWidget {
                             .append(ItemUtils.getConcatenatedLore(pieceStack));
                 }
             }
-            if (!searchableContent.toString().toLowerCase(Locale.ENGLISH).contains(SEARCH_QUERY.toLowerCase(Locale.ENGLISH))) {
+			if (!searchableContent.toString().toLowerCase(Locale.ENGLISH).contains(searchQuery.toLowerCase(Locale.ENGLISH))) {
                 excludedDonationIds.add(item.getId());
             }
         }
-        if (resetPage) CURRENT_PAGE = 0;
+		if (resetPage) currentPage = 0;
         updateButtons();
     }
 
@@ -202,7 +202,7 @@ public class MuseumManager extends ClickableWidget {
 
         // Render page count if multiple pages exist
         if (this.pageCount > 1) {
-            Text text = Text.translatable("gui.recipebook.page", CURRENT_PAGE + 1, this.pageCount);
+			Text text = Text.translatable("gui.recipebook.page", currentPage + 1, this.pageCount);
             int width = TEXT_RENDERER.getWidth(text);
 
             context.drawText(TEXT_RENDERER, text, getX() - width / 2 + 73, getY() + 137, -1, false);
@@ -257,11 +257,11 @@ public class MuseumManager extends ClickableWidget {
             this.searchField.setFocused(true);
             return true;
         } else if (this.nextPageButton.mouseClicked(mouseX, mouseY, button)) {
-            CURRENT_PAGE++;
+			currentPage++;
             updateButtons();
             return true;
         } else if (this.prevPageButton.mouseClicked(mouseX, mouseY, button)) {
-            CURRENT_PAGE--;
+			currentPage--;
             updateButtons();
             return true;
         } else if (this.filterButton.mouseClicked(mouseX, mouseY, button)) {
