@@ -334,19 +334,19 @@ public class UIAndVisualsConfig {
     public static class SmoothAOTE {
 
         @SerialEntry
-        public boolean enableWeirdTransmission = true;
+        public boolean enableWeirdTransmission = false;
 
         @SerialEntry
-        public boolean enableInstantTransmission = true;
+        public boolean enableInstantTransmission = false;
 
         @SerialEntry
-        public boolean enableEtherTransmission = true;
+        public boolean enableEtherTransmission = false;
 
         @SerialEntry
-        public boolean enableSinrecallTransmission = true;
+        public boolean enableSinrecallTransmission = false;
 
         @SerialEntry
-        public boolean enableWitherImpact = true;
+        public boolean enableWitherImpact = false;
     }
 
     public static class SearchOverlay {
