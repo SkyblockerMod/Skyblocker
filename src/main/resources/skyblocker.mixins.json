@@ -8,6 +8,7 @@
     "BatEntityMixin",
     "BossBarHudMixin",
     "ClientPlayerEntityMixin",
+    "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldMixin",
     "CommandTreeS2CPacketMixin",
