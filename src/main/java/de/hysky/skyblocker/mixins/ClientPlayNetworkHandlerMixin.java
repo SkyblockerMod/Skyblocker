@@ -132,7 +132,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		return !(Utils.isOnHypixel() && ((Identifier) identifier).getNamespace().equals("badlion"));
 	}
 
-	@WrapWithCondition(method = {"onScoreboardScoreUpdate", "onScoreboardScoreReset"}, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
+	@WrapWithCondition(method = {"onScoreboardScoreUpdate", "onScoreboardScoreReset"}, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false), require = 2)
 	private boolean skyblocker$cancelUnknownScoreboardObjectiveWarnings(Logger instance, String message, Object objectiveName) {
 		return !Utils.isOnHypixel();
 	}

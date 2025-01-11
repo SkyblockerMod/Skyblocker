@@ -32,7 +32,7 @@ public class WorldRendererMixin {
 	@Final
 	private DefaultFramebufferSet framebufferSet;
 
-	@ModifyExpressionValue(method = {"getEntitiesToRender", "renderEntities"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;hasOutline(Lnet/minecraft/entity/Entity;)Z"))
+	@ModifyExpressionValue(method = {"getEntitiesToRender", "renderEntities"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;hasOutline(Lnet/minecraft/entity/Entity;)Z"), require = 2)
 	private boolean skyblocker$shouldMobGlow(boolean original, @Local Entity entity) {
 		boolean allowGlow = LividColor.allowGlow();
 		boolean customGlow = MobGlow.hasOrComputeMobGlow(entity);

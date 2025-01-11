@@ -83,7 +83,7 @@ public abstract class InGameHudMixin {
         }
     }
 
-    @Inject(method = { "renderExperienceBar", "renderExperienceLevel" }, at = @At("HEAD"), cancellable = true)
+    @Inject(method = { "renderExperienceBar", "renderExperienceLevel" }, at = @At("HEAD"), cancellable = true, require = 2)
     private void skyblocker$renderExperienceBar(CallbackInfo ci) {
         if (Utils.isOnSkyblock() && FancyStatusBars.isEnabled() && FancyStatusBars.isExperienceFancyBarVisible())
             ci.cancel();
