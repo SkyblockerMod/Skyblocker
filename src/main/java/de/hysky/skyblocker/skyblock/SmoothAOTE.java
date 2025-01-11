@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -41,6 +42,7 @@ public class SmoothAOTE {
 	private static Vec3d cameraStartPos;
 	private static Vec3d teleportVector;
 	private static long lastPing;
+	private static long currentTeleportPing;
 	private static int teleportsAhead;
 	private static long lastTeleportTime;
 	public static boolean teleportDisabled;
@@ -238,15 +240,18 @@ public class SmoothAOTE {
 			startPos = CLIENT.player.getPos().add(0, 1.62, 0); // the eye poss should not be affected by crouching
 			cameraStartPos = CLIENT.player.getEyePos();
 			lastTeleportTime = System.currentTimeMillis();
+			// update the ping used for the teleport
+			currentTeleportPing = lastPing;
 		} else {
 			//add to the end of the teleport sequence
 			startPos = startPos.add(teleportVector);
 			//set the camera start pos to how far though the teleport the player is to make is smoother
 			cameraStartPos = getInterpolatedPos();
+			//update the ping used for this part of the teleport
+			currentTeleportPing = lastPing;
 		}
 
 		startTime = System.currentTimeMillis();
-
 
 		// calculate the vector the player will follow for the teleport
 		//get direction
@@ -444,14 +449,15 @@ public class SmoothAOTE {
 		}
 		long gap = System.currentTimeMillis() - startTime;
 		//make sure the player is actually getting teleported if not disable teleporting until they are teleported again
-		if (System.currentTimeMillis() - lastTeleportTime > Math.min(2 * lastPing, MAX_TELEPORT_TIME)) {
+		if (System.currentTimeMillis() - lastTeleportTime > Math.min(2 * Math.max(lastPing, currentTeleportPing), MAX_TELEPORT_TIME)) {
+			System.out.println("sdf;lk");
 			teleportDisabled = true;
 			startPos = null;
 			teleportVector = null;
 			teleportsAhead = 0;
 			return null;
 		}
-		double percentage = Math.min((double) (gap) / Math.min(lastPing, MAX_TELEPORT_TIME), 1);
+		double percentage = Math.min((double) (gap) / Math.min(currentTeleportPing, MAX_TELEPORT_TIME), 1);
 
 		return cameraStartPos.add(teleportVector.multiply(percentage));
 	}
