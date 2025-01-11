@@ -31,7 +31,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 public class TheEnd {
     protected static final Logger LOGGER = LoggerFactory.getLogger(TheEnd.class);
@@ -132,7 +136,7 @@ public class TheEnd {
     public static void onEntityDeath(Entity entity) {
         if (!(entity instanceof EndermanEntity enderman) || !isZealot(enderman)) return;
         if (hitZealots.contains(enderman.getUuid())) {
-			EndStats stats = PROFILES_STATS.putIfAbsent(EndStats.EMPTY);
+			EndStats stats = PROFILES_STATS.computeIfAbsent(EndStats.EMPTY);
             if (isSpecialZealot(enderman)) {
 				PROFILES_STATS.put(new EndStats(stats.totalZealotKills() + 1, 0, stats.eyes() + 1));
 			} else {
@@ -172,7 +176,7 @@ public class TheEnd {
 				Codec.INT.fieldOf("zealotsSinceLastEye").forGetter(EndStats::zealotsSinceLastEye),
 				Codec.INT.fieldOf("eyes").forGetter(EndStats::eyes)
 		).apply(instance, EndStats::new));
-		public static final EndStats EMPTY = new EndStats(0, 0, 0);
+		public static final Supplier<EndStats> EMPTY = () -> new EndStats(0, 0, 0);
 	}
 
     public record ProtectorLocation(int x, int z, Text name, Waypoint waypoint) {
