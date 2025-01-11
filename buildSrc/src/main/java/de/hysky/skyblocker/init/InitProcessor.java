@@ -2,7 +2,8 @@ package de.hysky.skyblocker.init;
 
 import de.hysky.skyblocker.Processor;
 import org.gradle.api.tasks.compile.JavaCompile;
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
 
 import java.io.IOException;
 import java.io.InputStream;

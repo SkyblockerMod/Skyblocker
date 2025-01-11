@@ -1,15 +1,8 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import java.util.List;
-import java.util.Locale;
-
-import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
-import net.minecraft.screen.ScreenHandler;
-import org.jetbrains.annotations.Nullable;
-
 import com.google.common.collect.Lists;
-
 import de.hysky.skyblocker.mixins.accessors.RecipeBookWidgetAccessor;
+import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -23,9 +16,14 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.recipe.RecipeFinder;
 import net.minecraft.recipe.display.RecipeDisplay;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.context.ContextParameterMap;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Based on {@link net.minecraft.client.gui.screen.recipebook.RecipeBookWidget}.

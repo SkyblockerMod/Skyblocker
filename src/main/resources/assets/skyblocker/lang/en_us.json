@@ -398,7 +398,6 @@
   "skyblocker.config.helpers.enableBitsHelper": "Highlight best Community Store (Bits Shop) offer",
   "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip",
 
-
   "skyblocker.config.helpers.enableWardrobeHelper": "Enable Wardrobe Helper",
   "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing armor from the wardrobe by pressing hotbar keys 1-9 while the menu is open. The corresponding armor set in the wardrobe menu will be equipped.",
 
@@ -631,7 +630,6 @@
   "skyblocker.config.mining.dwarvenMines.enableCarpetHighlight.@Tooltip": "Highlights unbreakable carpets within ore veins in the Dwarven Mines.",
   "skyblocker.config.mining.dwarvenMines.carpetHighlightColor": "Carpet Highlight Color",
   "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Sets the color of the highlight for the unbreakable carpets.",
-
 
   "skyblocker.config.mining.enableDrillFuel": "Enable Drill Fuel",
 
@@ -871,6 +869,9 @@
   "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "Displays your assigned and unassigned tuning points",
   "skyblocker.config.uiAndVisuals.slotText.yourEssence": "Your Essence",
 
+  "skyblocker.config.uiAndVisuals.museumOverlay": "Museum Overlay",
+  "skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip": "Shows undonated items including their prices and more.\n\nMake sure to enable your Museum API for this to work!",
+
   "skyblocker.config.uiAndVisuals.searchOverlay": "Search Overlay",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse.@Tooltip": "Show custom search overlay when searching in the auction house.",
@@ -976,6 +977,29 @@
   "skyblocker.updateRepository.success": "§aUpdated the local repository successfully.",
   "skyblocker.updateRepository.failed": "§cUpdating the local repository failed. See logs for details.",
   "skyblocker.updateRepository.error":  "§cEncountered an error while deleting and updating the local repository. Try again in a moment or remove the files manually and restart the game. See logs for details.",
+
+  "skyblocker.museum.hud.alreadyDonatedItem": "Donated Item",
+  "skyblocker.museum.hud.coin": "Coins",
+  "skyblocker.museum.hud.craftIngredient": "Crafted with",
+  "skyblocker.museum.hud.countsFor": "Will count for",
+  "skyblocker.museum.hud.filter": "Item Filter",
+  "skyblocker.museum.hud.filter.all": "All",
+  "skyblocker.museum.hud.filter.armor": "Armor",
+  "skyblocker.museum.hud.filter.rarities": "Rarities",
+  "skyblocker.museum.hud.filter.switch": "Click to switch filter!",
+  "skyblocker.museum.hud.filter.weapons": "Weapons",
+  "skyblocker.museum.hud.ratioText": "Coins per XP",
+  "skyblocker.museum.hud.skyblockXp": "SkyBlock XP",
+  "skyblocker.museum.hud.sorter": "Item Sort",
+  "skyblocker.museum.hud.sorter.craftCost": "Craft Cost",
+  "skyblocker.museum.hud.sorter.lBin": "Lowest BIN",
+  "skyblocker.museum.hud.sorter.ratio": "Coins/XP Ratio",
+  "skyblocker.museum.hud.sorter.switch": "Click to switch sort!",
+  "skyblocker.museum.hud.soulboundItem": "Soulbound",
+  "skyblocker.museum.hud.untradeableItem": "Untradable",
+  "skyblocker.museum.hud.unknownPrice": "Unknown",
+  "skyblocker.museum.hud.wikiLookup": "Click on %s to open the wiki page!",
+  "skyblocker.museum.hud.xpReward": "Reward",
 
   "skyblocker.museum.attemptingResync": "Attempting to resync your museum item donations...",
   "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! Note that you can only do this once every two days.",

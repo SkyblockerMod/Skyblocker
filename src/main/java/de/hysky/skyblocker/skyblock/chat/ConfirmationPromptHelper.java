@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import java.util.Optional;
-
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
@@ -16,6 +14,8 @@ import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+
+import java.util.Optional;
 
 public class ConfirmationPromptHelper {
 	private static String command;

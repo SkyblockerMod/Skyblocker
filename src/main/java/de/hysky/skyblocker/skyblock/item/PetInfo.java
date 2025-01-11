@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import java.util.Optional;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import java.util.Optional;
 
 public record PetInfo(String type, double exp, SkyblockItemRarity tier, Optional<String> uuid, Optional<String> item, Optional<String> skin) {
 	public static final Codec<PetInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(

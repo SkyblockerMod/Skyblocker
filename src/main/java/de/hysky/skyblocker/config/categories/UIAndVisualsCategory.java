@@ -95,6 +95,14 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.museumOverlay"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip")))
+						.binding(defaults.uiAndVisuals.museumOverlay,
+								() -> config.uiAndVisuals.museumOverlay,
+								newValue -> config.uiAndVisuals.museumOverlay = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation"))
                         .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip")))
@@ -104,7 +112,7 @@ public class UIAndVisualsCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 
-                //Chest Value FIXME change dropdown to color controller
+				//Chest Value FIXME change dropdown to color controller
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.chestValue"))
                         .collapsed(true)

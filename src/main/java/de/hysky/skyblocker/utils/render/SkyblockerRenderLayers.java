@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.utils.render;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayer.MultiPhase;
 import net.minecraft.client.render.RenderLayer.MultiPhaseParameters;
@@ -9,6 +7,7 @@ import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.RenderPhase.DepthTest;
 import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.render.VertexFormats;
+import org.lwjgl.opengl.GL11;
 
 public class SkyblockerRenderLayers {
 	public static final DepthTest OUTLINE_ALWAYS = new DepthTest("outline_always", GL11.GL_ALWAYS);

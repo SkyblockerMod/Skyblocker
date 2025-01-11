@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
 
 public enum DungeonClass {
 	UNKNOWN("Unknown", MobGlow.NO_GLOW),

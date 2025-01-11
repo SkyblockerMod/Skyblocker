@@ -1,16 +1,13 @@
 package de.hysky.skyblocker.mixins;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.systems.RenderSystem;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import net.minecraft.client.render.RenderPhase;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-
-import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
-
-import net.minecraft.client.render.RenderPhase;
 
 @Mixin(RenderPhase.DepthTest.class)
 public class RenderPhaseDepthTestMixin {

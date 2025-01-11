@@ -1,14 +1,12 @@
 package de.hysky.skyblocker.mixins;
 
-import org.objectweb.asm.Opcodes;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-
 import de.hysky.skyblocker.utils.render.SkyblockerRenderLayers;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase.DepthTest;
+import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(RenderLayer.MultiPhase.class)
 public class RenderLayerMultiPhaseMixin {

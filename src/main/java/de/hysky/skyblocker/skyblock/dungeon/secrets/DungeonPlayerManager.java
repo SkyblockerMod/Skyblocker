@@ -1,10 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.jetbrains.annotations.Range;
-
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
@@ -12,6 +7,10 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
+import org.jetbrains.annotations.Range;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DungeonPlayerManager {
 	/**

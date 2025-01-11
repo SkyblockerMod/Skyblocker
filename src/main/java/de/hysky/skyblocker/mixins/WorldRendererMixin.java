@@ -1,5 +1,16 @@
 package de.hysky.skyblocker.mixins;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Local;
+import de.hysky.skyblocker.skyblock.dungeon.LividColor;
+import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.DefaultFramebufferSet;
+import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -8,20 +19,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
-
-import de.hysky.skyblocker.skyblock.dungeon.LividColor;
-import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.DefaultFramebufferSet;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin {
