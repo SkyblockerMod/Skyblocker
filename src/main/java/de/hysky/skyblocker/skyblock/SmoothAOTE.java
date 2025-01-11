@@ -18,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -65,9 +64,15 @@ public class SmoothAOTE {
 
 		//if the server is in sync in number of teleports
 		if (teleportsAhead == 0) {
+			//see if the teleport has a small amount left to continue animating instead of jumping to the end
+			long timeLeft = (currentTeleportPing - (System.currentTimeMillis() - startTime));
+			if (timeLeft > 0 && timeLeft <= SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.maximumAddedLag) {
+				return;
+			}
 			//reset when player has reached the end of the teleports
 			startPos = null;
 			teleportVector = null;
+
 		}
 	}
 
@@ -450,7 +455,6 @@ public class SmoothAOTE {
 		long gap = System.currentTimeMillis() - startTime;
 		//make sure the player is actually getting teleported if not disable teleporting until they are teleported again
 		if (System.currentTimeMillis() - lastTeleportTime > Math.min(2 * Math.max(lastPing, currentTeleportPing), MAX_TELEPORT_TIME)) {
-			System.out.println("sdf;lk");
 			teleportDisabled = true;
 			startPos = null;
 			teleportVector = null;
@@ -458,6 +462,14 @@ public class SmoothAOTE {
 			return null;
 		}
 		double percentage = Math.min((double) (gap) / Math.min(currentTeleportPing, MAX_TELEPORT_TIME), 1);
+
+		//if the animation is done and the player has finished the teleport server side finish the teleport
+		if (teleportsAhead == 0 && percentage == 1) {
+			//reset when player has reached the end of the teleports
+			startPos = null;
+			teleportVector = null;
+			return null;
+		}
 
 		return cameraStartPos.add(teleportVector.multiply(percentage));
 	}

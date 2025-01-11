@@ -347,6 +347,9 @@ public class UIAndVisualsConfig {
 
         @SerialEntry
         public boolean enableWitherImpact = false;
+
+		@SerialEntry
+		public int maximumAddedLag = 100;
     }
 
     public static class SearchOverlay {

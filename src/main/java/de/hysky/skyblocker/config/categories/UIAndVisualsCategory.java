@@ -443,6 +443,14 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.smoothAOTE.enableWitherImpact = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip")))
+								.binding(defaults.uiAndVisuals.smoothAOTE.maximumAddedLag,
+										() -> config.uiAndVisuals.smoothAOTE.maximumAddedLag,
+										newValue -> config.uiAndVisuals.smoothAOTE.maximumAddedLag = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 500).step(1))
+								.build())
                         .build())
 
                 //Search overlay
