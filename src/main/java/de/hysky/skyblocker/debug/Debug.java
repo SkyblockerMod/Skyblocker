@@ -44,7 +44,7 @@ public class Debug {
 	private static boolean keyDown = false;
 
 	public static boolean debugEnabled() {
-		return DEBUG_ENABLED || FabricLoader.getInstance().isDevelopmentEnvironment();
+		return DEBUG_ENABLED || FabricLoader.getInstance().isDevelopmentEnvironment() || SnapshotDebug.isInSnapshot();
 	}
 
 	public static boolean webSocketDebug() {
