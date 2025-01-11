@@ -188,6 +188,7 @@
   "skyblocker.config.dungeons.puzzle.solveBoulder.@Tooltip": "Draws a line to the chest and highlight button",
   "skyblocker.config.dungeons.puzzle.solveIceFill": "Solve Ice Fill Puzzle",
   "skyblocker.config.dungeons.puzzle.solveSilverfish": "Solve Silverfish Puzzle",
+  "skyblocker.config.dungeons.puzzle.solveTeleportMaze": "Solve Teleport Maze Puzzle",
   "skyblocker.config.dungeons.puzzle.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
   "skyblocker.config.dungeons.puzzle.solveTicTacToe": "Solve Tic Tac Toe Puzzle",
   "skyblocker.config.dungeons.puzzle.solveTicTacToe.@Tooltip": "Puts a red box around the next best move for you to make!",
