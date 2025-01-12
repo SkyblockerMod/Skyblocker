@@ -5,8 +5,10 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
+import de.hysky.skyblocker.skyblock.SmoothAOTE;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
@@ -40,6 +42,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * All mixins in this file should be arranged in the order of the methods they inject into.
+ */
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
@@ -71,6 +76,12 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		if (world.getEntityById(entityId) instanceof ItemEntity itemEntity) {
 			DungeonManager.onItemPickup(itemEntity);
 		}
+	}
+
+	@Inject(method = "onPlayerPositionLook", at = @At("TAIL"))
+	private void onPlayerTeleported(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
+		//player has been teleported by the server tell the smooth AOTE this
+		SmoothAOTE.playerTeleported();
 	}
 
 	@ModifyVariable(method = "onItemPickupAnimation", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V", ordinal = 0))
@@ -149,5 +160,16 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		CrystalsChestHighlighter.onParticle(packet);
 		EnderNodes.onParticle(packet);
 		WishingCompassSolver.onParticle(packet);
+	}
+
+	@ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;shouldShowPacketSizeAndPingCharts()Z"))
+	private boolean shouldShowPacketSizeAndPingCharts(boolean original) {
+		//make the f3+3 screen always send ping packets even when closed
+		//this is needed to make smooth AOTE work so check if its enabled
+		UIAndVisualsConfig.SmoothAOTE options = SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE;
+		if (Utils.isOnSkyblock() && !SmoothAOTE.teleportDisabled && (options.enableWeirdTransmission || options.enableEtherTransmission || options.enableInstantTransmission || options.enableSinrecallTransmission || options.enableWitherImpact)) {
+			return true;
+		}
+		return original;
 	}
 }
