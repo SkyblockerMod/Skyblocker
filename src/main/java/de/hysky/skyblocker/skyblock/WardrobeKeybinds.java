@@ -67,7 +67,7 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
 		if (!stack.isOf(Items.PINK_DYE) && !stack.isOf(Items.LIME_DYE)) return List.of();
 		if (!(slotId >= 36 && slotId <= 44)) return List.of();
-		return SlotText.bottomLeftList(Text.literal(String.valueOf(slotId - 35)).withColor(0x74c7ec));
+		return SlotText.bottomLeftList(Text.literal(String.valueOf(slotId - 35)).withColor(SlotText.MID_BLUE));
 	}
 
 	@Override
