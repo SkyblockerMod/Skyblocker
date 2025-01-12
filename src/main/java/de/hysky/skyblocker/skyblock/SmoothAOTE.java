@@ -454,17 +454,18 @@ public class SmoothAOTE {
 		}
 		long gap = System.currentTimeMillis() - startTime;
 		//make sure the player is actually getting teleported if not disable teleporting until they are teleported again
-		if (System.currentTimeMillis() - lastTeleportTime > Math.min(2 * Math.max(lastPing, currentTeleportPing), MAX_TELEPORT_TIME)) {
+		if (System.currentTimeMillis() - lastTeleportTime > Math.min(Math.max(lastPing, currentTeleportPing) + SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.maximumAddedLag, MAX_TELEPORT_TIME)) {
 			teleportDisabled = true;
 			startPos = null;
 			teleportVector = null;
 			teleportsAhead = 0;
 			return null;
 		}
-		double percentage = Math.min((double) (gap) / Math.min(currentTeleportPing, MAX_TELEPORT_TIME), 1);
+		long estimatedTeleportTime = Math.min(currentTeleportPing, MAX_TELEPORT_TIME);
+		double percentage = Math.clamp((double) (gap) / estimatedTeleportTime, 0, 1); // Sanity clamp
 
 		//if the animation is done and the player has finished the teleport server side finish the teleport
-		if (teleportsAhead == 0 && percentage == 1) {
+		if (teleportsAhead == 0 && gap >= estimatedTeleportTime + SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.maximumAddedLag) {
 			//reset when player has reached the end of the teleports
 			startPos = null;
 			teleportVector = null;
