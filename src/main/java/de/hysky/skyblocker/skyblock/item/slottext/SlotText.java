@@ -13,12 +13,12 @@ public record SlotText(@NotNull Text text, @NotNull TextPosition position) {
 	public static final int CREAM = 0xFFDDC1;
 	public static final int GOLD = 0xE5B80B;
 	public static final int LIGHT_BLUE = 0xCFF8F8;
-	public static final int LIGHT_ORANGE = 0xfab387;
-	public static final int LIGHT_YELLOW = 0xf9e2af;
-	public static final int LIGHT_PURPLE = 0xcba6f7;
+	public static final int LIGHT_ORANGE = 0xFAB387;
+	public static final int LIGHT_YELLOW = 0xF9E2AF;
+	public static final int LIGHT_PURPLE = 0xCBA6F7;
 	public static final int LIGHT_RED = 0xFF7276;
-	public static final int LIGHT_GREEN = 0x90ee90;
-	public static final int MID_BLUE = 0x74c7ec;
+	public static final int LIGHT_GREEN = 0x90EE90;
+	public static final int MID_BLUE = 0x74C7EC;
 	public static final int WHITE = 0xFFFFFF;
 
 	public static SlotText bottomLeft(@NotNull Text text) {
