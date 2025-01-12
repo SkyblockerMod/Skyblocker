@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public record SlotText(@NotNull Text text, @NotNull TextPosition position) {
+	public static final int CREAM = 0xFFDDC1;
+	public static final int GOLD = 0xE5B80B;
+
 	public static SlotText bottomLeft(@NotNull Text text) {
 		return new SlotText(text, TextPosition.BOTTOM_LEFT);
 	}
