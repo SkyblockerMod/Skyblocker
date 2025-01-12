@@ -31,9 +31,9 @@ public class SkillLevelAdder extends SimpleSlotTextAdder {
 				String romanNumeral = name.substring(lastIndex + 1); //+1 because we don't need the space itself
 				//The "romanNumeral" might be a latin numeral, too. There's a skyblock setting for this, so we have to do it this way V
 				if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Max Skill level reached!")) != null) {
-					return SlotText.bottomLeftList(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Integer.parseInt(romanNumeral))).withColor(0xE5B80B));
+					return SlotText.bottomLeftList(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Integer.parseInt(romanNumeral))).withColor(SlotText.GOLD));
 				} else {
-					return SlotText.bottomLeftList(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Integer.parseInt(romanNumeral))).withColor(0xFFDDC1));
+					return SlotText.bottomLeftList(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Integer.parseInt(romanNumeral))).withColor(SlotText.CREAM));
 				}
 			}
 			default -> {

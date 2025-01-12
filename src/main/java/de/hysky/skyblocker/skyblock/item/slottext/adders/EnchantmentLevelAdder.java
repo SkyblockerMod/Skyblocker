@@ -208,14 +208,14 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 			if (enchantments.getSize() != 1) return List.of(); //Only makes sense to display the level when there's one enchant.
 			final String enchantmentId = enchantments.getKeys().iterator().next();
 			int level = enchantments.getInt(enchantmentId);
-			final SlotText enchantmentLevel = SlotText.bottomLeft(Text.literal(String.valueOf(level)).withColor(0xFFDDC1));
+			final SlotText enchantmentLevel = SlotText.bottomLeft(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
 
 			return getAbbreviation(enchantmentId)
 					.map(text -> List.of(SlotText.topRight(text), enchantmentLevel))
 					.orElseGet(() -> List.of(enchantmentLevel));
 		} else { //In bazaar, the books have the enchantment level in the name
 			int level = getEnchantLevelFromString(name);
-			return level != 0 ? SlotText.bottomLeftList(Text.literal(String.valueOf(level)).withColor(0xFFDDC1)) : List.of();
+			return level != 0 ? SlotText.bottomLeftList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM)) : List.of();
 		}
 	}
 
