@@ -111,5 +111,8 @@
     "skyblocker.config.crimsonIsle.kuudra": "Kuudra",
     "key.itemPriceRefresh": "Bazaar 새로고침",
     "text.skyblocker.source": "소스 코드",
-    "text.skyblocker.website": "웹사이트"
+    "text.skyblocker.website": "웹사이트",
+    "text.skyblocker.confirm": "확인",
+    "text.skyblocker.undo": "취소",
+    "text.skyblocker.reset": "재설정"
 }
