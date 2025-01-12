@@ -42,6 +42,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * All mixins in this file should be arranged in the order of the methods they inject into.
+ */
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
@@ -73,6 +76,12 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		if (world.getEntityById(entityId) instanceof ItemEntity itemEntity) {
 			DungeonManager.onItemPickup(itemEntity);
 		}
+	}
+
+	@Inject(method = "onPlayerPositionLook", at = @At("TAIL"))
+	private void onPlayerTeleported(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
+		//player has been teleported by the server tell the smooth AOTE this
+		SmoothAOTE.playerTeleported();
 	}
 
 	@ModifyVariable(method = "onItemPickupAnimation", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V", ordinal = 0))
@@ -153,12 +162,6 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		WishingCompassSolver.onParticle(packet);
 	}
 
-	 @Inject(method = "onPlayerPositionLook", at = @At("TAIL"))
-    private void onPlayerTeleported(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
-        //player has been teleported by the server tell the smooth AOTE this
-        SmoothAOTE.playerTeleported();
-    }
-
 	@ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;shouldShowPacketSizeAndPingCharts()Z"))
 	private boolean shouldShowPacketSizeAndPingCharts(boolean original) {
 		//make the f3+3 screen always send ping packets even when closed
@@ -168,6 +171,5 @@ public abstract class ClientPlayNetworkHandlerMixin {
 			return true;
 		}
 		return original;
-
 	}
 }
