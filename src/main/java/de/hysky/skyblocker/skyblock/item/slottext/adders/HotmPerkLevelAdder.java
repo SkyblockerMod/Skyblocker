@@ -19,7 +19,7 @@ public class HotmPerkLevelAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
 			"hotm_perk_level",
 			"skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel");
-	private static final Pattern LEVEL = Pattern.compile("Level (?<level>\\d+)\\/(?<max>\\d+)");
+	private static final Pattern LEVEL = Pattern.compile("Level (?<level>\\d+)/(?<max>\\d+)");
 
 	public HotmPerkLevelAdder() {
 		super("^Heart of the Mountain$", CONFIG_INFORMATION);
@@ -28,7 +28,7 @@ public class HotmPerkLevelAdder extends SimpleSlotTextAdder {
 	@Override
 	@NotNull
 	public List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		if (slotId >= 0 && slotId <= 53 && !stack.isOf(Items.COAL)) {
+		if (slotId >= 0 && slotId <= 44 && !stack.isOf(Items.COAL)) {
 			List<Text> lore = ItemUtils.getLore(stack);
 
 			if (!lore.isEmpty()) {
