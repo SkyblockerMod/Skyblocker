@@ -31,6 +31,6 @@ public class PetLevelAdder extends SimpleSlotTextAdder {
 		if (!matcher.matches()) return List.of();
 		String level = matcher.group(1);
 		if (!NumberUtils.isDigits(level) || "100".equals(level) || "200".equals(level)) return List.of();
-		return SlotText.topLeftList(Text.literal(level).withColor(0xFFDDC1));
+		return SlotText.topLeftList(Text.literal(level).withColor(SlotText.CREAM));
 	}
 }

@@ -34,11 +34,11 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 			NbtCompound enchantments = nbt.getCompound("enchantments");
 			if (enchantments.getSize() != 1) return List.of(); //Only makes sense to display the level when there's one enchant.
 			int level = enchantments.getInt(enchantments.getKeys().iterator().next());
-			return SlotText.bottomLeftList(Text.literal(String.valueOf(level)).withColor(0xFFDDC1));
+			return SlotText.bottomLeftList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
 		} else { //In bazaar, the books have the enchantment level in the name
 			int level = getEnchantLevelFromString(name);
 			if (level == 0) return List.of();
-			return SlotText.bottomLeftList(Text.literal(String.valueOf(level)).withColor(0xFFDDC1));
+			return SlotText.bottomLeftList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
 		}
 	}
 
