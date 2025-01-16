@@ -1,15 +1,16 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.sound.SoundEvent;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.regex.Pattern;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
+import net.minecraft.sound.SoundEvent;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * Data class to contain all the settings for a chat rule
@@ -22,7 +23,7 @@ public class ChatRule {
             Codec.BOOL.fieldOf("isRegex").forGetter(ChatRule::getRegex),
             Codec.BOOL.fieldOf("isIgnoreCase").forGetter(ChatRule::getIgnoreCase),
             Codec.STRING.fieldOf("filter").forGetter(ChatRule::getFilter),
-            Codec.STRING.fieldOf("validLocations").forGetter(ChatRule::getValidLocations),
+            Location.SET_CODEC.fieldOf("validLocations").forGetter(ChatRule::getValidLocations),
             Codec.BOOL.fieldOf("hideMessage").forGetter(ChatRule::getHideMessage),
             Codec.BOOL.fieldOf("showActionBar").forGetter(ChatRule::getShowActionBar),
             Codec.BOOL.fieldOf("showAnnouncement").forGetter(ChatRule::getShowAnnouncement),
@@ -33,20 +34,21 @@ public class ChatRule {
 
     private String name;
 
-    //inputs
-    private Boolean enabled;
-    private Boolean isPartialMatch;
-    private Boolean isRegex;
-    private Boolean isIgnoreCase;
+    // Inputs
+    private boolean enabled;
+    private boolean isPartialMatch;
+    private boolean isRegex;
+    private boolean isIgnoreCase;
     private String filter;
-    private String validLocations;
+    private EnumSet<Location> validLocations;
 
-    //output
-    private Boolean hideMessage;
-    private Boolean showActionBar;
-    private Boolean showAnnouncement;
+    // Outputs
+    private boolean hideMessage;
+    private boolean showActionBar;
+    private boolean showAnnouncement;
     private String replaceMessage;
     private SoundEvent customSound;
+
     /**
      * Creates a chat rule with default options.
      */
@@ -58,7 +60,7 @@ public class ChatRule {
         this.isRegex = false;
         this.isIgnoreCase = true;
         this.filter = "";
-        this.validLocations = "";
+        this.validLocations = EnumSet.noneOf(Location.class);
 
         this.hideMessage = true;
         this.showActionBar = false;
@@ -67,7 +69,7 @@ public class ChatRule {
         this.customSound = null;
     }
 
-    public ChatRule(String name, Boolean enabled, Boolean isPartialMatch, Boolean isRegex, Boolean isIgnoreCase, String filter, String validLocations, Boolean hideMessage, Boolean showActionBar, Boolean showAnnouncement, String replaceMessage, SoundEvent customSound) {
+    public ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, boolean showActionBar, boolean showAnnouncement, @Nullable String replaceMessage, @Nullable SoundEvent customSound) {
         this.name = name;
         this.enabled = enabled;
         this.isPartialMatch = isPartialMatch;
@@ -82,7 +84,7 @@ public class ChatRule {
         this.customSound = customSound;
     }
 
-    private ChatRule(String name, Boolean enabled, Boolean isPartialMatch, Boolean isRegex, Boolean isIgnoreCase, String filter, String validLocations, Boolean hideMessage, Boolean showActionBar, Boolean showAnnouncement, Optional<String> replaceMessage, Optional<SoundEvent> customSound) {
+    private ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, boolean showActionBar, boolean showAnnouncement, Optional<String> replaceMessage, Optional<SoundEvent> customSound) {
         this(name, enabled, isPartialMatch, isRegex, isIgnoreCase, filter, validLocations, hideMessage, showActionBar, showAnnouncement, replaceMessage.orElse(null), customSound.orElse(null));
     }
 
@@ -94,35 +96,35 @@ public class ChatRule {
         this.name = name;
     }
 
-    protected Boolean getEnabled() {
+    protected boolean getEnabled() {
         return enabled;
     }
 
-    protected void setEnabled(Boolean enabled) {
+    protected void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    protected Boolean getPartialMatch() {
+    protected boolean getPartialMatch() {
         return isPartialMatch;
     }
 
-    protected void setPartialMatch(Boolean partialMatch) {
+    protected void setPartialMatch(boolean partialMatch) {
         isPartialMatch = partialMatch;
     }
 
-    protected Boolean getRegex() {
+    protected boolean getRegex() {
         return isRegex;
     }
 
-    protected void setRegex(Boolean regex) {
+    protected void setRegex(boolean regex) {
         isRegex = regex;
     }
 
-    protected Boolean getIgnoreCase() {
+    protected boolean getIgnoreCase() {
         return isIgnoreCase;
     }
 
-    protected void setIgnoreCase(Boolean ignoreCase) {
+    protected void setIgnoreCase(boolean ignoreCase) {
         isIgnoreCase = ignoreCase;
     }
 
@@ -134,27 +136,27 @@ public class ChatRule {
         this.filter = filter;
     }
 
-    protected Boolean getHideMessage() {
+    protected boolean getHideMessage() {
         return hideMessage;
     }
 
-    protected void setHideMessage(Boolean hideMessage) {
+    protected void setHideMessage(boolean hideMessage) {
         this.hideMessage = hideMessage;
     }
 
-    protected Boolean getShowActionBar() {
+    protected boolean getShowActionBar() {
         return showActionBar;
     }
 
-    protected void setShowActionBar(Boolean showActionBar) {
+    protected void setShowActionBar(boolean showActionBar) {
         this.showActionBar = showActionBar;
     }
 
-    protected Boolean getShowAnnouncement() {
+    protected boolean getShowAnnouncement() {
         return showAnnouncement;
     }
 
-    protected void setShowAnnouncement(Boolean showAnnouncement) {
+    protected void setShowAnnouncement(boolean showAnnouncement) {
         this.showAnnouncement = showAnnouncement;
     }
 
@@ -182,11 +184,11 @@ public class ChatRule {
         this.customSound = customSound;
     }
 
-    protected String getValidLocations() {
+    protected EnumSet<Location> getValidLocations() {
         return validLocations;
     }
 
-    protected void setValidLocations(String validLocations) {
+    protected void setValidLocations(EnumSet<Location> validLocations) {
         this.validLocations = validLocations;
     }
 
@@ -195,7 +197,7 @@ public class ChatRule {
      * @param inputString the chat message to check if fits
      * @return if the inputs are all true and the outputs should be performed
      */
-    protected Boolean isMatch(String inputString) {
+    protected boolean isMatch(String inputString) {
         //enabled
         if (!enabled) return false;
 
@@ -227,36 +229,10 @@ public class ChatRule {
             }
         }
 
-        //location
-        if (validLocations.isBlank()) { //if no locations do not check
-            return true;
-        }
-
-        String cleanedMapLocation = Utils.getMap().toLowerCase().replace(" ", "");
-        Boolean isLocationValid = null;
-        for (String validLocation : validLocations.replace(" ", "").toLowerCase().split(",")) {//the locations are split by "," and start with ! if not locations
-            if (validLocation == null) continue;
-            if (validLocation.startsWith("!")) {//not location
-                if (Objects.equals(validLocation.substring(1), cleanedMapLocation)) {
-                    isLocationValid = false;
-                    break;
-                } else {
-                    isLocationValid = true;
-                }
-            } else {
-                if (Objects.equals(validLocation, cleanedMapLocation)) { //normal location
-                    isLocationValid = true;
-                    break;
-                }
-            }
-        }
-
-        //if location is not in the list at all and is a not a "!" location or and is a normal location
-        if (isLocationValid != null && isLocationValid) {
-            return true;
-        }
-
-        return false;
+		// As a special case, if there are no valid locations all locations are valid.
+	    // This exists because it doesn't make sense to remove all valid locations, you should disable the chat rule if you want to do that.
+	    // This way, we can also default to an empty set for validLocations.
+		return validLocations.isEmpty() || validLocations.contains(Utils.getLocation());
     }    
 }
 
