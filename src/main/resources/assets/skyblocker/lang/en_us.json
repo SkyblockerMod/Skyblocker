@@ -542,6 +542,9 @@
 
   "skyblocker.config.mining": "Mining",
 
+  "skyblocker.config.mining.islandPickobulusBlock": "Island Pickobulus Block",
+  "skyblocker.config.mining.islandPickobulusBlock.@Tooltip": "Blocks the pickobulus ability when on your private island.",
+
   "skyblocker.config.mining.commissionWaypoints": "Commission Waypoints",
   "skyblocker.config.mining.commissionWaypoints.mode": "Enable Commission Waypoints",
   "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[0]": "Off: Do not show Commission waypoint.",

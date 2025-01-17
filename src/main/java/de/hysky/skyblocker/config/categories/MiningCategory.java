@@ -26,6 +26,14 @@ public class MiningCategory {
                 .name(Text.translatable("skyblocker.config.mining"))
 
                 //Uncategorized Options
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.mining.islandPickobulusBlock"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.mining.islandPickobulusBlock.@Tooltip")))
+						.binding(defaults.mining.islandPickobulusBlock,
+								() -> config.mining.islandPickobulusBlock,
+								newValue -> config.mining.islandPickobulusBlock = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.mining.enableDrillFuel"))
                         .binding(defaults.mining.enableDrillFuel,

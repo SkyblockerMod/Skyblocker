@@ -53,6 +53,7 @@ public final class ItemUtils {
     public static final String ID = "id";
     public static final String UUID = "uuid";
     public static final Pattern NOT_DURABILITY = Pattern.compile("[^0-9 /]");
+	public static final Pattern ABILITY = Pattern.compile("ability:\\s+(?<ability>[\\w\\s]+?)\\s+right\\s+click", Pattern.CASE_INSENSITIVE);
     public static final Predicate<String> FUEL_PREDICATE = line -> line.contains("Fuel: ");
     private static final Codec<RegistryEntry<Item>> EMPTY_ALLOWING_ITEM_CODEC = Registries.ITEM.getEntryCodec();
     public static final Codec<ItemStack> EMPTY_ALLOWING_ITEMSTACK_CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
@@ -423,6 +424,11 @@ public final class ItemUtils {
     public static @NotNull List<Text> getLore(ItemStack stack) {
         return stack.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT).styledLines();
     }
+
+	public static Optional<String> getAbility(ItemStack stack) {
+		var match = ItemUtils.getLoreLineIfMatch(stack, ABILITY);
+		return Optional.ofNullable(match).map(m -> m.group("ability"));
+	}
 
     public static @NotNull PropertyMap propertyMapWithTexture(String textureValue) {
         return Codecs.GAME_PROFILE_PROPERTY_MAP.parse(JsonOps.INSTANCE, JsonParser.parseString("[{\"name\":\"textures\",\"value\":\"" + textureValue + "\"}]")).getOrThrow();
