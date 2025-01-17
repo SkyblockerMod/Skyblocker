@@ -27,9 +27,8 @@ public final class IslandPickobulusBlock {
 				&& Utils.getLocation() == Location.PRIVATE_ISLAND) {
 			var stack = player.getStackInHand(hand);
 			var ability = ItemUtils.getAbility(stack);
-			if (ability.isPresent()) {
-				var name = ability.get();
-				if (name.equalsIgnoreCase("pickobulus")) {
+			if (ability != null) {
+				if (ability.equalsIgnoreCase("pickobulus")) {
 					return ActionResult.FAIL; // Cancels and doesn't send a package
 				}
 			}

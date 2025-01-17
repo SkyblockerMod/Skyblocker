@@ -425,9 +425,9 @@ public final class ItemUtils {
         return stack.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT).styledLines();
     }
 
-	public static Optional<String> getAbility(ItemStack stack) {
+	public static String getAbility(ItemStack stack) {
 		var match = ItemUtils.getLoreLineIfMatch(stack, ABILITY);
-		return Optional.ofNullable(match).map(m -> m.group("ability"));
+		return match == null ? null : match.group("ability");
 	}
 
     public static @NotNull PropertyMap propertyMapWithTexture(String textureValue) {
