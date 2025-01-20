@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfigListWidget.AbstractChatRuleEntry> {
     private final ChatRulesConfigScreen screen;
-    private Boolean hasChanged;
+    private boolean hasChanged;
 
     public ChatRulesConfigListWidget(MinecraftClient client, ChatRulesConfigScreen screen, int width, int height, int y, int itemHeight) {
         super(client, width, height, y, itemHeight);
