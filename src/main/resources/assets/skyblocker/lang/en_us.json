@@ -445,8 +445,6 @@
   "skyblocker.config.chat.chatRules": "Custom Chat Rules",
   "skyblocker.config.chat.chatRules.announcementLength": "Announcement Display Time",
   "skyblocker.config.chat.chatRules.announcementLength.@Tooltip": "The amount of time the announcement will show for in ticks.",
-  "skyblocker.config.chat.chatRules.announcementScale": "Announcement Size",
-  "skyblocker.config.chat.chatRules.announcementScale.@Tooltip": "The amount to scale the size of the announcement.",
   "skyblocker.config.chat.chatRules.screen": "Chat Rules Config...",
   "skyblocker.config.chat.chatRules.screen.deleteQuestion": "Are you sure you want to remove this rule?",
   "skyblocker.config.chat.chatRules.screen.deleteWarning": "Rule '%s' will be lost forever! (A long time!)",

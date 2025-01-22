@@ -535,8 +535,6 @@
     "skyblocker.config.chat.chatRules": "Кастомные настройки чата",
     "skyblocker.config.chat.chatRules.announcementLength": "Время отображения оповещений",
     "skyblocker.config.chat.chatRules.announcementLength.@Tooltip": "Время, которое будет отображаться оповещение (в тиках).",
-    "skyblocker.config.chat.chatRules.announcementScale": "Размер оповещения",
-    "skyblocker.config.chat.chatRules.announcementScale.@Tooltip": "Размер оповещения.",
     "skyblocker.config.chat.chatRules.screen": "Настройки правил чата...",
     "skyblocker.config.chat.chatRules.screen.new": "Новое правило",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.announcement": "Показывать оповещение:",

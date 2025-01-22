@@ -61,7 +61,5 @@ public class ChatConfig {
     public static class ChatRuleConfig {
         @SerialEntry
         public int announcementLength = 60;
-        @SerialEntry
-        public int announcementScale = 3;
     }
 }
