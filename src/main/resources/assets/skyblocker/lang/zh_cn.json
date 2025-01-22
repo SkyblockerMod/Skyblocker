@@ -1051,5 +1051,17 @@
     "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]": "简约：在普通的框中显示基本信息。\n",
     "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]": "经典：在普通的框中显示带有装饰的信息。\n",
     "skyblocker.slayer.bossSpawnAlert": "Boss已生成！",
-    "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]": "极简：在简单的框中显示最少的信息。\n"
+    "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]": "极简：在简单的框中显示最少的信息。\n",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "对Necron's Blade、Hyperion、Astraea、Scylla、Valkyrie生效。",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip": "对Aspect of the Leech生效。",
+    "skyblocker.config.uiAndVisuals.smoothAOTE": "平滑的AOTE",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip": "使右键单击传送的能力变得平滑。",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip": "对Etherwarp Conduit和Ether Merged生效。",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission": "平滑的Ether Transmission",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission.@Tooltip": "对AOTE和AOTV生效。",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission": "平滑的Instant Transmission",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission": "平滑的Sinrecall Transmission",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip": "对Sinseeker Scythe生效。",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission": "平滑的Weird Transmission",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact": "平滑的Wither Impact"
 }
