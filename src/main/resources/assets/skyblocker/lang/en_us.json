@@ -256,6 +256,9 @@
 
   "skyblocker.config.general.acceptReparty": "Auto accept Reparty",
 
+  "skyblocker.config.general.preventSwimming": "Prevent swimming on Skyblock",
+  "skyblocker.config.general.preventSwimming.@Tooltip": "Prevent players and NPCs from entering swimming state that does not exist in legacy servers. This may fix lag backs when in water.",
+
   "skyblocker.config.general.hitbox": "Hitboxes",
   "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Enable 1.8 farmland hitbox",
   "skyblocker.config.general.hitbox.oldLeverHitbox": "Enable 1.8 lever hitbox",

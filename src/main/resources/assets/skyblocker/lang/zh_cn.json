@@ -97,6 +97,8 @@
     "skyblocker.config.helpers.experiments.enableChronomatronSolver": "启用序列记忆实验助手",
     "skyblocker.config.helpers.experiments.enableUltrasequencerSolver": "启用超级序列实验助手",
     "skyblocker.config.general.acceptReparty": "自动接受重新组队",
+    "skyblocker.config.general.preventSwimming": "阻止在 Skyblock 中游泳",
+    "skyblocker.config.general.preventSwimming.@Tooltip": "防止玩家和 NPC 进入旧版服务器中不存在的游泳状态。这可能会修复在水中时回弹的问题。",
     "skyblocker.config.helpers.fairySouls": "仙女之魂助手",
     "skyblocker.config.helpers.fairySouls.enableFairySoulsHelper": "启用仙女之魂助手",
     "skyblocker.fairySouls.markAllFound": "§r将当前岛屿上的全部仙女之魂标记为已发现",

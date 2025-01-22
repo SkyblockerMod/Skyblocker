@@ -22,6 +22,9 @@ public class GeneralConfig {
     @SerialEntry
     public boolean acceptReparty = true;
 
+    @SerialEntry
+    public boolean preventSwimming = true;
+
 	@SerialEntry
 	public SpeedPresets speedPresets = new SpeedPresets();
 
