@@ -3,6 +3,7 @@ package de.hysky.skyblocker;
 import de.hysky.skyblocker.debug.SnapshotDebug;
 import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
+import net.fabricmc.fabric.api.client.gametest.v1.TestScreenshotComparisonOptions;
 import net.fabricmc.fabric.api.client.gametest.v1.TestSingleplayerContext;
 import net.minecraft.client.gui.screen.world.WorldCreator;
 import net.minecraft.registry.RegistryKeys;
@@ -25,7 +26,7 @@ public class SkyblockerGameTest implements FabricClientGameTest {
 				client.player.setPitch(20);
 			});
 			singleplayer.getClientWorld().waitForChunksRender();
-			context.takeScreenshot("skyblocker_render");
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("skyblocker_render").saveWithFileName("skyblocker_render"));
 		}
 	}
 }
