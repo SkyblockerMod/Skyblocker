@@ -382,5 +382,13 @@
     "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage": "Wishing compass utilisée. Déplacez-vous vers un autre emplacement et utilisez un second wishing compass pour trianguler la cible",
     "skyblocker.waypoints.type.OUTLINE": "Contour",
     "skyblocker.waypoints.type.OUTLINED_HIGHLIGHT": "Surlignage entouré",
-    "skyblocker.waypoints.type.HIGHLIGHT": "Surlignage"
+    "skyblocker.waypoints.type.HIGHLIGHT": "Surlignage",
+    "argument.color.hex.invalidString": "Le code hexadécimal doit avoir exactement 6 caractères, il est actuellement de %d caractères.",
+    "argument.color.hex.invalidChar": "Caractère invalide : %s. Caractères hexadécimaux valides : [0-9a-fA-F]",
+    "text.skyblocker.reset": "Réinitialiser",
+    "text.skyblocker.undo": "Annuler",
+    "text.skyblocker.clickToSend": "[Cliquez pour envoyer dans le chat]",
+    "text.skyblocker.clickToSend.@Tooltip": "Cliquez pour envoyer dans le chat.",
+    "key.itemPriceLookup": "Recherche dans le Bazaar",
+    "key.itemPriceRefresh": "Actualiser le Bazaar"
 }
