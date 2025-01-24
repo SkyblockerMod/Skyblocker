@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimaps;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,12 +20,9 @@ public class EnchantmentLevelAdderTest {
 
 	private void checkForDuplicates(Map<String, String> abbreviations) {
 		if (abbreviations.size() == abbreviations.values().stream().distinct().count()) return;
-		Map<String, String> names = new Object2ObjectOpenHashMap<>();
-		for (var entry : abbreviations.entrySet()) {
-			var put = names.put(entry.getValue(), entry.getKey());
-			if (put != null) {
-				Assertions.fail("Duplicate abbreviation: %s for %s and %s".formatted(entry.getValue(), put, entry.getKey()));
-			}
-		}
+		abbreviations.entrySet().stream().collect(Multimaps.toMultimap(Map.Entry::getValue, Map.Entry::getKey, ArrayListMultimap::create))
+				.asMap().entrySet().stream().filter(e -> e.getValue().size() > 1)
+				.map(e -> "Duplicate abbreviations: %s for %s".formatted(e.getKey(), e.getValue()))
+				.forEach(Assertions::fail);
 	}
 }
