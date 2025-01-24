@@ -34,7 +34,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -68,7 +67,7 @@ public class CrystalsLocationsManager {
 
     protected static Map<String, MiningLocationLabel> activeWaypoints = new HashMap<>();
     protected static List<String> verifiedWaypoints = new ArrayList<>();
-    private static List<MiningLocationLabel.CrystalHollowsLocationsCategory> waypointsSent2Socket = new ArrayList<>();
+    private static final List<MiningLocationLabel.CrystalHollowsLocationsCategory> waypointsSent2Socket = new ArrayList<>();
 
     @Init
     public static void init() {
@@ -294,8 +293,8 @@ public class CrystalsLocationsManager {
 
     public static int shareWaypoint(String place) {
         if (activeWaypoints.containsKey(place)) {
-            Vec3d pos = activeWaypoints.get(place).centerPos();
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + " " + place + ": " + (int) pos.getX() + ", " + (int) pos.getY() + ", " + (int) pos.getZ());
+            BlockPos pos = activeWaypoints.get(place).pos;
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + " " + place + ": " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ(), false);
         } else {
             //send fail message
             if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
@@ -325,6 +324,7 @@ public class CrystalsLocationsManager {
 
     public static void addCustomWaypointFromSocket(MiningLocationLabel.CrystalHollowsLocationsCategory category, BlockPos pos) {
         if (activeWaypoints.containsKey(category.getName())) return;
+        if (category == MiningLocationLabel.CrystalHollowsLocationsCategory.FAIRY_GROTTO && !SkyblockerConfigManager.get().mining.crystalsWaypoints.shareFairyGrotto) return;
 
         removeUnknownNear(pos);
         MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
@@ -349,7 +349,7 @@ public class CrystalsLocationsManager {
         String name = MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN.getName();
         MiningLocationLabel unknownWaypoint = activeWaypoints.getOrDefault(name, null);
         if (unknownWaypoint != null) {
-            double distance = unknownWaypoint.centerPos().distanceTo(location.toCenterPos());
+            double distance = unknownWaypoint.centerPos.distanceTo(location.toCenterPos());
             if (distance < REMOVE_UNKNOWN_DISTANCE) {
                 activeWaypoints.remove(name);
             }
@@ -396,9 +396,10 @@ public class CrystalsLocationsManager {
     }
 
     private static void trySendWaypoint2Socket(MiningLocationLabel.CrystalHollowsLocationsCategory category) {
-        if (!waypointsSent2Socket.contains(category)) {
-            WsMessageHandler.sendMessage(Service.CRYSTAL_WAYPOINTS, new CrystalsWaypointMessage(category, CLIENT.player.getBlockPos()));
-            waypointsSent2Socket.add(category);
-        }
+        if (waypointsSent2Socket.contains(category)) return;
+        if (category == MiningLocationLabel.CrystalHollowsLocationsCategory.FAIRY_GROTTO && !SkyblockerConfigManager.get().mining.crystalsWaypoints.shareFairyGrotto) return;
+
+        WsMessageHandler.sendMessage(Service.CRYSTAL_WAYPOINTS, new CrystalsWaypointMessage(category, CLIENT.player.getBlockPos()));
+        waypointsSent2Socket.add(category);
     }
 }

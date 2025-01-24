@@ -39,9 +39,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * Opened here {@code de.hysky.skyblocker.mixins.MinecraftClientMixin#skyblocker$skyblockInventoryScreen}
- * <br>
- * Book button is moved here {@code de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker}
+ * <p>Adds equipment slots to the inventory screen and moves the offhand slot.</p>
+ * <p>Opened here {@link de.hysky.skyblocker.mixins.MinecraftClientMixin#skyblocker$skyblockInventoryScreen MinecraftClientMixin#skyblocker$skyblockInventoryScreen}</p>
+ * <p>Book button is moved here {@link de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker$moveButton InventoryScreenMixin#skyblocker$moveButton}</p>
  */
 public class SkyblockInventoryScreen extends InventoryScreen {
     private static final Logger LOGGER = LoggerFactory.getLogger("Equipment");
@@ -91,7 +91,13 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         }));
     }
 
-    @Init
+	@Override
+	public void onDisplayed() {
+		Slot slot = handler.slots.get(45);
+		((SlotAccessor) slot).setX(slot.x + 21);
+	}
+
+	@Init
     public static void initEquipment() {
         SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
             if (!prevProfileId.isEmpty()) CompletableFuture.runAsync(() -> save(prevProfileId)).thenRun(() -> load(profileId));
@@ -108,20 +114,17 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
     public SkyblockInventoryScreen(PlayerEntity player) {
         super(player);
-        SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);
-
-        Slot slot = handler.slots.get(45);
-        ((SlotAccessor) slot).setX(slot.x + 21);
-        for (int i = 0; i < 4; i++) {
-            equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
-        }
+	    SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);
+	    for (int i = 0; i < 4; i++) {
+		    equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
+	    }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (Slot equipmentSlot : equipmentSlots) {
             if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) {
-                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/equipment");
+                MessageScheduler.INSTANCE.sendMessageAfterCooldown("/equipment", true);
                 return true;
             }
         }
@@ -137,7 +140,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         for (Slot equipmentSlot : equipmentSlots) {
             boolean hovered = isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY);
 
-            if (hovered) context.drawGuiTexture(RenderLayer::getGuiTextured, HandledScreenAccessor.getSLOT_HIGHLIGHT_BACK_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);;
+            if (hovered) context.drawGuiTexture(RenderLayer::getGuiTextured, HandledScreenAccessor.getSLOT_HIGHLIGHT_BACK_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
 
             drawSlot(context, equipmentSlot);
 

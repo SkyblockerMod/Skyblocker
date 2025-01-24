@@ -22,6 +22,12 @@ public class FarmingConfig {
 
         @SerialEntry
         public boolean lockMouseGroundOnly = false;
+
+        @SerialEntry
+        public boolean gardenPlotsWidget = true;
+
+        @SerialEntry
+        public boolean closeScreenOnPlotClick = false;
     }
 
     public static class FarmingHud {

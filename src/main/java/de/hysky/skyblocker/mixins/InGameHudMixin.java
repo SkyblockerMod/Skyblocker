@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -11,6 +12,9 @@ import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
+import de.hysky.skyblocker.skyblock.tabhud.TabHud;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -18,9 +22,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.LayeredDrawer;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.util.Window;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
@@ -74,7 +83,7 @@ public abstract class InGameHudMixin {
         }
     }
 
-    @Inject(method = { "renderExperienceBar", "renderExperienceLevel" }, at = @At("HEAD"), cancellable = true)
+    @Inject(method = { "renderExperienceBar", "renderExperienceLevel" }, at = @At("HEAD"), cancellable = true, require = 2)
     private void skyblocker$renderExperienceBar(CallbackInfo ci) {
         if (Utils.isOnSkyblock() && FancyStatusBars.isEnabled() && FancyStatusBars.isExperienceFancyBarVisible())
             ci.cancel();
@@ -112,6 +121,7 @@ public abstract class InGameHudMixin {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay) ci.cancel();
     }
 
+	// TODO switch to fabric event when available
     @Inject(method = "renderMiscOverlays", at = @At("TAIL"))
     private void skyblocker$afterMiscOverlays(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
         GlaciteColdOverlay.render(context);
@@ -156,4 +166,41 @@ public abstract class InGameHudMixin {
     private void skyblocker$afterDrawersInitialized(CallbackInfo ci) {
         this.layeredDrawer.addLayer(HudRenderEvents.LAST.invoker()::onRender);
     }
+
+    // Renders the hud (always on screen) widgets.
+    // Inject before the debug hud, this injection point is identical to the after main hud event
+    // z = 200
+    // TODO: Switch to fabric event when available
+    // TODO: The after sleep/before demo timer injection point gives z = 1600,
+    // 		 and due to the z offset that comes with item rendering, it still renders above the debug hud
+    @Inject(method = "renderMainHud", at = @At("RETURN"))
+    private void skyblocker$renderHud(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
+        skyblocker$renderTabHudInternal(context, true);
+    }
+
+    // Renders the tab widgets
+    // TODO: Switch to fabric event when available
+    @Inject(method = "renderPlayerList", at = @At("HEAD"))
+    private void skyblocker$renderTabHud(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
+        skyblocker$renderTabHudInternal(context, false);
+    }
+
+    private void skyblocker$renderTabHudInternal(DrawContext context, boolean hud) {
+        if (!Utils.isOnSkyblock()) return;
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        if (client.currentScreen instanceof WidgetsConfigurationScreen) return;
+        Window window = client.getWindow();
+        float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
+        MatrixStack matrices = context.getMatrices();
+        matrices.push();
+        matrices.scale(scale, scale, 1.F);
+        ScreenMaster.render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale), hud);
+        matrices.pop();
+    }
+
+	@WrapWithCondition(method = "renderPlayerList", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/gui/DrawContext;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"))
+	private boolean skyblocker$shouldRenderHud(PlayerListHud playerListHud, DrawContext context, int scaledWindowWidth, Scoreboard scoreboard, ScoreboardObjective objective) {
+		return !Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.shouldRenderVanilla() || MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen;
+	}
 }

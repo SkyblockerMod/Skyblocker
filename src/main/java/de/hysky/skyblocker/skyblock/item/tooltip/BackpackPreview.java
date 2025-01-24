@@ -179,6 +179,7 @@ public class BackpackPreview {
         }
 
         matrices.pop();
+        RenderSystem.disableDepthTest();
 
         return true;
     }

@@ -1,74 +1,52 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
-import de.hysky.skyblocker.skyblock.PetCache;
-import de.hysky.skyblocker.skyblock.itemlist.ItemFixerUpper;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.constants.PetNumbers;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.Rarity;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
+import net.minecraft.item.Items;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.hysky.skyblocker.skyblock.itemlist.ItemStackBuilder.SKULL_TEXTURE_PATTERN;
 import static de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils.numLetterFormat;
 
 public class Pet {
+    private static final Pattern statsMatcher = Pattern.compile("\\{[A-Za-z_]+}");
+    private static final Pattern numberMatcher = Pattern.compile("\\{\\d+}");
+
     private final String name;
     private final double xp;
-    private final String tier;
+    private final SkyblockItemRarity tier;
     private final Optional<String> heldItem;
     private final Optional<String> skin;
-    private final Optional<String> skinTexture;
+    private final Optional<ProfileComponent> skinTexture;
     private final int level;
     private final double perecentageToLevel;
     private final long levelXP;
     private final long nextLevelXP;
     private final ItemStack icon;
 
-    private final Pattern statsMatcher = Pattern.compile("\\{[A-Za-z_]+}");
-    private final Pattern numberMatcher = Pattern.compile("\\{\\d+}");
-
-
-
-    private static final Object2IntMap<String> TIER_MAP = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(Map.of(
-            "COMMON", 0, "UNCOMMON", 1, "RARE", 2, "EPIC", 3, "LEGENDARY", 4, "MYTHIC", 5
-    )));
-
-    private static final Int2ObjectMap<Formatting> RARITY_COLOR_MAP = Int2ObjectMaps.unmodifiable(new Int2ObjectOpenHashMap<>(Map.of(
-            0, Formatting.WHITE, // COMMON
-            1, Formatting.GREEN, // UNCOMMON
-            2, Formatting.BLUE, // RARE
-            3, Formatting.DARK_PURPLE, // EPIC
-            4, Formatting.GOLD, // LEGENDARY
-            5, Formatting.LIGHT_PURPLE, // MYTHIC
-            6, Formatting.AQUA // DIVINE (future proofing, because why not)
-    )));
-
-    public Pet(PetCache.PetInfo petData) {
+    public Pet(PetInfo petData) {
         LevelFinder.LevelInfo info = LevelFinder.getLevelInfo(petData.type().equals("GOLDEN_DRAGON") ? "PET_GREG" : "PET_" + petData.tier(), (long) petData.exp());
         this.name = petData.type();
         this.xp = petData.exp();
@@ -91,23 +69,27 @@ public class Pet {
         return (long) xp;
     }
 
-    private int getTier() {
-        return TIER_MAP.getOrDefault(tier, 0);
-    }
-
-    public String getTierAsString() {
+    public SkyblockItemRarity getRarity() {
         return tier;
     }
 
-    private Optional<String> calculateSkinTexture() {
+    public int getTier() {
+        return tier.ordinal();
+    }
+
+    private Optional<ProfileComponent> calculateSkinTexture() {
         if (this.skin.isPresent()) {
-            NEUItem item = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId("PET_SKIN_" + this.skin.get());
-            if (item == null) return Optional.empty();
-            Matcher skullTexture = SKULL_TEXTURE_PATTERN.matcher(item.getNbttag());
-            if (skullTexture.find()) return Optional.of(skullTexture.group(1));
+            ItemStack item = ItemRepository.getItemStack("PET_SKIN_" + this.skin.get());
+
+            if (item == null || item.isEmpty()) return Optional.empty();
+
+            ProfileComponent profile = item.get(DataComponentTypes.PROFILE);
+
+            return profile != null ? Optional.of(profile) : Optional.empty();
         }
         return Optional.empty();
     }
+
     public int getLevel() { return level; }
     public ItemStack getIcon() { return icon; }
 
@@ -139,14 +121,14 @@ public class Pet {
      * @return The ItemStack representing the pet with all its properties set.
      */
     private ItemStack fromNEUItem(NEUItem item, ItemStack heldItem) {
-        if (item == null) {
-            ItemStack errIcon = Ico.BARRIER.copy();
-            errIcon.set(DataComponentTypes.CUSTOM_NAME, Text.of(this.getName()));
-            return errIcon;
-        }
+        if (item == null) return getErrorStack();
 
-        Identifier itemId = Identifier.of(ItemFixerUpper.convertItemId(item.getMinecraftItemId(), item.getDamage()));
-        ItemStack petStack = new ItemStack(Registries.ITEM.get(itemId)).copy();
+        ItemStack petStack = ItemRepository.getItemStack(item.getSkyblockItemId());
+
+        if (petStack == null || petStack.isEmpty()) return getErrorStack();
+
+        // Copy to avoid mutating the original stack
+        petStack = petStack.copy();
 
         List<Text> formattedLore = !(name.equals("GOLDEN_DRAGON") && level < 101) ?  processLore(item.getLore(), heldItem) : buildGoldenDragonEggLore(item.getLore());
 
@@ -167,24 +149,15 @@ public class Pet {
         // Skin Head Texture
         if (skinTexture.isPresent()) {
             formattedLore.set(0, Text.of(formattedLore.getFirst().getString() + ", " + Formatting.strip(NEURepoManager.NEU_REPO.getItems().getItems().get("PET_SKIN_" + skin.get()).getDisplayName())));
-            petStack.set(DataComponentTypes.PROFILE, new ProfileComponent(
-                    Optional.of(item.getSkyblockItemId()), Optional.of(UUID.randomUUID()),
-                    ItemUtils.propertyMapWithTexture(this.skinTexture.get())));
-        } else {
-            Matcher skullTexture = SKULL_TEXTURE_PATTERN.matcher(item.getNbttag());
-            if (skullTexture.find()) {
-                petStack.set(DataComponentTypes.PROFILE, new ProfileComponent(
-                        Optional.of(item.getSkyblockItemId()), Optional.of(UUID.randomUUID()),
-                        ItemUtils.propertyMapWithTexture(skullTexture.group(1))));
-            }
+            petStack.set(DataComponentTypes.PROFILE, skinTexture.get());
         }
 
-        if ((boosted())) formattedLore.set(formattedLore.size() - 1, Text.literal(Rarity.values()[getTier() + 1].toString()).setStyle(style).formatted(Formatting.BOLD, RARITY_COLOR_MAP.get(getTier() + 1)));
+        if ((boosted())) formattedLore.set(formattedLore.size() - 1, Text.literal(getRarity().next().toString()).setStyle(style).formatted(Formatting.BOLD, getRarity().next().formatting));
 
         // Update the lore and name
         petStack.set(DataComponentTypes.LORE, new LoreComponent(formattedLore));
         String displayName = Formatting.strip(item.getDisplayName()).replace("[Lvl {LVL}]", "§7[Lvl " + this.level + "]§r");
-        petStack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(displayName).setStyle(style).formatted(RARITY_COLOR_MAP.get(this.getTier() + (boosted() ? 1 : 0))));
+        petStack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(displayName).setStyle(style).formatted((boosted() ? getRarity().next() : getRarity()).formatting));
         return petStack;
     }
 
@@ -264,5 +237,11 @@ public class Pet {
 
     private boolean boosted() {
         return this.heldItem.isPresent() && this.heldItem.get().equals("PET_ITEM_TIER_BOOST");
+    }
+
+    private ItemStack getErrorStack() {
+        ItemStack errIcon = new ItemStack(Items.BARRIER);
+        errIcon.set(DataComponentTypes.CUSTOM_NAME, Text.of(this.getName()));
+        return errIcon;
     }
 }

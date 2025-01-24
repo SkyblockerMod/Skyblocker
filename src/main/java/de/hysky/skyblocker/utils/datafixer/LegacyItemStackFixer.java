@@ -1,13 +1,12 @@
 package de.hysky.skyblocker.utils.datafixer;
 
 import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getFixer;
+import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getFirstVersion;
+import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getLatestVersion;
 
 import java.util.List;
 
 import org.slf4j.Logger;
-
-import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.FIRST_VERSION;
-import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.LATEST_VERSION;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
@@ -33,7 +32,7 @@ public class LegacyItemStackFixer {
 	@SuppressWarnings("deprecation")
 	public static ItemStack fixLegacyStack(NbtCompound nbt) {
 		RegistryOps<NbtElement> ops = ItemStackComponentizationFixer.getRegistryLookup().getOps(NbtOps.INSTANCE);
-		Dynamic<NbtElement> fixed = getFixer().update(TypeReferences.LEGACY_ITEM_STACK, new Dynamic<>(ops, nbt), FIRST_VERSION, LATEST_VERSION);
+		Dynamic<NbtElement> fixed = getFixer().update(TypeReferences.LEGACY_ITEM_STACK, new Dynamic<>(ops, nbt), getFirstVersion(), getLatestVersion());
 		ItemStack stack = ItemStack.CODEC.parse(fixed)
 				.setPartial(ItemStack.EMPTY)
 				.resultOrPartial(LegacyItemStackFixer::log)

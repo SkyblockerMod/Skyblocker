@@ -81,7 +81,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.hovered != null && this.hovered.getWarpCommand() != null) {
-			MessageScheduler.INSTANCE.sendMessageAfterCooldown(hovered.getWarpCommand());
+			MessageScheduler.INSTANCE.sendMessageAfterCooldown(hovered.getWarpCommand(), true);
 
 			return true;
 		}
@@ -95,7 +95,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	}
 
 	@Override
-	public void updateSearchResults(String query) {}
+	public void updateSearchResults(String query, FilterOption filterOption, boolean refresh) {}
 
 	@Override
 	public void initializeSearchResults(String query) {}

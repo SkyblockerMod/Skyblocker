@@ -26,7 +26,9 @@ public class DyedColorComponentMixin {
 				return ColorHelper.fullAlpha(CustomArmorAnimatedDyes.animateColorTransition(SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid)));
 			}
 
-			return ColorHelper.fullAlpha(SkyblockerConfigManager.get().general.customDyeColors.getOrDefault(itemUuid, originalColor));
+			if (SkyblockerConfigManager.get().general.customDyeColors.containsKey(itemUuid)) {
+				return ColorHelper.fullAlpha(SkyblockerConfigManager.get().general.customDyeColors.getInt(itemUuid));
+			}
 		}
 
 		return originalColor;

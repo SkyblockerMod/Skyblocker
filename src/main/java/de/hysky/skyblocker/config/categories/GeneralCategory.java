@@ -5,9 +5,9 @@ import de.hysky.skyblocker.UpdateNotifications;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
+import de.hysky.skyblocker.skyblock.speedPreset.SpeedPresetsScreen;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
@@ -57,6 +57,23 @@ public class GeneralCategory {
                                 newValue -> config.general.acceptReparty = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.general.speedPresets"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.speedPresets.enableSpeedPresets"))
+								.binding(defaults.general.speedPresets.enableSpeedPresets,
+										() -> config.general.speedPresets.enableSpeedPresets,
+										newValue -> config.general.speedPresets.enableSpeedPresets = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.general.speedPresets.config"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new SpeedPresetsScreen(screen)))
+								.build())
+						.build())
 
                 //Shortcuts
                 .group(OptionGroup.createBuilder()
@@ -255,29 +272,20 @@ public class GeneralCategory {
                                         newValue -> config.general.itemTooltip.enableEstimatedItemValue = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.itemTooltip.enableStackingEnchantProgress"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemTooltip.enableStackingEnchantProgress.@Tooltip")))
+                                .binding(defaults.general.itemTooltip.enableStackingEnchantProgress,
+                                        () -> config.general.itemTooltip.enableStackingEnchantProgress,
+                                        newValue -> config.general.itemTooltip.enableStackingEnchantProgress = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .build())
 
                 //Item Info Display
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.general.itemInfoDisplay"))
                         .collapsed(true)
-                        .option(Option.<SlotTextMode>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.slotText"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.slotText.@Tooltip")))
-                                .binding(defaults.general.itemInfoDisplay.slotTextMode,
-                                        () -> config.general.itemInfoDisplay.slotTextMode,
-                                        newValue -> config.general.itemInfoDisplay.slotTextMode = newValue)
-                                .controller(ConfigUtils::createEnumCyclingListController)
-                                .build())
-                        .option(ConfigUtils.createShortcutToKeybindsScreen())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.attributeShardInfo"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.attributeShardInfo.@Tooltip")))
-                                .binding(defaults.general.itemInfoDisplay.attributeShardInfo,
-                                        () -> config.general.itemInfoDisplay.attributeShardInfo,
-                                        newValue -> config.general.itemInfoDisplay.attributeShardInfo = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip")))
@@ -315,6 +323,14 @@ public class GeneralCategory {
                                         newValue -> config.general.itemProtection.slotLockStyle = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                        		.name(Text.translatable("skyblocker.config.general.itemProtection.protectValuableConsumables"))
+                        		.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip")))
+                        		.binding(defaults.general.itemProtection.protectValuableConsumables,
+                        				() -> config.general.itemProtection.protectValuableConsumables,
+                        				newValue -> config.general.itemProtection.protectValuableConsumables = newValue)
+                        		.controller(ConfigUtils::createBooleanController)
+                        		.build())
                         .build())
 
                 //Wiki Lookup
@@ -380,6 +396,13 @@ public class GeneralCategory {
                                         newValue -> config.general.hitbox.oldLeverHitbox = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.hitbox.oldMushroomHitbox"))
+								.binding(defaults.general.hitbox.oldMushroomHitbox,
+										() -> config.general.hitbox.oldMushroomHitbox,
+										newValue -> config.general.hitbox.oldMushroomHitbox = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 .build();

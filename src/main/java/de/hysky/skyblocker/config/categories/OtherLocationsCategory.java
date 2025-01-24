@@ -2,9 +2,10 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.skyblock.end.EndHudConfigScreen;
 import de.hysky.skyblocker.skyblock.end.EndHudWidget;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
@@ -104,7 +105,7 @@ public class OtherLocationsCategory {
                                         () -> config.otherLocations.end.zealotKillsEnabled,
                                         newValue -> {
                                             config.otherLocations.end.zealotKillsEnabled = newValue;
-                                            EndHudWidget.INSTANCE.update();
+                                            EndHudWidget.getInstance().update();
                                         })
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
@@ -114,7 +115,7 @@ public class OtherLocationsCategory {
                                         () -> config.otherLocations.end.protectorLocationEnabled,
                                         newValue -> {
                                             config.otherLocations.end.protectorLocationEnabled = newValue;
-                                            EndHudWidget.INSTANCE.update();
+                                            EndHudWidget.getInstance().update();
                                         })
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
@@ -128,17 +129,20 @@ public class OtherLocationsCategory {
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.otherLocations.end.screen"))
                                 .text(Text.translatable("text.skyblocker.open")) // Reusing again lol
-                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new EndHudConfigScreen(screen)))
+                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.THE_END, EndHudWidget.getInstance().getInternalID(), screen)))
                                 .build())
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.otherLocations.end.resetName"))
                                 .text(Text.translatable("skyblocker.config.otherLocations.end.resetText"))
-                                .action((screen, opt) -> {
-                                    TheEnd.zealotsKilled = 0;
-                                    TheEnd.zealotsSinceLastEye = 0;
-                                    TheEnd.eyes = 0;
-                                })
+                                .action((screen, opt) -> TheEnd.PROFILES_STATS.put(TheEnd.EndStats.EMPTY.get()))
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.otherLocations.end.muteEndermanSounds"))
+								.binding(defaults.otherLocations.end.muteEndermanSounds,
+										() -> config.otherLocations.end.muteEndermanSounds,
+										newValue -> config.otherLocations.end.muteEndermanSounds = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 //Spider's Den

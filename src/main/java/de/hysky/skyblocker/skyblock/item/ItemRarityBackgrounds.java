@@ -57,32 +57,38 @@ public class ItemRarityBackgrounds {
 	}
 
 	public static void tryDraw(ItemStack stack, DrawContext context, int x, int y) {
-		MinecraftClient client = MinecraftClient.getInstance();
-
-		if (client.player != null) {
-			SkyblockItemRarity itemRarity = getItemRarity(stack, client.player);
-
-			if (itemRarity != null) draw(context, x, y, itemRarity);
-		}
+		SkyblockItemRarity itemRarity = getItemRarity(stack);
+		if (itemRarity != null)
+			draw(context, x, y, itemRarity);
 	}
 
-	private static SkyblockItemRarity getItemRarity(ItemStack stack, ClientPlayerEntity player) {
+	private static SkyblockItemRarity getItemRarity(ItemStack stack) {
 		if (stack == null || stack.isEmpty()) return null;
 
-		String itemUuid = ItemUtils.getItemUuid(stack);
+		String itemUuid = stack.getUuid();
 
 		//If the item has an uuid, then use the hash code of the uuid otherwise use the identity hash code of the stack
 		int hashCode = itemUuid.isEmpty() ? System.identityHashCode(stack) : itemUuid.hashCode();
 
 		if (CACHE.containsKey(hashCode)) return CACHE.get(hashCode);
 
-		List<Text> lore = ItemUtils.getLore(stack);
-		String[] stringifiedTooltip = lore.stream().map(Text::getString).toArray(String[]::new);
+		//For regular items check the lore, for pets we use the rarity in the petInfo so that the rarity background work in the pets menu
+		if (!stack.getSkyblockId().equals("PET")) {
+			List<Text> lore = ItemUtils.getLore(stack);
+			String[] stringifiedTooltip = lore.stream().map(Text::getString).toArray(String[]::new);
 
-		for (String rarityString : LORE_RARITIES.keySet()) {
-			if (Arrays.stream(stringifiedTooltip).anyMatch(line -> line.contains(rarityString))) {
-				SkyblockItemRarity rarity = LORE_RARITIES.get(rarityString);
+			for (String rarityString : LORE_RARITIES.keySet()) {
+				if (Arrays.stream(stringifiedTooltip).anyMatch(line -> line.contains(rarityString))) {
+					SkyblockItemRarity rarity = LORE_RARITIES.get(rarityString);
 
+					CACHE.put(hashCode, rarity);
+					return rarity;
+				}
+			}
+		} else {
+			PetInfo info = stack.getPetInfo();
+			if (!info.isEmpty()) {
+				SkyblockItemRarity rarity = info.rarity();
 				CACHE.put(hashCode, rarity);
 				return rarity;
 			}

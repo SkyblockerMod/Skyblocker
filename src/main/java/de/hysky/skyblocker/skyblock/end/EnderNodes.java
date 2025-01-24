@@ -78,8 +78,11 @@ public class EnderNodes {
 
         EnderNode enderNode = enderNodes.computeIfAbsent(pos, EnderNode::new);
         IntIntPair particles = enderNode.particles.get(direction);
-        particles.left(particles.leftInt() + 1);
-        particles.right(particles.rightInt() + 1);
+        if (ParticleTypes.PORTAL.getType().equals(particleType)) {
+            particles.left(particles.leftInt() + 1);
+        } else if (ParticleTypes.WITCH.getType().equals(particleType)) {
+            particles.right(particles.rightInt() + 1);
+        }
     }
 
     private static void update() {
@@ -120,7 +123,7 @@ public class EnderNodes {
         private long lastConfirmed;
 
         private EnderNode(BlockPos pos) {
-            super(pos, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, ColorUtils.getFloatComponents(DyeColor.CYAN), false);
+            super(pos, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType.withoutBeacon(), ColorUtils.getFloatComponents(DyeColor.CYAN), false);
         }
 
         private void updateParticles() {

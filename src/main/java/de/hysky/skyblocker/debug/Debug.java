@@ -7,6 +7,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
@@ -19,6 +20,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.option.KeyBinding;
@@ -26,6 +28,7 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -62,6 +65,7 @@ public class Debug {
 						.then(toggleShowingInvisibleArmorStands())
 						.then(dumpArmorStandHeadTextures())
 						.then(toggleWebSocketDebug())
+						.then(EventNotifications.debugToasts())
 				)
 		));
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -83,9 +87,9 @@ public class Debug {
 				Slot focusedSlot = ((HandledScreenAccessor) handledScreen).getFocusedSlot();
 				if (dumpHoveredItemKey.matchesKey(key, scancode) && client.player != null && focusedSlot != null && focusedSlot.hasStack()) {
 					if (!Screen.hasShiftDown()) {
-						client.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Hovered Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), focusedSlot.getStack()).getOrThrow()))), false);
+						client.player.sendMessage(Constants.PREFIX.get().append("Hovered Item: ").append(SkyblockerConfigManager.get().debug.dumpFormat.format(focusedSlot.getStack())), false);
 					} else {
-						client.player.sendMessage(Constants.PREFIX.get().append(Text.literal("Held Item NW Calcs: " + SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getStack()).calculations()).getOrThrow()))), false);
+						client.player.sendMessage(Constants.PREFIX.get().append("Held Item NW Calcs: ").append(Text.literal(SkyblockerMod.GSON_COMPACT.toJson(Calculation.LIST_CODEC.encodeStart(JsonOps.INSTANCE, NetworthCalculator.getItemNetworth(focusedSlot.getStack()).calculations()).getOrThrow()))), false);
 					}
 				}
 			});
@@ -135,5 +139,22 @@ public class Debug {
 
 					return Command.SINGLE_SUCCESS;
 				});
+	}
+
+	public enum DumpFormat {
+		JSON {
+			@Override
+			public Text format(ItemStack stack) {
+				return Text.literal(SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), stack).getOrThrow()));
+			}
+		},
+		SNBT {
+			@Override
+			public Text format(ItemStack stack) {
+				return NbtHelper.toPrettyPrintedText(ItemStack.CODEC.encodeStart(MinecraftClient.getInstance().player.getRegistryManager().getOps(NbtOps.INSTANCE), stack).getOrThrow());
+			}
+		};
+
+		abstract Text format(ItemStack stack);
 	}
 }

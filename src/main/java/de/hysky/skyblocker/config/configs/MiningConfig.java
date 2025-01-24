@@ -4,6 +4,8 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import net.minecraft.client.resource.language.I18n;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MiningConfig {
     @SerialEntry
@@ -12,7 +14,7 @@ public class MiningConfig {
     @SerialEntry
     public DwarvenMines dwarvenMines = new DwarvenMines();
 
-    @SerialEntry
+	@Deprecated
     public DwarvenHud dwarvenHud = new DwarvenHud();
 
     @SerialEntry
@@ -39,28 +41,35 @@ public class MiningConfig {
 
         @SerialEntry
         public boolean solvePuzzler = true;
+
+		@SerialEntry
+	    public boolean enableCarpetHighlighter = true;
+
+		@SerialEntry
+	    public Color carpetHighlightColor = new Color(255, 0, 0, 76);
     }
 
+	@Deprecated
     public static class DwarvenHud {
-        @SerialEntry
+        @Deprecated
         public boolean enabledCommissions = true;
 
-        @SerialEntry
+        @Deprecated
         public boolean enabledPowder = true;
 
-        @SerialEntry
+        @Deprecated
         public DwarvenHudStyle style = DwarvenHudStyle.SIMPLE;
 
-        @SerialEntry
+        @Deprecated
         public int commissionsX = 10;
 
-        @SerialEntry
+        @Deprecated
         public int commissionsY = 10;
 
-        @SerialEntry
+        @Deprecated
         public int powderX = 10;
 
-        @SerialEntry
+        @Deprecated
         public int powderY = 70;
     }
 
@@ -76,6 +85,15 @@ public class MiningConfig {
 
         @SerialEntry
         public Color chestHighlightColor = new Color(0, 0, 255, 128);
+
+	    @SerialEntry
+	    public boolean enablePowderTracker = true;
+
+	    @SerialEntry
+	    public boolean countNaturalChestsInTracker = true;
+
+		@SerialEntry
+	    public List<String> powderTrackerFilter = new ArrayList<>();
     }
 
     public static class CrystalsHud {
@@ -102,6 +120,7 @@ public class MiningConfig {
         @SerialEntry
         public boolean enabled = true;
 
+		@Deprecated
         @SerialEntry
         public float textScale = 1;
 
@@ -110,12 +129,16 @@ public class MiningConfig {
 
         @SerialEntry
         public boolean wishingCompassSolver = true;
+
+		@SerialEntry
+		public boolean shareFairyGrotto = true;
     }
 
     public static class CommissionWaypoints {
         @SerialEntry
         public CommissionWaypointMode mode = CommissionWaypointMode.BOTH;
 
+		@Deprecated
         @SerialEntry
         public float textScale = 1;
 
@@ -141,8 +164,21 @@ public class MiningConfig {
     public static class Glacite {
         @SerialEntry
         public boolean coldOverlay = true;
+
+        @SerialEntry
+        public boolean enableCorpseFinder = true;
+
+        @SerialEntry
+        public boolean enableParsingChatCorpseFinder = true;
+
+		@SerialEntry
+	    public boolean autoShareCorpses = false;
     }
 
+	/**
+	 * @deprecated See {@link UIAndVisualsConfig.TabHudStyle}.
+	 */
+	@Deprecated
     public enum DwarvenHudStyle {
         SIMPLE, FANCY, CLASSIC;
 

@@ -1,179 +1,197 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
-import java.io.BufferedReader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.NoSuchElementException;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import de.hysky.skyblocker.skyblock.tabhud.widget.Widget;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.AlignStage;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.CollideStage;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PipelineStage;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PlaceStage;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.StackStage;
-import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.ErrorWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.EventWidget;
-import net.minecraft.client.MinecraftClient;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.CenteredWidgetPositioner;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.TopAlignedWidgetPositioner;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
+import de.hysky.skyblocker.utils.Location;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 public class ScreenBuilder {
+	public static boolean positionsNeedsUpdating = true;
 
-    // layout pipeline
-    private final ArrayList<PipelineStage> layoutPipeline = new ArrayList<>();
+	//private final String builderName;
 
-    // all widget instances this builder knows
-    private final ArrayList<Widget> instances = new ArrayList<>();
-    // maps alias -> widget instance
-    private final HashMap<String, Widget> objectMap = new HashMap<>();
+	private final Map<String, PositionRule> positioning = new Object2ObjectOpenHashMap<>();
+	private Map<String, PositionRule> positioningBackup = null;
+	private final Location location;
 
-    private final String builderName;
+	/**
+	 * Create a ScreenBuilder from a json.
+	 */
+	public ScreenBuilder(Location location) {
+		this.location = location;
+	}
 
-    /**
-     * Create a ScreenBuilder from a json.
-     */
-    public ScreenBuilder(Identifier ident) {
+	public @Nullable PositionRule getPositionRule(String widgetInternalId) {
+		return positioning.get(widgetInternalId);
+	}
 
-        try (BufferedReader reader = MinecraftClient.getInstance().getResourceManager().openAsReader(ident)) {
-            this.builderName = ident.getPath();
+	public void forEachPositionRuleEntry(BiConsumer<String, PositionRule> action) {
+		positioning.forEach(action);
+	}
 
-            JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+	public PositionRule getPositionRuleOrDefault(String widgetInternalId) {
+		PositionRule positionRule = getPositionRule(widgetInternalId);
+		return positionRule == null ? PositionRule.DEFAULT : positionRule;
+	}
 
-            JsonArray widgets = json.getAsJsonArray("widgets");
-            JsonArray layout = json.getAsJsonArray("layout");
+	public void setPositionRule(String widgetInternalId, @Nullable PositionRule newPositionRule) {
+		if (newPositionRule == null) positioning.remove(widgetInternalId);
+		else positioning.put(widgetInternalId, newPositionRule);
+	}
 
-            for (JsonElement w : widgets) {
-                JsonObject widget = w.getAsJsonObject();
-                String name = widget.get("name").getAsString();
-                String alias = widget.get("alias").getAsString();
+	public void backupPositioning() {
+		positioningBackup = Map.copyOf(positioning);
+	}
 
-                Widget wid = instanceFrom(name, widget);
-                objectMap.put(alias, wid);
-                instances.add(wid);
-            }
+	public void restorePositioningFromBackup() {
+		if (positioningBackup == null) return;
+		positioning.clear();
+		positioning.putAll(positioningBackup);
+	}
 
-            for (JsonElement l : layout) {
-                PipelineStage ps = createStage(l.getAsJsonObject());
-                layoutPipeline.add(ps);
-            }
-        } catch (Exception ex) {
-            // rethrow as unchecked exception so that I don't have to catch anything in the ScreenMaster
-            throw new IllegalStateException("Failed to load file " + ident + ". Reason: " + ex.getMessage());
-        }
-    }
+	private final List<HudWidget> hudScreen = new ArrayList<>();
+	private final List<HudWidget> mainTabScreen = new ArrayList<>();
+	private final List<HudWidget> secondaryTabScreen = new ArrayList<>();
 
-    /**
-     * Try to find a class in the widget package that has the supplied name and
-     * call it's constructor. Manual work is required if the class has arguments.
-     */
-    public Widget instanceFrom(String name, JsonObject widget) {
+	public void positionWidgets(int screenW, int screenH, boolean config) {
+		hudScreen.clear();
+		mainTabScreen.clear();
+		secondaryTabScreen.clear();
 
-        // do widgets that require args the normal way
-        JsonElement arg;
-        switch (name) {
-            case "EventWidget" -> {
-                return new EventWidget(widget.get("inGarden").getAsBoolean());
-            }
-            case "DungeonPlayerWidget" -> {
-                return new DungeonPlayerWidget(widget.get("player").getAsInt());
-            }
-            case "ErrorWidget" -> {
-                arg = widget.get("text");
-                if (arg == null) {
-                    return new ErrorWidget();
-                } else {
-                    return new ErrorWidget(arg.getAsString());
-                }
-            }
-            case "Widget" ->
-                // clown case sanity check. don't instantiate the superclass >:|
-                    throw new NoSuchElementException(builderName + "[ERROR]: No such Widget type \"Widget\"!");
-        }
+		WidgetPositioner newPositioner = SkyblockerConfigManager.get().uiAndVisuals.tabHud.defaultPositioning.getNewPositioner(screenW, screenH);
 
-        // reflect something together for the "normal" ones.
+		for (HudWidget widget : ScreenMaster.widgetInstances.values()) {
+			widget.setVisible(false);
+			if (config ? widget.isEnabledIn(location) : widget.shouldRender(location)) { // TabHudWidget has this at false
+				// TODO maybe behavior to change? (having no position rule on a normal hud widget shouldn't quite be possible)
+				PositionRule rule = getPositionRule(widget.getInternalID());
+				if (rule == null) {
+					hudScreen.add(widget);
+				} else {
+					switch (rule.screenLayer()) {
+						case MAIN_TAB -> mainTabScreen.add(widget);
+						case SECONDARY_TAB -> secondaryTabScreen.add(widget);
+						case null, default -> hudScreen.add(widget);
+					}
+				}
+				widget.setVisible(true);
+				widget.update();
+				widget.setPositioned(false);
+			}
+		}
 
-        // list all packages that might contain widget classes
-        // using Package isn't reliable, as some classes might not be loaded yet,
-        // causing the packages not to show.
-        String packbase = "de.hysky.skyblocker.skyblock.tabhud.widget";
-        String[] packnames = {
-                packbase,
-                packbase + ".rift"
-        };
+		for (TabHudWidget widget : PlayerListManager.tabWidgetsToShow) {
+			PositionRule rule = getPositionRule(widget.getInternalID());
+			widget.setVisible(true);
+			if (rule == null) {
+				mainTabScreen.add(widget);
+			} else {
+				widget.setPositioned(false);
+				switch (rule.screenLayer()) {
+					case HUD -> hudScreen.add(widget);
+					case SECONDARY_TAB -> secondaryTabScreen.add(widget);
+					case null, default -> mainTabScreen.add(widget);
+				}
+			}
+		}
 
-        // construct the full class name and try to load.
-        Class<?> clazz = null;
-        for (String pn : packnames) {
-            try {
-                clazz = Class.forName(pn + "." + name);
-            } catch (LinkageError | ClassNotFoundException ex) {
-                continue;
-            }
-        }
+		// Auto positioning
+		for (HudWidget widget : mainTabScreen) {
 
-        // load failed.
-        if (clazz == null) {
-           throw new NoSuchElementException(builderName + "/[ERROR]: No such Widget type \"" + name + "\"!");
-        }
+			if (getPositionRule(widget.getInternalID()) != null) {
+				widget.setPositioned(false);
+			} else {
+				newPositioner.positionWidget(widget);
+				widget.setPositioned(true);
+			}
+		}
+		newPositioner.finalizePositioning();
+		// Custom positioning
+		for (HudWidget widget : mainTabScreen) {
+			if (!widget.isPositioned()) {
+				WidgetPositioner.applyRuleToWidget(widget, screenW, screenH, this::getPositionRule);
+			}
+		}
 
-        // return instance of that class.
-        try {
-            Constructor<?> ctor = clazz.getConstructor();
-            return (Widget) ctor.newInstance();
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException | SecurityException ex) {
-            throw new IllegalStateException(builderName + "/" + name + ": Internal error...");
-        }
-    }
+		for (HudWidget widget : hudScreen) {
+			if (!widget.isPositioned()) {
+				WidgetPositioner.applyRuleToWidget(widget, screenW, screenH, this::getPositionRule);
+			}
+		}
+		for (HudWidget widget : secondaryTabScreen) {
+			if (!widget.isPositioned()) {
+				WidgetPositioner.applyRuleToWidget(widget, screenW, screenH, this::getPositionRule);
+			}
+		}
+	}
 
-    /**
-     * Create a PipelineStage from a json object.
-     */
-    public PipelineStage createStage(JsonObject descr) throws NoSuchElementException {
+	/**
+	 * Renders the widgets present on the specified layer. Doesn't scale with the config option.
+	 */
+	public void renderWidgets(DrawContext context, ScreenMaster.ScreenLayer screenLayer) {
+		List<HudWidget> widgetsToRender = getHudWidgets(screenLayer);
 
-        String op = descr.get("op").getAsString();
+		for (HudWidget widget : widgetsToRender) {
+			widget.render(context);
+		}
+	}
 
-        return switch (op) {
-            case "place" -> new PlaceStage(this, descr);
-            case "stack" -> new StackStage(this, descr);
-            case "align" -> new AlignStage(this, descr);
-            case "collideAgainst" -> new CollideStage(this, descr);
-            default -> throw new NoSuchElementException("No such op " + op + " as requested by " + this.builderName);
-        };
-    }
+	public List<HudWidget> getHudWidgets(ScreenMaster.ScreenLayer screenLayer) {
+		return switch (screenLayer) {
+			case MAIN_TAB -> mainTabScreen;
+			case SECONDARY_TAB -> secondaryTabScreen;
+			case HUD -> hudScreen;
+			case null, default -> List.of();
+		};
+	}
 
-    /**
-     * Lookup Widget instance from alias name
-     */
-    public Widget getInstance(String name) {
-        if (!this.objectMap.containsKey(name)) {
-            throw new NoSuchElementException("No widget with alias " + name + " in screen " + builderName);
-        }
-        return this.objectMap.get(name);
-    }
+	/**
+	 * Run the pipeline to build a Screen
+	 */
+	public void run(DrawContext context, int screenW, int screenH, ScreenMaster.ScreenLayer screenLayer) {
 
-    /**
-     * Run the pipeline to build a Screen
-     */
-    public void run(DrawContext context, int screenW, int screenH) {
+        /*int i = 0;
+        for (TabHudWidget value : PlayerListMgr.tabWidgetInstances.values()) {
+            context.drawText(MinecraftClient.getInstance().textRenderer, value.getHypixelWidgetName(), 0, i, PlayerListMgr.tabWidgetsToShow.contains(value) ? Colors.LIGHT_YELLOW : -1, true);
+            i += 9;
+        }*/
 
-        for (Widget w : instances) {
-            w.update();
-        }
-        for (PipelineStage ps : layoutPipeline) {
-            ps.run(screenW, screenH);
-        }
-        for (Widget w : instances) {
-            w.render(context);
-        }
-    }
+		if (positionsNeedsUpdating) {
+			positionsNeedsUpdating = false;
+			positionWidgets(screenW, screenH, false);
+		}
+
+		renderWidgets(context, screenLayer);
+	}
+
+
+	public enum DefaultPositioner {
+		TOP(TopAlignedWidgetPositioner::new),
+		CENTERED(CenteredWidgetPositioner::new);
+
+		private final BiFunction<Integer, Integer, WidgetPositioner> function;
+
+		DefaultPositioner(BiFunction<Integer, Integer, WidgetPositioner> widgetPositionerSupplier) {
+			function = widgetPositionerSupplier;
+		}
+
+		public WidgetPositioner getNewPositioner(int screenWidth, int screenHeight) {
+			return function.apply(screenWidth, screenHeight);
+		}
+	}
 
 }

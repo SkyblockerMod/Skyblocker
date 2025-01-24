@@ -1,0 +1,292 @@
+[
+  {
+    "kind": "device",
+    "phase": 0,
+    "name": "Device",
+    "pos": [
+      110,
+      121,
+      91
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 0,
+    "name": "Terminal #1",
+    "pos": [
+      111,
+      113,
+      73
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 0,
+    "name": "Terminal #2",
+    "pos": [
+      111,
+      119,
+      79
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 0,
+    "name": "Terminal #3",
+    "pos": [
+      89,
+      112,
+      92
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 0,
+    "name": "Terminal #4",
+    "pos": [
+      89,
+      122,
+      101
+    ]
+  },
+  {
+    "kind": "lever",
+    "phase": 0,
+    "name": "Lever",
+    "pos": [
+      106,
+      124,
+      113
+    ]
+  },
+  {
+    "kind": "lever",
+    "phase": 0,
+    "name": "Lever",
+    "pos": [
+      94,
+      124,
+      113
+    ]
+  },
+  {
+    "kind": "device",
+    "phase": 1,
+    "name": "Device",
+    "pos": [
+      60,
+      132,
+      143
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 1,
+    "name": "Terminal #1",
+    "pos": [
+      68,
+      109,
+      121
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 1,
+    "name": "Terminal #2",
+    "pos": [
+      59,
+      120,
+      122
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 1,
+    "name": "Terminal #3",
+    "pos": [
+      47,
+      109,
+      121
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 1,
+    "name": "Terminal #4",
+    "pos": [
+      40,
+      124,
+      122
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 1,
+    "name": "Terminal #5",
+    "pos": [
+      39,
+      108,
+      143
+    ]
+  },
+  {
+    "kind": "lever",
+    "phase": 1,
+    "name": "Lever",
+    "pos": [
+      27,
+      124,
+      127
+    ]
+  },
+  {
+    "kind": "lever",
+    "phase": 1,
+    "name": "Lever",
+    "pos": [
+      23,
+      132,
+      138
+    ]
+  },
+  {
+    "kind": "device",
+    "phase": 2,
+    "name": "Device",
+    "pos": [
+      0,
+      120,
+      77
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 2,
+    "name": "Terminal #1",
+    "pos": [
+      -3,
+      109,
+      112
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 2,
+    "name": "Terminal #2",
+    "pos": [
+      -3,
+      119,
+      93
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 2,
+    "name": "Terminal #3",
+    "pos": [
+      19,
+      123,
+      93
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 2,
+    "name": "Terminal #4",
+    "pos": [
+      -3,
+      109,
+      77
+    ]
+  },
+  {
+    "kind": "lever",
+    "phase": 2,
+    "name": "Lever",
+    "pos": [
+      14,
+      122,
+      55
+    ]
+  },
+  {
+    "kind": "lever",
+    "phase": 2,
+    "name": "Lever",
+    "pos": [
+      2,
+      122,
+      55
+    ]
+  },
+  {
+    "kind": "device",
+    "phase": 3,
+    "name": "Device",
+    "pos": [
+      63,
+      127,
+      35
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 3,
+    "name": "Terminal #1",
+    "pos": [
+      41,
+      109,
+      29
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 3,
+    "name": "Terminal #2",
+    "pos": [
+      44,
+      121,
+      29
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 3,
+    "name": "Terminal #3",
+    "pos": [
+      67,
+      109,
+      29
+    ]
+  },
+  {
+    "kind": "terminal",
+    "phase": 3,
+    "name": "Terminal #4",
+    "pos": [
+      72,
+      115,
+      48
+    ]
+  },
+  {
+    "kind": "lever",
+    "phase": 3,
+    "name": "Lever",
+    "pos": [
+      86,
+      128,
+      46
+    ]
+  },
+  {
+    "kind": "lever",
+    "phase": 3,
+    "name": "Lever",
+    "pos": [
+      84,
+      121,
+      34
+    ]
+  }
+]

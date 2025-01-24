@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
@@ -10,9 +10,7 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,8 +19,14 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
     private static final Pattern UNLOCKED = Pattern.compile("UNLOCKED");
     private static final Pattern ESSENCE = Pattern.compile("Your \\w+ Essence: (?<essence>[\\d,]+)");
 
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"essence_shop",
+			"skyblocker.config.uiAndVisuals.slotText.essenceShop",
+			"skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip"
+	);
+
     public EssenceShopAdder() {
-        super("Essence Shop");
+        super(".*Essence Shop", CONFIG_INFORMATION);
     }
 
     @Override
@@ -41,10 +45,7 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
         if (essenceAmountMatcher == null) return List.of();
         String essenceAmount = essenceAmountMatcher.group("essence").replace(",", "");
         if (!essenceAmount.matches("-?\\d+")) return List.of();
-        NumberFormat NUMBER_FORMATTER_S = NumberFormat.getCompactNumberInstance(Locale.CANADA, NumberFormat.Style.SHORT);
-        NUMBER_FORMATTER_S.setMinimumFractionDigits(1);
-        int amount = Integer.parseInt(essenceAmount);
 
-        return SlotText.bottomRightList(Text.literal(NUMBER_FORMATTER_S.format(amount)).withColor(0xFFDDC1));
+        return SlotText.bottomRightList(Text.literal(YourEssenceAdder.COMPACT_NUMBER_FORMATTER.format(Integer.parseInt(essenceAmount))).withColor(0xFFDDC1));
     }
 }

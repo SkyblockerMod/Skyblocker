@@ -202,7 +202,7 @@ public class DojoManager {
             return;
         }
         // Check if within 50 blocks and 5 blocks vertically
-        if (entity.squaredDistanceTo(CLIENT.player) > 2500 || Math.abs(entity.getBlockY() - CLIENT.player.getBlockY()) > 5) {
+		if (!entity.isInRange(CLIENT.player, 50, 5)) {
             return;
         }
         switch (currentChallenge) {

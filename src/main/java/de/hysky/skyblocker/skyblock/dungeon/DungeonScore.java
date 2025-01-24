@@ -5,8 +5,9 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -67,12 +68,11 @@ public class DungeonScore {
     public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(DungeonScore::tick, 20);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+		DungeonEvents.DUNGEON_STARTED.register(DungeonScore::onDungeonStart);
 		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
 			if (overlay || !Utils.isInDungeons()) return;
 			String str = message.getString();
-			if (!dungeonStarted) {
-				checkMessageForMort(str);
-			} else {
+			if (dungeonStarted) {
 				checkMessageForDeaths(str);
 				checkMessageForWatcher(str);
 				if (floorHasMimics) checkMessageForMimic(str); //Only called when the message is not cancelled & isn't on the action bar, complementing MimicFilter
@@ -95,7 +95,7 @@ public class DungeonScore {
 		score = calculateScore();
 		if (!sent270 && !sent300 && score >= 270 && score < 300) {
 			if (SCORE_CONFIG.enableDungeonScore270Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270"));
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270"), false);
 			}
 			if (SCORE_CONFIG.enableDungeonScore270Title) {
 				client.inGameHud.setDefaultTitleFade();
@@ -110,14 +110,14 @@ public class DungeonScore {
 		int crypts = getCrypts();
 		if (!sentCrypts && score >= SCORE_CONFIG.dungeonCryptsMessageThreshold && crypts < 5) {
 			if (SCORE_CONFIG.enableDungeonCryptsMessage) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(crypts)));
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(crypts)), false);
 			}
 			sentCrypts = true;
 		}
 
 		if (!sent300 && score >= 300) {
 			if (SCORE_CONFIG.enableDungeonScore300Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300"));
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300"), false);
 			}
 			if (SCORE_CONFIG.enableDungeonScore300Title) {
 				client.inGameHud.setDefaultTitleFade();
@@ -215,7 +215,7 @@ public class DungeonScore {
 	public static void handleEntityDeath(Entity entity) {
 		if (mimicKilled) return;
 		if (!isEntityMimic(entity)) return;
-		if (MIMIC_MESSAGE_CONFIG.sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown(MIMIC_MESSAGE_CONFIG.mimicMessage);
+		if (MIMIC_MESSAGE_CONFIG.sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown(MIMIC_MESSAGE_CONFIG.mimicMessage, false);
 		mimicKilled = true;
 	}
 
@@ -231,7 +231,7 @@ public class DungeonScore {
 	}
 
 	private static int getCompletedRooms() {
-		Matcher matcher = PlayerListMgr.regexAt(43, COMPLETED_ROOMS_PATTERN);
+		Matcher matcher = PlayerListManager.regexAt(43, COMPLETED_ROOMS_PATTERN);
 		return matcher != null ? Integer.parseInt(matcher.group("rooms")) : 0;
 	}
 
@@ -259,14 +259,14 @@ public class DungeonScore {
 	}
 
 	private static int getPuzzleCount() {
-		Matcher matcher = PlayerListMgr.regexAt(47, PUZZLE_COUNT_PATTERN);
+		Matcher matcher = PlayerListManager.regexAt(47, PUZZLE_COUNT_PATTERN);
 		return matcher != null ? Integer.parseInt(matcher.group("count")) : 0;
 	}
 
 	private static int getPuzzlePenalty() {
 		int incompletePuzzles = 0;
 		for (int index = 0; index < puzzleCount; index++) {
-			Matcher puzzleMatcher = PlayerListMgr.regexAt(48 + index, PUZZLES_PATTERN);
+			Matcher puzzleMatcher = PlayerListManager.regexAt(48 + index, PUZZLES_PATTERN);
 			if (puzzleMatcher == null) break;
 			if (puzzleMatcher.group("state").matches("[✖✦]")) incompletePuzzles++;
 		}
@@ -274,13 +274,13 @@ public class DungeonScore {
 	}
 
 	private static double getSecretsPercentage() {
-		Matcher matcher = PlayerListMgr.regexAt(44, SECRETS_PATTERN);
+		Matcher matcher = PlayerListManager.regexAt(44, SECRETS_PATTERN);
 		return matcher != null ? Double.parseDouble(matcher.group("secper")) : 0;
 	}
 
 	private static int getCrypts() {
-		Matcher matcher = PlayerListMgr.regexAt(33, CRYPTS_PATTERN);
-		if (matcher == null) matcher = PlayerListMgr.regexAt(32, CRYPTS_PATTERN); //If class milestone 9 is reached, crypts goes up by 1
+		Matcher matcher = PlayerListManager.regexAt(33, CRYPTS_PATTERN);
+		if (matcher == null) matcher = PlayerListManager.regexAt(32, CRYPTS_PATTERN); //If class milestone 9 is reached, crypts goes up by 1
 		return matcher != null ? Integer.parseInt(matcher.group("crypts")) : 0;
 	}
 
@@ -313,11 +313,6 @@ public class DungeonScore {
 
 	private static void checkMessageForWatcher(String message) {
 		if (message.equals("[BOSS] The Watcher: You have proven yourself. You may pass.")) bloodRoomCompleted = true;
-	}
-
-	private static void checkMessageForMort(String message) {
-		if (!message.equals("§e[NPC] §bMort§f: You should find it useful if you get lost.")) return;
-		onDungeonStart();
 	}
 
 	private static void checkMessageForMimic(String message) {

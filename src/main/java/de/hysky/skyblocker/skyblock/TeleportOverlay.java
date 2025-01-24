@@ -81,7 +81,7 @@ public class TeleportOverlay {
      * @implNote {@link MinecraftClient#player} and {@link MinecraftClient#world} must not be null when calling this method.
      */
     private static void render(WorldRenderContext wrc, int range) {
-        if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK && client.crosshairTarget instanceof BlockHitResult blockHitResult && client.crosshairTarget.squaredDistanceTo(client.player) < range * range) {
+        if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK && client.crosshairTarget instanceof BlockHitResult blockHitResult && client.crosshairTarget.getPos().isInRange(client.player.getPos(), range)) {
             render(wrc, blockHitResult);
         } else if (client.interactionManager != null && range > client.player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).getValue()) {
             HitResult result = client.player.raycast(range, wrc.tickCounter().getTickDelta(true), false);

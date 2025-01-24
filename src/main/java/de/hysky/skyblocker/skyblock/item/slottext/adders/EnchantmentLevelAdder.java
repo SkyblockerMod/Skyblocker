@@ -22,6 +22,10 @@ import java.util.Map;
 import java.util.Optional;
 
 public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"enchantment_level",
+			"skyblocker.config.uiAndVisuals.slotText.enchantmentLevel");
+
 	@VisibleForTesting
 	static final Object2ObjectMap<String, String> ENCHANTMENT_ABBREVIATIONS = new Object2ObjectOpenHashMap<>();
 	@VisibleForTesting
@@ -190,7 +194,7 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 	}
 
 	public EnchantmentLevelAdder() {
-		super();
+		super(CONFIG_INFORMATION);
 	}
 
 	@Override

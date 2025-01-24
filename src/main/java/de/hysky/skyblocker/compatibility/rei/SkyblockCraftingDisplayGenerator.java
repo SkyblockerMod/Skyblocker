@@ -61,7 +61,11 @@ public class SkyblockCraftingDisplayGenerator implements DynamicDisplayGenerator
             recipe.getGrid().forEach((item) -> inputEntryStacks.add(EntryStacks.of(item)));
 
             for (EntryStack<ItemStack> entryStack : inputEntryStacks) {
-                inputs.add(EntryIngredient.of(entryStack));
+                if (entryStack.isEmpty()) {
+                    inputs.add(EntryIngredient.empty());
+                } else {
+                    inputs.add(EntryIngredient.of(entryStack));
+                }
             }
             outputs.add(EntryIngredient.of(EntryStacks.of(recipe.getResult())));
 

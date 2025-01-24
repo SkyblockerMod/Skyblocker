@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils.scheduler;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
@@ -10,14 +9,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.profiler.Profilers;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -28,8 +26,8 @@ public class Scheduler {
     protected static final Logger LOGGER = LoggerFactory.getLogger(Scheduler.class);
     public static final Scheduler INSTANCE = new Scheduler();
     private int currentTick = 0;
-    private final AbstractInt2ObjectMap<List<ScheduledTask>> tasks = new Int2ObjectOpenHashMap<>();
-    private final ExecutorService executors = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("Skyblocker-Scheduler-%d").build());
+    private final AbstractInt2ObjectMap<List<Runnable>> tasks = new Int2ObjectOpenHashMap<>();
+    private final ExecutorService executors = ForkJoinPool.commonPool();
 
     protected Scheduler() {
     }
@@ -57,7 +55,7 @@ public class Scheduler {
      */
     public void schedule(Runnable task, int delay, boolean multithreaded) {
         if (delay >= 0) {
-            addTask(new ScheduledTask(task, multithreaded), currentTick + delay);
+            addTask(multithreaded ? new ScheduledTask(task, true) : task, currentTick + delay);
         } else {
             LOGGER.warn("Scheduled a task with negative delay");
         }
@@ -111,9 +109,9 @@ public class Scheduler {
     /**
      * Schedules a screen to open in the next tick. Used in commands to avoid screen immediately closing after the command is executed.
      *
-     * @deprecated Use {@link #queueOpenScreen(Screen)} instead
      * @param screenSupplier the supplier of the screen to open
      * @see #queueOpenScreenCommand(Supplier)
+     * @deprecated Use {@link #queueOpenScreen(Screen)} instead
      */
     @Deprecated(forRemoval = true)
     public static int queueOpenScreen(Supplier<Screen> screenSupplier) {
@@ -132,15 +130,15 @@ public class Scheduler {
     }
 
     public void tick() {
-    	Profiler profiler = Profilers.get();
-    	profiler.push("skyblockerSchedulerTick");
+        Profiler profiler = Profilers.get();
+        profiler.push("skyblockerSchedulerTick");
 
         if (tasks.containsKey(currentTick)) {
-            List<ScheduledTask> currentTickTasks = tasks.get(currentTick);
+            List<Runnable> currentTickTasks = tasks.get(currentTick);
             //noinspection ForLoopReplaceableByForEach (or else we get a ConcurrentModificationException)
             for (int i = 0; i < currentTickTasks.size(); i++) {
-                ScheduledTask task = currentTickTasks.get(i);
-                if (!runTask(task, task.multithreaded)) {
+                Runnable task = currentTickTasks.get(i);
+                if (!runTask(task, task instanceof ScheduledTask scheduledTask && scheduledTask.multithreaded)) {
                     tasks.computeIfAbsent(currentTick + 1, key -> new ArrayList<>()).add(task);
                 }
             }
@@ -167,12 +165,12 @@ public class Scheduler {
         return true;
     }
 
-    private void addTask(ScheduledTask scheduledTask, int schedule) {
+    private void addTask(Runnable task, int schedule) {
         if (tasks.containsKey(schedule)) {
-            tasks.get(schedule).add(scheduledTask);
+            tasks.get(schedule).add(task);
         } else {
-            List<ScheduledTask> list = new ArrayList<>();
-            list.add(scheduledTask);
+            List<Runnable> list = new ArrayList<>();
+            list.add(task);
             tasks.put(schedule, list);
         }
     }

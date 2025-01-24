@@ -18,6 +18,7 @@ import de.hysky.skyblocker.skyblock.dwarven.CommissionHighlight;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.BitsHelper;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -51,7 +52,8 @@ public class ContainerSolverManager {
 			new NewYearCakeBagHelper(),
 			NewYearCakesHelper.INSTANCE,
 			ChocolateFactorySolver.INSTANCE,
-			new ReorderHelper()
+			new ReorderHelper(),
+			BitsHelper.INSTANCE
 	};
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;
@@ -130,7 +132,7 @@ public class ContainerSolverManager {
 
 	public static void onDraw(DrawContext context, GenericContainerScreen genericContainerScreen, List<Slot> slots) {
 		if (currentSolver == null) return;
-		if (highlights == null) highlights = currentSolver.getColors(slotMap(slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9)));
+		if (highlights == null) highlights = currentSolver.getColors(slotMap(currentSolver instanceof ContainerAndInventorySolver ? slots : slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9)));
 		RenderSystem.enableDepthTest();
 		RenderSystem.colorMask(true, true, true, false);
 		for (ColorHighlight highlight : highlights) {

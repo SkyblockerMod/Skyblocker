@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
+import com.demonwav.mcdev.annotations.Translatable;
 import de.hysky.skyblocker.debug.Debug;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -20,9 +21,9 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
     private final List<Map<String, String>> shortcutMaps = new ArrayList<>();
 
     /**
-     * @param width the width of the widget
-     * @param height the height of the widget
-     * @param y the y coordinate to start rendering/placing the widget from
+     * @param width      the width of the widget
+     * @param height     the height of the widget
+     * @param y          the y coordinate to start rendering/placing the widget from
      * @param itemHeight the height of each item
      */
     public ShortcutsConfigListWidget(MinecraftClient minecraftClient, ShortcutsConfigScreen screen, int width, int height, int y, int itemHeight) {
@@ -77,6 +78,11 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
         }
     }
 
+    /**
+     * Returns true if the client is in debug mode and the entry at the given index is selected.
+     * <p>
+     * Used to show the box around the selected entry in debug mode.
+     */
     @Override
     protected boolean isSelectedEntry(int index) {
         return Debug.debugEnabled() ? Objects.equals(getSelectedOrNull(), children().get(index)) : super.isSelectedEntry(index);
@@ -113,15 +119,15 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
         @Nullable
         private final Text tooltip;
 
-        private ShortcutCategoryEntry(Map<String, String> shortcutsMap, String targetName, String replacementName) {
+        private ShortcutCategoryEntry(Map<String, String> shortcutsMap, @Translatable String targetName, @Translatable String replacementName) {
             this(shortcutsMap, targetName, replacementName, (Text) null);
         }
 
-        private ShortcutCategoryEntry(Map<String, String> shortcutsMap, String targetName, String replacementName, String tooltip) {
+        private ShortcutCategoryEntry(Map<String, String> shortcutsMap, @Translatable String targetName, @Translatable String replacementName, @Translatable String tooltip) {
             this(shortcutsMap, targetName, replacementName, Text.translatable(tooltip));
         }
 
-        private ShortcutCategoryEntry(Map<String, String> shortcutsMap, String targetName, String replacementName, @Nullable Text tooltip) {
+        private ShortcutCategoryEntry(Map<String, String> shortcutsMap, @Translatable String targetName, @Translatable String replacementName, @Nullable Text tooltip) {
             this.shortcutsMap = shortcutsMap;
             this.targetName = Text.translatable(targetName);
             this.replacementName = Text.translatable(replacementName);
@@ -157,6 +163,14 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
             if (tooltip != null && isMouseOver(mouseX, mouseY)) {
                 screen.setTooltip(tooltip);
             }
+        }
+
+        /**
+         * Returns true so that category entries can be focused and selected, so that we can add shortcut entries after them.
+         */
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            return true;
         }
     }
 

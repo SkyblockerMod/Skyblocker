@@ -15,6 +15,7 @@ import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket;
 import net.azureaaron.hmapi.network.packet.v2.s2c.PartyInfoS2CPacket;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
@@ -26,6 +27,7 @@ import java.util.regex.Matcher;
 import org.slf4j.Logger;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.logging.LogUtils;
 
 public class Reparty extends ChatPatternListener {
@@ -43,14 +45,19 @@ public class Reparty extends ChatPatternListener {
 
 		this.repartying = false;
 		HypixelPacketEvents.PARTY_INFO.register(this::onPacket);
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("rp").executes(context -> {
-			if (!Utils.isOnSkyblock() || this.repartying || CLIENT.player == null) return 0;
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+			dispatcher.register(ClientCommandManager.literal("reparty").executes(this::executeCommand));
+			dispatcher.register(ClientCommandManager.literal("rp").executes(this::executeCommand));
+		});
+	}
 
-			this.repartying = true;
-			HypixelNetworking.sendPartyInfoC2SPacket(2);
+	private int executeCommand(CommandContext<FabricClientCommandSource> source) {
+		if (!Utils.isOnSkyblock() || this.repartying || CLIENT.player == null) return 0;
 
-			return Command.SINGLE_SUCCESS;
-		})));
+		this.repartying = true;
+		HypixelNetworking.sendPartyInfoC2SPacket(2);
+
+		return Command.SINGLE_SUCCESS;
 	}
 
 	private void onPacket(HypixelS2CPacket packet) {
@@ -107,6 +114,6 @@ public class Reparty extends ChatPatternListener {
 	}
 
 	private void sendCommand(String command, int delay) {
-		MessageScheduler.INSTANCE.queueMessage(command, false, delay * BASE_DELAY);
+		MessageScheduler.INSTANCE.queueMessage(command, true, delay * BASE_DELAY);
 	}
 }

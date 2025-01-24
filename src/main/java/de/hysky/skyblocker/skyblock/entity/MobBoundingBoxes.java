@@ -4,7 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
-import de.hysky.skyblocker.skyblock.slayers.SlayerEntitiesGlow;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -12,7 +12,6 @@ import de.hysky.skyblocker.utils.render.Renderable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -45,22 +44,15 @@ public class MobBoundingBoxes {
 			};
 		}
 
-		if (SkyblockerConfigManager.get().slayers.highlightMinis == SlayersConfig.HighlightSlayerEntities.HITBOX
-				&& entity instanceof ArmorStandEntity le && SlayerEntitiesGlow.isSlayerMiniMob(le)) {
+		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.HITBOX)) {
 			return true;
-		}
-
-		if (SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.HITBOX
-				&& entity instanceof ArmorStandEntity le) {
-			return le.getDisplayName().getString().contains(MinecraftClient.getInstance().getSession().getUsername()) ||
-					entity.getDisplayName().getString().contains("Ⓣ") || entity.getDisplayName().getString().contains("Ⓐ");
 		}
 
 		return false;
 	}
 	
 	public static float[] getBoxColor(Entity entity) {
-		int color = MobGlow.getGlowColor(entity);
+		int color = MobGlow.getMobGlow(entity);
 
 		return new float[] { ((color >> 16) & 0xFF) / 255f, ((color >> 8) & 0xFF) / 255f, (color & 0xFF) / 255f };
 	}

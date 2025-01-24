@@ -3,12 +3,18 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.MiningConfig;
-import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudConfigScreen;
-import de.hysky.skyblocker.skyblock.dwarven.DwarvenHudConfigScreen;
+import de.hysky.skyblocker.config.screens.powdertracker.PowderFilterConfigScreen;
+import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
+import de.hysky.skyblocker.skyblock.dwarven.CarpetHighlighter;
+import de.hysky.skyblocker.skyblock.dwarven.PowderMiningTracker;
+import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
@@ -37,6 +43,12 @@ public class MiningCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 
+				.option(ButtonOption.createBuilder()
+						.name(Text.translatable("skyblocker.config.mining.dwarvenHud.screen"))
+						.text(Text.translatable("text.skyblocker.open"))
+						.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, CommsWidget.ID, screen)))
+						.build())
+
                 //Dwarven Mines
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.mining.dwarvenMines"))
@@ -54,40 +66,24 @@ public class MiningCategory {
                                         newValue -> config.mining.dwarvenMines.solvePuzzler = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
-                        .build())
-
-                //Dwarven HUD
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.mining.dwarvenHud"))
-                        .collapsed(false)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.dwarvenHud.enabledCommissions"))
-                                .binding(defaults.mining.dwarvenHud.enabledCommissions,
-                                        () -> config.mining.dwarvenHud.enabledCommissions,
-                                        newValue -> config.mining.dwarvenHud.enabledCommissions = newValue)
+		                .option(Option.<Boolean>createBuilder()
+				                .name(Text.translatable("skyblocker.config.mining.dwarvenMines.enableCarpetHighlight"))
+				                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.dwarvenMines.enableCarpetHighlight.@Tooltip")))
+                                .binding(defaults.mining.dwarvenMines.enableCarpetHighlighter,
+		                                () -> config.mining.dwarvenMines.enableCarpetHighlighter,
+                                       newValue -> config.mining.dwarvenMines.enableCarpetHighlighter = newValue)
                                 .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.dwarvenHud.enabledPowder"))
-                                .binding(defaults.mining.dwarvenHud.enabledPowder,
-                                        () -> config.mining.dwarvenHud.enabledPowder,
-                                        newValue -> config.mining.dwarvenHud.enabledPowder = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<MiningConfig.DwarvenHudStyle>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.dwarvenHud.style"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[0]"),
-                                        Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[1]"),
-                                        Text.translatable("skyblocker.config.mining.dwarvenHud.style.@Tooltip[2]")))
-                                .binding(defaults.mining.dwarvenHud.style,
-                                        () -> config.mining.dwarvenHud.style,
-                                        newValue -> config.mining.dwarvenHud.style = newValue)
-                                .controller(ConfigUtils::createEnumCyclingListController)
-                                .build())
-                        .option(ButtonOption.createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.dwarvenHud.screen"))
-                                .text(Text.translatable("text.skyblocker.open"))
-                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new DwarvenHudConfigScreen(screen)))
+	                            .build())
+                        .option(Option.<Color>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.dwarvenMines.carpetHighlightColor"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip")))
+                                .binding(defaults.mining.dwarvenMines.carpetHighlightColor,
+		                                () -> config.mining.dwarvenMines.carpetHighlightColor,
+		                                newValue -> {
+											config.mining.dwarvenMines.carpetHighlightColor = newValue;
+			                                CarpetHighlighter.INSTANCE.configCallback(newValue);
+		                                })
+                                .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
                                 .build())
                         .build())
 
@@ -126,6 +122,12 @@ public class MiningCategory {
                                         newValue -> config.mining.crystalHollows.chestHighlightColor = newValue)
                                 .controller(v -> ColorControllerBuilder.create(v).allowAlpha(true))
                                 .build())
+		                .option(ButtonOption.createBuilder()
+				                .name(Text.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter"))
+				                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip")))
+				                .text(Text.translatable("text.skyblocker.open"))
+				                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new PowderFilterConfigScreen(screen, new ObjectImmutableList<>(PowderMiningTracker.getName2IdMap().keySet()))))
+				                .build())
                         .build())
 
                 //Crystal Hollows Map
@@ -142,7 +144,7 @@ public class MiningCategory {
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.crystalsHud.screen"))
                                 .text(Text.translatable("text.skyblocker.open"))
-                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new CrystalsHudConfigScreen(screen)))
+                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.CRYSTAL_HOLLOWS, CrystalsHudWidget.getInstance().getInternalID(), screen)))
                                 .build())
                         .option(Option.<Float>createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.crystalsHud.mapScaling"))
@@ -181,14 +183,6 @@ public class MiningCategory {
                                         newValue -> config.mining.crystalsWaypoints.enabled = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
-                        .option(Option.<Float>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.crystalsWaypoints.textScale"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalsWaypoints.textScale.@Tooltip")))
-                                .binding(defaults.mining.crystalsWaypoints.textScale,
-                                        () -> config.mining.crystalsWaypoints.textScale,
-                                        newValue -> config.mining.crystalsWaypoints.textScale = newValue)
-                                .controller(FloatFieldControllerBuilder::create)
-                                .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.crystalsWaypoints.findInChat"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalsWaypoints.findInChat.@Tooltip")))
@@ -205,7 +199,14 @@ public class MiningCategory {
                                         newValue -> config.mining.crystalsWaypoints.wishingCompassSolver = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
-
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto.@Tooltip")))
+								.binding(defaults.mining.crystalsWaypoints.shareFairyGrotto,
+										() -> config.mining.crystalsWaypoints.shareFairyGrotto,
+										newValue -> config.mining.crystalsWaypoints.shareFairyGrotto = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 //commission waypoints
@@ -223,14 +224,6 @@ public class MiningCategory {
                                         () -> config.mining.commissionWaypoints.mode,
                                         newValue -> config.mining.commissionWaypoints.mode = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
-                                .build())
-                        .option(Option.<Float>createBuilder()
-                                .name(Text.translatable("skyblocker.config.mining.commissionWaypoints.textScale"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.commissionWaypoints.textScale.@Tooltip")))
-                                .binding(defaults.mining.commissionWaypoints.textScale,
-                                        () -> config.mining.commissionWaypoints.textScale,
-                                        newValue -> config.mining.commissionWaypoints.textScale = newValue)
-                                .controller(FloatFieldControllerBuilder::create)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.commissionWaypoints.useColor"))
@@ -264,12 +257,36 @@ public class MiningCategory {
                         .collapsed(false)
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.glacite.coldOverlay"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.coldOverlay@Tooltip")))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.coldOverlay.@Tooltip")))
                                 .binding(defaults.mining.glacite.coldOverlay,
                                         () -> config.mining.glacite.coldOverlay,
                                         newValue -> config.mining.glacite.coldOverlay = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.glacite.enableCorpseFinder"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.enableCorpseFinder.@Tooltip")))
+                                .binding(defaults.mining.glacite.enableCorpseFinder,
+                                        () -> config.mining.glacite.enableCorpseFinder,
+                                        newValue -> config.mining.glacite.enableCorpseFinder = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.glacite.enableParsingChatCorpseFinder"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.enableParsingChatCorpseFinder.@Tooltip")))
+                                .binding(defaults.mining.glacite.enableParsingChatCorpseFinder,
+                                        () -> config.mining.glacite.enableParsingChatCorpseFinder,
+                                        newValue -> config.mining.glacite.enableParsingChatCorpseFinder = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+		                .option(Option.<Boolean>createBuilder()
+		                        .name(Text.translatable("skyblocker.config.mining.glacite.autoShareCorpses"))
+		                        .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip")))
+		                        .binding(defaults.mining.glacite.autoShareCorpses,
+		                                () -> config.mining.glacite.autoShareCorpses,
+		                                newValue -> config.mining.glacite.autoShareCorpses = newValue)
+		                        .controller(ConfigUtils::createBooleanController)
+				                .build())
                         .build())
                 .build();
     }

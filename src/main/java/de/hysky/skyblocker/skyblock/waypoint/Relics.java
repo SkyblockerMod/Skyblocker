@@ -69,7 +69,7 @@ public class Relics {
                         for (JsonElement locationJson : json.getValue().getAsJsonArray().asList()) {
                             JsonObject posData = locationJson.getAsJsonObject();
                             BlockPos pos = new BlockPos(posData.get("x").getAsInt(), posData.get("y").getAsInt(), posData.get("z").getAsInt());
-                            relics.put(pos, new ProfileAwareWaypoint(pos, TYPE_SUPPLIER, ColorUtils.getFloatComponents(DyeColor.YELLOW), ColorUtils.getFloatComponents(DyeColor.BROWN)));
+                            relics.put(pos, new Relic(pos, TYPE_SUPPLIER, ColorUtils.getFloatComponents(DyeColor.YELLOW), ColorUtils.getFloatComponents(DyeColor.BROWN)));
                         }
                     }
                 }
@@ -163,5 +163,16 @@ public class Relics {
                 .min(Comparator.comparingDouble(relic -> relic.pos.getSquaredDistance(player.getPos())))
                 .filter(relic -> relic.pos.getSquaredDistance(player.getPos()) <= 16)
                 .ifPresent(Waypoint::setFound);
+    }
+
+    private static class Relic extends ProfileAwareWaypoint {
+        public Relic(BlockPos pos, Supplier<Type> typeSupplier, float[] missingColor, float[] foundColor) {
+            super(pos, typeSupplier, missingColor, foundColor);
+        }
+
+        @Override
+        public boolean shouldRender() {
+            return super.shouldRender() || SkyblockerConfigManager.get().otherLocations.spidersDen.relics.highlightFoundRelics;
+        }
     }
 }

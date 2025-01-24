@@ -1,103 +1,106 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 // this widget shows info about a player in the current dungeon group
 
-public class DungeonPlayerWidget extends Widget {
+public class DungeonPlayerWidget extends TabHudWidget {
 
-    private static final MutableText TITLE = Text.literal("Player").formatted(Formatting.DARK_PURPLE,
-            Formatting.BOLD);
+	private static final MutableText TITLE = Text.literal("Player").formatted(Formatting.DARK_PURPLE,
+			Formatting.BOLD);
 
-    // match a player entry
-    // group 1: name
-    // group 2: class (or literal "EMPTY" pre dungeon start)
-    // group 3: level (or nothing, if pre dungeon start)
-    // this regex filters out the ironman icon as well as rank prefixes and emblems
-    // \[\d*\] (?:\[[A-Za-z]+\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\((?<class>\S*) ?(?<level>[LXVI]*)\)
-    public static final Pattern PLAYER_PATTERN = Pattern
-            .compile("\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\\((?<class>\\S*) ?(?<level>[LXVI]*)\\)");
+	// match a player entry
+	// group 1: name
+	// group 2: class (or literal "EMPTY" pre dungeon start)
+	// group 3: level (or nothing, if pre dungeon start)
+	// this regex filters out the ironman icon as well as rank prefixes and emblems
+	// \[\d*\] (?:\[[A-Za-z]+\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\((?<class>\S*) ?(?<level>[LXVI]*)\)
+	public static final Pattern PLAYER_PATTERN = Pattern
+			.compile("\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\\((?<class>\\S*) ?(?<level>[LXVI]*)\\)");
 
-    private static final HashMap<String, ItemStack> ICOS = new HashMap<>();
-    private static final ArrayList<String> MSGS = new ArrayList<>();
-    static {
-        ICOS.put("Tank", Ico.CHESTPLATE);
-        ICOS.put("Mage", Ico.B_ROD);
-        ICOS.put("Berserk", Ico.DIASWORD);
-        ICOS.put("Archer", Ico.BOW);
-        ICOS.put("Healer", Ico.POTION);
+	private static final HashMap<String, ItemStack> ICOS = new HashMap<>();
+	private static final ArrayList<String> MSGS = new ArrayList<>();
 
-        MSGS.add("PRESS A TO JOIN");
-        MSGS.add("Invite a friend!");
-        MSGS.add("But nobody came.");
-        MSGS.add("More is better!");
-    }
+	static {
+		ICOS.put("Tank", Ico.CHESTPLATE);
+		ICOS.put("Mage", Ico.B_ROD);
+		ICOS.put("Berserk", Ico.DIASWORD);
+		ICOS.put("Archer", Ico.BOW);
+		ICOS.put("Healer", Ico.POTION);
 
-    private final int player;
+		MSGS.add("???");
+		MSGS.add("PRESS A TO JOIN");
+		MSGS.add("Invite a friend!");
+		MSGS.add("But nobody came.");
+		MSGS.add("More is better!");
+	}
 
-    // title needs to be changeable here
-    public DungeonPlayerWidget(int player) {
-        super(TITLE, Formatting.DARK_PURPLE.getColorValue());
-        this.player = player;
-    }
+	private final int player;
 
-    @Override
-    public void updateContent() {
-        int start = 1 + (player - 1) * 4;
+	// title needs to be changeable here
+	public DungeonPlayerWidget(int player) {
+		super("Dungeon Player " + player, TITLE, Formatting.DARK_PURPLE.getColorValue());
+		this.player = player;
+	}
 
-        if (PlayerListMgr.strAt(start) == null) {
-            int idx = player - 2;
-            IcoTextComponent noplayer = new IcoTextComponent(Ico.SIGN,
-                    Text.literal(MSGS.get(idx)).formatted(Formatting.GRAY));
-            this.addComponent(noplayer);
-            return;
-        }
-        Matcher m = PlayerListMgr.regexAt(start, PLAYER_PATTERN);
-        if (m == null) {
-            this.addComponent(new IcoTextComponent());
-            this.addComponent(new IcoTextComponent());
-        } else {
+	@Override
+	public void updateContent(List<Text> ignored) {
+		int start = 1 + (player - 1) * 4;
 
-            Text name = Text.literal("Name: ").append(Text.literal(m.group("name")).formatted(Formatting.YELLOW));
-            this.addComponent(new IcoTextComponent(Ico.PLAYER, name));
+		if (PlayerListManager.strAt(start) == null) {
+			int idx = player - 1;
+			IcoTextComponent noplayer = new IcoTextComponent(Ico.SIGN,
+					Text.literal(MSGS.get(idx)).formatted(Formatting.GRAY));
+			this.addComponent(noplayer);
+			return;
+		}
+		Matcher m = PlayerListManager.regexAt(start, PLAYER_PATTERN);
+		if (m == null) {
+			this.addComponent(new IcoTextComponent());
+			this.addComponent(new IcoTextComponent());
+		} else {
 
-            String cl = m.group("class");
-            String level = m.group("level");
+			Text name = Text.literal("Name: ").append(Text.literal(m.group("name")).formatted(Formatting.YELLOW));
+			this.addComponent(new IcoTextComponent(Ico.PLAYER, name));
 
-            if (level == null) {
-                PlainTextComponent ptc = new PlainTextComponent(
-                        Text.literal("Player is dead").formatted(Formatting.RED));
-                this.addComponent(ptc);
-            } else {
+			String cl = m.group("class");
+			String level = m.group("level");
 
-                Formatting clf = Formatting.GRAY;
-                ItemStack cli = Ico.BARRIER;
-                if (!cl.equals("EMPTY")) {
-                    cli = ICOS.get(cl);
-                    clf = Formatting.LIGHT_PURPLE;
-                    cl += " " + m.group("level");
-                }
+			if (level == null) {
+				PlainTextComponent ptc = new PlainTextComponent(
+						Text.literal("Player is dead").formatted(Formatting.RED));
+				this.addComponent(ptc);
+			} else {
 
-                Text clazz = Text.literal("Class: ").append(Text.literal(cl).formatted(clf));
-                IcoTextComponent itclass = new IcoTextComponent(cli, clazz);
-                this.addComponent(itclass);
-            }
-        }
+				Formatting clf = Formatting.GRAY;
+				ItemStack cli = Ico.BARRIER;
+				if (!cl.equals("EMPTY")) {
+					cli = ICOS.get(cl);
+					clf = Formatting.LIGHT_PURPLE;
+					cl += " " + m.group("level");
+				}
 
-        this.addSimpleIcoText(Ico.CLOCK, "Ult Cooldown:", Formatting.GOLD, start + 1);
-        this.addSimpleIcoText(Ico.POTION, "Revives:", Formatting.DARK_PURPLE, start + 2);
+				Text clazz = Text.literal("Class: ").append(Text.literal(cl).formatted(clf));
+				IcoTextComponent itclass = new IcoTextComponent(cli, clazz);
+				this.addComponent(itclass);
+			}
+		}
 
-    }
+		this.addSimpleIcoText(Ico.CLOCK, "Ult Cooldown:", Formatting.GOLD, start + 1);
+		this.addSimpleIcoText(Ico.POTION, "Revives:", Formatting.DARK_PURPLE, start + 2);
+
+	}
 }

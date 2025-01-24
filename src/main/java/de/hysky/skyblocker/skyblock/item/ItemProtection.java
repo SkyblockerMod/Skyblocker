@@ -14,15 +14,23 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class ItemProtection {
@@ -37,6 +45,7 @@ public class ItemProtection {
 				"key.categories.skyblocker"
 		));
 		ClientCommandRegistrationCallback.EVENT.register(ItemProtection::registerCommand);
+		UseEntityCallback.EVENT.register(ItemProtection::onEntityInteract);
 	}
 
 	public static boolean isItemProtected(ItemStack stack) {
@@ -121,5 +130,15 @@ public class ItemProtection {
 			ItemStack heldItem = player.getMainHandStack();
 			handleKeyPressed(heldItem);
 		}
+	}
+
+	private static ActionResult onEntityInteract(PlayerEntity playerEntity, World world, Hand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
+		if (!Utils.isOnSkyblock() || !world.isClient) return ActionResult.PASS;
+		if (entity instanceof ItemFrameEntity itemFrame && itemFrame.getHeldItemStack().isEmpty()) {
+			if (isItemProtected(playerEntity.getStackInHand(hand)) || HotbarSlotLock.isLocked(playerEntity.getInventory().selectedSlot)) {
+				return ActionResult.FAIL;
+			}
+		}
+		return ActionResult.PASS;
 	}
 }

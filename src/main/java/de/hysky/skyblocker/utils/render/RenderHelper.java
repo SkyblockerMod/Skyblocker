@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.BeaconBlockEntityRendererInvoker;
-import de.hysky.skyblocker.utils.Boxes;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
@@ -32,8 +31,6 @@ import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.profiler.Profilers;
-
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -42,7 +39,6 @@ import java.awt.*;
 
 public class RenderHelper {
     private static final Identifier TRANSLUCENT_DRAW = Identifier.of(SkyblockerMod.NAMESPACE, "translucent_draw");
-    private static final Vec3d ONE = new Vec3d(1, 1, 1);
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
     private static final BufferAllocator ALLOCATOR = new BufferAllocator(1536);
@@ -58,31 +54,31 @@ public class RenderHelper {
         renderBeaconBeam(context, pos, colorComponents);
     }
 
-    public static void renderFilled(WorldRenderContext context, Box box, float[] colorComponents, float alpha, boolean throughWalls) {
-        renderFilled(context, box.getMinPos(), Boxes.getLengthVec(box), colorComponents, alpha, throughWalls);
-    }
-
     public static void renderFilled(WorldRenderContext context, BlockPos pos, float[] colorComponents, float alpha, boolean throughWalls) {
-        renderFilled(context, Vec3d.of(pos), ONE, colorComponents, alpha, throughWalls);
-    }
-
-    public static void renderFilled(WorldRenderContext context, BlockPos pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
-        renderFilled(context, Vec3d.of(pos), dimensions, colorComponents, alpha, throughWalls);
+        renderFilled(context, pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1, colorComponents, alpha, throughWalls);
     }
 
     public static void renderFilled(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
+        renderFilled(context, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents, alpha, throughWalls);
+    }
+
+    public static void renderFilled(WorldRenderContext context, Box box, float[] colorComponents, float alpha, boolean throughWalls) {
+        renderFilled(context, box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, colorComponents, alpha, throughWalls);
+    }
+
+    public static void renderFilled(WorldRenderContext context, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, float[] colorComponents, float alpha, boolean throughWalls) {
         if (throughWalls) {
-            if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + dimensions.x, pos.getY() + dimensions.y, pos.getZ() + dimensions.z)) {
-                renderFilledInternal(context, pos, dimensions, colorComponents, alpha, true);
+            if (FrustumUtils.isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
+                renderFilledInternal(context, minX, minY, minZ, maxX, maxY, maxZ, colorComponents, alpha, true);
             }
         } else {
-            if (OcclusionCulling.getRegularCuller().isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + dimensions.x, pos.getY() + dimensions.y, pos.getZ() + dimensions.z)) {
-                renderFilledInternal(context, pos, dimensions, colorComponents, alpha, false);
+            if (OcclusionCulling.getRegularCuller().isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
+                renderFilledInternal(context, minX, minY, minZ, maxX, maxY, maxZ, colorComponents, alpha, false);
             }
         }
     }
 
-    private static void renderFilledInternal(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float alpha, boolean throughWalls) {
+    private static void renderFilledInternal(WorldRenderContext context, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, float[] colorComponents, float alpha, boolean throughWalls) {
         MatrixStack matrices = context.matrixStack();
         Vec3d camera = context.camera().getPos();
 
@@ -92,7 +88,7 @@ public class RenderHelper {
         VertexConsumerProvider consumers = context.consumers();
         VertexConsumer buffer = consumers.getBuffer(throughWalls ? SkyblockerRenderLayers.FILLED_THROUGH_WALLS : SkyblockerRenderLayers.FILLED);
 
-        VertexRendering.drawFilledBox(matrices, buffer, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
+        VertexRendering.drawFilledBox(matrices, buffer, minX, minY, minZ, maxX, maxY, maxZ, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
 
         matrices.pop();
     }
@@ -111,22 +107,24 @@ public class RenderHelper {
         }
     }
 
-    /**
-     * Renders the outline of a box with the specified color components and line width.
-     * This does not use renderer since renderer draws outline using debug lines with a fixed width.
-     */
+    public static void renderOutline(WorldRenderContext context, BlockPos pos, float[] colorComponents, float lineWidth, boolean throughWalls) {
+        renderOutline(context, pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1, colorComponents, 1f, lineWidth, throughWalls);
+    }
+
+    public static void renderOutline(WorldRenderContext context, Vec3d pos, Vec3d dimensions, float[] colorComponents, float lineWidth, boolean throughWalls) {
+        renderOutline(context, pos.x, pos.y, pos.z, pos.x + dimensions.x, pos.y + dimensions.y, pos.z + dimensions.z, colorComponents, 1f, lineWidth, throughWalls);
+    }
+
     public static void renderOutline(WorldRenderContext context, Box box, float[] colorComponents, float lineWidth, boolean throughWalls) {
         renderOutline(context, box, colorComponents, 1f, lineWidth, throughWalls);
     }
 
-    /**
-     * Renders the outline of a box with the specified color components and line width.
-     * This does not use renderer since renderer draws outline using debug lines with a fixed width.
-     *
-     * @param alpha the transparency of the lines for the box
-     */
     public static void renderOutline(WorldRenderContext context, Box box, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
-        if (FrustumUtils.isVisible(box)) {
+        renderOutline(context, box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, colorComponents, alpha, lineWidth, throughWalls);
+    }
+
+    public static void renderOutline(WorldRenderContext context, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls) {
+        if (FrustumUtils.isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
             MatrixStack matrices = context.matrixStack();
             Vec3d camera = context.camera().getPos();
             Tessellator tessellator = RenderSystem.renderThreadTesselator();
@@ -143,7 +141,7 @@ public class RenderHelper {
             matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
 
             BufferBuilder buffer = tessellator.begin(DrawMode.LINES, VertexFormats.LINES);
-            VertexRendering.drawBox(matrices, buffer, box, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
+            VertexRendering.drawBox(matrices, buffer, minX, minY, minZ, maxX, maxY, maxZ, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
             BufferRenderer.drawWithGlobalProgram(buffer.end());
 
             matrices.pop();
@@ -177,8 +175,7 @@ public class RenderHelper {
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
-        Matrix3f normalMatrix = matrices.peek().getNormalMatrix();
+        MatrixStack.Entry entry = matrices.peek();
 
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
@@ -196,11 +193,17 @@ public class RenderHelper {
 
         for (int i = 0; i < points.length; i++) {
             Vec3d nextPoint = points[i + 1 == points.length ? i - 1 : i + 1];
-            Vector3f normalVec = new Vector3f((float) nextPoint.getX(), (float) nextPoint.getY(), (float) nextPoint.getZ()).sub((float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ()).normalize().mul(normalMatrix);
+            Vector3f normalVec = nextPoint.toVector3f().sub((float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ()).normalize();
+            // If the last point, the normal is the previous point minus the current point.
+            // Negate the normal to make it point forward, away from the previous point.
+            if (i + 1 == points.length) {
+                normalVec.negate();
+            }
+
             buffer
-                    .vertex(positionMatrix, (float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ())
+                    .vertex(entry, (float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ())
                     .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
-                    .normal(normalVec.x, normalVec.y, normalVec.z);
+                    .normal(entry, normalVec);
         }
 
         BufferRenderer.drawWithGlobalProgram(buffer.end());
@@ -210,6 +213,7 @@ public class RenderHelper {
         RenderSystem.lineWidth(1f);
         RenderSystem.enableCull();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        RenderSystem.disableDepthTest();
     }
 
     public static void renderLineFromCursor(WorldRenderContext context, Vec3d point, float[] colorComponents, float alpha, float lineWidth) {
@@ -220,7 +224,7 @@ public class RenderHelper {
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+        MatrixStack.Entry entry = matrices.peek();
 
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
@@ -234,21 +238,21 @@ public class RenderHelper {
         RenderSystem.enableDepthTest();
         RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
-        Vec3d offset = Vec3d.fromPolar(context.camera().getPitch(), context.camera().getYaw());
-        Vec3d cameraPoint = camera.add(offset);
+        // Start drawing the line from a point slightly in front of the camera
+        Vec3d cameraPoint = camera.add(Vec3d.fromPolar(context.camera().getPitch(), context.camera().getYaw()));
 
         BufferBuilder buffer = tessellator.begin(DrawMode.LINES, VertexFormats.LINES);
 
-        Vector3f normal = new Vector3f((float) offset.x, (float) offset.y, (float) offset.z);
+        Vector3f normal = point.toVector3f().sub((float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z).normalize();
         buffer
-                .vertex(positionMatrix, (float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z)
+                .vertex(entry, (float) cameraPoint.x, (float) cameraPoint.y, (float) cameraPoint.z)
                 .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
-                .normal(normal.x, normal.y, normal.z);
+                .normal(entry, normal);
 
         buffer
-                .vertex(positionMatrix, (float) point.getX(), (float) point.getY(), (float) point.getZ())
+                .vertex(entry, (float) point.getX(), (float) point.getY(), (float) point.getZ())
                 .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
-                .normal(normal.x, normal.y, normal.z);
+                .normal(entry, normal);
 
 
         BufferRenderer.drawWithGlobalProgram(buffer.end());
@@ -258,6 +262,7 @@ public class RenderHelper {
         RenderSystem.lineWidth(1f);
         RenderSystem.enableCull();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        RenderSystem.disableDepthTest();
     }
 
     public static void renderQuad(WorldRenderContext context, Vec3d[] points, float[] colorComponents, float alpha, boolean throughWalls) {
@@ -273,6 +278,7 @@ public class RenderHelper {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
+        RenderSystem.enableDepthTest();
         RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 
         BufferBuilder buffer = tessellator.begin(DrawMode.QUADS, VertexFormats.POSITION_COLOR);
@@ -283,6 +289,7 @@ public class RenderHelper {
 
         RenderSystem.enableCull();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        RenderSystem.disableDepthTest();
     }
 
     public static void renderText(WorldRenderContext context, Text text, Vec3d pos, boolean throughWalls) {
@@ -319,11 +326,14 @@ public class RenderHelper {
 
         VertexConsumerProvider.Immediate consumers = VertexConsumerProvider.immediate(ALLOCATOR);
 
+        //Don't trust the render layer to do this for you!
+        RenderSystem.enableDepthTest();
         RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
 
-        textRenderer.draw(text, xOffset, yOffset, 0xFFFFFFFF, false, positionMatrix, consumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+        textRenderer.draw(text, xOffset, yOffset, 0xFFFFFFFF, false, positionMatrix, consumers, throughWalls ? TextRenderer.TextLayerType.SEE_THROUGH : TextRenderer.TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
         consumers.draw();
 
+        RenderSystem.disableDepthTest();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
@@ -334,8 +344,14 @@ public class RenderHelper {
     	Profiler profiler = Profilers.get();
 
     	profiler.push("skyblockerTranslucentDraw");
-        //Draw all render layers that haven't been drawn yet - drawing a specific layer does nothing and idk why
-        ((VertexConsumerProvider.Immediate) context.consumers()).draw();
+    	VertexConsumerProvider.Immediate immediate = (VertexConsumerProvider.Immediate) context.consumers();
+
+    	//Work around RenderLayer impl problems (DepthTest#ALWAYS not actually turning off depth testing)
+    	RenderSystem.disableDepthTest();
+    	immediate.draw(SkyblockerRenderLayers.FILLED_THROUGH_WALLS);
+
+    	//Draw all render layers that haven't been drawn yet - drawing a specific layer does nothing and idk why (IF bug maybe?)
+    	immediate.draw();
         profiler.pop();
     }
 

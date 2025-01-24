@@ -7,6 +7,8 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.utils.purse.PurseChangeCause;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -37,6 +39,9 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Utility variables and methods for retrieving Skyblock related information.
@@ -48,8 +53,10 @@ public class Utils {
     private static final String PROFILE_PREFIX = "Profile: ";
     private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
     public static final String PROFILE_ID_PREFIX = "Profile ID: ";
+	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
     private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
+
     /**
      * The player's rank.
      */
@@ -60,6 +67,11 @@ public class Utils {
      */
     @NotNull
     private static Location location = Location.UNKNOWN;
+    /**
+     * Current Skyblock island area.
+     */
+    @NotNull
+    private static Area area = Area.UNKNOWN;
     /**
      * The profile name parsed from the player list.
      */
@@ -89,6 +101,10 @@ public class Utils {
     private static String locationRaw = "";
     @NotNull
     private static String map = "";
+    @NotNull
+    public static double purse = 0;
+
+	private static boolean firstProfileUpdate = true;
 
     /**
      * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
@@ -130,6 +146,7 @@ public class Utils {
     public static boolean isInKuudra() {
         return location == Location.KUUDRAS_HOLLOW;
     }
+
     public static boolean isInCrimson() {
         return location == Location.CRIMSON_ISLE;
     }
@@ -157,6 +174,16 @@ public class Utils {
     @NotNull
     public static Location getLocation() {
         return location;
+    }
+
+    /**
+     * <b>Note: Under no circumstances should you skip checking the location if you also need the area.</b>
+     * 
+     * @return the area parsed from the scoreboard.
+     */
+    @NotNull
+    public static Area getArea() {
+        return area;
     }
 
     /**
@@ -272,22 +299,9 @@ public class Utils {
         return "Unknown";
     }
 
-    public static double getPurse() {
-        String purseString = null;
-        double purse = 0;
-
-        try {
-            for (String sidebarLine : STRING_SCOREBOARD) {
-                if (sidebarLine.contains("Piggy:") || sidebarLine.contains("Purse:")) purseString = sidebarLine;
-            }
-            if (purseString != null) purse = Double.parseDouble(purseString.replaceAll("[^0-9.]", "").strip());
-            else purse = 0;
-
-        } catch (IndexOutOfBoundsException e) {
-            LOGGER.error("[Skyblocker] Failed to get purse from sidebar", e);
-        }
-        return purse;
-    }
+	public static double getPurse() {
+		return purse;
+	}
 
     public static int getBits() {
         int bits = 0;
@@ -347,10 +361,36 @@ public class Utils {
 
             TEXT_SCOREBOARD.addAll(textLines);
             STRING_SCOREBOARD.addAll(stringLines);
+            Utils.updatePurse();
+			SlayerManager.getSlayerBossInfo(true);
+			updateArea();
         } catch (NullPointerException e) {
             //Do nothing
         }
     }
+
+    //TODO add event in the future
+    private static void updateArea() {
+    	if (isOnSkyblock) {
+        	String areaName = getIslandArea().replaceAll("[⏣ф]", "").strip();
+        	area = Area.from(areaName);
+    	} else {
+    		area = Area.UNKNOWN;
+    	}
+    }
+
+	public static void updatePurse() {
+		STRING_SCOREBOARD.stream().filter(s -> s.contains("Piggy:") || s.contains("Purse:")).findFirst().ifPresent(purseString -> {
+			Matcher matcher = PURSE.matcher(purseString);
+			if (matcher.find()) {
+				double newPurse = Double.parseDouble(matcher.group("purse").replaceAll(",", ""));
+				double changeSinceLast = newPurse - Utils.purse;
+				if (changeSinceLast == 0) return;
+				SkyblockEvents.PURSE_CHANGE.invoker().onPurseChange(changeSinceLast, PurseChangeCause.getCause(changeSinceLast));
+				Utils.purse = newPurse;
+			}
+		});
+	}
 
 	private static void updateFromPlayerList(MinecraftClient client) {
         if (client.getNetworkHandler() == null) {
@@ -375,6 +415,7 @@ public class Utils {
         gameType = "";
         locationRaw = "";
         location = Location.UNKNOWN;
+        area = Area.UNKNOWN;
         map = "";
     }
 
@@ -400,6 +441,7 @@ public class Utils {
                 if (Utils.gameType.equals("SKYBLOCK")) {
                     isOnSkyblock = true;
                     tickProfileId();
+					SlayerManager.getSlayerInfoOnJoin();
 
                     if (!previousServerType.equals("SKYBLOCK")) SkyblockEvents.JOIN.invoker().onSkyblockJoin();
                 } else if (previousServerType.equals("SKYBLOCK")) {
@@ -444,7 +486,7 @@ public class Utils {
 
 		    @Override
 		    public void run() {
-		        if (requestId == profileIdRequest) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid");
+		        if (requestId == profileIdRequest) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid", true);
 		    }
         }, 20 * 8); //8 seconds
     }
@@ -454,7 +496,6 @@ public class Utils {
      * and {@link #location}
      *
      * @param message json message from chat
-     * 
      * @deprecated Retained just in case the mod api doesn't work or gets disabled.
      */
     @Deprecated
@@ -464,8 +505,8 @@ public class Utils {
         if (locRaw.has("server")) {
             server = locRaw.get("server").getAsString();
         }
-        if (locRaw.has("gameType")) {
-            gameType = locRaw.get("gameType").getAsString();
+        if (locRaw.has("gametype")) {
+            gameType = locRaw.get("gametype").getAsString();
             isOnSkyblock = gameType.equals("SKYBLOCK");
         }
         if (locRaw.has("mode")) {
@@ -485,6 +526,7 @@ public class Utils {
      * @return not display the message in chat if the command is sent by the mod
      */
     public static boolean onChatMessage(Text text, boolean overlay) {
+		if (overlay) return true;
         String message = text.getString();
 
         if (message.startsWith("{\"server\":") && message.endsWith("}")) {
@@ -501,9 +543,10 @@ public class Utils {
 
                 if (!prevProfileId.equals(profileId)) {
                     SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
+                } else if (firstProfileUpdate) {
+					SkyblockEvents.PROFILE_INIT.invoker().onSkyblockProfileInit(profileId);
+	                firstProfileUpdate = false;
                 }
-
-                MuseumItemCache.tick(profileId);
             }
         }
 
@@ -523,7 +566,11 @@ public class Utils {
         client.getNarratorManager().narrateSystemMessage(message);
     }
 
+	public static UUID getUuid() {
+		return MinecraftClient.getInstance().getSession().getUuidOrNull();
+	}
+
     public static String getUndashedUuid() {
-        return UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
+        return UndashedUuid.toString(getUuid());
     }
 }

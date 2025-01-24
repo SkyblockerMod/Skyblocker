@@ -7,19 +7,15 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
+import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +25,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
-public class SecretWaypoint extends NamedWaypoint {
+public class SecretWaypoint extends DistancedNamedWaypoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecretWaypoint.class);
     public static final Codec<SecretWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("secretIndex").forGetter(secretWaypoint -> secretWaypoint.secretIndex),
@@ -63,7 +59,7 @@ public class SecretWaypoint extends NamedWaypoint {
     }
 
     static Predicate<SecretWaypoint> getRangePredicate(Entity entity) {
-        return secretWaypoint -> entity.squaredDistanceTo(secretWaypoint.centerPos) <= 36D;
+        return secretWaypoint -> entity.getPos().isInRange(secretWaypoint.centerPos, 36);
     }
 
     @Override
@@ -94,7 +90,7 @@ public class SecretWaypoint extends NamedWaypoint {
 
     @Override
     protected boolean shouldRenderName() {
-        return CONFIG.get().showSecretText;
+        return super.shouldRenderName() && CONFIG.get().showSecretText;
     }
 
     /**
@@ -104,12 +100,6 @@ public class SecretWaypoint extends NamedWaypoint {
     public void render(WorldRenderContext context) {
         //TODO In the future, shrink the box for wither essence and items so its more realistic
         super.render(context);
-
-        if (CONFIG.get().showSecretText) {
-            Vec3d posUp = centerPos.add(0, 1, 0);
-            double distance = context.camera().getPos().distanceTo(centerPos);
-            RenderHelper.renderText(context, Text.literal(Math.round(distance) + "m").formatted(Formatting.YELLOW), posUp, 1, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
-        }
     }
 
     @NotNull

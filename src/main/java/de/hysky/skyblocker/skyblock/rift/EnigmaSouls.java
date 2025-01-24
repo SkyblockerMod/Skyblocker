@@ -61,7 +61,7 @@ public class EnigmaSouls {
 				for (int i = 0; i < waypoints.size(); i++) {
 					JsonObject waypoint = waypoints.get(i).getAsJsonObject();
 					BlockPos pos = new BlockPos(waypoint.get("x").getAsInt(), waypoint.get("y").getAsInt(), waypoint.get("z").getAsInt());
-					SOUL_WAYPOINTS.put(pos, new ProfileAwareWaypoint(pos, TYPE_SUPPLIER, GREEN, RED));
+					SOUL_WAYPOINTS.put(pos, new EnigmaSoul(pos, TYPE_SUPPLIER, GREEN, RED));
 				}
 
 			} catch (IOException e) {
@@ -114,9 +114,7 @@ public class EnigmaSouls {
 
 		if (Utils.isInTheRift() && config.enigmaSoulWaypoints && soulsLoaded.isDone()) {
 			for (Waypoint soul : SOUL_WAYPOINTS.values()) {
-				if (soul.shouldRender()) {
-					soul.render(context);
-				} else if (config.highlightFoundEnigmaSouls) {
+				if (soul.shouldRender() || config.highlightFoundEnigmaSouls) {
 					soul.render(context);
 				}
 			}
@@ -160,5 +158,16 @@ public class EnigmaSouls {
 				.min(Comparator.comparingDouble(soul -> soul.pos.getSquaredDistance(player.getPos())))
 				.filter(soul -> soul.pos.getSquaredDistance(player.getPos()) <= 16)
 				.ifPresent(Waypoint::setFound);
+	}
+
+	private static class EnigmaSoul extends ProfileAwareWaypoint {
+		public EnigmaSoul(BlockPos pos, Supplier<Type> typeSupplier, float[] missingColor, float[] foundColor) {
+			super(pos, typeSupplier, missingColor, foundColor);
+		}
+
+		@Override
+		public boolean shouldRender() {
+			return super.shouldRender() || SkyblockerConfigManager.get().otherLocations.rift.highlightFoundEnigmaSouls;
+		}
 	}
 }

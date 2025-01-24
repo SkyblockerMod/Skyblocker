@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.item;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.PetCache;
-import de.hysky.skyblocker.skyblock.PetCache.PetInfo;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -59,7 +58,7 @@ public class ItemCooldowns {
     public static void updateCooldown() {
         PetInfo pet = PetCache.getCurrentPet();
 
-        if (pet != null && pet.tier().equals("LEGENDARY")) {
+        if (pet != null && pet.tier().equals(SkyblockItemRarity.LEGENDARY)) {
             monkeyExp = pet.exp();
 
             monkeyLevel = 0;
