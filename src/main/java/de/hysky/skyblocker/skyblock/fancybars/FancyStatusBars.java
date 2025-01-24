@@ -14,21 +14,18 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -40,58 +37,43 @@ public class FancyStatusBars {
 	private final StatusBarTracker statusBarTracker = SkyblockerMod.getInstance().statusBarTracker;
 
 	public static BarPositioner barPositioner = new BarPositioner();
-	public static Map<String, StatusBar> statusBars = new HashMap<>();
+	public static Map<StatusBarType, StatusBar> statusBars = new EnumMap<>(StatusBarType.class);
 
 	public static boolean isHealthFancyBarVisible() {
-		StatusBar health = statusBars.get("health");
+		StatusBar health = statusBars.get(StatusBarType.HEALTH);
 		return health.anchor != null || health.inMouse;
 	}
 
 	public static boolean isExperienceFancyBarVisible() {
-		StatusBar experience = statusBars.get("experience");
+		StatusBar experience = statusBars.get(StatusBarType.EXPERIENCE);
 		return experience.anchor != null || experience.inMouse;
 	}
 
 	@SuppressWarnings("deprecation")
 	@Init
 	public static void init() {
-		statusBars.put("health", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/health"),
-				new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)},
-				true, new Color(255, 85, 85), Text.translatable("skyblocker.bars.config.health")));
-		statusBars.put("intelligence", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/intelligence"),
-				new Color[]{new Color(0, 255, 255), new Color(180, 0, 255)},
-				true, new Color(85, 255, 255), Text.translatable("skyblocker.bars.config.intelligence")));
-		statusBars.put("defense", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/defense"),
-				new Color[]{new Color(255, 255, 255)},
-				false, new Color(185, 185, 185), Text.translatable("skyblocker.bars.config.defense")));
-		statusBars.put("experience", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/experience"),
-				new Color[]{new Color(100, 230, 70)},
-				false, new Color(128, 255, 32), Text.translatable("skyblocker.bars.config.experience")));
-		statusBars.put("speed", new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/speed"),
-				new Color[]{new Color(255, 255, 255)},
-				false, new Color(185, 185, 185), Text.translatable("skyblocker.bars.config.speed")));
+		statusBars.put(StatusBarType.HEALTH, StatusBarType.HEALTH.newStatusBar());
+		statusBars.put(StatusBarType.INTELLIGENCE, StatusBarType.INTELLIGENCE.newStatusBar());
+		statusBars.put(StatusBarType.DEFENSE, StatusBarType.DEFENSE.newStatusBar());
+		statusBars.put(StatusBarType.EXPERIENCE, StatusBarType.EXPERIENCE.newStatusBar());
+		statusBars.put(StatusBarType.SPEED, StatusBarType.SPEED.newStatusBar());
 
 		// Fetch from old status bar config
 		int[] counts = new int[3]; // counts for RIGHT, LAYER1, LAYER2
-		StatusBar health = statusBars.get("health");
-
 		UIAndVisualsConfig.LegacyBarPositions barPositions = SkyblockerConfigManager.get().uiAndVisuals.bars.barPositions;
-		initBarPosition(health, counts, barPositions.healthBarPosition);
-		StatusBar intelligence = statusBars.get("intelligence");
-		initBarPosition(intelligence, counts, barPositions.manaBarPosition);
-		StatusBar defense = statusBars.get("defense");
-		initBarPosition(defense, counts, barPositions.defenceBarPosition);
-		StatusBar experience = statusBars.get("experience");
-		initBarPosition(experience, counts, barPositions.experienceBarPosition);
-		StatusBar speed = statusBars.get("speed");
-		initBarPosition(speed, counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
+		initBarPosition(statusBars.get(StatusBarType.HEALTH), counts, barPositions.healthBarPosition);
+		initBarPosition(statusBars.get(StatusBarType.INTELLIGENCE), counts, barPositions.manaBarPosition);
+		initBarPosition(statusBars.get(StatusBarType.DEFENSE), counts, barPositions.defenceBarPosition);
+		initBarPosition(statusBars.get(StatusBarType.EXPERIENCE), counts, barPositions.experienceBarPosition);
+		initBarPosition(statusBars.get(StatusBarType.SPEED), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
 
 		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig).thenAccept(object -> {
 			if (object != null) {
 				for (String s : object.keySet()) {
-					if (statusBars.containsKey(s)) {
+					StatusBarType type = StatusBarType.from(s);
+					if (statusBars.containsKey(type)) {
 						try {
-							statusBars.get(s).loadFromJson(object.get(s).getAsJsonObject());
+							statusBars.get(type).loadFromJson(object.get(s).getAsJsonObject());
 						} catch (Exception e) {
 							LOGGER.error("[Skyblocker] Failed to load {} status bar", s, e);
 						}
@@ -145,13 +127,13 @@ public class FancyStatusBars {
 
 	private static boolean configLoaded = false;
 
-	private static void placeBarsInPositioner() {
-		List<StatusBar> original = statusBars.values().stream().toList();
-
+	@VisibleForTesting
+	public static void placeBarsInPositioner() {
+		barPositioner.clear();
 		for (BarPositioner.BarAnchor barAnchor : BarPositioner.BarAnchor.allAnchors()) {
-			List<StatusBar> barList = new ArrayList<>(original.stream().filter(bar -> bar.anchor == barAnchor).toList());
+			List<StatusBar> barList = statusBars.values().stream().filter(bar -> bar.anchor == barAnchor)
+					.sorted(Comparator.<StatusBar>comparingInt(bar -> bar.gridY).thenComparingInt(bar -> bar.gridX)).toList();
 			if (barList.isEmpty()) continue;
-			barList.sort((a, b) -> a.gridY == b.gridY ? Integer.compare(a.gridX, b.gridX) : Integer.compare(a.gridY, b.gridY));
 
 			int y = -1;
 			int rowNum = -1;
@@ -179,7 +161,7 @@ public class FancyStatusBars {
 
 	public static void saveBarConfig() {
 		JsonObject output = new JsonObject();
-		statusBars.forEach((s, statusBar) -> output.add(s, statusBar.toJson()));
+		statusBars.forEach((s, statusBar) -> output.add(s.asString(), statusBar.toJson()));
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
 			SkyblockerMod.GSON.toJson(output, writer);
 			LOGGER.info("[Skyblocker] Saved status bars config");
@@ -315,16 +297,16 @@ public class FancyStatusBars {
 		for (StatusBar statusBar : barCollection) {
 			if (statusBar.anchor != null) statusBar.render(context, -1, -1, client.getRenderTickCounter().getLastFrameDuration());
 		}
-		StatusBarTracker.Resource health = statusBarTracker.getHealth();
-		statusBars.get("health").updateValues(health.value() / (float) health.max(), health.overflow() / (float) health.max(), health.value());
 
+		StatusBarTracker.Resource health = statusBarTracker.getHealth();
+		statusBars.get(StatusBarType.HEALTH).updateValues(health.value() / (float) health.max(), health.overflow() / (float) health.max(), health.value());
 		StatusBarTracker.Resource intelligence = statusBarTracker.getMana();
-		statusBars.get("intelligence").updateValues(intelligence.value() / (float) intelligence.max(), intelligence.overflow() / (float) intelligence.max(), intelligence.value());
+		statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / (float) intelligence.max(), intelligence.overflow() / (float) intelligence.max(), intelligence.value());
 		int defense = statusBarTracker.getDefense();
-		statusBars.get("defense").updateValues(defense / (defense + 100.f), 0, defense);
+		statusBars.get(StatusBarType.DEFENSE).updateValues(defense / (defense + 100.f), 0, defense);
 		StatusBarTracker.Resource speed = statusBarTracker.getSpeed();
-		statusBars.get("speed").updateValues(speed.value() / (float) speed.max(), 0, speed.value());
-		statusBars.get("experience").updateValues(player.experienceProgress, 0, player.experienceLevel);
+		statusBars.get(StatusBarType.SPEED).updateValues(speed.value() / (float) speed.max(), 0, speed.value());
+		statusBars.get(StatusBarType.EXPERIENCE).updateValues(player.experienceProgress, 0, player.experienceLevel);
 		return true;
 	}
 }
