@@ -59,7 +59,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 		} else {
 
 			Text name = Text.literal("Name: ").append(Text.literal(m.group("name")).formatted(Formatting.YELLOW));
-			this.addComponent(new PlayerComponent(PlayerListMgr.getRaw(start), name));
+			this.addComponent(new PlayerComponent(PlayerListManager.getRaw(start), name));
 
 			String cl = m.group("class");
 			String level = m.group("level");
