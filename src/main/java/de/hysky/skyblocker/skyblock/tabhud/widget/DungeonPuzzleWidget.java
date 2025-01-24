@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -35,7 +35,7 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 		int pos = 48;
 
 		while (pos < 60) {
-			Matcher m = PlayerListMgr.regexAt(pos, PUZZLE_PATTERN);
+			Matcher m = PlayerListManager.regexAt(pos, PUZZLE_PATTERN);
 			if (m == null) {
 				break;
 			}

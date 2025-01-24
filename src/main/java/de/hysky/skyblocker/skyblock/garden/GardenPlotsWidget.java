@@ -7,7 +7,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import it.unimi.dsi.fastutil.ints.*;
@@ -211,7 +211,7 @@ public class GardenPlotsWidget extends ClickableWidget {
 			if (hovered) {
 				context.fill(slotX + 1, slotY + 1, slotX + 17, slotY + 17, 0xAA_FF_FF_FF);
 				matrices.push();
-				matrices.translate(slotX, slotY, 100.f);
+				matrices.translate(slotX, slotY, 50.f);
 				matrices.scale(1.125f, 1.125f, 1.125f);
 				context.drawItem(item, 0, 0);
 				matrices.pop();
@@ -221,7 +221,10 @@ public class GardenPlotsWidget extends ClickableWidget {
 
 			boolean infested = infectedPlots.contains(i);
 			if (infested && (timeMillis & 512) != 0) {
+				matrices.push();
+				matrices.translate(0, 0, 200.f);
 				context.drawBorder(slotX + 1, slotY + 1, 16, 16, 0xFF_FF0000);
+				matrices.pop();
 			}
 
 			// tooltip
@@ -259,8 +262,8 @@ public class GardenPlotsWidget extends ClickableWidget {
 
 	private void updateInfestedFromTab() {
 		infectedPlots.clear();
-		for (int i = 0; i < PlayerListMgr.getPlayerStringList().size(); i++) {
-			String string = PlayerListMgr.getPlayerStringList().get(i);
+		for (int i = 0; i < PlayerListManager.getPlayerStringList().size(); i++) {
+			String string = PlayerListManager.getPlayerStringList().get(i);
 			if (string.startsWith("Plots:")) {
 				String[] split = string.split(":")[1].split(",");
 				for (String s : split) {
@@ -281,7 +284,7 @@ public class GardenPlotsWidget extends ClickableWidget {
 		if (SkyblockerConfigManager.get().farming.garden.closeScreenOnPlotClick && MinecraftClient.getInstance().currentScreen != null)
 			MinecraftClient.getInstance().currentScreen.close();
 
-		if (hoveredSlot == 12) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/warp garden", true);
+		if (hoveredSlot == 12) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/plottp barn", true);
 		else MessageScheduler.INSTANCE.sendMessageAfterCooldown("/plottp " + gardenPlots[hoveredSlot].name, true);
 	}
 

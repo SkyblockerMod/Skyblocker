@@ -13,8 +13,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class SkyblockLevelAdder extends SimpleSlotTextAdder {
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"skyblock_level",
+			"skyblocker.config.uiAndVisuals.slotText.skyblockLevel");
 	public SkyblockLevelAdder() {
-		super("^SkyBlock Menu");
+		super("^SkyBlock Menu", CONFIG_INFORMATION);
 	}
 
 	@Override

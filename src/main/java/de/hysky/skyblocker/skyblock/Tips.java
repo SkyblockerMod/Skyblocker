@@ -64,7 +64,8 @@ public class Tips {
             getTipFactory("skyblocker.tips.gardenMouseLock", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config"),
             getTipFactory("skyblocker.tips.newYearCakesHelper"),
             getTipFactory("skyblocker.tips.accessoryHelper"),
-            getTipFactory("skyblocker.tips.fancyAuctionHouseCheapHighlight")
+            getTipFactory("skyblocker.tips.fancyAuctionHouseCheapHighlight"),
+			getTipFactory("skyblocker.tips.viewRecipe")
     ));
 
     private static boolean sentTip = false;

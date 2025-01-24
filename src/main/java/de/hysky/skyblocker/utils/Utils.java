@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,6 +67,11 @@ public class Utils {
      */
     @NotNull
     private static Location location = Location.UNKNOWN;
+    /**
+     * Current Skyblock island area.
+     */
+    @NotNull
+    private static Area area = Area.UNKNOWN;
     /**
      * The profile name parsed from the player list.
      */
@@ -97,6 +103,8 @@ public class Utils {
     private static String map = "";
     @NotNull
     public static double purse = 0;
+
+	private static boolean firstProfileUpdate = true;
 
     /**
      * @implNote The parent text will always be empty, the actual text content is inside the text's siblings.
@@ -166,6 +174,16 @@ public class Utils {
     @NotNull
     public static Location getLocation() {
         return location;
+    }
+
+    /**
+     * <b>Note: Under no circumstances should you skip checking the location if you also need the area.</b>
+     * 
+     * @return the area parsed from the scoreboard.
+     */
+    @NotNull
+    public static Area getArea() {
+        return area;
     }
 
     /**
@@ -345,9 +363,20 @@ public class Utils {
             STRING_SCOREBOARD.addAll(stringLines);
             Utils.updatePurse();
 			SlayerManager.getSlayerBossInfo(true);
+			updateArea();
         } catch (NullPointerException e) {
             //Do nothing
         }
+    }
+
+    //TODO add event in the future
+    private static void updateArea() {
+    	if (isOnSkyblock) {
+        	String areaName = getIslandArea().replaceAll("[⏣ф]", "").strip();
+        	area = Area.from(areaName);
+    	} else {
+    		area = Area.UNKNOWN;
+    	}
     }
 
 	public static void updatePurse() {
@@ -386,6 +415,7 @@ public class Utils {
         gameType = "";
         locationRaw = "";
         location = Location.UNKNOWN;
+        area = Area.UNKNOWN;
         map = "";
     }
 
@@ -513,9 +543,10 @@ public class Utils {
 
                 if (!prevProfileId.equals(profileId)) {
                     SkyblockEvents.PROFILE_CHANGE.invoker().onSkyblockProfileChange(prevProfileId, profileId);
+                } else if (firstProfileUpdate) {
+					SkyblockEvents.PROFILE_INIT.invoker().onSkyblockProfileInit(profileId);
+	                firstProfileUpdate = false;
                 }
-
-                MuseumItemCache.tick(profileId);
             }
         }
 
@@ -535,7 +566,11 @@ public class Utils {
         client.getNarratorManager().narrateSystemMessage(message);
     }
 
+	public static UUID getUuid() {
+		return MinecraftClient.getInstance().getSession().getUuidOrNull();
+	}
+
     public static String getUndashedUuid() {
-        return UndashedUuid.toString(MinecraftClient.getInstance().getSession().getUuidOrNull());
+        return UndashedUuid.toString(getUuid());
     }
 }

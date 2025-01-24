@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  * data every frame, instead, a scheduler is used to update the data this class
  * is holding periodically. The list is sorted like in the vanilla game.
  */
-public class PlayerListMgr {
+public class PlayerListManager {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
 	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("(^|\\s*)(Players \\(\\d+\\)|Island|Coop \\(\\d+\\))(\\s*|$)");
@@ -301,7 +301,7 @@ public class PlayerListMgr {
 	 */
 	public static Matcher regexAt(int idx, Pattern p) {
 
-		String str = PlayerListMgr.strAt(idx);
+		String str = PlayerListManager.strAt(idx);
 
 		if (str == null) {
 			return null;

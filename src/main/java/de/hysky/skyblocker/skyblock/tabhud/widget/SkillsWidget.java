@@ -2,10 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoFatTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.*;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -43,11 +40,9 @@ public class SkillsWidget extends TabHudWidget {
 
 				if (!pcntStr.equals("MAX")) {
 					float pcnt = Float.parseFloat(pcntStr);
-					progress = new ProgressComponent(Ico.LANTERN, Text.of(skill),
-							Text.of(pcntStr + "%"), pcnt, Formatting.GOLD.getColorValue());
+					progress = Components.progressComponent(Ico.LANTERN, Text.of(skill), pcnt, Formatting.GOLD.getColorValue());
 				} else {
-					progress = new IcoFatTextComponent(Ico.LANTERN, Text.of(skill),
-							Text.literal(pcntStr).formatted(Formatting.RED));
+					progress = new IcoFatTextComponent(Ico.LANTERN, Text.of(skill), Text.literal(pcntStr).formatted(Formatting.RED));
 				}
 			} else {
 				progress = new PlainTextComponent(line);

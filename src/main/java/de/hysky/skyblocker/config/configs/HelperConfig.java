@@ -33,6 +33,9 @@ public class HelperConfig {
     public ChocolateFactory chocolateFactory = new ChocolateFactory();
 
     @SerialEntry
+    public Carnival carnival = new Carnival();
+
+    @SerialEntry
     public Bazaar bazaar = new Bazaar();
 
     @SerialEntry
@@ -105,6 +108,14 @@ public class HelperConfig {
 
         @SerialEntry
         public boolean straySound = true;
+    }
+
+    public static class Carnival {
+    	@SerialEntry
+    	public boolean catchAFishHelper = true;
+
+    	@SerialEntry
+    	public boolean zombieShootoutHelper = true;
     }
 
     public static class Bazaar {

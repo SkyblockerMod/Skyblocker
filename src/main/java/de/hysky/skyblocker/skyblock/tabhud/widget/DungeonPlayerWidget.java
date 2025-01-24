@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
@@ -45,14 +45,14 @@ public class DungeonPlayerWidget extends TabHudWidget {
 	public void updateContent(List<Text> ignored) {
 		int start = 1 + (player - 1) * 4;
 
-		if (PlayerListMgr.strAt(start) == null) {
+		if (PlayerListManager.strAt(start) == null) {
 			int idx = player - 1;
 			IcoTextComponent noplayer = new IcoTextComponent(Ico.SIGN,
 					Text.literal(MSGS.get(idx)).formatted(Formatting.GRAY));
 			this.addComponent(noplayer);
 			return;
 		}
-		Matcher m = PlayerListMgr.regexAt(start, PLAYER_PATTERN);
+		Matcher m = PlayerListManager.regexAt(start, PLAYER_PATTERN);
 		if (m == null) {
 			this.addComponent(new IcoTextComponent());
 			this.addComponent(new IcoTextComponent());

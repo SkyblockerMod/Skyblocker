@@ -4,6 +4,8 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import net.minecraft.client.resource.language.I18n;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MiningConfig {
     @SerialEntry
@@ -83,6 +85,15 @@ public class MiningConfig {
 
         @SerialEntry
         public Color chestHighlightColor = new Color(0, 0, 255, 128);
+
+	    @SerialEntry
+	    public boolean enablePowderTracker = true;
+
+	    @SerialEntry
+	    public boolean countNaturalChestsInTracker = true;
+
+		@SerialEntry
+	    public List<String> powderTrackerFilter = new ArrayList<>();
     }
 
     public static class CrystalsHud {
@@ -153,8 +164,21 @@ public class MiningConfig {
     public static class Glacite {
         @SerialEntry
         public boolean coldOverlay = true;
+
+        @SerialEntry
+        public boolean enableCorpseFinder = true;
+
+        @SerialEntry
+        public boolean enableParsingChatCorpseFinder = true;
+
+		@SerialEntry
+	    public boolean autoShareCorpses = false;
     }
 
+	/**
+	 * @deprecated See {@link UIAndVisualsConfig.TabHudStyle}.
+	 */
+	@Deprecated
     public enum DwarvenHudStyle {
         SIMPLE, FANCY, CLASSIC;
 

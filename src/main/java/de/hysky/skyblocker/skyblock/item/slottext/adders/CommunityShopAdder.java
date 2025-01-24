@@ -17,10 +17,14 @@ import java.util.List;
 public class CommunityShopAdder extends SimpleSlotTextAdder {
 	private static final byte CATEGORIES_START = 10;
 	private static final byte CATEGORIES_END = 14; //Inclusive
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"community_shop",
+			"skyblocker.config.uiAndVisuals.slotText.communityShop",
+			"skyblocker.config.uiAndVisuals.slotText.communityShop.@Tooltip");
 	private static byte currentScreen = -1; // 0 = city projects, 1 = upgrades, 2 = booster cookie, 3 = bits shop, 4 = fire sales, any other number = invalid
 
 	public CommunityShopAdder() {
-		super("^Community Shop");
+		super("^Community Shop", CONFIG_INFORMATION);
 	}
 
 	@Override

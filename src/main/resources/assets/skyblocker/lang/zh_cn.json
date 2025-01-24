@@ -650,7 +650,7 @@
     "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip": "当时间塔停止运作时，在聊天栏发送一条提示信息。",
     "skyblocker.config.mining.glacite.coldOverlay": "寒冷效果动画修改",
     "skyblocker.config.mining.glacite": "极寒隧道",
-    "skyblocker.config.mining.glacite.coldOverlay@Tooltip": "显示极寒隧道中的霜冻效果，随着温度的降低，霜冻效果会变得更强。",
+    "skyblocker.config.mining.glacite.coldOverlay.@Tooltip": "显示极寒隧道中的霜冻效果，随着温度的降低，霜冻效果会变得更强。",
     "skyblocker.config.misc": "杂项",
     "skyblocker.config.general.searchOverlay.maxPet.@Tooltip": "只显示最高等级的宠物",
     "skyblocker.config.general.searchOverlay.starsTooltip": "地牢物品的星星数量",

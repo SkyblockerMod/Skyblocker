@@ -16,8 +16,11 @@ import java.util.regex.Pattern;
 
 public class MinionLevelAdder extends SimpleSlotTextAdder {
 	private static final Pattern MINION_PATTERN = Pattern.compile(".* Minion ([IVXLCDM]+)");
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"minion_level",
+			"skyblocker.config.uiAndVisuals.slotText.minionLevel");
 	public MinionLevelAdder() {
-		super();
+		super(CONFIG_INFORMATION);
 	}
 
 	@Override

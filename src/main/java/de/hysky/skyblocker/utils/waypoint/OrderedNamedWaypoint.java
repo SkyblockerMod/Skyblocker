@@ -77,6 +77,9 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 	@Override
 	public void render(WorldRenderContext context) {
 		super.render(context);
+		if (relativeIndex == RelativeIndex.NEXT && shouldRender()) {
+			RenderHelper.renderLineFromCursor(context, centerPos, getRenderColorComponents(), 1f, DEFAULT_LINE_WIDTH);
+		}
 		if (shouldRenderName()) {
 			float scale = Math.max((float) context.camera().getPos().distanceTo(centerPos) / 10, 1);
 			RenderHelper.renderText(context, Text.of(String.valueOf(index + 1)), centerPos.add(0, 1, 0), scale, MinecraftClient.getInstance().textRenderer.fontHeight + 1, true);
