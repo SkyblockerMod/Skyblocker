@@ -163,7 +163,6 @@
     "skyblocker.config.mining.crystalsHud.showLocations.locationSize": "Dimensioni Luogo",
     "skyblocker.config.mining.crystalsWaypoints.enabled": "Waypoint Attivi",
     "skyblocker.config.otherLocations.rift.mcGrubberStacks": "Stack per McGrubber",
-    "skyblocker.config.chat.chatRules.announcementScale": "Dimensione Annunci",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.regex": "È Regex:",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.locations": "Posizioni Valide:",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.announcement": "Mostra Annunci:",

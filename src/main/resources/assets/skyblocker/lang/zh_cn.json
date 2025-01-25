@@ -497,8 +497,6 @@
     "skyblocker.garden.hud.mouseLocked": "鼠标已锁定。",
     "skyblocker.config.chat.chatRules.announcementLength": "告示显示时长",
     "skyblocker.config.chat.chatRules.announcementLength.@Tooltip": "显示公告的时间长度，以游戏刻为单位。",
-    "skyblocker.config.chat.chatRules.announcementScale": "告示尺寸",
-    "skyblocker.config.chat.chatRules.announcementScale.@Tooltip": "告示的缩放级别。",
     "skyblocker.config.helpers.enableNewYearCakesHelper": "启用新年蛋糕助手",
     "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "以绿色高亮显示缺少的新年蛋糕、红色高亮显示已有的蛋糕。\n\n需要至少打开一次蛋糕背包才能生效。",
     "skyblocker.config.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "值越低，更新越频繁，可能会导致卡顿。",
