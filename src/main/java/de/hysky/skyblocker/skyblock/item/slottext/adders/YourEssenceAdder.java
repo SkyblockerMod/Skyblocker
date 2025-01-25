@@ -38,7 +38,7 @@ public class YourEssenceAdder extends SimpleSlotTextAdder {
 			return essenceAmountMatcher(ItemUtils.getLore(stack)).<List<SlotText>>map(essenceAmountMatcher -> {
 				String essenceAmount = essenceAmountMatcher.group("essence").replace(",", "");
 				if (!essenceAmount.matches("-?\\d+")) return List.of();
-				return SlotText.bottomRightList(Text.literal(COMPACT_NUMBER_FORMATTER.format(Integer.parseInt(essenceAmount))).withColor(0xFFDDC1));
+				return SlotText.bottomRightList(Text.literal(COMPACT_NUMBER_FORMATTER.format(Integer.parseInt(essenceAmount))).withColor(SlotText.CREAM));
 			}).orElse(List.of());
 		}
 		return List.of();
