@@ -304,6 +304,7 @@
   "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[5]": "You don't own any accessory from this family.",
   "skyblocker.config.general.itemTooltip.enableAvgBIN": "Enable Avg. BIN Price",
   "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Enable Bazaar buy/sell Price",
+  "skyblocker.config.general.itemTooltip.enableCalendarStartTime": "Enable Calendar Event Start Time",
   "skyblocker.config.general.itemTooltip.craft": "Crafting Cost",
   "skyblocker.config.general.itemTooltip.craft.@Tooltip": "You can choose which Bazaar order type to use in crafting calculation",
   "skyblocker.config.general.itemTooltip.craft.OFF": "Off",

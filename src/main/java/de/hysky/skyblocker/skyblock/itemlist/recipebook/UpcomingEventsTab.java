@@ -1,10 +1,8 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.CalendarStartTimeTooltip;
 import org.jetbrains.annotations.Nullable;
 
 import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
@@ -100,16 +98,9 @@ public class UpcomingEventsTab implements RecipeTab {
 	@Override
 	public void initializeSearchResults(String query) {}
 
-	private static class EventRenderer {
+	private record EventRenderer(String eventName, LinkedList<EventNotifications.SkyblockEvent> events) {
 		private static final int HEIGHT = 20;
-
-		private final String eventName;
-		private final LinkedList<EventNotifications.SkyblockEvent> events;
-
-		private EventRenderer(String eventName, LinkedList<EventNotifications.SkyblockEvent> events) {
-			this.eventName = eventName;
-			this.events = events;
-		}
+		private static final Calendar CALENDAR = Calendar.getInstance();
 
 		private void render(DrawContext context, int x, int y, int mouseX, int mouseY) {
 			long time = System.currentTimeMillis() / 1000;
@@ -124,7 +115,7 @@ public class UpcomingEventsTab implements RecipeTab {
 
 				context.drawTextWithShadow(textRenderer, formatted, x, y + textRenderer.fontHeight, -1);
 			} else {
-				Text formatted = Text.literal(" ").append(Text.translatable( "skyblocker.events.tab.endsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() + events.peekFirst().duration() - time)))).formatted(Formatting.GREEN);
+				Text formatted = Text.literal(" ").append(Text.translatable("skyblocker.events.tab.endsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() + events.peekFirst().duration() - time)))).formatted(Formatting.GREEN);
 
 				context.drawTextWithShadow(textRenderer, formatted, x, y + textRenderer.fontHeight, -1);
 			}
@@ -137,14 +128,18 @@ public class UpcomingEventsTab implements RecipeTab {
 		private List<TooltipComponent> getTooltip() {
 			List<TooltipComponent> components = new ArrayList<>();
 
-			if (events.peekFirst() == null) return components;
+			EventNotifications.SkyblockEvent event = events.peekFirst();
+			if (event == null) return components;
 			if (eventName.equals(EventNotifications.JACOBS)) {
-				components.add(new JacobsTooltip(events.peekFirst().extras()));
+				components.add(new JacobsTooltip(event.extras()));
 			}
 
-			if (events.peekFirst().warpCommand() != null) {
+			if (event.warpCommand() != null) {
 				components.add(TooltipComponent.of(Text.translatable("skyblocker.events.tab.clickToWarp").formatted(Formatting.ITALIC).asOrderedText()));
 			}
+
+			CALENDAR.setTimeInMillis(event.start() * 1000);
+			components.add(TooltipComponent.of(Text.literal(CalendarStartTimeTooltip.FORMATTER.format(CALENDAR.toInstant())).formatted(Formatting.ITALIC, Formatting.DARK_GRAY).asOrderedText()));
 
 			return components;
 		}

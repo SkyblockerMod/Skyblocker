@@ -280,6 +280,13 @@ public class GeneralCategory {
                                         newValue -> config.general.itemTooltip.enableStackingEnchantProgress = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemTooltip.enableCalendarStartTime"))
+								.binding(defaults.general.itemTooltip.enableCalendarStartTime,
+										() -> config.general.itemTooltip.enableCalendarStartTime,
+										newValue -> config.general.itemTooltip.enableCalendarStartTime = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 //Item Info Display
