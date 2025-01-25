@@ -74,7 +74,7 @@ public class ChatPositionShare {
         MutableText requestMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.display").formatted(Formatting.AQUA)
                 .styled(style -> style
 						.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("skyblocker.config.chat.waypoints.display")))
-						.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+						.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command.trim()))
 				)
         );
         if (!area.isEmpty()) {
