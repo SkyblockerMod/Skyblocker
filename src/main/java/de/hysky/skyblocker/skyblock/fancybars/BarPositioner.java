@@ -5,11 +5,14 @@ import net.minecraft.client.gui.ScreenRect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class BarPositioner {
 
-    private final Map<BarAnchor, LinkedList<LinkedList<StatusBar>>> map = new HashMap<>(BarAnchor.values().length);
+    private final Map<BarAnchor, LinkedList<LinkedList<StatusBar>>> map = new EnumMap<>(BarAnchor.class);
 
     public BarPositioner() {
         for (BarAnchor value : BarAnchor.values()) {
@@ -144,6 +147,10 @@ public class BarPositioner {
             return (right && x > 0) || (!right && x < statusBars.size() - 1);
         }
     }
+
+	public void clear() {
+		map.replaceAll((barAnchor, rows) -> new LinkedList<>());
+	}
 
 
     public enum BarAnchor {
