@@ -1021,5 +1021,6 @@
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip": "對Sinseeker Scythe生效。",
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip": "對Aspect of the Leech生效。",
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact": "平滑的Wither Impact",
-    "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "對Necron's Blade、Hyperion、Astraea、Scylla、Valkyrie生效。"
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "對Necron's Blade、Hyperion、Astraea、Scylla、Valkyrie生效。",
+    "skyblocker.config.dungeons.puzzle.solveTeleportMaze": "傳送迷宮助手"
 }
