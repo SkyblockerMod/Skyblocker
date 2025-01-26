@@ -1063,5 +1063,6 @@
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission": "平滑的Sinrecall Transmission",
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip": "对Sinseeker Scythe生效。",
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission": "平滑的Weird Transmission",
-    "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact": "平滑的Wither Impact"
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact": "平滑的Wither Impact",
+    "skyblocker.config.dungeons.puzzle.solveTeleportMaze": "传送迷宫助手"
 }
