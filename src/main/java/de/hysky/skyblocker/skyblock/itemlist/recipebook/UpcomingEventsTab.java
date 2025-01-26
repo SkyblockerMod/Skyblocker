@@ -139,7 +139,7 @@ public class UpcomingEventsTab implements RecipeTab {
 			}
 
 			CALENDAR.setTimeInMillis(event.start() * 1000);
-			components.add(TooltipComponent.of(Text.literal(CalendarStartTimeTooltip.FORMATTER.format(CALENDAR.toInstant())).formatted(Formatting.ITALIC, Formatting.DARK_GRAY).asOrderedText()));
+			components.add(TooltipComponent.of(Text.literal(CalendarStartTimeTooltip.getTimeFormatter().format(CALENDAR.toInstant())).formatted(Formatting.ITALIC, Formatting.DARK_GRAY).asOrderedText()));
 
 			return components;
 		}

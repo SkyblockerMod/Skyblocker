@@ -17,7 +17,12 @@ import java.util.regex.Pattern;
 
 public class CalendarStartTimeTooltip extends SimpleTooltipAdder {
 
-	public static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
+	public static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("EE yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
+	public static DateTimeFormatter FORMATTER_12H = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a").withZone(ZoneId.systemDefault());
+
+	public static DateTimeFormatter getTimeFormatter() {
+		return SkyblockerConfigManager.get().general.use12HourClock ? FORMATTER_12H : FORMATTER;
+	}
 
 	private static final Pattern TIMER_PATTERN = Pattern.compile(".*(Starts in: |\\()((?<days>\\d+)d)? ?((?<hours>\\d+)h)? ?((?<minutes>\\d+)m)? ?((?<seconds>\\d+)s)?\\)?");
 
@@ -46,7 +51,7 @@ public class CalendarStartTimeTooltip extends SimpleTooltipAdder {
 				minute = (int) (Math.round(minute / 5.d) * 5); // round to nearest 5.
 				calendar.set(Calendar.MINUTE, minute);
 
-				lines.add(i+1, Text.literal(FORMATTER.format(calendar.toInstant())).formatted(Formatting.ITALIC, Formatting.DARK_GRAY));
+				lines.add(i+1, Text.literal(getTimeFormatter().format(calendar.toInstant())).formatted(Formatting.ITALIC, Formatting.DARK_GRAY));
 				i++;
 			}
 		}
