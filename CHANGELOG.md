@@ -1,3 +1,193 @@
+# Release 25.0.0
+To avoid confusion with Minecraft's versioning system, we are transitioning from Semantic Versioning (SemVer) to a custom versioning scheme: 
+- x.y.z
+  - x: Last two digits of the release year (e.g., '25' for 2025).
+  - y: Major or minor increment, indicating significant or minor feature updates.
+  - z: Patch level, representing patches, fixes, or hotfixes.
+
+This approach ensures that our version numbers remain distinct and are not mistaken for Minecraft's versions.
+
+## Highlight
+* Fancy Tab Hud 2.0 (back and customizable)
+* Slayer Stuff
+  * Slayer Bossbars
+  * Slayer HUD
+  * Boss slain time
+  * Personal Best slain time
+  * Boss and MiniBoss spawn alert
+  * Mute Enderman sounds
+  * Laser phase Timer
+* Teleport Maze Solver
+* Wardrobe helper based on hotbar keybinds
+* Daedalus axe as farming tool
+* Garden Plots Widget
+* Speed Presets (ranchers boots)
+* Floor 7 tasks phase task highlight
+* powder mining tracker
+* Corpse Finder
+* Carnival Helpers
+* Smooth AOTE
+* CTRL + F to search inventory
+* Estimated Diana burrow pos
+* Share position and set waypoint
+* Speed Status Bar
+* Sack Item Autocomplete
+* Viewstash Autocomplete
+* Fel Head Glow
+* Bits Helper
+* Salvage Helper
+* Math teacher helper
+* More slot text (Evolving Item, New Year Cake, Wardrobe slot)
+* Tweak texture positions for quick craft
+* Pet rarity backgrounds in pets menu
+* 1.8.9 mushroom hitbox
+* Skyblock ID tooltip
+* Prevent placing protected items in item frames
+* Option to share fairy grottos
+* Hide latency icons in the tab
+* Customizable night vision strength
+* Valuable Consumable Protection
+* Dwarven Mines unbreakable carpet highlighter
+* Dungeon Class-based player glow
+* Enchantment abbreviations as slot text
+* Fix Skin Transparency
+* Fix NukeKubi Heads
+* Fix kings scent detection
+* Fix BazaarPriceTooltip crash in sacks
+* Fix PV failing to fetch skins
+* Fix NPE
+* Fix offhand slot moving around
+* Fix crash on missing pet info in slayer rewards
+* Fix undyed leather armour turning black
+
+## What's Changed
+* Use ASM compile-time class transformation for class init via an `@Init` annotation by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/924
+* Improved vampire icon in profile viewer by @IllagerCaptain in https://github.com/SkyblockerMod/Skyblocker/pull/969
+* Editor Config by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/800
+* Estimated diana burrow pos thing by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/714
+* BazaarLookup Small Edit by @VeritasDL in https://github.com/SkyblockerMod/Skyblocker/pull/884
+* [Location Share & Waypoint] Share position and set waypoint by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/916
+* Added Speed Status Bar #855 by @Westsi in https://github.com/SkyblockerMod/Skyblocker/pull/945
+* [Slayers] Adds Slayer Bossbars by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/940
+* Add wardrobe helper based on hotbar keybinds by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/943
+* Update Networth Calculator + Fix EMI Log Spam by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1001
+* Various Fixes  by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1004
+* Random fixes by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1006
+* Some Other fixes by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1011
+* fix kings scent detection for wishing compass by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1012
+* More consistent wishing compass triangulation by @wahfl2 in https://github.com/SkyblockerMod/Skyblocker/pull/1003
+* Dont glow f/m4 minis by @BigloBot in https://github.com/SkyblockerMod/Skyblocker/pull/996
+* Add debug config and a keybind to dump nearby entities by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/961
+* added 2 items to ItemCooldowns by @VeritasDL in https://github.com/SkyblockerMod/Skyblocker/pull/1018
+* Add SalvageHelper by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/999
+* 1.21.2/1.21.3 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1030
+* Glacite waypoints (update) by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/1008
+* Add clamps to wherever they might be needed in DungeonScore by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1035
+* Fix Skin Transparency Correction by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1036
+* Fixed NukeKubi Heads not highlighing due to hypixel skin changes update by @7azeemm in https://github.com/SkyblockerMod/Skyblocker/pull/1037
+* Add math teacher helper by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1041
+* Fix NPE when there is no intersection by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1042
+* Add more slot text adders by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1025
+* Egg finder fix by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/1039
+* Fix offhand slot moving around by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1045
+* Fix slot text not rendering when multiple adders add to same slot by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1046
+* Add colored item dump output by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1048
+* Fix Glow by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1050
+* Revert Egg finder fix (#1039) Base64 skins by @Julienraptor01 in https://github.com/SkyblockerMod/Skyblocker/pull/1059
+* Fix PV NPE with irregular inventory data by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1053
+* Crystal Hollows chest highlighter fixes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1055
+* Add configurable waypoints for Goldor phase on f7. by @GatienDoesStuff in https://github.com/SkyblockerMod/Skyblocker/pull/934
+* Shortcuts config fix by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/973
+* Added Purse API and Purse Change Event by @Westsi in https://github.com/SkyblockerMod/Skyblocker/pull/950
+* CTRL + F to search inventory by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/933
+* Fix slot text scaling and update essence adders by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1023
+* Tweak texture positions for quick craft by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1031
+* add old mushroom hitbox by @KhafraDev in https://github.com/SkyblockerMod/Skyblocker/pull/1051
+* Item Stuff by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1060
+* Fel Head Glow by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1061
+* Random status bar changes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1009
+* Item DFU Unification by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1054
+* Waypoints refactor by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/976
+* Alternate Skyblock ID tooltip design by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1066
+* Sack Item Autocomplete by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1062
+* Add viewstash suggestions by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1067
+* 1.21.4 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1070
+* Update issue templates by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1075
+* Fix crash on missing pet info in slayer rewards by @darkkeks in https://github.com/SkyblockerMod/Skyblocker/pull/1080
+* Fix hiding other players rods by @darkkeks in https://github.com/SkyblockerMod/Skyblocker/pull/1074
+* Prevent placing protected items in item frames by @darkkeks in https://github.com/SkyblockerMod/Skyblocker/pull/1073
+* Option to share fairy grottos by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1072
+* Remove Mineshaft from Commission Label by @j10a1n15 in https://github.com/SkyblockerMod/Skyblocker/pull/1049
+* Update slayer icons by @IllagerCaptain in https://github.com/SkyblockerMod/Skyblocker/pull/970
+* Excessive hud rework by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/816
+* Add Daedalus axe as farming tool + others by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1084
+* Random refactors & fixes by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1085
+* Hide latency icons in the tab by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1081
+* Use empty input for REI recepies intead of AIR by @darkkeks in https://github.com/SkyblockerMod/Skyblocker/pull/1076
+* Add customizable night vision strength feature by @Manchick0 in https://github.com/SkyblockerMod/Skyblocker/pull/1078
+* Add more detailed error messages by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1087
+* Clamp between 0 and 1 by @Manchick0 in https://github.com/SkyblockerMod/Skyblocker/pull/1088
+* Small Fix by @7azeemm in https://github.com/SkyblockerMod/Skyblocker/pull/1089
+* Chat Confirmation Prompt Helper by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1063
+* Valuable Consumable Protection by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1090
+* Fix undyed leather armour turning black by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1091
+* Fix reparty command by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1092
+* Fix Glowing by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1093
+* Add Garden Plots Widget by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/929
+* Slayer System rework by @7azeemm in https://github.com/SkyblockerMod/Skyblocker/pull/1040
+* Add player list widget by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1086
+* Fix ender nodes detection by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1095
+* Change election over text by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1099
+* forgot the garden plots texture lol by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1097
+* Add unbreakable carpet highlighter by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1034
+* Fix Simon Says Solver by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1100
+* Mob glow refactor by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1101
+* Fix the powder widget to also display the diff by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1103
+* tab hud related fixes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1104
+* Slayer Widget Preview for Tab HUD by @7azeemm in https://github.com/SkyblockerMod/Skyblocker/pull/1105
+* Bits Helper by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/939
+* Accept integer names by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1110
+* Title hud refactor by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/951
+* Add Speed Presets for configurable speed settings by @Manchick0 in https://github.com/SkyblockerMod/Skyblocker/pull/1111
+* Class-based player glow by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1113
+* Fix pet icon and command history by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1114
+* Add powder mining tracker by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1065
+* Cancel Component Update Animation by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1116
+* Remove unused code and change translation by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1117
+* Add feature to close sign screens with the enter key by @Ownwn in https://github.com/SkyblockerMod/Skyblocker/pull/1122
+* Corpse Finder by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/960
+* Per Slot Text Toggle by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1043
+* Profiled data api by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1102
+* ItemList Changes by @Manchick0 in https://github.com/SkyblockerMod/Skyblocker/pull/1119
+* Dynamic ProgressComponent text color by @DatL4g in https://github.com/SkyblockerMod/Skyblocker/pull/1123
+* Fix config not loading properly by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1129
+* Random fixes by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1120
+* Carnival Helpers by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1124
+* garden plots fixes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1126
+* Tab hud additions by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1128
+* Smooth AOTE by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/963
+* Fix dungeon score not working when fancy tab hud is disabled by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1145
+* add enchantment abbreviations as slot text by @Morazzer in https://github.com/SkyblockerMod/Skyblocker/pull/1056
+* Add client game test by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1106
+* Add Teleport Maze Solver + small things by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1115
+* Fix JGit using insteadOfs (how?) by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1137
+* Remove unused setting by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1144
+* Fix forge HUD tooltips about locked slots 5,6,7 by @Myitian in https://github.com/SkyblockerMod/Skyblocker/pull/1146
+
+## New Contributors
+* @Westsi made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/945
+* @wahfl2 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1003
+* @7azeemm made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1037
+* @darkkeks made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1080
+* @j10a1n15 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1049
+* @Manchick0 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1078
+* @Ownwn made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1122
+* @DatL4g made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1123
+* @Morazzer made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1056
+* @Myitian made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1146
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.22.2...v25.0.0
+___
 # Release 1.22.2
 
 ## Highlight
