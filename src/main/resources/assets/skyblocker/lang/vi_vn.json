@@ -73,5 +73,18 @@
     "key.skyblocker.debug.dumpNearbyEntities": "Xuất các thực thể ở gần",
     "key.skyblocker.debug.dumpHoveredItem": "Xuất vật phẩm đang được đè lên",
     "text.skyblocker.reset": "Reset",
-    "text.skyblocker.undo": "Hoàn tác"
+    "text.skyblocker.undo": "Hoàn tác",
+    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nGhi chú: Đánh dấu Địa điểm Bí mật cần được bật để tính năng này hoạt động.",
+    "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight": "Bật Highlight Cửa",
+    "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Highlight các rương với lợi nhuận tốt nhất trong menu NPC Croesus.\n\n\nRương tốt nhất sẽ được highlight màu xanh.\nNếu có rương nào đáng được mở khóa bằng khóa dungeon, nó sẽ được highlight màu vàng",
+    "skyblocker.config.debug.dumpRange.@Tooltip": "Bán kính theo số ô xung quanh người chơi để xuất các entity bên trong.",
+    "skyblocker.config.debug.dumpFormat.@Tooltip": "Định dạng được dùng để xuất vật phẩm. SNBT sẽ có màu sắc và dễ đọc hơn trong khi JSON có ngoặc kép.",
+    "skyblocker.config.debug.dumpRange": "Khoảng cách Xuất Entity",
+    "skyblocker.config.dungeons.croesusHelper": "Croesus Helper",
+    "skyblocker.config.dungeons.devices": "Hỗ trợ giải Thiết bị (F7/M7)",
+    "skyblocker.config.dungeons.devices.solveLightsOn": "Giải Bật Đèn",
+    "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Highlight màu xanh với các nút cần bấm, và màu vàng với nút tiếp theo cần bấm.",
+    "skyblocker.config.dungeons.doorHighlight.enableDoorHighlight.@Tooltip": "Highlight cửa wither và cửa máu bằng màu đỏ nếu đang khóa và bằng màu xanh nếu đã mở khóa.",
+    "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit": "Tính Lợi Nhuận Rương Croesus",
+    "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Highlight màu đỏ các công tắc cần bật"
 }
