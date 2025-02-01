@@ -9,7 +9,7 @@ public class ComboFilterTest extends ChatFilterTest<ComboFilter> {
 
     @Test
     void testComboMF() {
-        assertMatches("+5 Kill Combo +3✯ Magic Find");
+        assertMatches("+5 Kill Combo +3% ✯ Magic Find");
     }
 
     @Test
