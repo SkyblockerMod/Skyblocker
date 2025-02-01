@@ -264,12 +264,13 @@ public class MiningCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                                                        .name(Text.translatable("skyblocker.config.mining.glacite.fossilSolver"))
-                                                        .binding(defaults.mining.glacite.fossilSolver,
-                                                                        () -> config.mining.glacite.fossilSolver,
-                                                                        newValue -> config.mining.glacite.fossilSolver = newValue)
-                                                        .controller(ConfigUtils::createBooleanController)
-                                                        .build())
+								.name(Text.translatable("skyblocker.config.mining.glacite.fossilSolver"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.fossilSolver.@Tooltip")))
+								.binding(defaults.mining.glacite.fossilSolver,
+												() -> config.mining.glacite.fossilSolver,
+												newValue -> config.mining.glacite.fossilSolver = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.glacite.enableCorpseFinder"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.enableCorpseFinder.@Tooltip")))
@@ -294,7 +295,6 @@ public class MiningCategory {
 		                                newValue -> config.mining.glacite.autoShareCorpses = newValue)
 		                        .controller(ConfigUtils::createBooleanController)
 				                .build())
-						
                         .build())
                 .build();
     }

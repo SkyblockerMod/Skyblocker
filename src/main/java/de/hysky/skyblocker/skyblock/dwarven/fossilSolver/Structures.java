@@ -1,13 +1,16 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossilSolver;
 
 public class Structures {
-	protected enum tileState {
+	/**
+	 * The three possible states a tile could be in
+	 */
+	protected enum TileState {
 		UNKNOWN,
 		EMPTY,
 		FOSSIL
 	}
 
-	protected enum transformationOptions {
+	protected enum TransformationOptions {
 		ROTATED_0,
 		ROTATED_90,
 		ROTATED_180,
@@ -19,16 +22,16 @@ public class Structures {
 	}
 
 	/**
-	 * Stores a grid of {@link Structures.tileState} as a 2d array referencable with an x and y
+	 * Stores a grid of {@link TileState} as a 2d array referencable with an x and y
 	 *
 	 * @param state the starting state of the grid
 	 */
-	protected record tileGrid(tileState[][] state) {
-		void updateSlot(int x, int y, tileState newState) {
+	protected record tileGrid(TileState[][] state) {
+		void updateSlot(int x, int y, TileState newState) {
 			state[y][x] = newState;
 		}
 
-		tileState getSlot(int x, int y) {
+		TileState getSlot(int x, int y) {
 			return state[y][x];
 		}
 
@@ -51,7 +54,7 @@ public class Structures {
 	 */
 	protected record permutation(FossilTypes type, tileGrid grid, int xOffset, int yOffset) {
 		/**
-		 * works out if this is a valid state based on the current state of the excavator window
+		 * Works out if this is a valid state based on the current state of the excavator window
 		 *
 		 * @param currentState the state of the excavator window
 		 * @return if this screen state can exist depending on found tiles
@@ -64,7 +67,7 @@ public class Structures {
 			//check conflicting tiles
 			for (int x = 0; x < currentState.width(); x++) {
 				for (int y = 0; y < currentState.height(); y++) {
-					tileState knownState = currentState.getSlot(x, y);
+					TileState knownState = currentState.getSlot(x, y);
 					//if there is a miss match return false
 					switch (knownState) {
 						case UNKNOWN -> {
@@ -98,7 +101,7 @@ public class Structures {
 		 */
 		private boolean isEmptyCollision(int positionX, int positionY) {
 			try {
-				return isState(positionX, positionY, tileState.EMPTY);
+				return isState(positionX, positionY, TileState.EMPTY);
 			} catch (IndexOutOfBoundsException f) {
 				return true;
 			}
@@ -114,7 +117,7 @@ public class Structures {
 		 */
 		boolean isFossilCollision(int positionX, int positionY) {
 			try {
-				return isState(positionX, positionY, tileState.FOSSIL);
+				return isState(positionX, positionY, TileState.FOSSIL);
 			} catch (IndexOutOfBoundsException f) {
 				return false;
 			}
@@ -128,7 +131,7 @@ public class Structures {
 		 * @param state     the state the excavator window is at this location
 		 * @return if states match
 		 */
-		private boolean isState(int positionX, int positionY, tileState state) {
+		private boolean isState(int positionX, int positionY, TileState state) {
 			int x = positionX - xOffset;
 			int y = positionY - yOffset;
 			//if they are not in range of the grid they are not a fossil

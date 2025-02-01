@@ -48,7 +48,7 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 		//convert to container
 		tileGrid mainTileGrid = convertItemsToTiles(slots);
 		//get how many chisels the player has left
-		if (!slots.values().isEmpty()) {
+		if (!slots.isEmpty()) {
 			chiselLeft = getChiselLeft(slots.values().stream().findAny().get());
 		} else {
 			chiselLeft = -1;
@@ -80,9 +80,9 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 	}
 
 	/**
-	 * See if there is any found fossils then see if there is a fossil chance percentage in the tool tips
+	 * See if there is any found fossils then see if there is a fossil chance percentage in the tooltip
 	 *
-	 * @param slots items to check tool tip of
+	 * @param slots items to check tooltip of
 	 * @return null if there is none or the value of the percentage
 	 */
 	private String getFossilPercentage(Int2ObjectMap<ItemStack> slots) {
@@ -102,6 +102,11 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 		return SkyblockerConfigManager.get().mining.glacite.fossilSolver;
 	}
 
+	/**
+	 * Converts tile probability into a color for each of the remaining tiles
+	 * @param chances the probability in order from 0-1
+	 * @return the colors formated for the {@link SimpleContainerSolver#getColors(Int2ObjectMap)}
+	 */
 	private static List<ColorHighlight> convertChanceToColor(double[] chances) {
 		List<ColorHighlight> outputColors = new ArrayList<>();
 		Color gradientColor = Color.BLUE;
@@ -122,7 +127,7 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 	}
 
 	/**
-	 * add solver info to tooltips
+	 * Add solver info to tooltips
 	 *
 	 * @param focusedSlot the slot focused by the player
 	 * @param stack       unused
@@ -139,21 +144,21 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 
 		//if no permutation say this instead of other stats
 		if (permutations == 0) {
-			lines.add(Text.translatable("skyblocker.config.mining.glacite.toolTip.noFossilFound").formatted(Formatting.GOLD));
+			lines.add(Text.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound").formatted(Formatting.GOLD));
 			return;
 		}
 
 		//add permutation count
-		lines.add(Text.translatable("skyblocker.config.mining.glacite.toolTip.possiblePatterns").append(Text.literal(String.valueOf(permutations)).formatted(Formatting.YELLOW)));
+		lines.add(Text.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.possiblePatterns").append(Text.literal(String.valueOf(permutations)).formatted(Formatting.YELLOW)));
 		//add minimum tiles left count
-		lines.add(Text.translatable("skyblocker.config.mining.glacite.toolTip.minimumTilesLeft").append(Text.literal(String.valueOf(minimumTiles)).formatted(chiselLeft >= minimumTiles ? Formatting.YELLOW : Formatting.RED)));
+		lines.add(Text.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.minimumTilesLeft").append(Text.literal(String.valueOf(minimumTiles)).formatted(chiselLeft >= minimumTiles ? Formatting.YELLOW : Formatting.RED)));
 		//add probability if available and not uncovered
 		if (focusedSlot != null && probability != null && probability.length > focusedSlot.getIndex() && stack.getItem() == Items.BROWN_STAINED_GLASS_PANE) {
-			lines.add(Text.translatable("skyblocker.config.mining.glacite.toolTip.probability").append(Text.literal(Math.round(probability[focusedSlot.getIndex()] * 100) + "%").formatted(Formatting.YELLOW)));
+			lines.add(Text.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.probability").append(Text.literal(Math.round(probability[focusedSlot.getIndex()] * 100) + "%").formatted(Formatting.YELLOW)));
 		}
 		//if only 1 type of fossil left and a fossil is partially uncovered add the fossil name
 		if (fossilName != null && percentage != null) {
-			lines.add(Text.translatable("skyblocker.config.mining.glacite.toolTip.foundFossil").append(Text.literal(fossilName).formatted(Formatting.YELLOW)));
+			lines.add(Text.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.foundFossil").append(Text.literal(fossilName).formatted(Formatting.YELLOW)));
 		}
 	}
 
