@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils.container;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.skyblock.RaffleTaskHighlight;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
@@ -52,7 +53,8 @@ public class ContainerSolverManager {
 			NewYearCakesHelper.INSTANCE,
 			ChocolateFactorySolver.INSTANCE,
 			new ReorderHelper(),
-			BitsHelper.INSTANCE
+			BitsHelper.INSTANCE,
+			new RaffleTaskHighlight()
 	};
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;
