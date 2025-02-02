@@ -212,7 +212,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
-	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "LOAD", ordinal = 0))
+	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "STORE"))
 	private ItemStack skyblocker$experimentSolvers$replaceTooltipDisplayStack(ItemStack stack) {
 		return skyblocker$experimentSolvers$getStack(focusedSlot, stack);
 	}
