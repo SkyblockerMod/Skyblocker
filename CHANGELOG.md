@@ -186,7 +186,7 @@ This approach ensures that our version numbers remain distinct and are not mista
 * @Morazzer made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1056
 * @Myitian made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1146
 
-**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.22.2...v25.0.0
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.22.2...v5.1.0
 ___
 # Release 1.22.2
 
@@ -200,7 +200,7 @@ ___
 * mod publish upload changes  by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/977
 * Update NEU repo parser to 1.6.0 by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/982
 
-**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.22.1...v5.1.0
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.22.1...v1.22.2
 ___
 # Release 1.22.1
 
