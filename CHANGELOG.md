@@ -50,6 +50,7 @@ This approach ensures that our version numbers remain distinct and are not mista
 * Dwarven Mines unbreakable carpet highlighter
 * Dungeon Class-based player glow
 * Enchantment abbreviations as slot text
+* Raffle task highlighter
 * Fix Skin Transparency
 * Fix NukeKubi Heads
 * Fix kings scent detection
@@ -173,6 +174,10 @@ This approach ensures that our version numbers remain distinct and are not mista
 * Fix JGit using insteadOfs (how?) by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1137
 * Remove unused setting by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1144
 * Fix forge HUD tooltips about locked slots 5,6,7 by @Myitian in https://github.com/SkyblockerMod/Skyblocker/pull/1146
+* Add raffle task highlighter by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1155
+* Properly empty layout in AuctionViewScreen by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1150
+* Pet Widget Fix by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1149
+* Update Combofilter by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1148
 
 ## New Contributors
 * @Westsi made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/945
