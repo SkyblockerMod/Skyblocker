@@ -1,9 +1,9 @@
-# Release 25.0.0
-To avoid confusion with Minecraft's versioning system, we are transitioning from Semantic Versioning (SemVer) to a custom versioning scheme: 
+# Release 5.1.0
+To avoid confusion with Minecraft's versioning system, we are transitioning from Semantic Versioning (SemVer) to a Unity like versioning scheme: 
 - x.y.z
-  - x: Last two digits of the release year (e.g., '25' for 2025).
-  - y: Major or minor increment, indicating significant or minor feature updates.
-  - z: Patch level, representing patches, fixes, or hotfixes.
+  - x: Increment by 1 every year. Since this project started in 2020, the version number 5.1.0 corresponds to the year 2025.
+  - y: 1+i.
+  - z: Represents patches, fixes, or hotfixes.
 
 This approach ensures that our version numbers remain distinct and are not mistaken for Minecraft's versions.
 
@@ -200,7 +200,7 @@ ___
 * mod publish upload changes  by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/977
 * Update NEU repo parser to 1.6.0 by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/982
 
-**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.22.1...v1.22.2
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.22.1...v5.1.0
 ___
 # Release 1.22.1
 
