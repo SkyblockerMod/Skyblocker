@@ -57,7 +57,16 @@ public class GeneralCategory {
                                 newValue -> config.general.acceptReparty = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.general.use12HourClock"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.general.use12HourClock.@Tooltip")))
+						.binding(defaults.general.use12HourClock,
+								() -> config.general.use12HourClock,
+								newValue -> config.general.use12HourClock = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
+				// Speed Presets
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.general.speedPresets"))
 						.collapsed(true)
@@ -280,6 +289,13 @@ public class GeneralCategory {
                                         newValue -> config.general.itemTooltip.enableStackingEnchantProgress = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemTooltip.enableCalendarStartTime"))
+								.binding(defaults.general.itemTooltip.enableCalendarStartTime,
+										() -> config.general.itemTooltip.enableCalendarStartTime,
+										newValue -> config.general.itemTooltip.enableCalendarStartTime = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 //Item Info Display

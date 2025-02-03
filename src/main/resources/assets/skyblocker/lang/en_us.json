@@ -254,7 +254,8 @@
   "skyblocker.config.general.minionValue.@Tooltip": "Calculate the value of this minion's generated resources.",
 
   "skyblocker.config.general.enableTips": "Enable Tips",
-
+  "skyblocker.config.general.use12HourClock": "Use 12-hour clock",
+  "skyblocker.config.general.use12HourClock.@Tooltip": "Use 12-hour clock instead of the default 24h clock for certain features.",
   "skyblocker.config.general.acceptReparty": "Auto accept Reparty",
 
   "skyblocker.config.general.hitbox": "Hitboxes",
@@ -305,6 +306,7 @@
   "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[5]": "You don't own any accessory from this family.",
   "skyblocker.config.general.itemTooltip.enableAvgBIN": "Enable Avg. BIN Price",
   "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Enable Bazaar buy/sell Price",
+  "skyblocker.config.general.itemTooltip.enableCalendarStartTime": "Enable Calendar Event Start Time",
   "skyblocker.config.general.itemTooltip.craft": "Crafting Cost",
   "skyblocker.config.general.itemTooltip.craft.@Tooltip": "You can choose which Bazaar order type to use in crafting calculation",
   "skyblocker.config.general.itemTooltip.craft.OFF": "Off",
