@@ -157,6 +157,16 @@ public class Waypoint implements Renderable {
     }
     // endregion
 
+    // region Rendering
+    /**
+     * Returns the render type of the waypoint.
+     * <p>
+     * Override this method for custom behavior.
+     */
+    public Type getRenderType() {
+        return typeSupplier.get();
+    }
+
     /**
      * Returns the render time color components of the waypoint.
      * <p>
@@ -164,6 +174,15 @@ public class Waypoint implements Renderable {
      */
     public float[] getRenderColorComponents() {
         return colorComponents;
+    }
+
+    /**
+     * Returns whether the waypoint should be rendered through walls.
+     * <p>
+     * Override this method for custom behavior.
+     */
+    public boolean shouldRenderThroughWalls() {
+        return throughWalls;
     }
 
     /**
@@ -176,22 +195,23 @@ public class Waypoint implements Renderable {
     @Override
     public void render(WorldRenderContext context) {
         if (!shouldRender()) return;
-        switch (typeSupplier.get()) {
-            case WAYPOINT -> RenderHelper.renderFilledWithBeaconBeam(context, pos, getRenderColorComponents(), alpha, throughWalls);
+        final float[] colorComponents = getRenderColorComponents();
+        final boolean throughWalls = shouldRenderThroughWalls();
+        switch (getRenderType()) {
+            case WAYPOINT -> RenderHelper.renderFilledWithBeaconBeam(context, pos, colorComponents, alpha, throughWalls);
             case OUTLINED_WAYPOINT -> {
-                float[] colorComponents = getRenderColorComponents();
                 RenderHelper.renderFilledWithBeaconBeam(context, pos, colorComponents, alpha, throughWalls);
                 RenderHelper.renderOutline(context, pos, colorComponents, lineWidth, throughWalls);
             }
-            case HIGHLIGHT -> RenderHelper.renderFilled(context, pos, getRenderColorComponents(), alpha, throughWalls);
+            case HIGHLIGHT -> RenderHelper.renderFilled(context, pos, colorComponents, alpha, throughWalls);
             case OUTLINED_HIGHLIGHT -> {
-                float[] colorComponents = getRenderColorComponents();
                 RenderHelper.renderFilled(context, pos, colorComponents, alpha, throughWalls);
                 RenderHelper.renderOutline(context, pos, colorComponents, lineWidth, throughWalls);
             }
-            case OUTLINE -> RenderHelper.renderOutline(context, pos, getRenderColorComponents(), lineWidth, throughWalls);
+            case OUTLINE -> RenderHelper.renderOutline(context, pos, colorComponents, lineWidth, throughWalls);
         }
     }
+    // endregion
 
     @Override
     public int hashCode() {
