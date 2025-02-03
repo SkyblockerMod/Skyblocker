@@ -38,7 +38,7 @@ public class SkyblockCraftingTableScreenHandler extends GenericContainerScreenHa
                 slot.id = i;
                 slots.set(i, slot);
             } else {
-                DisabledSlot slot = new DisabledSlot(originalSlot.inventory, originalSlot.getIndex(), originalSlot.x, originalSlot.y);
+                DisabledSlot slot = new DisabledSlot(originalSlot.inventory, originalSlot.getIndex(), -20, -20);
                 slot.id = i;
                 slots.set(i, slot);
             }
