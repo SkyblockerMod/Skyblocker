@@ -1,7 +1,7 @@
 # Release 5.0.0
 To avoid confusion with Minecraft's versioning system, we are transitioning from Semantic Versioning (SemVer) to a Unity like versioning scheme: 
 - x.y.z
-  - x: Increment by 1 every year. Since this project started in 2020, the version number 5.1.0 corresponds to the year 2025.
+  - x: Increment by 1 every year. Since this project started in 2020, the version number 5.0.0 corresponds to the year 2025.
   - y: Major or minor increment.
   - z: Represents patches, fixes, or hotfixes.
 
