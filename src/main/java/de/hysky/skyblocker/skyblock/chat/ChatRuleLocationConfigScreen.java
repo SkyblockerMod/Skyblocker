@@ -1,8 +1,7 @@
-package de.hysky.skyblocker.config.screens.powdertracker;
+package de.hysky.skyblocker.skyblock.chat;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dwarven.PowderMiningTracker;
-import net.minecraft.client.MinecraftClient;
+import de.hysky.skyblocker.config.screens.powdertracker.ItemTickList;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
@@ -12,41 +11,42 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.EnumSet;
 
-public class PowderFilterConfigScreen extends Screen {
+public class ChatRuleLocationConfigScreen extends Screen {
 	@Nullable
 	private final Screen parent;
-	private final List<String> filters;
-	private final List<String> allItems;
+	private final ChatRule chatRule;
+	private final EnumSet<Location> enabledLocations;
 
-	public PowderFilterConfigScreen(@Nullable Screen parent, List<String> allItems) {
-		super(Text.of("Powder Mining Tracker Filter Config"));
+	public ChatRuleLocationConfigScreen(@Nullable Screen parent, ChatRule chatRule) {
+		super(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen"));
 		this.parent = parent;
-		this.filters = new ArrayList<>(SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter); // Copy the list so we can undo changes when necessary
-		this.allItems = allItems;
+		this.chatRule = chatRule;
+		this.enabledLocations = EnumSet.copyOf(chatRule.getValidLocations()); // Copy the list so we can undo changes when necessary
 	}
 
 	@Override
 	protected void init() {
+		assert client != null;
 		addDrawable((context, mouseX, mouseY, delta) -> {
-			assert client != null;
-			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter.screenTitle").formatted(Formatting.BOLD), width / 2, (32 - client.textRenderer.fontHeight) / 2, 0xFFFFFF);
+			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen").formatted(Formatting.BOLD), width / 2, (32 - client.textRenderer.fontHeight) / 2, 0xFFFFFF);
+			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen.note"), width / 2, (38 - client.textRenderer.fontHeight), 0xFFFFFF);
 		});
-		ItemTickList<String> itemTickList = addDrawableChild(new ItemTickList<>(MinecraftClient.getInstance(), width, height - 96, 32, 24, filters, allItems).init());
+
+		ItemTickList<Location> itemTickList = addDrawableChild(new ItemTickList<>(client, width, height - 107, 43, 24, enabledLocations, EnumSet.allOf(Location.class), true).init());
 		//Grid code gratuitously stolen from WaypointsScreen. Same goes for the y and heights above.
 		GridWidget gridWidget = new GridWidget();
 		gridWidget.getMainPositioner().marginX(5).marginY(2);
 		GridWidget.Adder adder = gridWidget.createAdder(2);
 
 		adder.add(ButtonWidget.builder(Text.translatable("text.skyblocker.reset"), button -> {
-			filters.clear();
+			enabledLocations.clear();
 			itemTickList.clearAndInit();
 		}).build());
 		adder.add(ButtonWidget.builder(Text.translatable("text.skyblocker.undo"), button -> {
-			filters.clear();
-			filters.addAll(SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter);
+			enabledLocations.clear();
+			enabledLocations.addAll(chatRule.getValidLocations());
 			itemTickList.clearAndInit();
 		}).build());
 		adder.add(ButtonWidget.builder(ScreenTexts.DONE, button -> {
@@ -61,9 +61,7 @@ public class PowderFilterConfigScreen extends Screen {
 	}
 
 	public void saveFilters() {
-		SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter = filters;
-		SkyblockerConfigManager.save();
-		PowderMiningTracker.recalculateAll();
+		chatRule.setValidLocations(enabledLocations);
 	}
 
 	@Override
