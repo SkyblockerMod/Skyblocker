@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MiningConfig {
+
+	@SerialEntry
+	public boolean islandPickobulusBlock = false;
+
     @SerialEntry
     public boolean enableDrillFuel = true;
 
