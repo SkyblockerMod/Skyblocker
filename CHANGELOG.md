@@ -1,8 +1,8 @@
-# Release 5.1.0
+# Release 5.0.0
 To avoid confusion with Minecraft's versioning system, we are transitioning from Semantic Versioning (SemVer) to a Unity like versioning scheme: 
 - x.y.z
   - x: Increment by 1 every year. Since this project started in 2020, the version number 5.1.0 corresponds to the year 2025.
-  - y: 1+i.
+  - y: Major or minor increment.
   - z: Represents patches, fixes, or hotfixes.
 
 This approach ensures that our version numbers remain distinct and are not mistaken for Minecraft's versions.
@@ -191,7 +191,7 @@ This approach ensures that our version numbers remain distinct and are not mista
 * @Morazzer made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1056
 * @Myitian made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1146
 
-**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.22.2...v5.1.0
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v1.22.2...v5.0.0
 ___
 # Release 1.22.2
 
