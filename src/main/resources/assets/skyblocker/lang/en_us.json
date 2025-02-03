@@ -574,8 +574,10 @@
   "skyblocker.config.mining.crystalHollows.chestHighlighter.@Tooltip": "Highlight found treasure chests and lock pick locations when powder mining.",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "Chest Highlight Color",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "What color the treasure chests / lock pick should be highlighted.",
-  "skyblocker.config.mining.crystalHollows.powderTrackerFilter": "Powder Tracker Shown Items",
-  "skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip": "Choose which items to show & include in the profit calculation for the powder tracker.",
+  "skyblocker.config.mining.crystalHollows.enablePowderTracker": "Enable Powder Mining Tracker",
+  "skyblocker.config.mining.crystalHollows.enablePowderTracker.@Tooltip": "Tracks the treasure chest rewards you get from powder mining in the Crystal Hollows.",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter": "Powder Mining Tracker Shown Items",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip": "Choose which items to show & include in the profit calculation for the powder mining tracker.",
   "skyblocker.config.mining.crystalHollows.powderTrackerFilter.screenTitle": "Shown Items",
 
   "skyblocker.config.mining.crystalsHud": "Crystal Hollows Map",
@@ -1267,6 +1269,10 @@
   "skyblocker.crimson.kuudra.noArrowPoison": "No Arrow Poison!",
   "skyblocker.crimson.kuudra.lowArrowPoison": "Low on Arrow Poison!",
   "skyblocker.crimson.kuudra.danger": "DANGER!",
+
+  "skyblocker.corpseTracker.historyScreenTitle": "Corpse Loot History",
+  "skyblocker.corpseTracker.screenTitle": "Corpse Loot Summary",
+  "skyblocker.corpseTracker.openHistory": "Open Corpse Loot History",
 
   "skyblocker.waypoints.ordered.import.skyblocker.success": "Successfully imported waypoints from the Skyblocker Ordered Waypoints format!",
   "skyblocker.waypoints.ordered.import.skyblocker.unknownFormatHeader": "§cThis import code doesn't look like its in the Skyblocker Ordered Waypoints format, double-check your clipboard to see if everything is correct.",

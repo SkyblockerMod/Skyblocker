@@ -1,13 +1,12 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.dwarven.CorpseType.CorpseTypeArgumentType;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -19,7 +18,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -27,7 +25,6 @@ import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.EnumUtils;
@@ -49,10 +46,6 @@ public class CorpseFinder {
 	private static final String PREFIX = "[Skyblocker Corpse Finder] ";
 	private static final Logger LOGGER = LoggerFactory.getLogger(CorpseFinder.class);
 	private static final Map<CorpseType, List<Corpse>> corpsesByType = new EnumMap<>(CorpseType.class);
-	private static final String LAPIS_HELMET = "LAPIS_ARMOR_HELMET";
-	private static final String UMBER_HELMET = "ARMOR_OF_YOG_HELMET";
-	private static final String TUNGSTEN_HELMET = "MINERAL_HELMET";
-	private static final String VANGUARD_HELMET = "VANGUARD_HELMET";
 
 	@Init
 	public static void init() {
@@ -78,9 +71,9 @@ public class CorpseFinder {
 				.then(literal("corpseHelper")
 						.then(literal("shareLocation")
 								.then(argument("blockPos", ClientBlockPosArgumentType.blockPos())
-										.then(argument("corpseType", CorpseType.CorpseTypeArgumentType.corpseType())
+										.then(argument("corpseType", CorpseTypeArgumentType.corpseType())
 												.executes(context -> {
-													shareLocation(ClientBlockPosArgumentType.getBlockPos(context, "blockPos"), CorpseType.CorpseTypeArgumentType.getCorpseType(context, "corpseType"));
+													shareLocation(ClientBlockPosArgumentType.getBlockPos(context, "blockPos"), CorpseTypeArgumentType.getCorpseType(context, "corpseType"));
 													return Command.SINGLE_SUCCESS;
 												})
 										)
@@ -246,50 +239,6 @@ public class CorpseFinder {
 				for (Corpse corpse : corpses) {
 					LOGGER.info(PREFIX + "Corpse: {}, BlockPos: {}", corpse.entity, corpse.entity.getBlockPos());
 				}
-			}
-		}
-	}
-
-	enum CorpseType implements StringIdentifiable {
-		LAPIS(LAPIS_HELMET, Formatting.BLUE), // dark blue looks bad and these two never exist in same shaft
-		UMBER(UMBER_HELMET, Formatting.RED),
-		TUNGSTEN(TUNGSTEN_HELMET, Formatting.GRAY),
-		VANGUARD(VANGUARD_HELMET, Formatting.BLUE),
-		UNKNOWN("UNKNOWN", Formatting.YELLOW);
-		private static final Codec<CorpseType> CODEC = StringIdentifiable.createCodec(CorpseType::values);
-		private final String helmetItemId;
-		private final Formatting color;
-
-		CorpseType(String helmetItemId, Formatting color) {
-			this.helmetItemId = helmetItemId;
-			this.color = color;
-		}
-
-		static CorpseType fromHelmetItemId(String helmetItemId) {
-			for (CorpseType value : values()) {
-				if (value.helmetItemId.equals(helmetItemId)) {
-					return value;
-				}
-			}
-			return UNKNOWN;
-		}
-
-		@Override
-		public String asString() {
-			return name().toLowerCase();
-		}
-
-		static class CorpseTypeArgumentType extends EnumArgumentType<CorpseType> {
-			protected CorpseTypeArgumentType() {
-				super(CODEC, CorpseType::values);
-			}
-
-			static CorpseTypeArgumentType corpseType() {
-				return new CorpseTypeArgumentType();
-			}
-
-			static <S> CorpseType getCorpseType(CommandContext<S> context, String name) {
-				return context.getArgument(name, CorpseType.class);
 			}
 		}
 	}

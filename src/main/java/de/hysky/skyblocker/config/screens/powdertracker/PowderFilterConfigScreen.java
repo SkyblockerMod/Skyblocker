@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.config.screens.powdertracker;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dwarven.PowderMiningTracker;
+import de.hysky.skyblocker.skyblock.dwarven.profittrackers.PowderMiningTracker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -63,7 +63,7 @@ public class PowderFilterConfigScreen extends Screen {
 	public void saveFilters() {
 		SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter = filters;
 		SkyblockerConfigManager.save();
-		PowderMiningTracker.recalculateAll();
+		PowderMiningTracker.INSTANCE.recalculateAll();
 	}
 
 	@Override

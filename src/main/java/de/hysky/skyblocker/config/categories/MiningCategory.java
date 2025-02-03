@@ -6,7 +6,7 @@ import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.config.screens.powdertracker.PowderFilterConfigScreen;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
 import de.hysky.skyblocker.skyblock.dwarven.CarpetHighlighter;
-import de.hysky.skyblocker.skyblock.dwarven.PowderMiningTracker;
+import de.hysky.skyblocker.skyblock.dwarven.profittrackers.PowderMiningTracker;
 import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
@@ -122,12 +122,23 @@ public class MiningCategory {
                                         newValue -> config.mining.crystalHollows.chestHighlightColor = newValue)
                                 .controller(v -> ColorControllerBuilder.create(v).allowAlpha(true))
                                 .build())
-		                .option(ButtonOption.createBuilder()
-				                .name(Text.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter"))
-				                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip")))
-				                .text(Text.translatable("text.skyblocker.open"))
-				                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new PowderFilterConfigScreen(screen, new ObjectImmutableList<>(PowderMiningTracker.getName2IdMap().keySet()))))
-				                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.crystalHollows.enablePowderTracker"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalHollows.enablePowderTracker.@Tooltip")))
+                                .binding(defaults.mining.crystalHollows.enablePowderTracker,
+                                        () -> config.mining.crystalHollows.enablePowderTracker,
+                                        newValue -> {
+									config.mining.crystalHollows.enablePowderTracker = newValue;
+									if (newValue) PowderMiningTracker.INSTANCE.recalculateAll();
+								})
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(ButtonOption.createBuilder()
+                                .name(Text.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip")))
+                                .text(Text.translatable("text.skyblocker.open"))
+                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new PowderFilterConfigScreen(screen, new ObjectImmutableList<>(PowderMiningTracker.getName2IdMap().keySet()))))
+                                .build())
                         .build())
 
                 //Crystal Hollows Map
