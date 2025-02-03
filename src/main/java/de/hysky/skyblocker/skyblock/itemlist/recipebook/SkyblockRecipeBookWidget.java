@@ -31,7 +31,7 @@ import net.minecraft.util.context.ContextParameterMap;
  * Based on {@link net.minecraft.client.gui.screen.recipebook.RecipeBookWidget}.
  */
 public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenHandler> {
-	private static final int IMAGE_WIDTH = RecipeBookWidget.field_32408;
+	protected static final int IMAGE_WIDTH = RecipeBookWidget.field_32408;
 	private static final int IMAGE_HEIGHT = RecipeBookWidget.field_32409;
 	//Corresponds to field_32410 in RecipeBookWidget
 	private static final int OFFSET_X_POSITION = 86;
@@ -106,7 +106,7 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 
 		//Tab Init
 		this.currentTab.left().initialize(this.client, left, top);
-		this.currentTab.left().initializeSearchResults(defaultSearchText);
+		this.currentTab.left().updateSearchResults(defaultSearchText, FilterOption.ALL);
 	}
 
 	@Override
