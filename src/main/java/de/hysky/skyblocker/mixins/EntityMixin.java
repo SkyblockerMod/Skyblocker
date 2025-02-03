@@ -84,4 +84,11 @@ public abstract class EntityMixin {
 			}
 		}
 	}
+
+	@Inject(method = "setSwimming", at = @At("HEAD"), cancellable = true)
+	private void preventSwimming(boolean swimming, CallbackInfo ci) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.preventSwimming) {
+			ci.cancel();
+		}
+	}
 }

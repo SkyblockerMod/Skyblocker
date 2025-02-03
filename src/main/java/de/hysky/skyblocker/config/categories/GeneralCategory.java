@@ -57,6 +57,14 @@ public class GeneralCategory {
                                 newValue -> config.general.acceptReparty = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.general.preventSwimming"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.general.preventSwimming.@Tooltip")))
+						.binding(defaults.general.preventSwimming,
+								() -> config.general.preventSwimming,
+								newValue -> config.general.preventSwimming = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.general.speedPresets"))

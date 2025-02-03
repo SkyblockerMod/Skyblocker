@@ -51,6 +51,8 @@
     "skyblocker.config.general.itemTooltip.enableBazaarPrice": "顯示集市購買/賣出價格",
     "skyblocker.tips.clickNextTip": "§a[點擊看下一則提示]",
     "skyblocker.config.general.acceptReparty": "自動接受重新組隊",
+    "skyblocker.config.general.preventSwimming": "阻止在 Skyblock 中游泳",
+    "skyblocker.config.general.preventSwimming.@Tooltip": "防止玩家和 NPC 進入舊版伺服器中不存在的游泳狀態。這可能會修復在水中時回彈的問題。",
     "skyblocker.config.helpers.fairySouls": "仙女之魂助手",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip": "相對於原版GUI的百分比大小",
     "skyblocker.config.general.shortcuts.enableShortcuts": "啟用快捷指令",
