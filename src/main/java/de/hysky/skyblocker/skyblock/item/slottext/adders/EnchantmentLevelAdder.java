@@ -131,6 +131,7 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("scavenger", "SC");
 		ENCHANTMENT_ABBREVIATIONS.put("sharpness", "SH");
 		ENCHANTMENT_ABBREVIATIONS.put("silk_touch", "ST");
+		ENCHANTMENT_ABBREVIATIONS.put("small_brain", "SB");
 		ENCHANTMENT_ABBREVIATIONS.put("smarty_pants", "SP");
 		ENCHANTMENT_ABBREVIATIONS.put("smelting_touch", "SE");
 		ENCHANTMENT_ABBREVIATIONS.put("smite", "SI");
