@@ -22,12 +22,12 @@ This approach ensures that our version numbers remain distinct and are not mista
 * Daedalus axe as farming tool
 * Garden Plots Widget
 * Speed Presets (ranchers boots)
-* Floor 7 tasks phase task highlight
-* powder mining tracker
+* Floor 7 Terminal/Device Waypoints
+* Powder mining tracker
 * Corpse Finder
 * Carnival Helpers
 * Smooth AOTE
-* CTRL + F to search inventory
+* CTRL/CMD + F to search inventory
 * Estimated Diana burrow pos
 * Share position and set waypoint
 * Speed Status Bar
@@ -52,7 +52,7 @@ This approach ensures that our version numbers remain distinct and are not mista
 * Enchantment abbreviations as slot text
 * Raffle task highlighter
 * Fix Skin Transparency
-* Fix NukeKubi Heads
+* Fix Nukekubi Heads
 * Fix kings scent detection
 * Fix BazaarPriceTooltip crash in sacks
 * Fix PV failing to fetch skins

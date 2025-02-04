@@ -46,7 +46,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **F3/M3 Fire Freeze Staff Timer**
 - **F3/M3 Guardian Health Display**
 - **F5/M5 Livid Color Highlight**
-- **F7/M7 tasks phase task highlight**
+- **F7/M7 Terminal/Device Waypoints/Highlight**
 - **Reparty:** Type /rp to reparty and enable auto-rejoin.
 - **AOTV & Pearl Secret Waypoints**
 - **Player Secrets Tracker**
@@ -255,7 +255,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Fancy Auctions Browser**
 - **Calendar Event Notifications**
 - **Sign calculator**
-- **CTRL + F to search inventory**
+- **CTRL/CMD + F to search inventory**
 
 ### Barn Features:
 - **Barn Solver:**
