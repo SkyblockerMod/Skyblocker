@@ -114,7 +114,7 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("power", "PW");
 		ENCHANTMENT_ABBREVIATIONS.put("pristine", "PM"); // Prismatic
 		ENCHANTMENT_ABBREVIATIONS.put("projectile_protection", "PP");
-		ENCHANTMENT_ABBREVIATIONS.put("prosecute", "PO");
+		ENCHANTMENT_ABBREVIATIONS.put("PROSECUTE", "PO");
 		ENCHANTMENT_ABBREVIATIONS.put("prosperity", "PE");
 		ENCHANTMENT_ABBREVIATIONS.put("protection", "PR");
 		ENCHANTMENT_ABBREVIATIONS.put("punch", "PU");
