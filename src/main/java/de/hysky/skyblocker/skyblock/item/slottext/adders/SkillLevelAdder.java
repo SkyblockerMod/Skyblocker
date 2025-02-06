@@ -16,7 +16,7 @@ import java.util.List;
 public class SkillLevelAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
 			"skill_level",
-			"skyblocker.config.uiAndVisuals.slotText.rancherBoots");
+			"skyblocker.config.uiAndVisuals.slotText.skillLevel");
 	public SkillLevelAdder() {
 		super("^Your Skills", CONFIG_INFORMATION);
 	}
