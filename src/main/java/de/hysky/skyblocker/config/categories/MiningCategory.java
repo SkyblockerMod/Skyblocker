@@ -298,6 +298,14 @@ public class MiningCategory {
 		                                newValue -> config.mining.glacite.autoShareCorpses = newValue)
 		                        .controller(ConfigUtils::createBooleanController)
 				                .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.mining.glacite.enableCorpseProfitTracker"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip")))
+								.binding(defaults.mining.glacite.enableCorpseProfitTracker,
+										() -> config.mining.glacite.enableCorpseProfitTracker,
+										newValue -> config.mining.glacite.enableCorpseProfitTracker = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
                 .build();
     }

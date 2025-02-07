@@ -88,10 +88,22 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 					.then(literal("powderMining")
 						.then(literal("list")
 							.executes(ctx -> {
-								for (Entry<String> entry : INSTANCE.currentProfileRewards.object2IntEntrySet()) {
-									ctx.getSource().sendFeedback(Text.literal(entry.getKey() + ": " + entry.getIntValue()).formatted(Formatting.GRAY));
+								if (INSTANCE.currentProfileRewards.isEmpty()) {
+									ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.powderTracker.emptyHistory").formatted(Formatting.RED)));
+									return Command.SINGLE_SUCCESS;
+								} else if (INSTANCE.shownRewards.isEmpty()) {
+									ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.powderTracker.rewardsFilteredOut").formatted(Formatting.RED)));
+									return Command.SINGLE_SUCCESS;
 								}
-								ctx.getSource().sendFeedback(Text.literal("Profit: " + INSTANCE.profit).formatted(Formatting.GRAY));
+
+								for (Entry<Text> entry : INSTANCE.shownRewards.object2IntEntrySet()) {
+									ctx.getSource().sendFeedback(
+											Text.empty()
+												.append(entry.getKey())
+												.append(Text.literal(": ").formatted(Formatting.GRAY))
+												.append(Text.literal(String.valueOf(entry.getIntValue()))));
+								}
+								ctx.getSource().sendFeedback(Text.translatable("skyblocker.powderTracker.profit", NumberFormat.getInstance().format(INSTANCE.profit)).formatted(Formatting.GOLD));
 								return Command.SINGLE_SUCCESS;
 							})
 						)
@@ -99,7 +111,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 							.executes(ctx -> {
 								INSTANCE.currentProfileRewards.clear();
 								INSTANCE.allRewards.save();
-								ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Text.literal("Powder mining tracker has been reset for the current profile.").formatted(Formatting.GREEN)));
+								ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.powderTracker.historyReset").formatted(Formatting.GREEN)));
 								return Command.SINGLE_SUCCESS;
 							})
 						)
@@ -234,6 +246,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 		return Object2ObjectMaps.unmodifiable(NAME2ID_MAP);
 	}
 
+	// TODO: Perhaps make a little something in the skyblocker-assets repo for this in case it needs updating in the future
 	static {
 		NAME2ID_MAP.put("Gemstone Powder", "GEMSTONE_POWDER"); // Not an actual item, but since we're using IDs for mapping to colored text we need to have this here
 
@@ -303,6 +316,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 		return NAME2ID_MAP.getOrDefault(itemName, "");
 	}
 
+	// TODO: Make this a hud widget without the background (optional), needs to be moveable
 	private static void render(DrawContext context, RenderTickCounter tickCounter) {
 		if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !INSTANCE.isEnabled()) return;
 		int y = MinecraftClient.getInstance().getWindow().getScaledHeight() / 2 - 100;
@@ -312,6 +326,6 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(NumberFormat.getInstance().format(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, 0xFFFFFF);
 			y += 10;
 		}
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.literal("Gain: " + NumberFormat.getInstance().format(INSTANCE.profit) + " coins").formatted(Formatting.GOLD), 5, y + 10, 0xFFFFFF);
+		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.translatable("skyblocker.powderTracker.profit", NumberFormat.getInstance().format(INSTANCE.profit)).formatted(Formatting.GOLD), 5, y + 10, 0xFFFFFF);
 	}
 }

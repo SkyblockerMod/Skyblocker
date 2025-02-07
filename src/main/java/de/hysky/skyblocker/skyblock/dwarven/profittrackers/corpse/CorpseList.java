@@ -47,8 +47,8 @@ public class CorpseList extends ElementListWidget<CorpseList.AbstractEntry> {
 			//TODO: Make this use the Formatters class instead when it's added
 			addEntry(new CorpseList.SingleEntry(Text.literal(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(LocalDateTime.ofInstant(loot.timestamp(), ZoneId.systemDefault()))).formatted(Formatting.LIGHT_PURPLE)));
 
-			List<CorpseProfitTracker.Reward> entries = loot.rewards();
-			for (CorpseProfitTracker.Reward reward : entries) {
+			List<Reward> entries = loot.rewards();
+			for (Reward reward : entries) {
 				Text itemName = getItemName(reward.itemId());
 
 				// If the item is priceless, don't show the prices

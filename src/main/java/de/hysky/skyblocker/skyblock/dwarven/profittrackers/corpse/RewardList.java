@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 
 import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
-import de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.Reward;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.Reference2IntArrayMap;
@@ -23,8 +22,6 @@ import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.List;
 
-import static de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse.CorpseProfitTracker.CorpseLoot;
-
 // This class is a copy of CorpseList because it's a very similar widget, but the way entries are added is different to achieve a different layout.
 // The main difference between this class and that class is the constructor and the constructors of MultiEntry.
 // Sure, you could reuse some of the code if you really wanted to, but it's honestly not worth it for 2 classes.
@@ -39,7 +36,7 @@ public class RewardList extends ElementListWidget<RewardList.AbstractEntry> {
 			addEmptyEntry();
 			addEmptyEntry();
 			addEmptyEntry();
-			addEntry(new SingleEntry(Text.literal("Your corpse history list is empty :(").formatted(Formatting.RED), false));
+			addEntry(new SingleEntry(Text.translatable("skyblocker.corpseTracker.emptyHistory").formatted(Formatting.RED), false));
 			return;
 		}
 
@@ -148,11 +145,11 @@ public class RewardList extends ElementListWidget<RewardList.AbstractEntry> {
 	private static class SingleEntry extends AbstractEntry {
 		private boolean drawBorder = true;
 
-		public SingleEntry(Text text) {
+		private SingleEntry(Text text) {
 			children = List.of(new TextWidget(text, MinecraftClient.getInstance().textRenderer).alignCenter());
 		}
 
-		public SingleEntry(Text text, boolean drawBorder) {
+		private SingleEntry(Text text, boolean drawBorder) {
 			this(text);
 			this.drawBorder = drawBorder;
 		}
@@ -193,7 +190,7 @@ public class RewardList extends ElementListWidget<RewardList.AbstractEntry> {
 		}
 
 		// For the total profit line
-		public MultiEntry(double profit) {
+		private MultiEntry(double profit) {
 			this.itemName = new TextWidget(Text.literal("Total Profit").formatted(Formatting.BOLD, Formatting.GOLD), MinecraftClient.getInstance().textRenderer).alignLeft();
 			this.totalPrice = new TextWidget(Text.literal(NumberFormat.getInstance().format(profit) + " Coins").formatted(profit > 0 ? Formatting.GREEN : Formatting.RED), MinecraftClient.getInstance().textRenderer);
 			children = List.of(this.itemName, this.totalPrice);

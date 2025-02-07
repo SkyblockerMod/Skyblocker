@@ -647,6 +647,8 @@
   "skyblocker.config.mining.glacite.enableParsingChatCorpseFinder.@Tooltip": "If enabled, will listen to chat and process corpses shared by other players. Should be compatible with other mods.",
   "skyblocker.config.mining.glacite.autoShareCorpses": "Automatically Share Found Corpses In Chat",
   "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "Sends a message in party chat with the location of the found corpse when you find one.",
+  "skyblocker.config.mining.glacite.enableCorpseProfitTracker": "Enable Corpse Profit Tracker",
+  "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": "Tracks the profit and the loot you get from corpses. Shows the profit in chat when looting a corpse, and has a command to see your history of corpse loot in /skyblocker rewardTrackers corpse list",
 
   "skyblocker.config.misc": "Misc",
 
@@ -1270,9 +1272,22 @@
   "skyblocker.crimson.kuudra.lowArrowPoison": "Low on Arrow Poison!",
   "skyblocker.crimson.kuudra.danger": "DANGER!",
 
-  "skyblocker.corpseTracker.historyScreenTitle": "Corpse Loot History",
-  "skyblocker.corpseTracker.screenTitle": "Corpse Loot Summary",
-  "skyblocker.corpseTracker.openHistory": "Open Corpse Loot History",
+  "skyblocker.corpseTracker.screenTitle": "Corpse Loot Tracker",
+  "skyblocker.corpseTracker.historyView": "Switch to history view",
+  "skyblocker.corpseTracker.summaryView": "Switch to summary view",
+  "skyblocker.corpseTracker.totalProfit": "Total Profit: %s%s",
+  "skyblocker.corpseTracker.corpseProfit": "Corpse Profit: %s",
+  "skyblocker.corpseTracker.incompletePriceData": " (Incomplete Price Data)",
+  "skyblocker.corpseTracker.hoverText": "Click to open corpse loot history",
+  "skyblocker.corpseTracker.somethingWentWrong": "Something went wrong with corpse profit calculation. Check logs for more information.",
+  "skyblocker.corpseTracker.emptyHistory": "Your corpse history list is empty :(",
+  "skyblocker.corpseTracker.historyReset": "Corpse profit history has been reset for the current profile.",
+
+  "skyblocker.powderTracker.historyReset": "Powder mining tracker has been reset for the current profile.",
+  "skyblocker.powderTracker.profit": "Profit: %s Coins",
+  "skyblocker.powderTracker.emptyHistory": "Your powder mining rewards list is empty :(",
+  "skyblocker.powderTracker.rewardsFilteredOut": "Your powder mining rewards list is empty after filtering :(",
+
 
   "skyblocker.waypoints.ordered.import.skyblocker.success": "Successfully imported waypoints from the Skyblocker Ordered Waypoints format!",
   "skyblocker.waypoints.ordered.import.skyblocker.unknownFormatHeader": "§cThis import code doesn't look like its in the Skyblocker Ordered Waypoints format, double-check your clipboard to see if everything is correct.",

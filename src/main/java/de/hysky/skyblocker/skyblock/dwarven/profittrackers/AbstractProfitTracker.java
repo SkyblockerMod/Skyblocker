@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.UnboundedMapCodec;
 import de.hysky.skyblocker.SkyblockerMod;
 
 import java.nio.file.Path;
@@ -14,8 +12,8 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractProfitTracker {
 	private static final String REWARD_TRACKERS_DIR = "reward-trackers";
-	protected static final UnboundedMapCodec<String, Integer> REWARDS_CODEC = Codec.unboundedMap(Codec.STRING, Codec.INT);
 	protected static final Pattern REWARD_PATTERN = Pattern.compile(" {4}(.*?) ?x?([\\d,]*)");
+	protected static final Pattern HOTM_XP_PATTERN = Pattern.compile(" {4}\\+[\\d,]+ HOTM Experience");
 	protected static final Pattern GEMSTONE_SYMBOLS = Pattern.compile("[α☘☠✎✧❁❂❈❤⸕] ");
 
 	protected static String replaceGemstoneSymbols(String reward) {
