@@ -1,8 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 
 import com.mojang.brigadier.Command;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -21,21 +20,25 @@ import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.NumberFormat;
 import java.time.Instant;
 import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public final class CorpseProfitTracker extends AbstractProfitTracker {
@@ -48,13 +51,12 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	public static final String CITRINE_CRYSTAL = "CITRINE_CRYSTAL";
 	public static final String RUBY_CRYSTAL = "RUBY_CRYSTAL";
 	public static final String JASPER_CRYSTAL = "JASPER_CRYSTAL";
-	public static final List<String> PRICELESS_ITEMS = List.of(GLACITE_POWDER, OPAL_CRYSTAL, ONYX_CRYSTAL, AQUAMARINE_CRYSTAL, PERIDOT_CRYSTAL, CITRINE_CRYSTAL, RUBY_CRYSTAL, JASPER_CRYSTAL);
+	public static final @Unmodifiable List<String> PRICELESS_ITEMS = List.of(GLACITE_POWDER, OPAL_CRYSTAL, ONYX_CRYSTAL, AQUAMARINE_CRYSTAL, PERIDOT_CRYSTAL, CITRINE_CRYSTAL, RUBY_CRYSTAL, JASPER_CRYSTAL);
 
 	public static final CorpseProfitTracker INSTANCE = new CorpseProfitTracker();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Corpse Profit Tracker");
 	private static final Pattern CORPSE_PATTERN = Pattern.compile(" {2}(LAPIS|UMBER|TUNGSTEN|VANGUARD) CORPSE LOOT! *");
-	private static final Pattern HOTM_XP_PATTERN = Pattern.compile(" {4}\\+[\\d,]+ HOTM Experience");
 	private static final Object2ObjectArrayMap<String, String> NAME2ID_MAP = new Object2ObjectArrayMap<>(50);
 
 	private ObjectArrayList<CorpseLoot> currentProfileRewards = new ObjectArrayList<>();
@@ -80,6 +82,13 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 				.then(literal("rewardTrackers")
 					.then(literal("corpse")
 						.then(literal("list")
+							// Optional argument.
+							.then(argument("summaryView", BoolArgumentType.bool())
+								.executes(ctx -> {
+									Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().currentScreen, BoolArgumentType.getBool(ctx, "summaryView")));
+									return Command.SINGLE_SUCCESS;
+								})
+							)
 							.executes(ctx -> {
 								Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().currentScreen));
 								return Command.SINGLE_SUCCESS;
@@ -89,7 +98,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 							.executes(ctx -> {
 								INSTANCE.currentProfileRewards.clear();
 								INSTANCE.allRewards.save();
-								ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Text.literal("Corpse profit history has been reset for the current profile.").formatted(Formatting.GREEN)));
+								ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.corpseTracker.historyReset").formatted(Formatting.GREEN)));
 								return Command.SINGLE_SUCCESS;
 							})
 						)
@@ -124,13 +133,16 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			currentProfileRewards.add(lastCorpseLoot);
 			if (!lastCorpseLoot.isPriceDataComplete()) {
 				MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
-						Constants.PREFIX.get().append(Text.literal("Something went wrong with corpse profit calculation. Check logs for more information.").formatted(Formatting.GOLD))
+						Constants.PREFIX.get().append(Text.translatable("skyblocker.corpseTracker.somethingWentWrong").formatted(Formatting.GOLD))
 				);
 			} else {
 				MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
 						Constants.PREFIX.get()
-						                .append("Corpse profit: ")
-						                .append(Text.literal(String.valueOf(lastCorpseLoot.profit)).formatted(lastCorpseLoot.profit > 0 ? Formatting.GREEN : Formatting.RED))
+										.append(Text.translatable("skyblocker.corpseTracker.corpseProfit", Text.literal(NumberFormat.getInstance().format(lastCorpseLoot.profit())).formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED)))
+										.styled(style ->
+														style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
+															 .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker rewardTrackers corpse list false"))
+										)
 				);
 			}
 			lastCorpseLoot = null;
@@ -154,7 +166,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			}
 
 			try {
-				lastCorpseLoot.profit -= type.getKeyPrice(); //Negated since the key price is a cost, not a reward
+				lastCorpseLoot.profit(lastCorpseLoot.profit() - type.getKeyPrice()); //Negated since the key price is a cost, not a reward
 			} catch (IllegalStateException e) { // This is thrown when the key price is not found
 				LOGGER.warn("No key price found for corpse type `{}`. Profit calculation will not be accurate, therefore it will not be sent to chat. It will still be added to the corpse history.", corpse);
 				lastCorpseLoot.markPriceDataIncomplete();
@@ -173,134 +185,26 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 
 	private void recalculateAll() {
 		for (CorpseLoot corpseLoot : currentProfileRewards) {
-			corpseLoot.profit = 0;
+			corpseLoot.profit(0);
 			corpseLoot.markPriceDataComplete(); // Reset the flag
 			for (Reward reward : corpseLoot.rewards()) {
-				if (PRICELESS_ITEMS.contains(reward.itemId)) continue;
+				if (PRICELESS_ITEMS.contains(reward.itemId())) continue;
 
-				DoubleBooleanPair price = ItemUtils.getItemPrice(reward.itemId);
+				DoubleBooleanPair price = ItemUtils.getItemPrice(reward.itemId());
 				if (!price.rightBoolean()) {
-					LOGGER.warn("No price found for item `{}`.", reward.itemId);
+					LOGGER.warn("No price found for item `{}`.", reward.itemId());
 					corpseLoot.markPriceDataIncomplete();
 					continue;
 				}
-				corpseLoot.profit += price.leftDouble() * reward.amount;
+				corpseLoot.profit(corpseLoot.profit() + price.leftDouble() * reward.amount());
 				reward.pricePerUnit(price.leftDouble());
 			}
 			try {
-				corpseLoot.profit -= corpseLoot.corpseType.getKeyPrice();
+				corpseLoot.profit(corpseLoot.profit() - corpseLoot.corpseType().getKeyPrice());
 			} catch (IllegalStateException e) {
-				LOGGER.warn("No key price found for corpse type `{}`. Profit calculation will not be accurate.", corpseLoot.corpseType);
+				LOGGER.warn("No key price found for corpse type `{}`. Profit calculation will not be accurate.", corpseLoot.corpseType());
 				corpseLoot.markPriceDataIncomplete();
 			}
-		}
-	}
-
-	public static final class CorpseLoot {
-		public static final Codec<CorpseLoot> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				CorpseType.CODEC.fieldOf("corpseType").forGetter(CorpseLoot::corpseType),
-				Reward.CODEC.listOf().fieldOf("rewards").forGetter(CorpseLoot::rewards),
-				Codec.LONG.xmap(Instant::ofEpochMilli, Instant::toEpochMilli).fieldOf("timestamp").forGetter(CorpseLoot::timestamp),
-				Codec.DOUBLE.fieldOf("profit").forGetter(CorpseLoot::profit)
-		).apply(instance, CorpseLoot::new));
-
-		private final @NotNull CorpseType corpseType;
-		private final @NotNull List<Reward> rewards;
-		private final @NotNull Instant timestamp;
-		private double profit;
-		private boolean isPriceDataComplete = true;
-
-		private CorpseLoot(@NotNull CorpseType corpseType, @NotNull List<Reward> rewards, @NotNull Instant timestamp, double profit) {
-			this.corpseType = corpseType;
-			this.rewards = rewards;
-			this.timestamp = timestamp;
-			this.profit = profit;
-		}
-
-		private CorpseLoot(@NotNull CorpseType corpseType, @NotNull List<Reward> rewards, @NotNull Instant timestamp) {
-			this(corpseType, rewards, timestamp, 0);
-		}
-
-		public @NotNull CorpseType corpseType() { return corpseType; }
-
-		public @NotNull List<Reward> rewards() { return rewards; }
-
-		public @NotNull Instant timestamp() { return timestamp; }
-
-		public double profit() { return profit; }
-
-		public void addLoot(@NotNull String itemName, int amount) {
-			String itemId = getItemId(itemName);
-			if (itemId.isEmpty()) {
-				LOGGER.error("No matching item id for name `{}`. Report this!", itemName);
-				return;
-			}
-			Reward reward = new Reward(amount, itemId);
-			rewards.add(reward);
-			if (PRICELESS_ITEMS.contains(itemId)) return;
-
-			DoubleBooleanPair price = ItemUtils.getItemPrice(itemId);
-			if (!price.rightBoolean()) {
-				LOGGER.warn("No price found for item `{}`.", itemId);
-				// Only fired once per corpse
-				if (isPriceDataComplete) LOGGER.warn("Profit calculation will not be accurate due to missing item price, therefore it will not be sent to chat. It will still be added to the corpse history.");
-				markPriceDataIncomplete();
-				return;
-			}
-			profit += price.leftDouble() * amount;
-			reward.pricePerUnit(price.leftDouble());
-		}
-
-		public boolean isPriceDataComplete() { return isPriceDataComplete; }
-
-		public void markPriceDataIncomplete() { isPriceDataComplete = false; }
-
-		public void markPriceDataComplete() { isPriceDataComplete = true; }
-
-		private static @NotNull String getItemId(String itemName) {
-			return NAME2ID_MAP.getOrDefault(itemName, "");
-		}
-	}
-
-	public static class Reward {
-		public static final Codec<Reward> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.INT.fieldOf("amount").forGetter(Reward::amount),
-				Codec.STRING.fieldOf("itemId").forGetter(Reward::itemId),
-				Codec.DOUBLE.fieldOf("pricePerUnit").forGetter(Reward::pricePerUnit)
-		).apply(instance, Reward::new));
-
-		private final String itemId;
-		private int amount;
-		private double pricePerUnit;
-
-		public Reward(int amount, String itemId, double pricePerUnit) {
-			this.amount = amount;
-			this.itemId = itemId;
-			this.pricePerUnit = pricePerUnit;
-		}
-
-		public Reward(int amount, String itemId) {
-			this(amount, itemId, 0);
-		}
-
-		public int amount() {
-			return amount;
-		}
-
-		public void amount(int amount) {
-			this.amount = amount;
-		}
-
-		public String itemId() {
-			return itemId;
-		}
-
-		public double pricePerUnit() {
-			return pricePerUnit;
-		}
-
-		public void pricePerUnit(double pricePerUnit) {
-			this.pricePerUnit = pricePerUnit;
 		}
 	}
 
@@ -314,6 +218,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		return Object2ObjectMaps.unmodifiable(NAME2ID_MAP);
 	}
 
+	// TODO: Perhaps make a little something in the skyblocker-assets repo for this in case it needs updating in the future
 	static {
 		NAME2ID_MAP.put("☠ Flawed Onyx Gemstone", "FLAWED_ONYX_GEM");
 		NAME2ID_MAP.put("☠ Fine Onyx Gemstone", "FINE_ONYX_GEM");
