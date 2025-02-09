@@ -178,8 +178,10 @@ public class RewardList extends ElementListWidget<RewardList.AbstractEntry> {
 			this.itemName = new TextWidget(itemName, MinecraftClient.getInstance().textRenderer).alignLeft();
 			this.amount = new TextWidget(Text.literal("x" + amount).formatted(Formatting.AQUA), MinecraftClient.getInstance().textRenderer).alignCenter();
 			this.totalPrice = new TextWidget(Text.literal(NumberFormat.getInstance().format(amount * pricePerUnit) + " Coins").formatted(Formatting.GOLD), MinecraftClient.getInstance().textRenderer);
-			this.pricePerUnit = new TextWidget(Text.literal(NumberFormat.getInstance().format(pricePerUnit) + " each").formatted(Formatting.GRAY), MinecraftClient.getInstance().textRenderer);
-			children = List.of(this.itemName, this.amount, this.totalPrice, this.pricePerUnit);
+			if (amount > 1) { // Only show the price per unit if there's more than 1 item, otherwise it's equal to the total price anyway and is redundant.
+				this.pricePerUnit = new TextWidget(Text.literal(NumberFormat.getInstance().format(pricePerUnit) + " each").formatted(Formatting.GRAY), MinecraftClient.getInstance().textRenderer);
+				children = List.of(this.itemName, this.amount, this.totalPrice, this.pricePerUnit);
+			} else children = List.of(this.itemName, this.amount, this.totalPrice);
 		}
 
 		// For the items
