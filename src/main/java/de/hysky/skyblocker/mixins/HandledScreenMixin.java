@@ -15,6 +15,8 @@ import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
+import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
+import de.hysky.skyblocker.skyblock.museum.MuseumManager;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -96,6 +98,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@Shadow
 	protected abstract List<Text> getTooltipFromItem(ItemStack stack);
 
+	@Shadow
+	protected int x;
+	@Shadow
+	protected int y;
+	@Shadow
+	protected int backgroundWidth;
 	@Unique
 	private List<QuickNavButton> quickNavButtons;
 
@@ -112,6 +120,21 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
+	@Inject(method = "init", at = @At("TAIL"))
+	private void skyblocker$initMuseumOverlay(CallbackInfo ci) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && !client.player.isCreative() && getTitle().getString().contains("Museum")) {
+			new MuseumManager(this, this.x, this.y, this.backgroundWidth);
+		}
+	}
+
+	@Inject(method = "removed", at = @At("HEAD"))
+	private void skyblocker$removeMuseumOverlay(CallbackInfo ci) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && !client.player.isCreative() && getTitle().getString().contains("Museum")) {
+			// Reset Overlay variables when no longer in Museum inventory
+			MuseumManager.reset();
+		}
+	}
+
 	@Inject(at = @At("HEAD"), method = "keyPressed")
 	public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
 		if (this.client != null && this.client.player != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && Utils.isOnSkyblock()) {
@@ -121,7 +144,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				if (WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode)) {
 					WikiLookup.openWiki(this.focusedSlot, client.player, true);
 				} else if (WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
-					WikiLookup.openWiki(this.focusedSlot, client.player, false);
+					WikiLookup.openWiki(this.focusedSlot.getStack(), client.player, false);
 				}
 			}
 			//item protection
@@ -305,10 +328,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				}
 			}
 
-			case GenericContainerScreenHandler genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> {
-				//Museum Item Cache donation tracking
-				MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
-			}
+			case GenericContainerScreenHandler genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> //Museum Item Cache donation tracking
+					MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
 
 			case null, default -> {}
 		}
