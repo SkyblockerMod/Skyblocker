@@ -138,7 +138,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			} else {
 				MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
 						Constants.PREFIX.get()
-										.append(Text.translatable("skyblocker.corpseTracker.corpseProfit", Text.literal(NumberFormat.getInstance().format(lastCorpseLoot.profit())).formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED)))
+										.append(Text.translatable("skyblocker.corpseTracker.corpseProfit", Text.literal(NumberFormat.getInstance().format(Math.round(lastCorpseLoot.profit()))).formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED)))
 										.styled(style ->
 														style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
 															 .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker rewardTrackers corpse list false"))
