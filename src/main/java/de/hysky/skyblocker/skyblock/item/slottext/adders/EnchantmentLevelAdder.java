@@ -154,7 +154,7 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("true_protection", "TP");
 
 		// Turbo books
-		ENCHANTMENT_ABBREVIATIONS.put("turbo_cacti", "TI");
+		ENCHANTMENT_ABBREVIATIONS.put("turbo_cactus", "TI");
 		ENCHANTMENT_ABBREVIATIONS.put("turbo_cane", "TC");
 		ENCHANTMENT_ABBREVIATIONS.put("turbo_carrot", "TR");
 		ENCHANTMENT_ABBREVIATIONS.put("turbo_coco", "TO");
