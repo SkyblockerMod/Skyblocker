@@ -33,10 +33,6 @@ public class WikiLookup {
         ));
     }
 
-    public static void openWiki(@NotNull Slot slot, @NotNull PlayerEntity player) {
-        WikiLookup.openWiki(slot.getStack(), player);
-    }
-
 	public static void openWiki(ItemStack stack, PlayerEntity player) {
 		ItemUtils.getItemIdOptional(stack)
 				.map(ItemRepository::getWikiLink)
