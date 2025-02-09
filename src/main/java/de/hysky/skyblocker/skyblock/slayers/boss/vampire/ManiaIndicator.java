@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.slayers.boss.vampire;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
@@ -17,7 +16,7 @@ public class ManiaIndicator {
     private static final Title title = new Title("skyblocker.rift.mania", Formatting.RED);
 
 	public static void updateMania() {
-		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !Utils.isOnSkyblock() || !Utils.isInTheRift() || !(Utils.getIslandArea().contains("Stillgore Château")) || !SlayerManager.isBossSpawned()) {
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !SlayerManager.isBossSpawned()) {
             TitleContainer.removeTitle(title);
             return;
         }

@@ -9,7 +9,6 @@ import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -30,7 +29,7 @@ public class FirePillarAnnouncer {
      * @param entity The updated entity that is checked to be a fire pillar
      */
     public static void checkFirePillar(Entity entity) {
-		if (Utils.isInCrimson() && SlayerManager.isBossSpawned() && entity instanceof ArmorStandEntity) {
+		if (Utils.isInCrimson() && SlayerManager.isBossSpawned()) {
 
             String entityName = entity.getName().getString();
             Matcher matcher = FIRE_PILLAR_PATTERN.matcher(entityName);
