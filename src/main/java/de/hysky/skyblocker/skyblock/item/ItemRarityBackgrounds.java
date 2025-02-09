@@ -89,6 +89,9 @@ public class ItemRarityBackgrounds {
 			PetInfo info = stack.getPetInfo();
 			if (!info.isEmpty()) {
 				SkyblockItemRarity rarity = info.rarity();
+				if (info.item().isPresent() && info.item().get().equals("PET_ITEM_TIER_BOOST")) {
+					rarity = rarity.next();
+				}
 				CACHE.put(hashCode, rarity);
 				return rarity;
 			}
