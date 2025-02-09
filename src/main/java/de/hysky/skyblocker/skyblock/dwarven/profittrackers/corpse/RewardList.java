@@ -202,7 +202,7 @@ public class RewardList extends ElementListWidget<RewardList.AbstractEntry> {
 			this.amount = new TextWidget(Text.literal("x" + amount).formatted(Formatting.AQUA), MinecraftClient.getInstance().textRenderer).alignCenter();
 			double pricePerKey = corpseType.getKeyPrice();
 			// Gotta make do with weird formatting until we have actual formatters
-			String priceString = (pricePerKey > 0 ? "-" + NumberFormat.getInstance().format(pricePerKey) : 0) + " Coins";
+			String priceString = (pricePerKey > 0 ? "-" + NumberFormat.getInstance().format(pricePerKey * amount) : 0) + " Coins";
 			Text priceText = Text.literal(priceString).formatted(pricePerKey > 0 ? Formatting.RED : Formatting.GOLD); // We're inverting the price here so positive price is red
 			this.totalPrice = new TextWidget(priceText, MinecraftClient.getInstance().textRenderer);
 			if (amount > 1) {
