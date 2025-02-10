@@ -130,7 +130,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		int transparency = transparency(-1);
 		switch (iconPosition) {
 			case LEFT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x, y, 9, 9, transparency);
-			case RIGHT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x + width - 9, y, 9, transparency);
+			case RIGHT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x + width - 9, y, 9, 9, transparency);
 		}
 
 		int barWith = iconPosition.equals(IconPosition.OFF) ? width : width - 10;
