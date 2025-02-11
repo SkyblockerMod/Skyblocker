@@ -10,6 +10,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
@@ -19,8 +20,13 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.Window;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
 import org.slf4j.Logger;
 
@@ -39,6 +45,8 @@ import java.util.stream.Collectors;
 
 public class ScreenMaster {
 	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final Identifier FANCY_TAB_HUD = Identifier.of(SkyblockerMod.NAMESPACE, "fancy_tab_hud");
+	private static final Identifier FANCY_TAB = Identifier.of(SkyblockerMod.NAMESPACE, "fancy_tab");
 
 	private static final int VERSION = 2;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
@@ -51,14 +59,59 @@ public class ScreenMaster {
 		return BUILDER_MAP.get(location);
 	}
 
+	// we probably want this to run pretty early?
+	@Init(priority = -1)
+	public static void init() {
+		SkyblockEvents.LOCATION_CHANGE.register(location -> ScreenBuilder.positionsNeedsUpdating = true);
+
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+
+			instantiateWidgets();
+			for (int i = 1; i < 6; i++) {
+				DungeonPlayerWidget widget = new DungeonPlayerWidget(i);
+				addWidgetInstance(widget);
+			}
+
+			fillDefaultConfig();
+			loadConfig();
+
+		});
+
+		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
+
+		HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer
+				// Renders the hud (always on screen) widgets.
+				// Inject before the debug hud, this injection point is identical to the after main hud event
+				// z = 200
+				// TODO: The after sleep/before demo timer injection point gives z = 1600,
+				// 		 and due to the z offset that comes with item rendering, it still renders above the debug hud
+				.attachLayerBefore(IdentifiedLayer.DEBUG, FANCY_TAB_HUD, (context, tickCounter) -> render(context, true))
+				// Renders the tab widgets
+				.attachLayerBefore(IdentifiedLayer.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false))
+		);
+	}
+
+	private static void render(DrawContext context, boolean hud) {
+		if (!Utils.isOnSkyblock()) return;
+		MinecraftClient client = MinecraftClient.getInstance();
+
+		if (client.currentScreen instanceof WidgetsConfigurationScreen) return;
+		Window window = client.getWindow();
+		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
+		MatrixStack matrices = context.getMatrices();
+		matrices.push();
+		matrices.scale(scale, scale, 1.F);
+		ScreenMaster.render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale), hud);
+		matrices.pop();
+	}
+
 	/**
 	 * Top level render method.
 	 * Calls the appropriate ScreenBuilder with the screen's dimensions
-	 * Called in PlayerListHudMixin
 	 *
 	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
-	public static void render(DrawContext context, int w, int h, boolean hud) {
+	private static void render(DrawContext context, int w, int h, boolean hud) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
 		if (client.options.playerListKey.isPressed()) {
@@ -140,30 +193,7 @@ public class ScreenMaster {
 					"powders",
 					new PositionRule(CommsWidget.ID, new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, ScreenMaster.ScreenLayer.HUD)
 			);
-
 		}
-
-	}
-
-	// we probably want this to run pretty early?
-	@Init(priority = -1)
-	public static void init() {
-		SkyblockEvents.LOCATION_CHANGE.register(location -> ScreenBuilder.positionsNeedsUpdating = true);
-
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-
-			instantiateWidgets();
-			for (int i = 1; i < 6; i++) {
-				DungeonPlayerWidget widget = new DungeonPlayerWidget(i);
-				addWidgetInstance(widget);
-			}
-
-			fillDefaultConfig();
-			loadConfig();
-
-		});
-
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
 	}
 
 

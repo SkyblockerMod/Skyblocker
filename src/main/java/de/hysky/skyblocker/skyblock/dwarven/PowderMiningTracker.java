@@ -5,7 +5,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ChatEvents;
-import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -17,6 +16,8 @@ import de.hysky.skyblocker.utils.profile.ProfiledData;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.ChatHud;
@@ -24,6 +25,7 @@ import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
@@ -41,6 +43,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class PowderMiningTracker {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Powder Mining Tracker");
+	private static final Identifier POWDER_MINING_TRACKER = Identifier.of(SkyblockerMod.NAMESPACE, "powder_mining_tracker");
 	private static final Pattern GEMSTONE_SYMBOLS = Pattern.compile("[α☘☠✎✧❁❂❈❤⸕] ");
 	private static final Pattern REWARD_PATTERN = Pattern.compile(" {4}(.*?) ?x?([\\d,]*)");
 	private static final Codec<Object2IntMap<String>> REWARDS_CODEC = CodecUtils.object2IntMapCodec(Codec.STRING);
@@ -78,7 +81,7 @@ public class PowderMiningTracker {
 	@Init
 	public static void init() {
 		ChatEvents.RECEIVE_STRING.register(PowderMiningTracker::onChatMessage);
-		HudRenderEvents.AFTER_MAIN_HUD.register(PowderMiningTracker::render);
+		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.STATUS_EFFECTS, POWDER_MINING_TRACKER, PowderMiningTracker::render));
 
 		ItemPriceUpdateEvent.ON_PRICE_UPDATE.register(() -> {
 			if (isEnabled()) recalculatePrices();
