@@ -202,13 +202,13 @@ loom {
 	mixin {
 		useLegacyMixinAp = false
 	}
+}
 
-	runs {
-		clientGametest {
-			inherit client
-			name "Client Game Test"
-			vmArg "-Dfabric.client.gametest"
-		}
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = project.archives_base_name
+		eula = true
 	}
 }
 
