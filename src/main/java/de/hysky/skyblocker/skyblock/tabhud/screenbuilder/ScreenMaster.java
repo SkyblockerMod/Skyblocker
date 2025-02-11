@@ -81,11 +81,8 @@ public class ScreenMaster {
 
 		HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer
 				// Renders the hud (always on screen) widgets.
-				// Inject before the debug hud, this injection point is identical to the after main hud event
-				// z = 200
-				// TODO: The after sleep/before demo timer injection point gives z = 1600,
-				// 		 and due to the z offset that comes with item rendering, it still renders above the debug hud
-				.attachLayerBefore(IdentifiedLayer.DEBUG, FANCY_TAB_HUD, (context, tickCounter) -> render(context, true))
+				// Since each layer has a z offset of 200 automatically added, attaching fancy tab hud before the demo timer is just enough for items to render below the debug hud
+				.attachLayerBefore(IdentifiedLayer.DEMO_TIMER, FANCY_TAB_HUD, (context, tickCounter) -> render(context, true))
 				// Renders the tab widgets
 				.attachLayerBefore(IdentifiedLayer.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false))
 		);
