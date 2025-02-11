@@ -208,6 +208,7 @@ fabricApi {
 	configureTests {
 		createSourceSet = true
 		modId = project.archives_base_name
+		enableGameTests = false
 		eula = true
 	}
 }
