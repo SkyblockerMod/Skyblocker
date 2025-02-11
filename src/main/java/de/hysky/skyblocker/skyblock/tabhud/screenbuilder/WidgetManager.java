@@ -43,7 +43,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ScreenMaster {
+public class WidgetManager {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Identifier FANCY_TAB_HUD = Identifier.of(SkyblockerMod.NAMESPACE, "fancy_tab_hud");
 	private static final Identifier FANCY_TAB = Identifier.of(SkyblockerMod.NAMESPACE, "fancy_tab");
@@ -98,7 +98,7 @@ public class ScreenMaster {
 		MatrixStack matrices = context.getMatrices();
 		matrices.push();
 		matrices.scale(scale, scale, 1.F);
-		ScreenMaster.render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale), hud);
+		WidgetManager.render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale), hud);
 		matrices.pop();
 	}
 
@@ -171,24 +171,24 @@ public class ScreenMaster {
 		ScreenBuilder screenBuilder = getScreenBuilder(Location.THE_END);
 		screenBuilder.setPositionRule(
 				"hud_end",
-				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().otherLocations.end.x, SkyblockerConfigManager.get().otherLocations.end.y, ScreenMaster.ScreenLayer.HUD)
+				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().otherLocations.end.x, SkyblockerConfigManager.get().otherLocations.end.y, WidgetManager.ScreenLayer.HUD)
 		);
 
 		screenBuilder = getScreenBuilder(Location.GARDEN);
 		screenBuilder.setPositionRule(
 				"hud_farming",
-				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().farming.garden.farmingHud.x, SkyblockerConfigManager.get().farming.garden.farmingHud.y, ScreenMaster.ScreenLayer.HUD)
+				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().farming.garden.farmingHud.x, SkyblockerConfigManager.get().farming.garden.farmingHud.y, WidgetManager.ScreenLayer.HUD)
 		);
 
 		for (Location loc : new Location[]{Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES}) {
 			screenBuilder = getScreenBuilder(loc);
 			screenBuilder.setPositionRule(
 					CommsWidget.ID,
-					new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, 5, 5, ScreenMaster.ScreenLayer.HUD)
+					new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, 5, 5, WidgetManager.ScreenLayer.HUD)
 			);
 			screenBuilder.setPositionRule(
 					"powders",
-					new PositionRule(CommsWidget.ID, new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, ScreenMaster.ScreenLayer.HUD)
+					new PositionRule(CommsWidget.ID, new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, WidgetManager.ScreenLayer.HUD)
 			);
 		}
 	}
@@ -241,5 +241,4 @@ public class ScreenMaster {
 			return name();
 		}
 	}
-
 }
