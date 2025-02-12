@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.garden.visitorhelper;
+package de.hysky.skyblocker.skyblock.garden.visitor;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;

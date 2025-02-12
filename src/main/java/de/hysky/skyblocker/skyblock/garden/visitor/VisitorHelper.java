@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.garden.visitorhelper;
+package de.hysky.skyblocker.skyblock.garden.visitor;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;

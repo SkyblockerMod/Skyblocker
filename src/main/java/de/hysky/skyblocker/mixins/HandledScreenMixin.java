@@ -11,7 +11,7 @@ import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
-import de.hysky.skyblocker.skyblock.garden.visitorhelper.VisitorHelper;
+import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
