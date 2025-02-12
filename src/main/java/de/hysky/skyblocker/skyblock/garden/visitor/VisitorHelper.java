@@ -83,7 +83,8 @@ public class VisitorHelper {
 		ItemUtils.getLore(acceptButton).stream()
 				.map(Text::getString)
 				.map(String::trim)
-				.filter(lore -> !lore.contains("Rewards") && lore.contains(" x"))
+				.takeWhile(lore -> !lore.contains("Rewards"))
+				.filter(lore -> lore.contains(" x"))
 				.map(lore -> lore.split(" x"))
 				.forEach(parts -> visitor.addRequiredItem(Text.literal(parts[0].trim()), Integer.parseInt(parts[1].trim())));
 	}
@@ -129,7 +130,7 @@ public class VisitorHelper {
 		int index = 0;
 
 		context.getMatrices().push();
-		context.getMatrices().translate(0, 0, 200);
+		context.getMatrices().translate(0, 0, 500);
 
 		for (Map.Entry<Text, Integer> entry : groupedItems.entrySet()) {
 			Text itemName = entry.getKey();
