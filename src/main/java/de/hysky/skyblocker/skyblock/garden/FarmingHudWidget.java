@@ -96,7 +96,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 		addSimpleIcoText(Ico.GOLD, "Coins/h: ", Formatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
 		addSimpleIcoText(cropStack, "Blocks/s: ", Formatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
 		//noinspection DataFlowIssue
-		addComponent(new ProgressComponent(Ico.LANTERN, Text.literal("Farming Level:"), FarmingHud.farmingXpPercentProgress(), Formatting.GOLD.getColorValue()));
+		addComponent(Components.progressComponent(Ico.LANTERN, Text.literal("Farming Level:"), FarmingHud.farmingXpPercentProgress(), Formatting.GOLD.getColorValue()));
 		addSimpleIcoText(Ico.LIME_DYE, "Farming XP/h: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
 
 		Entity cameraEntity = client.getCameraEntity();

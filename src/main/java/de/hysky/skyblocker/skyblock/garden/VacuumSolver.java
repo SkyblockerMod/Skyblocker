@@ -24,11 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 public class VacuumSolver {
-
 	private static final long PARTICLES_MAX_DELAY = 500;
 	private static final double PARTICLES_MAX_DISTANCE = 4.0;
 	private static final List<Vec3d> particleTrail = new LinkedList<>();
-	private static Vec3d fixedDestination = null;
+	private static BlockPos fixedDestination = null;
 	private static long lastParticleUpdate = System.currentTimeMillis();
 	private static final Map<ArmorStandEntity, BlockPos> linkedMarkers = new HashMap<>();
 
@@ -45,7 +44,7 @@ public class VacuumSolver {
 	}
 
 	public static void onParticle(ParticleS2CPacket packet) {
-		if (!Utils.isOnGarden() || !SkyblockerConfigManager.get().farming.garden.vacuumSolver || !ParticleTypes.ANGRY_VILLAGER.equals(packet.getParameters().getType())) {
+		if (!Utils.isInGarden() || !SkyblockerConfigManager.get().farming.garden.vacuumSolver || !ParticleTypes.ANGRY_VILLAGER.equals(packet.getParameters().getType())) {
 			return;
 		}
 
@@ -65,7 +64,7 @@ public class VacuumSolver {
 		}
 
 		particleTrail.add(particlePos);
-		fixedDestination = particlePos;
+		fixedDestination = BlockPos.ofFloored(particlePos);
 
 		lastParticleUpdate = currentTime;
 		linkMarkerWithDestination();
@@ -83,9 +82,7 @@ public class VacuumSolver {
 		return tooltip.stream().anyMatch(text -> text.getString().contains("Pest Tracker"));
 	}
 
-
 	// Highlight flickers when no pest is nearby? it should render regardless
-
 	private static void linkMarkerWithDestination() {
 		if (fixedDestination == null || MinecraftClient.getInstance().world == null) return;
 
@@ -95,7 +92,7 @@ public class VacuumSolver {
 					&& armorStand.hasCustomName()
 					&& armorStand.getCustomName() != null
 					&& armorStand.getCustomName().getString().startsWith("ൠ")) {
-				linkedMarkers.put(armorStand, new BlockPos((int) fixedDestination.getX(), (int) fixedDestination.getY(), (int) fixedDestination.getZ()));
+				linkedMarkers.put(armorStand, fixedDestination);
 				break;
 			}
 		}
@@ -108,24 +105,16 @@ public class VacuumSolver {
 
 		float[] color = {1f, 0f, 0f};
 
-		RenderHelper.renderFilled(context, new BlockPos(
-				(int) fixedDestination.getX(),
-				(int) fixedDestination.getY(),
-				(int) fixedDestination.getZ()
-		), color, 2.0f, false);
+		RenderHelper.renderFilled(context, fixedDestination, color, 1, false);
 
 		linkedMarkers.entrySet().removeIf(entry -> entry.getKey().isRemoved());
 
 		for (BlockPos pos : linkedMarkers.values()) {
-			RenderHelper.renderFilled(context, pos, color, 2.0f, false);
+			RenderHelper.renderFilled(context, pos, color, 1, false);
 		}
 
 		if (linkedMarkers.isEmpty() && fixedDestination != null) {
-			RenderHelper.renderFilled(context, new BlockPos(
-					(int) fixedDestination.getX(),
-					(int) fixedDestination.getY(),
-					(int) fixedDestination.getZ()
-			), color, 2.0f, false);
+			RenderHelper.renderFilled(context, fixedDestination, color, 1, false);
 		}
 	}
 }

@@ -6,7 +6,6 @@ import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
-import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.purse.PurseChangeCause;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -136,7 +135,7 @@ public class Utils {
         return location == Location.THE_RIFT;
     }
 
-	public static boolean isOnGarden() {
+	public static boolean isInGarden() {
 		return location == Location.GARDEN;
 	}
 

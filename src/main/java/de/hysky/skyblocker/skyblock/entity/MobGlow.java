@@ -1,8 +1,6 @@
 package de.hysky.skyblocker.skyblock.entity;
 
 import com.google.common.collect.Streams;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
@@ -30,7 +28,6 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
@@ -170,7 +167,7 @@ public class MobGlow {
 			case ArmorStandEntity armorStand when SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads && Utils.isInTheEnd() && armorStand.isMarker() && SlayerManager.isInSlayer() && isNukekubiHead(armorStand) -> 0x990099;
 
 			// Pests
-			case ArmorStandEntity armorStand when SkyblockerConfigManager.get().farming.garden.pestHighlighter && Utils.isOnGarden() && isPestHead(armorStand) -> 0xb62f00;
+			case ArmorStandEntity armorStand when SkyblockerConfigManager.get().farming.garden.pestHighlighter && Utils.isInGarden() && isPestHead(armorStand) -> 0xb62f00;
 
 			// Blaze Slayer's Demonic minions
 			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerManager.isInSlayerType(SlayerType.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15 -> AttunementColors.getColor(e);

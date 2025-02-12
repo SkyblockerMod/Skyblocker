@@ -91,7 +91,7 @@ public class FarmingHud {
 
 	private static boolean tryGetCounter(ItemStack stack, CounterType counterType) {
 		NbtCompound customData = ItemUtils.getCustomData(stack);
-		if (customData == null || !customData.contains(counterType.nbtKey, NbtElement.NUMBER_TYPE)) return true;
+		if (customData.isEmpty() || !customData.contains(counterType.nbtKey, NbtElement.NUMBER_TYPE)) return true;
 		int count = customData.getInt(counterType.nbtKey);
 		if (FarmingHud.counterType != counterType) {
 			counter.clear();
@@ -116,49 +116,32 @@ public class FarmingHud {
 	}
 
 	public static float cropsPerMinute() {
-
 		if (counter.isEmpty()) {
-
 			return 0;
-
 		}
-
 		IntLongPair first = counter.peek();
-
 		IntLongPair last = counter.peekLast();
-
 		return (float) (last.leftInt() - first.leftInt()) / (last.rightLong() - first.rightLong()) * 60_000f;
-
 	}
 
 	public static double blockBreaks() {
 		if (blockBreaks.isEmpty()) {
-			return 0.0;
+			return 0;
 		}
-
 		long firstTimestamp = blockBreaks.firstLong();
-		long lastTimestamp = System.currentTimeMillis();
-
-		double timeDifferenceInSeconds = (lastTimestamp - firstTimestamp) / 1000.0;
-
-		if (timeDifferenceInSeconds <= 0) {
-			return 0.0;
-		}
-
-		return Math.round((blockBreaks.size() / timeDifferenceInSeconds) * 100) / 100.0;
+		long lastTimestamp = blockBreaks.lastLong();
+		return Math.round(blockBreaks.size() / (double) (lastTimestamp - firstTimestamp) * 100000) / 100d;
 	}
 
-
 	public static float farmingXpPercentProgress() {
-		return Math.min(Math.max(farmingXpPercentProgress, 0), 100);
+		return Math.clamp(farmingXpPercentProgress, 0, 100);
 	}
 
 	public static double farmingXpPerHour() {
-		double xpPerCrop = farmingXp.isEmpty() ? 0 : farmingXp.peek().leftFloat();
-		double cropsPerSecond = blockBreaks();
-		double xpPerSecond = xpPerCrop * cropsPerSecond;
-
-		return Math.round(xpPerSecond * 3600 * 10) / 10.0;
+		if (farmingXp.isEmpty()) {
+			return 0;
+		}
+		return Math.round(farmingXp.peek().leftFloat() * blockBreaks() * 3600 * 10) / 10d;
 	}
 
 	public enum CounterType {

@@ -40,7 +40,7 @@ public class VisitorHelper {
 
 			boolean isHelperEnabled = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelper;
 			boolean isGardenMode = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelperGardenOnly;
-			boolean canRenderScreen = isHelperEnabled && (!isGardenMode || Utils.isOnGarden() || Utils.getIslandArea().contains("Bazaar"));
+			boolean canRenderScreen = isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getIslandArea().contains("Bazaar"));
 
 			if (canRenderScreen) {
 				ScreenEvents.afterRender(screen).register((screen_, context, mouseX, mouseY, delta) ->
