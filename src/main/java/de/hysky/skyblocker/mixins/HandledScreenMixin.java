@@ -2,7 +2,6 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -214,6 +213,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	/**
 	 * Avoids getting currentSolver again when it's already in the scope for some usages of this method.
+	 *
 	 * @see #skyblocker$experimentSolvers$getStack(Slot, ItemStack, ContainerSolver)
 	 */
 	@Unique
@@ -320,7 +320,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	@Inject(at = @At("HEAD"), method = "mouseClicked")
 	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		if (SkyblockerConfigManager.get().farming.visitorHelper.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar"))) {
+		if (VisitorHelper.shouldRender()) {
 			VisitorHelper.handleMouseClick(mouseX, mouseY, button, this.textRenderer);
 		}
 	}

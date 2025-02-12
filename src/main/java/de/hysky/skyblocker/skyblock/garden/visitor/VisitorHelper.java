@@ -9,6 +9,8 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -25,9 +27,11 @@ import net.minecraft.util.Formatting;
 import java.util.*;
 
 public class VisitorHelper {
-
 	private static final Map<Visitor, Boolean> activeVisitors = new LinkedHashMap<>();
 	private static final Map<String, ItemStack> cachedItems = new HashMap<>();
+	// Map of grouped items with their total amount and associated visitors
+	private static final Object2IntMap<Text> groupedItems = new Object2IntOpenHashMap<>();
+	private static final Map<Text, List<Visitor>> visitorsByItem = new LinkedHashMap<>();
 	private static final int X_OFFSET = 4;
 	private static final int Y_OFFSET = 4;
 	private static final int ICON_SIZE = 16;
@@ -36,25 +40,17 @@ public class VisitorHelper {
 	@Init
 	public static void initialize() {
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-			if (!(screen instanceof HandledScreen<?> handledScreen)) return;
+			if (!(screen instanceof HandledScreen<?> handledScreen) || !shouldRender()) return;
 
-			boolean isHelperEnabled = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelper;
-			boolean isGardenMode = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelperGardenOnly;
-			boolean canRenderScreen = isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getIslandArea().contains("Bazaar"));
-
-			if (canRenderScreen) {
-				ScreenEvents.afterRender(screen).register((screen_, context, mouseX, mouseY, delta) ->
-						renderVisitorUI(context, client.textRenderer, handledScreen.getScreenHandler()));
-			}
+			ScreenEvents.afterTick(screen).register(_screen -> updateVisitors(handledScreen.getScreenHandler()));
+			ScreenEvents.afterRender(screen).register((_screen, context, _x, _y, _d) -> renderVisitorHelper(context, client.textRenderer));
 		});
 	}
 
-	/**
-	 * Renders the visitor UI on the screen.
-	 */
-	public static void renderVisitorUI(DrawContext context, TextRenderer textRenderer, ScreenHandler handler) {
-		updateVisitors(handler);
-		drawVisitorItems(context, textRenderer);
+	public static boolean shouldRender() {
+		boolean isHelperEnabled = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelper;
+		boolean isGardenMode = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelperGardenOnly;
+		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getIslandArea().contains("Bazaar"));
 	}
 
 	/**
@@ -73,6 +69,8 @@ public class VisitorHelper {
 		if (!newVisitor.requiredItems().isEmpty()) {
 			activeVisitors.put(newVisitor, true);
 		}
+
+		updateItems();
 	}
 
 	/**
@@ -85,12 +83,25 @@ public class VisitorHelper {
 		ItemUtils.getLore(acceptButton).stream()
 				.map(Text::getString)
 				.map(String::trim)
-				.filter(lore -> !lore.isEmpty() && !lore.contains("Rewards"))
-				.filter(lore -> lore.contains(" x"))
-				.forEach(lore -> {
-					String[] parts = lore.split(" x");
-					visitor.addRequiredItem(Text.literal(parts[0].trim()), Integer.parseInt(parts[1].trim()));
-				});
+				.filter(lore -> !lore.contains("Rewards") && lore.contains(" x"))
+				.map(lore -> lore.split(" x"))
+				.forEach(parts -> visitor.addRequiredItem(Text.literal(parts[0].trim()), Integer.parseInt(parts[1].trim())));
+	}
+
+	private static void updateItems() {
+		groupedItems.clear();
+		visitorsByItem.clear();
+
+		// Group items by their name and accumulate their counts
+		for (Visitor visitor : activeVisitors.keySet()) {
+			for (Map.Entry<Text, Integer> entry : visitor.requiredItems().entrySet()) {
+				Text itemName = entry.getKey();
+				int amount = entry.getValue();
+
+				groupedItems.put(itemName, groupedItems.getOrDefault(itemName, 0) + amount);
+				visitorsByItem.computeIfAbsent(itemName, k -> new LinkedList<>()).add(visitor);
+			}
+		}
 	}
 
 	/**
@@ -114,24 +125,8 @@ public class VisitorHelper {
 	/**
 	 * Draws the visitor items and their associated information.
 	 */
-	private static void drawVisitorItems(DrawContext context, TextRenderer textRenderer) {
-
+	private static void renderVisitorHelper(DrawContext context, TextRenderer textRenderer) {
 		int index = 0;
-
-		// Map of grouped items with their total amount and associated visitors
-		Map<Text, Integer> groupedItems = new LinkedHashMap<>();
-		Map<Text, List<Visitor>> visitorsByItem = new LinkedHashMap<>();
-
-		// Group items by their name and accumulate their counts
-		for (Visitor visitor : activeVisitors.keySet()) {
-			for (Map.Entry<Text, Integer> entry : visitor.requiredItems().entrySet()) {
-				Text itemName = entry.getKey();
-				int amount = entry.getValue();
-
-				groupedItems.put(itemName, groupedItems.getOrDefault(itemName, 0) + amount);
-				visitorsByItem.computeIfAbsent(itemName, k -> new LinkedList<>()).add(visitor);
-			}
-		}
 
 		context.getMatrices().push();
 		context.getMatrices().translate(0, 0, 200);
@@ -200,19 +195,6 @@ public class VisitorHelper {
 		int index = 0;
 		int yOffsetAdjustment = -5;
 
-		Map<Text, Integer> groupedItems = new LinkedHashMap<>();
-		Map<Text, List<Visitor>> visitorsByItem = new LinkedHashMap<>();
-
-		for (Visitor visitor : activeVisitors.keySet()) {
-			for (Map.Entry<Text, Integer> entry : visitor.requiredItems().entrySet()) {
-				Text itemName = entry.getKey();
-				int amount = entry.getValue();
-
-				groupedItems.put(itemName, groupedItems.getOrDefault(itemName, 0) + amount);
-				visitorsByItem.computeIfAbsent(itemName, k -> new LinkedList<>()).add(visitor);
-			}
-		}
-
 		for (Map.Entry<Text, Integer> entry : groupedItems.entrySet()) {
 			Text itemName = entry.getKey();
 			int totalAmount = entry.getValue();
@@ -256,25 +238,15 @@ public class VisitorHelper {
 	/**
 	 * Handles slot clicks to remove a visitor when certain conditions are met.
 	 *
-	 * @param title  The visitor's name to match for removal.
+	 * @param title The visitor's name to match for removal.
 	 */
 	public static void onSlotClick(Slot slot, int slotId, String title) {
 		if ((slotId == 29 || slotId == 13 || slotId == 33) && slot.hasStack() &&
 				ItemUtils.getLoreLineIf(slot.getStack(), s -> s.equals("Click to give!") || s.equals("Click to refuse!")) != null) {
-
-			Visitor visitorToRemove = null;
-
-			for (Visitor visitor : activeVisitors.keySet()) {
-				if (visitor.name().getString().equals(title)) {
-					visitorToRemove = visitor;
-					break;
-				}
-			}
-
-			if (visitorToRemove != null) {
-				activeVisitors.remove(visitorToRemove);
-			}
+			activeVisitors.entrySet().removeIf(entry -> entry.getKey().name().getString().equals(title));
 		}
+
+		updateItems();
 	}
 
 	/**
