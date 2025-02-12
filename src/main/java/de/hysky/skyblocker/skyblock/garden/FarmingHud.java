@@ -130,7 +130,7 @@ public class FarmingHud {
 		}
 		long firstTimestamp = blockBreaks.firstLong();
 		long lastTimestamp = blockBreaks.lastLong();
-		return Math.round(blockBreaks.size() / (double) (lastTimestamp - firstTimestamp) * 100000) / 100d;
+		return Math.round((blockBreaks.size() - 1) / (double) (lastTimestamp - firstTimestamp) * 10000) / 10d;
 	}
 
 	public static float farmingXpPercentProgress() {
