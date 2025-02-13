@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.slayers.boss.vampire;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
@@ -14,7 +15,7 @@ public class TwinClawsIndicator {
     private static boolean scheduled = false;
 
 	public static void updateIce() {
-		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableHolyIceIndicator || !SlayerManager.isBossSpawned()) {
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableHolyIceIndicator || !SlayerManager.isInSlayerType(SlayerType.VAMPIRE)) {
             TitleContainer.removeTitle(title);
             return;
         }

@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.slayers.boss.demonlord;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
@@ -29,7 +30,7 @@ public class FirePillarAnnouncer {
      * @param entity The updated entity that is checked to be a fire pillar
      */
     public static void checkFirePillar(Entity entity) {
-		if (Utils.isInCrimson() && SlayerManager.isBossSpawned()) {
+		if (Utils.isInCrimson() && SlayerManager.isInSlayerType(SlayerType.DEMONLORD)) {
 
             String entityName = entity.getName().getString();
             Matcher matcher = FIRE_PILLAR_PATTERN.matcher(entityName);
