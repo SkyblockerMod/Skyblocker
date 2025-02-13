@@ -196,9 +196,9 @@ public class VisitorHelper {
 		int index = 0;
 		int yOffsetAdjustment = -5;
 
-		for (Map.Entry<Text, Integer> entry : groupedItems.entrySet()) {
+		for (Object2IntMap.Entry<Text> entry : groupedItems.object2IntEntrySet()) {
 			Text itemName = entry.getKey();
-			int totalAmount = entry.getValue();
+			int totalAmount = entry.getIntValue();
 			List<Visitor> visitors = visitorsByItem.get(itemName);
 
 			if (visitors != null && !visitors.isEmpty()) {
