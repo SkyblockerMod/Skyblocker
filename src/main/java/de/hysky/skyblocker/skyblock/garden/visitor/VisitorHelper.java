@@ -27,7 +27,7 @@ import net.minecraft.util.Formatting;
 import java.util.*;
 
 public class VisitorHelper {
-	private static final Map<Visitor, Boolean> activeVisitors = new LinkedHashMap<>();
+	private static final Set<Visitor> activeVisitors = new HashSet<>();
 	private static final Map<String, ItemStack> cachedItems = new HashMap<>();
 	// Map of grouped items with their total amount and associated visitors
 	private static final Object2IntMap<Text> groupedItems = new Object2IntOpenHashMap<>();
@@ -61,13 +61,13 @@ public class VisitorHelper {
 		if (visitorHead == null || !visitorHead.contains(DataComponentTypes.LORE) || ItemUtils.getLoreLineIf(visitorHead, t -> t.contains("Times Visited")) == null) return;
 
 		Text visitorName = visitorHead.getName();
-		if (activeVisitors.keySet().stream().anyMatch(visitor -> visitor.name().equals(visitorName))) return;
+		if (activeVisitors.stream().map(Visitor::name).anyMatch(visitorName::equals)) return;
 
 		Visitor newVisitor = new Visitor(visitorName, visitorHead.copy());
 		extractRequiredItems(handler, newVisitor);
 
 		if (!newVisitor.requiredItems().isEmpty()) {
-			activeVisitors.put(newVisitor, true);
+			activeVisitors.add(newVisitor);
 		}
 
 		updateItems();
@@ -94,10 +94,10 @@ public class VisitorHelper {
 		visitorsByItem.clear();
 
 		// Group items by their name and accumulate their counts
-		for (Visitor visitor : activeVisitors.keySet()) {
-			for (Map.Entry<Text, Integer> entry : visitor.requiredItems().entrySet()) {
+		for (Visitor visitor : activeVisitors) {
+			for (Object2IntMap.Entry<Text> entry : visitor.requiredItems().object2IntEntrySet()) {
 				Text itemName = entry.getKey();
-				int amount = entry.getValue();
+				int amount = entry.getIntValue();
 
 				groupedItems.put(itemName, groupedItems.getOrDefault(itemName, 0) + amount);
 				visitorsByItem.computeIfAbsent(itemName, k -> new LinkedList<>()).add(visitor);
@@ -132,9 +132,9 @@ public class VisitorHelper {
 		context.getMatrices().push();
 		context.getMatrices().translate(0, 0, 500);
 
-		for (Map.Entry<Text, Integer> entry : groupedItems.entrySet()) {
+		for (Object2IntMap.Entry<Text> entry : groupedItems.object2IntEntrySet()) {
 			Text itemName = entry.getKey();
-			int totalAmount = entry.getValue();
+			int totalAmount = entry.getIntValue();
 			List<Visitor> visitors = visitorsByItem.get(itemName);
 
 			if (visitors == null || visitors.isEmpty()) continue;
@@ -244,7 +244,7 @@ public class VisitorHelper {
 	public static void onSlotClick(Slot slot, int slotId, String title) {
 		if ((slotId == 29 || slotId == 13 || slotId == 33) && slot.hasStack() &&
 				ItemUtils.getLoreLineIf(slot.getStack(), s -> s.equals("Click to give!") || s.equals("Click to refuse!")) != null) {
-			activeVisitors.entrySet().removeIf(entry -> entry.getKey().name().getString().equals(title));
+			activeVisitors.removeIf(entry -> entry.name().getString().equals(title));
 		}
 
 		updateItems();

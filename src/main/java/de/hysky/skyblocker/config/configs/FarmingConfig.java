@@ -8,7 +8,7 @@ public class FarmingConfig {
     public Garden garden = new Garden();
 
 	@SerialEntry
-	public visitorHelper visitorHelper = new visitorHelper();
+	public VisitorHelper visitorHelper = new VisitorHelper();
 
     public static class Garden {
         @SerialEntry
@@ -36,7 +36,7 @@ public class FarmingConfig {
         public boolean closeScreenOnPlotClick = false;
     }
 
-	public static class visitorHelper {
+	public static class VisitorHelper {
 		@SerialEntry
 		public boolean visitorHelper = true;
 

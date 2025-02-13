@@ -112,9 +112,5 @@ public class VacuumSolver {
 		for (BlockPos pos : linkedMarkers.values()) {
 			RenderHelper.renderFilled(context, pos, color, 1, false);
 		}
-
-		if (linkedMarkers.isEmpty() && fixedDestination != null) {
-			RenderHelper.renderFilled(context, fixedDestination, color, 1, false);
-		}
 	}
 }
