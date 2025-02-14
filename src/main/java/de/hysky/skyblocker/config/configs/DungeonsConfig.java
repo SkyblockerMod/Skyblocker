@@ -19,6 +19,9 @@ public class DungeonsConfig {
     public boolean playerSecretsTracker = false;
 
     @SerialEntry
+    public boolean classBasedPlayerGlow = true;
+
+    @SerialEntry
     public boolean starredMobGlow = false;
 
     @SerialEntry
@@ -107,6 +110,9 @@ public class DungeonsConfig {
 
         @SerialEntry
         public boolean solveTrivia = true;
+
+		@SerialEntry
+		public boolean solveTeleportMaze = true;
     }
 
     public static class TheProfessor {

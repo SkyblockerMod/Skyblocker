@@ -5,9 +5,8 @@
 
   "key.categories.skyblocker": "Skyblocker",
   "key.hotbarSlotLock": "Slot Lock (Hotbar)",
-  "key.skyblocker.toggleB": "Toggle tab HUD to screen B",
   "key.skyblocker.defaultTgl": "Switch tab HUD to default view",
-  "key.skyblocker.toggleA": "Toggle tab HUD to screen A",
+  "key.skyblocker.toggleA": "Show tab HUD secondary view",
   "key.skyblocker.debug.dumpNearbyEntities": "Dump Nearby Entities",
   "key.skyblocker.debug.dumpHoveredItem": "Dump Hovered Item",
   "key.wikiLookup": "Wiki Lookup",
@@ -23,6 +22,8 @@
   "text.skyblocker.quit_discard": "Quit & Discard Changes",
   "text.skyblocker.confirm": "Confirm",
   "text.skyblocker.config": "Open Config...",
+  "text.skyblocker.reset": "Reset",
+  "text.skyblocker.undo": "Undo",
   "text.skyblocker.source": "Source",
   "text.skyblocker.website": "Website",
   "text.skyblocker.translate": "Translate",
@@ -68,6 +69,7 @@
   "skyblocker.config.debug.dumpRange.@Tooltip": "The range in blocks around the player to dump entities within.",
   "skyblocker.config.debug.showInvisibleArmorStands": "Show Invisible Armor Stands",
   "skyblocker.config.debug.debugWebSockets": "Enable Websocket Debug Messages",
+  "skyblocker.config.debug.corpseFinderDebug": "Debug Corpse Finder",
 
   "skyblocker.config.dungeons": "Dungeons",
 
@@ -76,6 +78,9 @@
 
   "skyblocker.config.dungeons.croesusHelper": "Croesus Helper",
   "skyblocker.config.dungeons.croesusHelper.@Tooltip": "Gray out chests that have already been opened.",
+
+  "skyblocker.config.dungeons.classBasedPlayerGlow": "Class-based Player Glow",
+  "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "Changes the color of your teammates glow to be based on their class rather than their rank.",
 
   "skyblocker.config.dungeons.goldorWaypoints": "Goldor Tasks Waypoints (F7/M7)",
   "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Enable waypoints for terminals/devices/levers during Goldor",
@@ -183,6 +188,7 @@
   "skyblocker.config.dungeons.puzzle.solveBoulder.@Tooltip": "Draws a line to the chest and highlight button",
   "skyblocker.config.dungeons.puzzle.solveIceFill": "Solve Ice Fill Puzzle",
   "skyblocker.config.dungeons.puzzle.solveSilverfish": "Solve Silverfish Puzzle",
+  "skyblocker.config.dungeons.puzzle.solveTeleportMaze": "Solve Teleport Maze Puzzle",
   "skyblocker.config.dungeons.puzzle.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
   "skyblocker.config.dungeons.puzzle.solveTicTacToe": "Solve Tic Tac Toe Puzzle",
   "skyblocker.config.dungeons.puzzle.solveTicTacToe.@Tooltip": "Puts a red box around the next best move for you to make!",
@@ -257,8 +263,6 @@
   "skyblocker.config.general.hitbox.oldMushroomHitbox": "Enable 1.8 mushroom hitbox",
 
   "skyblocker.config.general.itemInfoDisplay": "Item Info Display",
-  "skyblocker.config.general.itemInfoDisplay.attributeShardInfo": "Attribute Shard Info",
-  "skyblocker.config.general.itemInfoDisplay.attributeShardInfo.@Tooltip": "Displays the attribute's level and the initials of the attribute's name on the slot containing the item.",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle": "Item Rarity Background Style",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.@Tooltip": "Choose between a circular or a square background style!",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.style.CIRCULAR": "Circular",
@@ -266,16 +270,15 @@
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds": "Item Rarity Backgrounds",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Displays a colored background behind an item, the color represents the item's rarity.",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsOpacity": "Item Rarity Backgrounds Opacity",
-  "skyblocker.config.general.itemInfoDisplay.slotText": "Slot Text",
-  "skyblocker.config.general.itemInfoDisplay.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level",
-  "skyblocker.config.general.itemInfoDisplay.slotText.mode.ENABLED": "Enabled",
-  "skyblocker.config.general.itemInfoDisplay.slotText.mode.HOLD_TO_SHOW": "Hold to Show",
-  "skyblocker.config.general.itemInfoDisplay.slotText.mode.PRESS_TO_TOGGLE": "Press to Toggle",
-  "skyblocker.config.general.itemInfoDisplay.slotText.mode.HOLD_TO_HIDE": "Hold to Hide",
-  "skyblocker.config.general.itemInfoDisplay.slotText.mode.DISABLED": "Disabled",
 
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
+
+  "skyblocker.config.general.itemList.filter.all": "All",
+  "skyblocker.config.general.itemList.filter.entities": "Entities",
+  "skyblocker.config.general.itemList.filter.npcs": "NPCs",
+  "skyblocker.config.general.itemList.filter.mayors": "Mayors",
+  "skyblocker.config.general.itemList.filter.items": "Items",
 
   "skyblocker.config.general.itemProtection": "Item Protection",
   "skyblocker.config.general.itemProtection.protectValuableConsumables": "Protect Valuable Consumables",
@@ -332,6 +335,12 @@
   "skyblocker.config.general.searchOverlay.maxPet": "Max Pet Level",
   "skyblocker.config.general.searchOverlay.maxPet.@Tooltip": "Only show pets that are max level",
 
+  "skyblocker.config.general.speedPresets": "Speed Presets",
+  "skyblocker.config.general.speedPresets.config": "Speed Presets Config...",
+  "skyblocker.config.general.speedPresets.config.title": "Title",
+  "skyblocker.config.general.speedPresets.config.speed": "Speed",
+  "skyblocker.config.general.speedPresets.enableSpeedPresets": "Enable Speed Presets",
+
   "skyblocker.config.general.shortcuts": "Shortcuts",
   "skyblocker.config.general.shortcuts.config": "Shortcuts Config...",
   "skyblocker.config.general.shortcuts.enableCommandArgShortcuts": "Enable Command Argument Shortcuts",
@@ -366,6 +375,12 @@
   "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Draws icons on top of orders to explain the current state of the order.\n\n%s: Order is going to expire soon\n%s: Order has expired\n%s: Order is filled to some degree and there are items/coins to claim\n%s: Order is filled",
 
+  "skyblocker.config.helpers.carnival": "Chivalrous Carnival",
+  "skyblocker.config.helpers.carnival.catchAFishHelper": "Catch a Fish Helper",
+  "skyblocker.config.helpers.carnival.catchAFishHelper.@Tooltip": "Makes golden fish glow.",
+  "skyblocker.config.helpers.carnival.zombieShootoutHelper": "Zombie Shootout Helper",
+  "skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip": "Outlines lit redstone lamps in red, and applies the glowing effect to zombies where the color depends on the kind of zombie.",
+
   "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper.@Tooltip": "Highlights the best upgrade when enabled. \n\nThe best upgrade is marked as green, but if you can't afford it, it's marked as yellow while marking the next best upgrade that you can afford as green.",
@@ -381,6 +396,9 @@
 
   "skyblocker.config.helpers.enableNewYearCakesHelper": "Enable New Year Cakes Helper",
   "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "Highlights the missing new year cakes green and the cakes you have already red.\n\nRequires you to open your cake bag at least once to work.",
+  "skyblocker.config.helpers.enableBitsHelper": "Highlight best Community Store (Bits Shop) offer",
+  "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip",
+
 
   "skyblocker.config.helpers.enableWardrobeHelper": "Enable Wardrobe Helper",
   "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing armor from the wardrobe by pressing hotbar keys 1-9 while the menu is open. The corresponding armor set in the wardrobe menu will be equipped.",
@@ -428,8 +446,6 @@
   "skyblocker.config.chat.chatRules": "Custom Chat Rules",
   "skyblocker.config.chat.chatRules.announcementLength": "Announcement Display Time",
   "skyblocker.config.chat.chatRules.announcementLength.@Tooltip": "The amount of time the announcement will show for in ticks.",
-  "skyblocker.config.chat.chatRules.announcementScale": "Announcement Size",
-  "skyblocker.config.chat.chatRules.announcementScale.@Tooltip": "The amount to scale the size of the announcement.",
   "skyblocker.config.chat.chatRules.screen": "Chat Rules Config...",
   "skyblocker.config.chat.chatRules.screen.deleteQuestion": "Are you sure you want to remove this rule?",
   "skyblocker.config.chat.chatRules.screen.deleteWarning": "Rule '%s' will be lost forever! (A long time!)",
@@ -558,6 +574,9 @@
   "skyblocker.config.mining.crystalHollows.chestHighlighter.@Tooltip": "Highlight found treasure chests and lock pick locations when powder mining.",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "Chest Highlight Color",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "What color the treasure chests / lock pick should be highlighted.",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter": "Powder Tracker Shown Items",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip": "Choose which items to show & include in the profit calculation for the powder tracker.",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter.screenTitle": "Shown Items",
 
   "skyblocker.config.mining.crystalsHud": "Crystal Hollows Map",
   "skyblocker.config.mining.crystalsHud.enabled": "Enabled",
@@ -603,14 +622,15 @@
   "skyblocker.config.mining.dwarvenHud.enabledCommissions": "Enable Commissions",
   "skyblocker.config.mining.dwarvenHud.enabledPowder": "Enable Powder",
   "skyblocker.config.mining.dwarvenHud.screen": "Dwarven HUD Config...",
-  "skyblocker.config.mining.dwarvenHud.style": "Style for HUD",
-  "skyblocker.config.mining.dwarvenHud.style.@Tooltip[0]": "Simple: Shows name and percentage.",
-  "skyblocker.config.mining.dwarvenHud.style.@Tooltip[1]": "\nFancy: Shows name, percentage, progress bar and an icon.",
-  "skyblocker.config.mining.dwarvenHud.style.@Tooltip[2]": "\nClassic: Shows name and percentage in a very simple box.",
 
   "skyblocker.config.mining.dwarvenMines": "Dwarven Mines",
   "skyblocker.config.mining.dwarvenMines.solveFetchur": "Solve Fetchur",
   "skyblocker.config.mining.dwarvenMines.solvePuzzler": "Solve Puzzler Puzzle",
+  "skyblocker.config.mining.dwarvenMines.enableCarpetHighlight": "Enable Unbreakable Carpet Highlighter",
+  "skyblocker.config.mining.dwarvenMines.enableCarpetHighlight.@Tooltip": "Highlights unbreakable carpets within ore veins in the Dwarven Mines.",
+  "skyblocker.config.mining.dwarvenMines.carpetHighlightColor": "Carpet Highlight Color",
+  "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Sets the color of the highlight for the unbreakable carpets.",
+
 
   "skyblocker.config.mining.enableDrillFuel": "Enable Drill Fuel",
 
@@ -618,7 +638,13 @@
 
   "skyblocker.config.mining.glacite": "Glacite Tunnels",
   "skyblocker.config.mining.glacite.coldOverlay": "Cold Overlay",
-  "skyblocker.config.mining.glacite.coldOverlay@Tooltip": "Shows a frosty overlay in the Glacite mines that gets stronger as you get colder.",
+  "skyblocker.config.mining.glacite.coldOverlay.@Tooltip": "Shows a frosty overlay in the Glacite mines that gets stronger as you get colder.",
+  "skyblocker.config.mining.glacite.enableCorpseFinder": "Corpse Finder",
+  "skyblocker.config.mining.glacite.enableCorpseFinder.@Tooltip": "Creates waypoints for corpses. Allows for sharing them.",
+  "skyblocker.config.mining.glacite.enableParsingChatCorpseFinder": "Parse Corpses from chat",
+  "skyblocker.config.mining.glacite.enableParsingChatCorpseFinder.@Tooltip": "If enabled, will listen to chat and process corpses shared by other players. Should be compatible with other mods.",
+  "skyblocker.config.mining.glacite.autoShareCorpses": "Automatically Share Found Corpses In Chat",
+  "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "Sends a message in party chat with the location of the found corpse when you find one.",
 
   "skyblocker.config.misc": "Misc",
 
@@ -752,6 +778,9 @@
   "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defence, Speed & XP Bars",
   "skyblocker.config.uiAndVisuals.bars.enableBars": "Enable Bars",
 
+  "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation": "Cancel Component Update Animation",
+  "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip": "Cancels the down-and-up animation in your hand that plays when an item's components are updated.",
+
   "skyblocker.config.uiAndVisuals.chestValue": "Chest Value",
   "skyblocker.config.uiAndVisuals.chestValue.color": "Chest Value Color",
   "skyblocker.config.uiAndVisuals.chestValue.enableChestValue": "Enable Chest Value",
@@ -791,6 +820,8 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "Enables the ability for you to do calculations when inputting values such as price for the ah.\n Key:\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\n purse/P = current purse value",
   "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals": "Only show with \"=\".",
   "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "Only show the calculator when the message starts with \"=\".",
+  "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter": "Close signs with enter",
+  "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter.@Tooltip": "Close the current open sign screen with the enter key",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
 
 
@@ -806,6 +837,38 @@
 
   "skyblocker.config.uiAndVisuals.itemCooldown": "Item Cooldown",
   "skyblocker.config.uiAndVisuals.itemCooldown.enableItemCooldowns": "Enable Item Cooldown",
+
+  "skyblocker.config.uiAndVisuals.slotText": "Slot Text",
+  "skyblocker.config.uiAndVisuals.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level",
+  "skyblocker.config.uiAndVisuals.slotText.mode.ENABLED": "Enabled",
+  "skyblocker.config.uiAndVisuals.slotText.mode.HOLD_TO_SHOW": "Hold to Show",
+  "skyblocker.config.uiAndVisuals.slotText.mode.PRESS_TO_TOGGLE": "Press to Toggle",
+  "skyblocker.config.uiAndVisuals.slotText.mode.HOLD_TO_HIDE": "Hold to Hide",
+  "skyblocker.config.uiAndVisuals.slotText.mode.DISABLED": "Disabled",
+  "skyblocker.config.uiAndVisuals.slotText.separator": "Individual Toggles",
+
+  "skyblocker.config.uiAndVisuals.slotText.attributeShard": "Attribute Shards",
+  "skyblocker.config.uiAndVisuals.slotText.attributeShard.@Tooltip": "Displays the attribute's level and the initials of the attribute's name.",
+  "skyblocker.config.uiAndVisuals.slotText.catacombsLevel": "Catacombs Class Level",
+  "skyblocker.config.uiAndVisuals.slotText.collectionLevel": "Collection Level",
+  "skyblocker.config.uiAndVisuals.slotText.communityShop": "Community Shop",
+  "skyblocker.config.uiAndVisuals.slotText.communityShop.@Tooltip": "Displays the level of the upgrades in the community shop.",
+  "skyblocker.config.uiAndVisuals.slotText.enchantmentLevel": "Enchantment Book Level",
+  "skyblocker.config.uiAndVisuals.slotText.essenceShop": "Essence Shop",
+  "skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip": "Displays the levels and your current amount of essence while in essence shops.",
+  "skyblocker.config.uiAndVisuals.slotText.minionLevel": "Minion Level",
+  "skyblocker.config.uiAndVisuals.slotText.petLevel": "Pet Level",
+  "skyblocker.config.uiAndVisuals.slotText.potionLevel": "Potion Level",
+  "skyblocker.config.uiAndVisuals.slotText.powerStonesGuide": "Power Stones Guide",
+  "skyblocker.config.uiAndVisuals.slotText.powerStonesGuide.@Tooltip": "Displays if you learned a power or not in the power stones guide.",
+  "skyblocker.config.uiAndVisuals.slotText.prehistoricEgg": "Prehistoric Egg",
+  "skyblocker.config.uiAndVisuals.slotText.prehistoricEgg.@Tooltip": "Displays your current number of blocks traveled with the egg.",
+  "skyblocker.config.uiAndVisuals.slotText.rancherBoots": "Rancher Boots Speed",
+  "skyblocker.config.uiAndVisuals.slotText.skillLevel": "Skill Level",
+  "skyblocker.config.uiAndVisuals.slotText.skyblockLevel": "Skyblock Level",
+  "skyblocker.config.uiAndVisuals.slotText.statsTuning": "Stats Tuning",
+  "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "Displays your assigned and unassigned tuning points",
+  "skyblocker.config.uiAndVisuals.slotText.yourEssence": "Your Essence",
 
   "skyblocker.config.uiAndVisuals.searchOverlay": "Search Overlay",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",
@@ -823,6 +886,22 @@
 
   "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
 
+  "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip": "Smooths out teleporting with right click teleport abilities.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission": "Enable Ether Transmission",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip": "For: Etherwarp Conduit and Ether Merged.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission": "Enable Instant Transmission",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission.@Tooltip": "For: AOTE and AOTV.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission": "Enable Sinrecall Transmission",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip": "For: Sinseeker Scythe.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission": "Enable Weird Transmission",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip": "For: Aspect of the Leech.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact": "Enable Wither Impact",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "For: Necron's Blade, Hyperion, Astraea, Scylla, and Valkyrie.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag": "Maximum Added Lag (ms)",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "How long the animation is allowed to get behind the game in milliseconds. (If set to 0, smoothing will not have any lag, but stuttering will likely occur. Increase this value if you're experiencing flashing.)",
+
+  
   "skyblocker.config.uiAndVisuals.tabHud": "Fancy HUD and TAB",
   "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Open Config Screen",
   "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Default Positioning Behavior",
@@ -830,6 +909,17 @@
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip": "Enables the background of the non-tab HUD.",
   "skyblocker.config.uiAndVisuals.tabHud.effectsFooter": "Effects from footer",
   "skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip": "If on, will fetch current effects from the tab footer if the Hypixel Effects Widget is disabled.",
+  "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault": "Show Vanilla Tab by Default",
+  "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault.@Tooltip": "If on, will show the vanilla tab by default. Press the toggle key to show fancy tab HUD.",
+  "skyblocker.config.uiAndVisuals.tabHud.style": "Style for fancy HUD and TAB",
+  "skyblocker.config.uiAndVisuals.tabHud.style.MINIMAL": "Minimal",
+  "skyblocker.config.uiAndVisuals.tabHud.style.SIMPLE": "Simple",
+  "skyblocker.config.uiAndVisuals.tabHud.style.CLASSIC": "Classic",
+  "skyblocker.config.uiAndVisuals.tabHud.style.FANCY": "Fancy",
+  "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]": "Minimal: Shows minimal information in simple boxes.\n",
+  "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]": "Simple: Shows essential information in normal boxes.\n",
+  "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]": "Classic: Shows information with decorations in normal boxes.\n",
+  "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[3]": "Fancy: Shows information formatted in custom components with decorations in normal boxes.\n",
   "skyblocker.config.uiAndVisuals.tabHud.tabHudEnabled": "Enable fancy tab HUD",
   "skyblocker.config.uiAndVisuals.tabHud.tabHudScale": "Scale factor of fancy tab HUD",
   "skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip": "Value in %, relative to your vanilla GUI scale",
@@ -1118,6 +1208,7 @@
   "skyblocker.tips.newYearCakesHelper": "Open your New Year Cake Bag and Skyblocker will remember them and highlight duplicate cakes red and missing cakes green.",
   "skyblocker.tips.accessoryHelper": "Open your accessory bag and Skyblocker will remember them. The accessory helper will tell you what accessories you have and what accessories are missing.",
   "skyblocker.tips.fancyAuctionHouseCheapHighlight": "Cheap BINs are highlighted in green in the Fancy Auction House.",
+  "skyblocker.tips.viewRecipe": "Right-Click on a recipe result in the recipe book to access the super-craft menu.",
 
   "skyblocker.partyFinder.tabs.partyFinder": "Party Finder",
   "skyblocker.partyFinder.tabs.searchSettings": "Search Filters",

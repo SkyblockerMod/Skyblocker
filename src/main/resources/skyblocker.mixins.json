@@ -7,6 +7,7 @@
     "BackgroundRendererMixin",
     "BatEntityMixin",
     "BossBarHudMixin",
+    "CameraMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldMixin",
@@ -22,11 +23,13 @@
     "GenericContainerScreenHandlerMixin",
     "HandledScreenMixin",
     "HandledScreenProviderMixin",
+    "HeldItemRendererMixin",
     "InGameHudMixin",
     "InGameOverlayRendererMixin",
     "InventoryScreenMixin",
     "ItemStackMixin",
     "LeverBlockMixin",
+    "MessageHandlerMixin",
     "MinecraftClientMixin",
     "MouseMixin",
     "MushroomPlantBlockMixin",
@@ -60,7 +63,8 @@
     "accessors.SlotAccessor",
     "accessors.WorldRendererAccessor",
     "discordipc.ConnectionMixin",
-    "jgit.SystemReaderMixin"
+    "jgit.SystemReaderMixin",
+    "jgit.UrlConfigMixin"
   ],
   "injectors": {
     "defaultRequire": 1

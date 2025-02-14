@@ -5,7 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.preview.PreviewTab;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -275,7 +275,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 			this.handler.onClosed(this.client.player);
 		}
 		handler.removeListener(this);
-		Scheduler.INSTANCE.schedule(PlayerListMgr::updateList, 1);
+		Scheduler.INSTANCE.schedule(PlayerListManager::updateList, 1);
 		SkyblockerConfigManager.save();
 	}
 

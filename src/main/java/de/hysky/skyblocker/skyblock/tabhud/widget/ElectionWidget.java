@@ -2,9 +2,9 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -24,8 +24,8 @@ public class ElectionWidget extends TabHudWidget {
 
 	private static final HashMap<String, ItemStack> MAYOR_DATA = new HashMap<>();
 
-	private static final Text EL_OVER = Text.literal("Election ")
-			.append(Text.literal("over!").formatted(Formatting.RED));
+	private static final Text EL_OVER = Text.literal("Election: ")
+			.append(Text.literal("Over!").formatted(Formatting.RED));
 
 	// pattern matching a candidate while people are voting
 	// group 1: name
@@ -84,9 +84,7 @@ public class ElectionWidget extends TabHudWidget {
 					String pcntstr = m.group("pcnt");
 					float pcnt = Float.parseFloat(pcntstr);
 					Text candidate = Text.literal(mayorname).formatted(COLS[i - 1]);
-					ProgressComponent pc = new ProgressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt,
-							COLS[i - 1].getColorValue());
-					this.addComponent(pc);
+					this.addComponent(Components.progressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt, COLS[i - 1].getColorValue()));
 				} else this.addComponent(new PlainTextComponent(lines.get(i)));
 			}
 		}

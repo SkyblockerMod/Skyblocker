@@ -3,33 +3,44 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.FishingHelper;
+import de.hysky.skyblocker.skyblock.SmoothAOTE;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
+import de.hysky.skyblocker.skyblock.dungeon.puzzle.TeleportMaze;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dwarven.CorpseFinder;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
 import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.utils.Utils;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientCommonNetworkHandler;
+import net.minecraft.client.network.ClientConnectionState;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,14 +50,21 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * All mixins in this file should be arranged in the order of the methods they inject into.
+ */
 @Mixin(ClientPlayNetworkHandler.class)
-public abstract class ClientPlayNetworkHandlerMixin {
+public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkHandler {
 	@Shadow
 	private ClientWorld world;
 
 	@Shadow
 	@Final
 	private static Logger LOGGER;
+
+	protected ClientPlayNetworkHandlerMixin(MinecraftClient client, ClientConnection connection, ClientConnectionState connectionState) {
+		super(client, connection, connectionState);
+	}
 
 	@Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
 	private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
@@ -57,6 +75,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
 		EggFinder.checkIfEgg(armorStandEntity);
+		CorpseFinder.checkIfCorpse(armorStandEntity);
 		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
 			CompactDamage.compactDamage(armorStandEntity);
 		} catch (Exception e) {
@@ -69,6 +88,19 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		if (world.getEntityById(entityId) instanceof ItemEntity itemEntity) {
 			DungeonManager.onItemPickup(itemEntity);
 		}
+	}
+
+	@Inject(method = "onPlayerPositionLook", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
+	private void skyblocker$beforeTeleport(PlayerPositionLookS2CPacket packet, CallbackInfo ci, @Share("playerBeforeTeleportBlockPos") LocalRef<BlockPos> beforeTeleport) {
+		beforeTeleport.set(client.player.getBlockPos().toImmutable());
+	}
+
+	@Inject(method = "onPlayerPositionLook", at = @At(value = "RETURN"))
+	private void skyblocker$onTeleport(PlayerPositionLookS2CPacket packet, CallbackInfo ci, @Share("playerBeforeTeleportBlockPos") LocalRef<BlockPos> beforeTeleport) {
+		//player has been teleported by the server, tell the smooth AOTE this
+		SmoothAOTE.playerTeleported();
+
+		TeleportMaze.INSTANCE.onTeleport(client, beforeTeleport.get(), client.player.getBlockPos().toImmutable());
 	}
 
 	@ModifyVariable(method = "onItemPickupAnimation", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V", ordinal = 0))
@@ -94,11 +126,12 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
 	private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
 		EggFinder.checkIfEgg(entity);
+		CorpseFinder.checkIfCorpse(entity);
 	}
 
 	@Inject(method = "onPlayerListHeader", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;setFooter(Lnet/minecraft/text/Text;)V"))
 	private void skyblocker$updatePlayerListFooter(PlayerListHeaderS2CPacket packet, CallbackInfo ci) {
-		PlayerListMgr.updateFooter(packet.footer());
+		PlayerListManager.updateFooter(packet.footer());
 	}
 
 	@WrapWithCondition(method = "onPlayerList", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false))
@@ -129,7 +162,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		return !(Utils.isOnHypixel() && ((Identifier) identifier).getNamespace().equals("badlion"));
 	}
 
-	@WrapWithCondition(method = {"onScoreboardScoreUpdate", "onScoreboardScoreReset"}, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
+	@WrapWithCondition(method = {"onScoreboardScoreUpdate", "onScoreboardScoreReset"}, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false), require = 2)
 	private boolean skyblocker$cancelUnknownScoreboardObjectiveWarnings(Logger instance, String message, Object objectiveName) {
 		return !Utils.isOnHypixel();
 	}
@@ -146,5 +179,16 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		CrystalsChestHighlighter.onParticle(packet);
 		EnderNodes.onParticle(packet);
 		WishingCompassSolver.onParticle(packet);
+	}
+
+	@ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;shouldShowPacketSizeAndPingCharts()Z"))
+	private boolean shouldShowPacketSizeAndPingCharts(boolean original) {
+		//make the f3+3 screen always send ping packets even when closed
+		//this is needed to make smooth AOTE work so check if its enabled
+		UIAndVisualsConfig.SmoothAOTE options = SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE;
+		if (Utils.isOnSkyblock() && !SmoothAOTE.teleportDisabled && (options.enableWeirdTransmission || options.enableEtherTransmission || options.enableInstantTransmission || options.enableSinrecallTransmission || options.enableWitherImpact)) {
+			return true;
+		}
+		return original;
 	}
 }

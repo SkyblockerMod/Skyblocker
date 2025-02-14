@@ -165,14 +165,6 @@ public class ChatCategory {
                                         newValue -> config.chat.chatRuleConfig.announcementLength = newValue)
                                 .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(5, 200).step(1))
                                 .build())
-                        .option(Option.<Integer>createBuilder()
-                                .name(Text.translatable("skyblocker.config.chat.chatRules.announcementScale"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.chat.chatRules.announcementScale.@Tooltip")))
-                                .binding(defaults.chat.chatRuleConfig.announcementScale,
-                                        () -> config.chat.chatRuleConfig.announcementScale,
-                                        newValue -> config.chat.chatRuleConfig.announcementScale = newValue)
-                                .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 8).step(1))
-                                .build())
                         .build())
                 .build();
     }

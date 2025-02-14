@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoFatTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -46,7 +46,7 @@ public class EffectWidget extends TabHudWidget {
 	}
 
 	private void fetchFromFooter() {
-		String footertext = PlayerListMgr.getFooter();
+		String footertext = PlayerListManager.getFooter();
 
 		if (footertext == null || !footertext.contains("Active Effects")) {
 			this.addComponent(new IcoTextComponent());

@@ -4,16 +4,18 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
@@ -23,6 +25,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.awt.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Objects;
 
 public class UIAndVisualsCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
@@ -90,6 +95,14 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip")))
+                        .binding(defaults.uiAndVisuals.cancelComponentUpdateAnimation,
+                                () -> config.uiAndVisuals.cancelComponentUpdateAnimation,
+                                newValue -> config.uiAndVisuals.cancelComponentUpdateAnimation = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
 
                 //Chest Value FIXME change dropdown to color controller
                 .group(OptionGroup.createBuilder()
@@ -132,6 +145,23 @@ public class UIAndVisualsCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
+
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.slotText"))
+						.collapsed(true)
+						.option(Option.<SlotTextMode>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.slotText"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.slotText.@Tooltip")))
+								.binding(defaults.uiAndVisuals.slotText.slotTextMode,
+										() -> config.uiAndVisuals.slotText.slotTextMode,
+										newValue -> config.uiAndVisuals.slotText.slotTextMode = newValue)
+								.controller(ConfigUtils::createEnumCyclingListController)
+								.build())
+						.option(ConfigUtils.createShortcutToKeybindsScreen())
+						.option(LabelOption.create(Text.translatable("skyblocker.config.uiAndVisuals.slotText.separator")))
+						.options(createSlotTextToggles(config))
+						.build()
+				)
 
                 // Inventory Search
                 .group(OptionGroup.createBuilder()
@@ -196,7 +226,7 @@ public class UIAndVisualsCategory {
 								.text(Text.translatable("text.skyblocker.open"))
 								.action((screen, opt) -> {
 									if (Utils.isOnSkyblock()) {
-										MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets");
+										MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
 									} else {
 										MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, ScreenMaster.ScreenLayer.MAIN_TAB, screen));
 									}
@@ -210,6 +240,25 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.tabHud.tabHudScale = newValue)
                                 .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(10, 200).step(1))
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault.@Tooltip")))
+								.binding(defaults.uiAndVisuals.tabHud.showVanillaTabByDefault,
+										() -> config.uiAndVisuals.tabHud.showVanillaTabByDefault,
+										newValue -> config.uiAndVisuals.tabHud.showVanillaTabByDefault = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<UIAndVisualsConfig.TabHudStyle>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]"),
+										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]"),
+										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]"),
+										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[3]")))
+								.binding(defaults.uiAndVisuals.tabHud.style,
+										() -> config.uiAndVisuals.tabHud.style,
+										newValue -> config.uiAndVisuals.tabHud.style = newValue)
+								.controller(ConfigUtils::createEnumCyclingListController)
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip")))
@@ -349,6 +398,61 @@ public class UIAndVisualsCategory {
                                 .build())
                         .build())
 
+                //Smooth AOTE
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip")))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableWeirdTransmission,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableWeirdTransmission,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableWeirdTransmission = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableInstantTransmission,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableInstantTransmission,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableInstantTransmission = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableEtherTransmission,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableEtherTransmission,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableEtherTransmission = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableSinrecallTransmission,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableWitherImpact,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableWitherImpact,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableWitherImpact = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip")))
+								.binding(defaults.uiAndVisuals.smoothAOTE.maximumAddedLag,
+										() -> config.uiAndVisuals.smoothAOTE.maximumAddedLag,
+										newValue -> config.uiAndVisuals.smoothAOTE.maximumAddedLag = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 500).step(1))
+								.build())
+                        .build())
+
                 //Search overlay
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay"))
@@ -423,6 +527,14 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.inputCalculator.requiresEquals = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter.@Tooltip")))
+								.binding(defaults.uiAndVisuals.inputCalculator.closeSignsWithEnter,
+										() -> config.uiAndVisuals.inputCalculator.closeSignsWithEnter,
+										newValue -> config.uiAndVisuals.inputCalculator.closeSignsWithEnter = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 //Flame Overlay
@@ -492,4 +604,10 @@ public class UIAndVisualsCategory {
 
                 .build();
     }
+
+	private static Collection<Option<Boolean>> createSlotTextToggles(SkyblockerConfig config) {
+		return SlotTextManager.getAdderStream().map(SlotTextAdder::getConfigInformation).filter(Objects::nonNull).distinct()
+				.map(configInfo -> configInfo.getOption(config))
+				.sorted(Comparator.comparing(option -> option.name().getString())).toList();
+	}
 }

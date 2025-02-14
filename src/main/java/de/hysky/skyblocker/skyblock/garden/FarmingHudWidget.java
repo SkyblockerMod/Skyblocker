@@ -6,8 +6,8 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
@@ -96,7 +96,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 		addSimpleIcoText(Ico.GOLD, "Coins/h: ", Formatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
 		addSimpleIcoText(cropStack, "Blocks/s: ", Formatting.YELLOW, Integer.toString(FarmingHud.blockBreaks()));
 		//noinspection DataFlowIssue
-		addComponent(new ProgressComponent(Ico.LANTERN, Text.literal("Farming Level: "), FarmingHud.farmingXpPercentProgress(), Formatting.GOLD.getColorValue()));
+		addComponent(Components.progressComponent(Ico.LANTERN, Text.literal("Farming Level: "), FarmingHud.farmingXpPercentProgress(), Formatting.GOLD.getColorValue()));
 		addSimpleIcoText(Ico.LIME_DYE, "Farming XP/h: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) FarmingHud.farmingXpPerHour()));
 
 		Entity cameraEntity = client.getCameraEntity();

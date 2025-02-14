@@ -107,7 +107,7 @@ public class WaypointGroup {
     }
 
     public void render(WorldRenderContext context) {
-        if (ordered) {
+        if (ordered && !waypoints.isEmpty()) {
             for (int i = 0; i < waypoints.size(); i++) {
                 NamedWaypoint waypoint = waypoints.get(i);
                 if (waypoint.pos.isWithinDistance(MinecraftClient.getInstance().player.getPos(), WAYPOINT_ACTIVATION_RADIUS)) {

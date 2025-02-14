@@ -79,7 +79,7 @@ public class VisitorHelper {
                 // The text starts at `TEXT_START_X + ENTRY_INDENT + ITEM_INDENT`
                 if (isMouseOverText(mouseX, mouseY, TEXT_START_X + ENTRY_INDENT + ITEM_INDENT, yPosition, textWidth, textRenderer.fontHeight)) {
                     // Send command to buy the item from the bazaar
-                    MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText);
+                    MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemText, true);
                     return;
                 }
 

@@ -8,9 +8,9 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.MinecraftClient;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+
 import net.minecraft.client.render.RenderPhase;
-import net.minecraft.client.render.WorldRenderer;
 
 @Mixin(RenderPhase.DepthTest.class)
 public class RenderPhaseDepthTestMixin {
@@ -19,9 +19,7 @@ public class RenderPhaseDepthTestMixin {
 	private static Runnable skyblocker$modifyOutlineAlwaysStartAction(Runnable original, @Local(argsOnly = true) String depthFunctionName) {
 		if (depthFunctionName.equals("outline_always")) {
 			return () -> {
-				WorldRenderer worldRenderer = MinecraftClient.getInstance().worldRenderer;
-
-				if (worldRenderer != null && worldRenderer.atLeastOneMobHasCustomGlow()) {
+				if (MobGlow.atLeastOneMobHasCustomGlow()) {
 					RenderSystem.enableDepthTest();
 					RenderSystem.depthFunc(GL11.GL_LEQUAL);
 				}
@@ -35,9 +33,7 @@ public class RenderPhaseDepthTestMixin {
 	private static Runnable skyblocker$modifyOutlineAlwaysEndAction(Runnable original, @Local(argsOnly = true) String depthFunctionName) {
 		if (depthFunctionName.equals("outline_always")) {
 			return () -> {
-				WorldRenderer worldRenderer = MinecraftClient.getInstance().worldRenderer;
-
-				if (worldRenderer != null && worldRenderer.atLeastOneMobHasCustomGlow()) {
+				if (MobGlow.atLeastOneMobHasCustomGlow()) {
 					RenderSystem.disableDepthTest();
 					RenderSystem.depthFunc(GL11.GL_LEQUAL);
 				}

@@ -74,7 +74,7 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
     private void skyblocker$addGardenPlotsWidget(CallbackInfo ci) {
         if (Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget) {
             gardenPlotsWidget = new GardenPlotsWidget(x + backgroundWidth + 4, y);
-			deskButton = ButtonWidget.builder(Text.translatable("skyblocker.gardenPlots.openDesk"), button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/desk"))
+			deskButton = ButtonWidget.builder(Text.translatable("skyblocker.gardenPlots.openDesk"), button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/desk", true))
 					.dimensions(gardenPlotsWidget.getX() + 7, y + 108, 60, 15)
 					.build();
 			// make desk button get selected before the widget but render after the widget

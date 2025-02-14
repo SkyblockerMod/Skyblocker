@@ -22,6 +22,9 @@
     "client": [
       "de.hysky.skyblocker.SkyblockerMod"
     ],
+    "fabric-client-gametest": [
+      "de.hysky.skyblocker.SkyblockerGameTest"
+    ],
     "modmenu": [
       "de.hysky.skyblocker.compatibility.modmenu.ModMenuEntry"
     ],
@@ -51,7 +54,8 @@
     "immediatelyfast": "*"
   },
   "breaks": {
-    "forcecloseworldloadingscreen": "<=2.2.0"
+    "forcecloseworldloadingscreen": "<=2.2.0",
+    "skyblockmod": "<=1.10.7"
   },
   "custom": {
     "modmenu": {
@@ -64,9 +68,6 @@
     "loom:injected_interfaces": {
       "net/minecraft/class_1799": [
         "de/hysky/skyblocker/injected/SkyblockerStack"
-      ],
-      "net/minecraft/class_761": [
-        "de/hysky/skyblocker/injected/CustomGlowInfo"
       ]
     }
   }

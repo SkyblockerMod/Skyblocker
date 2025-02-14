@@ -35,11 +35,13 @@ public class PetWidget extends TabHudWidget {
 					addComponent(new PlainTextComponent(line));
 					continue;
 				}
-				String petName = split[1].trim();
+				String petName = split[1].replace("✦", "").trim();
 				if (!petName.equals(prevString)) {
 					icon = ItemRepository.getItemsStream().filter(stack -> {
-						String trim = stack.getName().getString().trim();
-						return trim.contains("]") && trim.endsWith(petName);
+						String string1 = stack.getName().getString();
+						if (!string1.contains("]")) return false;
+						String trim = string1.split("]")[1].trim();
+						return trim.equals(petName);
 					}).findFirst().orElse(Ico.BONE);
 					prevString = petName;
 				}

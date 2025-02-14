@@ -27,3 +27,6 @@ extendable method net/minecraft/nbt/StringNbtReader readCompound ()Lnet/minecraf
 extendable method net/minecraft/nbt/StringNbtReader parseList ()Lnet/minecraft/nbt/NbtElement;
 extendable method net/minecraft/nbt/StringNbtReader readComma ()Z
 extendable method net/minecraft/nbt/StringNbtReader expect (C)V
+
+# Block Shapes
+accessible field net/minecraft/block/CarpetBlock SHAPE Lnet/minecraft/util/shape/VoxelShape;

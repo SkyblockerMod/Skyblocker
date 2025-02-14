@@ -15,29 +15,32 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class DropdownWidget<T> extends ContainerWidget {
-    private static final MinecraftClient client = MinecraftClient.getInstance();
-    public static final int ENTRY_HEIGHT = 15;
-    protected final List<T> entries;
-    protected final Consumer<T> selectCallback;
+	private static final MinecraftClient client = MinecraftClient.getInstance();
+	public static final int ENTRY_HEIGHT = 15;
+	private static final int HEADER_HEIGHT = ENTRY_HEIGHT + 4;
+	protected final List<T> entries;
+	protected final Consumer<T> selectCallback;
 	private final DropdownList dropdownList;
 	protected T prevSelected;
-    protected T selected;
-    protected boolean open;
+	protected T selected;
+	protected boolean open;
+	private int maxHeight;
 
-    public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
-        super(x, y, width, Math.min((entries.size() + 1) * ENTRY_HEIGHT + 8, maxHeight), Text.empty());
-        this.entries = entries;
-        this.selectCallback = selectCallback;
-        this.selected = selected;
-		dropdownList = new DropdownList(minecraftClient, x + 1, y + ENTRY_HEIGHT + 4, width - 2, maxHeight - ENTRY_HEIGHT - 4);
+	public DropdownWidget(MinecraftClient minecraftClient, int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
+		super(x, y, width, HEADER_HEIGHT, Text.empty());
+		this.maxHeight = maxHeight;
+		this.entries = entries;
+		this.selectCallback = selectCallback;
+		this.selected = selected;
+		dropdownList = new DropdownList(minecraftClient, x + 1, y + HEADER_HEIGHT, width - 2, maxHeight - HEADER_HEIGHT);
 		for (T element : entries) {
 			dropdownList.addEntry(new Entry(element));
 		}
 	}
 
 	public void setMaxHeight(int maxHeight) {
-		setHeight(maxHeight);
-		dropdownList.setHeight(maxHeight - ENTRY_HEIGHT - 4);
+		this.maxHeight = maxHeight;
+		setOpen(open);
 	}
 
 	@Override
@@ -52,14 +55,14 @@ public class DropdownWidget<T> extends ContainerWidget {
 		matrices.translate(0, 0, 100);
 		dropdownList.visible = open;
 		dropdownList.render(context, mouseX, mouseY, delta);
-		context.fill(getX(), getY(), getRight(), getY() + ENTRY_HEIGHT + 5, 0xFF << 24);
-		context.drawBorder(getX(), getY(), getWidth(), ENTRY_HEIGHT + 5, -1);
+		context.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, 0xFF << 24);
+		context.drawBorder(getX(), getY(), getWidth(), HEADER_HEIGHT + 1, -1);
 		drawScrollableText(context, client.textRenderer, Text.literal(
-				selected.toString()),
+						selected.toString()),
 				getX() + 2,
 				getY() + 2,
 				getRight() - 2,
-				getY() + ENTRY_HEIGHT + 2,
+				getY() + HEADER_HEIGHT - 2,
 				-1);
 		matrices.pop();
 	}
@@ -67,9 +70,19 @@ public class DropdownWidget<T> extends ContainerWidget {
 	@Override
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 
+	private void setOpen(boolean open) {
+		this.open = open;
+		if (this.open) {
+			setHeight(maxHeight);
+			dropdownList.setHeight(Math.min(entries.size() * ENTRY_HEIGHT + 4, maxHeight - HEADER_HEIGHT));
+		} else {
+			setHeight(HEADER_HEIGHT);
+		}
+	}
+
 	protected void select(T entry) {
 		selected = entry;
-		open = false;
+		setOpen(false);
 		if (selected != prevSelected) {
 			selectCallback.accept(entry);
 			prevSelected = selected;
@@ -85,7 +98,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 	@Override
 	public void setY(int y) {
 		super.setY(y);
-		dropdownList.setY(getY() + ENTRY_HEIGHT + 4);
+		dropdownList.setY(getY() + HEADER_HEIGHT);
 	}
 
 	@Override
@@ -97,18 +110,18 @@ public class DropdownWidget<T> extends ContainerWidget {
 	@Override
 	public void setHeight(int height) {
 		super.setHeight(height);
-		dropdownList.setHeight(height - ENTRY_HEIGHT - 4);
+		dropdownList.setHeight(height - HEADER_HEIGHT);
 	}
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		 if (!visible) return false;
-		 if (getX() <= mouseX && mouseX < getX() + getWidth() && getY() <= mouseY && mouseY < getY() + ENTRY_HEIGHT + 4) {
-			 open = !open;
-			 playDownSound(client.getSoundManager());
-			 return true;
-		 }
-		 return super.mouseClicked(mouseX, mouseY, button);
+		if (!visible) return false;
+		if (getX() <= mouseX && mouseX < getX() + getWidth() && getY() <= mouseY && mouseY < getY() + HEADER_HEIGHT) {
+			setOpen(!open);
+			playDownSound(client.getSoundManager());
+			return true;
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
 	}
 
 	@Override
@@ -213,7 +226,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 			context.enableScissor(this.getX(), this.getY() + 1, this.getRight(), this.getBottom() - 1);
 		}
 	}
-	
+
 	private class Entry extends ElementListWidget.Entry<Entry> {
 
 		private final T entry;

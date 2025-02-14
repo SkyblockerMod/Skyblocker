@@ -22,6 +22,9 @@ public class GeneralConfig {
     @SerialEntry
     public boolean acceptReparty = true;
 
+	@SerialEntry
+	public SpeedPresets speedPresets = new SpeedPresets();
+
     @SerialEntry
     public Shortcuts shortcuts = new Shortcuts();
 
@@ -67,6 +70,12 @@ public class GeneralConfig {
 
     @SerialEntry
     public Object2ObjectOpenHashMap<String, CustomArmorAnimatedDyes.AnimatedDye> customAnimatedDyes = new Object2ObjectOpenHashMap<>();
+
+	public static class SpeedPresets {
+
+		@SerialEntry
+		public boolean enableSpeedPresets = true;
+	}
 
     public static class Shortcuts {
         @SerialEntry
@@ -174,12 +183,15 @@ public class GeneralConfig {
         @SerialEntry
         public boolean slotText = true;
 
+		@Deprecated
         @SerialEntry
         public SlotTextMode slotTextMode = SlotTextMode.ENABLED;
 
+		@Deprecated
         @SerialEntry
         public boolean slotTextToggled = true;
 
+		@Deprecated
         @SerialEntry
         public boolean attributeShardInfo = true;
 

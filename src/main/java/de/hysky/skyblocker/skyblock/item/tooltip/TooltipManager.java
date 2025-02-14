@@ -28,6 +28,7 @@ public class TooltipManager {
 			new TrueHexDyeScreenDisplay(),
 			new SupercraftReminder(),
 			ChocolateFactorySolver.INSTANCE,
+			BitsHelper.INSTANCE,
 			new ReorderHelper(),
 			new StackingEnchantProgressTooltip(0), //Would be best to have after the lore but the tech doesn't exist for that
 			new NpcPriceTooltip(1),

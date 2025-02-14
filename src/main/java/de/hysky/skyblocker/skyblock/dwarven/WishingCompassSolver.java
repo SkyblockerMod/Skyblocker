@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -110,11 +110,11 @@ public class WishingCompassSolver {
 			return false;
 		}
 		//make sure the data is in tab and if not tell the user
-		if (PlayerListMgr.getPlayerStringList().stream().noneMatch(entry -> entry.startsWith("Active Effects:"))) {
+		if (PlayerListManager.getPlayerStringList().stream().noneMatch(entry -> entry.startsWith("Active Effects:"))) {
 			CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabEffectsMessage")), false);
 			return false;
 		}
-        return PlayerListMgr.getPlayerStringList().stream().anyMatch(entry -> entry.startsWith("King's Scent"));
+        return PlayerListManager.getPlayerStringList().stream().anyMatch(entry -> entry.startsWith("King's Scent"));
     }
 
     private static boolean isKeyInInventory() {
@@ -131,13 +131,13 @@ public class WishingCompassSolver {
         }
 
         //make sure the data is in tab and if not tell the user
-        if (PlayerListMgr.getPlayerStringList().stream().noneMatch(entry -> entry.equals("Crystals:"))) {
+        if (PlayerListManager.getPlayerStringList().stream().noneMatch(entry -> entry.equals("Crystals:"))) {
             CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabMessage")), false);
             return false;
         }
 
         //return if the crystal for a zone is found
-        Stream<String> displayNameStream = PlayerListMgr.getPlayerStringList().stream();
+        Stream<String> displayNameStream = PlayerListManager.getPlayerStringList().stream();
         return switch (zone) {
             case JUNGLE -> displayNameStream.noneMatch(entry -> entry.equals("Amethyst: ✖ Not Found"));
             case MITHRIL_DEPOSITS -> displayNameStream.noneMatch(entry -> entry.equals("Jade: ✖ Not Found"));

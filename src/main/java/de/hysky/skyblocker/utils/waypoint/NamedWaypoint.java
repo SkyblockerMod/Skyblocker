@@ -19,6 +19,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class NamedWaypoint extends Waypoint {
@@ -36,7 +37,7 @@ public class NamedWaypoint extends Waypoint {
             Codec.INT.fieldOf("x").forGetter(waypoint -> waypoint.pos.getX()),
             Codec.INT.fieldOf("y").forGetter(waypoint -> waypoint.pos.getY()),
             Codec.INT.fieldOf("z").forGetter(waypoint -> waypoint.pos.getZ()),
-            Codec.either(Codec.STRING, Codec.INT).xmap(either -> either.map(str -> str, Object::toString), Either::left).fieldOf("name").forGetter(waypoint -> waypoint.name.getString()),
+            Codec.either(Codec.STRING, Codec.INT).xmap(either -> either.map(Function.identity(), Object::toString), Either::left).fieldOf("name").forGetter(waypoint -> waypoint.name.getString()),
             Codec.INT.optionalFieldOf("color", ColorHelper.getArgb(128, 0, 255, 0)).forGetter(waypoint -> (int) (waypoint.alpha * 255) << 24 | (int) (waypoint.colorComponents[0] * 255) << 16 | (int) (waypoint.colorComponents[1] * 255) << 8 | (int) (waypoint.colorComponents[2] * 255)),
             Codec.BOOL.fieldOf("enabled").forGetter(Waypoint::isEnabled)
     ).apply(instance, NamedWaypoint::fromSkytils));
@@ -159,7 +160,7 @@ public class NamedWaypoint extends Waypoint {
 
     private record ColeweightOptions(Optional<String> name) {
         public static final Codec<ColeweightOptions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.STRING.optionalFieldOf("name").forGetter(ColeweightOptions::name)
+                Codec.either(Codec.STRING, Codec.INT).xmap(either -> either.map(Function.identity(), Object::toString), Either::left).optionalFieldOf("name").forGetter(ColeweightOptions::name)
         ).apply(instance, ColeweightOptions::new));
     }
 }

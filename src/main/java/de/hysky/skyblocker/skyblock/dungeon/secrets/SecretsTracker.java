@@ -4,7 +4,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.events.DungeonEvents;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Constants;
@@ -41,6 +42,7 @@ public class SecretsTracker {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.GAME.register(SecretsTracker::onMessage);
+		DungeonEvents.DUNGEON_STARTED.register(() -> calculate(RunPhase.START));
 	}
 
 	private static void calculate(RunPhase phase) {
@@ -101,11 +103,10 @@ public class SecretsTracker {
 	}
 
 	private static void sendResultMessage(String player, SecretData secretData, boolean success) {
-		@SuppressWarnings("resource")
 		PlayerEntity playerEntity = MinecraftClient.getInstance().player;
 		if (playerEntity != null) {
 			if (success) {
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.feedback", Text.literal(player).withColor(0xf57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))), false);
+				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.feedback", Text.literal(player).append(" (" + DungeonPlayerManager.getClassFromPlayer(playerEntity).displayName() + ")").withColor(0xf57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))), false);
 			} else {
 				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.secretsTracker.failFeedback")), false);
 			}
@@ -122,7 +123,6 @@ public class SecretsTracker {
 			String message = Formatting.strip(text.getString());
 
 			try {
-				if (message.equals("[NPC] Mort: Here, I found this map when I first entered the dungeon.")) calculate(RunPhase.START);
 				if (TEAM_SCORE_PATTERN.matcher(message).matches()) calculate(RunPhase.END);
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Encountered an unknown error while trying to track player secrets!", e);
@@ -131,7 +131,7 @@ public class SecretsTracker {
 	}
 
 	private static String getPlayerNameAt(int index) {
-		Matcher matcher = PlayerListMgr.regexAt(1 + (index - 1) * 4, DungeonPlayerWidget.PLAYER_PATTERN);
+		Matcher matcher = PlayerListManager.regexAt(1 + (index - 1) * 4, DungeonPlayerWidget.PLAYER_PATTERN);
 
 		return matcher != null ? matcher.group("name") : "";
 	}

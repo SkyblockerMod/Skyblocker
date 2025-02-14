@@ -26,6 +26,17 @@ public class HelperCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 
+                // Bits Helper
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.helpers.enableBitsHelper"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.enableBitsHelper.@Tooltip")))
+                        .binding(defaults.helpers.enableBitsTooltip,
+                                () -> config.helpers.enableBitsTooltip,
+                                newValue -> config.helpers.enableBitsTooltip = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
+
+				// Wardrobe Helper
 		        .option(Option.<Boolean>createBuilder()
 		                .name(Text.translatable("skyblocker.config.helpers.enableWardrobeHelper"))
 		                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.enableWardrobeHelper.@Tooltip")))
@@ -215,6 +226,27 @@ public class HelperCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
+
+                .group(OptionGroup.createBuilder()
+                		.name(Text.translatable("skyblocker.config.helpers.carnival"))
+                		.collapsed(true)
+                		.option(Option.<Boolean>createBuilder()
+                				.name(Text.translatable("skyblocker.config.helpers.carnival.catchAFishHelper"))
+                				.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.carnival.catchAFishHelper.@Tooltip")))
+                				.binding(defaults.helpers.carnival.catchAFishHelper,
+                						() -> config.helpers.carnival.catchAFishHelper,
+                						newValue -> config.helpers.carnival.catchAFishHelper = newValue)
+                				.controller(ConfigUtils::createBooleanController)
+                				.build())
+                		.option(Option.<Boolean>createBuilder()
+                				.name(Text.translatable("skyblocker.config.helpers.carnival.zombieShootoutHelper"))
+                				.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip")))
+                				.binding(defaults.helpers.carnival.zombieShootoutHelper,
+                						() -> config.helpers.carnival.zombieShootoutHelper,
+                						newValue -> config.helpers.carnival.zombieShootoutHelper = newValue)
+                				.controller(ConfigUtils::createBooleanController)
+                				.build())
+                		.build())
 
                 //Bazaar
                 .group(OptionGroup.createBuilder()

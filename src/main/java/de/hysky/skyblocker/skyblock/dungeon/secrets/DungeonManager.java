@@ -17,6 +17,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
 import de.hysky.skyblocker.utils.Constants;
@@ -675,6 +676,10 @@ public class DungeonManager {
             if (WITHER_DOOR_OPENED.matcher(message).matches()) {
                 hasKey = false;
             }
+        }
+
+        if (message.equals("§e[NPC] §bMort§f: You should find it useful if you get lost.")) {
+        	DungeonEvents.DUNGEON_STARTED.invoker().onDungeonStarted();
         }
 
         var newBoss = DungeonBoss.fromMessage(message);

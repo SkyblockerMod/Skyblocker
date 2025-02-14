@@ -44,6 +44,13 @@ public class DebugCategory {
 								newValue -> config.debug.dumpFormat = newValue)
 						.controller(opt -> EnumControllerBuilder.create(opt).enumClass(Debug.DumpFormat.class)) // ConfigUtils::createEnumCyclingListController causes a NPE for some reason
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.debug.corpseFinderDebug"))
+						.binding(defaults.debug.corpseFinderDebug,
+								() -> config.debug.corpseFinderDebug,
+								newValue -> config.debug.corpseFinderDebug = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 				.build();
 	}
 }

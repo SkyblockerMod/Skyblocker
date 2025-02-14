@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListMgr;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -30,7 +30,7 @@ public class DungeonDeathWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent(List<Text> ignored) {
-		Matcher m = PlayerListMgr.regexAt(25, DEATH_PATTERN);
+		Matcher m = PlayerListManager.regexAt(25, DEATH_PATTERN);
 		if (m == null) {
 			this.addComponent(new IcoTextComponent());
 		} else {

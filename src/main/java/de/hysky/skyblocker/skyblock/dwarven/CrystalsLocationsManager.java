@@ -294,7 +294,7 @@ public class CrystalsLocationsManager {
     public static int shareWaypoint(String place) {
         if (activeWaypoints.containsKey(place)) {
             BlockPos pos = activeWaypoints.get(place).pos;
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + " " + place + ": " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown(Constants.PREFIX.get().getString() + " " + place + ": " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ(), false);
         } else {
             //send fail message
             if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
