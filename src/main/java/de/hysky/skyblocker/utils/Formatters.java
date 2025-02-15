@@ -81,10 +81,7 @@ public class Formatters {
 
 			return timeFormat.contains("a");
 		} else {
-			DateTimePatternGenerator generator = DateTimePatternGenerator.getInstance(Locale.getDefault());
-			String timeFormat = generator.getBestPattern("j");
-
-			return timeFormat.contains("a");
+			return DateTimePatternGenerator.getInstance(Locale.getDefault()).getBestPattern("j").contains("a");
 		}
 	}
 }
