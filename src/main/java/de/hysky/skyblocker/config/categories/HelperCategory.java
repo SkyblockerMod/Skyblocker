@@ -3,12 +3,15 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
+import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
+import de.hysky.skyblocker.skyblock.end.EndHudWidget;
+import de.hysky.skyblocker.skyblock.fishing.FishingHudWidget;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class HelperCategory {
@@ -153,6 +156,11 @@ public class HelperCategory {
                                         newValue -> config.helpers.fishing.hideOtherPlayersRods = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.fishing.hud.screen"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, FishingHudWidget.getInstance().getInternalID(), screen)))
+								.build())
                         .build())
 
                 //Fairy Souls Helper
