@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.skyblock.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
@@ -360,6 +361,16 @@ public class UIAndVisualsCategory {
                                         () -> config.uiAndVisuals.teleportOverlay.enableTeleportOverlays,
                                         newValue -> config.uiAndVisuals.teleportOverlay.enableTeleportOverlays = newValue)
                                 .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Color>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor"))
+                                .binding(defaults.uiAndVisuals.teleportOverlay.teleportOverlayColor,
+                                        () -> config.uiAndVisuals.teleportOverlay.teleportOverlayColor,
+                                        newValue -> { 
+                                            config.uiAndVisuals.teleportOverlay.teleportOverlayColor = newValue;
+                                            TeleportOverlay.configCallback(newValue); 
+                                       })
+                                .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableWeirdTransmission"))

@@ -16,12 +16,15 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 
+import java.awt.*;
+
 public class TeleportOverlay {
-    private static final float[] COLOR_COMPONENTS = {118f / 255f, 21f / 255f, 148f / 255f};
     private static final MinecraftClient client = MinecraftClient.getInstance();
+    private static float[] colorComponents;
 
     @Init
     public static void init() {
+        configCallback(SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.teleportOverlayColor); // Initialize colorComponents from the config value
         WorldRenderEvents.AFTER_TRANSLUCENT.register(TeleportOverlay::render);
     }
 
@@ -101,7 +104,11 @@ public class TeleportOverlay {
         @SuppressWarnings("DataFlowIssue")
         BlockState state = client.world.getBlockState(pos);
         if (!state.isAir() && client.world.getBlockState(pos.up()).isAir() && client.world.getBlockState(pos.up(2)).isAir()) {
-            RenderHelper.renderFilled(wrc, pos, COLOR_COMPONENTS, 0.5f, false);
+            RenderHelper.renderFilled(wrc, pos, colorComponents, colorComponents[3], false);
         }
+    }
+
+    public static void configCallback(Color color) {
+        colorComponents = color.getRGBComponents(null);
     }
 }
