@@ -47,6 +47,9 @@ public class UIAndVisualsConfig {
     public ItemCooldown itemCooldown = new ItemCooldown();
 
 	@SerialEntry
+	public boolean museumOverlay = true;
+
+	@SerialEntry
 	public SlotText slotText = new SlotText();
 
     @SerialEntry
