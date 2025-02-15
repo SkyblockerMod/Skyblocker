@@ -71,7 +71,7 @@ public class SlayersConfig {
 		public boolean enableHolyIceIndicator = true;
 
 		@SerialEntry
-		public int holyIceIndicatorTickDelay = 10;
+		public int holyIceIndicatorTickDelay = 5;
 
 		@SerialEntry
 		public int holyIceUpdateFrequency = 5;

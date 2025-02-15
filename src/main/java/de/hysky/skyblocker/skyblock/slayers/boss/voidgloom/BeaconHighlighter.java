@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.slayers.boss.voidgloom;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -46,7 +48,7 @@ public class BeaconHighlighter {
      * @param context An instance of WorldRenderContext for the RenderHelper to use
      */
     private static void render(WorldRenderContext context) {
-        if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons) {
+        if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons && SlayerManager.isInSlayerType(SlayerType.VOIDGLOOM)) {
             for (BlockPos pos : beaconPositions) {
                 RenderHelper.renderFilled(context, pos, RED_COLOR_COMPONENTS, 0.5f, true);
             }
