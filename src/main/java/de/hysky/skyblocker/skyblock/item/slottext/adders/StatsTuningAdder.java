@@ -33,13 +33,13 @@ public class StatsTuningAdder extends SimpleSlotTextAdder {
         if (stack.getName().getString().equals("Stats Tuning")) {
             if (unassignedMatcher == null) return List.of();
             String unassignedPoints = unassignedMatcher.group("points");
-            return SlotText.bottomRightList(Text.literal(unassignedPoints).withColor(0xFFDDC1));
+            return SlotText.bottomRightList(Text.literal(unassignedPoints).withColor(SlotText.CREAM));
         }
 
         if (statMatcher == null) return List.of();
         String assignedPoints = statMatcher.group("points");
         if (assignedPoints.equals("0")) return List.of();
-        return SlotText.bottomRightList(Text.literal(assignedPoints).withColor(0xFFDDC1));
+        return SlotText.bottomRightList(Text.literal(assignedPoints).withColor(SlotText.CREAM));
 
     }
 }

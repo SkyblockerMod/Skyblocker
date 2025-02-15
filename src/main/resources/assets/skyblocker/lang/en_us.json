@@ -856,6 +856,7 @@
   "skyblocker.config.uiAndVisuals.slotText.enchantmentLevel": "Enchantment Book Level",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop": "Essence Shop",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip": "Displays the levels and your current amount of essence while in essence shops.",
+  "skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel": "HOTM Perk Level",
   "skyblocker.config.uiAndVisuals.slotText.minionLevel": "Minion Level",
   "skyblocker.config.uiAndVisuals.slotText.petLevel": "Pet Level",
   "skyblocker.config.uiAndVisuals.slotText.potionLevel": "Potion Level",
