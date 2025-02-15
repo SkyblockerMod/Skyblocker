@@ -145,16 +145,16 @@ public class Debug {
 		JSON {
 			@Override
 			public Text format(ItemStack stack) {
-				return Text.literal(SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), stack).getOrThrow()));
+				return Text.literal(SkyblockerMod.GSON_COMPACT.toJson(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), stack).getOrThrow()));
 			}
 		},
 		SNBT {
 			@Override
 			public Text format(ItemStack stack) {
-				return NbtHelper.toPrettyPrintedText(ItemStack.CODEC.encodeStart(MinecraftClient.getInstance().player.getRegistryManager().getOps(NbtOps.INSTANCE), stack).getOrThrow());
+				return NbtHelper.toPrettyPrintedText(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(MinecraftClient.getInstance().player.getRegistryManager().getOps(NbtOps.INSTANCE), stack).getOrThrow());
 			}
 		};
 
-		abstract Text format(ItemStack stack);
+		public abstract Text format(ItemStack stack);
 	}
 }
