@@ -161,6 +161,14 @@ public class HelperCategory {
 								.text(Text.translatable("text.skyblocker.open"))
 								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, FishingHudWidget.getInstance().getInternalID(), screen)))
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn.@Tooltip")))
+								.binding(defaults.helpers.fishing.onlyShowHudInBarn,
+										() -> config.helpers.fishing.onlyShowHudInBarn,
+										newValue -> config.helpers.fishing.onlyShowHudInBarn = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 //Fairy Souls Helper
