@@ -1,12 +1,16 @@
 package de.hysky.skyblocker.skyblock.fishing;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
@@ -25,44 +29,66 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	}
 
 	public FishingHudWidget() {
-		super(Text.literal("Fishing").formatted(Formatting.DARK_AQUA, Formatting.BOLD), Formatting.DARK_AQUA.getColorValue(), "hud_fishing");//todo better color
+		super(Text.literal("Fishing").formatted(Formatting.DARK_AQUA, Formatting.BOLD), Formatting.DARK_AQUA.getColorValue(), "hud_fishing");
 		instance = this;
 	}
 
 	@Override
 	public Set<Location> availableLocations() {
-		return Set.of(Location.HUB);
+		return Set.of(Location.HUB, Location.CRIMSON_ISLE, Location.CRYSTAL_HOLLOWS, Location.THE_PARK, Location.SPIDERS_DEN);
 	}
 
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
-
+		if (enabled) {
+			SkyblockerConfigManager.get().helpers.fishing.fishingHudEnabledLocations.add(location);
+		} else {
+			SkyblockerConfigManager.get().helpers.fishing.fishingHudEnabledLocations.remove(location);
+		}
 	}
 
 	@Override
 	public boolean isEnabledIn(Location location) {
-		return true;//todo
+		return SkyblockerConfigManager.get().helpers.fishing.fishingHudEnabledLocations.contains(location);
 	}
 
 	@Override
 	public boolean shouldRender(Location location) {
-		return super.shouldRender(location) && SeaCreatureTracker.isCreaturesAlive(); //todo coifig
+		if (super.shouldRender(location) && SeaCreatureTracker.isCreaturesAlive()) {
+			if (Utils.getLocation() == Location.HUB && SkyblockerConfigManager.get().helpers.fishing.onlyShowHudInBarn) {
+				return isBarnFishing();
+			}
+			return true;
+
+		}
+		return false;
 	}
 
 	@Override
 	public void updateContent() {
 		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen) {
-			addSimpleIcoText(Ico.WATER, "Alive Creatures: ", Formatting.WHITE, "3/5");
+			addSimpleIcoText(new ItemStack(Items.SALMON_BUCKET), "Alive Creatures: ", Formatting.WHITE, "3/5");
 			addSimpleIcoText(Ico.CLOCK, "Time Left: ", Formatting.DARK_GREEN, "1m");
 			return;
 		}
 
-		Pair<String, Formatting> timer = SeaCreatureTracker.getTimerText(360000, SeaCreatureTracker.getOldestSeaCreatureAge());
+		Pair<String, Float> timer = SeaCreatureTracker.getTimerText(360000, SeaCreatureTracker.getOldestSeaCreatureAge());
 		int seaCreatureCap = SeaCreatureTracker.getSeaCreatureCap();
-		addSimpleIcoText(Ico.WATER, "Alive Creatures: ", Formatting.WHITE, SeaCreatureTracker.seaCreatureCount()+"/"+seaCreatureCap);
-		addSimpleIcoText(Ico.CLOCK, "Time Left: ", timer.right(), timer.left());
+		addSimpleIcoText(new ItemStack(Items.TROPICAL_FISH_BUCKET), "Alive Creatures: ", getTextFormating(1 - (float) SeaCreatureTracker.seaCreatureCount() / seaCreatureCap), SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap);
+		addSimpleIcoText(Ico.CLOCK, "Time Left: ", getTextFormating(timer.right()), timer.left());
 
 	}
+
+	private static Formatting getTextFormating(float percentage) {
+		if (percentage > 0.4) {
+			return Formatting.DARK_GREEN;
+		} else if (percentage > 0.1) {
+			return Formatting.GOLD;
+		} else {
+			return Formatting.RED;
+		}
+	}
+
 
 	@Override
 	public Text getDisplayName() {
