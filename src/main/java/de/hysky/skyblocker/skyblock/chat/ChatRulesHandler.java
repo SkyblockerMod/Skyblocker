@@ -34,29 +34,6 @@ public class ChatRulesHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatRulesHandler.class);
     private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chat_rules.json");
     private static final Codec<Map<String, List<ChatRule>>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, ChatRule.LIST_CODEC);
-    /**
-     * list of possible locations still formatted for the tool tip
-     */
-    protected static final List<String> locationsList = List.of (
-            "The Farming Islands",
-            "Crystal Hollows",
-            "Jerry's Workshop",
-            "The Park",
-            "Dark Auction",
-            "Dungeons",
-            "The End",
-            "Crimson Isle",
-            "Hub",
-            "Kuudra's Hollow",
-            "Private Island",
-            "Dwarven Mines",
-            "The Garden",
-            "Gold Mine",
-            "Blazing Fortress",
-            "Deep Caverns",
-            "Spider's Den",
-            "Mineshaft"
-    );
 
     protected static final List<ChatRule> chatRuleList = new ArrayList<>();
 
