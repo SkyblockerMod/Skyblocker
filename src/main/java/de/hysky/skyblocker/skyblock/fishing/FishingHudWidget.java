@@ -72,7 +72,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			return;
 		}
 
-		Pair<String, Float> timer = SeaCreatureTracker.getTimerText(360000, SeaCreatureTracker.getOldestSeaCreatureAge());
+		Pair<String, Float> timer = SeaCreatureTracker.getTimerText(SeaCreatureTracker.getOldestSeaCreatureAge());
 		int seaCreatureCap = SeaCreatureTracker.getSeaCreatureCap();
 		addSimpleIcoText(new ItemStack(Items.TROPICAL_FISH_BUCKET), "Alive Creatures: ", getTextFormating(1 - (float) SeaCreatureTracker.seaCreatureCount() / seaCreatureCap), SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap);
 		addSimpleIcoText(Ico.CLOCK, "Time Left: ", getTextFormating(timer.right()), timer.left());
