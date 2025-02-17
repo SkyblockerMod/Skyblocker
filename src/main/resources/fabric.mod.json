@@ -44,7 +44,7 @@
   "accessWidener": "skyblocker.accesswidener",
   "depends": {
     "fabricloader": ">=0.16.9",
-    "fabric-api": ">=0.111.0+1.21.4",
+    "fabric-api": ">=0.116.1+1.21.4",
     "yet_another_config_lib_v3": ">=3.6.2+1.21.4",
     "hm-api": ">=1.0.1+1.21.2",
     "minecraft": "~1.21.4",
