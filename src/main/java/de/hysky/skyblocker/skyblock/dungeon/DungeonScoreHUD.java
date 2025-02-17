@@ -2,21 +2,25 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 public class DungeonScoreHUD {
+	private static final Identifier DUNGEON_SCORE = Identifier.of("skyblocker", "dungeon_score");
+
 	private DungeonScoreHUD() {
 	}
 
 	@Init
 	public static void init() {
-		HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> render(context));
+		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.OVERLAY_MESSAGE, DUNGEON_SCORE, (context, tickCounter) -> render(context)));
 	}
 
 	//This is 4+5 wide, needed to offset the extra width from bold numbers (3×1 wide) in S+ and the "+" (6 wide) so that it doesn't go off the screen if the score is S+ and the hud element is at the right edge of the screen

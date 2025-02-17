@@ -5,7 +5,10 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -24,6 +27,7 @@ public class GlaciteColdOverlay {
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(GlaciteColdOverlay::update, 20);
         ClientReceiveMessageEvents.GAME.register(GlaciteColdOverlay::coldReset);
+		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, POWDER_SNOW_OUTLINE, (context, tickCounter) -> render(context)));
     }
 
     private static void coldReset(Text text, boolean b) {

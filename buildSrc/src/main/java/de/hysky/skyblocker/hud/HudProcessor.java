@@ -84,7 +84,7 @@ public class HudProcessor {
 	}
 
 	private void inject(List<ClassNode> constructors) {
-		Path mainClassFile = Objects.requireNonNull(Processor.findClass("ScreenMaster.class"), "ScreenMaster class wasn't found :(").toPath();
+		Path mainClassFile = Objects.requireNonNull(Processor.findClass("WidgetManager.class"), "WidgetManager class wasn't found :(").toPath();
 
 		try (InputStream inputStream = Files.newInputStream(mainClassFile)) {
 			ClassReader classReader = new ClassReader(inputStream);

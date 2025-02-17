@@ -10,6 +10,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
@@ -19,8 +20,13 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.Window;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
 import org.slf4j.Logger;
 
@@ -37,8 +43,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ScreenMaster {
+public class WidgetManager {
 	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final Identifier FANCY_TAB_HUD = Identifier.of(SkyblockerMod.NAMESPACE, "fancy_tab_hud");
+	private static final Identifier FANCY_TAB = Identifier.of(SkyblockerMod.NAMESPACE, "fancy_tab");
 
 	private static final int VERSION = 2;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
@@ -51,14 +59,56 @@ public class ScreenMaster {
 		return BUILDER_MAP.get(location);
 	}
 
+	// we probably want this to run pretty early?
+	@Init(priority = -1)
+	public static void init() {
+		SkyblockEvents.LOCATION_CHANGE.register(location -> ScreenBuilder.positionsNeedsUpdating = true);
+
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+
+			instantiateWidgets();
+			for (int i = 1; i < 6; i++) {
+				DungeonPlayerWidget widget = new DungeonPlayerWidget(i);
+				addWidgetInstance(widget);
+			}
+
+			fillDefaultConfig();
+			loadConfig();
+
+		});
+
+		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
+
+		HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer
+				// Renders the hud (always on screen) widgets.
+				// Since each layer has a z offset of 200 automatically added, attaching fancy tab hud before the demo timer is just enough for items to render below the debug hud
+				.attachLayerBefore(IdentifiedLayer.DEMO_TIMER, FANCY_TAB_HUD, (context, tickCounter) -> render(context, true))
+				// Renders the tab widgets
+				.attachLayerBefore(IdentifiedLayer.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false))
+		);
+	}
+
+	private static void render(DrawContext context, boolean hud) {
+		if (!Utils.isOnSkyblock()) return;
+		MinecraftClient client = MinecraftClient.getInstance();
+
+		if (client.currentScreen instanceof WidgetsConfigurationScreen) return;
+		Window window = client.getWindow();
+		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
+		MatrixStack matrices = context.getMatrices();
+		matrices.push();
+		matrices.scale(scale, scale, 1.F);
+		WidgetManager.render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale), hud);
+		matrices.pop();
+	}
+
 	/**
 	 * Top level render method.
 	 * Calls the appropriate ScreenBuilder with the screen's dimensions
-	 * Called in PlayerListHudMixin
 	 *
 	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
-	public static void render(DrawContext context, int w, int h, boolean hud) {
+	private static void render(DrawContext context, int w, int h, boolean hud) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
 		if (client.options.playerListKey.isPressed()) {
@@ -121,49 +171,26 @@ public class ScreenMaster {
 		ScreenBuilder screenBuilder = getScreenBuilder(Location.THE_END);
 		screenBuilder.setPositionRule(
 				"hud_end",
-				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().otherLocations.end.x, SkyblockerConfigManager.get().otherLocations.end.y, ScreenMaster.ScreenLayer.HUD)
+				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().otherLocations.end.x, SkyblockerConfigManager.get().otherLocations.end.y, WidgetManager.ScreenLayer.HUD)
 		);
 
 		screenBuilder = getScreenBuilder(Location.GARDEN);
 		screenBuilder.setPositionRule(
 				"hud_farming",
-				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().farming.garden.farmingHud.x, SkyblockerConfigManager.get().farming.garden.farmingHud.y, ScreenMaster.ScreenLayer.HUD)
+				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().farming.garden.farmingHud.x, SkyblockerConfigManager.get().farming.garden.farmingHud.y, WidgetManager.ScreenLayer.HUD)
 		);
 
 		for (Location loc : new Location[]{Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES}) {
 			screenBuilder = getScreenBuilder(loc);
 			screenBuilder.setPositionRule(
 					CommsWidget.ID,
-					new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, 5, 5, ScreenMaster.ScreenLayer.HUD)
+					new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, 5, 5, WidgetManager.ScreenLayer.HUD)
 			);
 			screenBuilder.setPositionRule(
 					"powders",
-					new PositionRule(CommsWidget.ID, new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, ScreenMaster.ScreenLayer.HUD)
+					new PositionRule(CommsWidget.ID, new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, WidgetManager.ScreenLayer.HUD)
 			);
-
 		}
-
-	}
-
-	// we probably want this to run pretty early?
-	@Init(priority = -1)
-	public static void init() {
-		SkyblockEvents.LOCATION_CHANGE.register(location -> ScreenBuilder.positionsNeedsUpdating = true);
-
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-
-			instantiateWidgets();
-			for (int i = 1; i < 6; i++) {
-				DungeonPlayerWidget widget = new DungeonPlayerWidget(i);
-				addWidgetInstance(widget);
-			}
-
-			fillDefaultConfig();
-			loadConfig();
-
-		});
-
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
 	}
 
 
@@ -214,5 +241,4 @@ public class ScreenMaster {
 			return name();
 		}
 	}
-
 }

@@ -5,7 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.DungeonsTabPlaceholder;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
@@ -57,7 +57,7 @@ public class PreviewTab implements Tab {
 	private final WidgetOptionsScrollable widgetOptions;
 	private final Mode mode;
 	private final ButtonWidget restorePositioning;
-	private ScreenMaster.ScreenLayer currentScreenLayer = ScreenMaster.ScreenLayer.MAIN_TAB;
+	private WidgetManager.ScreenLayer currentScreenLayer = WidgetManager.ScreenLayer.MAIN_TAB;
 	private final ButtonWidget[] layerButtons;
 	private final TextWidget textWidget;
 	final ScoreboardObjective placeHolderObjective;
@@ -76,10 +76,10 @@ public class PreviewTab implements Tab {
 		widgetOptions = new WidgetOptionsScrollable();
 		widgetOptions.setWidth(RIGHT_SIDE_WIDTH - 10);
 
-		ScreenMaster.ScreenLayer[] values = ScreenMaster.ScreenLayer.values();
+		WidgetManager.ScreenLayer[] values = WidgetManager.ScreenLayer.values();
 		layerButtons = new ButtonWidget[3];
 		for (int i = 0; i < 3; i++) {
-			ScreenMaster.ScreenLayer screenLayer = values[i];
+			WidgetManager.ScreenLayer screenLayer = values[i];
 			layerButtons[i] = ButtonWidget.builder(Text.literal(screenLayer.toString()), button -> {
 						this.currentScreenLayer = screenLayer;
 						for (ButtonWidget layerButton : this.layerButtons) {
@@ -92,7 +92,7 @@ public class PreviewTab implements Tab {
 		}
 
 		restorePositioning = ButtonWidget.builder(Text.literal("Restore Positioning"), button -> {
-					ScreenMaster.getScreenBuilder(getCurrentLocation()).restorePositioningFromBackup();
+					WidgetManager.getScreenBuilder(getCurrentLocation()).restorePositioningFromBackup();
 					updateWidgets();
 					onHudWidgetSelected(previewWidget.selectedWidget);
 				})
@@ -122,7 +122,7 @@ public class PreviewTab implements Tab {
 		scoreboard.getOrCreateScore(createHolder(Text.literal("enough lines bye")), placeHolderObjective).setScore(-9);
 		scoreboard.getOrCreateScore(createHolder(Text.literal("NEVER GONNA GIVE Y-")), placeHolderObjective).setScore(-10);
 
-		ScreenMaster.getScreenBuilder(getCurrentLocation()).positionWidgets(client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight(), true);
+		WidgetManager.getScreenBuilder(getCurrentLocation()).positionWidgets(client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight(), true);
 		locationDropdown = parent.createLocationDropdown(location -> updateWidgets());
 	}
 
@@ -141,8 +141,8 @@ public class PreviewTab implements Tab {
 		};
 	}
 
-	public void goToLayer(ScreenMaster.ScreenLayer layer) {
-		if (layer == ScreenMaster.ScreenLayer.DEFAULT) layer = ScreenMaster.ScreenLayer.HUD;
+	public void goToLayer(WidgetManager.ScreenLayer layer) {
+		if (layer == WidgetManager.ScreenLayer.DEFAULT) layer = WidgetManager.ScreenLayer.HUD;
 		layerButtons[layer.ordinal()].onPress();
 	}
 
@@ -248,7 +248,7 @@ public class PreviewTab implements Tab {
 	}
 
 	void updateWidgets() {
-		ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
+		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
 		updatePlayerListFromPreview();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
 		screenBuilder.positionWidgets((int) (parent.width / scale), (int) (parent.height / scale), true);
@@ -263,7 +263,7 @@ public class PreviewTab implements Tab {
 	void onHudWidgetSelected(@Nullable HudWidget hudWidget) {
 		widgetOptions.clearWidgets();
 		if (hudWidget == null) return;
-		ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
+		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
 		PositionRule positionRule = screenBuilder.getPositionRule(hudWidget.getInternalID());
 		int width = widgetOptions.getWidth() - 6;
 
@@ -284,7 +284,7 @@ public class PreviewTab implements Tab {
 								PositionRule.Point.DEFAULT,
 								hudWidget.getX() - 5,
 								hudWidget.getY() - 5,
-								ScreenMaster.ScreenLayer.DEFAULT);
+								WidgetManager.ScreenLayer.DEFAULT);
 						screenBuilder.setPositionRule(hudWidget.getInternalID(), rule);
 						updateWidgets();
 						onHudWidgetSelected(hudWidget);
@@ -306,9 +306,9 @@ public class PreviewTab implements Tab {
 			String ye = "Layer: " + positionRule.screenLayer().toString();
 
 			widgetOptions.addWidget(ButtonWidget.builder(Text.literal(ye), button -> {
-				ScreenBuilder builder = ScreenMaster.getScreenBuilder(getCurrentLocation());
+				ScreenBuilder builder = WidgetManager.getScreenBuilder(getCurrentLocation());
 				PositionRule rule = builder.getPositionRuleOrDefault(hudWidget.getInternalID());
-				ScreenMaster.ScreenLayer newLayer = EnumUtils.cycle(rule.screenLayer());
+				WidgetManager.ScreenLayer newLayer = EnumUtils.cycle(rule.screenLayer());
 
 				PositionRule newRule = new PositionRule(
 						rule.parent(),
@@ -321,7 +321,7 @@ public class PreviewTab implements Tab {
 				builder.setPositionRule(hudWidget.getInternalID(), newRule);
 				button.setMessage(Text.literal("Layer: " + newRule.screenLayer().toString()));
 				updateWidgets();
-				if (newLayer != ScreenMaster.ScreenLayer.DEFAULT) {
+				if (newLayer != WidgetManager.ScreenLayer.DEFAULT) {
 					layerButtons[newLayer.ordinal()].onPress();
 				}
 
@@ -331,7 +331,7 @@ public class PreviewTab implements Tab {
 			HudWidget parent;
 			if (positionRule.parent().equals("screen")) {
 				parentName = Text.literal("Screen");
-			} else if ((parent = ScreenMaster.widgetInstances.get(positionRule.parent())) == null) {
+			} else if ((parent = WidgetManager.widgetInstances.get(positionRule.parent())) == null) {
 				parentName = Text.literal("Unloaded Widget");
 			} else {
 				parentName = parent.getDisplayName();
@@ -361,11 +361,11 @@ public class PreviewTab implements Tab {
 
 		widgetOptions.addWidget(ButtonWidget.builder(Text.literal("Apply Everywhere"), button -> {
 					if (this.previewWidget.selectedWidget == null) return;
-					PositionRule toCopy = ScreenMaster.getScreenBuilder(getCurrentLocation()).getPositionRule(this.previewWidget.selectedWidget.getInternalID());
+					PositionRule toCopy = WidgetManager.getScreenBuilder(getCurrentLocation()).getPositionRule(this.previewWidget.selectedWidget.getInternalID());
 					if (toCopy == null && !(this.previewWidget.selectedWidget instanceof TabHudWidget)) return;
 					for (Location value : Location.values()) {
 						if (value == getCurrentLocation() || value == Location.DUNGEON || value == Location.UNKNOWN) continue;
-						ScreenMaster.getScreenBuilder(value).setPositionRule(
+						WidgetManager.getScreenBuilder(value).setPositionRule(
 								this.previewWidget.selectedWidget.getInternalID(),
 								toCopy
 						);
@@ -380,7 +380,7 @@ public class PreviewTab implements Tab {
 		return mode == Mode.DUNGEON ? Location.DUNGEON : parent.getCurrentLocation();
 	}
 
-	public ScreenMaster.ScreenLayer getCurrentScreenLayer() {
+	public WidgetManager.ScreenLayer getCurrentScreenLayer() {
 		return currentScreenLayer;
 	}
 
@@ -472,7 +472,7 @@ public class PreviewTab implements Tab {
 					boolean selectedAnchor = false;
 					if (previewWidget.selectedWidget != null) {
 						String internalID = previewWidget.selectedWidget.getInternalID();
-						PositionRule positionRule = ScreenMaster.getScreenBuilder(getCurrentLocation()).getPositionRule(internalID);
+						PositionRule positionRule = WidgetManager.getScreenBuilder(getCurrentLocation()).getPositionRule(internalID);
 						if (positionRule != null) {
 							PositionRule.Point point = other ? positionRule.parentPoint() : positionRule.thisPoint();
 							selectedAnchor = point.horizontalPoint().ordinal() == i && point.verticalPoint().ordinal() == j;
@@ -500,7 +500,7 @@ public class PreviewTab implements Tab {
 		public void onClick(double mouseX, double mouseY) {
 			HudWidget affectedWidget = previewWidget.selectedWidget;
 			if (hoveredPoint != null && affectedWidget != null) {
-				ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(getCurrentLocation());
+				ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
 				String internalID = affectedWidget.getInternalID();
 				PositionRule oldRule = screenBuilder.getPositionRuleOrDefault(internalID);
 				// Get the x, y of the parent's point

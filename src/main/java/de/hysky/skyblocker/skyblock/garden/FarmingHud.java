@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.garden;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -15,11 +14,14 @@ import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 import it.unimi.dsi.fastutil.longs.LongPriorityQueue;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +38,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class FarmingHud {
     private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
+	private static final Identifier FARMING_HUD = Identifier.of(SkyblockerMod.NAMESPACE, "farming_hud");
     public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
     private static final Pattern FARMING_XP = Pattern.compile("§3\\+(?<xp>\\d+.?\\d*) Farming \\((?<percent>[\\d,]+.?\\d*)%\\)");
     private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -47,7 +50,7 @@ public class FarmingHud {
 
     @Init
     public static void init() {
-        HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
+		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.STATUS_EFFECTS, FARMING_HUD, (context, tickCounter) -> {
             if (shouldRender()) {
                 if (!counter.isEmpty() && counter.peek().rightLong() + 5000 < System.currentTimeMillis()) {
                     counter.poll();
@@ -64,7 +67,7 @@ public class FarmingHud {
                     counterType = CounterType.NONE;
                 }
             }
-        });
+        }));
         ClientPlayerBlockBreakEvents.AFTER.register((world, player, pos, state) -> {
             if (shouldRender()) {
                 blockBreaks.enqueue(System.currentTimeMillis());

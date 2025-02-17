@@ -29,7 +29,7 @@ public class HudInjectClassVisitor extends ClassVisitor {
 				methodNode.visitTypeInsn(Opcodes.NEW, widget.name);
 				methodNode.visitInsn(Opcodes.DUP);
 				methodNode.visitMethodInsn(Opcodes.INVOKESPECIAL, widget.name, "<init>", "()V", false);
-				methodNode.visitMethodInsn(Opcodes.INVOKESTATIC, "de/hysky/skyblocker/skyblock/tabhud/screenbuilder/ScreenMaster", "addWidgetInstance", "(Lde/hysky/skyblocker/skyblock/tabhud/widget/HudWidget;)V", false);
+				methodNode.visitMethodInsn(Opcodes.INVOKESTATIC, "de/hysky/skyblocker/skyblock/tabhud/screenbuilder/WidgetManager", "addWidgetInstance", "(Lde/hysky/skyblocker/skyblock/tabhud/widget/HudWidget;)V", false);
 			}
 
 
