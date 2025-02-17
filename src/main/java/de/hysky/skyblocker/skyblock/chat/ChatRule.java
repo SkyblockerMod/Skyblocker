@@ -1,12 +1,16 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.sound.SoundEvent;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +20,33 @@ import java.util.regex.Pattern;
  * Data class to contain all the settings for a chat rule
  */
 public class ChatRule {
+    /**
+     * Codec that can decode both string and enumset of locations, while encoding only enumset of locations.
+     * <br>
+     * This is necessary due to a change in how the locations are stored in the config.
+     * <br>
+     * This could probably be done in a more pretty manner using the FP-style functions in the Codec class, but this works. Feel free to refactor if you want.
+     */
+    static final Codec<EnumSet<Location>> LOCATION_FIXING_CODEC = new Codec<>() {
+		@Override
+		public <T> DataResult<Pair<EnumSet<Location>, T>> decode(DynamicOps<T> ops, T input) {
+            DataResult<Pair<EnumSet<Location>, T>> result = Location.SET_CODEC.decode(ops, input);
+            if (result.isSuccess()) return result;
+            // Necessary for empty strings, which would've been decoded as UNKNOWN otherwise.
+            if (input instanceof String string && string.isEmpty()) return DataResult.success(Pair.of(EnumSet.noneOf(Location.class), ops.empty()));
+
+            return Codec.STRING.decode(ops, input)
+                        .ap(DataResult.success(pair -> pair.mapFirst( string -> Arrays.stream(string.split(", ?"))
+                                        .map(Location::fromFriendlyName)
+                                        .collect(() -> EnumSet.noneOf(Location.class), EnumSet::add, EnumSet::addAll))));
+		}
+
+		@Override
+		public <T> DataResult<T> encode(EnumSet<Location> input, DynamicOps<T> ops, T prefix) {
+			return Location.SET_CODEC.encode(input, ops, prefix);
+		}
+	};
+
     private static final Codec<ChatRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("name").forGetter(ChatRule::getName),
             Codec.BOOL.fieldOf("enabled").forGetter(ChatRule::getEnabled),
@@ -23,7 +54,7 @@ public class ChatRule {
             Codec.BOOL.fieldOf("isRegex").forGetter(ChatRule::getRegex),
             Codec.BOOL.fieldOf("isIgnoreCase").forGetter(ChatRule::getIgnoreCase),
             Codec.STRING.fieldOf("filter").forGetter(ChatRule::getFilter),
-            Location.SET_CODEC.fieldOf("validLocations").forGetter(ChatRule::getValidLocations),
+            LOCATION_FIXING_CODEC.fieldOf("validLocations").forGetter(ChatRule::getValidLocations),
             Codec.BOOL.fieldOf("hideMessage").forGetter(ChatRule::getHideMessage),
             Codec.BOOL.fieldOf("showActionBar").forGetter(ChatRule::getShowActionBar),
             Codec.BOOL.fieldOf("showAnnouncement").forGetter(ChatRule::getShowAnnouncement),
@@ -233,7 +264,7 @@ public class ChatRule {
 	    // This exists because it doesn't make sense to remove all valid locations, you should disable the chat rule if you want to do that.
 	    // This way, we can also default to an empty set for validLocations.
 		return validLocations.isEmpty() || validLocations.contains(Utils.getLocation());
-    }    
+    }
 }
 
 
