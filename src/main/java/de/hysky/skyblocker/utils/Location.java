@@ -68,7 +68,7 @@ public enum Location implements StringIdentifiable {
      */
     Location(String id) {
         this.id = id;
-		this.friendlyName = WordUtils.capitalizeFully(name(), '_').replace('_', ' ');
+		this.friendlyName = WordUtils.capitalizeFully(name().replace('_', ' '));
     }
 
     /**
