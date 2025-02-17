@@ -7,7 +7,6 @@ import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -15,12 +14,14 @@ import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
-public class SeaCreatureTracker { //todo handle double hook
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+public class SeaCreatureTracker {
+	private static final Pattern DOUBLE_HOOK_PATTERN = Pattern.compile("Double Hook!(?: Woot woot!)?");
 
 	private static final List<LiveSeaCreature> seaCreatures = new ArrayList<>();
 	private static SeaCreature lastCatch;
+	private static boolean doubleHook = false;
 
 
 	@Init
@@ -40,7 +41,12 @@ public class SeaCreatureTracker { //todo handle double hook
 		if (armorStand.getName().getString().contains(lastCatch.name)) {
 			seaCreatures.add(new LiveSeaCreature(lastCatch, armorStand, System.currentTimeMillis()));
 			System.out.println("found new sea creature");
-			lastCatch = null;
+			//either stop double hook or clear last catch
+			if (doubleHook) {
+				doubleHook = false;
+			} else {
+				lastCatch = null;
+			}
 		}
 	}
 
@@ -54,6 +60,11 @@ public class SeaCreatureTracker { //todo handle double hook
 			return;
 		}
 		String message = Formatting.strip(s);
+		//see if it's a double hook
+		if (DOUBLE_HOOK_PATTERN.matcher(message).find()) {
+			doubleHook = true;
+			return;
+		}
 		//see if message matches any creature
 		for (SeaCreature creature : SeaCreature.values()) {
 			if (creature.chatMessage.equals(message)) {
