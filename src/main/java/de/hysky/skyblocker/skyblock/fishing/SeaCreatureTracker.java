@@ -8,7 +8,7 @@ import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
-import io.github.moulberry.repo.data.Rarity;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.Pair;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.minecraft.client.MinecraftClient;
@@ -56,6 +56,21 @@ public class SeaCreatureTracker {
 			}
 			checkCapNotification();
 			checkRarityNotification();
+			//schedule notification for end of timer
+			Scheduler.INSTANCE.schedule(SeaCreatureTracker::checkTimerNotification,SkyblockerConfigManager.get().helpers.fishing.timerLength * 20);
+		}
+	}
+
+	/**
+	 * Sees if a notification should be sent out about the timer running out
+	 */
+	private static void checkTimerNotification() {
+		if (!SkyblockerConfigManager.get().helpers.fishing.seaCreatureTimerNotification || !isCreaturesAlive()) return;
+		//if the timer is about to finish show notification
+		if (Math.abs(SkyblockerConfigManager.get().helpers.fishing.timerLength * 1000L - getOldestSeaCreatureAge()) < 100){
+			TitleContainer.addTitle(new Title(Text.translatable("skyblocker.config.helpers.fishing.seaCreatureTimerNotification.notification").formatted(Formatting.RED)), 60);
+			if (CLIENT.player == null) return;
+			CLIENT.player.playSound(SoundEvents.ENTITY_ARROW_HIT_PLAYER, 100f, 0.1f);
 		}
 	}
 
@@ -67,8 +82,8 @@ public class SeaCreatureTracker {
 		SkyblockItemRarity rarityThreshold = SkyblockerConfigManager.get().helpers.fishing.minimumNotificationRarity;
 		if (rarityThreshold == SkyblockItemRarity.UNKNOWN) return;
 		SkyblockItemRarity lastCreatureRarity = seaCreatures.getLast().seaCreature.rarity;
-		if (rarityThreshold.compareTo(lastCreatureRarity) >= 0) {
-			TitleContainer.addTitle(new Title(Text.translatable("skyblocker.config.helpers.fishing.minimumNotificationRarity.notification", lastCreatureRarity).formatted(lastCreatureRarity.formatting)), 20);
+		if (lastCreatureRarity.compareTo(rarityThreshold) >= 0) {
+			TitleContainer.addTitle(new Title(Text.translatable("skyblocker.config.helpers.fishing.minimumNotificationRarity.notification", lastCreatureRarity).formatted(lastCreatureRarity.formatting)), 60);
 			if (CLIENT.player == null) return;
 			CLIENT.player.playSound(SoundEvents.ENTITY_ARROW_HIT_PLAYER, 100f, 0.1f);
 		}
@@ -80,9 +95,9 @@ public class SeaCreatureTracker {
 	private static void checkCapNotification() {
 		if (!SkyblockerConfigManager.get().helpers.fishing.seaCreatureCapNotification) return;
 		if (seaCreatureCount() == getSeaCreatureCap()) {
-			TitleContainer.addTitle(new Title(Text.translatable("skyblocker.config.helpers.fishing.seaCreatureCapNotification.notification")), 20);
+			TitleContainer.addTitle(new Title(Text.translatable("skyblocker.config.helpers.fishing.seaCreatureCapNotification.notification").formatted(Formatting.RED)), 60);
 			if (CLIENT.player == null) return;
-			CLIENT.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
+			CLIENT.player.playSound(SoundEvents.ENTITY_ARROW_HIT_PLAYER, 100f, 0.1f);
 		}
 	}
 

@@ -95,13 +95,16 @@ public class HelperConfig {
 		public int timerLength = 340;
 
 		@SerialEntry
+		public boolean seaCreatureTimerNotification = true; //todo
+
+		@SerialEntry
 		public int seaCreatureCap = 30;
 
 		@SerialEntry
 		public boolean seaCreatureCapNotification = true;
 
 		@SerialEntry
-		public SkyblockItemRarity minimumNotificationRarity = SkyblockItemRarity.RARE;
+		public SkyblockItemRarity minimumNotificationRarity = SkyblockItemRarity.EPIC;
     }
 
     public static class FairySouls {

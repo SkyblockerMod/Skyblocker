@@ -179,6 +179,14 @@ public class HelperCategory {
 										newValue -> config.helpers.fishing.timerLength = newValue)
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 360).step(1))
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.fishing.seaCreatureTimerNotification"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.seaCreatureTimerNotification.@Tooltip")))
+								.binding(defaults.helpers.fishing.seaCreatureTimerNotification,
+										() -> config.helpers.fishing.seaCreatureTimerNotification,
+										newValue -> config.helpers.fishing.seaCreatureTimerNotification = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.fishing.seaCreatureCap"))
 								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.seaCreatureCap.@Tooltip")))
