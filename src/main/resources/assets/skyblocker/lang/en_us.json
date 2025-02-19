@@ -400,8 +400,11 @@
   "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip",
 
 
-  "skyblocker.config.helpers.enableWardrobeHelper": "Enable Wardrobe Helper",
-  "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing armor from the wardrobe by pressing hotbar keys 1-9 while the menu is open. The corresponding armor set in the wardrobe menu will be equipped.",
+  "skyblocker.config.helpers.wardrobe": "Wardrobe Helper",
+  "skyblocker.config.helpers.wardrobe.enableWardrobeHelper": "Enable Wardrobe Helper",
+  "skyblocker.config.helpers.wardrobe.enableWardrobeHelper.@Tooltip": "Allows changing armor from the wardrobe by pressing hotbar keys 1-9 while the menu is open. The corresponding armor set in the wardrobe menu will be equipped.",
+  "skyblocker.config.helpers.wardrobe.showKeybinds": "Show Keybinds",
+  "skyblocker.config.helpers.wardrobe.showKeybinds.@Tooltip": "Show the keybind to equip an armor set, instead of its number.",
 
   "skyblocker.config.helpers.experiments": "Experiments Solver",
   "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Enable Chronomatron Solver",
