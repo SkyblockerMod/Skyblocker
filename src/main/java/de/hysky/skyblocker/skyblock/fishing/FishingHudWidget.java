@@ -35,7 +35,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public Set<Location> availableLocations() {
-		return Set.of(Location.HUB, Location.CRIMSON_ISLE, Location.CRYSTAL_HOLLOWS, Location.THE_PARK, Location.SPIDERS_DEN);
+		return Set.of(Location.values());
 	}
 
 	@Override
