@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config;
 
 import com.google.gson.FieldNamingPolicy;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.categories.*;
@@ -20,13 +21,19 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import javax.annotation.Nullable;
 import java.lang.StackWalker.Option;
 import java.nio.file.Path;
+import java.util.stream.Stream;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
 public class SkyblockerConfigManager {
+
     public static final int CONFIG_VERSION = 3;
     private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("skyblocker.json");
     private static final ConfigClassHandler<SkyblockerConfig> HANDLER = ConfigClassHandler.createBuilder(SkyblockerConfig.class)
@@ -53,7 +60,12 @@ public class SkyblockerConfigManager {
         }
 
         HANDLER.load();
-        ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
+        ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher
+                .register(ClientCommandManager
+                        .literal(SkyblockerMod.NAMESPACE)
+                        .then(optionsLiteral("config"))
+                        .then(optionsLiteral("options")))));
+
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (screen instanceof GenericContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
                 Screens.getButtons(screen).add(ButtonWidget
@@ -70,6 +82,11 @@ public class SkyblockerConfigManager {
     }
 
     public static Screen createGUI(Screen parent) {
+        return createGUI(parent, null);
+    }
+
+    // Overloaded method allows for specifying a category to open to
+    public static Screen createGUI(Screen parent, @Nullable String category) {
         return YetAnotherConfigLib.create(HANDLER, (defaults, config, builder) -> {
             builder.title(Text.translatable("skyblocker.config.title"))
                     .category(GeneralCategory.create(defaults, config))
@@ -89,8 +106,23 @@ public class SkyblockerConfigManager {
             if (Debug.debugEnabled()) {
                 builder.category(DebugCategory.create(defaults, config));
             }
+
+            // Default method will skip the initial screen to avoid redundant checks
+            if (category != null) setInitialConfigScreen(builder, category);
+
             return builder;
+
         }).generateScreen(parent);
+    }
+
+
+    public static void setInitialConfigScreen(YetAnotherConfigLib.Builder builder, String category) {
+        builder.screenInit(screen ->
+                screen.tabManager.setCurrentTab(screen.tabNavigationBar.getTabs().stream().filter(tab ->
+                        tab.getTitle().getString().toLowerCase().matches(category.toLowerCase() + ".*")
+
+                ).findFirst().orElse(screen.tabNavigationBar.getTabs().getFirst()), false)
+        );
     }
 
     /**
@@ -101,6 +133,13 @@ public class SkyblockerConfigManager {
      */
     private static LiteralArgumentBuilder<FabricClientCommandSource> optionsLiteral(String name) {
         // Don't immediately open the next screen as it will be closed by ChatScreen right after this command is executed
-        return ClientCommandManager.literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)));
+        return ClientCommandManager.literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)))
+                // If a category is specified, open to that category using overloaded createGUI method
+                .then(argument("category", StringArgumentType.word())
+                        .suggests((ctx, builder) ->
+                                CommandSource.suggestMatching(Stream.of("general", "ui", "helper", "dungeons", "crimson", "mining", "farming", "other", "slayers", "chat", "quick", "event", "misc"), builder))
+                        .executes(ctx ->
+                                Scheduler.queueOpenScreenCommand(() ->
+                                        createGUI(null, StringArgumentType.getString(ctx, "category"))).run(ctx)));
     }
 }

@@ -36,15 +36,27 @@ public class HelperCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 
-				// Wardrobe Helper
-		        .option(Option.<Boolean>createBuilder()
-		                .name(Text.translatable("skyblocker.config.helpers.enableWardrobeHelper"))
-		                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.enableWardrobeHelper.@Tooltip")))
-		                .binding(defaults.helpers.enableWardrobeHelper,
-				                () -> config.helpers.enableWardrobeHelper,
-				                newValue -> config.helpers.enableWardrobeHelper = newValue)
-		                .controller(ConfigUtils::createBooleanController)
-				        .build())
+                // Wardrobe Helper
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.helpers.wardrobe"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.helpers.wardrobe.enableWardrobeHelper"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.wardrobe.enableWardrobeHelper.@Tooltip")))
+                                .binding(defaults.helpers.enableWardrobeHelper,
+                                        () -> config.helpers.enableWardrobeHelper,
+                                        newValue -> config.helpers.enableWardrobeHelper = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.helpers.wardrobe.showKeybinds"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.wardrobe.showKeybinds.@Tooltip")))
+                                .binding(defaults.helpers.showKeybinds,
+                                        () -> config.helpers.showKeybinds,
+                                        newValue -> config.helpers.showKeybinds = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .build())
 
                 //Mythological Ritual
                 .group(OptionGroup.createBuilder()
@@ -228,38 +240,38 @@ public class HelperCategory {
                         .build())
 
                 .group(OptionGroup.createBuilder()
-                		.name(Text.translatable("skyblocker.config.helpers.carnival"))
-                		.collapsed(true)
-                		.option(Option.<Boolean>createBuilder()
-                				.name(Text.translatable("skyblocker.config.helpers.carnival.catchAFishHelper"))
-                				.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.carnival.catchAFishHelper.@Tooltip")))
-                				.binding(defaults.helpers.carnival.catchAFishHelper,
-                						() -> config.helpers.carnival.catchAFishHelper,
-                						newValue -> config.helpers.carnival.catchAFishHelper = newValue)
-                				.controller(ConfigUtils::createBooleanController)
-                				.build())
-                		.option(Option.<Boolean>createBuilder()
-                				.name(Text.translatable("skyblocker.config.helpers.carnival.zombieShootoutHelper"))
-                				.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip")))
-                				.binding(defaults.helpers.carnival.zombieShootoutHelper,
-                						() -> config.helpers.carnival.zombieShootoutHelper,
-                						newValue -> config.helpers.carnival.zombieShootoutHelper = newValue)
-                				.controller(ConfigUtils::createBooleanController)
-                				.build())
-                		.build())
+                        .name(Text.translatable("skyblocker.config.helpers.carnival"))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.helpers.carnival.catchAFishHelper"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.carnival.catchAFishHelper.@Tooltip")))
+                                .binding(defaults.helpers.carnival.catchAFishHelper,
+                                        () -> config.helpers.carnival.catchAFishHelper,
+                                        newValue -> config.helpers.carnival.catchAFishHelper = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.helpers.carnival.zombieShootoutHelper"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip")))
+                                .binding(defaults.helpers.carnival.zombieShootoutHelper,
+                                        () -> config.helpers.carnival.zombieShootoutHelper,
+                                        newValue -> config.helpers.carnival.zombieShootoutHelper = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .build())
 
                 //Bazaar
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.helpers.bazaar"))
                         .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
-                                 .name(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper"))
-                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip", BazaarHelper.getExpiringIcon(), BazaarHelper.getExpiredIcon(), BazaarHelper.getFilledIcon(69), BazaarHelper.getFilledIcon(100))))
-                                 .binding(defaults.helpers.bazaar.enableBazaarHelper,
-		                                 () -> config.helpers.bazaar.enableBazaarHelper,
-		                                 newValue -> config.helpers.bazaar.enableBazaarHelper = newValue)
-                                 .controller(ConfigUtils::createBooleanController)
-                                 .build())
+                                .name(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip", BazaarHelper.getExpiringIcon(), BazaarHelper.getExpiredIcon(), BazaarHelper.getFilledIcon(69), BazaarHelper.getFilledIcon(100))))
+                                .binding(defaults.helpers.bazaar.enableBazaarHelper,
+                                        () -> config.helpers.bazaar.enableBazaarHelper,
+                                        newValue -> config.helpers.bazaar.enableBazaarHelper = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip")))
@@ -277,7 +289,7 @@ public class HelperCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(ConfigUtils.createShortcutToKeybindsScreen())
-		                .build())
+                        .build())
                 .build();
     }
 }
