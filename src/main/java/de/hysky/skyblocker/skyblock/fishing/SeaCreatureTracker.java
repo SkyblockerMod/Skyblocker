@@ -77,7 +77,6 @@ public class SeaCreatureTracker {
 	/**
 	 * Sends notification and sound when a sea creature is above a rarity threshold
 	 */
-
 	private static void checkRarityNotification() {
 		SkyblockItemRarity rarityThreshold = SkyblockerConfigManager.get().helpers.fishing.minimumNotificationRarity;
 		if (rarityThreshold == SkyblockItemRarity.UNKNOWN) return;
@@ -135,6 +134,10 @@ public class SeaCreatureTracker {
 		return System.currentTimeMillis() - seaCreatures.getFirst().spawnTime;
 	}
 
+	/**
+	 * Checks if at least one creature is alive
+	 * @return if atleast one creature is alive
+	 */
 	protected static Boolean isCreaturesAlive() {
 		return !seaCreatures.isEmpty();
 	}
@@ -143,8 +146,9 @@ public class SeaCreatureTracker {
 	protected static Pair<String, Float> getTimerText(long currentTime) {
 		long maxTime = SkyblockerConfigManager.get().helpers.fishing.timerLength * 1000L;
 		String time = SkyblockTime.formatTime((maxTime - currentTime) / 1000f).getString();
-		//colour text depending on time left
+		//get how far through the timer is
 		float percentage = (float) (maxTime - currentTime) / (float) maxTime;
+
 		return Pair.of(time, percentage);
 
 	}

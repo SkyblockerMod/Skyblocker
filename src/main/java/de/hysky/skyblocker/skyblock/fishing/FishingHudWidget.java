@@ -59,7 +59,6 @@ public class FishingHudWidget extends ComponentBasedWidget {
 				return isBarnFishing();
 			}
 			return true;
-
 		}
 		return false;
 	}
