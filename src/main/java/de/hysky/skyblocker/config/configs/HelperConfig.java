@@ -95,7 +95,7 @@ public class HelperConfig {
 		public int timerLength = 340;
 
 		@SerialEntry
-		public boolean seaCreatureTimerNotification = true; //todo
+		public boolean seaCreatureTimerNotification = true;
 
 		@SerialEntry
 		public int seaCreatureCap = 30;

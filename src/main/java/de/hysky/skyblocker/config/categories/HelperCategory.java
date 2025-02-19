@@ -11,9 +11,7 @@ import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
-import io.github.moulberry.repo.data.Rarity;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.text.Text;
 
 public class HelperCategory {
@@ -223,139 +221,139 @@ public class HelperCategory {
 								.build())
 						.build())
 
-						//Fairy Souls Helper
-						.group(OptionGroup.createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.fairySouls"))
-								.collapsed(true)
-								.option(Option.<Boolean>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.fairySouls.enableFairySoulsHelper"))
-										.binding(defaults.helpers.fairySouls.enableFairySoulsHelper,
-												() -> config.helpers.fairySouls.enableFairySoulsHelper,
-												newValue -> config.helpers.fairySouls.enableFairySoulsHelper = newValue)
-										.controller(ConfigUtils::createBooleanController)
-										.build())
-								.option(Option.<Boolean>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.fairySouls.highlightFoundSouls"))
-										.binding(defaults.helpers.fairySouls.highlightFoundSouls,
-												() -> config.helpers.fairySouls.highlightFoundSouls,
-												newValue -> config.helpers.fairySouls.highlightFoundSouls = newValue)
-										.controller(ConfigUtils::createBooleanController)
-										.build())
-								.option(Option.<Boolean>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls"))
-										.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls.@Tooltip")))
-										.binding(defaults.helpers.fairySouls.highlightOnlyNearbySouls,
-												() -> config.helpers.fairySouls.highlightOnlyNearbySouls,
-												newValue -> config.helpers.fairySouls.highlightOnlyNearbySouls = newValue)
-										.controller(ConfigUtils::createBooleanController)
-										.build())
+				//Fairy Souls Helper
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.fairySouls"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.fairySouls.enableFairySoulsHelper"))
+								.binding(defaults.helpers.fairySouls.enableFairySoulsHelper,
+										() -> config.helpers.fairySouls.enableFairySoulsHelper,
+										newValue -> config.helpers.fairySouls.enableFairySoulsHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.fairySouls.highlightFoundSouls"))
+								.binding(defaults.helpers.fairySouls.highlightFoundSouls,
+										() -> config.helpers.fairySouls.highlightFoundSouls,
+										newValue -> config.helpers.fairySouls.highlightFoundSouls = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls.@Tooltip")))
+								.binding(defaults.helpers.fairySouls.highlightOnlyNearbySouls,
+										() -> config.helpers.fairySouls.highlightOnlyNearbySouls,
+										newValue -> config.helpers.fairySouls.highlightOnlyNearbySouls = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
 
-						//Chocolate Factory
-						.group(OptionGroup.createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory"))
-								.collapsed(true)
-								.option(Option.<Boolean>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper"))
-										.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper.@Tooltip")))
-										.binding(defaults.helpers.chocolateFactory.enableChocolateFactoryHelper,
-												() -> config.helpers.chocolateFactory.enableChocolateFactoryHelper,
-												newValue -> config.helpers.chocolateFactory.enableChocolateFactoryHelper = newValue)
-										.controller(ConfigUtils::createBooleanController)
-										.build())
-								.option(Option.<Boolean>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableEggFinder"))
-										.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableEggFinder.@Tooltip")))
-										.binding(defaults.helpers.chocolateFactory.enableEggFinder,
-												() -> config.helpers.chocolateFactory.enableEggFinder,
-												newValue -> config.helpers.chocolateFactory.enableEggFinder = newValue)
-										.controller(ConfigUtils::createBooleanController)
-										.build())
-								.option(Option.<Boolean>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages"))
-										.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages.@Tooltip")))
-										.binding(defaults.helpers.chocolateFactory.sendEggFoundMessages,
-												() -> config.helpers.chocolateFactory.sendEggFoundMessages,
-												newValue -> config.helpers.chocolateFactory.sendEggFoundMessages = newValue)
-										.controller(ConfigUtils::createBooleanController)
-										.build())
-								.option(Option.<Waypoint.Type>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.waypointType"))
-										.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip")))
-										.binding(defaults.helpers.chocolateFactory.waypointType,
-												() -> config.helpers.chocolateFactory.waypointType,
-												newValue -> config.helpers.chocolateFactory.waypointType = newValue)
-										.controller(ConfigUtils::createEnumCyclingListController)
-										.build())
-								.option(Option.<Boolean>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder"))
-										.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip")))
-										.binding(defaults.helpers.chocolateFactory.enableTimeTowerReminder,
-												() -> config.helpers.chocolateFactory.enableTimeTowerReminder,
-												newValue -> config.helpers.chocolateFactory.enableTimeTowerReminder = newValue)
-										.controller(ConfigUtils::createBooleanController)
-										.build())
-								.option(Option.<Boolean>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.straySound"))
-										.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip")))
-										.binding(defaults.helpers.chocolateFactory.straySound,
-												() -> config.helpers.chocolateFactory.straySound,
-												newValue -> config.helpers.chocolateFactory.straySound = newValue)
-										.controller(ConfigUtils::createBooleanController)
-										.build())
+				//Chocolate Factory
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.chocolateFactory"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper.@Tooltip")))
+								.binding(defaults.helpers.chocolateFactory.enableChocolateFactoryHelper,
+										() -> config.helpers.chocolateFactory.enableChocolateFactoryHelper,
+										newValue -> config.helpers.chocolateFactory.enableChocolateFactoryHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableEggFinder"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableEggFinder.@Tooltip")))
+								.binding(defaults.helpers.chocolateFactory.enableEggFinder,
+										() -> config.helpers.chocolateFactory.enableEggFinder,
+										newValue -> config.helpers.chocolateFactory.enableEggFinder = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages.@Tooltip")))
+								.binding(defaults.helpers.chocolateFactory.sendEggFoundMessages,
+										() -> config.helpers.chocolateFactory.sendEggFoundMessages,
+										newValue -> config.helpers.chocolateFactory.sendEggFoundMessages = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Waypoint.Type>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.waypointType"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip")))
+								.binding(defaults.helpers.chocolateFactory.waypointType,
+										() -> config.helpers.chocolateFactory.waypointType,
+										newValue -> config.helpers.chocolateFactory.waypointType = newValue)
+								.controller(ConfigUtils::createEnumCyclingListController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip")))
+								.binding(defaults.helpers.chocolateFactory.enableTimeTowerReminder,
+										() -> config.helpers.chocolateFactory.enableTimeTowerReminder,
+										newValue -> config.helpers.chocolateFactory.enableTimeTowerReminder = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.straySound"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip")))
+								.binding(defaults.helpers.chocolateFactory.straySound,
+										() -> config.helpers.chocolateFactory.straySound,
+										newValue -> config.helpers.chocolateFactory.straySound = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
 
-						.group(OptionGroup.createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.carnival"))
-								.collapsed(true)
-								.option(Option.<Boolean>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.carnival.catchAFishHelper"))
-										.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.carnival.catchAFishHelper.@Tooltip")))
-										.binding(defaults.helpers.carnival.catchAFishHelper,
-												() -> config.helpers.carnival.catchAFishHelper,
-												newValue -> config.helpers.carnival.catchAFishHelper = newValue)
-										.controller(ConfigUtils::createBooleanController)
-										.build())
-								.option(Option.<Boolean>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.carnival.zombieShootoutHelper"))
-										.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip")))
-										.binding(defaults.helpers.carnival.zombieShootoutHelper,
-												() -> config.helpers.carnival.zombieShootoutHelper,
-												newValue -> config.helpers.carnival.zombieShootoutHelper = newValue)
-										.controller(ConfigUtils::createBooleanController)
-										.build())
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.carnival"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.carnival.catchAFishHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.carnival.catchAFishHelper.@Tooltip")))
+								.binding(defaults.helpers.carnival.catchAFishHelper,
+										() -> config.helpers.carnival.catchAFishHelper,
+										newValue -> config.helpers.carnival.catchAFishHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.carnival.zombieShootoutHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip")))
+								.binding(defaults.helpers.carnival.zombieShootoutHelper,
+										() -> config.helpers.carnival.zombieShootoutHelper,
+										newValue -> config.helpers.carnival.zombieShootoutHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
 
-						//Bazaar
-						.group(OptionGroup.createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.bazaar"))
-								.collapsed(true)
-								.option(Option.<Boolean>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper"))
-										.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip", BazaarHelper.getExpiringIcon(), BazaarHelper.getExpiredIcon(), BazaarHelper.getFilledIcon(69), BazaarHelper.getFilledIcon(100))))
-										.binding(defaults.helpers.bazaar.enableBazaarHelper,
-												() -> config.helpers.bazaar.enableBazaarHelper,
-												newValue -> config.helpers.bazaar.enableBazaarHelper = newValue)
-										.controller(ConfigUtils::createBooleanController)
-										.build())
-								.option(Option.<Boolean>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup"))
-										.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip")))
-										.binding(defaults.helpers.itemPrice.enableItemPriceLookup,
-												() -> config.helpers.itemPrice.enableItemPriceLookup,
-												newValue -> config.helpers.itemPrice.enableItemPriceLookup = newValue)
-										.controller(ConfigUtils::createBooleanController)
-										.build())
-								.option(Option.<Boolean>createBuilder()
-										.name(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh"))
-										.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip")))
-										.binding(defaults.helpers.itemPrice.enableItemPriceRefresh,
-												() -> config.helpers.itemPrice.enableItemPriceRefresh,
-												newValue -> config.helpers.itemPrice.enableItemPriceRefresh = newValue)
-										.controller(ConfigUtils::createBooleanController)
-										.build())
-								.option(ConfigUtils.createShortcutToKeybindsScreen())
+				//Bazaar
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.bazaar"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip", BazaarHelper.getExpiringIcon(), BazaarHelper.getExpiredIcon(), BazaarHelper.getFilledIcon(69), BazaarHelper.getFilledIcon(100))))
+								.binding(defaults.helpers.bazaar.enableBazaarHelper,
+										() -> config.helpers.bazaar.enableBazaarHelper,
+										newValue -> config.helpers.bazaar.enableBazaarHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
-						.build();
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip")))
+								.binding(defaults.helpers.itemPrice.enableItemPriceLookup,
+										() -> config.helpers.itemPrice.enableItemPriceLookup,
+										newValue -> config.helpers.itemPrice.enableItemPriceLookup = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip")))
+								.binding(defaults.helpers.itemPrice.enableItemPriceRefresh,
+										() -> config.helpers.itemPrice.enableItemPriceRefresh,
+										newValue -> config.helpers.itemPrice.enableItemPriceRefresh = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(ConfigUtils.createShortcutToKeybindsScreen())
+						.build())
+				.build();
 	}
 }
