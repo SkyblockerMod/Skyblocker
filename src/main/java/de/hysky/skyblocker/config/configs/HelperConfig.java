@@ -86,7 +86,7 @@ public class HelperConfig {
         public boolean hideOtherPlayersRods = false;
 
 		@SerialEntry
-		public List<Location> fishingHudEnabledLocations = List.of(Location.HUB, Location.CRIMSON_ISLE, Location.CRYSTAL_HOLLOWS, Location.THE_PARK);
+		public List<Location> fishingHudEnabledLocations = List.of(Location.values());
 
 		@SerialEntry
 		public boolean onlyShowHudInBarn = true;
