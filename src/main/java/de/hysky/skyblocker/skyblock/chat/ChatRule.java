@@ -1,9 +1,7 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import com.mojang.datafixers.util.Pair;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.utils.CollectionUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -16,6 +14,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
@@ -30,36 +29,10 @@ public class ChatRule {
 	 * This could probably be done in a more pretty manner using the FP-style functions in the Codec class, but this works. Feel free to refactor if you want.
 	 */
 	@VisibleForTesting
-	static final Codec<EnumSet<Location>> LOCATION_FIXING_CODEC = new Codec<>() {
-		@Override
-		public <T> DataResult<Pair<EnumSet<Location>, T>> decode(DynamicOps<T> ops, T input) {
-			DataResult<Pair<EnumSet<Location>, T>> result = Location.SET_CODEC.decode(ops, input);
-			if (result.isSuccess()) return result;
-			// Necessary for empty strings, which would've been decoded as UNKNOWN otherwise.
-			if (input instanceof String string && string.isEmpty()) return DataResult.success(Pair.of(EnumSet.noneOf(Location.class), ops.empty()));
-
-			return Codec.STRING.decode(ops, input).ap(DataResult.success(pair -> pair.mapFirst(this::encodeString)));
-		}
-
-		// This maps invalid entries to `Location.UNKNOWN`, which is better than failing outright.
-		private EnumSet<Location> encodeString(String string) {
-			// If a location's name contains a ! prefix, it's negated, meaning every location except that one is valid.
-			if (string.contains("!")) return EnumSet.complementOf(
-					Arrays.stream(string.split(", ?"))
-						  .filter(s1 -> s1.startsWith("!")) // Filter out the non-negated locations because the negation of any element in the list already implies those non-negated locations being valid.
-						  .map(Location::fromFriendlyName)
-						  .collect(CollectionUtils.enumSetCollector(Location.class))
-			);
-			return Arrays.stream(string.split(", ?"))
-						 .map(Location::fromFriendlyName)
-						 .collect(CollectionUtils.enumSetCollector(Location.class));
-		}
-
-		@Override
-		public <T> DataResult<T> encode(EnumSet<Location> input, DynamicOps<T> ops, T prefix) {
-			return Location.SET_CODEC.encode(input, ops, prefix);
-		}
-	};
+	static final Codec<EnumSet<Location>> LOCATION_FIXING_CODEC = Codec.either(Location.SET_CODEC, Codec.STRING).xmap(
+			either -> either.map(Function.identity(), ChatRule::encodeString),
+			Either::left
+	);
 
 	private static final Codec<ChatRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("name").forGetter(ChatRule::getName),
@@ -279,6 +252,24 @@ public class ChatRule {
 		// This exists because it doesn't make sense to remove all valid locations, you should disable the chat rule if you want to do that.
 		// This way, we can also default to an empty set for validLocations.
 		return validLocations.isEmpty() || validLocations.contains(Utils.getLocation());
+	}
+
+	// This maps invalid entries to `Location.UNKNOWN`, which is better than failing outright.
+	private static EnumSet<Location> encodeString(String string) {
+		// Necessary for empty strings, which would've been decoded as UNKNOWN otherwise.
+		if (string.isEmpty()) return EnumSet.noneOf(Location.class);
+
+		// If a location's name contains a ! prefix, it's negated, meaning every location except that one is valid.
+		if (string.contains("!")) return EnumSet.complementOf(
+				Arrays.stream(string.split(", ?"))
+						.filter(s1 -> s1.startsWith("!")) // Filter out the non-negated locations because the negation of any element in the list already implies those non-negated locations being valid.
+						.map(s -> s.substring(1))
+						.map(Location::fromFriendlyName)
+						.collect(CollectionUtils.enumSetCollector(Location.class))
+		);
+		return Arrays.stream(string.split(", ?"))
+				.map(Location::fromFriendlyName)
+				.collect(CollectionUtils.enumSetCollector(Location.class));
 	}
 }
 
