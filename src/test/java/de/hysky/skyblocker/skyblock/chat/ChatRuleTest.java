@@ -38,14 +38,36 @@ class ChatRuleTest {
 	}
 
 	@Test
-	void codecFixTest() {
+	void codecParseLegacy() {
 		// Testing to see if the string/enum set decoding codec works properly
 		// Encoding is left to the actual enum set codec, and that's beyond the scope of this test.
-		Assertions.assertEquals(ChatRule.LOCATION_FIXING_CODEC.decode(JsonOps.INSTANCE, JsonOps.INSTANCE.createString("Dwarven Mines, Jerry's Workshop, The Park")).getOrThrow().getFirst(), EnumSet.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND, Location.THE_PARK));
-		Assertions.assertEquals(ChatRule.LOCATION_FIXING_CODEC.decode(JsonOps.INSTANCE,
-						JsonOps.INSTANCE.createList(Stream.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND, Location.THE_PARK)
-														  .map(Location::asString)
-														  .map(JsonOps.INSTANCE::createString))).getOrThrow().getFirst(),
-				EnumSet.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND, Location.THE_PARK));
+		Assertions.assertEquals(
+				EnumSet.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND, Location.THE_PARK),
+				ChatRule.LOCATION_FIXING_CODEC.parse(JsonOps.INSTANCE, JsonOps.INSTANCE.createString("Dwarven Mines, Jerry's Workshop, The Park")).getOrThrow()
+		);
+	}
+
+	@Test
+	void codecParseLegacyExclusion() {
+		Assertions.assertEquals(
+				EnumSet.complementOf(EnumSet.of(Location.WINTER_ISLAND, Location.DEEP_CAVERNS)),
+				ChatRule.LOCATION_FIXING_CODEC.parse(JsonOps.INSTANCE, JsonOps.INSTANCE.createString("!Jerry's Workshop, !Deep Caverns")).getOrThrow()
+		);
+
+		Assertions.assertEquals(
+				EnumSet.complementOf(EnumSet.of(Location.DWARVEN_MINES)),
+				ChatRule.LOCATION_FIXING_CODEC.parse(JsonOps.INSTANCE, JsonOps.INSTANCE.createString("!Dwarven Mines, Jerry's Workshop, The Park")).getOrThrow()
+		);
+	}
+
+	@Test
+	void codecParseEnumSet() {
+		Assertions.assertEquals(
+				EnumSet.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND, Location.THE_PARK),
+				ChatRule.LOCATION_FIXING_CODEC.parse(JsonOps.INSTANCE, JsonOps.INSTANCE.createList(Stream.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND, Location.THE_PARK)
+						.map(Location::asString)
+						.map(JsonOps.INSTANCE::createString)
+				)).getOrThrow()
+		);
 	}
 }

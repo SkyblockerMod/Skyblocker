@@ -46,13 +46,14 @@ public class ChatRule {
 			// If a location's name contains a ! prefix, it's negated, meaning every location except that one is valid.
 			if (string.contains("!")) return EnumSet.complementOf(
 					Arrays.stream(string.split(", ?"))
-						  .filter(s1 -> s1.startsWith("!")) // Filter out the non-negated locations because the negation of any element in the list already implies those non-negated locations being valid.
-						  .map(Location::fromFriendlyName)
-						  .collect(CollectionUtils.enumSetCollector(Location.class))
+							.filter(s1 -> s1.startsWith("!")) // Filter out the non-negated locations because the negation of any element in the list already implies those non-negated locations being valid.
+							.map(s -> s.substring(1))
+							.map(Location::fromFriendlyName)
+							.collect(CollectionUtils.enumSetCollector(Location.class))
 			);
 			return Arrays.stream(string.split(", ?"))
-						 .map(Location::fromFriendlyName)
-						 .collect(CollectionUtils.enumSetCollector(Location.class));
+					.map(Location::fromFriendlyName)
+					.collect(CollectionUtils.enumSetCollector(Location.class));
 		}
 
 		@Override
