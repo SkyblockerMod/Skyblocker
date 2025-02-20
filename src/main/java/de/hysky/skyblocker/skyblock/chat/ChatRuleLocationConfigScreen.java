@@ -34,7 +34,7 @@ public class ChatRuleLocationConfigScreen extends Screen {
 			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen.note"), width / 2, (38 - client.textRenderer.fontHeight), 0xFFFFFF);
 		});
 
-		ItemTickList<Location> itemTickList = addDrawableChild(new ItemTickList<>(client, width, height - 107, 43, 24, enabledLocations, EnumSet.allOf(Location.class), true).init());
+		ItemTickList<Location> itemTickList = addDrawableChild(new ItemTickList<>(client, width, height - 107, 43, 24, enabledLocations, EnumSet.complementOf(EnumSet.of(Location.UNKNOWN, Location.MODERN_FORAGING_ISLAND)), true).init());
 		//Grid code gratuitously stolen from WaypointsScreen. Same goes for the y and heights above.
 		GridWidget gridWidget = new GridWidget();
 		gridWidget.getMainPositioner().marginX(5).marginY(2);
