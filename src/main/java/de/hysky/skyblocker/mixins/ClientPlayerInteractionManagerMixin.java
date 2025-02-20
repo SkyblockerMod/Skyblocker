@@ -12,16 +12,20 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public class ClientPlayerInteractionManagerMixin {
-
-	@Inject(method = "method_41929", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/ActionResult;", shift = At.Shift.AFTER))
-	public void onInteractItem(Hand hand, PlayerEntity playerEntity, MutableObject<?> mutableObject,
-							   int sequence, CallbackInfoReturnable<Packet<?>> cir, @Local ItemStack itemStack) {
+	// Inject so that we only swing when the result is not success because vanilla handles swing on success.
+	@Inject(method = "method_41929",
+			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/ActionResult;")),
+			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;")
+	)
+	public void swingOnAbility(Hand hand, PlayerEntity playerEntity, MutableObject<?> mutableObject,
+							   int sequence, CallbackInfoReturnable<Packet<?>> cir, @Local(ordinal = 0) ItemStack itemStack) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.swingOnAbilities
-			&& SwingAnimation.hasAbility(itemStack)) {
+				&& SwingAnimation.hasAbility(itemStack)) {
 			playerEntity.swingHand(hand);
 		}
 	}
