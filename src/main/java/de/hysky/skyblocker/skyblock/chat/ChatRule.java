@@ -25,8 +25,6 @@ public class ChatRule {
 	 * Codec that can decode both string and enumset of locations, while encoding only enumset of locations.
 	 * <br>
 	 * This is necessary due to a change in how the locations are stored in the config.
-	 * <br>
-	 * This could probably be done in a more pretty manner using the FP-style functions in the Codec class, but this works. Feel free to refactor if you want.
 	 */
 	@VisibleForTesting
 	static final Codec<EnumSet<Location>> LOCATION_FIXING_CODEC = Codec.either(Location.SET_CODEC, Codec.STRING).xmap(
