@@ -26,7 +26,7 @@ import static java.util.Map.entry;
 
 public class ChatRuleConfigScreen extends Screen {
 	private static final int SPACER_X = 5;
-	private static final int SPACER_Y = 25;
+	private static final int SPACER_Y = 5;
 
 	private final Map<MutableText, SoundEvent> soundsLookup = Map.ofEntries(
 			entry(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling"), SoundEvents.BLOCK_NOTE_BLOCK_PLING.value()),
@@ -38,8 +38,10 @@ public class ChatRuleConfigScreen extends Screen {
 			entry(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.anvil"), SoundEvents.BLOCK_ANVIL_LAND)
 	);
 
-	private int buttonWidth = 75;
-	private static final int BUTTON_HEIGHT = ButtonWidget.DEFAULT_HEIGHT;
+	private static final int MAX_WIDTH = 360;
+	private static final int BUTTON_WIDTH = 75;
+	private static final int ROW_HEIGHT = ButtonWidget.DEFAULT_HEIGHT;
+	private static final int Y_OFFSET = (ROW_HEIGHT - MinecraftClient.getInstance().textRenderer.fontHeight) / 2;
 
 	private final int chatRuleIndex;
 	private final ChatRule chatRule;
@@ -91,18 +93,18 @@ public class ChatRuleConfigScreen extends Screen {
 		// Title
 		titleWidget = new TextWidget(0, 16, this.width, client.textRenderer.fontHeight, getTitle(), client.textRenderer).alignCenter();
 
-		// Start centered on the X and 1/3 down on the Y
-		calculateMaxButtonWidth();
-		IntIntPair rootPos = IntIntImmutablePair.of((this.width - getMaxUsedWidth()) / 2, (int) ((this.height - getMaxUsedHeight()) * 0.33));
+		// Start centered
+		IntIntPair rootPos = IntIntImmutablePair.of((this.width - getMaxWidth()) / 2 + SPACER_X, (this.height - getMaxUsedHeight()) / 2);
 		IntIntMutablePair currentPos = IntIntMutablePair.of(0, 0); // Offset from root pos, add them up and we get the actual position
-		int yOffset = (BUTTON_HEIGHT - client.textRenderer.fontHeight) / 2;
+		int yOffset = (ROW_HEIGHT - client.textRenderer.fontHeight) / 2;
 
 		// Row 1, name
 		Text nameText = Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.name");
 		nameLabel = textWidget(rootPos, currentPos, yOffset, nameText);
 		nextColumn(currentPos, client.textRenderer.getWidth(nameText));
 
-		nameInput = new TextFieldWidget(client.textRenderer, rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt(), 100, BUTTON_HEIGHT, Text.of(""));
+		int textFieldWidth = 200; // Placeholder value, their size is calculated dynamically afterward
+		nameInput = new TextFieldWidget(client.textRenderer, rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt(), textFieldWidth, ROW_HEIGHT, Text.of(""));
 		nameInput.setText(chatRule.getName());
 		nameInput.setTooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.name.@Tooltip")));
 		nextRow(currentPos);
@@ -117,13 +119,13 @@ public class ChatRuleConfigScreen extends Screen {
 		Text filterText = Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.filter");
 		filterLabel = textWidget(currentPos, rootPos, yOffset, filterText);
 		nextColumn(currentPos, client.textRenderer.getWidth(filterText));
-		filterInput = new TextFieldWidget(client.textRenderer, rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt(), 200, BUTTON_HEIGHT, Text.of(""));
+		filterInput = new TextFieldWidget(client.textRenderer, rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt(), textFieldWidth, ROW_HEIGHT, Text.of(""));
 		filterInput.setMaxLength(96);
 		filterInput.setText(chatRule.getFilter());
 		filterInput.setTooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.filter.@Tooltip")));
 		nextRow(currentPos);
 
-		// Row 4, partial match, regex and ignore case checkboxes.
+		// Row 4, partial match and regex
 
 		Text partialMatchText = Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch");
 		partialMatchLabel = textWidget(rootPos, currentPos, yOffset, partialMatchText);
@@ -133,10 +135,10 @@ public class ChatRuleConfigScreen extends Screen {
 											 partialMatchToggle.setMessage(enabledButtonText(chatRule.getPartialMatch()));
 										 })
 										 .position(rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt())
-										 .size(buttonWidth, BUTTON_HEIGHT)
+										 .size(BUTTON_WIDTH, ROW_HEIGHT)
 										 .tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
 										 .build();
-		nextColumn(currentPos, buttonWidth);
+		nextColumn(currentPos, BUTTON_WIDTH);
 
 		Text regexLabelText = Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex");
 		regexLabel = textWidget(rootPos, currentPos, yOffset, regexLabelText);
@@ -146,11 +148,12 @@ public class ChatRuleConfigScreen extends Screen {
 									  regexToggle.setMessage(enabledButtonText(chatRule.getRegex()));
 								  })
 								  .position(rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt())
-								  .size(buttonWidth, BUTTON_HEIGHT)
+								  .size(BUTTON_WIDTH, ROW_HEIGHT)
 								  .tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
 								  .build();
-		nextColumn(currentPos, buttonWidth);
+		nextRow(currentPos);
 
+		// Row 5, ignore case and location selection
 		Text ignoreCaseText = Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase");
 		ignoreCaseLabel = textWidget(rootPos, currentPos, yOffset, ignoreCaseText);
 		nextColumn(currentPos, client.textRenderer.getWidth(ignoreCaseText));
@@ -159,12 +162,10 @@ public class ChatRuleConfigScreen extends Screen {
 										   ignoreCaseToggle.setMessage(enabledButtonText(chatRule.getIgnoreCase()));
 									   })
 									   .position(rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt())
-									   .size(buttonWidth, BUTTON_HEIGHT)
+									   .size(BUTTON_WIDTH, ROW_HEIGHT)
 									   .tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
 									   .build();
-		nextRow(currentPos);
-
-		// Row 5, location selection
+		nextColumn(currentPos, BUTTON_WIDTH);
 
 		Text locationsText = Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations");
 		locationLabel = textWidget(rootPos, currentPos, yOffset, locationsText);
@@ -173,7 +174,7 @@ public class ChatRuleConfigScreen extends Screen {
 		locationsConfigButton = ButtonWidget.builder(Text.translatable("text.skyblocker.open"),
 													widget -> client.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
 											.tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip")))
-											.dimensions(rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt(), buttonWidth, BUTTON_HEIGHT)
+											.dimensions(rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt(), BUTTON_WIDTH, ROW_HEIGHT)
 											.build();
 
 		nextRow(currentPos);
@@ -193,10 +194,10 @@ public class ChatRuleConfigScreen extends Screen {
 											hideMessageToggle.setMessage(enabledButtonText(chatRule.getHideMessage()));
 										})
 										.position(rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt())
-										.size(buttonWidth, BUTTON_HEIGHT)
+										.size(BUTTON_WIDTH, ROW_HEIGHT)
 										.tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip")))
 										.build();
-		nextColumn(currentPos, buttonWidth);
+		nextColumn(currentPos, BUTTON_WIDTH);
 
 		Text actionBarText = Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar");
 		actionBarLabel = textWidget(rootPos, currentPos, yOffset, actionBarText);
@@ -206,12 +207,12 @@ public class ChatRuleConfigScreen extends Screen {
 										  actionBarToggle.setMessage(enabledButtonText(chatRule.getShowActionBar()));
 									  })
 									  .position(rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt())
-									  .size(buttonWidth, BUTTON_HEIGHT)
+									  .size(BUTTON_WIDTH, ROW_HEIGHT)
 									  .tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.actionBar.@Tooltip")))
 									  .build();
 		nextRow(currentPos);
 
-		// Row 8, announcement, sounds and replacement message
+		// Row 8, announcement, sounds
 
 		Text announcementText = Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.announcement");
 		announcementLabel = textWidget(rootPos, currentPos, yOffset, announcementText);
@@ -221,10 +222,10 @@ public class ChatRuleConfigScreen extends Screen {
 											 announcementToggle.setMessage(enabledButtonText(chatRule.getShowAnnouncement()));
 										 })
 										 .position(rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt())
-										 .size(buttonWidth, BUTTON_HEIGHT)
+										 .size(BUTTON_WIDTH, ROW_HEIGHT)
 										 .tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.announcement.@Tooltip")))
 										 .build();
-		nextColumn(currentPos, buttonWidth);
+		nextColumn(currentPos, BUTTON_WIDTH);
 
 		Text soundsText = Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds");
 		soundsLabel = textWidget(rootPos, currentPos, yOffset, soundsText);
@@ -244,7 +245,7 @@ public class ChatRuleConfigScreen extends Screen {
 									   }
 								   })
 								   .position(rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt())
-								   .size(buttonWidth, BUTTON_HEIGHT)
+								   .size(BUTTON_WIDTH, ROW_HEIGHT)
 								   .tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.@Tooltip")))
 								   .build();
 		nextRow(currentPos);
@@ -254,7 +255,7 @@ public class ChatRuleConfigScreen extends Screen {
 		Text replaceMessageText = Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.replace");
 		replaceMessageLabel = textWidget(rootPos, currentPos, yOffset, replaceMessageText);
 		nextColumn(currentPos, client.textRenderer.getWidth(replaceMessageText));
-		replaceMessageInput = new TextFieldWidget(client.textRenderer, rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt(), 200, BUTTON_HEIGHT, Text.of(""));
+		replaceMessageInput = new TextFieldWidget(client.textRenderer, rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt(), textFieldWidth, ROW_HEIGHT, Text.of(""));
 		replaceMessageInput.setMaxLength(96);
 		replaceMessageInput.setTooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.replace.@Tooltip")));
 		replaceMessageInput.setText(chatRule.getReplaceMessage());
@@ -262,9 +263,11 @@ public class ChatRuleConfigScreen extends Screen {
 		// Finish button at bottom right corner
 
 		finishButton = ButtonWidget.builder(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.finish"), a -> close())
-								   .position(this.width - buttonWidth - SPACER_Y, this.height - SPACER_Y)
-								   .size(buttonWidth, BUTTON_HEIGHT)
+								   .position(this.width - BUTTON_WIDTH - SPACER_Y, this.height - SPACER_Y)
+								   .size(BUTTON_WIDTH, ROW_HEIGHT)
 								   .build();
+		calculateTextFieldWidths();
+		calculateButtonWidths();
 	}
 
 	private int getCurrentSoundIndex() {
@@ -300,9 +303,9 @@ public class ChatRuleConfigScreen extends Screen {
 		addDrawableChild(partialMatchLabel);
 		addDrawableChild(regexToggle);
 		addDrawableChild(regexLabel);
+		// Row 5
 		addDrawableChild(ignoreCaseToggle);
 		addDrawableChild(ignoreCaseLabel);
-		// Row 5
 		addDrawableChild(locationsConfigButton);
 		addDrawableChild(locationLabel);
 		// Row 6
@@ -322,73 +325,82 @@ public class ChatRuleConfigScreen extends Screen {
 		addDrawableChild(replaceMessageLabel);
 		// Finish button
 		addDrawableChild(finishButton);
+		calculateTextFieldWidths();
+		calculateButtonWidths();
 	}
 
 	private void recalculateWidgetPositions() {
-		IntIntPair rootPos = IntIntImmutablePair.of((this.width - getMaxUsedWidth()) / 2, (int) ((this.height - getMaxUsedHeight()) * 0.33));
+		IntIntPair rootPos = IntIntImmutablePair.of((this.width - getMaxWidth()) / 2 + SPACER_X, (this.height - getMaxUsedHeight()) / 2);
 		IntIntMutablePair currentPos = IntIntMutablePair.of(0, 0); // Offset from root pos, add them up and we get the actual position
 		assert client != null;
-		int yOffset = (BUTTON_HEIGHT - client.textRenderer.fontHeight) / 2;
 		// Title
 		titleWidget.setWidth(this.width);
 		// Row 1
-		setWidgetPosition(nameLabel, rootPos, currentPos, yOffset);
+		setWidgetPosition(nameLabel, rootPos, currentPos, Y_OFFSET);
 		nextColumn(currentPos, client.textRenderer.getWidth(nameLabel.getMessage()));
 		setWidgetPosition(nameInput, rootPos, currentPos);
 		nextRow(currentPos);
 		// Row 2
-		setWidgetPosition(inputsLabel, rootPos, currentPos, yOffset);
+		setWidgetPosition(inputsLabel, rootPos, currentPos, Y_OFFSET);
 		nextRow(currentPos);
 		// Row 3
-		setWidgetPosition(filterLabel, rootPos, currentPos, yOffset);
+		setWidgetPosition(filterLabel, rootPos, currentPos, Y_OFFSET);
 		nextColumn(currentPos, client.textRenderer.getWidth(filterLabel.getMessage()));
 		setWidgetPosition(filterInput, rootPos, currentPos);
 		nextRow(currentPos);
 		// Row 4
-		setWidgetPosition(partialMatchLabel, rootPos, currentPos, yOffset);
+		setWidgetPosition(partialMatchLabel, rootPos, currentPos, Y_OFFSET);
 		nextColumn(currentPos, client.textRenderer.getWidth(partialMatchLabel.getMessage()));
 		setWidgetPosition(partialMatchToggle, rootPos, currentPos);
-		nextColumn(currentPos, buttonWidth);
-		setWidgetPosition(regexLabel, rootPos, currentPos, yOffset);
+		partialMatchToggle.setWidth(BUTTON_WIDTH);
+		nextColumn(currentPos, BUTTON_WIDTH);
+		setWidgetPosition(regexLabel, rootPos, currentPos, Y_OFFSET);
 		nextColumn(currentPos, client.textRenderer.getWidth(regexLabel.getMessage()));
 		setWidgetPosition(regexToggle, rootPos, currentPos);
-		nextColumn(currentPos, buttonWidth);
-		setWidgetPosition(ignoreCaseLabel, rootPos, currentPos, yOffset);
-		nextColumn(currentPos, client.textRenderer.getWidth(ignoreCaseLabel.getMessage()));
-		setWidgetPosition(ignoreCaseToggle, rootPos, currentPos);
+		regexToggle.setWidth(BUTTON_WIDTH);
 		nextRow(currentPos);
 		// Row 5
-		setWidgetPosition(locationLabel, rootPos, currentPos, yOffset);
+		setWidgetPosition(ignoreCaseLabel, rootPos, currentPos, Y_OFFSET);
+		nextColumn(currentPos, client.textRenderer.getWidth(ignoreCaseLabel.getMessage()));
+		setWidgetPosition(ignoreCaseToggle, rootPos, currentPos);
+		ignoreCaseToggle.setWidth(BUTTON_WIDTH);
+		nextColumn(currentPos, BUTTON_WIDTH);
+		setWidgetPosition(locationLabel, rootPos, currentPos, Y_OFFSET);
 		nextColumn(currentPos, client.textRenderer.getWidth(locationLabel.getMessage()));
 		setWidgetPosition(locationsConfigButton, rootPos, currentPos);
+		locationsConfigButton.setWidth(BUTTON_WIDTH);
 		nextRow(currentPos);
 		// Row 6
-		setWidgetPosition(outputsLabel, rootPos, currentPos, yOffset);
+		setWidgetPosition(outputsLabel, rootPos, currentPos, Y_OFFSET);
 		nextRow(currentPos);
 		// Row 7
-		setWidgetPosition(hideMessageLabel, rootPos, currentPos, yOffset);
+		setWidgetPosition(hideMessageLabel, rootPos, currentPos, Y_OFFSET);
 		nextColumn(currentPos, client.textRenderer.getWidth(hideMessageLabel.getMessage()));
 		setWidgetPosition(hideMessageToggle, rootPos, currentPos);
-		nextColumn(currentPos, buttonWidth);
-		setWidgetPosition(actionBarLabel, rootPos, currentPos, yOffset);
+		hideMessageToggle.setWidth(BUTTON_WIDTH);
+		nextColumn(currentPos, BUTTON_WIDTH);
+		setWidgetPosition(actionBarLabel, rootPos, currentPos, Y_OFFSET);
 		nextColumn(currentPos, client.textRenderer.getWidth(actionBarLabel.getMessage()));
 		setWidgetPosition(actionBarToggle, rootPos, currentPos);
+		actionBarToggle.setWidth(BUTTON_WIDTH);
 		nextRow(currentPos);
 		// Row 8
-		setWidgetPosition(announcementLabel, rootPos, currentPos, yOffset);
+		setWidgetPosition(announcementLabel, rootPos, currentPos, Y_OFFSET);
 		nextColumn(currentPos, client.textRenderer.getWidth(announcementLabel.getMessage()));
 		setWidgetPosition(announcementToggle, rootPos, currentPos);
-		nextColumn(currentPos, buttonWidth);
-		setWidgetPosition(soundsLabel, rootPos, currentPos, yOffset);
+		announcementToggle.setWidth(BUTTON_WIDTH);
+		nextColumn(currentPos, BUTTON_WIDTH);
+		setWidgetPosition(soundsLabel, rootPos, currentPos, Y_OFFSET);
 		nextColumn(currentPos, client.textRenderer.getWidth(soundsLabel.getMessage()));
 		setWidgetPosition(soundsToggle, rootPos, currentPos);
+		soundsToggle.setWidth(BUTTON_WIDTH);
 		nextRow(currentPos);
 		// Row 9
-		setWidgetPosition(replaceMessageLabel, rootPos, currentPos, yOffset);
+		setWidgetPosition(replaceMessageLabel, rootPos, currentPos, Y_OFFSET);
 		nextColumn(currentPos, client.textRenderer.getWidth(replaceMessageLabel.getMessage()));
 		setWidgetPosition(replaceMessageInput, rootPos, currentPos);
 		// Finish button
-		finishButton.setPosition(this.width - buttonWidth - SPACER_Y, this.height - SPACER_Y);
+		finishButton.setPosition(this.width - BUTTON_WIDTH - SPACER_X, this.height - SPACER_Y - ROW_HEIGHT);
 	}
 
 	/**
@@ -412,8 +424,9 @@ public class ChatRuleConfigScreen extends Screen {
 	}
 
 	/**
-	 * Convenience method to set the position of a widget based on the root position and the current position, with an additional y offset.
+	 * Convenience method to set the position of a widget based on the root position and the current position, with an additional y offset, mainly for text widgets.
 	 */
+	@SuppressWarnings("SameParameterValue") // We can't just inline the parameter value since it causes method signature conflicts. This is fine.
 	private static void setWidgetPosition(Widget widget, IntIntPair rootPos, IntIntPair currentPos, int yOffset) {
 		widget.setPosition(rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt() + yOffset);
 	}
@@ -426,41 +439,66 @@ public class ChatRuleConfigScreen extends Screen {
 	}
 
 	/**
-	 * Moves the current position down by {@link #SPACER_Y}, to advance to the next row. Also resets the x position to 0, to start back from the left.
+	 * Moves the current position down by {@link #SPACER_Y} + {@link #ROW_HEIGHT}, to advance to the next row. Also resets the x position to 0, to start back from the left.
 	 */
 	private static void nextRow(IntIntMutablePair pos) {
-		pos.right(pos.rightInt() + SPACER_Y);
+		pos.right(pos.rightInt() + SPACER_Y + ROW_HEIGHT);
 		pos.left(0);
 	}
 
 	/**
-	 * if the maxUsedWidth is above the available width decrease the button width to fix this
+	 * Dynamically calculates the width of the text fields based on the width of the labels.
 	 */
-	private void calculateMaxButtonWidth() {
-		if (client == null || client.currentScreen == null) return;
-		buttonWidth = 75;
-		int available = client.currentScreen.width - getMaxUsedWidth() - SPACER_X * 2;
-		if (available >= 0) return; //keep the largest size if room
-		buttonWidth += available / 3; //remove the needed width from the width of the total 3 buttons
-		buttonWidth = Math.max(10, buttonWidth); //do not let the width go below 10
+	private void calculateTextFieldWidths() {
+		calculateTextFieldWidth(nameLabel, nameInput);
+		calculateTextFieldWidth(filterLabel, filterInput);
+		calculateTextFieldWidth(replaceMessageLabel, replaceMessageInput);
+	}
+
+	private int getMaxWidth() {
+		return Math.min(width, MAX_WIDTH);
 	}
 
 	/**
-	 * Works out the width of the maximum line
 	 *
-	 * @return the max used width
+	 * @param textWidget The labeling text widget
+	 * @param textFieldWidget The text field widget to calculate the width for
 	 */
-	private int getMaxUsedWidth() {
-		if (client == null) return 0;
-		//text
-		int total = client.textRenderer.getWidth(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"));
-		total += client.textRenderer.getWidth(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"));
-		total += client.textRenderer.getWidth(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"));
-		//space
-		total += SPACER_X * 6;
-		//button width
-		total += buttonWidth * 3;
-		return total;
+	private void calculateTextFieldWidth(TextWidget textWidget, TextFieldWidget textFieldWidget) {
+		assert client != null;
+		int textWidth = client.textRenderer.getWidth(textWidget.getMessage());
+		textFieldWidget.setWidth(getMaxWidth() - textWidth - SPACER_X * 3); // 1 inner, 2 outer paddings
+	}
+
+	/**
+	 * Dynamically calculates the width of the buttons based on the width of the labels.
+	 */
+	private void calculateButtonWidths() {
+		calculateButtonWidth(partialMatchLabel, partialMatchToggle, regexLabel, regexToggle);
+		calculateButtonWidth(ignoreCaseLabel, ignoreCaseToggle, locationLabel, locationsConfigButton);
+		calculateButtonWidth(hideMessageLabel, hideMessageToggle, actionBarLabel, actionBarToggle);
+		calculateButtonWidth(announcementLabel, announcementToggle, soundsLabel, soundsToggle);
+	}
+
+	/**
+	 * Calculates button widths for a row of buttons. Each row has 2 buttons and 2 labels, so this method needs 4 parameters.
+	 *
+	 * @param label1 The first label
+	 * @param button1 The first button
+	 * @param label2 The second label
+	 * @param button2 The second button
+	 */
+	private void calculateButtonWidth(TextWidget label1, ButtonWidget button1, TextWidget label2, ButtonWidget button2) {
+		assert client != null;
+		int label1Width = client.textRenderer.getWidth(label1.getMessage());
+		int label2Width = client.textRenderer.getWidth(label2.getMessage());
+		int remainingWidth = getMaxWidth() - label1Width - label2Width - SPACER_X * 5; // 3 inner, 2 outer paddings
+		int buttonWidth = remainingWidth / 2;
+		button1.setWidth(buttonWidth);
+		button2.setWidth(buttonWidth + remainingWidth % 2); // Add the remainder to the second button if there's any
+		int label2x = ((this.width - getMaxWidth()) / 2) + SPACER_X + label1Width + SPACER_X + buttonWidth + SPACER_X;
+		label2.setX(label2x); // Reposition the second label to the right of the first button
+		button2.setX(label2x + label2Width + SPACER_X); // Reposition the second button to the right of the second label
 	}
 
 	/**
@@ -469,8 +507,9 @@ public class ChatRuleConfigScreen extends Screen {
 	 * @return height used by the gui
 	 */
 	private int getMaxUsedHeight() {
-		//there are 8 rows so just times the spacer by 8
-		return SPACER_Y * 8;
+		// 9 rows, and there's a spacer between each row
+		// Since this isn't used to make anything fit, we don't need to care about the top and bottom outer padding or the finish button. This is just used to center the gui contents on the screen.
+		return ROW_HEIGHT * 9 + SPACER_Y * 8;
 	}
 
 	private Text enabledButtonText(boolean enabled) {
