@@ -249,7 +249,10 @@ public class ChatRule {
 		// As a special case, if there are no valid locations all locations are valid.
 		// This exists because it doesn't make sense to remove all valid locations, you should disable the chat rule if you want to do that.
 		// This way, we can also default to an empty set for validLocations.
-		return validLocations.isEmpty() || validLocations.contains(Utils.getLocation());
+		if (validLocations.isEmpty()) return true;
+		// UNKNOWN isn't a valid location, so we act the same as the list being empty.
+		if (validLocations.size() == 1 && validLocations.contains(Location.UNKNOWN)) return true;
+		return validLocations.contains(Utils.getLocation());
 	}
 
 	// This maps invalid entries to `Location.UNKNOWN`, which is better than failing outright.
@@ -260,14 +263,14 @@ public class ChatRule {
 		// If a location's name contains a ! prefix, it's negated, meaning every location except that one is valid.
 		if (string.contains("!")) return EnumSet.complementOf(
 				Arrays.stream(string.split(", ?"))
-						.filter(s1 -> s1.startsWith("!")) // Filter out the non-negated locations because the negation of any element in the list already implies those non-negated locations being valid.
-						.map(s -> s.substring(1)) // Skip the `!`
-						.map(Location::fromFriendlyName)
-						.collect(CollectionUtils.enumSetCollector(Location.class))
+					  .filter(s1 -> s1.startsWith("!")) // Filter out the non-negated locations because the negation of any element in the list already implies those non-negated locations being valid.
+					  .map(s -> s.substring(1)) // Skip the `!`
+					  .map(Location::fromFriendlyName)
+					  .collect(CollectionUtils.enumSetCollector(Location.class))
 		);
 		return Arrays.stream(string.split(", ?"))
-				.map(Location::fromFriendlyName)
-				.collect(CollectionUtils.enumSetCollector(Location.class));
+					 .map(Location::fromFriendlyName)
+					 .collect(CollectionUtils.enumSetCollector(Location.class));
 	}
 }
 
