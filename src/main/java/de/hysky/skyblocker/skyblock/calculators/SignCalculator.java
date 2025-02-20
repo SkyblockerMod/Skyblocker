@@ -2,17 +2,14 @@ package de.hysky.skyblocker.skyblock.calculators;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Calculator;
+import de.hysky.skyblocker.utils.Formatters;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
 public class SignCalculator {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    private static final NumberFormat FORMATTER = NumberFormat.getInstance(Locale.US);
 
     private static String lastInput;
     private static double output;
@@ -59,7 +56,7 @@ public class SignCalculator {
         if (output == -1) {
             text = Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").formatted(Formatting.RED);
         } else {
-            text = Text.literal(input + " = " + FORMATTER.format(output)).formatted(Formatting.GREEN);
+            text = Text.literal(input + " = " + Formatters.DOUBLE_NUMBERS.format(output)).formatted(Formatting.GREEN);
         }
 
         context.drawCenteredTextWithShadow(CLIENT.textRenderer, text, renderX, renderY, 0xFFFFFFFF);

@@ -9,10 +9,7 @@ import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.CodecUtils;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.profile.ProfiledData;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
@@ -31,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
-import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -311,9 +307,9 @@ public class PowderMiningTracker {
 		var set = SHOWN_REWARDS.object2IntEntrySet();
 		for (Object2IntMap.Entry<Text> entry : set) {
 			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, entry.getKey(), 5, y, 0xFFFFFF);
-			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(NumberFormat.getInstance().format(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, 0xFFFFFF);
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(Formatters.INTEGER_NUMBERS.format(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, 0xFFFFFF);
 			y += 10;
 		}
-		if (!set.isEmpty()) context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.literal("Gain: " + NumberFormat.getInstance().format(profit) + " coins").formatted(Formatting.GOLD), 5, y + 10, 0xFFFFFF);
+		if (!set.isEmpty()) context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.literal("Gain: " + Formatters.DOUBLE_NUMBERS.format(profit) + " coins").formatted(Formatting.GOLD), 5, y + 10, 0xFFFFFF);
 	}
 }

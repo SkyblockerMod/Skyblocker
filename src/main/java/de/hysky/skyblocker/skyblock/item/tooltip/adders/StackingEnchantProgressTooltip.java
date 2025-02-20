@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
+import de.hysky.skyblocker.utils.Formatters;
 import org.jetbrains.annotations.Nullable;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -25,7 +24,6 @@ public class StackingEnchantProgressTooltip extends SimpleTooltipAdder {
 	private static final StackingEnchantInfo CHAMPION_INFO = new StackingEnchantInfo("Champion", "champion_combat_xp", "Combat XP", 0, 50_000, 100_000, 250_000, 500_000, 1_000_000, 1_500_000, 2_000_000, 2_500_000, 3_000_000);
 	private static final StackingEnchantInfo HECATOMB_INFO = new StackingEnchantInfo("Hecatomb", "hecatomb_s_runs", "S runs", 0, 2, 5, 10, 20, 30, 40, 60, 80, 100);
 	private static final StackingEnchantInfo TOXOPHILITE_INFO = new StackingEnchantInfo("Toxophilite", "toxophilite_combat_xp", "Combat XP", 0, 50_000, 100_000, 250_000, 500_000, 1_000_000, 1_500_000, 2_000_000, 2_500_000, 3_000_000);
-	private static final NumberFormat FORMAT = NumberFormat.getInstance(Locale.ENGLISH);
 
 	public StackingEnchantProgressTooltip(int priority) {
 		super(priority);
@@ -65,9 +63,9 @@ public class StackingEnchantProgressTooltip extends SimpleTooltipAdder {
 						.append(Text.literal(stackingEnchantInfo.name() + " ").formatted(Formatting.GRAY))
 						.append(Text.translatable("enchantment.level." + (stackingEnchantLevel + 1)).formatted(Formatting.GRAY))
 						.append(Text.literal(": ").formatted(Formatting.GRAY))
-						.append(Text.literal(FORMAT.format(progress)).formatted(Formatting.RED))
+						.append(Text.literal(Formatters.INTEGER_NUMBERS.format(progress)).formatted(Formatting.RED))
 						.append(Text.literal("/").formatted(Formatting.GRAY))
-						.append(Text.literal(FORMAT.format(needed)).formatted(Formatting.RED))
+						.append(Text.literal(Formatters.INTEGER_NUMBERS.format(needed)).formatted(Formatting.RED))
 						.append(Text.literal(" " + stackingEnchantInfo.unit()).formatted(Formatting.GRAY));
 
 				lines.add(text);

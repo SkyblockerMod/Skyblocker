@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import net.minecraft.item.ItemStack;
@@ -10,9 +11,7 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.OptionalDouble;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +19,6 @@ import java.util.regex.Pattern;
 // Evolving items are those that get upgraded after holding them in your inventory for a certain amount of time.
 public class EvolvingItemAdder extends SimpleSlotTextAdder {
 	private static final Pattern BONUS_PATTERN = Pattern.compile("\\+?([\\d.]+)");
-	private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
 
 	public EvolvingItemAdder() {
 		super();
@@ -56,7 +54,7 @@ public class EvolvingItemAdder extends SimpleSlotTextAdder {
 				Text bonus = siblings.get(1);
 				Matcher matcher = BONUS_PATTERN.matcher(bonus.getString());
 				OptionalDouble result = RegexUtils.findDoubleFromMatcher(matcher);
-				if (result.isPresent()) return SlotText.bottomLeftList(Text.literal(NUMBER_FORMAT.format(result.getAsDouble())).setStyle(bonus.getStyle()));
+				if (result.isPresent()) return SlotText.bottomLeftList(Text.literal(Formatters.DOUBLE_NUMBERS.format(result.getAsDouble())).setStyle(bonus.getStyle()));
 			}
 		}
 		return List.of();
