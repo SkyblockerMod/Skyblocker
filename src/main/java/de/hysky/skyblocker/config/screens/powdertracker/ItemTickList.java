@@ -9,16 +9,49 @@ import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Text;
 
+import java.util.Collection;
 import java.util.List;
 
-public class ItemTickList extends ElementListWidget<ItemTickList.ItemTickEntry> {
-	private final List<String> filters;
-	private final List<String> allItems;
+/**
+ * A checkbox list for filter configuring purposes.
+ */
+public class ItemTickList<T> extends ElementListWidget<ItemTickList.ItemTickEntry> {
+	private final Collection<T> filters;
+	private final Collection<T> allItems;
+	private final boolean whitelist;
 
-	public ItemTickList(MinecraftClient minecraftClient, int width, int height, int y, int entryHeight, List<String> filters, List<String> allItems) {
+	/**
+	 *
+	 * @param minecraftClient Minecraft client.
+	 * @param width The width of the list.
+	 * @param height The height of the list.
+	 * @param y The y value at which the list should render.
+	 * @param entryHeight Height of a single item
+	 * @param filters The items that will be marked. This should be a subset of allItems.
+	 * @param allItems All possible values
+	 */
+	public ItemTickList(MinecraftClient minecraftClient, int width, int height, int y, int entryHeight, Collection<T> filters, Collection<T> allItems) {
 		super(minecraftClient, width, height, y, entryHeight);
 		this.filters = filters;
 		this.allItems = allItems;
+		this.whitelist = false;
+	}
+
+	/**
+	 * @param minecraftClient Minecraft client.
+	 * @param width The width of the list.
+	 * @param height The height of the list.
+	 * @param y The y value at which the list should render.
+	 * @param entryHeight Height of a single item
+	 * @param filters The items that will be marked. This should be a subset of allItems.
+	 * @param allItems All possible values
+	 * @param whitelist Whether the filter logic works as a whitelist or blacklist, to change whether the boxes for items in the filters collection should be checked. As an example: PowderFilter keeps which items to remove inside the filter (blacklist), while ChatRuleLocation keeps which locations the feature should work in (whitelist).
+	 */
+	public ItemTickList(MinecraftClient minecraftClient, int width, int height, int y, int entryHeight, Collection<T> filters, Collection<T> allItems, boolean whitelist) {
+		super(minecraftClient, width, height, y, entryHeight);
+		this.filters = filters;
+		this.allItems = allItems;
+		this.whitelist = whitelist;
 	}
 
 	public void clearAndInit() {
@@ -26,14 +59,19 @@ public class ItemTickList extends ElementListWidget<ItemTickList.ItemTickEntry> 
 		init();
 	}
 
-	public ItemTickList init() {
-		for (String item : allItems) {
+	public ItemTickList<T> init() {
+		for (T item : allItems) {
 			ItemTickEntry entry = new ItemTickEntry(
-					CheckboxWidget.builder(Text.of(item), client.textRenderer)
-					              .checked(!filters.contains(item))
+					CheckboxWidget.builder(Text.of(item.toString()), client.textRenderer)
+					              .checked(whitelist == filters.contains(item))
 					              .callback((checkbox1, checked) -> {
-						              if (checked) filters.remove(item);
-						              else filters.add(item);
+									  if (whitelist) {
+										  if (checked) filters.add(item);
+										  else filters.remove(item);
+									  } else {
+										  if (checked) filters.remove(item);
+										  else filters.add(item);
+									  }
 					              })
 					              .build()
 			);

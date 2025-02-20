@@ -7,6 +7,7 @@ import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
@@ -30,32 +31,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class ChatRulesHandler {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChatRule.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChatRulesHandler.class);
     private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chat_rules.json");
     private static final Codec<Map<String, List<ChatRule>>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, ChatRule.LIST_CODEC);
-    /**
-     * list of possible locations still formatted for the tool tip
-     */
-    protected static final List<String> locationsList = List.of (
-            "The Farming Islands",
-            "Crystal Hollows",
-            "Jerry's Workshop",
-            "The Park",
-            "Dark Auction",
-            "Dungeons",
-            "The End",
-            "Crimson Isle",
-            "Hub",
-            "Kuudra's Hollow",
-            "Private Island",
-            "Dwarven Mines",
-            "The Garden",
-            "Gold Mine",
-            "Blazing Fortress",
-            "Deep Caverns",
-            "Spider's Den",
-            "Mineshaft"
-    );
 
     protected static final List<ChatRule> chatRuleList = new ArrayList<>();
 
@@ -83,9 +61,9 @@ public class ChatRulesHandler {
 
     private static void registerDefaultChatRules() {
         //clean hub chat
-        ChatRule cleanHubRule = new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", "hub", true, false, false, "", null);
+        ChatRule cleanHubRule = new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, false, false, "", null);
         //mining Ability
-        ChatRule miningAbilityRule = new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", "Crystal Hollows, Dwarven Mines", false, false, true, "&1Ability", SoundEvents.ENTITY_ARROW_HIT_PLAYER);
+        ChatRule miningAbilityRule = new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, false, true, "&1Ability", SoundEvents.ENTITY_ARROW_HIT_PLAYER);
 
         chatRuleList.add(cleanHubRule);
         chatRuleList.add(miningAbilityRule);
@@ -113,38 +91,38 @@ public class ChatRulesHandler {
         String plain =  Formatting.strip(message.getString());
 
         for (ChatRule rule : chatRuleList) {
-            if (rule.isMatch(plain)) {
-                //get a replacement message
-                Text newMessage;
-                if (!rule.getReplaceMessage().isBlank()) {
-                    newMessage = formatText(rule.getReplaceMessage());
-                } else {
-                    newMessage = message;
-                }
+            if (!rule.isMatch(plain)) continue;
 
-                if (rule.getShowAnnouncement()) {
-                    TitleContainer.addTitle(new Title(newMessage.copy()), SkyblockerConfigManager.get().chat.chatRuleConfig.announcementLength) ;
-                }
-
-                //show in action bar
-                if (rule.getShowActionBar() && CLIENT.player != null) {
-                    CLIENT.player.sendMessage(newMessage, true);
-                }
-
-                //show replacement message in chat
-                //bypass MessageHandler#onGameMessage to avoid activating chat rules again
-                if (!rule.getHideMessage() && CLIENT.player != null) {
-                    Utils.sendMessageToBypassEvents(newMessage);
-                }
-
-                //play sound
-                if (rule.getCustomSound() != null && CLIENT.player != null) {
-                    CLIENT.player.playSound(rule.getCustomSound(), 100f, 0.1f);
-                }
-
-                //do not send original message
-                return false;
+            //get a replacement message
+            Text newMessage;
+            if (!rule.getReplaceMessage().isBlank()) {
+                newMessage = formatText(rule.getReplaceMessage());
+            } else {
+                newMessage = message;
             }
+
+            if (rule.getShowAnnouncement()) {
+                TitleContainer.addTitle(new Title(newMessage.copy()), SkyblockerConfigManager.get().chat.chatRuleConfig.announcementLength) ;
+            }
+
+            //show in action bar
+            if (rule.getShowActionBar() && CLIENT.player != null) {
+                CLIENT.player.sendMessage(newMessage, true);
+            }
+
+            //show replacement message in chat
+            //bypass MessageHandler#onGameMessage to avoid activating chat rules again
+            if (!rule.getHideMessage() && CLIENT.player != null) {
+                Utils.sendMessageToBypassEvents(newMessage);
+            }
+
+            //play sound
+            if (rule.getCustomSound() != null && CLIENT.player != null) {
+                CLIENT.player.playSound(rule.getCustomSound(), 100f, 0.1f);
+            }
+
+            //do not send original message
+            return false;
         }
         return true;
     }
