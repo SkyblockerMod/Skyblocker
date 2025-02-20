@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  */
 public class ChatRule {
 	/**
-	 * Codec that can decode both string and enumset of locations, while encoding only enumset of locations.
+	 * Codec that can decode both {@link String} and {@link EnumSet} of locations, while encoding only {@link EnumSet} of locations.
 	 * <br>
 	 * This is necessary due to a change in how the locations are stored in the config.
 	 */
@@ -181,7 +181,7 @@ public class ChatRule {
 	}
 
 	private Optional<String> getReplaceMessageOpt() {
-		return replaceMessage == null ? Optional.empty() : Optional.of(replaceMessage);
+		return Optional.ofNullable(replaceMessage);
 	}
 
 	protected void setReplaceMessage(String replaceMessage) {
@@ -193,7 +193,7 @@ public class ChatRule {
 	}
 
 	private Optional<SoundEvent> getCustomSoundOpt() {
-		return customSound == null ? Optional.empty() : Optional.of(customSound);
+		return Optional.ofNullable(customSound);
 	}
 
 	protected void setCustomSound(SoundEvent customSound) {
@@ -261,7 +261,7 @@ public class ChatRule {
 		if (string.contains("!")) return EnumSet.complementOf(
 				Arrays.stream(string.split(", ?"))
 						.filter(s1 -> s1.startsWith("!")) // Filter out the non-negated locations because the negation of any element in the list already implies those non-negated locations being valid.
-						.map(s -> s.substring(1))
+						.map(s -> s.substring(1)) // Skip the `!`
 						.map(Location::fromFriendlyName)
 						.collect(CollectionUtils.enumSetCollector(Location.class))
 		);

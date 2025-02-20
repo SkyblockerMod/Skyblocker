@@ -39,7 +39,7 @@ public class ChatRuleConfigScreen extends Screen {
 	);
 
 	private static final int MAX_WIDTH = 360;
-	private static final int BUTTON_WIDTH = 75;
+	private static final int BUTTON_WIDTH = 75; // Placeholder for all buttons except the finish button, the others are calculated dynamically but still need an initial value
 	private static final int ROW_HEIGHT = ButtonWidget.DEFAULT_HEIGHT;
 	private static final int Y_OFFSET = (ROW_HEIGHT - MinecraftClient.getInstance().textRenderer.fontHeight) / 2;
 
@@ -94,7 +94,7 @@ public class ChatRuleConfigScreen extends Screen {
 		titleWidget = new TextWidget(0, 16, this.width, client.textRenderer.fontHeight, getTitle(), client.textRenderer).alignCenter();
 
 		// Start centered
-		IntIntPair rootPos = IntIntImmutablePair.of((this.width - getMaxWidth()) / 2 + SPACER_X, (this.height - getMaxUsedHeight()) / 2);
+		IntIntPair rootPos = getRootPos();
 		IntIntMutablePair currentPos = IntIntMutablePair.of(0, 0); // Offset from root pos, add them up and we get the actual position
 		int yOffset = (ROW_HEIGHT - client.textRenderer.fontHeight) / 2;
 
@@ -330,7 +330,7 @@ public class ChatRuleConfigScreen extends Screen {
 	}
 
 	private void recalculateWidgetPositions() {
-		IntIntPair rootPos = IntIntImmutablePair.of((this.width - getMaxWidth()) / 2 + SPACER_X, (this.height - getMaxUsedHeight()) / 2);
+		IntIntPair rootPos = getRootPos();
 		IntIntMutablePair currentPos = IntIntMutablePair.of(0, 0); // Offset from root pos, add them up and we get the actual position
 		assert client != null;
 		// Title
@@ -453,6 +453,10 @@ public class ChatRuleConfigScreen extends Screen {
 		calculateTextFieldWidth(nameLabel, nameInput);
 		calculateTextFieldWidth(filterLabel, filterInput);
 		calculateTextFieldWidth(replaceMessageLabel, replaceMessageInput);
+	}
+
+	private IntIntImmutablePair getRootPos() {
+		return IntIntImmutablePair.of((this.width - getMaxWidth()) / 2 + SPACER_X, (this.height - getMaxUsedHeight()) / 2);
 	}
 
 	private int getMaxWidth() {
