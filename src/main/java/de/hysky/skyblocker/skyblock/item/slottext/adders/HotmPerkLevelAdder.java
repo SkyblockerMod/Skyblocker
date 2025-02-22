@@ -1,12 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -14,12 +7,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HotmPerkLevelAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
 			"hotm_perk_level",
 			"skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel");
-	private static final Pattern LEVEL = Pattern.compile("Level (?<level>\\d+)/(?<max>\\d+)");
+	private static final Pattern LEVEL = Pattern.compile("Level (?<level>\\d+)/?(?<max>\\d+)?");
 
 	public HotmPerkLevelAdder() {
 		super("^Heart of the Mountain$", CONFIG_INFORMATION);
@@ -28,22 +27,19 @@ public class HotmPerkLevelAdder extends SimpleSlotTextAdder {
 	@Override
 	@NotNull
 	public List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		if (slotId >= 0 && slotId <= 44 && !stack.isOf(Items.COAL)) {
-			List<Text> lore = ItemUtils.getLore(stack);
+		if (slotId < 0 || slotId > 44 || stack.isOf(Items.COAL)) return List.of();
 
-			if (!lore.isEmpty()) {
-				String levelLine = lore.getFirst().getString();
-				Matcher matcher = LEVEL.matcher(levelLine);
+		List<Text> lore = ItemUtils.getLore(stack);
+		if (lore.isEmpty()) return List.of();
 
-				if (matcher.matches()) {
-					int level = Integer.parseInt(matcher.group("level"));
-					int max = Integer.parseInt(matcher.group("max"));
+		String levelLine = lore.getFirst().getString();
+		Matcher matcher = LEVEL.matcher(levelLine);
+		if (!matcher.matches()) return List.of();
 
-					return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(level == max ? SlotText.GOLD : SlotText.CREAM));
-				}
-			}
-		}
+		String level = matcher.group("level");
+		// The `/<max>` part is removed when the level is max, so the group being null means it's maxed
+		boolean isMaxed = matcher.group("max") == null;
 
-		return List.of();
+		return SlotText.bottomRightList(Text.literal(level).withColor(isMaxed ? SlotText.GOLD : SlotText.CREAM));
 	}
 }
