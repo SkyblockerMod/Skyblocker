@@ -144,7 +144,7 @@ jobs:
             const issue_number = context.payload.pull_request.number;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const commentTag = "### EditorConfig Check"; // Unique identifier for the comment
+            const commentTag = "### EditorConfig Check";
             
             const SUCCESS_MESSAGE = `### EditorConfig Check
             
