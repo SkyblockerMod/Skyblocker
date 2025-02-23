@@ -1,0 +1,177 @@
+name: EditorConfig Check
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  editorconfig:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Run EditorConfig Checker on Changed Files
+        id: editorconfig
+        continue-on-error: true
+        run: |
+          OUTPUT=$(git diff --name-only --diff-filter=ACM HEAD^ HEAD | grep -E '\.java$|\.gradle$|\.json$' | xargs npx editorconfig-checker || true)
+
+          echo "EditorConfig Output:"
+          echo "$OUTPUT"
+
+          if [[ -z "$OUTPUT" ]]; then
+              echo "No EditorConfig issues found."
+              echo "NO_ERRORS=true" >> $GITHUB_ENV
+              exit 0
+          fi
+
+          FILE_LIST=$(echo "$OUTPUT" | grep -oP '^\S+\.(java|gradle|json)' | sort | uniq | sed 's/\x1B\[[0-9;]*[mK]//g')
+          CLEAN_OUTPUT=$(echo "$OUTPUT" | sed 's/\x1B\[[0-9;]*[mK]//g')
+          TOTAL_ERRORS=$(echo "$OUTPUT" | grep -v ".java" | grep -v ".gradle" | grep -v ".json" | grep -c ":")
+
+          get_error_count() {
+              local count=$(echo "$OUTPUT" | grep -ci "$1")
+              [[ -z "$count" ]] && echo 0 || echo "$count"
+          }
+
+          INDENTATION_ERRORS=$(get_error_count "Wrong indentation type")
+          LINE_ENDING_ERRORS=$(get_error_count "Not all lines have the correct end of line character")
+          FINAL_NEWLINE_ERRORS=$(get_error_count "final newline")
+
+          FILE_COUNT=$(echo "$FILE_LIST" | wc -l)
+          INDENTATION_ERRORS=$((INDENTATION_ERRORS))
+          LINE_ENDING_ERRORS=$((LINE_ENDING_ERRORS))
+          FINAL_NEWLINE_ERRORS=$((FINAL_NEWLINE_ERRORS))
+          TOTAL_ERRORS=$((TOTAL_ERRORS))
+
+          OTHER_ERRORS=$((TOTAL_ERRORS - INDENTATION_ERRORS - LINE_ENDING_ERRORS - FINAL_NEWLINE_ERRORS))
+          
+          ERROR_MESSAGE=$(cat <<EOF
+          ### EditorConfig Check
+          
+          📂 **Affected Files:** $FILE_COUNT
+          ⚠️ **Total Errors:** $TOTAL_ERRORS
+          
+          🚨 **Error Breakdown:**
+             - 📝 Indentation Issues: $INDENTATION_ERRORS
+             - 🔄 Line Ending Issues: $LINE_ENDING_ERRORS
+             - 📌 Final Newline Issues: $FINAL_NEWLINE_ERRORS
+             - ❓ Other Issues: $OTHER_ERRORS
+
+          <details>
+            <summary>📁 Click to see affected files</summary>
+          
+          \`\`\`
+          $FILE_LIST
+          \`\`\`
+          
+          </details>
+
+          <details>
+            <summary>📜 Click to view full log</summary>
+          
+          \`\`\`
+          $CLEAN_OUTPUT
+          \`\`\`
+          
+          </details>
+          
+          Please fix these issues. 🚀
+          EOF
+          )
+
+          {
+            echo 'errors<<EOF'
+            echo "$ERROR_MESSAGE"
+            echo 'EOF'
+          } >> $GITHUB_ENV
+
+      - name: Add PR Comment if Errors Found
+        if: env.errors != ''
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_COMMENT }}
+          script: |
+            const issue_number = context.payload.pull_request.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const comment_tag = "### EditorConfig Check";
+
+            const timestamp = new Date().toISOString().replace("T", " ").split(".")[0] + " UTC";
+
+            const updatedMessage = `${process.env.errors}
+            
+            ---
+            🕒 **Last updated:** ${timestamp}`;
+            
+            const { data: comments } = await github.rest.issues.listComments({ owner, repo, issue_number });
+            
+            const botComment = comments.find(comment =>
+              comment.user.type === "Bot" && comment.body.includes(comment_tag)
+            );
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: botComment.id,
+                body: updatedMessage
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body: process.env.errors
+              });
+            }
+
+      - name: Fail Workflow if Errors Found
+        if: env.errors != ''
+        run: exit 1
+
+      - name: Update PR Comment if No Errors Found
+        if: env.NO_ERRORS == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_COMMENT }}
+          script: |
+            const issue_number = context.payload.pull_request.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const commentTag = "### EditorConfig Check"; // Unique identifier for the comment
+            
+            const SUCCESS_MESSAGE = `### EditorConfig Check
+            
+            ✅ No issues found! 
+            Your code follows the EditorConfig standards. 🎉
+            
+            Great job! 🚀`;
+            
+            const { data: comments } = await github.rest.issues.listComments({ owner, repo, issue_number });
+            
+            const botComment = comments.find(comment =>
+              comment.user.type === "Bot" && comment.body.includes(commentTag)
+            );
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: owner,
+                repo: repo,
+                comment_id: botComment.id,
+                body: SUCCESS_MESSAGE
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body: SUCCESS_MESSAGE
+              });
+            }
+
