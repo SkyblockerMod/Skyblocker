@@ -19,7 +19,13 @@ jobs:
         id: editorconfig
         continue-on-error: true
         run: |
-          OUTPUT=$(git diff --name-only --diff-filter=ACM HEAD^ HEAD | grep -E '\.java$|\.gradle$|\.json$' | xargs npx editorconfig-checker || true)
+          CHANGED_FILES=$(git diff --name-only --diff-filter=ACM HEAD^ HEAD | grep -E '\.java$|\.gradle$|\.json$')
+          
+          if [[ -n "$CHANGED_FILES" ]]; then
+            OUTPUT=$(echo "$CHANGED_FILES" | xargs npx editorconfig-checker || true)
+          else
+            OUTPUT=""
+          fi
 
           echo "EditorConfig Output:"
           echo "$OUTPUT"
