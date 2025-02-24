@@ -15,18 +15,6 @@
         <property name="message" value="trailing whitespace"/>
     </module>
 
-    <!-- disallow blank after { -->
-    <module name="RegexpMultiline">
-        <property name="format" value="\{[\t ]*\r?\n[\t ]*\r?\n"/>
-        <property name="message" value="blank line after '{'"/>
-    </module>
-
-    <!-- disallow blank before } -->
-    <module name="RegexpMultiline">
-        <property name="format" value="\n[\t ]*\r?\n[\t ]*\}"/>
-        <property name="message" value="blank line before '}'"/>
-    </module>
-
     <module name="TreeWalker">
         <!-- Allow "//CHECKSTYLE.OFF: <InspectionName>" and "//CHECKSTYLE.ON: <InspectionName>" pairs to toggle some inspections -->
         <module name="SuppressionCommentFilter">
@@ -39,17 +27,6 @@
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
-
-        <!-- Ensures braces are at the end of a line -->
-        <module name="LeftCurly"/>
-        <module name="RightCurly"/>
-
-        <module name="EmptyLineSeparator">
-            <property name="allowNoEmptyLineBetweenFields" value="true"/>
-            <property name="allowMultipleEmptyLines" value="false"/>
-            <!-- exclude  METHOD_DEF and VARIABLE_DEF -->
-            <property name="tokens" value="PACKAGE_DEF,IMPORT,STATIC_IMPORT,CLASS_DEF,INTERFACE_DEF,ENUM_DEF,STATIC_INIT,INSTANCE_INIT,CTOR_DEF"/>
-        </module>
 
         <module name="SeparatorWrap">
             <property name="tokens" value="DOT,ELLIPSIS,AT"/>
@@ -67,7 +44,6 @@
             <property name="tokens" value="AT,INC,DEC,UNARY_MINUS,UNARY_PLUS,BNOT,LNOT,DOT,ARRAY_DECLARATOR,INDEX_OP"/>
         </module>
         <module name="WhitespaceAfter"/>
-        <module name="SingleSpaceSeparator"/>
         <module name="GenericWhitespace"/>
 
         <module name="ArrayTypeStyle"/>
