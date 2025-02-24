@@ -8,7 +8,7 @@ import net.minecraft.client.render.RenderTickCounter;
 /**
  * HUD render events that allow for proper layering between different HUD elements.
  * This should always be preferred over Fabric's {@link net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback}.
- * 
+ *
  * Perhaps in the future this system could be PR'd to Fabric.
  */
 public class HudRenderEvents {

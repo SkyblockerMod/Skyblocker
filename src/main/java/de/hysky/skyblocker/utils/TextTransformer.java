@@ -10,7 +10,7 @@ import net.minecraft.util.Formatting;
 
 /**
  * Contains utilities for transforming text. These methods are from Aaron's Mod.
- * 
+ *
  * @author AzureAaron
  */
 public class TextTransformer {
@@ -21,7 +21,7 @@ public class TextTransformer {
 	 *
 	 * @param legacy The string with legacy formatting to be transformed
 	 * @return A {@link MutableText} object matching the exact formatting of the input
-	 * 
+	 *
 	 * @author AzureAaron
 	 */
 	public static MutableText fromLegacy(@NotNull String legacy) {

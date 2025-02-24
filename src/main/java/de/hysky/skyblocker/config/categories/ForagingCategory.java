@@ -17,7 +17,7 @@ public class ForagingCategory {
 						.name(Text.translatable("skyblocker.config.foraging.hunting"))
 
 						.build())*/
-				
+
 				.build();
 	}
 }

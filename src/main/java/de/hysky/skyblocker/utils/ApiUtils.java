@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ApiUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApiUtils.class);
-	/** 
+	/**
 	 * Do not iterate over this map, it will be accessed and modified by multiple threads.
 	 */
 	private static final Object2ObjectOpenHashMap<String, String> NAME_2_UUID_CACHE = new Object2ObjectOpenHashMap<>();

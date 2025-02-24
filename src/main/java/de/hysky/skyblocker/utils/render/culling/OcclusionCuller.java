@@ -29,7 +29,7 @@ public class OcclusionCuller {
 	/**
 	 * This first checks checks if the bounding box is within the camera's FOV, if
 	 * it is then it checks for whether it's occluded or not.
-	 * 
+	 *
 	 * @return A boolean representing whether the bounding box is fully visible or
 	 *         not as per the instance's settings.
 	 */
