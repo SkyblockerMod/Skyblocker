@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * The terminal where you change all the panes that are red to green.
- * 
+ *
  * This doesn't solve the terminal because you don't need a solver for it, but rather to simply allow for click blocking.
  */
 public final class LightsOnTerminal extends SimpleContainerSolver implements TerminalSolver {

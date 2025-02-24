@@ -8,6 +8,6 @@ public class ForagingConfig {
 	public Hunting hunting = new Hunting();
 
 	public static class Hunting {
-		
+
 	}
 }

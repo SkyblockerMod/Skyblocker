@@ -22,13 +22,11 @@ import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.util.math.Rect2i;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.*;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @JeiPlugin
 public class SkyblockerJEIPlugin implements IModPlugin {

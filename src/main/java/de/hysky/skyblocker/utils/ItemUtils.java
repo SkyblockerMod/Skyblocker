@@ -259,7 +259,7 @@ public final class ItemUtils {
 
     /**
      * Parses the {@code petInfo} field from a pet item that has it into the {@link PetInfo} record.
-     * 
+     *
      * @return the parsed {@link PetInfo} if successful, or {@link PetInfo#EMPTY}
      */
     @NotNull

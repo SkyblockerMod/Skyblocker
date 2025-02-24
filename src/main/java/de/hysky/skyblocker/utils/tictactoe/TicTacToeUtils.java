@@ -70,7 +70,7 @@ public class TicTacToeUtils {
 			}
 		}
 
-		return 0;	
+		return 0;
 	}
 
 	private static int alphabeta(char[][] board, int alpha, int beta, int depth, boolean maximizePlayer) {

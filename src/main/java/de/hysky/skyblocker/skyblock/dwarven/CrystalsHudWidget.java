@@ -16,7 +16,6 @@ import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @RegisterWidget

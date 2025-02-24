@@ -180,7 +180,7 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 
 	/**
 	 * Handles updating the search results when a character is typed into the search bar,
-	 * 
+	 *
 	 * @implNote The {@code query} is always passed as lower case.
 	 */
 	@Override

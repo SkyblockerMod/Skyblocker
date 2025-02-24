@@ -12,7 +12,6 @@ import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;

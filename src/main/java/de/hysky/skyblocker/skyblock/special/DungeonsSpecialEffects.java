@@ -65,7 +65,7 @@ public class DungeonsSpecialEffects {
 
 			default -> "NONE";
 		};
-		
+
 		return ItemRepository.getItemStack(itemId);
 	}
 }

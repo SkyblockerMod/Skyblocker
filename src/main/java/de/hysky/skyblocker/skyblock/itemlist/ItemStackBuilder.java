@@ -72,7 +72,7 @@ public class ItemStackBuilder {
 
 		return createErrorStack(item.getSkyblockItemId());
 	}
-	
+
 	private static ItemStack createErrorStack(String skyblockItemId) {
 		ItemStack errorStack = new ItemStack(Items.BARRIER);
 		errorStack.set(DataComponentTypes.CUSTOM_NAME, Text.of(skyblockItemId));

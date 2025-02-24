@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class Kuudra { 
+public class Kuudra {
 	public static final int KUUDRA_MAGMA_CUBE_SIZE = 30;
 
 	static KuudraPhase phase = KuudraPhase.OTHER;

@@ -111,11 +111,11 @@ public class CustomArmorAnimatedDyes {
 		boolean shouldCycleBack(int samples, boolean canCycleBack) {
 			return canCycleBack && sampleCounter == samples;
 		}
-		
+
 		int getAndDecrement() {
 			return sampleCounter--;
 		}
-		
+
 		int getAndIncrement() {
 			return sampleCounter++;
 		}

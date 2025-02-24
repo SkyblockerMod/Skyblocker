@@ -257,7 +257,7 @@ public class ChatRule {
         }
 
         return false;
-    }    
+    }
 }
 
 
