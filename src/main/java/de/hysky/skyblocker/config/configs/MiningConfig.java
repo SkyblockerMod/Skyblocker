@@ -165,6 +165,9 @@ public class MiningConfig {
         @SerialEntry
         public boolean coldOverlay = true;
 
+		@SerialEntry
+		public boolean fossilSolver = true;
+
         @SerialEntry
         public boolean enableCorpseFinder = true;
 
@@ -173,9 +176,6 @@ public class MiningConfig {
 
 		@SerialEntry
 	    public boolean autoShareCorpses = false;
-        
-		@SerialEntry
-		public boolean fossilSolver = true;
     }
 
 	/**
