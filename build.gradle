@@ -249,6 +249,25 @@ test {
 	useJUnitPlatform()
 }
 
+spotless {
+	java {
+		removeUnusedImports()
+		//indentWithTabs() // TODO: turn on when more files are converted to tabs
+		trimTrailingWhitespace()
+	}
+
+	json {
+		target 'src/**/lang/en_us.json'
+		targetExclude 'src/**/generated/**'
+		gson().indentWithSpaces(2).sortByKeys()
+	}
+
+	groovyGradle {
+		target 'src/**/*.gradle', '*.gradle', 'gradle/*.gradle'
+		greclipse()
+	}
+}
+
 publishMods {
 	file = remapJar.archiveFile
 	changelog = System.getenv('CHANGELOG')
