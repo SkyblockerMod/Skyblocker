@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.dwarven.fossilSolver;
+package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.item.Item;
@@ -34,7 +34,7 @@ public class FossilCalculations {
 	 * @return the probability of a fossil being in a tile
 	 */
 
-	protected static double[] getFossilChance(Structures.tileGrid tiles, String percentage) {
+	protected static double[] getFossilChance(Structures.TileGrid tiles, String percentage) {
 		int[] total = new int[EXCAVATOR_WIDTH * EXCAVATOR_HEIGHT];
 		minimumTiles = EXCAVATOR_WIDTH * EXCAVATOR_HEIGHT;
 		AtomicInteger fossilCount = new AtomicInteger();
@@ -90,13 +90,13 @@ public class FossilCalculations {
 	}
 
 	/**
-	 * Converts a dictionary of item stacks to{@link Structures.tileGrid}. assuming each row will be 9 tiles and there will be 6 rows
+	 * Converts a dictionary of item stacks to{@link Structures.TileGrid}. assuming each row will be 9 tiles and there will be 6 rows
 	 *
 	 * @param currentState dictionary of item in container
 	 * @return input container converted into 2d {@link Structures.TileState} array
 	 */
-	protected static Structures.tileGrid convertItemsToTiles(Int2ObjectMap<ItemStack> currentState) {
-		Structures.tileGrid output = new Structures.tileGrid(new Structures.TileState[EXCAVATOR_HEIGHT][EXCAVATOR_WIDTH]);
+	protected static Structures.TileGrid convertItemsToTiles(Int2ObjectMap<ItemStack> currentState) {
+		Structures.TileGrid output = new Structures.TileGrid(new Structures.TileState[EXCAVATOR_HEIGHT][EXCAVATOR_WIDTH]);
 		//go through each slot and work out its state
 		int index = 0;
 		for (int y = 0; y < EXCAVATOR_HEIGHT; y++) {
@@ -129,7 +129,7 @@ public class FossilCalculations {
 			//loop though rotations
 			for (Structures.TransformationOptions rotation : fossil.rotations) {
 				//get the rotated grid of the fossil
-				Structures.tileGrid grid = transformGrid(new Structures.tileGrid(fossil.grid), rotation);
+				Structures.TileGrid grid = transformGrid(new Structures.TileGrid(fossil.grid), rotation);
 				//get possible offsets for the grid based on width and height
 				int maxXOffset = EXCAVATOR_WIDTH - grid.width();
 				int maxYOffset = EXCAVATOR_HEIGHT - grid.height();
@@ -151,7 +151,7 @@ public class FossilCalculations {
 	 * @param transformation transformation to perform on gird
 	 * @return transformed grid
 	 */
-	private static Structures.tileGrid transformGrid(Structures.tileGrid grid, Structures.TransformationOptions transformation) {
+	private static Structures.TileGrid transformGrid(Structures.TileGrid grid, Structures.TransformationOptions transformation) {
 		switch (transformation) {
 			case ROTATED_90 -> {
 				return rotateGrid(grid, 90);
@@ -186,8 +186,8 @@ public class FossilCalculations {
 	 * @param grid input grid
 	 * @return flipped grid
 	 */
-	private static Structures.tileGrid flipGrid(Structures.tileGrid grid) {
-		Structures.tileGrid output = new Structures.tileGrid(new Structures.TileState[grid.height()][grid.width()]);
+	private static Structures.TileGrid flipGrid(Structures.TileGrid grid) {
+		Structures.TileGrid output = new Structures.TileGrid(new Structures.TileState[grid.height()][grid.width()]);
 		for (int x = 0; x < grid.width(); x++) {
 			for (int y = 0; y < grid.height(); y++) {
 				output.updateSlot(x, y, grid.getSlot(x, grid.height() - 1 - y));
@@ -203,12 +203,12 @@ public class FossilCalculations {
 	 * @param rotation rotation amount in degrees
 	 * @return rotated grid
 	 */
-	private static Structures.tileGrid rotateGrid(Structures.tileGrid grid, int rotation) {
+	private static Structures.TileGrid rotateGrid(Structures.TileGrid grid, int rotation) {
 		int startingWidth = grid.width() - 1;
 		int startingHeight = grid.height() - 1;
 		switch (rotation) {
 			case 90 -> {
-				Structures.tileGrid output = new Structures.tileGrid(new Structures.TileState[grid.height()][grid.width()]);
+				Structures.TileGrid output = new Structures.TileGrid(new Structures.TileState[grid.height()][grid.width()]);
 				for (int x = 0; x < grid.width(); x++) {
 					for (int y = 0; y < grid.height(); y++) {
 						output.updateSlot(startingWidth - x, y, grid.getSlot(x, y));
@@ -217,7 +217,7 @@ public class FossilCalculations {
 				return output;
 			}
 			case 180 -> {
-				Structures.tileGrid output = new Structures.tileGrid(new Structures.TileState[grid.height()][grid.width()]);
+				Structures.TileGrid output = new Structures.TileGrid(new Structures.TileState[grid.height()][grid.width()]);
 				for (int x = 0; x < grid.width(); x++) {
 					for (int y = 0; y < grid.height(); y++) {
 						output.updateSlot(startingWidth - x, startingHeight - y, grid.getSlot(x, y));
@@ -226,7 +226,7 @@ public class FossilCalculations {
 				return output;
 			}
 			case 270 -> {
-				Structures.tileGrid output = new Structures.tileGrid(new Structures.TileState[grid.height()][grid.width()]);
+				Structures.TileGrid output = new Structures.TileGrid(new Structures.TileState[grid.height()][grid.width()]);
 				for (int x = 0; x < grid.width(); x++) {
 					for (int y = 0; y < grid.height(); y++) {
 						output.updateSlot(x, startingHeight - y, grid.getSlot(x, y));

@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.dwarven.fossilSolver;
+package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
 import java.util.List;
 

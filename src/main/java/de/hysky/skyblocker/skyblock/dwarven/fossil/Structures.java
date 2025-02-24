@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.dwarven.fossilSolver;
+package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
 public class Structures {
 	/**
@@ -26,7 +26,7 @@ public class Structures {
 	 *
 	 * @param state the starting state of the grid
 	 */
-	protected record tileGrid(TileState[][] state) {
+	protected record TileGrid(TileState[][] state) {
 		void updateSlot(int x, int y, TileState newState) {
 			state[y][x] = newState;
 		}
@@ -52,14 +52,14 @@ public class Structures {
 	 * @param xOffset where it's positioned in the excavator window in the x direction
 	 * @param yOffset where it's positioned in the excavator window in the y direction
 	 */
-	protected record permutation(FossilTypes type, tileGrid grid, int xOffset, int yOffset) {
+	protected record permutation(FossilTypes type, TileGrid grid, int xOffset, int yOffset) {
 		/**
 		 * Works out if this is a valid state based on the current state of the excavator window
 		 *
 		 * @param currentState the state of the excavator window
 		 * @return if this screen state can exist depending on found tiles
 		 */
-		boolean isValid(tileGrid currentState, String percentage) {
+		boolean isValid(TileGrid currentState, String percentage) {
 			//check the percentage
 			if (percentage != null && !percentage.equals(type.percentage)) {
 				return false;

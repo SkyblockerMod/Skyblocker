@@ -1,7 +1,7 @@
-package de.hysky.skyblocker.skyblock.dwarven.fossilSolver;
+package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dwarven.fossilSolver.Structures.tileGrid;
+import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileGrid;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
@@ -25,7 +25,7 @@ import java.util.OptionalDouble;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.hysky.skyblocker.skyblock.dwarven.fossilSolver.FossilCalculations.*;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.*;
 
 public class FossilSolver extends SimpleContainerSolver implements TooltipAdder {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -43,7 +43,7 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		//convert to container
-		tileGrid mainTileGrid = convertItemsToTiles(slots);
+		TileGrid mainTileGrid = convertItemsToTiles(slots);
 		//get how many chisels the player has left
 		if (!slots.isEmpty()) {
 			chiselLeft = getChiselLeft(slots.values().stream().findAny().get());
