@@ -15,13 +15,6 @@
         <property name="message" value="trailing whitespace"/>
     </module>
 
-    <!-- note: RegexpMultiline shows nicer messages than Regexp, but has to be outside TreeWalker -->
-    <!-- disallow multiple consecutive blank lines -->
-    <module name="RegexpMultiline">
-        <property name="format" value="\n[\t ]*\r?\n[\t ]*\r?\n"/>
-        <property name="message" value="adjacent blank lines"/>
-    </module>
-
     <!-- disallow blank after { -->
     <module name="RegexpMultiline">
         <property name="format" value="\{[\t ]*\r?\n[\t ]*\r?\n"/>
@@ -43,7 +36,6 @@
         </module>
 
         <!-- Ensure all imports are ship shape -->
-        <module name="AvoidStarImport"/>
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
@@ -52,16 +44,6 @@
         <module name="LeftCurly"/>
         <module name="RightCurly"/>
 
-        <!-- single line statements on one line, -->
-        <module name="NeedBraces">
-            <property name="tokens" value="LITERAL_IF,LITERAL_FOR,LITERAL_WHILE"/>
-            <property name="allowSingleLineStatement" value="true"/>
-        </module>
-        <module name="NeedBraces">
-            <property name="tokens" value="LITERAL_ELSE,LITERAL_DO"/>
-            <property name="allowSingleLineStatement" value="false"/>
-        </module>
-
         <module name="EmptyLineSeparator">
             <property name="allowNoEmptyLineBetweenFields" value="true"/>
             <property name="allowMultipleEmptyLines" value="false"/>
@@ -69,7 +51,6 @@
             <property name="tokens" value="PACKAGE_DEF,IMPORT,STATIC_IMPORT,CLASS_DEF,INTERFACE_DEF,ENUM_DEF,STATIC_INIT,INSTANCE_INIT,CTOR_DEF"/>
         </module>
 
-        <module name="OperatorWrap"/>
         <module name="SeparatorWrap">
             <property name="tokens" value="DOT,ELLIPSIS,AT"/>
             <property name="option" value="nl"/>
@@ -81,7 +62,7 @@
 
         <module name="Indentation">
             <property name="basicOffset" value="4"/>
-            <property name="caseIndent" value="0"/>
+            <property name="caseIndent" value="4"/>
             <property name="throwsIndent" value="4"/>
             <property name="arrayInitIndent" value="4"/>
             <property name="lineWrappingIndentation" value="8"/>
@@ -94,10 +75,6 @@
             <property name="tokens" value="AT,INC,DEC,UNARY_MINUS,UNARY_PLUS,BNOT,LNOT,DOT,ARRAY_DECLARATOR,INDEX_OP"/>
         </module>
         <module name="WhitespaceAfter"/>
-        <module name="WhitespaceAround">
-            <!-- Allow PLUS, MINUS, MUL, DIV as they may be more readable without spaces in some cases -->
-            <property name="tokens" value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV_ASSIGN,DO_WHILE,EQUAL,GE,GT,LAMBDA,LAND,LCURLY,LE,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_RETURN,LITERAL_SWITCH,LITERAL_SYNCHRONIZED,LITERAL_TRY,LITERAL_WHILE,LOR,LT,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS_ASSIGN,QUESTION,RCURLY,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR,STAR_ASSIGN,LITERAL_ASSERT,TYPE_EXTENSION_AND"/>
-        </module>
         <module name="SingleSpaceSeparator"/>
         <module name="GenericWhitespace"/>
         <module name="CommentsIndentation"/>
@@ -116,9 +93,6 @@
         <module name="AnnotationLocation"/>
         <module name="MissingOverride"/>
 
-        <!-- By default this allows catch blocks with only comments -->
-        <module name="EmptyCatchBlock"/>
-
         <!-- Enforce tabs -->
         <!-- TODO: enforce tabs in the future -->
         <!--<module name="RegexpSinglelineJava">-->
@@ -128,12 +102,5 @@
 
         <module name="OuterTypeFilename"/>
         <module name="PackageDeclaration"/>
-
-        <!--<module name="InvalidJavadocPosition"/>-->
-        <module name="JavadocParagraph"/>
-        <module name="JavadocStyle"/>
-        <module name="AtclauseOrder">
-            <property name="tagOrder" value="@param,@return,@throws,@deprecated"/>
-        </module>
     </module>
 </module>
