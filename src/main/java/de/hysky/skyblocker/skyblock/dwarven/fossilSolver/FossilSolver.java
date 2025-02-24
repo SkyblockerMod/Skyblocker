@@ -32,15 +32,12 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 	private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("Fossil Excavation Progress: (\\d{1,2}.\\d)%");
 	private static final Pattern CHARGES_PATTERN = Pattern.compile("Chisel Charges Remaining: (\\d{1,2})");
 
-
-	private String percentage;
+	private static String percentage;
 	private static double[] probability;
-	private static int chiselLeft;
+	private static int chiselLeft = -1;
 
 	public FossilSolver() {
 		super("Fossil Excavator");
-		percentage = null;
-		chiselLeft = -1;
 	}
 
 	@Override
