@@ -82,5 +82,6 @@
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra strahlen",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Kuudra wird dunkel Orange umrandet.",
     "key.skyblocker.debug.dumpNearbyEntities": "Objekte in der Nähe entsorgen",
-    "skyblocker.config.debug": "Debuggen"
+    "skyblocker.config.debug": "Debuggen",
+    "skyblocker.config.debug.showInvisibleArmorStands": "Unsichtbare Rüstungsständer anzeigen"
 }
