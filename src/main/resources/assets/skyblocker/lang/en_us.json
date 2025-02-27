@@ -768,6 +768,9 @@
 
   "skyblocker.config.uiAndVisuals": "UI & Visuals",
 
+  "skyblocker.config.uiAndVisuals.swingOnAbilities": "Swing On Abilities",
+  "skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip": "Swings your hand whenever you use an item with a right-click ability.",
+
   "skyblocker.config.uiAndVisuals.nightVisionStrength": "Night Vision Strength",
   "skyblocker.config.uiAndVisuals.nightVisionStrength.@Tooltip": "Determines the strength of the Night Vision effect.",
 
