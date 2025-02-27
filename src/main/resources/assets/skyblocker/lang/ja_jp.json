@@ -255,5 +255,10 @@
     "key.itemPriceRefresh": "バザーを更新",
     "skyblocker.config.debug": "デバッグ",
     "text.skyblocker.undo": "戻す",
-    "text.skyblocker.reset": "リセット"
+    "text.skyblocker.reset": "リセット",
+    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Arrow Poisonの警告しきい値",
+    "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "バリスタの構築位置を表示",
+    "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator": "利益の計算を有効にする",
+    "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning": "Arrow Poisonを持っていない時に警告する",
+    "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "エンダーパールを使用する位置を表示"
 }
