@@ -260,5 +260,7 @@
     "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "バリスタの構築位置を表示",
     "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator": "利益の計算を有効にする",
     "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning": "Arrow Poisonを持っていない時に警告する",
-    "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "エンダーパールを使用する位置を表示"
+    "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "エンダーパールを使用する位置を表示",
+    "skyblocker.config.crimsonIsle.kuudra.safeSpotWaypoints": "安全地帯の位置を表示",
+    "skyblocker.config.debug.dumpFormat.@Tooltip": "アイテムを出力する際のフォーマット。\nSNBTはカラー表示があり、読みやすく、JSONは文字列がダブルクォーテーションでエスケープされる。"
 }
