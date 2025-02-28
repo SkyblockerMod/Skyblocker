@@ -49,6 +49,13 @@ public class FormattersTest {
 	}
 
 	@Test
+	void testParseNumbers() {
+		Assertions.assertInstanceOf(Long.class, Formatters.parseNumber("1,024"));
+		Assertions.assertEquals(1024, Formatters.parseNumber("1,024").intValue());
+		Assertions.assertEquals(123_456.789, Formatters.parseNumber("123,456.789"));
+	}
+
+	@Test
 	void testDates() {
 		long Thu_Jan_30th_2025_at_4_10_00_PM = 1738253400000L;
 		long Fri_Jan_31st_2025_at_11_11_00_AM = 1738321860000L;

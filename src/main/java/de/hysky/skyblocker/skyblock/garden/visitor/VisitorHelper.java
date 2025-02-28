@@ -3,10 +3,7 @@ package de.hysky.skyblocker.skyblock.garden.visitor;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -86,7 +83,7 @@ public class VisitorHelper {
 				.takeWhile(lore -> !lore.contains("Rewards"))
 				.filter(lore -> lore.contains(" x"))
 				.map(lore -> lore.split(" x"))
-				.forEach(parts -> visitor.addRequiredItem(Text.literal(parts[0].trim()), Integer.parseInt(parts[1].trim())));
+				.forEach(parts -> visitor.addRequiredItem(Text.literal(parts[0].trim()), Formatters.parseNumber(parts[1].trim()).intValue()));
 	}
 
 	private static void updateItems() {
