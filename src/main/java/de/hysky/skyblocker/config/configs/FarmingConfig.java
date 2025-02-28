@@ -20,9 +20,6 @@ public class FarmingConfig {
 		@SerialEntry
 		public boolean pestHighlighter = true;
 
-		@SerialEntry
-		public boolean vacuumSolver = false;
-
         @SerialEntry
         public boolean lockMouseTool = false;
 

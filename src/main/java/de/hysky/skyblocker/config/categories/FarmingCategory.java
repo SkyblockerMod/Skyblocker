@@ -46,14 +46,6 @@ public class FarmingCategory {
 										newValue -> config.farming.garden.pestHighlighter = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.farming.garden.vacuumSolver"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.farming.garden.vacuumSolver.@Tooltip")))
-								.binding(defaults.farming.garden.vacuumSolver,
-										() -> config.farming.garden.vacuumSolver,
-										newValue -> config.farming.garden.vacuumSolver = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.farming.garden.lockMouseTool"))
                                 .binding(defaults.farming.garden.lockMouseTool,
