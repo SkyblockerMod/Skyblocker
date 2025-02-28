@@ -7,6 +7,7 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.ManiaIndicator;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.StakeIndicator;
 import de.hysky.skyblocker.skyblock.slayers.boss.vampire.TwinClawsIndicator;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.mayor.MayorUtils;
@@ -56,20 +57,26 @@ public class SlayerManager {
 	public static void init() {
 		ClientReceiveMessageEvents.GAME.register(SlayerManager::onChatMessage);
 		SkyblockEvents.LOCATION_CHANGE.register(SlayerManager::onLocationChange);
+		SkyblockEvents.AREA_CHANGE.register(SlayerManager::onAreaChange);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayers.vampireSlayer.maniaUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(StakeIndicator::updateStake, SkyblockerConfigManager.get().slayers.vampireSlayer.steakStakeUpdateFrequency);
 	}
 
-	private static void onLocationChange(Location location) {
-		if (isBossSpawned()) {
-			slayerQuest = null;
-			bossFight = null;
+	private static void onAreaChange(Area area) {
+		if (area.equals(Area.CHATEAU)) {
+			getSlayerBossInfo(false);
 		}
 	}
 
+	private static void onLocationChange(Location location) {
+		slayerQuest = null;
+		bossFight = null;
+		Scheduler.INSTANCE.schedule(() -> getSlayerBossInfo(false), 20 * 2);
+	}
+
 	private static void onChatMessage(Text text, boolean overlay) {
-		if (!Utils.isOnSkyblock() || overlay) return;
+		if (overlay || !Utils.isOnSkyblock()) return;
 		String message = text.getString();
 
 		switch (message.replaceFirst("^\\s+", "")) {
@@ -157,13 +164,6 @@ public class SlayerManager {
 	}
 
 	/**
-	 * Gets The slayer info from scoreboard when player joins SkyBlock
-	 */
-	public static void getSlayerInfoOnJoin() {
-		Scheduler.INSTANCE.schedule(() -> getSlayerBossInfo(false), 20 * 2); //2 seconds
-	}
-
-	/**
 	 * Checks if the given armor stand is a slayer boss or miniboss and saves it to the corresponding field.
 	 * <p>This is the main mechanism for detecting slayer bosses and minibosses. All other features rely on information processed here.
 	 *
@@ -171,7 +171,7 @@ public class SlayerManager {
 	 * {@link #findClosestMobEntity(EntityType, ArmorStandEntity)} could be modified and run more than once to ensure the correct entity is found.
 	 */
 	public static void checkSlayerBoss(ArmorStandEntity armorStand) {
-		if (slayerQuest == null || (isBossSpawned() && bossFight.boss != null) || !armorStand.hasCustomName()) return;
+		if (slayerQuest == null || !armorStand.hasCustomName() || (isBossSpawned() && bossFight.boss != null)) return;
 		if (armorStand.getName().getString().contains(CLIENT.getSession().getUsername())) {
 			for (Entity otherArmorStands : getEntityArmorStands(armorStand, 1.5f)) {
 				Matcher matcher = SLAYER_PATTERN.matcher(otherArmorStands.getName().getString());

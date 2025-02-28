@@ -39,10 +39,7 @@ import net.minecraft.util.dynamic.Codecs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.OptionalDouble;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -259,7 +256,7 @@ public final class ItemUtils {
 
     /**
      * Parses the {@code petInfo} field from a pet item that has it into the {@link PetInfo} record.
-     * 
+     *
      * @return the parsed {@link PetInfo} if successful, or {@link PetInfo#EMPTY}
      */
     @NotNull
@@ -394,13 +391,7 @@ public final class ItemUtils {
      */
     @Nullable
     public static Matcher getLoreLineIfMatch(ItemStack stack, Pattern pattern) {
-        Matcher matcher = pattern.matcher("");
-        for (Text line : getLore(stack)) {
-            if (matcher.reset(line.getString()).matches()) {
-                return matcher;
-            }
-        }
-        return null;
+        return TextUtils.matchInList(getLore(stack), pattern);
     }
 
     /**
@@ -411,13 +402,7 @@ public final class ItemUtils {
      */
     @Nullable
     public static Matcher getLoreLineIfContainsMatch(ItemStack stack, Pattern pattern) {
-        Matcher matcher = pattern.matcher("");
-        for (Text line : getLore(stack)) {
-            if (matcher.reset(line.getString()).find()) {
-                return matcher;
-            }
-        }
-        return null;
+        return TextUtils.findInList(getLore(stack), pattern);
     }
 
     public static @NotNull List<Text> getLore(ItemStack stack) {

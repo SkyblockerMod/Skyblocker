@@ -35,6 +35,14 @@ public class UIAndVisualsCategory {
 				.name(Text.translatable("skyblocker.config.uiAndVisuals"))
 
                 //Ungrouped Options
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.swingOnAbilities"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip")))
+						.binding(defaults.uiAndVisuals.swingOnAbilities,
+								() -> config.uiAndVisuals.swingOnAbilities,
+								newValue -> config.uiAndVisuals.swingOnAbilities = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 				.option(Option.<Integer>createBuilder()
 						.name(Text.translatable("skyblocker.config.uiAndVisuals.nightVisionStrength"))
 						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.nightVisionStrength.@Tooltip")))
