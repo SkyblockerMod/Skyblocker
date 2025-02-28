@@ -1142,5 +1142,6 @@
     "skyblocker.powderTracker.rewardsFilteredOut": "",
     "skyblocker.profileviewer.inventory.wardrobe": "",
     "skyblocker.profileviewer.inventory.inactive": "",
-    "skyblocker.chat.confirmationPromptNotification": ""
+    "skyblocker.chat.confirmationPromptNotification": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
