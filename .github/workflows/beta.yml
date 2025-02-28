@@ -117,4 +117,4 @@ jobs:
         if: always()
         with:
           name: Test Screenshots
-          path: run/screenshots
+          path: build/run/clientGameTest/screenshots
