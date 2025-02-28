@@ -111,7 +111,7 @@ jobs:
       - name: Run client gametest with Xvfb
         uses: modmuss50/xvfb-action@v1
         with:
-          run: ./gradlew runProductionClientGametest
+          run: ./gradlew runClientGametest
       - name: Upload test screenshots
         uses: actions/upload-artifact@v4
         if: always()
