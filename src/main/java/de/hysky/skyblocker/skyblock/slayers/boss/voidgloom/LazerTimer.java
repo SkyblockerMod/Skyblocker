@@ -53,7 +53,6 @@ public class LazerTimer {
 						.append(Text.literal(timeText).formatted(Formatting.GREEN).formatted(Formatting.BOLD));
 
 				RenderHelper.renderText(context, renderText, boss.getPos().add(0, 2, 0), true);
-
 			}
 		}
 	}

@@ -188,6 +188,7 @@
   "skyblocker.config.dungeons.puzzle.solveBoulder.@Tooltip": "Draws a line to the chest and highlight button",
   "skyblocker.config.dungeons.puzzle.solveIceFill": "Solve Ice Fill Puzzle",
   "skyblocker.config.dungeons.puzzle.solveSilverfish": "Solve Silverfish Puzzle",
+  "skyblocker.config.dungeons.puzzle.solveTeleportMaze": "Solve Teleport Maze Puzzle",
   "skyblocker.config.dungeons.puzzle.solveThreeWeirdos": "Solve Three Weirdos Puzzle",
   "skyblocker.config.dungeons.puzzle.solveTicTacToe": "Solve Tic Tac Toe Puzzle",
   "skyblocker.config.dungeons.puzzle.solveTicTacToe.@Tooltip": "Puts a red box around the next best move for you to make!",
@@ -445,8 +446,6 @@
   "skyblocker.config.chat.chatRules": "Custom Chat Rules",
   "skyblocker.config.chat.chatRules.announcementLength": "Announcement Display Time",
   "skyblocker.config.chat.chatRules.announcementLength.@Tooltip": "The amount of time the announcement will show for in ticks.",
-  "skyblocker.config.chat.chatRules.announcementScale": "Announcement Size",
-  "skyblocker.config.chat.chatRules.announcementScale.@Tooltip": "The amount to scale the size of the announcement.",
   "skyblocker.config.chat.chatRules.screen": "Chat Rules Config...",
   "skyblocker.config.chat.chatRules.screen.deleteQuestion": "Are you sure you want to remove this rule?",
   "skyblocker.config.chat.chatRules.screen.deleteWarning": "Rule '%s' will be lost forever! (A long time!)",
@@ -468,10 +467,12 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage": "Hide Message:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip": "Remove the message from chat.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase": "Ignore Case:",
-  "skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip": "if the filter is case-sensitive.",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip": "If the filter is case-sensitive.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.inputs": "Inputs:",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen": "Chat Rule Location Config",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen.note": "Note: When all locations are unchecked, the chat rule will work in every location.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.locations": "Valid Locations:",
-  "skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip": "List of locations where the filter will work. Separate each location with a \",\" and use a \"!\" if you want it to work anywhere but a location. Location Names:",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip": "Whitelist of locations where the filter will work.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.name": "Name:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.name.@Tooltip": "The name of the rule.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.outputs": "Outputs:",
@@ -575,8 +576,10 @@
   "skyblocker.config.mining.crystalHollows.chestHighlighter.@Tooltip": "Highlight found treasure chests and lock pick locations when powder mining.",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "Chest Highlight Color",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "What color the treasure chests / lock pick should be highlighted.",
-  "skyblocker.config.mining.crystalHollows.powderTrackerFilter": "Powder Tracker Shown Items",
-  "skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip": "Choose which items to show & include in the profit calculation for the powder tracker.",
+  "skyblocker.config.mining.crystalHollows.enablePowderTracker": "Enable Powder Mining Tracker",
+  "skyblocker.config.mining.crystalHollows.enablePowderTracker.@Tooltip": "Tracks the treasure chest rewards you get from powder mining in the Crystal Hollows.",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter": "Powder Mining Tracker Shown Items",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip": "Choose which items to show & include in the profit calculation for the powder mining tracker.",
   "skyblocker.config.mining.crystalHollows.powderTrackerFilter.screenTitle": "Shown Items",
 
   "skyblocker.config.mining.crystalsHud": "Crystal Hollows Map",
@@ -646,6 +649,8 @@
   "skyblocker.config.mining.glacite.enableParsingChatCorpseFinder.@Tooltip": "If enabled, will listen to chat and process corpses shared by other players. Should be compatible with other mods.",
   "skyblocker.config.mining.glacite.autoShareCorpses": "Automatically Share Found Corpses In Chat",
   "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "Sends a message in party chat with the location of the found corpse when you find one.",
+  "skyblocker.config.mining.glacite.enableCorpseProfitTracker": "Enable Corpse Profit Tracker",
+  "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": "Tracks the profit and the loot you get from corpses. Shows the profit in chat when looting a corpse, and has a command to see your history of corpse loot in /skyblocker rewardTrackers corpse list",
 
   "skyblocker.config.misc": "Misc",
 
@@ -769,6 +774,9 @@
 
   "skyblocker.config.uiAndVisuals": "UI & Visuals",
 
+  "skyblocker.config.uiAndVisuals.swingOnAbilities": "Swing On Abilities",
+  "skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip": "Swings your hand whenever you use an item with a right-click ability.",
+
   "skyblocker.config.uiAndVisuals.nightVisionStrength": "Night Vision Strength",
   "skyblocker.config.uiAndVisuals.nightVisionStrength.@Tooltip": "Determines the strength of the Night Vision effect.",
 
@@ -876,6 +884,7 @@
   "skyblocker.config.uiAndVisuals.slotText.enchantmentLevel": "Enchantment Book Level",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop": "Essence Shop",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip": "Displays the levels and your current amount of essence while in essence shops.",
+  "skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel": "HOTM Perk Level",
   "skyblocker.config.uiAndVisuals.slotText.minionLevel": "Minion Level",
   "skyblocker.config.uiAndVisuals.slotText.petLevel": "Pet Level",
   "skyblocker.config.uiAndVisuals.slotText.potionLevel": "Potion Level",
@@ -906,6 +915,22 @@
 
   "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
 
+  "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip": "Smooths out teleporting with right click teleport abilities.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission": "Enable Ether Transmission",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip": "For: Etherwarp Conduit and Ether Merged.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission": "Enable Instant Transmission",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission.@Tooltip": "For: AOTE and AOTV.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission": "Enable Sinrecall Transmission",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip": "For: Sinseeker Scythe.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission": "Enable Weird Transmission",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip": "For: Aspect of the Leech.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact": "Enable Wither Impact",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "For: Necron's Blade, Hyperion, Astraea, Scylla, and Valkyrie.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag": "Maximum Added Lag (ms)",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "How long the animation is allowed to get behind the game in milliseconds. (If set to 0, smoothing will not have any lag, but stuttering will likely occur. Increase this value if you're experiencing flashing.)",
+
+  
   "skyblocker.config.uiAndVisuals.tabHud": "Fancy HUD and TAB",
   "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Open Config Screen",
   "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Default Positioning Behavior",
@@ -1271,6 +1296,23 @@
   "skyblocker.crimson.kuudra.noArrowPoison": "No Arrow Poison!",
   "skyblocker.crimson.kuudra.lowArrowPoison": "Low on Arrow Poison!",
   "skyblocker.crimson.kuudra.danger": "DANGER!",
+
+  "skyblocker.corpseTracker.screenTitle": "Corpse Loot Tracker",
+  "skyblocker.corpseTracker.historyView": "Switch to history view",
+  "skyblocker.corpseTracker.summaryView": "Switch to summary view",
+  "skyblocker.corpseTracker.totalProfit": "Total Profit: %s%s",
+  "skyblocker.corpseTracker.corpseProfit": "Corpse Profit: %s",
+  "skyblocker.corpseTracker.incompletePriceData": " (Incomplete Price Data)",
+  "skyblocker.corpseTracker.hoverText": "Click to open corpse loot history",
+  "skyblocker.corpseTracker.somethingWentWrong": "Something went wrong with corpse profit calculation. Check logs for more information.",
+  "skyblocker.corpseTracker.emptyHistory": "Your corpse history list is empty :(",
+  "skyblocker.corpseTracker.historyReset": "Corpse profit history has been reset for the current profile.",
+
+  "skyblocker.powderTracker.historyReset": "Powder mining tracker has been reset for the current profile.",
+  "skyblocker.powderTracker.profit": "Profit: %s Coins",
+  "skyblocker.powderTracker.emptyHistory": "Your powder mining rewards list is empty :(",
+  "skyblocker.powderTracker.rewardsFilteredOut": "Your powder mining rewards list is empty after filtering :(",
+
 
   "skyblocker.waypoints.ordered.import.skyblocker.success": "Successfully imported waypoints from the Skyblocker Ordered Waypoints format!",
   "skyblocker.waypoints.ordered.import.skyblocker.unknownFormatHeader": "§cThis import code doesn't look like its in the Skyblocker Ordered Waypoints format, double-check your clipboard to see if everything is correct.",

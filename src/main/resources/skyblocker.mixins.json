@@ -7,7 +7,9 @@
     "BackgroundRendererMixin",
     "BatEntityMixin",
     "BossBarHudMixin",
+    "CameraMixin",
     "ClientPlayerEntityMixin",
+    "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldMixin",
     "CommandTreeS2CPacketMixin",
@@ -62,7 +64,8 @@
     "accessors.SlotAccessor",
     "accessors.WorldRendererAccessor",
     "discordipc.ConnectionMixin",
-    "jgit.SystemReaderMixin"
+    "jgit.SystemReaderMixin",
+    "jgit.UrlConfigMixin"
   ],
   "injectors": {
     "defaultRequire": 1

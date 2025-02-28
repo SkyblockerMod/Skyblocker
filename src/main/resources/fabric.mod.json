@@ -22,6 +22,9 @@
     "client": [
       "de.hysky.skyblocker.SkyblockerMod"
     ],
+    "fabric-client-gametest": [
+      "de.hysky.skyblocker.SkyblockerGameTest"
+    ],
     "modmenu": [
       "de.hysky.skyblocker.compatibility.modmenu.ModMenuEntry"
     ],
@@ -51,7 +54,8 @@
     "immediatelyfast": "*"
   },
   "breaks": {
-    "forcecloseworldloadingscreen": "<=2.2.0"
+    "forcecloseworldloadingscreen": "<=2.2.0",
+    "skyblockmod": "<=1.10.7"
   },
   "custom": {
     "modmenu": {

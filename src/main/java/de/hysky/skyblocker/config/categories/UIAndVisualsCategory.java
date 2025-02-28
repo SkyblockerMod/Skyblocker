@@ -35,6 +35,14 @@ public class UIAndVisualsCategory {
 				.name(Text.translatable("skyblocker.config.uiAndVisuals"))
 
                 //Ungrouped Options
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.swingOnAbilities"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip")))
+						.binding(defaults.uiAndVisuals.swingOnAbilities,
+								() -> config.uiAndVisuals.swingOnAbilities,
+								newValue -> config.uiAndVisuals.swingOnAbilities = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 				.option(Option.<Integer>createBuilder()
 						.name(Text.translatable("skyblocker.config.uiAndVisuals.nightVisionStrength"))
 						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.nightVisionStrength.@Tooltip")))
@@ -396,6 +404,61 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.teleportOverlay.enableWitherImpact = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .build())
+
+                //Smooth AOTE
+                .group(OptionGroup.createBuilder()
+                        .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip")))
+                        .collapsed(true)
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableWeirdTransmission,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableWeirdTransmission,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableWeirdTransmission = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableInstantTransmission,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableInstantTransmission,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableInstantTransmission = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableEtherTransmission,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableEtherTransmission,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableEtherTransmission = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableSinrecallTransmission,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip")))
+                                .binding(defaults.uiAndVisuals.smoothAOTE.enableWitherImpact,
+                                        () -> config.uiAndVisuals.smoothAOTE.enableWitherImpact,
+                                        newValue -> config.uiAndVisuals.smoothAOTE.enableWitherImpact = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip")))
+								.binding(defaults.uiAndVisuals.smoothAOTE.maximumAddedLag,
+										() -> config.uiAndVisuals.smoothAOTE.maximumAddedLag,
+										newValue -> config.uiAndVisuals.smoothAOTE.maximumAddedLag = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(0, 500).step(1))
+								.build())
                         .build())
 
                 //Search overlay

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.events;
 
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.purse.PurseChangeCause;
 import net.fabricmc.api.EnvType;
@@ -24,6 +25,12 @@ public final class SkyblockEvents {
 	public static final Event<SkyblockLocationChange> LOCATION_CHANGE = EventFactory.createArrayBacked(SkyblockLocationChange.class, callbacks -> location -> {
 		for (SkyblockLocationChange callback : callbacks) {
 			callback.onSkyblockLocationChange(location);
+		}
+	});
+
+	public static final Event<SkyblockAreaChange> AREA_CHANGE = EventFactory.createArrayBacked(SkyblockAreaChange.class, callbacks -> area -> {
+		for (SkyblockAreaChange callback : callbacks) {
+			callback.onSkyblockAreaChange(area);
 		}
 	});
 
@@ -72,6 +79,12 @@ public final class SkyblockEvents {
 	@FunctionalInterface
 	public interface SkyblockLocationChange {
 		void onSkyblockLocationChange(Location location);
+	}
+
+	@Environment(EnvType.CLIENT)
+	@FunctionalInterface
+	public interface SkyblockAreaChange {
+		void onSkyblockAreaChange(Area area);
 	}
 
 	@Environment(EnvType.CLIENT)

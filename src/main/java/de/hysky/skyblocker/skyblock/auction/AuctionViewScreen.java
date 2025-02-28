@@ -71,6 +71,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
     @Override
     protected void init() {
         super.init();
+		verticalLayout = DirectionalLayoutWidget.vertical();
         verticalLayout.spacing(2).getMainPositioner().alignHorizontalCenter();
         priceTextWidget = new TextWidget(isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid"), textRenderer).alignCenter();
         verticalLayout.add(priceTextWidget);
