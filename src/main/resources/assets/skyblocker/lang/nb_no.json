@@ -1142,5 +1142,6 @@
     "skyblocker.corpseTracker.incompletePriceData": "",
     "skyblocker.corpseTracker.hoverText": "",
     "skyblocker.corpseTracker.somethingWentWrong": "",
-    "skyblocker.profileviewer.inventory.armor": ""
+    "skyblocker.profileviewer.inventory.armor": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
