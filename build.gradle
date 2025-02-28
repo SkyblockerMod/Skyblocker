@@ -207,7 +207,7 @@ loom {
 fabricApi {
 	configureTests {
 		createSourceSet = true
-		modId = project.archives_base_name
+		modId = "skyblocker-test"
 		enableGameTests = false
 		eula = true
 	}

@@ -22,9 +22,6 @@
     "client": [
       "de.hysky.skyblocker.SkyblockerMod"
     ],
-    "fabric-client-gametest": [
-      "de.hysky.skyblocker.SkyblockerGameTest"
-    ],
     "modmenu": [
       "de.hysky.skyblocker.compatibility.modmenu.ModMenuEntry"
     ],
