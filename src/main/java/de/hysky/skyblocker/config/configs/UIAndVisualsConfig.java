@@ -423,7 +423,7 @@ public class UIAndVisualsConfig {
 
 	public static class HealthBars {
 		@SerialEntry
-		public boolean enabled = true;
+		public boolean enabled = false;
 
 		@SerialEntry
 		public float scale = 1.5f;
