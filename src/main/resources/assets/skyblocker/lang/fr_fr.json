@@ -1142,5 +1142,6 @@
     "skyblocker.customDyeColors.added": "",
     "skyblocker.customDyeColors.noItemUuid": "",
     "skyblocker.customDyeColors.unableToSetColor": "",
-    "skyblocker.customArmorTrims.neverHad": ""
+    "skyblocker.customArmorTrims.neverHad": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
