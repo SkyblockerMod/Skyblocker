@@ -1142,5 +1142,6 @@
     "skyblocker.profileviewer.inventory.inventory": "",
     "skyblocker.profileviewer.inventory.armor": "",
     "skyblocker.profileviewer.inventory.enderchest": "",
-    "skyblocker.profileviewer.inventory.inactive.description.backpack": ""
+    "skyblocker.profileviewer.inventory.inactive.description.backpack": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
