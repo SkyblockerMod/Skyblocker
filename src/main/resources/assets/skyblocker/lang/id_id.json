@@ -1142,5 +1142,6 @@
     "skyblocker.powderTracker.profit": "",
     "skyblocker.powderTracker.emptyHistory": "",
     "skyblocker.powderTracker.rewardsFilteredOut": "",
-    "skyblocker.waypoints.ordered.import.skyblocker.fail": ""
+    "skyblocker.waypoints.ordered.import.skyblocker.fail": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
