@@ -1142,5 +1142,6 @@
     "skyblocker.corpseTracker.historyReset": "",
     "skyblocker.powderTracker.historyReset": "",
     "skyblocker.powderTracker.profit": "",
-    "skyblocker.powderTracker.emptyHistory": ""
+    "skyblocker.powderTracker.emptyHistory": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
