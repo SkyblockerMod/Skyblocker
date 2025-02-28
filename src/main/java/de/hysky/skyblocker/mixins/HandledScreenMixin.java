@@ -157,7 +157,9 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@Inject(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawBackground(Lnet/minecraft/client/gui/DrawContext;FII)V"))
 	private void skyblocker$drawUnselectedQuickNavButtons(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		if (quickNavButtons != null) for (QuickNavButton quickNavButton : quickNavButtons) {
-			if (!quickNavButton.toggled()) {
+			// Render the button behind the main inventory background if it's not toggled or if it's still fading in
+			if (!quickNavButton.toggled() || quickNavButton.getAlpha() < 255) {
+				quickNavButton.setRenderInFront(false);
 				quickNavButton.render(context, mouseX, mouseY, delta);
 			}
 		}
@@ -170,6 +172,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	private void skyblocker$drawSelectedQuickNavButtons(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		if (quickNavButtons != null) for (QuickNavButton quickNavButton : quickNavButtons) {
 			if (quickNavButton.toggled()) {
+				quickNavButton.setRenderInFront(true);
 				quickNavButton.render(context, mouseX, mouseY, delta);
 			}
 		}
@@ -201,7 +204,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
-	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "LOAD", ordinal = 0))
+	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "STORE"))
 	private ItemStack skyblocker$experimentSolvers$replaceTooltipDisplayStack(ItemStack stack) {
 		return skyblocker$experimentSolvers$getStack(focusedSlot, stack);
 	}

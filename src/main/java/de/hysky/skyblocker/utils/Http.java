@@ -42,7 +42,7 @@ public class Http {
 				.version(Version.HTTP_2)
 				.uri(URI.create(url));
 
-		if (token != null) requestBuilder.header("Token", token);
+		if (token != null) requestBuilder.header("Authorization", "Bearer " + token);
 
 		HttpRequest request = requestBuilder.build();
 

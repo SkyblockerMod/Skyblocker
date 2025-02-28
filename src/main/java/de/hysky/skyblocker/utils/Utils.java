@@ -364,22 +364,22 @@ public class Utils {
 
             TEXT_SCOREBOARD.addAll(textLines);
             STRING_SCOREBOARD.addAll(stringLines);
-            Utils.updatePurse();
-			SlayerManager.getSlayerBossInfo(true);
-			updateArea();
+			if (isOnSkyblock) {
+				Utils.updatePurse();
+				SlayerManager.getSlayerBossInfo(true);
+				updateArea();
+			}
         } catch (NullPointerException e) {
             //Do nothing
         }
     }
 
-    //TODO add event in the future
     private static void updateArea() {
-    	if (isOnSkyblock) {
-        	String areaName = getIslandArea().replaceAll("[⏣ф]", "").strip();
-        	area = Area.from(areaName);
-    	} else {
-    		area = Area.UNKNOWN;
-    	}
+		String areaName = getIslandArea().replaceAll("[⏣ф]", "").strip();
+		Area oldArea = area;
+		area = Area.from(areaName);
+
+		if (!oldArea.equals(area)) SkyblockEvents.AREA_CHANGE.invoker().onSkyblockAreaChange(area);
     }
 
 	public static void updatePurse() {
@@ -444,7 +444,6 @@ public class Utils {
                 if (Utils.gameType.equals("SKYBLOCK")) {
                     isOnSkyblock = true;
                     tickProfileId();
-					SlayerManager.getSlayerInfoOnJoin();
 
                     if (!previousServerType.equals("SKYBLOCK")) SkyblockEvents.JOIN.invoker().onSkyblockJoin();
                 } else if (previousServerType.equals("SKYBLOCK")) {

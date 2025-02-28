@@ -84,7 +84,7 @@ public class MuseumItemCache {
 					String profileId = Utils.getProfileId();
 
 					if (!itemId.isEmpty() && !profileId.isEmpty()) {
-						MUSEUM_ITEM_CACHE.putIfAbsent(ProfileMuseumData.EMPTY.get()).collectedItemIds().add(itemId);
+						MUSEUM_ITEM_CACHE.computeIfAbsent(ProfileMuseumData.EMPTY).collectedItemIds().add(itemId);
 						MUSEUM_ITEM_CACHE.save();
 					}
 				}

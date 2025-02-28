@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.quicknav;
 
 import com.google.gson.JsonElement;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
@@ -22,21 +21,25 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 
 import java.time.Duration;
 
 @Environment(value = EnvType.CLIENT)
 public class QuickNavButton extends ClickableWidget {
+    private static final long TOGGLE_DURATION = 1000;
+
     private final int index;
     private final boolean toggled;
-    private boolean temporaryToggled = false;
     private final String command;
     private final ItemStack icon;
 
-    private static final long TOGGLE_DURATION = 1000;
+    private boolean temporaryToggled = false;
     private long toggleTime;
 
-    private float alpha = 1.0f;
+    // Stores whether the button is currently rendering in front of the main inventory background.
+    private boolean renderInFront;
+    private int alpha = 255;
 
     /**
      * Checks if the current tab is a top tab based on its index.
@@ -49,6 +52,14 @@ public class QuickNavButton extends ClickableWidget {
 
     public boolean toggled() {
         return toggled || temporaryToggled;
+    }
+
+    public void setRenderInFront(boolean renderInFront) {
+        this.renderInFront = renderInFront;
+    }
+
+    public int getAlpha() {
+        return alpha;
     }
 
     /**
@@ -106,7 +117,7 @@ public class QuickNavButton extends ClickableWidget {
             } else {
                 MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
             }
-            this.alpha = 0.5f;
+            this.alpha = 0;
         }
     }
 
@@ -123,37 +134,25 @@ public class QuickNavButton extends ClickableWidget {
     @Override
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         this.updateCoordinates();
-        RenderSystem.disableDepthTest();
 
+		// Note that this changes the return value of `toggled()`, so do not call it after this point.
+		// Instead, use `renderInFront` to determine whether the button is currently rendering in front of the main inventory background.
         if (this.temporaryToggled && System.currentTimeMillis() - this.toggleTime >= TOGGLE_DURATION) {
             this.temporaryToggled = false; // Reset toggled state
         }
         //"animation"
-        if (this.alpha < 1.0f) {
-            this.alpha += 0.05f;
-            if (this.alpha > 1.0f) {
-                this.alpha = 1.0f;
-            }
+        if (alpha < 255) {
+            alpha = Math.min(alpha + 10, 255);
         }
 
-        //"animation"
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, this.alpha);
-
         // Construct the texture identifier based on the index and toggled state
-        Identifier tabTexture = Identifier.ofVanilla("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (toggled() ? "selected" : "unselected") + "_" + (index % 7 + 1));
+        Identifier tabTexture = Identifier.ofVanilla("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (renderInFront ? "selected" : "unselected") + "_" + (index % 7 + 1));
 
-        // Render the button texture
-        context.drawGuiTexture(RenderLayer::getGuiTextured, tabTexture, this.getX(), this.getY(), this.width, this.height);
+        // Render the button texture, always with full alpha if it's not rendering in front
+        context.drawGuiTexture(RenderLayer::getGuiTextured, tabTexture, this.getX(), this.getY(), this.width, this.height, renderInFront ? ColorHelper.withAlpha(alpha, -1) : -1);
         // Render the button icon
         int yOffset = this.index < 7 ? 1 : -1;
         context.drawItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
-        //prevent "fading animation" on not quicknav stuff
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        RenderSystem.disableBlend();
-
-        RenderSystem.enableDepthTest();
     }
 
     @Override

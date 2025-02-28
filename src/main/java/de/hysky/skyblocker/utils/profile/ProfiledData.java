@@ -131,18 +131,22 @@ public class ProfiledData<T> {
 		return getPlayerData(uuid).get(profileId);
 	}
 
+	@Nullable
 	public T put(T value) {
 		return put(Utils.getUuid(), Utils.getProfileId(), value);
 	}
 
+	@Nullable
 	public T put(UUID uuid, String profileId, T value) {
 		return getPlayerData(uuid).put(profileId, value);
 	}
 
+	@Nullable
 	public T putIfAbsent(T value) {
 		return putIfAbsent(Utils.getUuid(), Utils.getProfileId(), value);
 	}
 
+	@Nullable
 	public T putIfAbsent(UUID uuid, String profileId, T value) {
 		return getPlayerData(uuid).putIfAbsent(profileId, value);
 	}
@@ -155,10 +159,12 @@ public class ProfiledData<T> {
 		return getPlayerData(uuid).computeIfAbsent(profileId, _profileId -> valueSupplier.get());
 	}
 
+	@Nullable
 	public T remove() {
 		return remove(Utils.getUuid(), Utils.getProfileId());
 	}
 
+	@Nullable
 	public T remove(UUID uuid, String profileId) {
 		return getPlayerData(uuid).remove(profileId);
 	}

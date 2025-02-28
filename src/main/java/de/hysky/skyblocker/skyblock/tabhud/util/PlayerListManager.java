@@ -40,15 +40,18 @@ import java.util.regex.Pattern;
 public class PlayerListManager {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
-	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("(^|\\s*)(Players \\(\\d+\\)|Island|Coop \\(\\d+\\))(\\s*|$)");
-	private static final Pattern INFO_COLUMN_PATTERN = Pattern.compile("(^|\\s*)Info(\\s*|$)");
+	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("\\s*(Players \\(\\d+\\)|Island|Coop \\(\\d+\\))\\s*");
+	private static final Pattern INFO_COLUMN_PATTERN = Pattern.compile("\\s*Info\\s*");
 
 	/**
 	 * The player list in tab.
 	 */
 	private static List<PlayerListEntry> playerList = new ArrayList<>(); // Initialize to prevent npe.
+
 	/**
 	 * The player list in tab, but a list of strings instead of {@link PlayerListEntry}s.
+	 *
+	 * @implNote All leading and trailing whitespace is removed from the strings.
 	 */
 	private static List<String> playerStringList = new ArrayList<>();
 	@Nullable
@@ -56,31 +59,44 @@ public class PlayerListManager {
 	public static final Map<String, TabHudWidget> tabWidgetInstances = new Object2ObjectOpenHashMap<>();
 	public static final List<TabHudWidget> tabWidgetsToShow = new ObjectArrayList<>(5);
 
-	public static void updateList() {
+	private static void reset() {
+		if (!tabWidgetsToShow.isEmpty()) {
+			tabWidgetsToShow.clear();
+			ScreenBuilder.positionsNeedsUpdating = true;
+		}
+	}
 
-		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
-			if (!tabWidgetsToShow.isEmpty()) {
-				tabWidgetsToShow.clear();
-				ScreenBuilder.positionsNeedsUpdating = true;
-			}
+	public static void updateList() {
+		if (!Utils.isOnSkyblock()) {
+			reset();
 			return;
 		}
 
-		ClientPlayNetworkHandler cpnwh = MinecraftClient.getInstance().getNetworkHandler();
+		ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
 
 		// check is needed, else game crashes on server leave
-		if (cpnwh != null) {
-			playerList = cpnwh.getPlayerList().stream().sorted(PlayerListHudAccessor.getOrdering()).toList();
-			playerStringList = playerList.stream().map(PlayerListEntry::getDisplayName).filter(Objects::nonNull).map(Text::getString).map(String::strip).toList();
+		if (networkHandler != null) {
+			playerList = networkHandler.getPlayerList()
+			                           .stream()
+			                           .sorted(PlayerListHudAccessor.getOrdering())
+			                           .toList();
+			playerStringList = playerList.stream()
+			                             .map(PlayerListEntry::getDisplayName)
+			                             .filter(Objects::nonNull)
+			                             .map(Text::getString)
+			                             .map(String::strip)
+			                             .toList();
+		}
+
+		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
+			reset();
+			return;
 		}
 
 		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen widgetsConfigurationScreen && widgetsConfigurationScreen.isPreviewVisible()) return;
 
-		if (Utils.isInDungeons()) {
-			updateDungeons(null);
-		} else {
-			updateWidgetsFrom(playerList);
-		}
+		if (Utils.isInDungeons()) updateDungeons(null);
+		else updateWidgetsFrom(playerList);
 	}
 
 	/**
