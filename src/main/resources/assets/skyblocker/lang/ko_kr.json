@@ -1142,5 +1142,6 @@
     "skyblocker.powderTracker.emptyHistory": "",
     "skyblocker.profileviewer.inventory.accessoryBag": "",
     "skyblocker.profileviewer.inventory.inactive": "",
-    "skyblocker.profileviewer.inventory.inactive.description.backpack": ""
+    "skyblocker.profileviewer.inventory.inactive.description.backpack": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
