@@ -305,7 +305,7 @@ public class RenderHelper {
 	 * @param shaderColor color to apply to the texture
 	 * @param throughWalls if it should render though walls
 	 */
-	public static void renderTextureInWorld(WorldRenderContext context, Vec3d pos, float width, float height, float textureWidth, float textureHeight, Vec3d renderOffset, Identifier texture, Color shaderColor, boolean throughWalls) {
+	public static void renderTextureInWorld(WorldRenderContext context, Vec3d pos, float width, float height, float textureWidth, float textureHeight, Vec3d renderOffset, Identifier texture, float[] shaderColor, float alpha, boolean throughWalls) {
 		Matrix4f positionMatrix = new Matrix4f();
 		Camera camera = context.camera();
 		Vec3d cameraPos = camera.getPos();
@@ -316,9 +316,9 @@ public class RenderHelper {
 
 		Tessellator tessellator = RenderSystem.renderThreadTesselator();
 
-		RenderSystem.setShaderTexture(0, texture);
-		RenderSystem.setShaderColor(shaderColor.getRed() / 255f, shaderColor.getGreen() / 255f, shaderColor.getBlue() / 255f, shaderColor.getAlpha() / 255f);
 		RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
+		RenderSystem.setShaderTexture(0, texture);
+		RenderSystem.setShaderColor(shaderColor[0], shaderColor[1], shaderColor[2], alpha);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.disableCull();

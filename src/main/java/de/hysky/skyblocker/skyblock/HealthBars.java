@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
@@ -16,6 +17,7 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.StringUtils;
 
@@ -222,46 +224,12 @@ public class HealthBars {
 				return;
 			}
 			//gets the mixed color of the health bar
-			Color mixedColor = fadeBetweenThreeColors(emptyColor, halfColor, fullColor, health);
+			int mixedColor = ColorUtils.interpolate(health, emptyColor.getRGB(), halfColor.getRGB(), fullColor.getRGB());
+			float[] components = ColorUtils.getFloatComponents(mixedColor);
+			float alpha = ColorHelper.getAlphaFloat(mixedColor);
 			// Render the health bar texture with scaling based on health percentage
-			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, mixedColor, true);
-			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, 0.003f), HEALTH_BAR_TEXTURE, mixedColor, true);
+			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, components, alpha, true);
+			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, 0.003f), HEALTH_BAR_TEXTURE, components, alpha, true);
 		}
 	}
-
-
-	/**
-	 * Interoperates between 3 colors
-	 *
-	 * @param color1 full color
-	 * @param color2 half color
-	 * @param color3 empty color
-	 * @param t      position between the colors from 0-1
-	 * @return the interpolated color
-	 */
-	public static Color fadeBetweenThreeColors(Color color1, Color color2, Color color3, double t) {
-		Color startColor;
-		Color endColor;
-		double subT;
-
-		if (t <= 0.5) {
-			// First half: color1 to color2
-			startColor = color1;
-			endColor = color2;
-			subT = t / 0.5;
-		} else {
-			// Second half: color2 to color3
-			startColor = color2;
-			endColor = color3;
-			subT = (t - 0.5) / 0.5;
-		}
-
-		// Interpolate each RGB component
-		int red = (int) (startColor.getRed() + (endColor.getRed() - startColor.getRed()) * subT);
-		int green = (int) (startColor.getGreen() + (endColor.getGreen() - startColor.getGreen()) * subT);
-		int blue = (int) (startColor.getBlue() + (endColor.getBlue() - startColor.getBlue()) * subT);
-
-		return new Color(red, green, blue);
-	}
-
 }
