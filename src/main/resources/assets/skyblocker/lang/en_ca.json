@@ -1142,5 +1142,6 @@
     "skyblocker.config.mining.crystalsWaypoints.getLocationHover.remove": "",
     "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabMessage": "",
     "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "",
-    "skyblocker.config.mining.glacite.enableCorpseProfitTracker": ""
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
