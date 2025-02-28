@@ -291,7 +291,7 @@ public class RenderHelper {
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
         RenderSystem.disableDepthTest();
     }
-	
+
 	/**
 	 * Renders a texture in world space facing the player (like a name tag)
 	 * @param context world render context
@@ -335,6 +335,7 @@ public class RenderHelper {
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.enableCull();
 		RenderSystem.depthFunc(GL11.GL_LEQUAL);
+		RenderSystem.disableDepthTest();
 	}
 
     public static void renderText(WorldRenderContext context, Text text, Vec3d pos, boolean throughWalls) {

@@ -23,6 +23,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class HealthBars {
 
@@ -180,7 +181,7 @@ public class HealthBars {
 		//loop though name and add every part to a new text skipping over the health value
 		for (int i = 0; i < parts.size(); i++) {
 			//skip space before value, value and heart from name
-			if (i < parts.size() - 2 && StringUtils.join(parts.subList(i + 1, i + 3).stream().map(Text::getString).toArray(), "").equals(healthOnlyMatcher.group(0))) {
+			if (i < parts.size() - 2 && parts.subList(i + 1, i + 3).stream().map(Text::getString).collect(Collectors.joining()).equals(healthOnlyMatcher.group(0))) {
 				//skip the heart
 				i += 2;
 				continue;
