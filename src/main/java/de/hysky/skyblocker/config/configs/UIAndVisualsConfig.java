@@ -316,7 +316,7 @@ public class UIAndVisualsConfig {
         public boolean enableTeleportOverlays = true;
 
         @SerialEntry
-        public Color teleportOverlayColor = new Color(0x761594);
+        public Color teleportOverlayColor = new Color(0x7F761594, true);
 
         @SerialEntry
         public boolean enableWeirdTransmission = true;
