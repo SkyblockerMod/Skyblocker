@@ -29,10 +29,12 @@ public class CalendarStartTimeTooltip extends SimpleTooltipAdder {
 			Matcher matcher = TIMER_PATTERN.matcher(lines.get(i).getString());
 			if (matcher.matches()) {
 				Instant instant = Instant.now()
-						.truncatedTo(ChronoUnit.MINUTES)
-						.plus(RegexUtils.parseIntFromMatcher(matcher, "days"), ChronoUnit.DAYS)
-						.plus(RegexUtils.parseIntFromMatcher(matcher, "hours"), ChronoUnit.HOURS)
-						.plus(RegexUtils.parseIntFromMatcher(matcher, "minutes"), ChronoUnit.MINUTES);
+						.plus(RegexUtils.parseOptionalIntFromMatcher(matcher, "days").orElse(0), ChronoUnit.DAYS)
+						.plus(RegexUtils.parseOptionalIntFromMatcher(matcher, "hours").orElse(0), ChronoUnit.HOURS)
+						.plus(RegexUtils.parseOptionalIntFromMatcher(matcher, "minutes").orElse(0), ChronoUnit.MINUTES)
+						.plusSeconds(RegexUtils.parseOptionalIntFromMatcher(matcher, "seconds").orElse(0))
+						.plusSeconds(30) // Add 30 seconds to round to the nearest minute
+						.truncatedTo(ChronoUnit.MINUTES);
 
 				lines.add(++i, Text.literal(Formatters.DATE_FORMATTER.format(instant)).formatted(Formatting.ITALIC, Formatting.DARK_GRAY));
 			}
