@@ -9,6 +9,7 @@
     "BossBarHudMixin",
     "CameraMixin",
     "ClientPlayerEntityMixin",
+    "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldMixin",
     "CommandTreeS2CPacketMixin",

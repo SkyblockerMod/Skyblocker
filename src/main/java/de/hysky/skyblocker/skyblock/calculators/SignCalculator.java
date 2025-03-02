@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.VisibleForTesting;
 
 public class SignCalculator {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -23,21 +24,26 @@ public class SignCalculator {
         if (message.startsWith("=")) {
             message = message.substring(1);
         }
-        //only update output if new input
-        if (!message.equals(lastInput)) { //
-            try {
-                output = Calculator.calculate(message);
-            } catch (Exception e) {
-                output = -1;
-            }
-        }
+		calculate(message);
 
         render(context, message, renderX, renderY);
 
         lastInput = message;
     }
 
-    public static String getNewValue(Boolean isPrice) {
+	@VisibleForTesting
+	public static void calculate(String message) {
+		//only update output if new input
+		if (!message.equals(lastInput)) {
+			try {
+				output = Calculator.calculate(message);
+			} catch (Exception e) {
+				output = -1;
+			}
+		}
+	}
+
+    public static String getNewValue(boolean isPrice) {
         if (output == -1) {
             //if mode is not activated or just invalid equation return what the user typed in
             return lastInput;
@@ -45,7 +51,7 @@ public class SignCalculator {
 
         //price can except decimals and exponents
         if (isPrice) {
-            return String.valueOf(output);
+            return String.valueOf(Math.round(output * 100d) / 100d);
         }
         //amounts want an integer number so round
         return Long.toString(Math.round(output));

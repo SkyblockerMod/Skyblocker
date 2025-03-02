@@ -41,12 +41,12 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
             if (unlockedMatcher == null) {
                 level -= 1;
             }
-            return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(0xFFDDC1));
+            return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
         }
         if (essenceAmountMatcher == null) return List.of();
         String essenceAmount = essenceAmountMatcher.group("essence").replace(",", "");
         if (!essenceAmount.matches("-?\\d+")) return List.of();
 
-        return SlotText.bottomRightList(Text.literal(Formatters.SHORT_FLOAT_NUMBERS.format(Integer.parseInt(essenceAmount))).withColor(0xFFDDC1));
+        return SlotText.bottomRightList(Text.literal(Formatters.SHORT_FLOAT_NUMBERS.format(Integer.parseInt(essenceAmount))).withColor(SlotText.CREAM));
     }
 }
