@@ -109,7 +109,7 @@ public enum Location implements StringIdentifiable {
 	@NotNull
 	public static Location fromFriendlyName(String friendlyName) {
 		return Arrays.stream(Location.values())
-					 .filter(loc -> loc.friendlyName.equals(friendlyName))
+					 .filter(loc -> loc.friendlyName.equals(friendlyName) || loc.friendlyName.equalsIgnoreCase(friendlyName))
 					 .findFirst()
 					 .orElse(UNKNOWN);
 	}
