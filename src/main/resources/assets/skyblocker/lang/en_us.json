@@ -254,6 +254,7 @@
   "skyblocker.config.general.minionValue.@Tooltip": "Calculate the value of this minion's generated resources.",
 
   "skyblocker.config.general.enableTips": "Enable Tips",
+
   "skyblocker.config.general.acceptReparty": "Auto accept Reparty",
 
   "skyblocker.config.general.hitbox": "Hitboxes",
