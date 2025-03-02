@@ -12,6 +12,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.util.Map.entry;
@@ -23,8 +24,7 @@ public class JacobsContestWidget extends TabHudWidget {
 	private static final MutableText TITLE = Text.literal("Jacob's Contest").formatted(Formatting.YELLOW,
 			Formatting.BOLD);
 
-	//TODO Properly match the contest placement and display it
-	private static final Pattern CROP_PATTERN = Pattern.compile("(?<fortune>[☘○]) (?<crop>[A-Za-z ]+).*");
+	private static final Pattern CROP_PATTERN = Pattern.compile("(?<fortune>[☘○]) (?<crop>.+?)(?: ◆ )?(?<percentage>Top [\\d.]+%)?");
 
 	public static final Map<String, ItemStack> FARM_DATA = Map.ofEntries(
 			entry("Wheat", new ItemStack(Items.WHEAT)),
@@ -47,15 +47,19 @@ public class JacobsContestWidget extends TabHudWidget {
 	public void updateContent(List<Text> lines) {
 		for (Text line : lines) {
 			String string = line.getString();
-			switch (string.toLowerCase()) {
-				case String s when s.contains("left") || s.contains("starts") -> this.addComponent(new IcoTextComponent(Ico.CLOCK, line));
-				case String s when s.contains("○") -> {
-					String trim = string.replace("○", "").trim();
-					this.addComponent(new IcoTextComponent(FARM_DATA.get(trim), Text.literal(trim)));
-				}
-				default -> this.addComponent(new PlainTextComponent(line));
-			}
+			if (string.endsWith("left") || string.contains("Starts")) this.addComponent(new IcoTextComponent(Ico.CLOCK, line));
+			else {
+				Matcher matcher = CROP_PATTERN.matcher(string);
+				if (matcher.matches()) {
+					String crop = matcher.group("crop");
+					String percentage = matcher.group("percentage");
+					MutableText cropText = Text.empty().append(crop);
+					if (matcher.group("fortune").equals("☘")) cropText.append(Text.literal(" ☘").formatted(Formatting.GOLD));
 
+					this.addComponent(new IcoTextComponent(FARM_DATA.get(crop), cropText));
+					if (percentage != null) this.addComponent(new PlainTextComponent(Text.literal(percentage)));
+				} else this.addComponent(new PlainTextComponent(line));
+			}
 		}
 	}
 }

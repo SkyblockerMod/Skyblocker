@@ -47,11 +47,18 @@ public class IndividualWaypoint extends NamedWaypoint {
 																StringArgumentType.getString(context, "area")
 														))
 												)
+												.executes(context -> setWaypoint(
+														context.getSource()::sendFeedback,
+														IntegerArgumentType.getInteger(context, "x"),
+														IntegerArgumentType.getInteger(context, "y"),
+														IntegerArgumentType.getInteger(context, "z"),
+														""
+												))
 										)
 								)
 						)
-				)))
-		);
+				))
+		));
 	}
 
 	public IndividualWaypoint(BlockPos pos, Text name, float[] colorComponents) {

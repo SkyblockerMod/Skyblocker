@@ -146,6 +146,9 @@ dependencies {
 	}
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
+	// Loom does not always add this
+	implementation "ca.weblite:java-objc-bridge:1.1"
+
 	// Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
@@ -201,6 +204,14 @@ loom {
 
 	mixin {
 		useLegacyMixinAp = false
+	}
+
+	runs {
+		clientGametest {
+			inherit client
+			name "Client Game Test"
+			vmArg "-Dfabric.client.gametest"
+		}
 	}
 }
 

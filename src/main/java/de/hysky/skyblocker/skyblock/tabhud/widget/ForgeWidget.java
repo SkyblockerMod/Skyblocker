@@ -38,7 +38,9 @@ public class ForgeWidget extends TabHudWidget {
 					l2 = switch (slot) {
 						case 3 -> Text.literal("Needs HotM 3").formatted(Formatting.GRAY);
 						case 4 -> Text.literal("Needs HotM 4").formatted(Formatting.GRAY);
-						case 5 -> Text.literal("Needs PotM 2").formatted(Formatting.GRAY);
+						case 5 -> Text.literal("Needs HotM 5").formatted(Formatting.GRAY);
+						case 6 -> Text.literal("Needs HotM 6").formatted(Formatting.GRAY);
+						case 7 -> Text.literal("Needs HotM 7").formatted(Formatting.GRAY);
 						default -> Text.literal("This message should not appear").formatted(Formatting.RED, Formatting.BOLD);
 					};
 					c = new IcoFatTextComponent(Ico.BARRIER, l1, l2);

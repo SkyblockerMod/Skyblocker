@@ -95,9 +95,6 @@ public class UpcomingEventsTab implements RecipeTab {
 	@Override
 	public void updateSearchResults(String query, FilterOption filterOption, boolean refresh) {}
 
-	@Override
-	public void initializeSearchResults(String query) {}
-
 	private record EventRenderer(String eventName, LinkedList<EventNotifications.SkyblockEvent> events) {
 		private static final int HEIGHT = 20;
 		private static final Calendar CALENDAR = Calendar.getInstance();
