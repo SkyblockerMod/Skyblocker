@@ -23,9 +23,6 @@ public class GeneralConfig {
     public boolean acceptReparty = true;
 
 	@SerialEntry
-	public boolean use12HourClock = false;
-
-	@SerialEntry
 	public SpeedPresets speedPresets = new SpeedPresets();
 
     @SerialEntry

@@ -1,13 +1,9 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import java.util.*;
-
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.CalendarStartTimeTooltip;
-import org.jetbrains.annotations.Nullable;
-
 import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -22,6 +18,13 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class UpcomingEventsTab implements RecipeTab {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -97,7 +100,6 @@ public class UpcomingEventsTab implements RecipeTab {
 
 	private record EventRenderer(String eventName, LinkedList<EventNotifications.SkyblockEvent> events) {
 		private static final int HEIGHT = 20;
-		private static final Calendar CALENDAR = Calendar.getInstance();
 
 		private void render(DrawContext context, int x, int y, int mouseX, int mouseY) {
 			long time = System.currentTimeMillis() / 1000;
@@ -135,8 +137,7 @@ public class UpcomingEventsTab implements RecipeTab {
 				components.add(TooltipComponent.of(Text.translatable("skyblocker.events.tab.clickToWarp").formatted(Formatting.ITALIC).asOrderedText()));
 			}
 
-			CALENDAR.setTimeInMillis(event.start() * 1000);
-			components.add(TooltipComponent.of(Text.literal(CalendarStartTimeTooltip.getTimeFormatter().format(CALENDAR.toInstant())).formatted(Formatting.ITALIC, Formatting.DARK_GRAY).asOrderedText()));
+			components.add(TooltipComponent.of(Text.literal(Formatters.DATE_FORMATTER.format(Instant.ofEpochSecond(event.start()))).formatted(Formatting.ITALIC, Formatting.DARK_GRAY).asOrderedText()));
 
 			return components;
 		}
