@@ -36,6 +36,18 @@ public class RegexUtils {
 		return OptionalInt.of(parseIntFromMatcher(matcher, 1));
 	}
 
+	public static OptionalInt parseOptionalIntFromMatcher(Matcher matcher, int group) {
+		String s = matcher.group(group);
+		if (s == null) return OptionalInt.empty();
+		return OptionalInt.of(Integer.parseInt(s.replace(",", "")));
+	}
+
+	public static OptionalInt parseOptionalIntFromMatcher(Matcher matcher, String group) {
+		String s = matcher.group(group);
+		if (s == null) return OptionalInt.empty();
+		return OptionalInt.of(Integer.parseInt(s.replace(",", "")));
+	}
+
 	public static int parseIntFromMatcher(Matcher matcher, int group) {
 		return Integer.parseInt(matcher.group(group).replace(",", ""));
 	}

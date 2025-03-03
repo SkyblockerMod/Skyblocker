@@ -14,6 +14,9 @@ public class HelperConfig {
     @SerialEntry
     public boolean enableWardrobeHelper = true;
 
+	@SerialEntry
+	public boolean enableDateCalculator = true;
+
     @SerialEntry
     public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
