@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.MinecraftClient;
@@ -28,8 +29,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import static de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils.COMMA_FORMATTER;
 
 public class GenericCategory implements ProfileViewerPage {
     private final String category;
@@ -90,10 +89,10 @@ public class GenericCategory implements ProfileViewerPage {
             lore.add(Text.empty());
 
             if (hProfile.get("members").getAsJsonObject().keySet().size() > 1) {
-                lore.add(Text.literal("Personal: " + COMMA_FORMATTER.format(personalColl)).setStyle(style).formatted(Formatting.GOLD));
-                lore.add(Text.literal("Co-op: " + COMMA_FORMATTER.format(totalCollection - personalColl)).setStyle(style).formatted(Formatting.AQUA));
+                lore.add(Text.literal("Personal: " + Formatters.INTEGER_NUMBERS.format(personalColl)).setStyle(style).formatted(Formatting.GOLD));
+                lore.add(Text.literal("Co-op: " + Formatters.INTEGER_NUMBERS.format(totalCollection - personalColl)).setStyle(style).formatted(Formatting.AQUA));
             }
-            lore.add(Text.literal("Collection: " + COMMA_FORMATTER.format(totalCollection)).setStyle(style).formatted(Formatting.YELLOW));
+            lore.add(Text.literal("Collection: " + Formatters.INTEGER_NUMBERS.format(totalCollection)).setStyle(style).formatted(Formatting.YELLOW));
 
             lore.add(Text.empty());
             lore.add(Text.literal("Collection Tier: " + collectionTier + "/" + tierRequirements.size()).setStyle(style).formatted(Formatting.LIGHT_PURPLE));
