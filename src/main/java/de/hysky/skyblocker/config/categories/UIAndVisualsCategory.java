@@ -8,7 +8,7 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -236,7 +236,7 @@ public class UIAndVisualsCategory {
 									if (Utils.isOnSkyblock()) {
 										MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
 									} else {
-										MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, ScreenMaster.ScreenLayer.MAIN_TAB, screen));
+										MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, WidgetManager.ScreenLayer.MAIN_TAB, screen));
 									}
 								})
 								.build())

@@ -74,7 +74,7 @@ public class ScreenBuilder {
 
 		WidgetPositioner newPositioner = SkyblockerConfigManager.get().uiAndVisuals.tabHud.defaultPositioning.getNewPositioner(screenW, screenH);
 
-		for (HudWidget widget : ScreenMaster.widgetInstances.values()) {
+		for (HudWidget widget : WidgetManager.widgetInstances.values()) {
 			widget.setVisible(false);
 			if (config ? widget.isEnabledIn(location) : widget.shouldRender(location)) { // TabHudWidget has this at false
 				// TODO maybe behavior to change? (having no position rule on a normal hud widget shouldn't quite be possible)
@@ -142,7 +142,7 @@ public class ScreenBuilder {
 	/**
 	 * Renders the widgets present on the specified layer. Doesn't scale with the config option.
 	 */
-	public void renderWidgets(DrawContext context, ScreenMaster.ScreenLayer screenLayer) {
+	public void renderWidgets(DrawContext context, WidgetManager.ScreenLayer screenLayer) {
 		List<HudWidget> widgetsToRender = getHudWidgets(screenLayer);
 
 		for (HudWidget widget : widgetsToRender) {
@@ -150,7 +150,7 @@ public class ScreenBuilder {
 		}
 	}
 
-	public List<HudWidget> getHudWidgets(ScreenMaster.ScreenLayer screenLayer) {
+	public List<HudWidget> getHudWidgets(WidgetManager.ScreenLayer screenLayer) {
 		return switch (screenLayer) {
 			case MAIN_TAB -> mainTabScreen;
 			case SECONDARY_TAB -> secondaryTabScreen;
@@ -162,7 +162,7 @@ public class ScreenBuilder {
 	/**
 	 * Run the pipeline to build a Screen
 	 */
-	public void run(DrawContext context, int screenW, int screenH, ScreenMaster.ScreenLayer screenLayer) {
+	public void run(DrawContext context, int screenW, int screenH, WidgetManager.ScreenLayer screenLayer) {
 
         /*int i = 0;
         for (TabHudWidget value : PlayerListMgr.tabWidgetInstances.values()) {
