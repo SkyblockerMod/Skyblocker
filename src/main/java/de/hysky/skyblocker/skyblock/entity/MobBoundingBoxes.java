@@ -50,7 +50,7 @@ public class MobBoundingBoxes {
 
 		return false;
 	}
-	
+
 	public static float[] getBoxColor(Entity entity) {
 		int color = MobGlow.getMobGlow(entity);
 
