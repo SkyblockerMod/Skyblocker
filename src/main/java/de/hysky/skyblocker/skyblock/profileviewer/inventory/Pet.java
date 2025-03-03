@@ -4,8 +4,8 @@ import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
-import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.constants.PetNumbers;
 import io.github.moulberry.repo.data.NEUItem;
@@ -142,12 +142,12 @@ public class Pet {
             formattedLore.add(formattedLore.size() - 1, Text.empty());
         } else {
             formattedLore.add(formattedLore.size() - 1, Text.literal("MAX LEVEL").setStyle(style).formatted(Formatting.AQUA, Formatting.BOLD));
-            formattedLore.add(formattedLore.size() - 1, Text.literal("▸ " + ProfileViewerUtils.COMMA_FORMATTER.format((long) xp) + " XP").setStyle(style).formatted(Formatting.DARK_GRAY));
+            formattedLore.add(formattedLore.size() - 1, Text.literal("▸ " + Formatters.INTEGER_NUMBERS.format((long) xp) + " XP").setStyle(style).formatted(Formatting.DARK_GRAY));
             formattedLore.add(formattedLore.size() - 1, Text.empty());
         }
 
         // Skin Head Texture
-        if (skinTexture.isPresent()) {
+        if (skinTexture.isPresent() && skin.isPresent()) {
             formattedLore.set(0, Text.of(formattedLore.getFirst().getString() + ", " + Formatting.strip(NEURepoManager.NEU_REPO.getItems().getItems().get("PET_SKIN_" + skin.get()).getDisplayName())));
             petStack.set(DataComponentTypes.PROFILE, skinTexture.get());
         }

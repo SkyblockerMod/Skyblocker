@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
@@ -46,6 +47,6 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
         String essenceAmount = essenceAmountMatcher.group("essence").replace(",", "");
         if (!essenceAmount.matches("-?\\d+")) return List.of();
 
-        return SlotText.bottomRightList(Text.literal(YourEssenceAdder.COMPACT_NUMBER_FORMATTER.format(Integer.parseInt(essenceAmount))).withColor(SlotText.CREAM));
+        return SlotText.bottomRightList(Text.literal(Formatters.SHORT_FLOAT_NUMBERS.format(Integer.parseInt(essenceAmount))).withColor(SlotText.CREAM));
     }
 }

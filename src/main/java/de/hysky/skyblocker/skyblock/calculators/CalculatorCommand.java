@@ -7,6 +7,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Calculator;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Formatters;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -15,18 +16,14 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class CalculatorCommand {
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    private static final NumberFormat FORMATTER = NumberFormat.getInstance(Locale.US);
 
-    @Init
+	@Init
     public static void init() {
         ClientCommandRegistrationCallback.EVENT.register(CalculatorCommand::calculate);
     }
@@ -44,7 +41,7 @@ public class CalculatorCommand {
     private static int doCalculation(String calculation) {
         MutableText text = Constants.PREFIX.get();
         try {
-            text.append(Text.literal(FORMATTER.format(Calculator.calculate(calculation))).formatted(Formatting.GREEN));
+            text.append(Text.literal(Formatters.DOUBLE_NUMBERS.format(Calculator.calculate(calculation))).formatted(Formatting.GREEN));
         } catch (UnsupportedOperationException e) {
             text.append(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").formatted(Formatting.RED));
         }
