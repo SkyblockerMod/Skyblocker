@@ -150,9 +150,6 @@ public class GeneralConfig {
 
         @SerialEntry
         public boolean enableStackingEnchantProgress = true;
-
-		@SerialEntry
-		public boolean enableCalendarStartTime = true;
     }
 
     public enum Average {

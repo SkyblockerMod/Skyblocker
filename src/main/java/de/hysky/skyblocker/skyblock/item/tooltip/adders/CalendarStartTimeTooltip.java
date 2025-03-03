@@ -43,6 +43,6 @@ public class CalendarStartTimeTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().general.itemTooltip.enableCalendarStartTime;
+		return SkyblockerConfigManager.get().helpers.enableDateCalculator;
 	}
 }

@@ -46,6 +46,16 @@ public class HelperCategory {
 		                .controller(ConfigUtils::createBooleanController)
 				        .build())
 
+				// Date Calculator
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.enableDateCalculator"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.enableDateCalculator.@Tooltip")))
+						.binding(defaults.helpers.enableDateCalculator,
+								() -> config.helpers.enableDateCalculator,
+								newValue -> config.helpers.enableDateCalculator = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+
                 //Mythological Ritual
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.helpers.mythologicalRitual"))
