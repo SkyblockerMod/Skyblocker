@@ -610,6 +610,84 @@ public class UIAndVisualsCategory {
                         .build()
                 )
 
+				//Custom Health bars
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.enabled"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.enabled.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.enabled,
+										() -> config.uiAndVisuals.healthBars.enabled,
+										newValue -> config.uiAndVisuals.healthBars.enabled = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.scale"))
+								.binding(defaults.uiAndVisuals.healthBars.scale,
+										() -> config.uiAndVisuals.healthBars.scale,
+										newValue -> config.uiAndVisuals.healthBars.scale = newValue)
+								.controller(FloatFieldControllerBuilder::create)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.removeHealthFromName,
+										() -> config.uiAndVisuals.healthBars.removeHealthFromName,
+										newValue -> config.uiAndVisuals.healthBars.removeHealthFromName = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.removeMaxHealthFromName"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.removeMaxHealthFromName.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.removeMaxHealthFromName,
+										() -> config.uiAndVisuals.healthBars.removeMaxHealthFromName,
+										newValue -> config.uiAndVisuals.healthBars.removeMaxHealthFromName = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.applyToHealthOnlyMobs"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.applyToHealthOnlyMobs.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.applyToHealthOnlyMobs,
+										() -> config.uiAndVisuals.healthBars.applyToHealthOnlyMobs,
+										newValue -> config.uiAndVisuals.healthBars.applyToHealthOnlyMobs = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.hideFullHealth"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.hideFullHealth.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.hideFullHealth,
+										() -> config.uiAndVisuals.healthBars.hideFullHealth,
+										newValue -> config.uiAndVisuals.healthBars.hideFullHealth = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.fullBarColor"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.fullBarColor.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.fullBarColor,
+										() -> config.uiAndVisuals.healthBars.fullBarColor,
+										newValue -> config.uiAndVisuals.healthBars.fullBarColor = newValue)
+								.controller(ColorControllerBuilder::create)
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.halfBarColor"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.halfBarColor.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.halfBarColor,
+										() -> config.uiAndVisuals.healthBars.halfBarColor,
+										newValue -> config.uiAndVisuals.healthBars.halfBarColor = newValue)
+								.controller(ColorControllerBuilder::create)
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.emptyBarColor"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.emptyBarColor,
+										() -> config.uiAndVisuals.healthBars.emptyBarColor,
+										newValue -> config.uiAndVisuals.healthBars.emptyBarColor = newValue)
+								.controller(ColorControllerBuilder::create)
+								.build())
+						.build()
+				)
+
                 .build();
     }
 

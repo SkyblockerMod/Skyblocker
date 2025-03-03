@@ -243,7 +243,16 @@
   "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "While in the garden, on the right of your inventory there will be a widget to quickly teleport to plots. It will also show plots that have pests (this requires the Pests widget to be enabled and visible in the Tab).",
   "skyblocker.config.farming.garden.lockMouseGround": "Only lock camera when on the ground",
   "skyblocker.config.farming.garden.lockMouseTool": "Lock camera when holding a farming tool",
-  "skyblocker.config.farming.garden.visitorHelper": "Visitor helper",
+  "skyblocker.config.farming.garden.pestHighlighter": "Pest Highlighter",
+  "skyblocker.config.farming.garden.pestHighlighter.@Tooltip": "Make's all pest's on your island glow so you can see them easier :D",
+
+  "skyblocker.config.farming.visitorHelper": "Visitor Helper",
+  "skyblocker.config.farming.visitorHelper.visitorHelper": "Enable Visitor Helper",
+  "skyblocker.config.farming.visitorHelper.visitorHelper.@Tooltip": "Makes it easier to manage visitors by grouping similar requests, copying item amounts, and quickly opening the Bazaar to buy items.",
+  "skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly": "Garden Only",
+  "skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly.@Tooltip": "Locks the Visitor Helper so it only works on the Garden.\n§cRequires Visitor Helper to be enabled.",
+  "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper": "Show Stacks in Visitor Helper",
+  "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip": "Show's the required items as (5 stacks + 45) rather than just a total number especially useful for ironman players.",
 
   "skyblocker.config.foraging": "Foraging",
   "skyblocker.config.foraging.hunting": "Hunting",
@@ -399,9 +408,11 @@
   "skyblocker.config.helpers.enableBitsHelper": "Highlight best Community Store (Bits Shop) offer",
   "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip",
 
-
   "skyblocker.config.helpers.enableWardrobeHelper": "Enable Wardrobe Helper",
   "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing armor from the wardrobe by pressing hotbar keys 1-9 while the menu is open. The corresponding armor set in the wardrobe menu will be equipped.",
+
+  "skyblocker.config.helpers.enableDateCalculator": "Enable Date Calculator",
+  "skyblocker.config.helpers.enableDateCalculator.@Tooltip": "Shows the date and time of events in the future, such as calendar events.",
 
   "skyblocker.config.helpers.experiments": "Experiments Solver",
   "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Enable Chronomatron Solver",
@@ -652,6 +663,14 @@
   "skyblocker.config.mining.glacite.enableCorpseProfitTracker": "Enable Corpse Profit Tracker",
   "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": "Tracks the profit and the loot you get from corpses. Shows the profit in chat when looting a corpse, and has a command to see your history of corpse loot in /skyblocker rewardTrackers corpse list",
 
+  "skyblocker.config.mining.glacite.fossilSolver": "Fossil Solver",
+  "skyblocker.config.mining.glacite.fossilSolver.@Tooltip": "Helps find fossils in the Fossil Excavator",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound": "No fossil found",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.possiblePatterns": "Possible Patterns: ",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.minimumTilesLeft": "Minimum tiles left : ",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.probability": "Probability: ",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.foundFossil": "Found Fossil: ",
+
   "skyblocker.config.misc": "Misc",
 
   "skyblocker.config.misc.richPresence": "Discord RPC",
@@ -823,6 +842,25 @@
 
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips": "Hide empty item tooltips in menus",
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "Hides the tooltip of an item if it doesn't have any information to display. Also blocks clicks on filler items like glass panes.",
+
+  "skyblocker.config.uiAndVisuals.healthBars": "Custom Mob Health Bars",
+  "skyblocker.config.uiAndVisuals.healthBars.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.healthBars.enabled.@Tooltip": "(only updates when health updates)",
+  "skyblocker.config.uiAndVisuals.healthBars.scale": "Scale",
+  "skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName": "Remove Health From Name",
+  "skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName.@Tooltip": "Remove the current health of mobs from their nametag",
+  "skyblocker.config.uiAndVisuals.healthBars.removeMaxHealthFromName": "Remove Max Health From Name",
+  "skyblocker.config.uiAndVisuals.healthBars.removeMaxHealthFromName.@Tooltip": "Remove the maximum health of mobs from their nametag",
+  "skyblocker.config.uiAndVisuals.healthBars.applyToHealthOnlyMobs": "Apply to Health Only Mobs",
+  "skyblocker.config.uiAndVisuals.healthBars.applyToHealthOnlyMobs.@Tooltip": "Also add health bars to mobs with only a current health value (will sometimes be wrong if mob is damaged before loading in)",
+  "skyblocker.config.uiAndVisuals.healthBars.hideFullHealth": "Hide Full Health Bars",
+  "skyblocker.config.uiAndVisuals.healthBars.hideFullHealth.@Tooltip": "Don't show the health bar when its full",
+  "skyblocker.config.uiAndVisuals.healthBars.fullBarColor": "Full Health bar Color",
+  "skyblocker.config.uiAndVisuals.healthBars.fullBarColor.@Tooltip": "Color of health bar when mob is at full hp",
+  "skyblocker.config.uiAndVisuals.healthBars.halfBarColor": "Half Health Bar Color",
+  "skyblocker.config.uiAndVisuals.healthBars.halfBarColor.@Tooltip": "Color of health bar when mob is at half hp",
+  "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor": "Empty Health Bar Color",
+  "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip": "Color of health bar when mob is at full hp",
 
   "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "Enable Sign Calculator",
