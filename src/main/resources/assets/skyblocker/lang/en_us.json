@@ -663,6 +663,14 @@
   "skyblocker.config.mining.glacite.enableCorpseProfitTracker": "Enable Corpse Profit Tracker",
   "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": "Tracks the profit and the loot you get from corpses. Shows the profit in chat when looting a corpse, and has a command to see your history of corpse loot in /skyblocker rewardTrackers corpse list",
 
+  "skyblocker.config.mining.glacite.fossilSolver": "Fossil Solver",
+  "skyblocker.config.mining.glacite.fossilSolver.@Tooltip": "Helps find fossils in the Fossil Excavator",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound": "No fossil found",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.possiblePatterns": "Possible Patterns: ",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.minimumTilesLeft": "Minimum tiles left : ",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.probability": "Probability: ",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.foundFossil": "Found Fossil: ",
+
   "skyblocker.config.misc": "Misc",
 
   "skyblocker.config.misc.richPresence": "Discord RPC",
