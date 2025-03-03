@@ -1,15 +1,9 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
 import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -24,6 +18,13 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class UpcomingEventsTab implements RecipeTab {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -97,16 +98,8 @@ public class UpcomingEventsTab implements RecipeTab {
 	@Override
 	public void updateSearchResults(String query, FilterOption filterOption, boolean refresh) {}
 
-	private static class EventRenderer {
+	private record EventRenderer(String eventName, LinkedList<EventNotifications.SkyblockEvent> events) {
 		private static final int HEIGHT = 20;
-
-		private final String eventName;
-		private final LinkedList<EventNotifications.SkyblockEvent> events;
-
-		private EventRenderer(String eventName, LinkedList<EventNotifications.SkyblockEvent> events) {
-			this.eventName = eventName;
-			this.events = events;
-		}
 
 		private void render(DrawContext context, int x, int y, int mouseX, int mouseY) {
 			long time = System.currentTimeMillis() / 1000;
@@ -121,7 +114,7 @@ public class UpcomingEventsTab implements RecipeTab {
 
 				context.drawTextWithShadow(textRenderer, formatted, x, y + textRenderer.fontHeight, -1);
 			} else {
-				Text formatted = Text.literal(" ").append(Text.translatable( "skyblocker.events.tab.endsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() + events.peekFirst().duration() - time)))).formatted(Formatting.GREEN);
+				Text formatted = Text.literal(" ").append(Text.translatable("skyblocker.events.tab.endsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() + events.peekFirst().duration() - time)))).formatted(Formatting.GREEN);
 
 				context.drawTextWithShadow(textRenderer, formatted, x, y + textRenderer.fontHeight, -1);
 			}
@@ -134,14 +127,17 @@ public class UpcomingEventsTab implements RecipeTab {
 		private List<TooltipComponent> getTooltip() {
 			List<TooltipComponent> components = new ArrayList<>();
 
-			if (events.peekFirst() == null) return components;
+			EventNotifications.SkyblockEvent event = events.peekFirst();
+			if (event == null) return components;
 			if (eventName.equals(EventNotifications.JACOBS)) {
-				components.add(new JacobsTooltip(events.peekFirst().extras()));
+				components.add(new JacobsTooltip(event.extras()));
 			}
 
-			if (events.peekFirst().warpCommand() != null) {
+			if (event.warpCommand() != null) {
 				components.add(TooltipComponent.of(Text.translatable("skyblocker.events.tab.clickToWarp").formatted(Formatting.ITALIC).asOrderedText()));
 			}
+
+			components.add(TooltipComponent.of(Text.literal(Formatters.DATE_FORMATTER.format(Instant.ofEpochSecond(event.start()))).formatted(Formatting.ITALIC, Formatting.DARK_GRAY).asOrderedText()));
 
 			return components;
 		}

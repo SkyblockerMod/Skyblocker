@@ -5,7 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Utils;
@@ -236,7 +236,7 @@ public class PlayerListManager {
 			tabHudWidget = tabWidgetInstances.get(hypixelWidgetName.right());
 		} else {
 			tabHudWidget = new DefaultTabHudWidget(hypixelWidgetName.right(), Text.literal(hypixelWidgetName.right()).formatted(Formatting.BOLD), hypixelWidgetName.firstInt());
-			ScreenMaster.addWidgetInstance(tabHudWidget);
+			WidgetManager.addWidgetInstance(tabHudWidget);
 		}
 		tabHudWidget.updateFromTab(lines, playerListEntries);
 		tabHudWidget.update();

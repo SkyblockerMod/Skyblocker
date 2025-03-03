@@ -8,6 +8,7 @@ import net.minecraft.util.Util;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -60,6 +61,17 @@ public class Formatters {
 	 * Examples: Thu Jan 30 2025 2:00:10 PM, Thu Jan 30 2025 14:00:10
 	 */
 	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("E MMM d yyyy " + getTimeFormat(), Locale.US).withZone(ZoneId.systemDefault());
+
+	/**
+	 * Parses a number from a string, allowing commas as thousands separators and periods as decimal points.
+	 */
+	public static Number parseNumber(String number) throws NumberFormatException {
+		try {
+			return DOUBLE_NUMBERS.parse(number);
+		} catch (ParseException e) {
+			throw new NumberFormatException("For input string: \"" + number + "\"");
+		}
+	}
 
 	/**
 	 * Returns the formatting for the time, always returns 12 hour in development environments for testing purposes.

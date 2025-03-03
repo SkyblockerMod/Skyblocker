@@ -93,7 +93,7 @@ public class RenderHelper {
         matrices.pop();
     }
 
-    private static void renderBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents) {
+    public static void renderBeaconBeam(WorldRenderContext context, BlockPos pos, float[] colorComponents) {
         if (FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, MAX_OVERWORLD_BUILD_HEIGHT, pos.getZ() + 1)) {
             MatrixStack matrices = context.matrixStack();
             Vec3d camera = context.camera().getPos();
@@ -291,6 +291,52 @@ public class RenderHelper {
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
         RenderSystem.disableDepthTest();
     }
+
+	/**
+	 * Renders a texture in world space facing the player (like a name tag)
+	 * @param context world render context
+	 * @param pos world position
+	 * @param width rendered width
+	 * @param height rendered height
+	 * @param textureWidth amount of texture rendered width
+	 * @param textureHeight amount of texture rendered height
+	 * @param renderOffset offset once it's been placed in the world facing the player
+	 * @param texture reference to texture to render
+	 * @param shaderColor color to apply to the texture
+	 * @param throughWalls if it should render though walls
+	 */
+	public static void renderTextureInWorld(WorldRenderContext context, Vec3d pos, float width, float height, float textureWidth, float textureHeight, Vec3d renderOffset, Identifier texture, float[] shaderColor, float alpha, boolean throughWalls) {
+		Matrix4f positionMatrix = new Matrix4f();
+		Camera camera = context.camera();
+		Vec3d cameraPos = camera.getPos();
+
+		positionMatrix
+				.translate((float) (pos.getX() - cameraPos.getX()), (float) (pos.getY() - cameraPos.getY()), (float) (pos.getZ() - cameraPos.getZ()))
+				.rotate(camera.getRotation());
+
+		Tessellator tessellator = RenderSystem.renderThreadTesselator();
+
+		RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
+		RenderSystem.setShaderTexture(0, texture);
+		RenderSystem.setShaderColor(shaderColor[0], shaderColor[1], shaderColor[2], alpha);
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.disableCull();
+		RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
+		BufferBuilder buffer = tessellator.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+
+		buffer.vertex(positionMatrix, (float) renderOffset.getX(), (float) renderOffset.getY(), (float) renderOffset.getZ()).texture(1, 1 - textureHeight);
+		buffer.vertex(positionMatrix, (float) renderOffset.getX(), (float) renderOffset.getY() + height, (float) renderOffset.getZ()).texture(1, 1);
+		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY() + height	, (float) renderOffset.getZ()).texture(1 - textureWidth, 1);
+		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY(), (float) renderOffset.getZ()).texture(1 - textureWidth, 1 - textureHeight);
+
+		BufferRenderer.drawWithGlobalProgram(buffer.end());
+
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+		RenderSystem.enableCull();
+		RenderSystem.depthFunc(GL11.GL_LEQUAL);
+		RenderSystem.disableDepthTest();
+	}
 
     public static void renderText(WorldRenderContext context, Text text, Vec3d pos, boolean throughWalls) {
         renderText(context, text, pos, 1, throughWalls);
