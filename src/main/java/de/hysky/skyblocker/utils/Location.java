@@ -44,7 +44,7 @@ public enum Location implements StringIdentifiable {
 	UNKNOWN("unknown");
 
 	public static final Codec<Location> CODEC = StringIdentifiable.createCodec(Location::values);
-	public static final Codec<EnumSet<Location>> SET_CODEC = CodecUtils.enumSetCodec(CODEC);
+	public static final Codec<EnumSet<Location>> SET_CODEC = CodecUtils.enumSetCodec(CODEC, Location.class);
 
 	/**
 	 * location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>

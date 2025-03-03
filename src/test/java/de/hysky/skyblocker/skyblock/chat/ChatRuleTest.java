@@ -70,4 +70,12 @@ class ChatRuleTest {
 				)).getOrThrow()
 		);
 	}
+
+	@Test
+	void codecParseEmptySet() {
+		Assertions.assertEquals(
+				EnumSet.noneOf(Location.class),
+				ChatRule.LOCATION_FIXING_CODEC.parse(JsonOps.INSTANCE, JsonOps.INSTANCE.createList(Stream.empty())).getOrThrow()
+		);
+	}
 }

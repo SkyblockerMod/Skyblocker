@@ -44,7 +44,9 @@ public final class CodecUtils {
 	 * @param <E> The enum type
 	 * @return EnumSet codec for the given enum
 	 */
-	public static <E extends Enum<E>> Codec<EnumSet<E>> enumSetCodec(Codec<E> enumCodec) {
-		return enumCodec.listOf().xmap(EnumSet::copyOf, List::copyOf);
+	public static <E extends Enum<E>> Codec<EnumSet<E>> enumSetCodec(Codec<E> enumCodec, Class<E> enumClass) {
+		// EnumSet#copyOf finds type from the first element of the list passed to it, so if it's empty the enum type is unknown and an exception is thrown
+		// So we have to manually handle the case where the list empty
+		return enumCodec.listOf().xmap(list -> list.isEmpty() ? EnumSet.noneOf(enumClass) : EnumSet.copyOf(list), List::copyOf);
 	}
 }
