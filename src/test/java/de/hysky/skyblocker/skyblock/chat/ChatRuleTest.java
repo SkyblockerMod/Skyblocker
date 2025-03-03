@@ -78,4 +78,20 @@ class ChatRuleTest {
 				ChatRule.LOCATION_FIXING_CODEC.parse(JsonOps.INSTANCE, JsonOps.INSTANCE.createList(Stream.empty())).getOrThrow()
 		);
 	}
+
+	@Test
+	void codecEncode() {
+		Assertions.assertEquals(
+				JsonOps.INSTANCE.createList(Stream.empty()),
+				ChatRule.LOCATION_FIXING_CODEC.encodeStart(JsonOps.INSTANCE, EnumSet.noneOf(Location.class)).getOrThrow()
+		);
+
+		Assertions.assertEquals(
+				JsonOps.INSTANCE.createList(Stream.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND)
+						.map(Location::asString)
+						.map(JsonOps.INSTANCE::createString)
+				),
+				ChatRule.LOCATION_FIXING_CODEC.encodeStart(JsonOps.INSTANCE, EnumSet.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND)).getOrThrow()
+		);
+	}
 }
