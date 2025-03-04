@@ -33,8 +33,8 @@ public class HealthBars {
 
 	private static final Identifier HEALTH_BAR_BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/white_background.png");
 	private static final Identifier HEALTH_BAR_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/white_progress.png");
-	protected static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kMBT]?)/(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kMBT]?)❤");
-	protected static final Pattern HEALTH_ONLY_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kMBT]?)❤");
+	protected static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?[KMBT]?)/(\\d{1,3}(,\\d{3})*(\\.\\d+)?[KMBT]?)❤");
+	protected static final Pattern HEALTH_ONLY_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?[KMBT]?)❤");
 
 	private static final Object2FloatOpenHashMap<ArmorStandEntity> healthValues = new Object2FloatOpenHashMap<>();
 	private static final Object2LongOpenHashMap<ArmorStandEntity> mobStartingHealth = new Object2LongOpenHashMap<>();
@@ -84,7 +84,7 @@ public class HealthBars {
 		if (armorStand.getCustomName() == null) {
 			return;
 		}
-		Matcher healthMatcher = HEALTH_PATTERN.matcher(armorStand.getCustomName().getString());
+		Matcher healthMatcher = HEALTH_PATTERN.matcher(armorStand.getCustomName().getString().toUpperCase());
 		//if a health ratio can not be found send onto health only pattern
 		if (!healthMatcher.find()) {
 			healthOnlyCheck(armorStand);
@@ -158,7 +158,7 @@ public class HealthBars {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.applyToHealthOnlyMobs || armorStand.getCustomName() == null) {
 			return;
 		}
-		Matcher healthOnlyMatcher = HEALTH_ONLY_PATTERN.matcher(armorStand.getCustomName().getString());
+		Matcher healthOnlyMatcher = HEALTH_ONLY_PATTERN.matcher(armorStand.getCustomName().getString().toUpperCase());
 		//if not found return
 		if (!healthOnlyMatcher.find()) {
 			return;

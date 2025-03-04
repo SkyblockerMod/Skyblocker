@@ -20,7 +20,7 @@ public class HealthBarsTest {
 
 	@Test
 	void testHealthPatternAbbreviation() throws ParseException {
-		Matcher match = HealthBars.HEALTH_PATTERN.matcher("Mob Name 100k/3.1M❤");
+		Matcher match = HealthBars.HEALTH_PATTERN.matcher("Mob Name 100K/3.1M❤");
 		match.find();
 		Assertions.assertEquals(100_000L, SHORT_FLOAT_NUMBERS.parse(match.group(1)));
 		Assertions.assertEquals(3_100_000L, SHORT_FLOAT_NUMBERS.parse(match.group(4)));
