@@ -32,6 +32,9 @@ public enum Location implements StringIdentifiable {
 	CRYSTAL_HOLLOWS("crystal_hollows"),
 	DUNGEON("dungeon", "Dungeons"),
 	KUUDRAS_HOLLOW("kuudra", "Kuudra's Hollow"),
+	/**
+	 * The freezing cold Glacite Mineshafts! *brr... so cold... :(*
+	 */
 	GLACITE_MINESHAFT("mineshaft"),
 	/**
 	 * <p>Goodbye 1.8 hello 1.21 (and foraging 50 for all)!</p>
