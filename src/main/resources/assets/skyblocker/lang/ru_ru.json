@@ -372,7 +372,6 @@
     "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Размер очков",
     "skyblocker.config.farming.garden.lockMouseTool": "Заблокировать управление камерой, когда в руках фермерский инструмент",
     "skyblocker.config.farming.garden.lockMouseGround": "Блокировать камеру, только когда вы стоите на земле",
-    "skyblocker.config.farming.garden.visitorHelper": "Помощник для посетителей",
     "skyblocker.config.dungeons.puzzle.creeperSolver.@Tooltip": "Выделяет наилучшие лучи из возможных и цели для поражения, чтобы их создать.",
     "skyblocker.config.dungeons.puzzle.solveIceFill": "Помощь в решении головоломки Ice Fill",
     "skyblocker.config.dungeons.puzzle.solveSilverfish": "Помощь в решении головоломки Silverfish",
