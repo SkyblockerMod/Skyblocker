@@ -20,11 +20,6 @@ public class ChatRulesConfigScreen extends Screen {
     }
 
     @Override
-    public void setTooltip(Text tooltip) {
-        super.setTooltip(tooltip);
-    }
-
-    @Override
     protected void init() {
         super.init();
         chatRulesConfigListWidget = new ChatRulesConfigListWidget(client, this, width, height - 96, 32, 25);
