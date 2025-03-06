@@ -565,6 +565,13 @@ public class DungeonManager {
         if (client.player == null || client.world == null) {
             return;
         }
+
+        //The check for the area should delay this until after the player's position has been set by the server (since the scoreboard should be sent after the player position)
+        //this is necessary otherwise the default position of (0, 0) or whatever will mess up the entrance calculation which will break all sorts of things
+        if (physicalEntrancePos == null && !Utils.getIslandArea().contains("The Catacombs")) {
+        	return;
+        }
+
         if (physicalEntrancePos == null) {
             Vec3d playerPos = client.player.getPos();
             physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(playerPos);
