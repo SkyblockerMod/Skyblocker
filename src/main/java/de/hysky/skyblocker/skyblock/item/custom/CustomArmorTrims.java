@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.item;
+package de.hysky.skyblocker.skyblock.item.custom;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -55,7 +55,7 @@ public class CustomArmorTrims {
 		}
 		try {
 			TRIMS_CACHE.clear();
-			RegistryWrapper.WrapperLookup wrapperLookup = getWrapperLookup(loader, client);
+			RegistryWrapper.WrapperLookup wrapperLookup = Utils.getWrapperLookup();
 			for (Reference<ArmorTrimMaterial> material : wrapperLookup.getOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries().toList()) {
 				for (Reference<ArmorTrimPattern> pattern : wrapperLookup.getOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries().toList()) {
 					ArmorTrim trim = new ArmorTrim(material, pattern);
@@ -69,10 +69,6 @@ public class CustomArmorTrims {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Encountered an exception while caching armor trims", e);
 		}
-	}
-
-	private static RegistryWrapper.WrapperLookup getWrapperLookup(FabricLoader loader, MinecraftClient client) {
-		return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : BuiltinRegistries.createWrapperLookup();
 	}
 
 	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {

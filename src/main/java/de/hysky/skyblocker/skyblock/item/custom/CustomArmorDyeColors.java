@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.item;
+package de.hysky.skyblocker.skyblock.item.custom;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
