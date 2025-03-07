@@ -19,6 +19,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.text.ParseException;
@@ -30,7 +32,7 @@ import java.util.stream.Collectors;
 import static de.hysky.skyblocker.utils.Formatters.SHORT_FLOAT_NUMBERS;
 
 public class HealthBars {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(HealthBars.class);
 	private static final Identifier HEALTH_BAR_BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/white_background.png");
 	private static final Identifier HEALTH_BAR_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/white_progress.png");
 	protected static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)/(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)❤");
@@ -68,7 +70,7 @@ public class HealthBars {
 	 *
 	 * @param armorStand updated armorstand
 	 */
-	public static void heathBar(ArmorStandEntity armorStand) throws ParseException {
+	public static void healthBar(ArmorStandEntity armorStand) {
 		if (!armorStand.isInvisible() || !armorStand.hasCustomName() || !armorStand.isCustomNameVisible() || !SkyblockerConfigManager.get().uiAndVisuals.healthBars.enabled) {
 			return;
 		}
@@ -92,8 +94,15 @@ public class HealthBars {
 		}
 
 		//work out health value and save to hashMap
-		Number firstValue = SHORT_FLOAT_NUMBERS.parse(healthMatcher.group(1).replace(",", "").toUpperCase());
-		Number secondValue = SHORT_FLOAT_NUMBERS.parse(healthMatcher.group(4).replace(",", "").toUpperCase());
+		Number firstValue;
+		Number secondValue;
+		try {
+			firstValue = SHORT_FLOAT_NUMBERS.parse(healthMatcher.group(1).replace(",", "").toUpperCase());
+			secondValue = SHORT_FLOAT_NUMBERS.parse(healthMatcher.group(4).replace(",", "").toUpperCase());
+		} catch (ParseException e) {
+			LOGGER.error("[Skyblocker] Failed to parse health bar text: {}", armorStand.getCustomName().getString());
+			return;
+		}
 		float health = firstValue.floatValue() / secondValue.floatValue();
 		healthValues.put(armorStand, health);
 
@@ -154,7 +163,7 @@ public class HealthBars {
 	 *
 	 * @param armorStand armorstand to check the name of
 	 */
-	private static void healthOnlyCheck(ArmorStandEntity armorStand) throws ParseException {
+	private static void healthOnlyCheck(ArmorStandEntity armorStand) {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.applyToHealthOnlyMobs || armorStand.getCustomName() == null) {
 			return;
 		}
@@ -165,7 +174,14 @@ public class HealthBars {
 		}
 
 		//get the current health of the mob
-		long currentHealth = SHORT_FLOAT_NUMBERS.parse(healthOnlyMatcher.group(1).replace(",", "").toUpperCase()).longValue();
+		long currentHealth;
+		try {
+			currentHealth = SHORT_FLOAT_NUMBERS.parse(healthOnlyMatcher.group(1).replace(",", "").toUpperCase()).longValue();
+
+		} catch (ParseException e) {
+			LOGGER.error("[Skyblocker] Failed to parse health bar text: {}", armorStand.getCustomName().getString());
+			return;
+		}
 
 		//if it's a new health only armor stand add to starting health lookup (not always full health if already damaged but best that can be done)
 		if (!mobStartingHealth.containsKey(armorStand)) {

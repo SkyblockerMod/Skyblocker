@@ -79,11 +79,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 
 		EggFinder.checkIfEgg(armorStandEntity);
 		CorpseFinder.checkIfCorpse(armorStandEntity);
-		try{//Prevent packet handling fails if something goes wrong so that entity trackers still update, just without health bars
-			HealthBars.heathBar(armorStandEntity);
-		} catch (ParseException e){
-			LOGGER.error("[Skyblocker] failed formating number from health bar", e);
-		}
+		HealthBars.healthBar(armorStandEntity);
 		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
 			CompactDamage.compactDamage(armorStandEntity);
 		} catch (Exception e) {
