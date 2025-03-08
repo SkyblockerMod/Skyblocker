@@ -63,11 +63,13 @@ public class Formatters {
 	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("E MMM d yyyy " + getTimeFormat(), Locale.US).withZone(ZoneId.systemDefault());
 
 	/**
-	 * Parses a number from a string, allowing commas as thousands separators and periods as decimal points.
+	 * Parses a number from a string.
+	 * <p>
+	 * Allows commas as thousands separators, periods as decimal points, and abbreviations.
 	 */
 	public static Number parseNumber(String number) throws NumberFormatException {
 		try {
-			return DOUBLE_NUMBERS.parse(number);
+			return SHORT_INTEGER_NUMBERS.parse(number.replace(",", ""));
 		} catch (ParseException e) {
 			throw new NumberFormatException("For input string: \"" + number + "\"");
 		}

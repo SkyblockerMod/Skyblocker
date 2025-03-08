@@ -77,7 +77,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 
 		EggFinder.checkIfEgg(armorStandEntity);
 		CorpseFinder.checkIfCorpse(armorStandEntity);
-		HealthBars.heathBar(armorStandEntity);
+		HealthBars.healthBar(armorStandEntity);
 		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
 			CompactDamage.compactDamage(armorStandEntity);
 		} catch (Exception e) {
