@@ -566,17 +566,18 @@ public class DungeonManager {
             return;
         }
 
-        //The check for the area should delay this until after the player's position has been set by the server (since the scoreboard should be sent after the player position)
-        //this is necessary otherwise the default position of (0, 0) or whatever will mess up the entrance calculation which will break all sorts of things
-        if (physicalEntrancePos == null && !Utils.getIslandArea().contains("The Catacombs")) {
-        	return;
-        }
+		if (physicalEntrancePos == null) {
+			//The check for the area should delay this until after the player's position has been set by the server (since the scoreboard should be sent after the player position)
+			//this is necessary otherwise the default position of (0, 0) or whatever will mess up the entrance calculation which will break all sorts of things
+			if (!Utils.getIslandArea().contains("The Catacombs")) {
+				return;
+			}
 
-        if (physicalEntrancePos == null) {
-            Vec3d playerPos = client.player.getPos();
-            physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(playerPos);
-            currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
-        }
+			Vec3d playerPos = client.player.getPos();
+			physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(playerPos);
+			currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
+		}
+
         MapState map = FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().main.get(8)), client.world);
         if (map == null) {
             return;
