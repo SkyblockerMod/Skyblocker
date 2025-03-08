@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
@@ -23,13 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.text.ParseException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static de.hysky.skyblocker.utils.Formatters.SHORT_FLOAT_NUMBERS;
 
 public class HealthBars {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HealthBars.class);
@@ -94,16 +92,9 @@ public class HealthBars {
 		}
 
 		//work out health value and save to hashMap
-		Number firstValue;
-		Number secondValue;
-		try {
-			firstValue = SHORT_FLOAT_NUMBERS.parse(healthMatcher.group(1).replace(",", "").toUpperCase());
-			secondValue = SHORT_FLOAT_NUMBERS.parse(healthMatcher.group(4).replace(",", "").toUpperCase());
-		} catch (ParseException e) {
-			LOGGER.error("[Skyblocker] Failed to parse health bar text: {}", armorStand.getCustomName().getString());
-			return;
-		}
-		float health = firstValue.floatValue() / secondValue.floatValue();
+		float firstValue = Formatters.parseNumber(healthMatcher.group(1).toUpperCase()).floatValue();
+		float secondValue = Formatters.parseNumber(healthMatcher.group(4).toUpperCase()).floatValue();
+		float health = firstValue / secondValue;
 		healthValues.put(armorStand, health);
 
 		//edit armor stand name to remove health
@@ -174,14 +165,7 @@ public class HealthBars {
 		}
 
 		//get the current health of the mob
-		long currentHealth;
-		try {
-			currentHealth = SHORT_FLOAT_NUMBERS.parse(healthOnlyMatcher.group(1).replace(",", "").toUpperCase()).longValue();
-
-		} catch (ParseException e) {
-			LOGGER.error("[Skyblocker] Failed to parse health bar text: {}", armorStand.getCustomName().getString());
-			return;
-		}
+		long currentHealth = Formatters.parseNumber(healthOnlyMatcher.group(1).toUpperCase()).longValue();
 
 		//if it's a new health only armor stand add to starting health lookup (not always full health if already damaged but best that can be done)
 		if (!mobStartingHealth.containsKey(armorStand)) {

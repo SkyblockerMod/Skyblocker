@@ -51,8 +51,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.text.ParseException;
-
 /**
  * All mixins in this file should be arranged in the order of the methods they inject into.
  */
