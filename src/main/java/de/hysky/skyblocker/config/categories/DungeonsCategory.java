@@ -60,6 +60,14 @@ public class DungeonsCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
                 .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip")))
+                        .binding(defaults.dungeons.spiritLeapOverlay,
+                                () -> config.dungeons.spiritLeapOverlay,
+                                newValue -> config.dungeons.spiritLeapOverlay = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .build())
+                .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.dungeons.starredMobGlow"))
                         .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.starredMobGlow.@Tooltip")))
                         .binding(defaults.dungeons.starredMobGlow,
