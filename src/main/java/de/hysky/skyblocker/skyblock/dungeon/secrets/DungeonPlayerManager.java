@@ -26,8 +26,10 @@ public class DungeonPlayerManager {
 	}
 
 	public static DungeonClass getClassFromPlayer(PlayerEntity player) {
-		String name = player.getGameProfile().getName();
+		return getClassFromPlayer(player.getGameProfile().getName());
+	}
 
+	public static DungeonClass getClassFromPlayer(String name) {
 		return PLAYER_CLASSES.getOrDefault(name, DungeonClass.UNKNOWN);
 	}
 
