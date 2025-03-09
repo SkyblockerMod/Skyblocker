@@ -245,6 +245,8 @@ jar {
 
 test {
 	useJUnitPlatform()
+
+	systemProperty("IS_TEST_ENV", "true")
 }
 
 publishMods {
