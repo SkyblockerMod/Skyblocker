@@ -220,6 +220,9 @@
   "skyblocker.config.dungeons.secretWaypoints.showSecretText": "Show Secret Text",
   "skyblocker.config.dungeons.secretWaypoints.waypointType": "Waypoint Type",
 
+  "skyblocker.config.dungeons.spiritLeapOverlay": "Spirit Leap Overlay",
+  "skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip": "Shows a custom overlay for the Spirit Leap screen that makes leaping to teammates easy and consistent.",
+
   "skyblocker.config.dungeons.starredMobBoundingBoxes": "Starred Mob Bounding Boxes",
   "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
 
