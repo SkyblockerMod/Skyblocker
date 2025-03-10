@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ import org.lwjgl.glfw.GLFW;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
+import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -42,6 +44,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	private static final float SCALE = 1.5f;
 	private static final int BUTTON_WIDTH = (int) (130f * SCALE);
 	private static final int BUTTON_HEIGHT = (int) (50f * SCALE);
+	private static final int RED_OVERLAY = ColorHelper.withAlpha(64, Colors.LIGHT_RED);
 	/**
 	 * Compares first by class name then by player name.
 	 */
@@ -82,14 +85,16 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		if (slotId < containerSlots && stack.isOf(Items.PLAYER_HEAD) && stack.contains(DataComponentTypes.PROFILE)) {
 			ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
 
-			//All heads in the leap menu have the name and id properties set
-			if (profile.name().isEmpty() || profile.id().isEmpty()) return;
+			//All heads in the leap menu have the id property set
+			if (profile.id().isEmpty()) return;
 
 			UUID uuid = profile.id().get();
-			String name = profile.name().get();
+			//We take the name from the item because the name from the profile component can leave out _ characters for some reason?
+			String name = stack.getName().getString();
 			DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(name);
+			boolean dead = ItemUtils.getConcatenatedLore(stack).toLowerCase(Locale.ENGLISH).contains("dead");
 
-			PlayerReference reference = new PlayerReference(uuid, name, dungeonClass, handler.syncId, slotId);
+			PlayerReference reference = new PlayerReference(uuid, name, dungeonClass, dead, handler.syncId, slotId);
 			tryInsertReference(reference);
 		}
 	}
@@ -158,6 +163,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			context.drawGuiTexture(RenderLayer::getGuiTextured, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
 			int baseX = this.getX() + BORDER_THICKNESS;
+			int centreX = this.getX() + (this.getWidth() >> 1);
 			int centreY = this.getY() + (this.getHeight() >> 1);
 
 			//Draw Player Head
@@ -168,7 +174,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 			//Draw class as heading
 			matrices.push();
-			matrices.translate(this.getX() + (this.getWidth() >> 1), this.getY() + halfFontHeight, 0f);
+			matrices.translate(centreX, this.getY() + halfFontHeight, 0f);
 			matrices.scale(SCALE, SCALE, 1f);
 			context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.dungeonClass().displayName(), 0, 0, ColorHelper.fullAlpha(reference.dungeonClass().color()));
 			matrices.pop();
@@ -179,6 +185,21 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			matrices.scale(SCALE, SCALE, 1f);
 			context.drawTextWithShadow(CLIENT.textRenderer, Text.literal(reference.name()), 0, 0, Colors.WHITE);
 			matrices.pop();
+
+			if (reference.dead()) {
+				//Text
+				matrices.push();
+				matrices.translate(centreX, this.getY() + this.getHeight() - (halfFontHeight * 3), 0f);
+				matrices.scale(SCALE, SCALE, 1f);
+				context.drawCenteredTextWithShadow(CLIENT.textRenderer, Text.translatable("text.skyblocker.dead"), 0, 0, Colors.RED);
+				matrices.pop();
+
+				//Red overlay
+				matrices.push();
+				matrices.scale(1f, 1f, 1f);
+				context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), RED_OVERLAY);
+				matrices.pop();
+			}
 		}
 
 		@Override
@@ -187,5 +208,5 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 	}
 
-	private record PlayerReference(UUID uuid, String name, DungeonClass dungeonClass, int syncId, int slotId) {}
+	private record PlayerReference(UUID uuid, String name, DungeonClass dungeonClass, boolean dead, int syncId, int slotId) {}
 }
