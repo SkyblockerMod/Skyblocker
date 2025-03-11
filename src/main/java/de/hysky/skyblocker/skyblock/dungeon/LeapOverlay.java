@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import de.hysky.skyblocker.SkyblockerMod;
@@ -44,7 +46,6 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	private static final float SCALE = 1.5f;
 	private static final int BUTTON_WIDTH = (int) (130f * SCALE);
 	private static final int BUTTON_HEIGHT = (int) (50f * SCALE);
-	private static final int RED_OVERLAY = ColorHelper.withAlpha(64, Colors.LIGHT_RED);
 	/**
 	 * Compares first by class name then by player name.
 	 */
@@ -92,9 +93,13 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			//We take the name from the item because the name from the profile component can leave out _ characters for some reason?
 			String name = stack.getName().getString();
 			DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(name);
-			boolean dead = ItemUtils.getConcatenatedLore(stack).toLowerCase(Locale.ENGLISH).contains("dead");
+			PlayerStatus status = switch (ItemUtils.getConcatenatedLore(stack).toLowerCase(Locale.ENGLISH)) {
+				case String s when s.contains("dead") -> PlayerStatus.DEAD;
+				case String s when s.contains("offline") -> PlayerStatus.OFFLINE;
+				default -> null;
+			};
 
-			PlayerReference reference = new PlayerReference(uuid, name, dungeonClass, dead, handler.syncId, slotId);
+			PlayerReference reference = new PlayerReference(uuid, name, dungeonClass, status, handler.syncId, slotId);
 			tryInsertReference(reference);
 		}
 	}
@@ -186,18 +191,18 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			context.drawTextWithShadow(CLIENT.textRenderer, Text.literal(reference.name()), 0, 0, Colors.WHITE);
 			matrices.pop();
 
-			if (reference.dead()) {
+			if (reference.status() != null) {
 				//Text
 				matrices.push();
 				matrices.translate(centreX, this.getY() + this.getHeight() - (halfFontHeight * 3), 0f);
 				matrices.scale(SCALE, SCALE, 1f);
-				context.drawCenteredTextWithShadow(CLIENT.textRenderer, Text.translatable("text.skyblocker.dead"), 0, 0, Colors.RED);
+				context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.status().text.get(), 0, 0, Colors.WHITE);
 				matrices.pop();
 
-				//Red overlay
+				//Overlay
 				matrices.push();
 				matrices.scale(1f, 1f, 1f);
-				context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), RED_OVERLAY);
+				context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), reference.status().overlayColor);
 				matrices.pop();
 			}
 		}
@@ -208,5 +213,18 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 	}
 
-	private record PlayerReference(UUID uuid, String name, DungeonClass dungeonClass, boolean dead, int syncId, int slotId) {}
+	private record PlayerReference(UUID uuid, String name, DungeonClass dungeonClass, @Nullable PlayerStatus status, int syncId, int slotId) {}
+
+	private enum PlayerStatus {
+		DEAD(() -> Text.translatable("text.skyblocker.dead").withColor(Colors.RED), ColorHelper.withAlpha(64, Colors.LIGHT_RED)),
+		OFFLINE(() -> Text.translatable("text.skyblocker.offline").withColor(Colors.GRAY), ColorHelper.withAlpha(64, Colors.LIGHT_GRAY));
+
+		private final Supplier<Text> text;
+		private final int overlayColor;
+
+		PlayerStatus(Supplier<Text> text, int overlayColor) {
+			this.text = text;
+			this.overlayColor = overlayColor;
+		}
+	}
 }
