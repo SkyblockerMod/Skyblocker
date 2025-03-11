@@ -1,16 +1,22 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.Range;
 
+import com.mojang.util.UndashedUuid;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.utils.ApiUtils;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class DungeonPlayerManager {
@@ -45,6 +51,14 @@ public class DungeonPlayerManager {
 
 				if (dungeonClass != DungeonClass.UNKNOWN) PLAYER_CLASSES.put(name, dungeonClass);
 			}
+		}
+
+		//Pre-fetch game profiles for rendering skins in the leap overlay
+		for (Object2ReferenceMap.Entry<String, DungeonClass> entry : PLAYER_CLASSES.object2ReferenceEntrySet()) {
+			CompletableFuture.runAsync(() -> {
+				UUID uuid = UndashedUuid.fromString(ApiUtils.name2Uuid(entry.getKey()));
+				MinecraftClient.getInstance().getSessionService().fetchProfile(uuid, false);
+			});
 		}
 	}
 
