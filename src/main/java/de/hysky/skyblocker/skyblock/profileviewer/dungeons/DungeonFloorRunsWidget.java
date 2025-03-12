@@ -13,6 +13,7 @@ import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,10 @@ public class DungeonFloorRunsWidget {
             JsonObject dungeonData;
             try {
                 dungeonData = dungeonsStats.getAsJsonObject(dungeon).getAsJsonObject("tier_completions");
-                for (Map.Entry<String, JsonElement> entry : dungeonData.entrySet()) {
+                List<Map.Entry<String, JsonElement>> entries = new ArrayList<>(dungeonData.entrySet());
+                entries.sort(Comparator.comparing(Map.Entry::getKey));
+
+                for (Map.Entry<String, JsonElement> entry : entries) {
                     if (entry.getKey().equals("total")) continue;
 
                     String textToRender = String.format((dungeon.equals("catacombs") ? "§aF" : "§cM") + "%s§r %s", entry.getKey(), entry.getValue().getAsInt());
