@@ -1130,5 +1130,7 @@
     "skyblocker.config.uiAndVisuals.healthBars.halfBarColor": "半血生命值条颜色",
     "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor": "空生命值条颜色",
     "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip": "当怪物的生命值条为空时的颜色",
-    "skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel": "HOTM能力等级"
+    "skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel": "HOTM能力等级",
+    "text.skyblocker.offline": "离线",
+    "text.skyblocker.dead": "死亡"
 }
