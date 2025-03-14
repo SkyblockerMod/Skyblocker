@@ -1,13 +1,12 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,8 +15,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//This class is split into 3 inner classes as there are multiple screens for showing catacombs levels, each with different slot ids or different style of showing the level.
-//It's still kept in 1 main class for organization purposes.
+// This class is split into 3 inner classes as there are multiple screens for showing catacombs levels, each with different slot ids or different style of showing the level.
+// It's still kept in 1 main class for the shared config information.
 public class CatacombsLevelAdder {
 
 	private static final SlotTextAdder.ConfigInformation CONFIG_INFORMATION = new SlotTextAdder.ConfigInformation(
@@ -28,7 +27,7 @@ public class CatacombsLevelAdder {
 	}
 
 	public static class Dungeoneering extends SimpleSlotTextAdder {
-		private static final Pattern LEVEL_PATTERN = Pattern.compile(".*?(?:(?<arabic>\\d+)|(?<roman>\\S+))? ?✯?");
+		private static final Pattern LEVEL_PATTERN = Pattern.compile(".*?(?:(?: (?<arabic>\\d+)| (?<roman>[IVXLC]+))(?: ✯)?)?");
 		public Dungeoneering() {
 			super("^Dungeoneering", CONFIG_INFORMATION);
 		}
@@ -41,7 +40,7 @@ public class CatacombsLevelAdder {
 					if (!matcher.matches()) return List.of();
 					String arabic = matcher.group("arabic");
 					String roman = matcher.group("roman");
-					if (arabic == null && roman == null) return SlotText.bottomLeftList(Text.literal("0").formatted(Formatting.RED));
+					if (arabic == null && roman == null) return SlotText.bottomLeftList(Text.literal("0").withColor(SlotText.CREAM));
 					String level;
 					if (arabic != null) {
 						if (!NumberUtils.isDigits(arabic)) return List.of(); //Sanity check
