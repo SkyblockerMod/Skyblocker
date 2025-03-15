@@ -25,6 +25,7 @@ public enum Location implements StringIdentifiable {
 	GOLD_MINE("mining_1"),
 	DEEP_CAVERNS("mining_2"),
 	DWARVEN_MINES("mining_3"),
+	BACKWATER_BAYOU("fishing_1"),
 	DUNGEON_HUB("dungeon_hub"),
 	WINTER_ISLAND("winter", "Jerry's Workshop"),
 	THE_RIFT("rift"),
