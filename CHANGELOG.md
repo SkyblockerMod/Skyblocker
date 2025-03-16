@@ -1,3 +1,63 @@
+# Release 5.1.0
+
+## Highlight
+* Spirit Leap Overlay
+* Corpse profit tracker
+* Entity health bars
+* Garden Tweaks
+* Fossil Solver
+* Slot text stuff
+    * HOTM Perk Level
+    * Discrite
+    * Moby-Duck
+* Teleport overlay color config
+* Update Ice Fill Room solver
+* Swing On Abilities
+* Chat rule location config overhaul
+* Fixed Vampire Slayer Helper
+
+## What's Changed
+* Fix incorrect translation for SkillLevelAdder by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1161
+* Fix right icon not rendering lol by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1171
+* Add seen waypoint by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1108
+* Fix recipe book crashes by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1121
+* Formatters by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1151
+* Fix the way jacob's contest widget is parsed and displayed by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1162
+* Boosted Pets Background Rarity by @7azeemm in https://github.com/SkyblockerMod/Skyblocker/pull/1168
+* Fixed Vampire Features not working by @7azeemm in https://github.com/SkyblockerMod/Skyblocker/pull/1169
+* Add "Swing On Abilities" by @Manchick0 in https://github.com/SkyblockerMod/Skyblocker/pull/1127
+* Move disabled slots out of the way by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1132
+* Slot Text Stuff by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1134
+* Chat rule location config overhaul by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1138
+* Corpse profit tracker by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1152
+* Fix npc price tooltip crash with cookie's mod by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1176
+* Health bars by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1028
+* Garden Tweaks & Features by @WannaBeIan in https://github.com/SkyblockerMod/Skyblocker/pull/1118
+* Event Start Time in Calendar menu by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1147
+* Fossil Solver by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1156
+* Fabric updates by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1172
+* Add teleport overlay color config by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1175
+* Migrate to formatters by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1185
+* Fix empty validLocations set failing to be decoded by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1197
+* Add support for Abbreviations in health values by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1199
+* Fix dungeon entrance room physical pos being detected incorrectly by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1200
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1163
+* Spirit Leap Overlay by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1202
+* Update Ice Fill Room by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1203
+* Render Layer Migration by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1205
+* Remove Skyblock Time Logging by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1206
+* Auto Pet support for the Pet Cache by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1207
+* Update Ordered Waypoints Tooltip by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1208
+* Fix dungeon floor ordering in pv by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1210
+* Simplify hiding world loading screens by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1209
+* Add Moby-Duck as an evolving item by @IllagerCaptain in https://github.com/SkyblockerMod/Skyblocker/pull/1212
+* Fix catacombs level adder showing incorrect levels by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1213
+
+## New Contributors
+* @WannaBeIan made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1118
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.0.0...v5.1.0
+___
 # Release 5.0.0
 To avoid confusion with Minecraft's versioning system, we are transitioning from Semantic Versioning (SemVer) to a Unity like versioning scheme: 
 - x.y.z
