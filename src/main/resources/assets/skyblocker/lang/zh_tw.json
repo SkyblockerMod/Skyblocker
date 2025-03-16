@@ -1088,5 +1088,7 @@
     "skyblocker.corpseTracker.historyReset": "屍體利潤記錄已因切換存檔而重置。",
     "skyblocker.powderTracker.profit": "利潤：％s Coins",
     "skyblocker.powderTracker.rewardsFilteredOut": "經過篩選後，你的powder mining獎勵歷史記錄是空的 :(",
-    "skyblocker.chat.confirmationPromptNotification": "在60秒內點擊聊天欄的任何位置以接受提示。"
+    "skyblocker.chat.confirmationPromptNotification": "在60秒內點擊聊天欄的任何位置以接受提示。",
+    "text.skyblocker.dead": "死亡",
+    "text.skyblocker.offline": "離線"
 }
