@@ -39,6 +39,7 @@
 - **Block Incorrect Terminal Clicks**
 - **Hide Soulweaver Skulls**
 - **Dungeon Class-based player glow**
+- **Spirit Leap Overlay**
 
 ### Kuudra Features:
 - **Kuudra waypoints:**
@@ -85,10 +86,11 @@
 - **Collections**
 
 ### Dwarven Mines / Crystal Hollows / Glacite Mining:
-- **Dwarven Mines Solver:**
-  - Fetchur
-  - Puzzler
-- **Dwarven Mines unbreakable carpet highlighter**
+- **Dwarven Mines:**
+  - Solver:
+    - Fetchur
+    - Puzzler
+  - Unbreakable carpet highlighter
 - **Crystal Hollows:**
   - Crystal Hollows Map:
     - *Shows players location in Crystal Hollows*
@@ -106,6 +108,8 @@
 - **Glacite Tunnels:**
   - *Cold Overlay*
   - *Corpse Finder*
+  - *Corpse profit tracker*
+  - *Fossil Solver*
 - **Commission HUD:**
   - *Provides information on Dwarven Mines / Crystal Hollows / Glacite Mining quests*
 - **Powder HUD**
@@ -159,6 +163,7 @@
 - **Speed Presets (Rancher's Boots)**
 - **Disable title and chat messages for Melon/Pumpkin Dicer**
 - **Basic garden mouse locking feature (set mouse sensitivity to 0)**
+- **Pest Highlighter**
 
 ### Visual Enhancements:
 - **Smooth AOTE**
@@ -185,6 +190,7 @@
 - **Ender Nodes Helper**
 - **Powder mining tracker**
 - **Special Effects for rare dye drops**
+- **Entity health bars**
 
 ### User Interface Enhancements:
 - **Equipment in inventory**
