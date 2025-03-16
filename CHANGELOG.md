@@ -15,6 +15,7 @@
 * Swing On Abilities
 * Chat rule location config overhaul
 * Fixed Vampire Slayer Helper
+* Fixed rooms failing to match occasionally
 
 ## What's Changed
 * Fix incorrect translation for SkillLevelAdder by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1161
