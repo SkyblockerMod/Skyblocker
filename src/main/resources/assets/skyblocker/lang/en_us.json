@@ -1356,6 +1356,17 @@
   "skyblocker.profileviewer.inventory.inactive.description.backpack": "The selected backpack",
   "skyblocker.profileviewer.inventory.inactive.description.general": "does not contain this slot",
 
+  "skyblocker.armorCustomization.addCustomColor": "Add custom color",
+  "skyblocker.armorCustomization.animated": "Animated",
+  "skyblocker.armorCustomization.cannotCustomizeColor": "Cannot customize this piece's color :(",
+  "skyblocker.armorCustomization.cycleBack": "Cycle Back",
+  "skyblocker.armorCustomization.removeCustomColor": "Remove custom color",
+  "skyblocker.armorCustomization.delay": "Delay: %s",
+  "skyblocker.armorCustomization.delayTooltip": "The animation will be delayed by this amount in seconds.",
+  "skyblocker.armorCustomization.speed": "Speed: %s",
+  "skyblocker.armorCustomization.speedTooltip": "The speed of the animation in \"completions\" per second.",
+  "skyblocker.armorCustomization.title": "Pimp Your Armor",
+
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
   "emi.category.skyblocker.skyblock": "Skyblock"

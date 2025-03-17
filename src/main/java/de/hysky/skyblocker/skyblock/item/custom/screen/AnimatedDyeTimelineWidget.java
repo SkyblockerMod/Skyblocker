@@ -113,7 +113,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 			}
 		}
 		double v = (System.currentTimeMillis() - l) / 1000.d;
-		CustomArmorColorScreen.LOGGER.debug("Time taken to generate gradient texture: {}s", v);
+		CustomizeArmorScreen.LOGGER.debug("Time taken to generate gradient texture: {}s", v);
 		gradientTexture.upload();
 	}
 
@@ -141,7 +141,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	public void setColor(int argb) {
 		if (focusedFrame == null) {
-			CustomArmorColorScreen.LOGGER.warn("tried to set color when no frame was focused");
+			CustomizeArmorScreen.LOGGER.warn("tried to set color when no frame was focused");
 			return;
 		}
 		focusedFrame.color = argb;
@@ -193,7 +193,6 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
 			super.onDrag(mouseX, mouseY, deltaX, deltaY);
 			if (!draggable) {
-				System.out.println("no drag for you");
 				return;
 			}
 			AnimatedDyeTimelineWidget parent = AnimatedDyeTimelineWidget.this;

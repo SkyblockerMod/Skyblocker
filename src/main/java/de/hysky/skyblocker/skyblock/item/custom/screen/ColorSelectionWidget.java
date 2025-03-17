@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import com.demonwav.mcdev.annotations.Translatable;
 import com.google.common.collect.ImmutableList;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -31,8 +32,16 @@ import java.util.Locale;
 public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
-	private static final Text ADD_COLOR_TEXT = Text.of("Add custom color");
-	private static final Text REMOVE_COLOR_TEXT = Text.of("Remove custom color");
+	private static final Text ADD_COLOR_TEXT = Text.literal("skyblocker.armorCustomization.addCustomColor");
+	private static final Text REMOVE_COLOR_TEXT = Text.literal("skyblocker.armorCustomization.removeCustomColor");
+	private static final Text CANNOT_CUSTOMIZE_COLOR_TEXT = Text.translatable("skyblocker.armorCustomization.cannotCustomizeColor");
+	private static final Text ANIMATED_TEXT = Text.translatable("skyblocker.armorCustomization.animated");
+	private static final Text CYCLE_BACK_TEXT = Text.translatable("skyblocker.armorCustomization.cycleBack");
+	private static final Text SPEED_TOOLTIP_TEXT = Text.translatable("skyblocker.armorCustomization.speedTooltip");
+	private static final Text DELAY_TOOLTIP_TEXT = Text.translatable("skyblocker.armorCustomization.delayTooltip");
+	private static final String SPEED_TEXT = "skyblocker.armorCustomization.speed";
+	private static final String DELAY_TEXT = "skyblocker.armorCustomization.delay";
+
 	private final TextRenderer textRenderer;
 
 	private final ColorPickerWidget colorPicker;
@@ -72,17 +81,17 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 		removeCustomColorButton.setPosition(getRight() - removeCustomColorButton.getWidth() - 3, getY() + 3);
 
-		notCustomizableText = new TextWidget(Text.literal("Cannot customize this piece's color :("), textRenderer);
+		notCustomizableText = new TextWidget(CANNOT_CUSTOMIZE_COLOR_TEXT, textRenderer);
 		SimplePositioningWidget.setPos(notCustomizableText, getX(), getY(), getWidth(), getHeight());
 
 		int x1 = removeCustomColorButton.getX();
 		int width1 = removeCustomColorButton.getWidth();
-		animatedCheckbox = CheckboxWidget.builder(Text.literal("Animated"), textRenderer)
+		animatedCheckbox = CheckboxWidget.builder(ANIMATED_TEXT, textRenderer)
 				.pos(x1, removeCustomColorButton.getBottom() + 3)
 				.maxWidth(width1 / 2)
 				.callback(this::onAnimatedCheckbox)
 				.build();
-		cycleBackCheckbox = CheckboxWidget.builder(Text.literal("Cycle Back"), textRenderer)
+		cycleBackCheckbox = CheckboxWidget.builder(CYCLE_BACK_TEXT, textRenderer)
 				.pos(animatedCheckbox.getRight() + 1, animatedCheckbox.getY())
 				.maxWidth(width1 / 2)
 				.callback(this::onCycleBackCheckbox)
@@ -98,8 +107,8 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 					dye.speed()
 			);
 			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
-		}, Text.literal("Delay: "));
-		delaySlider.setTooltip(Tooltip.of(Text.literal("The animation will be delayed by this amount in seconds.")));
+		}, DELAY_TEXT);
+		delaySlider.setTooltip(Tooltip.of(DELAY_TOOLTIP_TEXT));
 
 		speedSlider = new Slider(x1, delaySlider.getBottom() + 1, width1, 0.01f, 2.0f, f -> {
 			String itemUuid = ItemUtils.getItemUuid(currentItem);
@@ -111,8 +120,8 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 					f
 			);
 			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
-		}, Text.literal("Speed: "));
-		speedSlider.setTooltip(Tooltip.of(Text.literal("The speed of the animation in \"completions\" per second.")));
+		}, SPEED_TEXT);
+		speedSlider.setTooltip(Tooltip.of(SPEED_TOOLTIP_TEXT));
 
 
 		children = ImmutableList.<ClickableWidget>builder().add(colorPicker, rgbTextInput, timelineWidget, addCustomColorButton, removeCustomColorButton, animatedCheckbox, notCustomizableText, cycleBackCheckbox, delaySlider, speedSlider).build();
@@ -279,16 +288,16 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		private final FloatConsumer onValueChanged;
 		private final float minValue;
 		private final float maxValue;
-		private final Text prefix;
+		private final String translatable;
 
 		private boolean clicked = false;
 
-		public Slider(int x, int y, int width, float min, float max, FloatConsumer onValueChanged, Text prefix) {
+		public Slider(int x, int y, int width, float min, float max, FloatConsumer onValueChanged, @Translatable String translatable) {
 			super(x, y, width, 15, Text.empty(), min);
 			this.onValueChanged = onValueChanged;
 			this.minValue = min;
 			this.maxValue = max;
-			this.prefix = prefix;
+			this.translatable = translatable;
 			updateMessage();
 		}
 
@@ -298,7 +307,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 		@Override
 		protected void updateMessage() {
-			setMessage(prefix.copy().append(Text.literal(FORMATTER.format(trueValue()))));
+			setMessage(Text.translatable(translatable, FORMATTER.format(trueValue())));
 		}
 
 		private void setVal(float val) {

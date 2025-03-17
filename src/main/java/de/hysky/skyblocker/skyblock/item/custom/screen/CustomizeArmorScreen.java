@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-public class CustomArmorColorScreen extends Screen {
+public class CustomizeArmorScreen extends Screen {
 	static final Logger LOGGER = LogUtils.getLogger();
 
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
@@ -64,8 +64,8 @@ public class CustomArmorColorScreen extends Screen {
 	@Init
 	public static void initThings() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
-				ClientCommandManager.literal("skyblocker").then(ClientCommandManager.literal("teehee").executes(context -> {
-					Scheduler.queueOpenScreen(new CustomArmorColorScreen(null));
+				ClientCommandManager.literal("skyblocker").then(ClientCommandManager.literal("customizeArmor").executes(context -> {
+					Scheduler.queueOpenScreen(new CustomizeArmorScreen(null));
 					return 1;
 				}))));
 		ScreenEvents.AFTER_INIT.register((client1, screen, scaledWidth, scaledHeight) -> {
@@ -83,8 +83,9 @@ public class CustomArmorColorScreen extends Screen {
 	}
 
 
-	protected CustomArmorColorScreen(Screen previousScreen) {
-		super(Text.literal("Pimp My Armor"));
+	private final boolean nothingCustomizable;
+	protected CustomizeArmorScreen(Screen previousScreen) {
+		super(Text.translatable("skyblocker.armorCustomization.title"));
 		DefaultedList<ItemStack> list = MinecraftClient.getInstance().player.getInventory().armor;
 		for (int i = 0; i < list.size(); i++) {
 			ItemStack copy = list.get(i).copy();
@@ -93,6 +94,7 @@ public class CustomArmorColorScreen extends Screen {
 		}
 		while (selectedSlot < armor.length - 1 && !canEdit(armor[selectedSlot])) selectedSlot++;
 		this.previousScreen = previousScreen;
+		nothingCustomizable = !canEdit(armor[selectedSlot]);
 
 		ImmutableMap.Builder<String, Stuff> builder = ImmutableMap.builderWithExpectedSize(4);
 		for (ItemStack stack : armor) {
@@ -118,19 +120,28 @@ public class CustomArmorColorScreen extends Screen {
 		super.init();
 		int w = Math.min(500, width);
 		int x = (width - w) / 2;
-		PlayerWidget playerWidget = new PlayerWidget(x + 5, (height - 190) / 2, 90, 165, player);
-		addDrawableChild(playerWidget);
-		addDrawableChild(new PieceSelectionWidget(playerWidget.getX() + 3, playerWidget.getBottom() + 1));
-		trimSelectionWidget = new TrimSelectionWidget(x + 105, 25, w - 105 - 5, 80);
-		addDrawableChild(trimSelectionWidget);
-		trimSelectionWidget.setCurrentItem(armor[selectedSlot]);
-		if (colorSelectionWidget != null) colorSelectionWidget.close();
-		colorSelectionWidget = new ColorSelectionWidget(trimSelectionWidget.getX(), 115, trimSelectionWidget.getWidth(), 100, textRenderer);
-		addDrawableChild(colorSelectionWidget);
-		colorSelectionWidget.setCurrentItem(armor[selectedSlot]);
 
-		addDrawableChild(ButtonWidget.builder(Text.literal("Cancel"), b -> cancel()).position(width / 2 - 155, height - 25).build());
-		addDrawableChild(ButtonWidget.builder(Text.literal("Done"), b -> close()).position(width / 2 + 5, height - 25).build());
+		int y = (height - 190) / 2;
+		PlayerWidget playerWidget = new PlayerWidget(x + 5, y, 90, 165, player);
+		addDrawableChild(playerWidget);
+		PieceSelectionWidget pieceSelectionWidget = new PieceSelectionWidget(playerWidget.getX() + 3, playerWidget.getBottom() + 1);
+		addDrawableChild(pieceSelectionWidget);
+
+
+
+		if (!nothingCustomizable) {
+			trimSelectionWidget = new TrimSelectionWidget(x + 105, y, w - 105 - 5, 80);
+			addDrawableChild(trimSelectionWidget);
+			trimSelectionWidget.setCurrentItem(armor[selectedSlot]);
+
+			if (colorSelectionWidget != null) colorSelectionWidget.close();
+			colorSelectionWidget = new ColorSelectionWidget(trimSelectionWidget.getX(), trimSelectionWidget.getBottom() + 10, trimSelectionWidget.getWidth(), 100, textRenderer);
+			addDrawableChild(colorSelectionWidget);
+			colorSelectionWidget.setCurrentItem(armor[selectedSlot]);
+		}
+
+		addDrawableChild(ButtonWidget.builder(Text.translatable("gui.cancel"), b -> cancel()).position(width / 2 - 155, height - 25).build());
+		addDrawableChild(ButtonWidget.builder(Text.translatable("gui.done"), b -> close()).position(width / 2 + 5, height - 25).build());
 	}
 
 	private void cancel() {
@@ -166,7 +177,7 @@ public class CustomArmorColorScreen extends Screen {
 	public void removed() {
 		super.removed();
 		SkyblockerConfigManager.save();
-		colorSelectionWidget.close();
+		if (colorSelectionWidget != null) colorSelectionWidget.close();
 		// clear all the trackers cuz the color selection maybe created a bunch.
 		CustomArmorAnimatedDyes.cleanTrackers();
 	}
@@ -264,7 +275,7 @@ public class CustomArmorColorScreen extends Screen {
 
 		@Override
 		public void onClick(double mouseX, double mouseY) {
-			MinecraftClient.getInstance().setScreen(new CustomArmorColorScreen(prevScreen));
+			MinecraftClient.getInstance().setScreen(new CustomizeArmorScreen(prevScreen));
 		}
 
 		@Override
