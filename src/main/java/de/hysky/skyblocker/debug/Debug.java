@@ -47,6 +47,13 @@ public class Debug {
 		return DEBUG_ENABLED || FabricLoader.getInstance().isDevelopmentEnvironment() || SnapshotDebug.isInSnapshot();
 	}
 
+	/**
+	 * Used for checking if unit tests are being run.
+	 */
+	public static boolean isTestEnvironment() {
+		return Boolean.getBoolean("IS_TEST_ENV");
+	}
+
 	public static boolean webSocketDebug() {
 		return SkyblockerConfigManager.get().debug.webSocketDebug;
 	}

@@ -22,6 +22,9 @@ public class DungeonsConfig {
     public boolean classBasedPlayerGlow = true;
 
     @SerialEntry
+    public boolean spiritLeapOverlay = true;
+
+    @SerialEntry
     public boolean starredMobGlow = false;
 
     @SerialEntry

@@ -31,6 +31,8 @@
   "text.skyblocker.discord": "Discord",
   "text.skyblocker.clickToSend": "[Click To Send In Chat]",
   "text.skyblocker.clickToSend.@Tooltip": "Click to send this in chat.",
+  "text.skyblocker.dead": "Dead",
+  "text.skyblocker.offline": "Offline",
 
   "skyblocker.skyblockerScreen": "Skyblocker Main Screen",
 
@@ -219,6 +221,9 @@
   "skyblocker.config.dungeons.secretWaypoints.enableWitherWaypoints": "Enable Wither Essence Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.showSecretText": "Show Secret Text",
   "skyblocker.config.dungeons.secretWaypoints.waypointType": "Waypoint Type",
+
+  "skyblocker.config.dungeons.spiritLeapOverlay": "Spirit Leap Overlay",
+  "skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip": "Shows a custom overlay for the Spirit Leap screen that makes leaping to teammates easy and consistent.",
 
   "skyblocker.config.dungeons.starredMobBoundingBoxes": "Starred Mob Bounding Boxes",
   "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
@@ -1240,7 +1245,7 @@
   "skyblocker.tips.fairySoulsEnigmaSoulsRelics": "Don't know where to find Fairy Souls, Enigma Souls, or Relics? Enable the helpers to aid your exploration; they'll remember which souls you've already found.",
   "skyblocker.tips.quickNav": "You can customize the QuickNav buttons in the config.",
   "skyblocker.tips.waypoints": "You can import (including from skytils), add, remove, and toggle waypoints on any island with /skyblocker waypoints.",
-  "skyblocker.tips.orderedWaypoints": "You can import (including from coleweight), add, remove, and toggle ordered waypoints with /skyblocker waypoints ordered.",
+  "skyblocker.tips.orderedWaypoints": "You can import (including from Coleweight), add, remove, and toggle ordered waypoints with /skyblocker waypoints. When importing from Coleweight you must go to Share → Import Waypoints (Soopy). Make sure to import them under the desired island.",
   "skyblocker.tips.visitorHelper": "Click on the item name in the visitor helper to buy from the bazaar or click on [Copy Amount] to copy the amount to your clipboard.",
   "skyblocker.tips.slotText": "Slot text shows you the attribute shard info, catacombs level, collection level, enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, skill level, skyblock level in the slot.",
   "skyblocker.tips.profileViewer": "You can view other players' profiles with /pv.",

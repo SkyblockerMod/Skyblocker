@@ -25,6 +25,7 @@ public enum Location implements StringIdentifiable {
 	GOLD_MINE("mining_1"),
 	DEEP_CAVERNS("mining_2"),
 	DWARVEN_MINES("mining_3"),
+	BACKWATER_BAYOU("fishing_1"),
 	DUNGEON_HUB("dungeon_hub"),
 	WINTER_ISLAND("winter", "Jerry's Workshop"),
 	THE_RIFT("rift"),
@@ -47,7 +48,7 @@ public enum Location implements StringIdentifiable {
 	UNKNOWN("unknown");
 
 	public static final Codec<Location> CODEC = StringIdentifiable.createCodec(Location::values);
-	public static final Codec<EnumSet<Location>> SET_CODEC = CodecUtils.enumSetCodec(CODEC);
+	public static final Codec<EnumSet<Location>> SET_CODEC = CodecUtils.enumSetCodec(CODEC, Location.class);
 
 	/**
 	 * location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>

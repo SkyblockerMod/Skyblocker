@@ -62,5 +62,12 @@
     "skyblocker.config.mining.dwarvenMines.carpetHighlightColor": "Carpet Highlight Colour",
     "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Sets the colour of the highlight for the unbreakable carpets.",
     "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "Changes the colour of your teammates glow to be based on their class rather than their rank.",
-    "skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip": "Outlines lit redstone lamps in red, and applies the glowing effect to zombies where the colour depends on the kind of zombie."
+    "skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip": "Outlines lit redstone lamps in red, and applies the glowing effect to zombies where the colour depends on the kind of zombie.",
+    "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor": "Empty Health Bar Colour",
+    "skyblocker.config.uiAndVisuals.healthBars.fullBarColor": "Full Health bar Colour",
+    "skyblocker.config.uiAndVisuals.healthBars.fullBarColor.@Tooltip": "Colour of health bar when mob is at full hp",
+    "skyblocker.config.uiAndVisuals.healthBars.halfBarColor": "Half Health Bar Colour",
+    "skyblocker.config.uiAndVisuals.healthBars.halfBarColor.@Tooltip": "Colour of health bar when mob is at half hp",
+    "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip": "Colour of health bar when mob is at full hp",
+    "skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor": "Teleport Overlay Colour"
 }

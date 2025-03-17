@@ -48,7 +48,7 @@ public class Tips {
             getTipFactory("skyblocker.tips.fairySoulsEnigmaSoulsRelics", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker fairySouls"),
             getTipFactory("skyblocker.tips.quickNav", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker config"),
             getTipFactory("skyblocker.tips.waypoints", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker waypoint"),
-            getTipFactory("skyblocker.tips.orderedWaypoints", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker waypoint ordered"),
+            getTipFactory("skyblocker.tips.orderedWaypoints", ClickEvent.Action.SUGGEST_COMMAND, "/skyblocker waypoints"),
             getTipFactory("skyblocker.tips.visitorHelper"),
             getTipFactory("skyblocker.tips.slotText"),
             getTipFactory("skyblocker.tips.profileViewer", ClickEvent.Action.SUGGEST_COMMAND, "/pv"),

@@ -3,10 +3,11 @@ package de.hysky.skyblocker.skyblock;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -19,6 +20,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.util.List;
@@ -27,14 +30,14 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class HealthBars {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(HealthBars.class);
 	private static final Identifier HEALTH_BAR_BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/white_background.png");
 	private static final Identifier HEALTH_BAR_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/white_progress.png");
-	private static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?)/(\\d{1,3}(,\\d{3})*(\\.\\d+)?)❤");
-	private static final Pattern HEALTH_ONLY_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?)❤");
+	protected static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)/(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)❤");
+	protected static final Pattern HEALTH_ONLY_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)❤");
 
 	private static final Object2FloatOpenHashMap<ArmorStandEntity> healthValues = new Object2FloatOpenHashMap<>();
-	private static final Object2IntOpenHashMap<ArmorStandEntity> mobStartingHealth = new Object2IntOpenHashMap<>();
+	private static final Object2LongOpenHashMap<ArmorStandEntity> mobStartingHealth = new Object2LongOpenHashMap<>();
 
 	@Init
 	public static void init() {
@@ -56,7 +59,7 @@ public class HealthBars {
 	public static void onEntityDespawn(Entity entity, ClientWorld clientWorld) {
 		if (entity instanceof ArmorStandEntity armorStandEntity) {
 			healthValues.removeFloat(armorStandEntity);
-			mobStartingHealth.removeInt(armorStandEntity);
+			mobStartingHealth.removeLong(armorStandEntity);
 		}
 	}
 
@@ -65,7 +68,7 @@ public class HealthBars {
 	 *
 	 * @param armorStand updated armorstand
 	 */
-	public static void heathBar(ArmorStandEntity armorStand) {
+	public static void healthBar(ArmorStandEntity armorStand) {
 		if (!armorStand.isInvisible() || !armorStand.hasCustomName() || !armorStand.isCustomNameVisible() || !SkyblockerConfigManager.get().uiAndVisuals.healthBars.enabled) {
 			return;
 		}
@@ -73,7 +76,7 @@ public class HealthBars {
 		//check if armor stand is dead and remove it from list
 		if (armorStand.isDead()) {
 			healthValues.removeFloat(armorStand);
-			mobStartingHealth.removeInt(armorStand);
+			mobStartingHealth.removeLong(armorStand);
 			return;
 		}
 
@@ -89,9 +92,9 @@ public class HealthBars {
 		}
 
 		//work out health value and save to hashMap
-		int firstValue = Integer.parseInt(healthMatcher.group(1).replace(",", ""));
-		int secondValue = Integer.parseInt(healthMatcher.group(4).replace(",", ""));
-		float health = (float) firstValue / secondValue;
+		float firstValue = Formatters.parseNumber(healthMatcher.group(1).toUpperCase()).floatValue();
+		float secondValue = Formatters.parseNumber(healthMatcher.group(4).toUpperCase()).floatValue();
+		float health = firstValue / secondValue;
 		healthValues.put(armorStand, health);
 
 		//edit armor stand name to remove health
@@ -162,7 +165,7 @@ public class HealthBars {
 		}
 
 		//get the current health of the mob
-		int currentHealth = Integer.parseInt(healthOnlyMatcher.group(1).replace(",", ""));
+		long currentHealth = Formatters.parseNumber(healthOnlyMatcher.group(1).toUpperCase()).longValue();
 
 		//if it's a new health only armor stand add to starting health lookup (not always full health if already damaged but best that can be done)
 		if (!mobStartingHealth.containsKey(armorStand)) {
@@ -170,7 +173,7 @@ public class HealthBars {
 		}
 
 		//add to health bar values
-		float health = (float) currentHealth / mobStartingHealth.getInt(armorStand);
+		float health = (float) currentHealth / mobStartingHealth.getLong(armorStand);
 		healthValues.put(armorStand, health);
 
 		//if enabled remove from name
@@ -226,8 +229,9 @@ public class HealthBars {
 			int mixedColor = ColorUtils.interpolate(health, emptyColor.getRGB(), halfColor.getRGB(), fullColor.getRGB());
 			float[] components = ColorUtils.getFloatComponents(mixedColor);
 			// Render the health bar texture with scaling based on health percentage
-			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, components, 1f, true);
 			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, 0.003f), HEALTH_BAR_TEXTURE, components, 1f, true);
+			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, components, 1f, true);
+
 		}
 	}
 }
