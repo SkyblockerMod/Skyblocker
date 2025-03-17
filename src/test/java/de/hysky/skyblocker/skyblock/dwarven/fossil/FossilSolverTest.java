@@ -5,7 +5,9 @@ import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.getFossilChance;
+import java.util.Arrays;
+
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.*;
 
 public class FossilSolverTest {
 
@@ -18,6 +20,10 @@ public class FossilSolverTest {
 		}
 		return new TileGrid(tileStates);
 	}
+	@Test
+	public void testPossibleFossils() {
+		Assertions.assertEquals(287, POSSIBLE_STATES.size());
+	}
 
 	@Test
 	void testPartlyFoundFossil() {
@@ -27,7 +33,7 @@ public class FossilSolverTest {
 		tileGrid.updateSlot(0, 4, TileState.FOSSIL);
 		tileGrid.updateSlot(0, 5, TileState.FOSSIL);
 		tileGrid.updateSlot(1, 5, TileState.FOSSIL);
-		Assertions.assertEquals(getFossilChance(tileGrid, null)[20], 1);
+		Assertions.assertEquals(1, getFossilChance(tileGrid, null)[20]);
 	}
 
 	@Test
@@ -36,7 +42,7 @@ public class FossilSolverTest {
 		tileGrid.updateSlot(1, 0, TileState.FOSSIL);
 		tileGrid.updateSlot(3, 0, TileState.FOSSIL);
 		tileGrid.updateSlot(0, 1, TileState.FOSSIL);
-		Assertions.assertEquals(getFossilChance(tileGrid, "7.7")[29], 1);
+		Assertions.assertEquals(1, getFossilChance(tileGrid, "7.7")[29]);
 	}
 
 	@Test
@@ -60,5 +66,55 @@ public class FossilSolverTest {
 		tileGrid.updateSlot(0, 0, TileState.FOSSIL);
 		tileGrid.updateSlot(8, 0, TileState.FOSSIL);
 		Assertions.assertTrue(Double.isNaN(getFossilChance(tileGrid, null)[1]));
+	}
+
+
+	TileGrid createTestRotationGrid(int height, int width) {
+		TileState[][] tileStates = new TileState[height][width];
+		for (int x = 0; x < height; x++) {
+			for (int y = 0; y < width; y++) {
+				tileStates[x][y] = TileState.UNKNOWN;
+			}
+		}
+		return new TileGrid(tileStates);
+
+	}
+	@Test
+	void testRotation90(){
+		TileGrid originalGrid = createTestRotationGrid(6, 3);
+		originalGrid.updateSlot(0, 0, TileState.FOSSIL);
+		TileGrid targetGrid = createTestRotationGrid(3, 6);
+		targetGrid.updateSlot(5, 0, TileState.FOSSIL);
+		TileGrid rotatedGrid = rotateGrid(originalGrid, 90);
+		Assertions.assertEquals(targetGrid, rotatedGrid);
+	}
+	@Test
+	void testRotation180(){
+		TileGrid originalGrid = createTestRotationGrid(6, 3);
+		originalGrid.updateSlot(0, 0, TileState.FOSSIL);
+		TileGrid targetGrid = createTestRotationGrid(6, 3);
+		targetGrid.updateSlot(2, 5, TileState.FOSSIL);
+		TileGrid rotatedGrid = rotateGrid(originalGrid, 180);
+		Assertions.assertEquals(targetGrid, rotatedGrid);
+	}
+
+	@Test
+	void testRotation270(){
+		TileGrid originalGrid = createTestRotationGrid(6, 3);
+		originalGrid.updateSlot(0, 0, TileState.FOSSIL);
+		TileGrid targetGrid = createTestRotationGrid(3, 6);
+		targetGrid.updateSlot(0, 2, TileState.FOSSIL);
+		TileGrid rotatedGrid = rotateGrid(originalGrid, 270);
+		Assertions.assertEquals(targetGrid, rotatedGrid);
+	}
+
+	@Test
+	void testFlipped(){
+		TileGrid originalGrid = createTestRotationGrid(6, 3);
+		originalGrid.updateSlot(0, 0, TileState.FOSSIL);
+		TileGrid targetGrid = createTestRotationGrid(6, 3);
+		targetGrid.updateSlot(0, 5, TileState.FOSSIL);
+		TileGrid flippedGrid = flipGrid(originalGrid);
+		Assertions.assertEquals(targetGrid, flippedGrid);
 	}
 }

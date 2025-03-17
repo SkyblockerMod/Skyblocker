@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FossilCalculations {
-	private static final List<Structures.permutation> POSSIBLE_STATES = getAllPossibleStates();
+	protected static final List<Structures.permutation> POSSIBLE_STATES = getAllPossibleStates();
 	private static final int EXCAVATOR_WIDTH = 9;
 	private static final int EXCAVATOR_HEIGHT = 6;
 
@@ -186,7 +186,7 @@ public class FossilCalculations {
 	 * @param grid input grid
 	 * @return flipped grid
 	 */
-	private static Structures.TileGrid flipGrid(Structures.TileGrid grid) {
+	protected static Structures.TileGrid flipGrid(Structures.TileGrid grid) {
 		Structures.TileGrid output = new Structures.TileGrid(new Structures.TileState[grid.height()][grid.width()]);
 		for (int x = 0; x < grid.width(); x++) {
 			for (int y = 0; y < grid.height(); y++) {
@@ -203,15 +203,15 @@ public class FossilCalculations {
 	 * @param rotation rotation amount in degrees
 	 * @return rotated grid
 	 */
-	private static Structures.TileGrid rotateGrid(Structures.TileGrid grid, int rotation) {
+	protected static Structures.TileGrid rotateGrid(Structures.TileGrid grid, int rotation) {
 		int startingWidth = grid.width() - 1;
 		int startingHeight = grid.height() - 1;
 		switch (rotation) {
 			case 90 -> {
-				Structures.TileGrid output = new Structures.TileGrid(new Structures.TileState[grid.height()][grid.width()]);
-				for (int x = 0; x < grid.width(); x++) {
-					for (int y = 0; y < grid.height(); y++) {
-						output.updateSlot(startingWidth - x, y, grid.getSlot(x, y));
+				Structures.TileGrid output = new Structures.TileGrid(new Structures.TileState[grid.width()][grid.height()]);
+				for (int originalX = 0; originalX < grid.width(); originalX++) {
+					for (int originalY = 0; originalY < grid.height(); originalY++) {
+						output.updateSlot(startingHeight - originalY, originalX, grid.getSlot(originalX, originalY));
 					}
 				}
 				return output;
@@ -226,10 +226,10 @@ public class FossilCalculations {
 				return output;
 			}
 			case 270 -> {
-				Structures.TileGrid output = new Structures.TileGrid(new Structures.TileState[grid.height()][grid.width()]);
-				for (int x = 0; x < grid.width(); x++) {
-					for (int y = 0; y < grid.height(); y++) {
-						output.updateSlot(x, startingHeight - y, grid.getSlot(x, y));
+				Structures.TileGrid output = new Structures.TileGrid(new Structures.TileState[grid.width()][grid.height()]);
+				for (int originalX = 0; originalX < grid.width(); originalX++) {
+					for (int originalY = 0; originalY < grid.height(); originalY++) {
+						output.updateSlot(originalY,startingWidth - originalX, grid.getSlot(originalX, originalY));
 					}
 				}
 				return output;
