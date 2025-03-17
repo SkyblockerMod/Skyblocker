@@ -64,7 +64,7 @@ public class CustomizeArmorScreen extends Screen {
 	@Init
 	public static void initThings() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
-				ClientCommandManager.literal("skyblocker").then(ClientCommandManager.literal("customizeArmor").executes(context -> {
+				ClientCommandManager.literal("skyblocker").then(ClientCommandManager.literal("custom").executes(context -> {
 					Scheduler.queueOpenScreen(new CustomizeArmorScreen(null));
 					return 1;
 				}))));
