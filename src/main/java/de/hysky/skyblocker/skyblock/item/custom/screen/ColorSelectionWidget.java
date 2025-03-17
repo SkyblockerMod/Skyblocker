@@ -32,8 +32,8 @@ import java.util.Locale;
 public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
-	private static final Text ADD_COLOR_TEXT = Text.literal("skyblocker.armorCustomization.addCustomColor");
-	private static final Text REMOVE_COLOR_TEXT = Text.literal("skyblocker.armorCustomization.removeCustomColor");
+	private static final Text ADD_COLOR_TEXT = Text.translatable("skyblocker.armorCustomization.addCustomColor");
+	private static final Text REMOVE_COLOR_TEXT = Text.translatable("skyblocker.armorCustomization.removeCustomColor");
 	private static final Text CANNOT_CUSTOMIZE_COLOR_TEXT = Text.translatable("skyblocker.armorCustomization.cannotCustomizeColor");
 	private static final Text ANIMATED_TEXT = Text.translatable("skyblocker.armorCustomization.animated");
 	private static final Text CYCLE_BACK_TEXT = Text.translatable("skyblocker.armorCustomization.cycleBack");
@@ -97,7 +97,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 				.callback(this::onCycleBackCheckbox)
 				.build();
 
-		delaySlider = new Slider(x1, animatedCheckbox.getBottom() + 1, width1, 0.0f, 1.0f, f -> {
+		delaySlider = new Slider(x1, animatedCheckbox.getBottom() + 1, width1, 0.0f, 2.0f, f -> {
 			String itemUuid = ItemUtils.getItemUuid(currentItem);
 			CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 			CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
@@ -107,7 +107,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 					dye.speed()
 			);
 			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
-		}, DELAY_TEXT);
+		}, DELAY_TEXT, true);
 		delaySlider.setTooltip(Tooltip.of(DELAY_TOOLTIP_TEXT));
 
 		speedSlider = new Slider(x1, delaySlider.getBottom() + 1, width1, 0.01f, 2.0f, f -> {
@@ -120,7 +120,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 					f
 			);
 			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
-		}, SPEED_TEXT);
+		}, SPEED_TEXT, false);
 		speedSlider.setTooltip(Tooltip.of(SPEED_TOOLTIP_TEXT));
 
 
@@ -289,20 +289,23 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		private final float minValue;
 		private final float maxValue;
 		private final String translatable;
+		private final boolean linear;
 
 		private boolean clicked = false;
 
-		public Slider(int x, int y, int width, float min, float max, FloatConsumer onValueChanged, @Translatable String translatable) {
+		public Slider(int x, int y, int width, float min, float max, FloatConsumer onValueChanged, @Translatable String translatable, boolean linear) {
 			super(x, y, width, 15, Text.empty(), min);
 			this.onValueChanged = onValueChanged;
 			this.minValue = min;
 			this.maxValue = max;
 			this.translatable = translatable;
+			this.linear = linear;
 			updateMessage();
 		}
 
 		private float trueValue() {
-			return (float) (minValue + value*value * (maxValue - minValue));
+			double v = linear ? value : value*value;
+			return (float) (minValue + v * (maxValue - minValue));
 		}
 
 		@Override
@@ -311,7 +314,8 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		}
 
 		private void setVal(float val) {
-			value = Math.sqrt((val - minValue) / (maxValue - minValue));
+			float v = (val - minValue) / (maxValue - minValue);
+			value = linear ? v : Math.sqrt(v);
 			updateMessage();
 		}
 

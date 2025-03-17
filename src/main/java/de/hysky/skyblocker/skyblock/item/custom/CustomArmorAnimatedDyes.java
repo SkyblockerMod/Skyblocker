@@ -7,6 +7,7 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.OkLabColor;
@@ -38,6 +39,8 @@ public class CustomArmorAnimatedDyes {
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register(CustomArmorAnimatedDyes::registerCommands);
 		WorldRenderEvents.START.register(ignored -> ++frames);
+		// have the animation restart on world change because why not?
+		SkyblockEvents.LOCATION_CHANGE.register(ignored -> cleanTrackers());
 	}
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
@@ -109,9 +112,9 @@ public class CustomArmorAnimatedDyes {
 		if (animatedDye.delay() > 0) {
 			if (animatedDye.cycleBack()) {
 				tracker.onBackCycle = true;
-				tracker.progress = animatedDye.delay() * animatedDye.speed();
+				tracker.progress = Math.clamp(animatedDye.delay() * animatedDye.speed(), 0, 1);
 			} else {
-				tracker.progress = 1 - animatedDye.delay() * animatedDye.speed();
+				tracker.progress = Math.clamp(1 - animatedDye.delay() * animatedDye.speed(), 0, 1);
 			}
 		}
 		return tracker;
