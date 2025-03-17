@@ -466,4 +466,15 @@ public class RenderHelper {
     public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, Color color) {
         renderNineSliceColored(context, texture, x, y, width, height, ColorHelper.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
     }
+
+	public static void drawHorizontalGradient(DrawContext context, float startX, float startY, float endX, float endY, int colorStart, int colorEnd) {
+		context.draw(provider -> {
+			VertexConsumer vertexConsumer = provider.getBuffer(RenderLayer.getGui());
+			Matrix4f matrix4f = context.getMatrices().peek().getPositionMatrix();
+			vertexConsumer.vertex(matrix4f, startX, startY, 0).color(colorStart);
+			vertexConsumer.vertex(matrix4f, startX, endY, 0).color(colorStart);
+			vertexConsumer.vertex(matrix4f, endX, endY, 0).color(colorEnd);
+			vertexConsumer.vertex(matrix4f, endX, startY, 0).color(colorEnd);
+		});
+	}
 }

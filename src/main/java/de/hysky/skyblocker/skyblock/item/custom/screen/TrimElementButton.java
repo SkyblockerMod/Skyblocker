@@ -18,7 +18,7 @@ public class TrimElementButton extends PressableWidget {
 	private final ItemStack icon;
 	private final Consumer<TrimElementButton> onPress;
 
-	public TrimElementButton(Identifier element, ItemStack icon, Consumer<TrimElementButton> onPress) {
+	public TrimElementButton(@Nullable Identifier element, ItemStack icon, Consumer<TrimElementButton> onPress) {
 		super(0, 0, 20, 20, icon.getName());
 		this.element = element;
 		this.icon = icon;

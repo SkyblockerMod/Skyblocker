@@ -27,7 +27,8 @@ public class TrimSelectionWidget extends ContainerWidget {
 
 	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
-	private static final int BUTTONS_PER_ROW = 5;
+	private static final int BUTTONS_PER_ROW_PATTERN = 7;
+	private static final int BUTTONS_PER_ROW_MATERIAL = 5;
 
 	private final List<TrimElementButton> patternButtons = new ArrayList<>();
 	private final List<TrimElementButton> materialButtons = new ArrayList<>();
@@ -55,7 +56,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 		children.addAll(patternButtons);
 		for (int i = 0; i < patternButtons.size(); i++) {
 			TrimElementButton button = patternButtons.get(i);
-			button.setPosition(x + 5 + (i % BUTTONS_PER_ROW) * 20, y + 5 + (i / BUTTONS_PER_ROW) * 20);
+			button.setPosition(x + 5 + (i % BUTTONS_PER_ROW_PATTERN) * 20, y + 5 + (i / BUTTONS_PER_ROW_PATTERN) * 20);
 		}
 
 		// Materials
@@ -70,7 +71,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 		children.addAll(materialButtons);
 		for (int i = 0; i < materialButtons.size(); i++) {
 			TrimElementButton button = materialButtons.get(i);
-			button.setPosition(x + getWidth() - 11 - BUTTONS_PER_ROW * 20 + (i % BUTTONS_PER_ROW) * 20, y + 5 + (i / BUTTONS_PER_ROW) * 20);
+			button.setPosition(x + getWidth() - 11 - BUTTONS_PER_ROW_MATERIAL * 20 + (i % BUTTONS_PER_ROW_MATERIAL) * 20, y + 5 + (i / BUTTONS_PER_ROW_MATERIAL) * 20);
 		}
 	}
 
@@ -110,7 +111,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 
 	@Override
 	protected int getContentsHeightWithPadding() {
-		return (Math.max(patternButtons.size(), materialButtons.size()) / BUTTONS_PER_ROW + 1) * 20 + 10;
+		return (Math.max(patternButtons.size(), materialButtons.size()) / BUTTONS_PER_ROW_PATTERN + 1) * 20 + 10;
 	}
 
 	@Override

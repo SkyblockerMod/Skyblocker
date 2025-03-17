@@ -1,5 +1,8 @@
 package de.hysky.skyblocker.utils;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+
 /**
  * Implements color interpolation in the OkLab color space.
  * 
@@ -7,6 +10,7 @@ package de.hysky.skyblocker.utils;
  * @see <a href="https://www.sjbrown.co.uk/posts/gamma-correct-rendering/">Gamma Correct Rendering</a>
  */
 public class OkLabColor {
+	private static final Int2ObjectMap<Lab> colorToOkLab = new Int2ObjectOpenHashMap<>();
 
 	/**
 	 * Converts a linear SRGB color to the OkLab color space.
@@ -75,17 +79,8 @@ public class OkLabColor {
 	 */
 	//Escape analysis should hopefully take care of the objects :')
 	public static int interpolate(int firstColor, int secondColor, float progress) {
-		//Normalize colours to a range of [0, 1]
-		float normalizedR1 = ((firstColor >> 16) & 0xFF) / 255f;
-		float normalizedG1 = ((firstColor >> 8) & 0xFF) / 255f;
-		float normalizedB1 = (firstColor & 0xFF) / 255f;
-
-		float normalizedR2 = ((secondColor >> 16) & 0xFF) / 255f;
-		float normalizedG2 = ((secondColor >> 8) & 0xFF) / 255f;
-		float normalizedB2 = (secondColor & 0xFF) / 255f;
-
-		Lab lab1 = linearSRGB2OkLab(linearize(normalizedR1), linearize(normalizedG1), linearize(normalizedB1));
-		Lab lab2 = linearSRGB2OkLab(linearize(normalizedR2), linearize(normalizedG2), linearize(normalizedB2));
+		Lab lab1 = colorToOkLab.computeIfAbsent(firstColor & 0xFFFFFF, OkLabColor::colorToOkLab);
+		Lab lab2 = colorToOkLab.computeIfAbsent(secondColor & 0xFFFFFF, OkLabColor::colorToOkLab);
 
 		float L = Math.fma(progress, (lab2.l - lab1.l), lab1.l);
 		float A = Math.fma(progress, (lab2.a - lab1.a), lab1.a);
@@ -97,6 +92,14 @@ public class OkLabColor {
 		int b = Math.clamp((int) (delinearize(rgb.b) * 255f), 0, 255);
 
 		return (r << 16) | (g << 8) | b;
+	}
+
+	private static Lab colorToOkLab(int color) {
+		//Normalize colours to a range of [0, 1]
+		float normalizedR = ((color >> 16) & 0xFF) / 255f;
+		float normalizedG = ((color >> 8) & 0xFF) / 255f;
+		float normalizedB = (color & 0xFF) / 255f;
+		return linearSRGB2OkLab(linearize(normalizedR), linearize(normalizedG), linearize(normalizedB));
 	}
 
 	private record Lab(float l, float a, float b) {}

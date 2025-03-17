@@ -6,36 +6,31 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.OkLabColor;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
-import it.unimi.dsi.fastutil.objects.Object2ObjectFunction;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.text.Text;
+
+import java.util.List;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class CustomArmorAnimatedDyes {
 	private static final Object2ObjectOpenHashMap<AnimatedDye, AnimatedDyeStateTracker> STATE_TRACKER_MAP = new Object2ObjectOpenHashMap<>();
-	private static final Object2ObjectFunction<AnimatedDye, AnimatedDyeStateTracker> NEW_STATE_TRACKER = _dye -> AnimatedDyeStateTracker.create();
 	private static final int DEFAULT_TICK_DELAY = 4;
-	private static int ticks;
+	private static int frames;
 
 	@Init
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register(CustomArmorAnimatedDyes::registerCommands);
-		ClientTickEvents.END_CLIENT_TICK.register(_client -> ++ticks);
+		WorldRenderEvents.START.register(ignored -> ++frames);
 	}
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
@@ -53,14 +48,14 @@ public class CustomArmorAnimatedDyes {
 	}
 
 	private static int customizeAnimatedDye(FabricClientCommandSource source, int color1, int color2, int samples, boolean cycleBack, int tickDelay) {
-		ItemStack heldItem = source.getPlayer().getMainHandStack();
+		/*ItemStack heldItem = source.getPlayer().getMainHandStack();
 
 		if (Utils.isOnSkyblock() && heldItem != null && !heldItem.isEmpty()) {
 			if (heldItem.isIn(ItemTags.DYEABLE)) {
 				String itemUuid = ItemUtils.getItemUuid(heldItem);
 
 				if (!itemUuid.isEmpty()) {
-					Object2ObjectOpenHashMap<String, AnimatedDye> customAnimatedDyes = SkyblockerConfigManager.get().general.customAnimatedDyes;
+					Object2ObjectOpenHashMap<String, AnimatedDyeOld> customAnimatedDyes = SkyblockerConfigManager.get().general.customAnimatedDyes;
 
 					if (color1 == Integer.MIN_VALUE && color2 == Integer.MIN_VALUE) {
 						if (customAnimatedDyes.containsKey(itemUuid)) {
@@ -71,7 +66,7 @@ public class CustomArmorAnimatedDyes {
 							source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.neverHad")));
 						}
 					} else {
-						AnimatedDye animatedDye = new AnimatedDye(color1, color2, samples, cycleBack, tickDelay);
+						AnimatedDyeOld animatedDye = new AnimatedDyeOld(color1, color2, samples, cycleBack, tickDelay);
 
 						customAnimatedDyes.put(itemUuid, animatedDye);
 						SkyblockerConfigManager.save();
@@ -86,23 +81,36 @@ public class CustomArmorAnimatedDyes {
 		} else {
 			source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.unableToSetDye")));
 		}
-
+		*/
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int animateColorTransition(AnimatedDye animatedDye) {
-		AnimatedDyeStateTracker trackedState = STATE_TRACKER_MAP.computeIfAbsent(animatedDye, NEW_STATE_TRACKER);
+		AnimatedDyeStateTracker trackedState = STATE_TRACKER_MAP.computeIfAbsent(animatedDye, CustomArmorAnimatedDyes::createStateTracker);
 
-		if (trackedState.lastRecordedTick + animatedDye.tickDelay() > ticks) {
+		if (trackedState.lastRecordedFrame == frames) {
 			return trackedState.lastColor;
 		}
 
-		trackedState.lastRecordedTick = ticks;
+		trackedState.lastRecordedFrame = frames;
 
-		return animatedDye.interpolate(trackedState);
+		return animatedDye.interpolate(trackedState, MinecraftClient.getInstance().getRenderTickCounter());
 	}
 
-	private static class AnimatedDyeStateTracker {
+	private static AnimatedDyeStateTracker createStateTracker(AnimatedDye animatedDye) {
+		AnimatedDyeStateTracker tracker = new AnimatedDyeStateTracker();
+		if (animatedDye.delay() > 0) {
+			if (animatedDye.cycleBack()) {
+				tracker.onBackCycle = true;
+				tracker.progress = animatedDye.delay() * animatedDye.speed();
+			} else {
+				tracker.progress = 1 - animatedDye.delay() * animatedDye.speed();
+			}
+		}
+		return tracker;
+	}
+
+	private static class AnimatedDyeStateTrackerOld {
 		private int sampleCounter;
 		private boolean onBackCycle = false;
 		private int lastColor = 0;
@@ -120,14 +128,64 @@ public class CustomArmorAnimatedDyes {
 			return sampleCounter++;
 		}
 
-		static AnimatedDyeStateTracker create() {
-			return new AnimatedDyeStateTracker();
+		static AnimatedDyeStateTrackerOld create() {
+			return new AnimatedDyeStateTrackerOld();
 		}
 	}
 
-	public record AnimatedDye(@SerialEntry int color1, @SerialEntry int color2, @SerialEntry int samples, @SerialEntry boolean cycleBack, @SerialEntry int tickDelay) {
+	private static class AnimatedDyeStateTracker {
+		private float progress = 0;
+		private boolean onBackCycle = false;
+		private int lastColor = 0;
+		private int lastRecordedFrame = 0;
+	}
 
-		private int interpolate(AnimatedDyeStateTracker stateTracker) {
+	public static void cleanTrackers() {
+		STATE_TRACKER_MAP.clear();
+	}
+
+	public record DyeFrame(@SerialEntry int color, @SerialEntry float time) {}
+	public record AnimatedDye(@SerialEntry List<DyeFrame> frames, @SerialEntry boolean cycleBack, @SerialEntry float delay, @SerialEntry float speed) {
+
+		private int interpolate(AnimatedDyeStateTracker tracker, RenderTickCounter counter) {
+
+			int dyeFrame = 0;
+			while (dyeFrame < frames.size() - 1 && frames.get(dyeFrame + 1).time <= tracker.progress) dyeFrame++;
+
+
+			DyeFrame current = tracker.onBackCycle ? frames.get(dyeFrame + 1) : frames.get(dyeFrame);
+			DyeFrame next = tracker.onBackCycle ? frames.get(dyeFrame) : frames.get(dyeFrame + 1);
+
+			float progress = (tracker.progress - current.time) / (next.time - current.time);
+
+			tracker.lastColor = OkLabColor.interpolate(current.color, next.color, progress);
+
+			float v = counter.getLastDuration() * speed * 0.05f;
+			if (tracker.onBackCycle) {
+				tracker.progress -= v;
+				if (tracker.progress <= 0f) {
+					tracker.onBackCycle = false;
+					tracker.progress = Math.abs(tracker.progress);
+				}
+			} else {
+				tracker.progress += v;
+				if (tracker.progress >= 1f) {
+					if (cycleBack) {
+						tracker.onBackCycle = true;
+						tracker.progress = 2f - tracker.progress;
+					} else {
+						tracker.progress %= 1.f;
+					}
+				}
+			}
+			return tracker.lastColor;
+		}
+	}
+
+
+	public record AnimatedDyeOld(@SerialEntry int color1, @SerialEntry int color2, @SerialEntry int samples, @SerialEntry boolean cycleBack, @SerialEntry int tickDelay) {
+
+		private int interpolate(AnimatedDyeStateTrackerOld stateTracker) {
 			if (stateTracker.shouldCycleBack(samples, cycleBack)) stateTracker.onBackCycle = true;
 
 			if (stateTracker.onBackCycle) {
@@ -152,5 +210,6 @@ public class CustomArmorAnimatedDyes {
 
 			return interpolatedColor;
 		}
+
 	}
 }
