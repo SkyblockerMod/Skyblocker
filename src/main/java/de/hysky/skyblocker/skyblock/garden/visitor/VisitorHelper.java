@@ -15,8 +15,10 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -33,12 +35,16 @@ public class VisitorHelper {
 	private static final int Y_OFFSET = 4;
 	private static final int ICON_SIZE = 16;
 	private static final int LINE_HEIGHT = 3;
+	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
+
+	private static boolean updateVistors = false;
 
 	@Init
 	public static void initialize() {
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (!(screen instanceof HandledScreen<?> handledScreen) || !shouldRender()) return;
 
+			updateVistors = true;
 			ScreenEvents.afterTick(screen).register(_screen -> updateVisitors(handledScreen.getScreenHandler()));
 			ScreenEvents.afterRender(screen).register((_screen, context, _x, _y, _d) -> renderVisitorHelper(context, client.textRenderer));
 		});
@@ -54,6 +60,7 @@ public class VisitorHelper {
 	 * Updates the current visitors and their required items.
 	 */
 	private static void updateVisitors(ScreenHandler handler) {
+		if (!updateVistors) return;
 		ItemStack visitorHead = handler.getSlot(13).getStack();
 		if (visitorHead == null || !visitorHead.contains(DataComponentTypes.LORE) || ItemUtils.getLoreLineIf(visitorHead, t -> t.contains("Times Visited")) == null) return;
 
@@ -116,7 +123,7 @@ public class VisitorHelper {
 					.findFirst()
 					.map(NEUItem::getSkyblockItemId)
 					.map(ItemRepository::getItemStack)
-					.orElse(null);
+					.orElse(BARRIER);
 		});
 	}
 
@@ -165,10 +172,11 @@ public class VisitorHelper {
 				context.getMatrices().pop();
 			}
 
+			MutableText name = cachedStack != null ? cachedStack.getName().copy() : itemName.copy();
 			Text itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper
-					? cachedStack.getName().copy()
+					? name
 					.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
-					: cachedStack.getName().copy()
+					: name
 					.append(" x" + totalAmount);
 
 			int itemTextWidth = textRenderer.getWidth(itemText);
@@ -238,10 +246,11 @@ public class VisitorHelper {
 	 *
 	 * @param title The visitor's name to match for removal.
 	 */
-	public static void onSlotClick(Slot slot, int slotId, String title) {
+	public static void onSlotClick(Slot slot, int slotId, String title, Slot visitorHeadSlot) {
 		if ((slotId == 29 || slotId == 13 || slotId == 33) && slot.hasStack() &&
 				ItemUtils.getLoreLineIf(slot.getStack(), s -> s.equals("Click to give!") || s.equals("Click to refuse!")) != null) {
-			activeVisitors.removeIf(entry -> entry.name().getString().equals(title));
+			activeVisitors.removeIf(entry -> entry.name().getString().equals(title) && visitorHeadSlot.hasStack() && ItemUtils.getHeadTexture(visitorHeadSlot.getStack()).equals(ItemUtils.getHeadTexture(entry.head())));
+			updateVistors = false;
 		}
 
 		updateItems();
