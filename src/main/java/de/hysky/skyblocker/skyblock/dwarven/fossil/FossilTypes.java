@@ -31,7 +31,7 @@ public enum FossilTypes {
 			{Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.FOSSIL},
 			{Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.FOSSIL},
 			{Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL}
-	}, List.of(Structures.TransformationOptions.ROTATED_0, Structures.TransformationOptions.ROTATED_90, Structures.TransformationOptions.ROTATED_180, Structures.TransformationOptions.ROTATED_270), "7.1", 14, "Helix"),
+	}, List.of(Structures.TransformationOptions.ROTATED_0, Structures.TransformationOptions.ROTATED_90, Structures.TransformationOptions.ROTATED_180, Structures.TransformationOptions.FLIP_ROTATED_270), "7.1", 14, "Helix"),
 	WEBBED(new Structures.TileState[][]{
 			{Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.EMPTY},
 			{Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.FOSSIL},
