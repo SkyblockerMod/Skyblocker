@@ -45,7 +45,7 @@ public class VisitorHelper {
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (!(screen instanceof HandledScreen<?> handledScreen) || !shouldRender()) return;
 
-			updateVistors = true;
+			processVisitor = true;
 			ScreenEvents.afterTick(screen).register(_screen -> updateVisitors(handledScreen.getScreenHandler()));
 			ScreenEvents.afterRender(screen).register((_screen, context, _x, _y, _d) -> renderVisitorHelper(context, client.textRenderer));
 		});
