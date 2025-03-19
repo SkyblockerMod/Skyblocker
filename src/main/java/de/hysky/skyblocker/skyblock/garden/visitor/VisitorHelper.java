@@ -232,8 +232,11 @@ public class VisitorHelper {
 				}
 
 				if (isMouseOverText(mouseX, mouseY, copyTextX, yPosition, textRenderer.getWidth(" [Copy Amount]"), textRenderer.fontHeight)) {
-					MinecraftClient.getInstance().keyboard.setClipboard(String.valueOf(totalAmount));
-					MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
+					MinecraftClient client = MinecraftClient.getInstance();
+					client.keyboard.setClipboard(String.valueOf(totalAmount));
+					if (client.player != null) {
+						client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
+					}
 					return;
 				}
 
