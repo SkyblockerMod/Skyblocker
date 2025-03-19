@@ -37,7 +37,7 @@ public class VisitorHelper {
 	private static final int LINE_HEIGHT = 3;
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 
-	private static boolean updateVistors = false;
+	private static boolean processVistors = false;
 
 	@Init
 	public static void initialize() {
