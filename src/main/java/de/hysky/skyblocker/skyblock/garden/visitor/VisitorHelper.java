@@ -37,7 +37,8 @@ public class VisitorHelper {
 	private static final int LINE_HEIGHT = 3;
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 
-	private static boolean processVistors = false;
+	// Used to prevent adding the visitor again after the player clicks accept or refuse.
+	private static boolean processVistor = false;
 
 	@Init
 	public static void initialize() {
@@ -60,7 +61,7 @@ public class VisitorHelper {
 	 * Updates the current visitors and their required items.
 	 */
 	private static void updateVisitors(ScreenHandler handler) {
-		if (!updateVistors) return;
+		if (!processVistor) return;
 		ItemStack visitorHead = handler.getSlot(13).getStack();
 		if (visitorHead == null || !visitorHead.contains(DataComponentTypes.LORE) || ItemUtils.getLoreLineIf(visitorHead, t -> t.contains("Times Visited")) == null) return;
 
@@ -250,7 +251,7 @@ public class VisitorHelper {
 		if ((slotId == 29 || slotId == 13 || slotId == 33) && slot.hasStack() &&
 				ItemUtils.getLoreLineIf(slot.getStack(), s -> s.equals("Click to give!") || s.equals("Click to refuse!")) != null) {
 			activeVisitors.removeIf(entry -> entry.name().getString().equals(title) && visitorHeadSlot.hasStack() && ItemUtils.getHeadTexture(visitorHeadSlot.getStack()).equals(ItemUtils.getHeadTexture(entry.head())));
-			updateVistors = false;
+			processVistor = false;
 		}
 
 		updateItems();
