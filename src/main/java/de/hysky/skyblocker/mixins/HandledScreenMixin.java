@@ -290,7 +290,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		switch (this.handler) {
 			case GenericContainerScreenHandler genericContainerScreenHandler when genericContainerScreenHandler.getRows() == 6 -> {
-				VisitorHelper.onSlotClick(slot, slotId, title);
+				VisitorHelper.onSlotClick(slot, slotId, title, genericContainerScreenHandler.getSlot(13));
 				// Prevent selling to NPC shops
 				ItemStack sellStack = this.handler.slots.get(49).getStack();
 				if (sellStack.getName().getString().equals("Sell Item") || ItemUtils.getLoreLineIf(sellStack, text -> text.contains("buyback")) != null) {
