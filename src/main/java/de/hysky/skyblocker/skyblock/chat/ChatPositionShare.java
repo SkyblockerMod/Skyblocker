@@ -71,7 +71,7 @@ public class ChatPositionShare {
 
     private static void requestWaypoint(String x, String y, String z, @NotNull String area) {
         String command = "/skyblocker waypoints individual " + x + " " + y + " " + z + " " + area;
-        MutableText requestMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.display").formatted(Formatting.AQUA)
+        MutableText requestMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.display").formatted(Formatting.AQUA).append(" X: " + x + ", Y: " + y + ", Z: " + z)
                 .styled(style -> style
 						.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("skyblocker.config.chat.waypoints.display")))
 						.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command.trim()))
