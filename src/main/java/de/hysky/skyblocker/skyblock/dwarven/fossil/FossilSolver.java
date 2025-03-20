@@ -164,6 +164,12 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 		return 0;
 	}
 
+	@Override
+	public void reset() {
+		chiselLeft = -1;
+		percentage = null;
+	}
+
 
 }
 
