@@ -1,3 +1,15 @@
+# Release 5.1.2
+
+## Highlight
+* Fix Fossil solver
+* Fix Visitor Helper
+
+## What's Changed
+* Fix fossil solver again by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1224
+* the final visitor fix hopefully by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1225
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.1.1...v5.1.2
+___
 # Release 5.1.1
 
 ## Highlight
