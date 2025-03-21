@@ -28,6 +28,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.scoreboard.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -575,4 +577,10 @@ public class Utils {
     public static String getUndashedUuid() {
         return UndashedUuid.toString(getUuid());
     }
+
+	public static RegistryWrapper.WrapperLookup getWrapperLookup() {
+		MinecraftClient client = MinecraftClient.getInstance();
+		return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : BuiltinRegistries.createWrapperLookup();
+
+	}
 }
