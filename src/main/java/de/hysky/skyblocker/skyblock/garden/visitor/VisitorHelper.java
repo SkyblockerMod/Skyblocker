@@ -88,10 +88,15 @@ public class VisitorHelper {
 		ItemUtils.getLore(acceptButton).stream()
 				.map(Text::getString)
 				.map(String::trim)
-				.takeWhile(lore -> !lore.contains("Rewards"))
-				.filter(lore -> lore.contains(" x"))
-				.map(lore -> lore.split(" x"))
-				.forEach(parts -> visitor.addRequiredItem(Text.literal(parts[0].trim()), Formatters.parseNumber(parts[1].trim()).intValue()));
+				.dropWhile(lore -> !lore.contains("Items Required")) // All lines before Items Required (shouldn't be any, but you never know)
+				.skip(1) // skip the Items Required line
+				.takeWhile(lore -> !lore.isEmpty()) // All lines until the blank line before Rewards
+				.forEach(requirement -> {
+					String[] split = requirement.split(" x");
+					Text item = Text.of(split[0].trim());
+					if (split.length == 1) visitor.addRequiredItem(item, 1);
+					else visitor.addRequiredItem(item, Formatters.parseNumber(split[1].trim()).intValue());
+				});
 	}
 
 	private static void updateItems() {
