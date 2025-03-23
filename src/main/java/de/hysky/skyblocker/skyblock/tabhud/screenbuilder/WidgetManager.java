@@ -177,7 +177,7 @@ public class WidgetManager {
 		screenBuilder = getScreenBuilder(Location.GARDEN);
 		screenBuilder.setPositionRule(
 				"hud_farming",
-				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().farming.garden.farmingHud.x, SkyblockerConfigManager.get().farming.garden.farmingHud.y, WidgetManager.ScreenLayer.HUD)
+				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().farming.farmingHud.x, SkyblockerConfigManager.get().farming.farmingHud.y, WidgetManager.ScreenLayer.HUD)
 		);
 
 		for (Location loc : new Location[]{Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES}) {

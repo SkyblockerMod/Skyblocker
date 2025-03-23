@@ -10,10 +10,10 @@ public class FarmingConfig {
 	@SerialEntry
 	public VisitorHelper visitorHelper = new VisitorHelper();
 
-    public static class Garden {
-        @SerialEntry
-        public FarmingHud farmingHud = new FarmingHud();
+    @SerialEntry
+	public FarmingHud farmingHud = new FarmingHud();
 
+    public static class Garden {
         @SerialEntry
         public boolean dicerTitlePrevent = true;
 
@@ -56,5 +56,23 @@ public class FarmingConfig {
 
         @SerialEntry
         public int y;
+
+        @SerialEntry
+        public boolean showCropCounter = true;
+
+        @SerialEntry
+        public boolean showCropsPerMinute = true;
+
+        @SerialEntry
+        public boolean showCoinsPerHour = true;
+
+        @SerialEntry
+        public boolean showBlocksPerSecond = true;
+
+        @SerialEntry
+        public boolean showFarmingLevelProgress = true;
+
+        @SerialEntry
+        public boolean showXpPerHour = true;
     }
 }
