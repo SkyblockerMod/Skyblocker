@@ -189,7 +189,9 @@ public class VisitorHelper {
 			int copyTextX = textX + itemTextWidth;
 
 			context.drawText(textRenderer, itemText, textX, yPosition, -1, true);
-			context.drawText(textRenderer, Text.literal(" [Copy Amount]").setStyle(Style.EMPTY.withColor(Formatting.YELLOW)), copyTextX, yPosition, -1, true);
+			if (SkyblockerConfigManager.get().farming.visitorHelper.showCopyAmountButton) {
+				context.drawText(textRenderer, Text.literal(" [Copy Amount]").setStyle(Style.EMPTY.withColor(Formatting.YELLOW)), copyTextX, yPosition, -1, true);
+			}
 
 			index++;
 		}
@@ -235,14 +237,15 @@ public class VisitorHelper {
 					MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName.getString(), true);
 					return;
 				}
-
-				if (isMouseOverText(mouseX, mouseY, copyTextX, yPosition, textRenderer.getWidth(" [Copy Amount]"), textRenderer.fontHeight)) {
-					MinecraftClient client = MinecraftClient.getInstance();
-					client.keyboard.setClipboard(String.valueOf(totalAmount));
-					if (client.player != null) {
-						client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
+				if (SkyblockerConfigManager.get().farming.visitorHelper.showCopyAmountButton) {
+					if (isMouseOverText(mouseX, mouseY, copyTextX, yPosition, textRenderer.getWidth(" [Copy Amount]"), textRenderer.fontHeight)) {
+						MinecraftClient client = MinecraftClient.getInstance();
+						client.keyboard.setClipboard(String.valueOf(totalAmount));
+						if (client.player != null) {
+							client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
+						}
+						return;
 					}
-					return;
 				}
 
 				index++;

@@ -42,6 +42,9 @@ public class FarmingConfig {
 
 		@SerialEntry
 		public boolean showStacksInVisitorHelper = false;
+
+        @SerialEntry
+        public boolean showCopyAmountButton = true;
 	}
 
     public static class FarmingHud {

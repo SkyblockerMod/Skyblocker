@@ -257,7 +257,9 @@
   "skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly": "Garden Only",
   "skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly.@Tooltip": "Locks the Visitor Helper so it only works on the Garden.\n§cRequires Visitor Helper to be enabled.",
   "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper": "Show Stacks in Visitor Helper",
-  "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip": "Show's the required items as (5 stacks + 45) rather than just a total number especially useful for ironman players.",
+  "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip": "Shows the required items as (5 stacks + 45) rather than just a total number especially useful for ironman players.",
+  "skyblocker.config.farming.visitorHelper.showCopyAmountButton": "Show [Copy Amount] Button",
+  "skyblocker.config.farming.visitorHelper.showCopyAmountButton.@Tooltip": "Show a [Copy Amount] button next to Visitor Helper orders",
 
   "skyblocker.config.foraging": "Foraging",
   "skyblocker.config.foraging.hunting": "Hunting",

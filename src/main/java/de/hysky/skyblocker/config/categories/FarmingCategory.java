@@ -104,6 +104,14 @@ public class FarmingCategory {
 										newValue -> config.farming.visitorHelper.showStacksInVisitorHelper = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+                                                .option(Option.<Boolean>createBuilder()
+                                                                .name(Text.translatable("skyblocker.config.farming.visitorHelper.showCopyAmountButton"))
+                                                                .description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.showCopyAmountButton.@Tooltip")))
+                                                                .binding(defaults.farming.visitorHelper.showCopyAmountButton,
+										() -> config.farming.visitorHelper.showCopyAmountButton,
+										newValue -> config.farming.visitorHelper.showCopyAmountButton = newValue)
+                                                                .controller(ConfigUtils::createBooleanController)
+                                                                .build())
 						.build())
                 .build();
 
