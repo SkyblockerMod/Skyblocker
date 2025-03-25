@@ -1132,5 +1132,8 @@
     "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip": "当怪物的生命值条为空时的颜色",
     "skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel": "HOTM能力等级",
     "text.skyblocker.offline": "离线",
-    "text.skyblocker.dead": "死亡"
+    "text.skyblocker.dead": "死亡",
+    "skyblocker.config.helpers.carnival.catchAFishHelper.@Tooltip": "将金鱼高亮",
+    "skyblocker.gardenPlots": "花园地皮",
+    "skyblocker.gardenPlots.plot": "地皮 - %s"
 }
