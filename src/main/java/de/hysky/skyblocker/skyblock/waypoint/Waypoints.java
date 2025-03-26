@@ -13,7 +13,6 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.TextUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -84,8 +83,7 @@ public class Waypoints {
 		int index = group.getCurrentIndex();
 		int waypointCount = group.waypoints().size();
 		switch (action) {
-			case LAST -> group.setCurrentIndex(waypointCount - 1);
-			case FIRST -> group.setCurrentIndex(0);
+			case FIRST, RESET -> group.setCurrentIndex(0);
 			case NEXT -> group.setCurrentIndex((index + 1) % waypointCount);
 			case PREVIOUS -> group.setCurrentIndex((index - 1 + waypointCount) % waypointCount);
 		}
@@ -243,7 +241,7 @@ public class Waypoints {
 		NEXT,
 		PREVIOUS,
 		FIRST,
-		LAST;
+		RESET;
 
 		private static final Codec<OrderedAction> CODEC = StringIdentifiable.createCodec(OrderedAction::values);
 		private static final ArgumentType ARGUMENT_TYPE = new ArgumentType();
