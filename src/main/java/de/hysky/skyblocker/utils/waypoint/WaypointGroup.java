@@ -140,7 +140,15 @@ public class WaypointGroup {
         }
     }
 
-    @Override
+	public void setCurrentIndex(int currentIndex) {
+		this.currentIndex = currentIndex;
+	}
+
+	public int getCurrentIndex() {
+		return currentIndex;
+	}
+
+	@Override
     public boolean equals(Object o) {
         try {
             return (boolean) InstancedUtils.equals(getClass()).invokeExact(this, o);
