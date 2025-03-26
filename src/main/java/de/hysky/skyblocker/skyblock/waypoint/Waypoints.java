@@ -11,7 +11,9 @@ import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.TextUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -26,6 +28,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EnumArgumentType;
+import net.minecraft.text.Text;
 import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -72,7 +75,10 @@ public class Waypoints {
 		Optional<WaypointGroup> groupOptional = waypoints.get(Utils.getLocation()).stream()
 				.filter(group -> group.ordered() && !group.waypoints().isEmpty() && group.waypoints().stream().allMatch(Waypoint::isEnabled))
 				.findFirst();
-		if (groupOptional.isEmpty()) return 1;
+		if (groupOptional.isEmpty()) {
+			context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.literal("No ordered group enabled here! (make sure all waypoints in the group are enabled)")));
+			return 1;
+		}
 		WaypointGroup group = groupOptional.get();
 		OrderedAction action = context.getArgument("action", OrderedAction.class);
 		int index = group.getCurrentIndex();
