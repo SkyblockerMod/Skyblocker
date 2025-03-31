@@ -492,5 +492,7 @@
     "skyblocker.exotic.glitched": "BUGGÉ",
     "skyblocker.end.hud.protectorLocations.front": "Avant",
     "text.skyblocker.dead": "Mort",
-    "text.skyblocker.offline": "Hors-ligne"
+    "text.skyblocker.offline": "Hors-ligne",
+    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Si la quantité de Toxic Arrow Poison que vous avez dans votre inventaire est inférieure au seuil fixé, vous recevrez un avertissement.\n\n16 est le minimum absolu.\nVous en voulez 32 pour une phase « DPS » en douceur avec des tirs en préalable.",
+    "skyblocker.config.debug": "Débogage"
 }
