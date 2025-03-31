@@ -49,7 +49,7 @@ public class DungeonMap {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) return;
 
-        MapIdComponent mapId = getMapIdComponent(client.player.getInventory().main.get(8));
+        MapIdComponent mapId = getMapIdComponent(client.player.getInventory().getMainStacks().get(8));
 
         MapState state = FilledMapItem.getMapState(mapId, client.world);
         if (state == null) return;

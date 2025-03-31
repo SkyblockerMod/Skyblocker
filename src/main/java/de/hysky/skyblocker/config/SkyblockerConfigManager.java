@@ -35,7 +35,7 @@ public class SkyblockerConfigManager {
                     .setJson5(false)
                     .appendGsonBuilder(builder -> builder
                             .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
-                            .registerTypeHierarchyAdapter(Identifier.class, new Identifier.Serializer()))
+                            .registerTypeHierarchyAdapter(Identifier.class, new CodecTypeAdapter<>(Identifier.CODEC)))
                     .build())
             .build();
 

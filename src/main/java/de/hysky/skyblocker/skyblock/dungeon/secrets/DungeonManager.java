@@ -488,7 +488,7 @@ public class DungeonManager {
                 context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get player or world."));
                 return Command.SINGLE_SUCCESS;
             }
-            ItemStack stack = client.player.getInventory().main.get(8);
+            ItemStack stack = client.player.getInventory().getMainStacks().get(8);
             if (!stack.isOf(Items.FILLED_MAP)) {
                 context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map."));
                 return Command.SINGLE_SUCCESS;
@@ -578,7 +578,7 @@ public class DungeonManager {
 			currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
 		}
 
-        MapState map = FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().main.get(8)), client.world);
+        MapState map = FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().getMainStacks().get(8)), client.world);
         if (map == null) {
             return;
         }

@@ -137,7 +137,7 @@ public class Debug {
 					List<ArmorStandEntity> armorStands = context.getSource().getWorld().getEntitiesByClass(ArmorStandEntity.class, context.getSource().getPlayer().getBoundingBox().expand(8d), EntityPredicates.NOT_MOUNTED);
 
 					for (ArmorStandEntity armorStand : armorStands) {
-						Iterable<ItemStack> equippedItems = armorStand.getEquippedItems();
+						Iterable<ItemStack> equippedItems = ItemUtils.getArmor(armorStand);
 
 						for (ItemStack stack : equippedItems) {
 							ItemUtils.getHeadTextureOptional(stack).ifPresent(texture -> context.getSource().sendFeedback(Text.of(texture)));

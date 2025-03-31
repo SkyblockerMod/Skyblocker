@@ -135,7 +135,7 @@ public class ItemProtection {
 	private static ActionResult onEntityInteract(PlayerEntity playerEntity, World world, Hand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
 		if (!Utils.isOnSkyblock() || !world.isClient) return ActionResult.PASS;
 		if (entity instanceof ItemFrameEntity itemFrame && itemFrame.getHeldItemStack().isEmpty()) {
-			if (isItemProtected(playerEntity.getStackInHand(hand)) || HotbarSlotLock.isLocked(playerEntity.getInventory().selectedSlot)) {
+			if (isItemProtected(playerEntity.getStackInHand(hand)) || HotbarSlotLock.isLocked(playerEntity.getInventory().getSelectedSlot())) {
 				return ActionResult.FAIL;
 			}
 		}

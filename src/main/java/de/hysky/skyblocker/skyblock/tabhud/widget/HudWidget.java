@@ -71,7 +71,7 @@ public abstract class HudWidget extends AbstractWidget {
 	protected abstract void renderWidget(DrawContext context, int mouseX, int mouseY, float delta);
 
 	public void render(DrawContext context) {
-		render(context, -1, -1, MinecraftClient.getInstance().getRenderTickCounter().getLastFrameDuration());
+		render(context, -1, -1, MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks());
 	}
 
 	@Override
