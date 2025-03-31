@@ -94,7 +94,7 @@
     "skyblocker.config.helpers.fairySouls.enableFairySoulsHelper": "Activer l'aide au Fairy Souls",
     "skyblocker.config.helpers.fairySouls": "Aide aux Fairy Souls",
     "skyblocker.config.general.shortcuts": "Raccourcis",
-    "key.skyblocker.toggleA": "Basculer l'onglet HUD vers l'écran A",
+    "key.skyblocker.toggleA": "Montrer l'onglet HUD secondaire",
     "skyblocker.config.general.shortcuts.enableShortcuts": "Activer les Raccourcis",
     "skyblocker.config.general.shortcuts.enableShortcuts.@Tooltip": "Marche partout, même en Vanilla ! Edite les raccourcis avec \"/skyblocker shortcuts\". Au moins une des options suivantes doit être activée pour que ceci prenne effet.",
     "skyblocker.config.general.shortcuts.enableCommandShortcuts": "Activer les Commandes Raccourcis",
@@ -254,7 +254,7 @@
     "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "Lorsque dans la Crimson Isle, empêche le brouillard d'apparaître plus proche du joueur comme il le ferai dans les biomes du Nether en vanilla.",
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Alerte du seuil de flêches de poison",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage": "Message des cryptes de donjon",
-    "skyblocker.skyblockerScreen": "Menu principal de Skyblocker",
+    "skyblocker.skyblockerScreen": "Écran principal de Skyblocker",
     "skyblocker.config.dungeons.dungeonChestProfit": "Calculateur de profit de coffre de donjon",
     "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit": "Calculateur de profit de coffre de Crésus",
     "argument.color.rgb.incomplete": "Incomplet (3 valeurs de couleurs attendues).",
@@ -270,7 +270,7 @@
     "skyblocker.config.dungeons.dungeonChestProfit.includeKismet": "Inclure le prix de Kismet",
     "skyblocker.config.dungeons.dungeonChestProfit.includeEssence": "Inclure l'essence",
     "skyblocker.config.dungeons.dungeonChestProfit.neutralColor": "Couleur neutre",
-    "key.skyblocker.slottext": "Texte de slot",
+    "key.skyblocker.slottext": "Texte du slot",
     "skyblocker.config.shortcutToKeybindsSettings": "Editer les contrôles",
     "skyblocker.config.shortcutToKeybindsSettings.@Text": "Clic... (Ouvre les options de contrôles)",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.HIGHLIGHT": "Surlignage",
@@ -490,5 +490,7 @@
     "skyblocker.end.hud.protectorLocations.rightBack": "Droite Arrière",
     "skyblocker.end.hud.stage": "Stage : %s",
     "skyblocker.exotic.glitched": "BUGGÉ",
-    "skyblocker.end.hud.protectorLocations.front": "Avant"
+    "skyblocker.end.hud.protectorLocations.front": "Avant",
+    "text.skyblocker.dead": "Mort",
+    "text.skyblocker.offline": "Hors-ligne"
 }
