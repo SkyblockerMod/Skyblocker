@@ -494,6 +494,7 @@
     "skyblocker.exotic.glitched": "BUGGÉ",
     "skyblocker.end.hud.protectorLocations.front": "Avant",
     "text.skyblocker.dead": "Mort",
+<<<<<<< HEAD
     "text.skyblocker.offline": "Hors-ligne",
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Si la quantité de Toxic Arrow Poison que vous avez dans votre inventaire est inférieure au seuil fixé, vous recevrez un avertissement.\n\n16 est le minimum absolu.\nVous en voulez 32 pour une phase « DPS » en douceur avec des tirs en préalable.",
     "skyblocker.config.debug": "Débogage",
@@ -566,4 +567,7 @@
     "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "Ajoute un effet visuel spécial activé en obtenant un colorant rare !",
     "skyblocker.config.dungeons.secretWaypoints.enableFairySoulWaypoints": "Activer les Waypoints de Fairy Soul",
     "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Taille du Score"
+=======
+    "text.skyblocker.offline": "Hors-ligne"
+>>>>>>> 110a10b6 (Translated using Weblate (French))
 }
