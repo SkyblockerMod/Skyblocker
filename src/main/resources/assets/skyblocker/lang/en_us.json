@@ -31,6 +31,8 @@
   "text.skyblocker.discord": "Discord",
   "text.skyblocker.clickToSend": "[Click To Send In Chat]",
   "text.skyblocker.clickToSend.@Tooltip": "Click to send this in chat.",
+  "text.skyblocker.dead": "Dead",
+  "text.skyblocker.offline": "Offline",
 
   "skyblocker.skyblockerScreen": "Skyblocker Main Screen",
 
@@ -220,6 +222,9 @@
   "skyblocker.config.dungeons.secretWaypoints.showSecretText": "Show Secret Text",
   "skyblocker.config.dungeons.secretWaypoints.waypointType": "Waypoint Type",
 
+  "skyblocker.config.dungeons.spiritLeapOverlay": "Spirit Leap Overlay",
+  "skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip": "Shows a custom overlay for the Spirit Leap screen that makes leaping to teammates easy and consistent.",
+
   "skyblocker.config.dungeons.starredMobBoundingBoxes": "Starred Mob Bounding Boxes",
   "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
 
@@ -243,7 +248,16 @@
   "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "While in the garden, on the right of your inventory there will be a widget to quickly teleport to plots. It will also show plots that have pests (this requires the Pests widget to be enabled and visible in the Tab).",
   "skyblocker.config.farming.garden.lockMouseGround": "Only lock camera when on the ground",
   "skyblocker.config.farming.garden.lockMouseTool": "Lock camera when holding a farming tool",
-  "skyblocker.config.farming.garden.visitorHelper": "Visitor helper",
+  "skyblocker.config.farming.garden.pestHighlighter": "Pest Highlighter",
+  "skyblocker.config.farming.garden.pestHighlighter.@Tooltip": "Make's all pest's on your island glow so you can see them easier :D",
+
+  "skyblocker.config.farming.visitorHelper": "Visitor Helper",
+  "skyblocker.config.farming.visitorHelper.visitorHelper": "Enable Visitor Helper",
+  "skyblocker.config.farming.visitorHelper.visitorHelper.@Tooltip": "Makes it easier to manage visitors by grouping similar requests, copying item amounts, and quickly opening the Bazaar to buy items.",
+  "skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly": "Garden Only",
+  "skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly.@Tooltip": "Locks the Visitor Helper so it only works on the Garden.\n§cRequires Visitor Helper to be enabled.",
+  "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper": "Show Stacks in Visitor Helper",
+  "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip": "Show's the required items as (5 stacks + 45) rather than just a total number especially useful for ironman players.",
 
   "skyblocker.config.foraging": "Foraging",
   "skyblocker.config.foraging.hunting": "Hunting",
@@ -399,9 +413,11 @@
   "skyblocker.config.helpers.enableBitsHelper": "Highlight best Community Store (Bits Shop) offer",
   "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip",
 
-
   "skyblocker.config.helpers.enableWardrobeHelper": "Enable Wardrobe Helper",
   "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing armor from the wardrobe by pressing hotbar keys 1-9 while the menu is open. The corresponding armor set in the wardrobe menu will be equipped.",
+
+  "skyblocker.config.helpers.enableDateCalculator": "Enable Date Calculator",
+  "skyblocker.config.helpers.enableDateCalculator.@Tooltip": "Shows the date and time of events in the future, such as calendar events.",
 
   "skyblocker.config.helpers.experiments": "Experiments Solver",
   "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Enable Chronomatron Solver",
@@ -467,10 +483,12 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage": "Hide Message:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip": "Remove the message from chat.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase": "Ignore Case:",
-  "skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip": "if the filter is case-sensitive.",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip": "If the filter is case-sensitive.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.inputs": "Inputs:",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen": "Chat Rule Location Config",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen.note": "Note: When all locations are unchecked, the chat rule will work in every location.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.locations": "Valid Locations:",
-  "skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip": "List of locations where the filter will work. Separate each location with a \",\" and use a \"!\" if you want it to work anywhere but a location. Location Names:",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip": "Whitelist of locations where the filter will work.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.name": "Name:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.name.@Tooltip": "The name of the rule.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.outputs": "Outputs:",
@@ -574,8 +592,10 @@
   "skyblocker.config.mining.crystalHollows.chestHighlighter.@Tooltip": "Highlight found treasure chests and lock pick locations when powder mining.",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "Chest Highlight Color",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "What color the treasure chests / lock pick should be highlighted.",
-  "skyblocker.config.mining.crystalHollows.powderTrackerFilter": "Powder Tracker Shown Items",
-  "skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip": "Choose which items to show & include in the profit calculation for the powder tracker.",
+  "skyblocker.config.mining.crystalHollows.enablePowderTracker": "Enable Powder Mining Tracker",
+  "skyblocker.config.mining.crystalHollows.enablePowderTracker.@Tooltip": "Tracks the treasure chest rewards you get from powder mining in the Crystal Hollows.",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter": "Powder Mining Tracker Shown Items",
+  "skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip": "Choose which items to show & include in the profit calculation for the powder mining tracker.",
   "skyblocker.config.mining.crystalHollows.powderTrackerFilter.screenTitle": "Shown Items",
 
   "skyblocker.config.mining.crystalsHud": "Crystal Hollows Map",
@@ -645,6 +665,16 @@
   "skyblocker.config.mining.glacite.enableParsingChatCorpseFinder.@Tooltip": "If enabled, will listen to chat and process corpses shared by other players. Should be compatible with other mods.",
   "skyblocker.config.mining.glacite.autoShareCorpses": "Automatically Share Found Corpses In Chat",
   "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "Sends a message in party chat with the location of the found corpse when you find one.",
+  "skyblocker.config.mining.glacite.enableCorpseProfitTracker": "Enable Corpse Profit Tracker",
+  "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": "Tracks the profit and the loot you get from corpses. Shows the profit in chat when looting a corpse, and has a command to see your history of corpse loot in /skyblocker rewardTrackers corpse list",
+
+  "skyblocker.config.mining.glacite.fossilSolver": "Fossil Solver",
+  "skyblocker.config.mining.glacite.fossilSolver.@Tooltip": "Helps find fossils in the Fossil Excavator",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound": "No fossil found",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.possiblePatterns": "Possible Patterns: ",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.minimumTilesLeft": "Minimum tiles left : ",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.probability": "Probability: ",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.foundFossil": "Found Fossil: ",
 
   "skyblocker.config.misc": "Misc",
 
@@ -768,6 +798,9 @@
 
   "skyblocker.config.uiAndVisuals": "UI & Visuals",
 
+  "skyblocker.config.uiAndVisuals.swingOnAbilities": "Swing On Abilities",
+  "skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip": "Swings your hand whenever you use an item with a right-click ability.",
+
   "skyblocker.config.uiAndVisuals.nightVisionStrength": "Night Vision Strength",
   "skyblocker.config.uiAndVisuals.nightVisionStrength.@Tooltip": "Determines the strength of the Night Vision effect.",
 
@@ -815,6 +848,25 @@
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips": "Hide empty item tooltips in menus",
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "Hides the tooltip of an item if it doesn't have any information to display. Also blocks clicks on filler items like glass panes.",
 
+  "skyblocker.config.uiAndVisuals.healthBars": "Custom Mob Health Bars",
+  "skyblocker.config.uiAndVisuals.healthBars.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.healthBars.enabled.@Tooltip": "(only updates when health updates)",
+  "skyblocker.config.uiAndVisuals.healthBars.scale": "Scale",
+  "skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName": "Remove Health From Name",
+  "skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName.@Tooltip": "Remove the current health of mobs from their nametag",
+  "skyblocker.config.uiAndVisuals.healthBars.removeMaxHealthFromName": "Remove Max Health From Name",
+  "skyblocker.config.uiAndVisuals.healthBars.removeMaxHealthFromName.@Tooltip": "Remove the maximum health of mobs from their nametag",
+  "skyblocker.config.uiAndVisuals.healthBars.applyToHealthOnlyMobs": "Apply to Health Only Mobs",
+  "skyblocker.config.uiAndVisuals.healthBars.applyToHealthOnlyMobs.@Tooltip": "Also add health bars to mobs with only a current health value (will sometimes be wrong if mob is damaged before loading in)",
+  "skyblocker.config.uiAndVisuals.healthBars.hideFullHealth": "Hide Full Health Bars",
+  "skyblocker.config.uiAndVisuals.healthBars.hideFullHealth.@Tooltip": "Don't show the health bar when its full",
+  "skyblocker.config.uiAndVisuals.healthBars.fullBarColor": "Full Health bar Color",
+  "skyblocker.config.uiAndVisuals.healthBars.fullBarColor.@Tooltip": "Color of health bar when mob is at full hp",
+  "skyblocker.config.uiAndVisuals.healthBars.halfBarColor": "Half Health Bar Color",
+  "skyblocker.config.uiAndVisuals.healthBars.halfBarColor.@Tooltip": "Color of health bar when mob is at half hp",
+  "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor": "Empty Health Bar Color",
+  "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip": "Color of health bar when mob is at full hp",
+
   "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "Enable Sign Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "Enables the ability for you to do calculations when inputting values such as price for the ah.\n Key:\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\n purse/P = current purse value",
@@ -856,6 +908,7 @@
   "skyblocker.config.uiAndVisuals.slotText.enchantmentLevel": "Enchantment Book Level",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop": "Essence Shop",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip": "Displays the levels and your current amount of essence while in essence shops.",
+  "skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel": "HOTM Perk Level",
   "skyblocker.config.uiAndVisuals.slotText.minionLevel": "Minion Level",
   "skyblocker.config.uiAndVisuals.slotText.petLevel": "Pet Level",
   "skyblocker.config.uiAndVisuals.slotText.potionLevel": "Potion Level",
@@ -929,6 +982,7 @@
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableInstantTransmission": "Enable Instant Transmission Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission": "Enable Sinrecall Transmission Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableTeleportOverlays": "Enable Teleport Overlays",
+  "skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor": "Teleport Overlay Color",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableWeirdTransmission": "Enable Weird Transmission Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableWitherImpact": "Enable Wither Impact Overlay",
 
@@ -1191,7 +1245,7 @@
   "skyblocker.tips.fairySoulsEnigmaSoulsRelics": "Don't know where to find Fairy Souls, Enigma Souls, or Relics? Enable the helpers to aid your exploration; they'll remember which souls you've already found.",
   "skyblocker.tips.quickNav": "You can customize the QuickNav buttons in the config.",
   "skyblocker.tips.waypoints": "You can import (including from skytils), add, remove, and toggle waypoints on any island with /skyblocker waypoints.",
-  "skyblocker.tips.orderedWaypoints": "You can import (including from coleweight), add, remove, and toggle ordered waypoints with /skyblocker waypoints ordered.",
+  "skyblocker.tips.orderedWaypoints": "You can import (including from Coleweight), add, remove, and toggle ordered waypoints with /skyblocker waypoints. When importing from Coleweight you must go to Share → Import Waypoints (Soopy). Make sure to import them under the desired island.",
   "skyblocker.tips.visitorHelper": "Click on the item name in the visitor helper to buy from the bazaar or click on [Copy Amount] to copy the amount to your clipboard.",
   "skyblocker.tips.slotText": "Slot text shows you the attribute shard info, catacombs level, collection level, enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, skill level, skyblock level in the slot.",
   "skyblocker.tips.profileViewer": "You can view other players' profiles with /pv.",
@@ -1267,6 +1321,23 @@
   "skyblocker.crimson.kuudra.noArrowPoison": "No Arrow Poison!",
   "skyblocker.crimson.kuudra.lowArrowPoison": "Low on Arrow Poison!",
   "skyblocker.crimson.kuudra.danger": "DANGER!",
+
+  "skyblocker.corpseTracker.screenTitle": "Corpse Loot Tracker",
+  "skyblocker.corpseTracker.historyView": "Switch to history view",
+  "skyblocker.corpseTracker.summaryView": "Switch to summary view",
+  "skyblocker.corpseTracker.totalProfit": "Total Profit: %s%s",
+  "skyblocker.corpseTracker.corpseProfit": "Corpse Profit: %s",
+  "skyblocker.corpseTracker.incompletePriceData": " (Incomplete Price Data)",
+  "skyblocker.corpseTracker.hoverText": "Click to open corpse loot history",
+  "skyblocker.corpseTracker.somethingWentWrong": "Something went wrong with corpse profit calculation. Check logs for more information.",
+  "skyblocker.corpseTracker.emptyHistory": "Your corpse history list is empty :(",
+  "skyblocker.corpseTracker.historyReset": "Corpse profit history has been reset for the current profile.",
+
+  "skyblocker.powderTracker.historyReset": "Powder mining tracker has been reset for the current profile.",
+  "skyblocker.powderTracker.profit": "Profit: %s Coins",
+  "skyblocker.powderTracker.emptyHistory": "Your powder mining rewards list is empty :(",
+  "skyblocker.powderTracker.rewardsFilteredOut": "Your powder mining rewards list is empty after filtering :(",
+
 
   "skyblocker.waypoints.ordered.import.skyblocker.success": "Successfully imported waypoints from the Skyblocker Ordered Waypoints format!",
   "skyblocker.waypoints.ordered.import.skyblocker.unknownFormatHeader": "§cThis import code doesn't look like its in the Skyblocker Ordered Waypoints format, double-check your clipboard to see if everything is correct.",

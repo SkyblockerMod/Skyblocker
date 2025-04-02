@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UIAndVisualsConfig {
+
+	@SerialEntry
+	public boolean swingOnAbilities = false;
+
 	@SerialEntry
 	public int nightVisionStrength = 100;
 
@@ -84,6 +88,9 @@ public class UIAndVisualsConfig {
 
     @SerialEntry
     public CompactDamage compactDamage = new CompactDamage();
+
+	@SerialEntry
+	public HealthBars healthBars = new HealthBars();
 
     public static class ChestValue {
         @SerialEntry
@@ -316,6 +323,9 @@ public class UIAndVisualsConfig {
         public boolean enableTeleportOverlays = true;
 
         @SerialEntry
+        public Color teleportOverlayColor = new Color(0x7F761594, true);
+
+        @SerialEntry
         public boolean enableWeirdTransmission = true;
 
         @SerialEntry
@@ -413,4 +423,34 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public Color critDamageGradientEnd = new Color(0xFF5555);
     }
+
+	public static class HealthBars {
+		@SerialEntry
+		public boolean enabled = false;
+
+		@SerialEntry
+		public float scale = 1.5f;
+
+		@SerialEntry
+		public boolean removeHealthFromName = true;
+
+		@SerialEntry
+		public boolean removeMaxHealthFromName = true;
+
+		@SerialEntry
+		public boolean applyToHealthOnlyMobs = true;
+
+		@SerialEntry
+		public boolean hideFullHealth = false;
+
+
+		@SerialEntry
+		public Color fullBarColor = new Color(0x00FF00);
+
+		@SerialEntry
+		public Color halfBarColor = new Color(0xFF4600);
+
+		@SerialEntry
+		public Color emptyBarColor = new Color(0xFF0000);
+	}
 }

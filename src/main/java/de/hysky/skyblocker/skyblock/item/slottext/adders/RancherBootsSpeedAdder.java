@@ -31,6 +31,6 @@ public class RancherBootsSpeedAdder extends SimpleSlotTextAdder {
 		if (matcher == null) return List.of();
 		String speed = matcher.group(2);
 		if (speed == null) speed = matcher.group(1); //2nd group only matches when the speed cap is set to a number beyond the player's actual speed cap.
-		return SlotText.bottomLeftList(Text.literal(speed).withColor(0xFFDDC1));
+		return SlotText.bottomLeftList(Text.literal(speed).withColor(SlotText.CREAM));
 	}
 }

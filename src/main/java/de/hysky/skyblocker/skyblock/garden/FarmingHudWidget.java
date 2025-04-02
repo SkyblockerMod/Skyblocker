@@ -94,10 +94,10 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 		float cropsPerMinute = FarmingHud.cropsPerMinute();
 		addSimpleIcoText(cropStack, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
 		addSimpleIcoText(Ico.GOLD, "Coins/h: ", Formatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
-		addSimpleIcoText(cropStack, "Blocks/s: ", Formatting.YELLOW, Integer.toString(FarmingHud.blockBreaks()));
+		addSimpleIcoText(cropStack, "Blocks/s: ", Formatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
 		//noinspection DataFlowIssue
-		addComponent(Components.progressComponent(Ico.LANTERN, Text.literal("Farming Level: "), FarmingHud.farmingXpPercentProgress(), Formatting.GOLD.getColorValue()));
-		addSimpleIcoText(Ico.LIME_DYE, "Farming XP/h: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) FarmingHud.farmingXpPerHour()));
+		addComponent(Components.progressComponent(Ico.LANTERN, Text.literal("Farming Level:"), FarmingHud.farmingXpPercentProgress(), Formatting.GOLD.getColorValue()));
+		addSimpleIcoText(Ico.LIME_DYE, "Farming XP/h: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
 
 		Entity cameraEntity = client.getCameraEntity();
 		String yaw = cameraEntity == null ? "No Camera Entity" : String.format("%.2f", MathHelper.wrapDegrees(cameraEntity.getYaw()));

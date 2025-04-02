@@ -6,7 +6,6 @@ import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.MessageHandlerAccessor;
-import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.purse.PurseChangeCause;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -135,6 +134,10 @@ public class Utils {
     public static boolean isInTheRift() {
         return location == Location.THE_RIFT;
     }
+
+	public static boolean isInGarden() {
+		return location == Location.GARDEN;
+	}
 
     /**
      * @return if the player is in the end island
@@ -361,22 +364,22 @@ public class Utils {
 
             TEXT_SCOREBOARD.addAll(textLines);
             STRING_SCOREBOARD.addAll(stringLines);
-            Utils.updatePurse();
-			SlayerManager.getSlayerBossInfo(true);
-			updateArea();
+			if (isOnSkyblock) {
+				Utils.updatePurse();
+				SlayerManager.getSlayerBossInfo(true);
+				updateArea();
+			}
         } catch (NullPointerException e) {
             //Do nothing
         }
     }
 
-    //TODO add event in the future
     private static void updateArea() {
-    	if (isOnSkyblock) {
-        	String areaName = getIslandArea().replaceAll("[⏣ф]", "").strip();
-        	area = Area.from(areaName);
-    	} else {
-    		area = Area.UNKNOWN;
-    	}
+		String areaName = getIslandArea().replaceAll("[⏣ф]", "").strip();
+		Area oldArea = area;
+		area = Area.from(areaName);
+
+		if (!oldArea.equals(area)) SkyblockEvents.AREA_CHANGE.invoker().onSkyblockAreaChange(area);
     }
 
 	public static void updatePurse() {
@@ -441,7 +444,6 @@ public class Utils {
                 if (Utils.gameType.equals("SKYBLOCK")) {
                     isOnSkyblock = true;
                     tickProfileId();
-					SlayerManager.getSlayerInfoOnJoin();
 
                     if (!previousServerType.equals("SKYBLOCK")) SkyblockEvents.JOIN.invoker().onSkyblockJoin();
                 } else if (previousServerType.equals("SKYBLOCK")) {

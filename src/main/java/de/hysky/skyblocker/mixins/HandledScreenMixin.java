@@ -2,7 +2,6 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -11,7 +10,7 @@ import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
-import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
+import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
@@ -136,13 +135,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "mouseClicked")
-	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		if (SkyblockerConfigManager.get().farming.garden.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar"))) {
-			VisitorHelper.onMouseClicked(mouseX, mouseY, button, this.textRenderer);
-		}
-	}
-
 	@ModifyExpressionValue(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDI)Z"))
 	public boolean skyblocker$passThroughSearchFieldUnfocusedClicks(boolean superClicked, double mouseX, double mouseY, int button) {
 		//Handle Search Field clicks - as of 1.21.4 the game will only send clicks to the selected element rather than trying to send one to each and stopping when the first returns true (if any).
@@ -224,6 +216,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	/**
 	 * Avoids getting currentSolver again when it's already in the scope for some usages of this method.
+	 *
 	 * @see #skyblocker$experimentSolvers$getStack(Slot, ItemStack, ContainerSolver)
 	 */
 	@Unique
@@ -297,8 +290,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		switch (this.handler) {
 			case GenericContainerScreenHandler genericContainerScreenHandler when genericContainerScreenHandler.getRows() == 6 -> {
-				VisitorHelper.onSlotClick(slot, slotId, title, genericContainerScreenHandler.getSlot(13).getStack());
-
+				VisitorHelper.onSlotClick(slot, slotId, title, genericContainerScreenHandler.getSlot(13));
 				// Prevent selling to NPC shops
 				ItemStack sellStack = this.handler.slots.get(49).getStack();
 				if (sellStack.getName().getString().equals("Sell Item") || ItemUtils.getLoreLineIf(sellStack, text -> text.contains("buyback")) != null) {
@@ -326,6 +318,13 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack);
 
 			if (disallowed) ci.cancel();
+		}
+	}
+
+	@Inject(at = @At("HEAD"), method = "mouseClicked")
+	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+		if (VisitorHelper.shouldRender()) {
+			VisitorHelper.handleMouseClick(mouseX, mouseY, button, this.textRenderer);
 		}
 	}
 

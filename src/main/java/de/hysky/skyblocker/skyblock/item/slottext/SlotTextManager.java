@@ -37,6 +37,7 @@ public class SlotTextManager {
 			new MinionLevelAdder(),
 			new PetLevelAdder(),
 			new SkyblockLevelAdder(),
+			new HotmPerkLevelAdder(),
 			new SkillLevelAdder(),
 			new CatacombsLevelAdder.Dungeoneering(),
 			new CatacombsLevelAdder.DungeonClasses(),

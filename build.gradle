@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.9-SNAPSHOT'
+	id 'fabric-loom' version '1.10-SNAPSHOT'
 	id 'maven-publish'
 	id "me.modmuss50.mod-publish-plugin" version "0.8.1"
 	id "de.hysky.skyblocker.annotation-processor"
@@ -146,6 +146,9 @@ dependencies {
 	}
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
+	// Loom does not always add this
+	implementation "ca.weblite:java-objc-bridge:1.1"
+
 	// Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
@@ -202,13 +205,14 @@ loom {
 	mixin {
 		useLegacyMixinAp = false
 	}
+}
 
-	runs {
-		clientGametest {
-			inherit client
-			name "Client Game Test"
-			vmArg "-Dfabric.client.gametest"
-		}
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "skyblocker-test"
+		enableGameTests = false
+		eula = true
 	}
 }
 
@@ -241,6 +245,8 @@ jar {
 
 test {
 	useJUnitPlatform()
+
+	systemProperty("IS_TEST_ENV", "true")
 }
 
 publishMods {

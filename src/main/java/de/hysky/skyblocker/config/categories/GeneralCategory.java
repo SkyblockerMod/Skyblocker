@@ -58,6 +58,7 @@ public class GeneralCategory {
                         .controller(ConfigUtils::createBooleanController)
                         .build())
 
+				// Speed Presets
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.general.speedPresets"))
 						.collapsed(true)

@@ -2,19 +2,9 @@ package de.hysky.skyblocker.utils;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import it.unimi.dsi.fastutil.objects.*;
 
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.function.Function;
 
 public final class CodecUtils {
@@ -32,18 +22,31 @@ public final class CodecUtils {
 	}
 
 	public static <K> Codec<Object2BooleanMap<K>> object2BooleanMapCodec(Codec<K> keyCodec) {
-	    return Codec.unboundedMap(keyCodec, Codec.BOOL).xmap(Object2BooleanOpenHashMap::new, Function.identity());
+		return Codec.unboundedMap(keyCodec, Codec.BOOL).xmap(Object2BooleanOpenHashMap::new, Function.identity());
 	}
 
 	public static <K> Codec<Object2IntMap<K>> object2IntMapCodec(Codec<K> keyCodec) {
-	    return Codec.unboundedMap(keyCodec, Codec.INT).xmap(Object2IntOpenHashMap::new, Function.identity());
+		return Codec.unboundedMap(keyCodec, Codec.INT).xmap(Object2IntOpenHashMap::new, Function.identity());
 	}
 
 	public static <K> Codec<Object2DoubleMap<K>> object2DoubleMapCodec(Codec<K> keyCodec) {
-	    return Codec.unboundedMap(keyCodec, Codec.DOUBLE).xmap(Object2DoubleOpenHashMap::new, Function.identity());
+		return Codec.unboundedMap(keyCodec, Codec.DOUBLE).xmap(Object2DoubleOpenHashMap::new, Function.identity());
 	}
 
 	public static <K, V> Codec<Object2ObjectMap<K, V>> object2ObjectMapCodec(Codec<K> keyCodec, Codec<V> valueCodec) {
-	    return Codec.unboundedMap(keyCodec, valueCodec).xmap(Object2ObjectOpenHashMap::new, Function.identity());
+		return Codec.unboundedMap(keyCodec, valueCodec).xmap(Object2ObjectOpenHashMap::new, Function.identity());
+	}
+
+	/**
+	 * Creates a {@link EnumSet} codec for the given enum codec and class.
+	 *
+	 * @param enumCodec Codec of the enum
+	 * @param <E> The enum type
+	 * @return EnumSet codec for the given enum
+	 */
+	public static <E extends Enum<E>> Codec<EnumSet<E>> enumSetCodec(Codec<E> enumCodec, Class<E> enumClass) {
+		// EnumSet#copyOf finds type from the first element of the list passed to it, so if it's empty the enum type is unknown and an exception is thrown
+		// So we have to manually handle the case where the list empty
+		return enumCodec.listOf().xmap(list -> list.isEmpty() ? EnumSet.noneOf(enumClass) : EnumSet.copyOf(list), List::copyOf);
 	}
 }
