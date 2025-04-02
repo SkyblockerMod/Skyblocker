@@ -41,7 +41,6 @@ public class ItemUtilsTest {
 		//The hide tooltip fields are consolidated into a single component now so this just fixes it until I want to edit the constants lol
 		Dynamic<JsonElement> dynamic = new Dynamic<>(JSON_OPS, JsonParser.parseString(itemStackJson));
 		Dynamic<JsonElement> fixed = Schemas.getFixer().update(TypeReferences.ITEM_STACK, dynamic, 4189, 4323);
-		System.out.println(fixed.getValue().toString());
 
 		return ItemStack.CODEC.parse(fixed).getOrThrow();
 	}
@@ -130,7 +129,7 @@ public class ItemUtilsTest {
 	void testGetDurability() {
 		IntIntPair durability = ItemUtils.getDurability(TITANIUM_DRILL_DR_X655);
 		Assertions.assertNotNull(durability);
-		Assertions.assertEquals(durability.leftInt(), 5395);
-		Assertions.assertEquals(durability.rightInt(), 10_000);
+		Assertions.assertEquals(5395, durability.leftInt());
+		Assertions.assertEquals(10_000, durability.rightInt());
 	}
 }

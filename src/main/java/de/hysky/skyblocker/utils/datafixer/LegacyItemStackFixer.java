@@ -63,7 +63,7 @@ public class LegacyItemStackFixer {
 		TooltipDisplayComponent display = stack.getOrDefault(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplayComponent.DEFAULT)
 				.with(DataComponentTypes.ATTRIBUTE_MODIFIERS, true)
 				.with(DataComponentTypes.ENCHANTMENTS, true);
-		stack.set(DataComponentTypes.TOOLTIP_DISPLAY, display);;
+		stack.set(DataComponentTypes.TOOLTIP_DISPLAY, display);
 
 		return stack;
 	}
