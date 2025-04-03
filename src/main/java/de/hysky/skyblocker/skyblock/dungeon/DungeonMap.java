@@ -45,24 +45,26 @@ public class DungeonMap {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
     }
 
-    public static void render(MatrixStack matrices) {
+	private static void render(DrawContext context) {
+		if (Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss() && SkyblockerConfigManager.get().dungeons.dungeonMap.enableMap) {
+			render(context.getMatrices(), SkyblockerConfigManager.get().dungeons.dungeonMap.mapX, SkyblockerConfigManager.get().dungeons.dungeonMap.mapY, SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling);
+		}
+	}
+
+    public static void render(MatrixStack matrices, int x, int y, float scale) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) return;
 
         MapIdComponent mapId = getMapIdComponent(client.player.getInventory().main.get(8));
-
         MapState state = FilledMapItem.getMapState(mapId, client.world);
         if (state == null) return;
 
-        int x = SkyblockerConfigManager.get().dungeons.dungeonMap.mapX;
-        int y = SkyblockerConfigManager.get().dungeons.dungeonMap.mapY;
-        float scaling = SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling;
         VertexConsumerProvider.Immediate vertices = client.getBufferBuilders().getEffectVertexConsumers();
         MapRenderer mapRenderer = client.getMapRenderer();
 
         matrices.push();
         matrices.translate(x, y, 0);
-        matrices.scale(scaling, scaling, 0f);
+        matrices.scale(scale, scale, 0f);
         mapRenderer.update(mapId, state, MAP_RENDER_STATE);
         mapRenderer.draw(MAP_RENDER_STATE, matrices, vertices, false, LightmapTextureManager.MAX_LIGHT_COORDINATE);
         vertices.draw();
@@ -75,12 +77,6 @@ public class DungeonMap {
             cachedMapIdComponent = mapIdComponent;
             return mapIdComponent;
         } else return cachedMapIdComponent != null ? cachedMapIdComponent : DEFAULT_MAP_ID_COMPONENT;
-    }
-
-    private static void render(DrawContext context) {
-        if (Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss() && SkyblockerConfigManager.get().dungeons.dungeonMap.enableMap) {
-            render(context.getMatrices());
-        }
     }
 
     private static void reset() {

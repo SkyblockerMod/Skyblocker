@@ -202,7 +202,7 @@ public class GeneralConfig {
         public RarityBackgroundStyle itemRarityBackgroundStyle = RarityBackgroundStyle.SQUARE;
 
         @SerialEntry
-        public float itemRarityBackgroundsOpacity = 1f;
+        public float itemRarityBackgroundsOpacity = 0.5f;
     }
 
     public enum RarityBackgroundStyle {
