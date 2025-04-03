@@ -111,6 +111,13 @@ public class DungeonsCategory {
                                         newValue -> config.dungeons.dungeonMap.enableMap = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.map.fancyMap"))
+								.binding(defaults.dungeons.dungeonMap.fancyMap,
+										() -> config.dungeons.dungeonMap.fancyMap,
+										newValue -> config.dungeons.dungeonMap.fancyMap = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .option(Option.<Float>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.map.mapScaling"))
                                 .binding(defaults.dungeons.dungeonMap.mapScaling,

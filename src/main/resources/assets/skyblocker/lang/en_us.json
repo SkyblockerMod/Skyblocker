@@ -163,6 +163,7 @@
 
   "skyblocker.config.dungeons.map": "Map",
   "skyblocker.config.dungeons.map.enableMap": "Enable Map",
+  "skyblocker.config.dungeons.map.fancyMap": "Fancy Dungeon Map",
   "skyblocker.config.dungeons.map.mapScaling": "Map Scaling",
   "skyblocker.config.dungeons.map.mapScreen": "Dungeon Map & Score Placement Config...",
 

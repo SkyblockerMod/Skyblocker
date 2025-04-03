@@ -8,14 +8,14 @@ import net.minecraft.item.map.MapDecoration;
 import net.minecraft.item.map.MapDecorationTypes;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Position;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.RoundingMode;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.*;
 
 public class DungeonMapUtils {
@@ -143,6 +143,10 @@ public class DungeonMapUtils {
     public static Vector2ic getMapPosFromPhysical(Vector2ic physicalEntrancePos, Vector2ic mapEntrancePos, int mapRoomSize, Vector2ic physicalPos) {
         return new Vector2i(physicalPos).sub(physicalEntrancePos).div(32).mul(mapRoomSize + 4).add(mapEntrancePos);
     }
+
+	public static Vector2dc getMapPosFromPhysical(Vector2ic physicalEntrancePos, Vector2ic mapEntrancePos, int mapRoomSize, Position physicalPos) {
+		return new Vector2d(physicalPos.getX(), physicalPos.getZ()).sub(physicalEntrancePos.x(), physicalEntrancePos.y()).div(32).mul(mapRoomSize + 4).add(mapEntrancePos.x(), mapEntrancePos.y());
+	}
 
     /**
      * Gets the map pos for the room that could be the furthest north-west on the map

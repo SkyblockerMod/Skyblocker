@@ -107,7 +107,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 		int x = (width >> 1) - 64;
 		int y = (height >> 2) - 64;
-		DungeonMap.render(context.getMatrices(), x, y, 1);
+		DungeonMap.render(context, x, y, 1, true);
 		context.drawBorder(x, y, 128, 128, -1);
 	}
 

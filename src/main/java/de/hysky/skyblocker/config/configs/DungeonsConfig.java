@@ -76,6 +76,9 @@ public class DungeonsConfig {
         @SerialEntry
         public boolean enableMap = true;
 
+		@SerialEntry
+		public boolean fancyMap = true;
+
         @SerialEntry
         public float mapScaling = 1f;
 
