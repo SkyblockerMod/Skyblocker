@@ -98,6 +98,7 @@ public class DungeonMap {
 			context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(entity.getYaw() + 180));
 			RealmsUtil.drawPlayerHead(context, -4, -4, 8, entity.getUuid());
 			context.drawBorder(-5, -5, 10, 10, ColorHelper.fullAlpha(dungeonClass.color()));
+			context.fill(-1, -7, 1, -5, ColorHelper.fullAlpha(dungeonClass.color()));
 			context.getMatrices().pop();
 		}
 	}
