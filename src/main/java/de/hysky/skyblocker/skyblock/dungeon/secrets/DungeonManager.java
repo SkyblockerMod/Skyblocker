@@ -590,6 +590,7 @@ public class DungeonManager {
 			Vec3d playerPos = client.player.getPos();
 			physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(playerPos);
 			currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
+			DungeonEvents.DUNGEON_LOADED.invoker().onDungeonLoaded();
 		}
 
         MapState map = FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().main.get(8)), client.world);
