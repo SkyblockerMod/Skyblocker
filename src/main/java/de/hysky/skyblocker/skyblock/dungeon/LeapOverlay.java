@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.mixins.accessors.MapStateAccessor;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
@@ -21,6 +22,7 @@ import net.minecraft.client.realms.util.RealmsUtil;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
+import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -42,6 +44,8 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	private static final int BUTTON_HEIGHT = 50;
 	private final GenericContainerScreenHandler handler;
 	private final SortedSet<PlayerReference> references = new TreeSet<>();
+	@Nullable
+	private UUID hovered;
 
 	public LeapOverlay(GenericContainerScreenHandler handler) {
 		super(Text.literal("Skyblocker Leap Overlay"));
@@ -107,8 +111,26 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 		int x = (width >> 1) - 64;
 		int y = (height >> 2) - 64;
-		DungeonMap.render(context, x, y, 1, true);
+		hovered = DungeonMap.render(context, x, y, 1, true, mouseX - x, mouseY - y, hoveredElement(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
 		context.drawBorder(x, y, 128, 128, -1);
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		int x = (width >> 1) - 64;
+		int y = (height >> 2) - 64;
+		if (x <= mouseX && mouseX <= x + 128 && y <= mouseY && mouseY <= y + 128) {
+			assert client != null && client.player != null && client.interactionManager != null;
+			Optional.ofNullable(FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().main.get(8)), client.world))
+					.stream().map(MapStateAccessor.class::cast).map(MapStateAccessor::getDecorations).map(Map::entrySet).flatMap(Set::stream)
+					.map(DungeonMap.PlayerRenderState::of)
+					.filter(Objects::nonNull).filter(player -> player.mapPos().distanceSquared(mouseX - x, mouseY - y) <= 16)
+					.flatMap(player -> references.stream().filter(ref -> ref.uuid().equals(player.uuid())))
+					.findAny().ifPresent(ref -> client.interactionManager.clickSlot(ref.syncId(), ref.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, client.player));
+			return true;
+		}
+
+		return super.mouseClicked(mouseX, mouseY, button);
 	}
 
 	@Override
@@ -134,7 +156,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 	}
 
-	private static class PlayerButton extends ButtonWidget {
+	private class PlayerButton extends ButtonWidget {
 		private static final int BORDER_THICKNESS = 2;
 		private static final int HEAD_SIZE = 32;
 		private final PlayerReference reference;
@@ -146,7 +168,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			Identifier texture = this.isSelected() ? BUTTON_HIGHLIGHTED : BUTTON;
+			Identifier texture = this.isSelected() || reference.uuid().equals(LeapOverlay.this.hovered) ? BUTTON_HIGHLIGHTED : BUTTON;
 			context.drawGuiTexture(RenderLayer::getGuiTextured, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
 			int baseX = this.getX() + BORDER_THICKNESS;

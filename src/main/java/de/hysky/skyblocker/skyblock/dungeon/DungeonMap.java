@@ -37,6 +37,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.RotationAxis;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
 
@@ -109,12 +110,17 @@ public class DungeonMap {
 	}
 
 	public static void render(DrawContext context, int x, int y, float scale, boolean fancy) {
+		render(context, x, y, scale, fancy, Integer.MIN_VALUE, Integer.MIN_VALUE, null);
+	}
+
+	@Nullable
+	public static UUID render(DrawContext context, int x, int y, float scale, boolean fancy, int mouseX, int mouseY, @Nullable UUID enlarge) {
 		MinecraftClient client = MinecraftClient.getInstance();
-		if (client.player == null || client.world == null) return;
+		if (client.player == null || client.world == null) return null;
 
 		MapIdComponent mapId = getMapIdComponent(client.player.getInventory().main.get(8));
 		MapState state = FilledMapItem.getMapState(mapId, client.world);
-		if (state == null) return;
+		if (state == null) return null;
 
 		VertexConsumerProvider.Immediate vertices = client.getBufferBuilders().getEffectVertexConsumers();
 		MapRenderer mapRenderer = client.getMapRenderer();
@@ -126,8 +132,10 @@ public class DungeonMap {
 		mapRenderer.draw(MAP_RENDER_STATE, context.getMatrices(), vertices, false, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 		vertices.draw();
 
-		if (fancy) renderPlayerHeads(client, context, state);
+		UUID hoveredHead = null;
+		if (fancy) hoveredHead = renderPlayerHeads(context, state, mouseX, mouseY, enlarge);
 		context.getMatrices().pop();
+		return hoveredHead;
 	}
 
 	public static MapIdComponent getMapIdComponent(ItemStack stack) {
@@ -138,32 +146,52 @@ public class DungeonMap {
 		} else return cachedMapIdComponent != null ? cachedMapIdComponent : DEFAULT_MAP_ID_COMPONENT;
 	}
 
-	private static void renderPlayerHeads(MinecraftClient client, DrawContext context, MapState state) {
-		if (!DungeonManager.isClearingDungeon()) return;
+	private static UUID renderPlayerHeads(DrawContext context, MapState state, int mouseX, int mouseY, @Nullable UUID enlarge) {
+		if (!DungeonManager.isClearingDungeon()) return null;
 
-		for (Map.Entry<String, MapDecoration> mapPlayerDecoration : ((MapStateAccessor) state).getDecorations().entrySet()) {
-			if (!mapPlayers.containsKey(mapPlayerDecoration.getKey())) continue;
-			// Get the player uuid and name pair with the highest count (therefore most likely to be the correct player)
-			Pair<UUID, String> mapPlayer = mapPlayers.get(mapPlayerDecoration.getKey()).entrySet().stream()
-					.max(Map.Entry.comparingByValue()).orElseThrow().getKey();
-			// Use the player entity if it exists, since it gives the most accurate position and rotation
-			PlayerEntity player = client.world.getPlayerByUuid(mapPlayer.left());
-			Vector2dc mapPos = player != null ? DungeonMapUtils.getMapPosFromPhysical(DungeonManager.getPhysicalEntrancePos(), DungeonManager.getMapEntrancePos(), DungeonManager.getMapRoomSize(), player.getPos()) : new Vector2d(mapPlayerDecoration.getValue().x() / 2d + 64, mapPlayerDecoration.getValue().z() / 2d + 64);
-			float deg = player != null ? player.getYaw() : mapPlayerDecoration.getValue().rotation() * 360 / 16.0F;
-			DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(mapPlayer.right());
+		UUID hovered = null;
+		for (Map.Entry<String, MapDecoration> mapDecoration : ((MapStateAccessor) state).getDecorations().entrySet()) {
+			PlayerRenderState player = PlayerRenderState.of(mapDecoration);
+			if (player == null) continue;
+			DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(player.name());
 
 			context.getMatrices().push();
-			context.getMatrices().translate(mapPos.x(), mapPos.y(), 0);
-			context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(deg + 180));
-			RealmsUtil.drawPlayerHead(context, -4, -4, 8, mapPlayer.left());
+			context.getMatrices().translate(player.mapPos().x(), player.mapPos().y(), 0);
+			context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(player.deg() + 180));
+
+			if (player.uuid().equals(enlarge)) {
+				// Enlarge the player head when the corresponding button is hovered
+				context.getMatrices().scale(2, 2, 1);
+			} else if (hovered == null && player.mapPos().distanceSquared(mouseX, mouseY) < 16) {
+				// Enlarge the player head when hovered
+				context.getMatrices().scale(2, 2, 1);
+				hovered = player.uuid();
+			}
+			RealmsUtil.drawPlayerHead(context, -4, -4, 8, player.uuid());
 			context.drawBorder(-5, -5, 10, 10, ColorHelper.fullAlpha(dungeonClass.color()));
 			context.fill(-1, -7, 1, -5, ColorHelper.fullAlpha(dungeonClass.color()));
 			context.getMatrices().pop();
 		}
+		return hovered;
 	}
 
 	private static void reset() {
 		cachedMapIdComponent = null;
 		mapPlayers.clear();
+	}
+
+	public record PlayerRenderState(UUID uuid, String name, Vector2dc mapPos, float deg) {
+		public static PlayerRenderState of(Map.Entry<String, MapDecoration> mapDecoration) {
+			if (!mapPlayers.containsKey(mapDecoration.getKey())) return null;
+			// Get the player uuid and name pair with the highest count (therefore most likely to be the correct player)
+			Pair<UUID, String> mapPlayer = mapPlayers.get(mapDecoration.getKey()).entrySet().stream()
+					.max(Map.Entry.comparingByValue()).orElseThrow().getKey();
+			// Use the player entity if it exists, since it gives the most accurate position and rotation
+			PlayerEntity player = MinecraftClient.getInstance().world.getPlayerByUuid(mapPlayer.left());
+			Vector2dc mapPos = player != null ? DungeonMapUtils.getMapPosFromPhysical(DungeonManager.getPhysicalEntrancePos(), DungeonManager.getMapEntrancePos(), DungeonManager.getMapRoomSize(), player.getPos()) : new Vector2d(mapDecoration.getValue().x() / 2d + 64, mapDecoration.getValue().z() / 2d + 64);
+			float deg = player != null ? player.getYaw() : mapDecoration.getValue().rotation() * 360 / 16.0F;
+
+			return new PlayerRenderState(mapPlayer.left(), mapPlayer.right(), mapPos, deg);
+		}
 	}
 }
