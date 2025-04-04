@@ -58,6 +58,7 @@
     "accessors.FrustumInvoker",
     "accessors.HandledScreenAccessor",
     "accessors.InGameHudInvoker",
+    "accessors.MapStateAccessor",
     "accessors.MessageHandlerAccessor",
     "accessors.MinecraftClientAccessor",
     "accessors.PlayerListHudAccessor",
