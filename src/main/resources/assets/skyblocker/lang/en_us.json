@@ -814,6 +814,9 @@
   "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation": "Cancel Component Update Animation",
   "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip": "Cancels the down-and-up animation in your hand that plays when an item's components are updated.",
 
+  "skyblocker.config.uiAndVisuals.cancelShortbowPullAnimation": "Cancel Shortbow Pull Animation",
+  "skyblocker.config.uiAndVisuals.cancelShortbowPullAnimation.@Tooltip": "Cancels the pull animation for shortbows, which primarily occurs when switching bows.",
+
   "skyblocker.config.uiAndVisuals.chestValue": "Chest Value",
   "skyblocker.config.uiAndVisuals.chestValue.color": "Chest Value Color",
   "skyblocker.config.uiAndVisuals.chestValue.enableChestValue": "Enable Chest Value",
