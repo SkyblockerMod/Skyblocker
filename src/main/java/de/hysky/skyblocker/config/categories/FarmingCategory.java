@@ -20,20 +20,32 @@ public class FarmingCategory {
                         .name(Text.translatable("skyblocker.config.farming.garden"))
                         .collapsed(false)
                         .option(Option.<Boolean>createBuilder()
+                                .name(Text.translatable("skyblocker.config.farming.garden.enableHud"))
+                                .binding(defaults.farming.garden.farmingHud.enableHud,
+                                        () -> config.farming.garden.farmingHud.enableHud,
+                                        newValue -> config.farming.garden.farmingHud.enableHud = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(ButtonOption.createBuilder()
+                                .name(Text.translatable("skyblocker.config.farming.garden.farmingHud"))
+                                .text(Text.translatable("text.skyblocker.open"))
+                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GARDEN, FarmingHudWidget.getInstance().getInternalID(), screen)))
+                                .build())
+                        .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.farming.garden.dicerTitlePrevent"))
                                 .binding(defaults.farming.garden.dicerTitlePrevent,
                                         () -> config.farming.garden.dicerTitlePrevent,
                                         newValue -> config.farming.garden.dicerTitlePrevent = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.garden.pestHighlighter"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.farming.garden.pestHighlighter.@Tooltip")))
-                                .binding(defaults.farming.garden.pestHighlighter,
-                                        () -> config.farming.garden.pestHighlighter,
-                                        newValue -> config.farming.garden.pestHighlighter = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.farming.garden.pestHighlighter"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.farming.garden.pestHighlighter.@Tooltip")))
+								.binding(defaults.farming.garden.pestHighlighter,
+										() -> config.farming.garden.pestHighlighter,
+										newValue -> config.farming.garden.pestHighlighter = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.farming.garden.lockMouseTool"))
                                 .binding(defaults.farming.garden.lockMouseTool,
@@ -65,100 +77,43 @@ public class FarmingCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.farming.visitorHelper"))
-                        .collapsed(false)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelper"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelper.@Tooltip")))
-                                .binding(defaults.farming.visitorHelper.visitorHelper,
-                                        () -> config.farming.visitorHelper.visitorHelper,
-                                        newValue -> config.farming.visitorHelper.visitorHelper = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly.@Tooltip")))
-                                .binding(defaults.farming.visitorHelper.visitorHelperGardenOnly,
-                                        () -> config.farming.visitorHelper.visitorHelperGardenOnly,
-                                        newValue -> config.farming.visitorHelper.visitorHelperGardenOnly = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip")))
-                                .binding(defaults.farming.visitorHelper.showStacksInVisitorHelper,
-                                        () -> config.farming.visitorHelper.showStacksInVisitorHelper,
-                                        newValue -> config.farming.visitorHelper.showStacksInVisitorHelper = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.visitorHelper.showCopyAmountButton"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.showCopyAmountButton.@Tooltip")))
-                                .binding(defaults.farming.visitorHelper.showCopyAmountButton,
-                                        () -> config.farming.visitorHelper.showCopyAmountButton,
-                                        newValue -> config.farming.visitorHelper.showCopyAmountButton = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .build())
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.farming.farmingHud"))
-                        .collapsed(false)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.farmingHud.enableHud"))
-                                .binding(defaults.farming.farmingHud.enableHud,
-                                        () -> config.farming.farmingHud.enableHud,
-                                        newValue -> config.farming.farmingHud.enableHud = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(ButtonOption.createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.farmingHud.openConfig"))
-                                .text(Text.translatable("text.skyblocker.open"))
-                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GARDEN, FarmingHudWidget.getInstance().getInternalID(), screen)))
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.farmingHud.showCropCounter"))
-                                .binding(defaults.farming.farmingHud.showCropCounter,
-                                        () -> config.farming.farmingHud.showCropCounter,
-                                        newValue -> config.farming.farmingHud.showCropCounter = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.farmingHud.showCropsPerMinute"))
-                                .binding(defaults.farming.farmingHud.showCropsPerMinute,
-                                        () -> config.farming.farmingHud.showCropsPerMinute,
-                                        newValue -> config.farming.farmingHud.showCropsPerMinute = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.farmingHud.showCoinsPerHour"))
-                                .binding(defaults.farming.farmingHud.showCoinsPerHour,
-                                        () -> config.farming.farmingHud.showCoinsPerHour,
-                                        newValue -> config.farming.farmingHud.showCoinsPerHour = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.farmingHud.showBlocksPerSecond"))
-                                .binding(defaults.farming.farmingHud.showBlocksPerSecond,
-                                        () -> config.farming.farmingHud.showBlocksPerSecond,
-                                        newValue -> config.farming.farmingHud.showBlocksPerSecond = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.farmingHud.showFarmingLevelProgress"))
-                                .binding(defaults.farming.farmingHud.showFarmingLevelProgress,
-                                        () -> config.farming.farmingHud.showFarmingLevelProgress,
-                                        newValue -> config.farming.farmingHud.showFarmingLevelProgress = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.farmingHud.showXpPerHour"))
-                                .binding(defaults.farming.farmingHud.showXpPerHour,
-                                        () -> config.farming.farmingHud.showXpPerHour,
-                                        newValue -> config.farming.farmingHud.showXpPerHour = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .build())
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.farming.visitorHelper"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelper.@Tooltip")))
+								.binding(defaults.farming.visitorHelper.visitorHelper,
+										() -> config.farming.visitorHelper.visitorHelper,
+										newValue -> config.farming.visitorHelper.visitorHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly.@Tooltip")))
+								.binding(defaults.farming.visitorHelper.visitorHelperGardenOnly,
+										() -> config.farming.visitorHelper.visitorHelperGardenOnly,
+										newValue -> config.farming.visitorHelper.visitorHelperGardenOnly = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip")))
+								.binding(defaults.farming.visitorHelper.showStacksInVisitorHelper,
+										() -> config.farming.visitorHelper.showStacksInVisitorHelper,
+										newValue -> config.farming.visitorHelper.showStacksInVisitorHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+                                                .option(Option.<Boolean>createBuilder()
+                                                                .name(Text.translatable("skyblocker.config.farming.visitorHelper.showCopyAmountButton"))
+                                                                .description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.showCopyAmountButton.@Tooltip")))
+                                                                .binding(defaults.farming.visitorHelper.showCopyAmountButton,
+										() -> config.farming.visitorHelper.showCopyAmountButton,
+										newValue -> config.farming.visitorHelper.showCopyAmountButton = newValue)
+                                                                .controller(ConfigUtils::createBooleanController)
+                                                                .build())
+						.build())
                 .build();
+
     }
 }

@@ -87,31 +87,18 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 		String cropItemId = FARMING_TOOLS.getOrDefault(itemId, "");
 		ItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
 
-		de.hysky.skyblocker.config.configs.FarmingConfig.FarmingHud hudConfig = SkyblockerConfigManager.get().farming.farmingHud;
-		if (hudConfig.showCropCounter) {
-			String counterText = FarmingHud.counterText();
-			String counterNumber = FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter());
-			if (FarmingHud.CounterType.NONE.matchesText(counterText)) counterNumber = "";
-			addSimpleIcoText(cropStack, counterText, Formatting.YELLOW, counterNumber);
-		}
+		String counterText = FarmingHud.counterText();
+		String counterNumber = FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter());
+		if (FarmingHud.CounterType.NONE.matchesText(counterText)) counterNumber = "";
+		addSimpleIcoText(cropStack, counterText, Formatting.YELLOW, counterNumber);
 		float cropsPerMinute = FarmingHud.cropsPerMinute();
-		if (hudConfig.showCropsPerMinute) {
-			addSimpleIcoText(cropStack, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
-		}
-		if (hudConfig.showCoinsPerHour) {
-			addSimpleIcoText(Ico.GOLD, "Coins/h: ", Formatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
-		}
-		if (hudConfig.showBlocksPerSecond) {
-			addSimpleIcoText(cropStack, "Blocks/s: ", Formatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
-		}
+		addSimpleIcoText(cropStack, "Crops/min: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
+		addSimpleIcoText(Ico.GOLD, "Coins/h: ", Formatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
+		addSimpleIcoText(cropStack, "Blocks/s: ", Formatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
 		//noinspection DataFlowIssue
-		if (hudConfig.showFarmingLevelProgress) {
-			addComponent(Components.progressComponent(Ico.LANTERN, Text.literal("Farming Level:"), FarmingHud.farmingXpPercentProgress(), Formatting.GOLD.getColorValue()));
-		}
-		if (hudConfig.showXpPerHour) {
-			addSimpleIcoText(Ico.LIME_DYE, "Farming XP/h: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
-		}
-		
+		addComponent(Components.progressComponent(Ico.LANTERN, Text.literal("Farming Level:"), FarmingHud.farmingXpPercentProgress(), Formatting.GOLD.getColorValue()));
+		addSimpleIcoText(Ico.LIME_DYE, "Farming XP/h: ", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
+
 		Entity cameraEntity = client.getCameraEntity();
 		String yaw = cameraEntity == null ? "No Camera Entity" : String.format("%.2f", MathHelper.wrapDegrees(cameraEntity.getYaw()));
 		String pitch = cameraEntity == null ? "No Camera Entity" : String.format("%.2f", MathHelper.wrapDegrees(cameraEntity.getPitch()));
@@ -138,13 +125,13 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public boolean isEnabledIn(Location location) {
-		return location.equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.farmingHud.enableHud;
+		return location.equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud;
 	}
 
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!location.equals(Location.GARDEN)) return;
-		SkyblockerConfigManager.get().farming.farmingHud.enableHud = enabled;
+		SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud = enabled;
 	}
 
 	@Override

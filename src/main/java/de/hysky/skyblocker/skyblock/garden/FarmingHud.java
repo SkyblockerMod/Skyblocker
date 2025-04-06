@@ -107,7 +107,7 @@ public class FarmingHud {
 	}
 
 	private static boolean shouldRender() {
-		return SkyblockerConfigManager.get().farming.farmingHud.enableHud && client.player != null && Utils.getLocation() == Location.GARDEN;
+		return SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud && client.player != null && Utils.getLocation() == Location.GARDEN;
 	}
 
 	public static String counterText() {
