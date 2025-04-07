@@ -26,6 +26,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
@@ -34,9 +35,11 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -47,8 +50,10 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 @Deprecated
 public class OrderedWaypoints {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Codec<Map<String, OrderedWaypointGroup>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING, OrderedWaypointGroup.CODEC).xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new);
-	private static final String PREFIX = "[Skyblocker::OrderedWaypoints::v1]";
+	@VisibleForTesting
+	static final Codec<Map<String, OrderedWaypointGroup>> SERIALIZATION_CODEC = Codec.unboundedMap(Codec.STRING, OrderedWaypointGroup.CODEC).xmap(Object2ObjectOpenHashMap::new, Object2ObjectOpenHashMap::new);
+	@VisibleForTesting
+	static final String PREFIX = "[Skyblocker::OrderedWaypoints::v1]";
 	public static final Path PATH = SkyblockerMod.CONFIG_DIR.resolve("ordered_waypoints.json");
 
 	@Init
@@ -66,11 +71,12 @@ public class OrderedWaypoints {
 												.executes(context -> fromSkyblockerFormat(context.getSource())))))));
 	}
 
-    /**
-     * Loads and migrates the ordered waypoints to waypoints.
-     * @deprecated Use {@link Waypoints} instead.
-     */
-    @Deprecated
+	/**
+	 * Loads and migrates the ordered waypoints to waypoints.
+	 *
+	 * @deprecated Use {@link Waypoints} instead.
+	 */
+	@Deprecated
 	private static void load() {
 		try (BufferedReader reader = Files.newBufferedReader(PATH)) {
 			Map<String, OrderedWaypointGroup> orderedWaypoints = SERIALIZATION_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
@@ -83,10 +89,10 @@ public class OrderedWaypoints {
 		}
 	}
 
-    /**
-     * @deprecated Use {@link Waypoints} instead.
-     */
-    @Deprecated
+	/**
+	 * @deprecated Use {@link Waypoints} instead.
+	 */
+	@Deprecated
 	private static int fromSkyblockerFormat(FabricClientCommandSource source) {
 		try {
 			String importCode = MinecraftClient.getInstance().keyboard.getClipboard();
@@ -111,19 +117,24 @@ public class OrderedWaypoints {
 		return Command.SINGLE_SUCCESS;
 	}
 
-    /**
-     * Migrates the given ordered waypoints to waypoints.
-     */
+	/**
+	 * Migrates the given ordered waypoints to waypoints.
+	 */
 	private static void migrateOrderedWaypoints(Map<String, OrderedWaypointGroup> orderedWaypoints) {
-		for (OrderedWaypointGroup legacyGroup : orderedWaypoints.values()) {
-			// Migrate waypoints to both the dwarven mines and the crystal hollows
-			Waypoints.putWaypointGroup(new WaypointGroup(legacyGroup.name, Location.DWARVEN_MINES, legacyGroup.waypoints.stream().map(waypoint -> new OrderedNamedWaypoint(waypoint.pos, "", new float[]{0, 1, 0})).collect(Collectors.toList()), true));
-			Waypoints.putWaypointGroup(new WaypointGroup(legacyGroup.name, Location.CRYSTAL_HOLLOWS, legacyGroup.waypoints.stream().map(waypoint -> new OrderedNamedWaypoint(waypoint.pos, "", new float[]{0, 1, 0})).collect(Collectors.toList()), true));
-		}
+		toWaypointGroups(orderedWaypoints.values()).forEach(Waypoints::putWaypointGroup);
 	}
 
-    @Deprecated
-	private record OrderedWaypointGroup(String name, boolean enabled, ObjectArrayList<OrderedWaypoint> waypoints) {
+	@VisibleForTesting
+	static List<WaypointGroup> toWaypointGroups(Collection<OrderedWaypointGroup> orderedWaypoints) {
+		return orderedWaypoints.stream().flatMap(orderedWaypointGroup -> Stream.of(
+				new WaypointGroup(orderedWaypointGroup.name, Location.DWARVEN_MINES, orderedWaypointGroup.waypoints.stream().map(waypoint -> new OrderedNamedWaypoint(waypoint.pos, "", new float[]{0, 1, 0})).collect(Collectors.toList()), true),
+				new WaypointGroup(orderedWaypointGroup.name, Location.CRYSTAL_HOLLOWS, orderedWaypointGroup.waypoints.stream().map(waypoint -> new OrderedNamedWaypoint(waypoint.pos, "", new float[]{0, 1, 0})).collect(Collectors.toList()), true)
+		)).toList();
+	}
+
+	@Deprecated
+	@VisibleForTesting
+	record OrderedWaypointGroup(String name, boolean enabled, ObjectArrayList<OrderedWaypoint> waypoints) {
 		static final Codec<OrderedWaypointGroup> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("name").forGetter(OrderedWaypointGroup::name),
 				Codec.BOOL.fieldOf("enabled").forGetter(OrderedWaypointGroup::enabled),
@@ -131,7 +142,7 @@ public class OrderedWaypoints {
 		).apply(instance, OrderedWaypointGroup::new));
 	}
 
-    @Deprecated
+	@Deprecated
 	private static class OrderedWaypoint extends Waypoint {
 		static final Codec<OrderedWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 						BlockPos.CODEC.fieldOf("pos").forGetter(OrderedWaypoint::getPos),
