@@ -3,13 +3,15 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import java.util.*;
 import java.util.function.Supplier;
 
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.mixins.accessors.MapStateAccessor;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
@@ -21,6 +23,7 @@ import net.minecraft.client.gui.widget.GridWidget.Adder;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.client.realms.util.RealmsUtil;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.FilledMapItem;
@@ -40,6 +43,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Identifier BUTTON = Identifier.of(SkyblockerMod.NAMESPACE, "button/button");
 	private static final Identifier BUTTON_HIGHLIGHTED = Identifier.of(SkyblockerMod.NAMESPACE, "button/button_highlighted");
+	private static final DungeonsConfig.SpiritLeapOverlay CONFIG = SkyblockerConfigManager.get().dungeons.spiritLeapOverlay;
 	private static final int BUTTON_SPACING = 8;
 	private static final int BUTTON_WIDTH = 130;
 	private static final int BUTTON_HEIGHT = 50;
@@ -57,6 +61,10 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		handler.addListener(this);
 	}
 
+	public static boolean shouldShowMap() {
+		return DungeonManager.isClearingDungeon() && CONFIG.showMap;
+	}
+
 	@Override
 	protected void init() {
 		GridWidget gridWidget = new GridWidget();
@@ -65,11 +73,11 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		Adder adder = gridWidget.createAdder(2);
 
 		for (PlayerReference reference : references) {
-			adder.add(new PlayerButton(0, 0, BUTTON_WIDTH, BUTTON_HEIGHT, reference));
+			adder.add(new PlayerButton(0, 0, (int) (BUTTON_WIDTH * CONFIG.scale), (int) (BUTTON_HEIGHT * CONFIG.scale), reference));
 		}
 
 		gridWidget.refreshPositions();
-		SimplePositioningWidget.setPos(gridWidget, 0, 0, this.width, this.height, 0.5f, DungeonManager.isClearingDungeon() ? 0.75f : 0.5f);
+		SimplePositioningWidget.setPos(gridWidget, 0, 0, this.width, this.height, 0.5f, shouldShowMap() ? 0.75f : 0.5f);
 		gridWidget.forEachChild(this::addDrawableChild);
 	}
 
@@ -110,7 +118,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 
-		if (DungeonManager.isClearingDungeon()) {
+		if (shouldShowMap()) {
 			int x = (width >> 1) - 64;
 			int y = (height >> 2) - 64;
 			hovered = DungeonMap.render(context, x, y, 1, true, mouseX - x, mouseY - y, hoveredElement(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
@@ -120,7 +128,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (DungeonManager.isClearingDungeon()) {
+		if (shouldShowMap()) {
 			int x = (width >> 1) - 64;
 			int y = (height >> 2) - 64;
 			if (x <= mouseX && mouseX <= x + 128 && y <= mouseY && mouseY <= y + 128) {
@@ -174,7 +182,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 	private class PlayerButton extends ButtonWidget {
 		private static final int BORDER_THICKNESS = 2;
-		private static final int HEAD_SIZE = 32;
+		private static final int HEAD_SIZE = 24;
 		private final PlayerReference reference;
 
 		private PlayerButton(int x, int y, int width, int height, PlayerReference reference) {
@@ -187,23 +195,37 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			Identifier texture = this.isSelected() || reference.uuid().equals(LeapOverlay.this.hovered) ? BUTTON_HIGHLIGHTED : BUTTON;
 			context.drawGuiTexture(RenderLayer::getGuiTextured, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
+			MatrixStack matrices = context.getMatrices();
+			float scale = CONFIG.scale;
 			int baseX = this.getX() + BORDER_THICKNESS;
 			int centreX = this.getX() + (this.getWidth() >> 1);
 			int centreY = this.getY() + (this.getHeight() >> 1);
-			int halfFontHeight = CLIENT.textRenderer.fontHeight >> 1;
+			int halfFontHeight = (int) (CLIENT.textRenderer.fontHeight * scale) >> 1;
 
 			//Draw Player Head
-			RealmsUtil.drawPlayerHead(context, baseX + 4, centreY - (HEAD_SIZE >> 1), HEAD_SIZE, reference.uuid());
+			RealmsUtil.drawPlayerHead(context, baseX + 4, centreY - ((int) (HEAD_SIZE * scale) >> 1), (int) (HEAD_SIZE * scale), reference.uuid());
 
 			//Draw class as heading
-			context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.dungeonClass().displayName(), centreX, this.getY() + halfFontHeight, ColorHelper.fullAlpha(reference.dungeonClass().color()));
+			matrices.push();
+			matrices.translate(centreX, this.getY() + halfFontHeight, 0f);
+			matrices.scale(scale, scale, 1f);
+			context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.dungeonClass().displayName(), 0, 0, ColorHelper.fullAlpha(reference.dungeonClass().color()));
+			matrices.pop();
 
 			//Draw name next to head
-			context.drawTextWithShadow(CLIENT.textRenderer, Text.literal(reference.name()), baseX + HEAD_SIZE + 8, centreY - halfFontHeight, Colors.WHITE);
+			matrices.push();
+			matrices.translate(baseX + HEAD_SIZE * scale + 8, centreY - halfFontHeight, 0f);
+			matrices.scale(scale, scale, 1f);
+			context.drawTextWithShadow(CLIENT.textRenderer, Text.literal(reference.name()), 0, 0, Colors.WHITE);
+			matrices.pop();
 
 			if (reference.status() != null) {
 				//Text
-				context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.status().text.get(), centreX, this.getY() + this.getHeight() - (halfFontHeight * 3), Colors.WHITE);
+				matrices.push();
+				matrices.translate(centreX, this.getY() + this.getHeight() - (halfFontHeight * 3), 0f);
+				matrices.scale(scale, scale, 1f);
+				context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.status().text.get(), 0, 0, Colors.WHITE);
+				matrices.pop();
 
 				//Overlay
 				context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), reference.status().overlayColor);

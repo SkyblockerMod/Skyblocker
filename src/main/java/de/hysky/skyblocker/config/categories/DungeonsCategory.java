@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
 import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
+import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import net.minecraft.client.MinecraftClient;
@@ -57,14 +58,6 @@ public class DungeonsCategory {
                         .binding(defaults.dungeons.classBasedPlayerGlow,
                                 () -> config.dungeons.classBasedPlayerGlow,
                                 newValue -> config.dungeons.classBasedPlayerGlow = newValue)
-                        .controller(ConfigUtils::createBooleanController)
-                        .build())
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay"))
-                        .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip")))
-                        .binding(defaults.dungeons.spiritLeapOverlay,
-                                () -> config.dungeons.spiritLeapOverlay,
-                                newValue -> config.dungeons.spiritLeapOverlay = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
                 .option(Option.<Boolean>createBuilder()
@@ -138,6 +131,34 @@ public class DungeonsCategory {
                                 .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new DungeonMapConfigScreen(screen)))
                                 .build())
                         .build())
+
+				// Spirit Leap Overlay
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay.@Tooltip")))
+								.binding(defaults.dungeons.spiritLeapOverlay.enableLeapOverlay,
+										() -> config.dungeons.spiritLeapOverlay.enableLeapOverlay,
+										newValue -> config.dungeons.spiritLeapOverlay.enableLeapOverlay = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.showMap"))
+								.binding(defaults.dungeons.spiritLeapOverlay.showMap,
+										() -> config.dungeons.spiritLeapOverlay.showMap,
+										newValue -> config.dungeons.spiritLeapOverlay.showMap = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.scale"))
+								.binding(defaults.dungeons.spiritLeapOverlay.scale,
+										() -> config.dungeons.spiritLeapOverlay.scale,
+										newValue -> config.dungeons.spiritLeapOverlay.scale = newValue)
+								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(1f, 2f).step(0.05f).formatValue(ConfigUtils.FLOAT_TWO_FORMATTER))
+								.build())
+						.build())
 
                 // Puzzle Solver
                 .group(OptionGroup.createBuilder()
