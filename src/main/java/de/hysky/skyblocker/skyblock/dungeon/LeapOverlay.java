@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import java.util.*;
 import java.util.function.Supplier;
 
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -68,7 +69,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 
 		gridWidget.refreshPositions();
-		SimplePositioningWidget.setPos(gridWidget, 0, 0, this.width, this.height, 0.5f, 0.75f);
+		SimplePositioningWidget.setPos(gridWidget, 0, 0, this.width, this.height, 0.5f, DungeonManager.isClearingDungeon() ? 0.75f : 0.5f);
 		gridWidget.forEachChild(this::addDrawableChild);
 	}
 
@@ -109,28 +110,43 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 
-		int x = (width >> 1) - 64;
-		int y = (height >> 2) - 64;
-		hovered = DungeonMap.render(context, x, y, 1, true, mouseX - x, mouseY - y, hoveredElement(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
-		context.drawBorder(x, y, 128, 128, -1);
+		if (DungeonManager.isClearingDungeon()) {
+			int x = (width >> 1) - 64;
+			int y = (height >> 2) - 64;
+			hovered = DungeonMap.render(context, x, y, 1, true, mouseX - x, mouseY - y, hoveredElement(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
+			context.drawBorder(x, y, 128, 128, -1);
+		}
 	}
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		int x = (width >> 1) - 64;
-		int y = (height >> 2) - 64;
-		if (x <= mouseX && mouseX <= x + 128 && y <= mouseY && mouseY <= y + 128) {
-			assert client != null && client.player != null && client.interactionManager != null;
-			Optional.ofNullable(FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().main.get(8)), client.world))
-					.stream().map(MapStateAccessor.class::cast).map(MapStateAccessor::getDecorations).map(Map::entrySet).flatMap(Set::stream)
-					.map(DungeonMap.PlayerRenderState::of)
-					.filter(Objects::nonNull).filter(player -> player.mapPos().distanceSquared(mouseX - x, mouseY - y) <= 16)
-					.flatMap(player -> references.stream().filter(ref -> ref.uuid().equals(player.uuid())))
-					.findAny().ifPresent(ref -> client.interactionManager.clickSlot(ref.syncId(), ref.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, client.player));
-			return true;
+		if (DungeonManager.isClearingDungeon()) {
+			int x = (width >> 1) - 64;
+			int y = (height >> 2) - 64;
+			if (x <= mouseX && mouseX <= x + 128 && y <= mouseY && mouseY <= y + 128) {
+				assert client != null && client.player != null && client.interactionManager != null;
+				Optional.ofNullable(FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().main.get(8)), client.world))
+						.stream().map(MapStateAccessor.class::cast).map(MapStateAccessor::getDecorations).map(Map::entrySet).flatMap(Set::stream)
+						.map(DungeonMap.PlayerRenderState::of)
+						.filter(Objects::nonNull).filter(player -> player.mapPos().distanceSquared(mouseX - x, mouseY - y) <= 16)
+						.flatMap(player -> references.stream().filter(ref -> ref.uuid().equals(player.uuid())))
+						.findAny().ifPresent(ref -> client.interactionManager.clickSlot(ref.syncId(), ref.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, client.player));
+				return true;
+			}
 		}
 
 		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (super.keyPressed(keyCode, scanCode, modifiers)) {
+			return true;
+		} else if (this.client.options.inventoryKey.matchesKey(keyCode, scanCode)) {
+			this.close();
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -209,6 +225,11 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		@Override
 		public boolean equals(Object obj) {
 			return obj instanceof PlayerReference playerRef && uuid.equals(playerRef.uuid);
+		}
+
+		@Override
+		public int hashCode() {
+			return uuid.hashCode();
 		}
 
 		@Override

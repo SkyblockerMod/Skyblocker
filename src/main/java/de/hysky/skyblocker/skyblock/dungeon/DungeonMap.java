@@ -152,7 +152,7 @@ public class DungeonMap {
 		UUID hovered = null;
 		for (Map.Entry<String, MapDecoration> mapDecoration : ((MapStateAccessor) state).getDecorations().entrySet()) {
 			PlayerRenderState player = PlayerRenderState.of(mapDecoration);
-			if (player == null) continue;
+			if (player == null || player.uuid().equals(MinecraftClient.getInstance().player.getUuid()) && !SkyblockerConfigManager.get().dungeons.dungeonMap.showSelfHead) continue;
 			DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(player.name());
 
 			context.getMatrices().push();
