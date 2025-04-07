@@ -17,7 +17,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
 import org.apache.commons.io.IOUtils;
@@ -45,7 +44,8 @@ public class Waypoints {
 	private static final String SKYBLOCKER_LEGACY_ORDERED = "[Skyblocker::OrderedWaypoints::v1]";
     protected static final SystemToast.Type WAYPOINTS_TOAST_TYPE = new SystemToast.Type();
 
-    private static final Path waypointsFile = FabricLoader.getInstance().getConfigDir().resolve(SkyblockerMod.NAMESPACE).resolve("waypoints.json");
+    private static final Path WAYPOINTS_FILE = SkyblockerMod.CONFIG_DIR.resolve("waypoints.json");
+	private static final Path SKYBLOCKER_LEGACY_ORDERED_FILE = SkyblockerMod.CONFIG_DIR.resolve("ordered_waypoints.json");
     private static final Multimap<Location, WaypointGroup> waypoints = MultimapBuilder.enumKeys(Location.class).arrayListValues().build();
 
     @Init
@@ -58,16 +58,27 @@ public class Waypoints {
 
     public static void loadWaypoints() {
         waypoints.clear();
-        try (BufferedReader reader = Files.newBufferedReader(waypointsFile)) {
+        try (BufferedReader reader = Files.newBufferedReader(WAYPOINTS_FILE)) {
             List<WaypointGroup> waypointGroups = CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
             waypointGroups.forEach(Waypoints::putWaypointGroup);
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading waypoints", e);
         }
-    }
+		try (BufferedReader reader = Files.newBufferedReader(SKYBLOCKER_LEGACY_ORDERED_FILE)) {
+			Collection<WaypointGroup> waypointGroups = SKYBLOCKER_LEGACY_ORDERED_CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonObject.class)).resultOrPartial(LOGGER::error).orElseThrow();
+			for (WaypointGroup group : waypointGroups) {
+				Waypoints.putWaypointGroup(group.withIsland(Location.DWARVEN_MINES).deepCopy());
+				Waypoints.putWaypointGroup(group.withIsland(Location.DWARVEN_MINES).deepCopy());
+			}
+			Files.move(SKYBLOCKER_LEGACY_ORDERED_FILE, SkyblockerMod.CONFIG_DIR.resolve("legacy_ordered_waypoints.json"));
+			LOGGER.info("[Skyblocker Waypoints] Successfully migrated {} ordered waypoints from {} groups to waypoints!", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size());
+		} catch (IOException e) {
+			LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading legacy ordered waypoints", e);
+		}
+	}
 
     public static void saveWaypoints(MinecraftClient client) {
-        try (BufferedWriter writer = Files.newBufferedWriter(waypointsFile)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(WAYPOINTS_FILE)) {
             JsonElement waypointsJson = CODEC.encodeStart(JsonOps.INSTANCE, List.copyOf(waypoints.values())).resultOrPartial(LOGGER::error).orElseThrow();
             SkyblockerMod.GSON.toJson(waypointsJson, writer);
             LOGGER.info("[Skyblocker Waypoints] Saved waypoints");
