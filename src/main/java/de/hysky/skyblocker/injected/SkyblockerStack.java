@@ -29,4 +29,8 @@ public interface SkyblockerStack {
 	default PetInfo getPetInfo() {
 		return PetInfo.EMPTY;
 	}
+
+	default boolean isShortbow() {
+		return false;
+	}
 }

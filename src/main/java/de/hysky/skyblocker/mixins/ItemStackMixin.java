@@ -16,17 +16,13 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.MergedComponentMap;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.component.type.LoreComponent;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipAppender;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -78,13 +74,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 		if (Utils.isOnSkyblock() && this.getItem() == Items.BOW) {
 			this.isShortbow = components.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT)
 					.styledLines().stream().anyMatch(line -> line.getString().contains("Shortbow: Instantly shoots!"));
-		}
-	}
-
-	@Inject(method = "use", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$cancelShortbowPullAnimation(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-		if (this.isShortbow && SkyblockerConfigManager.get().uiAndVisuals.cancelShortbowPullAnimation) {
-			cir.setReturnValue(ActionResult.FAIL);
 		}
 	}
 
@@ -210,5 +199,10 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	public PetInfo getPetInfo() {
 		if (petInfo != null) return petInfo;
 		return petInfo = ItemUtils.getPetInfo(this);
+	}
+
+	@Override
+	public boolean isShortbow() {
+		return isShortbow;
 	}
 }
