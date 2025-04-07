@@ -133,7 +133,7 @@ public class DungeonMap {
 		vertices.draw();
 
 		UUID hoveredHead = null;
-		if (fancy) hoveredHead = renderPlayerHeads(context, state, mouseX, mouseY, enlarge);
+		if (fancy) hoveredHead = renderPlayerHeads(context, state, mouseX / scale, mouseY / scale, enlarge);
 		context.getMatrices().pop();
 		return hoveredHead;
 	}
@@ -146,7 +146,7 @@ public class DungeonMap {
 		} else return cachedMapIdComponent != null ? cachedMapIdComponent : DEFAULT_MAP_ID_COMPONENT;
 	}
 
-	private static UUID renderPlayerHeads(DrawContext context, MapState state, int mouseX, int mouseY, @Nullable UUID enlarge) {
+	private static UUID renderPlayerHeads(DrawContext context, MapState state, double mouseX, double mouseY, @Nullable UUID enlarge) {
 		if (!DungeonManager.isClearingDungeon()) return null;
 
 		UUID hovered = null;
@@ -162,7 +162,7 @@ public class DungeonMap {
 			if (player.uuid().equals(enlarge)) {
 				// Enlarge the player head when the corresponding button is hovered
 				context.getMatrices().scale(2, 2, 1);
-			} else if (hovered == null && player.mapPos().distanceSquared(mouseX, mouseY) < 16) {
+			} else if (hovered == null && isPlayerHovered(player, mouseX, mouseY)) {
 				// Enlarge the player head when hovered
 				context.getMatrices().scale(2, 2, 1);
 				hovered = player.uuid();
@@ -173,6 +173,10 @@ public class DungeonMap {
 			context.getMatrices().pop();
 		}
 		return hovered;
+	}
+
+	public static boolean isPlayerHovered(PlayerRenderState player, double mouseX, double mouseY) {
+		return player.mapPos().distanceSquared(mouseX, mouseY) < 16;
 	}
 
 	private static void reset() {

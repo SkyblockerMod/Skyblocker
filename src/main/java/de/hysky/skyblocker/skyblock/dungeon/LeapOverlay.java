@@ -17,10 +17,9 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.GridWidget;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.gui.widget.GridWidget.Adder;
-import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.client.realms.util.RealmsUtil;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -67,18 +66,21 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 	@Override
 	protected void init() {
-		GridWidget gridWidget = new GridWidget();
-		gridWidget.setSpacing(BUTTON_SPACING);
+		DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
+		layout.spacing(32).getMainPositioner().alignHorizontalCenter();
 
+		if (shouldShowMap()) layout.add(new MapWidget(0, 0));
+
+		GridWidget gridWidget = new GridWidget().setSpacing(BUTTON_SPACING);
 		Adder adder = gridWidget.createAdder(2);
-
 		for (PlayerReference reference : references) {
 			adder.add(new PlayerButton(0, 0, (int) (BUTTON_WIDTH * CONFIG.scale), (int) (BUTTON_HEIGHT * CONFIG.scale), reference));
 		}
+		layout.add(gridWidget);
 
-		gridWidget.refreshPositions();
-		SimplePositioningWidget.setPos(gridWidget, 0, 0, this.width, this.height, 0.5f, shouldShowMap() ? 0.75f : 0.5f);
-		gridWidget.forEachChild(this::addDrawableChild);
+		layout.refreshPositions();
+		SimplePositioningWidget.setPos(layout, 0, 0, this.width, this.height);
+		layout.forEachChild(this::addDrawableChild);
 	}
 
 	@Override
@@ -115,38 +117,6 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
-
-		if (shouldShowMap()) {
-			int x = (width >> 1) - 64;
-			int y = (height >> 2) - 64;
-			hovered = DungeonMap.render(context, x, y, 1, true, mouseX - x, mouseY - y, hoveredElement(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
-			context.drawBorder(x, y, 128, 128, -1);
-		}
-	}
-
-	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (shouldShowMap()) {
-			int x = (width >> 1) - 64;
-			int y = (height >> 2) - 64;
-			if (x <= mouseX && mouseX <= x + 128 && y <= mouseY && mouseY <= y + 128) {
-				assert client != null && client.player != null && client.interactionManager != null;
-				Optional.ofNullable(FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().main.get(8)), client.world))
-						.stream().map(MapStateAccessor.class::cast).map(MapStateAccessor::getDecorations).map(Map::entrySet).flatMap(Set::stream)
-						.map(DungeonMap.PlayerRenderState::of)
-						.filter(Objects::nonNull).filter(player -> player.mapPos().distanceSquared(mouseX - x, mouseY - y) <= 16)
-						.flatMap(player -> references.stream().filter(ref -> ref.uuid().equals(player.uuid())))
-						.findAny().ifPresent(ref -> client.interactionManager.clickSlot(ref.syncId(), ref.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, client.player));
-				return true;
-			}
-		}
-
-		return super.mouseClicked(mouseX, mouseY, button);
-	}
-
-	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (super.keyPressed(keyCode, scanCode, modifiers)) {
 			return true;
@@ -178,6 +148,32 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			this.handler.onClosed(this.client.player);
 			this.handler.removeListener(this);
 		}
+	}
+
+	public class MapWidget extends ClickableWidget {
+		public MapWidget(int x, int y) {
+			super(x, y, (int) (128 * CONFIG.scale), (int) (128 * CONFIG.scale), Text.translatable("skyblocker.config.dungeons.map.fancyMap"));
+		}
+
+		@Override
+		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+			LeapOverlay.this.hovered = DungeonMap.render(context, getX(), getY(), CONFIG.scale, true, mouseX - getX(), mouseY - getY(), hoveredElement(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
+			context.drawBorder(getX(), getY(), (int) (128 * CONFIG.scale), (int) (128 * CONFIG.scale), -1);
+		}
+
+		@Override
+		public void onClick(double mouseX, double mouseY) {
+			assert client != null && client.player != null && client.interactionManager != null;
+			Optional.ofNullable(FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().main.get(8)), client.world))
+					.stream().map(MapStateAccessor.class::cast).map(MapStateAccessor::getDecorations).map(Map::entrySet).flatMap(Set::stream)
+					.map(DungeonMap.PlayerRenderState::of)
+					.filter(Objects::nonNull).filter(player -> DungeonMap.isPlayerHovered(player, (mouseX - getX()) / CONFIG.scale, (mouseY - getY()) / CONFIG.scale))
+					.flatMap(player -> references.stream().filter(ref -> ref.uuid().equals(player.uuid())))
+					.findAny().ifPresent(ref -> client.interactionManager.clickSlot(ref.syncId(), ref.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, client.player));
+		}
+
+		@Override
+		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 	}
 
 	private class PlayerButton extends ButtonWidget {
