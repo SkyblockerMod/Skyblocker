@@ -38,14 +38,14 @@ public class FarmingCategory {
                                         newValue -> config.farming.garden.dicerTitlePrevent = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.garden.pestHighlighter"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.farming.garden.pestHighlighter.@Tooltip")))
-                                .binding(defaults.farming.garden.pestHighlighter,
-                                        () -> config.farming.garden.pestHighlighter,
-                                        newValue -> config.farming.garden.pestHighlighter = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.farming.garden.pestHighlighter"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.farming.garden.pestHighlighter.@Tooltip")))
+								.binding(defaults.farming.garden.pestHighlighter,
+										() -> config.farming.garden.pestHighlighter,
+										newValue -> config.farming.garden.pestHighlighter = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.farming.garden.lockMouseTool"))
                                 .binding(defaults.farming.garden.lockMouseTool,
@@ -77,34 +77,34 @@ public class FarmingCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.farming.visitorHelper"))
-                        .collapsed(false)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelper"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelper.@Tooltip")))
-                                .binding(defaults.farming.visitorHelper.visitorHelper,
-                                        () -> config.farming.visitorHelper.visitorHelper,
-                                        newValue -> config.farming.visitorHelper.visitorHelper = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly.@Tooltip")))
-                                .binding(defaults.farming.visitorHelper.visitorHelperGardenOnly,
-                                        () -> config.farming.visitorHelper.visitorHelperGardenOnly,
-                                        newValue -> config.farming.visitorHelper.visitorHelperGardenOnly = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip")))
-                                .binding(defaults.farming.visitorHelper.showStacksInVisitorHelper,
-                                        () -> config.farming.visitorHelper.showStacksInVisitorHelper,
-                                        newValue -> config.farming.visitorHelper.showStacksInVisitorHelper = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .build())
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.farming.visitorHelper"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelper.@Tooltip")))
+								.binding(defaults.farming.visitorHelper.visitorHelper,
+										() -> config.farming.visitorHelper.visitorHelper,
+										newValue -> config.farming.visitorHelper.visitorHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly.@Tooltip")))
+								.binding(defaults.farming.visitorHelper.visitorHelperGardenOnly,
+										() -> config.farming.visitorHelper.visitorHelperGardenOnly,
+										newValue -> config.farming.visitorHelper.visitorHelperGardenOnly = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip")))
+								.binding(defaults.farming.visitorHelper.showStacksInVisitorHelper,
+										() -> config.farming.visitorHelper.showStacksInVisitorHelper,
+										newValue -> config.farming.visitorHelper.showStacksInVisitorHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
                 .build();
 
     }
