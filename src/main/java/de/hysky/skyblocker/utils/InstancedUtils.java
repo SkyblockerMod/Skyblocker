@@ -14,7 +14,8 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 
 /**
  * @implNote If implementing any of these onto a class, ensure that all subclasses have an implementation of the methods too.
@@ -90,7 +91,8 @@ public class InstancedUtils {
 	}
 
 	private static MethodHandle[] getFieldGetters(Field[] fields) throws Throwable {
-		ObjectOpenHashSet<MethodHandle> handles = new ObjectOpenHashSet<>();
+		// Keep insertion order to make sure getters and field names match
+		ObjectSet<MethodHandle> handles = new ObjectLinkedOpenHashSet<>();
 
 		for (Field field : fields) {
 			if (!nonStatic(field)) continue;

@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -39,8 +40,7 @@ public class Waypoints {
     public static final Logger LOGGER = LoggerFactory.getLogger(Waypoints.class);
     private static final Codec<List<WaypointGroup>> CODEC = WaypointGroup.CODEC.listOf();
     private static final Codec<List<WaypointGroup>> SKYTILS_CODEC = WaypointGroup.SKYTILS_CODEC.listOf();
-	@SuppressWarnings("deprecation")
-	private static final Codec<Map<String, OrderedWaypoints.OrderedWaypointGroup>> SKYBLOCKER_LEGACY_ORDERED_CODEC = OrderedWaypoints.SERIALIZATION_CODEC;
+	private static final Codec<Collection<WaypointGroup>> SKYBLOCKER_LEGACY_ORDERED_CODEC = Codec.unboundedMap(Codec.STRING, WaypointGroup.SKYBLOCKER_LEGACY_ORDERED_CODEC).xmap(Map::values, groups -> groups.stream().collect(Collectors.toMap(WaypointGroup::name, Function.identity())));
     private static final String PREFIX = "[Skyblocker-Waypoint-Data-V1]";
 	private static final String SKYBLOCKER_LEGACY_ORDERED = "[Skyblocker::OrderedWaypoints::v1]";
     protected static final SystemToast.Type WAYPOINTS_TOAST_TYPE = new SystemToast.Type();
@@ -76,7 +76,7 @@ public class Waypoints {
         }
     }
 
-    public static List<WaypointGroup> fromSkyblocker(String waypointsString) {
+    public static List<WaypointGroup> fromSkyblocker(String waypointsString, Location defaultIsland) {
         if (waypointsString.startsWith(PREFIX)) {
             try (GZIPInputStream reader = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(waypointsString.replace(PREFIX, ""))))) {
                 return CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(new String(reader.readAllBytes()), JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
@@ -85,7 +85,7 @@ public class Waypoints {
             }
         } else if (waypointsString.startsWith(SKYBLOCKER_LEGACY_ORDERED)) {
 			try (GZIPInputStream reader = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(waypointsString.replace(SKYBLOCKER_LEGACY_ORDERED, ""))))) {
-				return OrderedWaypoints.toWaypointGroups(SKYBLOCKER_LEGACY_ORDERED_CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(new String(reader.readAllBytes()), JsonObject.class)).resultOrPartial(LOGGER::error).orElseThrow().values());
+				return applyDefaultLocation(SKYBLOCKER_LEGACY_ORDERED_CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(new String(reader.readAllBytes()), JsonObject.class)).resultOrPartial(LOGGER::error).orElseThrow(), defaultIsland);
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skyblocker legacy ordered waypoint data", e);
 			}
@@ -139,7 +139,7 @@ public class Waypoints {
             waypointGroupsJson.add(waypointGroupJson);
         }
         List<WaypointGroup> waypointGroups = SKYTILS_CODEC.parse(JsonOps.INSTANCE, waypointGroupsJson).resultOrPartial(LOGGER::error).orElseThrow();
-        return waypointGroups.stream().map(waypointGroup -> waypointGroup.island() == Location.UNKNOWN ? waypointGroup.withIsland(defaultIsland) : waypointGroup).toList();
+        return applyDefaultLocation(waypointGroups, defaultIsland);
     }
 
     public static String toSkytilsBase64(List<WaypointGroup> waypointGroups) {
@@ -155,6 +155,10 @@ public class Waypoints {
     public static WaypointGroup fromColeweightJson(String waypointsJson, Location defaultIsland) {
         return WaypointGroup.COLEWEIGHT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(waypointsJson)).resultOrPartial(LOGGER::error).orElseThrow().withIsland(defaultIsland);
     }
+
+	public static List<WaypointGroup> applyDefaultLocation(Collection<WaypointGroup> waypointGroups, Location defaultIsland) {
+		return waypointGroups.stream().map(waypointGroup -> waypointGroup.island() == Location.UNKNOWN ? waypointGroup.withIsland(defaultIsland) : waypointGroup).toList();
+	}
 
 	/**
 	 * Gets the waypoint groups for the specified island.
