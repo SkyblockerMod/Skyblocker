@@ -28,10 +28,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -42,7 +39,10 @@ public class Waypoints {
     public static final Logger LOGGER = LoggerFactory.getLogger(Waypoints.class);
     private static final Codec<List<WaypointGroup>> CODEC = WaypointGroup.CODEC.listOf();
     private static final Codec<List<WaypointGroup>> SKYTILS_CODEC = WaypointGroup.SKYTILS_CODEC.listOf();
+	@SuppressWarnings("deprecation")
+	private static final Codec<Map<String, OrderedWaypoints.OrderedWaypointGroup>> SKYBLOCKER_LEGACY_ORDERED_CODEC = OrderedWaypoints.SERIALIZATION_CODEC;
     private static final String PREFIX = "[Skyblocker-Waypoint-Data-V1]";
+	private static final String SKYBLOCKER_LEGACY_ORDERED = "[Skyblocker::OrderedWaypoints::v1]";
     protected static final SystemToast.Type WAYPOINTS_TOAST_TYPE = new SystemToast.Type();
 
     private static final Path waypointsFile = FabricLoader.getInstance().getConfigDir().resolve(SkyblockerMod.NAMESPACE).resolve("waypoints.json");
@@ -83,7 +83,13 @@ public class Waypoints {
             } catch (IOException e) {
                 LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skyblocker waypoint data", e);
             }
-        }
+        } else if (waypointsString.startsWith(SKYBLOCKER_LEGACY_ORDERED)) {
+			try (GZIPInputStream reader = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(waypointsString.replace(SKYBLOCKER_LEGACY_ORDERED, ""))))) {
+				return OrderedWaypoints.toWaypointGroups(SKYBLOCKER_LEGACY_ORDERED_CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(new String(reader.readAllBytes()), JsonObject.class)).resultOrPartial(LOGGER::error).orElseThrow().values());
+			} catch (IOException e) {
+				LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skyblocker legacy ordered waypoint data", e);
+			}
+		}
         return Collections.emptyList();
     }
 
