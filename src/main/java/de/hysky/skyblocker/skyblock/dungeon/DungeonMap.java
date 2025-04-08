@@ -41,10 +41,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class DungeonMap {
 	private static final Identifier DUNGEON_MAP = Identifier.of(SkyblockerMod.NAMESPACE, "dungeon_map");
@@ -56,7 +53,7 @@ public class DungeonMap {
 	 * This does so by counting how many times a map decoration and a player was closest to each other.
 	 * The higher the number, the more likely that the map decoration is the player.
 	 */
-	private static final Map<String, Map<Pair<UUID, String>, MutableInt>> mapPlayers = HashMap.newHashMap(5);
+	private static final Map<String, PlayerMatchData<Pair<UUID, String>>> mapPlayers = HashMap.newHashMap(5);
 
 	@Init
 	public static void init() {
@@ -98,7 +95,7 @@ public class DungeonMap {
 					.filter(e -> e.getValue().type() == MapDecorationTypes.FRAME || e.getValue().type() == MapDecorationTypes.BLUE_MARKER)
 					.filter(e -> mapPos.distanceSquared(e.getValue().x() / 2d + 64, e.getValue().z() / 2d + 64) <= 8)
 					.min(Comparator.comparingDouble(e -> mapPos.distanceSquared(e.getValue().x() / 2d + 64, e.getValue().z() / 2d + 64)))
-					.ifPresent(e -> mapPlayers.computeIfAbsent(e.getKey(), _key -> new HashMap<>()).computeIfAbsent(Pair.of(player.getUuid(), player.getGameProfile().getName()), _key -> new MutableInt(0)).increment());
+					.ifPresent(e -> mapPlayers.computeIfAbsent(e.getKey(), _key -> new PlayerMatchData<>()).addMatch(Pair.of(player.getUuid(), player.getGameProfile().getName())));
 		}
 	}
 
@@ -151,7 +148,7 @@ public class DungeonMap {
 
 		UUID hovered = null;
 		for (Map.Entry<String, MapDecoration> mapDecoration : ((MapStateAccessor) state).getDecorations().entrySet()) {
-			PlayerRenderState player = PlayerRenderState.of(mapDecoration);
+			PlayerRenderState player = PlayerRenderState.of(mapDecoration).orElse(null);
 			if (player == null || player.uuid().equals(MinecraftClient.getInstance().player.getUuid()) && !SkyblockerConfigManager.get().dungeons.dungeonMap.showSelfHead) continue;
 			DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(player.name());
 
@@ -184,18 +181,48 @@ public class DungeonMap {
 		mapPlayers.clear();
 	}
 
-	public record PlayerRenderState(UUID uuid, String name, Vector2dc mapPos, float deg) {
-		public static PlayerRenderState of(Map.Entry<String, MapDecoration> mapDecoration) {
-			if (!mapPlayers.containsKey(mapDecoration.getKey())) return null;
-			// Get the player uuid and name pair with the highest count (therefore most likely to be the correct player)
-			Pair<UUID, String> mapPlayer = mapPlayers.get(mapDecoration.getKey()).entrySet().stream()
-					.max(Map.Entry.comparingByValue()).orElseThrow().getKey();
-			// Use the player entity if it exists, since it gives the most accurate position and rotation
-			PlayerEntity player = MinecraftClient.getInstance().world.getPlayerByUuid(mapPlayer.left());
-			Vector2dc mapPos = player != null ? DungeonMapUtils.getMapPosFromPhysical(DungeonManager.getPhysicalEntrancePos(), DungeonManager.getMapEntrancePos(), DungeonManager.getMapRoomSize(), player.getPos()) : new Vector2d(mapDecoration.getValue().x() / 2d + 64, mapDecoration.getValue().z() / 2d + 64);
-			float deg = player != null ? player.getYaw() : mapDecoration.getValue().rotation() * 360 / 16.0F;
+	/**
+	 * Data structure that stores the past 100 matches of type {@code T} and the number of times each instance of {@code T} was matched.
+	 */
+	public record PlayerMatchData<T>(Queue<T> matches, Map<T, MutableInt> counts) {
+		private static final int MAX_MATCHES = 100;
 
-			return new PlayerRenderState(mapPlayer.left(), mapPlayer.right(), mapPos, deg);
+		public PlayerMatchData() {
+			this(new ArrayDeque<>(MAX_MATCHES), new HashMap<>());
+		}
+
+		public void addMatch(T newEntry) {
+			// Remove the oldest entry if the queue is full
+			if (matches.size() >= MAX_MATCHES) {
+				T remove = matches.poll();
+				if (counts.get(remove) instanceof MutableInt count && count.decrementAndGet() <= 0) {
+					counts.remove(remove);
+				}
+			}
+			// Add the new entry to the queue and increment its count in the map
+			matches.add(newEntry);
+			counts.computeIfAbsent(newEntry, _key -> new MutableInt()).increment();
+		}
+
+		public Optional<T> getMostFrequent() {
+			return counts.entrySet().stream()
+					.max(Map.Entry.comparingByValue())
+					.map(Map.Entry::getKey);
+		}
+	}
+
+	public record PlayerRenderState(UUID uuid, String name, Vector2dc mapPos, float deg) {
+		public static Optional<PlayerRenderState> of(Map.Entry<String, MapDecoration> mapDecoration) {
+			if (!mapPlayers.containsKey(mapDecoration.getKey())) return Optional.empty();
+			// Get the player uuid and name pair with the highest count (therefore most likely to be the correct player)
+			return mapPlayers.get(mapDecoration.getKey()).getMostFrequent().map(mapPlayer -> {
+				// Use the player entity if it exists, since it gives the most accurate position and rotation
+				PlayerEntity player = MinecraftClient.getInstance().world.getPlayerByUuid(mapPlayer.left());
+				Vector2dc mapPos = player != null ? DungeonMapUtils.getMapPosFromPhysical(DungeonManager.getPhysicalEntrancePos(), DungeonManager.getMapEntrancePos(), DungeonManager.getMapRoomSize(), player.getPos()) : new Vector2d(mapDecoration.getValue().x() / 2d + 64, mapDecoration.getValue().z() / 2d + 64);
+				float deg = player != null ? player.getYaw() : mapDecoration.getValue().rotation() * 360 / 16.0F;
+
+				return new PlayerRenderState(mapPlayer.left(), mapPlayer.right(), mapPos, deg);
+			});
 		}
 	}
 }

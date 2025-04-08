@@ -166,8 +166,8 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			assert client != null && client.player != null && client.interactionManager != null;
 			Optional.ofNullable(FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().main.get(8)), client.world))
 					.stream().map(MapStateAccessor.class::cast).map(MapStateAccessor::getDecorations).map(Map::entrySet).flatMap(Set::stream)
-					.map(DungeonMap.PlayerRenderState::of)
-					.filter(Objects::nonNull).filter(player -> DungeonMap.isPlayerHovered(player, (mouseX - getX()) / CONFIG.scale, (mouseY - getY()) / CONFIG.scale))
+					.map(DungeonMap.PlayerRenderState::of).flatMap(Optional::stream)
+					.filter(player -> DungeonMap.isPlayerHovered(player, (mouseX - getX()) / CONFIG.scale, (mouseY - getY()) / CONFIG.scale))
 					.flatMap(player -> references.stream().filter(ref -> ref.uuid().equals(player.uuid())))
 					.findAny().ifPresent(ref -> client.interactionManager.clickSlot(ref.syncId(), ref.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, client.player));
 		}
