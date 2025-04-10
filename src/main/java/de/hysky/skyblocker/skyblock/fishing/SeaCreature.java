@@ -17,8 +17,8 @@ public enum SeaCreature {
 	GUARDIAN_DEFENDER("Guardian Defender", "You've discovered a Guardian Defender of the sea.", SkyblockItemRarity.EPIC, SeaCreatureCategory.WATER),
 	DEEP_SEA_PROTECTOR("Deep Sea Protector", "You have awoken the Deep Sea Protector, prepare for a battle!", SkyblockItemRarity.EPIC, SeaCreatureCategory.WATER),
 	WATER_HYDRA("Water Hydra", "The Water Hydra has come to test your strength.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.WATER),
-	SEA_EMPEROR("Sea Emperor", "The Sea Emperor arises from the depths.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.WATER),
-	FROZEN_STEVE("Frozen Steve", "Frozen Steve fell into the pond long ago, never to §rresurface...until§r now!", SkyblockItemRarity.COMMON, SeaCreatureCategory.WINTER_ISLAND),
+	THE_SEA_EMPEROR("The Sea Emperor", "The Sea Emperor arises from the depths.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.WATER),
+	FROZEN_STEVE("Frozen Steve", "Frozen Steve fell into the pond long ago, never to resurface...until now!", SkyblockItemRarity.COMMON, SeaCreatureCategory.WINTER_ISLAND),
 	FROSTY("Frosty", "It's a snowman! He looks harmless.", SkyblockItemRarity.COMMON, SeaCreatureCategory.WINTER_ISLAND),
 	GRINCH("Grinch", "The Grinch stole Jerry's §rGifts...get§r them back!", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.WINTER_ISLAND),
 	NUTCRACKER("Nutcracker", "You found a forgotten Nutcracker laying beneath the ice.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.WINTER_ISLAND),
@@ -54,7 +54,22 @@ public enum SeaCreature {
 	TAURUS("Taurus", "Taurus and his steed emerge.", SkyblockItemRarity.RARE, SeaCreatureCategory.LAVA_CRIMSON_ISLE),
 	THUNDER("Thunder", "§c§lYou hear a massive rumble as Thunder emerges.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.LAVA_CRIMSON_ISLE),
 	LORD_JAWBUS("Lord Jawbus", "§c§lYou have angered a legendary creature... Lord Jawbus has arrived.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.LAVA_CRIMSON_ISLE),
-	PLHLEGBLAST("Plhlegblast", "WOAH! A Plhlegblast appeared.", SkyblockItemRarity.COMMON, SeaCreatureCategory.PLHLEGBLAST);
+	PLHLEGBLAST("Plhlegblast", "WOAH! A Plhlegblast appeared.", SkyblockItemRarity.COMMON, SeaCreatureCategory.PLHLEGBLAST),
+	TRASH_GOBBLER("Trash Gobbler", "The Trash Gobbler is hungry for you!", SkyblockItemRarity.COMMON, SeaCreatureCategory.BACKWATER_BAYOU),
+	BANSHEE("Banshee", "The desolate wail of a Banshee breaks the silence.", SkyblockItemRarity.RARE, SeaCreatureCategory.BACKWATER_BAYOU),
+	ALLIGATOR("Alligator", "A long snout breaks the surface of the water. It's an Alligator!", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.BACKWATER_BAYOU),
+	DUMPSTER_DIVER("Dumpster Diver", "A Dumpster Diver has emerged from the swamp!", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.BACKWATER_BAYOU),
+	BAYOU_SLUDGE("Bayou Sludge", "A swampy mass of slime emerges, the Bayou Sludge!", SkyblockItemRarity.EPIC, SeaCreatureCategory.BACKWATER_BAYOU),
+	TITANOBOA("Titanoboa", "§r§c§lA massive Titanoboa surfaces. It's body stretches as far as the eye can see.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.BACKWATER_BAYOU),
+	RAGNAROK("Ragnarok", "§c§r§c§lThe sky darkens and the air thickens. The end times are upon us: Ragnarok is here.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.LAVA_HOTSPOT),
+	FIREPROOF_WITCH("Fireproof Witch", "Trouble's brewing, it's a Fireproof Witch!", SkyblockItemRarity.RARE, SeaCreatureCategory.LAVA_HOTSPOT),
+	FRIED_CHICKEN("Fried Chicken", "Smells of burning. Must be a Fried Chicken.", SkyblockItemRarity.COMMON, SeaCreatureCategory.LAVA_HOTSPOT),
+	FIERY_SCUTTLER("Fiery Scuttler", "§cA Fiery Scuttler inconspicuously waddles up to you, friends in tow.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.LAVA_HOTSPOT),
+	WIKI_TIKI("Wiki Tiki", "§c§r§c§lThe water bubbles and froths. A massive form emerges- you have disturbed the Wiki Tiki! You shall pay the price.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.WATER_HOTSPOT),
+	BLUE_RINGED_OCTOPUS("Blue Ringed Octopus", "A garish set of tentacles arise. It's a Blue Ringed Octopus!", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.WATER_HOTSPOT),
+	SNAPPING_TURTLE("Snapping Turtle", "A Snapping Turtle is coming your way, and it's ANGRY!", SkyblockItemRarity.RARE, SeaCreatureCategory.WATER_HOTSPOT),
+	FROG_MAN("Frog Man", "Is it a frog? Is it a man? Well, yes, sorta, IT'S FROG MAN!!!!!!", SkyblockItemRarity.COMMON, SeaCreatureCategory.WATER_HOTSPOT);
+
 
 
 	final String name;
