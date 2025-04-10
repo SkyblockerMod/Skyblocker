@@ -752,7 +752,7 @@ information.
  </tr>
 </table>
 
-### Translator
+### Translator 
 
 **Translate status** \
 [![Translate status](https://translate.hysky.de/widget/Skyblocker/multi-auto.svg)](https://translate.hysky.de/projects/Skyblocker/skyblocker/)
