@@ -206,18 +206,8 @@ public class HelperCategory {
 								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.minimumNotificationRarity.@Tooltip")))
 								.binding(defaults.helpers.fishing.minimumNotificationRarity,
 										() -> config.helpers.fishing.minimumNotificationRarity,
-										rarity -> config.helpers.fishing.minimumNotificationRarity = rarity)
+										rarity -> config.helpers.fishing.minimumNotificationRarity = rarity == SkyblockItemRarity.DIVINE ? SkyblockItemRarity.UNKNOWN : rarity)
 								.controller(ConfigUtils::createEnumCyclingListController)
-								.addListener((rarity, event) -> {
-									//hacky way to skip unused rarity's in the rarity enum
-									if (event == OptionEventListener.Event.STATE_CHANGE) {
-										if (rarity.pendingValue().equals(SkyblockItemRarity.DIVINE)) {
-											config.helpers.fishing.minimumNotificationRarity = SkyblockItemRarity.UNKNOWN;
-											rarity.forgetPendingValue();
-										}
-									}
-								})
-
 								.build())
 						.build())
 
