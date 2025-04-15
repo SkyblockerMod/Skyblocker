@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
+import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -70,7 +71,7 @@ public class FishingHelper {
             if (player != null && player.fishHook != null) {
                 Vec3d soundToFishHook = player.fishHook.getPos().subtract(packet.getX(), 0, packet.getZ());
                 if (Math.abs(normalYawVector.x * soundToFishHook.z - normalYawVector.z * soundToFishHook.x) < 0.2D && Math.abs(normalYawVector.dotProduct(soundToFishHook)) < 4D && player.squaredDistanceTo(packet.getX(), packet.getY(), packet.getZ()) > 1D) {
-                    RenderHelper.displayInTitleContainerAndPlaySound(title, 10);
+                    TitleContainer.addTitleAndPlaySound(title, 10);
                     resetFish();
                 }
             } else {

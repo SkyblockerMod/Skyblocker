@@ -14,13 +14,13 @@ import de.hysky.skyblocker.mixins.accessors.MapStateAccessor;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.gui.widget.GridWidget.Adder;
-import net.minecraft.client.realms.util.RealmsUtil;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
@@ -199,7 +199,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			int halfFontHeight = (int) (CLIENT.textRenderer.fontHeight * scale) >> 1;
 
 			//Draw Player Head
-			RealmsUtil.drawPlayerHead(context, baseX + 4, centreY - ((int) (HEAD_SIZE * scale) >> 1), (int) (HEAD_SIZE * scale), reference.uuid());
+			HudHelper.drawPlayerHead(context, baseX + 4, centreY - ((int) (HEAD_SIZE * scale) >> 1), (int) (HEAD_SIZE * scale), reference.uuid());
 
 			//Draw class as heading
 			matrices.push();

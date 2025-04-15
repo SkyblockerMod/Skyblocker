@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.Pair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -18,7 +19,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.realms.util.RealmsUtil;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.MapRenderState;
 import net.minecraft.client.render.MapRenderer;
@@ -164,7 +164,7 @@ public class DungeonMap {
 				context.getMatrices().scale(2, 2, 1);
 				hovered = player.uuid();
 			}
-			RealmsUtil.drawPlayerHead(context, -4, -4, 8, player.uuid());
+			HudHelper.drawPlayerHead(context, -4, -4, 8, player.uuid());
 			context.drawBorder(-5, -5, 10, 10, ColorHelper.fullAlpha(dungeonClass.color()));
 			context.fill(-1, -7, 1, -5, ColorHelper.fullAlpha(dungeonClass.color()));
 			context.getMatrices().pop();

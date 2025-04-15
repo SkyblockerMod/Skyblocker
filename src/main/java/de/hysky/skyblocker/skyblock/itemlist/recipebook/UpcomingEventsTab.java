@@ -5,7 +5,7 @@ import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.SkyblockTime;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -64,7 +64,7 @@ public class UpcomingEventsTab implements RecipeTab {
 			eventRenderer.render(context, x + 1, eventsY, mouseX, mouseY);
 
 			//If we're hovering over this event then set it as the hovered one to show a tooltip
-			if (RenderHelper.pointIsInArea(mouseX, mouseY, x, y, x + 131, y + 150) && EventRenderer.isMouseOver(mouseX, mouseY, x + 1, eventsY)) this.hovered = eventRenderer;
+			if (HudHelper.pointIsInArea(mouseX, mouseY, x, y, x + 131, y + 150) && EventRenderer.isMouseOver(mouseX, mouseY, x + 1, eventsY)) this.hovered = eventRenderer;
 
 			eventsY += EventRenderer.HEIGHT;
 		}
@@ -121,7 +121,7 @@ public class UpcomingEventsTab implements RecipeTab {
 		}
 
 		private static boolean isMouseOver(int mouseX, int mouseY, int x, int y) {
-			return RenderHelper.pointIsInArea(mouseX, mouseY, x, y, x + 131, y + HEIGHT);
+			return HudHelper.pointIsInArea(mouseX, mouseY, x, y, x + 131, y + HEIGHT);
 		}
 
 		private List<TooltipComponent> getTooltip() {
