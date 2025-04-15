@@ -70,18 +70,15 @@ public enum SeaCreature {
 	SNAPPING_TURTLE("Snapping Turtle", "A Snapping Turtle is coming your way, and it's ANGRY!", SkyblockItemRarity.RARE, SeaCreatureCategory.WATER_HOTSPOT),
 	FROG_MAN("Frog Man", "Is it a frog? Is it a man? Well, yes, sorta, IT'S FROG MAN!!!!!!", SkyblockItemRarity.COMMON, SeaCreatureCategory.WATER_HOTSPOT);
 
-
-
 	final String name;
 	final String chatMessage;
 	final SkyblockItemRarity rarity;
 	final SeaCreatureCategory category;
 
-	SeaCreature(String name, String chatMessage, SkyblockItemRarity rarity, SeaCreatureCategory category){
+	SeaCreature(String name, String chatMessage, SkyblockItemRarity rarity, SeaCreatureCategory category) {
 		this.name = name;
 		this.chatMessage = chatMessage;
 		this.rarity = rarity;
 		this.category = category;
-
 	}
 }

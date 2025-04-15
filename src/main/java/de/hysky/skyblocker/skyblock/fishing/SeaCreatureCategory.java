@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.skyblock.fishing;
 
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
-
 public enum SeaCreatureCategory {
 	PARK,
 	CARROT,
@@ -22,6 +19,4 @@ public enum SeaCreatureCategory {
 	BACKWATER_BAYOU,
 	LAVA_HOTSPOT,
 	WATER_HOTSPOT;
-
-
 }
