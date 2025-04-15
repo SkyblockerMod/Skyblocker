@@ -45,12 +45,12 @@ public class ObtainedDateTooltip extends SimpleTooltipAdder {
 	private static TemporalAccessor getTimestampInternal(ItemStack stack) {
 		NbtCompound customData = ItemUtils.getCustomData(stack);
 
-		if (customData != null && customData.get("timestamp") instanceof NbtLong nbtLong) {
-			return Instant.ofEpochMilli(nbtLong.longValue());
+		if (customData != null && customData.get("timestamp") instanceof NbtLong(long value)) {
+			return Instant.ofEpochMilli(value);
 		}
 
-		if (customData != null && customData.get("timestamp") instanceof NbtString nbtString) {
-			return OLD_OBTAINED_DATE_FORMAT.parse(nbtString.value());
+		if (customData != null && customData.get("timestamp") instanceof NbtString(String value)) {
+			return OLD_OBTAINED_DATE_FORMAT.parse(value);
 		}
 
 		return null;
