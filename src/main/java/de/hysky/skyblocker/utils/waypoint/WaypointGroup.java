@@ -17,8 +17,7 @@ public class WaypointGroup {
             Codec.STRING.fieldOf("name").forGetter(WaypointGroup::name),
             Codec.STRING.fieldOf("island").xmap(Location::from, Location::id).forGetter(WaypointGroup::island),
             NamedWaypoint.CODEC.listOf().fieldOf("waypoints").forGetter(WaypointGroup::waypoints),
-            Codec.BOOL.lenientOptionalFieldOf("ordered", false).forGetter(WaypointGroup::ordered),
-            Codec.INT.lenientOptionalFieldOf("currentIndex", 0).forGetter(group -> group.currentIndex)
+            Codec.BOOL.lenientOptionalFieldOf("ordered", false).forGetter(WaypointGroup::ordered)
     ).apply(instance, WaypointGroup::new));
     public static final Codec<WaypointGroup> SKYTILS_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("name").forGetter(WaypointGroup::name),
@@ -32,23 +31,18 @@ public class WaypointGroup {
     private final Location island;
     private final List<NamedWaypoint> waypoints;
     private final boolean ordered;
-    protected int currentIndex;
+    private transient int currentIndex = 0;
 
     public WaypointGroup(String name, Location island, List<NamedWaypoint> waypoints) {
         this(name, island, waypoints, false);
     }
 
     public WaypointGroup(String name, Location island, List<NamedWaypoint> waypoints, boolean ordered) {
-        this(name, island, waypoints, ordered, 0);
-    }
-
-    public WaypointGroup(String name, Location island, List<NamedWaypoint> waypoints, boolean ordered, int currentIndex) {
         this.name = name;
         this.island = island;
         // Set ordered first since convertWaypoint depends on it
         this.ordered = ordered;
         this.waypoints = waypoints.stream().map(this::convertWaypoint).collect(Collectors.toList());
-        this.currentIndex = currentIndex;
     }
 
     public String name() {
@@ -68,26 +62,26 @@ public class WaypointGroup {
     }
 
     public WaypointGroup withName(String name) {
-        return new WaypointGroup(name, island, waypoints, ordered, currentIndex);
+        return new WaypointGroup(name, island, waypoints, ordered);
     }
 
     public WaypointGroup withIsland(Location island) {
-        return new WaypointGroup(name, island, waypoints, ordered, currentIndex);
+        return new WaypointGroup(name, island, waypoints, ordered);
     }
 
     public WaypointGroup withOrdered(boolean ordered) {
-        return new WaypointGroup(name, island, waypoints, ordered, currentIndex);
+        return new WaypointGroup(name, island, waypoints, ordered);
     }
 
     public WaypointGroup filterWaypoints(Predicate<NamedWaypoint> predicate) {
-        return new WaypointGroup(name, island, waypoints.stream().filter(predicate).toList(), ordered, currentIndex);
+        return new WaypointGroup(name, island, waypoints.stream().filter(predicate).toList(), ordered);
     }
 
     /**
      * Returns a deep copy of this {@link WaypointGroup} with a mutable waypoints list for editing.
      */
     public WaypointGroup deepCopy() {
-        return new WaypointGroup(name, island, waypoints.stream().map(NamedWaypoint::copy).collect(Collectors.toList()), ordered, currentIndex);
+        return new WaypointGroup(name, island, waypoints.stream().map(NamedWaypoint::copy).collect(Collectors.toList()), ordered);
     }
 
     public NamedWaypoint createWaypoint(BlockPos pos) {
@@ -138,6 +132,13 @@ public class WaypointGroup {
                 waypoint.render(context);
             }
         }
+    }
+
+    /**
+     * Resets the current ordered waypoint index on world change.
+     */
+    public void resetOrder() {
+    	currentIndex = 0;
     }
 
     @Override

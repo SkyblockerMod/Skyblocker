@@ -15,6 +15,7 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -52,6 +53,7 @@ public class Waypoints {
     public static void init() {
         loadWaypoints();
         ClientLifecycleEvents.CLIENT_STOPPING.register(Waypoints::saveWaypoints);
+        ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
         WorldRenderEvents.AFTER_TRANSLUCENT.register(Waypoints::render);
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(MinecraftClient.getInstance().currentScreen))))));
     }
@@ -185,6 +187,10 @@ public class Waypoints {
 	 */
     public static Multimap<Location, WaypointGroup> waypointsDeepCopy() {
         return waypoints.values().stream().map(WaypointGroup::deepCopy).collect(Multimaps.toMultimap(WaypointGroup::island, Function.identity(), () -> MultimapBuilder.enumKeys(Location.class).arrayListValues().build()));
+    }
+
+    private static void reset() {
+    	waypoints.values().forEach(WaypointGroup::resetOrder);
     }
 
     private static void render(WorldRenderContext context) {
