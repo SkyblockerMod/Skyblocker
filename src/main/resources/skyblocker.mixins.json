@@ -24,6 +24,7 @@
     "FarmlandBlockMixin",
     "GameRendererMixin",
     "GenericContainerScreenHandlerMixin",
+    "GlResourceManagerMixin",
     "HandledScreenMixin",
     "HandledScreenProviderMixin",
     "HeldItemRendererMixin",
