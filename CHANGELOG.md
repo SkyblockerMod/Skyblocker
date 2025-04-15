@@ -1,3 +1,31 @@
+# Release 5.1.2
+
+## Highlight
+* Fix Fossil solver
+* Fix Visitor Helper
+
+## What's Changed
+* Fix fossil solver again by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1224
+* the final visitor fix hopefully by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1225
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.1.1...v5.1.2
+___
+# Release 5.1.1
+
+## Highlight
+* Fix swing animation bug
+* Fix leap overlay opening outside of dungeons
+* Fix fossil solver bugs
+* Fix Visitor Helper
+
+## What's Changed
+* Fix swing animation causing right clicks to also send left clicks by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1217
+* fix leap overlay opening outside of dungeons by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1218
+* fix fossil solver bugs by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1216
+* Visitor Helper fixes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1219
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.1.0...v5.1.1
+___
 # Release 5.1.0
 
 ## Highlight

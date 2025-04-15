@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
+import java.util.Arrays;
+
 public class Structures {
 	/**
 	 * The three possible states a tile could be in
@@ -41,6 +43,15 @@ public class Structures {
 
 		int height() {
 			return state.length;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if(o instanceof TileGrid(TileState[][] state2)) {
+				return Arrays.deepEquals(state, state2);
+			}
+			return false;
 		}
 	}
 

@@ -26,7 +26,11 @@ public class ClientPlayerInteractionManagerMixin {
 							   int sequence, CallbackInfoReturnable<Packet<?>> cir, @Local(ordinal = 0) ItemStack itemStack) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.swingOnAbilities
 				&& SwingAnimation.hasAbility(itemStack)) {
-			playerEntity.swingHand(hand);
+			swingHandWithoutPackets(playerEntity, hand);
 		}
+	}
+
+	private void swingHandWithoutPackets(PlayerEntity playerEntity, Hand hand) {
+		playerEntity.swingHand(hand, false); // The playerEntity override for swingHand is the other method with just the hand parameter, this one isn't overridden and doesn't lead to sending packets.
 	}
 }
