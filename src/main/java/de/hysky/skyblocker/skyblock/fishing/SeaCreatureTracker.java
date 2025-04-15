@@ -9,7 +9,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
@@ -19,15 +19,14 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class SeaCreatureTracker {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Pattern DOUBLE_HOOK_PATTERN = Pattern.compile("Double Hook!(?: Woot woot!)?");
 
-	private static final List<LiveSeaCreature> seaCreatures = new ArrayList<>();
+	private static final SequencedMap<Entity, LiveSeaCreature> seaCreatures = new LinkedHashMap<>();
 	private static SeaCreature lastCatch;
 	private static boolean doubleHook = false;
 
@@ -39,7 +38,7 @@ public class SeaCreatureTracker {
 	}
 
 	private static void onEntityDespawn(Entity entity, ClientWorld clientWorld) {
-		seaCreatures.removeIf(liveSeaCreature -> liveSeaCreature.entity.equals(entity));
+		seaCreatures.remove(entity);
 	}
 
 	public static void onEntitySpawn(ArmorStandEntity armorStand) {
@@ -47,7 +46,7 @@ public class SeaCreatureTracker {
 			return;
 		}
 		if (armorStand.getName().getString().contains(lastCatch.name)) {
-			seaCreatures.add(new LiveSeaCreature(lastCatch, armorStand, System.currentTimeMillis()));
+			seaCreatures.put(armorStand, new LiveSeaCreature(lastCatch, armorStand, System.currentTimeMillis()));
 			//either stop double hook or clear last catch
 			if (doubleHook) {
 				doubleHook = false;
@@ -62,7 +61,7 @@ public class SeaCreatureTracker {
 	}
 
 	/**
-	 * Sees if a notification should be sent out about the timer running out
+	 * Checks if a notification should be sent out about the timer running out
 	 */
 	private static void checkTimerNotification() {
 		if (!SkyblockerConfigManager.get().helpers.fishing.seaCreatureTimerNotification || !isCreaturesAlive()) return;
@@ -80,7 +79,7 @@ public class SeaCreatureTracker {
 	private static void checkRarityNotification() {
 		SkyblockItemRarity rarityThreshold = SkyblockerConfigManager.get().helpers.fishing.minimumNotificationRarity;
 		if (rarityThreshold == SkyblockItemRarity.UNKNOWN) return;
-		SkyblockItemRarity lastCreatureRarity = seaCreatures.getLast().seaCreature.rarity;
+		SkyblockItemRarity lastCreatureRarity = seaCreatures.sequencedValues().getLast().seaCreature.rarity;
 		if (lastCreatureRarity.compareTo(rarityThreshold) >= 0) {
 			TitleContainer.addTitle(new Title(Text.translatable("skyblocker.config.helpers.fishing.minimumNotificationRarity.notification", lastCreatureRarity).formatted(lastCreatureRarity.formatting)), 60);
 			if (CLIENT.player == null) return;
@@ -89,7 +88,7 @@ public class SeaCreatureTracker {
 	}
 
 	/**
-	 * Send notification and sound when see creature cap is reached
+	 * Sends notification and sound when see creature cap is reached
 	 */
 	private static void checkCapNotification() {
 		if (!SkyblockerConfigManager.get().helpers.fishing.seaCreatureCapNotification) return;
@@ -101,7 +100,7 @@ public class SeaCreatureTracker {
 	}
 
 	/**
-	 * Look for a message that is sent when a sea creature is fished up
+	 * Looks for a message that is sent when a sea creature is fished up
 	 *
 	 * @param s Message to check
 	 */
@@ -131,7 +130,7 @@ public class SeaCreatureTracker {
 	 * @return Oldest sea creature age
 	 */
 	protected static long getOldestSeaCreatureAge() {
-		return System.currentTimeMillis() - seaCreatures.getFirst().spawnTime;
+		return System.currentTimeMillis() - seaCreatures.sequencedValues().getFirst().spawnTime;
 	}
 
 	/**
@@ -143,14 +142,13 @@ public class SeaCreatureTracker {
 	}
 
 
-	protected static Pair<String, Float> getTimerText(long currentTime) {
+	protected static ObjectFloatPair<Text> getTimerText(long currentTime) {
 		long maxTime = SkyblockerConfigManager.get().helpers.fishing.timerLength * 1000L;
-		String time = SkyblockTime.formatTime((maxTime - currentTime) / 1000f).getString();
+		Text time = SkyblockTime.formatTime((maxTime - currentTime) / 1000f);
 		//get how far through the timer is
-		float percentage = (float) (maxTime - currentTime) / (float) maxTime;
+		float percentage = (float) (maxTime - currentTime) / maxTime * 100;
 
-		return Pair.of(time, percentage);
-
+		return ObjectFloatPair.of(time, percentage);
 	}
 
 	protected static int seaCreatureCount() {
@@ -170,9 +168,6 @@ public class SeaCreatureTracker {
 		};
 	}
 
-
 	record LiveSeaCreature(SeaCreature seaCreature, Entity entity, Long spawnTime) {}
-
-
 }
 

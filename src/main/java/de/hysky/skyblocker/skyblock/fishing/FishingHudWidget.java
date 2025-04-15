@@ -5,12 +5,12 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
@@ -66,38 +66,24 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	@Override
 	public void updateContent() {
 		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen) {
-			addSimpleIcoText(new ItemStack(Items.SALMON_BUCKET), "Alive Creatures: ", Formatting.WHITE, "3/5");
-			addSimpleIcoText(Ico.CLOCK, "Time Left: ", Formatting.DARK_GREEN, "1m");
+			addComponent(Components.progressComponent(Ico.SALMON_BUCKET, Text.of("Alive Creatures"), Text.of("3/5"), 60, ColorUtils.percentToColor(40)));
+			addComponent(Components.progressComponent(Ico.CLOCK, Text.of("Time Left"), Text.of("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100));
 			return;
 		}
 
-		Pair<String, Float> timer = SeaCreatureTracker.getTimerText(SeaCreatureTracker.getOldestSeaCreatureAge());
+		ObjectFloatPair<Text> timer = SeaCreatureTracker.getTimerText(SeaCreatureTracker.getOldestSeaCreatureAge());
 		int seaCreatureCap = SeaCreatureTracker.getSeaCreatureCap();
-		addSimpleIcoText(new ItemStack(Items.TROPICAL_FISH_BUCKET), "Alive Creatures: ", getTextFormating(1 - (float) SeaCreatureTracker.seaCreatureCount() / seaCreatureCap), SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap);
-		addSimpleIcoText(Ico.CLOCK, "Time Left: ", getTextFormating(timer.right()), timer.left());
-
+		float seaCreaturePercent = (float) SeaCreatureTracker.seaCreatureCount() / seaCreatureCap * 100;
+		addComponent(Components.progressComponent(Ico.TROPICAL_FISH_BUCKET, Text.of("Alive Creatures"), Text.of(SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap), seaCreaturePercent, ColorUtils.percentToColor(100 - seaCreaturePercent)));
+		addComponent(Components.progressComponent(Ico.CLOCK, Text.of("Time Left"), timer.left(), timer.rightFloat()));
 	}
-
-	private static Formatting getTextFormating(float percentage) {
-		if (percentage > 0.4) {
-			return Formatting.DARK_GREEN;
-		} else if (percentage > 0.1) {
-			return Formatting.GOLD;
-		} else {
-			return Formatting.RED;
-		}
-	}
-
 
 	@Override
 	public Text getDisplayName() {
 		return Text.literal("Fishing Hud");
 	}
 
-
 	private static boolean isBarnFishing() {
 		return CLIENT.player != null && CLIENT.player.squaredDistanceTo(BARN_LOCATION) < 2500;
 	}
-
-
 }
