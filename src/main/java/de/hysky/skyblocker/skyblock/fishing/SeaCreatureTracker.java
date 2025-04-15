@@ -146,7 +146,7 @@ public class SeaCreatureTracker {
 		long maxTime = SkyblockerConfigManager.get().helpers.fishing.timerLength * 1000L;
 		Text time = SkyblockTime.formatTime((maxTime - currentTime) / 1000f);
 		//get how far through the timer is
-		float percentage = (float) (maxTime - currentTime) / maxTime;
+		float percentage = (float) (maxTime - currentTime) / maxTime * 100;
 
 		return ObjectFloatPair.of(time, percentage);
 	}
