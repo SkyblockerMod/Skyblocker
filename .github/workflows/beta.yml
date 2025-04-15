@@ -62,9 +62,7 @@ jobs:
           java-version: '21'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          validate-wrappers: true
+        uses: gradle/actions/wrapper-validation@v4
       - name: Build with Gradle
         run: ./gradlew build
 
@@ -104,9 +102,7 @@ jobs:
           distribution: 'microsoft'
           java-version: '21'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          validate-wrappers: true
+        uses: gradle/actions/wrapper-validation@v4
 
       - name: Run client gametest with Xvfb
         uses: modmuss50/xvfb-action@v1
