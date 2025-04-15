@@ -50,11 +50,11 @@ public class CustomArmorAnimatedDyes {
 								.executes(context -> customizeAnimatedDye(context.getSource(), Integer.MIN_VALUE, Integer.MIN_VALUE, 0, false, 0))
 								.then(argument("hex1", ColorArgumentType.hex())
 										.then(argument("hex2", ColorArgumentType.hex())
-												.then(argument("speed", FloatArgumentType.floatArg(0.01f, 2))
+												.then(argument("duration", FloatArgumentType.floatArg(0.01f, 2))
 														.then(argument("cycleBack", BoolArgumentType.bool())
-																.executes(context -> customizeAnimatedDye(context.getSource(), ColorArgumentType.getIntFromHex(context, "hex1"), ColorArgumentType.getIntFromHex(context, "hex2"), FloatArgumentType.getFloat(context, "speed"), BoolArgumentType.getBool(context, "cycleBack"), DEFAULT_DELAY))
+																.executes(context -> customizeAnimatedDye(context.getSource(), ColorArgumentType.getIntFromHex(context, "hex1"), ColorArgumentType.getIntFromHex(context, "hex2"), FloatArgumentType.getFloat(context, "duration"), BoolArgumentType.getBool(context, "cycleBack"), DEFAULT_DELAY))
 																.then(argument("delay", FloatArgumentType.floatArg(0))
-																		.executes(context ->customizeAnimatedDye(context.getSource(), ColorArgumentType.getIntFromHex(context, "hex1"), ColorArgumentType.getIntFromHex(context, "hex2"), FloatArgumentType.getFloat(context, "speed"), BoolArgumentType.getBool(context, "cycleBack"), FloatArgumentType.getFloat(context, "delay")))))))))));
+																		.executes(context ->customizeAnimatedDye(context.getSource(), ColorArgumentType.getIntFromHex(context, "hex1"), ColorArgumentType.getIntFromHex(context, "hex2"), FloatArgumentType.getFloat(context, "duration"), BoolArgumentType.getBool(context, "cycleBack"), FloatArgumentType.getFloat(context, "delay")))))))))));
 	}
 
 	private static int customizeAnimatedDye(FabricClientCommandSource source, int color1, int color2, float speed, boolean cycleBack, float delay) {
@@ -112,9 +112,9 @@ public class CustomArmorAnimatedDyes {
 		if (animatedDye.delay() > 0) {
 			if (animatedDye.cycleBack()) {
 				tracker.onBackCycle = true;
-				tracker.progress = Math.clamp(animatedDye.delay() * animatedDye.speed(), 0, 1);
+				tracker.progress = Math.clamp(animatedDye.delay() / animatedDye.duration(), 0, 1);
 			} else {
-				tracker.progress = Math.clamp(1 - animatedDye.delay() * animatedDye.speed(), 0, 1);
+				tracker.progress = Math.clamp(1 - animatedDye.delay() / animatedDye.duration(), 0, 1);
 			}
 		}
 		return tracker;
@@ -155,12 +155,12 @@ public class CustomArmorAnimatedDyes {
 	}
 
 	public record DyeFrame(@SerialEntry int color, @SerialEntry float time) {}
-	public record AnimatedDye(@SerialEntry List<DyeFrame> frames, @SerialEntry boolean cycleBack, @SerialEntry float delay, @SerialEntry float speed) {
+	public record AnimatedDye(@SerialEntry List<DyeFrame> frames, @SerialEntry boolean cycleBack, @SerialEntry float delay, @SerialEntry float duration) {
 
 		private int interpolate(AnimatedDyeStateTracker tracker, RenderTickCounter counter) {
 
 			int dyeFrame = 0;
-			while (dyeFrame < frames.size() - 1 && frames.get(dyeFrame + 1).time <= tracker.progress) dyeFrame++;
+			while (dyeFrame < frames.size() - 1 && frames.get(dyeFrame + 1).time < tracker.progress) dyeFrame++;
 
 
 			DyeFrame current = tracker.onBackCycle ? frames.get(dyeFrame + 1) : frames.get(dyeFrame);
@@ -170,7 +170,7 @@ public class CustomArmorAnimatedDyes {
 
 			tracker.lastColor = OkLabColor.interpolate(current.color, next.color, progress);
 
-			float v = counter.getLastDuration() * speed * 0.05f;
+			float v = counter.getLastDuration() * 0.05f / duration();
 			if (tracker.onBackCycle) {
 				tracker.progress -= v;
 				if (tracker.progress <= 0f) {

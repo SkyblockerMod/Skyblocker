@@ -37,12 +37,10 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	private static final Text CANNOT_CUSTOMIZE_COLOR_TEXT = Text.translatable("skyblocker.armorCustomization.cannotCustomizeColor");
 	private static final Text ANIMATED_TEXT = Text.translatable("skyblocker.armorCustomization.animated");
 	private static final Text CYCLE_BACK_TEXT = Text.translatable("skyblocker.armorCustomization.cycleBack");
-	private static final Text SPEED_TOOLTIP_TEXT = Text.translatable("skyblocker.armorCustomization.speedTooltip");
+	private static final Text DURATION_TOOLTIP_TEXT = Text.translatable("skyblocker.armorCustomization.durationTooltip");
 	private static final Text DELAY_TOOLTIP_TEXT = Text.translatable("skyblocker.armorCustomization.delayTooltip");
-	private static final String SPEED_TEXT = "skyblocker.armorCustomization.speed";
+	private static final String DURATION_TEXT = "skyblocker.armorCustomization.duration";
 	private static final String DELAY_TEXT = "skyblocker.armorCustomization.delay";
-
-	private final TextRenderer textRenderer;
 
 	private final ColorPickerWidget colorPicker;
 	private final RGBTextInput rgbTextInput;
@@ -50,7 +48,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	private final AnimatedDyeTimelineWidget timelineWidget;
 	private final CheckboxWidget cycleBackCheckbox;
 	private final Slider delaySlider;
-	private final Slider speedSlider;
+	private final Slider durationSlider;
 
 	private final ButtonWidget addCustomColorButton;
 	private final ButtonWidget removeCustomColorButton;
@@ -66,7 +64,6 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	public ColorSelectionWidget(int x, int y, int width, int height, TextRenderer textRenderer) {
 		super(x, y, width, height, Text.of("ColorSelectionWidget"));
 		int height1 = Math.min(2 * height / 3, width / 6);
-		this.textRenderer = textRenderer;
 
 		colorPicker = new ColorPickerWidget(x + 3, y + 3, height1 * 2, height1);
 		colorPicker.setOnColorChange(this::onPickerColorChanged);
@@ -104,13 +101,13 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 					dye.frames(),
 					dye.cycleBack(),
 					f,
-					dye.speed()
+					dye.duration()
 			);
 			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
 		}, DELAY_TEXT, true);
 		delaySlider.setTooltip(Tooltip.of(DELAY_TOOLTIP_TEXT));
 
-		speedSlider = new Slider(x1, delaySlider.getBottom() + 1, width1, 0.01f, 2.0f, f -> {
+		durationSlider = new Slider(x1, delaySlider.getBottom() + 1, width1, 0.1f, 10.0f, f -> {
 			String itemUuid = ItemUtils.getItemUuid(currentItem);
 			CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 			CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
@@ -120,11 +117,11 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 					f
 			);
 			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
-		}, SPEED_TEXT, false);
-		speedSlider.setTooltip(Tooltip.of(SPEED_TOOLTIP_TEXT));
+		}, DURATION_TEXT, true);
+		durationSlider.setTooltip(Tooltip.of(DURATION_TOOLTIP_TEXT));
 
 
-		children = ImmutableList.<ClickableWidget>builder().add(colorPicker, rgbTextInput, timelineWidget, addCustomColorButton, removeCustomColorButton, animatedCheckbox, notCustomizableText, cycleBackCheckbox, delaySlider, speedSlider).build();
+		children = ImmutableList.<ClickableWidget>builder().add(colorPicker, rgbTextInput, timelineWidget, addCustomColorButton, removeCustomColorButton, animatedCheckbox, notCustomizableText, cycleBackCheckbox, delaySlider, durationSlider).build();
 	}
 
 	private void onPickerColorChanged(int argb, boolean release) {
@@ -174,9 +171,11 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 					List.of(new CustomArmorAnimatedDyes.DyeFrame(Colors.RED, 0), new CustomArmorAnimatedDyes.DyeFrame(Colors.BLUE, 1)),
 					true,
 					0,
-					0.6f
+					1.f
 			));
 			timelineWidget.setAnimatedDye(itemUuid);
+			delaySlider.setVal(0);
+			durationSlider.setVal(1);
 		} else {
 			SkyblockerConfigManager.get().general.customAnimatedDyes.remove(itemUuid);
 		}
@@ -189,7 +188,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 				dye.frames(),
 				checked,
 				dye.delay(),
-				dye.speed()
+				dye.duration()
 		);
 		SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
 	}
@@ -201,7 +200,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		timelineWidget.visible = state == State.CUSTOMIZED && animated;
 		cycleBackCheckbox.visible = state == State.CUSTOMIZED && animated;
 		delaySlider.visible = state == State.CUSTOMIZED && animated;
-		speedSlider.visible = state == State.CUSTOMIZED && animated;
+		durationSlider.visible = state == State.CUSTOMIZED && animated;
 
 		addCustomColorButton.visible = state == State.CUSTOMIZABLE;
 		removeCustomColorButton.visible = state == State.CUSTOMIZED;
@@ -263,7 +262,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 			CustomArmorAnimatedDyes.AnimatedDye animatedDye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 			((CheckboxWidgetAccessor) cycleBackCheckbox).setChecked(animatedDye.cycleBack());
 			delaySlider.setVal(animatedDye.delay());
-			speedSlider.setVal(animatedDye.speed());
+			durationSlider.setVal(animatedDye.duration());
 		} else if (SkyblockerConfigManager.get().general.customDyeColors.containsKey(itemUuid)) {
 			state = State.CUSTOMIZED;
 			animated = false;
@@ -294,7 +293,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		private boolean clicked = false;
 
 		public Slider(int x, int y, int width, float min, float max, FloatConsumer onValueChanged, @Translatable String translatable, boolean linear) {
-			super(x, y, width, 15, Text.empty(), min);
+			super(x, y, width, 15, Text.empty(), 0);
 			this.onValueChanged = onValueChanged;
 			this.minValue = min;
 			this.maxValue = max;

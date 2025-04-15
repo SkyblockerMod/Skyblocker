@@ -157,7 +157,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 				configFrames,
 				dye.cycleBack(),
 				dye.delay(),
-				dye.speed()
+				dye.duration()
 		);
 		SkyblockerConfigManager.get().general.customAnimatedDyes.put(uuid, newDye);
 	}
