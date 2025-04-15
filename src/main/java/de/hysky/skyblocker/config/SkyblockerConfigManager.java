@@ -1,11 +1,9 @@
 package de.hysky.skyblocker.config;
 
 import com.google.gson.FieldNamingPolicy;
-import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.categories.*;
-import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -27,12 +25,10 @@ import net.minecraft.util.Identifier;
 
 import java.lang.StackWalker.Option;
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class SkyblockerConfigManager {
     public static final int CONFIG_VERSION = 3;
     private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("skyblocker.json");
-	private static final AtomicReference<GsonBuilder> ATOMIC_REFERENCE = new AtomicReference<>();
     private static final ConfigClassHandler<SkyblockerConfig> HANDLER = ConfigClassHandler.createBuilder(SkyblockerConfig.class)
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
                     .setPath(CONFIG_FILE)
@@ -40,10 +36,6 @@ public class SkyblockerConfigManager {
                     .appendGsonBuilder(builder -> builder
                             .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
                             .registerTypeHierarchyAdapter(Identifier.class, new Identifier.Serializer()))
-					.appendGsonBuilder(builder -> {
-						ATOMIC_REFERENCE.set(builder);
-						return builder;
-					})
                     .build())
             .build();
 
@@ -59,8 +51,6 @@ public class SkyblockerConfigManager {
         if (StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE).getCallerClass() != SkyblockerMod.class) {
             throw new RuntimeException("Skyblocker: Called config init from an illegal place!");
         }
-		System.out.println("BALLS");
-		System.out.println(ATOMIC_REFERENCE.get().create().getAdapter(GeneralConfig.ItemTooltip.class));
 
 		HANDLER.load();
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
