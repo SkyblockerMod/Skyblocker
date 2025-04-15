@@ -42,7 +42,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Identifier BUTTON = Identifier.of(SkyblockerMod.NAMESPACE, "button/button");
 	private static final Identifier BUTTON_HIGHLIGHTED = Identifier.of(SkyblockerMod.NAMESPACE, "button/button_highlighted");
-	private static final DungeonsConfig.SpiritLeapOverlay CONFIG = SkyblockerConfigManager.get().dungeons.spiritLeapOverlay;
+	private static final DungeonsConfig.SpiritLeapOverlay CONFIG = SkyblockerConfigManager.get().dungeons.leapOverlay;
 	private static final int BUTTON_SPACING = 8;
 	private static final int BUTTON_WIDTH = 130;
 	private static final int BUTTON_HEIGHT = 50;

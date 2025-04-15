@@ -139,23 +139,23 @@ public class DungeonsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay"))
 								.description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay.@Tooltip")))
-								.binding(defaults.dungeons.spiritLeapOverlay.enableLeapOverlay,
-										() -> config.dungeons.spiritLeapOverlay.enableLeapOverlay,
-										newValue -> config.dungeons.spiritLeapOverlay.enableLeapOverlay = newValue)
+								.binding(defaults.dungeons.leapOverlay.enableLeapOverlay,
+										() -> config.dungeons.leapOverlay.enableLeapOverlay,
+										newValue -> config.dungeons.leapOverlay.enableLeapOverlay = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.showMap"))
-								.binding(defaults.dungeons.spiritLeapOverlay.showMap,
-										() -> config.dungeons.spiritLeapOverlay.showMap,
-										newValue -> config.dungeons.spiritLeapOverlay.showMap = newValue)
+								.binding(defaults.dungeons.leapOverlay.showMap,
+										() -> config.dungeons.leapOverlay.showMap,
+										newValue -> config.dungeons.leapOverlay.showMap = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Float>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.scale"))
-								.binding(defaults.dungeons.spiritLeapOverlay.scale,
-										() -> config.dungeons.spiritLeapOverlay.scale,
-										newValue -> config.dungeons.spiritLeapOverlay.scale = newValue)
+								.binding(defaults.dungeons.leapOverlay.scale,
+										() -> config.dungeons.leapOverlay.scale,
+										newValue -> config.dungeons.leapOverlay.scale = newValue)
 								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(1f, 2f).step(0.05f).formatValue(ConfigUtils.FLOAT_TWO_FORMATTER))
 								.build())
 						.build())

@@ -37,7 +37,7 @@ public class DungeonsConfig {
     public DungeonMap dungeonMap = new DungeonMap();
 
 	@SerialEntry
-	public SpiritLeapOverlay spiritLeapOverlay = new SpiritLeapOverlay();
+	public SpiritLeapOverlay leapOverlay = new SpiritLeapOverlay();
 
     @SerialEntry
     public PuzzleSolvers puzzleSolvers = new PuzzleSolvers();
