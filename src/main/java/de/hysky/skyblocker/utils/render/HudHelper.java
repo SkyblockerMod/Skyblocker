@@ -29,14 +29,6 @@ public class HudHelper {
 	}
 
 	/**
-	 * Draws a player head without blocking or nothing if profile is not available immediately.
-	 * This fetches the profile so it will be available for future calls to this method.
-	 */
-	public static void drawPlayerHead(DrawContext context, int x, int y, int size, String name) {
-		SkullBlockEntity.fetchProfileByName(name).getNow(Optional.empty()).map(CLIENT.getSkinProvider()::getSkinTextures).ifPresent(skinTexture -> PlayerSkinDrawer.draw(context, skinTexture, x, y, size));
-	}
-
-	/**
 	 * Draws a player head without blocking or a default head if profile is not available immediately.
 	 * This fetches the profile so it will be available for future calls to this method.
 	 */
