@@ -496,5 +496,7 @@
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Si la quantité de Toxic Arrow Poison que vous avez dans votre inventaire est inférieure au seuil fixé, vous recevrez un avertissement.\n\n16 est le minimum absolu.\nVous en voulez 32 pour une phase « DPS » en douceur avec des tirs en préalable.",
     "skyblocker.config.debug": "Débogage",
     "skyblocker.config.debug.showInvisibleArmorStands": "Afficher les Armor Stands invisibles",
-    "skyblocker.config.general.itemList.filter.npcs": "NPCs"
+    "skyblocker.config.general.itemList.filter.npcs": "NPCs",
+    "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Activer les Waypoints pour les terminals/devices/levers pendant Goldor",
+    "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "Modifie la couleur de vos coéquipiers en fonction de leur classe plutôt que de leur grade."
 }
