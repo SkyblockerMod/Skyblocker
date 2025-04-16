@@ -415,6 +415,10 @@
     "skyblocker.config.general.itemTooltip.craft": "Coût du craft",
     "skyblocker.config.general.minionValue.@Tooltip": "Calculer la valeur des ressources générées par ce minion.",
     "skyblocker.config.general.hitbox.oldMushroomHitbox": "Activer la hitbox 1.8 des champignon",
+<<<<<<< HEAD
+=======
+    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.style.SQUARE": "Carré",
+>>>>>>> 261d27ef (Translated using Weblate (French))
     "skyblocker.config.general.itemProtection.slotLockStyle.style.CLASSIC": "Classique",
     "skyblocker.config.helpers.chocolateFactory.enableEggFinder": "Activer le détecteur d'œufs",
     "skyblocker.config.general.updateNotifications": "Notifications de mise à jour",
@@ -466,7 +470,11 @@
     "skyblocker.config.chat.chatRules.screen.deleteQuestion": "Êtes-vous sûr de vouloir supprimer cette règle ?",
     "skyblocker.config.chat.chatRules.screen.ruleEnabled": "Règle activée",
     "skyblocker.config.eventNotifications.@Tooltip[1]": "L'ordre n'a pas d'importance. Si vous souhaitez désactiver les notifications, il vous suffit de vider la liste.",
+<<<<<<< HEAD
     "skyblocker.config.chat.waypoints.displayed": "Affichage d'un Waypoint temporaire à x: %d y: %d z: %d %s",
+=======
+    "skyblocker.config.chat.waypoints.displayed": "Affichage d'un Waypoint temporaire à x : %d, y : %d, z : %d | %s",
+>>>>>>> 261d27ef (Translated using Weblate (French))
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Recherche dans le Bazaar et l'AH de l'objet actuellement survolé à l'aide de la touche F6.",
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "Échec de la recherche de l'objet dans le Bazaar et l'Auction House",
     "skyblocker.config.helpers.itemPrice.refreshingItemPrices": "Rafraîchissement du prix des objets...",
