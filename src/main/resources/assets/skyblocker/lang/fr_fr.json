@@ -498,5 +498,8 @@
     "skyblocker.config.debug.showInvisibleArmorStands": "Afficher les Armor Stands invisibles",
     "skyblocker.config.general.itemList.filter.npcs": "NPCs",
     "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Activer les Waypoints pour les terminals/devices/levers pendant Goldor",
-    "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "Modifie la couleur de vos coéquipiers en fonction de leur classe plutôt que de leur grade."
+    "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "Modifie la couleur de vos coéquipiers en fonction de leur classe plutôt que de leur grade.",
+    "skyblocker.config.general.updateChannel.@Tooltip": "Choisissez de recevoir des notifications pour les officielles, pour les officielles et les bêtas, ou pour les officielles, les bêtas et les alphas.",
+    "skyblocker.config.general.itemTooltip.craft.@Tooltip": "Vous pouvez choisir le type d'order du Bazaar à utiliser pour le calcul de fabrication.",
+    "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory"
 }
