@@ -382,7 +382,11 @@
     "skyblocker.events.tab.clickToWarp": "Cliquez pour vous téléporter !",
     "skyblocker.profileviewer.inventory.armor": "Armure",
     "skyblocker.profileviewer.inventory.inventory": "Inventaire",
+<<<<<<< HEAD
     "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage": "Wishing Compass utilisée. Déplacez-vous vers un autre emplacement et utilisez un second Wishing Compass pour trianguler la cible",
+=======
+    "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage": "Wishing Compass utilisée. Déplacez-vous vers un autre emplacement et utilisez un second Wishing Compass pour trianguler la cible.",
+>>>>>>> 10a68bae (Translated using Weblate (French))
     "skyblocker.waypoints.type.OUTLINE": "Contour",
     "skyblocker.waypoints.type.OUTLINED_HIGHLIGHT": "Surlignage entouré",
     "skyblocker.waypoints.type.HIGHLIGHT": "Surlignage",
