@@ -31,6 +31,7 @@
     "InventoryScreenMixin",
     "ItemStackMixin",
     "LeverBlockMixin",
+    "MapRendererMixin",
     "MessageHandlerMixin",
     "MinecraftClientMixin",
     "MouseMixin",

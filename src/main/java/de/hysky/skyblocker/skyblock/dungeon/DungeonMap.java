@@ -126,7 +126,7 @@ public class DungeonMap {
 		context.getMatrices().translate(x, y, 0);
 		context.getMatrices().scale(scale, scale, 0f);
 		mapRenderer.update(mapId, state, MAP_RENDER_STATE);
-		mapRenderer.draw(MAP_RENDER_STATE, context.getMatrices(), vertices, false, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+		mapRenderer.draw(MAP_RENDER_STATE, context.getMatrices(), vertices, fancy, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 		vertices.draw();
 
 		UUID hoveredHead = null;
