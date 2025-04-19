@@ -84,11 +84,15 @@ public class ItemCooldowns {
         String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
         if (usedItemId.isEmpty()) return;
         if (state.isIn(BlockTags.LOGS)) {
-            if (usedItemId.equals(JUNGLE_AXE_ID) || usedItemId.equals(TREECAPITATOR_ID)) {
+            if (usedItemId.equals(JUNGLE_AXE_ID) && !isOnCooldown(JUNGLE_AXE_ID)) {
                 updateCooldown();
-                if (!isOnCooldown(JUNGLE_AXE_ID) || !isOnCooldown(TREECAPITATOR_ID)) {
-                    ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry(getCooldown4Foraging()));
-                }
+                ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry(getCooldown4Foraging()));
+                return;
+            }
+            if (usedItemId.equals(TREECAPITATOR_ID) && !isOnCooldown(TREECAPITATOR_ID)) {
+                updateCooldown();
+                ITEM_COOLDOWNS.put(usedItemId, new CooldownEntry(getCooldown4Foraging()));
+                return;
             }
         }
     }
