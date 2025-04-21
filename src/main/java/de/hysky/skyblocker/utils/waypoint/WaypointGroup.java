@@ -137,7 +137,7 @@ public class WaypointGroup {
     /**
      * Resets the current ordered waypoint index on world change.
      */
-    public void resetOrder() {
+    public void resetIndex() {
     	currentIndex = 0;
     }
 

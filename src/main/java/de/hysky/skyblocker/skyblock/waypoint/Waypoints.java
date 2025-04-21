@@ -53,9 +53,9 @@ public class Waypoints {
     public static void init() {
         loadWaypoints();
         ClientLifecycleEvents.CLIENT_STOPPING.register(Waypoints::saveWaypoints);
-        ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
         WorldRenderEvents.AFTER_TRANSLUCENT.register(Waypoints::render);
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(MinecraftClient.getInstance().currentScreen))))));
+		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
     }
 
     public static void loadWaypoints() {
@@ -189,10 +189,6 @@ public class Waypoints {
         return waypoints.values().stream().map(WaypointGroup::deepCopy).collect(Multimaps.toMultimap(WaypointGroup::island, Function.identity(), () -> MultimapBuilder.enumKeys(Location.class).arrayListValues().build()));
     }
 
-    private static void reset() {
-    	waypoints.values().forEach(WaypointGroup::resetOrder);
-    }
-
     private static void render(WorldRenderContext context) {
         if (SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
             for (WaypointGroup group : getWaypointGroup(Utils.getLocation())) {
@@ -208,4 +204,8 @@ public class Waypoints {
             }
         }
     }
+
+	private static void reset() {
+		waypoints.values().forEach(WaypointGroup::resetIndex);
+	}
 }
