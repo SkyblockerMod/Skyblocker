@@ -6,21 +6,17 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.BeaconBlockEntityRendererInvoker;
 import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
-import de.hysky.skyblocker.utils.render.title.Title;
-import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -33,8 +29,6 @@ import net.minecraft.util.profiler.Profilers;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
-
-import java.awt.*;
 
 public class RenderHelper {
     private static final Identifier TRANSLUCENT_DRAW = Identifier.of(SkyblockerMod.NAMESPACE, "translucent_draw");
@@ -355,48 +349,5 @@ public class RenderHelper {
 
     public static Box getBlockBoundingBox(ClientWorld world, BlockState state, BlockPos pos) {
         return state.getOutlineShape(world, pos).asCuboid().getBoundingBox().offset(pos);
-    }
-
-    /**
-     * Adds the title to {@link TitleContainer} and {@link #playNotificationSound() plays the notification sound} if the title is not in the {@link TitleContainer} already.
-     * No checking needs to be done on whether the title is in the {@link TitleContainer} already by the caller.
-     *
-     * @param title the title
-     */
-    public static void displayInTitleContainerAndPlaySound(Title title) {
-        if (TitleContainer.addTitle(title)) {
-            playNotificationSound();
-        }
-    }
-
-    /**
-     * Adds the title to {@link TitleContainer} for a set number of ticks and {@link #playNotificationSound() plays the notification sound} if the title is not in the {@link TitleContainer} already.
-     * No checking needs to be done on whether the title is in the {@link TitleContainer} already by the caller.
-     *
-     * @param title the title
-     * @param ticks the number of ticks the title will remain
-     */
-    public static void displayInTitleContainerAndPlaySound(Title title, int ticks) {
-        if (TitleContainer.addTitle(title, ticks)) {
-            playNotificationSound();
-        }
-    }
-
-    private static void playNotificationSound() {
-        if (CLIENT.player != null) {
-            CLIENT.player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
-        }
-    }
-
-    public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
-        return x >= x1 && x <= x2 && y >= y1 && y <= y2;
-    }
-
-    public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, int argb) {
-        context.drawGuiTexture(RenderLayer::getGuiTextured, texture, x, y, width, height, argb);
-    }
-
-    public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, Color color) {
-        renderNineSliceColored(context, texture, x, y, width, height, ColorHelper.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
     }
 }

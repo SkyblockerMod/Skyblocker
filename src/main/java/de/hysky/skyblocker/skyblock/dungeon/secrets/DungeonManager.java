@@ -218,6 +218,20 @@ public class DungeonManager {
         return customWaypoints.remove(room, pos);
     }
 
+	@Nullable
+	public static Vector2ic getMapEntrancePos() {
+		return mapEntrancePos;
+	}
+
+	public static int getMapRoomSize() {
+		return mapRoomSize;
+	}
+
+	@Nullable
+	public static Vector2ic getPhysicalEntrancePos() {
+		return physicalEntrancePos;
+	}
+
     /**
      * not null if {@link #isCurrentRoomMatched()}
      */
@@ -479,7 +493,7 @@ public class DungeonManager {
 
     private static RequiredArgumentBuilder<FabricClientCommandSource, String> matchAgainstCommand() {
         return argument("room", StringArgumentType.string()).suggests((context, builder) -> CommandSource.suggestMatching(ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).map(Map::keySet).flatMap(Collection::stream), builder)).then(argument("direction", Room.Direction.DirectionArgumentType.direction()).executes(context -> {
-            if (physicalEntrancePos == null || mapEntrancePos == null || mapRoomSize == 0) {
+            if (!isClearingDungeon()) {
                 context.getSource().sendError(Constants.PREFIX.get().append("§cYou are not in a dungeon."));
                 return Command.SINGLE_SUCCESS;
             }
@@ -576,6 +590,7 @@ public class DungeonManager {
 			Vec3d playerPos = client.player.getPos();
 			physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(playerPos);
 			currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
+			DungeonEvents.DUNGEON_LOADED.invoker().onDungeonLoaded();
 		}
 
         MapState map = FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().main.get(8)), client.world);
@@ -768,6 +783,13 @@ public class DungeonManager {
     private static Room getRoomAtPhysical(Vec3i pos) {
         return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
     }
+
+	/**
+	 * @return {@code true} if the player is in the main clearing phase of a dungeon.
+	 */
+	public static boolean isClearingDungeon() {
+		return physicalEntrancePos != null && mapEntrancePos != null && mapRoomSize != 0;
+	}
 
     /**
      * Calls {@link #isRoomMatched(Room)} on {@link #currentRoom}.

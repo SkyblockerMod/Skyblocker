@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.slayers.boss.vampire;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.minecraft.block.Blocks;
@@ -32,7 +31,7 @@ public class ManiaIndicator {
                 BlockPos pos = MinecraftClient.getInstance().player.getBlockPos().down();
                 boolean isGreen = MinecraftClient.getInstance().world.getBlockState(pos).getBlock() == Blocks.GREEN_TERRACOTTA;
                 title.setText(Text.translatable("skyblocker.rift.mania").formatted(isGreen ? Formatting.GREEN : Formatting.RED));
-                RenderHelper.displayInTitleContainerAndPlaySound(title);
+                TitleContainer.addTitleAndPlaySound(title);
             }
         }
         if (!anyMania) {

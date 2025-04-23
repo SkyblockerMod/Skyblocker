@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
+import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -119,7 +120,7 @@ public class Boulder extends DungeonPuzzle {
         } else {
             // If no solution is found, display a title message and reset the puzzle
             Title title = new Title("skyblocker.dungeons.puzzle.boulder.noSolution", Formatting.GREEN);
-            RenderHelper.displayInTitleContainerAndPlaySound(title, 15);
+            TitleContainer.addTitleAndPlaySound(title, 15);
             reset();
         }
     }

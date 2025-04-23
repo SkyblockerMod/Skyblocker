@@ -22,9 +22,6 @@ public class DungeonsConfig {
     public boolean classBasedPlayerGlow = true;
 
     @SerialEntry
-    public boolean spiritLeapOverlay = true;
-
-    @SerialEntry
     public boolean starredMobGlow = false;
 
     @SerialEntry
@@ -38,6 +35,9 @@ public class DungeonsConfig {
 
     @SerialEntry
     public DungeonMap dungeonMap = new DungeonMap();
+
+	@SerialEntry
+	public SpiritLeapOverlay leapOverlay = new SpiritLeapOverlay();
 
     @SerialEntry
     public PuzzleSolvers puzzleSolvers = new PuzzleSolvers();
@@ -76,6 +76,12 @@ public class DungeonsConfig {
         @SerialEntry
         public boolean enableMap = true;
 
+		@SerialEntry
+		public boolean fancyMap = true;
+
+		@SerialEntry
+		public boolean showSelfHead = true;
+
         @SerialEntry
         public float mapScaling = 1f;
 
@@ -85,6 +91,17 @@ public class DungeonsConfig {
         @SerialEntry
         public int mapY = 2;
     }
+
+	public static class SpiritLeapOverlay {
+		@SerialEntry
+		public boolean enableLeapOverlay = true;
+
+		@SerialEntry
+		public boolean showMap = true;
+
+		@SerialEntry
+		public float scale = 1.2f;
+	}
 
     public static class PuzzleSolvers {
         @SerialEntry

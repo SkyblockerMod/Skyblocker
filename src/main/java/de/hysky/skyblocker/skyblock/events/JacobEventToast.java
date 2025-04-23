@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.events;
 
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
@@ -45,7 +45,7 @@ public class JacobEventToast extends EventToast {
             // IDK how to make the items transparent, so I just redraw the texture on top
             matrices.push();
             matrices.translate(0, 0, 400f);
-            RenderHelper.renderNineSliceColored(context, TEXTURE, 0, 0, getWidth(), getHeight(), ColorHelper.fromFloats((k >> 24) / 255f, 1f, 1f, 1f));
+            HudHelper.renderNineSliceColored(context, TEXTURE, 0, 0, getWidth(), getHeight(), ColorHelper.fromFloats((k >> 24) / 255f, 1f, 1f, 1f));
             matrices.pop();
             y += textRenderer.fontHeight * message.size();
         }
