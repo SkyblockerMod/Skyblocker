@@ -103,15 +103,13 @@ public class Tips {
     }
 
     private static int enableTips(CommandContext<FabricClientCommandSource> context) {
-        SkyblockerConfigManager.get().general.enableTips = true;
-        SkyblockerConfigManager.save();
+        SkyblockerConfigManager.update(config -> config.general.enableTips = true);
         context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.tips.enabled")).append(" ").append(Text.translatable("skyblocker.tips.clickDisable").styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker tips disable")))));
         return Command.SINGLE_SUCCESS;
     }
 
     private static int disableTips(CommandContext<FabricClientCommandSource> context) {
-        SkyblockerConfigManager.get().general.enableTips = false;
-        SkyblockerConfigManager.save();
+        SkyblockerConfigManager.update(config -> config.general.enableTips = false);
         context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.tips.disabled")).append(" ").append(Text.translatable("skyblocker.tips.clickEnable").styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker tips enable")))));
         return Command.SINGLE_SUCCESS;
     }

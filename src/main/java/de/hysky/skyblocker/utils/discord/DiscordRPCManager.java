@@ -42,8 +42,7 @@ public class DiscordRPCManager {
     public static void updateDataAndPresence() {
         // If the custom message is empty, discord will keep the last message, this is can serve as a default if the user doesn't want a custom message
         if (SkyblockerConfigManager.get().misc.richPresence.customMessage.isEmpty()) {
-            SkyblockerConfigManager.get().misc.richPresence.customMessage = "Playing Skyblock";
-            SkyblockerConfigManager.save();
+        	SkyblockerConfigManager.update(config -> config.misc.richPresence.customMessage = "Playing Skyblock");
         }
         if (SkyblockerConfigManager.get().misc.richPresence.cycleMode) cycleCount = (cycleCount + 1) % 3;
         initAndUpdatePresence();
