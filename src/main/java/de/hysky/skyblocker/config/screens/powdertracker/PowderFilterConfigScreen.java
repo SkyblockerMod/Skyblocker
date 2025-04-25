@@ -61,8 +61,7 @@ public class PowderFilterConfigScreen extends Screen {
 	}
 
 	public void saveFilters() {
-		SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter = filters;
-		SkyblockerConfigManager.save();
+		SkyblockerConfigManager.update(config -> config.mining.crystalHollows.powderTrackerFilter = filters);
 		PowderMiningTracker.INSTANCE.recalculateAll();
 	}
 

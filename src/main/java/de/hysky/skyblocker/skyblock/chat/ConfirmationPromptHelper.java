@@ -52,8 +52,8 @@ public class ConfirmationPromptHelper {
 				ClickEvent event = style.getClickEvent();
 
 				//Check to see if its a yes and has the proper command
-				if (asString.equals("§a§l[YES]") && event != null && event.getAction() == ClickEvent.Action.RUN_COMMAND && event.getValue().startsWith("/chatprompt")) {
-					return Optional.of(event.getValue());
+				if (asString.equals("§a§l[YES]") && event instanceof ClickEvent.RunCommand(String command) && command.startsWith("/chatprompt")) {
+					return Optional.of(command);
 				}
 
 				return Optional.empty();
