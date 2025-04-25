@@ -84,7 +84,7 @@ public class SmoothAOTE {
 	 * @return the range with tuner
 	 */
 	private static int extractTunedCustomData(NbtCompound customData, int baseRange) {
-		return customData != null && customData.contains("tuned_transmission") ? baseRange + customData.getInt("tuned_transmission") : baseRange;
+		return customData != null && customData.contains("tuned_transmission") ? baseRange + customData.getInt("tuned_transmission", 0) : baseRange;
 	}
 
 	/**
@@ -193,7 +193,7 @@ public class SmoothAOTE {
 				return;
 			}
 			case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
-				if (CLIENT.options.sneakKey.isPressed() && customData.getInt("ethermerge") == 1) {
+				if (CLIENT.options.sneakKey.isPressed() && customData.getInt("ethermerge", 0) == 1) {
 					if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission) {
 						distance = extractTunedCustomData(customData, 57);
 						break;

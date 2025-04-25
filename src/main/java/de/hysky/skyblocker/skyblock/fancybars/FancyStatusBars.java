@@ -295,7 +295,7 @@ public class FancyStatusBars {
 
 		Collection<StatusBar> barCollection = statusBars.values();
 		for (StatusBar statusBar : barCollection) {
-			if (statusBar.anchor != null) statusBar.render(context, -1, -1, client.getRenderTickCounter().getLastFrameDuration());
+			if (statusBar.anchor != null) statusBar.render(context, -1, -1, client.getRenderTickCounter().getDynamicDeltaTicks());
 		}
 
 		StatusBarTracker.Resource health = statusBarTracker.getHealth();

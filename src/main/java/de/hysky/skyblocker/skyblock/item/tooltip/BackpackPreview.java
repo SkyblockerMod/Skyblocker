@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
@@ -11,6 +10,7 @@ import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -22,25 +22,21 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.nbt.visitor.StringNbtWriter;
-import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class BackpackPreview {
     private static final Logger LOGGER = LoggerFactory.getLogger(BackpackPreview.class);
@@ -95,8 +91,8 @@ public class BackpackPreview {
             storages[index] = null;
             Path storageFile = saveDir.resolve(index + ".nbt");
             if (Files.isRegularFile(storageFile)) {
-                try (BufferedReader reader = Files.newBufferedReader(storageFile)) {
-                    storages[index] = Storage.CODEC.parse(getOps(), StringNbtReader.parse(reader.lines().collect(Collectors.joining()))).getOrThrow();
+                try {
+                    storages[index] = Storage.CODEC.parse(getOps(), NbtIo.read(storageFile)).getOrThrow();
                 } catch (Exception e) {
                     LOGGER.error("Failed to load backpack preview file: {}", storageFile.getFileName().toString(), e);
                 }
@@ -105,8 +101,7 @@ public class BackpackPreview {
     }
 
     private static RegistryOps<NbtElement> getOps() {
-        MinecraftClient client = MinecraftClient.getInstance();
-        return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager().getOps(NbtOps.INSTANCE) : BuiltinRegistries.createWrapperLookup().getOps(NbtOps.INSTANCE);
+        return ItemStackComponentizationFixer.getRegistryLookup().getOps(NbtOps.INSTANCE);
     }
 
     private static void saveStorages() {
@@ -119,8 +114,8 @@ public class BackpackPreview {
 
     private static void saveStorage(int index) {
         Path storageFile = saveDir.resolve(index + ".nbt");
-        try (BufferedWriter writer = Files.newBufferedWriter(storageFile)) {
-            writer.write(new StringNbtWriter().apply(Storage.CODEC.encodeStart(getOps(), storages[index]).getOrThrow()));
+        try {
+            NbtIo.write((NbtCompound) Storage.CODEC.encodeStart(getOps(), storages[index]).getOrThrow(), storageFile);
             storages[index].markClean();
         } catch (Exception e) {
             LOGGER.error("Failed to save backpack preview file: {}", storageFile.getFileName(), e);
@@ -150,7 +145,6 @@ public class BackpackPreview {
         matrices.push();
         matrices.translate(0f, 0f, 400f);
 
-        RenderSystem.enableDepthTest();
         context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, 176, rows * 18 + 17, 256, 256);
         context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7, 256, 256);
 
@@ -168,9 +162,7 @@ public class BackpackPreview {
             }
 
             if (ItemProtection.isItemProtected(currentStack)) {
-                RenderSystem.enableBlend();
                 context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
-                RenderSystem.disableBlend();
             }
 
             context.drawItem(currentStack, itemX, itemY);
@@ -179,7 +171,6 @@ public class BackpackPreview {
         }
 
         matrices.pop();
-        RenderSystem.disableDepthTest();
 
         return true;
     }

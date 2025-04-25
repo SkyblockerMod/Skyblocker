@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
@@ -105,9 +104,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	public final void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 		MatrixStack ms = context.getMatrices();
 
-		// not sure if this is the way to go, but it fixes Z-layer issues
-		// like blocks being rendered behind the BG and the hotbar clipping into things
-		RenderSystem.enableDepthTest();
 		ms.push();
 
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
@@ -143,7 +139,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		}
 		// pop manipulations above
 		ms.pop();
-		RenderSystem.disableDepthTest();
 	}
 
 	/**
