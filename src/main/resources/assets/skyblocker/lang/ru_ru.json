@@ -892,5 +892,8 @@
     "text.skyblocker.clickToSend.@Tooltip": "Нажмите для отправки в чат.",
     "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "Изменяет цвет подсветки напарников в зависимости от выбранного ими класса, а не от их ранга.",
     "text.skyblocker.reset": "Сбросить",
-    "text.skyblocker.undo": "Отменить"
+    "text.skyblocker.undo": "Отменить",
+    "skyblocker.config.farming.garden.closeScreenOnPlotClick": "Закрывать инвентарь при телепортации на участок",
+    "skyblocker.config.farming.garden.closeScreenOnPlotClick.@Tooltip": "Должен ли ваш инвентарь закрываться при телепортации на участок используя Виджет Участков Сада",
+    "skyblocker.config.farming.garden.gardenPlotsWidget": "Включить Виджет Участков Сада"
 }
