@@ -310,6 +310,36 @@ public class RenderHelper {
     }
 
     /**
+     * Renders a cylinder without the top or bottom faces.
+     * 
+     * @param pos      The position that the cylinder will be centred around.
+     * @param height   The total height of the cylinder with {@code pos} as the midpoint.
+     * @param segments The amount of triangles used to approximate the circle.
+     */
+    public static void renderCylinder(WorldRenderContext context, Vec3d centre, float radius, float height, int segments, int color) {
+    	MatrixStack matrices = context.matrixStack();
+    	Vec3d camera = context.camera().getPos();
+
+    	matrices.push();
+    	matrices.translate(-camera.x, -camera.y, -camera.z);
+
+    	VertexConsumer buffer = context.consumers().getBuffer(SkyblockerRenderLayers.CYLINDER);
+    	Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+    	float halfHeight = height / 2.0f;
+
+    	for (int i = 0; i <= segments; i++) {
+    		double angle = Math.TAU * i / segments;
+    		float dx = (float) Math.cos(angle) * radius;
+    		float dz = (float) Math.sin(angle) * radius;
+
+    		buffer.vertex(positionMatrix, (float) centre.getX() + dx, (float) centre.getY() + halfHeight, (float) centre.getZ() + dz).color(color);
+    		buffer.vertex(positionMatrix, (float) centre.getX() + dx, (float) centre.getY() - halfHeight, (float) centre.getZ() + dz).color(color);
+    	}
+
+    	matrices.pop();
+    }
+
+    /**
      * This is called after all {@link WorldRenderEvents#AFTER_TRANSLUCENT} listeners have been called so that we can draw all remaining render layers.
      */
     private static void drawTranslucents(WorldRenderContext context) {
