@@ -129,6 +129,7 @@
     "skyblocker.config.general.itemInfoDisplay": "Affichage des infos d'item",
     "skyblocker.config.general.itemTooltip.enableMotesPrice": "Activer le prix des motes",
     "skyblocker.config.general.chestValue.@Tooltip": "Calcule la valeur du contenant.",
+<<<<<<< HEAD
 
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle": "Style de Fond de Rareté d'Item",
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.@Tooltip": "Choisit entre un style rond ou carré !",
@@ -138,6 +139,9 @@
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds": "Fond de Rareté d'Item",
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Affiche un fond coloré derrière les objets, la couleur représente la rareté de l'objet.",
 
+=======
+    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.@Tooltip": "Choisit entre un style rond ou carré !",
+>>>>>>> 93fb2209 (Translated using Weblate (French))
     "skyblocker.config.uiAndVisuals.teleportOverlay.enableTeleportOverlays": "Activer l'overlay de téléportation",
     "skyblocker.config.uiAndVisuals.teleportOverlay": "Overlay de téléportation",
     "skyblocker.config.uiAndVisuals.itemCooldown": "Temps d'attente pour utiliser l'objet",
@@ -383,10 +387,14 @@
     "skyblocker.profileviewer.inventory.armor": "Armure",
     "skyblocker.profileviewer.inventory.inventory": "Inventaire",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage": "Wishing Compass utilisée. Déplacez-vous vers un autre emplacement et utilisez un second Wishing Compass pour trianguler la cible",
 =======
     "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage": "Wishing Compass utilisée. Déplacez-vous vers un autre emplacement et utilisez un second Wishing Compass pour trianguler la cible.",
 >>>>>>> 10a68bae (Translated using Weblate (French))
+=======
+    "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.wishingCompassUsedMessage": "Wishing Compass utilisée. Déplacez-vous vers un autre emplacement et utilisez un second Wishing Compass pour trianguler la cible",
+>>>>>>> 93fb2209 (Translated using Weblate (French))
     "skyblocker.waypoints.type.OUTLINE": "Contour",
     "skyblocker.waypoints.type.OUTLINED_HIGHLIGHT": "Surlignage entouré",
     "skyblocker.waypoints.type.HIGHLIGHT": "Surlignage",
@@ -474,11 +482,7 @@
     "skyblocker.config.chat.chatRules.screen.deleteQuestion": "Êtes-vous sûr de vouloir supprimer cette règle ?",
     "skyblocker.config.chat.chatRules.screen.ruleEnabled": "Règle activée",
     "skyblocker.config.eventNotifications.@Tooltip[1]": "L'ordre n'a pas d'importance. Si vous souhaitez désactiver les notifications, il vous suffit de vider la liste.",
-<<<<<<< HEAD
     "skyblocker.config.chat.waypoints.displayed": "Affichage d'un Waypoint temporaire à x: %d y: %d z: %d %s",
-=======
-    "skyblocker.config.chat.waypoints.displayed": "Affichage d'un Waypoint temporaire à x : %d, y : %d, z : %d | %s",
->>>>>>> 261d27ef (Translated using Weblate (French))
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Recherche dans le Bazaar et l'AH de l'objet actuellement survolé à l'aide de la touche F6.",
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "Échec de la recherche de l'objet dans le Bazaar et l'Auction House",
     "skyblocker.config.helpers.itemPrice.refreshingItemPrices": "Rafraîchissement du prix des objets...",
