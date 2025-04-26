@@ -1152,5 +1152,18 @@
     "skyblocker.powderTracker.historyReset": "已为当前存档重置挖粉追踪器。",
     "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation": "取消组件更新时的动画",
     "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault": "默认显示原版TAB",
-    "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault.@Tooltip": "如果启用，则默认显示原版TAB。按下切换键以显示更好的TAB。"
+    "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault.@Tooltip": "如果启用，则默认显示原版TAB。按下切换键以显示更好的TAB。",
+    "skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn": "Hub世界只在农业岛屿钓鱼时显示HUD",
+    "skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn.@Tooltip": "对于Hub，只在位于农业岛屿钓鱼时显示钓鱼HUD",
+    "skyblocker.config.helpers.fishing.seaCreatureTimerNotification.@Tooltip": "当计时器结束时显示提醒",
+    "skyblocker.config.helpers.fishing.seaCreatureTimerNotification.notification": "时间到",
+    "skyblocker.config.helpers.fishing.seaCreatureCap": "海怪上限",
+    "skyblocker.config.helpers.fishing.seaCreatureCapNotification": "海怪上限提醒",
+    "skyblocker.config.helpers.fishing.seaCreatureCapNotification.@Tooltip": "当海怪数量到达上限时显示提醒",
+    "skyblocker.config.helpers.fishing.seaCreatureCapNotification.notification": "海怪数量到达上限",
+    "skyblocker.config.helpers.fishing.minimumNotificationRarity": "稀有海怪提醒",
+    "skyblocker.config.helpers.fishing.minimumNotificationRarity.@Tooltip": "要提醒的稀有海怪的最低稀有度。（UNKNOWN=禁用）",
+    "skyblocker.config.helpers.fishing.minimumNotificationRarity.notification": "%s 海怪",
+    "skyblocker.config.helpers.fishing.hud.screen": "钓鱼HUD设置...",
+    "skyblocker.config.helpers.fishing.seaCreatureCap.@Tooltip": "农业岛屿钓鱼海怪上限"
 }
