@@ -46,7 +46,7 @@ public class TooltipManager {
 			new MuseumTooltip(11),
 			new ColorTooltip(12),
 			new AccessoryTooltip(13),
-			new CalendarStartTimeTooltip(14)
+			new DateCalculatorTooltip(14)
 	};
 	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
