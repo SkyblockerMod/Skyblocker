@@ -44,7 +44,8 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	public AnimatedDyeTimelineWidget(int x, int y, int width, int height, FrameCallback frameCallback) {
 		super(x, y, width, height, Text.literal("Animated Dye Timeline"));
-		gradientTexture = new NativeImageBackedTexture(width - HORIZONTAL_MARGIN * 2, height - VERTICAL_MARGIN * 2, true);
+		gradientTexture = new NativeImageBackedTexture("TimelineGradient", width - HORIZONTAL_MARGIN * 2, height - VERTICAL_MARGIN * 2, true);
+		assert gradientTexture.getImage() != null;
 		textureWidth = gradientTexture.getImage().getWidth();
 		textureHeight = gradientTexture.getImage().getHeight();
 		MinecraftClient.getInstance().getTextureManager().registerTexture(GRADIENT_TEXTURE, gradientTexture);

@@ -27,7 +27,7 @@ public class PlayerWidget extends ClickableWidget {
 	public PlayerWidget(int x, int y, int width, int height, AbstractClientPlayerEntity player) {
 		super(x, y, width, height, Text.literal(""));
 		this.player = player;
-		this.player.headYaw = this.player.prevHeadYaw = 0;
+		this.player.headYaw = this.player.lastHeadYaw = 0;
 	}
 
 	@Override

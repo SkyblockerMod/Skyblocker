@@ -12,7 +12,6 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -26,11 +25,10 @@ import java.util.Map;
 public class TrimSelectionWidget extends ContainerWidget {
 
 	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
-	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 	private static final int BUTTONS_PER_ROW_PATTERN = 7;
 	private static final int BUTTONS_PER_ROW_MATERIAL = 5;
 
-	private final List<TrimElementButton> patternButtons = new ArrayList<>();
+	private final List<TrimElementButton.Pattern> patternButtons = new ArrayList<>();
 	private final List<TrimElementButton> materialButtons = new ArrayList<>();
 	private final List<ClickableWidget> children = new ArrayList<>();
 	
@@ -41,16 +39,16 @@ public class TrimSelectionWidget extends ContainerWidget {
 	public TrimSelectionWidget(int x, int y, int width, int height) {
 		super(x, y, width, height, Text.of("Trim Selection"));
 		// Patterns
-		TrimElementButton patternNoneButton = new TrimElementButton(null, BARRIER, this::onClickPattern);
-		patternNoneButton.setMessage(Text.of("None"));
+		TrimElementButton.Pattern patternNoneButton = new TrimElementButton.Pattern(null, null, this::onClickPattern);
+		patternNoneButton.setMessage(Text.translatable("gui.none"));
 		patternButtons.add(patternNoneButton);
 
 		Utils.getWrapperLookup().getOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries()
 				// Sort them in alphabetical order
-				.sorted(Comparator.comparing(reference -> reference.value().templateItem().value().getName().getString()))
-				.map(reference -> new TrimElementButton(
+				.sorted(Comparator.comparing(reference -> reference.value().description().getString()))
+				.map(reference -> new TrimElementButton.Pattern(
 						reference.registryKey().getValue(),
-						new ItemStack(reference.value().templateItem().value()),
+						reference.value(),
 						this::onClickPattern
 				)).forEachOrdered(patternButtons::add);
 		children.addAll(patternButtons);
@@ -62,10 +60,10 @@ public class TrimSelectionWidget extends ContainerWidget {
 		// Materials
 		Utils.getWrapperLookup().getOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries()
 				// Sort them in alphabetical order
-				.sorted(Comparator.comparing(reference -> reference.value().ingredient().value().getName().getString()))
-				.map(reference -> new TrimElementButton(
+				.sorted(Comparator.comparing(reference -> reference.value().description().getString()))
+				.map(reference -> new TrimElementButton.Material(
 						reference.registryKey().getValue(),
-						new ItemStack(reference.value().ingredient().value()),
+						reference.value(),
 						this::onClickMaterial
 				)).forEachOrdered(materialButtons::add);
 		children.addAll(materialButtons);
@@ -138,6 +136,37 @@ public class TrimSelectionWidget extends ContainerWidget {
 
 		drawScrollbar(context);
 		context.disableScissor();
+		/*MatrixStack matrices = context.getMatrices();
+		matrices.push();
+		float y = getY() + getHeight() / 2f;
+		float x = getX() + getWidth() / 2f;
+		context.drawHorizontalLine(getX(), getWidth() + getX(), (int) y, 0xFFFF0000);
+		context.drawVerticalLine((int) x, getY(), getHeight() + getY(), 0xFFFF0000);
+		matrices.translate(x, y, 100);
+		//matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(15));
+		matrices.scale(50, 50, 50);
+		ItemStack stack = new ItemStack(Items.GOLDEN_CHESTPLATE);
+		ArmorEntityModel<BipedEntityRenderState> model = new ArmorEntityModel<>(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
+		model.setVisible(false);
+		model.body.visible = true;
+		model.rightArm.visible = true;
+		model.leftArm.visible = true;
+		stack.set(DataComponentTypes.TRIM, new ArmorTrim(
+				Utils.getWrapperLookup().getOrThrow(RegistryKeys.TRIM_MATERIAL).getOrThrow(ArmorTrimMaterials.AMETHYST),
+				Utils.getWrapperLookup().getOrThrow(RegistryKeys.TRIM_PATTERN).getOrThrow(ArmorTrimPatterns.EYE)));
+		EquipmentRenderer equipmentRenderer = new EquipmentRenderer(
+				((EntityRenderDispatcherAccessor) MinecraftClient.getInstance().getEntityRenderDispatcher()).getEquipmentModelLoader(),
+				MinecraftClient.getInstance().getBlockRenderManager().getModels().getModelManager().getAtlas(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE));
+		context.draw(vertexConsumerProvider -> equipmentRenderer.render(
+				EquipmentModel.LayerType.HUMANOID,
+				stack.get(DataComponentTypes.EQUIPPABLE).assetId().orElseThrow(),
+				model,
+				stack,
+				matrices,
+				vertexConsumerProvider,
+				15
+				));
+		matrices.pop();*/
 	}
 
 	@Override
@@ -149,6 +178,9 @@ public class TrimSelectionWidget extends ContainerWidget {
 		this.currentItem = currentItem;
 		Map<String, CustomArmorTrims.ArmorTrimId> trims = SkyblockerConfigManager.get().general.customArmorTrims;
 		String itemUuid = ItemUtils.getItemUuid(currentItem);
+		for (TrimElementButton.Pattern button : patternButtons) {
+			button.setItem(currentItem);
+		}
 		if (!trims.containsKey(itemUuid)) {
 			selectedPattern = null;
 			selectedMaterial = materialButtons.getFirst().getElement();

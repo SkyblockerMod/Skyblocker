@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-
 /**
  * Implements color interpolation in the OkLab color space.
  * 
@@ -10,7 +7,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
  * @see <a href="https://www.sjbrown.co.uk/posts/gamma-correct-rendering/">Gamma Correct Rendering</a>
  */
 public class OkLabColor {
-	private static final Int2ObjectMap<Lab> colorToOkLab = new Int2ObjectOpenHashMap<>();
 
 	/**
 	 * Converts a linear SRGB color to the OkLab color space.
@@ -29,7 +25,7 @@ public class OkLabColor {
 		float s_ = (float) Math.cbrt(s);
 
 		float L = Math.fma(0.2104542553f, l_, Math.fma(+0.7936177850f, m_, -0.0040720468f * s_));
-		float A = Math.fma(1.9779984951f, l_, Math.fma(-2.4285922050f, m_, +0.4505937099f * s_));
+		float A = Math.fma(1.9779984951f, l_, Math.fma(-2.4285922050f, m_,  0.4505937099f * s_));
 		float B = Math.fma(0.0259040371f, l_, Math.fma(+0.7827717662f, m_, -0.8086757660f * s_));
 
 		return new Lab(L, A, B);
@@ -47,9 +43,9 @@ public class OkLabColor {
 		float m = m_ * m_ * m_;
 		float s = s_ * s_ * s_;
 
-		float r = Math.fma(+4.0767416621f, l, Math.fma(-3.3077115913f, m, +0.2309699292f * s));
+		float r = Math.fma(+4.0767416621f, l, Math.fma(-3.3077115913f, m,  0.2309699292f * s));
 		float g = Math.fma(-1.2684380046f, l, Math.fma(+2.6097574011f, m, -0.3413193965f * s));
-		float b = Math.fma(-0.0041960863f, l, Math.fma(-0.7034186147f, m, +1.7076147010f * s));
+		float b = Math.fma(-0.0041960863f, l, Math.fma(-0.7034186147f, m,  1.7076147010f * s));
 
 		return new RGB(r, g, b);
 	}
@@ -79,8 +75,17 @@ public class OkLabColor {
 	 */
 	//Escape analysis should hopefully take care of the objects :')
 	public static int interpolate(int firstColor, int secondColor, float progress) {
-		Lab lab1 = colorToOkLab.computeIfAbsent(firstColor & 0xFFFFFF, OkLabColor::colorToOkLab);
-		Lab lab2 = colorToOkLab.computeIfAbsent(secondColor & 0xFFFFFF, OkLabColor::colorToOkLab);
+		//Normalize colours to a range of [0, 1]
+		float normalizedR1 = ((firstColor >> 16) & 0xFF) / 255f;
+		float normalizedG1 = ((firstColor >> 8) & 0xFF) / 255f;
+		float normalizedB1 = (firstColor & 0xFF) / 255f;
+
+		float normalizedR2 = ((secondColor >> 16) & 0xFF) / 255f;
+		float normalizedG2 = ((secondColor >> 8) & 0xFF) / 255f;
+		float normalizedB2 = (secondColor & 0xFF) / 255f;
+
+		Lab lab1 = linearSRGB2OkLab(linearize(normalizedR1), linearize(normalizedG1), linearize(normalizedB1));
+		Lab lab2 = linearSRGB2OkLab(linearize(normalizedR2), linearize(normalizedG2), linearize(normalizedB2));
 
 		float L = Math.fma(progress, (lab2.l - lab1.l), lab1.l);
 		float A = Math.fma(progress, (lab2.a - lab1.a), lab1.a);
@@ -92,14 +97,6 @@ public class OkLabColor {
 		int b = Math.clamp((int) (delinearize(rgb.b) * 255f), 0, 255);
 
 		return (r << 16) | (g << 8) | b;
-	}
-
-	private static Lab colorToOkLab(int color) {
-		//Normalize colours to a range of [0, 1]
-		float normalizedR = ((color >> 16) & 0xFF) / 255f;
-		float normalizedG = ((color >> 8) & 0xFF) / 255f;
-		float normalizedB = (color & 0xFF) / 255f;
-		return linearSRGB2OkLab(linearize(normalizedR), linearize(normalizedG), linearize(normalizedB));
 	}
 
 	private record Lab(float l, float a, float b) {}

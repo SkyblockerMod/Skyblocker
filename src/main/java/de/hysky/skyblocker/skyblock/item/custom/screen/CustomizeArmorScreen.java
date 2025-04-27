@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -25,21 +24,23 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
 import org.slf4j.Logger;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
 public class CustomizeArmorScreen extends Screen {
 	static final Logger LOGGER = LogUtils.getLogger();
+	private static final EquipmentSlot[] ARMOR_SLOTS = EquipmentSlot.VALUES.stream().filter(slot -> slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR).toArray(EquipmentSlot[]::new);
 
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 	//private static final ModelData PLAYER_MODEL = PlayerEntityModel.getTexturedModelData(Dilation.NONE, false);
@@ -49,6 +50,8 @@ public class CustomizeArmorScreen extends Screen {
 		public boolean isInvisibleTo(PlayerEntity player) {
 			return true;
 		}
+		@Override
+		public void onEquipStack(EquipmentSlot slot, ItemStack oldStack, ItemStack newStack) {}
 	};
 
 	private final ItemStack[] armor = new ItemStack[4];
@@ -79,18 +82,18 @@ public class CustomizeArmorScreen extends Screen {
 		});
 	}
 	static boolean canEdit(ItemStack stack) {
-		return stack.getItem() instanceof ArmorItem && !ItemUtils.getItemUuid(stack).isEmpty();
+		return stack.isIn(ItemTags.TRIMMABLE_ARMOR) && !ItemUtils.getItemUuid(stack).isEmpty();
 	}
 
 
 	private final boolean nothingCustomizable;
 	protected CustomizeArmorScreen(Screen previousScreen) {
 		super(Text.translatable("skyblocker.armorCustomization.title"));
-		DefaultedList<ItemStack> list = MinecraftClient.getInstance().player.getInventory().armor;
+		List<ItemStack> list = ItemUtils.getArmor(MinecraftClient.getInstance().player);
 		for (int i = 0; i < list.size(); i++) {
 			ItemStack copy = list.get(i).copy();
 			armor[3 - i] = copy;
-			player.getInventory().armor.set(i, copy);
+			player.equipStack(ARMOR_SLOTS[i], copy);
 		}
 		while (selectedSlot < armor.length - 1 && !canEdit(armor[selectedSlot])) selectedSlot++;
 		this.previousScreen = previousScreen;
@@ -176,7 +179,7 @@ public class CustomizeArmorScreen extends Screen {
 	@Override
 	public void removed() {
 		super.removed();
-		SkyblockerConfigManager.save();
+		SkyblockerConfigManager.update(config -> {});
 		if (colorSelectionWidget != null) colorSelectionWidget.close();
 		// clear all the trackers cuz the color selection maybe created a bunch.
 		CustomArmorAnimatedDyes.cleanTrackers();
@@ -215,18 +218,13 @@ public class CustomizeArmorScreen extends Screen {
 
 			if (hoveredSlot >= 0 && selectable[hoveredSlot]) {
 				int i = getX() + 2 + hoveredSlot * 20;
-				RenderSystem.enableBlend();
-				RenderSystem.defaultBlendFunc();
 				context.fill(i, getY() + 2, i + 20, getY() + 22, 0x20_FF_FF_FF);
-				RenderSystem.disableBlend();
 			}
 
 			for (int i = 0; i < armor.length; i++) {
 				context.drawItem(armor[i], getX() + 4 + i * 20, getY() + 4);
 				if (!selectable[i]) {
-					RenderSystem.disableDepthTest();
 					context.drawItem(BARRIER, getX() + 4 + i * 20, getY() + 4);
-					RenderSystem.enableDepthTest();
 				}
 			}
 			context.drawGuiTexture(RenderLayer::getGuiTextured, HOTBAR_SELECTION_TEXTURE, getX() + selectedSlot * 20, getY(), 24, 24);

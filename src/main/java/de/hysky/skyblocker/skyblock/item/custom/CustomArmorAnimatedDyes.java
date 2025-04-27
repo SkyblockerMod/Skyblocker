@@ -50,14 +50,14 @@ public class CustomArmorAnimatedDyes {
 								.executes(context -> customizeAnimatedDye(context.getSource(), Integer.MIN_VALUE, Integer.MIN_VALUE, 0, false, 0))
 								.then(argument("hex1", ColorArgumentType.hex())
 										.then(argument("hex2", ColorArgumentType.hex())
-												.then(argument("duration", FloatArgumentType.floatArg(0.01f, 2))
+												.then(argument("duration", FloatArgumentType.floatArg(0.1f, 10f))
 														.then(argument("cycleBack", BoolArgumentType.bool())
 																.executes(context -> customizeAnimatedDye(context.getSource(), ColorArgumentType.getIntFromHex(context, "hex1"), ColorArgumentType.getIntFromHex(context, "hex2"), FloatArgumentType.getFloat(context, "duration"), BoolArgumentType.getBool(context, "cycleBack"), DEFAULT_DELAY))
 																.then(argument("delay", FloatArgumentType.floatArg(0))
 																		.executes(context ->customizeAnimatedDye(context.getSource(), ColorArgumentType.getIntFromHex(context, "hex1"), ColorArgumentType.getIntFromHex(context, "hex2"), FloatArgumentType.getFloat(context, "duration"), BoolArgumentType.getBool(context, "cycleBack"), FloatArgumentType.getFloat(context, "delay")))))))))));
 	}
 
-	private static int customizeAnimatedDye(FabricClientCommandSource source, int color1, int color2, float speed, boolean cycleBack, float delay) {
+	private static int customizeAnimatedDye(FabricClientCommandSource source, int color1, int color2, float duration, boolean cycleBack, float delay) {
 		ItemStack heldItem = source.getPlayer().getMainHandStack();
 
 		if (Utils.isOnSkyblock() && heldItem != null && !heldItem.isEmpty()) {
@@ -69,17 +69,15 @@ public class CustomArmorAnimatedDyes {
 
 					if (color1 == Integer.MIN_VALUE && color2 == Integer.MIN_VALUE) {
 						if (customAnimatedDyes.containsKey(itemUuid)) {
-							customAnimatedDyes.remove(itemUuid);
-							SkyblockerConfigManager.save();
+							SkyblockerConfigManager.update(config -> config.general.customAnimatedDyes.remove(itemUuid));
 							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.removed")));
 						} else {
 							source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.neverHad")));
 						}
 					} else {
-						AnimatedDye animatedDye = new AnimatedDye(List.of(new DyeFrame(color1, 0), new DyeFrame(color2, 1)), cycleBack, delay, speed);
+						AnimatedDye animatedDye = new AnimatedDye(List.of(new DyeFrame(color1, 0), new DyeFrame(color2, 1)), cycleBack, delay, duration);
 
-						customAnimatedDyes.put(itemUuid, animatedDye);
-						SkyblockerConfigManager.save();
+						SkyblockerConfigManager.update(config -> config.general.customAnimatedDyes.put(itemUuid, animatedDye));
 						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.added")));
 					}
 				} else {
@@ -170,7 +168,7 @@ public class CustomArmorAnimatedDyes {
 
 			tracker.lastColor = OkLabColor.interpolate(current.color, next.color, progress);
 
-			float v = counter.getLastDuration() * 0.05f / duration();
+			float v = counter.getDynamicDeltaTicks() * 0.05f / duration();
 			if (tracker.onBackCycle) {
 				tracker.progress -= v;
 				if (tracker.progress <= 0f) {

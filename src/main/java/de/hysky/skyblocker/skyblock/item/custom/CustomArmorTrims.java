@@ -18,7 +18,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
@@ -49,7 +48,6 @@ public class CustomArmorTrims {
 
 	private static void initializeTrimCache() {
 		MinecraftClient client = MinecraftClient.getInstance();
-		FabricLoader loader = FabricLoader.getInstance();
 		if (trimsInitialized || (client == null && !Debug.debugEnabled())) {
 			return;
 		}
@@ -102,8 +100,7 @@ public class CustomArmorTrims {
 
 					if (material == null && pattern == null) {
 						if (customArmorTrims.containsKey(itemUuid)) {
-							customArmorTrims.remove(itemUuid);
-							SkyblockerConfigManager.save();
+							SkyblockerConfigManager.update(config -> config.general.customArmorTrims.remove(itemUuid));
 							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customArmorTrims.removed")));
 						} else {
 							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customArmorTrims.neverHad")));
@@ -117,8 +114,7 @@ public class CustomArmorTrims {
 							return Command.SINGLE_SUCCESS;
 						}
 
-						customArmorTrims.put(itemUuid, trimId);
-						SkyblockerConfigManager.save();
+						SkyblockerConfigManager.update(config -> config.general.customArmorTrims.put(itemUuid, trimId));
 						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customArmorTrims.added")));
 					}
 				} else {
