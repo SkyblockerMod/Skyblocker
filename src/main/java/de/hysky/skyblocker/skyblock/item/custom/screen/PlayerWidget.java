@@ -59,36 +59,6 @@ public class PlayerWidget extends ClickableWidget {
 				player
 		);
 		matrices.pop();
-			/*
-			Failed attempt at selecting which armor piece you are editing directly on the 3D preview, pretty close but looks stupid and x is flipped or some reason
-			And I don't know why :(
-
-			matrices.translate(0,0, 50);
-			matrices.scale(size, size, -size);
-			matrices.translate(vector3f.x, vector3f.y, vector3f.z);
-			matrices.multiply(SILLY_ROTATION);
-			matrices.scale(-1.0F, -1.0F, 1.0F);
-			matrices.scale(0.9375F, 0.9375F, 0.9375F);
-			matrices.translate(0.0F, -1.501F, 0.0F);
-
-			Matrix4f projInv = new Matrix4f(RenderSystem.getProjectionMatrix()).invert();
-			Matrix4f viewInv = new Matrix4f(RenderSystem.getModelViewMatrix()).mul(matrices.peek().getPositionMatrix()).invert();
-
-			float x = 2f * mouseX / width - 1;
-			float y = 1 - (2f * mouseY / height);
-			Vector4f mouseNear = new Vector4f(x, y, -1, 1f).mul(projInv).mul(viewInv);
-			Vector4f mouseFar = new Vector4f(x, y, 1, 1f).mul(projInv).mul(viewInv);
-			Vector4f mouseDiff = new Vector4f(mouseFar).sub(mouseNear);
-
-			matrices.pop();
-			Vector3f nearVec3 = new Vector3f(-mouseNear.x(), mouseNear.y(), mouseNear.z());
-			Vector3f farVec3 = new Vector3f(-mouseFar.x(), mouseFar.y(), mouseFar.z());
-			Vector3f diffVec3 = new Vector3f(-mouseDiff.x(), mouseDiff.y(), mouseDiff.z()).normalize();
-			context.drawText(textRenderer, nearVec3.toString(), 1, 1, -1, true);
-			context.drawText(textRenderer, farVec3.toString(), 1, 10, -1, true);
-			context.drawText(textRenderer, diffVec3.toString(), 1, 19, -1, true);
-			//context.fill(width/2 - 1, height/2 - 1, width/2 + 1, height/2 + 1, 200, 0xFF_00_FF_00);
-			*/
 	}
 
 	@Override

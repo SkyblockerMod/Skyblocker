@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.SpriteContentsAccessor;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
@@ -35,9 +36,12 @@ import java.util.concurrent.Executor;
 
 public class MaterialPlateTextures {
 	private static final Identifier RELOAD_LISTENER_ID = Identifier.of(SkyblockerMod.NAMESPACE, "material_plates");
-	private static final Identifier MATERIAL_PLATE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "armor_customization_screen/material_plate");
-	public static final Identifier TEXTURE_PREFIX = Identifier.of(SkyblockerMod.NAMESPACE, "generated/material_plate_");
 	private static final ResourceFinder RESOURCE_FINDER = new ResourceFinder("textures", ".png");
+
+	private static final Identifier MATERIAL_PLATE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "armor_customization_screen/material_plate");
+	private static final Identifier BASE_PALETTE_TEXTURE = Identifier.ofVanilla("trims/color_palettes/trim_palette");
+	public static final Identifier TEXTURE_PREFIX = Identifier.of(SkyblockerMod.NAMESPACE, "generated/material_plate_");
+
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	private static CompletableFuture<Void> texturesFuture = null;
@@ -47,9 +51,11 @@ public class MaterialPlateTextures {
 
 	@Init
 	public static void init() {
+		// Reset the generated textures when the resource pack is reloaded
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new Listener());
 
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> close());
+		SkyblockEvents.LEAVE.register(MaterialPlateTextures::closeTextures);
+		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> closeTextures()); // close textures on client stop in case the previous event doesn't get ran for some reason
 
 	}
 
@@ -57,6 +63,11 @@ public class MaterialPlateTextures {
 		return openPalette(Identifier.of(namespace,"trims/color_palettes/" + material.assets().base().suffix()));
 	}
 
+	/**
+	 * Opens a palette
+	 * @param texture the identifier of the palette
+	 * @return an array of ints representing each color
+	 */
 	private static int[] openPalette(Identifier texture) {
 		Optional<Resource> resource = MinecraftClient.getInstance().getResourceManager().getResource(
 				RESOURCE_FINDER.toResourcePath(texture)
@@ -75,9 +86,13 @@ public class MaterialPlateTextures {
 		return pixels;
 	}
 
+	/**
+	 * @return A map of all created textures with their suffix as a key
+	 * @implNote Taken from {@link net.minecraft.client.texture.atlas.PalettedPermutationsAtlasSource}
+	 */
 	private static Map<String, NativeImageBackedTexture> createTextures() {
 		Map<String, NativeImageBackedTexture> map = new HashMap<>();
-		int[] basePalette = openPalette(Identifier.ofVanilla("trims/color_palettes/trim_palette"));
+		int[] basePalette = openPalette(BASE_PALETTE_TEXTURE);
 		if (basePalette == null) {
 			LOGGER.error("Failed to load the base palette, see error above");
 			return map;
@@ -122,7 +137,7 @@ public class MaterialPlateTextures {
 				}
 				texture.upload();
 				map.put(suffix, texture);
-			}, MinecraftClient.getInstance()));
+			}, MinecraftClient.getInstance())); // Use client executor to run on main thread
 
 		});
 		CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).join();
@@ -143,10 +158,11 @@ public class MaterialPlateTextures {
 				.exceptionally(throwable -> {
 					errored = true;
 					LOGGER.error("Failed to create textures", throwable);
-					return null;});
+					return null;
+				});
 	}
 
-	private static void close() {
+	private static void closeTextures() {
 		if (SUFFIX_TO_TEXTURE.isEmpty()) return;
 		TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
 		for (Map.Entry<String, NativeImageBackedTexture> entry : SUFFIX_TO_TEXTURE.entrySet()) {
@@ -155,6 +171,9 @@ public class MaterialPlateTextures {
 		SUFFIX_TO_TEXTURE.clear();
 	}
 
+	/**
+	 * @return true if the textures are available, creates the textures in another thread if they aren't created
+	 */
 	public static boolean isAvailable() {
 		if (texturesFuture == null) {
 			createTexturesAsync();
@@ -173,10 +192,10 @@ public class MaterialPlateTextures {
 		@Override
 		public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Executor prepareExecutor, Executor applyExecutor) {
 			return CompletableFuture.completedFuture(null)
-					.thenCompose(synchronizer::whenPrepared)
+					.thenCompose(synchronizer::whenPrepared) // Tell the reload listener that we finished "preparing"
 					.thenAcceptAsync(o -> {
 						texturesFuture = null;
-						close();
+						closeTextures();
 			}, applyExecutor);
 		}
 

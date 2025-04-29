@@ -35,6 +35,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -74,6 +75,7 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 		private static ArmorEntityModel<BipedEntityRenderState> OUTER_MODEL = null;
 		private static ArmorEntityModel<BipedEntityRenderState> INNER_MODEL = null;
 		private static EquipmentRenderer EQUIPMENT_RENDERER = null;
+
 		private ItemStack item;
 		private final ArmorTrim trim;
 		private EquippableComponent equippableComponent;
@@ -108,9 +110,11 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 				rotation += MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks() * 0.05f * 90;
 				rotation %= 360;
 			} else rotation = 15;
+
 			EquipmentSlot slot = equippableComponent.slot();
 			ArmorEntityModel<BipedEntityRenderState> model = slot == EquipmentSlot.LEGS ? INNER_MODEL : OUTER_MODEL;
 			float offset = setVisibleAndGetOffset(model, slot);
+
 			MatrixStack matrices = context.getMatrices();
 			matrices.push();
 			matrices.translate(getX() + getWidth() / 2f, getY() + getHeight() / 2f, 200);
@@ -133,11 +137,13 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 
 		}
 
-		public void setItem(ItemStack newItem) {
+		public void setItem(@NotNull ItemStack newItem) {
 			this.item = newItem.copy();
+			// Remove the uuid so it doesn't render with the selected trim
 			NbtCompound copy = ItemUtils.getCustomData(item).copy();
 			copy.remove(ItemUtils.UUID);
 			item.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(copy));
+
 			equippableComponent = this.item.get(DataComponentTypes.EQUIPPABLE);
 			if (equippableComponent == null) throw new IllegalArgumentException("Trimmed stack must contain an equippable component");
 			this.item.set(DataComponentTypes.TRIM, trim);
@@ -171,6 +177,9 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 
 	public static final class Material extends TrimElementButton {
 
+		/**
+		 * Texture generated in {@link MaterialPlateTextures}
+		 */
 		private final Identifier texture;
 
 		public Material(Identifier element, ArmorTrimMaterial material, Consumer<TrimElementButton> onPress) {

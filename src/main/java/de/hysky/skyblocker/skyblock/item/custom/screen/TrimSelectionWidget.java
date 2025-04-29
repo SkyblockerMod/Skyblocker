@@ -136,37 +136,6 @@ public class TrimSelectionWidget extends ContainerWidget {
 
 		drawScrollbar(context);
 		context.disableScissor();
-		/*MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		float y = getY() + getHeight() / 2f;
-		float x = getX() + getWidth() / 2f;
-		context.drawHorizontalLine(getX(), getWidth() + getX(), (int) y, 0xFFFF0000);
-		context.drawVerticalLine((int) x, getY(), getHeight() + getY(), 0xFFFF0000);
-		matrices.translate(x, y, 100);
-		//matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(15));
-		matrices.scale(50, 50, 50);
-		ItemStack stack = new ItemStack(Items.GOLDEN_CHESTPLATE);
-		ArmorEntityModel<BipedEntityRenderState> model = new ArmorEntityModel<>(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
-		model.setVisible(false);
-		model.body.visible = true;
-		model.rightArm.visible = true;
-		model.leftArm.visible = true;
-		stack.set(DataComponentTypes.TRIM, new ArmorTrim(
-				Utils.getWrapperLookup().getOrThrow(RegistryKeys.TRIM_MATERIAL).getOrThrow(ArmorTrimMaterials.AMETHYST),
-				Utils.getWrapperLookup().getOrThrow(RegistryKeys.TRIM_PATTERN).getOrThrow(ArmorTrimPatterns.EYE)));
-		EquipmentRenderer equipmentRenderer = new EquipmentRenderer(
-				((EntityRenderDispatcherAccessor) MinecraftClient.getInstance().getEntityRenderDispatcher()).getEquipmentModelLoader(),
-				MinecraftClient.getInstance().getBlockRenderManager().getModels().getModelManager().getAtlas(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE));
-		context.draw(vertexConsumerProvider -> equipmentRenderer.render(
-				EquipmentModel.LayerType.HUMANOID,
-				stack.get(DataComponentTypes.EQUIPPABLE).assetId().orElseThrow(),
-				model,
-				stack,
-				matrices,
-				vertexConsumerProvider,
-				15
-				));
-		matrices.pop();*/
 	}
 
 	@Override

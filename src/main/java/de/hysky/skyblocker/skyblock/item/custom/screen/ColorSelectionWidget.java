@@ -174,8 +174,8 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 					1.f
 			));
 			timelineWidget.setAnimatedDye(itemUuid);
-			delaySlider.setVal(0);
-			durationSlider.setVal(1);
+			delaySlider.setValue(0);
+			durationSlider.setValue(1);
 		} else {
 			SkyblockerConfigManager.get().general.customAnimatedDyes.remove(itemUuid);
 		}
@@ -261,8 +261,8 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 			animated = true;
 			CustomArmorAnimatedDyes.AnimatedDye animatedDye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 			((CheckboxWidgetAccessor) cycleBackCheckbox).setChecked(animatedDye.cycleBack());
-			delaySlider.setVal(animatedDye.delay());
-			durationSlider.setVal(animatedDye.duration());
+			delaySlider.setValue(animatedDye.delay());
+			durationSlider.setValue(animatedDye.duration());
 		} else if (SkyblockerConfigManager.get().general.customDyeColors.containsKey(itemUuid)) {
 			state = State.CUSTOMIZED;
 			animated = false;
@@ -298,7 +298,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 			this.minValue = min;
 			this.maxValue = max;
 			this.translatable = translatable;
-			this.linear = linear;
+			this.linear = linear; // old code stuff... is always true, keeping it, can maybe be useful
 			updateMessage();
 		}
 
@@ -312,7 +312,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 			setMessage(Text.translatable(translatable, FORMATTER.format(trueValue())));
 		}
 
-		private void setVal(float val) {
+		private void setValue(float val) {
 			float v = (val - minValue) / (maxValue - minValue);
 			value = linear ? v : Math.sqrt(v);
 			updateMessage();
@@ -345,7 +345,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		@Override
 		public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {if (verticalAmount == 0) return false;
 			float offset = verticalAmount > 0 ? 0.001f : -0.001f;
-			setVal(Math.clamp(trueValue() + offset, minValue, maxValue));
+			setValue(Math.clamp(trueValue() + offset, minValue, maxValue));
 			onValueChanged.accept(trueValue());
 			return true;
 		}
