@@ -191,6 +191,7 @@
 - **Powder mining tracker**
 - **Special Effects for rare dye drops**
 - **Entity health bars**
+- **Fishing HUD**
 
 ### User Interface Enhancements:
 - **Equipment in inventory**
