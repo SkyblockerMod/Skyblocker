@@ -51,7 +51,6 @@ public class JacobMedalBackground extends ColoredItemBackground<Integer> {
 			}
 		}
 
-
 		cache.put(hashCode, null);
 		return null;
 	}
