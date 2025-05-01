@@ -287,29 +287,37 @@ public class GeneralCategory {
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.general.itemInfoDisplay"))
                         .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip")))
-                                .binding(defaults.general.itemInfoDisplay.itemRarityBackgrounds,
-                                        () -> config.general.itemInfoDisplay.itemRarityBackgrounds,
-                                        newValue -> config.general.itemInfoDisplay.itemRarityBackgrounds = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<GeneralConfig.RarityBackgroundStyle>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.@Tooltip")))
-                                .binding(defaults.general.itemInfoDisplay.itemRarityBackgroundStyle,
-                                        () -> config.general.itemInfoDisplay.itemRarityBackgroundStyle,
-                                        newValue -> config.general.itemInfoDisplay.itemRarityBackgroundStyle = newValue)
+                        .option(Option.<GeneralConfig.ColoredBackgroundStyle>createBuilder()
+                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.coloredBackgroundStyle"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.coloredBackgroundStyle.@Tooltip")))
+                                .binding(defaults.general.itemInfoDisplay.coloredBackgroundStyle,
+                                        () -> config.general.itemInfoDisplay.coloredBackgroundStyle,
+                                        newValue -> config.general.itemInfoDisplay.coloredBackgroundStyle = newValue)
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<Float>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsOpacity"))
-                                .binding(defaults.general.itemInfoDisplay.itemRarityBackgroundsOpacity,
-                                        () -> config.general.itemInfoDisplay.itemRarityBackgroundsOpacity,
-                                        newValue -> config.general.itemInfoDisplay.itemRarityBackgroundsOpacity = newValue)
+                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.coloredBackgroundOpacity"))
+                                .binding(defaults.general.itemInfoDisplay.coloredBackgroundOpacity,
+                                        () -> config.general.itemInfoDisplay.coloredBackgroundOpacity,
+                                        newValue -> config.general.itemInfoDisplay.coloredBackgroundOpacity = newValue)
                                 .controller(opt -> FloatSliderControllerBuilder.create(opt).range(0f, 1f).step(0.05f).formatValue(ConfigUtils.FLOAT_TWO_FORMATTER))
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip")))
+								.binding(defaults.general.itemInfoDisplay.itemRarityBackgrounds,
+										() -> config.general.itemInfoDisplay.itemRarityBackgrounds,
+										newValue -> config.general.itemInfoDisplay.itemRarityBackgrounds = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds.@Tooltip")))
+								.binding(defaults.general.itemInfoDisplay.jacobMedalBackgrounds,
+										() -> config.general.itemInfoDisplay.jacobMedalBackgrounds,
+										newValue -> config.general.itemInfoDisplay.jacobMedalBackgrounds = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 //Item Protection

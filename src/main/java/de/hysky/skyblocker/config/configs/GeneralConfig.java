@@ -195,29 +195,32 @@ public class GeneralConfig {
         @SerialEntry
         public boolean attributeShardInfo = true;
 
+		@SerialEntry
+		public ColoredBackgroundStyle coloredBackgroundStyle = ColoredBackgroundStyle.SQUARE;
+
+		@SerialEntry
+		public float coloredBackgroundOpacity = 1f;
+
         @SerialEntry
         public boolean itemRarityBackgrounds = true;
 
-        @SerialEntry
-        public RarityBackgroundStyle itemRarityBackgroundStyle = RarityBackgroundStyle.SQUARE;
-
-        @SerialEntry
-        public float itemRarityBackgroundsOpacity = 1f;
+		@SerialEntry
+		public boolean jacobMedalBackgrounds = true;
     }
 
-    public enum RarityBackgroundStyle {
-        CIRCULAR(Identifier.of(SkyblockerMod.NAMESPACE, "item_rarity_background_circular")),
-        SQUARE(Identifier.of(SkyblockerMod.NAMESPACE, "item_rarity_background_square"));
+    public enum ColoredBackgroundStyle {
+        CIRCULAR(Identifier.of(SkyblockerMod.NAMESPACE, "item_colored_background_circular")),
+        SQUARE(Identifier.of(SkyblockerMod.NAMESPACE, "item_colored_background_square"));
 
         public final Identifier tex;
 
-        RarityBackgroundStyle(Identifier tex) {
+        ColoredBackgroundStyle(Identifier tex) {
             this.tex = tex;
         }
 
         @Override
         public String toString() {
-            return I18n.translate("skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.style." + name());
+            return I18n.translate("skyblocker.config.general.itemInfoDisplay.coloredBackgroundStyle.style." + name());
         }
     }
 
