@@ -84,7 +84,6 @@ public abstract class ColoredItemBackground<T> {
 
 	/**
 	 * Returns a {@link Runnable} that clears this background's internal cache.
-	 * Used for scheduled and screen lifecycle events.
 	 *
 	 * @return A runnable that clears the item cache
 	 */
