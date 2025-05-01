@@ -44,10 +44,13 @@ public class JacobMedalBackground extends ColoredItemBackground<Integer> {
 
 		Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, PATTERN);
 		if (matcher != null) {
-			Integer color = BRACKET_COLORS.getOrDefault(matcher.group("bracket"), -1);
-			cache.put(hashCode, color);
-			return color;
+			Integer color = BRACKET_COLORS.get(matcher.group("bracket"));
+			if (color != null) {
+				cache.put(hashCode, color);
+				return color;
+			}
 		}
+
 
 		cache.put(hashCode, null);
 		return null;
