@@ -1,3 +1,20 @@
+# Release 5.2.0
+
+## Highlight
+* 1.21.5 update
+* Fishing HUD and Notifications
+* Fix slayer Crash
+
+## What's Changed
+* Slayer crash fix by @7azeemm in https://github.com/SkyblockerMod/Skyblocker/pull/1238
+* 1.21.5 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1256
+* Fishing HUD and Notifications by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1183
+* Update chat cords parsing to support common "X Y Z" format by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/1222
+* Code of conduct by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1230
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.1.2...5.2.0
+___
 # Release 5.1.2
 
 ## Highlight
