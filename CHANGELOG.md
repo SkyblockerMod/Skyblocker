@@ -4,6 +4,8 @@
 * 1.21.5 update
 * Fishing HUD and Notifications
 * Fix slayer Crash
+* Fix foraging axes cooldown
+* Fix visitor helper
 
 ## What's Changed
 * Slayer crash fix by @7azeemm in https://github.com/SkyblockerMod/Skyblocker/pull/1238
@@ -11,7 +13,8 @@
 * Fishing HUD and Notifications by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1183
 * Update chat cords parsing to support common "X Y Z" format by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/1222
 * Code of conduct by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1230
-
+* fix foraging axes cooldown by @PonomarevIK in https://github.com/SkyblockerMod/Skyblocker/pull/1254
+* visitor helper: dont display "x0 stacks" text by @PonomarevIK in https://github.com/SkyblockerMod/Skyblocker/pull/1258
 
 **Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.1.2...5.2.0
 ___
