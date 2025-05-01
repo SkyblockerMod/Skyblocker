@@ -209,8 +209,8 @@ public class GeneralConfig {
     }
 
     public enum ItemBackgroundStyle {
-        CIRCULAR(Identifier.of(SkyblockerMod.NAMESPACE, "item_colored_background_circular")),
-        SQUARE(Identifier.of(SkyblockerMod.NAMESPACE, "item_colored_background_square"));
+        CIRCULAR(Identifier.of(SkyblockerMod.NAMESPACE, "item_background_circular")),
+        SQUARE(Identifier.of(SkyblockerMod.NAMESPACE, "item_background_square"));
 
         public final Identifier tex;
 
