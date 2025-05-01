@@ -196,7 +196,7 @@ public class GeneralConfig {
         public boolean attributeShardInfo = true;
 
 		@SerialEntry
-		public ColoredBackgroundStyle coloredBackgroundStyle = ColoredBackgroundStyle.SQUARE;
+		public ItemBackgroundStyle itemBackgroundStyle = ItemBackgroundStyle.SQUARE;
 
 		@SerialEntry
 		public float coloredBackgroundOpacity = 1f;
@@ -208,13 +208,13 @@ public class GeneralConfig {
 		public boolean jacobMedalBackgrounds = true;
     }
 
-    public enum ColoredBackgroundStyle {
+    public enum ItemBackgroundStyle {
         CIRCULAR(Identifier.of(SkyblockerMod.NAMESPACE, "item_colored_background_circular")),
         SQUARE(Identifier.of(SkyblockerMod.NAMESPACE, "item_colored_background_square"));
 
         public final Identifier tex;
 
-        ColoredBackgroundStyle(Identifier tex) {
+        ItemBackgroundStyle(Identifier tex) {
             this.tex = tex;
         }
 

@@ -287,12 +287,12 @@ public class GeneralCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.general.itemInfoDisplay"))
 						.collapsed(true)
-						.option(Option.<GeneralConfig.ColoredBackgroundStyle>createBuilder()
+						.option(Option.<GeneralConfig.ItemBackgroundStyle>createBuilder()
 								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.coloredBackgroundStyle"))
 								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.coloredBackgroundStyle.@Tooltip")))
-								.binding(defaults.general.itemInfoDisplay.coloredBackgroundStyle,
-										() -> config.general.itemInfoDisplay.coloredBackgroundStyle,
-										newValue -> config.general.itemInfoDisplay.coloredBackgroundStyle = newValue)
+								.binding(defaults.general.itemInfoDisplay.itemBackgroundStyle,
+										() -> config.general.itemInfoDisplay.itemBackgroundStyle,
+										newValue -> config.general.itemInfoDisplay.itemBackgroundStyle = newValue)
 								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(Option.<Float>createBuilder()

@@ -25,7 +25,7 @@ public abstract class ColoredItemBackground<T> {
 	protected ColoredItemBackground() {
 		this.sprite = () -> MinecraftClient.getInstance()
 				.getGuiAtlasManager()
-				.getSprite(SkyblockerConfigManager.get().general.itemInfoDisplay.coloredBackgroundStyle.tex);
+				.getSprite(SkyblockerConfigManager.get().general.itemInfoDisplay.itemBackgroundStyle.tex);
 	}
 
 	/**
