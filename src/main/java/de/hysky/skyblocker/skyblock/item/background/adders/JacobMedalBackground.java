@@ -61,7 +61,7 @@ public class JacobMedalBackground extends ColoredItemBackground<Integer> {
 
 		context.drawSpriteStretched(RenderLayer::getGuiTextured, getSprite(), x, y, 16, 16,
 				ColorHelper.fromFloats(
-						SkyblockerConfigManager.get().general.itemInfoDisplay.coloredBackgroundOpacity,
+						SkyblockerConfigManager.get().general.itemInfoDisplay.itemBackgroundOpacity,
 						r, g, b
 				)
 		);

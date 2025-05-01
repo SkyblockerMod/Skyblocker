@@ -288,18 +288,18 @@ public class GeneralCategory {
 						.name(Text.translatable("skyblocker.config.general.itemInfoDisplay"))
 						.collapsed(true)
 						.option(Option.<GeneralConfig.ItemBackgroundStyle>createBuilder()
-								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.coloredBackgroundStyle"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.coloredBackgroundStyle.@Tooltip")))
+								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.@Tooltip")))
 								.binding(defaults.general.itemInfoDisplay.itemBackgroundStyle,
 										() -> config.general.itemInfoDisplay.itemBackgroundStyle,
 										newValue -> config.general.itemInfoDisplay.itemBackgroundStyle = newValue)
 								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(Option.<Float>createBuilder()
-								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.coloredBackgroundOpacity"))
-								.binding(defaults.general.itemInfoDisplay.coloredBackgroundOpacity,
-										() -> config.general.itemInfoDisplay.coloredBackgroundOpacity,
-										newValue -> config.general.itemInfoDisplay.coloredBackgroundOpacity = newValue)
+								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemBackgroundOpacity"))
+								.binding(defaults.general.itemInfoDisplay.itemBackgroundOpacity,
+										() -> config.general.itemInfoDisplay.itemBackgroundOpacity,
+										newValue -> config.general.itemInfoDisplay.itemBackgroundOpacity = newValue)
 								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(0f, 1f).step(0.05f).formatValue(ConfigUtils.FLOAT_TWO_FORMATTER))
 								.build())
 						.option(Option.<Boolean>createBuilder()

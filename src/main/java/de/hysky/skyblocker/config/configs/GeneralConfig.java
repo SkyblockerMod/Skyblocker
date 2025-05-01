@@ -199,7 +199,7 @@ public class GeneralConfig {
 		public ItemBackgroundStyle itemBackgroundStyle = ItemBackgroundStyle.SQUARE;
 
 		@SerialEntry
-		public float coloredBackgroundOpacity = 1f;
+		public float itemBackgroundOpacity = 1f;
 
         @SerialEntry
         public boolean itemRarityBackgrounds = true;
@@ -220,7 +220,7 @@ public class GeneralConfig {
 
         @Override
         public String toString() {
-            return I18n.translate("skyblocker.config.general.itemInfoDisplay.coloredBackgroundStyle.style." + name());
+            return I18n.translate("skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style." + name());
         }
     }
 

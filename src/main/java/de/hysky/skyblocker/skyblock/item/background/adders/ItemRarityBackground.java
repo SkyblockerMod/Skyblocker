@@ -83,7 +83,7 @@ public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRari
 	protected void draw(DrawContext context, int x, int y, SkyblockItemRarity rarity) {
 		context.drawSpriteStretched(RenderLayer::getGuiTextured, getSprite(), x, y, 16, 16,
 				ColorHelper.fromFloats(
-						SkyblockerConfigManager.get().general.itemInfoDisplay.coloredBackgroundOpacity,
+						SkyblockerConfigManager.get().general.itemInfoDisplay.itemBackgroundOpacity,
 						rarity.r, rarity.g, rarity.b
 				)
 		);
