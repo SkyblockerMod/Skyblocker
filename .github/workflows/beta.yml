@@ -62,7 +62,7 @@ jobs:
           java-version: '21'
 
       - name: Setup Gradle
-        uses: gradle/actions/wrapper-validation@v4
+        uses: gradle/actions/setup-gradle@v4
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: Build with Gradle
@@ -104,7 +104,7 @@ jobs:
           distribution: 'microsoft'
           java-version: '21'
       - name: Setup Gradle
-        uses: gradle/actions/wrapper-validation@v4
+        uses: gradle/actions/setup-gradle@v4
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
 
