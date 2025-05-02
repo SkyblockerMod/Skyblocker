@@ -209,6 +209,7 @@ public class SlayerManager {
 	 * @implNote This method is not perfect. Possible improvements could be sort by x and z distance only (ignore y difference).
 	 */
 	public static <T extends Entity> T findClosestMobEntity(EntityType<T> entityType, ArmorStandEntity armorStand) {
+		if (entityType == null) return null;
 		List<T> mobEntities = armorStand.getWorld().getEntitiesByType(entityType, armorStand.getBoundingBox().expand(0, 1.5f, 0), SlayerManager::isValidSlayerMob);
 		mobEntities.sort(Comparator.comparingDouble(armorStand::squaredDistanceTo));
 

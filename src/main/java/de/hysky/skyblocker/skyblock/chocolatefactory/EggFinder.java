@@ -130,7 +130,7 @@ public class EggFinder {
 	}
 
 	private static void handleArmorStand(ArmorStandEntity armorStand) {
-		for (ItemStack itemStack : armorStand.getArmorItems()) {
+		for (ItemStack itemStack : ItemUtils.getArmor(armorStand)) {
 			ItemUtils.getHeadTextureOptional(itemStack).ifPresent(texture -> {
 				for (EggType type : EggType.entries) { //Compare blockPos rather than entity to avoid incorrect matches when the entity just moves rather than a new one being spawned elsewhere
 					if (texture.equals(type.texture) && (type.egg == null || !type.egg.entity.getBlockPos().equals(armorStand.getBlockPos()))) {
@@ -218,8 +218,8 @@ public class EggFinder {
 							.append(Text.literal("Chocolate " + this + " Egg")
 									.withColor(color))
 							.append(" at " + egg.entity.getBlockPos().up(2).toShortString() + "!")
-							.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker eggFinder shareLocation " + PosUtils.toSpaceSeparatedString(egg.pos) + " " + this))
-									.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))), false);
+							.styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker eggFinder shareLocation " + PosUtils.toSpaceSeparatedString(egg.pos) + " " + this))
+									.withHoverEvent(new HoverEvent.ShowText(Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))), false);
 		}
 
 		@Override

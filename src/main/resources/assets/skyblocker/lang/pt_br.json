@@ -321,5 +321,19 @@
     "skyblocker.config.debug": "Depurar",
     "skyblocker.config.debug.showInvisibleArmorStands": "Mostrar Suportes de Armadura Invisíveis",
     "skyblocker.config.debug.debugWebSockets": "Habilitar Mensagens de Depuração do Websocket",
-    "key.itemPriceLookup": "Pesquisa de Bazar"
+    "key.itemPriceLookup": "Pesquisa de Bazar",
+    "text.skyblocker.dead": "Morto",
+    "text.skyblocker.clickToSend": "[Clique Para Mandar No Chat]",
+    "text.skyblocker.clickToSend.@Tooltip": "Clique para mandar isto para o chat.",
+    "key.skyblocker.debug.dumpNearbyEntities": "Despejar Entidades Próximas",
+    "skyblocker.config.debug.dumpRange": "Alcance de despejo de Entidade",
+    "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "Waypoints de Pérola",
+    "skyblocker.config.crimsonIsle.kuudra.safeSpotWaypoints": "Waypoints de Pontos Seguros",
+    "skyblocker.config.dungeons.allowDroppingProtectedItems": "Ativar Droppar Items Protegidos & em Slots Bloqueados",
+    "skyblocker.config.crimsonIsle.kuudra.supplyWaypoints": "Waypoints de Fornecimento",
+    "skyblocker.config.debug.dumpFormat": "Despejar Formato",
+    "text.skyblocker.undo": "Anular",
+    "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Te avisa quando puxares um arco e não teres Flecha Venenosa de Poison no teu inventário",
+    "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "Construir pontos de Waypoints da Ballista",
+    "key.itemPriceRefresh": "Atualizar Bazaar"
 }

@@ -21,12 +21,5 @@ extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget re
 extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget refreshSearchResults ()V
 extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget triggerPirateSpeakEasterEgg (Ljava/lang/String;)V
 
-# Legacy String NBT Reader
-accessible field net/minecraft/nbt/StringNbtReader reader Lcom/mojang/brigadier/StringReader;
-extendable method net/minecraft/nbt/StringNbtReader readCompound ()Lnet/minecraft/nbt/NbtCompound;
-extendable method net/minecraft/nbt/StringNbtReader parseList ()Lnet/minecraft/nbt/NbtElement;
-extendable method net/minecraft/nbt/StringNbtReader readComma ()Z
-extendable method net/minecraft/nbt/StringNbtReader expect (C)V
-
 # Block Shapes
 accessible field net/minecraft/block/CarpetBlock SHAPE Lnet/minecraft/util/shape/VoxelShape;

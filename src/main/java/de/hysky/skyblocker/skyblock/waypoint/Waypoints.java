@@ -20,6 +20,7 @@ import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -61,6 +62,7 @@ public class Waypoints {
         ClientLifecycleEvents.CLIENT_STOPPING.register(Waypoints::saveWaypoints);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(Waypoints::render);
         ClientCommandRegistrationCallback.EVENT.register(Waypoints::registerCommands);
+		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
     }
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess access) {
@@ -236,6 +238,10 @@ public class Waypoints {
             }
         }
     }
+
+	private static void reset() {
+		waypoints.values().forEach(WaypointGroup::resetIndex);
+	}
 
 	private enum OrderedAction implements StringIdentifiable {
 		NEXT,

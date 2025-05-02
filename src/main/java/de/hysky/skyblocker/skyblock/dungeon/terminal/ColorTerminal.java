@@ -66,14 +66,14 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
     static {
         colorFromName = new HashMap<>();
         for (DyeColor color : DyeColor.values())
-            colorFromName.put(color.getName().toUpperCase(Locale.ENGLISH), color);
+            colorFromName.put(color.getId().toUpperCase(Locale.ENGLISH), color);
         colorFromName.put("SILVER", DyeColor.LIGHT_GRAY);
         colorFromName.put("LIGHT BLUE", DyeColor.LIGHT_BLUE);
 
         itemColor = new HashMap<>();
         for (DyeColor color : DyeColor.values())
             for (String item : new String[]{"dye", "wool", "stained_glass", "terracotta"})
-                itemColor.put(Registries.ITEM.get(Identifier.ofVanilla(color.getName() + '_' + item)), color);
+                itemColor.put(Registries.ITEM.get(Identifier.ofVanilla(color.getId() + '_' + item)), color);
         itemColor.put(Items.BONE_MEAL, DyeColor.WHITE);
         itemColor.put(Items.LAPIS_LAZULI, DyeColor.BLUE);
         itemColor.put(Items.COCOA_BEANS, DyeColor.BROWN);

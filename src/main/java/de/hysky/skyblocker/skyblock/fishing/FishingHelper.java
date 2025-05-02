@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock;
+package de.hysky.skyblocker.skyblock.fishing;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;

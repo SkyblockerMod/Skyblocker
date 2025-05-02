@@ -64,7 +64,7 @@ public class ControlTestHelper {
      */
     protected static void render(WorldRenderContext context) {
         if (CLIENT.player != null && correctWitherSkeleton != null && pingOffset != null && lastPingOffset != null) {
-            float tickDelta = context.tickCounter().getTickDelta(false);
+            float tickDelta = context.tickCounter().getTickProgress(false);
             //how long until net update
             double updatePercent = (double) (System.currentTimeMillis() - lastUpdate) / 150;
             Vec3d aimPos = correctWitherSkeleton.getCameraPosVec(tickDelta).add(pingOffset.multiply(updatePercent)).add(lastPingOffset.multiply(1 - updatePercent));
