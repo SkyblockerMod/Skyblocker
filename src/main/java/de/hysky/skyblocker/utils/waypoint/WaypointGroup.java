@@ -61,6 +61,21 @@ public class WaypointGroup {
         return ordered;
     }
 
+	public int currentIndex() {
+		return currentIndex;
+	}
+
+	public void setCurrentIndex(int currentIndex) {
+		this.currentIndex = currentIndex;
+	}
+
+	/**
+	 * Resets the current ordered waypoint index on world change.
+	 */
+	public void resetCurrentIndex() {
+		setCurrentIndex(0);
+	}
+
     public WaypointGroup withName(String name) {
         return new WaypointGroup(name, island, waypoints, ordered);
     }
@@ -132,21 +147,6 @@ public class WaypointGroup {
                 waypoint.render(context);
             }
         }
-    }
-
-	public void setCurrentIndex(int currentIndex) {
-		this.currentIndex = currentIndex;
-	}
-
-	public int getCurrentIndex() {
-		return currentIndex;
-	}
-
-    /**
-     * Resets the current ordered waypoint index on world change.
-     */
-    public void resetIndex() {
-    	currentIndex = 0;
     }
 
     @Override

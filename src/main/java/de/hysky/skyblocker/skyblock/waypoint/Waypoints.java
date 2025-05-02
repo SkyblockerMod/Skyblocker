@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Multimaps;
 import com.google.gson.*;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
@@ -68,28 +69,28 @@ public class Waypoints {
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess access) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(MinecraftClient.getInstance().currentScreen)))
-						.then(literal("ordered").then(argument("action", OrderedAction.ARGUMENT_TYPE).executes(Waypoints::runCommand)))
+						.then(literal("ordered").then(argument("action", OrderedAction.ArgumentType.orderedAction()).executes(Waypoints::executeOrderedWaypointAction)))
 				));
 	}
 
-	private static int runCommand(CommandContext<FabricClientCommandSource> context) {
+	private static int executeOrderedWaypointAction(CommandContext<FabricClientCommandSource> context) {
 		Optional<WaypointGroup> groupOptional = waypoints.get(Utils.getLocation()).stream()
 				.filter(group -> group.ordered() && !group.waypoints().isEmpty() && group.waypoints().stream().allMatch(Waypoint::isEnabled))
 				.findFirst();
 		if (groupOptional.isEmpty()) {
 			context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.literal("No ordered group enabled here! (make sure all waypoints in the group are enabled)")));
-			return 1;
+			return Command.SINGLE_SUCCESS;
 		}
 		WaypointGroup group = groupOptional.get();
-		OrderedAction action = context.getArgument("action", OrderedAction.class);
-		int index = group.getCurrentIndex();
+		OrderedAction action = OrderedAction.ArgumentType.getOrderedAction(context, "action");
+		int index = group.currentIndex();
 		int waypointCount = group.waypoints().size();
 		switch (action) {
-			case FIRST, RESET -> group.setCurrentIndex(0);
+			case FIRST, RESET -> group.resetCurrentIndex();
 			case NEXT -> group.setCurrentIndex((index + 1) % waypointCount);
 			case PREVIOUS -> group.setCurrentIndex((index - 1 + waypointCount) % waypointCount);
 		}
-		return 1;
+		return Command.SINGLE_SUCCESS;
 	}
 
     public static void loadWaypoints() {
@@ -240,7 +241,7 @@ public class Waypoints {
     }
 
 	private static void reset() {
-		waypoints.values().forEach(WaypointGroup::resetIndex);
+		waypoints.values().forEach(WaypointGroup::resetCurrentIndex);
 	}
 
 	private enum OrderedAction implements StringIdentifiable {
@@ -250,7 +251,6 @@ public class Waypoints {
 		RESET;
 
 		private static final Codec<OrderedAction> CODEC = StringIdentifiable.createCodec(OrderedAction::values);
-		private static final ArgumentType ARGUMENT_TYPE = new ArgumentType();
 
 		@Override
 		public String asString() {
@@ -258,9 +258,16 @@ public class Waypoints {
 		}
 
 		static class ArgumentType extends EnumArgumentType<OrderedAction> {
-
 			protected ArgumentType() {
 				super(CODEC, OrderedAction::values);
+			}
+
+			static ArgumentType orderedAction() {
+				return new ArgumentType();
+			}
+
+			static <S> OrderedAction getOrderedAction(CommandContext<S> context, String name) {
+				return context.getArgument(name, OrderedAction.class);
 			}
 		}
 	}
