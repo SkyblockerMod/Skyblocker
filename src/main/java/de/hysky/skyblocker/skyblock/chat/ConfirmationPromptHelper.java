@@ -90,7 +90,7 @@ public class ConfirmationPromptHelper {
 				asString = asString.replaceAll("\\s+", " ").trim();	// clear newline '\n' and trim spaces
 
 				//Check to see if it has confirmation phrase and has the proper commands
-				if (CONFIRMATION_PHRASES_FORMATTING.contains(asString) && event instanceof ClickEvent.RunCommand(String command) && (command.startsWith("/chatprompt") || command.startsWith("/selectnpcoption")) {
+				if (CONFIRMATION_PHRASES_FORMATTING.contains(asString) && event instanceof ClickEvent.RunCommand(String command) && (command.startsWith("/chatprompt") || command.startsWith("/selectnpcoption"))) {
 					return Optional.of(command);
 				}
 
