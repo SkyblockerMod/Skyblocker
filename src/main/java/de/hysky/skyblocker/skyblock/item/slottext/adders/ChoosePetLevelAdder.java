@@ -19,8 +19,8 @@ public class ChoosePetLevelAdder extends SimpleSlotTextAdder {
 	private static final Pattern AUTOPET_LEVEL_PATTERN = Pattern.compile("Equip: ⭐? ?\\[Lvl (\\d+)].*");
 	private static final Pattern LEVEL_PATTERN = Pattern.compile("⭐? ?\\[Lvl (\\d+)].*");
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
-			"autopet_pet_level",
-			"skyblocker.config.uiAndVisuals.slotText.autopetPetLevel");
+			"choose_pet_pet_level",
+			"skyblocker.config.uiAndVisuals.slotText.choosePetPetLevel");
 
 	public ChoosePetLevelAdder() {super("^Choose Pet.*", CONFIG_INFORMATION);}
 
