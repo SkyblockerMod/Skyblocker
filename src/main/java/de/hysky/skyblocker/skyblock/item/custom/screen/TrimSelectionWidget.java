@@ -43,7 +43,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 		patternNoneButton.setMessage(Text.translatable("gui.none"));
 		patternButtons.add(patternNoneButton);
 
-		Utils.getWrapperLookup().getOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries()
+		Utils.getRegistryWrapperLookup().getOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries()
 				// Sort them in alphabetical order
 				.sorted(Comparator.comparing(reference -> reference.value().description().getString()))
 				.map(reference -> new TrimElementButton.Pattern(
@@ -58,7 +58,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 		}
 
 		// Materials
-		Utils.getWrapperLookup().getOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries()
+		Utils.getRegistryWrapperLookup().getOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries()
 				// Sort them in alphabetical order
 				.sorted(Comparator.comparing(reference -> reference.value().description().getString()))
 				.map(reference -> new TrimElementButton.Material(

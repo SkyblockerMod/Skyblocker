@@ -53,7 +53,7 @@ public class CustomArmorTrims {
 		}
 		try {
 			TRIMS_CACHE.clear();
-			RegistryWrapper.WrapperLookup wrapperLookup = Utils.getWrapperLookup();
+			RegistryWrapper.WrapperLookup wrapperLookup = Utils.getRegistryWrapperLookup();
 			for (Reference<ArmorTrimMaterial> material : wrapperLookup.getOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries().toList()) {
 				for (Reference<ArmorTrimPattern> pattern : wrapperLookup.getOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries().toList()) {
 					ArmorTrim trim = new ArmorTrim(material, pattern);

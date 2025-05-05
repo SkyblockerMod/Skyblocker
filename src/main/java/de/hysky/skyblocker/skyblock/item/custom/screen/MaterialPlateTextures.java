@@ -100,7 +100,7 @@ public class MaterialPlateTextures {
 
 		NativeImage image = ((SpriteContentsAccessor) MinecraftClient.getInstance().getGuiAtlasManager().getSprite(MATERIAL_PLATE_TEXTURE).getContents()).getImage();
 
-		RegistryWrapper<ArmorTrimMaterial> materials = Utils.getWrapperLookup().getOrThrow(RegistryKeys.TRIM_MATERIAL);
+		RegistryWrapper<ArmorTrimMaterial> materials = Utils.getRegistryWrapperLookup().getOrThrow(RegistryKeys.TRIM_MATERIAL);
 		List<CompletableFuture<Void>> futures = new ArrayList<>();
 
 		materials.streamEntries().forEach(entry -> {

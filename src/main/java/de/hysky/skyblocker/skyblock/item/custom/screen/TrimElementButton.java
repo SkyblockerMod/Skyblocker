@@ -96,7 +96,7 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 						MinecraftClient.getInstance().getBlockRenderManager().getModels().getModelManager().getAtlas(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE));
 			}
 			trim = new ArmorTrim(
-					Utils.getWrapperLookup().getOrThrow(RegistryKeys.TRIM_MATERIAL).getOrThrow(ArmorTrimMaterials.QUARTZ),
+					Utils.getRegistryWrapperLookup().getOrThrow(RegistryKeys.TRIM_MATERIAL).getOrThrow(ArmorTrimMaterials.QUARTZ),
 					RegistryEntry.of(pattern));
 		}
 
