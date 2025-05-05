@@ -53,12 +53,12 @@ public class ItemStackComponentizationFixerTest {
 	void testComponentsAsString() {
 		String componentString = ItemStackComponentizationFixer.componentsAsString(TEST_STACK);
 
-		Assertions.assertEquals("[minecraft:enchantments={levels:{\"minecraft:sharpness\":1}}]", componentString);
+		Assertions.assertEquals("[minecraft:enchantments={\"minecraft:sharpness\":1}]", componentString);
 	}
 
 	@Test
 	void testFromComponentsString() {
-		String componentString = "[minecraft:enchantments={levels:{\"minecraft:sharpness\":1}}]";
+		String componentString = "[minecraft:enchantments={\"minecraft:sharpness\":1}]";
 		ItemStack stack = ItemStackComponentizationFixer.fromComponentsString("minecraft:diamond_sword", 1, componentString);
 
 		Assertions.assertTrue(ItemStack.areItemsAndComponentsEqual(stack, TEST_STACK));
@@ -66,7 +66,7 @@ public class ItemStackComponentizationFixerTest {
 
 	@Test
 	void testFromComponentsStringWithInvalidItem() {
-		String componentString = "[minecraft:enchantments={levels:{\"minecraft:sharpness\":1}}]";
+		String componentString = "[minecraft:enchantments={\"minecraft:sharpness\":1}]";
 		ItemStack stack = ItemStackComponentizationFixer.fromComponentsString("minecraft:does_not_exist", 1, componentString);
 
 		Assertions.assertEquals(stack, ItemStack.EMPTY);
@@ -82,7 +82,7 @@ public class ItemStackComponentizationFixerTest {
 
 	private static NbtCompound convertToNbt(String nbt) {
 		try {
-			return StringNbtReader.parse(nbt);
+			return StringNbtReader.readCompound(nbt);
 		} catch (Exception e) {
 			return new NbtCompound();
 		}

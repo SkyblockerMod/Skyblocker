@@ -179,7 +179,7 @@ public class VisitorHelper {
 			}
 
 			MutableText name = cachedStack != null ? cachedStack.getName().copy() : itemName.copy();
-			Text itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper
+			Text itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
 					? name
 					.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
 					: name
@@ -222,7 +222,7 @@ public class VisitorHelper {
 				int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight) -
 						(int) ((float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2) + yOffsetAdjustment;
 
-				Text itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper
+				Text itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
 						? itemName.copy()
 						.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
 						: itemName.copy()

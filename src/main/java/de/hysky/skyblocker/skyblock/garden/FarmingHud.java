@@ -19,8 +19,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.AbstractNbtNumber;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -94,8 +94,8 @@ public class FarmingHud {
 
 	private static boolean tryGetCounter(ItemStack stack, CounterType counterType) {
 		NbtCompound customData = ItemUtils.getCustomData(stack);
-		if (customData.isEmpty() || !customData.contains(counterType.nbtKey, NbtElement.NUMBER_TYPE)) return true;
-		int count = customData.getInt(counterType.nbtKey);
+		if (customData.isEmpty() || !(customData.get(counterType.nbtKey) instanceof AbstractNbtNumber)) return true;
+		int count = customData.getInt(counterType.nbtKey, 0);
 		if (FarmingHud.counterType != counterType) {
 			counter.clear();
 			FarmingHud.counterType = counterType;

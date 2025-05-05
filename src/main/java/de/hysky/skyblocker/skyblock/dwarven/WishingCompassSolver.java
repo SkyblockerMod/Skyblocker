@@ -118,7 +118,7 @@ public class WishingCompassSolver {
     }
 
     private static boolean isKeyInInventory() {
-        return CLIENT.player != null && CLIENT.player.getInventory().main.stream().anyMatch(stack -> stack != null && stack.getSkyblockId().equals("JUNGLE_KEY"));
+        return CLIENT.player != null && CLIENT.player.getInventory().getMainStacks().stream().anyMatch(stack -> stack != null && stack.getSkyblockId().equals("JUNGLE_KEY"));
     }
 
     private static Zone getZoneOfLocation(Vec3d location) {

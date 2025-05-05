@@ -3,7 +3,6 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
@@ -56,17 +55,13 @@ public abstract class InGameHudMixin {
     public void skyblocker$renderHotbarItemLockOrRarityBg(CallbackInfo ci, @Local(argsOnly = true) DrawContext context, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y, @Local PlayerEntity player) {
         if (Utils.isOnSkyblock()) {
             // slot lock
-            if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) ItemRarityBackgrounds.tryDraw(player.getInventory().main.get(index), context, x, y);
+            if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) ItemRarityBackgrounds.tryDraw(player.getInventory().getMainStacks().get(index), context, x, y);
             if (HotbarSlotLock.isLocked(index)) {
-                RenderSystem.enableBlend();
                 context.drawTexture(RenderLayer::getGuiTextured, SLOT_LOCK_ICON.get(), x, y, 0, 0, 16, 16, 16, 16);
-                RenderSystem.disableBlend();
             }
             //item protection
-            if (ItemProtection.isItemProtected(player.getInventory().main.get(index))) {
-                RenderSystem.enableBlend();
+            if (ItemProtection.isItemProtected(player.getInventory().getMainStacks().get(index))) {
                 context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
-                RenderSystem.disableBlend();
             }
         }
     }

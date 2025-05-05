@@ -6,7 +6,6 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
@@ -28,8 +27,8 @@ public class PrehistoricEggAdder extends SimpleSlotTextAdder {
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
 		if (!stack.isOf(Items.PLAYER_HEAD) || !stack.getSkyblockId().equals("PREHISTORIC_EGG")) return List.of();
 		NbtCompound nbt = ItemUtils.getCustomData(stack);
-		if (!nbt.contains("blocks_walked", NbtElement.INT_TYPE)) return List.of();
-		int walked = nbt.getInt("blocks_walked");
+		if (!nbt.contains("blocks_walked")) return List.of();
+		int walked = nbt.getInt("blocks_walked", 0);
 
 		String walkedStr;
 		if (walked < 1000) walkedStr = String.valueOf(walked);

@@ -46,7 +46,7 @@ public class TeleportOverlay {
                     }
                 }
                 case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
-                    if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableEtherTransmission && client.options.sneakKey.isPressed() && customData.getInt("ethermerge") == 1) {
+                    if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableEtherTransmission && client.options.sneakKey.isPressed() && customData.getInt("ethermerge", 0) == 1) {
                         render(wrc, customData, 57);
                     } else if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableInstantTransmission) {
                         render(wrc, customData, 8);
@@ -75,7 +75,7 @@ public class TeleportOverlay {
      * Renders the teleport overlay with a given base range and the tuned transmission stat.
      */
     private static void render(WorldRenderContext wrc, NbtCompound customData, int baseRange) {
-        render(wrc, customData != null && customData.contains("tuned_transmission") ? baseRange + customData.getInt("tuned_transmission") : baseRange);
+        render(wrc, customData != null && customData.contains("tuned_transmission") ? baseRange + customData.getInt("tuned_transmission", 0) : baseRange);
     }
 
     /**
@@ -87,7 +87,7 @@ public class TeleportOverlay {
         if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK && client.crosshairTarget instanceof BlockHitResult blockHitResult && client.crosshairTarget.getPos().isInRange(client.player.getPos(), range)) {
             render(wrc, blockHitResult);
         } else if (client.interactionManager != null && range > client.player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).getValue()) {
-            HitResult result = client.player.raycast(range, wrc.tickCounter().getTickDelta(true), false);
+            HitResult result = client.player.raycast(range, wrc.tickCounter().getTickProgress(true), false);
             if (result.getType() == HitResult.Type.BLOCK && result instanceof BlockHitResult blockHitResult) {
                 render(wrc, blockHitResult);
             }
