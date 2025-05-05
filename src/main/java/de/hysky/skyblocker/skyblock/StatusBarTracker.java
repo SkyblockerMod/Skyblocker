@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -128,7 +129,7 @@ public class StatusBarTracker {
 		if (client.player.getMainHandStack().getName().getString().contains("Cactus Knife") && Utils.getLocation() == Location.GARDEN) {
 			max = 500;
 		}
-		Iterable<ItemStack> armor = client.player.getArmorItems();
+		Iterable<ItemStack> armor = ItemUtils.getArmor(client.player);
 		int youngDragCount = 0;
 		for (ItemStack armorPiece : armor) {
 			if (armorPiece.getName().getString().contains("Racing Helmet")) {

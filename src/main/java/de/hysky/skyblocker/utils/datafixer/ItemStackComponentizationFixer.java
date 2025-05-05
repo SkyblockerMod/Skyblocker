@@ -31,7 +31,7 @@ import net.minecraft.util.Identifier;
  */
 public class ItemStackComponentizationFixer {
 	private static final int ITEM_NBT_DATA_VERSION = 3817;
-	private static final int ITEM_COMPONENTS_DATA_VERSION = 3825;
+	private static final int ITEM_COMPONENTS_DATA_VERSION = 4325;
 	private static final WrapperLookup LOOKUP = BuiltinRegistries.createWrapperLookup();
 
 	public static ItemStack fixUpItem(NbtCompound nbt) {

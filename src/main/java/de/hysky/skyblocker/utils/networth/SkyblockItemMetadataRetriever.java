@@ -20,14 +20,14 @@ record SkyblockItemMetadataRetriever(IntList cakeBagCakeYears) implements ItemMe
 	private static IntList getCakeBagCakeYears(NbtCompound customData, String itemId) {
 		if (itemId.equals("NEW_YEAR_CAKE_BAG") && customData.contains("new_year_cake_bag_data")) {
 			try {
-				NbtCompound uncompressed = NbtIo.readCompressed(new ByteArrayInputStream(customData.getByteArray("new_year_cake_bag_data")), NbtSizeTracker.ofUnlimitedBytes());
-				NbtList items = uncompressed.getList("i", NbtElement.COMPOUND_TYPE);
+				NbtCompound uncompressed = NbtIo.readCompressed(new ByteArrayInputStream(customData.getByteArray("new_year_cake_bag_data").orElse(new byte[0])), NbtSizeTracker.ofUnlimitedBytes());
+				NbtList items = uncompressed.getListOrEmpty("i");
 				IntList cakeYears = new IntArrayList();
 
 				for (NbtElement element : items) {
-					if (element instanceof NbtCompound compound && compound.getCompound("tag").contains("ExtraAttributes")) {
-						NbtCompound extraAttributes = compound.getCompound("tag").getCompound("ExtraAttributes");
-						int cakeYear = extraAttributes.getInt("new_years_cake"); //You can only put new year cakes in the bag so we don't need to check for it being one
+					if (element instanceof NbtCompound compound && compound.getCompoundOrEmpty("tag").contains("ExtraAttributes")) {
+						NbtCompound extraAttributes = compound.getCompoundOrEmpty("tag").getCompoundOrEmpty("ExtraAttributes");
+						int cakeYear = extraAttributes.getInt("new_years_cake", 0); //You can only put new year cakes in the bag so we don't need to check for it being one
 
 						cakeYears.add(cakeYear);
 					}

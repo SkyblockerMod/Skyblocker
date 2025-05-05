@@ -1,7 +1,11 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
+
+import java.util.List;
 
 public class HelperConfig {
 
@@ -80,6 +84,27 @@ public class HelperConfig {
 
         @SerialEntry
         public boolean hideOtherPlayersRods = false;
+
+		@SerialEntry
+		public List<Location> fishingHudEnabledLocations = List.of(Location.values());
+
+		@SerialEntry
+		public boolean onlyShowHudInBarn = true;
+
+		@SerialEntry
+		public int timerLength = 340;
+
+		@SerialEntry
+		public boolean seaCreatureTimerNotification = true;
+
+		@SerialEntry
+		public int seaCreatureCap = 30;
+
+		@SerialEntry
+		public boolean seaCreatureCapNotification = true;
+
+		@SerialEntry
+		public SkyblockItemRarity minimumNotificationRarity = SkyblockItemRarity.EPIC;
     }
 
     public static class FairySouls {

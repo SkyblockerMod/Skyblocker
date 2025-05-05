@@ -140,8 +140,8 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 						Constants.PREFIX.get()
 										.append(Text.translatable("skyblocker.corpseTracker.corpseProfit", Text.literal(NumberFormat.getInstance().format(Math.round(lastCorpseLoot.profit()))).formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED)))
 										.styled(style ->
-														style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
-															 .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker rewardTrackers corpse list false"))
+														style.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
+															 .withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
 										)
 				);
 			}

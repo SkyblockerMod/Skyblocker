@@ -89,8 +89,9 @@ public class ConfirmationPromptHelper {
 				ClickEvent event = style.getClickEvent();
 				asString = asString.replaceAll("\\s+", " ").trim();	// clear newline '\n' and trim spaces
 
-				if (CONFIRMATION_PHRASES_FORMATTING.contains(asString) && event != null && event.getAction() == ClickEvent.Action.RUN_COMMAND && (event.getValue().startsWith("/chatprompt") || event.getValue().startsWith("/selectnpcoption"))) {
-					return Optional.of(event.getValue());
+				//Check to see if it has confirmation phrase and has the proper commands
+				if (CONFIRMATION_PHRASES_FORMATTING.contains(asString) && event instanceof ClickEvent.RunCommand(String command) && (command.startsWith("/chatprompt") || command.startsWith("/selectnpcoption")) {
+					return Optional.of(command);
 				}
 
 				return Optional.empty();

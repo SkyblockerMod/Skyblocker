@@ -2,11 +2,14 @@ package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
+import net.minecraft.datafixer.Schemas;
+import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.RegistryOps;
@@ -35,7 +38,11 @@ public class ItemUtilsTest {
 	private final ItemStack WITHER_SKELETON_PET = create("{\"id\":\"minecraft:player_head\",\"count\":1,\"components\":{\"minecraft:lore\":[\"{\\\"extra\\\":[{\\\"color\\\":\\\"dark_gray\\\",\\\"text\\\":\\\"Mining Pet\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"Defense: \\\"},{\\\"color\\\":\\\"green\\\",\\\"text\\\":\\\"+25\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"Strength: \\\"},{\\\"color\\\":\\\"red\\\",\\\"text\\\":\\\"+25\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"Intelligence: \\\"},{\\\"color\\\":\\\"green\\\",\\\"text\\\":\\\"+25\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"Crit Chance: \\\"},{\\\"color\\\":\\\"red\\\",\\\"text\\\":\\\"+5%\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"Crit Damage: \\\"},{\\\"color\\\":\\\"red\\\",\\\"text\\\":\\\"+25%\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gold\\\",\\\"text\\\":\\\"Stronger Bones\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"\\\"},{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"Take \\\"},{\\\"color\\\":\\\"green\\\",\\\"text\\\":\\\"30% \\\"},{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"less damage from skeletons\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gold\\\",\\\"text\\\":\\\"Wither Blood\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"\\\"},{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"Deal \\\"},{\\\"color\\\":\\\"green\\\",\\\"text\\\":\\\"125% \\\"},{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"more damage to wither\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"mobs\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gold\\\",\\\"text\\\":\\\"Death\\u0027s Touch\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"\\\"},{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"Upon hitting an enemy inflict the\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"wither effect for \\\"},{\\\"color\\\":\\\"green\\\",\\\"text\\\":\\\"200% \\\"},{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"damage over\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"3 seconds\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"dark_gray\\\",\\\"text\\\":\\\"Does not stack\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gold\\\",\\\"text\\\":\\\"Held Item: \\\"},{\\\"color\\\":\\\"blue\\\",\\\"text\\\":\\\"Dwarf Turtle Shelmet\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"Makes the pet\\u0027s owner immune to\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"knockback.\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"bold\\\":true,\\\"color\\\":\\\"aqua\\\",\\\"text\\\":\\\"MAX LEVEL\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"dark_gray\\\",\\\"text\\\":\\\"▸ 29,079,797 XP\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"\\\"},{\\\"color\\\":\\\"red\\\",\\\"text\\\":\\\"Click to despawn!\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"\\\"},{\\\"color\\\":\\\"yellow\\\",\\\"text\\\":\\\"Shift Left-click to toggle as favorite!\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"{\\\"extra\\\":[{\\\"color\\\":\\\"yellow\\\",\\\"text\\\":\\\"Right-click to convert to an item!\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\"],\"minecraft:custom_name\":\"{\\\"extra\\\":[{\\\"color\\\":\\\"gray\\\",\\\"text\\\":\\\"[Lvl 100] \\\"},{\\\"color\\\":\\\"gold\\\",\\\"text\\\":\\\"Wither Skeleton\\\"}],\\\"italic\\\":false,\\\"text\\\":\\\"\\\"}\",\"minecraft:profile\":{\"name\":\"61eebdb5acf149e9\",\"id\":[1643036085,-1393473047,-1459445539,-328222031],\"properties\":[{\"name\":\"textures\",\"value\":\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjVlYzk2NDY0NWE4ZWZhYzc2YmUyZjE2MGQ3Yzk5NTYzNjJmMzJiNjUxNzM5MGM1OWMzMDg1MDM0ZjA1MGNmZiJ9fX0\\u003d\"}]},\"minecraft:custom_data\":{\"petInfo\":\"{\\\"type\\\":\\\"WITHER_SKELETON\\\",\\\"active\\\":true,\\\"exp\\\":2.907979704591799E7,\\\"tier\\\":\\\"LEGENDARY\\\",\\\"hideInfo\\\":false,\\\"heldItem\\\":\\\"DWARF_TURTLE_SHELMET\\\",\\\"candyUsed\\\":0,\\\"uuid\\\":\\\"dcc730ef-2936-461c-b7ec-45a087baa44d\\\",\\\"uniqueId\\\":\\\"7e7270ec-0ff5-460d-8d14-430ea48b596f\\\",\\\"hideRightClick\\\":false,\\\"noMove\\\":false}\",\"uuid\":\"dcc730ef-2936-461c-b7ec-45a087baa44d\",\"id\":\"PET\"}}}");
 
 	public ItemStack create(String itemStackJson) {
-		return ItemStack.CODEC.parse(JSON_OPS, JsonParser.parseString(itemStackJson)).getOrThrow();
+		//The hide tooltip fields are consolidated into a single component now so this just fixes it until I want to edit the constants lol
+		Dynamic<JsonElement> dynamic = new Dynamic<>(JSON_OPS, JsonParser.parseString(itemStackJson));
+		Dynamic<JsonElement> fixed = Schemas.getFixer().update(TypeReferences.ITEM_STACK, dynamic, 4189, 4323);
+
+		return ItemStack.CODEC.parse(fixed).getOrThrow();
 	}
 
 	@BeforeAll
@@ -122,7 +129,7 @@ public class ItemUtilsTest {
 	void testGetDurability() {
 		IntIntPair durability = ItemUtils.getDurability(TITANIUM_DRILL_DR_X655);
 		Assertions.assertNotNull(durability);
-		Assertions.assertEquals(durability.leftInt(), 5395);
-		Assertions.assertEquals(durability.rightInt(), 10_000);
+		Assertions.assertEquals(5395, durability.leftInt());
+		Assertions.assertEquals(10_000, durability.rightInt());
 	}
 }

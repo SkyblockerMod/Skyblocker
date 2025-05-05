@@ -2,7 +2,6 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.InventorySearch;
@@ -334,9 +333,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			ItemRarityBackgrounds.tryDraw(slot.getStack(), context, slot.x, slot.y);
 		// Item Protection
 		if (ItemProtection.isItemProtected(slot.getStack())) {
-			RenderSystem.enableBlend();
 			context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
-			RenderSystem.disableBlend();
 		}
 		// Search
 		// Darken the slots

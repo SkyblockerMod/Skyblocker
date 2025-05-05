@@ -5,7 +5,8 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtLong;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -44,12 +45,12 @@ public class ObtainedDateTooltip extends SimpleTooltipAdder {
 	private static TemporalAccessor getTimestampInternal(ItemStack stack) {
 		NbtCompound customData = ItemUtils.getCustomData(stack);
 
-		if (customData != null && customData.contains("timestamp", NbtElement.LONG_TYPE)) {
-			return Instant.ofEpochMilli(customData.getLong("timestamp"));
+		if (customData != null && customData.get("timestamp") instanceof NbtLong(long value)) {
+			return Instant.ofEpochMilli(value);
 		}
 
-		if (customData != null && customData.contains("timestamp", NbtElement.STRING_TYPE)) {
-			return OLD_OBTAINED_DATE_FORMAT.parse(customData.getString("timestamp"));
+		if (customData != null && customData.get("timestamp") instanceof NbtString(String value)) {
+			return OLD_OBTAINED_DATE_FORMAT.parse(value);
 		}
 
 		return null;

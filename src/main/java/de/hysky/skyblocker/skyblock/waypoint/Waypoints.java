@@ -15,6 +15,7 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -54,6 +55,7 @@ public class Waypoints {
         ClientLifecycleEvents.CLIENT_STOPPING.register(Waypoints::saveWaypoints);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(Waypoints::render);
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(MinecraftClient.getInstance().currentScreen))))));
+		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
     }
 
     public static void loadWaypoints() {
@@ -202,4 +204,8 @@ public class Waypoints {
             }
         }
     }
+
+	private static void reset() {
+		waypoints.values().forEach(WaypointGroup::resetIndex);
+	}
 }
