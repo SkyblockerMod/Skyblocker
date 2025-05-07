@@ -1316,6 +1316,8 @@
 
   "skyblocker.gardenPlots": "Garden Plots",
   "skyblocker.gardenPlots.openDesk": "Open Desk",
+  "skyblocker.gardenPlots.spawn": "TP to Garden spawn",
+  "skyblocker.gardenPlots.setSpawn": "Set Garden spawn",
   "skyblocker.gardenPlots.pests": "GROSS! This plot has pests!",
   "skyblocker.gardenPlots.plot": "Plot - %s",
   "skyblocker.gardenPlots.tp": "Click to TP to it!",
