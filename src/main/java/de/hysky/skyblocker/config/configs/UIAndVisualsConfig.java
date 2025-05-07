@@ -44,6 +44,9 @@ public class UIAndVisualsConfig {
     @SerialEntry
     public boolean cancelComponentUpdateAnimation = true;
 
+	@SerialEntry
+	public boolean cancelShortbowPullAnimation = true;
+
     @SerialEntry
     public ChestValue chestValue = new ChestValue();
 

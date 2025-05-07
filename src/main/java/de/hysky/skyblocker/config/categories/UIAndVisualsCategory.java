@@ -112,6 +112,14 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.cancelComponentUpdateAnimation = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.cancelShortbowPullAnimation"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.cancelShortbowPullAnimation.@Tooltip")))
+						.binding(defaults.uiAndVisuals.cancelShortbowPullAnimation,
+								() -> config.uiAndVisuals.cancelShortbowPullAnimation,
+								newValue -> config.uiAndVisuals.cancelShortbowPullAnimation = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
                 //Chest Value FIXME change dropdown to color controller
                 .group(OptionGroup.createBuilder()
