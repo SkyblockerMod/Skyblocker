@@ -4,16 +4,22 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Multimaps;
 import com.google.gson.*;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -21,6 +27,10 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.command.argument.EnumArgumentType;
+import net.minecraft.text.Text;
+import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +39,12 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class Waypoints {
@@ -54,9 +62,36 @@ public class Waypoints {
         loadWaypoints();
         ClientLifecycleEvents.CLIENT_STOPPING.register(Waypoints::saveWaypoints);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(Waypoints::render);
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(MinecraftClient.getInstance().currentScreen))))));
+        ClientCommandRegistrationCallback.EVENT.register(Waypoints::registerCommands);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
     }
+
+	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess access) {
+		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
+				.then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(MinecraftClient.getInstance().currentScreen)))
+						.then(literal("ordered").then(argument("action", OrderedAction.ArgumentType.orderedAction()).executes(Waypoints::executeOrderedWaypointAction)))
+				));
+	}
+
+	private static int executeOrderedWaypointAction(CommandContext<FabricClientCommandSource> context) {
+		Optional<WaypointGroup> groupOptional = waypoints.get(Utils.getLocation()).stream()
+				.filter(group -> group.ordered() && !group.waypoints().isEmpty() && group.waypoints().stream().allMatch(Waypoint::isEnabled))
+				.findFirst();
+		if (groupOptional.isEmpty()) {
+			context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.literal("No ordered group enabled here! (make sure all waypoints in the group are enabled)")));
+			return Command.SINGLE_SUCCESS;
+		}
+		WaypointGroup group = groupOptional.get();
+		OrderedAction action = OrderedAction.ArgumentType.getOrderedAction(context, "action");
+		int index = group.currentIndex();
+		int waypointCount = group.waypoints().size();
+		switch (action) {
+			case FIRST, RESET -> group.resetCurrentIndex();
+			case NEXT -> group.setCurrentIndex((index + 1) % waypointCount);
+			case PREVIOUS -> group.setCurrentIndex((index - 1 + waypointCount) % waypointCount);
+		}
+		return Command.SINGLE_SUCCESS;
+	}
 
     public static void loadWaypoints() {
         waypoints.clear();
@@ -206,6 +241,34 @@ public class Waypoints {
     }
 
 	private static void reset() {
-		waypoints.values().forEach(WaypointGroup::resetIndex);
+		waypoints.values().forEach(WaypointGroup::resetCurrentIndex);
+	}
+
+	private enum OrderedAction implements StringIdentifiable {
+		NEXT,
+		PREVIOUS,
+		FIRST,
+		RESET;
+
+		private static final Codec<OrderedAction> CODEC = StringIdentifiable.createCodec(OrderedAction::values);
+
+		@Override
+		public String asString() {
+			return name().toLowerCase(Locale.ENGLISH);
+		}
+
+		static class ArgumentType extends EnumArgumentType<OrderedAction> {
+			protected ArgumentType() {
+				super(CODEC, OrderedAction::values);
+			}
+
+			static ArgumentType orderedAction() {
+				return new ArgumentType();
+			}
+
+			static <S> OrderedAction getOrderedAction(CommandContext<S> context, String name) {
+				return context.getArgument(name, OrderedAction.class);
+			}
+		}
 	}
 }
