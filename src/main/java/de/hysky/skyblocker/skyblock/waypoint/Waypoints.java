@@ -24,7 +24,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.command.CommandRegistryAccess;
@@ -41,6 +40,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -51,10 +51,13 @@ public class Waypoints {
     public static final Logger LOGGER = LoggerFactory.getLogger(Waypoints.class);
     private static final Codec<List<WaypointGroup>> CODEC = WaypointGroup.CODEC.listOf();
     private static final Codec<List<WaypointGroup>> SKYTILS_CODEC = WaypointGroup.SKYTILS_CODEC.listOf();
+	private static final Codec<Collection<WaypointGroup>> SKYBLOCKER_LEGACY_ORDERED_CODEC = Codec.unboundedMap(Codec.STRING, WaypointGroup.SKYBLOCKER_LEGACY_ORDERED_CODEC).xmap(Map::values, groups -> groups.stream().collect(Collectors.toMap(WaypointGroup::name, Function.identity())));
     private static final String PREFIX = "[Skyblocker-Waypoint-Data-V1]";
+	private static final String SKYBLOCKER_LEGACY_ORDERED = "[Skyblocker::OrderedWaypoints::v1]";
     protected static final SystemToast.Type WAYPOINTS_TOAST_TYPE = new SystemToast.Type();
 
-    private static final Path waypointsFile = FabricLoader.getInstance().getConfigDir().resolve(SkyblockerMod.NAMESPACE).resolve("waypoints.json");
+    private static final Path WAYPOINTS_FILE = SkyblockerMod.CONFIG_DIR.resolve("waypoints.json");
+	private static final Path SKYBLOCKER_LEGACY_ORDERED_FILE = SkyblockerMod.CONFIG_DIR.resolve("ordered_waypoints.json");
     private static final Multimap<Location, WaypointGroup> waypoints = MultimapBuilder.enumKeys(Location.class).arrayListValues().build();
 
     @Init
@@ -95,16 +98,27 @@ public class Waypoints {
 
     public static void loadWaypoints() {
         waypoints.clear();
-        try (BufferedReader reader = Files.newBufferedReader(waypointsFile)) {
+        try (BufferedReader reader = Files.newBufferedReader(WAYPOINTS_FILE)) {
             List<WaypointGroup> waypointGroups = CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
             waypointGroups.forEach(Waypoints::putWaypointGroup);
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading waypoints", e);
         }
-    }
+		try (BufferedReader reader = Files.newBufferedReader(SKYBLOCKER_LEGACY_ORDERED_FILE)) {
+			Collection<WaypointGroup> waypointGroups = SKYBLOCKER_LEGACY_ORDERED_CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonObject.class)).resultOrPartial(LOGGER::error).orElseThrow();
+			for (WaypointGroup group : waypointGroups) {
+				Waypoints.putWaypointGroup(group.withIsland(Location.DWARVEN_MINES).deepCopy());
+				Waypoints.putWaypointGroup(group.withIsland(Location.DWARVEN_MINES).deepCopy());
+			}
+			Files.move(SKYBLOCKER_LEGACY_ORDERED_FILE, SkyblockerMod.CONFIG_DIR.resolve("legacy_ordered_waypoints.json"));
+			LOGGER.info("[Skyblocker Waypoints] Successfully migrated {} ordered waypoints from {} groups to waypoints!", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size());
+		} catch (IOException e) {
+			LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading legacy ordered waypoints", e);
+		}
+	}
 
     public static void saveWaypoints(MinecraftClient client) {
-        try (BufferedWriter writer = Files.newBufferedWriter(waypointsFile)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(WAYPOINTS_FILE)) {
             JsonElement waypointsJson = CODEC.encodeStart(JsonOps.INSTANCE, List.copyOf(waypoints.values())).resultOrPartial(LOGGER::error).orElseThrow();
             SkyblockerMod.GSON.toJson(waypointsJson, writer);
             LOGGER.info("[Skyblocker Waypoints] Saved waypoints");
@@ -113,14 +127,20 @@ public class Waypoints {
         }
     }
 
-    public static List<WaypointGroup> fromSkyblocker(String waypointsString) {
+    public static List<WaypointGroup> fromSkyblocker(String waypointsString, Location defaultIsland) {
         if (waypointsString.startsWith(PREFIX)) {
             try (GZIPInputStream reader = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(waypointsString.replace(PREFIX, ""))))) {
                 return CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(new String(reader.readAllBytes()), JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
             } catch (IOException e) {
                 LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skyblocker waypoint data", e);
             }
-        }
+        } else if (waypointsString.startsWith(SKYBLOCKER_LEGACY_ORDERED)) {
+			try (GZIPInputStream reader = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(waypointsString.replace(SKYBLOCKER_LEGACY_ORDERED, ""))))) {
+				return applyDefaultLocation(SKYBLOCKER_LEGACY_ORDERED_CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(new String(reader.readAllBytes()), JsonObject.class)).resultOrPartial(LOGGER::error).orElseThrow(), defaultIsland);
+			} catch (IOException e) {
+				LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skyblocker legacy ordered waypoint data", e);
+			}
+		}
         return Collections.emptyList();
     }
 
@@ -170,7 +190,7 @@ public class Waypoints {
             waypointGroupsJson.add(waypointGroupJson);
         }
         List<WaypointGroup> waypointGroups = SKYTILS_CODEC.parse(JsonOps.INSTANCE, waypointGroupsJson).resultOrPartial(LOGGER::error).orElseThrow();
-        return waypointGroups.stream().map(waypointGroup -> waypointGroup.island() == Location.UNKNOWN ? waypointGroup.withIsland(defaultIsland) : waypointGroup).toList();
+        return applyDefaultLocation(waypointGroups, defaultIsland);
     }
 
     public static String toSkytilsBase64(List<WaypointGroup> waypointGroups) {
@@ -186,6 +206,10 @@ public class Waypoints {
     public static WaypointGroup fromColeweightJson(String waypointsJson, Location defaultIsland) {
         return WaypointGroup.COLEWEIGHT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(waypointsJson)).resultOrPartial(LOGGER::error).orElseThrow().withIsland(defaultIsland);
     }
+
+	public static List<WaypointGroup> applyDefaultLocation(Collection<WaypointGroup> waypointGroups, Location defaultIsland) {
+		return waypointGroups.stream().map(waypointGroup -> waypointGroup.island() == Location.UNKNOWN ? waypointGroup.withIsland(defaultIsland) : waypointGroup).toList();
+	}
 
 	/**
 	 * Gets the waypoint groups for the specified island.
