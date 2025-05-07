@@ -31,13 +31,6 @@ public class ItemBackgroundManager {
 			for (ColoredItemBackground<?> background : BACKGROUNDS) {
 				background.onScreenChange(title, screen);
 			}
-
-			// Clear cache on screen close
-			ScreenEvents.remove(screen).register(s -> {
-				for (ColoredItemBackground<?> background : BACKGROUNDS) {
-					background.clearCache();
-				}
-			});
 		});
 	}
 
