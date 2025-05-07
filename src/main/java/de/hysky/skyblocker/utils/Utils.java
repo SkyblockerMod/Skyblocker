@@ -584,6 +584,7 @@ public class Utils {
 	 */
 	public static RegistryWrapper.WrapperLookup getRegistryWrapperLookup() {
 		MinecraftClient client = MinecraftClient.getInstance();
-		return client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : LOOKUP;
+		// Null check on client for tests
+		return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : LOOKUP;
 	}
 }
