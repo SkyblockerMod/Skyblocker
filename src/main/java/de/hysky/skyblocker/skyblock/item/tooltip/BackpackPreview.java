@@ -4,9 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
+import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -157,9 +156,7 @@ public class BackpackPreview {
             int itemX = x + (i - 9) % 9 * 18 + 8;
             int itemY = y + (i - 9) / 9 * 18 + 18;
 
-            if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) {
-                ItemRarityBackgrounds.tryDraw(currentStack, context, itemX, itemY);
-            }
+			ItemBackgroundManager.drawBackgrounds(currentStack, context, itemX, itemY);
 
             if (ItemProtection.isItemProtected(currentStack)) {
                 context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
