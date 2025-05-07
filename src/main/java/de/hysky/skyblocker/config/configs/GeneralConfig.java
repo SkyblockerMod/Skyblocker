@@ -199,7 +199,7 @@ public class GeneralConfig {
 		public ItemBackgroundStyle itemBackgroundStyle = ItemBackgroundStyle.SQUARE;
 
 		@SerialEntry
-		public float itemBackgroundOpacity = 1f;
+		public float itemBackgroundOpacity = 0.5f;
 
         @SerialEntry
         public boolean itemRarityBackgrounds = true;
