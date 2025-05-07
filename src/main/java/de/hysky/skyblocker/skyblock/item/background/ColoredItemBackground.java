@@ -40,7 +40,8 @@ public abstract class ColoredItemBackground<T> {
 	}
 
 	/**
-	 * Determines the color key (e.g. {@link de.hysky.skyblocker.skyblock.item.SkyblockItemRarity} enum or RGB int) to use for the given item.
+	 * Determines the color key (e.g. {@link de.hysky.skyblocker.skyblock.item.SkyblockItemRarity} enum or RGB int)
+	 * to use for the given item.
 	 *
 	 * @param stack The item to inspect
 	 * @param cache The internal cache used to store/reuse results
@@ -68,7 +69,8 @@ public abstract class ColoredItemBackground<T> {
 	}
 
 	/**
-	 * Attempts to draw a background for the given {@link ItemStack} if a valid color key is found.
+	 * Attempts to draw a background for the given {@link ItemStack} if a valid color
+	 * key is found.
 	 *
 	 * @param stack   The {@link ItemStack} to check
 	 * @param context The rendering context
@@ -80,15 +82,6 @@ public abstract class ColoredItemBackground<T> {
 		if (value != null) {
 			draw(context, x, y, value);
 		}
-	}
-
-	/**
-	 * Returns a {@link Runnable} that clears this background's internal cache.
-	 *
-	 * @return A runnable that clears the item cache
-	 */
-	protected final Runnable getCacheClearRunnable() {
-		return cache::clear;
 	}
 
 	/**

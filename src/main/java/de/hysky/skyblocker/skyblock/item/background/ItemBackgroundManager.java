@@ -20,8 +20,8 @@ public class ItemBackgroundManager {
 	@Init
 	public static void init() {
 		// Clear the cache of every background every 5 minutes
-		for (ColoredItemBackground<?> BACKGROUND : BACKGROUNDS) {
-			Scheduler.INSTANCE.scheduleCyclic(BACKGROUND.getCacheClearRunnable(), 6000);
+		for (ColoredItemBackground<?> background : BACKGROUNDS) {
+			Scheduler.INSTANCE.scheduleCyclic(background::clearCache, 6000);
 		}
 
 		// Hook into screen changes for per-background logic
