@@ -3,20 +3,15 @@ package de.hysky.skyblocker.skyblock.fishing;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.Vec3d;
 
 public class FishingHookDisplayHelper {
 	private static ArmorStandEntity fishingHookArmorStand;
@@ -24,17 +19,17 @@ public class FishingHookDisplayHelper {
 	@Init
 	public static void init() {
 		UseItemCallback.EVENT.register((player, world, hand) -> {
-			ItemStack stack = player.getStackInHand(hand);
 			if (!Utils.isOnSkyblock()) {
 				return ActionResult.PASS;
 			}
 			return ActionResult.PASS;
 		});
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(FishingHookDisplayHelper::render);
+		HudRenderCallback.EVENT.register(FishingHookDisplayHelper::render);
 	}
 
-	public static void render(WorldRenderContext context) {
+	public static void render(DrawContext context, RenderTickCounter tickDelta) {
 		if (!SkyblockerConfigManager.get().helpers.fishing.enableFishingHookDisplay) return;
+
 
 		// Check if the armor stand is null or invalid
 		if (fishingHookArmorStand == null || !fishingHookArmorStand.isAlive() || !fishingHookArmorStand.hasCustomName()) {
@@ -42,18 +37,27 @@ public class FishingHookDisplayHelper {
 			return;
 		}
 
+
 		MinecraftClient client = MinecraftClient.getInstance();
 		ClientPlayerEntity player = client.player;
 		if (player == null || player.fishHook == null) return;
 
 		// Proceed only if fishingHookArmorStand is not null
 		if (fishingHookArmorStand != null) {
-			Vec3d playerEyePos = player.getPos().add(0, player.getEyeHeight(player.getPose()), 0);
-			Vec3d lookVec = player.getRotationVec(1.0F).normalize();
-			Vec3d displayPos = playerEyePos.add(lookVec.multiply(3.0)); // 2 blocks in front of the player
+//			MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("[DEBUG] Rendering"));
 
 			String armorStandName = fishingHookArmorStand.getName().getString();
-			RenderHelper.renderText(context, Text.literal(armorStandName), displayPos, true);
+
+			int screenWidth = client.getWindow().getScaledWidth();
+			int screenHeight = client.getWindow().getScaledHeight();
+			int x = screenWidth / 2; // Center horizontally
+			int y = screenHeight / 2; // Position near the top
+
+			// Scale the text by 3x
+			context.getMatrices().push();
+			context.getMatrices().scale(3.0F, 3.0F, 1.0F);
+			context.drawCenteredTextWithShadow(client.textRenderer, armorStandName, (int) (x / 3.0F), (int) (y / 3.0F), 0xFFFF00);
+			context.getMatrices().pop();
 		}
 	}
 
