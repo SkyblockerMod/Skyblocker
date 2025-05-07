@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.config.configs.GeneralConfig.Average;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
@@ -12,9 +13,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@RegisterTooltipAdder(priority = 1)
 public class AvgBinTooltip extends SimpleTooltipAdder {
-	public AvgBinTooltip(int priority) {
-		super(priority);
+	public AvgBinTooltip() {
+		super(0);
 	}
 
 	@Override

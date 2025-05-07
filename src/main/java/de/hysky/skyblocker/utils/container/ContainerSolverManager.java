@@ -38,8 +38,8 @@ import java.util.List;
  * Manager class for {@link SimpleContainerSolver}s like terminal solvers and experiment solvers. To add a new gui solver, extend {@link SimpleContainerSolver} and register it in {@link #ContainerSolverManager()}.
  */
 public class ContainerSolverManager {
-	private static final ContainerSolver[] solvers = new ContainerSolver[]{
-			new ColorTerminal(),
+	private static final ContainerSolver[] SOLVERS = new ContainerSolver[]{
+			/*new ColorTerminal(),
 			new OrderTerminal(),
 			new StartsWithTerminal(),
 			new LightsOnTerminal(),
@@ -56,7 +56,7 @@ public class ContainerSolverManager {
 			new ReorderHelper(),
 			BitsHelper.INSTANCE,
 			new RaffleTaskHighlight(),
-			new FossilSolver()
+			new FossilSolver()*/
 	};
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;
@@ -90,10 +90,10 @@ public class ContainerSolverManager {
 		});
 	}
 
-	@SuppressWarnings({"ConstantValue", "java:S1066"})
+	@SuppressWarnings({"java:S1066"})
 	public static void onSetScreen(@NotNull GenericContainerScreen screen) {
 		String screenName = screen.getTitle().getString();
-		for (ContainerSolver solver : solvers) {
+		for (ContainerSolver solver : SOLVERS) {
 			if (solver.isEnabled()) {
 				//Ignore the result of instanceof being always true.
 				//This only happens because all solvers in the `solvers` array are SimpleContainerSolvers, which extend RegexContainerMatcher.

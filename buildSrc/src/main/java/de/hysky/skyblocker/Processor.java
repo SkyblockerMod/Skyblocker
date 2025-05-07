@@ -2,6 +2,7 @@ package de.hysky.skyblocker;
 
 import de.hysky.skyblocker.hud.HudProcessor;
 import de.hysky.skyblocker.init.InitProcessor;
+import de.hysky.skyblocker.register.RegisterAnnotationProcessor;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
@@ -24,7 +25,7 @@ import java.util.function.Consumer;
 
 public class Processor implements Plugin<Project> {
 
-	public static final Logger logger = Logging.getLogger(Processor.class);
+	public static final Logger LOGGER = Logging.getLogger(Processor.class);
 	public static File classesDir;
 
 	@Override
@@ -37,6 +38,7 @@ public class Processor implements Plugin<Project> {
 
 			new InitProcessor().apply(javaCompile);
 			new HudProcessor().apply(javaCompile);
+			new RegisterAnnotationProcessor().apply();
 		});
 	}
 
@@ -49,7 +51,7 @@ public class Processor implements Plugin<Project> {
 					try (InputStream inputStream = Files.newInputStream(path)) {
 						consumer.accept(inputStream);
 					} catch (IOException e) {
-						logger.error("Failed to run consumer on class {}", path, e);
+						LOGGER.error("Failed to run consumer on class {}", path, e);
 
 					}
 
@@ -57,7 +59,7 @@ public class Processor implements Plugin<Project> {
 				}
 			});
 		} catch (IOException e) {
-			logger.error("Failed to walk classes", e);
+			LOGGER.error("Failed to walk classes", e);
 		}
 	}
 
@@ -82,6 +84,17 @@ public class Processor implements Plugin<Project> {
 		return null;
 	}
 
+	/**
+	 * Returns a path to the class so you can open it
+	 * @param fullClassName the full class name and path, with / instead of .
+	 * @return the file
+	 * @see org.objectweb.asm.tree.ClassNode#name
+	 */
+	public static Path getClassPath(String fullClassName) {
+		if (!fullClassName.endsWith(".class")) fullClassName += ".class";
+		return classesDir.toPath().resolve(fullClassName);
+	}
+
 	public static @Nullable File findClass(String className) {
 		return findClass(classesDir, className);
 	}
@@ -104,7 +117,7 @@ public class Processor implements Plugin<Project> {
 				ClassReader classReader = new ClassReader(stream);
 				sup = classReader.getSuperName();
 			} catch (IOException e) {
-				logger.error("Failed to read class {}", resolve, e);
+				LOGGER.error("Failed to read class {}", resolve, e);
 				return false;
 			}
 		}

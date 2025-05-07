@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
+import de.hysky.skyblocker.annotations.RegisterSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.RomanNumerals;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
 
 // This class is split into 3 inner classes as there are multiple screens for showing catacombs levels, each with different slot ids or different style of showing the level.
 // It's still kept in 1 main class for the shared config information.
+@RegisterSlotTextAdder
 public class CatacombsLevelAdder {
 
 	private static final SlotTextAdder.ConfigInformation CONFIG_INFORMATION = new SlotTextAdder.ConfigInformation(

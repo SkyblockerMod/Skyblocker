@@ -2,10 +2,6 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
-import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
-import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
-import de.hysky.skyblocker.skyblock.dwarven.fossil.FossilSolver;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -23,8 +19,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TooltipManager {
-	private static final TooltipAdder[] adders = new TooltipAdder[]{
-			new LineSmoothener(), // Applies before anything else
+	@SuppressWarnings("MismatchedReadAndWriteOfArray")
+	private static final TooltipAdder[] ADDERS = new TooltipAdder[]{
+			/*new LineSmoothener(), // Applies before anything else
 			new TrueHexDisplay(),
 			new TrueHexDyeScreenDisplay(),
 			new SupercraftReminder(),
@@ -46,7 +43,7 @@ public class TooltipManager {
 			new MuseumTooltip(11),
 			new ColorTooltip(12),
 			new AccessoryTooltip(13),
-			new CalendarStartTimeTooltip(14)
+			new CalendarStartTimeTooltip(14)*/
 	};
 	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
@@ -70,12 +67,12 @@ public class TooltipManager {
 
 	private static void onScreenChange(Screen screen) {
 		currentScreenAdders.clear();
-		for (TooltipAdder adder : adders) {
+		for (TooltipAdder adder : ADDERS) {
 			if (adder.isEnabled() && adder.test(screen)) {
 				currentScreenAdders.add(adder);
 			}
 		}
-		currentScreenAdders.sort(Comparator.comparingInt(TooltipAdder::getPriority));
+		//currentScreenAdders.sort(Comparator.comparingInt(TooltipAdder::getPriority));
 	}
 
 	/**

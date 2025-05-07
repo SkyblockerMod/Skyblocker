@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -13,9 +14,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@RegisterTooltipAdder
 public class MuseumTooltip extends SimpleTooltipAdder {
-	public MuseumTooltip(int priority) {
-		super(priority);
+	public MuseumTooltip() {
+		super(0);
 	}
 
 	@Override
