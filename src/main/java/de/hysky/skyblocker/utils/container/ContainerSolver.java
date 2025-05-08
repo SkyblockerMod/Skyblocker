@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * A solver for a container without the inventory slots included.
+ * Register a ContainerSolver using {@link de.hysky.skyblocker.annotations.RegisterContainerSolver}
  * @see ContainerAndInventorySolver
  */
 public interface ContainerSolver extends ContainerMatcher, Resettable {

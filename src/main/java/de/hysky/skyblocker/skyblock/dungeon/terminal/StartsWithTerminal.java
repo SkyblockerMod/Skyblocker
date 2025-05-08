@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+@RegisterContainerSolver
 public final class StartsWithTerminal extends SimpleContainerSolver implements TerminalSolver {
 	private final Int2ObjectOpenHashMap<ItemState> trackedItemStates = new Int2ObjectOpenHashMap<>();
 	private int lastKnownScreenId = Integer.MIN_VALUE;

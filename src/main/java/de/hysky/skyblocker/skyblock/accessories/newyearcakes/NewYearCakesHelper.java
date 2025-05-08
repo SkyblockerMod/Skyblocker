@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.accessories.newyearcakes;
 
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Utils;
@@ -23,6 +24,7 @@ public class NewYearCakesHelper extends SimpleContainerSolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewYearCakesHelper.class);
     private static final Pattern NEW_YEAR_CAKE = Pattern.compile("New Year Cake \\(Year (?<year>\\d+)\\)");
     private static final Pattern NEW_YEAR_CAKE_PURCHASE = Pattern.compile("You purchased New Year Cake \\(Year (?<year>\\d+)\\) for .+ coins!");
+	@RegisterContainerSolver
 	public static final NewYearCakesHelper INSTANCE = new NewYearCakesHelper();
     private final Map<String, IntSet> cakes = new HashMap<>();
 

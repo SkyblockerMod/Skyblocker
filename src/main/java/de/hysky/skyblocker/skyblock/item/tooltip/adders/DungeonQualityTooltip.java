@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -12,9 +13,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@RegisterTooltipAdder(priority = -3)
 public class DungeonQualityTooltip extends SimpleTooltipAdder {
-	public DungeonQualityTooltip(int priority) {
-		super(priority);
+	public DungeonQualityTooltip() {
+		super();
 	}
 
 	@Override

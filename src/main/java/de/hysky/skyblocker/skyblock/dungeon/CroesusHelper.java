@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
@@ -11,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
+@RegisterContainerSolver
 public class CroesusHelper extends SimpleContainerSolver {
     public CroesusHelper() {
         super("^Croesus$");

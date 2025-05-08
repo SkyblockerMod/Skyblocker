@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Formatters;
@@ -137,6 +139,8 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	);
 	//endregion
 
+	@RegisterContainerSolver
+	@RegisterTooltipAdder
 	public static final BitsHelper INSTANCE = new BitsHelper();
 
 	private final Map<String, ObjectLongImmutablePair<String>> categoryOutput = new HashMap<>();
@@ -384,11 +388,6 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	@Override
 	public boolean isEnabled() {
 		return SkyblockerConfigManager.get().helpers.enableBitsTooltip;
-	}
-
-	@Override
-	public int getPriority() {
-		return 0; // Intended to show first
 	}
 
 	private record BestItemsResult(int bestSlotIndexSelling, int bestSlotIndexAll, long bestCoinsPerBitSelling, long bestCoinsPerBitAll) {}

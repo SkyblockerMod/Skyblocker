@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
+import de.hysky.skyblocker.annotations.RegisterSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import net.minecraft.item.ItemStack;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@RegisterSlotTextAdder
 public class SkyblockGuideAdder extends SimpleSlotTextAdder {
 	private static final Pattern GUIDE_PATTERN = Pattern.compile("^(?<symbol>[✖✔])\\s*(?<text>.+)");
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(

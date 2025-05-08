@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@RegisterContainerSolver
 public class CroesusProfit extends SimpleContainerSolver {
     private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>\\d+)");
     public CroesusProfit() {
