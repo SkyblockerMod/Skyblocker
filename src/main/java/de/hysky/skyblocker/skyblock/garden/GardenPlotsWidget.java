@@ -9,6 +9,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.gui.ItemButtonWidget;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import it.unimi.dsi.fastutil.ints.*;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -16,9 +17,10 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
@@ -45,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class GardenPlotsWidget extends ClickableWidget {
+public class GardenPlotsWidget extends ContainerWidget {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("Garden Plots");
 	private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("garden_plots");
@@ -173,8 +175,10 @@ public class GardenPlotsWidget extends ClickableWidget {
 	private long updateFromTabTime = System.currentTimeMillis();
 	private final IntList infectedPlots = new IntArrayList(8);
 
+	private final ItemButtonWidget[] widgets;
+
 	public GardenPlotsWidget(int x, int y) {
-		super(x, y, 104, 127, Text.translatable("skyblocker.gardenPlots"));
+		super(x, y, 104, 132, Text.translatable("skyblocker.gardenPlots"));
 		items = Arrays.stream(gardenPlots).map(gardenPlot -> {
 			if (gardenPlot == null) return null;
 			ItemStack itemStack = new ItemStack(gardenPlot.item());
@@ -184,6 +188,24 @@ public class GardenPlotsWidget extends ClickableWidget {
 		items[12] = new ItemStack(Items.LODESTONE);
 		items[12].set(DataComponentTypes.ITEM_NAME, Text.literal("The Barn"));
 		updateInfestedFromTab();
+
+		// Inner widgets
+		ItemButtonWidget deskButton = new ItemButtonWidget(
+				getX() + 7, getBottom() - 24,
+				new ItemStack(Items.BOOK), Text.translatable("skyblocker.gardenPlots.openDesk"),
+				button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/desk", true)
+		);
+		ItemButtonWidget spawnButton = new ItemButtonWidget(
+				getRight() - 7 - 40 - 2, getBottom() - 24,
+				new ItemStack(Items.ENDER_EYE), Text.translatable("skyblocker.gardenPlots.spawn"),
+				button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/warp garden", true)
+		);
+		ItemButtonWidget setSpawnButton = new ItemButtonWidget(
+				getRight() - 7 - 20, getBottom() - 24,
+				new ItemStack(Math.random() < 0.001 ? Items.PINK_BED : Items.RED_BED), Text.translatable("skyblocker.gardenPlots.setSpawn"),
+				button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/setspawn", true)
+		);
+		widgets = new ItemButtonWidget[]{deskButton, spawnButton, setSpawnButton};
 	}
 
 	@Override
@@ -253,6 +275,11 @@ public class GardenPlotsWidget extends ClickableWidget {
 
 		matrices.pop();
 
+		for (ItemButtonWidget widget : widgets) {
+			widget.render(context, mouseX, mouseY, delta);
+		}
+
+
 
 		if (timeMillis - updateFromTabTime > 3000) {
 			updateFromTabTime = timeMillis;
@@ -295,6 +322,41 @@ public class GardenPlotsWidget extends ClickableWidget {
 
 	@Override
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+	}
+
+	@Override
+	public List<? extends Element> children() {
+		return List.of(widgets);
+	}
+
+	@Override
+	protected int getContentsHeightWithPadding() {
+		return getHeight();
+	}
+
+	@Override
+	protected double getDeltaYPerScroll() {
+		return 0;
+	}
+
+	@Override
+	public void setX(int x) {
+		int prevX = getX();
+		super.setX(x);
+		int diff = x - prevX;
+		for (ItemButtonWidget widget : widgets) {
+			widget.setX(widget.getX() + diff);
+		}
+	}
+
+	@Override
+	public void setY(int y) {
+		int prevY = getY();
+		super.setY(y);
+		int diff = y - prevY;
+		for (ItemButtonWidget widget : widgets) {
+			widget.setY(widget.getY() + diff);
+		}
 	}
 
 	private record GardenPlot(Item item, String name) {
