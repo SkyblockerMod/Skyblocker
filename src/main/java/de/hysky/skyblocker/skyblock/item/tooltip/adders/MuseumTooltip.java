@@ -17,7 +17,7 @@ import java.util.List;
 @RegisterTooltipAdder
 public class MuseumTooltip extends SimpleTooltipAdder {
 	public MuseumTooltip() {
-		super(0);
+		super();
 	}
 
 	@Override

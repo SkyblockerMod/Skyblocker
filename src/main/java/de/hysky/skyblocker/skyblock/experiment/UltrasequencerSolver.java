@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.experiment;
 
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
@@ -19,6 +20,7 @@ import java.util.stream.IntStream;
 import org.jetbrains.annotations.Nullable;
 
 public final class UltrasequencerSolver extends ExperimentSolver {
+	@RegisterContainerSolver
 	public static final UltrasequencerSolver INSTANCE = new UltrasequencerSolver();
 	/**
 	 * The playable slots of Ultrasequencer in the Metaphysical level.

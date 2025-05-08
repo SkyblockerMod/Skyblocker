@@ -1,32 +1,40 @@
 package de.hysky.skyblocker;
 
-import de.hysky.skyblocker.hud.HudProcessor;
-import de.hysky.skyblocker.init.InitProcessor;
-import de.hysky.skyblocker.register.RegisterAnnotationProcessor;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 
-public class Processor implements Plugin<Project> {
+public class SkyblockerPlugin implements Plugin<Project> {
 
-	public static final Logger LOGGER = Logging.getLogger(Processor.class);
+	public static final Logger LOGGER = Logging.getLogger(SkyblockerPlugin.class);
 	public static File classesDir;
+
+	private final BasicProcessor[] basicProcessors = new BasicProcessor[]{
+			new RegisterAnnotationProcessor(),
+			new InitProcessor(),
+			new HudProcessor()
+	};
+
+	private final Map<String, ClassNode> classes = new HashMap<>();
 
 	@Override
 	public void apply(@NotNull Project project) {
@@ -36,17 +44,62 @@ public class Processor implements Plugin<Project> {
 			JavaCompile javaCompile = (JavaCompile) task;
 			classesDir = javaCompile.getDestinationDirectory().get().getAsFile();
 
-			new InitProcessor().apply(javaCompile);
-			new HudProcessor().apply(javaCompile);
-			new RegisterAnnotationProcessor().apply();
+
+			long millis = System.currentTimeMillis();
+			forEachClass(this::runParseClassOnProcessors);
+			LOGGER.lifecycle("Parsed classes in {} ms", System.currentTimeMillis() - millis);
+
+			millis = System.currentTimeMillis();
+			for (BasicProcessor basicProcessor : basicProcessors) {
+				basicProcessor.writeToClasses(this::getClassNode);
+			}
+			LOGGER.lifecycle("Edited classes in {} ms", System.currentTimeMillis() - millis);
+			millis = System.currentTimeMillis();
+			for (Map.Entry<String, ClassNode> entry : classes.entrySet()) {
+				try (OutputStream outputStream = Files.newOutputStream(getClassPath(entry.getKey()))) {
+					ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+					entry.getValue().accept(writer);
+					outputStream.write(writer.toByteArray());
+				} catch (IOException e) {
+					throw new RuntimeException("Failed to write class file for " + entry.getKey(), e);
+				}
+			}
+			LOGGER.lifecycle("Wrote edited classes in {} ms", System.currentTimeMillis() - millis);
 		});
+	}
+
+	private void runParseClassOnProcessors(InputStream stream) {
+		try {
+			ClassReader reader = new ClassReader(stream);
+			ClassNode classNode = new ClassNode(Opcodes.ASM9);
+			reader.accept(classNode, 0);
+			for (BasicProcessor basicProcessor : basicProcessors) {
+				basicProcessor.parseClass(classNode);
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private ClassNode getClassNode(String className) {
+		ClassNode node = classes.get(className);
+		if (node != null) return node;
+		try (InputStream stream = Files.newInputStream(getClassPath(className))) {
+			ClassReader reader = new ClassReader(stream);
+			ClassNode classNode = new ClassNode(Opcodes.ASM9);
+			reader.accept(classNode, 0);
+			classes.put(className, classNode);
+			return classNode;
+		} catch (IOException e) {
+			throw new RuntimeException("Couldn't find class: " + className, e);
+		}
 	}
 
 	public static void forEachClass(@NotNull File directory, final Consumer<InputStream> consumer) {
 		try {
 			Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<>() {
 				@Override
-				public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
+				public @NotNull FileVisitResult visitFile(@NotNull Path path, @NotNull BasicFileAttributes attrs) {
 					if (!path.toString().endsWith(".class")) return FileVisitResult.CONTINUE;
 					try (InputStream inputStream = Files.newInputStream(path)) {
 						consumer.accept(inputStream);
@@ -67,23 +120,6 @@ public class Processor implements Plugin<Project> {
 		forEachClass(classesDir, consumer);
 	}
 
-	public static @Nullable File findClass(File directory, String className) {
-		if (!className.endsWith(".class")) className += ".class";
-
-		if (!directory.isDirectory()) throw new IllegalArgumentException("Not a directory");
-
-		for (File file : Objects.requireNonNull(directory.listFiles())) {
-			if (file.isDirectory()) {
-				File foundFile = findClass(file, className);
-
-				if (foundFile != null) return foundFile;
-			} else if (file.getName().equals(className)) {
-				return file;
-			}
-		}
-		return null;
-	}
-
 	/**
 	 * Returns a path to the class so you can open it
 	 * @param fullClassName the full class name and path, with / instead of .
@@ -93,10 +129,6 @@ public class Processor implements Plugin<Project> {
 	public static Path getClassPath(String fullClassName) {
 		if (!fullClassName.endsWith(".class")) fullClassName += ".class";
 		return classesDir.toPath().resolve(fullClassName);
-	}
-
-	public static @Nullable File findClass(String className) {
-		return findClass(classesDir, className);
 	}
 
 	/**

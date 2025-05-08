@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@RegisterTooltipAdder(priority = Integer.MIN_VALUE)
 public class LineSmoothener extends SimpleTooltipAdder {
 	//This is static to not create a new text object for each line in every item
 	private static final Text BUMPY_LINE = Text.literal("-----------------").formatted(Formatting.DARK_GRAY, Formatting.STRIKETHROUGH);
@@ -23,7 +25,7 @@ public class LineSmoothener extends SimpleTooltipAdder {
 	}
 
 	public LineSmoothener() {
-		super(Integer.MIN_VALUE);
+		super();
 	}
 
 	@Override

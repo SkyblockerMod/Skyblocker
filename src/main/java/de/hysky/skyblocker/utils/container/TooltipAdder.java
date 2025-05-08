@@ -7,6 +7,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * Register a tooltip adder using {@link de.hysky.skyblocker.annotations.RegisterTooltipAdder}
+ */
 public interface TooltipAdder extends ContainerMatcher {
 	/**
 	 * @implNote The first element of the lines list holds the item's display name,
@@ -14,5 +17,4 @@ public interface TooltipAdder extends ContainerMatcher {
 	 */
 	void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines);
 
-	int getPriority();
 }

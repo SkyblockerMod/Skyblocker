@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import java.util.List;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import org.jetbrains.annotations.Nullable;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
@@ -14,10 +15,11 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+@RegisterTooltipAdder(priority = -5)
 public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 
-	public EstimatedItemValueTooltip(int priority) {
-		super(priority);
+	public EstimatedItemValueTooltip() {
+		super();
 	}
 
 	@Override

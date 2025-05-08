@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -13,9 +14,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Locale;
 
+@RegisterTooltipAdder(priority = -4)
 public class MotesTooltip extends SimpleTooltipAdder {
-	public MotesTooltip(int priority) {
-		super(priority);
+	public MotesTooltip() {
+		super();
 	}
 
 	@Override

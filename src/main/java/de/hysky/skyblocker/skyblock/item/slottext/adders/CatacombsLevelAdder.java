@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 
 // This class is split into 3 inner classes as there are multiple screens for showing catacombs levels, each with different slot ids or different style of showing the level.
 // It's still kept in 1 main class for the shared config information.
-@RegisterSlotTextAdder
 public class CatacombsLevelAdder {
 
 	private static final SlotTextAdder.ConfigInformation CONFIG_INFORMATION = new SlotTextAdder.ConfigInformation(
@@ -28,6 +27,7 @@ public class CatacombsLevelAdder {
 	private CatacombsLevelAdder() {
 	}
 
+	@RegisterSlotTextAdder
 	public static class Dungeoneering extends SimpleSlotTextAdder {
 		private static final Pattern LEVEL_PATTERN = Pattern.compile(".*?(?:(?: (?<arabic>\\d+)| (?<roman>[IVXLC]+))(?: ✯)?)?");
 		public Dungeoneering() {
@@ -61,6 +61,7 @@ public class CatacombsLevelAdder {
 		}
 	}
 
+	@RegisterSlotTextAdder
 	public static class DungeonClasses extends SimpleSlotTextAdder {
 
 		public DungeonClasses() {
@@ -82,6 +83,7 @@ public class CatacombsLevelAdder {
 		}
 	}
 
+	@RegisterSlotTextAdder
 	public static class ReadyUp extends SimpleSlotTextAdder {
 
 		public ReadyUp() {

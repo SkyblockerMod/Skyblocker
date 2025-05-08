@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.Constants;
@@ -15,11 +16,12 @@ import net.minecraft.util.StringIdentifiable;
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
+@RegisterTooltipAdder
 public class ColorTooltip extends SimpleTooltipAdder {
 	private static final long WITHER_GLITCHED_AFTER_DATE = 1605830400000L;
 
-	public ColorTooltip(int priority) {
-		super(priority);
+	public ColorTooltip() {
+		super();
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.utils.BazaarProduct;
@@ -21,13 +22,14 @@ import java.util.OptionalLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@RegisterTooltipAdder(priority = -4)
 public class EssenceShopPrice extends SimpleTooltipAdder {
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("Cost (?<amount>[\\d,]+) (?<type>[A-Za-z]+) Essence");
 	private static final String[] ESSENCE_TYPES = {"WITHER", "SPIDER", "UNDEAD", "DRAGON", "GOLD", "DIAMOND", "ICE", "CRIMSON"};
 	private static final Object2LongArrayMap<String> ESSENCE_PRICES = new Object2LongArrayMap<>(ESSENCE_TYPES, new long[8]);
 
-	public EssenceShopPrice(int priority) {
-		super("\\S+ Essence Shop", priority);
+	public EssenceShopPrice() {
+		super("\\S+ Essence Shop");
 	}
 
 	public static void refreshEssencePrices(Object2ObjectMap<String, BazaarProduct> data) {

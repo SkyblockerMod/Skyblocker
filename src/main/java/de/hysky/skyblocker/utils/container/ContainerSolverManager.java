@@ -2,24 +2,6 @@ package de.hysky.skyblocker.utils.container;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
-import de.hysky.skyblocker.skyblock.RaffleTaskHighlight;
-import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
-import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
-import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
-import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
-import de.hysky.skyblocker.skyblock.dungeon.CroesusHelper;
-import de.hysky.skyblocker.skyblock.dungeon.CroesusProfit;
-import de.hysky.skyblocker.skyblock.dungeon.SalvageHelper;
-import de.hysky.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
-import de.hysky.skyblocker.skyblock.dungeon.terminal.LightsOnTerminal;
-import de.hysky.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
-import de.hysky.skyblocker.skyblock.dungeon.terminal.StartsWithTerminal;
-import de.hysky.skyblocker.skyblock.dwarven.CommissionHighlight;
-import de.hysky.skyblocker.skyblock.dwarven.fossil.FossilSolver;
-import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
-import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
-import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.BitsHelper;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -35,29 +17,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * Manager class for {@link SimpleContainerSolver}s like terminal solvers and experiment solvers. To add a new gui solver, extend {@link SimpleContainerSolver} and register it in {@link #ContainerSolverManager()}.
+ * Manager class for {@link SimpleContainerSolver}s like terminal solvers and experiment solvers. To add a new gui solver, extend {@link SimpleContainerSolver} and register it with {@link de.hysky.skyblocker.annotations.RegisterContainerSolver}.
  */
 public class ContainerSolverManager {
-	private static final ContainerSolver[] SOLVERS = new ContainerSolver[]{
-			/*new ColorTerminal(),
-			new OrderTerminal(),
-			new StartsWithTerminal(),
-			new LightsOnTerminal(),
-			new CroesusHelper(),
-			new CroesusProfit(),
-			new SalvageHelper(),
-			new ChronomatronSolver(),
-			new CommissionHighlight(),
-			new SuperpairsSolver(),
-			UltrasequencerSolver.INSTANCE,
-			new NewYearCakeBagHelper(),
-			NewYearCakesHelper.INSTANCE,
-			ChocolateFactorySolver.INSTANCE,
-			new ReorderHelper(),
-			BitsHelper.INSTANCE,
-			new RaffleTaskHighlight(),
-			new FossilSolver()*/
-	};
+	// This method is populated at compile time in buildSrc with classes annotated with RegisterContainerSolver
+	private static native ContainerSolver[] getSolvers();
+	private static final ContainerSolver[] SOLVERS = getSolvers();
+
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;
 	/**

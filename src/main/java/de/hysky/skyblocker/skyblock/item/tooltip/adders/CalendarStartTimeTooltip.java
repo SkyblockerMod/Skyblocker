@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.utils.Formatters;
@@ -16,11 +17,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@RegisterTooltipAdder
 public class CalendarStartTimeTooltip extends SimpleTooltipAdder {
 	private static final Pattern TIMER_PATTERN = Pattern.compile(".*(Starts in: |\\()((?<days>\\d+)d)? ?((?<hours>\\d+)h)? ?((?<minutes>\\d+)m)? ?((?<seconds>\\d+)s)?\\)?");
 
-	public CalendarStartTimeTooltip(int priority) {
-		super("(Calendar and Events|.*?, Year \\d+.*)", priority);
+	public CalendarStartTimeTooltip() {
+		super("(Calendar and Events|.*?, Year \\d+.*)");
 	}
 
 	@Override

@@ -15,36 +15,13 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class TooltipManager {
-	@SuppressWarnings("MismatchedReadAndWriteOfArray")
-	private static final TooltipAdder[] ADDERS = new TooltipAdder[]{
-			/*new LineSmoothener(), // Applies before anything else
-			new TrueHexDisplay(),
-			new TrueHexDyeScreenDisplay(),
-			new SupercraftReminder(),
-			ChocolateFactorySolver.INSTANCE,
-			BitsHelper.INSTANCE,
-			new FossilSolver(),
-			new ReorderHelper(),
-			new StackingEnchantProgressTooltip(0), //Would be best to have after the lore but the tech doesn't exist for that
-			new NpcPriceTooltip(1),
-			new BazaarPriceTooltip(2),
-			new LBinTooltip(3),
-			new AvgBinTooltip(4),
-			new EssenceShopPrice(5),
-			new CraftPriceTooltip(6),
-			new EstimatedItemValueTooltip(7),
-			new DungeonQualityTooltip(8),
-			new MotesTooltip(9),
-			new ObtainedDateTooltip(10),
-			new MuseumTooltip(11),
-			new ColorTooltip(12),
-			new AccessoryTooltip(13),
-			new CalendarStartTimeTooltip(14)*/
-	};
+	// This method is populated at compile time in buildSrc with classes annotated with RegisterTooltipAdder
+	private static native TooltipAdder[] getAdders();
+	private static final TooltipAdder[] ADDERS = getAdders();
+
 	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
 	private TooltipManager() {

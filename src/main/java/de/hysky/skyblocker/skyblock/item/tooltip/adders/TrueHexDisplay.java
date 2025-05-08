@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import org.jetbrains.annotations.Nullable;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
@@ -14,11 +15,12 @@ import net.minecraft.text.Text;
 /**
  * Changes the color of HEX colors codes on dye items to reflect their actual color
  */
+@RegisterTooltipAdder(priority = -1000)
 public class TrueHexDisplay extends SimpleTooltipAdder {
 	private static final Pattern HEX_PATTERN = Pattern.compile("#[A-Fa-f0-9]{6}");
 
 	public TrueHexDisplay() {
-		super(Integer.MIN_VALUE);
+		super();
 	}
 
 	@Override

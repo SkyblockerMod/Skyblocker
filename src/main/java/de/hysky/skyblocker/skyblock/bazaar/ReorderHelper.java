@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.bazaar;
 
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@RegisterContainerSolver
 public class ReorderHelper extends SimpleContainerSolver implements TooltipAdder {
 	private static final Pattern BUY_PATTERN = Pattern.compile("([\\d,]+)x missing items\\.");
 	private static final Pattern SELL_PATTERN = Pattern.compile("([\\d,]+)x items\\.");
@@ -64,8 +66,4 @@ public class ReorderHelper extends SimpleContainerSolver implements TooltipAdder
 		}
 	}
 
-	@Override
-	public int getPriority() {
-		return Integer.MIN_VALUE;
-	}
 }

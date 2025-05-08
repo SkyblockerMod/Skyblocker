@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
@@ -20,14 +21,15 @@ import java.util.OptionalInt;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@RegisterTooltipAdder(priority = -10)
 public class NpcPriceTooltip extends SimpleTooltipAdder {
 	private static final Pattern STORED_PATTERN = Pattern.compile("Stored: ([\\d,]+)/\\S+");
 	private static final Logger LOGGER = LoggerFactory.getLogger(NpcPriceTooltip.class);
 	private static final short LOG_INTERVAL = 1000;
 	private static long lastLog = Util.getMeasuringTimeMs();
 
-	public NpcPriceTooltip(int priority) {
-		super(priority);
+	public NpcPriceTooltip() {
+		super();
 	}
 
 	@Override

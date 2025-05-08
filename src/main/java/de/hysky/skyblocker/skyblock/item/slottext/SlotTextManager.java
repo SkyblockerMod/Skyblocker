@@ -2,10 +2,6 @@ package de.hysky.skyblocker.skyblock.item.slottext;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.WardrobeKeybinds;
-import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
-import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
-import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
@@ -31,32 +27,10 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class SlotTextManager {
-	private static final SlotTextAdder[] ADDERS = new SlotTextAdder[]{
-			/*new EssenceShopAdder(),
-			new EnchantmentLevelAdder(),
-			new MinionLevelAdder(),
-			new PetLevelAdder(),
-			new SkyblockLevelAdder(),
-			new HotmPerkLevelAdder(),
-			new SkillLevelAdder(),
-			new CatacombsLevelAdder.Dungeoneering(),
-			new CatacombsLevelAdder.DungeonClasses(),
-			new CatacombsLevelAdder.ReadyUp(),
-			new RancherBootsSpeedAdder(),
-			new AttributeShardAdder(),
-			new PrehistoricEggAdder(),
-			new PotionLevelAdder(),
-			new CollectionAdder(),
-			new CommunityShopAdder(),
-			new YourEssenceAdder(),
-			new PowerStonesGuideAdder(),
-			new BazaarHelper(),
-			new StatsTuningAdder(),
-			ChocolateFactorySolver.INSTANCE,
-			new EvolvingItemAdder(),
-			new NewYearCakeAdder(),
-			WardrobeKeybinds.INSTANCE*/
-	};
+	// This method is populated at compile time in buildSrc with classes annotated with RegisterSlotTextAdder
+	private static native SlotTextAdder[] getAdders();
+	private static final SlotTextAdder[] ADDERS = getAdders();
+
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 	private static final KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, "key.categories.skyblocker"));
 	private static boolean keyHeld = false;

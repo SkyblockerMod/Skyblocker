@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
+import de.hysky.skyblocker.annotations.RegisterSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.Formatters;
@@ -17,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 // Evolving items are those that get upgraded after holding them in your inventory for a certain amount of time.
+@RegisterSlotTextAdder
 public class EvolvingItemAdder extends SimpleSlotTextAdder {
 	private static final Pattern BONUS_PATTERN = Pattern.compile("\\+?([\\d.]+)");
 

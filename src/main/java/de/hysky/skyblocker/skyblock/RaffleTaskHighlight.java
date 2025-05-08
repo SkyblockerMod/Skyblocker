@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
@@ -13,6 +14,7 @@ import net.minecraft.text.Text;
 
 import java.util.List;
 
+@RegisterContainerSolver
 public class RaffleTaskHighlight extends SimpleContainerSolver {
 	public RaffleTaskHighlight() {
 		super("Daily Tasks");

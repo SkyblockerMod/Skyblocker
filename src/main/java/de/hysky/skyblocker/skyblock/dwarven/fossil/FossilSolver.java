@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileGrid;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
@@ -35,6 +37,10 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 	private static String percentage;
 	private static double[] probability;
 	private static int chiselLeft = -1;
+
+	@RegisterContainerSolver
+	@RegisterTooltipAdder
+	public static final FossilSolver INSTANCE = new FossilSolver();
 
 	public FossilSolver() {
 		super("Fossil Excavator");
@@ -157,11 +163,6 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 		if (fossilName != null && percentage != null) {
 			lines.add(Text.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.foundFossil").append(Text.literal(fossilName).formatted(Formatting.YELLOW)));
 		}
-	}
-
-	@Override
-	public int getPriority() {
-		return 0;
 	}
 
 	@Override

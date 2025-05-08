@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 /**
  * Simple implementation of a container solver. Extend this class to add a new gui solver,
- * like terminal solvers or experiment solvers and add it to {@link ContainerSolverManager#solvers}.
+ * like terminal solvers or experiment solvers and annotate it with {@link de.hysky.skyblocker.annotations.RegisterContainerSolver}.
  */
 public abstract class SimpleContainerSolver extends RegexContainerMatcher implements ContainerSolver {
     /**

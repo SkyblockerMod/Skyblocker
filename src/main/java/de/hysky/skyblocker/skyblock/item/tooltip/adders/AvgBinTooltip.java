@@ -13,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-@RegisterTooltipAdder(priority = 1)
+@RegisterTooltipAdder(priority = -7)
 public class AvgBinTooltip extends SimpleTooltipAdder {
 	public AvgBinTooltip() {
-		super(0);
+		super();
 	}
 
 	@Override
