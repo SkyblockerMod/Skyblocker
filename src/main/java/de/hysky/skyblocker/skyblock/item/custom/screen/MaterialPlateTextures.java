@@ -54,7 +54,7 @@ public class MaterialPlateTextures {
 		// Reset the generated textures when the resource pack is reloaded
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new Listener());
 
-		SkyblockEvents.LEAVE.register(MaterialPlateTextures::closeTextures);
+		SkyblockEvents.LEAVE.register(() -> MinecraftClient.getInstance().executeSync(MaterialPlateTextures::closeTextures)); // Needs to be run on render thread but LEAVE is on network thread
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> closeTextures()); // close textures on client stop in case the previous event doesn't get ran for some reason
 
 	}

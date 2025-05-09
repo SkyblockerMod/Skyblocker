@@ -39,8 +39,8 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	private String uuid = "";
 
-	private final ArrayList<FrameThing> frames = new ArrayList<>();
-	private @Nullable FrameThing focusedFrame = null;
+	private final ArrayList<FrameThumb> frames = new ArrayList<>();
+	private @Nullable AnimatedDyeTimelineWidget.FrameThumb focusedFrame = null;
 
 	public AnimatedDyeTimelineWidget(int x, int y, int width, int height, FrameCallback frameCallback) {
 		super(x, y, width, height, Text.literal("Animated Dye Timeline"));
@@ -69,7 +69,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 				textureWidth, textureHeight,
 				textureWidth, textureHeight
 		);
-		for (FrameThing frame : frames) {
+		for (FrameThumb frame : frames) {
 			frame.render(context, mouseX, mouseY, delta);
 		}
 	}
@@ -77,9 +77,9 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 	@Override
 	public void setFocused(@Nullable Element focused) {
 		super.setFocused(focused);
-		if (focused instanceof FrameThing frameThing) {
-			frameCallback.onFrameSelected(frameThing.color, frameThing.time);
-			focusedFrame = frameThing;
+		if (focused instanceof FrameThumb frameThumb) {
+			frameCallback.onFrameSelected(frameThumb.color, frameThumb.time);
+			focusedFrame = frameThumb;
 		}
 	}
 
@@ -90,7 +90,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		frames.ensureCapacity(dye.frames().size());
 		for (int i = 0; i < dye.frames().size(); i++) {
 			CustomArmorAnimatedDyes.DyeFrame dyeFrame = dye.frames().get(i);
-			frames.add(new FrameThing(dyeFrame.color(), dyeFrame.time(), i != 0 && i != dye.frames().size() - 1));
+			frames.add(new FrameThumb(dyeFrame.color(), dyeFrame.time(), i != 0 && i != dye.frames().size() - 1));
 		}
 		setFocused(frames.getFirst());
 		createGradientTexture();
@@ -101,8 +101,8 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		assert image != null;
 		long l = System.currentTimeMillis();
 		for (int i = 0; i < frames.size() - 1; i++) {
-			FrameThing frame = frames.get(i);
-			FrameThing nextFrame = frames.get(i + 1);
+			FrameThumb frame = frames.get(i);
+			FrameThumb nextFrame = frames.get(i + 1);
 			int startX = (int) ((image.getWidth() - 1) * frame.time);
 			int endX = (int) ((image.getWidth() - 1) * nextFrame.time);
 			int size = endX - startX;
@@ -131,7 +131,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		}
 		if (isMouseOver(mouseX, mouseY)) {
 			mouseX -= getX() + HORIZONTAL_MARGIN;
-			FrameThing e = new FrameThing(0xFFFF0000, (float) (mouseX / (getWidth() - HORIZONTAL_MARGIN * 2 - 1)), true);
+			FrameThumb e = new FrameThumb(0xFFFF0000, (float) (mouseX / (getWidth() - HORIZONTAL_MARGIN * 2 - 1)), true);
 			frames.add(e);
 			setFocused(e);
 			dataChanged();
@@ -142,7 +142,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	public void setColor(int argb) {
 		if (focusedFrame == null) {
-			CustomizeArmorScreen.LOGGER.warn("tried to set color when no frame was focused");
+			CustomizeArmorScreen.LOGGER.warn("Tried to set color when no frame was focused");
 			return;
 		}
 		focusedFrame.color = argb;
@@ -152,7 +152,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 	private void dataChanged() {
 		frames.sort(Comparator.comparingDouble(f -> f.time));
 		createGradientTexture();
-		List<CustomArmorAnimatedDyes.DyeFrame> configFrames = ImmutableList.copyOf(frames.stream().map(frameThing -> new CustomArmorAnimatedDyes.DyeFrame(frameThing.color, frameThing.time)).toList());
+		List<CustomArmorAnimatedDyes.DyeFrame> configFrames = ImmutableList.copyOf(frames.stream().map(frameThumb -> new CustomArmorAnimatedDyes.DyeFrame(frameThumb.color, frameThumb.time)).toList());
 		CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(uuid);
 		CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
 				configFrames,
@@ -163,14 +163,14 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		SkyblockerConfigManager.get().general.customAnimatedDyes.put(uuid, newDye);
 	}
 
-	private class FrameThing extends ClickableWidget {
+	private class FrameThumb extends ClickableWidget {
 
 		int color;
 		float time;
 
 		private final boolean draggable;
 
-		public FrameThing(int color, float time, boolean draggable) {
+		public FrameThumb(int color, float time, boolean draggable) {
 			super(0, AnimatedDyeTimelineWidget.this.getY(), 7, AnimatedDyeTimelineWidget.this.getHeight(), Text.literal("Keyframe"));
 			this.draggable = draggable;
 			this.color = color;

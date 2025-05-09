@@ -11,6 +11,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -145,9 +146,9 @@ public class ColorPickerWidget extends ClickableWidget {
 		return rgbColor;
 	}
 
-	public void setRGBColor(int argb) {
-		this.rgbColor = argb;
-		float[] floats = Color.RGBtoHSB((argb >> 16) & 0xFF, (argb >> 8) & 0xFF, argb & 0xFF, null);
+	public void setRGBColor(int rgb) {
+		this.rgbColor = ColorHelper.fullAlpha(rgb);
+		float[] floats = Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, null);
 		setHSV(floats[0], floats[1], floats[2]);
 	}
 

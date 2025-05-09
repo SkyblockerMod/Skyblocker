@@ -1381,16 +1381,16 @@
   "skyblocker.profileviewer.inventory.inactive.description.backpack": "The selected backpack",
   "skyblocker.profileviewer.inventory.inactive.description.general": "does not contain this slot",
 
-  "skyblocker.armorCustomization.addCustomColor": "Add custom color",
   "skyblocker.armorCustomization.animated": "Animated",
   "skyblocker.armorCustomization.cannotCustomizeColor": "Cannot customize this piece's color :(",
   "skyblocker.armorCustomization.cycleBack": "Cycle Back",
-  "skyblocker.armorCustomization.removeCustomColor": "Remove custom color",
+  "skyblocker.armorCustomization.resetColor": "Reset color",
   "skyblocker.armorCustomization.delay": "Delay: %s",
   "skyblocker.armorCustomization.delayTooltip": "The animation will be delayed by this amount in seconds.",
   "skyblocker.armorCustomization.duration": "Duration: %s",
   "skyblocker.armorCustomization.durationTooltip": "The duration of the animation in seconds.",
-  "skyblocker.armorCustomization.title": "Pimp Your Armor",
+  "skyblocker.armorCustomization.title": "Customize Your Armor",
+  "skyblocker.armorCustomization.titleSecret": "Pimp Your Armor",
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 

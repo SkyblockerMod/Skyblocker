@@ -25,8 +25,8 @@ import java.util.Map;
 public class TrimSelectionWidget extends ContainerWidget {
 
 	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
-	private static final int BUTTONS_PER_ROW_PATTERN = 7;
-	private static final int BUTTONS_PER_ROW_MATERIAL = 5;
+	private static final int MAX_BUTTONS_PER_ROW_PATTERN = 7;
+	private static final int MAX_BUTTONS_PER_ROW_MATERIAL = 5;
 
 	private final List<TrimElementButton.Pattern> patternButtons = new ArrayList<>();
 	private final List<TrimElementButton> materialButtons = new ArrayList<>();
@@ -35,6 +35,8 @@ public class TrimSelectionWidget extends ContainerWidget {
 	private ItemStack currentItem = null;
 	private Identifier selectedPattern = null;
 	private Identifier selectedMaterial = null;
+	private final int patternButtonsPerRow;
+	private final int materialButtonsPerRow;
 
 	public TrimSelectionWidget(int x, int y, int width, int height) {
 		super(x, y, width, height, Text.of("Trim Selection"));
@@ -52,9 +54,12 @@ public class TrimSelectionWidget extends ContainerWidget {
 						this::onClickPattern
 				)).forEachOrdered(patternButtons::add);
 		children.addAll(patternButtons);
+		int buttonsPerHalf = (width / 2 - 8) / 20;
+		patternButtonsPerRow = Math.min(buttonsPerHalf, MAX_BUTTONS_PER_ROW_PATTERN);
+		materialButtonsPerRow = Math.min(buttonsPerHalf, MAX_BUTTONS_PER_ROW_MATERIAL);
 		for (int i = 0; i < patternButtons.size(); i++) {
 			TrimElementButton button = patternButtons.get(i);
-			button.setPosition(x + 5 + (i % BUTTONS_PER_ROW_PATTERN) * 20, y + 5 + (i / BUTTONS_PER_ROW_PATTERN) * 20);
+			button.setPosition(x + 3 + (i % patternButtonsPerRow) * 20, y + 3 + (i / patternButtonsPerRow) * 20);
 		}
 
 		// Materials
@@ -69,7 +74,8 @@ public class TrimSelectionWidget extends ContainerWidget {
 		children.addAll(materialButtons);
 		for (int i = 0; i < materialButtons.size(); i++) {
 			TrimElementButton button = materialButtons.get(i);
-			button.setPosition(x + getWidth() - 11 - BUTTONS_PER_ROW_MATERIAL * 20 + (i % BUTTONS_PER_ROW_MATERIAL) * 20, y + 5 + (i / BUTTONS_PER_ROW_MATERIAL) * 20);
+			int margin = overflows() ? 9 : 3;
+			button.setPosition(x + getWidth() - margin - materialButtonsPerRow * 20 + (i % materialButtonsPerRow) * 20, y + 3 + (i / materialButtonsPerRow) * 20);
 		}
 	}
 
@@ -109,7 +115,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 
 	@Override
 	protected int getContentsHeightWithPadding() {
-		return (Math.max(patternButtons.size(), materialButtons.size()) / BUTTONS_PER_ROW_PATTERN + 1) * 20 + 10;
+		return (Math.max(patternButtons.size() / patternButtonsPerRow, materialButtons.size() / materialButtonsPerRow) + 1) * 20 + 10;
 	}
 
 	@Override

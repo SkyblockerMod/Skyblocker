@@ -88,7 +88,7 @@ public class CustomizeArmorScreen extends Screen {
 
 	private final boolean nothingCustomizable;
 	protected CustomizeArmorScreen(Screen previousScreen) {
-		super(Text.translatable("skyblocker.armorCustomization.title"));
+		super(Math.random() < 0.01 ? Text.translatable("skyblocker.armorCustomization.titleSecret") : Text.translatable("skyblocker.armorCustomization.title"));
 		List<ItemStack> list = ItemUtils.getArmor(MinecraftClient.getInstance().player);
 		for (int i = 0; i < list.size(); i++) {
 			ItemStack copy = list.get(i).copy();
@@ -121,13 +121,13 @@ public class CustomizeArmorScreen extends Screen {
 	@Override
 	protected void init() {
 		super.init();
-		int w = Math.min(500, width);
+		int w = Math.min(460, width);
 		int x = (width - w) / 2;
 
 		int y = (height - 190) / 2;
-		PlayerWidget playerWidget = new PlayerWidget(x + 5, y, 90, 165, player);
+		PlayerWidget playerWidget = new PlayerWidget(x + 8, y, 84, 165, player);
 		addDrawableChild(playerWidget);
-		PieceSelectionWidget pieceSelectionWidget = new PieceSelectionWidget(playerWidget.getX() + 3, playerWidget.getBottom() + 1);
+		PieceSelectionWidget pieceSelectionWidget = new PieceSelectionWidget(playerWidget.getX(), playerWidget.getBottom() + 1);
 		addDrawableChild(pieceSelectionWidget);
 
 
