@@ -13,6 +13,9 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class FishingHookDisplayHelper {
 	private static ArmorStandEntity fishingHookArmorStand;
 
@@ -63,11 +66,14 @@ public class FishingHookDisplayHelper {
 
 	public static void onArmorStandSpawn(ArmorStandEntity armorStand) {
 		if (!SkyblockerConfigManager.get().helpers.fishing.enableFishingHookDisplay) return;
+		if (fishingHookArmorStand != null) return;
 
-		if (armorStand.hasCustomName() && armorStand.getName().getString().matches("\\d+(\\.\\d+)?")) {
+		Pattern pattern = Pattern.compile("\\b\\d\\.\\d\\b");
+		Matcher matcher = pattern.matcher(armorStand.getName().getString());
+		if (armorStand.hasCustomName() && matcher.find()) {
 			fishingHookArmorStand = armorStand;
 			var message = "ArmorStand spawned: " + fishingHookArmorStand.getName().getString();
-			MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("[DEBUG] " + message));
+//			MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("[DEBUG] " + message));
 		} else {
 			fishingHookArmorStand = null;
 		}
