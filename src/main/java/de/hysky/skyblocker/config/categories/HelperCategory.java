@@ -209,6 +209,14 @@ public class HelperCategory {
 										rarity -> config.helpers.fishing.minimumNotificationRarity = rarity == SkyblockItemRarity.DIVINE ? SkyblockItemRarity.UNKNOWN : rarity)
 								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("Enable Fishing Hook Display"))
+								.description(OptionDescription.of(Text.translatable("Display the skyblock fishing hook timer on the screen instead of above the rod.")))
+								.binding(defaults.helpers.fishing.enableFishingHookDisplay,
+										() -> config.helpers.fishing.enableFishingHookDisplay,
+										newValue -> config.helpers.fishing.enableFishingHookDisplay = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.build())
 
 				//Fairy Souls Helper
