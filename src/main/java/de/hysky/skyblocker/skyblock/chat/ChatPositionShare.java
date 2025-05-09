@@ -27,11 +27,12 @@ import java.util.regex.Pattern;
 
 public class ChatPositionShare {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatPositionShare.class);
-
-    private static final Pattern GENERIC_COORDS_PATTERN = Pattern.compile("x: (?<x>-?[0-9]+), y: (?<y>[0-9]+), z: (?<z>-?[0-9]+)");
+	private static final Pattern SIMPLE_COORDS_PATTERN = Pattern.compile("(?<x>-?[0-9]+) (?<y>[0-9]+) (?<z>-?[0-9]+)");
+	private static final Pattern SIMPLE_COMMA_COORDS_PATTERN = Pattern.compile("(?<x>-?[0-9]+), (?<y>[0-9]+), (?<z>-?[0-9]+)");
+	private static final Pattern GENERIC_COORDS_PATTERN = Pattern.compile("x: (?<x>-?[0-9]+), y: (?<y>[0-9]+), z: (?<z>-?[0-9]+)");
     private static final Pattern SKYBLOCKER_COORDS_PATTERN = Pattern.compile("x: (?<x>-?[0-9]+), y: (?<y>[0-9]+), z: (?<z>-?[0-9]+)(?: \\| (?<area>[^|]+))");
     private static final Pattern SKYHANNI_DIANA_PATTERN = Pattern.compile("A MINOS INQUISITOR has spawned near \\[(?<area>[^]]*)] at Coords (?<x>-?[0-9]+) (?<y>[0-9]+) (?<z>-?[0-9]+)");
-    private static final List<Pattern> PATTERNS = List.of(SKYBLOCKER_COORDS_PATTERN, SKYHANNI_DIANA_PATTERN, GENERIC_COORDS_PATTERN);
+    private static final List<Pattern> PATTERNS = List.of(SKYBLOCKER_COORDS_PATTERN, SKYHANNI_DIANA_PATTERN, GENERIC_COORDS_PATTERN, SIMPLE_COMMA_COORDS_PATTERN, SIMPLE_COORDS_PATTERN);
 
     @Init
     public static void init() {
@@ -71,7 +72,7 @@ public class ChatPositionShare {
 
     private static void requestWaypoint(String x, String y, String z, @NotNull String area) {
         String command = "/skyblocker waypoints individual " + x + " " + y + " " + z + " " + area;
-        MutableText requestMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.display").formatted(Formatting.AQUA)
+        MutableText requestMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.display", x, y, z).formatted(Formatting.AQUA)
                 .styled(style -> style
 						.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.config.chat.waypoints.display")))
 						.withClickEvent(new ClickEvent.RunCommand(command.trim()))
