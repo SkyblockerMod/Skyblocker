@@ -219,8 +219,7 @@ public class VisitorHelper {
 
 				int iconX = X_OFFSET + 12;
 				int textX = iconX + (int) (ICON_SIZE * 0.95f) + 4;
-				int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight) -
-						(int) ((float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2) + yOffsetAdjustment;
+				int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
 				Text itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
 						? itemName.copy()
