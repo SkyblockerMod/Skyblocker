@@ -1144,6 +1144,7 @@
   "skyblocker.relics.markAllMissing": "§rMarked all relics as missing",
   "skyblocker.shortcuts.config": "Shortcuts Config",
   "skyblocker.shortcuts.notLoaded": "§c§lShortcuts not loaded yet",
+  "skyblocker.shortcuts.bind": "Bind",
   "skyblocker.shortcuts.command.target": "Target Command",
   "skyblocker.shortcuts.command.replacement": "Replacement Command",
   "skyblocker.shortcuts.commandArg.target": "Target Command Argument",
