@@ -10,6 +10,7 @@ import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.HealthBars;
+import de.hysky.skyblocker.skyblock.barn.GlowingMushrooms;
 import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
 import de.hysky.skyblocker.skyblock.SmoothAOTE;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
@@ -183,6 +184,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		CrystalsChestHighlighter.onParticle(packet);
 		EnderNodes.onParticle(packet);
 		WishingCompassSolver.onParticle(packet);
+		GlowingMushrooms.onParticle(packet);
 	}
 
 	@ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;shouldShowPacketSizeAndPingCharts()Z"))
