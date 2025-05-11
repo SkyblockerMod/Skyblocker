@@ -1380,6 +1380,7 @@
   "skyblocker.profileviewer.inventory.inactive": "Locked Slot",
   "skyblocker.profileviewer.inventory.inactive.description.backpack": "The selected backpack",
   "skyblocker.profileviewer.inventory.inactive.description.general": "does not contain this slot",
+  "skyblocker.profileviewer.title": "View Profile of: %s",
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
