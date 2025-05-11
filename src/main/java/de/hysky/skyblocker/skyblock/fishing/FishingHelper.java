@@ -5,97 +5,86 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class FishingHelper {
-    private static final Title title = new Title("skyblocker.fishing.reelNow", Formatting.GREEN);
-    private static long startTime;
-    private static long startTimeFish;
-    private static Vec3d normalYawVector;
+	private static final Title title = new Title("skyblocker.fishing.reelNow", Formatting.GREEN);
+	protected static long startTime;
+	protected static String rodReelTimer;
 
-    @Init
-    public static void init() {
-        UseItemCallback.EVENT.register((player, world, hand) -> {
-            ItemStack stack = player.getStackInHand(hand);
-            if (!Utils.isOnSkyblock()) {
-                return ActionResult.PASS;
-            }
-            if (stack.getItem() instanceof FishingRodItem) {
-                if (player.fishHook == null) {
-                    start(player);
-                } else {
-                    reset();
-                }
-            }
-            return ActionResult.PASS;
-        });
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(FishingHelper::render);
-    }
+	@Init
+	public static void init() {
+		UseItemCallback.EVENT.register((player, world, hand) -> {
+			ItemStack stack = player.getStackInHand(hand);
+			if (!Utils.isOnSkyblock()) {
+				return ActionResult.PASS;
+			}
+			if (stack.getItem() instanceof FishingRodItem) {
+				if (player.fishHook == null) {
+					start(player);
+				} else {
+					reset();
+				}
+			}
+			return ActionResult.PASS;
+		});
+	}
 
-    public static void start(PlayerEntity player) {
-        startTime = System.currentTimeMillis();
-        startTimeFish = System.currentTimeMillis();
-        float yawRad = player.getYaw() * 0.017453292F;
-        normalYawVector = new Vec3d(-MathHelper.sin(yawRad), 0, MathHelper.cos(yawRad));
-    }
+	public static void start(PlayerEntity player) {
+		startTime = System.currentTimeMillis();
+		float yawRad = player.getYaw() * 0.017453292F;
+	}
 
-    public static void reset() {
-        startTime = 0;
-        startTimeFish = 0;
-    }
+	public static void reset() {
+		startTime = 0;
+	}
 
-    public static void resetFish() {
-        startTimeFish = 0;
-    }
+	public static void resetFish() {
+		rodReelTimer = null;
+	}
 
-    public static void onSound(PlaySoundS2CPacket packet) {
-		SoundEvent sound = packet.getSound().value();
-        if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper && startTimeFish != 0 && System.currentTimeMillis() >= startTimeFish + 2000 && (sound.id().equals(SoundEvents.ENTITY_GENERIC_SPLASH.id()) || sound.id().equals(SoundEvents.ENTITY_PLAYER_SPLASH.id()))) {
-            ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            if (player != null && player.fishHook != null) {
-                Vec3d soundToFishHook = player.fishHook.getPos().subtract(packet.getX(), 0, packet.getZ());
-                if (Math.abs(normalYawVector.x * soundToFishHook.z - normalYawVector.z * soundToFishHook.x) < 0.2D && Math.abs(normalYawVector.dotProduct(soundToFishHook)) < 4D && player.squaredDistanceTo(packet.getX(), packet.getY(), packet.getZ()) > 1D) {
-                    RenderHelper.displayInTitleContainerAndPlaySound(title, 10);
-                    resetFish();
-                }
-            } else {
-                reset();
-            }
-        }
-    }
 
-    public static void render(WorldRenderContext context) {
-        if (SkyblockerConfigManager.get().helpers.fishing.enableFishingTimer && startTime != 0) {
-            ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            if (player != null && player.fishHook != null) {
-                float time = (int) ((System.currentTimeMillis() - startTime) / 100f) / 10f; //leave 1dp in seconds
-                float scale = SkyblockerConfigManager.get().helpers.fishing.fishingTimerScale;
-                Vec3d pos = player.fishHook.getPos().add(0, 0.4 + scale / 10, 0);
+	// Sends a title notification if a fish is caught
+	public static void checkIfFishWasCaught(ArmorStandEntity armorStand) {
+		if (Utils.isOnSkyblock() && (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper || SkyblockerConfigManager.get().helpers.fishing.showRodReelTimerHud)) {
+			if (!armorStand.isInvisible() || !armorStand.hasCustomName() || !armorStand.isCustomNameVisible()) return;
 
-                Text text;
-                if (time >= 20 && SkyblockerConfigManager.get().helpers.fishing.changeTimerColor) {
-                    text = Text.literal(String.valueOf(time)).formatted(Formatting.GREEN);
-                } else {
-                    text = Text.literal(String.valueOf(time));
-                }
+			ClientPlayerEntity player = MinecraftClient.getInstance().player;
+			if (player != null && player.fishHook != null) {
+				String name = armorStand.getCustomName().getString();
 
-                RenderHelper.renderText(context, text, pos, scale, true);
-            }
-        }
-    }
+				if (name.equals("!!!") && player.fishHook.getBoundingBox().expand(4D).contains(armorStand.getPos())) {
+					if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper) {
+						RenderHelper.displayInTitleContainerAndPlaySound(title, 10);
+					}
+					if (SkyblockerConfigManager.get().helpers.fishing.showRodReelTimerHud) {
+						rodReelTimer = name;
+						FishingHudWidget.getInstance().update();
+						//sets back to null once the fish has left the rod
+						Scheduler.INSTANCE.schedule(FishingHelper::resetFish, 15);
+					}
+
+
+				} else if (SkyblockerConfigManager.get().helpers.fishing.showRodReelTimerHud && name.matches("\\d.\\d") && player.fishHook.getBoundingBox().expand(4D).contains(armorStand.getPos())) {
+					rodReelTimer = name;
+					FishingHudWidget.getInstance().update();
+				}
+			}
+		}
+	}
+
+
 }

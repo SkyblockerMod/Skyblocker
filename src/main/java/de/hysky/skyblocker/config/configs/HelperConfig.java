@@ -80,17 +80,27 @@ public class HelperConfig {
         @SerialEntry
         public boolean enableFishingTimer = false;
 
+		@Deprecated
         @SerialEntry
         public boolean changeTimerColor = true;
 
+		@Deprecated
         @SerialEntry
         public float fishingTimerScale = 1f;
 
         @SerialEntry
         public boolean hideOtherPlayersRods = false;
 
+
 		@SerialEntry
 		public List<Location> fishingHudEnabledLocations = new ArrayList<>(List.of(Location.values()));
+
+		@SerialEntry
+		public boolean seaCreatureCounterHud = true;
+
+
+		@SerialEntry
+		public boolean showRodReelTimerHud = true;
 
 		@SerialEntry
 		public boolean onlyShowHudInBarn = true;

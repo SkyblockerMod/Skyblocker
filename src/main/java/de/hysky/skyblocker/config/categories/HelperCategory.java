@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.config.categories;
+ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
@@ -119,42 +119,11 @@ public class HelperCategory {
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.fishing.enableFishingHelper"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.enableFishingHelper.@Tooltip")))
 								.binding(defaults.helpers.fishing.enableFishingHelper,
 										() -> config.helpers.fishing.enableFishingHelper,
 										newValue -> config.helpers.fishing.enableFishingHelper = newValue)
 								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.fishing.enableFishingHookDisplay"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.enableFishingHookDisplay.@Tooltip")))
-								.binding(defaults.helpers.fishing.enableFishingHookDisplay,
-										() -> config.helpers.fishing.enableFishingHookDisplay,
-										newValue -> config.helpers.fishing.enableFishingHookDisplay = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.fishing.enableFishingTimer"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip")))
-								.binding(defaults.helpers.fishing.enableFishingTimer,
-										() -> config.helpers.fishing.enableFishingTimer,
-										newValue -> config.helpers.fishing.enableFishingTimer = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.fishing.changeTimerColor"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.changeTimerColor.@Tooltip")))
-								.binding(defaults.helpers.fishing.changeTimerColor,
-										() -> config.helpers.fishing.changeTimerColor,
-										newValue -> config.helpers.fishing.changeTimerColor = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
-						.option(Option.<Float>createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.fishing.fishingTimerScale"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.fishingTimerScale.@Tooltip")))
-								.binding(defaults.helpers.fishing.fishingTimerScale,
-										() -> config.helpers.fishing.fishingTimerScale,
-										newValue -> config.helpers.fishing.fishingTimerScale = newValue)
-								.controller(FloatFieldControllerBuilder::create)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.fishing.hideOtherPlayers"))
@@ -168,6 +137,30 @@ public class HelperCategory {
 								.name(Text.translatable("skyblocker.config.helpers.fishing.hud.screen"))
 								.text(Text.translatable("text.skyblocker.open"))
 								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, FishingHudWidget.getInstance().getInternalID(), screen)))
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.fishing.hud.showRodReelTimerHud"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.hud.showRodReelTimerHud.@Tooltip")))
+								.binding(defaults.helpers.fishing.showRodReelTimerHud,
+										() -> config.helpers.fishing.showRodReelTimerHud,
+										newValue -> config.helpers.fishing.showRodReelTimerHud = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.fishing.enableFishingTimer"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip")))
+								.binding(defaults.helpers.fishing.enableFishingTimer,
+										() -> config.helpers.fishing.enableFishingTimer,
+										newValue -> config.helpers.fishing.enableFishingTimer = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.fishing.hud.seaCreatureCounterHud"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.hud.seaCreatureCounterHud.@Tooltip")))
+								.binding(defaults.helpers.fishing.seaCreatureCounterHud,
+										() -> config.helpers.fishing.seaCreatureCounterHud,
+										newValue -> config.helpers.fishing.seaCreatureCounterHud = newValue)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn"))
