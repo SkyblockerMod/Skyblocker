@@ -49,13 +49,13 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
 
 	@WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/StatusEffectsDisplay;drawStatusEffects(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
 	private boolean skyblocker$dontDrawStatusEffects(StatusEffectsDisplay statusEffectsDisplay, DrawContext context, int mouseX, int mouseY, float tickDelta) {
-		return !(Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay);
+		return !((Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay) || (SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget) && Utils.isInGarden());
 	}
 
 	//This makes it so that REI at least doesn't wrongly exclude the zone
 	@ModifyReturnValue(method = "shouldHideStatusEffectHud", at = @At("RETURN"))
 	private boolean skyblocker$markStatusEffectsHidden(boolean original) {
-		return Utils.isOnSkyblock() ? !SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay : original;
+		return Utils.isOnSkyblock() ? !(SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay || (SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget) && Utils.isInGarden()) : original;
 	}
 
     @Inject(method = "onRecipeBookToggled", at = @At("TAIL"))
