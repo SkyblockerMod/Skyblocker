@@ -36,6 +36,7 @@ public class VisitorHelper {
 	private static final int ICON_SIZE = 16;
 	private static final int LINE_HEIGHT = 3;
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
+	private static final Map<Text, Long> copiedTimestamps = new HashMap<>();
 
 	// Used to prevent adding the visitor again after the player clicks accept or refuse.
 	private static boolean processVisitor = false;
@@ -185,11 +186,28 @@ public class VisitorHelper {
 					: name
 					.append(" x" + totalAmount);
 
+			boolean showCopy = !SkyblockerConfigManager.get().farming.visitorHelper.copyAndOpenBz;
 			int itemTextWidth = textRenderer.getWidth(itemText);
 			int copyTextX = textX + itemTextWidth;
+			Text copyText = showCopy ? Text.translatable("skyblocker.config.farming.general.copyAmount").setStyle(Style.EMPTY.withColor(Formatting.YELLOW)) : Text.literal("");
 
-			context.drawText(textRenderer, itemText, textX, yPosition, -1, true);
-			context.drawText(textRenderer, Text.literal(" [Copy Amount]").setStyle(Style.EMPTY.withColor(Formatting.YELLOW)), copyTextX, yPosition, -1, true);
+			double mouseX = MinecraftClient.getInstance().mouse.getX() / (double) MinecraftClient.getInstance().getWindow().getScaleFactor();
+			double mouseY = MinecraftClient.getInstance().mouse.getY() / (double) MinecraftClient.getInstance().getWindow().getScaleFactor();
+
+			drawTextWithHoverUnderline(context, textRenderer, itemText, textX, yPosition, mouseX, mouseY);
+
+			if (copiedTimestamps.containsKey(itemName)) {
+				long timeSinceCopy = System.currentTimeMillis() - copiedTimestamps.get(itemName);
+				if (timeSinceCopy < 1000) {
+					copyText = Text.translatable("skyblocker.config.farming.general.copiedAmountSuccessfully").setStyle(Style.EMPTY.withColor(Formatting.GREEN));
+				} else {
+					copiedTimestamps.remove(itemName);
+				}
+			}
+
+			if (!copyText.getString().isEmpty()) {
+				drawTextWithHoverUnderline(context, textRenderer, copyText, copyTextX, yPosition, mouseX, mouseY);
+			}
 
 			index++;
 		}
@@ -221,25 +239,36 @@ public class VisitorHelper {
 				int textX = iconX + (int) (ICON_SIZE * 0.95f) + 4;
 				int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
+				MutableText name = itemName.copy();
 				Text itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
-						? itemName.copy()
-						.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
-						: itemName.copy()
-						.append(" x" + totalAmount);
+						? name.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
+						: name.append(" x" + totalAmount);
 
 				int itemTextWidth = textRenderer.getWidth(itemText);
 				int copyTextX = textX + itemTextWidth;
+				boolean copyAndOpenBz = SkyblockerConfigManager.get().farming.visitorHelper.copyAndOpenBz;
 
 				if (isMouseOverText(mouseX, mouseY, textX, yPosition, itemTextWidth, textRenderer.fontHeight)) {
 					MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName.getString(), true);
+
+					if (copyAndOpenBz) {
+						MinecraftClient client = MinecraftClient.getInstance();
+						client.keyboard.setClipboard(String.valueOf(totalAmount));
+						if (client.player != null) {
+							client.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.farming.general.copiedAmountSuccessfully")), false);
+							copiedTimestamps.put(itemName, System.currentTimeMillis());
+						}
+					}
+
 					return;
 				}
 
-				if (isMouseOverText(mouseX, mouseY, copyTextX, yPosition, textRenderer.getWidth(" [Copy Amount]"), textRenderer.fontHeight)) {
+				if (!copyAndOpenBz && isMouseOverText(mouseX, mouseY, copyTextX, yPosition, textRenderer.getWidth(Text.translatable("skyblocker.config.farming.general.copyAmount")), textRenderer.fontHeight)) {
 					MinecraftClient client = MinecraftClient.getInstance();
 					client.keyboard.setClipboard(String.valueOf(totalAmount));
 					if (client.player != null) {
-						client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
+						client.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.farming.general.copiedAmountSuccessfully")), false);
+						copiedTimestamps.put(itemName, System.currentTimeMillis());
 					}
 					return;
 				}
@@ -262,6 +291,18 @@ public class VisitorHelper {
 		}
 
 		updateItems();
+	}
+
+	private static void drawTextWithHoverUnderline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, double mouseX, double mouseY) {
+		context.getMatrices().push();
+		context.getMatrices().translate(0, 0, 500);
+		context.drawText(textRenderer, text, x, y, -1, true);
+
+		if (isMouseOverText(mouseX, mouseY, x, y, textRenderer.getWidth(text), textRenderer.fontHeight)) {
+			context.drawHorizontalLine(x, x + textRenderer.getWidth(text), y + textRenderer.fontHeight, -1);
+		}
+
+		context.getMatrices().pop();
 	}
 
 	/**
