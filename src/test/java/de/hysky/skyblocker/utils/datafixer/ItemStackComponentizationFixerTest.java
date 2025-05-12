@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.datafixer;
 
+import de.hysky.skyblocker.utils.Utils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ public class ItemStackComponentizationFixerTest {
 	private final ItemStack TEST_STACK = Util.make(new ItemStack(Items.DIAMOND_SWORD, 1), item -> {
 		ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(ItemEnchantmentsComponent.DEFAULT);
 
-		builder.add(ItemStackComponentizationFixer.getRegistryLookup().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
+		builder.add(Utils.getRegistryWrapperLookup().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
 		item.set(DataComponentTypes.ENCHANTMENTS, builder.build());
 	});
 
@@ -44,7 +45,7 @@ public class ItemStackComponentizationFixerTest {
 	@Test
 	void testDataFixer() {
 		ItemStack fixedStack = ItemStackComponentizationFixer.fixUpItem(NBT);
-		JsonElement stackJson = ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), fixedStack).getOrThrow();
+		JsonElement stackJson = ItemStack.CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(JsonOps.INSTANCE), fixedStack).getOrThrow();
 
 		Assertions.assertEquals("{\"id\":\"minecraft:diamond_sword\",\"count\":1,\"components\":{\"minecraft:custom_data\":{\"ExtraAttributes\":{\"id\":\"TEST\"}}}}", GSON.toJson(stackJson));
 	}

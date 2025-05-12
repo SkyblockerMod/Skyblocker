@@ -6,6 +6,7 @@ package de.hysky.skyblocker.utils;
  * @see <a href="https://bottosson.github.io/posts/oklab">OkLab Colour Space</a>
  * @see <a href="https://www.sjbrown.co.uk/posts/gamma-correct-rendering/">Gamma Correct Rendering</a>
  */
+@SuppressWarnings("UnaryPlus")
 public class OkLabColor {
 
 	/**
