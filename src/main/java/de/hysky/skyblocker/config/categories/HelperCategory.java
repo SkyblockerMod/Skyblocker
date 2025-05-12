@@ -210,8 +210,8 @@ public class HelperCategory {
 								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.helpers.fishing.enableFishingHookDisplay"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.enableFishingHookDisplay.@Tooltip")))
+								.name(Text.translatable("Enable Fishing Hook Display"))
+								.description(OptionDescription.of(Text.translatable("Display the skyblock fishing hook timer on the screen instead of above the rod.")))
 								.binding(defaults.helpers.fishing.enableFishingHookDisplay,
 										() -> config.helpers.fishing.enableFishingHookDisplay,
 										newValue -> config.helpers.fishing.enableFishingHookDisplay = newValue)
