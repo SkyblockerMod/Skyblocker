@@ -2,9 +2,8 @@ package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
 import com.google.gson.JsonObject;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
+import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.ItemLoader;
@@ -85,9 +84,7 @@ public class Inventory implements ProfileViewerPage {
             int x = rootX + 8 + column * 18;
             int y = rootYAdjusted + 18 + row * 18;
 
-            if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) {
-                ItemRarityBackgrounds.tryDraw(stack, context, x, y);
-            }
+			ItemBackgroundManager.drawBackgrounds(stack, context, x, y);
 
             if (ItemProtection.isItemProtected(stack)) {
                 context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
