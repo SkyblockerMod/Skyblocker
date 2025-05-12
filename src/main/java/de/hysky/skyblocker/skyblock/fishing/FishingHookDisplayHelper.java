@@ -1,33 +1,31 @@
 package de.hysky.skyblocker.skyblock.fishing;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.Identifier;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FishingHookDisplayHelper {
 	private static ArmorStandEntity fishingHookArmorStand;
+	private static final Identifier FISHING_HOOK_DISPLAY = Identifier.of(SkyblockerMod.NAMESPACE, "fishing_hook_display");
+	static Pattern pattern = Pattern.compile("\\d.\\d");
 
 	@Init
 	public static void init() {
-		UseItemCallback.EVENT.register((player, world, hand) -> {
-			if (!Utils.isOnSkyblock()) {
-				return ActionResult.PASS;
-			}
-			return ActionResult.PASS;
-		});
-		HudRenderCallback.EVENT.register(FishingHookDisplayHelper::render);
+		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> fishingHookArmorStand = null);
+
+		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.TITLE_AND_SUBTITLE,FISHING_HOOK_DISPLAY,FishingHookDisplayHelper::render));
 	}
 
 	public static void render(DrawContext context, RenderTickCounter tickDelta) {
@@ -68,11 +66,10 @@ public class FishingHookDisplayHelper {
 		if (!SkyblockerConfigManager.get().helpers.fishing.enableFishingHookDisplay) return;
 		if (fishingHookArmorStand != null) return;
 
-		Pattern pattern = Pattern.compile("\\b\\d\\.\\d\\b");
 		Matcher matcher = pattern.matcher(armorStand.getName().getString());
-		if (armorStand.hasCustomName() && matcher.find()) {
+		if (armorStand.hasCustomName() && matcher.matches()) {
 			fishingHookArmorStand = armorStand;
-			var message = "ArmorStand spawned: " + fishingHookArmorStand.getName().getString();
+//			var message = "ArmorStand spawned: " + fishingHookArmorStand.getName().getString();
 //			MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("[DEBUG] " + message));
 		} else {
 			fishingHookArmorStand = null;
