@@ -101,6 +101,7 @@ public class ItemCooldowns {
 	//		"toggle": true,                  // If true, item can be toggled on/off with one click (logic not implemented yet)
 	//		"requires_sneak": true,          // If true, player must be sneaking to trigger the item
 	//		"cooldown_group": "GROUP_ID"     // Optional: group of items that share the same cooldown (e.g. jungle axe and treecapitator)
+	// FIXME: add logic for toggle (Wither cloak) and Logic for items that have two abilities with separate cooldowns (e.g., Gyrokinetic Wand)
 	//	}
 	private static void loadCooldownConfig(MinecraftClient client) {
 		try (BufferedReader reader = client.getResourceManager().openAsReader(Identifier.of(SkyblockerMod.NAMESPACE, "cooldown/item_cooldown.json"))) {
