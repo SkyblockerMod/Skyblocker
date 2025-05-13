@@ -15,8 +15,14 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
+import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandSource;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.hit.BlockHitResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +41,7 @@ public class SpeedPresets {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpeedPresets.class);
 	private static final Codec<Map<String, Integer>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, Codec.INT);
 	private static final File PRESETS_FILE = new File(SkyblockerMod.CONFIG_DIR.toFile(), "speed_presets.json");
+	private static boolean attackWasHeld = false;
 
 	private static SpeedPresets instance;
 
@@ -74,6 +81,34 @@ public class SpeedPresets {
 			}
 			return command;
 		});
+		ClientTickEvents.END_CLIENT_TICK.register(SpeedPresets::onSignAttack);
+	}
+
+	private static void onSignAttack(MinecraftClient client) {
+		if (client == null || client.player == null || client.world == null) return;
+		if (!(Utils.isOnSkyblock() && Utils.isInGarden())) return;
+
+		if (!(client.crosshairTarget instanceof BlockHitResult hit && client.world.getBlockEntity(hit.getBlockPos()) instanceof SignBlockEntity sign)) return;
+		ItemStack boots = client.player.getEquippedStack(EquipmentSlot.FEET);
+
+		if (!boots.getSkyblockId().equals("RANCHERS_BOOTS")) return;
+
+		boolean attackPressed = client.options.attackKey.isPressed();
+
+		if (attackPressed && !attackWasHeld) {
+			attackWasHeld = true;
+
+			String firstLine = sign.getFrontText().getMessage(0, true).getString();
+			if (!firstLine.isEmpty()) {
+				if (MinecraftClient.getInstance().player != null) {
+					MinecraftClient.getInstance().player.networkHandler.sendChatCommand("setmaxspeed " + firstLine);
+				}
+			}
+		}
+
+		if (!attackPressed) {
+			attackWasHeld = false;
+		}
 	}
 
 	public void clear() {
