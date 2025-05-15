@@ -193,7 +193,7 @@ public class ConfigFix1 extends ConfigDataFix {
             if (extraNbt.length() > 2) itemNbt += "," + extraNbt;
             itemNbt += "}";
 
-            ItemStack fixed = ItemStackComponentizationFixer.fixUpItem(StringNbtReader.parse(itemNbt));
+            ItemStack fixed = ItemStackComponentizationFixer.fixUpItem(StringNbtReader.readCompound(itemNbt));
 
             return nbt.createString(ItemStackComponentizationFixer.componentsAsString(fixed));
         } catch (Exception e) {

@@ -115,7 +115,7 @@ public class SecretsTracker {
 
 	private static Text getCacheText(boolean cached, int cacheAge) {
 		return Text.literal("\u2139").styled(style -> style.withColor(cached ? 0xeac864 : 0x218bff).withHoverEvent(
-				new HoverEvent(HoverEvent.Action.SHOW_TEXT, cached ? Text.translatable("skyblocker.api.cache.HIT", cacheAge) : Text.translatable("skyblocker.api.cache.MISS"))));
+				new HoverEvent.ShowText(cached ? Text.translatable("skyblocker.api.cache.HIT", cacheAge) : Text.translatable("skyblocker.api.cache.MISS"))));
 	}
 
 	private static void onMessage(Text text, boolean overlay) {

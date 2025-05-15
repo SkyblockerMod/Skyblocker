@@ -26,8 +26,8 @@ public class ItemLoader {
         List<ItemStack> itemList = new ArrayList<>();
 
         for (int i = 0; i < containerContent.size(); i++) {
-            NbtCompound nbt = containerContent.getCompound(i);
-            if (nbt.getInt("id") == 0) {
+            NbtCompound nbt = containerContent.getCompoundOrEmpty(i);
+            if (nbt.getInt("id", 0) == 0) {
                 itemList.add(ItemStack.EMPTY);
                 continue;
             }
@@ -37,7 +37,7 @@ public class ItemLoader {
             if (stack.isEmpty()) {
             	ItemStack fallback = Ico.BARRIER.copy();
 
-            	fallback.set(DataComponentTypes.CUSTOM_NAME, Text.literal("Error: " + nbt.getCompound("tag").getCompound("ExtraAttributes").getString("id")));
+            	fallback.set(DataComponentTypes.CUSTOM_NAME, Text.literal("Error: " + nbt.getCompoundOrEmpty("tag").getCompoundOrEmpty("ExtraAttributes").getString("id")));
                 itemList.add(fallback);
 
                 continue;
@@ -47,7 +47,7 @@ public class ItemLoader {
             NbtCompound customData = ItemUtils.getCustomData(stack);
 
             if (itemId.equals("PET")) {
-                PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
+                PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo", ""))).getOrThrow();
                 Pet pet = new Pet(petInfo);
                 itemList.add(pet.getIcon());
                 continue;
@@ -66,7 +66,7 @@ public class ItemLoader {
 
     private static NbtList decompress(JsonObject data) {
         try {
-            return NbtIo.readCompressed(new ByteArrayInputStream(Base64.getDecoder().decode(data.get("data").getAsString())), NbtSizeTracker.ofUnlimitedBytes()).getList("i", NbtElement.COMPOUND_TYPE);
+            return NbtIo.readCompressed(new ByteArrayInputStream(Base64.getDecoder().decode(data.get("data").getAsString())), NbtSizeTracker.ofUnlimitedBytes()).getListOrEmpty("i");
         } catch (Exception e) {
             ProfileViewerScreen.LOGGER.error("[Skyblocker Profile Viewer] Failed to decompress item data", e);
         }

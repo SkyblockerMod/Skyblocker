@@ -9,7 +9,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -204,11 +203,11 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 		String name = stack.getName().getString();
 		if (name.equals("Enchanted Book")) {
 			NbtCompound nbt = ItemUtils.getCustomData(stack);
-			if (nbt.isEmpty() || !nbt.contains("enchantments", NbtElement.COMPOUND_TYPE)) return List.of();
-			NbtCompound enchantments = nbt.getCompound("enchantments");
+			if (nbt.isEmpty() || !nbt.contains("enchantments")) return List.of();
+			NbtCompound enchantments = nbt.getCompoundOrEmpty("enchantments");
 			if (enchantments.getSize() != 1) return List.of(); //Only makes sense to display the level when there's one enchant.
 			final String enchantmentId = enchantments.getKeys().iterator().next();
-			int level = enchantments.getInt(enchantmentId);
+			int level = enchantments.getInt(enchantmentId, 0);
 			final SlotText enchantmentLevel = SlotText.bottomLeft(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
 
 			return getAbbreviation(enchantmentId)

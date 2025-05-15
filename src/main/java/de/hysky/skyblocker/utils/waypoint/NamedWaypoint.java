@@ -9,6 +9,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
@@ -50,6 +51,11 @@ public class NamedWaypoint extends Waypoint {
             CodecUtils.optionalDouble(Codec.DOUBLE.optionalFieldOf("b")).forGetter(waypoint -> OptionalDouble.of(waypoint.colorComponents[2])),
             ColeweightOptions.CODEC.optionalFieldOf("options").forGetter(waypoint -> Optional.of(new ColeweightOptions(Optional.of(waypoint.name.getString()))))
     ).apply(instance, NamedWaypoint::fromColeweight));
+	static final Codec<NamedWaypoint> SKYBLOCKER_LEGACY_ORDERED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			BlockPos.CODEC.fieldOf("pos").forGetter(waypoint -> waypoint.pos),
+			Codec.floatRange(0, 1).listOf().xmap(Floats::toArray, FloatArrayList::new).optionalFieldOf("colorComponents", new float[0]).forGetter(waypoint -> waypoint.colorComponents)
+	).apply(instance, (pos, colorComponents) -> new OrderedNamedWaypoint(pos, "", new float[]{0, 1, 0})));
+
     public final Text name;
     public final Vec3d centerPos;
 

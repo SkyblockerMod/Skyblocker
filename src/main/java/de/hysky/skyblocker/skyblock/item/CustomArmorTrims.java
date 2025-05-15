@@ -23,13 +23,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.IdentifierArgumentType;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.trim.ArmorTrim;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
 import net.minecraft.item.equipment.trim.ArmorTrimPattern;
 import net.minecraft.registry.*;
 import net.minecraft.registry.entry.RegistryEntry.Reference;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -98,7 +98,7 @@ public class CustomArmorTrims {
 		ItemStack heldItem = source.getPlayer().getMainHandStack();
 
 		if (Utils.isOnSkyblock() && heldItem != null) {
-			if (heldItem.getItem() instanceof ArmorItem) {
+			if (heldItem.isIn(ItemTags.TRIMMABLE_ARMOR)) {
 				String itemUuid = ItemUtils.getItemUuid(heldItem);
 
 				if (!itemUuid.isEmpty()) {

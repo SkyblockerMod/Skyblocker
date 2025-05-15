@@ -14,10 +14,9 @@ import com.mojang.serialization.Dynamic;
 import de.hysky.skyblocker.utils.TextTransformer;
 import net.azureaaron.legacyitemdfu.TypeReferences;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.AttributeModifiersComponent;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -57,14 +56,14 @@ public class LegacyItemStackFixer {
 
 		//Remap Custom Data
 		if (stack.contains(DataComponentTypes.CUSTOM_DATA)) {
-			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(stack.get(DataComponentTypes.CUSTOM_DATA).getNbt().getCompound("ExtraAttributes")));
+			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(stack.get(DataComponentTypes.CUSTOM_DATA).getNbt().getCompoundOrEmpty("ExtraAttributes")));
 		}
 
-		//Hide Vanilla Attributes
-		stack.set(DataComponentTypes.ATTRIBUTE_MODIFIERS, AttributeModifiersComponent.DEFAULT.withShowInTooltip(false));
-
-		//Hide Vanilla Enchantments
-		stack.set(DataComponentTypes.ENCHANTMENTS, stack.getOrDefault(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT).withShowInTooltip(false));
+		//Hide Attributes & Vanilla Enchantments		
+		TooltipDisplayComponent display = stack.getOrDefault(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplayComponent.DEFAULT)
+				.with(DataComponentTypes.ATTRIBUTE_MODIFIERS, true)
+				.with(DataComponentTypes.ENCHANTMENTS, true);
+		stack.set(DataComponentTypes.TOOLTIP_DISPLAY, display);
 
 		return stack;
 	}

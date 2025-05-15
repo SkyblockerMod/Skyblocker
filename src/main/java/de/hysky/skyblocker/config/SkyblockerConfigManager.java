@@ -25,6 +25,9 @@ import net.minecraft.util.Identifier;
 
 import java.lang.StackWalker.Option;
 import java.nio.file.Path;
+import java.util.function.Consumer;
+
+import org.apache.commons.lang3.function.Consumers;
 
 public class SkyblockerConfigManager {
     public static final int CONFIG_VERSION = 3;
@@ -35,7 +38,7 @@ public class SkyblockerConfigManager {
                     .setJson5(false)
                     .appendGsonBuilder(builder -> builder
                             .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
-                            .registerTypeHierarchyAdapter(Identifier.class, new Identifier.Serializer()))
+                            .registerTypeHierarchyAdapter(Identifier.class, new CodecTypeAdapter<>(Identifier.CODEC)))
                     .build())
             .build();
 
@@ -65,8 +68,17 @@ public class SkyblockerConfigManager {
         });
     }
 
+    @Deprecated(since = "1.21.5", forRemoval = true)
     public static void save() {
-        HANDLER.save();
+        update(Consumers.nop());
+    }
+
+    /**
+     * Executes the given {@code action} to update fields in the config, then saves the changes.
+     */
+    public static void update(Consumer<SkyblockerConfig> action) {
+    	action.accept(get());
+    	HANDLER.save();
     }
 
     public static Screen createGUI(Screen parent) {

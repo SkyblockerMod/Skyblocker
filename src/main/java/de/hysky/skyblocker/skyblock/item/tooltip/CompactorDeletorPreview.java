@@ -40,7 +40,7 @@ public class CompactorDeletorPreview {
         // Get items in compactor or deletor
         NbtCompound customData = ItemUtils.getCustomData(stack);
         // Get the slots and their items from the nbt, which is in the format personal_compact_<slot_number> or personal_deletor_<slot_number>
-        List<IntObjectPair<ItemStack>> slots = customData.getKeys().stream().filter(slot -> slot.contains(type.toLowerCase().substring(0, 7))).map(slot -> IntObjectPair.of(Integer.parseInt(slot.substring(17)), ItemRepository.getItemStack(customData.getString(slot)))).toList();
+        List<IntObjectPair<ItemStack>> slots = customData.getKeys().stream().filter(slot -> slot.contains(type.toLowerCase().substring(0, 7))).map(slot -> IntObjectPair.of(Integer.parseInt(slot.substring(17)), ItemRepository.getItemStack(customData.getString(slot, "")))).toList();
 
         List<TooltipComponent> components = tooltips.stream().map(Text::asOrderedText).map(TooltipComponent::of).collect(Collectors.toList());
         IntIntPair dimensions = DIMENSIONS.getOrDefault(size, DEFAULT_DIMENSION);
@@ -59,7 +59,7 @@ public class CompactorDeletorPreview {
 
         if (customData.contains("PERSONAL_DELETOR_ACTIVE")) {
             components.add(targetIndex, TooltipComponent.of(Text.literal("Active: ")
-                    .append(customData.getBoolean("PERSONAL_DELETOR_ACTIVE") ? Text.literal("YES").formatted(Formatting.BOLD).formatted(Formatting.GREEN) : Text.literal("NO").formatted(Formatting.BOLD).formatted(Formatting.RED)).asOrderedText()));
+                    .append(customData.getBoolean("PERSONAL_DELETOR_ACTIVE", false) ? Text.literal("YES").formatted(Formatting.BOLD).formatted(Formatting.GREEN) : Text.literal("NO").formatted(Formatting.BOLD).formatted(Formatting.RED)).asOrderedText()));
         }
         ((DrawContextInvoker) context).invokeDrawTooltip(client.textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE, null);
         return true;

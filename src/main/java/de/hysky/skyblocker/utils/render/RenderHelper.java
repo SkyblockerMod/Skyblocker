@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils.render;
 
-import com.mojang.blaze3d.systems.RenderCall;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -16,7 +15,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
@@ -32,7 +30,6 @@ import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.profiler.Profilers;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
@@ -100,7 +97,10 @@ public class RenderHelper {
             matrices.push();
             matrices.translate(pos.getX() - camera.getX(), pos.getY() - camera.getY(), pos.getZ() - camera.getZ());
 
-            BeaconBlockEntityRendererInvoker.renderBeam(matrices, context.consumers(), context.tickCounter().getTickDelta(true), context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, ColorHelper.fromFloats(1f, colorComponents[0], colorComponents[1], colorComponents[2]));
+            float length = (float) camera.subtract(pos.toCenterPos()).horizontalLength();
+            float scale = CLIENT.player != null && CLIENT.player.isUsingSpyglass() ? 1.0f : Math.max(1.0f, length / 96.0f);
+
+            BeaconBlockEntityRendererInvoker.renderBeam(matrices, context.consumers(), context.tickCounter().getTickProgress(true), scale, context.world().getTime(), 0, MAX_OVERWORLD_BUILD_HEIGHT, ColorHelper.fromFloats(1f, colorComponents[0], colorComponents[1], colorComponents[2]));
 
             matrices.pop();
         }
@@ -225,7 +225,7 @@ public class RenderHelper {
         positionMatrix.translate((float) -camera.x, (float) -camera.y, (float) -camera.z);
 
         VertexConsumerProvider.Immediate consumers = (VertexConsumerProvider.Immediate) context.consumers();
-        RenderLayer layer = throughWalls ? SkyblockerRenderLayers.QUAD_THROUGH_WALLS : SkyblockerRenderLayers.QUAD;
+        RenderLayer layer = throughWalls ? SkyblockerRenderLayers.QUADS_THROUGH_WALLS : SkyblockerRenderLayers.QUADS;
         VertexConsumer buffer = consumers.getBuffer(layer);
 
         for (int i = 0; i < 4; i++) {
@@ -305,15 +305,8 @@ public class RenderHelper {
 
         VertexConsumerProvider.Immediate consumers = VertexConsumerProvider.immediate(ALLOCATOR);
 
-        //Don't trust the render layer to do this for you!
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthFunc(throughWalls ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
-
         textRenderer.draw(text, xOffset, yOffset, 0xFFFFFFFF, false, positionMatrix, consumers, throughWalls ? TextRenderer.TextLayerType.SEE_THROUGH : TextRenderer.TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
         consumers.draw();
-
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
     /**
@@ -325,20 +318,16 @@ public class RenderHelper {
     	profiler.push("skyblockerTranslucentDraw");
     	VertexConsumerProvider.Immediate immediate = (VertexConsumerProvider.Immediate) context.consumers();
 
-    	//Work around RenderLayer impl problems (DepthTest#ALWAYS not actually turning off depth testing)
-    	RenderSystem.disableDepthTest();
-    	immediate.draw(SkyblockerRenderLayers.FILLED_THROUGH_WALLS);
-
     	//Draw all render layers that haven't been drawn yet - drawing a specific layer does nothing and idk why (IF bug maybe?)
     	immediate.draw();
         profiler.pop();
     }
 
-    public static void runOnRenderThread(RenderCall renderCall) {
+    public static void runOnRenderThread(Runnable runnable) {
         if (RenderSystem.isOnRenderThread()) {
-        	renderCall.execute();
+        	runnable.run();
         } else {
-            RenderSystem.recordRenderCall(renderCall);
+            CLIENT.execute(runnable);
         }
     }
 
