@@ -45,8 +45,6 @@ public class FishingHookDisplayHelper {
 
 		// Proceed only if fishingHookArmorStand is not null
 		if (fishingHookArmorStand != null) {
-//			MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("[DEBUG] Rendering"));
-
 			String armorStandName = fishingHookArmorStand.getName().getString();
 
 			int screenWidth = client.getWindow().getScaledWidth();
@@ -69,8 +67,6 @@ public class FishingHookDisplayHelper {
 		Matcher matcher = pattern.matcher(armorStand.getName().getString());
 		if (armorStand.hasCustomName() && matcher.matches()) {
 			fishingHookArmorStand = armorStand;
-//			var message = "ArmorStand spawned: " + fishingHookArmorStand.getName().getString();
-//			MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("[DEBUG] " + message));
 		} else {
 			fishingHookArmorStand = null;
 		}
