@@ -125,6 +125,14 @@ public class HelperCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.fishing.enableFishingHookDisplay"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.enableFishingHookDisplay.@Tooltip")))
+								.binding(defaults.helpers.fishing.enableFishingHookDisplay,
+										() -> config.helpers.fishing.enableFishingHookDisplay,
+										newValue -> config.helpers.fishing.enableFishingHookDisplay = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.fishing.enableFishingTimer"))
 								.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip")))
 								.binding(defaults.helpers.fishing.enableFishingTimer,
@@ -209,6 +217,7 @@ public class HelperCategory {
 										rarity -> config.helpers.fishing.minimumNotificationRarity = rarity == SkyblockItemRarity.DIVINE ? SkyblockItemRarity.UNKNOWN : rarity)
 								.controller(ConfigUtils::createEnumCyclingListController)
 								.build())
+
 						.build())
 
 				//Fairy Souls Helper
