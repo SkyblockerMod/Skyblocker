@@ -41,10 +41,10 @@ public class TreasureHunter extends ChatPatternListener {
 
 	private static void requestWaypoint(String location) {
 		String command = "/skyblocker waypoints individual " + location + " Treasure";
-		MutableText requestMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.display").formatted(Formatting.AQUA)
+		MutableText requestMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.display", java.util.Arrays.stream(location.split(" ")).mapToInt(Integer::parseInt).boxed().toArray()).formatted(Formatting.AQUA)
 				.styled(style -> style
-						.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("skyblocker.config.chat.waypoints.display")))
-						.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command.trim()))
+						.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.config.chat.waypoints.display")))
+						.withClickEvent(new ClickEvent.RunCommand(command.trim()))
 				)
 		);
 		MinecraftClient.getInstance().player.sendMessage(requestMessage, false);
