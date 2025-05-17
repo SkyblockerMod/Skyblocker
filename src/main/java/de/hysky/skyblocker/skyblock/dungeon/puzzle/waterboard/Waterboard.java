@@ -9,23 +9,25 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.LeverBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
@@ -38,15 +40,13 @@ import java.util.concurrent.CompletableFuture;
 public class Waterboard extends DungeonPuzzle {
     private static final Logger LOGGER = LoggerFactory.getLogger(Waterboard.class);
     public static final Waterboard INSTANCE = new Waterboard();
-	private static final BlockPos[] FIRST_SWITCH_POSITIONS = new BlockPos[]{
-			new BlockPos(14, 78, 26),
-			new BlockPos(14, 78, 27),
-			new BlockPos(16, 78, 26),
-			new BlockPos(16, 78, 27)
-	};
 	private static JsonObject SOLUTIONS;
+	private static final BlockPos BOARD_LOWER_CORNER = new BlockPos(6, 60, 26);
+	private static final BlockPos BOARD_UPPER_CORNER = new BlockPos(24, 78, 26);
+	private static final BlockPos FIRST_SWITCH_POSITION = new BlockPos(15, 78, 26);
 
 	private Map<LeverType, List<Double>> solution;
+	private boolean failed;
 	private double waterStartMillis;
 	private CompletableFuture<Void> solve;
 
@@ -75,11 +75,13 @@ public class Waterboard extends DungeonPuzzle {
 				client.world == null ||
 				!DungeonManager.isCurrentRoomMatched() ||
 				solution != null ||
+				failed ||
 				solve != null && !solve.isDone()) {
             return;
         }
 		solve = CompletableFuture.runAsync(() -> solvePuzzle(client)).exceptionally(e -> {
 			LOGGER.error("[Skyblocker Waterboard] Encountered an unknown exception while solving waterboard.", e);
+			failed = true;
 			return null;
 		});
     }
@@ -88,11 +90,27 @@ public class Waterboard extends DungeonPuzzle {
 		Room room = DungeonManager.getCurrentRoom();
 		ClientWorld world = client.world;
 		if (world == null) throw new RuntimeException("Unreachable");
+		if (client.player == null) throw new RuntimeException("Probably unreachable");
+
+		Box boardBox = Box.enclosing(BOARD_LOWER_CORNER, BOARD_UPPER_CORNER);
+		for (BlockState blockState : world.getStatesInBox(boardBox).toList()) {
+			if (blockState.getBlock() == Blocks.WATER) {
+				client.player.sendMessage(Constants.PREFIX.get().append(
+						"Waterboard: water must be toggled off for the solver to work properly. " +
+						"Turn the water off and let it drain, then reset the solver."), false);
+				failed = true;
+				return;
+			}
+		}
 
 		Set<LeverType> firstSwitches = new HashSet<>();
-		for (BlockPos pos : FIRST_SWITCH_POSITIONS) {
-			Block switchBlock = world.getBlockState(room.relativeToActual(pos)).getBlock();
-			firstSwitches.add(LeverType.fromBlock(switchBlock));
+		Box firstSwitchBlocks = Box.enclosing(room.relativeToActual(FIRST_SWITCH_POSITION.add(-1, -1, 0)),
+				room.relativeToActual(FIRST_SWITCH_POSITION.add(1, 0, 1)));
+		for (BlockState state : world.getStatesInBox(firstSwitchBlocks).toList()) {
+			LeverType leverType = LeverType.fromBlock(state.getBlock());
+			if (leverType != null) {
+				firstSwitches.add(leverType);
+			}
 		}
 
 		int variant;
@@ -105,7 +123,7 @@ public class Waterboard extends DungeonPuzzle {
 		} else if (firstSwitches.contains(LeverType.GOLD) && firstSwitches.contains(LeverType.QUARTZ)) {
 			variant = 3;
 		} else {
-			LOGGER.error("[Skyblocker Waterboard] Unknown waterboard layout");
+			LOGGER.error("[Skyblocker Waterboard] Unknown waterboard layout.");
 			return;
 		}
 
@@ -116,6 +134,18 @@ public class Waterboard extends DungeonPuzzle {
 				doors.append(i);
 			}
 			doorPos.move(Direction.NORTH);
+		}
+
+		if (doors.isEmpty()) {
+			solution = new HashMap<>();
+			return;
+		} else if (doors.toString().length() != 3) {
+			client.player.sendMessage(
+					Constants.PREFIX.get().append(
+							"Waterboard: doors are in an unrecognized state. " +
+							"Make sure exactly three doors are closed, then reset the solver."), false);
+			failed = true;
+			return;
 		}
 
 		JsonObject data = SOLUTIONS.get(String.valueOf(variant)).getAsJsonObject().get(doors.toString()).getAsJsonObject();
@@ -131,6 +161,21 @@ public class Waterboard extends DungeonPuzzle {
 				solution.put(leverType, times);
 			}
 		}
+
+		for (LeverType leverType : LeverType.values()) {
+			List<Double> times = solution.get(leverType);
+			if (world.getBlockState(room.relativeToActual(leverType.leverPos)).get(LeverBlock.POWERED, false)) {
+				if (times == null) {
+					times = new ArrayList<>();
+					solution.put(leverType, times);
+				}
+				if (times.isEmpty() || times.getFirst() != 0.0) {
+					times.addFirst(0.0);
+				} else {
+					times.removeFirst();
+				}
+			}
+		}
 	}
 
     @Override
@@ -140,6 +185,19 @@ public class Waterboard extends DungeonPuzzle {
 				solution == null) return;
 		Room room = DungeonManager.getCurrentRoom();
 
+		LeverType nextLever = null;
+		double minimumTime = 0;
+		for (LeverType leverType : LeverType.values()) {
+			List<Double> times = solution.get(leverType);
+			if (times != null && times.size() > leverType.timesUsed) {
+				double next = times.get(leverType.timesUsed);
+				if (nextLever == null || next < minimumTime) {
+					nextLever = leverType;
+					minimumTime = next;
+				}
+			}
+		}
+
 		for (Map.Entry<LeverType, List<Double>> leverData : solution.entrySet()) {
 			LeverType lever = leverData.getKey();
 			for (int i = lever.timesUsed; i < leverData.getValue().size(); i++) {
@@ -147,7 +205,9 @@ public class Waterboard extends DungeonPuzzle {
 				double remainingTime = waterStartMillis + nextTime * 1000 - System.currentTimeMillis();
 				String text;
 
-				if (waterStartMillis == 0 && nextTime == 0 || waterStartMillis > 0 && remainingTime <= 0) {
+				if (lever == LeverType.WATER && i == 0 && nextLever != LeverType.WATER) {
+					text = "" + Formatting.RED + Formatting.BOLD + "WAIT";
+				} else if (waterStartMillis == 0 && nextTime == 0 || waterStartMillis > 0 && remainingTime <= 0) {
 					text = "" + Formatting.GREEN + Formatting.BOLD + "CLICK";
 				} else {
 					double timeToShow = waterStartMillis == 0 ? nextTime : remainingTime / 1000.0;
@@ -157,6 +217,12 @@ public class Waterboard extends DungeonPuzzle {
 				RenderHelper.renderText(context, Text.of(text),
 						room.relativeToActual(lever.leverPos).toCenterPos()
 								.offset(Direction.UP, 0.5 * (1 + i - lever.timesUsed)), true);
+			}
+
+			if (nextLever != null) {
+				RenderHelper.renderLineFromCursor(context,
+						room.relativeToActual(nextLever.leverPos).toCenterPos(),
+						ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 2f);
 			}
 		}
     }
@@ -183,6 +249,7 @@ public class Waterboard extends DungeonPuzzle {
         super.reset();
         solve = null;
 		solution = null;
+		failed = false;
 		waterStartMillis = 0;
 		for (LeverType leverType : LeverType.values()) {
 			leverType.timesUsed = 0;

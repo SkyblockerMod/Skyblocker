@@ -41,6 +41,7 @@ public abstract class DungeonPuzzle implements Tickable, Renderable, Resettable 
             if (currentRoom != null) {
                 reset();
                 currentRoom.addSubProcess(this);
+				shouldSolve = true;
                 context.getSource().sendFeedback(Constants.PREFIX.get().append("§aSolving " + puzzleName + " puzzle in the current room."));
             } else {
                 context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null."));
