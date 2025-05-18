@@ -26,9 +26,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,7 +141,7 @@ public class Waterboard extends DungeonPuzzle {
 			for (int y = BOARD_MIN_Y; y <= BOARD_MAX_Y; y++) {
 				BlockPos pos = room.relativeToActual(new BlockPos(x, y, BOARD_Z));
 				BlockState state = world.getBlockState(pos);
-				if (state.getBlock() == Blocks.WATER) {
+				if (state.isOf(Blocks.WATER)) {
 					client.player.sendMessage(Constants.PREFIX.get().append(
 							"Waterboard: water must be toggled off for the solver to work properly. " +
 									"Turn the water off and let it drain, then reset the solver."), false);
@@ -227,14 +225,72 @@ public class Waterboard extends DungeonPuzzle {
 						room.relativeToActual(lever.leverPos).toCenterPos()
 								.offset(Direction.UP, 0.5 * (1 + i - lever.timesUsed)), true);
 			}
+		}
 
-			if (nextLever != null) {
-				RenderHelper.renderLineFromCursor(context,
-						room.relativeToActual(nextLever.leverPos).toCenterPos(),
-						ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 2f);
-			}
+		if (nextLever != null) {
+			RenderHelper.renderLineFromCursor(context,
+					room.relativeToActual(nextLever.leverPos).toCenterPos(),
+					ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 2f);
+		}
+
+		List<Pair<BlockPos, BlockPos>> waterPath = new ArrayList<>();
+		waterPath.add(new Pair<>(FIRST_SWITCH_POSITION.up(5), FIRST_SWITCH_POSITION.up(3)));
+		findWaterPathVertical(FIRST_SWITCH_POSITION.up(3), context.world(), room, waterPath);
+
+		for (Pair<BlockPos, BlockPos> pair : waterPath) {
+			Vec3d head = room.relativeToActual(pair.getLeft()).toCenterPos();
+			Vec3d tail = room.relativeToActual(pair.getRight()).toCenterPos();
+			RenderHelper.renderLinesFromPoints(context, new Vec3d[]{head, tail},
+					ColorUtils.getFloatComponents(DyeColor.LIGHT_BLUE), 1f, 3f, true);
 		}
     }
+
+	private void findWaterPathVertical(BlockPos root, ClientWorld world, Room room, List<Pair<BlockPos, BlockPos>> waterPath) {
+		if (isWaterPassable(root.down(), world, room)) {
+			BlockPos.Mutable tail = new BlockPos.Mutable().set(root.down());
+			while (isWaterPassable(tail.down(), world, room)) {
+				tail.move(Direction.DOWN);
+			}
+			waterPath.add(new Pair<>(root, new BlockPos(tail)));
+			findWaterPathHorizontal(tail, world, room, waterPath);
+		}
+	}
+
+	private void findWaterPathHorizontal(BlockPos root, ClientWorld world, Room room, List<Pair<BlockPos, BlockPos>> waterPath) {
+		if (!isWaterPassable(root.down(), world, room)) {
+			BlockPos.Mutable left = new BlockPos.Mutable().set(root);
+			int leftSteps = 0;
+			while (isWaterPassable(left.east(), world, room) && !isWaterPassable(left.down(), world, room) && leftSteps < 7) {
+				left.move(Direction.EAST);
+				leftSteps++;
+			}
+			BlockPos.Mutable right = new BlockPos.Mutable().set(root);
+			int rightSteps = 0;
+			while (isWaterPassable(right.west(), world, room) && !isWaterPassable(right.down(), world, room) && rightSteps < 7) {
+				right.move(Direction.WEST);
+				rightSteps++;
+			}
+
+			if (leftSteps > 0 && (leftSteps <= rightSteps || rightSteps == 0 || rightSteps > 5)) {
+				waterPath.add(new Pair<>(root, new BlockPos(left)));
+				findWaterPathVertical(left, world, room, waterPath);
+			}
+			if (rightSteps > 0 && (rightSteps <= leftSteps || leftSteps == 0 || leftSteps > 5)) {
+				waterPath.add(new Pair<>(root, new BlockPos(right)));
+				findWaterPathVertical(right, world, room, waterPath);
+			}
+		}
+	}
+
+	private boolean isWaterPassable(BlockPos pos, ClientWorld world, Room room) {
+		if (pos.getX() < BOARD_MIN_X || pos.getX() > BOARD_MAX_X ||
+				pos.getY() < BOARD_MIN_Y || pos.getY() > BOARD_MAX_Y ||
+				pos.getZ() != BOARD_Z) {
+			return false;
+		}
+		BlockState state = world.getBlockState(room.relativeToActual(pos));
+		return state.isAir() || state.isOf(Blocks.WATER);
+	}
 
     private ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult blockHitResult) {
 		if (SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveWaterboard &&
