@@ -41,8 +41,11 @@ public class Waterboard extends DungeonPuzzle {
     private static final Logger LOGGER = LoggerFactory.getLogger(Waterboard.class);
     public static final Waterboard INSTANCE = new Waterboard();
 	private static JsonObject SOLUTIONS;
-	private static final BlockPos BOARD_LOWER_CORNER = new BlockPos(6, 60, 26);
-	private static final BlockPos BOARD_UPPER_CORNER = new BlockPos(24, 78, 26);
+	private static final int BOARD_MIN_X = 6;
+	private static final int BOARD_MAX_X = 24;
+	private static final int BOARD_MIN_Y = 58;
+	private static final int BOARD_MAX_Y = 81;
+	private static final int BOARD_Z = 26;
 	private static final BlockPos FIRST_SWITCH_POSITION = new BlockPos(15, 78, 26);
 
 	private Map<LeverType, List<Double>> solution;
@@ -90,18 +93,7 @@ public class Waterboard extends DungeonPuzzle {
 		Room room = DungeonManager.getCurrentRoom();
 		ClientWorld world = client.world;
 		if (world == null) throw new RuntimeException("Unreachable");
-		if (client.player == null) throw new RuntimeException("Probably unreachable");
-
-		Box boardBox = Box.enclosing(BOARD_LOWER_CORNER, BOARD_UPPER_CORNER);
-		for (BlockState blockState : world.getStatesInBox(boardBox).toList()) {
-			if (blockState.getBlock() == Blocks.WATER) {
-				client.player.sendMessage(Constants.PREFIX.get().append(
-						"Waterboard: water must be toggled off for the solver to work properly. " +
-						"Turn the water off and let it drain, then reset the solver."), false);
-				failed = true;
-				return;
-			}
-		}
+		if (client.player == null) throw new RuntimeException("Unreachable");
 
 		Set<LeverType> firstSwitches = new HashSet<>();
 		Box firstSwitchBlocks = Box.enclosing(room.relativeToActual(FIRST_SWITCH_POSITION.add(-1, -1, 0)),
@@ -145,6 +137,23 @@ public class Waterboard extends DungeonPuzzle {
 							"Waterboard: doors are in an unrecognized state. " +
 							"Make sure exactly three doors are closed, then reset the solver."), false);
 			failed = true;
+		}
+
+		for (int x = BOARD_MIN_X; x <= BOARD_MAX_X; x++) {
+			for (int y = BOARD_MIN_Y; y <= BOARD_MAX_Y; y++) {
+				BlockPos pos = room.relativeToActual(new BlockPos(x, y, BOARD_Z));
+				BlockState state = world.getBlockState(pos);
+				if (state.getBlock() == Blocks.WATER) {
+					client.player.sendMessage(Constants.PREFIX.get().append(
+							"Waterboard: water must be toggled off for the solver to work properly. " +
+									"Turn the water off and let it drain, then reset the solver."), false);
+					failed = true;
+					break;
+				}
+			}
+		}
+
+		if (failed) {
 			return;
 		}
 
