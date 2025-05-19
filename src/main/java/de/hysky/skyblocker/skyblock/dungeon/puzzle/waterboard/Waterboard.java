@@ -251,6 +251,7 @@ public class Waterboard extends DungeonPuzzle {
 			renderWaterPath(context);
 			renderProspectiveChanges(context);
 
+
 			if (solution != null) {
 				LeverType nextLever = findNextLever();
 				if (nextLever != null) {
@@ -314,8 +315,8 @@ public class Waterboard extends DungeonPuzzle {
 
 		Vec3d camera = room.actualToRelative(player.getEyePos());
 		Vec3d look = room.actualToRelative(player.getEyePos().add(player.getRotationVector())).subtract(camera);
-		double t1 = (BOARD_Z - camera.getZ()) / look.getZ();
-		double t2 = (BOARD_Z + 1 - camera.getZ()) / look.getZ();
+		double t1 = (BOARD_Z - 1.5 - camera.getZ()) / look.getZ();
+		double t2 = (BOARD_Z + 1.5 - camera.getZ()) / look.getZ();
 		Vec3d start = camera.add(look.multiply(t1));
 		Vec3d end = camera.add(look.multiply(t2));
 
@@ -326,14 +327,17 @@ public class Waterboard extends DungeonPuzzle {
 			case SE -> Direction.NORTH;
 		};
 
-		prospective = BlockView.raycast(room.relativeToActual(start), room.relativeToActual(end), null, (context, pos) -> {
+		prospective = BlockView.raycast(room.relativeToActual(start), room.relativeToActual(end), null, (ctx, pos) -> {
+			if (room.actualToRelative(pos).getZ() != BOARD_Z) {
+				return null;
+			}
 			LeverType leverType = LeverType.fromBlock(world.getBlockState(pos).getBlock());
 			if (leverType == null) {
 				BlockPos alternatePos = pos.offset(behind);
 				leverType = LeverType.fromBlock(world.getBlockState(alternatePos).getBlock());
 			}
 			return leverType;
-		}, (context) -> null);
+		}, (ctx) -> null);
 	}
 
 	private void renderProspectiveChanges(WorldRenderContext context) {
