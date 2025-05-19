@@ -3,13 +3,12 @@ package de.hysky.skyblocker.skyblock.dungeon.secrets;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.map.MapDecoration;
 import net.minecraft.item.map.MapDecorationTypes;
 import net.minecraft.item.map.MapState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.RoundingMode;
@@ -226,6 +225,15 @@ public class DungeonMapUtils {
         };
     }
 
+	public static Vec3d actualToRelative(Room.Direction direction, Vector2ic physicalCornerPos, Vec3d pos) {
+		return switch (direction) {
+			case NW -> new Vec3d(pos.getX() - physicalCornerPos.x(), pos.getY(), pos.getZ() - physicalCornerPos.y());
+			case NE -> new Vec3d(pos.getZ() - physicalCornerPos.y(), pos.getY(), -pos.getX() + physicalCornerPos.x());
+			case SW -> new Vec3d(-pos.getZ() + physicalCornerPos.y(), pos.getY(), pos.getX() - physicalCornerPos.x());
+			case SE -> new Vec3d(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
+		};
+	}
+
     public static BlockPos relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, JsonObject posJson) {
         return relativeToActual(direction, physicalCornerPos, new BlockPos(posJson.get("x").getAsInt(), posJson.get("y").getAsInt(), posJson.get("z").getAsInt()));
     }
@@ -238,6 +246,15 @@ public class DungeonMapUtils {
             case SE -> new BlockPos(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
         };
     }
+
+	public static Vec3d relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, Vec3d pos) {
+		return switch (direction) {
+			case NW -> new Vec3d(pos.getX() + physicalCornerPos.x(), pos.getY(), pos.getZ() + physicalCornerPos.y());
+			case NE -> new Vec3d(-pos.getZ() + physicalCornerPos.x(), pos.getY(), pos.getX() + physicalCornerPos.y());
+			case SW -> new Vec3d(pos.getZ() + physicalCornerPos.x(), pos.getY(), -pos.getX() + physicalCornerPos.y());
+			case SE -> new Vec3d(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
+		};
+	}
 
     public static Room.Type getRoomType(MapState map, Vector2ic mapPos) {
         return switch (getColor(map, mapPos)) {

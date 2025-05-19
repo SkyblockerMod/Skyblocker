@@ -31,6 +31,8 @@ import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
+import net.minecraft.world.BlockStateRaycastContext;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +60,7 @@ public class Waterboard extends DungeonPuzzle {
 	private Map<LeverType, List<Double>> solution;
 	private boolean failed;
 	private long waterStartMillis;
+	private LeverType prospective;
 	private CompletableFuture<Void> solve;
 	private ClientWorld world;
 	private Room room;
@@ -104,26 +107,22 @@ public class Waterboard extends DungeonPuzzle {
         if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveWaterboard ||
 				!shouldSolve() ||
 				client.world == null ||
-				!DungeonManager.isCurrentRoomMatched() ||
-				solution != null ||
-				failed ||
-				solve != null && !solve.isDone()) {
+				client.player == null ||
+				!DungeonManager.isCurrentRoomMatched()) {
             return;
         }
 
 		world = client.world;
 		room = DungeonManager.getCurrentRoom();
 		player = client.player;
-		if (world == null || player == null) {
-			LOGGER.error("[Skyblocker Waterboard] world or player was null");
-			return;
-		}
 
-		solve = CompletableFuture.runAsync(this::solvePuzzle).exceptionally(e -> {
-			LOGGER.error("[Skyblocker Waterboard] Encountered an unknown exception while solving waterboard.", e);
-			failed = true;
-			return null;
-		});
+		if (solution == null && !failed && solve == null) {
+			solve = CompletableFuture.runAsync(this::solvePuzzle).exceptionally(e -> {
+				LOGGER.error("[Skyblocker Waterboard] Encountered an unknown exception while solving waterboard.", e);
+				failed = true;
+				return null;
+			});
+		}
     }
 
 	private void solvePuzzle() {
@@ -215,7 +214,7 @@ public class Waterboard extends DungeonPuzzle {
 		// Solutions are precalculated according to board variant and initial door combination
 		JsonObject data = SOLUTIONS.get(String.valueOf(variant)).getAsJsonObject().get(doors).getAsJsonObject();
 
-		solution = new HashMap<>();
+		Map<LeverType, List<Double>> solution = new HashMap<>();
 		for (Map.Entry<String, JsonElement> entry : data.entrySet()) {
 			LeverType leverType = LeverType.fromName(entry.getKey());
 			if (leverType != null) {
@@ -238,16 +237,20 @@ public class Waterboard extends DungeonPuzzle {
 				}
 			}
 		}
+
+		this.solution = solution;
 	}
 
     @Override
     public void render(WorldRenderContext context) {
-        if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveWaterboard ||
-				room == null ||
-				world == null) return;
+		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveWaterboard ||
+				world == null || room == null || player == null) return;
 
 		try {
+			findProspective();
 			renderWaterPath(context);
+			renderProspectiveChanges(context);
+
 			if (solution != null) {
 				LeverType nextLever = findNextLever();
 				if (nextLever != null) {
@@ -260,7 +263,7 @@ public class Waterboard extends DungeonPuzzle {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Waterboard] Error while rendering", e);
 		}
-    }
+	}
 
 	private LeverType findNextLever() {
 		// Determine which lever should be used next
@@ -268,7 +271,7 @@ public class Waterboard extends DungeonPuzzle {
 		double minimumTime = 0.0;
 
 		for (LeverType leverType : LeverType.values()) {
-			List<Double> times = solution.computeIfAbsent(leverType, k -> new ArrayList<>());
+			List<Double> times = solution.get(leverType);
 			if (!times.isEmpty()) {
 				double next = times.getFirst();
 				if (nextLever == null || next < minimumTime) {
@@ -306,6 +309,49 @@ public class Waterboard extends DungeonPuzzle {
 		}
 	}
 
+	private void findProspective() {
+		// If the player looking at a toggleable block in the board, show what would happen if that block was toggled
+
+		Vec3d camera = room.actualToRelative(player.getEyePos());
+		Vec3d look = room.actualToRelative(player.getEyePos().add(player.getRotationVector())).subtract(camera);
+		double t1 = (BOARD_Z - camera.getZ()) / look.getZ();
+		double t2 = (BOARD_Z + 1 - camera.getZ()) / look.getZ();
+		Vec3d start = camera.add(look.multiply(t1));
+		Vec3d end = camera.add(look.multiply(t2));
+
+		Direction behind = switch (room.getDirection()) {
+			case NW -> Direction.SOUTH;
+			case NE -> Direction.WEST;
+			case SW -> Direction.EAST;
+			case SE -> Direction.NORTH;
+		};
+
+		prospective = BlockView.raycast(room.relativeToActual(start), room.relativeToActual(end), null, (context, pos) -> {
+			LeverType leverType = LeverType.fromBlock(world.getBlockState(pos).getBlock());
+			if (leverType == null) {
+				BlockPos alternatePos = pos.offset(behind);
+				leverType = LeverType.fromBlock(world.getBlockState(alternatePos).getBlock());
+			}
+			return leverType;
+		}, (context) -> null);
+	}
+
+	private void renderProspectiveChanges(WorldRenderContext context) {
+		if (prospective != null) {
+			for (int x = BOARD_MIN_X; x <= BOARD_MAX_X; x++) {
+				for (int y = BOARD_MIN_Y; y <= BOARD_MAX_Y; y++) {
+					BlockPos activePos = room.relativeToActual(new BlockPos(x, y, BOARD_Z));
+					BlockPos inactivePos = room.relativeToActual(new BlockPos(x, y, BOARD_Z + 1));
+					if (world.getBlockState(activePos).isOf(prospective.block)) {
+						RenderHelper.renderOutline(context, activePos, ColorUtils.getFloatComponents(prospective.color), 2f, true);
+					} else if (world.getBlockState(inactivePos).isOf(prospective.block)) {
+						RenderHelper.renderFilled(context, activePos, ColorUtils.getFloatComponents(prospective.color), 0.8f, true);
+					}
+				}
+			}
+		}
+	}
+
 	private void renderWaterPath(WorldRenderContext context) {
 		// Calculate and render path of water through the board (as a fallback and because it looks nice)
 		List<Pair<BlockPos, BlockPos>> waterPath = new ArrayList<>();
@@ -315,8 +361,24 @@ public class Waterboard extends DungeonPuzzle {
 		for (Pair<BlockPos, BlockPos> pair : waterPath) {
 			Vec3d head = room.relativeToActual(pair.getLeft()).toCenterPos();
 			Vec3d tail = room.relativeToActual(pair.getRight()).toCenterPos();
-			RenderHelper.renderLinesFromPoints(context, new Vec3d[]{head, tail},
-					ColorUtils.getFloatComponents(DyeColor.LIGHT_BLUE), 1f, 3f, true);
+
+			List<Vec3d[]> lines = new ArrayList<>();
+			if (prospective == null) {
+				lines.add(new Vec3d[]{head, tail});
+			} else {
+				Vec3d forward = tail.subtract(head).normalize();
+				double distance = head.distanceTo(tail);
+				for (int i = 0; i < distance; i++) {
+					lines.add(new Vec3d[]{head, head.add(forward.multiply(0.3))});
+					lines.add(new Vec3d[]{head.add(forward.multiply(0.7)), head.add(forward)});
+					head = head.add(forward);
+				}
+			}
+
+			for (Vec3d[] line : lines) {
+				RenderHelper.renderLinesFromPoints(context, line,
+						ColorUtils.getFloatComponents(LeverType.WATER.color), 1f, 3f, true);
+			}
 		}
 	}
 
@@ -375,7 +437,13 @@ public class Waterboard extends DungeonPuzzle {
 			return false;
 		}
 		BlockState state = world.getBlockState(room.relativeToActual(pos));
-		return state.isAir() || state.isOf(Blocks.WATER);
+		BlockState behindState = world.getBlockState(room.relativeToActual(pos.offset(Direction.SOUTH)));
+		boolean open = state.isAir() || state.isOf(Blocks.WATER);
+		if (prospective == null) {
+			return open;
+		} else {
+			return open && !behindState.isOf(prospective.block) || state.isOf(prospective.block);
+		}
 	}
 
     private ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult blockHitResult) {
@@ -385,7 +453,7 @@ public class Waterboard extends DungeonPuzzle {
 				blockHitResult.getType() == HitResult.Type.BLOCK) {
 			LeverType leverType = LeverType.fromPos(room.actualToRelative(blockHitResult.getBlockPos()));
 			if (leverType != null) {
-				List<Double> times = solution.computeIfAbsent(leverType, k -> new ArrayList<>());
+				List<Double> times = solution.get(leverType);
 				if (waterStartMillis == 0 && leverType != LeverType.WATER && (times.isEmpty() || times.getFirst() != 0.0)) {
 					// If the incorrect lever was used and the water hasn't started yet, tell the player to move it back
 					times.addFirst(0.0);
@@ -420,23 +488,26 @@ public class Waterboard extends DungeonPuzzle {
 		solution = null;
 		failed = false;
 		waterStartMillis = 0;
+		prospective = null;
 	}
 
 	private enum LeverType {
-		COAL(Blocks.COAL_BLOCK, new BlockPos(20, 61, 10)),
-		GOLD(Blocks.GOLD_BLOCK, new BlockPos(20, 61, 15)),
-		QUARTZ(Blocks.QUARTZ_BLOCK, new BlockPos(20, 61, 20)),
-		DIAMOND(Blocks.DIAMOND_BLOCK, new BlockPos(10, 61, 20)),
-		EMERALD(Blocks.EMERALD_BLOCK, new BlockPos(10, 61, 15)),
-		TERRACOTTA(Blocks.TERRACOTTA, new BlockPos(10, 61, 10)),
-		WATER(Blocks.WATER, new BlockPos(15, 60, 5));
+		COAL(Blocks.COAL_BLOCK, new BlockPos(20, 61, 10), DyeColor.RED),
+		GOLD(Blocks.GOLD_BLOCK, new BlockPos(20, 61, 15), DyeColor.YELLOW),
+		QUARTZ(Blocks.QUARTZ_BLOCK, new BlockPos(20, 61, 20), DyeColor.LIGHT_GRAY),
+		DIAMOND(Blocks.DIAMOND_BLOCK, new BlockPos(10, 61, 20), DyeColor.CYAN),
+		EMERALD(Blocks.EMERALD_BLOCK, new BlockPos(10, 61, 15), DyeColor.LIME),
+		TERRACOTTA(Blocks.TERRACOTTA, new BlockPos(10, 61, 10), DyeColor.ORANGE),
+		WATER(Blocks.LAVA, new BlockPos(15, 60, 5), DyeColor.LIGHT_BLUE);
 
 		public final Block block;
 		public final BlockPos leverPos;
+		public final DyeColor color;
 
-		LeverType(Block block, BlockPos leverPos) {
+		LeverType(Block block, BlockPos leverPos, DyeColor color) {
 			this.block = block;
 			this.leverPos = leverPos;
+			this.color = color;
 		}
 
 		public static LeverType fromName(String name) {
@@ -459,7 +530,7 @@ public class Waterboard extends DungeonPuzzle {
 
 		public static LeverType fromPos(BlockPos leverPos) {
 			for (LeverType leverType : LeverType.values()) {
-				if (leverType.leverPos.isWithinDistance(leverPos, 1)) {
+				if (leverPos.equals(leverType.leverPos)) {
 					return leverType;
 				}
 			}
