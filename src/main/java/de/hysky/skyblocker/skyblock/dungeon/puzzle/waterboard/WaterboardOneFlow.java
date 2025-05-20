@@ -20,7 +20,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.LeverBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -36,20 +35,76 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.*;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
+/*
+Benchmark times for solutions in watertimes.json
+(for anyone trying to improve the solutions)
+
+--- Variant 1 ---
+012: 11.85s
+013: 14.24s
+014: 14.35s
+023: 14.16s
+024: 16.64s
+034: 16.11s
+123: 12.36s
+124: 11.94s
+134: 12.01s
+234: 11.29s
+
+--- Variant 2 ---
+012: 12.26s
+013: 15.86s
+014: 14.51s
+023: 14.44s
+024: 15.01s
+034: 11.91s
+123: 12.89s
+124: 16.09s
+134: 12.69s
+234: 12.50s
+
+--- Variant 3 ---
+012: 12.45s
+013: 16.76s
+014: 18.31s
+023: 16.29s
+024: 11.96s
+034: 13.71s
+123: 13.66s
+124: 10.94s
+134: 12.30s
+234: 15.35s
+
+--- Variant 4 ---
+012: 13.29s
+013: 12.15s
+014: 12.25s
+023: 11.10s
+024: 13.11s
+034: 16.59s
+123: 11.20s
+124: 13.61s
+134: 14.21s
+234: 13.94s
+*/
+
 public class WaterboardOneFlow extends DungeonPuzzle {
     private static final Logger LOGGER = LoggerFactory.getLogger(WaterboardOneFlow.class);
     public static final WaterboardOneFlow INSTANCE = new WaterboardOneFlow();
 	private static JsonObject SOLUTIONS;
 
+	private boolean timerEnabled;
 
 	private int variant;
 	private String doors;
+	private String initialDoors;
 	private Map<LeverType, List<Double>> solution;
 	private boolean failed;
 	private long waterStartMillis;
@@ -78,10 +133,35 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 						INSTANCE.softReset();
 						INSTANCE.doors = doorCombination;
 					} else {
-						context.getSource().sendError(Constants.PREFIX.get().append("Door combination must be three increasing digits between 0 and 4."));
+						context.getSource().sendError(Constants.PREFIX.get().append("Door combination must be three increasing digits between 0 and 4"));
 					}
 					return Command.SINGLE_SUCCESS;
 				})))
+				.then(literal("toggleTimer").executes((context) -> {
+					INSTANCE.timerEnabled = !INSTANCE.timerEnabled;
+					context.getSource().sendFeedback(Constants.PREFIX.get().append(
+							INSTANCE.timerEnabled ? "Timer enabled." : "Timer disabled."));
+					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("modifyLever").then(argument("leverType", StringArgumentType.string()).then(argument("times", StringArgumentType.greedyString()).executes((context) -> {
+					LeverType leverType = LeverType.fromName(StringArgumentType.getString(context, "leverType"));
+					if (leverType == null) {
+						context.getSource().sendError(Constants.PREFIX.get().append("Invalid lever type"));
+					} else if (INSTANCE.solution == null) {
+						context.getSource().sendError(Constants.PREFIX.get().append("No existing solution"));
+					} else {
+						try {
+							List<Double> times = new ArrayList<>();
+							for (String time : StringArgumentType.getString(context, "times").split(" ")) {
+								times.add(Double.valueOf(time));
+							}
+							INSTANCE.solution.put(leverType, times);
+						} catch (NumberFormatException e) {
+							context.getSource().sendError(Constants.PREFIX.get().append("Times must be valid numbers or decimals"));
+						}
+					}
+					return Command.SINGLE_SUCCESS;
+				}))))
 		)))));
     }
 
@@ -115,29 +195,71 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				return null;
 			});
 		}
+
+		if (timerEnabled && isPuzzleSolved()) {
+			double elapsed = (System.currentTimeMillis() - waterStartMillis) / 1000.0;
+			player.sendMessage(Constants.PREFIX.get().append("Puzzle solved in ")
+					.append(Text.literal(String.format("%.2f", elapsed)).formatted(Formatting.GREEN))
+					.append(Formatting.RESET.toString()).append(" seconds."), false);
+			softReset();
+			solution = makeEmptySolution();
+		}
     }
 
 	private void solvePuzzle() {
-		findDoors();
-		if (solution != null) {
+		variant = findVariant();
+		if (variant == 0) {
+			LOGGER.error("[Skyblocker Waterboard] Unknown waterboard layout.");
+			failed = true;
 			return;
 		}
 
-		findVariant();
-		checkWater();
+		initialDoors = findDoors();
+		if (doors == null) {
+			// Assume we want to open all doors, unless manually testing a different solution
+			doors = initialDoors;
+			if (doors.isEmpty()) {
+				solution = makeEmptySolution();
+				return;
+			} else if (doors.length() != 3) {
+				player.sendMessage(Constants.PREFIX.get().append(
+						"Waterboard: doors are in an unrecognized state. " +
+						"Make sure exactly three doors are closed, then reset the solver."), false);
+				failed = true;
+				return;
+			}
+		}
+
+		if (!checkWater()) {
+			player.sendMessage(Constants.PREFIX.get().append(
+					"Waterboard: water must be toggled off or it will mess up the solution. " +
+					"Turn the water off and let it drain, then reset the solver."), false);
+			failed = true;
+			return;
+		};
 
 		if (!failed) {
-			loadSolution();
+			// Solutions are precalculated according to board variant and initial door combination
+			JsonObject data = SOLUTIONS.get(String.valueOf(variant)).getAsJsonObject().get(doors).getAsJsonObject();
+			solution = setupSolution(data);
 		}
 	}
 
-	private void findVariant() {
+	private Map<LeverType, List<Double>> makeEmptySolution() {
+		Map<LeverType, List<Double>> solution = new HashMap<>();
+		for (LeverType leverType : LeverType.values()) {
+			solution.put(leverType, new ArrayList<>());
+		}
+		return solution;
+	}
+
+	private int findVariant() {
 		// The waterboard only has four possible layouts, each with a unique pair of
 		// toggleable blocks at the entrance. One layout has them a block lower than the others.
 
 		Set<LeverType> firstSwitches = new HashSet<>();
-		Box firstSwitchBlocks = Box.enclosing(room.relativeToActual(FIRST_SWITCH_POSITION.add(-1, -1, 0)),
-				room.relativeToActual(FIRST_SWITCH_POSITION.add(1, 0, 1)));
+		Box firstSwitchBlocks = Box.enclosing(room.relativeToActual(WATER_ENTRANCE_POSITION.add(-1, -1, 0)),
+				room.relativeToActual(WATER_ENTRANCE_POSITION.add(1, 0, 1)));
 		for (BlockState state : world.getStatesInBox(firstSwitchBlocks).toList()) {
 			LeverType leverType = LeverType.fromBlock(state.getBlock());
 			if (leverType != null) {
@@ -146,67 +268,47 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		}
 
 		if (firstSwitches.contains(LeverType.GOLD) && firstSwitches.contains(LeverType.TERRACOTTA)) {
-			variant = 1;
+			return 1;
 		} else if (firstSwitches.contains(LeverType.EMERALD) && firstSwitches.contains(LeverType.QUARTZ)) {
-			variant = 2;
+			return 2;
 		} else if (firstSwitches.contains(LeverType.QUARTZ) && firstSwitches.contains(LeverType.DIAMOND)) {
-			variant = 3;
+			return 3;
 		} else if (firstSwitches.contains(LeverType.GOLD) && firstSwitches.contains(LeverType.QUARTZ)) {
-			variant = 4;
-		} else {
-			LOGGER.error("[Skyblocker Waterboard] Unknown waterboard layout.");
-			failed = true;
+			return 4;
 		}
+
+		return 0;
 	}
 
-	private void findDoors() {
-		if (doors == null) {
-			// Determine which doors are closed
-			StringBuilder doorBuilder = new StringBuilder();
-			BlockPos.Mutable doorPos = new BlockPos.Mutable(15, 57, 19);
-			for (int i = 0; i < 5; i++) {
-				if (!world.getBlockState(room.relativeToActual(doorPos)).isAir()) {
-					doorBuilder.append(i);
-				}
-				doorPos.move(Direction.NORTH);
+	private String findDoors() {
+		// Determine which doors are closed
+		StringBuilder doorBuilder = new StringBuilder();
+		BlockPos.Mutable doorPos = new BlockPos.Mutable(15, 57, 19);
+		for (int i = 0; i < 5; i++) {
+			if (!world.getBlockState(room.relativeToActual(doorPos)).isAir()) {
+				doorBuilder.append(i);
 			}
-
-			doors = doorBuilder.toString();
+			doorPos.move(Direction.NORTH);
 		}
-
-		if (doors.isEmpty()) {
-			solution = new HashMap<>();
-		} else if (doors.length() != 3) {
-			player.sendMessage(
-					Constants.PREFIX.get().append(
-							"Waterboard: doors are in an unrecognized state. " +
-							"Make sure exactly three doors are closed, then reset the solver."), false);
-			failed = true;
-		}
+		return doorBuilder.toString();
 	}
 
-	private void checkWater() {
+	private boolean checkWater() {
 		// Make sure there is no water currently in the board
 		for (int x = BOARD_MIN_X; x <= BOARD_MAX_X; x++) {
 			for (int y = BOARD_MIN_Y; y <= BOARD_MAX_Y; y++) {
 				BlockPos pos = room.relativeToActual(new BlockPos(x, y, BOARD_Z));
 				BlockState state = world.getBlockState(pos);
 				if (state.isOf(Blocks.WATER)) {
-					player.sendMessage(Constants.PREFIX.get().append(
-							"Waterboard: water must be toggled off for the solver to work properly. " +
-							"Turn the water off and let it drain, then reset the solver."), false);
-					failed = true;
-					return;
+					return false;
 				}
 			}
 		}
+		return true;
 	}
 
-	private void loadSolution() {
-		// Solutions are precalculated according to board variant and initial door combination
-		JsonObject data = SOLUTIONS.get(String.valueOf(variant)).getAsJsonObject().get(doors).getAsJsonObject();
-
-		Map<LeverType, List<Double>> solution = new HashMap<>();
+	private Map<LeverType, List<Double>> setupSolution(JsonObject data) {
+		Map<LeverType, List<Double>> solution = makeEmptySolution();
 		for (Map.Entry<String, JsonElement> entry : data.entrySet()) {
 			LeverType leverType = LeverType.fromName(entry.getKey());
 			if (leverType != null) {
@@ -220,8 +322,8 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 
 		// If the solver was reset after using some levers, make sure they are flipped back to the correct positions
 		for (LeverType leverType : LeverType.values()) {
-			List<Double> times = solution.computeIfAbsent(leverType, k -> new ArrayList<>());
-			if (world.getBlockState(room.relativeToActual(leverType.leverPos)).get(LeverBlock.POWERED, false)) {
+			List<Double> times = solution.get(leverType);
+			if (leverType != LeverType.WATER && isLeverActive(leverType)) {
 				if (times.isEmpty() || times.getFirst() != 0.0) {
 					times.addFirst(0.0);
 				} else {
@@ -230,7 +332,29 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 			}
 		}
 
-		this.solution = solution;
+		return solution;
+	}
+
+	private boolean isLeverActive(LeverType leverType) {
+		BlockPos offset = leverType.initialPositions[variant - 1];
+		if (offset == null) {
+			return false;
+		}
+		return !world.getBlockState(room.relativeToActual(WATER_ENTRANCE_POSITION.add(offset))).isOf(leverType.block);
+	}
+
+	private boolean isPuzzleSolved() {
+		if (doors == null || initialDoors == null || waterStartMillis == 0) {
+			return false;
+		}
+		String currentDoors = findDoors();
+		for (int i = 0; i < 5; i++) {
+			String s = String.valueOf(i);
+			if (initialDoors.contains(s) == currentDoors.contains(s) == doors.contains(s)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
     @Override
@@ -296,25 +420,28 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	}
 
     private ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult blockHitResult) {
-		if (SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow &&
-				DungeonManager.isCurrentRoomMatched() &&
-				solution != null &&
-				blockHitResult.getType() == HitResult.Type.BLOCK) {
-			LeverType leverType = LeverType.fromPos(room.actualToRelative(blockHitResult.getBlockPos()));
-			if (leverType != null) {
-				List<Double> times = solution.get(leverType);
-				if (waterStartMillis == 0 && leverType != LeverType.WATER && (times.isEmpty() || times.getFirst() != 0.0)) {
-					// If the incorrect lever was used and the water hasn't started yet, tell the player to move it back
-					times.addFirst(0.0);
-				} else {
-					if (!times.isEmpty()) {
-						times.removeFirst();
-					}
-					if (waterStartMillis == 0 && leverType == LeverType.WATER) {
-						waterStartMillis = System.currentTimeMillis();
+		try {
+			if (SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow &&
+					solution != null &&
+					blockHitResult.getType() == HitResult.Type.BLOCK) {
+				LeverType leverType = LeverType.fromPos(room.actualToRelative(blockHitResult.getBlockPos()));
+				if (leverType != null) {
+					List<Double> times = solution.get(leverType);
+					if (waterStartMillis == 0 && leverType != LeverType.WATER && (times.isEmpty() || times.getFirst() != 0.0)) {
+						// If the incorrect lever was used and the water hasn't started yet, tell the player to move it back
+						times.addFirst(0.0);
+					} else {
+						if (!times.isEmpty()) {
+							times.removeFirst();
+						}
+						if (waterStartMillis == 0 && leverType == LeverType.WATER) {
+							waterStartMillis = System.currentTimeMillis();
+						}
 					}
 				}
 			}
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Waterboard] Exception in onUseBlock", e);
 		}
         return ActionResult.PASS;
     }
@@ -328,11 +455,9 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	private void softReset() {
 		// In most cases we want the solver to remain active after resetting, so don't call super.reset()
 		solve = null;
-		world = null;
-		room = null;
-		player = null;
 		variant = 0;
 		doors = null;
+		initialDoors = null;
 		solution = null;
 		failed = false;
 		waterStartMillis = 0;

@@ -72,8 +72,8 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 
 		// Calculate and render path of water through the board
 		List<Pair<BlockPos, BlockPos>> waterPath = new ArrayList<>();
-		waterPath.add(new Pair<>(FIRST_SWITCH_POSITION.up(5), FIRST_SWITCH_POSITION.up(3)));
-		findWaterPathVertical(FIRST_SWITCH_POSITION.up(3), waterPath);
+		waterPath.add(new Pair<>(WATER_ENTRANCE_POSITION.up(5), WATER_ENTRANCE_POSITION.up(3)));
+		findWaterPathVertical(WATER_ENTRANCE_POSITION.up(3), waterPath);
 
 		for (Pair<BlockPos, BlockPos> pair : waterPath) {
 			Vec3d head = room.relativeToActual(pair.getLeft()).toCenterPos();
