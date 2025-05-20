@@ -61,7 +61,7 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 			renderWaterPath(context);
 			renderProspectiveChanges(context);
 		} catch (Exception e) {
-			LOGGER.error("[Skyblocker Waterboard] Error while rendering", e);
+			LOGGER.error("[Skyblocker Waterboard] Error while rendering previews", e);
 		}
 	}
 
