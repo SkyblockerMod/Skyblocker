@@ -196,7 +196,9 @@
   "skyblocker.config.dungeons.puzzle.solveTicTacToe.@Tooltip": "Puts a red box around the next best move for you to make!",
   "skyblocker.config.dungeons.puzzle.solveTrivia": "Solve Trivia Puzzle",
   "skyblocker.config.dungeons.puzzle.solveWaterboard": "Solve Waterboard Puzzle",
-  "skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip": "Click the levers with green boxes to solve the puzzle.",
+  "skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip": "Click the indicated levers at the correct times to solve the puzzle.",
+  "skyblocker.config.dungeons.puzzle.previewWaterPath": "Waterboard: Preview Water Path",
+  "skyblocker.config.dungeons.puzzle.previewLeverEffects": "Waterboard: Preview Lever Effects",
 
   "skyblocker.config.dungeons.salvageHelper": "Salvage Helper",
   "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Highlights items picked up in dungeons that can be salvaged.",
