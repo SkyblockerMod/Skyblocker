@@ -101,6 +101,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	private static JsonObject SOLUTIONS;
 
 	private boolean timerEnabled;
+	private List<Mark> marks;
 	private ClientWorld world;
 	private Room room;
 	private ClientPlayerEntity player;
@@ -162,6 +163,50 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 					}
 					return Command.SINGLE_SUCCESS;
 				}))))
+				.then(literal("addMark").executes((context) -> {
+					if (INSTANCE.world == null || INSTANCE.room == null || INSTANCE.player == null) {
+						context.getSource().sendError(Constants.PREFIX.get().append("Solver not active"));
+						return Command.SINGLE_SUCCESS;
+					}
+
+					Vec3d camera = INSTANCE.room.actualToRelative(INSTANCE.player.getEyePos());
+					Vec3d look = INSTANCE.room.actualToRelative(INSTANCE.player.getEyePos()
+							.add(INSTANCE.player.getRotationVector())).subtract(camera);
+					double t = (BOARD_Z + 0.5 - camera.getZ()) / look.getZ();
+					Vec3d vec = camera.add(look.multiply(t));
+					double x = MathHelper.floor(vec.x);
+					double y = MathHelper.floor(vec.y);
+					double z = MathHelper.floor(vec.z);
+
+					if (x < BOARD_MIN_X || x > BOARD_MAX_X || y < BOARD_MIN_Y || y > BOARD_MAX_Y || z != BOARD_Z) {
+						context.getSource().sendError(Constants.PREFIX.get().append("Mark is not inside the board"));
+						return Command.SINGLE_SUCCESS;
+					}
+					BlockPos pos = BlockPos.ofFloored(INSTANCE.room.relativeToActual(vec));
+
+					if (!INSTANCE.world.getBlockState(pos).isAir()) {
+						context.getSource().sendError(Constants.PREFIX.get().append("Marks can only be placed on air"));
+						return Command.SINGLE_SUCCESS;
+					}
+
+					if (INSTANCE.marks == null) {
+						INSTANCE.marks = new ArrayList<>();
+					} else {
+						for (Mark mark : INSTANCE.marks) {
+							if (mark.pos.equals(pos)) {
+								context.getSource().sendError(Constants.PREFIX.get().append("There is already a mark at that position"));
+								return Command.SINGLE_SUCCESS;
+							}
+						}
+					}
+
+					INSTANCE.marks.add(new Mark(INSTANCE.marks.size() + 1, pos));
+					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("clearMarks").executes((context) -> {
+					INSTANCE.marks = null;
+					return Command.SINGLE_SUCCESS;
+				}))
 		)))));
     }
 
@@ -203,6 +248,18 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				player.sendMessage(Constants.PREFIX.get().append("Puzzle solved in ")
 						.append(Text.literal(String.format("%.2f", elapsed)).formatted(Formatting.GREEN))
 						.append(Formatting.RESET.toString()).append(" seconds."), false);
+			}
+		}
+
+		if (marks != null && waterStartMillis > 0) {
+			for (Mark mark : marks) {
+				if (!mark.reached && world.getBlockState(mark.pos).isOf(Blocks.WATER)) {
+					mark.reached = true;
+					double elapsed = (System.currentTimeMillis() - waterStartMillis) / 1000.0;
+					player.sendMessage(Constants.PREFIX.get().append(String.format("Mark %d reached in ", mark.index))
+							.append(Text.literal(String.format("%.2f", elapsed)).formatted(Formatting.GREEN))
+							.append(Formatting.RESET.toString()).append(" seconds."), false);
+				}
 			}
 		}
     }
@@ -362,36 +419,47 @@ public class WaterboardOneFlow extends DungeonPuzzle {
     @Override
     public void render(WorldRenderContext context) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow ||
-				world == null || room == null || player == null || solution == null) return;
+				world == null || room == null || player == null) return;
 
 		try {
-			List<Pair<LeverType, Double>> sortedTimes = solution.entrySet().stream()
-					.flatMap((entry) -> entry.getValue().stream().map((time) -> new Pair<>(entry.getKey(), time)))
-					.sorted((pair1, pair2) -> {
-						double time1 = pair1.getRight() + (pair1.getLeft() == LeverType.WATER ? 0.001 : 0.0);
-						double time2 = pair2.getRight() + (pair1.getLeft() == LeverType.WATER ? 0.001 : 0.0);
-						int comparison = Double.compare(time1, time2);
-						if (comparison == 0) {
-							comparison = Integer.compare(pair1.getLeft().ordinal(), pair2.getLeft().ordinal());
-						}
-						return comparison;
-					}).toList();
-			LeverType nextLever = sortedTimes.isEmpty() ? null : sortedTimes.getFirst().getLeft();
-			LeverType nextNextLever = sortedTimes.size() < 2 ? null : sortedTimes.get(1).getLeft();
-
-			if (nextLever != null) {
-				RenderHelper.renderLineFromCursor(context,
-						room.relativeToActual(nextLever.leverPos).toCenterPos(),
-						ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 2f);
-				if (nextNextLever != null) {
-					RenderHelper.renderLinesFromPoints(context, new Vec3d[]{
-							room.relativeToActual(nextLever.leverPos).toCenterPos(),
-							room.relativeToActual(nextNextLever.leverPos).toCenterPos()
-					}, ColorUtils.getFloatComponents(DyeColor.WHITE), 0.5f, 1f, true);
+			if (marks != null) {
+				for (Mark mark : marks) {
+					float[] components = ColorUtils.getFloatComponents(mark.reached ? DyeColor.LIME : DyeColor.WHITE);
+					RenderHelper.renderFilled(context, mark.pos, components, 0.5f, true);
+					RenderHelper.renderText(context, Text.of(String.format("Mark %d", mark.index)),
+							mark.pos.toCenterPos().offset(Direction.UP, 0.2), true);
 				}
 			}
 
-			renderLeverText(context, nextLever);
+			if (solution != null) {
+				List<Pair<LeverType, Double>> sortedTimes = solution.entrySet().stream()
+						.flatMap((entry) -> entry.getValue().stream().map((time) -> new Pair<>(entry.getKey(), time)))
+						.sorted((pair1, pair2) -> {
+							double time1 = pair1.getRight() + (pair1.getLeft() == LeverType.WATER ? 0.001 : 0.0);
+							double time2 = pair2.getRight() + (pair1.getLeft() == LeverType.WATER ? 0.001 : 0.0);
+							int comparison = Double.compare(time1, time2);
+							if (comparison == 0) {
+								comparison = Integer.compare(pair1.getLeft().ordinal(), pair2.getLeft().ordinal());
+							}
+							return comparison;
+						}).toList();
+				LeverType nextLever = sortedTimes.isEmpty() ? null : sortedTimes.getFirst().getLeft();
+				LeverType nextNextLever = sortedTimes.size() < 2 ? null : sortedTimes.get(1).getLeft();
+
+				if (nextLever != null) {
+					RenderHelper.renderLineFromCursor(context,
+							room.relativeToActual(nextLever.leverPos).toCenterPos(),
+							ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 2f);
+					if (nextNextLever != null) {
+						RenderHelper.renderLinesFromPoints(context, new Vec3d[]{
+								room.relativeToActual(nextLever.leverPos).toCenterPos(),
+								room.relativeToActual(nextNextLever.leverPos).toCenterPos()
+						}, ColorUtils.getFloatComponents(DyeColor.WHITE), 0.5f, 1f, true);
+					}
+				}
+
+				renderLeverText(context, nextLever);
+			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Waterboard] Error while rendering one flow", e);
 		}
@@ -463,5 +531,22 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		solution = null;
 		finished = false;
 		waterStartMillis = 0;
+		if (marks != null) {
+			for (Mark mark : marks) {
+				mark.reached = false;
+			}
+		}
+	}
+
+	private static class Mark {
+		public int index;
+		public BlockPos pos;
+		public boolean reached;
+
+		public Mark(int index, BlockPos pos) {
+			this.index = index;
+			this.pos = pos;
+			this.reached = false;
+		}
 	}
 }
