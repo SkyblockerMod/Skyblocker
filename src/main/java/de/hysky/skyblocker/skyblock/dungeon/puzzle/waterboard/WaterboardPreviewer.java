@@ -201,6 +201,7 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 			return;
 		}
 
+		// Render filled shapes for blocks that would be extended and outlines for blocks that would be retracted
 		for (int x = BOARD_MIN_X; x <= BOARD_MAX_X; x++) {
 			for (int y = BOARD_MIN_Y; y <= BOARD_MAX_Y; y++) {
 				BlockPos activePos = room.relativeToActual(new BlockPos(x, y, BOARD_Z));

@@ -43,8 +43,8 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.arg
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 /*
-Benchmark times for solutions in watertimes.json
-(for anyone trying to improve the solutions)
+Benchmark times for solutions in watertimes.json (for anyone trying to improve the solutions)
+Time starts when the water lever is turned on and stops when the last door opens, use the toggleTimer command
 
 --- Variant 1 ---
 012: 11.85s
@@ -298,7 +298,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		};
 
 		if (!finished) {
-			// Solutions are precalculated according to board variant and initial door combination
+			// Solutions are precalculated according to board variant and initial door combination (in watertimes.json)
 			JsonObject data = SOLUTIONS.get(String.valueOf(variant)).getAsJsonObject().get(doors).getAsJsonObject();
 			solution = setupSolution(data);
 		}
@@ -314,7 +314,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 
 	private int findVariant() {
 		// The waterboard only has four possible layouts, each with a unique pair of
-		// toggleable blocks at the entrance. One layout has them a block lower than the others.
+		// toggleable blocks at the entrance. They are a block lower on the first layout.
 
 		Set<LeverType> firstSwitches = new HashSet<>();
 		Box firstSwitchBlocks = Box.enclosing(room.relativeToActual(WATER_ENTRANCE_POSITION.add(-1, -1, 0)),
@@ -435,6 +435,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				List<Pair<LeverType, Double>> sortedTimes = solution.entrySet().stream()
 						.flatMap((entry) -> entry.getValue().stream().map((time) -> new Pair<>(entry.getKey(), time)))
 						.sorted((pair1, pair2) -> {
+							// Sort by next use time, then by lever type
 							double time1 = pair1.getRight() + (pair1.getLeft() == LeverType.WATER ? 0.001 : 0.0);
 							double time2 = pair2.getRight() + (pair1.getLeft() == LeverType.WATER ? 0.001 : 0.0);
 							int comparison = Double.compare(time1, time2);
@@ -538,6 +539,8 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		}
 	}
 
+	// Can be added to the board to time how long it takes the water to reach certain locations.
+	// Use the addMarks command while looking at the spot where the mark should go.
 	private static class Mark {
 		public int index;
 		public BlockPos pos;
