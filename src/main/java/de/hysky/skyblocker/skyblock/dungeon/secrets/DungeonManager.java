@@ -241,7 +241,7 @@ public class DungeonManager {
     @Init
     public static void init() {
         CUSTOM_WAYPOINTS_DIR = SkyblockerMod.CONFIG_DIR.resolve("custom_secret_waypoints.json");
-        if (!SkyblockerConfigManager.get().dungeons.secretWaypoints.enableRoomMatching) {
+        if (!SkyblockerConfigManager.get().debug.enableRoomMatching) {
             return;
         }
         // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
@@ -795,7 +795,7 @@ public class DungeonManager {
      * @return whether room matching and dungeon secrets should be processed
      */
     private static boolean shouldProcess() {
-        return SkyblockerConfigManager.get().dungeons.secretWaypoints.enableRoomMatching && Utils.isInDungeons();
+        return SkyblockerConfigManager.get().debug.enableRoomMatching && Utils.isInDungeons();
     }
 
     /**

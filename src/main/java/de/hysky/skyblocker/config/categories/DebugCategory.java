@@ -6,6 +6,7 @@ import de.hysky.skyblocker.debug.Debug;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
+import dev.isxander.yacl3.api.OptionFlag;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.text.Text;
@@ -51,6 +52,15 @@ public class DebugCategory {
 								newValue -> config.debug.corpseFinderDebug = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.debug.enableRoomMatching"))
+                        .description(OptionDescription.of(Text.translatable("skyblocker.config.debug.enableRoomMatching.@Tooltip")))
+                        .binding(defaults.debug.enableRoomMatching,
+                                () -> config.debug.enableRoomMatching,
+                                newValue -> config.debug.enableRoomMatching = newValue)
+                        .controller(ConfigUtils::createBooleanController)
+                        .flag(OptionFlag.GAME_RESTART)
+                        .build())
 				.build();
 	}
 }
