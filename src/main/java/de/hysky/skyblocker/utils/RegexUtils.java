@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 
 public class RegexUtils {
@@ -42,7 +43,7 @@ public class RegexUtils {
 		return OptionalInt.of(Integer.parseInt(s.replace(",", "")));
 	}
 
-	public static OptionalInt parseOptionalIntFromMatcher(Matcher matcher, String group) {
+	public static OptionalInt parseOptionalIntFromMatcher(MatchResult matcher, String group) {
 		String s = matcher.group(group);
 		if (s == null) return OptionalInt.empty();
 		return OptionalInt.of(Integer.parseInt(s.replace(",", "")));

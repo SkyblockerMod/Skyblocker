@@ -18,4 +18,7 @@ public class DebugConfig {
 
 	@SerialEntry
 	public boolean corpseFinderDebug = false;
+
+	@SerialEntry
+	public boolean enableRoomMatching = true;
 }
