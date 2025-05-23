@@ -1,28 +1,36 @@
 package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.azureaaron.hmapi.events.HypixelPacketEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
+import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RegisterWidget
 public class ItemPickupWidget extends ComponentBasedWidget {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final int ITEM_LIFE_TIME = 3000;
 	private static final int LOBBY_CHANGE_DELAY = 3000;
+	private static final String SACKS_MESSAGE_START = "[Sacks]";
 
 	private static ItemPickupWidget instance;
 
@@ -35,8 +43,54 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		super(Text.literal("Items"), Formatting.BLUE.getColorValue(), "item_pickup");
 		instance = this;
 
+		ClientReceiveMessageEvents.GAME.register((text, bl) -> instance.onChatMessage(text, bl));
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> lastLobbyChange = System.currentTimeMillis());
-		HypixelPacketEvents.PLAYER_INFO.register();
+	}
+
+	/**
+	 * Retrieves a cached ItemStack or fetches it if not already cached.
+	 */
+	private static ItemStack getItem(String itemName) {
+		return NEURepoManager.NEU_REPO.getItems().getItems()
+				.values().stream()
+				.filter(item -> Formatting.strip(item.getDisplayName()).equals(itemName))
+				.findFirst()
+				.map(NEUItem::getSkyblockItemId)
+				.map(ItemRepository::getItemStack)
+				.orElse(new ItemStack(Items.AIR));
+	}
+
+	private void onChatMessage(Text message, boolean b) {
+
+		if (!Formatting.strip(message.getString()).startsWith(SACKS_MESSAGE_START)) return;
+		HoverEvent hoverEvent = message.getSiblings().getFirst().getStyle().getHoverEvent();
+		if (hoverEvent == null || hoverEvent.getAction() != HoverEvent.Action.SHOW_TEXT) return;
+		String hoverMessage = ((HoverEvent.ShowText) hoverEvent).value().getString();
+
+		Pattern changeRegex = Pattern.compile("([+-])([\\d,]+) (.+) \\((.+)\\)");
+		Matcher matcher = changeRegex.matcher(hoverMessage);
+		while (matcher.find()) {
+
+			ItemStack item = getItem(matcher.group(3));
+			//positive
+			int existingCount = 0;
+			if (matcher.group(1).equals("+")) {
+				if (addedCount.containsKey(item.getNeuName())) {
+					existingCount = addedCount.get(item.getNeuName()).amount;
+				}
+				addedCount.put(item.getNeuName(), new changeData(item, existingCount + Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
+			}
+			//negative
+			else if (matcher.group(1).equals("-")) {
+				if (removedCount.containsKey(item.getNeuName())) {
+					existingCount = removedCount.get(item.getNeuName()).amount;
+				}
+				removedCount.put(item.getNeuName(), new changeData(item, existingCount - Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
+
+			}
+
+		}
+
 	}
 
 	public static ItemPickupWidget getInstance() {
@@ -135,21 +189,18 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		}
 
 
-
 		if (countDiff > 0) {
 			//add to diff
 			if (addedCount.containsKey(newStack.getNeuName())) {
 				existingCount = addedCount.get(newStack.getNeuName()).amount;
 			}
 			addedCount.put(newStack.getNeuName(), new changeData(newStack, existingCount + countDiff, System.currentTimeMillis()));
-		}else if (countDiff < 0){
+		} else if (countDiff < 0) {
 			if (removedCount.containsKey(newStack.getNeuName())) {
 				existingCount = removedCount.get(newStack.getNeuName()).amount;
 			}
 			removedCount.put(newStack.getNeuName(), new changeData(newStack, existingCount + countDiff, System.currentTimeMillis()));
 		}
-
-
 
 
 	}
