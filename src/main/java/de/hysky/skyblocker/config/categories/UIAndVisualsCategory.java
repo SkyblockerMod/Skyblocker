@@ -3,8 +3,10 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import de.hysky.skyblocker.skyblock.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
+import de.hysky.skyblocker.skyblock.fishing.FishingHudWidget;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -665,7 +667,7 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.hideFullHealth"))
+									.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.hideFullHealth"))
 								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.hideFullHealth.@Tooltip")))
 								.binding(defaults.uiAndVisuals.healthBars.hideFullHealth,
 										() -> config.uiAndVisuals.healthBars.hideFullHealth,
@@ -697,6 +699,42 @@ public class UIAndVisualsCategory {
 								.controller(ColorControllerBuilder::create)
 								.build())
 						.build()
+				)
+				//item pickup widget
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup"))
+						.collapsed(true)
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.hud.screen"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, ItemPickupWidget.getInstance().getInternalID(), screen)))
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications.@Tooltip")))
+								.binding(defaults.uiAndVisuals.itemPickup.sackNotifications,
+										() -> config.uiAndVisuals.itemPickup.sackNotifications,
+										newValue -> config.uiAndVisuals.itemPickup.sackNotifications = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.showItemName"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip")))
+								.binding(defaults.uiAndVisuals.itemPickup.showItemName,
+										() -> config.uiAndVisuals.itemPickup.showItemName,
+										newValue -> config.uiAndVisuals.itemPickup.showItemName = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.lifeTime"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip")))
+								.binding(defaults.uiAndVisuals.itemPickup.lifeTime,
+										() -> config.uiAndVisuals.itemPickup.lifeTime,
+										newValue -> config.uiAndVisuals.itemPickup.lifeTime = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
+								.build())
+						.build()
+
 				)
 
                 .build();
