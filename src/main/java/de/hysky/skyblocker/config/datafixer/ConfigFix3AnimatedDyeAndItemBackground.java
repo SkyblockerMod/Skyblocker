@@ -4,6 +4,7 @@ import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
+import net.minecraft.util.math.ColorHelper;
 
 import java.util.stream.Stream;
 
@@ -37,10 +38,10 @@ public class ConfigFix3AnimatedDyeAndItemBackground extends ConfigDataFix {
 		return customAnimatedDye
 				.set("keyframes", customAnimatedDye.createList(Stream.of(
 						customAnimatedDye.emptyMap()
-								.setFieldIfPresent("color", customAnimatedDye.get("color1").result())
+								.set("color", customAnimatedDye.createInt(ColorHelper.fullAlpha(customAnimatedDye.get("color1").asInt(0))))
 								.set("time", customAnimatedDye.createFloat(0)),
 						customAnimatedDye.emptyMap()
-								.setFieldIfPresent("color", customAnimatedDye.get("color2").result())
+								.set("color", customAnimatedDye.createInt(ColorHelper.fullAlpha(customAnimatedDye.get("color2").asInt(0))))
 								.set("time", customAnimatedDye.createFloat(1))
 				)))
 				.remove("color1")
