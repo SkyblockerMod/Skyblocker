@@ -205,7 +205,7 @@ public class GeneralCategory {
                                         () -> config.general.itemTooltip.enableCraftingCost,
                                         newValue -> config.general.itemTooltip.enableCraftingCost = newValue)
                                 .addListener((ignored, event) -> {
-                                	if (event == OptionEventListener.Event.STATE_CHANGE) CraftPriceTooltip.clearCache();
+                                    if (event == OptionEventListener.Event.STATE_CHANGE) CraftPriceTooltip.clearCache();
                                 })
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
@@ -283,34 +283,42 @@ public class GeneralCategory {
                                 .build())
                         .build())
 
-                //Item Info Display
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.general.itemInfoDisplay"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip")))
-                                .binding(defaults.general.itemInfoDisplay.itemRarityBackgrounds,
-                                        () -> config.general.itemInfoDisplay.itemRarityBackgrounds,
-                                        newValue -> config.general.itemInfoDisplay.itemRarityBackgrounds = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<GeneralConfig.RarityBackgroundStyle>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.@Tooltip")))
-                                .binding(defaults.general.itemInfoDisplay.itemRarityBackgroundStyle,
-                                        () -> config.general.itemInfoDisplay.itemRarityBackgroundStyle,
-                                        newValue -> config.general.itemInfoDisplay.itemRarityBackgroundStyle = newValue)
-                                .controller(ConfigUtils::createEnumCyclingListController)
-                                .build())
-                        .option(Option.<Float>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsOpacity"))
-                                .binding(defaults.general.itemInfoDisplay.itemRarityBackgroundsOpacity,
-                                        () -> config.general.itemInfoDisplay.itemRarityBackgroundsOpacity,
-                                        newValue -> config.general.itemInfoDisplay.itemRarityBackgroundsOpacity = newValue)
-                                .controller(opt -> FloatSliderControllerBuilder.create(opt).range(0f, 1f).step(0.05f).formatValue(ConfigUtils.FLOAT_TWO_FORMATTER))
-                                .build())
-                        .build())
+				//Item Info Display
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.general.itemInfoDisplay"))
+						.collapsed(true)
+						.option(Option.<GeneralConfig.ItemBackgroundStyle>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.@Tooltip")))
+								.binding(defaults.general.itemInfoDisplay.itemBackgroundStyle,
+										() -> config.general.itemInfoDisplay.itemBackgroundStyle,
+										newValue -> config.general.itemInfoDisplay.itemBackgroundStyle = newValue)
+								.controller(ConfigUtils::createEnumCyclingListController)
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemBackgroundOpacity"))
+								.binding(defaults.general.itemInfoDisplay.itemBackgroundOpacity,
+										() -> config.general.itemInfoDisplay.itemBackgroundOpacity,
+										newValue -> config.general.itemInfoDisplay.itemBackgroundOpacity = newValue)
+								.controller(opt -> FloatSliderControllerBuilder.create(opt).range(0f, 1f).step(0.05f).formatValue(ConfigUtils.FLOAT_TWO_FORMATTER))
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip")))
+								.binding(defaults.general.itemInfoDisplay.itemRarityBackgrounds,
+										() -> config.general.itemInfoDisplay.itemRarityBackgrounds,
+										newValue -> config.general.itemInfoDisplay.itemRarityBackgrounds = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds.@Tooltip")))
+								.binding(defaults.general.itemInfoDisplay.jacobMedalBackgrounds,
+										() -> config.general.itemInfoDisplay.jacobMedalBackgrounds,
+										newValue -> config.general.itemInfoDisplay.jacobMedalBackgrounds = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
 
                 //Item Protection
                 .group(OptionGroup.createBuilder()
@@ -325,13 +333,13 @@ public class GeneralCategory {
                                 .controller(ConfigUtils::createEnumCyclingListController)
                                 .build())
                         .option(Option.<Boolean>createBuilder()
-                        		.name(Text.translatable("skyblocker.config.general.itemProtection.protectValuableConsumables"))
-                        		.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip")))
-                        		.binding(defaults.general.itemProtection.protectValuableConsumables,
-                        				() -> config.general.itemProtection.protectValuableConsumables,
-                        				newValue -> config.general.itemProtection.protectValuableConsumables = newValue)
-                        		.controller(ConfigUtils::createBooleanController)
-                        		.build())
+                                .name(Text.translatable("skyblocker.config.general.itemProtection.protectValuableConsumables"))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip")))
+                                .binding(defaults.general.itemProtection.protectValuableConsumables,
+                                        () -> config.general.itemProtection.protectValuableConsumables,
+                                        newValue -> config.general.itemProtection.protectValuableConsumables = newValue)
+                                .controller(ConfigUtils::createBooleanController)
+                                .build())
                         .build())
 
                 //Wiki Lookup
@@ -379,24 +387,24 @@ public class GeneralCategory {
                                 .build())
                         .build())
 
-                //Hitboxes
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.general.hitbox"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.hitbox.oldFarmlandHitbox"))
-                                .binding(defaults.general.hitbox.oldFarmlandHitbox,
-                                        () -> config.general.hitbox.oldFarmlandHitbox,
-                                        newValue -> config.general.hitbox.oldFarmlandHitbox = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.hitbox.oldLeverHitbox"))
-                                .binding(defaults.general.hitbox.oldLeverHitbox,
-                                        () -> config.general.hitbox.oldLeverHitbox,
-                                        newValue -> config.general.hitbox.oldLeverHitbox = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
+				//Hitboxes
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.general.hitbox"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.hitbox.oldFarmlandHitbox"))
+								.binding(defaults.general.hitbox.oldFarmlandHitbox,
+										() -> config.general.hitbox.oldFarmlandHitbox,
+										newValue -> config.general.hitbox.oldFarmlandHitbox = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.hitbox.oldLeverHitbox"))
+								.binding(defaults.general.hitbox.oldLeverHitbox,
+										() -> config.general.hitbox.oldLeverHitbox,
+										newValue -> config.general.hitbox.oldLeverHitbox = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.general.hitbox.oldMushroomHitbox"))
 								.binding(defaults.general.hitbox.oldMushroomHitbox,
@@ -404,8 +412,8 @@ public class GeneralCategory {
 										newValue -> config.general.hitbox.oldMushroomHitbox = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
-                        .build())
+						.build())
 
-                .build();
-    }
+				.build();
+	}
 }
