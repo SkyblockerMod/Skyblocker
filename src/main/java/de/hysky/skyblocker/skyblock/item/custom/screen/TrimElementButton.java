@@ -30,6 +30,7 @@ import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 import net.minecraft.item.equipment.trim.ArmorTrimPattern;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
@@ -38,6 +39,7 @@ import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public sealed abstract class TrimElementButton extends PressableWidget permits TrimElementButton.Pattern, TrimElementButton.Material {
@@ -176,43 +178,26 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 	}
 
 	public static final class Material extends TrimElementButton {
-
-		/**
-		 * Texture generated in {@link MaterialPlateTextures}
-		 */
-		private final Identifier texture;
+		private final ItemStack icon;
 
 		public Material(Identifier element, ArmorTrimMaterial material, Consumer<TrimElementButton> onPress) {
 			super(element, material.description(), onPress);
-			texture = MaterialPlateTextures.TEXTURE_PREFIX.withSuffixedPath(material.assets().base().suffix());
+
+			// Find item that provides given material
+			icon = Registries.ITEM.stream()
+					.filter(item -> Optional.ofNullable(item.getComponents().get(DataComponentTypes.PROVIDES_TRIM_MATERIAL))
+							.flatMap(c -> c.getMaterial(Utils.getRegistryWrapperLookup()))
+							.map(provided -> provided.matchesId(element))
+							.orElse(false)
+					)
+					.findAny()
+					.map(ItemStack::new)
+					.orElse(BARRIER);
 		}
-
-
 
 		@Override
 		void draw(DrawContext context) {
-			int x = getX() + getWidth() / 2 - 8;
-			int y = getY() + getHeight() / 2 - 8;
-			if (MaterialPlateTextures.isAvailable()) {
-				MatrixStack matrices = context.getMatrices();
-				matrices.push();
-				matrices.translate(0, 0, 10);
-				context.drawTexture(
-						RenderLayer::getGuiTextured,
-						texture,
-						x,
-						y,
-						0,
-						0,
-						16,
-						16,
-						16,
-						16
-						);
-				matrices.pop();
-			} else {
-				context.drawItem(BARRIER, x, y);
-			}
+			context.drawItem(icon, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
 		}
 	}
 
@@ -222,7 +207,5 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-
-	}
+	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 }

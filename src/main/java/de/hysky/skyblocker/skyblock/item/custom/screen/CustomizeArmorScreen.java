@@ -40,12 +40,12 @@ import java.util.OptionalInt;
 
 public class CustomizeArmorScreen extends Screen {
 	static final Logger LOGGER = LogUtils.getLogger();
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final EquipmentSlot[] ARMOR_SLOTS = EquipmentSlot.VALUES.stream().filter(slot -> slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR).toArray(EquipmentSlot[]::new);
 
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
-	//private static final ModelData PLAYER_MODEL = PlayerEntityModel.getTexturedModelData(Dilation.NONE, false);
 
-	private final OtherClientPlayerEntity player = new OtherClientPlayerEntity(MinecraftClient.getInstance().world, MinecraftClient.getInstance().getGameProfile()) {
+	private final OtherClientPlayerEntity player = new OtherClientPlayerEntity(CLIENT.world, CLIENT.getGameProfile()) {
 		@Override
 		public boolean isInvisibleTo(PlayerEntity player) {
 			return true;
@@ -61,22 +61,19 @@ public class CustomizeArmorScreen extends Screen {
 
 	private final Screen previousScreen;
 
-	private final Map<String, Stuff> previousConfigs;
+	private final Map<String, PreviousConfig> previousConfigs;
 
 
 	@Init
 	public static void initThings() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
-				ClientCommandManager.literal("skyblocker").then(ClientCommandManager.literal("custom").executes(context -> {
-					Scheduler.queueOpenScreen(new CustomizeArmorScreen(null));
-					return 1;
-				}))));
+				ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("custom").executes(Scheduler.queueOpenScreenCommand(new CustomizeArmorScreen(null))))
+		));
 		ScreenEvents.AFTER_INIT.register((client1, screen, scaledWidth, scaledHeight) -> {
 			if (Utils.isOnSkyblock() && screen instanceof InventoryScreen inventoryScreen) {
-				Screens.getButtons(inventoryScreen).add(new Button(
-						((HandledScreenAccessor) inventoryScreen).getX() + 63 ,
-						((HandledScreenAccessor) inventoryScreen).getY() + 10,
-						inventoryScreen
+				Screens.getButtons(inventoryScreen).add(new CustomizeButton(
+						((HandledScreenAccessor) inventoryScreen).getX() + 63,
+						((HandledScreenAccessor) inventoryScreen).getY() + 10
 				));
 			}
 		});
@@ -89,7 +86,7 @@ public class CustomizeArmorScreen extends Screen {
 	private final boolean nothingCustomizable;
 	protected CustomizeArmorScreen(Screen previousScreen) {
 		super(Math.random() < 0.01 ? Text.translatable("skyblocker.armorCustomization.titleSecret") : Text.translatable("skyblocker.armorCustomization.title"));
-		List<ItemStack> list = ItemUtils.getArmor(MinecraftClient.getInstance().player);
+		List<ItemStack> list = ItemUtils.getArmor(CLIENT.player);
 		for (int i = 0; i < list.size(); i++) {
 			ItemStack copy = list.get(i).copy();
 			armor[3 - i] = copy;
@@ -99,11 +96,11 @@ public class CustomizeArmorScreen extends Screen {
 		this.previousScreen = previousScreen;
 		nothingCustomizable = !canEdit(armor[selectedSlot]);
 
-		ImmutableMap.Builder<String, Stuff> builder = ImmutableMap.builderWithExpectedSize(4);
+		ImmutableMap.Builder<String, PreviousConfig> builder = ImmutableMap.builderWithExpectedSize(4);
 		for (ItemStack stack : armor) {
 			if (canEdit(stack)) {
 				String uuid = ItemUtils.getItemUuid(stack);
-				builder.put(uuid, new Stuff(
+				builder.put(uuid, new PreviousConfig(
 						SkyblockerConfigManager.get().general.customArmorTrims.containsKey(uuid) ? Optional.of(SkyblockerConfigManager.get().general.customArmorTrims.get(uuid)) : Optional.empty(),
 						SkyblockerConfigManager.get().general.customDyeColors.containsKey(uuid) ? OptionalInt.of(SkyblockerConfigManager.get().general.customDyeColors.getInt(uuid)) : OptionalInt.empty(),
 						SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(uuid) ? Optional.of(SkyblockerConfigManager.get().general.customAnimatedDyes.get(uuid)) : Optional.empty()
@@ -148,16 +145,16 @@ public class CustomizeArmorScreen extends Screen {
 	}
 
 	private void cancel() {
-		previousConfigs.forEach((uuid, stuff) -> {
-			stuff.armorTrimId().ifPresentOrElse(
+		previousConfigs.forEach((uuid, previousConfig) -> {
+			previousConfig.armorTrimId().ifPresentOrElse(
 					trim -> SkyblockerConfigManager.get().general.customArmorTrims.put(uuid, trim),
 					() -> SkyblockerConfigManager.get().general.customArmorTrims.remove(uuid)
 			);
-			stuff.color().ifPresentOrElse(
+			previousConfig.color().ifPresentOrElse(
 					i -> SkyblockerConfigManager.get().general.customDyeColors.put(uuid, i),
 					() -> SkyblockerConfigManager.get().general.customDyeColors.removeInt(uuid)
 			);
-			stuff.animatedDye().ifPresentOrElse(
+			previousConfig.animatedDye().ifPresentOrElse(
 					animatedDye -> SkyblockerConfigManager.get().general.customAnimatedDyes.put(uuid, animatedDye),
 					() -> SkyblockerConfigManager.get().general.customAnimatedDyes.remove(uuid)
 			);
@@ -253,17 +250,14 @@ public class CustomizeArmorScreen extends Screen {
 		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 	}
 
-	private record Stuff(Optional<CustomArmorTrims.ArmorTrimId> armorTrimId, OptionalInt color, Optional<CustomArmorAnimatedDyes.AnimatedDye> animatedDye) {}
+	private record PreviousConfig(Optional<CustomArmorTrims.ArmorTrimId> armorTrimId, OptionalInt color, Optional<CustomArmorAnimatedDyes.AnimatedDye> animatedDye) {}
 
-	private static class Button extends ClickableWidget {
-
+	private static class CustomizeButton extends ClickableWidget {
 		// thanks to @yuflow
 		private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "armor_customization_screen/button");
 
-		private final Screen prevScreen;
-		public Button(int x, int y, Screen screen) {
+		public CustomizeButton(int x, int y) {
 			super(x, y, 10, 10, Text.empty());
-			prevScreen = screen;
 		}
 
 		@Override
@@ -273,7 +267,7 @@ public class CustomizeArmorScreen extends Screen {
 
 		@Override
 		public void onClick(double mouseX, double mouseY) {
-			MinecraftClient.getInstance().setScreen(new CustomizeArmorScreen(prevScreen));
+			CLIENT.setScreen(new CustomizeArmorScreen(CLIENT.currentScreen));
 		}
 
 		@Override
