@@ -6,6 +6,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import de.hysky.skyblocker.utils.render.gui.RGBTextInput;
@@ -23,14 +24,11 @@ import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Closeable;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 
 public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
@@ -94,7 +92,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		int sliderWidth = (int) (width * 0.35f);
 		boolean vertical = getRight() - sliderWidth - 3 > Math.max(animatedCheckbox.getRight(), cycleBackCheckbox.getRight());
 		int sliderY = vertical ? resetColorButton.getBottom() + 3: timelineWidget.getY() - 17;
-		delaySlider = new Slider(getRight() - sliderWidth - 3, sliderY, sliderWidth, 0.0f, 2.0f, f -> {
+		delaySlider = new Slider(getRight() - sliderWidth - 3, sliderY, sliderWidth, 0.0f, 2.0f, 0.02f, true, DELAY_TEXT, f -> {
 			String itemUuid = ItemUtils.getItemUuid(currentItem);
 			CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 			CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
@@ -104,7 +102,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 					dye.duration()
 			);
 			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
-		}, DELAY_TEXT, true);
+		});
 		delaySlider.setTooltip(Tooltip.of(DELAY_TOOLTIP_TEXT));
 
 		int durationX;
@@ -116,7 +114,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 			durationX = delaySlider.getX() - sliderWidth - 3;
 			durationY = delaySlider.getY();
 		}
-		durationSlider = new Slider(durationX, durationY, sliderWidth, 0.1f, 10.0f, f -> {
+		durationSlider = new Slider(durationX, durationY, sliderWidth, 0.1f, 10.0f, 0.1f, true, DURATION_TEXT, f -> {
 			String itemUuid = ItemUtils.getItemUuid(currentItem);
 			CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 			CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
@@ -126,7 +124,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 					f
 			);
 			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, newDye);
-		}, DURATION_TEXT, true);
+		});
 		durationSlider.setTooltip(Tooltip.of(DURATION_TOOLTIP_TEXT));
 
 
@@ -289,34 +287,34 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	}
 
 	private static class Slider extends SliderWidget {
-		private static final NumberFormat FORMATTER = Util.make(NumberFormat.getInstance(Locale.US), nf -> nf.setMaximumFractionDigits(3));
-
-		private final FloatConsumer onValueChanged;
 		private final float minValue;
 		private final float maxValue;
-		private final String translatable;
+		private final float step;
 		private final boolean linear;
+		private final String translatable;
+		private final FloatConsumer onValueChanged;
 
 		private boolean clicked = false;
 
-		public Slider(int x, int y, int width, float min, float max, FloatConsumer onValueChanged, @Translatable String translatable, boolean linear) {
+		public Slider(int x, int y, int width, float min, float max, float step, boolean linear, @Translatable String translatable, FloatConsumer onValueChanged) {
 			super(x, y, width, 15, Text.empty(), 0);
-			this.onValueChanged = onValueChanged;
 			this.minValue = min;
 			this.maxValue = max;
-			this.translatable = translatable;
+			this.step = step;
 			this.linear = linear; // old code stuff... is always true, keeping it, can maybe be useful
+			this.translatable = translatable;
+			this.onValueChanged = onValueChanged;
 			updateMessage();
 		}
 
 		private float trueValue() {
-			double v = linear ? value : value*value;
-			return (float) (minValue + v * (maxValue - minValue));
+			double v = linear ? value : value * value;
+			return roundToStep(minValue + v * (maxValue - minValue));
 		}
 
 		@Override
 		protected void updateMessage() {
-			setMessage(Text.translatable(translatable, FORMATTER.format(trueValue())));
+			setMessage(Text.translatable(translatable, Formatters.DOUBLE_NUMBERS.format(trueValue())));
 		}
 
 		private void setValue(float val) {
@@ -360,5 +358,9 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		// Not using this cuz it updates every drag
 		@Override
 		protected void applyValue() {}
+
+		private float roundToStep(double value) {
+			return Math.clamp(minValue + step * Math.round(value / step), minValue, maxValue);
+		}
 	}
 }
