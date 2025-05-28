@@ -98,7 +98,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 			String itemUuid = ItemUtils.getItemUuid(currentItem);
 			CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 			CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
-					dye.frames(),
+					dye.keyframes(),
 					dye.cycleBack(),
 					f,
 					dye.duration()
@@ -120,7 +120,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 			String itemUuid = ItemUtils.getItemUuid(currentItem);
 			CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 			CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
-					dye.frames(),
+					dye.keyframes(),
 					dye.cycleBack(),
 					dye.delay(),
 					f
@@ -178,7 +178,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		String itemUuid = ItemUtils.getItemUuid(currentItem);
 		if (animated) {
 			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, new CustomArmorAnimatedDyes.AnimatedDye(
-					List.of(new CustomArmorAnimatedDyes.DyeFrame(Colors.RED, 0), new CustomArmorAnimatedDyes.DyeFrame(Colors.BLUE, 1)),
+					List.of(new CustomArmorAnimatedDyes.Keyframe(Colors.RED, 0), new CustomArmorAnimatedDyes.Keyframe(Colors.BLUE, 1)),
 					true,
 					0,
 					1.f
@@ -199,7 +199,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		String itemUuid = ItemUtils.getItemUuid(currentItem);
 		CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 		CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
-				dye.frames(),
+				dye.keyframes(),
 				checked,
 				dye.delay(),
 				dye.duration()

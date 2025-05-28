@@ -39,8 +39,8 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	private String uuid = "";
 
-	private final ArrayList<FrameThumb> frames = new ArrayList<>();
-	private @Nullable AnimatedDyeTimelineWidget.FrameThumb focusedFrame = null;
+	private final ArrayList<KeyframeWidget> keyframes = new ArrayList<>();
+	private @Nullable AnimatedDyeTimelineWidget.KeyframeWidget focusedFrame = null;
 
 	public AnimatedDyeTimelineWidget(int x, int y, int width, int height, FrameCallback frameCallback) {
 		super(x, y, width, height, Text.literal("Animated Dye Timeline"));
@@ -54,7 +54,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	@Override
 	public List<? extends Element> children() {
-		return frames;
+		return keyframes;
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 				textureWidth, textureHeight,
 				textureWidth, textureHeight
 		);
-		for (FrameThumb frame : frames) {
+		for (KeyframeWidget frame : keyframes) {
 			frame.render(context, mouseX, mouseY, delta);
 		}
 	}
@@ -77,22 +77,22 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 	@Override
 	public void setFocused(@Nullable Element focused) {
 		super.setFocused(focused);
-		if (focused instanceof FrameThumb frameThumb) {
-			frameCallback.onFrameSelected(frameThumb.color, frameThumb.time);
-			focusedFrame = frameThumb;
+		if (focused instanceof KeyframeWidget keyframe) {
+			frameCallback.onFrameSelected(keyframe.color, keyframe.time);
+			focusedFrame = keyframe;
 		}
 	}
 
 	public void setAnimatedDye(String uuid) {
 		this.uuid = uuid;
 		CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(uuid);
-		frames.clear();
-		frames.ensureCapacity(dye.frames().size());
-		for (int i = 0; i < dye.frames().size(); i++) {
-			CustomArmorAnimatedDyes.DyeFrame dyeFrame = dye.frames().get(i);
-			frames.add(new FrameThumb(dyeFrame.color(), dyeFrame.time(), i != 0 && i != dye.frames().size() - 1));
+		keyframes.clear();
+		keyframes.ensureCapacity(dye.keyframes().size());
+		for (int i = 0; i < dye.keyframes().size(); i++) {
+			CustomArmorAnimatedDyes.Keyframe keyframe = dye.keyframes().get(i);
+			keyframes.add(new KeyframeWidget(keyframe.color(), keyframe.time(), i != 0 && i != dye.keyframes().size() - 1));
 		}
-		setFocused(frames.getFirst());
+		setFocused(keyframes.getFirst());
 		createGradientTexture();
 	}
 
@@ -100,9 +100,9 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		NativeImage image = gradientTexture.getImage();
 		assert image != null;
 		long l = System.currentTimeMillis();
-		for (int i = 0; i < frames.size() - 1; i++) {
-			FrameThumb frame = frames.get(i);
-			FrameThumb nextFrame = frames.get(i + 1);
+		for (int i = 0; i < keyframes.size() - 1; i++) {
+			KeyframeWidget frame = keyframes.get(i);
+			KeyframeWidget nextFrame = keyframes.get(i + 1);
 			int startX = (int) ((image.getWidth() - 1) * frame.time);
 			int endX = (int) ((image.getWidth() - 1) * nextFrame.time);
 			int size = endX - startX;
@@ -124,15 +124,15 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		boolean b = super.mouseClicked(mouseX, mouseY, button);
 		if (b) {
 			if (deletedIndex != -1) {
-				setFocused(frames.get(deletedIndex));
+				setFocused(keyframes.get(deletedIndex));
 				deletedIndex = -1;
 			}
 			return true;
 		}
 		if (isMouseOver(mouseX, mouseY)) {
 			mouseX -= getX() + HORIZONTAL_MARGIN;
-			FrameThumb e = new FrameThumb(0xFFFF0000, (float) (mouseX / (getWidth() - HORIZONTAL_MARGIN * 2 - 1)), true);
-			frames.add(e);
+			KeyframeWidget e = new KeyframeWidget(0xFFFF0000, (float) (mouseX / (getWidth() - HORIZONTAL_MARGIN * 2 - 1)), true);
+			keyframes.add(e);
 			setFocused(e);
 			dataChanged();
 			return true;
@@ -150,9 +150,9 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 	}
 
 	private void dataChanged() {
-		frames.sort(Comparator.comparingDouble(f -> f.time));
+		keyframes.sort(Comparator.comparingDouble(f -> f.time));
 		createGradientTexture();
-		List<CustomArmorAnimatedDyes.DyeFrame> configFrames = ImmutableList.copyOf(frames.stream().map(frameThumb -> new CustomArmorAnimatedDyes.DyeFrame(frameThumb.color, frameThumb.time)).toList());
+		List<CustomArmorAnimatedDyes.Keyframe> configFrames = ImmutableList.copyOf(keyframes.stream().map(keyframe -> new CustomArmorAnimatedDyes.Keyframe(keyframe.color, keyframe.time)).toList());
 		CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(uuid);
 		CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
 				configFrames,
@@ -163,14 +163,14 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		SkyblockerConfigManager.get().general.customAnimatedDyes.put(uuid, newDye);
 	}
 
-	private class FrameThumb extends ClickableWidget {
+	private class KeyframeWidget extends ClickableWidget {
 
 		int color;
 		float time;
 
 		private final boolean draggable;
 
-		public FrameThumb(int color, float time, boolean draggable) {
+		public KeyframeWidget(int color, float time, boolean draggable) {
 			super(0, AnimatedDyeTimelineWidget.this.getY(), 7, AnimatedDyeTimelineWidget.this.getHeight(), Text.literal("Keyframe"));
 			this.draggable = draggable;
 			this.color = color;
@@ -228,10 +228,10 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 		private void deleteThis(boolean mouse) {
 			if (!draggable) return;
-			int i = frames.indexOf(this);
-			AnimatedDyeTimelineWidget.this.setFocused(frames.get(i + 1));
+			int i = keyframes.indexOf(this);
+			AnimatedDyeTimelineWidget.this.setFocused(keyframes.get(i + 1));
 			if (mouse) deletedIndex = i;
-			frames.remove(this);
+			keyframes.remove(this);
 			dataChanged();
 		}
 

@@ -19,11 +19,11 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.List;
 
@@ -75,7 +75,7 @@ public class CustomArmorAnimatedDyes {
 							source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.neverHad")));
 						}
 					} else {
-						AnimatedDye animatedDye = new AnimatedDye(List.of(new DyeFrame(color1, 0), new DyeFrame(color2, 1)), cycleBack, delay, duration);
+						AnimatedDye animatedDye = new AnimatedDye(List.of(new Keyframe(color1, 0), new Keyframe(color2, 1)), cycleBack, delay, duration);
 
 						SkyblockerConfigManager.update(config -> config.general.customAnimatedDyes.put(itemUuid, animatedDye));
 						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.added")));
@@ -94,7 +94,7 @@ public class CustomArmorAnimatedDyes {
 	}
 
 	public static int animateColorTransition(AnimatedDye animatedDye) {
-		AnimatedDyeStateTracker trackedState = STATE_TRACKER_MAP.computeIfAbsent(animatedDye, CustomArmorAnimatedDyes::createStateTracker);
+		AnimatedDyeStateTracker trackedState = STATE_TRACKER_MAP.computeIfAbsent(animatedDye, AnimatedDyeStateTracker::new);
 
 		if (trackedState.lastRecordedFrame == frames) {
 			return trackedState.lastColor;
@@ -102,20 +102,7 @@ public class CustomArmorAnimatedDyes {
 
 		trackedState.lastRecordedFrame = frames;
 
-		return animatedDye.interpolate(trackedState, MinecraftClient.getInstance().getRenderTickCounter());
-	}
-
-	private static AnimatedDyeStateTracker createStateTracker(AnimatedDye animatedDye) {
-		AnimatedDyeStateTracker tracker = new AnimatedDyeStateTracker();
-		if (animatedDye.delay() > 0) {
-			if (animatedDye.cycleBack()) {
-				tracker.onBackCycle = true;
-				tracker.progress = Math.clamp(animatedDye.delay() / animatedDye.duration(), 0, 1);
-			} else {
-				tracker.progress = Math.clamp(1 - animatedDye.delay() / animatedDye.duration(), 0, 1);
-			}
-		}
-		return tracker;
+		return trackedState.interpolate(animatedDye, MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks());
 	}
 
 	private static class AnimatedDyeStateTrackerOld {
@@ -141,55 +128,68 @@ public class CustomArmorAnimatedDyes {
 		}
 	}
 
-	private static class AnimatedDyeStateTracker {
+	@VisibleForTesting
+	static class AnimatedDyeStateTracker {
 		private float progress = 0;
 		private boolean onBackCycle = false;
 		private int lastColor = 0;
 		private int lastRecordedFrame = 0;
+
+		@VisibleForTesting
+		AnimatedDyeStateTracker(AnimatedDye animatedDye) {
+			if (animatedDye.delay() > 0) {
+				if (animatedDye.cycleBack()) {
+					onBackCycle = true;
+					progress = Math.clamp(animatedDye.delay() / animatedDye.duration(), 0, 1);
+				} else {
+					progress = Math.clamp(1 - animatedDye.delay() / animatedDye.duration(), 0, 1);
+				}
+			}
+		}
+
+		@VisibleForTesting
+		int interpolate(AnimatedDye animatedDye, float deltaTicks) {
+			update(animatedDye, deltaTicks);
+
+			int keyframe = 0;
+			while (keyframe < animatedDye.keyframes.size() - 1 && animatedDye.keyframes.get(keyframe + 1).time < progress) keyframe++;
+
+			Keyframe current = onBackCycle ? animatedDye.keyframes.get(keyframe + 1) : animatedDye.keyframes.get(keyframe);
+			Keyframe next = onBackCycle ? animatedDye.keyframes.get(keyframe) : animatedDye.keyframes.get(keyframe + 1);
+
+			float colorProgress = (progress - current.time) / (next.time - current.time);
+
+			return lastColor = OkLabColor.interpolate(current.color, next.color, colorProgress);
+		}
+
+		private void update(AnimatedDye animatedDye, float deltaTicks) {
+			float v = deltaTicks * 0.05f / animatedDye.duration;
+			if (onBackCycle) {
+				progress -= v;
+				if (progress <= 0f) {
+					onBackCycle = false;
+					progress = Math.abs(progress);
+				}
+			} else {
+				progress += v;
+				if (progress >= 1f) {
+					if (animatedDye.cycleBack) {
+						onBackCycle = true;
+						progress = 2f - progress;
+					} else {
+						progress %= 1.f;
+					}
+				}
+			}
+		}
 	}
 
 	public static void cleanTrackers() {
 		STATE_TRACKER_MAP.clear();
 	}
 
-	public record DyeFrame(@SerialEntry int color, @SerialEntry float time) {}
-	public record AnimatedDye(@SerialEntry List<DyeFrame> frames, @SerialEntry boolean cycleBack, @SerialEntry float delay, @SerialEntry float duration) {
-
-		private int interpolate(AnimatedDyeStateTracker tracker, RenderTickCounter counter) {
-
-			int dyeFrame = 0;
-			while (dyeFrame < frames.size() - 1 && frames.get(dyeFrame + 1).time < tracker.progress) dyeFrame++;
-
-
-			DyeFrame current = tracker.onBackCycle ? frames.get(dyeFrame + 1) : frames.get(dyeFrame);
-			DyeFrame next = tracker.onBackCycle ? frames.get(dyeFrame) : frames.get(dyeFrame + 1);
-
-			float progress = (tracker.progress - current.time) / (next.time - current.time);
-
-			tracker.lastColor = OkLabColor.interpolate(current.color, next.color, progress);
-
-			float v = counter.getDynamicDeltaTicks() * 0.05f / duration();
-			if (tracker.onBackCycle) {
-				tracker.progress -= v;
-				if (tracker.progress <= 0f) {
-					tracker.onBackCycle = false;
-					tracker.progress = Math.abs(tracker.progress);
-				}
-			} else {
-				tracker.progress += v;
-				if (tracker.progress >= 1f) {
-					if (cycleBack) {
-						tracker.onBackCycle = true;
-						tracker.progress = 2f - tracker.progress;
-					} else {
-						tracker.progress %= 1.f;
-					}
-				}
-			}
-			return tracker.lastColor;
-		}
-	}
-
+	public record Keyframe(@SerialEntry int color, @SerialEntry float time) {}
+	public record AnimatedDye(@SerialEntry List<Keyframe> keyframes, @SerialEntry boolean cycleBack, @SerialEntry float delay, @SerialEntry float duration) {}
 
 	public record AnimatedDyeOld(@SerialEntry int color1, @SerialEntry int color2, @SerialEntry int samples, @SerialEntry boolean cycleBack, @SerialEntry int tickDelay) {
 
