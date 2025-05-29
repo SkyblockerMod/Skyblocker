@@ -3,7 +3,7 @@ package de.hysky.skyblocker.annotations;
 import java.lang.annotation.*;
 
 /**
- * This annotation can either go on a class with a {@code public} parameterless constructor, or a {@code public static finale} field
+ * This annotation can either go on a class with a {@code public} parameterless constructor, or a {@code public static final} field
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
