@@ -325,6 +325,24 @@ public class GardenPlotsWidget extends ContainerWidget {
 	}
 
 	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (super.mouseClicked(mouseX, mouseY, button)) return true;
+
+		if (this.active && this.visible) {
+			if (this.isValidClickButton(button)) {
+				boolean bl = this.isMouseOver(mouseX, mouseY);
+				if (bl) {
+					this.playDownSound(MinecraftClient.getInstance().getSoundManager());
+					this.onClick(mouseX, mouseY);
+					return true;
+				}
+			}
+
+		}
+		return false;
+	}
+
+	@Override
 	public List<? extends Element> children() {
 		return List.of(widgets);
 	}
