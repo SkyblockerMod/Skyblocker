@@ -19,6 +19,7 @@ public class RegisterAnnotationProcessor implements BasicProcessor {
 	public enum Registry {
 		SLOT_TEXT("RegisterSlotTextAdder", "de/hysky/skyblocker/skyblock/item/slottext/SlotTextManager", "getAdders"),
 		TOOLTIP("RegisterTooltipAdder", "de/hysky/skyblocker/skyblock/item/tooltip/TooltipManager", "getAdders"),
+		ITEM_BACKGROUND("RegisterItemBackground", "de/hysky/skyblocker/skyblock/item/background/ItemBackgroundManager", "getBackgrounds"),
 		CONTAINER_SOLVER("RegisterContainerSolver", "de/hysky/skyblocker/utils/container/ContainerSolverManager", "getSolvers"),
 		;
 
@@ -43,11 +44,11 @@ public class RegisterAnnotationProcessor implements BasicProcessor {
 	}
 
 
-	private final Map<Registry, List<Target>> registryTargets = new EnumMap<>(Registry.class);
+	private final Map<Registry, List<AnnotatedElement>> registryAnnotatedElements = new EnumMap<>(Registry.class);
 
 	public RegisterAnnotationProcessor() {
 		for (Registry registry : Registry.values()) {
-			registryTargets.put(registry, new ArrayList<>());
+			registryAnnotatedElements.put(registry, new ArrayList<>());
 		}
 	}
 
@@ -56,8 +57,8 @@ public class RegisterAnnotationProcessor implements BasicProcessor {
 		for (Registry registry : Registry.values()) {
 			ClassNode classNode = classProvider.apply(registry.targetClass);
 
-			List<Target> targets = registryTargets.get(registry);
-			targets.sort(Comparator.comparingInt(t -> t.priority));
+			List<AnnotatedElement> annotatedElements = registryAnnotatedElements.get(registry);
+			annotatedElements.sort(Comparator.comparingInt(t -> t.priority));
 
 			MethodNode targetMethod = classNode.methods.stream()
 					.filter(method -> method.name.equals(registry.targetMethod))
@@ -72,21 +73,21 @@ public class RegisterAnnotationProcessor implements BasicProcessor {
 
 			// Create the method
 			targetMethod.instructions.clear();
-			targetMethod.visitIntInsn(Opcodes.BIPUSH, targets.size());
+			targetMethod.visitIntInsn(Opcodes.BIPUSH, annotatedElements.size());
 			targetMethod.visitTypeInsn(Opcodes.ANEWARRAY, internalName);
-			for (int i = 0; i < targets.size(); i++) {
-				targetMethod.visitInsn(Opcodes.DUP);
-				targetMethod.visitIntInsn(Opcodes.BIPUSH, i);
-				Target target = targets.get(i);
-				target.map(targetClassName -> {
+			for (int i = 0; i < annotatedElements.size(); i++) {
+				targetMethod.visitInsn(Opcodes.DUP); // Push array on stack again
+				targetMethod.visitIntInsn(Opcodes.BIPUSH, i); // push array index
+				AnnotatedElement annotatedElement = annotatedElements.get(i);
+				// Annotated element is either a class or a field
+				annotatedElement.map(targetClassName -> {
 					// Create new instance of class
-					targetMethod.visitTypeInsn(Opcodes.NEW, targetClassName);
-					targetMethod.visitInsn(Opcodes.DUP);
-					targetMethod.visitMethodInsn(Opcodes.INVOKESPECIAL, targetClassName, "<init>", "()V", false);
+					targetMethod.visitTypeInsn(Opcodes.NEW, targetClassName); // Create object
+					targetMethod.visitInsn(Opcodes.DUP); // Dup it on stack to invoke constructor and store it in array
+					targetMethod.visitMethodInsn(Opcodes.INVOKESPECIAL, targetClassName, "<init>", "()V", false); // Call constructor
 				}, (field, ownerClassName) ->
-						// get static field
-						targetMethod.visitFieldInsn(Opcodes.GETSTATIC, ownerClassName, field.name, field.desc));
-				targetMethod.visitInsn(Opcodes.AASTORE);
+					targetMethod.visitFieldInsn(Opcodes.GETSTATIC, ownerClassName, field.name, field.desc)); // get static field
+				targetMethod.visitInsn(Opcodes.AASTORE); // store in array
 			}
 			targetMethod.visitInsn(Opcodes.ARETURN);
 
@@ -107,7 +108,7 @@ public class RegisterAnnotationProcessor implements BasicProcessor {
 					if (!hasParameterlessConstructor) {
 						throw new IllegalStateException("Class " + classNode.name + " has " + annotation.registry.annotation + " but has no public parameterless constructor");
 					}
-					registryTargets.get(annotation.registry).add(new Target(classNode.name, annotation.priority));
+					registryAnnotatedElements.get(annotation.registry).add(new AnnotatedElement(classNode.name, annotation.priority));
 				});
 
 		for (FieldNode field : classNode.fields) {
@@ -116,7 +117,7 @@ public class RegisterAnnotationProcessor implements BasicProcessor {
 					.map(RegisterAnnotationProcessor::getAnnotation)
 					.filter(Optional::isPresent)
 					.map(Optional::get)
-					.forEach(annotation -> registryTargets.get(annotation.registry).add(new Target(classNode.name, field, annotation.priority)));
+					.forEach(annotation -> registryAnnotatedElements.get(annotation.registry).add(new AnnotatedElement(classNode.name, field, annotation.priority)));
 		}
 	}
 
@@ -128,12 +129,12 @@ public class RegisterAnnotationProcessor implements BasicProcessor {
 
 	private record Annotation(Registry registry, int priority) {}
 
-	private record Target(String className, Optional<FieldNode> targetField, int priority) {
-		private Target(String className, int priority) {
+	private record AnnotatedElement(String className, Optional<FieldNode> targetField, int priority) {
+		private AnnotatedElement(String className, int priority) {
 			this(className, Optional.empty(), priority);
 		}
 
-		private Target(String className, FieldNode targetField, int priority) {
+		private AnnotatedElement(String className, FieldNode targetField, int priority) {
 			this(className, Optional.of(targetField), priority);
 		}
 

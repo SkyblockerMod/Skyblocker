@@ -23,7 +23,8 @@ public interface BasicProcessor {
 	/**
 	 * Write modifications to classes
 	 * @param classProvider returns a ClassNode based on a class' full name that will be saved after all procesors implementing this interface have run
-	 *                      example: de/hysky/skyblocker/SkyblockerMod
+	 *                      <br>
+	 *                      Example: {@code de/hysky/skyblocker/SkyblockerMod}
 	 */
 	void writeToClasses(Function<String, ClassNode> classProvider);
 

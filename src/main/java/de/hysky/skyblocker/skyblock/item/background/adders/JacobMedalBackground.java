@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.background.adders;
 
+import de.hysky.skyblocker.annotations.RegisterItemBackground;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.background.ColoredItemBackground;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -15,6 +16,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@RegisterItemBackground
 public class JacobMedalBackground extends ColoredItemBackground<Integer> {
 
 	private static final Pattern PATTERN = Pattern.compile("You placed in the (?<bracket>DIAMOND|PLATINUM|GOLD|SILVER|BRONZE) bracket!");
