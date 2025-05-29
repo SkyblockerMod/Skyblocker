@@ -105,29 +105,6 @@ public class CustomArmorAnimatedDyes {
 		return trackedState.interpolate(animatedDye, MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks());
 	}
 
-	private static class AnimatedDyeStateTrackerOld {
-		private int sampleCounter;
-		private boolean onBackCycle = false;
-		private int lastColor = 0;
-		private int lastRecordedTick = 0;
-
-		boolean shouldCycleBack(int samples, boolean canCycleBack) {
-			return canCycleBack && sampleCounter == samples;
-		}
-		
-		int getAndDecrement() {
-			return sampleCounter--;
-		}
-		
-		int getAndIncrement() {
-			return sampleCounter++;
-		}
-
-		static AnimatedDyeStateTrackerOld create() {
-			return new AnimatedDyeStateTrackerOld();
-		}
-	}
-
 	@VisibleForTesting
 	static class AnimatedDyeStateTracker {
 		private float progress = 0;
@@ -190,34 +167,4 @@ public class CustomArmorAnimatedDyes {
 
 	public record Keyframe(@SerialEntry int color, @SerialEntry float time) {}
 	public record AnimatedDye(@SerialEntry List<Keyframe> keyframes, @SerialEntry boolean cycleBack, @SerialEntry float delay, @SerialEntry float duration) {}
-
-	public record AnimatedDyeOld(@SerialEntry int color1, @SerialEntry int color2, @SerialEntry int samples, @SerialEntry boolean cycleBack, @SerialEntry int tickDelay) {
-
-		private int interpolate(AnimatedDyeStateTrackerOld stateTracker) {
-			if (stateTracker.shouldCycleBack(samples, cycleBack)) stateTracker.onBackCycle = true;
-
-			if (stateTracker.onBackCycle) {
-				float percent = (1f / samples) * stateTracker.getAndDecrement();
-
-				//Go back to normal cycle once we've cycled all the way back
-				if (stateTracker.sampleCounter == 0) stateTracker.onBackCycle = false;
-
-				int interpolatedColor = OkLabColor.interpolate(color1, color2, percent);
-				stateTracker.lastColor = interpolatedColor;
-
-				return interpolatedColor;
-			}
-
-			//This will only happen if cycleBack is false
-			if (stateTracker.sampleCounter == samples) stateTracker.sampleCounter = 0;
-
-			float percent = (1f / samples) * stateTracker.getAndIncrement();
-			int interpolatedColor = OkLabColor.interpolate(color1, color2, percent);
-
-			stateTracker.lastColor = interpolatedColor;
-
-			return interpolatedColor;
-		}
-
-	}
 }
