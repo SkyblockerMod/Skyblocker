@@ -26,7 +26,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 
 	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
 	private static final int MAX_BUTTONS_PER_ROW_PATTERN = 7;
-	private static final int MAX_BUTTONS_PER_ROW_MATERIAL = 5;
+	private static final int MAX_BUTTONS_PER_ROW_MATERIAL = 6;
 
 	private final List<TrimElementButton.Pattern> patternButtons = new ArrayList<>();
 	private final List<TrimElementButton> materialButtons = new ArrayList<>();
@@ -35,11 +35,12 @@ public class TrimSelectionWidget extends ContainerWidget {
 	private ItemStack currentItem = null;
 	private Identifier selectedPattern = null;
 	private Identifier selectedMaterial = null;
-	private final int patternButtonsPerRow;
-	private final int materialButtonsPerRow;
+	private int patternButtonsPerRow;
+	private int materialButtonsPerRow;
 
 	public TrimSelectionWidget(int x, int y, int width, int height) {
 		super(x, y, width, height, Text.of("Trim Selection"));
+
 		// Patterns
 		TrimElementButton.Pattern patternNoneButton = new TrimElementButton.Pattern(null, null, this::onClickPattern);
 		patternNoneButton.setMessage(Text.translatable("gui.none"));
@@ -54,13 +55,6 @@ public class TrimSelectionWidget extends ContainerWidget {
 						this::onClickPattern
 				)).forEachOrdered(patternButtons::add);
 		children.addAll(patternButtons);
-		int buttonsPerHalf = (width / 2 - 8) / 20;
-		patternButtonsPerRow = Math.min(buttonsPerHalf, MAX_BUTTONS_PER_ROW_PATTERN);
-		materialButtonsPerRow = Math.min(buttonsPerHalf, MAX_BUTTONS_PER_ROW_MATERIAL);
-		for (int i = 0; i < patternButtons.size(); i++) {
-			TrimElementButton button = patternButtons.get(i);
-			button.setPosition(x + 3 + (i % patternButtonsPerRow) * 20, y + 3 + (i / patternButtonsPerRow) * 20);
-		}
 
 		// Materials
 		Utils.getRegistryWrapperLookup().getOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries()
@@ -72,6 +66,27 @@ public class TrimSelectionWidget extends ContainerWidget {
 						this::onClickMaterial
 				)).forEachOrdered(materialButtons::add);
 		children.addAll(materialButtons);
+
+		// Calculate buttons per row
+		// minus 9 because 3 pixels of left padding, right padding, and gap
+		int buttonsPerRow = (width - 9) / 20;
+		// Try to allocate more buttons to patterns since there are more patterns than materials
+		patternButtonsPerRow = Math.min(Math.ceilDiv(buttonsPerRow, 2), MAX_BUTTONS_PER_ROW_PATTERN);
+		materialButtonsPerRow = Math.min(Math.floorDiv(buttonsPerRow, 2), MAX_BUTTONS_PER_ROW_MATERIAL);
+		// Layout button again and accommodate for the scrollbar if overflows
+		// We need to do this since overflows always return false during the first calculation since the buttons per row hasn't been calculated yet
+		if (overflows()) {
+			// subtract 6 extra pixels for the scrollbar
+			buttonsPerRow = (width - 15) / 20;
+			patternButtonsPerRow = Math.min(Math.ceilDiv(buttonsPerRow, 2), MAX_BUTTONS_PER_ROW_PATTERN);
+			materialButtonsPerRow = Math.min(Math.floorDiv(buttonsPerRow, 2), MAX_BUTTONS_PER_ROW_MATERIAL);
+		}
+
+		// Set button positions
+		for (int i = 0; i < patternButtons.size(); i++) {
+			TrimElementButton button = patternButtons.get(i);
+			button.setPosition(x + 3 + (i % patternButtonsPerRow) * 20, y + 3 + (i / patternButtonsPerRow) * 20);
+		}
 		for (int i = 0; i < materialButtons.size(); i++) {
 			TrimElementButton button = materialButtons.get(i);
 			int margin = overflows() ? 9 : 3;
@@ -115,7 +130,8 @@ public class TrimSelectionWidget extends ContainerWidget {
 
 	@Override
 	protected int getContentsHeightWithPadding() {
-		return (Math.max(patternButtons.size() / patternButtonsPerRow, materialButtons.size() / materialButtonsPerRow) + 1) * 20 + 10;
+		// 3 pixels of padding on top and bottom
+		return (Math.max(patternButtons.size() / patternButtonsPerRow, materialButtons.size() / materialButtonsPerRow) + 1) * 20 + 6;
 	}
 
 	@Override
@@ -154,7 +170,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 		Map<String, CustomArmorTrims.ArmorTrimId> trims = SkyblockerConfigManager.get().general.customArmorTrims;
 		String itemUuid = ItemUtils.getItemUuid(currentItem);
 		for (TrimElementButton.Pattern button : patternButtons) {
-			button.setItem(currentItem);
+			button.setStack(currentItem);
 		}
 		if (!trims.containsKey(itemUuid)) {
 			selectedPattern = null;

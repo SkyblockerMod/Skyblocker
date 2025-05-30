@@ -117,10 +117,11 @@ public class CustomArmorAnimatedDyes {
 			if (animatedDye.delay() > 0) {
 				if (animatedDye.cycleBack()) {
 					onBackCycle = true;
-					progress = Math.clamp(animatedDye.delay() / animatedDye.duration(), 0, 1);
+					progress = animatedDye.delay() / animatedDye.duration();
 				} else {
-					progress = Math.clamp(1 - animatedDye.delay() / animatedDye.duration(), 0, 1);
+					progress = 1 - animatedDye.delay() / animatedDye.duration();
 				}
+				progress = clamp(progress);
 			}
 		}
 
@@ -129,12 +130,14 @@ public class CustomArmorAnimatedDyes {
 			update(animatedDye, deltaTicks);
 
 			int keyframe = 0;
-			while (keyframe < animatedDye.keyframes.size() - 1 && animatedDye.keyframes.get(keyframe + 1).time < progress) keyframe++;
+			// keyframe cannot be the last keyframe, or else keyframe + 1 will be out of bounds, so we check for less than size - 2
+			while (keyframe < animatedDye.keyframes.size() - 2 && animatedDye.keyframes.get(keyframe + 1).time < progress) keyframe++;
 
 			Keyframe current = onBackCycle ? animatedDye.keyframes.get(keyframe + 1) : animatedDye.keyframes.get(keyframe);
 			Keyframe next = onBackCycle ? animatedDye.keyframes.get(keyframe) : animatedDye.keyframes.get(keyframe + 1);
 
 			float colorProgress = (progress - current.time) / (next.time - current.time);
+			colorProgress = clamp(colorProgress);
 
 			return lastColor = OkLabColor.interpolate(current.color, next.color, colorProgress);
 		}
@@ -154,10 +157,17 @@ public class CustomArmorAnimatedDyes {
 						onBackCycle = true;
 						progress = 2f - progress;
 					} else {
-						progress %= 1.f;
+						progress %= 1f;
 					}
 				}
 			}
+
+			// Sanity clamp because I got some pretty weird errors with progress being greater than 1
+			progress = clamp(progress);
+		}
+
+		private static float clamp(float progress) {
+			return Math.clamp(progress, 0, 1);
 		}
 	}
 

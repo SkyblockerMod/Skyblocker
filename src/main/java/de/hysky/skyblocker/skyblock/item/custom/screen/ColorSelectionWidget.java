@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import com.demonwav.mcdev.annotations.Translatable;
-import com.google.common.collect.ImmutableList;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
@@ -127,8 +126,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		});
 		durationSlider.setTooltip(Tooltip.of(DURATION_TOOLTIP_TEXT));
 
-
-		children = ImmutableList.<ClickableWidget>builder().add(colorPicker, rgbTextInput, timelineWidget, resetColorButton, animatedCheckbox, notCustomizableText, cycleBackCheckbox, delaySlider, durationSlider).build();
+		children = List.of(colorPicker, rgbTextInput, timelineWidget, resetColorButton, animatedCheckbox, notCustomizableText, cycleBackCheckbox, delaySlider, durationSlider);
 	}
 
 	private void onPickerColorChanged(int argb, boolean release) {
@@ -298,6 +296,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 		public Slider(int x, int y, int width, float min, float max, float step, boolean linear, @Translatable String translatable, FloatConsumer onValueChanged) {
 			super(x, y, width, 15, Text.empty(), 0);
+			if (min >= max || step <= 0 || step > (max - min)) throw new IllegalArgumentException("Invalid slider parameters: min=" + min + ", max=" + max + ", step=" + step);
 			this.minValue = min;
 			this.maxValue = max;
 			this.step = step;
@@ -309,7 +308,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 		private float trueValue() {
 			double v = linear ? value : value * value;
-			return roundToStep(minValue + v * (maxValue - minValue));
+			return roundToStep(v * (maxValue - minValue));
 		}
 
 		@Override
@@ -348,8 +347,9 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		}
 
 		@Override
-		public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {if (verticalAmount == 0) return false;
-			float offset = verticalAmount > 0 ? 0.001f : -0.001f;
+		public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+			if (verticalAmount == 0) return false;
+			float offset = verticalAmount > 0 ? step : -step;
 			setValue(Math.clamp(trueValue() + offset, minValue, maxValue));
 			onValueChanged.accept(trueValue());
 			return true;

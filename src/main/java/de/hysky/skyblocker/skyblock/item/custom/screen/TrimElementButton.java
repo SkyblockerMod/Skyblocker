@@ -10,7 +10,6 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
@@ -43,9 +42,9 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public sealed abstract class TrimElementButton extends PressableWidget permits TrimElementButton.Pattern, TrimElementButton.Material {
-
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 	protected final @Nullable Identifier element;
+	protected ItemStack stack;
 	private final Consumer<TrimElementButton> onPress;
 
 	public TrimElementButton(@Nullable Identifier element, Text name, Consumer<TrimElementButton> onPress) {
@@ -78,7 +77,6 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 		private static ArmorEntityModel<BipedEntityRenderState> INNER_MODEL = null;
 		private static EquipmentRenderer EQUIPMENT_RENDERER = null;
 
-		private ItemStack item;
 		private final ArmorTrim trim;
 		private EquippableComponent equippableComponent;
 
@@ -100,6 +98,20 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 			trim = new ArmorTrim(
 					Utils.getRegistryWrapperLookup().getOrThrow(RegistryKeys.TRIM_MATERIAL).getOrThrow(ArmorTrimMaterials.QUARTZ),
 					RegistryEntry.of(pattern));
+		}
+
+		public void setStack(@NotNull ItemStack newStack) {
+			newStack = newStack.copy();
+			// Remove the uuid so it doesn't render with the selected trim
+			NbtCompound nbtCopy = ItemUtils.getCustomData(newStack).copy();
+			nbtCopy.remove(ItemUtils.UUID);
+			newStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbtCopy));
+			newStack.set(DataComponentTypes.TRIM, trim);
+
+			equippableComponent = newStack.get(DataComponentTypes.EQUIPPABLE);
+			if (equippableComponent == null) throw new IllegalArgumentException("Trimmed stack must contain an equippable component");
+
+			stack = newStack;
 		}
 
 		@Override
@@ -129,26 +141,13 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 					slot == EquipmentSlot.LEGS ? EquipmentModel.LayerType.HUMANOID_LEGGINGS : EquipmentModel.LayerType.HUMANOID,
 					equippableComponent.assetId().orElse(EquipmentAssetKeys.IRON),
 					model,
-					item,
+					stack,
 					matrices,
 					vertexConsumerProvider,
 					15
 			));
 			DiffuseLighting.enableGuiDepthLighting();
 			matrices.pop();
-
-		}
-
-		public void setItem(@NotNull ItemStack newItem) {
-			this.item = newItem.copy();
-			// Remove the uuid so it doesn't render with the selected trim
-			NbtCompound copy = ItemUtils.getCustomData(item).copy();
-			copy.remove(ItemUtils.UUID);
-			item.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(copy));
-
-			equippableComponent = this.item.get(DataComponentTypes.EQUIPPABLE);
-			if (equippableComponent == null) throw new IllegalArgumentException("Trimmed stack must contain an equippable component");
-			this.item.set(DataComponentTypes.TRIM, trim);
 		}
 
 		private static float setVisibleAndGetOffset(ArmorEntityModel<?> bipedModel, EquipmentSlot slot) {
@@ -178,13 +177,11 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 	}
 
 	public static final class Material extends TrimElementButton {
-		private final ItemStack icon;
-
 		public Material(Identifier element, ArmorTrimMaterial material, Consumer<TrimElementButton> onPress) {
 			super(element, material.description(), onPress);
 
 			// Find item that provides given material
-			icon = Registries.ITEM.stream()
+			stack = Registries.ITEM.stream()
 					.filter(item -> Optional.ofNullable(item.getComponents().get(DataComponentTypes.PROVIDES_TRIM_MATERIAL))
 							.flatMap(c -> c.getMaterial(Utils.getRegistryWrapperLookup()))
 							.map(provided -> provided.matchesId(element))
@@ -197,7 +194,7 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 
 		@Override
 		void draw(DrawContext context) {
-			context.drawItem(icon, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
+			context.drawItem(stack, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
 		}
 	}
 
