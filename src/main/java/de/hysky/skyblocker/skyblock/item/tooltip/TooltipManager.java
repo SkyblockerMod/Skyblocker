@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.ContainerMatcher;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -14,7 +15,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TooltipManager {
@@ -22,7 +23,7 @@ public class TooltipManager {
 	private static native TooltipAdder[] getAdders();
 	private static final TooltipAdder[] ADDERS = getAdders();
 
-	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
+	private static List<TooltipAdder> currentScreenAdders = List.of();
 
 	private TooltipManager() {
 	}
@@ -43,13 +44,10 @@ public class TooltipManager {
 	}
 
 	private static void onScreenChange(Screen screen) {
-		currentScreenAdders.clear();
-		for (TooltipAdder adder : ADDERS) {
-			if (adder.isEnabled() && adder.test(screen)) {
-				currentScreenAdders.add(adder);
-			}
-		}
-		//currentScreenAdders.sort(Comparator.comparingInt(TooltipAdder::getPriority));
+		currentScreenAdders = Arrays.stream(ADDERS)
+				.filter(ContainerMatcher::isEnabled)
+				.filter(adder -> adder.test(screen))
+				.toList();
 	}
 
 	/**
