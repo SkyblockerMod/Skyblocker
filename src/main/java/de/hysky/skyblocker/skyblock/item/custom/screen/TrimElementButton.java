@@ -73,6 +73,8 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 
 	public static final class Pattern extends TrimElementButton {
 
+		private static final int DEFAULT_ROTATION = 195;
+
 		private static ArmorEntityModel<BipedEntityRenderState> OUTER_MODEL = null;
 		private static ArmorEntityModel<BipedEntityRenderState> INNER_MODEL = null;
 		private static EquipmentRenderer EQUIPMENT_RENDERER = null;
@@ -80,7 +82,7 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 		private final ArmorTrim trim;
 		private EquippableComponent equippableComponent;
 
-		private float rotation = 195;
+		private float rotation = DEFAULT_ROTATION;
 
 		public Pattern(@Nullable Identifier element, @Nullable ArmorTrimPattern pattern, Consumer<TrimElementButton> onPress) {
 			super(element, pattern == null ? Text.translatable("gui.none") : pattern.description(), onPress);
@@ -123,7 +125,7 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 			if (isHovered()) {
 				rotation += MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks() * 0.05f * 90;
 				rotation %= 360;
-			} else rotation = 15;
+			} else rotation = DEFAULT_ROTATION;
 
 			EquipmentSlot slot = equippableComponent.slot();
 			ArmorEntityModel<BipedEntityRenderState> model = slot == EquipmentSlot.LEGS ? INNER_MODEL : OUTER_MODEL;
