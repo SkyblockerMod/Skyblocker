@@ -67,7 +67,7 @@ public class CustomizeArmorScreen extends Screen {
 	@Init
 	public static void initThings() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
-				ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("custom").executes(Scheduler.queueOpenScreenCommand(new CustomizeArmorScreen(null))))
+				ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("custom").executes(Scheduler.queueOpenScreenCommand(() -> new CustomizeArmorScreen(null))))
 		));
 		ScreenEvents.AFTER_INIT.register((client1, screen, scaledWidth, scaledHeight) -> {
 			if (Utils.isOnSkyblock() && screen instanceof InventoryScreen inventoryScreen) {
