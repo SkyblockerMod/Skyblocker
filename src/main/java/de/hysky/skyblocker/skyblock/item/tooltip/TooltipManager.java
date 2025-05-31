@@ -39,7 +39,7 @@ public class TooltipManager {
 		});
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
 			onScreenChange(screen);
-			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
+			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders = List.of());
 		});
 	}
 
