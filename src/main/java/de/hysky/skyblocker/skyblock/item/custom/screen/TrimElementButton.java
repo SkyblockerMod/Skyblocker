@@ -80,7 +80,7 @@ public sealed abstract class TrimElementButton extends PressableWidget permits T
 		private final ArmorTrim trim;
 		private EquippableComponent equippableComponent;
 
-		private float rotation = 15;
+		private float rotation = 195;
 
 		public Pattern(@Nullable Identifier element, @Nullable ArmorTrimPattern pattern, Consumer<TrimElementButton> onPress) {
 			super(element, pattern == null ? Text.translatable("gui.none") : pattern.description(), onPress);
