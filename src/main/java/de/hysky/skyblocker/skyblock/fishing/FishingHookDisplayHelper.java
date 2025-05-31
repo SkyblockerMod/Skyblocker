@@ -64,6 +64,12 @@ public class FishingHookDisplayHelper {
 		if (!SkyblockerConfigManager.get().helpers.fishing.enableFishingHookDisplay) return;
 		if (fishingHookArmorStand != null) return;
 
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.player == null || client.player.fishHook == null) return;
+		// Check the distance between the armor stand and the player's fishing hook
+		double distance = armorStand.getPos().distanceTo(client.player.fishHook.getPos());
+		if (distance > 0.1) return; // Checks for a minimum distance of 0.1 blocks
+
 		Matcher matcher = pattern.matcher(armorStand.getName().getString());
 		if (armorStand.hasCustomName() && matcher.matches()) {
 			fishingHookArmorStand = armorStand;
