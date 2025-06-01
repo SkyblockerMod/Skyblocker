@@ -52,6 +52,11 @@ public class ChatPositionShare {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
             String message = text.getString();
 
+			// prevents parsing skyblocker's own messages. Also prevents TH solver from parsing as it already has own waypoint
+			if (message.startsWith("[Skyblocker]") || message.startsWith("§e[NPC] Treasure Hunter§f:")) {
+				return;
+			}
+
             for (Pattern pattern : PATTERNS) {
                 Matcher matcher = pattern.matcher(message);
                 if (matcher.find()) {
