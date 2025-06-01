@@ -75,6 +75,9 @@ public class HelperConfig {
         public boolean enableFishingHelper = true;
 
         @SerialEntry
+        public boolean enableFishingHookDisplay = true;
+
+        @SerialEntry
         public boolean enableFishingTimer = false;
 
         @SerialEntry

@@ -458,6 +458,8 @@
   "skyblocker.config.helpers.fishing.minimumNotificationRarity": "Sea Creature Rarity Notification",
   "skyblocker.config.helpers.fishing.minimumNotificationRarity.@Tooltip": "Minimum rarity for a notification about rare sea creatures. (UNKNOWN = disabled)",
   "skyblocker.config.helpers.fishing.minimumNotificationRarity.notification": "%s Sea Creature",
+  "skyblocker.config.helpers.fishing.enableFishingHookDisplay": "Enable Fishing Hook Display",
+  "skyblocker.config.helpers.fishing.enableFishingHookDisplay.@Tooltip": "Display the skyblock fishing hook timer on the screen instead of above the rod.",
 
   "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "Enable Item Price Lookup",
   "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Searches the Bazaar and AH for the current hovered item with the F6 key.",
