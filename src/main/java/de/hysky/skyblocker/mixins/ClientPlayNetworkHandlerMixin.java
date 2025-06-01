@@ -10,6 +10,7 @@ import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.HealthBars;
+import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
 import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
 import de.hysky.skyblocker.skyblock.SmoothAOTE;
@@ -198,5 +199,12 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 			return true;
 		}
 		return original;
+	}
+
+	@Inject(method = "onScreenHandlerSlotUpdate", at = @At("HEAD"))
+	private void skyblocker$onScreenHandlerSlotUpdate(ScreenHandlerSlotUpdateS2CPacket packet, CallbackInfo ci) {
+		if (InventorySearch.isSearching()) {
+			InventorySearch.refreshSlot(packet.getSlot());
+		}
 	}
 }
