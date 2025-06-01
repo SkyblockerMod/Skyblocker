@@ -213,8 +213,6 @@
   "skyblocker.config.dungeons.secretWaypoints.enableLeverWaypoints": "Enable Lever Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints": "Enable Pearl Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "With these waypoints, you throw a pearl towards the block and at the same time AOTV up.",
-  "skyblocker.config.dungeons.secretWaypoints.enableRoomMatching": "Enable Room Matching",
-  "skyblocker.config.dungeons.secretWaypoints.enableRoomMatching.@Tooltip": "Disabling this option can save around 20 MB of RAM, but Secret Waypoint and \u00a7lsome puzzle solvers \u00a7rrequire this option to be enabled.",
   "skyblocker.config.dungeons.secretWaypoints.enableSecretWaypoints": "Enable Dungeon Secret Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints": "Enable Stonk Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints": "Enable Superboom Waypoints",

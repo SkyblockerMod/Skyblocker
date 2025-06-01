@@ -178,9 +178,6 @@ public class DungeonsConfig {
 
     public static class SecretWaypoints {
         @SerialEntry
-        public boolean enableRoomMatching = true;
-
-        @SerialEntry
         public boolean enableSecretWaypoints = true;
 
         @SerialEntry
