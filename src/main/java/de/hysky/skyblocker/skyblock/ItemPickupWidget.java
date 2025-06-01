@@ -48,7 +48,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	}
 
 	/**
-	 * Retrieves a cached ItemStack or fetches it if not already cached.
+	 * Searches the NEU REPO for the item linked to the name
 	 */
 	private static ItemStack getItem(String itemName) {
 		return NEURepoManager.NEU_REPO.getItems().getItems()
@@ -57,9 +57,14 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 				.findFirst()
 				.map(NEUItem::getSkyblockItemId)
 				.map(ItemRepository::getItemStack)
-				.orElse(new ItemStack(Items.AIR));
+				.orElse(new ItemStack(Items.BARRIER));
 	}
 
+	/**
+	 * Checks chat messages for a stack update message then finds the items linked to it
+	 * @param message message
+	 * @param b overlay
+	 */
 	private void onChatMessage(Text message, boolean b) {
 		if (!Formatting.strip(message.getString()).startsWith(SACKS_MESSAGE_START)) return;
 		if (!SkyblockerConfigManager.get().uiAndVisuals.itemPickup.sackNotifications) return;
@@ -103,12 +108,11 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		//add positive changes
 		for (String item : addedCount.keySet()) {
 			changeData entry = addedCount.get(item);
-			//check the item has not expired
-			if (entry.lastChange + SkyblockerConfigManager.get().uiAndVisuals.itemPickup.lifeTime * 1000L < System.currentTimeMillis()) {
+			String itemName = checkNextItem(entry);
+			if (itemName == null) {
 				addedCount.remove(item);
 				continue;
 			}
-			String itemName = SkyblockerConfigManager.get().uiAndVisuals.itemPickup.showItemName ?  entry.item.getName().getString() + " " : " ";
 			addSimpleIcoText(entry.item, itemName, Formatting.GREEN, "+" + entry.amount);
 
 
@@ -116,14 +120,27 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		//add negative changes
 		for (String item : removedCount.keySet()) {
 			changeData entry = removedCount.get(item);
-			//check the item has not expired
-			if (entry.lastChange + SkyblockerConfigManager.get().uiAndVisuals.itemPickup.lifeTime * 1000L < System.currentTimeMillis()) {
+			String itemName = checkNextItem(entry);
+			if (itemName == null) {
 				removedCount.remove(item);
 				continue;
 			}
-			String itemName = SkyblockerConfigManager.get().uiAndVisuals.itemPickup.showItemName ?  entry.item.getName().getString() + " " : " ";
 			addSimpleIcoText(entry.item, itemName, Formatting.RED, "" + entry.amount);
 		}
+	}
+
+	/**
+	 * Checks if the changeData has expired and if not returns the item name for the entry
+	 * @param entry changeData to check
+	 * @return formated name from changeData
+	 */
+	private String checkNextItem(changeData entry) {
+		//check the item has not expired
+		if (entry.lastChange + SkyblockerConfigManager.get().uiAndVisuals.itemPickup.lifeTime * 1000L < System.currentTimeMillis()) {
+			return null;
+		}
+		//return the formated name for the item based on user settings
+		return  SkyblockerConfigManager.get().uiAndVisuals.itemPickup.showItemName ?  entry.item.getName().getString() + " " : " ";
 	}
 
 	@Override
@@ -153,6 +170,10 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		return SkyblockerConfigManager.get().uiAndVisuals.itemPickup.enabled;
 	}
 
+	/**
+	 * When the client receives a slot change packet see what has changed in the inventory and add the to the counts
+	 * @param packet slot change packet
+	 */
 	public void onItemPickup(ScreenHandlerSlotUpdateS2CPacket packet) {
 		//if just changed lobby don't read item as this is just going to be all the players items
 		if (lastLobbyChange + LOBBY_CHANGE_DELAY > System.currentTimeMillis() || CLIENT.player == null) return;
