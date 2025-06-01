@@ -157,6 +157,10 @@ public class Utils {
         return location == Location.CRIMSON_ISLE;
     }
 
+	public static boolean isInFarm() {
+		return location == Location.THE_FARMING_ISLAND;
+	}
+
     public static boolean isInModernForagingIsland() {
         return location == Location.MODERN_FORAGING_ISLAND;
     }
