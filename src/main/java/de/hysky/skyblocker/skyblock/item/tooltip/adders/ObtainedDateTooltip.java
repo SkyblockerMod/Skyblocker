@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -19,12 +20,13 @@ import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.Locale;
 
+@RegisterTooltipAdder
 public class ObtainedDateTooltip extends SimpleTooltipAdder {
 	private static final DateTimeFormatter OBTAINED_DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d, yyyy").withZone(ZoneId.systemDefault()).localizedBy(Locale.ENGLISH);
 	private static final DateTimeFormatter OLD_OBTAINED_DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yy h:m a").withZone(ZoneId.of("UTC")).localizedBy(Locale.ENGLISH);
 
-	public ObtainedDateTooltip(int priority) {
-		super(priority);
+	public ObtainedDateTooltip() {
+		super();
 	}
 
 	@Override

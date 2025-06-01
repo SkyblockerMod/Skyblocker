@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import java.util.List;
 import java.util.Set;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.utils.Formatters;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,6 +16,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+@RegisterTooltipAdder
 public class StackingEnchantProgressTooltip extends SimpleTooltipAdder {
 	private static final Set<String> STACKING_ENCHANT_IDS = Set.of("expertise", "compact", "cultivating", "champion", "hecatomb", "toxophilite");
 	private static final StackingEnchantInfo EXPERTISE_INFO = new StackingEnchantInfo("Expertise", "expertise_kills", "kills", 0, 50, 100, 250, 500, 1000, 2500, 5500, 10_000, 15_000);
@@ -24,8 +26,8 @@ public class StackingEnchantProgressTooltip extends SimpleTooltipAdder {
 	private static final StackingEnchantInfo HECATOMB_INFO = new StackingEnchantInfo("Hecatomb", "hecatomb_s_runs", "S runs", 0, 2, 5, 10, 20, 30, 40, 60, 80, 100);
 	private static final StackingEnchantInfo TOXOPHILITE_INFO = new StackingEnchantInfo("Toxophilite", "toxophilite_combat_xp", "Combat XP", 0, 50_000, 100_000, 250_000, 500_000, 1_000_000, 1_500_000, 2_000_000, 2_500_000, 3_000_000);
 
-	public StackingEnchantProgressTooltip(int priority) {
-		super(priority);
+	public StackingEnchantProgressTooltip() {
+		super();
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import org.jetbrains.annotations.Nullable;
 
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
@@ -16,12 +17,13 @@ import net.minecraft.util.Formatting;
 /**
  * Changes the color of HEX color codes on dye items inside of Vincent.
  */
+@RegisterTooltipAdder(priority = -1000)
 public class TrueHexDyeScreenDisplay extends SimpleTooltipAdder {
 	private static final Pattern DYE_SCREEN_NAMES = Pattern.compile("Dye Compendium|Dyes");
 	private static final Pattern HEX_PATTERN = Pattern.compile("Hex (?<hex>#[A-Fa-f0-9]{6})");
 
 	public TrueHexDyeScreenDisplay() {
-		super(DYE_SCREEN_NAMES, Integer.MIN_VALUE);
+		super(DYE_SCREEN_NAMES);
 	}
 
 	@Override

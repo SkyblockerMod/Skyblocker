@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@RegisterContainerSolver
 public final class OrderTerminal extends SimpleContainerSolver implements TerminalSolver {
     private static final int PANES_NUM = 14;
     private int[] orderedSlots;

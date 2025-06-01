@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.config.configs.GeneralConfig.Craft;
@@ -25,13 +26,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@RegisterTooltipAdder(priority = -6)
 public class CraftPriceTooltip extends SimpleTooltipAdder {
     protected static final Logger LOGGER = LoggerFactory.getLogger(CraftPriceTooltip.class.getName());
     private static final Map<String, Double> cachedCraftCosts = new ConcurrentHashMap<>();
     private static final int MAX_RECURSION_DEPTH = 15;
 
-    public CraftPriceTooltip(int priority) {
-        super(priority);
+    public CraftPriceTooltip() {
+        super();
     }
 
     @Override

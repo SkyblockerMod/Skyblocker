@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
+import de.hysky.skyblocker.annotations.RegisterSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.RomanNumerals;
@@ -26,6 +27,7 @@ public class CatacombsLevelAdder {
 	private CatacombsLevelAdder() {
 	}
 
+	@RegisterSlotTextAdder
 	public static class Dungeoneering extends SimpleSlotTextAdder {
 		private static final Pattern LEVEL_PATTERN = Pattern.compile(".*?(?:(?: (?<arabic>\\d+)| (?<roman>[IVXLC]+))(?: ✯)?)?");
 		public Dungeoneering() {
@@ -59,6 +61,7 @@ public class CatacombsLevelAdder {
 		}
 	}
 
+	@RegisterSlotTextAdder
 	public static class DungeonClasses extends SimpleSlotTextAdder {
 
 		public DungeonClasses() {
@@ -80,6 +83,7 @@ public class CatacombsLevelAdder {
 		}
 	}
 
+	@RegisterSlotTextAdder
 	public static class ReadyUp extends SimpleSlotTextAdder {
 
 		public ReadyUp() {

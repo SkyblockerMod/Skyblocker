@@ -2,11 +2,8 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
-import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
-import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
-import de.hysky.skyblocker.skyblock.dwarven.fossil.FossilSolver;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.ContainerMatcher;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -18,37 +15,15 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.List;
 
 public class TooltipManager {
-	private static final TooltipAdder[] adders = new TooltipAdder[]{
-			new LineSmoothener(), // Applies before anything else
-			new TrueHexDisplay(),
-			new TrueHexDyeScreenDisplay(),
-			new SupercraftReminder(),
-			ChocolateFactorySolver.INSTANCE,
-			BitsHelper.INSTANCE,
-			new FossilSolver(),
-			new ReorderHelper(),
-			new StackingEnchantProgressTooltip(0), //Would be best to have after the lore but the tech doesn't exist for that
-			new NpcPriceTooltip(1),
-			new BazaarPriceTooltip(2),
-			new LBinTooltip(3),
-			new AvgBinTooltip(4),
-			new EssenceShopPrice(5),
-			new CraftPriceTooltip(6),
-			new EstimatedItemValueTooltip(7),
-			new DungeonQualityTooltip(8),
-			new MotesTooltip(9),
-			new ObtainedDateTooltip(10),
-			new MuseumTooltip(11),
-			new ColorTooltip(12),
-			new AccessoryTooltip(13),
-			new CalendarStartTimeTooltip(14)
-	};
-	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
+	// This method is populated at compile time in buildSrc with classes annotated with RegisterTooltipAdder
+	private static native TooltipAdder[] getAdders();
+	private static final TooltipAdder[] ADDERS = getAdders();
+
+	private static List<TooltipAdder> currentScreenAdders = List.of();
 
 	private TooltipManager() {
 	}
@@ -64,18 +39,15 @@ public class TooltipManager {
 		});
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
 			onScreenChange(screen);
-			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
+			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders = List.of());
 		});
 	}
 
 	private static void onScreenChange(Screen screen) {
-		currentScreenAdders.clear();
-		for (TooltipAdder adder : adders) {
-			if (adder.isEnabled() && adder.test(screen)) {
-				currentScreenAdders.add(adder);
-			}
-		}
-		currentScreenAdders.sort(Comparator.comparingInt(TooltipAdder::getPriority));
+		currentScreenAdders = Arrays.stream(ADDERS)
+				.filter(ContainerMatcher::isEnabled)
+				.filter(adder -> adder.test(screen))
+				.toList();
 	}
 
 	/**

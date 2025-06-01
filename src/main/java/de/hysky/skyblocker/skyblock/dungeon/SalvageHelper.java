@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.ContainerAndInventorySolver;
@@ -13,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@RegisterContainerSolver
 public class SalvageHelper extends SimpleContainerSolver implements ContainerAndInventorySolver {
 	/**
 	 * Pattern to match dungeon items that are salvageable, using a negative lookahead to exclude dungeon items.
