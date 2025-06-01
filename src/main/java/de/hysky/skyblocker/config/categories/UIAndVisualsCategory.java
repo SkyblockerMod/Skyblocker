@@ -376,9 +376,9 @@ public class UIAndVisualsCategory {
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor"))
                                 .binding(defaults.uiAndVisuals.teleportOverlay.teleportOverlayColor,
                                         () -> config.uiAndVisuals.teleportOverlay.teleportOverlayColor,
-                                        newValue -> { 
+                                        newValue -> {
                                             config.uiAndVisuals.teleportOverlay.teleportOverlayColor = newValue;
-                                            TeleportOverlay.configCallback(newValue); 
+                                            TeleportOverlay.configCallback(newValue);
                                        })
                                 .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
                                 .build())
@@ -667,7 +667,7 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-									.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.hideFullHealth"))
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.hideFullHealth"))
 								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.hideFullHealth.@Tooltip")))
 								.binding(defaults.uiAndVisuals.healthBars.hideFullHealth,
 										() -> config.uiAndVisuals.healthBars.hideFullHealth,
@@ -700,6 +700,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.build()
 				)
+
 				//item pickup widget
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup"))
@@ -734,9 +735,7 @@ public class UIAndVisualsCategory {
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
 								.build())
 						.build()
-
 				)
-
                 .build();
     }
 
