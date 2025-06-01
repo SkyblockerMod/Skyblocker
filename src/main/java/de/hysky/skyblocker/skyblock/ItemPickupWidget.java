@@ -99,6 +99,11 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	}
 
 	@Override
+	protected boolean shouldUpdateBeforeRendering() {
+		return true;
+	}
+
+	@Override
 	public void updateContent() {
 		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen) {
 			addSimpleIcoText(Ico.BONE, "Bone ", Formatting.GREEN, "+64");
