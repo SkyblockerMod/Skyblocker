@@ -26,8 +26,8 @@ public class EventToast implements Toast {
 
     protected final List<OrderedText> message;
     protected final List<OrderedText> messageNow;
-    protected final int messageWidth;
-    protected final int messageNowWidth;
+    protected int messageWidth;
+    protected int messageNowWidth;
     protected final ItemStack icon;
 
     protected boolean started;
