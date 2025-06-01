@@ -11,6 +11,6 @@ package de.hysky.skyblocker.utils.render.state;
  * Render states may be reused and updated after the subject has completed rendering provided the conditions
  * listed above always remain true.
  */
-public class BaseRenderState {
+public class SkyblockerRenderState {
 	public boolean enabled;
 }

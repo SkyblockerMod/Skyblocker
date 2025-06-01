@@ -177,6 +177,9 @@ public class DungeonsConfig {
     }
 
     public static class SecretWaypoints {
+    	@Deprecated
+    	public transient boolean enableRoomMatching = true;
+
         @SerialEntry
         public boolean enableSecretWaypoints = true;
 
