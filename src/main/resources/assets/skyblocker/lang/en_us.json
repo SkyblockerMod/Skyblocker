@@ -1127,6 +1127,7 @@
 
   "skyblocker.events.startsNow": "%s starts now!",
   "skyblocker.events.startsSoon": "%s starts soon!",
+  "skyblocker.events.crops": "Crops:",
   "skyblocker.events.tab.endsIn": "Ends in %s",
   "skyblocker.events.tab.clickToWarp": "Click to warp!",
   "skyblocker.events.tab.noMore": "No more this year!",
