@@ -97,7 +97,13 @@ public class DungeonsConfig {
         public boolean creeperSolver = true;
 
         @SerialEntry
-        public boolean solveWaterboard = true;
+        public boolean waterboardOneFlow = true;
+
+		@SerialEntry
+		public boolean previewWaterPath = true;
+
+		@SerialEntry
+		public boolean previewLeverEffects = true;
 
         @SerialEntry
         public boolean blazeSolver = true;

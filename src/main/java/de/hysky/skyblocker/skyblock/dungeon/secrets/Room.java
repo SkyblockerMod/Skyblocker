@@ -33,6 +33,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Position;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
@@ -488,12 +490,26 @@ public class Room implements Tickable, Renderable {
         return DungeonMapUtils.actualToRelative(direction, physicalCornerPos, pos);
     }
 
+	/**
+	 * Fails if !{@link #isMatched()}
+	 */
+	public Vec3d actualToRelative(Vec3d pos) {
+		return DungeonMapUtils.actualToRelative(direction, physicalCornerPos, pos);
+	}
+
     /**
      * Fails if !{@link #isMatched()}
      */
     public BlockPos relativeToActual(BlockPos pos) {
         return DungeonMapUtils.relativeToActual(direction, physicalCornerPos, pos);
     }
+
+	/**
+	 * Fails if !{@link #isMatched()}
+	 */
+	public Vec3d relativeToActual(Vec3d pos) {
+		return DungeonMapUtils.relativeToActual(direction, physicalCornerPos, pos);
+	}
 
     /**
      * Calls {@link SecretWaypoint#render(WorldRenderContext)} on {@link #secretWaypoints all secret waypoints} and renders a highlight around the wither or blood door, if it exists.
