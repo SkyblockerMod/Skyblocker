@@ -8,6 +8,9 @@ public class MiscConfig {
     @SerialEntry
     public RichPresence richPresence = new RichPresence();
 
+	@SerialEntry
+	public boolean cat = true;
+
     public static class RichPresence {
         @SerialEntry
         public boolean enableRichPresence = false;
