@@ -29,8 +29,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	}
 
 	public FishingHudWidget() {
-		super(Text.literal("Fishing").formatted(Formatting.DARK_AQUA, Formatting.BOLD),
-				Formatting.DARK_AQUA.getColorValue(), "hud_fishing");
+		super(Text.literal("Fishing").formatted(Formatting.DARK_AQUA, Formatting.BOLD), Formatting.DARK_AQUA.getColorValue(), "hud_fishing");
 		instance = this;
 		update();
 	}
@@ -62,8 +61,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	@Override
 	public boolean shouldRender(Location location) {
 		if (super.shouldRender(location) && SeaCreatureTracker.isCreaturesAlive()) {
-			if (Utils.getLocation() == Location.HUB
-					&& SkyblockerConfigManager.get().helpers.fishing.onlyShowHudInBarn) {
+			if (Utils.getLocation() == Location.HUB && SkyblockerConfigManager.get().helpers.fishing.onlyShowHudInBarn) {
 				return isBarnFishing();
 			}
 			return true;
@@ -74,19 +72,15 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	@Override
 	public void updateContent() {
 		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen) {
-			addComponent(Components.progressComponent(Ico.SALMON_BUCKET, Text.of("Alive Creatures"), Text.of("3/5"), 60,
-					ColorUtils.percentToColor(40)));
-			addComponent(Components.progressComponent(Ico.CLOCK, Text.of("Time Left"), Text.of("1m"),
-					60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100));
+			addComponent(Components.progressComponent(Ico.SALMON_BUCKET, Text.of("Alive Creatures"), Text.of("3/5"), 60, ColorUtils.percentToColor(40)));
+			addComponent(Components.progressComponent(Ico.CLOCK, Text.of("Time Left"), Text.of("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100));
 			return;
 		}
 
 		ObjectFloatPair<Text> timer = SeaCreatureTracker.getTimerText(SeaCreatureTracker.getOldestSeaCreatureAge());
 		int seaCreatureCap = SeaCreatureTracker.getSeaCreatureCap();
 		float seaCreaturePercent = (float) SeaCreatureTracker.seaCreatureCount() / seaCreatureCap * 100;
-		addComponent(Components.progressComponent(Ico.TROPICAL_FISH_BUCKET, Text.of("Alive Creatures"),
-				Text.of(SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap), seaCreaturePercent,
-				ColorUtils.percentToColor(100 - seaCreaturePercent)));
+		addComponent(Components.progressComponent(Ico.TROPICAL_FISH_BUCKET, Text.of("Alive Creatures"), Text.of(SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap), seaCreaturePercent, ColorUtils.percentToColor(100 - seaCreaturePercent)));
 		addComponent(Components.progressComponent(Ico.CLOCK, Text.of("Time Left"), timer.left(), timer.rightFloat()));
 	}
 

@@ -23,14 +23,9 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 	private final MinecraftClient client = MinecraftClient.getInstance();
 
 	public SlayerHudWidget() {
-		super(Text.literal("Slayer").formatted(Formatting.DARK_PURPLE, Formatting.BOLD),
-				Formatting.DARK_PURPLE.getColorValue(), "hud_slayer");
+		super(Text.literal("Slayer").formatted(Formatting.DARK_PURPLE, Formatting.BOLD), Formatting.DARK_PURPLE.getColorValue(), "hud_slayer");
 		instance = this;
 		update();
-	}
-
-	public static SlayerHudWidget getInstance() {
-		return instance;
 	}
 
 	@Override
@@ -38,16 +33,18 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 		return true;
 	}
 
+	public static SlayerHudWidget getInstance() {
+		return instance;
+	}
+
 	@Override
 	public Set<Location> availableLocations() {
-		return Set.of(Location.CRIMSON_ISLE, Location.HUB, Location.SPIDERS_DEN, Location.THE_END, Location.THE_PARK,
-				Location.THE_RIFT);
+		return Set.of(Location.CRIMSON_ISLE, Location.HUB, Location.SPIDERS_DEN, Location.THE_END, Location.THE_PARK, Location.THE_RIFT);
 	}
 
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
-		if (!availableLocations().contains(location))
-			return;
+		if (!availableLocations().contains(location)) return;
 		SkyblockerConfigManager.get().slayers.enableHud = enabled;
 	}
 
@@ -58,8 +55,7 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public boolean shouldRender(Location location) {
-		return super.shouldRender(location) && SlayerManager.isInSlayer() && !SlayerManager.getSlayerType().isUnknown()
-				&& !SlayerManager.getSlayerTier().isUnknown();
+		return super.shouldRender(location) && SlayerManager.isInSlayer() && !SlayerManager.getSlayerType().isUnknown() && !SlayerManager.getSlayerTier().isUnknown();
 	}
 
 	@Override
@@ -70,39 +66,32 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 			addSimpleIcoText(type.icon, "", tier.color, type.bossName + " " + tier);
 			addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", Formatting.LIGHT_PURPLE, "100,000/400,000");
-			addComponent(new IcoTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn",
-					Text.literal("200").formatted(Formatting.LIGHT_PURPLE))));
+			addComponent(new IcoTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal("200").formatted(Formatting.LIGHT_PURPLE))));
 			return;
 		}
 
-		if (client.player == null || SlayerManager.getSlayerQuest() == null)
-			return;
+		if (client.player == null || SlayerManager.getSlayerQuest() == null) return;
 
 		SlayerType type = SlayerManager.getSlayerType();
 		SlayerTier tier = SlayerManager.getSlayerTier();
 		int level = SlayerManager.getSlayerQuest().level;
 		int bossesNeeded = SlayerManager.getSlayerQuest().bossesNeeded;
 
-		if (type == null || tier == null)
-			return;
+		if (type == null || tier == null) return;
 
 		addSimpleIcoText(type.icon, "", tier.color, type.bossName + " " + tier);
 		if (level > 0) {
 			if (level == type.maxLevel) {
-				addComponent(new IcoTextComponent(Ico.EXPERIENCE_BOTTLE, Text.literal("XP: ")
-						.append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));
+				addComponent(new IcoTextComponent(Ico.EXPERIENCE_BOTTLE, Text.literal("XP: ").append(Text.translatable("skyblocker.slayer.hud.levelMaxed").formatted(Formatting.GREEN))));
 			} else {
 				int nextMilestone = type.levelMilestones[level];
 				int currentXP = nextMilestone - SlayerManager.getSlayerQuest().xpRemaining;
-				addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", Formatting.LIGHT_PURPLE,
-						Formatters.INTEGER_NUMBERS.format(currentXP) + "/"
-								+ Formatters.INTEGER_NUMBERS.format(nextMilestone));
+				addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", Formatting.LIGHT_PURPLE, Formatters.INTEGER_NUMBERS.format(currentXP) + "/" + Formatters.INTEGER_NUMBERS.format(nextMilestone));
 			}
 		}
 
 		if (bossesNeeded > 0) {
-			addComponent(new IcoTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn",
-					Text.literal(Formatters.INTEGER_NUMBERS.format(bossesNeeded)).formatted(Formatting.LIGHT_PURPLE))));
+			addComponent(new IcoTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal(Formatters.INTEGER_NUMBERS.format(bossesNeeded)).formatted(Formatting.LIGHT_PURPLE))));
 		}
 	}
 
