@@ -127,7 +127,7 @@ public class CrystalsChestHighlighter {
 				activeParticles.clear();
 			}
 			//lock pick fail sound
-		} else if (sound.id().equals(SoundEvents.BLOCK_CHEST_LOCKED.id())) {
+		} else if (sound.id().equals(SoundEvents.ENTITY_VILLAGER_NO.id())) {
 			currentLockCount = 0;
 			activeParticles.clear();
 			//lock pick finish sound
