@@ -363,15 +363,6 @@ public class DungeonsCategory {
                         .name(Text.translatable("skyblocker.config.dungeons.secretWaypoints"))
                         .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableRoomMatching"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableRoomMatching.@Tooltip")))
-                                .binding(defaults.dungeons.secretWaypoints.enableRoomMatching,
-                                        () -> config.dungeons.secretWaypoints.enableRoomMatching,
-                                        newValue -> config.dungeons.secretWaypoints.enableRoomMatching = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .flag(OptionFlag.GAME_RESTART)
-                                .build())
-                        .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableSecretWaypoints"))
                                 .binding(defaults.dungeons.secretWaypoints.enableSecretWaypoints,
                                         () -> config.dungeons.secretWaypoints.enableSecretWaypoints,
