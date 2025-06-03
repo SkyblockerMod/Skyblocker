@@ -24,9 +24,10 @@ import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
+
+import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
@@ -92,11 +93,11 @@ public class WidgetManager {
 		if (client.currentScreen instanceof WidgetsConfigurationScreen) return;
 		Window window = client.getWindow();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.scale(scale, scale, 1.F);
+		Matrix3x2fStack matrices = context.getMatrices();
+		matrices.pushMatrix();
+		matrices.scale(scale, scale);
 		WidgetManager.render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale), hud);
-		matrices.pop();
+		matrices.popMatrix();
 	}
 
 	/**

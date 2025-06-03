@@ -17,6 +17,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -24,7 +25,6 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.network.OtherClientPlayerEntity;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -210,7 +210,7 @@ public class CustomizeArmorScreen extends Screen {
 
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			context.drawGuiTexture(RenderLayer::getGuiTextured, HOTBAR_TEXTURE, getX() + 1, getY() + 1, 82, 22);
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HOTBAR_TEXTURE, getX() + 1, getY() + 1, 82, 22);
 
 			int hoveredSlot = -1;
 			int localX = mouseX - getX() - 2;
@@ -230,7 +230,7 @@ public class CustomizeArmorScreen extends Screen {
 					context.drawItem(BARRIER, getX() + 4 + i * 20, getY() + 4);
 				}
 			}
-			context.drawGuiTexture(RenderLayer::getGuiTextured, HOTBAR_SELECTION_TEXTURE, getX() + selectedSlot * 20, getY(), 24, 24);
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HOTBAR_SELECTION_TEXTURE, getX() + selectedSlot * 20, getY(), 24, 24);
 		}
 
 		@Override
@@ -268,7 +268,7 @@ public class CustomizeArmorScreen extends Screen {
 
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, getX(), getY(), getWidth(), getHeight(), isHovered() ? 0xFFfafa96 : 0x80FFFFFF);
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight(), isHovered() ? 0xFFfafa96 : 0x80FFFFFF);
 		}
 
 		@Override

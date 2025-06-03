@@ -6,12 +6,12 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.OkLabColor;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.text.Text;
@@ -59,7 +59,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	@Override
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		context.drawTexture(RenderLayer::getGuiTextured,
+		context.drawTexture(RenderPipelines.GUI_TEXTURED,
 				GRADIENT_TEXTURE,
 				getX() + HORIZONTAL_MARGIN,
 				getY() + VERTICAL_MARGIN,

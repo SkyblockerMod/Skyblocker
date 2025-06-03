@@ -27,10 +27,10 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3x2fStack;
 
 import java.util.List;
 
@@ -76,11 +76,11 @@ public class ContainerSolverManager {
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
 				ScreenEvents.afterRender(screen).register((screen1, context, mouseX, mouseY, delta) -> {
-					MatrixStack matrices = context.getMatrices();
-					matrices.push();
-					matrices.translate(((HandledScreenAccessor) genericContainerScreen).getX(), ((HandledScreenAccessor) genericContainerScreen).getY(), 300);
+					Matrix3x2fStack matrices = context.getMatrices();
+					matrices.pushMatrix();
+					matrices.translate(((HandledScreenAccessor) genericContainerScreen).getX(), ((HandledScreenAccessor) genericContainerScreen).getY());
 					onDraw(context, genericContainerScreen, genericContainerScreen.getScreenHandler().slots);
-					matrices.pop();
+					matrices.popMatrix();
 				});
 				ScreenEvents.remove(screen).register(screen1 -> clearScreen());
 				onSetScreen(genericContainerScreen);

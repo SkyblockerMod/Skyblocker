@@ -22,11 +22,11 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -340,13 +340,13 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		// Item Protection
 		if (ItemProtection.isItemProtected(slot.getStack())) {
-			context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
+			context.drawTexture(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
 		}
 
 		// Search
 		// Darken the slots
 		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {
-			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 100, 0x88_000000);
+			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0x88_000000);
 		}
 	}
 

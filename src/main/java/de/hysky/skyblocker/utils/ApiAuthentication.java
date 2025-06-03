@@ -40,7 +40,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class ApiAuthentication {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final String MINECRAFT_VERSION = SharedConstants.getGameVersion().getName();
+	private static final String MINECRAFT_VERSION = SharedConstants.getGameVersion().name();
 	private static final String AUTH_URL = "https://hysky.de/api/aaron/authenticate";
 	private static final String CONTENT_TYPE = "application/json";
 	private static final String ALGORITHM = "SHA256withRSA";

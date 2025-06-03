@@ -161,7 +161,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
             context.drawCenteredTextWithShadow(client.textRenderer, targetName, width / 2 - 85, y + 5, 0xFFFFFF);
             context.drawCenteredTextWithShadow(client.textRenderer, replacementName, width / 2 + 85, y + 5, 0xFFFFFF);
             if (tooltip != null && isMouseOver(mouseX, mouseY)) {
-                screen.setTooltip(tooltip);
+                context.drawTooltip(tooltip, mouseX, mouseY);
             }
         }
 

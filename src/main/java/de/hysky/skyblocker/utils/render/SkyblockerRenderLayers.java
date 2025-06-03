@@ -15,7 +15,6 @@ import net.minecraft.client.render.RenderLayer.MultiPhaseParameters;
 import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.RenderPhase.LineWidth;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.TriState;
 
 public class SkyblockerRenderLayers {
 	private static final Double2ObjectMap<MultiPhase> LINES_LAYERS = new Double2ObjectOpenHashMap<>();
@@ -50,12 +49,12 @@ public class SkyblockerRenderLayers {
 			.build(false));
 
 	private static final Function<Identifier, MultiPhase> TEXTURE = texture -> RenderLayer.of("texture", RenderLayer.DEFAULT_BUFFER_SIZE, false, true, SkyblockerRenderPipelines.TEXTURE, MultiPhaseParameters.builder()
-			.texture(new RenderPhase.Texture(texture, TriState.FALSE, false))
+			.texture(new RenderPhase.Texture(texture, false))
 			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
 			.build(false));
 
 	private static final Function<Identifier, MultiPhase> TEXTURE_THROUGH_WALLS = texture -> RenderLayer.of("texture_through_walls", RenderLayer.DEFAULT_BUFFER_SIZE, false, true, SkyblockerRenderPipelines.TEXTURE_THROUGH_WALLS, MultiPhaseParameters.builder()
-			.texture(new RenderPhase.Texture(texture, TriState.FALSE, false))
+			.texture(new RenderPhase.Texture(texture, false))
 			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
 			.build(false));
 	public static final MultiPhase CYLINDER = RenderLayer.of("cylinder", RenderLayer.DEFAULT_BUFFER_SIZE, false, true, SkyblockerRenderPipelines.CYLINDER, MultiPhaseParameters.builder()

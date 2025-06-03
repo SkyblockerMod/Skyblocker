@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.background.adders;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
@@ -10,9 +8,9 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.ColorHelper;
@@ -23,7 +21,7 @@ import java.util.function.Predicate;
 
 public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRarity> {
 
-	public static final ImmutableMap<String, SkyblockItemRarity> LORE_RARITIES = ImmutableMap.ofEntries(
+	public static final Map<String, SkyblockItemRarity> LORE_RARITIES = Map.ofEntries(
 			Map.entry("ADMIN", SkyblockItemRarity.ADMIN),
 			Map.entry("ULTIMATE", SkyblockItemRarity.ULTIMATE),
 			Map.entry("SPECIAL", SkyblockItemRarity.SPECIAL), //Very special is the same color so this will cover it
@@ -37,7 +35,7 @@ public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRari
 			Map.entry("COMMON", SkyblockItemRarity.COMMON)
 	);
 
-	private static final ImmutableList<Predicate<String>> INVENTORY_TITLES = ImmutableList.of(
+	private static final List<Predicate<String>> INVENTORY_TITLES = List.of(
 			title -> title.contains("The Hex"),
 			title -> title.equals("Craft Item"),
 			title -> title.equals("Anvil"),
@@ -81,7 +79,7 @@ public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRari
 
 	@Override
 	protected void draw(DrawContext context, int x, int y, SkyblockItemRarity rarity) {
-		context.drawSpriteStretched(RenderLayer::getGuiTextured, getSprite(), x, y, 16, 16,
+		context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, getSprite(), x, y, 16, 16,
 				ColorHelper.fromFloats(
 						SkyblockerConfigManager.get().general.itemInfoDisplay.itemBackgroundOpacity,
 						rarity.r, rarity.g, rarity.b

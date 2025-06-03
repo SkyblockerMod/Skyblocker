@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.recipebook.RecipeGroupButtonWidget;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -28,7 +28,7 @@ public class SkyblockRecipeTabButton extends ToggleButtonWidget {
 			if (this.toggled) x -= 2;
 
 			//Render main texture
-			context.drawGuiTexture(RenderLayer::getGuiTextured, this.textures.get(true, this.toggled), x, this.getY(), this.width, this.height);
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, this.textures.get(true, this.toggled), x, this.getY(), this.width, this.height);
 
 			//Render item icon
 			int offset = this.toggled ? -2 : 0;

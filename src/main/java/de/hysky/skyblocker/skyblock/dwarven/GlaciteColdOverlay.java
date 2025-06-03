@@ -7,9 +7,9 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
@@ -63,7 +63,7 @@ public class GlaciteColdOverlay {
     private static void renderOverlay(DrawContext context, Identifier texture, float opacity) {
 		int white = ColorHelper.getWhite(opacity);
 		context.drawTexture(
-			RenderLayer::getGuiTexturedOverlay,
+			RenderPipelines.GUI_TEXTURED,
 			texture,
 			0,
 			0,

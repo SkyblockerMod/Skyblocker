@@ -53,10 +53,10 @@ public class FishingHookDisplayHelper {
 			int y = screenHeight / 2; // Position near the top
 
 			// Scale the text by 3x
-			context.getMatrices().push();
-			context.getMatrices().scale(3.0F, 3.0F, 1.0F);
+			context.getMatrices().pushMatrix();
+			context.getMatrices().scale(3.0F, 3.0F);
 			context.drawCenteredTextWithShadow(client.textRenderer, armorStandName, (int) (x / 3.0F), (int) (y / 3.0F), 0xFFFF00);
-			context.getMatrices().pop();
+			context.getMatrices().popMatrix();
 		}
 	}
 
