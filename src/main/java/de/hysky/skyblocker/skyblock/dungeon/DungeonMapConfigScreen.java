@@ -2,9 +2,9 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -79,7 +79,7 @@ public class DungeonMapConfigScreen extends Screen {
 	public void renderHUDMap(DrawContext context, int x, int y) {
 		float scaling = SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling;
 		int size = (int) (128 * scaling);
-		context.drawTexture(RenderLayer::getGuiTextured, MAP_BACKGROUND, x, y, 0, 0, size, size, size, size);
+		context.drawTexture(RenderPipelines.GUI_TEXTURED, MAP_BACKGROUND, x, y, 0, 0, size, size, size, size);
 	}
 
 	public void renderHUDScore(DrawContext context, int x, int y) {

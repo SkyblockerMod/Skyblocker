@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import de.hysky.skyblocker.utils.Formatters;
@@ -75,7 +74,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	@Override
 	public void drawTooltip(DrawContext context, int x, int y) {
 		if (this.hovered != null) {
-			((DrawContextInvoker) context).invokeDrawTooltip(CLIENT.textRenderer, this.hovered.getTooltip(), x, y, HoveredTooltipPositioner.INSTANCE, null);
+			context.drawTooltipImmediately(CLIENT.textRenderer, this.hovered.getTooltip(), x, y, HoveredTooltipPositioner.INSTANCE, null);
 		}
 	}
 

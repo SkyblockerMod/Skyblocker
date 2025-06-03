@@ -12,7 +12,6 @@ import net.minecraft.client.gui.tooltip.TooltipBackgroundRenderer;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -21,6 +20,8 @@ import net.minecraft.util.Formatting;
 import java.awt.*;
 import java.util.List;
 import java.util.function.Consumer;
+
+import org.joml.Matrix3x2fStack;
 
 public class EditBarWidget extends ContainerWidget {
 
@@ -92,13 +93,13 @@ public class EditBarWidget extends ContainerWidget {
 			int j = mouseY - insideMouseY;
 			if (i * i + j * j > 30 * 30) visible = false;
 		}
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.translate(getX(), getY(), 200.f);
-		TooltipBackgroundRenderer.render(context, 0, 0, getWidth(), getHeight(), 0, null);
+		Matrix3x2fStack matrices = context.getMatrices();
+		matrices.pushMatrix();
+		matrices.translate(getX(), getY());
+		TooltipBackgroundRenderer.render(context, 0, 0, getWidth(), getHeight(), null);
 		nameWidget.render(context, mouseX, mouseY, delta);
 		for (ClickableWidget option : options) option.render(context, mouseX - getX(), mouseY - getY(), delta);
-		matrices.pop();
+		matrices.popMatrix();
 	}
 
 	@Override

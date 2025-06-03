@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import org.joml.Matrix3x2fStack;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -13,11 +15,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.MapRenderState;
 import net.minecraft.client.render.MapRenderer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.MapIdComponent;
 import net.minecraft.item.FilledMapItem;
@@ -45,7 +44,7 @@ public class DungeonMap {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
     }
 
-    public static void render(MatrixStack matrices) {
+    public static void renderInternal(DrawContext context) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) return;
 
@@ -57,16 +56,15 @@ public class DungeonMap {
         int x = SkyblockerConfigManager.get().dungeons.dungeonMap.mapX;
         int y = SkyblockerConfigManager.get().dungeons.dungeonMap.mapY;
         float scaling = SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling;
-        VertexConsumerProvider.Immediate vertices = client.getBufferBuilders().getEffectVertexConsumers();
+        Matrix3x2fStack matrices = context.getMatrices();
         MapRenderer mapRenderer = client.getMapRenderer();
 
-        matrices.push();
-        matrices.translate(x, y, 0);
-        matrices.scale(scaling, scaling, 0f);
+        matrices.pushMatrix();
+        matrices.translate(x, y);
+        matrices.scale(scaling, scaling);
         mapRenderer.update(mapId, state, MAP_RENDER_STATE);
-        mapRenderer.draw(MAP_RENDER_STATE, matrices, vertices, false, LightmapTextureManager.MAX_LIGHT_COORDINATE);
-        vertices.draw();
-        matrices.pop();
+        context.drawMap(MAP_RENDER_STATE);
+        matrices.popMatrix();
     }
 
     public static MapIdComponent getMapIdComponent(ItemStack stack) {
@@ -79,7 +77,7 @@ public class DungeonMap {
 
     private static void render(DrawContext context) {
         if (Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss() && SkyblockerConfigManager.get().dungeons.dungeonMap.enableMap) {
-            render(context.getMatrices());
+            renderInternal(context);
         }
     }
 

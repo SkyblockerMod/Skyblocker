@@ -4,8 +4,8 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class SkillsPage implements ProfileViewerPage {
         for (int i = 0; i < skillWidgets.size(); i++) {
             int x = (i < 6) ? rootX : column2;
             int y = rootY + (i % 6) * ROW_GAP;
-            context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
             skillWidgets.get(i).render(context, mouseX, mouseY, x, y + 3);
         }
     }

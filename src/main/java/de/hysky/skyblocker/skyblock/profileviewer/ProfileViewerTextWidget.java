@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.skyblock.profileviewer;
 
+import org.joml.Matrix3x2fStack;
+
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Colors;
 
 public class ProfileViewerTextWidget {
@@ -27,13 +28,13 @@ public class ProfileViewerTextWidget {
 
     public void render(DrawContext context, TextRenderer textRenderer, int root_x, int root_y){
         // Profile Icon
-        MatrixStack matrices = context.getMatrices();
-        matrices.push();
-        matrices.scale(0.75f, 0.75f, 1);
+        Matrix3x2fStack matrices = context.getMatrices();
+        matrices.pushMatrix();
+        matrices.scale(0.75f, 0.75f);
         int rootAdjustedX = (int) ((root_x) / 0.75f);
         int rootAdjustedY = (int) ((root_y) / 0.75f);
         context.drawItem(Ico.PAINTING, rootAdjustedX, rootAdjustedY);
-        matrices.pop();
+        matrices.popMatrix();
 
         context.drawText(textRenderer, "§n"+PROFILE_NAME, root_x + 14, root_y + 3, Colors.WHITE, true);
         context.drawText(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 6 + ROW_GAP, Colors.WHITE, true);

@@ -212,4 +212,9 @@ public class WidgetsListTab implements Tab {
 	public void setShouldShowCustomWidgetEntries(boolean shouldShowCustomWidgetEntries) {
 		this.shouldShowCustomWidgetEntries = shouldShowCustomWidgetEntries;
 	}
+
+	@Override
+	public Text getNarratedHint() {
+		return Text.empty();
+	}
 }

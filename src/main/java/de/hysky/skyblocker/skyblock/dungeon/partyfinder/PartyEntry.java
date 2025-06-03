@@ -6,14 +6,13 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.DefaultSkinHelper;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
@@ -32,6 +31,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.joml.Matrix3x2fStack;
 
 public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     private static final Identifier PARTY_CARD_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/party_card.png");
@@ -190,15 +191,15 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
 
     @Override
     public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-        MatrixStack matrices = context.getMatrices();
-        matrices.push();
-        matrices.translate(x, y, 0);
+        Matrix3x2fStack matrices = context.getMatrices();
+        matrices.pushMatrix();
+        matrices.translate(x, y);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         if (hovered && !isLocked) {
-            context.drawTexture(RenderLayer::getGuiTextured, PARTY_CARD_TEXTURE_HOVER, 0, 0, 0, 0, 336, 64, 336, 64);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, PARTY_CARD_TEXTURE_HOVER, 0, 0, 0, 0, 336, 64, 336, 64);
             if (!(this instanceof YourParty)) context.drawText(textRenderer, JOIN_TEXT, 148, 6, 0xFFFFFFFF, false);
-        } else context.drawTexture(RenderLayer::getGuiTextured, PARTY_CARD_TEXTURE, 0, 0, 0, 0, 336, 64, 336, 64);
+        } else context.drawTexture(RenderPipelines.GUI_TEXTURED, PARTY_CARD_TEXTURE, 0, 0, 0, 0, 336, 64, 336, 64);
         int mouseXLocal = mouseX - x;
         int mouseYLocal = mouseY - y;
 
@@ -241,14 +242,11 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         context.drawText(textRenderer, note, 5, 52, 0xFFFFFFFF, true);
 
         if (isLocked) {
-            matrices.push();
-            matrices.translate(0, 0, 200f);
             context.fill(0, 0, entryWidth, entryHeight, 0x90000000);
             context.drawText(textRenderer, lockReason, entryWidth / 2 - textRenderer.getWidth(lockReason) / 2, entryHeight / 2 - textRenderer.fontHeight / 2, 0xFFFFFF, true);
-            matrices.pop();
         }
 
-        matrices.pop();
+        matrices.popMatrix();
 
     }
 
@@ -313,16 +311,16 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             super.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
 
-            MatrixStack matrices = context.getMatrices();
-            matrices.push();
-            matrices.translate(x, y, 0);
+            Matrix3x2fStack matrices = context.getMatrices();
+            matrices.pushMatrix();
+            matrices.translate(x, y);
 
             hovered = hovered & slotID != -1;
 
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
             context.drawText(textRenderer, hovered ? DE_LIST_TEXT : YOUR_PARTY_TEXT, 148, 6, 0xFFFFFFFF, false);
 
-            matrices.pop();
+            matrices.popMatrix();
         }
     }
 }

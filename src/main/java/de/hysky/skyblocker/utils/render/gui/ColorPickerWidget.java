@@ -1,13 +1,12 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.HudHelper;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
@@ -112,7 +111,7 @@ public class ColorPickerWidget extends ClickableWidget {
 			float segmentLength = (float) hRect.width() / rainbowColors.length;
 			float startX = hRect.getLeft() + segmentLength * i;
 			float endX = hRect.getLeft() + segmentLength * (i + 1);
-			RenderHelper.drawHorizontalGradient(context, startX, hRect.getTop(), endX, hRect.getBottom(), startColor, endColor);
+			HudHelper.drawHorizontalGradient(context, startX, hRect.getTop(), endX, hRect.getBottom(), startColor, endColor);
 		}
 		context.fill(hRect.getLeft() + (int) hThumbX - 1, hRect.getTop(), hRect.getLeft() + (int) hThumbX + 2, hRect.getBottom(), Colors.BLACK);
 		context.fill(hRect.getLeft() + (int) hThumbX, hRect.getTop() - 1, hRect.getLeft() + (int) hThumbX + 1, hRect.getBottom() + 1, Colors.BLACK);
@@ -124,18 +123,14 @@ public class ColorPickerWidget extends ClickableWidget {
 		int pickerY = svRect.getTop();
 		int pickerEndX = svRect.getRight();
 		int pickerEndY = svRect.getBottom();
-		RenderHelper.drawHorizontalGradient(context, pickerX, pickerY, pickerEndX, pickerEndY, -1, svColor);
-		context.fillGradient(pickerX, pickerY, pickerEndX, pickerEndY, 1, 0, 0xFF_00_00_00);
+		HudHelper.drawHorizontalGradient(context, pickerX, pickerY, pickerEndX, pickerEndY, -1, svColor);
+		context.fillGradient(pickerX, pickerY, pickerEndX, pickerEndY, 1, 0xFF_00_00_00);
 
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.translate(0, 0, 5);
-		context.drawGuiTexture(RenderLayer::getGuiTextured, SV_THUMB_TEXTURE,
+		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SV_THUMB_TEXTURE,
 				svRect.getLeft() + (int) svThumbX - 2,
 				svRect.getTop() + (int) svThumbY - 2,
 				5, 5
 		);
-		matrices.pop();
 
 		// Preview
 		context.fill(getX(), getY(), svRect.getLeft() - 2, svRect.getBottom() + 1, color);

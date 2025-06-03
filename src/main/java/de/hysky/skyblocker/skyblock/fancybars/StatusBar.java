@@ -5,16 +5,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -129,25 +130,22 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		if (width <= 0) return;
 		int transparency = transparency(-1);
 		switch (iconPosition) {
-			case LEFT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x, y, 9, 9, transparency);
-			case RIGHT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x + width - 9, y, 9, 9, transparency);
+			case LEFT -> context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, icon, x, y, 9, 9, transparency);
+			case RIGHT -> context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, icon, x + width - 9, y, 9, 9, transparency);
 		}
 
 		int barWith = iconPosition.equals(IconPosition.OFF) ? width : width - 10;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? x + 10 : x;
-		context.drawGuiTexture(RenderLayer::getGuiTextured, BAR_BACK, barX, y + 1, barWith, 7, transparency);
-		RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
+		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, y + 1, barWith, 7, transparency);
+		HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
 
 
 		if (hasOverflow && overflowFill > 0) {
-			RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
+			HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
 		}
 		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
 		if (showText()) {
-			context.getMatrices().push();
-			context.getMatrices().translate(0, 0, 100);
 			renderText(context);
-			context.getMatrices().pop();
 		}
 	}
 
@@ -173,16 +171,10 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		}
 		int y = this.y - 3;
 
-		context.draw(consumers -> textRenderer.drawWithOutline(
-				Text.of(text).asOrderedText(),
-				x,
-				y,
-				transparency((textColor == null ? colors[0] : textColor).getRGB()),
-				transparency(0),
-				context.getMatrices().peek().getPositionMatrix(),
-				consumers,
-				15728880
-				));
+		int color = transparency((textColor == null ? colors[0] : textColor).getRGB());
+		int outlineColor = transparency(Colors.BLACK);
+
+		HudHelper.drawOutlinedText(context, Text.of(text).asOrderedText(), x, y, color, outlineColor);
 	}
 
 	public void renderCursor(DrawContext context, int mouseX, int mouseY, float delta) {

@@ -13,7 +13,6 @@ import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
@@ -28,10 +27,9 @@ import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.profiler.Profilers;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-
-import java.awt.*;
 
 public class RenderHelper {
     private static final Identifier TRANSLUCENT_DRAW = Identifier.of(SkyblockerMod.NAMESPACE, "translucent_draw");
@@ -410,23 +408,4 @@ public class RenderHelper {
     public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
-
-    public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, int argb) {
-        context.drawGuiTexture(RenderLayer::getGuiTextured, texture, x, y, width, height, argb);
-    }
-
-    public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, Color color) {
-        renderNineSliceColored(context, texture, x, y, width, height, ColorHelper.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
-    }
-
-	public static void drawHorizontalGradient(DrawContext context, float startX, float startY, float endX, float endY, int colorStart, int colorEnd) {
-		context.draw(provider -> {
-			VertexConsumer vertexConsumer = provider.getBuffer(RenderLayer.getGui());
-			Matrix4f positionMatrix = context.getMatrices().peek().getPositionMatrix();
-			vertexConsumer.vertex(positionMatrix, startX, startY, 0).color(colorStart);
-			vertexConsumer.vertex(positionMatrix, startX, endY, 0).color(colorStart);
-			vertexConsumer.vertex(positionMatrix, endX, endY, 0).color(colorEnd);
-			vertexConsumer.vertex(positionMatrix, endX, startY, 0).color(colorEnd);
-		});
-	}
 }

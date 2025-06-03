@@ -8,8 +8,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 
 import java.awt.*;
@@ -48,14 +48,14 @@ public class DungeonMiscStatsWidgets {
     }
 
     public void render(DrawContext context, int x, int y) {
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
         context.drawItem(Ico.FEATHER, x + 2, y + 4);
 
         context.drawText(textRenderer, "Secrets " + secrets, x + 30, y + 4, Color.WHITE.getRGB(), true);
         context.drawText(textRenderer, "Avg " + (totalRuns > 0 ? DF.format(secrets / (float) totalRuns) : 0) + "/Run", x + 30, y + 14, Color.WHITE.getRGB(), true);
 
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y + 28, 0, 0, 109, 26, 109, 26);
-        context.drawTexture(RenderLayer::getGuiTextured, RUN_ICON, x + 4, y + 33, 0, 0, 14, 16, 14, 16);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + 28, 0, 0, 109, 26, 109, 26);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, RUN_ICON, x + 4, y + 33, 0, 0, 14, 16, 14, 16);
 
         context.drawText(textRenderer, "§aNormal §r" + dungeonRuns.getOrDefault("catacombs", 0), x + 30, y + 32, Color.WHITE.getRGB(), true);
         context.drawText(textRenderer, "§cMaster §r" + dungeonRuns.getOrDefault("master_catacombs", 0), x + 30, y + 42, Color.WHITE.getRGB(), true);

@@ -11,9 +11,9 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
@@ -136,11 +136,11 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         for (Slot equipmentSlot : equipmentSlots) {
             boolean hovered = isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY);
 
-            if (hovered) context.drawGuiTexture(RenderLayer::getGuiTextured, HandledScreenAccessor.getSLOT_HIGHLIGHT_BACK_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
+            if (hovered) context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HandledScreenAccessor.getSLOT_HIGHLIGHT_BACK_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
 
             drawSlot(context, equipmentSlot);
 
-            if (hovered) context.drawGuiTexture(RenderLayer::getGuiTexturedOverlay, HandledScreenAccessor.getSLOT_HIGHLIGHT_FRONT_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
+            if (hovered) context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HandledScreenAccessor.getSLOT_HIGHLIGHT_FRONT_TEXTURE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
         }
 
         super.drawForeground(context, mouseX, mouseY);
@@ -170,7 +170,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
         super.drawBackground(context, delta, mouseX, mouseY);
         for (int i = 0; i < 4; i++) {
-            context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, x + 76 + (i == 3 ? 21 : 0), y + 7 + i * 18, 18, 18);
+            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SLOT_TEXTURE, x + 76 + (i == 3 ? 21 : 0), y + 7 + i * 18, 18, 18);
         }
     }
 
@@ -178,7 +178,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     protected void drawSlot(DrawContext context, Slot slot) {
         super.drawSlot(context, slot);
         if (slot instanceof EquipmentSlot && !slot.hasStack()) {
-            context.drawGuiTexture(RenderLayer::getGuiTextured, EMPTY_SLOT, slot.x, slot.y, 16, 16);
+            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, EMPTY_SLOT, slot.x, slot.y, 16, 16);
         }
     }
 

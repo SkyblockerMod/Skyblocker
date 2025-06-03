@@ -4,8 +4,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.background.ColoredItemBackground;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.ColorHelper;
@@ -61,7 +61,7 @@ public class JacobMedalBackground extends ColoredItemBackground<Integer> {
 		float g = ((color >> 8) & 0xFF) / 255F;
 		float b = (color & 0xFF) / 255F;
 
-		context.drawSpriteStretched(RenderLayer::getGuiTextured, getSprite(), x, y, 16, 16,
+		context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, getSprite(), x, y, 16, 16,
 				ColorHelper.fromFloats(
 						SkyblockerConfigManager.get().general.itemInfoDisplay.itemBackgroundOpacity,
 						r, g, b
