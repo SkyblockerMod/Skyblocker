@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.item.CustomArmorAnimatedDyes;
-import de.hysky.skyblocker.skyblock.item.CustomArmorTrims;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -195,29 +195,32 @@ public class GeneralConfig {
         @SerialEntry
         public boolean attributeShardInfo = true;
 
+		@SerialEntry
+		public ItemBackgroundStyle itemBackgroundStyle = ItemBackgroundStyle.SQUARE;
+
+		@SerialEntry
+		public float itemBackgroundOpacity = 0.5f;
+
         @SerialEntry
         public boolean itemRarityBackgrounds = true;
 
-        @SerialEntry
-        public RarityBackgroundStyle itemRarityBackgroundStyle = RarityBackgroundStyle.SQUARE;
-
-        @SerialEntry
-        public float itemRarityBackgroundsOpacity = 1f;
+		@SerialEntry
+		public boolean jacobMedalBackgrounds = true;
     }
 
-    public enum RarityBackgroundStyle {
-        CIRCULAR(Identifier.of(SkyblockerMod.NAMESPACE, "item_rarity_background_circular")),
-        SQUARE(Identifier.of(SkyblockerMod.NAMESPACE, "item_rarity_background_square"));
+    public enum ItemBackgroundStyle {
+        CIRCULAR(Identifier.of(SkyblockerMod.NAMESPACE, "item_background_circular")),
+        SQUARE(Identifier.of(SkyblockerMod.NAMESPACE, "item_background_square"));
 
         public final Identifier tex;
 
-        RarityBackgroundStyle(Identifier tex) {
+        ItemBackgroundStyle(Identifier tex) {
             this.tex = tex;
         }
 
         @Override
         public String toString() {
-            return I18n.translate("skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.style." + name());
+            return I18n.translate("skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style." + name());
         }
     }
 

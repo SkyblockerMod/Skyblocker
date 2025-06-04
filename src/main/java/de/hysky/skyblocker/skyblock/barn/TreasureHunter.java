@@ -1,10 +1,16 @@
 package de.hysky.skyblocker.skyblock.barn;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +34,21 @@ public class TreasureHunter extends ChatPatternListener {
         String hint = matcher.group(1);
         String location = locations.get(hint);
         if (location == null) return false;
-        client.player.sendMessage(Text.of("§e[NPC] Treasure Hunter§f: Go mine around " + location + "."), false);
+        client.player.sendMessage(Text.of("§e[NPC] Treasure Hunter§f: Go mine around " + location), false);
+		requestWaypoint(location);
         return true;
     }
+
+	private static void requestWaypoint(String location) {
+		String command = "/skyblocker waypoints individual " + location + " Treasure";
+		MutableText requestMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.display", java.util.Arrays.stream(location.split(" ")).mapToInt(Integer::parseInt).boxed().toArray()).formatted(Formatting.AQUA)
+				.styled(style -> style
+						.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.config.chat.waypoints.display")))
+						.withClickEvent(new ClickEvent.RunCommand(command.trim()))
+				)
+		);
+		MinecraftClient.getInstance().player.sendMessage(requestMessage, false);
+	}
 
     static {
         locations = new HashMap<>();

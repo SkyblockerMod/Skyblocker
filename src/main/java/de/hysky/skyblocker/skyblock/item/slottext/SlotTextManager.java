@@ -36,6 +36,7 @@ public class SlotTextManager {
 			new EnchantmentLevelAdder(),
 			new MinionLevelAdder(),
 			new PetLevelAdder(),
+			new ChoosePetLevelAdder(),
 			new SkyblockLevelAdder(),
 			new HotmPerkLevelAdder(),
 			new SkillLevelAdder(),
@@ -55,7 +56,8 @@ public class SlotTextManager {
 			ChocolateFactorySolver.INSTANCE,
 			new EvolvingItemAdder(),
 			new NewYearCakeAdder(),
-			WardrobeKeybinds.INSTANCE
+			WardrobeKeybinds.INSTANCE,
+			new SkyblockGuideAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 	private static final KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, "key.categories.skyblocker"));

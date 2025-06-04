@@ -15,12 +15,10 @@ import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookWidget
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.gui.DrawContext;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.ingame.StatusEffectsDisplay;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.text.Text;
@@ -33,8 +31,6 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
 
     @Unique
     private GardenPlotsWidget gardenPlotsWidget;
-    @Unique
-    private ButtonWidget deskButton;
 
     public InventoryScreenMixin(PlayerScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -64,23 +60,15 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
 
     @Inject(method = "onRecipeBookToggled", at = @At("TAIL"))
     private void skyblocker$moveGardenPlotsWdiget(CallbackInfo ci) {
-        if (Utils.getLocation().equals(Location.GARDEN) && gardenPlotsWidget != null) {
+        if (gardenPlotsWidget != null) {
             gardenPlotsWidget.setPosition(x + backgroundWidth + 4, y);
-            if (deskButton != null) deskButton.setPosition(gardenPlotsWidget.getX() + 4, y + 108);
         }
     }
 
     @Inject(method = "init", at = @At("TAIL"))
     private void skyblocker$addGardenPlotsWidget(CallbackInfo ci) {
         if (Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget) {
-            gardenPlotsWidget = new GardenPlotsWidget(x + backgroundWidth + 4, y);
-			deskButton = ButtonWidget.builder(Text.translatable("skyblocker.gardenPlots.openDesk"), button -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/desk", true))
-					.dimensions(gardenPlotsWidget.getX() + 7, y + 108, 60, 15)
-					.build();
-			// make desk button get selected before the widget but render after the widget
-			addSelectableChild(deskButton);
-			addDrawableChild(gardenPlotsWidget);
-            addDrawable(deskButton);
+            addDrawableChild(gardenPlotsWidget = new GardenPlotsWidget(x + backgroundWidth + 4, y));
         }
     }
 }

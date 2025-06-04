@@ -28,6 +28,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.scoreboard.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -53,7 +55,8 @@ public class Utils {
     private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
     public static final String PROFILE_ID_PREFIX = "Profile ID: ";
 	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
-    private static boolean isOnHypixel = false;
+	private static final RegistryWrapper.WrapperLookup LOOKUP = BuiltinRegistries.createWrapperLookup();
+	private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
 
     /**
@@ -575,4 +578,13 @@ public class Utils {
     public static String getUndashedUuid() {
         return UndashedUuid.toString(getUuid());
     }
+
+	/**
+	 * Tries to get the dynamic registry manager instance currently in use or else returns {@link #LOOKUP}
+	 */
+	public static RegistryWrapper.WrapperLookup getRegistryWrapperLookup() {
+		MinecraftClient client = MinecraftClient.getInstance();
+		// Null check on client for tests
+		return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : LOOKUP;
+	}
 }
