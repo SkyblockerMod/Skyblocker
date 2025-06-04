@@ -190,8 +190,7 @@ public class BarPositioner {
         SCREEN_CENTER_RIGHT(false, true,
                 ((scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 + 8, scaledHeight / 2 - 4)),
                 SizeRule.freeSize(15, 3, 8)
-        )
-		;
+        );
 
         private final AnchorPositionProvider positionProvider;
         private final AnchorHitboxProvider hitboxProvider;
