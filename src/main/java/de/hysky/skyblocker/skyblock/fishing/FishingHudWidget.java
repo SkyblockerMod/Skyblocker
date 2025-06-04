@@ -31,7 +31,6 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	public FishingHudWidget() {
 		super(Text.literal("Fishing").formatted(Formatting.DARK_AQUA, Formatting.BOLD), Formatting.DARK_AQUA.getColorValue(), "hud_fishing");
 		instance = this;
-		update();
 	}
 
 	@Override
