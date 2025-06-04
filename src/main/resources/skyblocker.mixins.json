@@ -45,6 +45,7 @@
     "RenderFishMixin",
     "RenderPipelineMixin",
     "ScoreboardMixin",
+    "ScreenHandlerMixin",
     "ScreenMixin",
     "SignEditScreenMixin",
     "SocialInteractionsPlayerListWidgetMixin",
