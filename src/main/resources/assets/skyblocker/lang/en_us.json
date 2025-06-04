@@ -213,8 +213,6 @@
   "skyblocker.config.dungeons.secretWaypoints.enableLeverWaypoints": "Enable Lever Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints": "Enable Pearl Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "With these waypoints, you throw a pearl towards the block and at the same time AOTV up.",
-  "skyblocker.config.dungeons.secretWaypoints.enableRoomMatching": "Enable Room Matching",
-  "skyblocker.config.dungeons.secretWaypoints.enableRoomMatching.@Tooltip": "Disabling this option can save around 20 MB of RAM, but Secret Waypoint and \u00a7lsome puzzle solvers \u00a7rrequire this option to be enabled.",
   "skyblocker.config.dungeons.secretWaypoints.enableSecretWaypoints": "Enable Dungeon Secret Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints": "Enable Stonk Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints": "Enable Superboom Waypoints",
@@ -277,13 +275,15 @@
   "skyblocker.config.general.hitbox.oldMushroomHitbox": "Enable 1.8 mushroom hitbox",
 
   "skyblocker.config.general.itemInfoDisplay": "Item Info Display",
-  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle": "Item Rarity Background Style",
-  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.@Tooltip": "Choose between a circular or a square background style!",
-  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.style.CIRCULAR": "Circular",
-  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundStyle.style.SQUARE": "Square",
-  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds": "Item Rarity Backgrounds",
-  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Displays a colored background behind an item, the color represents the item's rarity.",
-  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsOpacity": "Item Rarity Backgrounds Opacity",
+  "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle": "Item Background Overlay Style",
+  "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.@Tooltip": "Choose between a circular or a square background style!",
+  "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style.CIRCULAR": "Circular",
+  "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style.SQUARE": "Square",
+  "skyblocker.config.general.itemInfoDisplay.itemBackgroundOpacity": "Item Background Overlay Opacity",
+  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds": "Item Rarity Background",
+  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Displays a colored background behind an item. The color represents the item's rarity.",
+  "skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds": "Jacob's Contest Medal Background",
+  "skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds.@Tooltip": "Displays a colored background behind a Jacob's Farming Contest entry. The color represents the medal earned during the contest.",
 
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
@@ -456,6 +456,8 @@
   "skyblocker.config.helpers.fishing.minimumNotificationRarity": "Sea Creature Rarity Notification",
   "skyblocker.config.helpers.fishing.minimumNotificationRarity.@Tooltip": "Minimum rarity for a notification about rare sea creatures. (UNKNOWN = disabled)",
   "skyblocker.config.helpers.fishing.minimumNotificationRarity.notification": "%s Sea Creature",
+  "skyblocker.config.helpers.fishing.enableFishingHookDisplay": "Enable Fishing Hook Display",
+  "skyblocker.config.helpers.fishing.enableFishingHookDisplay.@Tooltip": "Display the skyblock fishing hook timer on the screen instead of above the rod.",
 
   "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "Enable Item Price Lookup",
   "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Searches the Bazaar and AH for the current hovered item with the F6 key.",
@@ -982,7 +984,6 @@
   "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag": "Maximum Added Lag (ms)",
   "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "How long the animation is allowed to get behind the game in milliseconds. (If set to 0, smoothing will not have any lag, but stuttering will likely occur. Increase this value if you're experiencing flashing.)",
 
-  
   "skyblocker.config.uiAndVisuals.tabHud": "Fancy HUD and TAB",
   "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Open Config Screen",
   "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Default Positioning Behavior",
@@ -1134,6 +1135,7 @@
 
   "skyblocker.events.startsNow": "%s starts now!",
   "skyblocker.events.startsSoon": "%s starts soon!",
+  "skyblocker.events.crops": "Crops:",
   "skyblocker.events.tab.endsIn": "Ends in %s",
   "skyblocker.events.tab.clickToWarp": "Click to warp!",
   "skyblocker.events.tab.noMore": "No more this year!",
@@ -1261,7 +1263,7 @@
   "skyblocker.tips.customDungeonSecretWaypoints": "You can add custom secret waypoints to any dungeon room with /skyblocker dungeons secrets addWaypoint.",
   "skyblocker.tips.shortcuts": "Use /skyblocker shortcuts to create and edit command and message shortcuts.",
   "skyblocker.tips.gallery": "Check out https://hysky.de/skyblocker/gallery for pictures of the mod's features in action!",
-  "skyblocker.tips.itemRarityBackground": "See an item's rarity easily with Item Rarity Backgrounds in the config's Item Info Display section.",
+  "skyblocker.tips.itemRarityBackground": "See an item's rarity easily with Item Rarity Background in the config's Item Info Display section.",
   "skyblocker.tips.modMenuUpdate": "ModMenu will let you know if there's an update available for Skyblocker for your game version.",
   "skyblocker.tips.issues": "Submit bug reports and feature requests to https://github.com/SkyblockerMod/Skyblocker.",
   "skyblocker.tips.beta": "We often have beta versions available from GitHub Actions that contain new and experimental features.",
@@ -1390,6 +1392,17 @@
   "skyblocker.profileviewer.inventory.inactive": "Locked Slot",
   "skyblocker.profileviewer.inventory.inactive.description.backpack": "The selected backpack",
   "skyblocker.profileviewer.inventory.inactive.description.general": "does not contain this slot",
+
+  "skyblocker.armorCustomization.animated": "Animated",
+  "skyblocker.armorCustomization.cannotCustomizeColor": "Cannot customize this piece's color :(",
+  "skyblocker.armorCustomization.cycleBack": "Cycle Back",
+  "skyblocker.armorCustomization.resetColor": "Reset color",
+  "skyblocker.armorCustomization.delay": "Delay: %s",
+  "skyblocker.armorCustomization.delayTooltip": "The animation will be delayed by this amount in seconds.",
+  "skyblocker.armorCustomization.duration": "Duration: %s",
+  "skyblocker.armorCustomization.durationTooltip": "The duration of the animation in seconds.",
+  "skyblocker.armorCustomization.title": "Customize Your Armor",
+  "skyblocker.armorCustomization.titleSecret": "Pimp Your Armor",
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 

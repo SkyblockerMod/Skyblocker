@@ -68,6 +68,8 @@ public class ConfigDataFixer {
 		builder.addFixer(new ConfigFix1(schema2, true));
 		Schema schema3 = builder.addSchema(3, Schema::new);
 		builder.addFixer(new ConfigFix2QuickNav(schema3, true));
+		Schema schema4 = builder.addSchema(4, Schema::new);
+		builder.addFixer(new ConfigFix3AnimatedDyeAndItemBackground(schema4, true));
 
 		return builder.build().fixer();
 	}

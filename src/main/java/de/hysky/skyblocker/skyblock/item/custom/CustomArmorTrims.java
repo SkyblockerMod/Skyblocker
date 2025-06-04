@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.item;
+package de.hysky.skyblocker.skyblock.item.custom;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -18,7 +18,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
@@ -49,13 +48,12 @@ public class CustomArmorTrims {
 
 	private static void initializeTrimCache() {
 		MinecraftClient client = MinecraftClient.getInstance();
-		FabricLoader loader = FabricLoader.getInstance();
 		if (trimsInitialized || (client == null && !Debug.debugEnabled())) {
 			return;
 		}
 		try {
 			TRIMS_CACHE.clear();
-			RegistryWrapper.WrapperLookup wrapperLookup = getWrapperLookup(loader, client);
+			RegistryWrapper.WrapperLookup wrapperLookup = Utils.getRegistryWrapperLookup();
 			for (Reference<ArmorTrimMaterial> material : wrapperLookup.getOrThrow(RegistryKeys.TRIM_MATERIAL).streamEntries().toList()) {
 				for (Reference<ArmorTrimPattern> pattern : wrapperLookup.getOrThrow(RegistryKeys.TRIM_PATTERN).streamEntries().toList()) {
 					ArmorTrim trim = new ArmorTrim(material, pattern);
@@ -69,10 +67,6 @@ public class CustomArmorTrims {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Encountered an exception while caching armor trims", e);
 		}
-	}
-
-	private static RegistryWrapper.WrapperLookup getWrapperLookup(FabricLoader loader, MinecraftClient client) {
-		return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : BuiltinRegistries.createWrapperLookup();
 	}
 
 	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
@@ -106,8 +100,7 @@ public class CustomArmorTrims {
 
 					if (material == null && pattern == null) {
 						if (customArmorTrims.containsKey(itemUuid)) {
-							customArmorTrims.remove(itemUuid);
-							SkyblockerConfigManager.save();
+							SkyblockerConfigManager.update(config -> config.general.customArmorTrims.remove(itemUuid));
 							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customArmorTrims.removed")));
 						} else {
 							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customArmorTrims.neverHad")));
@@ -121,8 +114,7 @@ public class CustomArmorTrims {
 							return Command.SINGLE_SUCCESS;
 						}
 
-						customArmorTrims.put(itemUuid, trimId);
-						SkyblockerConfigManager.save();
+						SkyblockerConfigManager.update(config -> config.general.customArmorTrims.put(itemUuid, trimId));
 						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customArmorTrims.added")));
 					}
 				} else {

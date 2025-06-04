@@ -10,7 +10,7 @@ import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -150,7 +150,7 @@ public class Debug {
 		JSON {
 			@Override
 			public Text format(ItemStack stack) {
-				return Text.literal(SkyblockerMod.GSON_COMPACT.toJson(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), stack).getOrThrow()));
+				return Text.literal(SkyblockerMod.GSON_COMPACT.toJson(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(JsonOps.INSTANCE), stack).getOrThrow()));
 			}
 		},
 		SNBT {
