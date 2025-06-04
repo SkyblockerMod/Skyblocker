@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
@@ -27,23 +28,27 @@ import java.util.regex.Pattern;
 @RegisterWidget
 public class ItemPickupWidget extends ComponentBasedWidget {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final int LOBBY_CHANGE_DELAY = 3000;
 	private static final String SACKS_MESSAGE_START = "[Sacks]";
 	private static final Pattern CHANGE_REGEX = Pattern.compile("([+-])([\\d,]+) (.+) \\((.+)\\)");
 
 	private static ItemPickupWidget instance;
 
-	long lastLobbyChange;
-	Object2ObjectOpenHashMap<String, changeData> addedCount = new Object2ObjectOpenHashMap<>();
-	Object2ObjectOpenHashMap<String, changeData> removedCount = new Object2ObjectOpenHashMap<>();
+	private boolean changingLobby;
 
+	private final Object2ObjectOpenHashMap<String, ChangeData> addedCount = new Object2ObjectOpenHashMap<>();
+	private final Object2ObjectOpenHashMap<String, ChangeData> removedCount = new Object2ObjectOpenHashMap<>();
 
 	public ItemPickupWidget() {
 		super(Text.literal("Items"), Formatting.AQUA.getColorValue(), "Item Pickup");
 		instance = this;
 
 		ClientReceiveMessageEvents.GAME.register((text, bl) -> instance.onChatMessage(text, bl));
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> lastLobbyChange = System.currentTimeMillis());
+		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> changingLobby = true);
+		SkyblockEvents.LOCATION_CHANGE.register(location -> changingLobby = false);
+	}
+
+	public static ItemPickupWidget getInstance() {
+		return instance;
 	}
 
 	/**
@@ -60,11 +65,9 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	}
 
 	/**
-	 * Checks chat messages for a stack update message then finds the items linked to it
-	 * @param message message
-	 * @param b overlay
+	 * Checks chat messages for a stack update message, then finds the items linked to it
 	 */
-	private void onChatMessage(Text message, boolean b) {
+	private void onChatMessage(Text message, boolean overlay) {
 		if (!Formatting.strip(message.getString()).startsWith(SACKS_MESSAGE_START)) return;
 		if (!SkyblockerConfigManager.get().uiAndVisuals.itemPickup.sackNotifications) return;
 		HoverEvent hoverEvent = message.getSiblings().getFirst().getStyle().getHoverEvent();
@@ -81,20 +84,16 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 				if (addedCount.containsKey(item.getNeuName())) {
 					existingCount = addedCount.get(item.getNeuName()).amount;
 				}
-				addedCount.put(item.getNeuName(), new changeData(item, existingCount + Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
+				addedCount.put(item.getNeuName(), new ChangeData(item, existingCount + Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
 			}
 			//negative
 			else if (matcher.group(1).equals("-")) {
 				if (removedCount.containsKey(item.getNeuName())) {
 					existingCount = removedCount.get(item.getNeuName()).amount;
 				}
-				removedCount.put(item.getNeuName(), new changeData(item, existingCount - Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
+				removedCount.put(item.getNeuName(), new ChangeData(item, existingCount - Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
 			}
 		}
-	}
-
-	public static ItemPickupWidget getInstance() {
-		return instance;
 	}
 
 	@Override
@@ -108,43 +107,42 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 			addSimpleIcoText(Ico.BONE, "Bone ", Formatting.GREEN, "+64");
 			return;
 		}
-		//add each diff item to widget
+		//add each diff item to the widget
 		//add positive changes
 		for (String item : addedCount.keySet()) {
-			changeData entry = addedCount.get(item);
+			ChangeData entry = addedCount.get(item);
 			String itemName = checkNextItem(entry);
 			if (itemName == null) {
 				addedCount.remove(item);
 				continue;
 			}
-			addSimpleIcoText(entry.item, itemName, Formatting.GREEN, "+" + entry.amount);
-
-
+			addSimpleIcoText(entry.item, itemName, Formatting.GREEN, Formatters.DIFF_NUMBERS.format(entry.amount));
 		}
 		//add negative changes
 		for (String item : removedCount.keySet()) {
-			changeData entry = removedCount.get(item);
+			ChangeData entry = removedCount.get(item);
 			String itemName = checkNextItem(entry);
 			if (itemName == null) {
 				removedCount.remove(item);
 				continue;
 			}
-			addSimpleIcoText(entry.item, itemName, Formatting.RED, "" + entry.amount);
+			addSimpleIcoText(entry.item, itemName, Formatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
 		}
 	}
 
 	/**
-	 * Checks if the changeData has expired and if not returns the item name for the entry
-	 * @param entry changeData to check
-	 * @return formated name from changeData
+	 * Checks if the ChangeData has expired and if not, returns the item name for the entry
+	 *
+	 * @param entry ChangeData to check
+	 * @return formatted name from ChangeData
 	 */
-	private String checkNextItem(changeData entry) {
+	private String checkNextItem(ChangeData entry) {
 		//check the item has not expired
 		if (entry.lastChange + SkyblockerConfigManager.get().uiAndVisuals.itemPickup.lifeTime * 1000L < System.currentTimeMillis()) {
 			return null;
 		}
-		//return the formated name for the item based on user settings
-		return  SkyblockerConfigManager.get().uiAndVisuals.itemPickup.showItemName ?  entry.item.getName().getString() + " " : " ";
+		//return the formatted name for the item based on user settings
+		return SkyblockerConfigManager.get().uiAndVisuals.itemPickup.showItemName ? entry.item.getName().getString() + " " : " ";
 	}
 
 	@Override
@@ -178,19 +176,19 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	 * When the client receives a slot change packet, see what has changed in the inventory and add to the counts
 	 */
 	public void onItemPickup(int slot, ItemStack newStack) {
-		//if just changed lobby don't read item as this is just going to be all the players items
-		if (lastLobbyChange + LOBBY_CHANGE_DELAY > System.currentTimeMillis() || CLIENT.player == null) return;
+		//if just changed a lobby, don't read item as this is just going to be all the player's items
+		if (changingLobby || CLIENT.player == null) return;
 
-		//if the slot is below 9 it is a slot that we do not care about
+		//if the slot is below 9, it is a slot that we do not care about
 		if (slot < 9) return;
-		//hotbar slots are at the end of the ids instead of at the start like in the inventory main stacks so we convert to that indexing
+		//hotbar slots are at the end of the ids instead of at the start like in the inventory main stacks, so we convert to that indexing
 		if (slot >= 36 && slot < 45) {
 			slot = slot - 36;
 		}
-		//find what use to be in the slot
+		//find what used to be in the slot
 		ItemStack oldStack = CLIENT.player.getInventory().getMainStacks().get(slot);
 
-		//work out what amount of items has changed
+		//work out the number of items changed
 		int existingCount = 0;
 		int countDiff = newStack.getCount() - oldStack.getCount();
 
@@ -204,7 +202,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 			if (removedCount.containsKey(oldStack.getNeuName())) {
 				existingCount = removedCount.get(oldStack.getNeuName()).amount;
 			}
-			removedCount.put(oldStack.getNeuName(), new changeData(oldStack, existingCount - oldStack.getCount(), System.currentTimeMillis()));
+			removedCount.put(oldStack.getNeuName(), new ChangeData(oldStack, existingCount - oldStack.getCount(), System.currentTimeMillis()));
 			return;
 		}
 
@@ -214,7 +212,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 			if (addedCount.containsKey(newStack.getNeuName())) {
 				existingCount = addedCount.get(newStack.getNeuName()).amount;
 			}
-			addedCount.put(newStack.getNeuName(), new changeData(newStack, existingCount + countDiff, System.currentTimeMillis()));
+			addedCount.put(newStack.getNeuName(), new ChangeData(newStack, existingCount + countDiff, System.currentTimeMillis()));
 
 		}
 		//if there are fewer items than before
@@ -223,10 +221,9 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 			if (removedCount.containsKey(newStack.getNeuName())) {
 				existingCount = removedCount.get(newStack.getNeuName()).amount;
 			}
-			removedCount.put(newStack.getNeuName(), new changeData(newStack, existingCount + countDiff, System.currentTimeMillis()));
+			removedCount.put(newStack.getNeuName(), new ChangeData(newStack, existingCount + countDiff, System.currentTimeMillis()));
 		}
 	}
 
-	private record changeData(ItemStack item, int amount, long lastChange) {
-	}
+	private record ChangeData(ItemStack item, int amount, long lastChange) {}
 }
