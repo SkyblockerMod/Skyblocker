@@ -89,7 +89,6 @@ public class ScreenBuilder {
 					}
 				}
 				widget.setVisible(true);
-				widget.update();
 				widget.setPositioned(false);
 			}
 		}
@@ -136,6 +135,18 @@ public class ScreenBuilder {
 			if (!widget.isPositioned()) {
 				WidgetPositioner.applyRuleToWidget(widget, screenW, screenH, this::getPositionRule);
 			}
+		}
+	}
+
+	private long prevRenderHash = 0;
+	public void updatePositioningIfNecessary() {
+		long renderHash = 0;
+		for (HudWidget widget : WidgetManager.widgetInstances.values()) {
+			renderHash = renderHash * 31 + Boolean.hashCode(widget.shouldRender(location));
+		}
+		if (renderHash != prevRenderHash) {
+			prevRenderHash = renderHash;
+			positionsNeedsUpdating = true;
 		}
 	}
 

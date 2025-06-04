@@ -19,6 +19,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
@@ -86,6 +87,8 @@ public class WidgetManager {
 				// Renders the tab widgets
 				.attachLayerBefore(IdentifiedLayer.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false))
 		);
+
+		Scheduler.INSTANCE.scheduleCyclic(() -> getScreenBuilder(Utils.getLocation()).updatePositioningIfNecessary(), 5);
 	}
 
 	private static void render(DrawContext context, boolean hud) {
