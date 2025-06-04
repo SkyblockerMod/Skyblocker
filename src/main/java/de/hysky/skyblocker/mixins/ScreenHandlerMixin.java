@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.mixins;
 
 import de.hysky.skyblocker.skyblock.InventorySearch;
+import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,5 +16,6 @@ public class ScreenHandlerMixin {
 		if (InventorySearch.isSearching()) {
 			InventorySearch.refreshSlot(slot);
 		}
+		ItemPickupWidget.getInstance().onItemPickup(slot, stack);
 	}
 }

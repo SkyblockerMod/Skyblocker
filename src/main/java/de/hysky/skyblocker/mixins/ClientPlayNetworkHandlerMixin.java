@@ -10,7 +10,6 @@ import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.HealthBars;
-import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import de.hysky.skyblocker.skyblock.SmoothAOTE;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
@@ -200,10 +199,4 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		}
 		return original;
 	}
-
-	@Inject(method = "onScreenHandlerSlotUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/PlayerScreenHandler;setStackInSlot(IILnet/minecraft/item/ItemStack;)V"))
-	private void skyblocker$onScreenHandlerSlotUpdate(ScreenHandlerSlotUpdateS2CPacket packet, CallbackInfo ci) {
-		ItemPickupWidget.getInstance().onItemPickup(packet);
-	}
 }
-

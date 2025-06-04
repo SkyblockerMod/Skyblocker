@@ -16,7 +16,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -176,16 +175,12 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	}
 
 	/**
-	 * When the client receives a slot change packet see what has changed in the inventory and add the to the counts
-	 * @param packet slot change packet
+	 * When the client receives a slot change packet, see what has changed in the inventory and add to the counts
 	 */
-	public void onItemPickup(ScreenHandlerSlotUpdateS2CPacket packet) {
+	public void onItemPickup(int slot, ItemStack newStack) {
 		//if just changed lobby don't read item as this is just going to be all the players items
 		if (lastLobbyChange + LOBBY_CHANGE_DELAY > System.currentTimeMillis() || CLIENT.player == null) return;
 
-		//get the slot and stack from the packet
-		ItemStack newStack = packet.getStack();
-		int slot = packet.getSlot();
 		//if the slot is below 9 it is a slot that we do not care about
 		if (slot < 9) return;
 		//hotbar slots are at the end of the ids instead of at the start like in the inventory main stacks so we convert to that indexing
