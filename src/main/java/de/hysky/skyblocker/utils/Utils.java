@@ -161,6 +161,10 @@ public class Utils {
         return location == Location.MODERN_FORAGING_ISLAND;
     }
 
+	public static boolean isOnBingo() {
+		return profile.endsWith("Ⓑ");
+	}
+
     /**
      * @return the profile parsed from the player list.
      */
