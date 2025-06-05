@@ -325,6 +325,14 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.bars.enableBars = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<UIAndVisualsConfig.IntelligenceDisplay>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay"))
+								.binding(defaults.uiAndVisuals.bars.intelligenceDisplay,
+										() -> config.uiAndVisuals.bars.intelligenceDisplay,
+										newValue -> config.uiAndVisuals.bars.intelligenceDisplay = newValue)
+								.controller(ConfigUtils.getFormattedEnumCyclingControllerFactory(UIAndVisualsConfig.IntelligenceDisplay.class, intelligenceDisplay -> Text.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay." + intelligenceDisplay.name())))
+								.build()
+						)
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
                                 .text(Text.translatable("text.skyblocker.open"))
