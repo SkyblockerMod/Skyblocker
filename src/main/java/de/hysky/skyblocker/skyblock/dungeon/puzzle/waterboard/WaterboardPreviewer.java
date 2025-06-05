@@ -70,6 +70,7 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 		}
 
 		// Calculate and render path of water through the board
+		// If there is a prospective lever, instead find the path for if that lever was used
 		List<Pair<BlockPos, BlockPos>> waterPath = new ArrayList<>();
 		waterPath.add(new Pair<>(WATER_ENTRANCE_POSITION.up(5), WATER_ENTRANCE_POSITION.up(3)));
 		findWaterPathVertical(WATER_ENTRANCE_POSITION.up(3), waterPath);

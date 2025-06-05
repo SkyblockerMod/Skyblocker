@@ -407,6 +407,10 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		String currentDoors = findDoors();
 		for (int i = 0; i < 5; i++) {
 			String s = String.valueOf(i);
+			// If the door was toggled, initialDoors... == currentDoors... will be false.
+			// If the door should have been toggled, doors... will be true.
+			// If the puzzle is solved, doors will only be toggled when they should be,
+			// so the two will not be equal. If they are equal, it means the puzzle isn't solved.
 			if (initialDoors.contains(s) == currentDoors.contains(s) == doors.contains(s)) {
 				return false;
 			}
