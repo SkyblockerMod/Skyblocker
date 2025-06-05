@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.scheduler;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
@@ -12,6 +13,7 @@ import net.minecraft.util.profiler.Profilers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.StackWalker.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -54,6 +56,13 @@ public class Scheduler {
      * @param multithreaded whether to run the task on the schedulers dedicated thread pool
      */
     public void schedule(Runnable task, int delay, boolean multithreaded) {
+    	if (!RenderSystem.isOnRenderThread() && MinecraftClient.getInstance() != null) {
+    		LOGGER.warn("[Skyblocker Scheduler] Called the scheduler from the {} class on the {} thread. This will be unsupported in the future.", StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName(), Thread.currentThread().getName());
+    		MinecraftClient.getInstance().send(() -> schedule(task, delay, multithreaded));
+
+    		return;
+    	}
+
         if (delay >= 0) {
             addTask(multithreaded ? new ScheduledTask(task, true) : task, currentTick + delay);
         } else {
@@ -69,6 +78,13 @@ public class Scheduler {
      * @param multithreaded whether to run the task on the schedulers dedicated thread pool
      */
     public void scheduleCyclic(Runnable task, int period, boolean multithreaded) {
+    	if (!RenderSystem.isOnRenderThread() && MinecraftClient.getInstance() != null) {
+    		LOGGER.warn("[Skyblocker Scheduler] Called the scheduler from the {} class on the {} thread. This will be unsupported in the future.", StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName(), Thread.currentThread().getName());
+    		MinecraftClient.getInstance().send(() -> scheduleCyclic(task, period, multithreaded));
+
+    		return;
+    	}
+
         if (period > 0) {
             addTask(new ScheduledTask(task, period, true, multithreaded), currentTick);
         } else {
