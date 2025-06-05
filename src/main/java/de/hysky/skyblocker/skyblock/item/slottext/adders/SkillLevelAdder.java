@@ -4,6 +4,7 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -31,9 +32,9 @@ public class SkillLevelAdder extends SimpleSlotTextAdder {
 				String romanNumeral = name.substring(lastIndex + 1); //+1 because we don't need the space itself
 				//The "romanNumeral" might be a latin numeral, too. There's a skyblock setting for this, so we have to do it this way V
 				if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Max Skill level reached!")) != null) {
-					return SlotText.bottomLeftList(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Integer.parseInt(romanNumeral))).withColor(SlotText.GOLD));
+					return SlotText.bottomLeftList(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Utils.parseInt(romanNumeral).orElse(0))).withColor(SlotText.GOLD));
 				} else {
-					return SlotText.bottomLeftList(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Integer.parseInt(romanNumeral))).withColor(SlotText.CREAM));
+					return SlotText.bottomLeftList(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Utils.parseInt(romanNumeral).orElse(0))).withColor(SlotText.CREAM));
 				}
 			}
 			default -> {
