@@ -15,8 +15,8 @@ import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.ChatHud;
@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.List;
@@ -80,7 +79,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	@Init
 	public static void init() {
 		ChatEvents.RECEIVE_STRING.register(INSTANCE::onChatMessage);
-		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.STATUS_EFFECTS, POWDER_MINING_TRACKER, PowderMiningTracker::render));
+		HudElementRegistry.attachElementAfter(VanillaHudElements.STATUS_EFFECTS, POWDER_MINING_TRACKER, PowderMiningTracker::render);
 		ItemPriceUpdateEvent.ON_PRICE_UPDATE.register(INSTANCE::onPriceUpdate);
 
 		INSTANCE.allRewards.init();
