@@ -6,6 +6,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -24,22 +25,17 @@ public class SkillLevelAdder extends SimpleSlotTextAdder {
 
 	@Override
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		switch (slotId) {
-			case 19, 20, 21, 22, 23, 24, 25, 29, 30, 31, 32 -> { //These are the slots that contain the skill items. Note that they aren't continuous, as there are 2 rows.
-				String name = stack.getName().getString();
-				int lastIndex = name.lastIndexOf(' ');
-				if (lastIndex == -1) return SlotText.bottomLeftList(Text.literal("0").formatted(Formatting.LIGHT_PURPLE)); //Skills without any levels don't display any roman numerals. Probably because 0 doesn't exist.
-				String romanNumeral = name.substring(lastIndex + 1); //+1 because we don't need the space itself
-				//The "romanNumeral" might be a latin numeral, too. There's a skyblock setting for this, so we have to do it this way V
-				if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Max Skill level reached!")) != null) {
-					return SlotText.bottomLeftList(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Utils.parseInt(romanNumeral).orElse(0))).withColor(SlotText.GOLD));
-				} else {
-					return SlotText.bottomLeftList(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Utils.parseInt(romanNumeral).orElse(0))).withColor(SlotText.CREAM));
-				}
-			}
-			default -> {
-				return List.of();
-			}
+		if (slotId / 9 < 1 || slotId / 9 > 4) return List.of();
+		if (stack.getItem() == Items.BLACK_STAINED_GLASS_PANE) return List.of();
+		String name = stack.getName().getString();
+		int lastIndex = name.lastIndexOf(' ');
+		if (lastIndex == -1) return SlotText.bottomLeftList(Text.literal("0").formatted(Formatting.LIGHT_PURPLE));
+		String romanNumeral = name.substring(lastIndex + 1); //+1 because we don't need the space itself
+		//The "romanNumeral" might be a latin numeral, too. There's a skyblock setting for this, so we have to do it this way V
+		if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Max Skill level reached!")) != null) {
+			return SlotText.bottomLeftList(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Utils.parseInt(romanNumeral).orElse(0))).withColor(SlotText.GOLD));
+		} else {
+			return SlotText.bottomLeftList(Text.literal(String.valueOf(RomanNumerals.isValidRomanNumeral(romanNumeral) ? RomanNumerals.romanToDecimal(romanNumeral) : Utils.parseInt(romanNumeral).orElse(0))).withColor(SlotText.CREAM));
 		}
 	}
 }
