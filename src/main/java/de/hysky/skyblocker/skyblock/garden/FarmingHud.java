@@ -14,8 +14,8 @@ import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 import it.unimi.dsi.fastutil.longs.LongPriorityQueue;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -51,7 +51,7 @@ public class FarmingHud {
 
 	@Init
 	public static void init() {
-		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.STATUS_EFFECTS, FARMING_HUD, (context, tickCounter) -> {
+		HudElementRegistry.attachElementAfter(VanillaHudElements.STATUS_EFFECTS, FARMING_HUD, (context, tickCounter) -> {
 			if (shouldRender()) {
 				if (!counter.isEmpty() && counter.peek().rightLong() + 5000 < System.currentTimeMillis()) {
 					counter.poll();
@@ -69,7 +69,7 @@ public class FarmingHud {
 					counterType = CounterType.NONE;
 				}
 			}
-		}));
+		});
 		ClientPlayerBlockBreakEvents.AFTER.register((world, player, pos, state) -> {
 			if (shouldRender()) {
 				blockBreaks.enqueue(System.currentTimeMillis());
