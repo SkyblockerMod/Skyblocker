@@ -14,6 +14,9 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.doubles.DoubleList;
+import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -35,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.*;
@@ -96,12 +98,13 @@ Time starts when the water lever is turned on and stops when the last door opens
 */
 
 public class WaterboardOneFlow extends DungeonPuzzle {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WaterboardOneFlow.class);
-    public static final WaterboardOneFlow INSTANCE = new WaterboardOneFlow();
+	private static final Logger LOGGER = LoggerFactory.getLogger(WaterboardOneFlow.class);
+	public static final WaterboardOneFlow INSTANCE = new WaterboardOneFlow();
+	private static final Identifier WATER_TIMES = Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/watertimes.json");
 	private static JsonObject SOLUTIONS;
 
 	private boolean timerEnabled;
-	private List<Mark> marks;
+	private final List<Mark> marks = new ArrayList<>();
 	private ClientWorld world;
 	private Room room;
 	private ClientPlayerEntity player;
@@ -109,7 +112,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	private int variant;
 	private String doors;
 	private String initialDoors;
-	private Map<LeverType, List<Double>> solution;
+	private EnumMap<LeverType, DoubleList> solution;
 	private boolean finished;
 	private long waterStartMillis;
 	private CompletableFuture<Void> solve;
@@ -152,9 +155,9 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 						context.getSource().sendError(Constants.PREFIX.get().append("No existing solution"));
 					} else {
 						try {
-							List<Double> times = new ArrayList<>();
+							DoubleList times = new DoubleArrayList();
 							for (String time : StringArgumentType.getString(context, "times").split(" ")) {
-								times.add(Double.valueOf(time));
+								times.add(Double.parseDouble(time));
 							}
 							INSTANCE.solution.put(leverType, times);
 						} catch (NumberFormatException e) {
@@ -189,14 +192,10 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 						return Command.SINGLE_SUCCESS;
 					}
 
-					if (INSTANCE.marks == null) {
-						INSTANCE.marks = new ArrayList<>();
-					} else {
-						for (Mark mark : INSTANCE.marks) {
-							if (mark.pos.equals(pos)) {
-								context.getSource().sendError(Constants.PREFIX.get().append("There is already a mark at that position"));
-								return Command.SINGLE_SUCCESS;
-							}
+					for (Mark mark : INSTANCE.marks) {
+						if (mark.pos.equals(pos)) {
+							context.getSource().sendError(Constants.PREFIX.get().append("There is already a mark at that position"));
+							return Command.SINGLE_SUCCESS;
 						}
 					}
 
@@ -204,15 +203,14 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("clearMarks").executes((context) -> {
-					INSTANCE.marks = null;
+					INSTANCE.marks.clear();
 					return Command.SINGLE_SUCCESS;
 				}))
 		)))));
     }
 
 	private static void loadSolutions(MinecraftClient client) {
-		Identifier solutionsFile = Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/watertimes.json");
-		try (BufferedReader reader = client.getResourceManager().openAsReader(solutionsFile)) {
+		try (BufferedReader reader = client.getResourceManager().openAsReader(WATER_TIMES)) {
 			SOLUTIONS = JsonParser.parseReader(reader).getAsJsonObject();
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Waterboard] Failed to load solutions json", e);
@@ -251,7 +249,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 			}
 		}
 
-		if (marks != null && waterStartMillis > 0) {
+		if (waterStartMillis > 0) {
 			for (Mark mark : marks) {
 				if (!mark.reached && world.getBlockState(mark.pos).isOf(Blocks.WATER)) {
 					mark.reached = true;
@@ -295,7 +293,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 					"Turn the water off and let it drain, then reset the solver."), false);
 			finished = true;
 			return;
-		};
+		}
 
 		if (!finished) {
 			// Solutions are precalculated according to board variant and initial door combination (in watertimes.json)
@@ -304,10 +302,10 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		}
 	}
 
-	private Map<LeverType, List<Double>> makeEmptySolution() {
-		Map<LeverType, List<Double>> solution = new HashMap<>();
+	private EnumMap<LeverType, DoubleList> makeEmptySolution() {
+		EnumMap<LeverType, DoubleList> solution = new EnumMap<>(LeverType.class);
 		for (LeverType leverType : LeverType.values()) {
-			solution.put(leverType, new ArrayList<>());
+			solution.put(leverType, new DoubleArrayList());
 		}
 		return solution;
 	}
@@ -366,12 +364,12 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		return true;
 	}
 
-	private Map<LeverType, List<Double>> setupSolution(JsonObject data) {
-		Map<LeverType, List<Double>> solution = makeEmptySolution();
+	private EnumMap<LeverType, DoubleList> setupSolution(JsonObject data) {
+		EnumMap<LeverType, DoubleList> solution = makeEmptySolution();
 		for (Map.Entry<String, JsonElement> entry : data.entrySet()) {
 			LeverType leverType = LeverType.fromName(entry.getKey());
 			if (leverType != null) {
-				List<Double> times = new ArrayList<>();
+				DoubleList times = new DoubleArrayList();
 				for (JsonElement element : entry.getValue().getAsJsonArray()) {
 					times.add(element.getAsDouble());
 				}
@@ -381,7 +379,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 
 		// If the solver was reset after using some levers, make sure they are flipped back to the correct positions
 		for (LeverType leverType : LeverType.values()) {
-			List<Double> times = solution.get(leverType);
+			DoubleList times = solution.get(leverType);
 			if (leverType != LeverType.WATER && isLeverActive(leverType)) {
 				if (times.isEmpty() || times.getFirst() != 0.0) {
 					times.addFirst(0.0);
@@ -422,30 +420,23 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				world == null || room == null || player == null) return;
 
 		try {
-			if (marks != null) {
-				for (Mark mark : marks) {
-					float[] components = ColorUtils.getFloatComponents(mark.reached ? DyeColor.LIME : DyeColor.WHITE);
-					RenderHelper.renderFilled(context, mark.pos, components, 0.5f, true);
-					RenderHelper.renderText(context, Text.of(String.format("Mark %d", mark.index)),
-							mark.pos.toCenterPos().offset(Direction.UP, 0.2), true);
-				}
+			for (Mark mark : marks) {
+				float[] components = ColorUtils.getFloatComponents(mark.reached ? DyeColor.LIME : DyeColor.WHITE);
+				RenderHelper.renderFilled(context, mark.pos, components, 0.5f, true);
+				RenderHelper.renderText(context, Text.of(String.format("Mark %d", mark.index)),
+						mark.pos.toCenterPos().offset(Direction.UP, 0.2), true);
 			}
 
 			if (solution != null) {
-				List<Pair<LeverType, Double>> sortedTimes = solution.entrySet().stream()
-						.flatMap((entry) -> entry.getValue().stream().map((time) -> new Pair<>(entry.getKey(), time)))
-						.sorted((pair1, pair2) -> {
-							// Sort by next use time, then by lever type
-							double time1 = pair1.getRight() + (pair1.getLeft() == LeverType.WATER ? 0.001 : 0.0);
-							double time2 = pair2.getRight() + (pair1.getLeft() == LeverType.WATER ? 0.001 : 0.0);
-							int comparison = Double.compare(time1, time2);
-							if (comparison == 0) {
-								comparison = Integer.compare(pair1.getLeft().ordinal(), pair2.getLeft().ordinal());
-							}
-							return comparison;
-						}).toList();
-				LeverType nextLever = sortedTimes.isEmpty() ? null : sortedTimes.getFirst().getLeft();
-				LeverType nextNextLever = sortedTimes.size() < 2 ? null : sortedTimes.get(1).getLeft();
+				List<ObjectDoublePair<LeverType>> sortedTimes = solution.entrySet().stream()
+						.flatMap((entry) -> entry.getValue().doubleStream().mapToObj((time) -> ObjectDoublePair.of(entry.getKey(), time)))
+						// Sort by next use time, then by lever type
+						.sorted(Comparator
+								.<ObjectDoublePair<LeverType>>comparingDouble(p -> p.rightDouble() + (p.left() == LeverType.WATER ? 0.001 : 0.0))
+								.thenComparingInt(p -> p.left().ordinal())
+						).toList();
+				LeverType nextLever = sortedTimes.isEmpty() ? null : sortedTimes.getFirst().left();
+				LeverType nextNextLever = sortedTimes.size() < 2 ? null : sortedTimes.get(1).left();
 
 				if (nextLever != null) {
 					RenderHelper.renderLineFromCursor(context,
@@ -467,10 +458,10 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	}
 
 	private void renderLeverText(WorldRenderContext context, LeverType nextLever) {
-		for (Map.Entry<LeverType, List<Double>> leverData : solution.entrySet()) {
+		for (Map.Entry<LeverType, DoubleList> leverData : solution.entrySet()) {
 			LeverType lever = leverData.getKey();
 			for (int i = 0; i < leverData.getValue().size(); i++) {
-				double nextTime = leverData.getValue().get(i);
+				double nextTime = leverData.getValue().getDouble(i);
 				long remainingTime = waterStartMillis + (long)(nextTime * 1000) - System.currentTimeMillis();
 				String text;
 
@@ -532,21 +523,19 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		solution = null;
 		finished = false;
 		waterStartMillis = 0;
-		if (marks != null) {
-			for (Mark mark : marks) {
-				mark.reached = false;
-			}
+		for (Mark mark : marks) {
+			mark.reached = false;
 		}
 	}
 
 	// Can be added to the board to time how long it takes the water to reach certain locations.
 	// Use the addMarks command while looking at the spot where the mark should go.
 	private static class Mark {
-		public int index;
-		public BlockPos pos;
-		public boolean reached;
+		private final int index;
+		private final BlockPos pos;
+		private boolean reached;
 
-		public Mark(int index, BlockPos pos) {
+		private Mark(int index, BlockPos pos) {
 			this.index = index;
 			this.pos = pos;
 			this.reached = false;

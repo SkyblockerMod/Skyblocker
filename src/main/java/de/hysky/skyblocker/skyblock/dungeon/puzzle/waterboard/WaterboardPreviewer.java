@@ -40,21 +40,20 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 	}
 
 	@Init
-	public static void init() {
-	}
+	public static void init() {}
 
 	@Override
-	public void tick(MinecraftClient client) {
-	}
+	public void tick(MinecraftClient client) {}
 
 	@Override
 	public void render(WorldRenderContext context) {
+		if (!shouldSolve() || MinecraftClient.getInstance().world == null || MinecraftClient.getInstance().player == null || !DungeonManager.isCurrentRoomMatched()) {
+			return;
+		}
+
 		world = MinecraftClient.getInstance().world;
 		room = DungeonManager.getCurrentRoom();
 		player = MinecraftClient.getInstance().player;
-		if (!shouldSolve() || world == null || player == null || !DungeonManager.isCurrentRoomMatched()) {
-			return;
-		}
 
 		try {
 			findProspective();

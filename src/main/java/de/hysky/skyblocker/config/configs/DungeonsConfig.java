@@ -96,6 +96,9 @@ public class DungeonsConfig {
         @SerialEntry
         public boolean creeperSolver = true;
 
+		@Deprecated
+		public transient boolean solveWaterboard = true;
+
         @SerialEntry
         public boolean waterboardOneFlow = true;
 
