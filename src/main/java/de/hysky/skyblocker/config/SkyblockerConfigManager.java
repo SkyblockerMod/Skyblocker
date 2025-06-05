@@ -88,7 +88,7 @@ public class SkyblockerConfigManager {
                     .category(UIAndVisualsCategory.create(defaults, config))
                     .category(HelperCategory.create(defaults, config))
                     .category(DungeonsCategory.create(defaults, config))
-                    //.category(ForagingCategory.create(defaults, config))
+                    .category(ForagingCategory.create(defaults, config))
                     .category(CrimsonIsleCategory.create(defaults, config))
                     .category(MiningCategory.create(defaults, config))
                     .category(FarmingCategory.create(defaults, config))
