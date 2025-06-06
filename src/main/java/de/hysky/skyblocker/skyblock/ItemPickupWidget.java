@@ -42,7 +42,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		super(Text.literal("Items"), Formatting.AQUA.getColorValue(), "Item Pickup");
 		instance = this;
 
-		ClientReceiveMessageEvents.GAME.register((text, bl) -> instance.onChatMessage(text, bl));
+		ClientReceiveMessageEvents.GAME.register(instance::onChatMessage);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> changingLobby = true);
 		SkyblockEvents.LOCATION_CHANGE.register(location -> changingLobby = false);
 	}
@@ -180,9 +180,10 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		if (changingLobby || CLIENT.player == null) return;
 
 		//if the slot is below 9, it is a slot that we do not care about
-		if (slot < 9) return;
+		//if the slot is equals to or above 45, it is not in the player's inventory
+		if (slot < 9 || slot >= 45) return;
 		//hotbar slots are at the end of the ids instead of at the start like in the inventory main stacks, so we convert to that indexing
-		if (slot >= 36 && slot < 45) {
+		if (slot >= 36) {
 			slot = slot - 36;
 		}
 		//find what used to be in the slot
