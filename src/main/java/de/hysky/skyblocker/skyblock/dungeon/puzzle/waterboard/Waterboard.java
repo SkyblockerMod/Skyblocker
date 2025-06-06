@@ -1,8 +1,12 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard;
 
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 
 public class Waterboard {
@@ -14,7 +18,7 @@ public class Waterboard {
 	// The top center of the grid, between the first two toggleable blocks
 	public static final BlockPos WATER_ENTRANCE_POSITION = new BlockPos(15, 78, 26);
 
-	public enum LeverType {
+	public enum LeverType implements StringIdentifiable {
 		COAL(Blocks.COAL_BLOCK, new BlockPos(20, 61, 10), DyeColor.RED, new BlockPos[]{
 				new BlockPos(0, -2, 0), new BlockPos(2, -1, 1),
 				null, new BlockPos(5, -1, 0)
@@ -40,6 +44,8 @@ public class Waterboard {
 				null, new BlockPos(-4, -5, 1)
 		}),
 		WATER(Blocks.LAVA, new BlockPos(15, 60, 5), DyeColor.LIGHT_BLUE, null);
+
+		private static final Codec<LeverType> CODEC = StringIdentifiable.createCodec(LeverType::values);
 
 		public final Block block;
 		public final BlockPos leverPos;
@@ -80,6 +86,25 @@ public class Waterboard {
 				}
 			}
 			return null;
+		}
+
+		@Override
+		public String asString() {
+			return name().toLowerCase();
+		}
+
+		public static class LeverTypeArgumentType extends EnumArgumentType<LeverType> {
+			private LeverTypeArgumentType() {
+				super(CODEC, LeverType::values);
+			}
+
+			public static LeverTypeArgumentType leverType() {
+				return new LeverTypeArgumentType();
+			}
+
+			public static <S> LeverType getLeverType(CommandContext<S> context, String name) {
+				return context.getArgument(name, LeverType.class);
+			}
 		}
 	}
 }

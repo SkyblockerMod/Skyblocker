@@ -147,8 +147,8 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 							INSTANCE.timerEnabled ? "Timer enabled." : "Timer disabled."));
 					return Command.SINGLE_SUCCESS;
 				}))
-				.then(literal("modifyLever").then(argument("leverType", StringArgumentType.string()).then(argument("times", StringArgumentType.greedyString()).executes((context) -> {
-					LeverType leverType = LeverType.fromName(StringArgumentType.getString(context, "leverType"));
+				.then(literal("modifyLever").then(argument("leverType", LeverType.LeverTypeArgumentType.leverType()).then(argument("times", StringArgumentType.greedyString()).executes((context) -> {
+					LeverType leverType = LeverType.LeverTypeArgumentType.getLeverType(context, "leverType");
 					if (leverType == null) {
 						context.getSource().sendError(Constants.PREFIX.get().append("Invalid lever type"));
 					} else if (INSTANCE.solution == null) {
