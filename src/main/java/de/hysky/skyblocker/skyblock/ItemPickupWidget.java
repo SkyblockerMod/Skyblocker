@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
@@ -10,6 +9,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 @RegisterWidget
 public class ItemPickupWidget extends ComponentBasedWidget {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final int LOBBY_CHANGE_DELAY = 60;
 	private static final String SACKS_MESSAGE_START = "[Sacks]";
 	private static final Pattern CHANGE_REGEX = Pattern.compile("([+-])([\\d,]+) (.+) \\((.+)\\)");
 
@@ -43,8 +44,8 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		instance = this;
 
 		ClientReceiveMessageEvents.GAME.register(instance::onChatMessage);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> changingLobby = true);
-		SkyblockEvents.LOCATION_CHANGE.register(location -> changingLobby = false);
+		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> changeLobby());
+
 	}
 
 	public static ItemPickupWidget getInstance() {
@@ -62,6 +63,14 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 				.map(NEUItem::getSkyblockItemId)
 				.map(ItemRepository::getItemStack)
 				.orElse(new ItemStack(Items.BARRIER));
+	}
+
+	/**
+	 * Make {@link  ItemPickupWidget#changingLobby} true for a short period while the player loads into a new lobby and is reset there items
+	 */
+	private void changeLobby() {
+		changingLobby = true;
+		Scheduler.INSTANCE.schedule(() -> changingLobby = false, LOBBY_CHANGE_DELAY);
 	}
 
 	/**
@@ -179,7 +188,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		//if just changed a lobby, don't read item as this is just going to be all the player's items
 		if (changingLobby || CLIENT.player == null) return;
 		//make sure there is not an inventory open
-		if(CLIENT.currentScreen != null) return;
+		if (CLIENT.currentScreen != null) return;
 
 		//if the slot is below 9, it is a slot that we do not care about
 		//if the slot is equals to or above 45, it is not in the player's inventory
