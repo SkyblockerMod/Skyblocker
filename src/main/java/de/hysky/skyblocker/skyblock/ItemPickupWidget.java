@@ -178,6 +178,8 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	public void onItemPickup(int slot, ItemStack newStack) {
 		//if just changed a lobby, don't read item as this is just going to be all the player's items
 		if (changingLobby || CLIENT.player == null) return;
+		//make sure there is not an inventory open
+		if(CLIENT.currentScreen != null) return;
 
 		//if the slot is below 9, it is a slot that we do not care about
 		//if the slot is equals to or above 45, it is not in the player's inventory
