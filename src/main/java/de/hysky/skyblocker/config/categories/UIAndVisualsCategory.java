@@ -325,6 +325,11 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.bars.enableBars = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+                        .option(ButtonOption.createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
+                                .text(Text.translatable("text.skyblocker.open"))
+                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new StatusBarsConfigScreen()))
+                                .build())
 						.option(Option.<UIAndVisualsConfig.IntelligenceDisplay>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay"))
 								.binding(defaults.uiAndVisuals.bars.intelligenceDisplay,
@@ -333,11 +338,6 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils.getFormattedEnumCyclingControllerFactory(UIAndVisualsConfig.IntelligenceDisplay.class, intelligenceDisplay -> Text.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay." + intelligenceDisplay.name())))
 								.build()
 						)
-                        .option(ButtonOption.createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
-                                .text(Text.translatable("text.skyblocker.open"))
-                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new StatusBarsConfigScreen()))
-                                .build())
                         .build())
 
                 //Waypoints
