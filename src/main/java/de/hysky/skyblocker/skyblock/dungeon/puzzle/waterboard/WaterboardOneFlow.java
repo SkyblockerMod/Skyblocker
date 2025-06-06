@@ -8,6 +8,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
@@ -127,86 +128,91 @@ public class WaterboardOneFlow extends DungeonPuzzle {
         UseBlockCallback.EVENT.register(INSTANCE::onUseBlock);
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
-				.then(literal("reset").executes(context -> {
-					INSTANCE.softReset();
-					return Command.SINGLE_SUCCESS;
-				}))
-				.then(literal("setDoors").then(argument("combination", StringArgumentType.string()).executes(context -> {
-					String doorCombination = StringArgumentType.getString(context, "combination");
-					if (SOLUTIONS.get("1").getAsJsonObject().keySet().contains(doorCombination)) {
-						INSTANCE.softReset();
-						INSTANCE.doors = doorCombination;
-					} else {
-						context.getSource().sendError(Constants.PREFIX.get().append("Door combination must be three increasing digits between 0 and 4"));
-					}
-					return Command.SINGLE_SUCCESS;
-				})))
-				.then(literal("toggleTimer").executes((context) -> {
-					INSTANCE.timerEnabled = !INSTANCE.timerEnabled;
-					context.getSource().sendFeedback(Constants.PREFIX.get().append(
-							INSTANCE.timerEnabled ? "Timer enabled." : "Timer disabled."));
-					return Command.SINGLE_SUCCESS;
-				}))
-				.then(literal("modifyLever").then(argument("leverType", LeverType.LeverTypeArgumentType.leverType()).then(argument("times", StringArgumentType.greedyString()).executes((context) -> {
-					LeverType leverType = LeverType.LeverTypeArgumentType.getLeverType(context, "leverType");
-					if (leverType == null) {
-						context.getSource().sendError(Constants.PREFIX.get().append("Invalid lever type"));
-					} else if (INSTANCE.solution == null) {
-						context.getSource().sendError(Constants.PREFIX.get().append("No existing solution"));
-					} else {
-						try {
-							DoubleList times = new DoubleArrayList();
-							for (String time : StringArgumentType.getString(context, "times").split(" ")) {
-								times.add(Double.parseDouble(time));
-							}
-							INSTANCE.solution.put(leverType, times);
-						} catch (NumberFormatException e) {
-							context.getSource().sendError(Constants.PREFIX.get().append("Times must be valid numbers or decimals"));
+						.then(literal("reset").executes(context -> {
+							INSTANCE.softReset();
+							return Command.SINGLE_SUCCESS;
+						}))
+		)))));
+
+		if (Debug.debugEnabled()) {
+			ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
+					.then(literal("setDoors").then(argument("combination", StringArgumentType.string()).executes(context -> {
+						String doorCombination = StringArgumentType.getString(context, "combination");
+						if (SOLUTIONS.get("1").getAsJsonObject().keySet().contains(doorCombination)) {
+							INSTANCE.softReset();
+							INSTANCE.doors = doorCombination;
+						} else {
+							context.getSource().sendError(Constants.PREFIX.get().append("Door combination must be three increasing digits between 0 and 4"));
 						}
-					}
-					return Command.SINGLE_SUCCESS;
-				}))))
-				.then(literal("addMark").executes((context) -> {
-					if (INSTANCE.world == null || INSTANCE.room == null || INSTANCE.player == null) {
-						context.getSource().sendError(Constants.PREFIX.get().append("Solver not active"));
 						return Command.SINGLE_SUCCESS;
-					}
-
-					Vec3d camera = INSTANCE.room.actualToRelative(INSTANCE.player.getEyePos());
-					Vec3d look = INSTANCE.room.actualToRelative(INSTANCE.player.getEyePos()
-							.add(INSTANCE.player.getRotationVector())).subtract(camera);
-					double t = (BOARD_Z + 0.5 - camera.getZ()) / look.getZ();
-					Vec3d vec = camera.add(look.multiply(t));
-					double x = MathHelper.floor(vec.x);
-					double y = MathHelper.floor(vec.y);
-					double z = MathHelper.floor(vec.z);
-
-					if (x < BOARD_MIN_X || x > BOARD_MAX_X || y < BOARD_MIN_Y || y > BOARD_MAX_Y || z != BOARD_Z) {
-						context.getSource().sendError(Constants.PREFIX.get().append("Mark is not inside the board"));
+					})))
+					.then(literal("toggleTimer").executes((context) -> {
+						INSTANCE.timerEnabled = !INSTANCE.timerEnabled;
+						context.getSource().sendFeedback(Constants.PREFIX.get().append(
+								INSTANCE.timerEnabled ? "Timer enabled." : "Timer disabled."));
 						return Command.SINGLE_SUCCESS;
-					}
-					BlockPos pos = BlockPos.ofFloored(INSTANCE.room.relativeToActual(vec));
-
-					if (!INSTANCE.world.getBlockState(pos).isAir()) {
-						context.getSource().sendError(Constants.PREFIX.get().append("Marks can only be placed on air"));
+					}))
+					.then(literal("modifyLever").then(argument("leverType", LeverType.LeverTypeArgumentType.leverType()).then(argument("times", StringArgumentType.greedyString()).executes((context) -> {
+						LeverType leverType = LeverType.LeverTypeArgumentType.getLeverType(context, "leverType");
+						if (leverType == null) {
+							context.getSource().sendError(Constants.PREFIX.get().append("Invalid lever type"));
+						} else if (INSTANCE.solution == null) {
+							context.getSource().sendError(Constants.PREFIX.get().append("No existing solution"));
+						} else {
+							try {
+								DoubleList times = new DoubleArrayList();
+								for (String time : StringArgumentType.getString(context, "times").split(" ")) {
+									times.add(Double.parseDouble(time));
+								}
+								INSTANCE.solution.put(leverType, times);
+							} catch (NumberFormatException e) {
+								context.getSource().sendError(Constants.PREFIX.get().append("Times must be valid numbers or decimals"));
+							}
+						}
 						return Command.SINGLE_SUCCESS;
-					}
-
-					for (Mark mark : INSTANCE.marks) {
-						if (mark.pos.equals(pos)) {
-							context.getSource().sendError(Constants.PREFIX.get().append("There is already a mark at that position"));
+					}))))
+					.then(literal("addMark").executes((context) -> {
+						if (INSTANCE.world == null || INSTANCE.room == null || INSTANCE.player == null) {
+							context.getSource().sendError(Constants.PREFIX.get().append("Solver not active"));
 							return Command.SINGLE_SUCCESS;
 						}
-					}
 
-					INSTANCE.marks.add(new Mark(INSTANCE.marks.size() + 1, pos));
-					return Command.SINGLE_SUCCESS;
-				}))
-				.then(literal("clearMarks").executes((context) -> {
-					INSTANCE.marks.clear();
-					return Command.SINGLE_SUCCESS;
-				}))
-		)))));
+						Vec3d camera = INSTANCE.room.actualToRelative(INSTANCE.player.getEyePos());
+						Vec3d look = INSTANCE.room.actualToRelative(INSTANCE.player.getEyePos()
+								.add(INSTANCE.player.getRotationVector())).subtract(camera);
+						double t = (BOARD_Z + 0.5 - camera.getZ()) / look.getZ();
+						Vec3d vec = camera.add(look.multiply(t));
+						double x = MathHelper.floor(vec.x);
+						double y = MathHelper.floor(vec.y);
+						double z = MathHelper.floor(vec.z);
+
+						if (x < BOARD_MIN_X || x > BOARD_MAX_X || y < BOARD_MIN_Y || y > BOARD_MAX_Y || z != BOARD_Z) {
+							context.getSource().sendError(Constants.PREFIX.get().append("Mark is not inside the board"));
+							return Command.SINGLE_SUCCESS;
+						}
+						BlockPos pos = BlockPos.ofFloored(INSTANCE.room.relativeToActual(vec));
+
+						if (!INSTANCE.world.getBlockState(pos).isAir()) {
+							context.getSource().sendError(Constants.PREFIX.get().append("Marks can only be placed on air"));
+							return Command.SINGLE_SUCCESS;
+						}
+
+						for (Mark mark : INSTANCE.marks) {
+							if (mark.pos.equals(pos)) {
+								context.getSource().sendError(Constants.PREFIX.get().append("There is already a mark at that position"));
+								return Command.SINGLE_SUCCESS;
+							}
+						}
+
+						INSTANCE.marks.add(new Mark(INSTANCE.marks.size() + 1, pos));
+						return Command.SINGLE_SUCCESS;
+					}))
+					.then(literal("clearMarks").executes((context) -> {
+						INSTANCE.marks.clear();
+						return Command.SINGLE_SUCCESS;
+					}))
+			)))));
+		}
     }
 
 	private static void loadSolutions(MinecraftClient client) {
@@ -265,7 +271,6 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	private void solvePuzzle() {
 		variant = findVariant();
 		if (variant == 0) {
-			LOGGER.error("[Skyblocker Waterboard] Unknown waterboard layout.");
 			finished = true;
 			return;
 		}
@@ -279,18 +284,14 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				finished = true;
 				return;
 			} else if (doors.length() != 3) {
-				player.sendMessage(Constants.PREFIX.get().append(
-						"Waterboard: doors are in an unrecognized state. " +
-						"Make sure exactly three doors are closed, then reset the solver."), false);
+				player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.puzzle.waterboard.invalidDoors")), false);
 				finished = true;
 				return;
 			}
 		}
 
 		if (!checkWater()) {
-			player.sendMessage(Constants.PREFIX.get().append(
-					"Waterboard: water must be toggled off or it will mess up the solution. " +
-					"Turn the water off and let it drain, then reset the solver."), false);
+			player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dungeons.puzzle.waterboard.waterFound")), false);
 			finished = true;
 			return;
 		}
@@ -333,6 +334,9 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		} else if (firstSwitches.contains(LeverType.GOLD) && firstSwitches.contains(LeverType.QUARTZ)) {
 			return 4;
 		}
+
+		LOGGER.error("[Skyblocker Waterboard] Unknown waterboard layout. Detected switches: [{}]",
+				String.join(", ", firstSwitches.stream().map(LeverType::asString).toList()));
 
 		return 0;
 	}

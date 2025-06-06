@@ -1086,6 +1086,8 @@
   "skyblocker.dungeons.secrets.customWaypointNotFound": "§cNo custom waypoint found at X: %d, Y: %d, Z: %d for room %s.",
   "skyblocker.dungeons.dungeonScore.scoreText": "Score: %s",
   "skyblocker.dungeons.puzzle.boulder.noSolution": "No solution found!",
+  "skyblocker.dungeons.puzzle.waterboard.invalidDoors": "Doors are in an unrecognized state. Make sure exactly three doors are closed, then reset the solver.",
+  "skyblocker.dungeons.puzzle.waterboard.waterFound": "Water must be toggled off or it will interfere with the solution. Turn the water off and let it drain, then reset the solver.",
 
   "skyblocker.dungeons.secretsTracker.feedback": "%s§f found %s§f secrets. %s",
   "skyblocker.dungeons.secretsTracker.failFeedback": "§cUnable to calculate the number of secrets everybody did this run!",
