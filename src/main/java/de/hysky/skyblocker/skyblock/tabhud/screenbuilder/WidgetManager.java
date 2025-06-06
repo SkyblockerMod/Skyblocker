@@ -8,7 +8,6 @@ import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
@@ -19,7 +18,6 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
@@ -63,8 +61,6 @@ public class WidgetManager {
 	// we probably want this to run pretty early?
 	@Init(priority = -1)
 	public static void init() {
-		SkyblockEvents.LOCATION_CHANGE.register(location -> ScreenBuilder.positionsNeedsUpdating = true);
-
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
 
 			instantiateWidgets();
@@ -87,8 +83,6 @@ public class WidgetManager {
 				// Renders the tab widgets
 				.attachLayerBefore(IdentifiedLayer.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false))
 		);
-
-		Scheduler.INSTANCE.scheduleCyclic(() -> getScreenBuilder(Utils.getLocation()).updatePositioningIfNecessary(), 5);
 	}
 
 	private static void render(DrawContext context, boolean hud) {

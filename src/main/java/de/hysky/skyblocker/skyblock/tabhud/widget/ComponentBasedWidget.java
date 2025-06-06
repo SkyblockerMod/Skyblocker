@@ -161,7 +161,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		// min width is dependent on title
 		w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + txtRend.getWidth(title) + 4 + 4 + 1);
 		// update the positions so it doesn't wait for the next tick or something
-		if (h != prevH || w != prevW) ScreenBuilder.positionsNeedsUpdating = true;
+		if (h != prevH || w != prevW) ScreenBuilder.markDirty();
 		prevW = w;
 		prevH = h;
 	}

@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -62,7 +61,6 @@ public class PlayerListManager {
 	private static void reset() {
 		if (!tabWidgetsToShow.isEmpty()) {
 			tabWidgetsToShow.clear();
-			ScreenBuilder.positionsNeedsUpdating = true;
 		}
 	}
 
@@ -195,7 +193,6 @@ public class PlayerListManager {
 		if (!tabWidgetsToShow.contains(tabWidgetInstances.get("Active Effects")) && SkyblockerConfigManager.get().uiAndVisuals.tabHud.effectsFromFooter) {
 			tabWidgetsToShow.add(getTabHudWidget("Active Effects", List.of()));
 		}
-		ScreenBuilder.positionsNeedsUpdating = true;
 	}
 
 	private static Text trim(Text text) {
