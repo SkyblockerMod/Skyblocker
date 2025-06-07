@@ -527,7 +527,7 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling": "Pling",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie": "Zombie",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.true": "True",
-  "skyblocker.config.chat.waypoints.display": "[Click to Display Waypoint at x: %d y: %d z: %d]",
+  "skyblocker.config.chat.waypoints.display": "Click to display waypoint at x: %d y: %d z: %d",
   "skyblocker.config.chat.waypoints.displayed": "Displayed temporary waypoint at x: %d y: %d z: %d %s",
 
   "skyblocker.config.chat.confirmationPromptHelper": "Chat Confirmation Prompt Helper",
