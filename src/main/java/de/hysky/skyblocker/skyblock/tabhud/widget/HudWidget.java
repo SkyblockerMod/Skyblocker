@@ -64,19 +64,18 @@ public abstract class HudWidget extends AbstractWidget {
 	 *
 	 * @return true if it should update
 	 */
-	protected boolean shouldUpdateBeforeRendering() {
+	public boolean shouldUpdateBeforeRendering() {
 		return false;
 	}
 
 	protected abstract void renderWidget(DrawContext context, int mouseX, int mouseY, float delta);
 
-	public void render(DrawContext context) {
+	public final void render(DrawContext context) {
 		render(context, -1, -1, MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks());
 	}
 
 	@Override
 	public final void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		if (shouldUpdateBeforeRendering()) update();
 		renderWidget(context, mouseX, mouseY, delta);
 	}
 

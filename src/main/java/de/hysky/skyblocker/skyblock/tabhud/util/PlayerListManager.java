@@ -64,6 +64,7 @@ public class PlayerListManager {
 		}
 	}
 
+	// TODO: check for changes instead of updating every second
 	public static void updateList() {
 		if (!Utils.isOnSkyblock()) {
 			reset();

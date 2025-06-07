@@ -34,7 +34,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	protected boolean shouldUpdateBeforeRendering() {
+	public boolean shouldUpdateBeforeRendering() {
 		return true;
 	}
 

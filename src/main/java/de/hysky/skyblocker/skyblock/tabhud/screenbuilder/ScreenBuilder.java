@@ -127,6 +127,15 @@ public class ScreenBuilder {
 		return true;
 	}
 
+	/**
+	 * Updates the widgets (if needed) after the new widget list has been generated and before positioners run.
+	 */
+	public void updateWidgets(WidgetManager.ScreenLayer screenLayer) {
+		for (HudWidget widget : getHudWidgets(screenLayer)) {
+			if (widget.shouldUpdateBeforeRendering()) widget.update();
+		}
+	}
+
 	public void positionWidgets(int screenW, int screenH) {
 		WidgetPositioner newPositioner = SkyblockerConfigManager.get().uiAndVisuals.tabHud.defaultPositioning.getNewPositioner(screenW, screenH);
 
@@ -181,11 +190,16 @@ public class ScreenBuilder {
 	}
 
 	/**
-	 * Run the pipeline to build a Screen
+	 * Builds and renders the given {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager.ScreenLayer WidgetManager.ScreenLayer}, which
+	 * {@link #updateWidgetLists(boolean) updates the widget lists (for all screen layers)}, {@link #updateWidgets(WidgetManager.ScreenLayer) updates the widgets (for the current screen layer)},
+	 * {@link #positionWidgets(int, int) positions the widgets}, and {@link #renderWidgets(DrawContext, WidgetManager.ScreenLayer) renders the widgets}.
 	 */
 	public void run(DrawContext context, int screenW, int screenH, WidgetManager.ScreenLayer screenLayer) {
-		// updateWidgetLists is placed first to prevent short circuit
-		if (updateWidgetLists(false) || positionsNeedsUpdating) {
+		boolean widgetListsChanged = updateWidgetLists(false);
+
+		updateWidgets(screenLayer);
+
+		if (widgetListsChanged || positionsNeedsUpdating) {
 			positionsNeedsUpdating = false;
 			positionWidgets(screenW, screenH);
 		}

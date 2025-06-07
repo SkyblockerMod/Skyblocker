@@ -122,9 +122,8 @@ public class PreviewTab implements Tab {
 		scoreboard.getOrCreateScore(createHolder(Text.literal("enough lines bye")), placeHolderObjective).setScore(-9);
 		scoreboard.getOrCreateScore(createHolder(Text.literal("NEVER GONNA GIVE Y-")), placeHolderObjective).setScore(-10);
 
-		WidgetManager.getScreenBuilder(getCurrentLocation()).updateWidgetLists(true);
-		WidgetManager.getScreenBuilder(getCurrentLocation()).positionWidgets(client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight());
 		locationDropdown = parent.createLocationDropdown(location -> updateWidgets());
+		updateWidgets();
 	}
 
 	private ScoreHolder createHolder(Text name) {
@@ -253,6 +252,7 @@ public class PreviewTab implements Tab {
 		updatePlayerListFromPreview();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
 		screenBuilder.updateWidgetLists(true);
+		screenBuilder.updateWidgets(currentScreenLayer);
 		screenBuilder.positionWidgets((int) (parent.width / scale), (int) (parent.height / scale));
 	}
 
