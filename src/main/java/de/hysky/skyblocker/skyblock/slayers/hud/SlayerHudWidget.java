@@ -28,6 +28,11 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 		update();
 	}
 
+	@Override
+	public boolean shouldUpdateBeforeRendering() {
+		return true;
+	}
+
 	public static SlayerHudWidget getInstance() {
 		return instance;
 	}

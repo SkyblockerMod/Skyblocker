@@ -34,6 +34,11 @@ public class FishingHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
+	public boolean shouldUpdateBeforeRendering() {
+		return true;
+	}
+
+	@Override
 	public Set<Location> availableLocations() {
 		return Set.of(Location.values());
 	}
