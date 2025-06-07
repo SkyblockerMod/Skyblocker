@@ -258,7 +258,13 @@
   "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip": "Show's the required items as (5 stacks + 45) rather than just a total number especially useful for ironman players.",
 
   "skyblocker.config.foraging": "Foraging",
-  "skyblocker.config.foraging.hunting": "Hunting",
+  "skyblocker.config.foraging.park": "The Park",
+  "skyblocker.config.foraging.park.foragingHud.enableHud": "Enable Foraging HUD",
+  "skyblocker.config.foraging.park.foragingHud.enableHud.@Tooltip": "Displays the foraging HUD while in The Park.",
+  "skyblocker.config.foraging.park.foragingHud.x": "HUD X Position",
+  "skyblocker.config.foraging.park.foragingHud.y": "HUD Y Position",
+  "skyblocker.config.foraging.park.highlightConnectedTree": "Highlight Connected Trees",
+  "skyblocker.config.foraging.park.highlightColor": "Tree Highlight Color (ARGB)",
 
   "skyblocker.config.general": "General",
 
@@ -1395,6 +1401,15 @@
   "skyblocker.armorCustomization.titleSecret": "Pimp Your Armor",
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
+
+  "skyblocker.foraging.hud.title": "Foraging",
+  "skyblocker.foraging.hud.no_player": "No player :(",
+  "skyblocker.foraging.hud.logs_per_min": "Logs/min: ",
+  "skyblocker.foraging.hud.coins_per_hour": "Coins/h: ",
+  "skyblocker.foraging.hud.blocks_per_second": "Blocks/s: ",
+  "skyblocker.foraging.hud.level": "Foraging Level:",
+  "skyblocker.foraging.hud.xp_per_hour": "Foraging XP/h: ",
+  "skyblocker.foraging.hud.no_data": "No Data",
 
   "emi.category.skyblocker.skyblock": "Skyblock"
 }

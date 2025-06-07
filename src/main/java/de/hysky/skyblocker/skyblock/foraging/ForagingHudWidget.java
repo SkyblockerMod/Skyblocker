@@ -42,16 +42,16 @@ public class ForagingHudWidget extends ComponentBasedWidget {
 	@Override
 	public void updateContent() {
 		if (client.player == null) {
-			addComponent(new PlainTextComponent(Text.literal("No player :(")));
+			addComponent(new PlainTextComponent(Text.translatable("skyblocker.foraging.hud.no_player")));
 			return;
 		}
 
 		addSimpleIcoText(Ico.OAK_LOG, ForagingHud.counterText(), Formatting.GREEN, ForagingHud.NUMBER_FORMAT.format(ForagingHud.counter()));
-		addSimpleIcoText(Ico.OAK_LOG, "Logs/min: ", Formatting.GREEN, ForagingHud.NUMBER_FORMAT.format((int) ForagingHud.logsPerMinute()));
-		addSimpleIcoText(Ico.GOLD, "Coins/h: ", Formatting.GOLD, estimateCoinsPerHour());
-		addSimpleIcoText(Ico.OAK_LOG, "Blocks/s: ", Formatting.GREEN, String.format("%.2f", ForagingHud.blockBreaks()));
-		addComponent(Components.progressComponent(Ico.EXP_BOTTLE, Text.literal("Foraging Level:"), ForagingHud.foragingXpPercentProgress(), Formatting.GOLD.getColorValue()));
-		addSimpleIcoText(Ico.LIME_DYE, "Foraging XP/h: ", Formatting.GREEN, ForagingHud.NUMBER_FORMAT.format((int) ForagingHud.foragingXpPerHour()));
+		addSimpleIcoText(Ico.OAK_LOG, String.valueOf(Text.translatable("skyblocker.foraging.hud.logs_per_min")), Formatting.GREEN, ForagingHud.NUMBER_FORMAT.format((int) ForagingHud.logsPerMinute()));
+		addSimpleIcoText(Ico.GOLD, String.valueOf(Text.translatable("skyblocker.foraging.hud.coins_per_hour")), Formatting.GOLD, estimateCoinsPerHour());
+		addSimpleIcoText(Ico.OAK_LOG, String.valueOf(Text.translatable("skyblocker.foraging.hud.blocks_per_second")), Formatting.GREEN, String.format("%.2f", ForagingHud.blockBreaks()));
+		addComponent(Components.progressComponent(Ico.EXP_BOTTLE, Text.translatable("skyblocker.foraging.hud.level"), ForagingHud.foragingXpPercentProgress(), Formatting.GOLD.getColorValue()));
+		addSimpleIcoText(Ico.LIME_DYE, String.valueOf(Text.translatable("skyblocker.foraging.hud.xp_per_hour")), Formatting.GREEN, ForagingHud.NUMBER_FORMAT.format((int) ForagingHud.foragingXpPerHour()));
 	}
 
 	private String estimateCoinsPerHour() {
@@ -94,7 +94,7 @@ public class ForagingHudWidget extends ComponentBasedWidget {
 		}
 
 		if (pricePerLog <= 0) {
-			return "No Data";
+			return Text.translatable("skyblocker.foraging.hud.no_data").getString();
 		}
 
 		// ─── 5) Calculate: logsPerMinute × pricePerLog × 60 = Coins/hour ──────────────
