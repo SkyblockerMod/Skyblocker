@@ -278,8 +278,6 @@
     "skyblocker.itemTooltip.noData": "§c沒有數據",
     "skyblocker.config.dungeons.professor.floor3GuardianHealthDisplay": "守衛者生命值顯示（F3/M3）",
     "skyblocker.config.dungeons.professor.floor3GuardianHealthDisplay.@Tooltip": "在F3/M3的Boss戰中，在守衛者下方顯示它們的生命值。",
-    "skyblocker.config.dungeons.secretWaypoints.enableRoomMatching": "啟用房間匹配",
-    "skyblocker.config.dungeons.secretWaypoints.enableRoomMatching.@Tooltip": "關閉此選項可節省約20MB左右的記憶體，但是秘密路徑點和§l部分謎題助手功能§r需要啟用該選項。",
     "skyblocker.config.general.quiverWarning": "箭袋提示",
     "skyblocker.config.uiAndVisuals.itemCooldown": "物品冷卻提示",
     "skyblocker.config.uiAndVisuals.itemCooldown.enableItemCooldowns": "啟用物品冷卻提示",

@@ -173,7 +173,6 @@
     "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "Evidenzia in verde le torte di capodanno mancanti e in rosso le torte che hai già. \n\nRichiede che tu apra almeno una volta la tua borsa delle torte per funzionare.",
     "skyblocker.config.uiAndVisuals.searchOverlay.enableCommands.@Tooltip": "Apre la ricerca del bazaar con “/bzs” e la casa d’aste con “/ahs”. È richiesto re-log accesso per aggiornare questa impostazione.",
     "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Ti avvisa quando estrai un arco e non hai Veleno Freccia Tossica nel tuo inventario. Funziona solo durante la fase DPS.",
-    "skyblocker.config.dungeons.secretWaypoints.enableRoomMatching.@Tooltip": "Disabilitare questa opzione può risparmiare circa 20 MB di RAM, ma il Waypoint Segreto e alcuni solutori di puzzle richiedono che questa opzione sia abilitata.",
     "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Evidenzia i forzieri con il miglior profitto presso il NPC Croesus.\n\n\nIl miglior forziere sarà evidenziato in verde.\nSe c’è un forziere che vale la pena aprire con una chiave del dungeon, sarà evidenziato in giallo",
     "skyblocker.config.dungeons.puzzle.blazeSolver.@Tooltip": "Incornicia il blaze corretto in verde, disegna anche una linea e incornicia il prossimo blaze da uccidere in bianco.",
     "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Testo che verrà inviato in chat durante il combattimento con il boss Livid. La stringa “[colore]” sarà sostituita con il colore di Livid4.",
