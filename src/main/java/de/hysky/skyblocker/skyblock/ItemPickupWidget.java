@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
@@ -44,8 +45,9 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		instance = this;
 
 		ClientReceiveMessageEvents.GAME.register(instance::onChatMessage);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> changeLobby());
-
+		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> changingLobby = true);
+		// Make changingLobby true for a short period while the player loads into a new lobby and their items are loading
+		SkyblockEvents.LOCATION_CHANGE.register(location -> Scheduler.INSTANCE.schedule(() -> changingLobby = false, LOBBY_CHANGE_DELAY));
 	}
 
 	public static ItemPickupWidget getInstance() {
@@ -63,14 +65,6 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 				.map(NEUItem::getSkyblockItemId)
 				.map(ItemRepository::getItemStack)
 				.orElse(new ItemStack(Items.BARRIER));
-	}
-
-	/**
-	 * Make {@link  ItemPickupWidget#changingLobby} true for a short period while the player loads into a new lobby and is reset there items
-	 */
-	private void changeLobby() {
-		changingLobby = true;
-		Scheduler.INSTANCE.schedule(() -> changingLobby = false, LOBBY_CHANGE_DELAY);
 	}
 
 	/**
