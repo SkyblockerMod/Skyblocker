@@ -1,21 +1,15 @@
 package de.hysky.skyblocker.skyblock.item.background;
 
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.item.background.adders.ItemRarityBackground;
-import de.hysky.skyblocker.skyblock.item.background.adders.JacobMedalBackground;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 
-import java.util.List;
-
 public class ItemBackgroundManager {
-
-	private static final List<ColoredItemBackground<?>> BACKGROUNDS = List.of(
-			new ItemRarityBackground(),
-			new JacobMedalBackground()
-	);
+	// This method is populated at compile time in buildSrc with classes annotated with RegisterItemBackground
+	private static native ColoredItemBackground<?>[] getBackgrounds();
+	private static final ColoredItemBackground<?>[] BACKGROUNDS = getBackgrounds();
 
 	@Init
 	public static void init() {

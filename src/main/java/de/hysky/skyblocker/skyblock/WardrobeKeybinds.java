@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.annotations.RegisterSlotTextAdder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class WardrobeKeybinds extends SimpleSlotTextAdder {
+	@RegisterSlotTextAdder
 	public static final WardrobeKeybinds INSTANCE = new WardrobeKeybinds();
 
 	public WardrobeKeybinds() {

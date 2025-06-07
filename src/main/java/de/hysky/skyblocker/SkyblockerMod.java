@@ -84,6 +84,5 @@ public class SkyblockerMod implements ClientModInitializer {
      *
      * @see Init
      */
-    private static void init() {
-    }
+    private static native void init();
 }
