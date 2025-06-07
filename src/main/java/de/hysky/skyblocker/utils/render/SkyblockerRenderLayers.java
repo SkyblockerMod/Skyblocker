@@ -62,6 +62,22 @@ public class SkyblockerRenderLayers {
 			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
 			.build(false));
 
+
+
+
+	public static final MultiPhase CIRCLE = RenderLayer.of("circle", RenderLayer.DEFAULT_BUFFER_SIZE, false, true, SkyblockerRenderPipelines.CIRCLE, MultiPhaseParameters.builder()
+			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
+			.build(false));
+	public static final MultiPhase CIRCLE_LINES = RenderLayer.of("circle_lines", RenderLayer.DEFAULT_BUFFER_SIZE, false, true, SkyblockerRenderPipelines.CIRCLE_LINES, MultiPhaseParameters.builder()
+			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
+			.build(false));
+	public static final MultiPhase SPHERE = RenderLayer.of("sphere", RenderLayer.DEFAULT_BUFFER_SIZE, false, true, SkyblockerRenderPipelines.SPHERE, MultiPhaseParameters.builder()
+			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
+			.build(false));
+
+
+
+
 	public static MultiPhase getLines(double lineWidth) {
 		return LINES_LAYERS.computeIfAbsent(lineWidth, LINES);
 	}

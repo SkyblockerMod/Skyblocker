@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -73,6 +74,9 @@ public class UIAndVisualsConfig {
 
     @SerialEntry
     public TeleportOverlay teleportOverlay = new TeleportOverlay();
+
+	@SerialEntry
+	public GyroKineticWandOverlay gyroOverlay = new GyroKineticWandOverlay();
 
     @SerialEntry
     public SmoothAOTE smoothAOTE = new SmoothAOTE();
@@ -317,6 +321,16 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
     }
+
+	public static class GyroKineticWandOverlay {
+
+		@SerialEntry
+		public GyroOverlay.Mode gyroOverlayMode = GyroOverlay.Mode.OFF;
+
+
+		@SerialEntry
+		public Color gyroOverlayColor = new Color(0x7F761594, true);
+	}
 
     public static class TeleportOverlay {
         @SerialEntry

@@ -338,8 +338,150 @@ public class RenderHelper {
 
     	matrices.pop();
     }
+	/**
+	 * Renders a circle filled in using triangle_fan drawmode
+	 *
+	 * @param centre   The position that the circle will be centred around.
+	 * @param radius   The radius of the circle.
+	 * @param segments The amount of triangles used to approximate the circle.
+	 * @param color    The color of the circle as a argb int.
+	 */
+	public static void renderCircleFilled(WorldRenderContext context, Vec3d centre, float radius,int segments, int color) {
+		MatrixStack matrices = context.matrixStack();
+		Vec3d camera = context.camera().getPos();
 
-    /**
+
+
+		matrices.push();
+		matrices.translate(-camera.x, -camera.y, -camera.z);
+		VertexConsumer buffer = context.consumers().getBuffer(SkyblockerRenderLayers.CIRCLE);
+		Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+
+
+		for (int i = 0; i <= segments; i++) {
+			double angle = Math.TAU * i / segments;
+			float dx = (float) Math.cos(angle) * radius;
+			float dz = (float) Math.sin(angle) * radius;
+
+
+			buffer.vertex(positionMatrix, (float) centre.getX() + dx, (float) centre.getY() , (float) centre.getZ() + dz).color(color);
+
+		}
+
+		matrices.pop();
+	}
+	/**
+	 * Renders a circle sphere in using triange_strip
+	 *
+	 * @param centre   The position that the circle will be centred around.
+	 * @param radius   The radius of the sphere.
+	 * @param rings    Amount of rings to subdivide the sphere.
+	 * @param segments The amount of triangles used to approximate the circle.
+	 * @param color    The color of the circle as a argb int.
+	 */
+	public static void renderSphere(WorldRenderContext context, Vec3d centre, float radius, int segments, int rings, int color) {
+		MatrixStack matrices = context.matrixStack();
+		Vec3d camera = context.camera().getPos();
+
+		matrices.push();
+		matrices.translate(-camera.x, -camera.y, -camera.z);
+
+		VertexConsumer buffer = context.consumers().getBuffer(SkyblockerRenderLayers.SPHERE);
+		Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+
+		for (int lat = 0; lat < rings; lat++) {
+			double lat0 = Math.PI * (double) lat / rings;
+			double lat1 = Math.PI * (double) (lat + 1) / rings;
+
+			float y0 = (float) Math.cos(lat0) * radius;
+			float y1 = (float) Math.cos(lat1) * radius;
+
+			float r0 = (float) Math.sin(lat0) * radius;
+			float r1 = (float) Math.sin(lat1) * radius;
+
+			for (int lon = 0; lon <= segments; lon++) {
+				double angle = 2 * Math.PI * (double) lon / segments;
+				float x0 = (float) Math.cos(angle);
+				float z0 = (float) Math.sin(angle);
+
+				// First triangle
+				buffer.vertex(positionMatrix,
+								(float) centre.getX() + x0 * r0,
+								(float) centre.getY() + y0,
+								(float) centre.getZ() + z0 * r0)
+						.color(color);
+
+				buffer.vertex(positionMatrix,
+								(float) centre.getX() + x0 * r1,
+								(float) centre.getY() + y1,
+								(float) centre.getZ() + z0 * r1)
+						.color(color);
+			}
+		}
+
+		matrices.pop();
+	}
+	/**
+	 * Renders a circle outline in using quads
+	 *
+	 * @param centre   The position that the circle will be centred around.
+	 * @param radius   The radius of the circle.
+	 * @param thickness The thickness of the outline in blocks.
+	 * @param segments The amount of triangles used to approximate the circle.
+	 * @param color    The color of the circle as an argb int.
+	 */
+
+	public static void renderCircleOutlineWithQuads(WorldRenderContext context, Vec3d centre, float radius, float thickness, int segments, int color) {
+		MatrixStack matrices = context.matrixStack();
+		Vec3d camera = context.camera().getPos();
+
+		matrices.push();
+		matrices.translate(-camera.x, -camera.y, -camera.z);
+
+		VertexConsumer buffer = context.consumers().getBuffer(SkyblockerRenderLayers.CIRCLE_LINES);
+		Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+
+		float r = (color >> 16 & 0xFF) / 255f;
+		float g = (color >> 8 & 0xFF) / 255f;
+		float b = (color & 0xFF) / 255f;
+		float a = (color >> 24 & 0xFF) / 255f;
+
+		float innerRadius = radius - thickness / 2f;
+		float outerRadius = radius + thickness / 2f;
+
+		for (int i = 0; i < segments; i++) {
+			double angle1 = Math.TAU * i / segments;
+			double angle2 = Math.TAU * (i + 1) / segments;
+
+			float x1Inner = (float) Math.cos(angle1) * innerRadius;
+			float z1Inner = (float) Math.sin(angle1) * innerRadius;
+
+			float x1Outer = (float) Math.cos(angle1) * outerRadius;
+			float z1Outer = (float) Math.sin(angle1) * outerRadius;
+
+			float x2Inner = (float) Math.cos(angle2) * innerRadius;
+			float z2Inner = (float) Math.sin(angle2) * innerRadius;
+
+			float x2Outer = (float) Math.cos(angle2) * outerRadius;
+			float z2Outer = (float) Math.sin(angle2) * outerRadius;
+
+			float cx = (float) centre.getX();
+			float cy = (float) centre.getY();
+			float cz = (float) centre.getZ();
+
+			// Each quad is formed from two triangles
+			buffer.vertex(positionMatrix, cx + x1Inner, cy, cz + z1Inner).color(r, g, b, a);
+			buffer.vertex(positionMatrix, cx + x1Outer, cy, cz + z1Outer).color(r, g, b, a);
+			buffer.vertex(positionMatrix, cx + x2Outer, cy, cz + z2Outer).color(r, g, b, a);
+			buffer.vertex(positionMatrix, cx + x2Inner, cy, cz + z2Inner).color(r, g, b, a);
+		}
+
+		matrices.pop();
+	}
+
+
+
+	/**
      * This is called after all {@link WorldRenderEvents#AFTER_TRANSLUCENT} listeners have been called so that we can draw all remaining render layers.
      */
     private static void drawTranslucents(WorldRenderContext context) {
