@@ -908,6 +908,15 @@
   "skyblocker.config.uiAndVisuals.itemCooldown": "Item Cooldown",
   "skyblocker.config.uiAndVisuals.itemCooldown.enableItemCooldowns": "Enable Item Cooldown",
 
+  "skyblocker.config.uiAndVisuals.itemPickup": "Item Pickup Widget",
+  "skyblocker.config.uiAndVisuals.itemPickup.hud.screen": "Item Pickup Widget Config...",
+  "skyblocker.config.uiAndVisuals.itemPickup.sackNotifications": "Sack Notification",
+  "skyblocker.config.uiAndVisuals.itemPickup.sackNotifications.@Tooltip": "Also show changes in sacks (this relies on Hypixel Settings -> Chat Feedback -> Sack Notifications being enabled)",
+  "skyblocker.config.uiAndVisuals.itemPickup.showItemName": "Show Item Name",
+  "skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip": "Show the item names and icons in the widget",
+  "skyblocker.config.uiAndVisuals.itemPickup.lifeTime": "Item Lifetime (s)",
+  "skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip": "How long should items stay on the widget",
+
   "skyblocker.config.uiAndVisuals.slotText": "Slot Text",
   "skyblocker.config.uiAndVisuals.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level",
   "skyblocker.config.uiAndVisuals.slotText.mode.ENABLED": "Enabled",

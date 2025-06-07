@@ -5,7 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -92,12 +92,12 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 */
 	public final void addSimpleIcoText(ItemStack ico, String string, Formatting fmt, int idx) {
 		Text txt = simpleEntryText(idx, string, fmt);
-		this.addComponent(new IcoTextComponent(ico, txt));
+		this.addComponent(Components.iconTextComponent(ico, txt));
 	}
 
 	public final void addSimpleIcoText(ItemStack ico, String string, Formatting fmt, String content) {
 		Text txt = simpleEntryText(content, string, fmt);
-		this.addComponent(new IcoTextComponent(ico, txt));
+		this.addComponent(Components.iconTextComponent(ico, txt));
 	}
 
 	@Override
