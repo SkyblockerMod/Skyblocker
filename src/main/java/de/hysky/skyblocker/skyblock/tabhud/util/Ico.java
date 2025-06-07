@@ -57,6 +57,8 @@ public class Ico {
 	public static final ItemStack B_ROD = new ItemStack(Items.BLAZE_ROD);
 	public static final ItemStack B_POWDER = new ItemStack(Items.BLAZE_POWDER);
 	public static final ItemStack BOW = new ItemStack(Items.BOW);
+	public static final ItemStack OAK_LOG = new ItemStack(Items.OAK_LOG);
+	public static final ItemStack EXP_BOTTLE = new ItemStack(Items.EXPERIENCE_BOTTLE);
 	public static final ItemStack COPPER = new ItemStack(Items.COPPER_INGOT);
 	public static final ItemStack NETHERITE_UPGRADE_ST = new ItemStack(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE);
 	public static final ItemStack COMPOSTER = new ItemStack(Items.COMPOSTER);
