@@ -5,6 +5,7 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.injected.RecipeBookHolder;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
@@ -71,7 +72,12 @@ public class CustomizeArmorScreen extends Screen {
 		));
 		ScreenEvents.AFTER_INIT.register((client1, screen, scaledWidth, scaledHeight) -> {
 			if (Utils.isOnSkyblock() && screen instanceof InventoryScreen inventoryScreen) {
-				Screens.getButtons(inventoryScreen).add(new CustomizeButton(
+				CustomizeButton button = new CustomizeButton(
+						((HandledScreenAccessor) inventoryScreen).getX() + 63,
+						((HandledScreenAccessor) inventoryScreen).getY() + 10
+				);
+				Screens.getButtons(inventoryScreen).add(button);
+				((RecipeBookHolder) inventoryScreen).registerRecipeBookToggleCallback(() -> button.setPosition(
 						((HandledScreenAccessor) inventoryScreen).getX() + 63,
 						((HandledScreenAccessor) inventoryScreen).getY() + 10
 				));
