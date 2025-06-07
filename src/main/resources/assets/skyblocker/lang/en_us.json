@@ -826,8 +826,12 @@
 
   "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "Hide Status Effect Overlay",
 
-  "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defence, Speed & XP Bars",
+  "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defense, Speed & XP Bars",
   "skyblocker.config.uiAndVisuals.bars.enableBars": "Enable Bars",
+  "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay": "Intelligence Display",
+  "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.ORIGINAL": "Original",
+  "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.ACCURATE": "Accurate",
+  "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.IN_FRONT": "Smallest In Front",
 
   "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation": "Cancel Component Update Animation",
   "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip": "Cancels the down-and-up animation in your hand that plays when an item's components are updated.",
