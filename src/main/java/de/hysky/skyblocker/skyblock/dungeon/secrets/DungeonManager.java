@@ -241,9 +241,7 @@ public class DungeonManager {
     @Init
     public static void init() {
         CUSTOM_WAYPOINTS_DIR = SkyblockerMod.CONFIG_DIR.resolve("custom_secret_waypoints.json");
-        if (!SkyblockerConfigManager.get().dungeons.secretWaypoints.enableRoomMatching) {
-            return;
-        }
+
         // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
         CompletableFuture.runAsync(DungeonManager::load, MinecraftClient.getInstance()).exceptionally(e -> {
             LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);
@@ -790,12 +788,12 @@ public class DungeonManager {
     }
 
     /**
-     * Checks if {@link DungeonsConfig.SecretWaypoints#enableRoomMatching room matching} is enabled and the player is in a dungeon.
+     * Checks if the player is in a dungeon.
      *
      * @return whether room matching and dungeon secrets should be processed
      */
     private static boolean shouldProcess() {
-        return SkyblockerConfigManager.get().dungeons.secretWaypoints.enableRoomMatching && Utils.isInDungeons();
+        return Utils.isInDungeons();
     }
 
     /**

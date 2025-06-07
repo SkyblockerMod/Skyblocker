@@ -34,7 +34,6 @@ public class SkyblockerMod implements ClientModInitializer {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final Gson GSON_COMPACT = new GsonBuilder().create();
     private static SkyblockerMod INSTANCE;
-    public final StatusBarTracker statusBarTracker = new StatusBarTracker();
 
     /**
      * Do not instantiate this class. Use {@link #getInstance()} instead.
@@ -59,8 +58,6 @@ public class SkyblockerMod implements ClientModInitializer {
         ConfigDataFixer.apply();
         SkyblockerConfigManager.init();
         ConfigNullFieldsFix.init(); //DO NOT INIT ANY CLASS THAT USES CONFIG FIELDS BEFORE THIS!
-
-        statusBarTracker.init();
 
         init();
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);

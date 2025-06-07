@@ -9,10 +9,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -38,9 +38,12 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.Codecs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -60,12 +63,16 @@ public final class ItemUtils {
             Codec.INT.orElse(1).fieldOf("count").forGetter(ItemStack::getCount),
             ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(ItemStack::getComponentChanges)
     ).apply(instance, ItemStack::new)));
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemUtils.class);
+    private static final Pattern STORED_PATTERN = Pattern.compile("Stored: ([\\d,]+)/\\S+");
+    private static final short LOG_INTERVAL = 1000;
+	private static long lastLog = Util.getMeasuringTimeMs();
 
     private ItemUtils() {}
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
         return literal("dumpHeldItem").executes(context -> {
-            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
+            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(JsonOps.INSTANCE), context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
             return Command.SINGLE_SUCCESS;
         });
     }
@@ -469,5 +476,28 @@ public final class ItemUtils {
     			.filter(es -> es.getType() == EquipmentSlot.Type.HUMANOID_ARMOR)
     			.map(entity::getEquippedStack)
     			.toList();
+    }
+
+    /**
+     * Finds the number of items stored in a sack based on the tooltip lines.
+     * @param itemStack The item stack these lines belong to. This is used for logging purposes.
+     * @param lines The tooltip lines to search in. This isn't equivalent to the item's lore.
+     * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
+     */
+    public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines) {
+        if (lines.size() >= 2 && lines.get(1).getString().endsWith("Sack")) {
+			// Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
+            // Which equals: `Stored: 0/20k`
+			Matcher matcher = TextUtils.matchInList(lines, STORED_PATTERN);
+			if (matcher == null) {
+				// Log a warning every second if the amount couldn't be found, to prevent spamming the logs every frame (which can be hundreds of times per second)
+				if (Util.getMeasuringTimeMs() - lastLog > LOG_INTERVAL) {
+					LOGGER.warn("Failed to find stored amount in sack tooltip for item `{}`", Debug.DumpFormat.JSON.format(itemStack).getString()); // This is a very unintended way of serializing the item stack, but it's so much cleaner than actually using the codec
+					lastLog = Util.getMeasuringTimeMs();
+				}
+				return OptionalInt.empty();
+			} else return RegexUtils.parseOptionalIntFromMatcher(matcher, 1);
+		}
+		return OptionalInt.empty();
     }
 }

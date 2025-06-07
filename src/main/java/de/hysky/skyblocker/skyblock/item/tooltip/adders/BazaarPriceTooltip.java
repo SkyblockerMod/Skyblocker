@@ -5,14 +5,15 @@ import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.BazaarProduct;
+import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.OptionalInt;
 
 @RegisterTooltipAdder(priority = -9)
 public class BazaarPriceTooltip extends SimpleTooltipAdder {
@@ -22,29 +23,24 @@ public class BazaarPriceTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-        String skyblockApiId = stack.getSkyblockApiId();
+		String skyblockApiId = stack.getSkyblockApiId();
 
 		if (TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
-			int count;
-			if (lines.size() >= 4 && lines.get(3).getSiblings().size() >= 2 && lines.get(1).getString().endsWith("Sack")) {
-				//The count is in the 2nd sibling of the 3rd line of the lore.                                              here V
-				//Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
-				String line = lines.get(3).getSiblings().get(1).getString().replace(",", "");
-				count = NumberUtils.isParsable(line) && !line.equals("0") ? Integer.parseInt(line) : stack.getCount();
-			} else {
-				count = stack.getCount();
-			}
+			OptionalInt optCount = ItemUtils.getItemCountInSack(stack, lines);
+			// This clamp is here to ensure that the tooltip doesn't show a useless price of 0 coins if the item count is 0.
+			int count = optCount.isPresent() ? Math.max(optCount.getAsInt(), 1) : stack.getCount();
+
 			BazaarProduct product = TooltipInfoType.BAZAAR.getData().get(skyblockApiId);
 			lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
-			              .formatted(Formatting.GOLD)
-			              .append(product.buyPrice().isEmpty()
-					             ? Text.literal("No data").formatted(Formatting.RED)
-					              : ItemTooltip.getCoinsMessage(product.buyPrice().getAsDouble(), count)));
+						  .formatted(Formatting.GOLD)
+						  .append(product.buyPrice().isEmpty()
+								  ? Text.literal("No data").formatted(Formatting.RED)
+								  : ItemTooltip.getCoinsMessage(product.buyPrice().getAsDouble(), count)));
 			lines.add(Text.literal(String.format("%-19s", "Bazaar sell Price:"))
-			              .formatted(Formatting.GOLD)
-			              .append(product.sellPrice().isEmpty()
-					             ? Text.literal("No data").formatted(Formatting.RED)
-					              : ItemTooltip.getCoinsMessage(product.sellPrice().getAsDouble(), count)));
+						  .formatted(Formatting.GOLD)
+						  .append(product.sellPrice().isEmpty()
+								  ? Text.literal("No data").formatted(Formatting.RED)
+								  : ItemTooltip.getCoinsMessage(product.sellPrice().getAsDouble(), count)));
 		}
 	}
 
