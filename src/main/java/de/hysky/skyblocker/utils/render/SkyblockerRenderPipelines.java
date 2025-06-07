@@ -44,6 +44,29 @@ public class SkyblockerRenderPipelines {
 			.withCull(false)
 			.build());
 
+	static final RenderPipeline SPHERE = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
+			.withLocation(Identifier.of(SkyblockerMod.NAMESPACE, "pipeline/sphere"))
+			.withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP)
+			.withCull(false)
+			.build());
+
+
+
+	static final RenderPipeline CIRCLE = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
+			.withLocation(Identifier.of(SkyblockerMod.NAMESPACE, "pipeline/circle"))
+			.withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_FAN)
+			.withCull(false)
+			.build());
+	static final RenderPipeline CIRCLE_LINES = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
+			.withLocation(Identifier.of(SkyblockerMod.NAMESPACE, "pipeline/circle_lines"))
+			.withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.QUADS)
+			.withCull(false)
+			.build());
+
+
+
+
+
 	@Init
 	public static void init() {} //Ensure that pipelines are pre-compiled instead of compiled on demand
 }
