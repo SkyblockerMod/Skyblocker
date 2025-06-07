@@ -43,9 +43,6 @@ public class FarmingConfig {
 
 		@SerialEntry
 		public boolean showStacksInVisitorHelper = false;
-
-		@SerialEntry
-		public boolean copyAndOpenBz = true;
 	}
 
 	public static class FarmingHud {

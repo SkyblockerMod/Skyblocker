@@ -92,18 +92,18 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 		if (FarmingHud.CounterType.NONE.matchesText(counterText)) counterNumber = "";
 		addSimpleIcoText(cropStack, counterText, Formatting.YELLOW, counterNumber);
 		float cropsPerMinute = FarmingHud.cropsPerMinute();
-		addSimpleIcoText(cropStack, Text.translatable("skyblocker.config.farming.general.cropsPerMin").getString(), Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
-		addSimpleIcoText(Ico.GOLD, Text.translatable("skyblocker.config.farming.general.coinsPerHour").getString(), Formatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
-		addSimpleIcoText(cropStack, Text.translatable("skyblocker.config.farming.general.blocksPerSec").getString(), Formatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
+		addSimpleIconTranslatableText(cropStack, "skyblocker.config.farming.general.cropsPerMin", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
+		addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.config.farming.general.coinsPerHour", Formatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
+		addSimpleIconTranslatableText(cropStack, "skyblocker.config.farming.general.blocksPerSec", Formatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
 		//noinspection DataFlowIssue
 		addComponent(Components.progressComponent(Ico.LANTERN, Text.translatable("skyblocker.config.farming.general.farmingLevel"), FarmingHud.farmingXpPercentProgress(), Formatting.GOLD.getColorValue()));
-		addSimpleIcoText(Ico.LIME_DYE, Text.translatable("skyblocker.config.farming.general.farmingXPPerHour").getString(), Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
+		addSimpleIconTranslatableText(Ico.LIME_DYE, "skyblocker.config.farming.general.farmingXPPerHour", Formatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
 
 		Entity cameraEntity = client.getCameraEntity();
-		String yaw = cameraEntity == null ? Text.translatable("skyblocker.config.farming.general.noCameraEntity").getString() : String.format("%.2f", MathHelper.wrapDegrees(cameraEntity.getYaw()));
-		String pitch = cameraEntity == null ? Text.translatable("skyblocker.config.farming.general.noCameraEntity").getString() : String.format("%.2f", MathHelper.wrapDegrees(cameraEntity.getPitch()));
-		addComponent(new PlainTextComponent(Text.literal(Text.translatable("skyblocker.config.farming.general.yaw").getString() + yaw).formatted(Formatting.GOLD)));
-		addComponent(new PlainTextComponent(Text.literal(Text.translatable("skyblocker.config.farming.general.pitch").getString() + pitch).formatted(Formatting.GOLD)));
+		Text yaw = cameraEntity == null ? Text.translatable("skyblocker.config.farming.general.noCameraEntity") : Text.literal(String.format("%.2f", MathHelper.wrapDegrees(cameraEntity.getYaw())));
+		Text pitch = cameraEntity == null ? Text.translatable("skyblocker.config.farming.general.noCameraEntity") : Text.literal(String.format("%.2f", MathHelper.wrapDegrees(cameraEntity.getPitch())));
+		addComponent(new PlainTextComponent(Text.translatable("skyblocker.config.farming.general.yaw", yaw).formatted(Formatting.GOLD)));
+		addComponent(new PlainTextComponent(Text.translatable("skyblocker.config.farming.general.pitch", pitch).formatted(Formatting.GOLD)));
 		if (LowerSensitivity.isSensitivityLowered()) {
 			addComponent(new PlainTextComponent(Text.translatable("skyblocker.garden.hud.mouseLocked").formatted(Formatting.ITALIC)));
 		}
@@ -116,7 +116,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 	 * - NPC: only npc price (if available)
 	 * - BOTH: higher of NPC or bazaar price
 	 */
-	private String getPriceText(String cropItemId, float cropsPerMinute) {
+	private Text getPriceText(String cropItemId, float cropsPerMinute) {
 		DoubleBooleanPair itemBazaarPrice = ItemUtils.getItemPrice(cropItemId); // Gets the bazaar sell price of the crop.
 		double bazaarPrice = itemBazaarPrice.leftDouble();
 		boolean hasBazaarData = itemBazaarPrice.rightBoolean();
@@ -125,7 +125,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 		double itemNpcPrice = TooltipInfoType.NPC.hasOrNullWarning(cropItemId) ? TooltipInfoType.NPC.getData().getDouble(cropItemId) : Double.MIN_VALUE;
 
 		double priceToUse = 0;
-		String sourceLabel = "";
+		Text sourceLabel = null;
 		boolean hasValidPrice = false;
 
 		switch (SkyblockerConfigManager.get().farming.garden.farmingHud.type) {
@@ -133,7 +133,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 				// Use NPC price if it's available.
 				if (itemNpcPrice > 0 && itemNpcPrice != Double.MIN_VALUE) {
 					priceToUse = itemNpcPrice;
-					sourceLabel = " (NPC)";
+					sourceLabel = Text.literal(" (").append(Text.translatable("skyblocker.config.farming.garden.farmingHud.type.NPC")).append(")");
 					hasValidPrice = true;
 				}
 			}
@@ -141,7 +141,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 				// Use Bazaar price if data is available.
 				if (hasBazaarData) {
 					priceToUse = bazaarPrice;
-					sourceLabel = " (Bazaar)";
+					sourceLabel = Text.literal(" (").append(Text.translatable("skyblocker.config.farming.garden.farmingHud.type.BAZAAR")).append(")");
 					hasValidPrice = true;
 				}
 			}
@@ -149,22 +149,21 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 				// Use the NPC price if it's higher than the Bazaar price and available.
 				if (itemNpcPrice > bazaarPrice && itemNpcPrice != Double.MIN_VALUE) {
 					priceToUse = itemNpcPrice;
-					sourceLabel = " (NPC)";
+					sourceLabel = Text.literal(" (").append(Text.translatable("skyblocker.config.farming.garden.farmingHud.type.NPC")).append(")");
 					hasValidPrice = true;
 				}
 				// Otherwise, use Bazaar price if available.
 				else if (hasBazaarData) {
 					priceToUse = bazaarPrice;
-					sourceLabel = " (Bazaar)";
+					sourceLabel = Text.literal(" (").append(Text.translatable("skyblocker.config.farming.garden.farmingHud.type.BAZAAR")).append(")");
 					hasValidPrice = true;
 				}
 			}
 		}
 
 
-		// Return the formatted price if npc price is higher or bazaar price is present.
 		// Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6.
-		return hasValidPrice ? FarmingHud.NUMBER_FORMAT.format((int) (priceToUse * cropsPerMinute * 0.6) * 100) + sourceLabel : Text.translatable("skyblocker.config.farming.general.noData").getString();
+		return hasValidPrice ? Text.literal(FarmingHud.NUMBER_FORMAT.format((int) (priceToUse * cropsPerMinute * 0.6) * 100)).append(sourceLabel) : Text.translatable("skyblocker.config.farming.general.noData");
 	}
 
 	@Override

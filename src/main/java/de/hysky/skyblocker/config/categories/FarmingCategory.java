@@ -113,14 +113,6 @@ public class FarmingCategory {
 										newValue -> config.farming.visitorHelper.showStacksInVisitorHelper = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.farming.visitorHelper.copyAndOpenBz"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.farming.visitorHelper.copyAndOpenBz.@Tooltip")))
-								.binding(defaults.farming.visitorHelper.copyAndOpenBz,
-										() -> config.farming.visitorHelper.copyAndOpenBz,
-										newValue -> config.farming.visitorHelper.copyAndOpenBz = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
 						.build())
 				.build();
 

@@ -49,13 +49,19 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
 
 	@WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/StatusEffectsDisplay;drawStatusEffects(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
 	private boolean skyblocker$dontDrawStatusEffects(StatusEffectsDisplay statusEffectsDisplay, DrawContext context, int mouseX, int mouseY, float tickDelta) {
-		return !((Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay) || (SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget) && Utils.isInGarden());
+		return !(Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay || Utils.isInGarden() && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget);
 	}
 
-	//This makes it so that REI at least doesn't wrongly exclude the zone
+	// This makes it so that REI at least doesn't wrongly exclude the zone
+	// shouldHideStatusEffectHud should actually be showsStatusEffects
 	@ModifyReturnValue(method = "shouldHideStatusEffectHud", at = @At("RETURN"))
 	private boolean skyblocker$markStatusEffectsHidden(boolean original) {
-		return Utils.isOnSkyblock() ? !(SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay || (SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget) && Utils.isInGarden()) : original;
+		// In the garden, status effects are shown when both hideStatusEffectOverlay and gardenPlotsWidget are false
+		if (Utils.isInGarden()) return original && !SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay && !SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget;
+		// In the rest of Skyblock, status effects are shown when hideStatusEffectOverlay is false
+		if (Utils.isOnSkyblock()) return original && !SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay;
+		// In vanilla, status effects are shown as normal
+		return original;
 	}
 
     @Inject(method = "onRecipeBookToggled", at = @At("TAIL"))
