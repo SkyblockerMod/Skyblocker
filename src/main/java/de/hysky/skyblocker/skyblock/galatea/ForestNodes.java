@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.decoration.DisplayEntity;
@@ -37,6 +38,11 @@ public class ForestNodes {
 	public static void init() {
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(ForestNodes::render);
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+			forestNodes.remove(pos);
+			return ActionResult.PASS;
+		});
+		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+			BlockPos pos = hitResult.getBlockPos();
 			forestNodes.remove(pos);
 			return ActionResult.PASS;
 		});
