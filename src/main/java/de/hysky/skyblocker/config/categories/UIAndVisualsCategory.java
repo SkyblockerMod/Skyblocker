@@ -705,13 +705,6 @@ public class UIAndVisualsCategory {
 						.collapsed(true)
 						.option(Option.<GyroOverlay.Mode>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect"))
-								.description(
-										OptionDescription.of(
-												Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect.OFF"),
-												Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect.CIRCLE"),
-												Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect.CIRCLE_OUTLINE"),
-												Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect.SPHERE")
-												))
 								.binding(defaults.uiAndVisuals.gyroOverlay.gyroOverlayMode,
 										() -> config.uiAndVisuals.gyroOverlay.gyroOverlayMode,
 										newValue -> config.uiAndVisuals.gyroOverlay.gyroOverlayMode = newValue)

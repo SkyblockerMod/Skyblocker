@@ -863,6 +863,10 @@
   "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity": "Flame Opacity",
   "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity.@Tooltip": "100%  default opacity\n0%     off",
 
+  "skyblocker.config.uiAndVisuals.gyroOverlay": "Gyro Overlay",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect":"Gyrokinetic Wand Mode",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.Color":"Gyro Overlay Color",
+
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips": "Hide empty item tooltips in menus",
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "Hides the tooltip of an item if it doesn't have any information to display. Also blocks clicks on filler items like glass panes.",
 
@@ -1004,15 +1008,6 @@
   "skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor": "Teleport Overlay Color",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableWeirdTransmission": "Enable Weird Transmission Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableWitherImpact": "Enable Wither Impact Overlay",
-
-  "skyblocker.config.uiAndVisuals.gyroOverlay": "Gyro Overlay",
-  "skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect":"Gyrokinetic Wand Mode",
-  "skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect.OFF":"Off",
-  "skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect.CIRCLE":"Circle",
-  "skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect.CIRCLE_OUTLINE":"Circle Outline",
-  "skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect.SPHERE":"Sphere",
-  "skyblocker.config.uiAndVisuals.gyroOverlay.Color":"Gyro Overlay Color",
-
 
   "skyblocker.config.uiAndVisuals.titleContainer": "Title Container",
   "skyblocker.config.uiAndVisuals.titleContainer.@Tooltip": "Used to display multiple titles at once, Example use: Vampire Slayer",
