@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.utils;
 
 import com.mojang.serialization.Codec;
-import de.hysky.skyblocker.skyblock.chat.ChatRuleLocationConfigScreen;
 import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
@@ -39,9 +38,8 @@ public enum Location implements StringIdentifiable {
 	GLACITE_MINESHAFT("mineshaft"),
 	/**
 	 * <p>Goodbye 1.8 hello 1.21 (and foraging 50 for all)!</p>
-	 * <p>If this is ever implemented, please remove it from the list of locations in {@link ChatRuleLocationConfigScreen} along with this line of javadoc.</p>
 	 */
-	MODERN_FORAGING_ISLAND("placeholder"),
+	GALATEA("foraging_2"),
 	/**
 	 * Unknown Skyblock location
 	 */

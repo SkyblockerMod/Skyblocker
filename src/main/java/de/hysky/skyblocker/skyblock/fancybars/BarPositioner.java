@@ -182,6 +182,14 @@ public class BarPositioner {
         SCREEN_BOTTOM_RIGHT(true, false,
                 ((scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth - 5, scaledHeight - 5)),
                 SizeRule.freeSize(25, 2, 6)
+        ),
+		SCREEN_CENTER_LEFT(false, false,
+                ((scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 - 8, scaledHeight / 2 - 4)),
+                SizeRule.freeSize(15, 3, 8)
+        ),
+        SCREEN_CENTER_RIGHT(false, true,
+                ((scaledWidth, scaledHeight) -> new ScreenPos(scaledWidth / 2 + 8, scaledHeight / 2 - 4)),
+                SizeRule.freeSize(15, 3, 8)
         );
 
         private final AnchorPositionProvider positionProvider;

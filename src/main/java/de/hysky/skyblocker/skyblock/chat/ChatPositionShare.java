@@ -12,7 +12,6 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -52,6 +51,11 @@ public class ChatPositionShare {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
             String message = text.getString();
 
+			// prevents parsing skyblocker's own messages. Also prevents TH solver from parsing as it already has own waypoint
+			if (message.startsWith("[Skyblocker]") || message.startsWith("§e[NPC] Treasure Hunter§f:")) {
+				return;
+			}
+
             for (Pattern pattern : PATTERNS) {
                 Matcher matcher = pattern.matcher(message);
                 if (matcher.find()) {
@@ -74,7 +78,6 @@ public class ChatPositionShare {
         String command = "/skyblocker waypoints individual " + x + " " + y + " " + z + " " + area;
         MutableText requestMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.display", x, y, z).formatted(Formatting.AQUA)
                 .styled(style -> style
-						.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.config.chat.waypoints.display")))
 						.withClickEvent(new ClickEvent.RunCommand(command.trim()))
 				)
         );

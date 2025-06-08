@@ -44,10 +44,19 @@ public class ItemTooltip {
         }
     }
 
+	/**
+	 * Generates a formatted text message for displaying coin prices in tooltips, where the price is given per item.
+	 * @param price the price of a single item
+	 * @param count the number of items being priced
+	 */
     public static Text getCoinsMessage(double price, int count) {
         return getCoinsMessage(price, count, false);
     }
 
+	/**
+	 * Generates a formatted text message for displaying coin prices in tooltips.
+	 * @param preCounted Whether the count is already factored into the price. False if the price is per item, true if the price is the total price for the given count.
+	 */
     public static Text getCoinsMessage(double price, int count, boolean preCounted) {
         // Format the price string once
         String priceString = String.format(Locale.ENGLISH, "%1$,.1f", preCounted ? price / count : price);

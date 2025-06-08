@@ -2,11 +2,13 @@ package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.StringIdentifiable;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -91,6 +93,9 @@ public class UIAndVisualsConfig {
 
 	@SerialEntry
 	public HealthBars healthBars = new HealthBars();
+
+	@SerialEntry
+	public ItemPickup itemPickup = new ItemPickup();
 
     public static class ChestValue {
         @SerialEntry
@@ -274,12 +279,21 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public boolean enableBars = true;
 
+		@SerialEntry
+		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
+
         // Kept in for backwards compatibility, remove if needed
         @SuppressWarnings("DeprecatedIsStillUsed")
         @Deprecated
         @SerialEntry
         public LegacyBarPositions barPositions = new LegacyBarPositions();
     }
+
+	public enum IntelligenceDisplay {
+		ORIGINAL,
+		ACCURATE,
+		IN_FRONT;
+	}
 
     /**
      * Backwards compat.
@@ -452,5 +466,22 @@ public class UIAndVisualsConfig {
 
 		@SerialEntry
 		public Color emptyBarColor = new Color(0xFF0000);
+	}
+
+	public static class ItemPickup {
+		@SerialEntry
+		public boolean enabled = false;
+
+		@SerialEntry
+		public boolean sackNotifications = false;
+
+		@SerialEntry
+		public boolean showItemName = true;
+
+		@SerialEntry
+		public int lifeTime = 3;
+
+
+
 	}
 }

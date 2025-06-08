@@ -38,6 +38,11 @@ public class SkyblockerRenderPipelines {
 			.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
 			.withCull(false)
 			.build());
+	static final RenderPipeline CYLINDER = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
+			.withLocation(Identifier.of(SkyblockerMod.NAMESPACE, "pipeline/cylinder"))
+			.withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP)
+			.withCull(false)
+			.build());
 
 	@Init
 	public static void init() {} //Ensure that pipelines are pre-compiled instead of compiled on demand

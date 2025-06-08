@@ -5,6 +5,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HelperConfig {
@@ -74,6 +75,9 @@ public class HelperConfig {
         public boolean enableFishingHelper = true;
 
         @SerialEntry
+        public boolean enableFishingHookDisplay = true;
+
+        @SerialEntry
         public boolean enableFishingTimer = false;
 
         @SerialEntry
@@ -86,7 +90,7 @@ public class HelperConfig {
         public boolean hideOtherPlayersRods = false;
 
 		@SerialEntry
-		public List<Location> fishingHudEnabledLocations = List.of(Location.values());
+		public List<Location> fishingHudEnabledLocations = new ArrayList<>(List.of(Location.values()));
 
 		@SerialEntry
 		public boolean onlyShowHudInBarn = true;
