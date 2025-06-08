@@ -55,10 +55,9 @@ public abstract class SignEditScreenMixin extends Screen {
 
 	@Inject(method = "keyPressed", at = @At("HEAD"))
 	private void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-		// enter key
-		if (keyCode != 257 || !Utils.isOnSkyblock() || !isInputSign()) {
-			return;
-		}
+		if (!Utils.isOnSkyblock() || !isInputSign()) return;
+		// enter & num pad enter keys
+		if (keyCode != 257 && keyCode != 335) return;
 
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.closeSignsWithEnter) {
 			this.close();
