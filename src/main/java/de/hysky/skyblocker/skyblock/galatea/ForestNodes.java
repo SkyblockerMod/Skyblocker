@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -25,6 +26,7 @@ import net.minecraft.util.math.Box;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,7 @@ public class ForestNodes {
 
 	@Init
 	public static void init() {
+		Scheduler.INSTANCE.scheduleCyclic(ForestNodes::update, 20);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(ForestNodes::render);
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
 			forestNodes.remove(pos);
@@ -95,6 +98,25 @@ public class ForestNodes {
 				.count();
 	}
 
+	private static void update() {
+		if (!shouldProcess()) {
+			return;
+		}
+		// Collect positions to remove
+		List<BlockPos> toRemove = new ArrayList<>();
+		for (Map.Entry<BlockPos, ForestNode> entry : forestNodes.entrySet()) {
+			ForestNode forestNode = entry.getValue();
+			forestNode.updateWaypoint();
+			if (!forestNode.shouldRender()) {
+				toRemove.add(entry.getKey());
+			}
+		}
+		// Remove outdated nodes
+		for (BlockPos pos : toRemove) {
+			forestNodes.remove(pos);
+		}
+	}
+
 	private static void render(WorldRenderContext context) {
 		if (!shouldProcess()) {
 			return;
@@ -115,6 +137,7 @@ public class ForestNodes {
 	}
 
 	public static class ForestNode extends Waypoint {
+		private long lastConfirmed;
 
 		private ForestNode(BlockPos pos) {
 			super(pos,
@@ -122,7 +145,25 @@ public class ForestNodes {
 					ColorUtils.getFloatComponents(DyeColor.ORANGE),
 					DEFAULT_HIGHLIGHT_ALPHA,
 					DEFAULT_LINE_WIDTH,
-					false);
+					false
+			);
+			this.lastConfirmed = System.currentTimeMillis();
+		}
+
+		private void updateWaypoint() {
+			long currentTimeMillis = System.currentTimeMillis();
+			if (lastConfirmed + 2000 > currentTimeMillis || client.world == null) {
+				return;
+			}
+			int stringItemCount = countStringItemDisplays(pos);
+			if (stringItemCount == 3) {
+				lastConfirmed = System.currentTimeMillis();
+			}
+		}
+
+		@Override
+		public boolean shouldRender() {
+			return super.shouldRender() && lastConfirmed + 5000 > System.currentTimeMillis();
 		}
 	}
 }
