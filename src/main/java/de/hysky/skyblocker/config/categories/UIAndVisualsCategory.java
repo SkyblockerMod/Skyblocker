@@ -6,7 +6,6 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import de.hysky.skyblocker.skyblock.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
-import de.hysky.skyblocker.skyblock.fishing.FishingHudWidget;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -114,6 +113,14 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.cancelComponentUpdateAnimation = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.trueQuiverCount"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip")))
+						.binding(defaults.uiAndVisuals.cancelComponentUpdateAnimation,
+								() -> config.uiAndVisuals.cancelComponentUpdateAnimation,
+								newValue -> config.uiAndVisuals.cancelComponentUpdateAnimation = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
                 //Chest Value FIXME change dropdown to color controller
                 .group(OptionGroup.createBuilder()

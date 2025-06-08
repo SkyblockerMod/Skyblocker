@@ -2,13 +2,11 @@ package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.StringIdentifiable;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -45,6 +43,9 @@ public class UIAndVisualsConfig {
 
     @SerialEntry
     public boolean cancelComponentUpdateAnimation = true;
+
+	@SerialEntry
+	public boolean trueQuiverCount = true;
 
     @SerialEntry
     public ChestValue chestValue = new ChestValue();
@@ -292,7 +293,7 @@ public class UIAndVisualsConfig {
 	public enum IntelligenceDisplay {
 		ORIGINAL,
 		ACCURATE,
-		IN_FRONT;
+		IN_FRONT
 	}
 
     /**
