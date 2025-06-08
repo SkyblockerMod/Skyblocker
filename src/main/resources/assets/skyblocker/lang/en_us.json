@@ -9,7 +9,8 @@
   "key.skyblocker.toggleA": "Show tab HUD secondary view",
   "key.skyblocker.debug.dumpNearbyEntities": "Dump Nearby Entities",
   "key.skyblocker.debug.dumpHoveredItem": "Dump Hovered Item",
-  "key.wikiLookup": "Wiki Lookup",
+  "key.wikiLookup.official": "Hypixel Wiki Lookup",
+  "key.wikiLookup.fandom": "Fandom Wiki Lookup",
   "key.itemProtection": "Protect Item",
   "key.skyblocker.slottext": "Slot Text",
   "key.itemPriceLookup": "Bazaar Lookup",
@@ -379,9 +380,7 @@
 
   "skyblocker.config.general.wikiLookup": "Wiki Lookup",
   "skyblocker.config.general.wikiLookup.enableWikiLookup": "Enable Wiki Lookup",
-  "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "Opens the wiki page of the hovered item with the F4 key.",
-  "skyblocker.config.general.wikiLookup.officialWiki": "Use Official Wiki",
-  "skyblocker.config.general.wikiLookup.officialWiki.@Tooltip": "Use the official wiki instead of the Fandom wiki.",
+  "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "Opens the wiki page of the hovered item.\n\nUse '%s' for the official Hypixel wiki.\nUse '%s' for the Fandom wiki.",
 
   "skyblocker.config.helpers": "Helpers",
 
@@ -1046,7 +1045,8 @@
   "skyblocker.itemTooltip.noData": "\u00a7cNo Data",
   "skyblocker.itemTooltip.nullMessage": "\u00a7cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
-  "skyblocker.wikiLookup.noArticleFound": "\u00a7rUnable to locate a wiki article for this item...",
+  "skyblocker.wikiLookup.noArticleFound.official": "\u00a7rUnable to locate an Official wiki article for this item...",
+  "skyblocker.wikiLookup.noArticleFound.fandom": "\u00a7rUnable to locate a Fandom wiki article for this item...",
 
   "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armor stands to %s",
   "skyblocker.debug.toggledWebSocketDebug": "Toggled WebSocket debugging to %s",

@@ -251,9 +251,6 @@ public class GeneralConfig {
     public static class WikiLookup {
         @SerialEntry
         public boolean enableWikiLookup = true;
-
-        @SerialEntry
-        public boolean officialWiki = true;
     }
 
     public static class SpecialEffects {
