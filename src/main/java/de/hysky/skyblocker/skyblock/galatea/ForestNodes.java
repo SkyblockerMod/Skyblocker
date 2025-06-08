@@ -117,7 +117,12 @@ public class ForestNodes {
 	public static class ForestNode extends Waypoint {
 
 		private ForestNode(BlockPos pos) {
-			super(pos, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, ColorUtils.getFloatComponents(DyeColor.LIME));
+			super(pos,
+					() -> Type.HIGHLIGHT,
+					ColorUtils.getFloatComponents(DyeColor.ORANGE),
+					DEFAULT_HIGHLIGHT_ALPHA,
+					DEFAULT_LINE_WIDTH,
+					false);
 		}
 	}
 }
