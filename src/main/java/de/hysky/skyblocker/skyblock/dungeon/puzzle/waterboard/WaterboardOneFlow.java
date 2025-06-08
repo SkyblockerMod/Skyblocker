@@ -102,6 +102,8 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WaterboardOneFlow.class);
 	public static final WaterboardOneFlow INSTANCE = new WaterboardOneFlow();
 	private static final Identifier WATER_TIMES = Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/watertimes.json");
+	private static final Text WAIT_TEXT = Text.literal("WAIT").formatted(Formatting.RED, Formatting.BOLD);
+	private static final Text CLICK_TEXT = Text.literal("CLICK").formatted(Formatting.GREEN, Formatting.BOLD);
 	private static JsonObject SOLUTIONS;
 
 	private boolean timerEnabled;
@@ -471,19 +473,19 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 			for (int i = 0; i < leverData.getValue().size(); i++) {
 				double nextTime = leverData.getValue().getDouble(i);
 				long remainingTime = waterStartMillis + (long)(nextTime * 1000) - System.currentTimeMillis();
-				String text;
+				Text text;
 
 				if (lever == LeverType.WATER && nextTime == 0.0 && nextLever != LeverType.WATER) {
 					// Solutions assume levers with a time of 0.0 are used before the water lever
-					text = "" + Formatting.RED + Formatting.BOLD + "WAIT";
+					text = WAIT_TEXT;
 				} else if (waterStartMillis == 0 && nextTime == 0.0 || waterStartMillis > 0 && remainingTime <= 0.0) {
-					text = "" + Formatting.GREEN + Formatting.BOLD + "CLICK";
+					text = CLICK_TEXT;
 				} else {
 					double timeToShow = waterStartMillis == 0 ? nextTime : remainingTime / 1000.0;
-					text = Formatting.YELLOW + String.format("%.2f", timeToShow);
+					text = Text.literal(String.format("%.2f", timeToShow)).formatted(Formatting.YELLOW);
 				}
 
-				RenderHelper.renderText(context, Text.of(text),
+				RenderHelper.renderText(context, text,
 						room.relativeToActual(lever.leverPos).toCenterPos()
 								.offset(Direction.UP, 0.5 * (i + 1)), true);
 			}
