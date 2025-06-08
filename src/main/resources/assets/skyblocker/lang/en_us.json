@@ -956,7 +956,7 @@
   "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "Displays your assigned and unassigned tuning points",
   "skyblocker.config.uiAndVisuals.slotText.yourEssence": "Your Essence",
 
-  "skyblocker.config.uiAndVisuals.searchOverlay": "Search Overlay",
+  "skyblocker.config.uiAndVisuals.searchOverlay": "AH/BZ Search Overlay",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse.@Tooltip": "Show custom search overlay when searching in the auction house.",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableBazaar": "Enable For Bazaar",
