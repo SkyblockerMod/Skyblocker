@@ -248,7 +248,7 @@
     "skyblocker.config.dungeons.dungeonChestProfit": "地牢宝箱利润计算器",
     "skyblocker.config.mining.crystalsWaypoints": "水晶洞窟路径点",
     "skyblocker.config.mining.crystalsWaypoints.enabled": "启用路径点",
-    "skyblocker.config.uiAndVisuals.searchOverlay": "搜索界面",
+    "skyblocker.config.uiAndVisuals.searchOverlay": "拍卖行/集市搜索界面",
     "skyblocker.config.uiAndVisuals.searchOverlay.enableBazaar": "为Bazaar启用",
     "skyblocker.config.uiAndVisuals.searchOverlay.enableBazaar.@Tooltip": "在Bazaar中搜索时显示自定义搜索界面。",
     "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "为Auction House启用",
@@ -1183,5 +1183,17 @@
     "skyblocker.armorCustomization.durationTooltip": "动画的持续时间（以秒为单位）。",
     "skyblocker.armorCustomization.duration": "持续时长：%s",
     "skyblocker.armorCustomization.cycleBack": "颜色循环",
-    "skyblocker.config.uiAndVisuals.swingOnAbilities": "使用技能时挥手"
+    "skyblocker.config.uiAndVisuals.swingOnAbilities": "使用技能时挥手",
+    "skyblocker.config.mining.glacite.fossilSolver.toolTip.possiblePatterns": "可能的模式： ",
+    "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "默认定位行为",
+    "skyblocker.config.helpers.fishing.timerLength": "钓鱼计时器持续时间",
+    "skyblocker.config.helpers.fishing.enableFishingHookDisplay.@Tooltip": "将skyblock鱼钩的计时器显示在屏幕中央而非浮标上方。",
+    "skyblocker.config.helpers.fishing.enableFishingHookDisplay": "启用鱼钩显示",
+    "skyblocker.config.uiAndVisuals.itemPickup": "物品拾取小部件",
+    "skyblocker.config.uiAndVisuals.itemPickup.hud.screen": "物品拾取小部件设置…",
+    "skyblocker.config.uiAndVisuals.itemPickup.showItemName": "显示物品名称",
+    "skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip": "在小部件中显示物品名称和图标",
+    "skyblocker.armorCustomization.animated": "动态",
+    "skyblocker.config.mining.glacite.fossilSolver.toolTip.probability": "概率： ",
+    "skyblocker.config.debug.corpseFinderDebug": "尸体搜寻器Debug"
 }
