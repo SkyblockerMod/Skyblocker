@@ -75,9 +75,6 @@ public class UIAndVisualsConfig {
     @SerialEntry
     public TeleportOverlay teleportOverlay = new TeleportOverlay();
 
-	@SerialEntry
-	public GyroKineticWandOverlay gyroOverlay = new GyroKineticWandOverlay();
-
     @SerialEntry
     public SmoothAOTE smoothAOTE = new SmoothAOTE();
 
@@ -95,6 +92,9 @@ public class UIAndVisualsConfig {
 
 	@SerialEntry
 	public HealthBars healthBars = new HealthBars();
+
+	@SerialEntry
+	public GyroKineticWandOverlay gyroOverlay = new GyroKineticWandOverlay();
 
     public static class ChestValue {
         @SerialEntry
