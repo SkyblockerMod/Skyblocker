@@ -1045,8 +1045,8 @@
   "skyblocker.itemTooltip.noData": "\u00a7cNo Data",
   "skyblocker.itemTooltip.nullMessage": "\u00a7cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
-  "skyblocker.wikiLookup.noArticleFound.official": "\u00a7rUnable to locate an Official wiki article for this item...",
-  "skyblocker.wikiLookup.noArticleFound.fandom": "\u00a7rUnable to locate a Fandom wiki article for this item...",
+  "skyblocker.wikiLookup.noArticleFound.official": "Unable to locate an Official wiki article for this item...",
+  "skyblocker.wikiLookup.noArticleFound.fandom": "Unable to locate a Fandom wiki article for this item...",
 
   "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armor stands to %s",
   "skyblocker.debug.toggledWebSocketDebug": "Toggled WebSocket debugging to %s",
