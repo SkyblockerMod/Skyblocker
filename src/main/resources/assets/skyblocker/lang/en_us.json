@@ -264,6 +264,7 @@
 
   "skyblocker.config.general.chestValue.@Tooltip": "Calculate the value of this container.",
   "skyblocker.config.general.minionValue.@Tooltip": "Calculate the value of this minion's generated resources.",
+  "skyblocker.config.general.sackValue.@Tooltip": "Calculate the value of the items in this sack.",
 
   "skyblocker.config.general.enableTips": "Enable Tips",
 

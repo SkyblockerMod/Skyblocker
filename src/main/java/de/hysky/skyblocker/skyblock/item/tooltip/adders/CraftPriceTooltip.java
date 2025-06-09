@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
-import java.util.OptionalInt;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CraftPriceTooltip extends SimpleTooltipAdder {
@@ -53,9 +52,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 
 			if (totalCraftCost == 0) return;
 
-			OptionalInt optCount = ItemUtils.getItemCountInSack(stack, lines);
-			// This clamp is here to ensure that the tooltip doesn't show a useless price of 0 coins if the item count is 0.
-			int count = optCount.isPresent() ? Math.max(optCount.getAsInt(), 1) : stack.getCount();
+			int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(stack.getCount()), 1);
 
 			neuRecipes.getFirst().getAllOutputs().stream().findFirst().ifPresent(outputIngredient ->
 					lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)

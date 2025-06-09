@@ -485,7 +485,18 @@ public final class ItemUtils {
      * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
      */
     public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines) {
-        if (lines.size() >= 2 && lines.get(1).getString().endsWith("Sack")) {
+        return getItemCountInSack(itemStack, lines, false);
+    }
+
+    /**
+     * Finds the number of items stored in a sack from a list of texts.
+     * @param itemStack The item stack this list of texts belong to. This is used for logging purposes.
+     * @param lines A list of text lines that represent the tooltip of the item stack.
+     * @param isLore Whether the lines are from the item's lore or not. This is useful to figure out which line to look at, as lore and tooltip lines are different due to the first line being the item's name.
+     * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
+     */
+    public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines, boolean isLore) {
+		if (lines.size() >= 2 && lines.get(isLore ? 0 : 1).getString().endsWith("Sack")) {
 			// Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
             // Which equals: `Stored: 0/20k`
 			Matcher matcher = TextUtils.matchInList(lines, STORED_PATTERN);
