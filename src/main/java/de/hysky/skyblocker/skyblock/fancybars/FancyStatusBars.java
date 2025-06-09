@@ -274,8 +274,6 @@ public class FancyStatusBars {
 
 					statusBar.setWidth(MathHelper.floor(statusBar.size * widthPerSize) - lessWidth);
 					currSize += statusBar.size;
-					statusBar.gridX = i;
-					statusBar.gridY = row;
 
 				}
 			}

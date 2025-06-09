@@ -41,7 +41,13 @@ public class BarPositioner {
      * @param row       row index
      */
     public void addRow(@NotNull BarAnchor barAnchor, int row) {
-        map.get(barAnchor).add(row, new LinkedList<>());
+		LinkedList<LinkedList<StatusBar>> rows = map.get(barAnchor);
+		for (int i = row; i < rows.size(); i++) {
+			for (StatusBar bar : rows.get(i)) {
+				bar.gridY++;
+			}
+		}
+		rows.add(row, new LinkedList<>());
     }
 
     /**
@@ -69,6 +75,9 @@ public class BarPositioner {
      */
     public void addBar(@NotNull BarAnchor barAnchor, int row, int x, StatusBar bar) {
         LinkedList<StatusBar> statusBars = map.get(barAnchor).get(row);
+		for (int i = x; i < statusBars.size(); i++) {
+			statusBars.get(i).gridX++;
+		}
         statusBars.add(x, bar);
         bar.gridY = row;
         bar.gridX = statusBars.indexOf(bar);
