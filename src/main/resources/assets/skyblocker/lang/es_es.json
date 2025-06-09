@@ -67,7 +67,7 @@
     "skyblocker.config.general.shortcuts.enableShortcuts.@Tooltip": "Solo funciona en Hypixel. Edita atajos ejecutando \"/skyblocker shortcuts\". Al menos una de las siguientes opciones debe ser activada para surgir efecto.",
     "skyblocker.config.general.shortcuts": "Atajos",
     "skyblocker.config.uiAndVisuals.compactorDeletorPreview": "Habilitar la previsualización del compactador/eliminador",
-    "key.skyblocker.toggleA": "Cambiar el HUD tab a la pantalla A",
+    "key.skyblocker.toggleA": "Mostrar la pantalla secundaria del HUD",
     "skyblocker.config.crimsonIsle": "Crimson Isle",
     "skyblocker.config.crimsonIsle.kuudra": "Kuudra",
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Si la cantidad de \"Toxic Arrow Poison\" que tienes en tu inventario está por debajo del umbral fijado recibirás un aviso.\n\nEl mínimo es de 16.\nCon al menos 32 tendrás una fase 'DPS' consistente con pre-disparo.",
@@ -121,5 +121,15 @@
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Muestra una advertencia cuando estás en riesgo de un tentaculazo o de la explosión de TNT. El color de la advertencia se adapta al nivel del peligro!",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Brillo de Kuudra",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Destaca a Kuudra con un naranja profundo.",
-    "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Destaca los cofres con las mayores ganancias en el UI del NPC Croesus.\n\n\nEl mejor cofre se destacará con verde.\nSi hay un cofre en el cual valga la pena usar una llave de mazmorra, se marcará amarillo"
+    "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Destaca los cofres con las mayores ganancias en el UI del NPC Croesus.\n\n\nEl mejor cofre se destacará con verde.\nSi hay un cofre en el cual valga la pena usar una llave de mazmorra, se marcará amarillo",
+    "text.skyblocker.dead": "Muerto",
+    "text.skyblocker.offline": "Desconectado",
+    "text.skyblocker.reset": "Reiniciar",
+    "text.skyblocker.undo": "Deshacer",
+    "key.itemPriceLookup": "Buscar en el bazar",
+    "key.itemPriceRefresh": "Refrescar Bazaar",
+    "key.skyblocker.debug.dumpNearbyEntities": "Eliminar las entidades cercanas",
+    "text.skyblocker.clickToSend": "[Haz Click Para Enviarlo En El Chat]",
+    "text.skyblocker.clickToSend.@Tooltip": "Haz Click Para Enviar Esto En El Chat.",
+    "skyblocker.config.debug": "Depurar"
 }
