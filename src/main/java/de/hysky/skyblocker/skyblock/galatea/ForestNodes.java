@@ -26,10 +26,7 @@ import net.minecraft.util.math.Box;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ForestNodes {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ForestNodes.class);
@@ -41,10 +38,16 @@ public class ForestNodes {
 		Scheduler.INSTANCE.scheduleCyclic(ForestNodes::update, 20);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(ForestNodes::render);
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+			if (!shouldProcess()) {
+				return ActionResult.PASS;
+			}
 			forestNodes.remove(pos);
 			return ActionResult.PASS;
 		});
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+			if (!shouldProcess()) {
+				return ActionResult.PASS;
+			}
 			BlockPos pos = hitResult.getBlockPos();
 			forestNodes.remove(pos);
 			return ActionResult.PASS;
@@ -85,7 +88,7 @@ public class ForestNodes {
 		// Get all ItemDisplayEntity within the same block
 		List<DisplayEntity.ItemDisplayEntity> entities = world.getEntitiesByClass(
 				DisplayEntity.ItemDisplayEntity.class,
-				new Box(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1),
+				Box.of(pos.toCenterPos(), 1.0, 1.0, 1.0),
 				entity -> true
 		);
 
@@ -102,18 +105,14 @@ public class ForestNodes {
 		if (!shouldProcess()) {
 			return;
 		}
-		// Collect positions to remove
-		List<BlockPos> toRemove = new ArrayList<>();
-		for (Map.Entry<BlockPos, ForestNode> entry : forestNodes.entrySet()) {
+		Iterator<Map.Entry<BlockPos, ForestNode>> iterator = forestNodes.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<BlockPos, ForestNode> entry = iterator.next();
 			ForestNode forestNode = entry.getValue();
 			forestNode.updateWaypoint();
 			if (!forestNode.shouldRender()) {
-				toRemove.add(entry.getKey());
+				iterator.remove();
 			}
-		}
-		// Remove outdated nodes
-		for (BlockPos pos : toRemove) {
-			forestNodes.remove(pos);
 		}
 	}
 
