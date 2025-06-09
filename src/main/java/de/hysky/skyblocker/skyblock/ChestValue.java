@@ -176,6 +176,7 @@ public class ChestValue {
 			List<Slot> slots = switch (screenType) {
 				case MINION -> getMinionSlots(handler);
 				case SACK -> handler.slots.subList(10, (handler.getRows() * 9) - 10); // Skip the glass pane rows so we don't have to iterate over them
+				case STASH -> handler.slots.subList(0, (handler.getRows() - 1) * 9); // Stash uses the bottom row for the menu, so we skip it
 				case OTHER -> handler.slots.subList(0, handler.getRows() * 9);
 			};
 
@@ -201,6 +202,7 @@ public class ChestValue {
 						List<Text> lines = ItemUtils.getLore(stack);
 						yield ItemUtils.getItemCountInSack(stack, lines, true).orElse(0); // If this is in a sack and the item is not a stored item, we can just skip it
 					}
+					case STASH -> ItemUtils.getItemCountInStash(stack).orElse(0);
 					case OTHER, MINION -> stack.getCount();
 				};
 
@@ -276,6 +278,7 @@ public class ChestValue {
 	private static ScreenType determineScreenType(String rawTitleString) {
 		if (StringUtils.containsIgnoreCase(rawTitleString, "sack")) return ScreenType.SACK;
 		if (MINION_PATTERN.matcher(rawTitleString.trim()).find()) return ScreenType.MINION;
+		if (StringUtils.equalsIgnoreCase(rawTitleString, "View Stash")) return ScreenType.STASH;
 		return ScreenType.OTHER;
 	}
 
@@ -283,6 +286,7 @@ public class ChestValue {
 		return switch (screenType) {
 			case MINION -> Text.translatable("skyblocker.config.general.minionValue.@Tooltip");
 			case OTHER -> Text.translatable("skyblocker.config.general.chestValue.@Tooltip");
+			case STASH -> Text.translatable("skyblocker.config.general.stashValue.@Tooltip");
 			case SACK -> Text.translatable("skyblocker.config.general.sackValue.@Tooltip");
 		};
 	}
@@ -322,6 +326,7 @@ public class ChestValue {
 	private enum ScreenType {
 		MINION,
 		SACK,
+		STASH,
 		OTHER
 	}
 }

@@ -65,6 +65,7 @@ public final class ItemUtils {
     ).apply(instance, ItemStack::new)));
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemUtils.class);
     private static final Pattern STORED_PATTERN = Pattern.compile("Stored: ([\\d,]+)/\\S+");
+    private static final Pattern STASH_COUNT_PATTERN = Pattern.compile("x([\\d,]+)$"); // This is used with Matcher#find, not #matches
     private static final short LOG_INTERVAL = 1000;
 	private static long lastLog = Util.getMeasuringTimeMs();
 
@@ -510,5 +511,23 @@ public final class ItemUtils {
 			} else return RegexUtils.parseOptionalIntFromMatcher(matcher, 1);
 		}
 		return OptionalInt.empty();
+    }
+
+    /**
+     * Finds the number of items stored in a stash based on item's name.
+     * @param itemStack The item stack.
+     * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
+     */
+    public static OptionalInt getItemCountInStash(@NotNull ItemStack itemStack) {
+        return getItemCountInStash(itemStack.getName());
+    }
+
+    /**
+     * Finds the number of items stored in a stash based on item's name.
+     * @param itemName The name of the item to look in.
+     * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
+     */
+    public static OptionalInt getItemCountInStash(@NotNull Text itemName) {
+        return RegexUtils.findIntFromMatcher(STASH_COUNT_PATTERN.matcher(itemName.getString()));
     }
 }

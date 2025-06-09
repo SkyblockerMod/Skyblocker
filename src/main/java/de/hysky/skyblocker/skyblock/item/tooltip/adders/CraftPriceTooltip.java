@@ -52,7 +52,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 
 			if (totalCraftCost == 0) return;
 
-			int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(stack.getCount()), 1);
+			int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
 			neuRecipes.getFirst().getAllOutputs().stream().findFirst().ifPresent(outputIngredient ->
 					lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)
