@@ -244,6 +244,7 @@ public class ChestValue {
 		return Text.literal((profit > 0 ? " +" : ' ') + FORMATTER.format(profit) + " Coins").formatted(getProfitColor(hasIncompleteData, profit));
 	}
 
+	@NotNull
 	static Formatting getProfitColor(boolean hasIncompleteData, long profit) {
 		DungeonsConfig.DungeonChestProfit config = SkyblockerConfigManager.get().dungeons.dungeonChestProfit;
 		if (hasIncompleteData) return config.incompleteColor;
@@ -252,6 +253,7 @@ public class ChestValue {
 		return config.lossColor;
 	}
 
+	@NotNull
 	static Text getValueText(long value, boolean hasIncompleteData) {
 		UIAndVisualsConfig.ChestValue config = SkyblockerConfigManager.get().uiAndVisuals.chestValue;
 		return Text.literal(' ' + FORMATTER.format(value) + " Coins").formatted(hasIncompleteData ? config.incompleteColor : config.color);
@@ -275,6 +277,7 @@ public class ChestValue {
 		Screens.getButtons(genericContainerScreen).add(chestTitleWidget);
 	}
 
+	@NotNull
 	private static ScreenType determineScreenType(String rawTitleString) {
 		if (StringUtils.containsIgnoreCase(rawTitleString, "sack")) return ScreenType.SACK;
 		if (MINION_PATTERN.matcher(rawTitleString.trim()).find()) return ScreenType.MINION;
@@ -282,6 +285,7 @@ public class ChestValue {
 		return ScreenType.OTHER;
 	}
 
+	@NotNull
 	private static Text getButtonTooltipText(ScreenType screenType) {
 		return switch (screenType) {
 			case MINION -> Text.translatable("skyblocker.config.general.minionValue.@Tooltip");

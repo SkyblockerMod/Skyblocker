@@ -485,6 +485,7 @@ public final class ItemUtils {
      * @param lines The tooltip lines to search in. This isn't equivalent to the item's lore.
      * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
      */
+    @NotNull
     public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines) {
         return getItemCountInSack(itemStack, lines, false);
     }
@@ -496,6 +497,7 @@ public final class ItemUtils {
      * @param isLore Whether the lines are from the item's lore or not. This is useful to figure out which line to look at, as lore and tooltip lines are different due to the first line being the item's name.
      * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
      */
+    @NotNull
     public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines, boolean isLore) {
 		if (lines.size() >= 2 && lines.get(isLore ? 0 : 1).getString().endsWith("Sack")) {
 			// Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
@@ -518,6 +520,7 @@ public final class ItemUtils {
      * @param itemStack The item stack.
      * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
      */
+    @NotNull
     public static OptionalInt getItemCountInStash(@NotNull ItemStack itemStack) {
         return getItemCountInStash(itemStack.getName());
     }
@@ -527,6 +530,7 @@ public final class ItemUtils {
      * @param itemName The name of the item to look in.
      * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
      */
+    @NotNull
     public static OptionalInt getItemCountInStash(@NotNull Text itemName) {
         return RegexUtils.findIntFromMatcher(STASH_COUNT_PATTERN.matcher(itemName.getString()));
     }
