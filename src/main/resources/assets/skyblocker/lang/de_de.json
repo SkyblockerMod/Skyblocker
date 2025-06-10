@@ -83,5 +83,7 @@
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Kuudra wird dunkel Orange umrandet.",
     "key.skyblocker.debug.dumpNearbyEntities": "Objekte in der Nähe entsorgen",
     "skyblocker.config.debug": "Debuggen",
-    "skyblocker.config.debug.showInvisibleArmorStands": "Unsichtbare Rüstungsständer anzeigen"
+    "skyblocker.config.debug.showInvisibleArmorStands": "Unsichtbare Rüstungsständer anzeigen",
+    "skyblocker.itemTooltip.nullMessage": "§b[§6Skyblocker§b] §cItem-Preise auf dem Tooltip werden innerhalb der nächsten 60 Sekunden aktualisiert. Wenn nicht, überprüfe latest.log",
+    "skyblocker.itemTooltip.noData": "§cKeine Daten"
 }
