@@ -24,6 +24,7 @@ import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
 import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
 import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
+import de.hysky.skyblocker.skyblock.galatea.ForestNodes;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
@@ -186,6 +187,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		DojoManager.onParticle(packet);
 		CrystalsChestHighlighter.onParticle(packet);
 		EnderNodes.onParticle(packet);
+		ForestNodes.onParticle(packet);
 		WishingCompassSolver.onParticle(packet);
 	}
 

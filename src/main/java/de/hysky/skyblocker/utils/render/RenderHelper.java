@@ -197,7 +197,7 @@ public class RenderHelper {
         MatrixStack.Entry entry = matrices.peek();
 
         VertexConsumerProvider.Immediate consumers = (VertexConsumerProvider.Immediate) context.consumers();
-        RenderLayer layer = SkyblockerRenderLayers.getLines(lineWidth);
+        RenderLayer layer = SkyblockerRenderLayers.getLinesThroughWalls(lineWidth);
         VertexConsumer buffer = consumers.getBuffer(layer);
 
         // Start drawing the line from a point slightly in front of the camera

@@ -71,7 +71,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	protected boolean shouldUpdateBeforeRendering() {
+	public boolean shouldUpdateBeforeRendering() {
 		return true;
 	}
 

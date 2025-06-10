@@ -258,6 +258,9 @@
   "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip": "Show's the required items as (5 stacks + 45) rather than just a total number especially useful for ironman players.",
 
   "skyblocker.config.foraging": "Foraging",
+  "skyblocker.config.foraging.galatea": "Galatea",
+  "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Enable Forest Node Helper",
+
   "skyblocker.config.foraging.hunting": "Hunting",
 
   "skyblocker.config.general": "General",
@@ -527,7 +530,7 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling": "Pling",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie": "Zombie",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.true": "True",
-  "skyblocker.config.chat.waypoints.display": "[Click to Display Waypoint at x: %d y: %d z: %d]",
+  "skyblocker.config.chat.waypoints.display": "Click to display waypoint at x: %d y: %d z: %d",
   "skyblocker.config.chat.waypoints.displayed": "Displayed temporary waypoint at x: %d y: %d z: %d %s",
 
   "skyblocker.config.chat.confirmationPromptHelper": "Chat Confirmation Prompt Helper",
@@ -690,7 +693,7 @@
   "skyblocker.config.mining.glacite.fossilSolver.@Tooltip": "Helps find fossils in the Fossil Excavator",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound": "No fossil found",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.possiblePatterns": "Possible Patterns: ",
-  "skyblocker.config.mining.glacite.fossilSolver.toolTip.minimumTilesLeft": "Minimum tiles left : ",
+  "skyblocker.config.mining.glacite.fossilSolver.toolTip.minimumTilesLeft": "Minimum tiles left: ",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.probability": "Probability: ",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.foundFossil": "Found Fossil: ",
 
@@ -826,8 +829,12 @@
 
   "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "Hide Status Effect Overlay",
 
-  "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defence, Speed & XP Bars",
+  "skyblocker.config.uiAndVisuals.bars": "Health, Mana, Defense, Speed & XP Bars",
   "skyblocker.config.uiAndVisuals.bars.enableBars": "Enable Bars",
+  "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay": "Intelligence Display",
+  "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.ORIGINAL": "Original",
+  "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.ACCURATE": "Accurate",
+  "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.IN_FRONT": "Smallest In Front",
 
   "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation": "Cancel Component Update Animation",
   "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip": "Cancels the down-and-up animation in your hand that plays when an item's components are updated.",
@@ -912,6 +919,15 @@
   "skyblocker.config.uiAndVisuals.itemCooldown": "Item Cooldown",
   "skyblocker.config.uiAndVisuals.itemCooldown.enableItemCooldowns": "Enable Item Cooldown",
 
+  "skyblocker.config.uiAndVisuals.itemPickup": "Item Pickup Widget",
+  "skyblocker.config.uiAndVisuals.itemPickup.hud.screen": "Item Pickup Widget Config...",
+  "skyblocker.config.uiAndVisuals.itemPickup.sackNotifications": "Sack Notification",
+  "skyblocker.config.uiAndVisuals.itemPickup.sackNotifications.@Tooltip": "Also show changes in sacks (this relies on Hypixel Settings -> Chat Feedback -> Sack Notifications being enabled)",
+  "skyblocker.config.uiAndVisuals.itemPickup.showItemName": "Show Item Name",
+  "skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip": "Show the item names and icons in the widget",
+  "skyblocker.config.uiAndVisuals.itemPickup.lifeTime": "Item Lifetime (s)",
+  "skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip": "How long should items stay on the widget",
+
   "skyblocker.config.uiAndVisuals.slotText": "Slot Text",
   "skyblocker.config.uiAndVisuals.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level",
   "skyblocker.config.uiAndVisuals.slotText.mode.ENABLED": "Enabled",
@@ -947,7 +963,7 @@
   "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "Displays your assigned and unassigned tuning points",
   "skyblocker.config.uiAndVisuals.slotText.yourEssence": "Your Essence",
 
-  "skyblocker.config.uiAndVisuals.searchOverlay": "Search Overlay",
+  "skyblocker.config.uiAndVisuals.searchOverlay": "AH/BZ Search Overlay",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse.@Tooltip": "Show custom search overlay when searching in the auction house.",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableBazaar": "Enable For Bazaar",

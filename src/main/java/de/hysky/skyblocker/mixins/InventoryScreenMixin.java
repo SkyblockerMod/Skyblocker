@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import de.hysky.skyblocker.injected.RecipeBookHolder;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,9 +11,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.garden.GardenPlotsWidget;
 import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookWidget;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -26,11 +25,14 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(InventoryScreen.class)
-public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHandler> {
+import java.util.ArrayList;
+import java.util.List;
 
-    @Unique
-    private GardenPlotsWidget gardenPlotsWidget;
+@Mixin(InventoryScreen.class)
+public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHandler> implements RecipeBookHolder {
+
+	@Unique
+	private final List<Runnable> recipeBookToggleCallbacks = new ArrayList<>();
 
     public InventoryScreenMixin(PlayerScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -59,16 +61,17 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
 	}
 
     @Inject(method = "onRecipeBookToggled", at = @At("TAIL"))
-    private void skyblocker$moveGardenPlotsWdiget(CallbackInfo ci) {
-        if (gardenPlotsWidget != null) {
-            gardenPlotsWidget.setPosition(x + backgroundWidth + 4, y);
-        }
+    private void skyblocker$callRecipeToggleCallbacks(CallbackInfo ci) {
+		recipeBookToggleCallbacks.forEach(Runnable::run);
     }
 
-    @Inject(method = "init", at = @At("TAIL"))
-    private void skyblocker$addGardenPlotsWidget(CallbackInfo ci) {
-        if (Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget) {
-            addDrawableChild(gardenPlotsWidget = new GardenPlotsWidget(x + backgroundWidth + 4, y));
-        }
+    @Inject(method = "init", at = @At("HEAD"))
+    private void skyblocker$clearRecipeToggleCallbacks(CallbackInfo ci) {
+		recipeBookToggleCallbacks.clear();
     }
+
+	@Override
+	public void registerRecipeBookToggleCallback(Runnable runnable) {
+		recipeBookToggleCallbacks.add(runnable);
+	}
 }
