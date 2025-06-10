@@ -51,6 +51,8 @@ public class FishingHelper {
 
 	public static void reset() {
 		startTime = 0;
+		//once amour stand is gone reset rod real timer
+		Scheduler.INSTANCE.schedule(FishingHelper::resetFish, 15);
 	}
 
 	public static void resetFish() {

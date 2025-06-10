@@ -102,7 +102,7 @@ public class HelperConfig {
 
 
 		@SerialEntry
-		public FishingHookDisplay fishingHookDisplay = FishingHookDisplay.OFF;
+		public FishingHookDisplay fishingHookDisplay = FishingHookDisplay.HUD;
 
 		@SerialEntry
 		public boolean onlyShowHudInBarn = true;
