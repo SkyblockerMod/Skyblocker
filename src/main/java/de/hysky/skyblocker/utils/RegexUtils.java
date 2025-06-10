@@ -37,6 +37,25 @@ public class RegexUtils {
 		return OptionalInt.of(parseIntFromMatcher(matcher, 1));
 	}
 
+	/**
+	 * @return An OptionalInt of the first group in the matcher, or an empty OptionalInt if the matcher doesn't find anything.
+	 */
+	public static OptionalInt findRomanNumeralFromMatcher(Matcher matcher) {
+		return findRomanNumeralFromMatcher(matcher, matcher.hasMatch() ? matcher.end() : 0);
+	}
+
+	/**
+	 * @return An OptionalInt of the first group in the matcher after parsing via {@link RomanNumerals#romanToDecimal(String)}, or an empty OptionalInt if the matcher doesn't find anything / finds invalid roman numerals.
+	 */
+	public static OptionalInt findRomanNumeralFromMatcher(Matcher matcher, int startingIndex) {
+		if (!matcher.find(startingIndex)) return OptionalInt.empty();
+		String result = matcher.group(1);
+		if (!RomanNumerals.isValidRomanNumeral(result)) return OptionalInt.empty();
+		int resultInt = RomanNumerals.romanToDecimal(result);
+		if (resultInt <= 0) return OptionalInt.empty(); // Only positive roman numerals are valid
+		return OptionalInt.of(resultInt);
+	}
+
 	public static OptionalInt parseOptionalIntFromMatcher(Matcher matcher, int group) {
 		String s = matcher.group(group);
 		if (s == null) return OptionalInt.empty();
