@@ -24,8 +24,6 @@ import net.minecraft.util.math.Vec3d;
 public class FishingHelper {
 	private static final Title title = new Title("skyblocker.fishing.reelNow", Formatting.GREEN);
 	protected static long startTime;
-	protected static String rodReelTimer;
-
 	@Init
 	public static void init() {
 		UseItemCallback.EVENT.register((player, world, hand) -> {
@@ -52,12 +50,8 @@ public class FishingHelper {
 	public static void reset() {
 		startTime = 0;
 		//once amour stand is gone reset rod real timer
-		Scheduler.INSTANCE.schedule(FishingHelper::resetFish, 15);
 	}
 
-	public static void resetFish() {
-		rodReelTimer = null;
-	}
 
 
 	// Sends a title notification if a fish is caught
@@ -72,17 +66,6 @@ public class FishingHelper {
 					if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper) {
 						RenderHelper.displayInTitleContainerAndPlaySound(title, 10);
 					}
-					if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD) {
-						rodReelTimer = name;
-						FishingHudWidget.getInstance().update();
-						//sets back to null once the fish has left the rod
-						Scheduler.INSTANCE.schedule(FishingHelper::resetFish, 15);
-					}
-
-
-				} else if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD && name.matches("\\d.\\d") && player.fishHook.getBoundingBox().expand(4D).contains(armorStand.getPos())) {
-					rodReelTimer = name;
-					FishingHudWidget.getInstance().update();
 				}
 			}
 		}

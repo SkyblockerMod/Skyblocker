@@ -80,7 +80,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			return true;
 		}
 		//rod timer
-		if ((SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD) && FishingHelper.rodReelTimer != null) {
+		if ((SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD) && FishingHookDisplayHelper.fishingHookArmorStand != null) {
 			return true;
 		}
 		return false;
@@ -116,8 +116,9 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			addComponent(Components.progressComponent(Ico.CLOCK, Text.of("Bobber Time"), SkyblockTime.formatTime(maxTime - time),  100 - (time / maxTime) * 100));
 		}
 		// rod reel timer
-		if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD && FishingHelper.rodReelTimer != null) {
-			addSimpleIcoText(Ico.CLOCK, "Reel Timer: ", FishingHelper.rodReelTimer.equals("!!!") ? Formatting.RED : Formatting.YELLOW, FishingHelper.rodReelTimer);
+		if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD && FishingHookDisplayHelper.fishingHookArmorStand != null) {
+			String rodReelTimer = FishingHookDisplayHelper.fishingHookArmorStand.getName().getString();
+			addSimpleIcoText(Ico.CLOCK, "Reel Timer: ", rodReelTimer.equals("!!!") ? Formatting.RED : Formatting.YELLOW, rodReelTimer);
 		}
 
 	}
