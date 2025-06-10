@@ -42,6 +42,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	private static final Pattern TIME_TOWER_MULTIPLIER_PATTERN = Pattern.compile("by \\+([\\d.]+)x for \\dh\\.");
 	private static final Pattern AVAILABLE_EGGS_PATTERN = Pattern.compile("Available eggs: (\\d+)");
 	private static final Pattern ROMAN_LEVEL_PATTERN = Pattern.compile("(?:Chocolate Factory|Hand-Baked Chocolate|Time Tower|Rabbit Shrine|Coach Jackrabbit|Rabbit Barn) ?(?<level>\\w+)?");
+	private static final Pattern PURCHASED_SLOTS_PATTERN = Pattern.compile("Purchased slots: (\\d+)/(\\d+)");
 
 	//Slots, for ease of maintenance rather than using magic numbers everywhere.
 	private static final byte STRAY_RABBIT_START = 0;
@@ -72,6 +73,8 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	private int bestAffordableUpgrade = -1;
 	private int prestigeLevel = -1;
 	private int hitmanAvailableEggs = -1;
+	private int purchasedHitmanSlots = -1;
+	private int maxHitmanSlots = -1;
 	private int rabbitShrineLevel = -1;
 	private int handBakedChocolateLevel = -1;
 	private int rabbitBarnLevel = -1;
@@ -174,14 +177,14 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 			reachedMaxPrestige = true;
 		}
 		Matcher upgradeMatcher = ROMAN_LEVEL_PATTERN.matcher(slots.get(PRESTIGE_SLOT).getName().getString());
-		prestigeLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(0); //The level text is missing at level 0, so we default to 0.
+		prestigeLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(-1);
 
 		//Hand-Baked Chocolate
 		upgradeMatcher = ROMAN_LEVEL_PATTERN.matcher(slots.get(HAND_BAKED_CHOCOLATE_SLOT).getName().getString());
-		handBakedChocolateLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(0); //The level text is missing at level 0, so we default to 0.
+		handBakedChocolateLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(-1);
 		//Time Tower
 		upgradeMatcher.reset(slots.get(TIME_TOWER_SLOT).getName().getString());
-		timeTowerLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(0);
+		timeTowerLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(-1);
 		isTimeTowerMaxed = timeTowerLevel >= 15;
 		String timeTowerLore = ItemUtils.getConcatenatedLore(slots.get(TIME_TOWER_SLOT));
 		Matcher timeTowerMultiplierMatcher = TIME_TOWER_MULTIPLIER_PATTERN.matcher(timeTowerLore);
@@ -192,14 +195,19 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		}
 		//Rabbit Shrine
 		upgradeMatcher.reset(slots.get(RABBIT_SHRINE_SLOT).getName().getString());
-		rabbitShrineLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(0); //The level text is missing at level 0, so we default to 0.
+		rabbitShrineLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(-1);
 		//Rabbit Barn
 		upgradeMatcher.reset(slots.get(RABBIT_BARN_SLOT).getName().getString());
-		rabbitBarnLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(0);
+		rabbitBarnLevel = RegexUtils.findRomanNumeralFromMatcher(upgradeMatcher).orElse(-1);
 
 		//Rabbit Hitman
 		Matcher hitmanMatcher = ItemUtils.getLoreLineIfMatch(slots.get(RABBIT_HITMAN_SLOT), AVAILABLE_EGGS_PATTERN);
 		if (hitmanMatcher != null) hitmanAvailableEggs = RegexUtils.parseIntFromMatcher(hitmanMatcher, 1);
+		Matcher purchasedSlotsMatcher = ItemUtils.getLoreLineIfMatch(slots.get(RABBIT_HITMAN_SLOT), PURCHASED_SLOTS_PATTERN);
+		if (purchasedSlotsMatcher != null) {
+			purchasedHitmanSlots = RegexUtils.parseIntFromMatcher(purchasedSlotsMatcher, 1);
+			maxHitmanSlots = RegexUtils.parseIntFromMatcher(purchasedSlotsMatcher, 2);
+		}
 
 		//Compare cost/cpsIncrease rather than cpsIncrease/cost to avoid getting close to 0 and losing precision.
 		cpsIncreaseFactors.sort(Comparator.comparingDouble(rabbit -> rabbit.cost() / rabbit.cpsIncrease())); //Ascending order, lower = better
@@ -226,7 +234,7 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		}
 
 		Matcher levelMatcher = ROMAN_LEVEL_PATTERN.matcher(coachItem.getName().getString());
-		int level = RegexUtils.findRomanNumeralFromMatcher(levelMatcher).orElse(0); // The level text is missing at level 0, so we default to 0.
+		int level = RegexUtils.findRomanNumeralFromMatcher(levelMatcher).orElse(-1);
 
 		Matcher costMatcher = COST_PATTERN.matcher(coachLore);
 		OptionalLong cost = RegexUtils.findLongFromMatcher(costMatcher, multiplierIncreaseMatcher.hasMatch() ? multiplierIncreaseMatcher.end() : 0); //Cost comes after the multiplier line
@@ -402,29 +410,42 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		}
 		return switch (slotId) {
 			case HAND_BAKED_CHOCOLATE_SLOT -> {
-				if (handBakedChocolateLevel < 0) yield List.of();
+				if (handBakedChocolateLevel < 0 || handBakedChocolateLevel == 10) yield List.of();
 				Text levelText = Text.literal(String.valueOf(handBakedChocolateLevel)).formatted(Formatting.GOLD);
 				yield SlotText.topLeftList(levelText);
 			}
 			case RABBIT_SHRINE_SLOT -> {
-				if (rabbitShrineLevel < 0) yield List.of();
+				if (rabbitShrineLevel < 0 || rabbitShrineLevel == 20) yield List.of();
 				Text levelText = Text.literal(String.valueOf(rabbitShrineLevel)).formatted(Formatting.GOLD);
 				yield SlotText.topLeftList(levelText);
 			}
 			case RABBIT_BARN_SLOT -> {
-				if (rabbitBarnLevel < 0) yield List.of();
+				if (rabbitBarnLevel < 0 || rabbitBarnLevel == 245) yield List.of();
 				Text levelText = Text.literal(String.valueOf(rabbitBarnLevel)).formatted(Formatting.GOLD);
 				yield SlotText.topLeftList(levelText);
 			}
 			case TIME_TOWER_SLOT -> {
-				if (timeTowerLevel < 0) yield List.of();
+				if (timeTowerLevel < 0 || isTimeTowerMaxed) yield List.of();
 				Text levelText = Text.literal(String.valueOf(timeTowerLevel)).formatted(Formatting.GOLD);
 				yield SlotText.topLeftList(levelText);
 			}
 			case RABBIT_HITMAN_SLOT -> {
-				if (hitmanAvailableEggs < 0) yield List.of();
-				Text levelText = Text.literal(String.valueOf(hitmanAvailableEggs)).formatted(Formatting.GREEN);
-				yield SlotText.topLeftList(levelText);
+				if (hitmanAvailableEggs < 0 || purchasedHitmanSlots < 0 || maxHitmanSlots < 0) yield List.of();
+				if (purchasedHitmanSlots == 0) yield SlotText.topLeftList(Text.literal("0/0").formatted(Formatting.GRAY));
+
+				MutableText levelText = Text.literal(String.valueOf(hitmanAvailableEggs));
+				if (hitmanAvailableEggs == purchasedHitmanSlots) levelText = levelText.formatted(Formatting.GOLD, Formatting.BOLD);
+				else if (hitmanAvailableEggs == 0) levelText = levelText.formatted(Formatting.GRAY);
+				else levelText = levelText.formatted(Formatting.YELLOW); // Some amount that is neither 0 nor the max
+
+				MutableText result = Text.empty()
+										 .append(levelText);
+				if (purchasedHitmanSlots < maxHitmanSlots) {
+					result.append(Text.literal("/").formatted(Formatting.GRAY))
+						  .append(Text.literal(String.valueOf(purchasedHitmanSlots)).formatted(Formatting.YELLOW));
+				}
+
+				yield SlotText.topLeftList(result);
 			}
 			case PRESTIGE_SLOT -> {
 				if (prestigeLevel < 0) yield List.of();
@@ -454,6 +475,8 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 		bestAffordableUpgrade = -1;
 		prestigeLevel = -1;
 		hitmanAvailableEggs = -1;
+		purchasedHitmanSlots = -1;
+		maxHitmanSlots = -1;
 		rabbitShrineLevel = -1;
 		handBakedChocolateLevel = -1;
 		rabbitBarnLevel = -1;

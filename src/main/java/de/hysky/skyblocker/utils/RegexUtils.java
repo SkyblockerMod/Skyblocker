@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
@@ -39,6 +41,8 @@ public class RegexUtils {
 
 	/**
 	 * @return An OptionalInt of the first group in the matcher, or an empty OptionalInt if the matcher doesn't find anything.
+	 * @implNote Hypixel generally has optional roman numerals in the case of level 0, so this method will return a 0 if the matcher finds a match with an empty first group.
+	 * 		Example pattern: {@code Level ?([IVXLCDM]+)?}
 	 */
 	public static OptionalInt findRomanNumeralFromMatcher(Matcher matcher) {
 		return findRomanNumeralFromMatcher(matcher, matcher.hasMatch() ? matcher.end() : 0);
@@ -46,13 +50,16 @@ public class RegexUtils {
 
 	/**
 	 * @return An OptionalInt of the first group in the matcher after parsing via {@link RomanNumerals#romanToDecimal(String)}, or an empty OptionalInt if the matcher doesn't find anything / finds invalid roman numerals.
+	 * @implNote Hypixel generally has optional roman numerals in the case of level 0, so this method will return a 0 if the matcher finds a match with an empty first group.
+	 * 		Example pattern: {@code Level ?([IVXLCDM]+)?}
 	 */
 	public static OptionalInt findRomanNumeralFromMatcher(Matcher matcher, int startingIndex) {
 		if (!matcher.find(startingIndex)) return OptionalInt.empty();
 		String result = matcher.group(1);
+		if (StringUtils.isEmpty(result)) return OptionalInt.of(0); // Special case for level 0
 		if (!RomanNumerals.isValidRomanNumeral(result)) return OptionalInt.empty();
 		int resultInt = RomanNumerals.romanToDecimal(result);
-		if (resultInt <= 0) return OptionalInt.empty(); // Only positive roman numerals are valid
+		if (resultInt <= 0) return OptionalInt.empty(); // This shouldn't happen since we checked above, but just in case.
 		return OptionalInt.of(resultInt);
 	}
 
