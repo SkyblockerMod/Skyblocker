@@ -465,7 +465,6 @@ public class UIAndVisualsConfig {
 		@SerialEntry
 		public GyroOverlay.Mode gyroOverlayMode = GyroOverlay.Mode.OFF;
 
-
 		@SerialEntry
 		public Color gyroOverlayColor = new Color(0x7F761594, true);
 	}
