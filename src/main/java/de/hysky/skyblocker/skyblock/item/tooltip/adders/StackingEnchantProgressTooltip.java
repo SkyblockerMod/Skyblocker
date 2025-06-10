@@ -43,6 +43,7 @@ public class StackingEnchantProgressTooltip extends SimpleTooltipAdder {
 					stackingEnchantInfo = switch (enchantment) {
 						case "expertise" -> EXPERTISE_INFO;
 						case "compact" -> COMPACT_INFO;
+						case "absorb" -> ABSORB_INFO;
 						case "cultivating" -> CULTIVATING_INFO;
 						case "champion" -> CHAMPION_INFO;
 						case "hecatomb" -> HECATOMB_INFO;
