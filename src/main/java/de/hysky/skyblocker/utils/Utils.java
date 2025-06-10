@@ -158,9 +158,13 @@ public class Utils {
         return location == Location.CRIMSON_ISLE;
     }
 
-    public static boolean isInGalatea() {
-        return location == Location.GALATEA;
-    }
+    public static boolean isInGalatea() { return location == Location.GALATEA; }
+
+	public static boolean isInHub() { return location == Location.HUB; }
+
+	public static boolean isInPrivateIsland() { return location == Location.PRIVATE_ISLAND; }
+
+	public static boolean isInPark() { return location == Location.THE_PARK; }
 
 	public static boolean isOnBingo() {
 		return profile.endsWith("Ⓑ");
