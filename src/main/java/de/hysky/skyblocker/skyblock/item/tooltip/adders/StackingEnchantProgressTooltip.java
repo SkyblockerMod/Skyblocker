@@ -22,6 +22,7 @@ public class StackingEnchantProgressTooltip extends SimpleTooltipAdder {
 	private static final StackingEnchantInfo CULTIVATING_INFO = new StackingEnchantInfo("Cultivating", "farmed_cultivating", "crops", 0, 1000, 5000, 25_000, 100_000, 300_000, 1_500_000, 5_000_000, 20_000_000, 100_000_000);
 	private static final StackingEnchantInfo CHAMPION_INFO = new StackingEnchantInfo("Champion", "champion_combat_xp", "Combat XP", 0, 50_000, 100_000, 250_000, 500_000, 1_000_000, 1_500_000, 2_000_000, 2_500_000, 3_000_000);
 	private static final StackingEnchantInfo HECATOMB_INFO = new StackingEnchantInfo("Hecatomb", "hecatomb_s_runs", "S runs", 0, 2, 5, 10, 20, 30, 40, 60, 80, 100);
+	private static final StackingEnchantInfo ABSORB_INFO = new StackingEnchantInfo("Absorb", "absorb_logs_chopped", "logs", 0, 1000, 5000, 25_000, 100_000, 300_000, 1_500_000, 5_000_000, 25_000_000, 50_000_000);
 	private static final StackingEnchantInfo TOXOPHILITE_INFO = new StackingEnchantInfo("Toxophilite", "toxophilite_combat_xp", "Combat XP", 0, 50_000, 100_000, 250_000, 500_000, 1_000_000, 1_500_000, 2_000_000, 2_500_000, 3_000_000);
 
 	public StackingEnchantProgressTooltip(int priority) {
