@@ -308,5 +308,10 @@
     "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "mimicを倒した時にチャットにメッセージを送り、他のプレイヤーのスコア計算を修正する。",
     "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\n注意：これはskyblockの設定でデスメッセージが有効になっている場合のみ正しく機能します。デスメッセージを非表示にしたい場合は、代わりにこのMODのプレイヤーのデスメッセージを隠す設定を使って、デスメッセージをさらに処理できるようにしてください。",
     "skyblocker.config.dungeons.professor.floor3GuardianHealthDisplay.@Tooltip": "F3/M3のボス戦で、ガーディアンの体力を下に表示する。",
-    "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Lividボス戦の時 チャットに送られるテキスト。\"[color]\"の文字列はLividの色に置き換えられます。"
+    "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Lividボス戦の時 チャットに送られるテキスト。\"[color]\"の文字列はLividの色に置き換えられます。",
+    "skyblocker.config.dungeons.classBasedPlayerGlow": "クラスに基づいたプレイヤーの発光",
+    "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "チームメイトの発光の色がランクではなくクラスに基づいて変更されます。",
+    "skyblocker.config.dungeons.goldorWaypoints": "Goldorのタスクの位置を表示 (F7/M7)",
+    "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "goldor進行中にターミナル/デバイス/レバーの位置を表示",
+    "skyblocker.config.dungeons.goldorWaypoints.waypointType": "タスクの位置の表示タイプ"
 }
