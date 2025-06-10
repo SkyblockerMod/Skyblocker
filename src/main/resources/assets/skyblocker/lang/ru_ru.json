@@ -893,5 +893,6 @@
     "text.skyblocker.undo": "Отменить",
     "skyblocker.config.farming.garden.closeScreenOnPlotClick": "Закрывать инвентарь при телепортации на участок",
     "skyblocker.config.farming.garden.closeScreenOnPlotClick.@Tooltip": "Должен ли ваш инвентарь закрываться при телепортации на участок используя Виджет Участков Сада",
-    "skyblocker.config.farming.garden.gardenPlotsWidget": "Включить Виджет Участков Сада"
+    "skyblocker.config.farming.garden.gardenPlotsWidget": "Включить Виджет Участков Сада",
+    "skyblocker.config.uiAndVisuals.inputCalculator": "Калькулятор входных данных"
 }
