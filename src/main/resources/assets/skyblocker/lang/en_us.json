@@ -258,6 +258,9 @@
   "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip": "Show's the required items as (5 stacks + 45) rather than just a total number especially useful for ironman players.",
 
   "skyblocker.config.foraging": "Foraging",
+  "skyblocker.config.foraging.galatea": "Galatea",
+  "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Enable Forest Node Helper",
+
   "skyblocker.config.foraging.hunting": "Hunting",
 
   "skyblocker.config.general": "General",
