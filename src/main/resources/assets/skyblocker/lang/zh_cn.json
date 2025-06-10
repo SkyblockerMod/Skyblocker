@@ -983,7 +983,7 @@
     "skyblocker.waypoints.exportWaypointsSkyblocker": "导出路径点（Skyblocker格式）",
     "skyblocker.config.chat.waypoints.displayed": "已在x: %d y: %d z: %d处显示临时路径点%s",
     "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "从剪贴板导出路径点（Skyblocker格式）",
-    "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto.@Tooltip": "将Fairy Grotto的位置分享到WebSocket。",
+    "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto.@Tooltip": "将Fairy Grotto的位置分享到WebSocket",
     "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto": "分享Fairy Grotto",
     "skyblocker.config.uiAndVisuals.tabHud.configScreen": "打开设置界面",
     "skyblocker.config.uiAndVisuals.nightVisionStrength": "夜视强度",
