@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.fishing;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
@@ -59,18 +60,17 @@ public class FishingHelper {
 
 	// Sends a title notification if a fish is caught
 	public static void checkIfFishWasCaught(ArmorStandEntity armorStand) {
-		if (Utils.isOnSkyblock() && (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper || SkyblockerConfigManager.get().helpers.fishing.showRodReelTimerHud)) {
+		if (Utils.isOnSkyblock() && (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper || SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD)) {
 			if (!armorStand.isInvisible() || !armorStand.hasCustomName() || !armorStand.isCustomNameVisible()) return;
 
 			ClientPlayerEntity player = MinecraftClient.getInstance().player;
 			if (player != null && player.fishHook != null) {
 				String name = armorStand.getCustomName().getString();
-
 				if (name.equals("!!!") && player.fishHook.getBoundingBox().expand(4D).contains(armorStand.getPos())) {
 					if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper) {
 						RenderHelper.displayInTitleContainerAndPlaySound(title, 10);
 					}
-					if (SkyblockerConfigManager.get().helpers.fishing.showRodReelTimerHud) {
+					if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD) {
 						rodReelTimer = name;
 						FishingHudWidget.getInstance().update();
 						//sets back to null once the fish has left the rod
@@ -78,7 +78,7 @@ public class FishingHelper {
 					}
 
 
-				} else if (SkyblockerConfigManager.get().helpers.fishing.showRodReelTimerHud && name.matches("\\d.\\d") && player.fishHook.getBoundingBox().expand(4D).contains(armorStand.getPos())) {
+				} else if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD && name.matches("\\d.\\d") && player.fishHook.getBoundingBox().expand(4D).contains(armorStand.getPos())) {
 					rodReelTimer = name;
 					FishingHudWidget.getInstance().update();
 				}

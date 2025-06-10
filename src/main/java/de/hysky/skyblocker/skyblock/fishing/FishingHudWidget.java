@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.fishing;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
@@ -19,7 +20,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.Objects;
 import java.util.Set;
 
 @RegisterWidget
@@ -68,7 +68,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			return false;
 		}
 		// sea creature tracker
-		if (SkyblockerConfigManager.get().helpers.fishing.seaCreatureCounterHud && SeaCreatureTracker.isCreaturesAlive()) {
+		if (SkyblockerConfigManager.get().helpers.fishing.enableSeaCreatureCounter && SeaCreatureTracker.isCreaturesAlive()) {
 			if (Utils.getLocation() == Location.HUB && SkyblockerConfigManager.get().helpers.fishing.onlyShowHudInBarn) {
 				return isBarnFishing();
 			}
@@ -80,7 +80,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			return true;
 		}
 		//rod timer
-		if (SkyblockerConfigManager.get().helpers.fishing.showRodReelTimerHud && FishingHelper.rodReelTimer != null) {
+		if ((SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD) && FishingHelper.rodReelTimer != null) {
 			return true;
 		}
 		return false;
@@ -94,7 +94,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			return;
 		}
 		//creature counter
-		if (SkyblockerConfigManager.get().helpers.fishing.seaCreatureCounterHud && SeaCreatureTracker.isCreaturesAlive()) {
+		if (SkyblockerConfigManager.get().helpers.fishing.enableSeaCreatureCounter && SeaCreatureTracker.isCreaturesAlive()) {
 
 			ObjectFloatPair<Text> timer = SeaCreatureTracker.getTimerText(SeaCreatureTracker.getOldestSeaCreatureAge());
 			int seaCreatureCap = SeaCreatureTracker.getSeaCreatureCap();
@@ -116,7 +116,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			addComponent(Components.progressComponent(Ico.CLOCK, Text.of("Bobber Time"), SkyblockTime.formatTime(maxTime - time),  100 - (time / maxTime) * 100));
 		}
 		// rod reel timer
-		if (SkyblockerConfigManager.get().helpers.fishing.showRodReelTimerHud && FishingHelper.rodReelTimer != null) {
+		if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD && FishingHelper.rodReelTimer != null) {
 			addSimpleIcoText(Ico.CLOCK, "Reel Timer: ", FishingHelper.rodReelTimer.equals("!!!") ? Formatting.RED : Formatting.YELLOW, FishingHelper.rodReelTimer);
 		}
 

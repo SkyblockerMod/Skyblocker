@@ -4,6 +4,7 @@ import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import net.minecraft.client.resource.language.I18n;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +75,7 @@ public class HelperConfig {
         @SerialEntry
         public boolean enableFishingHelper = true;
 
+		@Deprecated
         @SerialEntry
         public boolean enableFishingHookDisplay = true;
 
@@ -96,11 +98,11 @@ public class HelperConfig {
 		public List<Location> fishingHudEnabledLocations = new ArrayList<>(List.of(Location.values()));
 
 		@SerialEntry
-		public boolean seaCreatureCounterHud = true;
+		public boolean enableSeaCreatureCounter = true;
 
 
 		@SerialEntry
-		public boolean showRodReelTimerHud = true;
+		public FishingHookDisplay fishingHookDisplay = FishingHookDisplay.OFF;
 
 		@SerialEntry
 		public boolean onlyShowHudInBarn = true;
@@ -119,6 +121,16 @@ public class HelperConfig {
 
 		@SerialEntry
 		public SkyblockItemRarity minimumNotificationRarity = SkyblockItemRarity.EPIC;
+
+		public enum FishingHookDisplay {
+			OFF,
+			CROSSHAIR,
+			HUD;
+			@Override
+			public String toString() {
+				return I18n.translate("skyblocker.config.helpers.fishing.fishingHookDisplay." + name());
+			}
+		}
     }
 
     public static class FairySouls {

@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.fishing;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.HelperConfig;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
@@ -29,7 +30,7 @@ public class FishingHookDisplayHelper {
 	}
 
 	public static void render(DrawContext context, RenderTickCounter tickDelta) {
-		if (!SkyblockerConfigManager.get().helpers.fishing.enableFishingHookDisplay) return;
+		if (!(SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.CROSSHAIR)) return;
 
 
 		// Check if the armor stand is null or invalid
@@ -61,7 +62,7 @@ public class FishingHookDisplayHelper {
 	}
 
 	public static void onArmorStandSpawn(ArmorStandEntity armorStand) {
-		if (!SkyblockerConfigManager.get().helpers.fishing.enableFishingHookDisplay) return;
+		if (!(SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.CROSSHAIR)) return;
 		if (fishingHookArmorStand != null) return;
 
 		MinecraftClient client = MinecraftClient.getInstance();
