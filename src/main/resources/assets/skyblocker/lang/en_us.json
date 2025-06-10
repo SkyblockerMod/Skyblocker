@@ -461,7 +461,6 @@
   "skyblocker.config.helpers.fishing.seaCreatureCapNotification.notification": "Sea Creature Cap Reached",
   "skyblocker.config.helpers.fishing.minimumNotificationRarity": "Sea Creature Rarity Notification",
   "skyblocker.config.helpers.fishing.minimumNotificationRarity.@Tooltip": "Minimum rarity for a notification about rare sea creatures. (UNKNOWN = disabled)",
-  "skyblocker.config.helpers.fishing.minimumNotificationRarity.notification": "%s Sea Creature",
   "skyblocker.config.helpers.fishing.fishingHookDisplay": "Fishing Hook Display",
   "skyblocker.config.helpers.fishing.fishingHookDisplay.OFF": "Off",
   "skyblocker.config.helpers.fishing.fishingHookDisplay.CROSSHAIR": "On Crosshair",
