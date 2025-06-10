@@ -322,15 +322,7 @@ public class UIAndVisualsConfig {
         public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
     }
 
-	public static class GyroKineticWandOverlay {
 
-		@SerialEntry
-		public GyroOverlay.Mode gyroOverlayMode = GyroOverlay.Mode.OFF;
-
-
-		@SerialEntry
-		public Color gyroOverlayColor = new Color(0x7F761594, true);
-	}
 
     public static class TeleportOverlay {
         @SerialEntry
@@ -466,5 +458,15 @@ public class UIAndVisualsConfig {
 
 		@SerialEntry
 		public Color emptyBarColor = new Color(0xFF0000);
+	}
+
+	public static class GyroKineticWandOverlay {
+
+		@SerialEntry
+		public GyroOverlay.Mode gyroOverlayMode = GyroOverlay.Mode.OFF;
+
+
+		@SerialEntry
+		public Color gyroOverlayColor = new Color(0x7F761594, true);
 	}
 }
