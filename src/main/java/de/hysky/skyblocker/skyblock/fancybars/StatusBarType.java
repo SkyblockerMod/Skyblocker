@@ -73,6 +73,7 @@ public enum StatusBarType implements StringIdentifiable {
 	}
 
 	public StatusBar newStatusBar() {
+		if (this == INTELLIGENCE) return new StatusBar.ManaStatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/" + id), colors, hasOverflow, textColor, name);
 		return new StatusBar(Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/" + id), colors, hasOverflow, textColor, name);
 	}
 }
