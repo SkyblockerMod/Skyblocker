@@ -13,7 +13,6 @@ public class ForagingCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("skyblocker.config.foraging"))
-				//Modern Foraging island
 
 				//Galatea
 				.group(OptionGroup.createBuilder()
@@ -35,13 +34,6 @@ public class ForagingCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
-
-				//Hunting - YACL doesn't like empty option groups
-				/*.group(OptionGroup.createBuilder()
-						.name(Text.translatable("skyblocker.config.foraging.hunting"))
-
-						.build())*/
-				
 				.build();
 	}
 }
