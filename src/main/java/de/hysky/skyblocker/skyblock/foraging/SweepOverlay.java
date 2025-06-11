@@ -52,14 +52,19 @@ public class SweepOverlay {
 			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE",
 			"ROOKIE_AXE", "PROMISING_AXE", "SWEET_AXE", "EFFICIENT_AXE"
 	);
+	private static final Set<String> THROWABLE_AXES = Set.of(
+			"FIG_AXE", "FIGSTONE_AXE", "JUNGLE_AXE", "TREECAPITATOR_AXE"
+	);
 
 	private static final BlockPos[] NEIGHBOR_OFFSETS = {
 			new BlockPos(-1, -1, -1), new BlockPos(-1, -1, 0), new BlockPos(-1, -1, 1),
 			new BlockPos(-1, 0, -1),  new BlockPos(-1, 0, 0),  new BlockPos(-1, 0, 1),
 			new BlockPos(-1, 1, -1),  new BlockPos(-1, 1, 0),  new BlockPos(-1, 1, 1),
+
 			new BlockPos(0, -1, -1),  new BlockPos(0, -1, 0),  new BlockPos(0, -1, 1),
-			new BlockPos(0, 0, -1),   new BlockPos(0, 0, 1),
+			new BlockPos(0, 0, -1),   						   new BlockPos(0, 0, 1),
 			new BlockPos(0, 1, -1),   new BlockPos(0, 1, 0),   new BlockPos(0, 1, 1),
+
 			new BlockPos(1, -1, -1),  new BlockPos(1, -1, 0),  new BlockPos(1, -1, 1),
 			new BlockPos(1, 0, -1),   new BlockPos(1, 0, 0),   new BlockPos(1, 0, 1),
 			new BlockPos(1, 1, -1),   new BlockPos(1, 1, 0),   new BlockPos(1, 1, 1)
@@ -84,7 +89,7 @@ public class SweepOverlay {
 
 	/**
 	 * Renders an overlay for logs that can be chopped when holding a valid axe.
-	 * If the crosshair doesn't target a block, casts a ray up to 50 blocks and highlights logs with half the sweep value and a modified color.
+	 * For throwable axes, casts a ray up to 50 blocks and highlights logs with half the sweep value and a dimmer color.
 	 *
 	 * @param wrc the world render context
 	 */
@@ -96,18 +101,21 @@ public class SweepOverlay {
 
 		ItemStack heldItem = client.player.getMainHandStack();
 		String itemId = ItemUtils.getItemId(heldItem);
-		if (!VALID_AXES.contains(itemId)) {
+		boolean isValidAxe = VALID_AXES.contains(itemId);
+		boolean isThrowableAxe = THROWABLE_AXES.contains(itemId);
+		if (!isValidAxe && !isThrowableAxe) {
 			return;
 		}
 
 		BlockHitResult blockHitResult = null;
 		boolean isThrown = false;
 
-		if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK
+		if (isValidAxe && client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK
 				&& client.crosshairTarget instanceof BlockHitResult hitResult) {
 			blockHitResult = hitResult;
-		} else {
-			// Cast a ray up to 50 blocks
+		} else if (isThrowableAxe) {
+			// Cast a ray up to 50 blocks for throwable axes
+			// #todo gravity prediction
 			Vec3d start = client.player.getCameraPosVec(1.0f);
 			Vec3d look = client.player.getRotationVec(1.0f);
 			Vec3d end = start.add(look.multiply(50.0));
@@ -163,7 +171,7 @@ public class SweepOverlay {
 			}
 		}
 
-		return  0.0f;
+		return 0.0f;
 	}
 
 	/**
@@ -190,12 +198,12 @@ public class SweepOverlay {
 
 	/**
 	 * Renders an overlay highlighting connected logs that can be chopped based on the player's Sweep stat.
-	 * For ray-cast hits, uses half the sweep stat and a dimmer color.
+	 * For ray-cast hits (throwable axes), uses half the sweep stat and a dimmer color.
 	 *
 	 * @param wrc           the world render context
 	 * @param blockHitResult the block hit result from the crosshair or ray cast
 	 * @param state         the block state of the targeted block
-	 * @param isThrown      true if the hit comes from a ray cast
+	 * @param isThrown      true if the hit comes from a ray cast (throwable axe)
 	 */
 	private static void renderConnectedLogs(WorldRenderContext wrc, BlockHitResult blockHitResult, BlockState state, boolean isThrown) {
 		BlockPos startPos = blockHitResult.getBlockPos();
@@ -245,7 +253,6 @@ public class SweepOverlay {
 			}
 		}
 	}
-
 
 	public static void configCallback(Color color) {
 		colorComponents = color.getRGBComponents(null);
