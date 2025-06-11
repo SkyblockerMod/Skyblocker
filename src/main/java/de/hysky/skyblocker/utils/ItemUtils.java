@@ -40,6 +40,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.Codecs;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -499,7 +500,8 @@ public final class ItemUtils {
      */
     @NotNull
     public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines, boolean isLore) {
-		if (lines.size() >= 2 && lines.get(isLore ? 0 : 1).getString().endsWith("Sack")) {
+        // Gemstone sack is a special case, it has a different 2nd line.
+		if (lines.size() >= 2 && StringUtils.endsWithAny(lines.get(isLore ? 0 : 1).getString(), "Sack", "Gemstones")) {
 			// Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
             // Which equals: `Stored: 0/20k`
 			Matcher matcher = TextUtils.matchInList(lines, STORED_PATTERN);
