@@ -52,10 +52,7 @@ public class SweepOverlay {
 			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE",
 			"ROOKIE_AXE", "PROMISING_AXE", "SWEET_AXE", "EFFICIENT_AXE"
 	);
-	private static final Map<String, Float> FALLBACK_SWEEP_VALUES = Map.of(
-			"JUNGLE_AXE", 10.0f,
-			"TREECAPITATOR_AXE", 35.0f
-	);
+
 	private static final BlockPos[] NEIGHBOR_OFFSETS = {
 			new BlockPos(-1, -1, -1), new BlockPos(-1, -1, 0), new BlockPos(-1, -1, 1),
 			new BlockPos(-1, 0, -1),  new BlockPos(-1, 0, 0),  new BlockPos(-1, 0, 1),
@@ -166,8 +163,7 @@ public class SweepOverlay {
 			}
 		}
 
-		String itemId = client.player.getMainHandStack().getSkyblockId();
-		return FALLBACK_SWEEP_VALUES.getOrDefault(itemId, 0.0f);
+		return  0.0f;
 	}
 
 	/**
