@@ -177,6 +177,6 @@ public class PetCache {
 
 	@Nullable
 	public static PetInfo getCurrentPet() {
-		return CACHED_PETS.getData();
+		return CACHED_PETS.get();
 	}
 }

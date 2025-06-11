@@ -7,7 +7,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import de.hysky.skyblocker.skyblock.SackItemAutocomplete;
 import de.hysky.skyblocker.skyblock.ViewstashAutocomplete;
 import de.hysky.skyblocker.skyblock.WarpAutocomplete;
-import de.hysky.skyblocker.skyblock.speedPreset.SpeedPresets;
+import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresets;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.command.CommandSource;
 import org.spongepowered.asm.mixin.Mixin;

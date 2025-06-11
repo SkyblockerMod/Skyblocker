@@ -25,6 +25,19 @@ public class TextTransformer {
 	 * @author AzureAaron
 	 */
 	public static MutableText fromLegacy(@NotNull String legacy) {
+		return fromLegacy(legacy, '§');
+	}
+
+	/**
+	 * Converts strings with section symbol/legacy formatting to MutableText objects.
+	 *
+	 * @param legacy The string with legacy formatting to be transformed
+	 * @param legacyPrefix The character that prefixes the legacy formatting codes (e.g., '§' or '&')
+	 * @return A {@link MutableText} object matching the exact formatting of the input
+	 *
+	 * @author AzureAaron
+	 */
+	public static MutableText fromLegacy(@NotNull String legacy, char legacyPrefix) {
 		MutableText newText = Text.empty();
 		StringBuilder builder = new StringBuilder();
 		Formatting formatting = null;
@@ -36,7 +49,7 @@ public class TextTransformer {
 
 		for (int i = 0; i < legacy.length(); i++) {
 			//If we've encountered a new formatting code then append the text from the previous "sequence" and reset state
-			if (i != 0 && legacy.charAt(i - 1) == '§' && FORMAT_CODES.contains(Character.toLowerCase(legacy.charAt(i))) && !builder.isEmpty()) {
+			if (i != 0 && legacy.charAt(i - 1) == legacyPrefix && FORMAT_CODES.contains(Character.toLowerCase(legacy.charAt(i))) && !builder.isEmpty()) {
 				newText.append(Text.literal(builder.toString()).setStyle(Style.EMPTY
 						.withColor(formatting)
 						.withBold(bold)
@@ -55,7 +68,7 @@ public class TextTransformer {
 				obfuscated = false;
 			}
 
-			if (i != 0 && legacy.charAt(i - 1) == '§') {
+			if (i != 0 && legacy.charAt(i - 1) == legacyPrefix) {
 				Formatting fmt = Formatting.byCode(legacy.charAt(i));
 
 				switch (fmt) {
@@ -72,7 +85,7 @@ public class TextTransformer {
 			}
 
 			//This character isn't the start of a formatting sequence or this character isn't part of a formatting sequence
-			if (legacy.charAt(i) != '§' && (i == 0 || (i != 0 && legacy.charAt(i - 1) != '§'))) {
+			if (legacy.charAt(i) != legacyPrefix && (i == 0 || (i != 0 && legacy.charAt(i - 1) != legacyPrefix))) {
 				builder.append(legacy.charAt(i));
 			}
 

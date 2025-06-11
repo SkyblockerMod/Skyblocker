@@ -7,7 +7,7 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
-import de.hysky.skyblocker.skyblock.speedPreset.SpeedPresetsScreen;
+import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresetsScreen;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
@@ -38,16 +38,16 @@ public class GeneralCategory {
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.general.updateNotifications"))
                         .binding(UpdateNotifications.Config.DEFAULT.enabled(),
-                                () -> UpdateNotifications.config.enabled(),
-                                newValue -> UpdateNotifications.config = UpdateNotifications.config.withEnabled(newValue))
+                                () -> UpdateNotifications.config.getData().enabled(),
+                                newValue -> UpdateNotifications.config.setData(UpdateNotifications.config.getData().withEnabled(newValue)))
                         .controller(ConfigUtils::createBooleanController)
                         .build())
                 .option(Option.<UpdateNotifications.Channel>createBuilder()
                         .name(Text.translatable("skyblocker.config.general.updateChannel"))
                         .description(OptionDescription.of(Text.translatable("skyblocker.config.general.updateChannel.@Tooltip")))
                         .binding(UpdateNotifications.Config.DEFAULT.channel(),
-                                () -> UpdateNotifications.config.channel(),
-                                newValue -> UpdateNotifications.config = UpdateNotifications.config.withChannel(newValue))
+                                () -> UpdateNotifications.config.getData().channel(),
+                                newValue -> UpdateNotifications.config.setData(UpdateNotifications.config.getData().withChannel(newValue)))
                         .controller(ConfigUtils::createEnumCyclingListController)
                         .build())
                 .option(Option.<Boolean>createBuilder()

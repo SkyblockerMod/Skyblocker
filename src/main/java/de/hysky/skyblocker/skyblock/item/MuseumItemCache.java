@@ -174,7 +174,7 @@ public class MuseumItemCache {
 		String profileId = Utils.getProfileId();
 
 		//Only allow resyncing if the data is actually present yet, otherwise the player needs to swap servers for the tick method to be called
-		if (loaded.isDone() && !profileId.isEmpty() && MUSEUM_ITEM_CACHE.containsKey() && MUSEUM_ITEM_CACHE.getData().canResync()) {
+		if (loaded.isDone() && !profileId.isEmpty() && MUSEUM_ITEM_CACHE.containsKey() && MUSEUM_ITEM_CACHE.get().canResync()) {
 			updateData4ProfileMember(uuid, profileId, source);
 
 			return true;
@@ -197,7 +197,7 @@ public class MuseumItemCache {
 	}
 
 	public static boolean hasItemInMuseum(String id) {
-		return MUSEUM_ITEM_CACHE.containsKey() && MUSEUM_ITEM_CACHE.getData().collectedItemIds().contains(id);
+		return MUSEUM_ITEM_CACHE.containsKey() && MUSEUM_ITEM_CACHE.get().collectedItemIds().contains(id);
 	}
 
 	private record ProfileMuseumData(long lastResync, ObjectOpenHashSet<String> collectedItemIds) {
