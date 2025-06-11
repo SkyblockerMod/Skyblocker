@@ -13,6 +13,9 @@ public class ForagingConfig {
 	public static class Galatea {
 		@SerialEntry
 		public boolean enableForestNodeHelper = true;
+
+		@SerialEntry
+		public boolean solveForestTemplePuzzle = true;
 	}
 
 	public static class Hunting {
