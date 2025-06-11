@@ -8,7 +8,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.profile.ProfiledData;
+import de.hysky.skyblocker.utils.data.ProfiledData;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.azureaaron.networth.utils.PetConstants;
@@ -177,6 +177,6 @@ public class PetCache {
 
 	@Nullable
 	public static PetInfo getCurrentPet() {
-		return CACHED_PETS.get();
+		return CACHED_PETS.getData();
 	}
 }
