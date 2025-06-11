@@ -373,6 +373,7 @@
   "skyblocker.config.general.searchOverlay.starsTooltip": "Star count for dungeon items",
   "skyblocker.config.general.searchOverlay.maxPet": "Max Pet Level",
   "skyblocker.config.general.searchOverlay.maxPet.@Tooltip": "Only show pets that are max level",
+  "skyblocker.config.general.searchOverlay.deleteTooltip": "Remove History Entry",
 
   "skyblocker.config.general.speedPresets": "Speed Presets",
   "skyblocker.config.general.speedPresets.config": "Speed Presets Config...",

@@ -94,7 +94,7 @@ public class SearchOverManager {
 			updateSearch(itemName);
 		}
 
-        CLIENT.send(() -> CLIENT.setScreen(new OverlayScreen(Text.of(""))));
+        CLIENT.send(() -> CLIENT.setScreen(new OverlayScreen()));
         return Command.SINGLE_SUCCESS;
     }
 
@@ -277,6 +277,19 @@ public class SearchOverManager {
         return namesToNeuId.get(getHistory(index));
     }
 
+	protected static void removeHistoryItem(int index) {
+		UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
+		if (isAuction) {
+			if (config.auctionHistory.size() > index) {
+				config.auctionHistory.remove(index);
+			}
+		} else {
+			if (config.bazaarHistory.size() > index) {
+				config.bazaarHistory.remove(index);
+			}
+		}
+	}
+
     /**
      * Add the current search value to the start of the history list and truncate to the max history value and save this to the config
      */
@@ -284,19 +297,31 @@ public class SearchOverManager {
         //save to history
         UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
         if (isAuction) {
-            if (config.auctionHistory.isEmpty() || !config.auctionHistory.getFirst().equals(search)) {
+			boolean inAuctionHistory = config.auctionHistory.contains(search);
+            if (config.auctionHistory.isEmpty() || !inAuctionHistory) {
                 config.auctionHistory.addFirst(search);
                 if (config.auctionHistory.size() > config.historyLength) {
                     config.auctionHistory = config.auctionHistory.subList(0, config.historyLength);
                 }
             }
+
+			if (inAuctionHistory) {
+				config.auctionHistory.remove(search);
+				config.auctionHistory.addFirst(search);
+			}
         } else {
-            if (config.bazaarHistory.isEmpty() || !config.bazaarHistory.getFirst().equals(search)) {
+			boolean inBazaarHistory = config.bazaarHistory.contains(search);
+            if (config.bazaarHistory.isEmpty() || !inBazaarHistory) {
                 config.bazaarHistory.addFirst(search);
                 if (config.bazaarHistory.size() > config.historyLength) {
                     config.bazaarHistory = config.bazaarHistory.subList(0, config.historyLength);
                 }
             }
+
+			if (inBazaarHistory) {
+				config.bazaarHistory.remove(search);
+				config.bazaarHistory.addFirst(search);
+			}
         }
         SkyblockerConfigManager.save();
     }
