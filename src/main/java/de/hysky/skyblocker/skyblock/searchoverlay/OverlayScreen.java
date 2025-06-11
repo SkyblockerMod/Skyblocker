@@ -266,6 +266,10 @@ public class OverlayScreen extends Screen {
             close();
             return true;
         }
+		if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+			super.close();
+			return true;
+		}
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
