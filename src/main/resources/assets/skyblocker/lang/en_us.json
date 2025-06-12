@@ -106,7 +106,7 @@
 
   "skyblocker.config.dungeons.dungeonChestProfit": "Dungeon Chest Profit Calculator",
   "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit": "Croesus Chest Profit Calculator",
-  "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Highlights chests with the best profit at the Croesus NPC.\n\n\nThe best chest will be highlighted green.\nIf there is a chest worth using dungeon key on, it will be highlighted yellow",
+  "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Highlights chests with the best profit at the Croesus NPC.\n\n\nThe best chest will be highlighted green.\nIf there is a chest worth using dungeon key on, it will be highlighted yellow.",
   "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator": "Enable Profit Calculator",
   "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Displays the profit of a dungeon chest in the chest screen's title.\nGreen if there's profit.\nRed if there isn't profit.\nGray if you don't gain or lose anything.\nBlue if calculations were based on incomplete data.",
   "skyblocker.config.dungeons.dungeonChestProfit.includeEssence": "Include Essence",
@@ -126,7 +126,7 @@
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage": "Dungeon Crypts Message",
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage.@Tooltip": "Message which will be sent in the chat when reaching threshold score before getting 5+ crypts. The string \"[crypts]\" will be replaced with the amount of crypts.",
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold": "Dungeon Crypts Message Threshold",
-  "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Default 270 is intended for S+ runs when you enter at 300+ score - which is usually F5-F7 and M5-M7. \nIf you are running S runs (enter at 270 score) then you should consider lowering this to 250 or less, otherwise it will be useless",
+  "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Default 270 is intended for S+ runs when you enter at 300+ score - which is usually F5-F7 and M5-M7. \nIf you are running S runs (enter at 270 score) then you should consider lowering this to 250 or less, otherwise it will be useless.",
   "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage": "Dungeon Score %d Message",
   "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage.@Tooltip": "Message which will be sent in the chat when reaching %d score in dungeons. The string \"[score]\" will be replaced with the dungeon score (%d).",
   "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage": "Enable Dungeon Crypts Message",
