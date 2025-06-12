@@ -353,7 +353,6 @@
     "skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly": "Gardenのみ",
     "skyblocker.config.general.itemList.filter.all": "すべて",
     "skyblocker.config.farming.garden.pestHighlighter.@Tooltip": "島にいるペストを発光させて見やすくする",
-    "skyblocker.config.farming.visitorHelper": "",
     "skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly.@Tooltip": "Visitor Helperをロックし、Gardenでのみ動作するようにします。\n§cVisitor Helperが有効になっている必要があります。",
     "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper": "Visitor Helperにスタックを表示する",
     "skyblocker.config.farming.garden.closeScreenOnPlotClick": "PlotにTPしたときにインベントリを閉じる",
