@@ -25,6 +25,7 @@ import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
 import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
 import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
 import de.hysky.skyblocker.skyblock.galatea.ForestNodes;
+import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
@@ -152,6 +153,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
 		FishingHelper.onSound(packet);
 		CrystalsChestHighlighter.onSound(packet);
+		TunerSolver.onSound(packet);
 		SoundEvent sound = packet.getSound().value();
 
 		// Mute Enderman sounds in the End
