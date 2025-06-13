@@ -460,6 +460,6 @@
     "skyblocker.config.eventNotifications.criterion.HYPIXEL": "Hypixel",
     "skyblocker.config.eventNotifications.criterion.EVERYWHERE": "全域",
     "skyblocker.config.general.itemList.filter.npcs": "NPC",
-    "skyblocker.config.debug.corpseFinderDebug": "デバッグ死体探知",
+    "skyblocker.config.debug.corpseFinderDebug": "Corpseファインダーのデバッグ",
     "skyblocker.config.debug.dumpRange.@Tooltip": "プレイヤー周囲のエンティティをブロック単位で取得する範囲。"
 }
