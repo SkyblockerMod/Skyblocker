@@ -11,6 +11,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -34,20 +35,6 @@ public class SweepOverlay {
 	private static final int DEFAULT_MAX_WOOD = 0;
 	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile("Sweep:\\s*(?:∮|§[0-9a-fk-or])*(\\d+)");
 	private static final HashMap<Block, Float> TOUGHNESS_MAP = new HashMap<>();
-	private static final Set<Block> LOG_BLOCKS = Set.of(
-			Blocks.OAK_LOG, Blocks.SPRUCE_LOG, Blocks.BIRCH_LOG, Blocks.JUNGLE_LOG,
-			Blocks.ACACIA_LOG, Blocks.CHERRY_LOG, Blocks.DARK_OAK_LOG, Blocks.PALE_OAK_LOG,
-			Blocks.MANGROVE_LOG, Blocks.MANGROVE_ROOTS, Blocks.MUDDY_MANGROVE_ROOTS,
-			Blocks.STRIPPED_SPRUCE_LOG, Blocks.STRIPPED_BIRCH_LOG, Blocks.STRIPPED_JUNGLE_LOG,
-			Blocks.STRIPPED_ACACIA_LOG, Blocks.STRIPPED_CHERRY_LOG, Blocks.STRIPPED_DARK_OAK_LOG,
-			Blocks.STRIPPED_PALE_OAK_LOG, Blocks.STRIPPED_OAK_LOG, Blocks.STRIPPED_MANGROVE_LOG,
-			Blocks.STRIPPED_BAMBOO_BLOCK, Blocks.OAK_WOOD, Blocks.SPRUCE_WOOD, Blocks.BIRCH_WOOD,
-			Blocks.JUNGLE_WOOD, Blocks.ACACIA_WOOD, Blocks.CHERRY_WOOD, Blocks.DARK_OAK_WOOD,
-			Blocks.MANGROVE_WOOD, Blocks.STRIPPED_OAK_WOOD, Blocks.STRIPPED_SPRUCE_WOOD,
-			Blocks.STRIPPED_BIRCH_WOOD, Blocks.STRIPPED_JUNGLE_WOOD, Blocks.STRIPPED_ACACIA_WOOD,
-			Blocks.STRIPPED_CHERRY_WOOD, Blocks.STRIPPED_DARK_OAK_WOOD, Blocks.STRIPPED_PALE_OAK_WOOD,
-			Blocks.STRIPPED_MANGROVE_WOOD
-	);
 	private static final Set<String> VALID_AXES = Set.of(
 			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE",
 			"ROOKIE_AXE", "PROMISING_AXE", "SWEET_AXE", "EFFICIENT_AXE"
@@ -62,7 +49,7 @@ public class SweepOverlay {
 			new BlockPos(-1, 1, -1),  new BlockPos(-1, 1, 0),  new BlockPos(-1, 1, 1),
 
 			new BlockPos(0, -1, -1),  new BlockPos(0, -1, 0),  new BlockPos(0, -1, 1),
-			new BlockPos(0, 0, -1),   						   new BlockPos(0, 0, 1),
+			new BlockPos(0, 0, -1),   						   		   new BlockPos(0, 0, 1),
 			new BlockPos(0, 1, -1),   new BlockPos(0, 1, 0),   new BlockPos(0, 1, 1),
 
 			new BlockPos(1, -1, -1),  new BlockPos(1, -1, 0),  new BlockPos(1, -1, 1),
@@ -131,7 +118,7 @@ public class SweepOverlay {
 
 		if (blockHitResult != null) {
 			BlockState state = client.world.getBlockState(blockHitResult.getBlockPos());
-			if (isLog(state.getBlock())) {
+			if (isLog(state)) {
 				renderConnectedLogs(wrc, blockHitResult, state, isThrown);
 			}
 		}
@@ -140,11 +127,11 @@ public class SweepOverlay {
 	/**
 	 * Checks if a block is a log or wood type that can be chopped.
 	 *
-	 * @param block the block to check
+	 * @param state the block to check
 	 * @return true if the block is a valid log or wood type
 	 */
-	private static boolean isLog(Block block) {
-		return LOG_BLOCKS.contains(block);
+	private static boolean isLog(BlockState state) {
+		return state.isIn(BlockTags.LOGS);
 	}
 
 	/**
@@ -237,7 +224,7 @@ public class SweepOverlay {
 		while (woodCount < maxWood && !queue.isEmpty()) {
 			BlockPos pos = queue.poll();
 			BlockState currentState = world.getBlockState(pos);
-			if (!isLog(currentState.getBlock())) continue;
+			if (!isLog(currentState)) continue;
 
 			woodCount++;
 			RenderHelper.renderFilled(wrc, pos, renderColor, renderColor[3], false);
@@ -246,7 +233,7 @@ public class SweepOverlay {
 				BlockPos neighbor = pos.add(offset);
 				if (visited.contains(neighbor) || queue.contains(neighbor)) continue;
 
-				if (isLog(world.getBlockState(neighbor).getBlock())) {
+				if (isLog(world.getBlockState(neighbor))) {
 					queue.add(neighbor);
 					visited.add(neighbor);
 				}
