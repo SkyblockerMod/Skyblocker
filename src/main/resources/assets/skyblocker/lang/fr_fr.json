@@ -129,7 +129,6 @@
     "skyblocker.config.general.itemInfoDisplay": "Affichage des infos d'item",
     "skyblocker.config.general.itemTooltip.enableMotesPrice": "Activer le prix des motes",
     "skyblocker.config.general.chestValue.@Tooltip": "Calcule la valeur du contenant.",
-
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle": "Style de Fond de Rareté d'Item",
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.@Tooltip": "Choisit entre un style rond ou carré !",
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundOpacity": "Opacité du Fond de Rareté d'Item",
@@ -137,7 +136,6 @@
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style.SQUARE": "Carré",
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds": "Fond de Rareté d'Item",
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Affiche un fond coloré derrière les objets, la couleur représente la rareté de l'objet.",
-
     "skyblocker.config.uiAndVisuals.teleportOverlay.enableTeleportOverlays": "Activer l'overlay de téléportation",
     "skyblocker.config.uiAndVisuals.teleportOverlay": "Overlay de téléportation",
     "skyblocker.config.uiAndVisuals.itemCooldown": "Temps d'attente pour utiliser l'objet",
@@ -565,5 +563,20 @@
     "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "Affiche une estimation de la valeur totale de l'item dans le tooltip, §lce n'est pas forcément 100% précis tout le temps.§r\n\nEn vendant des items, vérifiez toujours manuellement le prix !",
     "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "Ajoute un effet visuel spécial activé en obtenant un colorant rare !",
     "skyblocker.config.dungeons.secretWaypoints.enableFairySoulWaypoints": "Activer les Waypoints de Fairy Soul",
-    "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Taille du Score"
+    "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Taille du Score",
+    "skyblocker.bars.config.explanationTitle": "C'est quoi ?",
+    "skyblocker.slayer.personalBest": "NOUVEAU RECCORD !",
+    "skyblocker.waypoints.importWaypointsSkyblocker": "Importer des Waypoints (Skyblocker)",
+    "skyblocker.waypoints.importWaypointsSkyblocker.tooltip": "Importer des Waypoints depuis le presse-papier (Format Skyblocker)",
+    "skyblocker.config.uiAndVisuals.titleContainer.alignment.LEFT": "Gauche",
+    "skyblocker.config.uiAndVisuals.titleContainer.alignment.RIGHT": "Droite",
+    "skyblocker.config.uiAndVisuals.titleContainer.alignment.MIDDLE": "Milieu",
+    "skyblocker.config.uiAndVisuals.titleContainer.direction.HORIZONTAL": "Horizontal",
+    "skyblocker.config.uiAndVisuals.titleContainer.direction.VERTICAL": "Vertical",
+    "skyblocker.config.uiAndVisuals.waypoints.waypointType": "Type de Waypoint",
+    "skyblocker.slayer.miniBossSpawnAlert": "Mini Boss",
+    "skyblocker.slayer.previousPB": "Votre record précédent était %d.",
+    "skyblocker.waypoints.newGroup": "Nouveau groupe de Wayopints",
+    "skyblocker.waypoints.exportWaypointsSkyblocker": "Exporter des Waypoints (Skyblocker)",
+    "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "Exporter des Waypoints depuis le presse-papier (Format Skyblocker)"
 }
