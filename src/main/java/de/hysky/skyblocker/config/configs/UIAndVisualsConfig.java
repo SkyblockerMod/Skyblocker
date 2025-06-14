@@ -2,13 +2,11 @@ package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.StringIdentifiable;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -218,10 +216,10 @@ public class UIAndVisualsConfig {
         public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
 
         @Deprecated
-        public boolean plainPlayerNames = false;
+        public transient boolean plainPlayerNames = false;
 
         @Deprecated
-        public NameSorting nameSorting = NameSorting.DEFAULT;
+        public transient NameSorting nameSorting = NameSorting.DEFAULT;
     }
 
 	public enum TabHudStyle {
@@ -480,8 +478,5 @@ public class UIAndVisualsConfig {
 
 		@SerialEntry
 		public int lifeTime = 3;
-
-
-
 	}
 }
