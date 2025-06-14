@@ -106,7 +106,7 @@
 
   "skyblocker.config.dungeons.dungeonChestProfit": "Dungeon Chest Profit Calculator",
   "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit": "Croesus Chest Profit Calculator",
-  "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Highlights chests with the best profit at the Croesus NPC.\n\n\nThe best chest will be highlighted green.\nIf there is a chest worth using dungeon key on, it will be highlighted yellow",
+  "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Highlights chests with the best profit at the Croesus NPC.\n\n\nThe best chest will be highlighted green.\nIf there is a chest worth using dungeon key on, it will be highlighted yellow.",
   "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator": "Enable Profit Calculator",
   "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Displays the profit of a dungeon chest in the chest screen's title.\nGreen if there's profit.\nRed if there isn't profit.\nGray if you don't gain or lose anything.\nBlue if calculations were based on incomplete data.",
   "skyblocker.config.dungeons.dungeonChestProfit.includeEssence": "Include Essence",
@@ -126,7 +126,7 @@
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage": "Dungeon Crypts Message",
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage.@Tooltip": "Message which will be sent in the chat when reaching threshold score before getting 5+ crypts. The string \"[crypts]\" will be replaced with the amount of crypts.",
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold": "Dungeon Crypts Message Threshold",
-  "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Default 270 is intended for S+ runs when you enter at 300+ score - which is usually F5-F7 and M5-M7. \nIf you are running S runs (enter at 270 score) then you should consider lowering this to 250 or less, otherwise it will be useless",
+  "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Default 270 is intended for S+ runs when you enter at 300+ score - which is usually F5-F7 and M5-M7. \nIf you are running S runs (enter at 270 score) then you should consider lowering this to 250 or less, otherwise it will be useless.",
   "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage": "Dungeon Score %d Message",
   "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage.@Tooltip": "Message which will be sent in the chat when reaching %d score in dungeons. The string \"[score]\" will be replaced with the dungeon score (%d).",
   "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage": "Enable Dungeon Crypts Message",
@@ -433,7 +433,7 @@
   "skyblocker.config.helpers.enableNewYearCakesHelper": "Enable New Year Cakes Helper",
   "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "Highlights the missing new year cakes green and the cakes you have already red.\n\nRequires you to open your cake bag at least once to work.",
   "skyblocker.config.helpers.enableBitsHelper": "Highlight best Community Store (Bits Shop) offer",
-  "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip",
+  "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip.",
 
   "skyblocker.config.helpers.enableWardrobeHelper": "Enable Wardrobe Helper",
   "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing armor from the wardrobe by pressing hotbar keys 1-9 while the menu is open. The corresponding armor set in the wardrobe menu will be equipped.",
@@ -708,7 +708,7 @@
   "skyblocker.config.mining.glacite.autoShareCorpses": "Automatically Share Found Corpses In Chat",
   "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "Sends a message in party chat with the location of the found corpse when you find one.",
   "skyblocker.config.mining.glacite.enableCorpseProfitTracker": "Enable Corpse Profit Tracker",
-  "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": "Tracks the profit and the loot you get from corpses. Shows the profit in chat when looting a corpse, and has a command to see your history of corpse loot in /skyblocker rewardTrackers corpse list",
+  "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": "Tracks the profit and the loot you get from corpses. Shows the profit in chat when looting a corpse, and has a command to see your history of corpse loot in /skyblocker rewardTrackers corpse list.",
 
   "skyblocker.config.mining.glacite.fossilSolver": "Fossil Solver",
   "skyblocker.config.mining.glacite.fossilSolver.@Tooltip": "Helps find fossils in the Fossil Excavator",
