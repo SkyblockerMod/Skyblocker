@@ -191,7 +191,7 @@ public final class ItemUtils {
             case "NEW_YEAR_CAKE" -> {
                 return id + "_" + customData.getInt("new_years_cake", 0);
             }
-            case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024" -> {
+            case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> {
                 return id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
             }
             case "PARTY_HAT_SLOTH" -> {
@@ -257,7 +257,7 @@ public final class ItemUtils {
             }
             case "POTION" -> "POTION_" + customData.getString("potion", "").toUpperCase(Locale.ENGLISH) + ";" + customData.getInt("potion_level", 0);
             case "ATTRIBUTE_SHARD" -> "ATTRIBUTE_SHARD";
-            case "PARTY_HAT_CRAB", "BALLOON_HAT_2024" -> id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
+            case "PARTY_HAT_CRAB", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
             case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH) + "_ANIMATED";
             case "PARTY_HAT_SLOTH" -> id + "_" + customData.getString("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
             default -> id.replace(":", "-");
