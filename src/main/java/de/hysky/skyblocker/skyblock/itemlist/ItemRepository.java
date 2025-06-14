@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
@@ -70,7 +69,7 @@ public class ItemRepository {
         }
     }
 
-    public static String getWikiLink(String neuId) {
+    public static String getWikiLink(String neuId, boolean useOfficial) {
         NEUItem item = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(neuId);
         if (item == null || item.getInfo() == null || item.getInfo().isEmpty()) {
             return null;
@@ -79,7 +78,7 @@ public class ItemRepository {
         List<String> info = item.getInfo();
         String wikiLink0 = info.getFirst();
         String wikiLink1 = info.size() > 1 ? info.get(1) : "";
-        String wikiDomain = SkyblockerConfigManager.get().general.wikiLookup.officialWiki ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
+        String wikiDomain = useOfficial ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
         if (wikiLink0.startsWith(wikiDomain)) {
             return wikiLink0;
         } else if (wikiLink1.startsWith(wikiDomain)) {

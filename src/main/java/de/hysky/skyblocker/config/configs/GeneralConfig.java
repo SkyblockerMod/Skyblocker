@@ -252,8 +252,8 @@ public class GeneralConfig {
         @SerialEntry
         public boolean enableWikiLookup = true;
 
-        @SerialEntry
-        public boolean officialWiki = true;
+		@Deprecated
+		public transient boolean officialWiki = true;
     }
 
     public static class SpecialEffects {
