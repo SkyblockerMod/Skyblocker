@@ -17,6 +17,8 @@ import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.CompletableFuture;
+
 public class WikiLookup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WikiLookup.class);
 	public static KeyBinding officialWikiLookup;
@@ -44,20 +46,12 @@ public class WikiLookup {
 	}
 
 	public static void openWiki(ItemStack stack, PlayerEntity player, boolean useOfficial) {
-		String neuId = ItemUtils.getItemId(stack);
-		String wikiLink = ItemRepository.getWikiLink(neuId, useOfficial);
-
-		if (wikiLink == null) {
-			Text message = useOfficial ? Text.translatable("skyblocker.wikiLookup.noArticleFound.official") : Text.translatable("skyblocker.wikiLookup.noArticleFound.fandom");
-			player.sendMessage(Constants.PREFIX.get().append(message), false);
-			return;
-		}
-
-		try {
-			Util.getOperatingSystem().open(wikiLink);
-		} catch (Exception e) {
-			LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
-			player.sendMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
-		}
+		ItemUtils.getItemIdOptional(stack)
+				.map(neuId -> ItemRepository.getWikiLink(neuId, useOfficial))
+				.ifPresentOrElse(wikiLink -> CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink)).exceptionally(e -> {
+					LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
+					player.sendMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
+					return null;
+				}), () -> player.sendMessage(Constants.PREFIX.get().append(useOfficial ? Text.translatable("skyblocker.wikiLookup.noArticleFound.official") : Text.translatable("skyblocker.wikiLookup.noArticleFound.fandom")), false));
 	}
 }
