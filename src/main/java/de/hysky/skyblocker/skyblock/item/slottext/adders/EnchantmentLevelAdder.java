@@ -182,12 +182,14 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_combo", "CO");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_reiterate", "D"); // Duplex
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_fatal_tempo", "FT");
+		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_first_impression", "FI");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_flash", "F");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_flowstate", "FL");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_habanero_tactics", "HT");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_inferno", "I");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_last_stand", "LS");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_legion", "L");
+		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_missile", "M");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_no_pain_no_gain", "NP");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_one_for_all", "O");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_refrigerate", "RF");
