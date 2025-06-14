@@ -21,7 +21,7 @@ import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
 public class OverlayScreen extends Screen {
 
     protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.ofVanilla("icon/search");
-	protected static final Identifier DELETE_ICON_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/delete.png");
+	protected static final Identifier DELETE_ICON_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/pending_invite/reject.png");
     private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("social_interactions/background");
     private static final int rowHeight = 20;
 	private static final int specialButtonSize = rowHeight;
@@ -238,7 +238,7 @@ public class OverlayScreen extends Screen {
         }
 		for (ButtonWidget deleteButton : deleteButtons) {
 			if (deleteButton == null) continue;
-			context.drawTexture(RenderLayer::getGuiTextured, DELETE_ICON_TEXTURE, deleteButton.getX() + renderOffset + 4, deleteButton.getY() + renderOffset + 4, 0, 0, 8, 8, 8, 8);
+			context.drawTexture(RenderLayer::getGuiTextured, DELETE_ICON_TEXTURE, deleteButton.getX() + renderOffset, deleteButton.getY() + renderOffset, 0, 0, 16, 16, 16, 16);
 		}
     }
 
