@@ -38,6 +38,7 @@
     "MouseMixin",
     "MushroomPlantBlockMixin",
     "PingMeasurerMixin",
+    "PlayerEntityMixin",
     "PlayerInventoryMixin",
     "PlayerListHudMixin",
     "PlayerSkinProviderMixin",
