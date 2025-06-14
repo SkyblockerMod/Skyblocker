@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import com.demonwav.mcdev.annotations.Translatable;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
@@ -98,6 +99,16 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	public final void addSimpleIcoText(ItemStack ico, String string, Formatting fmt, String content) {
 		Text txt = simpleEntryText(content, string, fmt);
 		this.addComponent(Components.iconTextComponent(ico, txt));
+	}
+
+	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, Formatting formatting, String content) {
+		Text text = simpleEntryTranslatableText(translationKey, content, formatting);
+		this.addComponent(new IcoTextComponent(icon, text));
+	}
+
+	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, Formatting formatting, Text content) {
+		Text text = simpleEntryTranslatableText(translationKey, content, formatting);
+		this.addComponent(new IcoTextComponent(icon, text));
 	}
 
 	@Override
@@ -201,6 +212,14 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 */
 	public static Text simpleEntryText(String entryContent, String entryName, Formatting contentFmt) {
 		return Text.literal(entryName).append(Text.literal(entryContent).formatted(contentFmt));
+	}
+
+	public static Text simpleEntryTranslatableText(String translationKey, String content, Formatting contentFormatting) {
+		return Text.translatable(translationKey, Text.literal(content).formatted(contentFormatting));
+	}
+
+	public static Text simpleEntryTranslatableText(String translationKey, Text content, Formatting contentFormatting) {
+		return Text.translatable(translationKey, content.copy().formatted(contentFormatting));
 	}
 
 	/**
