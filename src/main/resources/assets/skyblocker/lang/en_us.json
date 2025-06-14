@@ -196,7 +196,9 @@
   "skyblocker.config.dungeons.puzzle.solveTicTacToe.@Tooltip": "Puts a red box around the next best move for you to make!",
   "skyblocker.config.dungeons.puzzle.solveTrivia": "Solve Trivia Puzzle",
   "skyblocker.config.dungeons.puzzle.solveWaterboard": "Solve Waterboard Puzzle",
-  "skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip": "Click the levers with green boxes to solve the puzzle.",
+  "skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip": "Click the indicated levers at the correct times to solve the puzzle.",
+  "skyblocker.config.dungeons.puzzle.previewWaterPath": "Waterboard: Preview Water Path",
+  "skyblocker.config.dungeons.puzzle.previewLeverEffects": "Waterboard: Preview Lever Effects",
 
   "skyblocker.config.dungeons.salvageHelper": "Salvage Helper",
   "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Highlights items picked up in dungeons that can be salvaged.",
@@ -1120,6 +1122,8 @@
   "skyblocker.dungeons.secrets.customWaypointNotFound": "§cNo custom waypoint found at X: %d, Y: %d, Z: %d for room %s.",
   "skyblocker.dungeons.dungeonScore.scoreText": "Score: %s",
   "skyblocker.dungeons.puzzle.boulder.noSolution": "No solution found!",
+  "skyblocker.dungeons.puzzle.waterboard.invalidDoors": "Doors are in an unrecognized state. Make sure exactly three doors are closed, then reset the solver.",
+  "skyblocker.dungeons.puzzle.waterboard.waterFound": "Water must be toggled off or it will interfere with the solution. Turn the water off and let it drain, then reset the solver.",
 
   "skyblocker.dungeons.secretsTracker.feedback": "%s§f found %s§f secrets. %s",
   "skyblocker.dungeons.secretsTracker.failFeedback": "§cUnable to calculate the number of secrets everybody did this run!",
