@@ -15,15 +15,13 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.AbstractWaypointEntry> {
     private final AbstractWaypointsScreen<?> screen;
     private Location island;
     private List<WaypointGroup> waypoints;
+	private final Set<WaypointGroup> collapsedGroups = new HashSet<>();
 
     public WaypointsListWidget(MinecraftClient client, AbstractWaypointsScreen<?> screen, int width, int height, int y, int itemHeight) {
         super(client, width, height, y, itemHeight);
@@ -33,7 +31,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
     @Override
     public int getRowWidth() {
-        return super.getRowWidth() + 100;
+        return super.getRowWidth() + 110;
     }
 
     @Override
@@ -53,6 +51,8 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
     void setIsland(Location island) {
         this.island = island;
         waypoints = (List<WaypointGroup>) screen.waypoints.get(island);
+		collapsedGroups.clear();
+		collapsedGroups.addAll(waypoints);
         updateEntries();
     }
 
@@ -76,8 +76,10 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
     void updateEntries() {
         clearEntries();
         for (WaypointGroup group : waypoints) {
-            WaypointGroupEntry groupEntry = new WaypointGroupEntry(group);
+			boolean collapsed = collapsedGroups.contains(group);
+			WaypointGroupEntry groupEntry = new WaypointGroupEntry(group, collapsed);
             addEntry(groupEntry);
+			if (collapsed) continue;
             for (NamedWaypoint waypoint : group.waypoints()) {
                 addEntry(new WaypointEntry(groupEntry, waypoint));
             }
@@ -109,12 +111,13 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         private final CheckboxWidget ordered;
         private final ButtonWidget buttonNewWaypoint;
         private final ButtonWidget buttonDelete;
+		private final ButtonWidget collapseWaypoint;
 
         public WaypointGroupEntry() {
-            this(new WaypointGroup("New Group", island, new ArrayList<>()));
+            this(new WaypointGroup("New Group", island, new ArrayList<>()), false);
         }
 
-        public WaypointGroupEntry(WaypointGroup group) {
+        public WaypointGroupEntry(WaypointGroup group, boolean collapsed) {
             this.group = group;
             enabled = CheckboxWidget.builder(Text.literal(""), client.textRenderer).checked(shouldBeChecked()).callback((checkbox, checked) -> group.waypoints().forEach(waypoint -> screen.enabledChanged(waypoint, checked))).build();
             nameField = new TextFieldWidget(client.textRenderer, 70, 20, Text.literal("Name"));
@@ -122,7 +125,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             nameField.setChangedListener(this::updateName);
             ordered = CheckboxWidget.builder(Text.literal("Ordered"), client.textRenderer).checked(group.ordered()).callback((checkbox, checked) -> updateOrdered(checked)).build();
             buttonNewWaypoint = ButtonWidget.builder(Text.translatable("skyblocker.waypoints.new"), buttonNewWaypoint -> {
-                WaypointEntry waypointEntry = new WaypointEntry(this);
+				WaypointEntry waypointEntry = new WaypointEntry(this);
                 int entryIndex;
                 if (getSelectedOrNull() instanceof WaypointEntry selectedWaypointEntry && selectedWaypointEntry.groupEntry == this) {
                     entryIndex = WaypointsListWidget.this.children().indexOf(selectedWaypointEntry) + 1;
@@ -134,6 +137,10 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
                 }
                 group.waypoints().add(waypointEntry.waypoint);
                 WaypointsListWidget.this.children().add(entryIndex, waypointEntry);
+				if (collapsed) {
+					collapsedGroups.remove(group);
+					updateEntries();
+				}
             }).width(72).build();
             buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.deleteButton"), buttonDelete -> {
                 int entryIndex = WaypointsListWidget.this.children().indexOf(this) + 1;
@@ -143,7 +150,12 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
                 WaypointsListWidget.this.children().remove(this);
                 waypoints.remove(group);
             }).width(38).build();
-            children = List.of(enabled, nameField, ordered, buttonNewWaypoint, buttonDelete);
+			Text arrow = Text.of(collapsed ? "▼" :"▲");
+			collapseWaypoint = ButtonWidget.builder(arrow, button -> {
+				if (collapsed) collapsedGroups.remove(group); else collapsedGroups.add(group);
+				updateEntries();
+			}).size(11, 11).build();
+            children = List.of(enabled, nameField, ordered, buttonNewWaypoint, buttonDelete, collapseWaypoint);
         }
 
         @Override
@@ -178,8 +190,9 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            enabled.setPosition(x, y + 1);
-            nameField.setPosition(x + 22, y);
+			collapseWaypoint.setPosition(x, y + (entryHeight - collapseWaypoint.getHeight()) / 2);
+			enabled.setPosition(x + 12, y + 1);
+            nameField.setPosition(x + 34, y);
             ordered.setPosition(x + entryWidth - 190, y + 1);
             buttonNewWaypoint.setPosition(x + entryWidth - 115, y);
             buttonDelete.setPosition(x + entryWidth - 38, y);
@@ -319,8 +332,8 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             context.drawTextWithShadow(client.textRenderer, "Y:", width / 2 - 19, y + 6, 0xFFFFFF);
             context.drawTextWithShadow(client.textRenderer, "Z:", width / 2 + 18, y + 6, 0xFFFFFF);
             context.drawTextWithShadow(client.textRenderer, "#", x + entryWidth - 105, y + 6, 0xFFFFFF);
-            enabled.setPosition(x + 10, y + 1);
-            nameField.setPosition(x + 32, y);
+            enabled.setPosition(x + 20, y + 1);
+            nameField.setPosition(x + 42, y);
             xField.setPosition(width / 2 - 48, y);
             yField.setPosition(width / 2 - 11, y);
             zField.setPosition(width / 2 + 26, y);
