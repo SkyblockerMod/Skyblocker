@@ -44,6 +44,9 @@ public class UIAndVisualsConfig {
     @SerialEntry
     public boolean cancelComponentUpdateAnimation = true;
 
+	@SerialEntry
+	public boolean trueQuiverCount = true;
+
     @SerialEntry
     public ChestValue chestValue = new ChestValue();
 
@@ -290,7 +293,7 @@ public class UIAndVisualsConfig {
 	public enum IntelligenceDisplay {
 		ORIGINAL,
 		ACCURATE,
-		IN_FRONT;
+		IN_FRONT
 	}
 
     /**
