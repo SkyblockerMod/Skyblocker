@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
@@ -32,6 +33,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class SearchOverManager {
@@ -71,16 +73,27 @@ public class SearchOverManager {
 
     private static void registerSearchCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableCommands) {
-            dispatcher.register(literal("ahs").executes(context -> startCommand(true)));
-            dispatcher.register(literal("bzs").executes(context -> startCommand(false)));
+            dispatcher.register(literal("ahs").executes(context -> startCommand(true, "")));
+            dispatcher.register(literal("bzs").executes(context -> startCommand(false, "")));
+
+			dispatcher.register(literal("ahs").then(argument("item", StringArgumentType.greedyString())
+				.executes(context -> startCommand(true, StringArgumentType.getString(context, "item"))
+			)));
+			dispatcher.register(literal("bzs").then(argument("item", StringArgumentType.greedyString())
+				.executes(context -> startCommand(false, StringArgumentType.getString(context, "item"))
+			)));
         }
     }
 
-    private static int startCommand(boolean isAuction) {
+    private static int startCommand(boolean isAuction, String itemName) {
         isCommand = true;
         SearchOverManager.isAuction = isAuction;
         search = "";
         suggestionsArray = new String[]{};
+		if (!itemName.isEmpty()) {
+			updateSearch(itemName);
+		}
+
         CLIENT.send(() -> CLIENT.setScreen(new OverlayScreen(Text.of(""))));
         return Command.SINGLE_SUCCESS;
     }
