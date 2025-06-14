@@ -28,7 +28,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         //add labels
         addEntry(new ChatRuleLabelsEntry());
         //add entry fall all existing rules
-        for (int i = 0; i < ChatRulesHandler.chatRuleList.size(); i++){
+        for (int i = 0; i < ChatRulesHandler.chatRuleList.getData().size(); i++){
             addEntry(new ChatRuleConfigEntry(i));
         }
     }
@@ -47,7 +47,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         hasChanged = true;
         int newIndex = Math.max(children().indexOf(getSelectedOrNull()), 0);
 
-        ChatRulesHandler.chatRuleList.add(newIndex, new ChatRule());
+        ChatRulesHandler.chatRuleList.getData().add(newIndex, new ChatRule());
         children().add(newIndex + 1, new ChatRuleConfigEntry(newIndex));
     }
 
@@ -109,7 +109,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
         public ChatRuleConfigEntry(int chatRuleIndex) {
             this.chatRuleIndex = chatRuleIndex;
-            this.chatRule = ChatRulesHandler.chatRuleList.get(chatRuleIndex);
+            this.chatRule = ChatRulesHandler.chatRuleList.getData().get(chatRuleIndex);
 
             enabledButton = ButtonWidget.builder(enabledButtonText(), a -> toggleEnabled())
                     .size(50, 20)
@@ -149,8 +149,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
         private void deleteEntry(boolean confirmedAction) {
             if (confirmedAction) {
-                //delete this
-                ChatRulesHandler.chatRuleList.remove(chatRuleIndex);
+                ChatRulesHandler.chatRuleList.getData().remove(chatRuleIndex);
                 removeEntry(this);
             }
 
@@ -192,7 +191,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         }
 
         public boolean isChange() {
-            return chatRule.getEnabled() != ChatRulesHandler.chatRuleList.get(chatRuleIndex).getEnabled();
+            return chatRule.getEnabled() != ChatRulesHandler.chatRuleList.getData().get(chatRuleIndex).getEnabled();
         }
     }
 }
