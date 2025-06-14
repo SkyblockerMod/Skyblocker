@@ -1233,5 +1233,7 @@
     "skyblocker.config.farming.general.coinsPerHour": "每小时收获作物：%s",
     "skyblocker.config.farming.general.cropsPerMin": "每分钟收获作物：%s",
     "skyblocker.config.farming.general.farmingXPPerHour": "每小时农耕经验值：%s",
-    "skyblocker.config.farming.general.noData": "无数据"
+    "skyblocker.config.farming.general.noData": "无数据",
+    "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "显示需要旋转陶瓦的次数。正数时右键，负数时左键。",
+    "skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip": "在精粹商店中显示等级和你当前的精粹数量。"
 }
