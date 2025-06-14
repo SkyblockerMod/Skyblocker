@@ -1212,7 +1212,7 @@
   "skyblocker.waypoints.importWaypointsSkyblocker": "Import Waypoints (Skyblocker)",
   "skyblocker.waypoints.importWaypointsSkyblocker.tooltip": "Import Waypoints from Clipboard (Skyblocker Format)",
   "skyblocker.waypoints.exportWaypointsSkyblocker": "Export Waypoints (Skyblocker)",
-  "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "Export Waypoints from Clipboard (Skyblocker Format)",
+  "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "Export Waypoints to Clipboard (Skyblocker Format)",
   "skyblocker.waypoints.importWaypointsSkytils": "Import Waypoints (Skytils)",
   "skyblocker.waypoints.importWaypointsSkytils.tooltip": "Import Waypoints from Clipboard (Skytils Format)",
   "skyblocker.waypoints.importWaypointsSnoopy": "Import Waypoints (Snoopy)",
