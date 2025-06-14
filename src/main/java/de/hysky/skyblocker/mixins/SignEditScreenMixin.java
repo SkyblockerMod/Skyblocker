@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.mixins;
 
 
+import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import de.hysky.skyblocker.skyblock.speedPreset.SpeedPresets;
@@ -8,6 +9,7 @@ import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.AbstractSignEditScreen;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Final;
@@ -17,8 +19,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractSignEditScreen.class)
@@ -55,14 +55,9 @@ public abstract class SignEditScreenMixin extends Screen {
 
 	@Inject(method = "keyPressed", at = @At("HEAD"))
 	private void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-		// enter key
-		if (keyCode != 257 || !Utils.isOnSkyblock() || !isInputSign()) {
-			return;
-		}
-
-		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.closeSignsWithEnter) {
-			this.close();
-		}
+		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.closeSignsWithEnter
+				&& Utils.isOnSkyblock() && isInputSign()
+				&& (keyCode == InputUtil.GLFW_KEY_ENTER || keyCode == InputUtil.GLFW_KEY_KP_ENTER)) this.close();
 	}
 
     @Inject(method = "finishEditing", at = @At("HEAD"))
