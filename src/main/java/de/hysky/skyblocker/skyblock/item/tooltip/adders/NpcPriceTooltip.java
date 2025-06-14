@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -13,10 +14,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.OptionalInt;
 
+@RegisterTooltipAdder(priority = -10)
 public class NpcPriceTooltip extends SimpleTooltipAdder {
 
-	public NpcPriceTooltip(int priority) {
-		super(priority);
+	public NpcPriceTooltip() {
+		super();
 	}
 
 	@Override

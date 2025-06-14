@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
@@ -12,12 +13,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@RegisterTooltipAdder(priority = -900)
 public class SupercraftReminder extends SimpleTooltipAdder {
 	private static final byte SUPERCRAFT_SLOT = 32;
 	private static final byte RECIPE_RESULT_SLOT = 25;
 
 	public SupercraftReminder() {
-		super(Pattern.compile("^.+ Recipe$"), Integer.MIN_VALUE);
+		super(Pattern.compile("^.+ Recipe$"));
 	}
 
 	@Override

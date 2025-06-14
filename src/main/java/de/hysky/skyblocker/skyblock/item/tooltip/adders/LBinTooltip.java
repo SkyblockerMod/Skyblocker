@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -11,9 +12,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@RegisterTooltipAdder(priority = -8)
 public class LBinTooltip extends SimpleTooltipAdder {
-    public LBinTooltip(int priority) {
-		super(priority);
+    public LBinTooltip() {
+		super();
 	}
 
 	@Override

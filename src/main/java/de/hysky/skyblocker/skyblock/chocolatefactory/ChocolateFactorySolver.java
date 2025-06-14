@@ -1,5 +1,8 @@
 package de.hysky.skyblocker.skyblock.chocolatefactory;
 
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
+import de.hysky.skyblocker.annotations.RegisterSlotTextAdder;
+import de.hysky.skyblocker.annotations.RegisterTooltipAdder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
@@ -70,6 +73,9 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	private static StraySound ding = StraySound.NONE;
 	private static int dingTick = 0;
 
+	@RegisterContainerSolver
+	@RegisterTooltipAdder
+	@RegisterSlotTextAdder(priority = -10)
 	public static final ChocolateFactorySolver INSTANCE = new ChocolateFactorySolver();
 
 	private ChocolateFactorySolver() {
@@ -356,11 +362,6 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 
 	private MutableText formatTime(double seconds) {
 		return SkyblockTime.formatTime(seconds).formatted(Formatting.GOLD);
-	}
-
-	@Override
-	public int getPriority() {
-		return 0; //The priority doesn't really matter here as this is the only tooltip adder for the Chocolate Factory.
 	}
 
 	// ======== Slot Text Adder ========
