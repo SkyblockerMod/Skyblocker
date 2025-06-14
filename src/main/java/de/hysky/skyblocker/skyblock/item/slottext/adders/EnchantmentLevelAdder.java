@@ -32,7 +32,7 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 
 	static {
 		// Normal enchants (A - Z)
-        	ENCHANTMENT_ABBREVIATIONS.put("absorb", "AB");
+        ENCHANTMENT_ABBREVIATIONS.put("absorb", "AB");
 		ENCHANTMENT_ABBREVIATIONS.put("angler", "AN");
 		ENCHANTMENT_ABBREVIATIONS.put("aqua_affinity", "AA");
 		ENCHANTMENT_ABBREVIATIONS.put("arcane", "AR");
