@@ -297,28 +297,26 @@ public class SearchOverManager {
         //save to history
         UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
         if (isAuction) {
-			boolean inAuctionHistory = config.auctionHistory.contains(search);
-            if (config.auctionHistory.isEmpty() || !inAuctionHistory) {
+            if (config.auctionHistory.isEmpty() || !config.auctionHistory.contains(search)) {
+				// Add new search to history
                 config.auctionHistory.addFirst(search);
-                if (config.auctionHistory.size() > config.historyLength) {
-                    config.auctionHistory = config.auctionHistory.subList(0, config.historyLength);
-                }
-            }
-
-			if (inAuctionHistory) {
+				if (config.auctionHistory.size() > config.historyLength) {
+					config.auctionHistory = config.auctionHistory.subList(0, config.historyLength);
+				}
+            } else {
+				// Move existing search to the top of the history list
 				config.auctionHistory.remove(search);
 				config.auctionHistory.addFirst(search);
 			}
         } else {
-			boolean inBazaarHistory = config.bazaarHistory.contains(search);
-            if (config.bazaarHistory.isEmpty() || !inBazaarHistory) {
+            if (config.bazaarHistory.isEmpty() || !config.bazaarHistory.contains(search)) {
+				// Add new search to history
                 config.bazaarHistory.addFirst(search);
-                if (config.bazaarHistory.size() > config.historyLength) {
-                    config.bazaarHistory = config.bazaarHistory.subList(0, config.historyLength);
-                }
-            }
-
-			if (inBazaarHistory) {
+				if (config.bazaarHistory.size() > config.historyLength) {
+					config.bazaarHistory = config.bazaarHistory.subList(0, config.historyLength);
+				}
+            } else {
+				// Move existing search to the top of the history list
 				config.bazaarHistory.remove(search);
 				config.bazaarHistory.addFirst(search);
 			}
