@@ -69,7 +69,7 @@ public class ItemRepository {
         }
     }
 
-    public static String getWikiLink(String neuId, Boolean useOfficial) {
+    public static String getWikiLink(String neuId, boolean useOfficial) {
         NEUItem item = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(neuId);
         if (item == null || item.getInfo() == null || item.getInfo().isEmpty()) {
             return null;
