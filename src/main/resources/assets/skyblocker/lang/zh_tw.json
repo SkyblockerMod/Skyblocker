@@ -1144,7 +1144,7 @@
     "skyblocker.config.helpers.fishing.enableFishingHookDisplay.@Tooltip": "將skyblock魚鉤的計時器顯示在螢幕中央而非浮標上方。",
     "skyblocker.config.helpers.fishing.enableFishingHookDisplay": "啟用魚鉤顯示",
     "skyblocker.config.foraging.galatea.enableForestNodeHelper": "啟用樹林節點助手",
-    "skyblocker.config.farming.garden.farmingHud.type": "價格來源：",
+    "skyblocker.config.farming.garden.farmingHud.type": "價格來源",
     "skyblocker.config.farming.garden.farmingHud.type.@Tooltip": "計算農耕HUD的金幣時要使用哪一個價格。\n「全部」會使用二者中較高的價格。",
     "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "解決叢林神廟謎題",
     "skyblocker.config.mining.crystalHollows.powderTrackerFilter.screenTitle": "顯示的物品",
