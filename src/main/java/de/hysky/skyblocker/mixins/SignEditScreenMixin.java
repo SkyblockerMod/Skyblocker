@@ -3,12 +3,14 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.BazaarQuickQuantities;
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import de.hysky.skyblocker.skyblock.speedPreset.SpeedPresets;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.AbstractSignEditScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -33,6 +35,17 @@ public abstract class SignEditScreenMixin extends Screen {
 
 	protected SignEditScreenMixin(Text title) {
 		super(title);
+	}
+
+	@Inject(method = "init", at = @At("TAIL"))
+	private void skyblocker$init(CallbackInfo ci) {
+		if (Utils.isOnSkyblock()) {
+			var config = SkyblockerConfigManager.get();
+			if (isInputSign() && messages[3].equals("to order") && config.uiAndVisuals.bazaarQuickQuantities.enabled) {
+				ButtonWidget[] buttons = BazaarQuickQuantities.getButtons(this.width, messages);
+				for (ButtonWidget button : buttons) addDrawableChild(button);
+			}
+		}
 	}
 
 	@Inject(method = "render", at = @At("HEAD"))
