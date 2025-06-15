@@ -80,6 +80,9 @@ public class UIAndVisualsConfig {
     @SerialEntry
     public SearchOverlay searchOverlay = new SearchOverlay();
 
+	@SerialEntry
+	public BazaarQuickQuantities bazaarQuickQuantities = new BazaarQuickQuantities();
+
     @SerialEntry
     public InputCalculator inputCalculator = new InputCalculator();
 
@@ -399,6 +402,23 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public List<String> auctionHistory = new ArrayList<>();
     }
+
+	public static class BazaarQuickQuantities {
+		@SerialEntry
+		public boolean enabled = false;
+
+		@SerialEntry
+		public boolean closeSignOnUse = false;
+
+		@SerialEntry
+		public int slot1Quantity = 28;
+
+		@SerialEntry
+		public int slot2Quantity = 2240;
+
+		@SerialEntry
+		public int slot3Quantity = 256;
+	}
 
     public static class InputCalculator {
         @SerialEntry
