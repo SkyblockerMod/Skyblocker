@@ -1227,7 +1227,7 @@
     "skyblocker.config.farming.garden.farmingHud.type.NPC": "NPC",
     "skyblocker.config.farming.garden.farmingHud.type.BAZAAR": "集市",
     "skyblocker.config.farming.garden.farmingHud.type.BOTH": "全部",
-    "skyblocker.config.farming.garden.farmingHud.type": "价格来源：",
+    "skyblocker.config.farming.garden.farmingHud.type": "价格来源",
     "skyblocker.config.farming.general.farmingLevel": "农耕技能等级：",
     "skyblocker.config.farming.general.blocksPerSec": "每秒破坏方块: %s",
     "skyblocker.config.farming.general.coinsPerHour": "每小时收获作物：%s",
