@@ -178,8 +178,6 @@
     "skyblocker.config.otherLocations.spidersDen": "Spidеr's Dеn",
     "skyblocker.config.general.specialEffects": "Спецэффекты",
     "skyblocker.config.general.specialEffects.rareDungeonDropEffects": "Показ эффекта для редких дропов в данже",
-    "skyblocker.config.dungeons.secretWaypoints.enableRoomMatching.@Tooltip": "Отключение сэкономит 20 МБ ОЗУ, но метки секретов и некоторые решатели пазлов требуют включение этой функции.",
-    "skyblocker.config.dungeons.secretWaypoints.enableRoomMatching": "Включить соответствие комнат",
     "skyblocker.config.dungeons.secretWaypoints.enableDefaultWaypoints": "Включить стандартные метки",
     "skyblocker.wikiLookup.noArticleFound": "§rДля этого предмета не найдено статьи на Вики...",
     "skyblocker.config.dungeons.fancyPartyFinder": "Красивый Party Finder",
@@ -895,5 +893,6 @@
     "text.skyblocker.undo": "Отменить",
     "skyblocker.config.farming.garden.closeScreenOnPlotClick": "Закрывать инвентарь при телепортации на участок",
     "skyblocker.config.farming.garden.closeScreenOnPlotClick.@Tooltip": "Должен ли ваш инвентарь закрываться при телепортации на участок используя Виджет Участков Сада",
-    "skyblocker.config.farming.garden.gardenPlotsWidget": "Включить Виджет Участков Сада"
+    "skyblocker.config.farming.garden.gardenPlotsWidget": "Включить Виджет Участков Сада",
+    "skyblocker.config.uiAndVisuals.inputCalculator": "Калькулятор входных данных"
 }
