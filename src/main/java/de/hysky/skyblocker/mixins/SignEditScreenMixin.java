@@ -43,7 +43,7 @@ public abstract class SignEditScreenMixin extends Screen {
 			var config = SkyblockerConfigManager.get();
 			if (isInputSign() && messages[3].equals("to order") && config.uiAndVisuals.bazaarQuickQuantities.enabled) {
 				ButtonWidget[] buttons = BazaarQuickQuantities.getButtons(this.width, messages);
-				for (ButtonWidget button : buttons) addDrawableChild(button);
+				for (ButtonWidget button : buttons) if (button != null) addDrawableChild(button);
 			}
 		}
 	}
