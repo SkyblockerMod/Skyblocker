@@ -1,6 +1,6 @@
 {
     "key.skyblocker.defaultTgl": "Trocar HUD da tab para padrão",
-    "key.skyblocker.toggleA": "Alternar HUD da tab para tela A",
+    "key.skyblocker.toggleA": "Mostrar visualização secundária do HUD da guia",
     "key.wikiLookup": "Olhar na Wiki",
     "skyblocker.config.general": "Geral",
     "skyblocker.config.uiAndVisuals.bars": "Barra de Vida, Mana, Defesa & XP",
@@ -335,5 +335,12 @@
     "text.skyblocker.undo": "Anular",
     "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Te avisa quando puxares um arco e não teres Flecha Venenosa de Poison no teu inventário",
     "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "Construir pontos de Waypoints da Ballista",
-    "key.itemPriceRefresh": "Atualizar Bazaar"
+    "key.itemPriceRefresh": "Atualizar Bazaar",
+    "text.skyblocker.offline": "Desligado",
+    "key.skyblocker.debug.dumpHoveredItem": "Despejar item pairado",
+    "skyblocker.config.debug.dumpRange.@Tooltip": "O intervalo em blocos ao redor do jogador para despejar entidades dentro.",
+    "skyblocker.config.debug.corpseFinderDebug": "Depurar o localizador de cadáveres",
+    "skyblocker.config.crimsonIsle.kuudra.suppliesAndFuelWaypointType": "Tipo de ponto de referência de suprimentos/combustível",
+    "text.skyblocker.reset": "Reiniciar",
+    "skyblocker.config.debug.dumpFormat.@Tooltip": "O formato a ser usado ao despejar itens. SNBT é colorido e mais fácil de ler, enquanto JSON tem caracteres de string de escape (aspas duplas)."
 }
