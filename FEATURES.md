@@ -58,7 +58,7 @@
 - **Option to increase fog radius**
 
 ### Item and Armor Customization:
-- *Item Renaming*
+- *Item Renaming* using `/skyblocker custom renameItem`
 - *Custom Armor Dye Colors*
 - *Custom Armor Trims*
 - *Custom Animated Dyes*
