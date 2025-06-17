@@ -1,7 +1,6 @@
 {
     "key.categories.skyblocker": "Skyblocker",
     "key.hotbarSlotLock": "ホットバースロットのロック",
-    "key.wikiLookup": "Wikiのページを開く",
     "skyblocker.config.title": "Skyblockerの設定",
     "skyblocker.config.general": "一般",
     "skyblocker.config.uiAndVisuals.bars": "体力,マナ,ディフェンス,経験値のバー",
@@ -119,8 +118,6 @@
     "skyblocker.config.dungeons.secretWaypoints.waypointType": "ウェイポイントの種類",
     "key.itemProtection": "アイテムを保護する",
     "skyblocker.config.general.enableTips": "ヒント有効にする",
-    "skyblocker.config.general.wikiLookup.officialWiki": "Hypixelのwikiを使う",
-    "skyblocker.config.general.wikiLookup.officialWiki.@Tooltip": "Fandomのwikiではなく、Hypixelの公式wikiを使用する。",
     "skyblocker.config.dungeons.puzzle.solveTicTacToe": "三目並べのソルバー",
     "skyblocker.config.otherLocations.end": "ジ・エンド",
     "skyblocker.config.dungeons.dungeonChestProfit.neutralColor": "中性の色",

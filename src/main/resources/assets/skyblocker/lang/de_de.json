@@ -33,7 +33,6 @@
     "skyblocker.config.chat.filter.hideImplosion": "Implosionsmeldung ausblenden",
     "skyblocker.config.chat.filter.hideMoltenWave": "Nachricht über Molten Wave ausblenden",
     "skyblocker.config.chat.filter.hideAds": "Werbung im öffentlichen Chat ausblenden",
-    "key.wikiLookup": "In der Wiki nachschlagen",
     "key.skyblocker.defaultTgl": "Tab-HUD auf Standard umstellen",
     "key.skyblocker.toggleA": "Sekundäre Ansicht des Tab-HUD anzeigen",
     "skyblocker.config.helpers.experiments.enableSuperpairsSolver": "Superpairs Solver aktivieren",

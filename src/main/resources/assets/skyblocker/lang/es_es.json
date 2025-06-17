@@ -1,7 +1,6 @@
 {
     "key.categories.skyblocker": "Skyblocker",
     "key.hotbarSlotLock": "Bloqueo de Slot (Barra Rápida)",
-    "key.wikiLookup": "Buscar en la Wiki",
     "skyblocker.config.title": "Ajustes de Skyblocker",
     "skyblocker.config.general": "General",
     "skyblocker.config.uiAndVisuals.bars": "Salud, Mana, Defensa & Barra de XP",
