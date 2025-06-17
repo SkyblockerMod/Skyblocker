@@ -295,7 +295,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                             String coins = split[1].replace(",", "").replace("coins", "").trim();
                             try {
                                 long parsed = Long.parseLong(coins);
-                                double price = TooltipInfoType.THREE_DAY_AVERAGE.getData().getDouble(stack.getNeuName());
+                                double price = TooltipInfoType.THREE_DAY_AVERAGE.getData().getDouble(stack.skyblocker$getNeuName());
                                 isSlotHighlighted.put(slotId, price > parsed);
                             } catch (Exception e) {
                                 LOGGER.error("[Skyblocker Fancy Auction House] Failed to parse BIN price", e);

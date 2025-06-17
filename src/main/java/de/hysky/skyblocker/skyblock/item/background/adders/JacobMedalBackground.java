@@ -37,7 +37,7 @@ public class JacobMedalBackground extends ColoredItemBackground<Integer> {
 			return null;
 		}
 
-		int hashCode = stack.getUuid().isEmpty() ? System.identityHashCode(stack) : stack.getUuid().hashCode();
+		int hashCode = stack.skyblocker$getUuid().isEmpty() ? System.identityHashCode(stack) : stack.skyblocker$getUuid().hashCode();
 		if (cache.containsKey(hashCode)) {
 			return cache.get(hashCode);
 		}

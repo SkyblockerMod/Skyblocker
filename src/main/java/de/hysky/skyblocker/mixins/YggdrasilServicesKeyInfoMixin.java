@@ -24,9 +24,9 @@ public class YggdrasilServicesKeyInfoMixin {
     @Final
     private static Logger LOGGER;
     @Unique
-    private static final Map<String, String> REPLACEMENT_MAP = Map.of();
+    private static final Map<String, String> skyblocker$REPLACEMENT_MAP = Map.of();
     @Unique
-    private static final IntList ERRONEUS_SIGNATURE_HASHES = new IntArrayList();
+    private static final IntList skyblocker$ERRONEUS_SIGNATURE_HASHES = new IntArrayList();
 
     @WrapOperation(method = "validateProperty", at = @At(value = "INVOKE", target = "Ljava/util/Base64$Decoder;decode(Ljava/lang/String;)[B", remap = false), remap = false)
     private byte[] skyblocker$replaceKnownWrongBase64(Base64.Decoder decoder, String signature, Operation<byte[]> decode) {
@@ -37,15 +37,15 @@ public class YggdrasilServicesKeyInfoMixin {
                 return decode.call(decoder, signature.replaceAll("[^A-Za-z0-9+/=]", ""));
             } catch (IllegalArgumentException e2) {
                 if (Utils.isOnSkyblock()) {
-                    if (REPLACEMENT_MAP.containsKey(signature)) {
-                        return decode.call(decoder, REPLACEMENT_MAP.get(signature));
+                    if (skyblocker$REPLACEMENT_MAP.containsKey(signature)) {
+                        return decode.call(decoder, skyblocker$REPLACEMENT_MAP.get(signature));
                     }
                     int signatureHashCode = signature.hashCode();
-                    if (!ERRONEUS_SIGNATURE_HASHES.contains(signatureHashCode)) {
-                    	ERRONEUS_SIGNATURE_HASHES.add(signatureHashCode);
-                        LOGGER.warn("[Skyblocker Base64 Fixer] Failed to decode base64 string No.{}: {}", ERRONEUS_SIGNATURE_HASHES.size() - 1, signature);
+                    if (!skyblocker$ERRONEUS_SIGNATURE_HASHES.contains(signatureHashCode)) {
+						skyblocker$ERRONEUS_SIGNATURE_HASHES.add(signatureHashCode);
+                        LOGGER.warn("[Skyblocker Base64 Fixer] Failed to decode base64 string No.{}: {}", skyblocker$ERRONEUS_SIGNATURE_HASHES.size() - 1, signature);
                     } else {
-                        LOGGER.warn("[Skyblocker Base64 Fixer] Failed to decode the base64 string No.{} again", ERRONEUS_SIGNATURE_HASHES.indexOf(signatureHashCode));
+                        LOGGER.warn("[Skyblocker Base64 Fixer] Failed to decode the base64 string No.{} again", skyblocker$ERRONEUS_SIGNATURE_HASHES.indexOf(signatureHashCode));
                     }
                 }
             }

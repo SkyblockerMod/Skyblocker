@@ -90,9 +90,9 @@ public class PetCache {
 	private static void parsePet(ItemStack stack, boolean clicked) {
 		String profileId = Utils.getProfileId();
 
-		if (stack.getSkyblockId().equals("PET") && !profileId.isEmpty()) {
+		if (stack.skyblocker$getSkyblockId().equals("PET") && !profileId.isEmpty()) {
 			//I once hoped that all pets would have a petInfo field, but that turned out to be false ;(
-			PetInfo petInfo = stack.getPetInfo();
+			PetInfo petInfo = stack.skyblocker$getPetInfo();
 
 			//This probably shouldn't happen since I would imagine pets inside of a pet menu would have a pet info but you never know...
 			if (petInfo.isEmpty()) return;
@@ -165,7 +165,7 @@ public class PetCache {
 					copied.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(customData));
 
 					//If the pet from the NEU repo is missing the data then try to guess the type
-					String type = !copied.getPetInfo().isEmpty() ? copied.getPetInfo().type() : name.toUpperCase(Locale.ENGLISH).replace(" ", "_");
+					String type = !copied.skyblocker$getPetInfo().isEmpty() ? copied.skyblocker$getPetInfo().type() : name.toUpperCase(Locale.ENGLISH).replace(" ", "_");
 					PetInfo petInfo = new PetInfo(type, exp, rarity, Optional.empty(), Optional.empty(), Optional.empty());
 
 					CACHED_PETS.put(petInfo);

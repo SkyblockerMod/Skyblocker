@@ -303,7 +303,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			ItemStack stack = entry.getValue();
 			if (stack == null || stack.isEmpty()) continue;
 
-			String itemId = stack.getSkyblockApiId();
+			String itemId = stack.skyblocker$getSkyblockApiId();
 			String lore = ItemUtils.concatenateLore(ItemUtils.getLore(stack));
 			Matcher bitsMatcher = BITS_PATTERN.matcher(lore);
 			if (!bitsMatcher.find()) continue;

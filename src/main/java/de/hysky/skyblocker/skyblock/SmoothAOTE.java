@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
@@ -172,7 +171,7 @@ public class SmoothAOTE {
 
 		//work out if the player is holding a teleporting item that is enabled and if so how far the item will take them
 		ItemStack heldItem = CLIENT.player.getMainHandStack();
-		String itemId = heldItem.getSkyblockId();
+		String itemId = heldItem.skyblocker$getSkyblockId();
 		NbtCompound customData = ItemUtils.getCustomData(heldItem);
 
 		int distance;

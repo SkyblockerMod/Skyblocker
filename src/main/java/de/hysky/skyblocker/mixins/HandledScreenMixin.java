@@ -58,10 +58,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 * This is the slot id returned for when a click is outside the screen's bounds
 	 */
 	@Unique
-	private static final int OUT_OF_BOUNDS_SLOT = -999;
+	private static final int skyblocker$OUT_OF_BOUNDS_SLOT = -999;
 
 	@Unique
-	private static final Set<String> FILLER_ITEMS = Set.of(
+	private static final Set<String> skyblocker$FILLER_ITEMS = Set.of(
 			" ", // Empty menu item
 			"Locked Page",
 			"Quick Crafting Slot",
@@ -97,7 +97,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	protected abstract List<Text> getTooltipFromItem(ItemStack stack);
 
 	@Unique
-	private List<QuickNavButton> quickNavButtons;
+	private List<QuickNavButton> skyblocker$quickNavButtons;
 
 	protected HandledScreenMixin(Text title) {
 		super(title);
@@ -106,7 +106,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@Inject(method = "init", at = @At("RETURN"))
 	private void skyblocker$initQuickNav(CallbackInfo ci) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().quickNav.enableQuickNav && client != null && client.player != null && !client.player.isCreative()) {
-			for (QuickNavButton quickNavButton : quickNavButtons = QuickNav.init(getTitle().getString().trim())) {
+			for (QuickNavButton quickNavButton : skyblocker$quickNavButtons = QuickNav.init(getTitle().getString().trim())) {
 				addSelectableChild(quickNavButton);
 			}
 		}
@@ -160,7 +160,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 */
 	@Inject(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawBackground(Lnet/minecraft/client/gui/DrawContext;FII)V"))
 	private void skyblocker$drawUnselectedQuickNavButtons(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-		if (quickNavButtons != null) for (QuickNavButton quickNavButton : quickNavButtons) {
+		if (skyblocker$quickNavButtons != null) for (QuickNavButton quickNavButton : skyblocker$quickNavButtons) {
 			// Render the button behind the main inventory background if it's not toggled or if it's still fading in
 			if (!quickNavButton.toggled() || quickNavButton.getAlpha() < 255) {
 				quickNavButton.setRenderInFront(false);
@@ -174,7 +174,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 */
 	@Inject(method = "renderBackground", at = @At("RETURN"))
 	private void skyblocker$drawSelectedQuickNavButtons(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-		if (quickNavButtons != null) for (QuickNavButton quickNavButton : quickNavButtons) {
+		if (skyblocker$quickNavButtons != null) for (QuickNavButton quickNavButton : skyblocker$quickNavButtons) {
 			if (quickNavButton.toggled()) {
 				quickNavButton.setRenderInFront(true);
 				quickNavButton.render(context, mouseX, mouseY, delta);
@@ -252,7 +252,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		// Item Protection
 		// When you try and drop the item by picking it up then clicking outside the screen
-		if (slotId == OUT_OF_BOUNDS_SLOT && ItemProtection.isItemProtected(this.handler.getCursorStack())) {
+		if (slotId == skyblocker$OUT_OF_BOUNDS_SLOT && ItemProtection.isItemProtected(this.handler.getCursorStack())) {
 			ci.cancel();
 			return;
 		}
@@ -263,7 +263,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		ItemStack stack = skyblocker$experimentSolvers$getStack(slot, slot.getStack(), currentSolver);
 
 		// Prevent clicks on filler items
-		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && FILLER_ITEMS.contains(stack.getName().getString()) &&
+		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && skyblocker$FILLER_ITEMS.contains(stack.getName().getString()) &&
 				// Allow clicks in Ultrasequencer and Superpairs
 				(!UltrasequencerSolver.INSTANCE.test(title) || SkyblockerConfigManager.get().helpers.experiments.enableUltrasequencerSolver)) {
 			ci.cancel();

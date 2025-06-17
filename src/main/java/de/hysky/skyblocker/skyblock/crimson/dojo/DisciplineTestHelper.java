@@ -41,7 +41,7 @@ public class DisciplineTestHelper {
         if (CLIENT == null || CLIENT.player == null) {
             return false;
         }
-        String heldId = CLIENT.player.getMainHandStack().getSkyblockId();
+        String heldId = CLIENT.player.getMainHandStack().skyblocker$getSkyblockId();
         return Objects.equals(SWORD_TO_NAME_LOOKUP.get(heldId), name);
     }
 
@@ -54,7 +54,7 @@ public class DisciplineTestHelper {
         if (DojoManager.currentChallenge != DojoManager.DojoChallenges.DISCIPLINE || CLIENT == null || CLIENT.player == null) {
             return 0;
         }
-        String heldId = CLIENT.player.getMainHandStack().getSkyblockId();
+        String heldId = CLIENT.player.getMainHandStack().skyblocker$getSkyblockId();
         return SWORD_TO_COLOR_LOOKUP.getOrDefault(heldId, 0);
     }
 }

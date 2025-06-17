@@ -16,7 +16,7 @@ public abstract class MushroomPlantBlockMixin extends Block {
 	protected static VoxelShape SHAPE;
 
 	@Unique
-	private static final VoxelShape OLD_SHAPE = Block.createCuboidShape(4.8, 0.0, 4.8, 11.2, 6.4, 11.2);
+	private static final VoxelShape skyblocker$OLD_SHAPE = Block.createCuboidShape(4.8, 0.0, 4.8, 11.2, 6.4, 11.2);
 
 	public MushroomPlantBlockMixin(Settings settings) {
 		super(settings);
@@ -24,7 +24,7 @@ public abstract class MushroomPlantBlockMixin extends Block {
 
 	@ModifyReturnValue(method = "getOutlineShape", at = @At("RETURN"))
 	private VoxelShape skyblocker$getOldMushroomOutline(VoxelShape original) {
-		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.hitbox.oldMushroomHitbox ? OLD_SHAPE : original;
+		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.hitbox.oldMushroomHitbox ? skyblocker$OLD_SHAPE : original;
 	}
 
 	@Override

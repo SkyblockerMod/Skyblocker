@@ -32,7 +32,7 @@ import java.util.List;
 public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHandler> implements RecipeBookHolder {
 
 	@Unique
-	private final List<Runnable> recipeBookToggleCallbacks = new ArrayList<>();
+	private final List<Runnable> skyblocker$recipeBookToggleCallbacks = new ArrayList<>();
 
     public InventoryScreenMixin(PlayerScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -68,16 +68,16 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
 
     @Inject(method = "onRecipeBookToggled", at = @At("TAIL"))
     private void skyblocker$callRecipeToggleCallbacks(CallbackInfo ci) {
-		recipeBookToggleCallbacks.forEach(Runnable::run);
+		skyblocker$recipeBookToggleCallbacks.forEach(Runnable::run);
     }
 
     @Inject(method = "init", at = @At("HEAD"))
     private void skyblocker$clearRecipeToggleCallbacks(CallbackInfo ci) {
-		recipeBookToggleCallbacks.clear();
+		skyblocker$recipeBookToggleCallbacks.clear();
     }
 
 	@Override
 	public void registerRecipeBookToggleCallback(Runnable runnable) {
-		recipeBookToggleCallbacks.add(runnable);
+		skyblocker$recipeBookToggleCallbacks.add(runnable);
 	}
 }

@@ -20,7 +20,7 @@ public class AccessoryTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		final String internalID = stack.getSkyblockId();
+		final String internalID = stack.skyblocker$getSkyblockId();
 		if (TooltipInfoType.ACCESSORIES.hasOrNullWarning(internalID)) {
 			Pair<AccessoriesHelper.AccessoryReport, String> report = AccessoriesHelper.calculateReport4Accessory(internalID);
 

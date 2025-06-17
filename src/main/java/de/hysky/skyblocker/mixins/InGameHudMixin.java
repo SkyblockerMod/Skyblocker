@@ -40,12 +40,12 @@ import java.util.regex.Pattern;
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
     @Unique
-    private static final Supplier<Identifier> SLOT_LOCK_ICON = () -> SkyblockerConfigManager.get().general.itemProtection.slotLockStyle.tex;
+    private static final Supplier<Identifier> skyblocker$SLOT_LOCK_ICON = () -> SkyblockerConfigManager.get().general.itemProtection.slotLockStyle.tex;
     @Unique
-    private static final Pattern DICER_TITLE_BLACKLIST = Pattern.compile(".+? DROP!");
+    private static final Pattern skyblocker$DICER_TITLE_BLACKLIST = Pattern.compile(".+? DROP!");
 
     @Unique
-    private final FancyStatusBars statusBars = new FancyStatusBars();
+    private final FancyStatusBars skyblocker$statusBars = new FancyStatusBars();
 
     @Shadow
     @Final
@@ -58,7 +58,7 @@ public abstract class InGameHudMixin {
 
 			// slot lock
             if (HotbarSlotLock.isLocked(index)) {
-                context.drawTexture(RenderLayer::getGuiTextured, SLOT_LOCK_ICON.get(), x, y, 0, 0, 16, 16, 16, 16);
+                context.drawTexture(RenderLayer::getGuiTextured, skyblocker$SLOT_LOCK_ICON.get(), x, y, 0, 0, 16, 16, 16, 16);
             }
 
             //item protection
@@ -76,7 +76,7 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V", shift = At.Shift.AFTER), cancellable = true)
     private void skyblocker$renderStatusBars(DrawContext context, CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && statusBars.render(context, context.getScaledWindowWidth(), context.getScaledWindowHeight())) ci.cancel();
+        if (Utils.isOnSkyblock() && skyblocker$statusBars.render(context, context.getScaledWindowWidth(), context.getScaledWindowHeight())) ci.cancel();
     }
 
     @Inject(method = "renderHealthBar", at = @At(value = "HEAD"), cancellable = true)
@@ -120,7 +120,7 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "setTitle", at = @At("HEAD"), cancellable = true)
     private void skyblocker$dicerTitlePrevent(Text title, CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().farming.garden.dicerTitlePrevent && title != null && DICER_TITLE_BLACKLIST.matcher(title.getString()).matches()) {
+        if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().farming.garden.dicerTitlePrevent && title != null && skyblocker$DICER_TITLE_BLACKLIST.matcher(title.getString()).matches()) {
             ci.cancel();
         }
     }

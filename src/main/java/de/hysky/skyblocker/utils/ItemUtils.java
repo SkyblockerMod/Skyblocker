@@ -234,12 +234,12 @@ public final class ItemUtils {
     /**
      * Gets the NEU id from an id and an api id.
      *
-     * @return the NEU id of the skyblock item, matching the id of the item gotten from {@link io.github.moulberry.repo.data.NEUItem#getSkyblockItemId() NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName()},
+     * @return the NEU id of the skyblock item, matching the id of the item gotten from {@link io.github.moulberry.repo.data.NEUItem#getSkyblockItemId() NEUItem#getSkyblockItemId()} or {@link ItemStack#getSkyblocker$neuName()},
      * or an empty string if stack is null
      */
     public static @NotNull String getNeuId(ItemStack stack) {
         if (stack == null) return "";
-        String id = stack.getSkyblockId();
+        String id = stack.skyblocker$getSkyblockId();
         NbtCompound customData = ItemUtils.getCustomData(stack);
         return switch (id) {
             case "ENCHANTED_BOOK" -> {
@@ -295,7 +295,7 @@ public final class ItemUtils {
      * and the {@code right boolean} indicating if the price was based on complete data.
      */
     public static @NotNull DoubleBooleanPair getItemPrice(@NotNull ItemStack stack) {
-        return getItemPrice(stack.getSkyblockApiId(), false);
+        return getItemPrice(stack.skyblocker$getSkyblockApiId(), false);
     }
 
     /**
@@ -366,7 +366,7 @@ public final class ItemUtils {
         // TODO Calculate drill durability based on the drill_fuel flag, fuel_tank flag, and hotm level
         // TODO Cache the max durability and only update the current durability on inventory tick
 
-        if (stack.getSkyblockId().equals("PICKONIMBUS")) {
+        if (stack.skyblocker$getSkyblockId().equals("PICKONIMBUS")) {
             int pickonimbusDurability = customData.getInt("pickonimbus_durability", 0);
 
             return IntIntPair.of(customData.contains("pickonimbus_durability") ? pickonimbusDurability : 2000, 2000);

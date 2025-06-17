@@ -26,7 +26,7 @@ public class EvolvingItemAdder extends SimpleSlotTextAdder {
 
 	@Override
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		switch (stack.getSkyblockId()) {
+		switch (stack.skyblocker$getSkyblockId()) {
 			case "NEW_BOTTLE_OF_JYRRE", "DARK_CACAO_TRUFFLE", "DISCRITE", "MOBY_DUCK" -> {
 				return actualLogic(stack, "Current Bonus: ");
 			}

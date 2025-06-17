@@ -23,7 +23,7 @@ public class LBinTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-        String skyblockApiId = stack.getSkyblockApiId();
+        String skyblockApiId = stack.skyblocker$getSkyblockApiId();
 
 		// Check for whether the item exist in bazaar price data, because Skytils keeps some bazaar item data in lbin api
 		if (TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId) && !TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {

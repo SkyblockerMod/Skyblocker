@@ -43,7 +43,7 @@ public class ItemLoader {
                 continue;
             }
 
-            String itemId = stack.getSkyblockId();
+            String itemId = stack.skyblocker$getSkyblockId();
             NbtCompound customData = ItemUtils.getCustomData(stack);
 
             if (itemId.equals("PET")) {
