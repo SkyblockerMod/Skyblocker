@@ -41,10 +41,10 @@
   "accessWidener": "skyblocker.accesswidener",
   "depends": {
     "fabricloader": ">=0.16.14",
-    "fabric-api": ">=0.126.0+1.21.6",
+    "fabric-api": ">=0.127.0+1.21.6",
     "yet_another_config_lib_v3": ">=3.7.0+1.21.6",
     "hm-api": ">=1.0.1+1.21.2",
-    "minecraft": "~1.21.6-beta.3",
+    "minecraft": "~1.21.6",
     "java": ">=21"
   },
   "conflicts": {

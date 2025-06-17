@@ -25,8 +25,8 @@ public abstract class InstancedGuiElementRenderer<T extends InstancedGuiElementR
 	}
 
 	@Override
-	public void method_72114(T specialGuiElementRenderState, GuiRenderState guiRenderState) {
-		super.method_72114(specialGuiElementRenderState, guiRenderState);
+	public void renderElement(T specialGuiElementRenderState, GuiRenderState guiRenderState) {
+		super.renderElement(specialGuiElementRenderState, guiRenderState);
 		this.usedThisFrame = true;
 	}
 }

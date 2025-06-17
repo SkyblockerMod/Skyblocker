@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -238,7 +237,7 @@ public class OverlayScreen extends Screen {
         }
 		for (ButtonWidget deleteButton : deleteButtons) {
 			if (deleteButton == null) continue;
-			context.drawTexture(RenderLayer::getGuiTextured, DELETE_ICON_TEXTURE, deleteButton.getX() + renderOffset, deleteButton.getY() + renderOffset, 0, 0, 16, 16, 16, 16);
+			context.drawTexture(RenderPipelines.GUI_TEXTURED, DELETE_ICON_TEXTURE, deleteButton.getX() + renderOffset, deleteButton.getY() + renderOffset, 0, 0, 16, 16, 16, 16);
 		}
     }
 

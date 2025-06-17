@@ -259,15 +259,11 @@ public class VisitorHelper {
 	}
 
 	private static void drawTextWithHoverUnderline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, double mouseX, double mouseY) {
-		context.getMatrices().push();
-		context.getMatrices().translate(0, 0, 500);
 		context.drawText(textRenderer, text, x, y, -1, true);
 
 		if (isMouseOverText(textRenderer, text, x, y, mouseX, mouseY)) {
 			context.drawHorizontalLine(x, x + textRenderer.getWidth(text), y + textRenderer.fontHeight, -1);
 		}
-
-		context.getMatrices().pop();
 	}
 
 	/**

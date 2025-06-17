@@ -58,8 +58,7 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
 	}
 
 	// This makes it so that REI at least doesn't wrongly exclude the zone
-	// shouldHideStatusEffectHud should actually be showsStatusEffects
-	@ModifyReturnValue(method = "shouldHideStatusEffectHud", at = @At("RETURN"))
+	@ModifyReturnValue(method = "showsStatusEffects", at = @At("RETURN"))
 	private boolean skyblocker$markStatusEffectsHidden(boolean original) {
 		// In the garden, status effects are shown when both hideStatusEffectOverlay and gardenPlotsWidget are false
 		if (Utils.isInGarden()) return original && !SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay && !SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget;
