@@ -267,7 +267,8 @@ public class OverlayScreen extends Screen {
             return true;
         }
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-			super.close();
+			SearchOverManager.search = "";
+			close();
 			return true;
 		}
         return super.keyPressed(keyCode, scanCode, modifiers);
