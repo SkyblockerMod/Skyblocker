@@ -135,7 +135,7 @@
     "key.skyblocker.debug.dumpHoveredItem": "Descartar objeto seleccionado",
     "skyblocker.config.debug.dumpRange": "Rango de depurado de Entidad",
     "skyblocker.config.debug.dumpFormat": "Formato de volcado",
-    "skyblocker.config.debug.dumpFormat.@Tooltip": "El formato a utilizar al volcar elementos. SNBT está coloreado y es más fácil de leer, mientras que JSON tiene caracteres de cadena escapados (comillas dobles).",
+    "skyblocker.config.debug.dumpFormat.@Tooltip": "El formato a utilizar al depurar elementos. SNBT está coloreado y es más fácil de leer, mientras que JSON tiene caracteres de cadena escapados (comillas dobles).",
     "skyblocker.config.debug.corpseFinderDebug": "Depurador de cadáveres",
     "skyblocker.config.debug.dumpRange.@Tooltip": "El rango en bloques alrededor del jugador para soltar entidades.",
     "skyblocker.config.debug.showInvisibleArmorStands": "Mostrar soporte de armadura invisible",
