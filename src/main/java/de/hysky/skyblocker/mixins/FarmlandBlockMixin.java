@@ -17,14 +17,14 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class FarmlandBlockMixin extends Block {
     @Shadow
     @Final
-    protected static VoxelShape SHAPE;
+	private static VoxelShape SHAPE;
 
     protected FarmlandBlockMixin(Settings settings) {
         super(settings);
     }
 
     @ModifyReturnValue(method = "getOutlineShape", at = @At("RETURN"))
-    private VoxelShape skyblocker$replaceOutlineShape(VoxelShape original) {
+    private VoxelShape replaceOutlineShape(VoxelShape original) {
         return Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.hitbox.oldFarmlandHitbox ? VoxelShapes.fullCube() : original;
     }
 

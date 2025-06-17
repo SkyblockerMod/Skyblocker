@@ -29,7 +29,7 @@ public class YggdrasilServicesKeyInfoMixin {
     private static final IntList skyblocker$ERRONEUS_SIGNATURE_HASHES = new IntArrayList();
 
     @WrapOperation(method = "validateProperty", at = @At(value = "INVOKE", target = "Ljava/util/Base64$Decoder;decode(Ljava/lang/String;)[B", remap = false), remap = false)
-    private byte[] skyblocker$replaceKnownWrongBase64(Base64.Decoder decoder, String signature, Operation<byte[]> decode) {
+    private byte[] replaceKnownWrongBase64(Base64.Decoder decoder, String signature, Operation<byte[]> decode) {
         try {
             return decode.call(decoder, signature);
         } catch (IllegalArgumentException e) {
@@ -54,7 +54,7 @@ public class YggdrasilServicesKeyInfoMixin {
     }
 
     @WrapWithCondition(method = "validateProperty", remap = false, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false))
-    private boolean skyblocker$dontLogFailedSignatureValidations(Logger logger, String message, Object property, Object exception) {
+    private boolean dontLogFailedSignatureValidations(Logger logger, String message, Object property, Object exception) {
         return !Utils.isOnHypixel();
     }
 }

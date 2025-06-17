@@ -35,7 +35,7 @@ public class WorldRendererMixin {
 	private DefaultFramebufferSet framebufferSet;
 
 	@ModifyExpressionValue(method = {"getEntitiesToRender", "renderEntities"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;hasOutline(Lnet/minecraft/entity/Entity;)Z"), require = 2)
-	private boolean skyblocker$shouldMobGlow(boolean original, @Local Entity entity) {
+	private boolean shouldMobGlow(boolean original, @Local Entity entity) {
 		boolean allowGlow = LividColor.allowGlow();
 		boolean customGlow = MobGlow.hasOrComputeMobGlow(entity);
 		return allowGlow && original || customGlow;
@@ -45,7 +45,7 @@ public class WorldRendererMixin {
 			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;canDrawEntityOutlines()Z")),
 			at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;clearColorAndDepthTextures(Lcom/mojang/blaze3d/textures/GpuTexture;ILcom/mojang/blaze3d/textures/GpuTexture;D)V", ordinal = 0, shift = At.Shift.AFTER)
 	)
-	private void skyblocker$copyFramebufferDepth2AdjustGlowVisibility(CallbackInfo ci, @Share(namespace = "c", value = "copiedOutlineDepth") LocalBooleanRef copiedOutlineDepth) {
+	private void copyFramebufferDepth2AdjustGlowVisibility(CallbackInfo ci, @Share(namespace = "c", value = "copiedOutlineDepth") LocalBooleanRef copiedOutlineDepth) {
 		if (MobGlow.atLeastOneMobHasCustomGlow() && !copiedOutlineDepth.get()) {
 			framebufferSet.entityOutlineFramebuffer.get().copyDepthFrom(client.getFramebuffer());
 			//Ensures that the depth isn't copied multiple times with other mods since copying it multiple times just wastes performance
@@ -57,12 +57,12 @@ public class WorldRendererMixin {
 			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;hasOutline(Lnet/minecraft/entity/Entity;)Z"), to = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/OutlineVertexConsumerProvider;setColor(IIII)V")),
 			at = @At("STORE"), ordinal = 0
 	)
-	private int skyblocker$modifyGlowColor(int color, @Local Entity entity) {
+	private int modifyGlowColor(int color, @Local Entity entity) {
 		return MobGlow.getMobGlowOrDefault(entity, color);
 	}
 
 	@Inject(method = "renderEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderEntity(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;)V"))
-	private void skyblocker$renderMobBoundingBox(CallbackInfo ci, @Local Entity entity) {
+	private void renderMobBoundingBox(CallbackInfo ci, @Local Entity entity) {
 		boolean shouldShowBoundingBox = MobBoundingBoxes.shouldDrawMobBoundingBox(entity);
 
 		if (shouldShowBoundingBox) {

@@ -15,7 +15,7 @@ public class PlayerInventoryMixin {
 	public int selectedSlot;
 
 	@Inject(method = "setSelectedSlot", at = @At("TAIL"))
-	private void skyblocker$onHotbarScroll(CallbackInfo ci) {
+	private void onHotbarScroll(CallbackInfo ci) {
 		ArrowPoisonWarning.tryWarn(selectedSlot);
 	}
 }

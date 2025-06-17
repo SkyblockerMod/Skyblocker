@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = MessageHandler.class, priority = 600) //Inject before the default of 1000 so it bypasses fabric's injections
 public class MessageHandlerMixin {
 	@Inject(method = "onGameMessage", at = @At("HEAD"))
-	private void skyblocker$monitorGameMessage(Text message, boolean overlay, CallbackInfo ci) {
+	private void monitorGameMessage(Text message, boolean overlay, CallbackInfo ci) {
 		if (overlay) return; //Can add overlay-specific events in the future or incorporate it into the existing events. For now, it's not necessary.
 		ChatEvents.RECEIVE_TEXT.invoker().onMessage(message);
 		ChatEvents.RECEIVE_STRING.invoker().onMessage(message.getString());

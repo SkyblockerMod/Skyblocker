@@ -20,7 +20,7 @@ public class ScreenMixin {
 	protected MinecraftClient client;
 
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
-	private void skyblocker$hideCursor(CallbackInfo ci) {
+	private void hideCursor(CallbackInfo ci) {
 		Object instance = (Object) this;
 
 		if ((instance instanceof DownloadingTerrainScreen || instance instanceof ReconfiguringScreen) && Utils.isOnHypixel()) {
@@ -30,7 +30,7 @@ public class ScreenMixin {
 	}
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$hideReconfiguringScreen(CallbackInfo ci) {
+	private void hideReconfiguringScreen(CallbackInfo ci) {
 		if ((Object) this instanceof ReconfiguringScreen && Utils.isOnHypixel()) ci.cancel();
 	}
 }

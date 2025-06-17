@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class MouseMixin {
 
     @ModifyExpressionValue(method = "updateMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/SimpleOption;getValue()Ljava/lang/Object;", ordinal = 0))
-    public Object skyblocker$gardenMouseLock(Object original) {
+    public Object gardenMouseLock(Object original) {
         if (LowerSensitivity.isSensitivityLowered())
             return -1 / 3d;
         else return original;

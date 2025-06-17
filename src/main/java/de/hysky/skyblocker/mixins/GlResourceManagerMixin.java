@@ -17,7 +17,7 @@ import net.minecraft.client.gl.GlResourceManager;
 public class GlResourceManagerMixin {
 
 	@WrapWithCondition(method = "writeToBuffer", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/GlStateManager;_glBufferSubData(IILjava/nio/ByteBuffer;)V", ordinal = 0))
-	private static boolean skyblocker$replaceBufferData(int target, int offset, ByteBuffer data, @Local(argsOnly = true) GpuBuffer gpuBuffer) {
+	private boolean replaceBufferData(int target, int offset, ByteBuffer data, @Local(argsOnly = true) GpuBuffer gpuBuffer) {
 		GlStateManager._glBufferData(target, data, GlConst.toGl(gpuBuffer.usage()));
 
 		return false;

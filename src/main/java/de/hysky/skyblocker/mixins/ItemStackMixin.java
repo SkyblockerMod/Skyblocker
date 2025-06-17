@@ -57,7 +57,7 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	public abstract void setDamage(int damage);
 
 	@ModifyReturnValue(method = "getName", at = @At("RETURN"))
-	private Text skyblocker$customItemNames(Text original) {
+	private Text customItemNames(Text original) {
 		if (Utils.isOnSkyblock()) {
 			return SkyblockerConfigManager.get().general.customItemNames.getOrDefault(ItemUtils.getItemUuid(this), original);
 		}
@@ -66,7 +66,7 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	}
 
 	@ModifyExpressionValue(method = "appendComponentTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/component/type/TooltipDisplayComponent;shouldDisplay(Lnet/minecraft/component/ComponentType;)Z"))
-	private boolean skyblocker$hideVanillaEnchants(boolean shouldDisplay, @Local TooltipAppender component) {
+	private boolean hideVanillaEnchants(boolean shouldDisplay, @Local TooltipAppender component) {
 		return shouldDisplay && !(Utils.isOnSkyblock() && component instanceof ItemEnchantmentsComponent);
 	}
 
@@ -74,7 +74,7 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/registry/DefaultedRegistry;getId(Ljava/lang/Object;)Lnet/minecraft/util/Identifier;")),
 			at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", shift = At.Shift.AFTER, ordinal = 0)
 	)
-	private void skyblocker$skyblockIdTooltip(CallbackInfo ci, @Local(argsOnly = true) Consumer<Text> textConsumer) {
+	private void skyblockIdTooltip(CallbackInfo ci, @Local(argsOnly = true) Consumer<Text> textConsumer) {
 		if (Utils.isOnSkyblock()) {
 			String skyblockId = skyblocker$getSkyblockId();
 
@@ -88,51 +88,51 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	 * Updates the durability of this item stack every tick when in the inventory.
 	 */
 	@Inject(method = "inventoryTick", at = @At("TAIL"))
-	private void skyblocker$updateDamage(CallbackInfo ci) {
-		if (!skyblocker$shouldProcess()) {
+	private void updateDamage(CallbackInfo ci) {
+		if (!shouldProcessCustomDurability()) {
 			return;
 		}
-		skyblocker$getAndCacheDurability();
+		getAndCacheDurability();
 	}
 
 	@ModifyReturnValue(method = "getDamage", at = @At("RETURN"))
-	private int skyblocker$handleDamage(int original) {
+	private int handleDamage(int original) {
 		// If the durability is already calculated, the original value should be the damage
-		if (!skyblocker$shouldProcess() || skyblocker$maxDamage != 0) {
+		if (!shouldProcessCustomDurability() || skyblocker$maxDamage != 0) {
 			return original;
 		}
-		return skyblocker$getAndCacheDurability() ? getDamage() : original;
+		return getAndCacheDurability() ? getDamage() : original;
 	}
 
 	@ModifyReturnValue(method = "getMaxDamage", at = @At("RETURN"))
-	private int skyblocker$handleMaxDamage(int original) {
-		if (!skyblocker$shouldProcess()) {
+	private int handleMaxDamage(int original) {
+		if (!shouldProcessCustomDurability()) {
 			return original;
 		}
 		// If the max damage is already calculated, return it
 		if (skyblocker$maxDamage != 0) {
 			return skyblocker$maxDamage;
 		}
-		return skyblocker$getAndCacheDurability() ? skyblocker$maxDamage : original;
+		return getAndCacheDurability() ? skyblocker$maxDamage : original;
 	}
 
 	@ModifyReturnValue(method = "isDamageable", at = @At("RETURN"))
-	private boolean skyblocker$handleDamageable(boolean original) {
-		return skyblocker$shouldProcess() || original;
+	private boolean handleDamageable(boolean original) {
+		return shouldProcessCustomDurability() || original;
 	}
 
 	@ModifyReturnValue(method = "isDamaged", at = @At("RETURN"))
-	private boolean skyblocker$handleDamaged(boolean original) {
-		return skyblocker$shouldProcess() || original;
+	private boolean handleDamaged(boolean original) {
+		return shouldProcessCustomDurability() || original;
 	}
 
 	@Unique
-	private boolean skyblocker$shouldProcess() { // Durability bar renders atop of tooltips in ProfileViewer so disable on this screen
+	private boolean shouldProcessCustomDurability() { // Durability bar renders atop of tooltips in ProfileViewer so disable on this screen
 		return !(MinecraftClient.getInstance() != null && MinecraftClient.getInstance().currentScreen instanceof ProfileViewerScreen) && Utils.isOnSkyblock() && SkyblockerConfigManager.get().mining.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
 	}
 
 	@Unique
-	private boolean skyblocker$getAndCacheDurability() {
+	private boolean getAndCacheDurability() {
 		// Calculate the durability
 		IntIntPair durability = ItemUtils.getDurability((ItemStack) (Object) this);
 		// Return if calculating the durability failed
