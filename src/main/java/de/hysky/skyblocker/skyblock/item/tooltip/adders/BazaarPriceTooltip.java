@@ -12,7 +12,6 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.OptionalInt;
 
 public class BazaarPriceTooltip extends SimpleTooltipAdder {
 	public BazaarPriceTooltip(int priority) {
@@ -24,9 +23,7 @@ public class BazaarPriceTooltip extends SimpleTooltipAdder {
 		String skyblockApiId = stack.getSkyblockApiId();
 
 		if (TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
-			OptionalInt optCount = ItemUtils.getItemCountInSack(stack, lines);
-			// This clamp is here to ensure that the tooltip doesn't show a useless price of 0 coins if the item count is 0.
-			int count = optCount.isPresent() ? Math.max(optCount.getAsInt(), 1) : stack.getCount();
+			int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
 			BazaarProduct product = TooltipInfoType.BAZAAR.getData().get(skyblockApiId);
 			lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
