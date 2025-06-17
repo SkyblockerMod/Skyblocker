@@ -77,7 +77,7 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
     }
 
 	@Override
-	public void registerRecipeBookToggleCallback(Runnable runnable) {
+	public void skyblocker$registerRecipeBookToggleCallback(Runnable runnable) {
 		skyblocker$recipeBookToggleCallbacks.add(runnable);
 	}
 }
