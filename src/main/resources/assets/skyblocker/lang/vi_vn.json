@@ -36,7 +36,6 @@
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Mức cảnh báo Arrow Poison",
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Nếu số lượng Toxic Arrow Poison trong kho đồ của bạn xuống dưới mức được cài đặt, bạn sẽ nhận được cảnh báo.\n\n16 là giá trị nhỏ nhất.\nBạn sẽ muốn 32 để prefire mượt mà trong phase 'DPS'.",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Hiện cảnh báo khi bạn đang ở vùng nguy hiểm của xúc tu hoặc từ TNT. Màu của cảnh báo sẽ dựa trên màu của độ nguy hiểm!",
-    "key.wikiLookup": "Tìm trên wiki",
     "key.itemProtection": "Bảo vệ item",
     "key.itemPriceLookup": "Tìm kiếm trên Bazaar",
     "key.itemPriceRefresh": "Làm mới Bazaar",

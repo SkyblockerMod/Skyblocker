@@ -1,7 +1,6 @@
 {
     "key.categories.skyblocker": "Skyblocker",
     "key.hotbarSlotLock": "슬롯 고정 (핫바)",
-    "key.wikiLookup": "위키에서 찾기",
     "skyblocker.config.title": "Skyblocker 설정",
     "skyblocker.config.general": "일반",
     "skyblocker.config.uiAndVisuals.bars": "체력, 마나, 방어력, 속도 & 경험치 바",

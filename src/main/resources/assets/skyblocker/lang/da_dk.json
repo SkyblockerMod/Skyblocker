@@ -44,7 +44,6 @@
     "skyblocker.config.dungeons.classBasedPlayerGlow": "Klassebaseret spiller-glød",
     "argument.color.rgb.incomplete": "Ufuldstændig (forventede 3 farveværdier).",
     "argument.color.hex.invalidString": "Hex-koden skal være præcis 6 tegn langt, der blev funder %d tegn.",
-    "key.wikiLookup": "Slå op på wiki",
     "key.itemPriceRefresh": "Opdater Bazaaren",
     "text.skyblocker.quit_config_sure": "Er du sikker på, at du vil afslutte redigeringen af konfigurationen? Ændringer vil ikke blive gemt!",
     "text.skyblocker.quit_discard": "Afslut og Kassér Ændringerne",
