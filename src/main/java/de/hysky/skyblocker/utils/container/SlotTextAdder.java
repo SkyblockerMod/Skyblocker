@@ -16,6 +16,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Register a slot text adder using {@link de.hysky.skyblocker.annotations.RegisterSlotTextAdder}
+ */
 public interface SlotTextAdder extends ContainerMatcher {
 
 	/**

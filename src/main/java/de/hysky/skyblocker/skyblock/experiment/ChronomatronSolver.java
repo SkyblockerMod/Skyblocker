@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.experiment;
 
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -15,6 +16,7 @@ import net.minecraft.item.Items;
 import java.util.ArrayList;
 import java.util.List;
 
+@RegisterContainerSolver
 public final class ChronomatronSolver extends ExperimentSolver {
 	public static final Object2ObjectMap<Item, Item> TERRACOTTA_TO_GLASS = Object2ObjectMaps.unmodifiable(
 			new Object2ObjectArrayMap<>(

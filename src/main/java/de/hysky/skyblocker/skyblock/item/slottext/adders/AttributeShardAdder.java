@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
+import de.hysky.skyblocker.annotations.RegisterSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@RegisterSlotTextAdder
 public class AttributeShardAdder extends SimpleSlotTextAdder {
 	private static final Object2ObjectMap<String, String> ID_2_SHORT_NAME = new Object2ObjectOpenHashMap<>();
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(

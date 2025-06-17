@@ -2,10 +2,6 @@ package de.hysky.skyblocker.skyblock.item.slottext;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.WardrobeKeybinds;
-import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
-import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
-import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
@@ -31,34 +27,10 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class SlotTextManager {
-	private static final SlotTextAdder[] adders = new SlotTextAdder[]{
-			new EssenceShopAdder(),
-			new EnchantmentLevelAdder(),
-			new MinionLevelAdder(),
-			new PetLevelAdder(),
-			new ChoosePetLevelAdder(),
-			new SkyblockLevelAdder(),
-			new HotmPerkLevelAdder(),
-			new SkillLevelAdder(),
-			new CatacombsLevelAdder.Dungeoneering(),
-			new CatacombsLevelAdder.DungeonClasses(),
-			new CatacombsLevelAdder.ReadyUp(),
-			new RancherBootsSpeedAdder(),
-			new AttributeShardAdder(),
-			new PrehistoricEggAdder(),
-			new PotionLevelAdder(),
-			new CollectionAdder(),
-			new CommunityShopAdder(),
-			new YourEssenceAdder(),
-			new PowerStonesGuideAdder(),
-			new BazaarHelper(),
-			new StatsTuningAdder(),
-			ChocolateFactorySolver.INSTANCE,
-			new EvolvingItemAdder(),
-			new NewYearCakeAdder(),
-			WardrobeKeybinds.INSTANCE,
-			new SkyblockGuideAdder()
-	};
+	// This method is populated at compile time in buildSrc with classes annotated with RegisterSlotTextAdder
+	private static native SlotTextAdder[] getAdders();
+	private static final SlotTextAdder[] ADDERS = getAdders();
+
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 	private static final KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, "key.categories.skyblocker"));
 	private static boolean keyHeld = false;
@@ -88,7 +60,7 @@ public class SlotTextManager {
 	}
 
 	private static void onScreenChange(Screen screen) {
-		for (SlotTextAdder adder : adders) {
+		for (SlotTextAdder adder : ADDERS) {
 			if (adder.isEnabled() && adder.test(screen)) {
 				currentScreenAdders.add(adder);
 			}
@@ -99,7 +71,7 @@ public class SlotTextManager {
 	 * The returned text is rendered on top of the slot. The text will be scaled if it doesn't fit in the slot,
 	 * but 3 characters should be seen as the maximum to keep it readable and in place as it tends to move around when scaled.
 	 *
-	 * @implNote The order of the adders remains the same as they were added to the {@link SlotTextManager#adders} array.
+	 * @implNote The order of the adders remains the same as they were added to the {@link SlotTextManager#ADDERS} array.
 	 *           It is the implementors' duty to ensure they do not add slot text to the same location as other adders on the same slot.
 	 */
 	@NotNull
@@ -147,7 +119,7 @@ public class SlotTextManager {
 	}
 
 	public static Stream<SlotTextAdder> getAdderStream() {
-		return Arrays.stream(adders);
+		return Arrays.stream(ADDERS);
 	}
 
 	public static boolean isEnabled(String adderId) {

@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item.background.adders;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import de.hysky.skyblocker.annotations.RegisterItemBackground;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+@RegisterItemBackground
 public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRarity> {
 
 	public static final ImmutableMap<String, SkyblockItemRarity> LORE_RARITIES = ImmutableMap.ofEntries(

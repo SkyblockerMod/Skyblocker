@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * Simple implementation of a slot text adder.
- * Extend this class and add it to {@link SlotTextManager#adders} to add text to any arbitrary slot.
+ * Extend this class and annotate it with {@link de.hysky.skyblocker.annotations.RegisterSlotTextAdder} to add text to any arbitrary slot.
  */
 public abstract class SimpleSlotTextAdder extends RegexContainerMatcher implements SlotTextAdder {
 	protected final @Nullable ConfigInformation configInformation;

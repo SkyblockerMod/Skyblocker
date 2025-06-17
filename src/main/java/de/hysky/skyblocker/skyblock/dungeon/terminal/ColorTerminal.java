@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
+import de.hysky.skyblocker.annotations.RegisterContainerSolver;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 
+@RegisterContainerSolver
 public final class ColorTerminal extends SimpleContainerSolver implements TerminalSolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(ColorTerminal.class.getName());
     private static final Map<String, DyeColor> colorFromName;
