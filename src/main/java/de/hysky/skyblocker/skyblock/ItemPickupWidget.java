@@ -162,7 +162,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 
 	@Override
 	public Set<Location> availableLocations() {
-		return Set.of(Location.values());
+		return ALL_LOCATIONS;
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import java.util.Set;
 @RegisterWidget
 public class FarmingHudWidget extends ComponentBasedWidget {
 	private static final MutableText TITLE = Text.literal("Farming").formatted(Formatting.YELLOW, Formatting.BOLD);
+	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GARDEN);
 	public static final Map<String, String> FARMING_TOOLS = Map.ofEntries(
 			Map.entry("THEORETICAL_HOE_WHEAT_1", "WHEAT"),
 			Map.entry("THEORETICAL_HOE_WHEAT_2", "WHEAT"),
@@ -179,7 +180,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public Set<Location> availableLocations() {
-		return Set.of(Location.GARDEN);
+		return AVAILABLE_LOCATIONS;
 	}
 
 	@Override
