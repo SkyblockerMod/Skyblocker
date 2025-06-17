@@ -1421,6 +1421,7 @@
   "skyblocker.profileviewer.inventory.inactive": "Locked Slot",
   "skyblocker.profileviewer.inventory.inactive.description.backpack": "The selected backpack",
   "skyblocker.profileviewer.inventory.inactive.description.general": "does not contain this slot",
+  "skyblocker.profileviewer.title": "View Profile of: %s",
 
   "skyblocker.armorCustomization.animated": "Animated",
   "skyblocker.armorCustomization.cannotCustomizeColor": "Cannot customize this piece's color :(",

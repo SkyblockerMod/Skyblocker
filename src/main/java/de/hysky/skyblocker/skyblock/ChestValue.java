@@ -61,7 +61,7 @@ public class ChestValue {
 								addValueToContainer(genericContainerScreen, dungeonChestProfit, title);
 						});
 					}
-				} else if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu")) {
+				} else if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu") && !titleString.endsWith("'s Profile")) {
 					boolean minion = MINION_PATTERN.matcher(title.getString().trim()).find();
 					Screens.getButtons(screen).add(ButtonWidget
 							.builder(Text.literal("$"), buttonWidget -> {
