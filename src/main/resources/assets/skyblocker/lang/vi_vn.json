@@ -245,7 +245,6 @@
     "skyblocker.config.farming.garden.pestHighlighter.@Tooltip": "Làm tất cả côn trùng trên đảo phát sáng để bạn tìm chúng dễ hơn :D",
     "skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly": "Chỉ hoạt động ở Vườn",
     "skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly.@Tooltip": "Khóa Hỗ trợ Visitor để chỉ hoạt động trong Garden\n§cHỗ trợ Visitor cần được bật.",
-    "skyblocker.config.farming.general.coinsPerHour": "",
     "skyblocker.config.farming.general.noData": "Không có dữ liệu",
     "skyblocker.config.general.hitbox.oldLeverHitbox": "Bật hitbox cần gạt của 1.8",
     "skyblocker.config.general.hitbox.oldMushroomHitbox": "Bật hitbox cây nấm của 1.8",
