@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonParser;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.brigadier.Command;
@@ -443,15 +444,25 @@ public final class ItemUtils {
         return Optional.of(texture);
     }
 
-    public static @NotNull ItemStack getSkyblockerStack() {
-        try {
-            ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-            stack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("SkyblockerStack"), Optional.of(java.util.UUID.randomUUID()), propertyMapWithTexture("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=")));
-            return stack;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public static @NotNull ItemStack createSkull(String textureBase64) {
+		GameProfile profile = new GameProfile(java.util.UUID.randomUUID(), "a");
+		profile.getProperties().put("textures", new Property("textures", textureBase64));
+		return createSkull(profile);
+	}
+
+	public static @NotNull ItemStack createSkull(GameProfile profile) {
+		try {
+			ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
+			stack.set(DataComponentTypes.PROFILE, new ProfileComponent(profile));
+			return stack;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static @NotNull ItemStack getSkyblockerStack() {
+		return createSkull("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=");
+	}
 
     /**
      * Utility method.
