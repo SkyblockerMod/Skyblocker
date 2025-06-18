@@ -14,11 +14,11 @@ public class Ico {
 	public static final ItemStack MAGMA_CREAM = Items.MAGMA_CREAM.getDefaultStack();
 	public static final ItemStack AMETHYST_SHARD = Items.AMETHYST_SHARD.getDefaultStack();
 	public static final ItemStack CLOCK = Items.CLOCK.getDefaultStack();
-	public static final ItemStack DIASWORD = Items.DIAMOND_SWORD.getDefaultStack();
+	public static final ItemStack DIA_SWORD = Items.DIAMOND_SWORD.getDefaultStack();
 	public static final ItemStack DBUSH = Items.DEAD_BUSH.getDefaultStack();
 	public static final ItemStack VILLAGER = Items.VILLAGER_SPAWN_EGG.getDefaultStack();
 	public static final ItemStack SPAWN_EGG = Items.GHAST_SPAWN_EGG.getDefaultStack();
-	public static final ItemStack MOREGOLD = Items.GOLDEN_APPLE.getDefaultStack();
+	public static final ItemStack GOLDEN_APPLE = Items.GOLDEN_APPLE.getDefaultStack();
 	public static final ItemStack COMPASS = Items.COMPASS.getDefaultStack();
 	public static final ItemStack SUGAR = Items.SUGAR.getDefaultStack();
 	public static final ItemStack IRON_HOE = Items.IRON_HOE.getDefaultStack();
@@ -41,7 +41,7 @@ public class Ico {
 	public static final ItemStack LEATHER = Items.LEATHER.getDefaultStack();
 	public static final ItemStack MITHRIL = Items.PRISMARINE_CRYSTALS.getDefaultStack();
 	public static final ItemStack REDSTONE = Items.REDSTONE.getDefaultStack();
-	public static final ItemStack FIRE = Items.CAMPFIRE.getDefaultStack();
+	public static final ItemStack CAMPFIRE = Items.CAMPFIRE.getDefaultStack();
 	public static final ItemStack STRING = Items.STRING.getDefaultStack();
 	public static final ItemStack WITHER = Items.WITHER_SKELETON_SKULL.getDefaultStack();
 	public static final ItemStack FLESH = Items.ROTTEN_FLESH.getDefaultStack();
@@ -64,7 +64,7 @@ public class Ico {
 	public static final ItemStack COMPOSTER = Items.COMPOSTER.getDefaultStack();
 	public static final ItemStack SAPLING = Items.OAK_SAPLING.getDefaultStack();
 	public static final ItemStack SEEDS = Items.WHEAT_SEEDS.getDefaultStack();
-	public static final ItemStack MILESTONE = Items.LODESTONE.getDefaultStack();
+	public static final ItemStack LODESTONE = Items.LODESTONE.getDefaultStack();
 	public static final ItemStack STONE_PICKAXE = Items.STONE_PICKAXE.getDefaultStack();
 	public static final ItemStack IRON_PICKAXE = Items.IRON_PICKAXE.getDefaultStack();
 	public static final ItemStack NETHER_STAR = Items.NETHER_STAR.getDefaultStack();
