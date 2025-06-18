@@ -101,7 +101,7 @@ public class ChestValue {
 				}
 
 				String name = stack.getName().getString();
-				String skyblockApiId = stack.getSkyblockApiId();
+				String skyblockApiId = stack.skyblocker$getSkyblockApiId();
 
 				//Regular item price
 				if (!skyblockApiId.isEmpty()) {
@@ -195,7 +195,7 @@ public class ChestValue {
 					continue;
 				}
 
-				String id = stack.getSkyblockApiId();
+				String id = stack.skyblocker$getSkyblockApiId();
 
 				int count = switch (screenType) {
 					case SACK -> {

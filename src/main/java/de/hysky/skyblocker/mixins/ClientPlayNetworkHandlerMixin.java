@@ -71,7 +71,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	}
 
 	@Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
-	private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
+	private void onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
 		if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
 
 		SlayerManager.checkSlayerBoss(armorStandEntity);
@@ -93,19 +93,19 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	}
 
 	@Inject(method = "method_64896", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V"))
-	private void skyblocker$onItemDestroy(int entityId, CallbackInfo ci) {
+	private void onItemDestroy(int entityId, CallbackInfo ci) {
 		if (world.getEntityById(entityId) instanceof ItemEntity itemEntity) {
 			DungeonManager.onItemPickup(itemEntity);
 		}
 	}
 
 	@Inject(method = "onPlayerPositionLook", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
-	private void skyblocker$beforeTeleport(PlayerPositionLookS2CPacket packet, CallbackInfo ci, @Share("playerBeforeTeleportBlockPos") LocalRef<BlockPos> beforeTeleport) {
+	private void beforeTeleport(PlayerPositionLookS2CPacket packet, CallbackInfo ci, @Share("playerBeforeTeleportBlockPos") LocalRef<BlockPos> beforeTeleport) {
 		beforeTeleport.set(client.player.getBlockPos().toImmutable());
 	}
 
 	@Inject(method = "onPlayerPositionLook", at = @At(value = "RETURN"))
-	private void skyblocker$onTeleport(PlayerPositionLookS2CPacket packet, CallbackInfo ci, @Share("playerBeforeTeleportBlockPos") LocalRef<BlockPos> beforeTeleport) {
+	private void onTeleport(PlayerPositionLookS2CPacket packet, CallbackInfo ci, @Share("playerBeforeTeleportBlockPos") LocalRef<BlockPos> beforeTeleport) {
 		//player has been teleported by the server, tell the smooth AOTE this
 		SmoothAOTE.playerTeleported();
 
@@ -113,18 +113,18 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	}
 
 	@ModifyVariable(method = "onItemPickupAnimation", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V", ordinal = 0))
-	private ItemEntity skyblocker$onItemPickup(ItemEntity itemEntity) {
+	private ItemEntity onItemPickup(ItemEntity itemEntity) {
 		DungeonManager.onItemPickup(itemEntity);
 		return itemEntity;
 	}
 
 	@WrapWithCondition(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;)V", remap = false))
-	private boolean skyblocker$cancelEntityPassengersWarning(Logger instance, String msg) {
+	private boolean cancelEntityPassengersWarning(Logger instance, String msg) {
 		return !Utils.isOnHypixel();
 	}
 
 	@ModifyExpressionValue(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/EntityStatusS2CPacket;getEntity(Lnet/minecraft/world/World;)Lnet/minecraft/entity/Entity;"))
-	private Entity skyblocker$onEntityDeath(Entity entity, @Local(argsOnly = true) EntityStatusS2CPacket packet) {
+	private Entity onEntityDeath(Entity entity, @Local(argsOnly = true) EntityStatusS2CPacket packet) {
 		if (packet.getStatus() == EntityStatuses.PLAY_DEATH_SOUND_OR_ADD_PROJECTILE_HIT_PARTICLES) {
 			DungeonScore.handleEntityDeath(entity);
 			TheEnd.onEntityDeath(entity);
@@ -133,23 +133,23 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	}
 
 	@Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
-	private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
+	private void onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
 		EggFinder.checkIfEgg(entity);
 		CorpseFinder.checkIfCorpse(entity);
 	}
 
 	@Inject(method = "onPlayerListHeader", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;setFooter(Lnet/minecraft/text/Text;)V"))
-	private void skyblocker$updatePlayerListFooter(PlayerListHeaderS2CPacket packet, CallbackInfo ci) {
+	private void updatePlayerListFooter(PlayerListHeaderS2CPacket packet, CallbackInfo ci) {
 		PlayerListManager.updateFooter(packet.footer());
 	}
 
 	@WrapWithCondition(method = "onPlayerList", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false))
-	private boolean skyblocker$cancelPlayerListWarning(Logger instance, String format, Object arg1, Object arg2) {
+	private boolean cancelPlayerListWarning(Logger instance, String format, Object arg1, Object arg2) {
 		return !Utils.isOnHypixel();
 	}
 
 	@Inject(method = "onPlaySound", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
-	private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
+	private void onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
 		FishingHelper.onSound(packet);
 		CrystalsChestHighlighter.onSound(packet);
 		SoundEvent sound = packet.getSound().value();
@@ -167,22 +167,22 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	}
 
 	@WrapWithCondition(method = "warnOnUnknownPayload", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
-	private boolean skyblocker$dropBadlionPacketWarnings(Logger instance, String message, Object identifier) {
+	private boolean dropBadlionPacketWarnings(Logger instance, String message, Object identifier) {
 		return !(Utils.isOnHypixel() && ((Identifier) identifier).getNamespace().equals("badlion"));
 	}
 
 	@WrapWithCondition(method = {"onScoreboardScoreUpdate", "onScoreboardScoreReset"}, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false), require = 2)
-	private boolean skyblocker$cancelUnknownScoreboardObjectiveWarnings(Logger instance, String message, Object objectiveName) {
+	private boolean cancelUnknownScoreboardObjectiveWarnings(Logger instance, String message, Object objectiveName) {
 		return !Utils.isOnHypixel();
 	}
 
 	@WrapWithCondition(method = "onTeam", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;[Ljava/lang/Object;)V", remap = false))
-	private boolean skyblocker$cancelTeamWarning(Logger instance, String format, Object... arg) {
+	private boolean cancelTeamWarning(Logger instance, String format, Object... arg) {
 		return !Utils.isOnHypixel();
 	}
 
 	@Inject(method = "onParticle", at = @At("RETURN"))
-	private void skyblocker$onParticle(ParticleS2CPacket packet, CallbackInfo ci) {
+	private void onParticle(ParticleS2CPacket packet, CallbackInfo ci) {
 		MythologicalRitual.onParticle(packet);
 		DojoManager.onParticle(packet);
 		CrystalsChestHighlighter.onParticle(packet);

@@ -23,7 +23,7 @@ public class TrueHexDisplay extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		String itemId = stack.getSkyblockId();
+		String itemId = stack.skyblocker$getSkyblockId();
 
 		//Nice job on item id consistency Hypixel
 		if (itemId != null && !itemId.isEmpty() && (itemId.startsWith("DYE_") || itemId.endsWith("_DYE"))) {

@@ -21,7 +21,7 @@ public interface ComponentHolderMixin {
 
 	@SuppressWarnings("unchecked")
 	@ModifyReturnValue(method = "get", at = @At("RETURN"))
-	private <T> T skyblocker$customArmorTrims(T original, ComponentType<? extends T> dataComponentType) {
+	private <T> T customArmorTrims(T original, ComponentType<? extends T> dataComponentType) {
 		if (Utils.isOnSkyblock() && ((Object) this) instanceof ItemStack stack) {
 			if (dataComponentType == DataComponentTypes.TRIM) {
 				Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customTrims = SkyblockerConfigManager.get().general.customArmorTrims;

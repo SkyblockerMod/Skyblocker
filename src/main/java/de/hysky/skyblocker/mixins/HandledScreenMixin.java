@@ -58,10 +58,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 * This is the slot id returned for when a click is outside the screen's bounds
 	 */
 	@Unique
-	private static final int OUT_OF_BOUNDS_SLOT = -999;
+	private static final int skyblocker$OUT_OF_BOUNDS_SLOT = -999;
 
 	@Unique
-	private static final Set<String> FILLER_ITEMS = Set.of(
+	private static final Set<String> skyblocker$FILLER_ITEMS = Set.of(
 			" ", // Empty menu item
 			"Locked Page",
 			"Quick Crafting Slot",
@@ -97,23 +97,23 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	protected abstract List<Text> getTooltipFromItem(ItemStack stack);
 
 	@Unique
-	private List<QuickNavButton> quickNavButtons;
+	private List<QuickNavButton> skyblocker$quickNavButtons;
 
 	protected HandledScreenMixin(Text title) {
 		super(title);
 	}
 
 	@Inject(method = "init", at = @At("RETURN"))
-	private void skyblocker$initQuickNav(CallbackInfo ci) {
+	private void initQuickNav(CallbackInfo ci) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().quickNav.enableQuickNav && client != null && client.player != null && !client.player.isCreative()) {
-			for (QuickNavButton quickNavButton : quickNavButtons = QuickNav.init(getTitle().getString().trim())) {
+			for (QuickNavButton quickNavButton : skyblocker$quickNavButtons = QuickNav.init(getTitle().getString().trim())) {
 				addSelectableChild(quickNavButton);
 			}
 		}
 	}
 
 	@Inject(at = @At("HEAD"), method = "keyPressed")
-	public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+	public void keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
 		if (this.client != null && this.client.player != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 			//wiki lookup
@@ -140,7 +140,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	}
 
 	@ModifyExpressionValue(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDI)Z"))
-	public boolean skyblocker$passThroughSearchFieldUnfocusedClicks(boolean superClicked, double mouseX, double mouseY, int button) {
+	public boolean passThroughSearchFieldUnfocusedClicks(boolean superClicked, double mouseX, double mouseY, int button) {
 		//Handle Search Field clicks - as of 1.21.4 the game will only send clicks to the selected element rather than trying to send one to each and stopping when the first returns true (if any).
 		if (!superClicked) {
 			Optional<ClickableWidget> searchField = Screens.getButtons(this).stream()
@@ -159,8 +159,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 * Draws the unselected tabs in front of the background blur, but behind the main inventory, similar to creative inventory tabs
 	 */
 	@Inject(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawBackground(Lnet/minecraft/client/gui/DrawContext;FII)V"))
-	private void skyblocker$drawUnselectedQuickNavButtons(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-		if (quickNavButtons != null) for (QuickNavButton quickNavButton : quickNavButtons) {
+	private void drawUnselectedQuickNavButtons(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+		if (skyblocker$quickNavButtons != null) for (QuickNavButton quickNavButton : skyblocker$quickNavButtons) {
 			// Render the button behind the main inventory background if it's not toggled or if it's still fading in
 			if (!quickNavButton.toggled() || quickNavButton.getAlpha() < 255) {
 				quickNavButton.setRenderInFront(false);
@@ -173,8 +173,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 * Draws the selected tab in front of the background blur and the main inventory, similar to creative inventory tabs
 	 */
 	@Inject(method = "renderBackground", at = @At("RETURN"))
-	private void skyblocker$drawSelectedQuickNavButtons(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-		if (quickNavButtons != null) for (QuickNavButton quickNavButton : quickNavButtons) {
+	private void drawSelectedQuickNavButtons(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+		if (skyblocker$quickNavButtons != null) for (QuickNavButton quickNavButton : skyblocker$quickNavButtons) {
 			if (quickNavButton.toggled()) {
 				quickNavButton.setRenderInFront(true);
 				quickNavButton.render(context, mouseX, mouseY, delta);
@@ -185,7 +185,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@SuppressWarnings("DataFlowIssue")
 	// makes intellij be quiet about this.focusedSlot maybe being null. It's already null checked in mixined method.
 	@Inject(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/util/Identifier;)V"), cancellable = true)
-	public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci, @Local(ordinal = 0) ItemStack stack) {
+	public void drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci, @Local(ordinal = 0) ItemStack stack) {
 		if (!Utils.isOnSkyblock()) return;
 
 		// Hide Empty Tooltips
@@ -209,30 +209,30 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	}
 
 	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "STORE"))
-	private ItemStack skyblocker$experimentSolvers$replaceTooltipDisplayStack(ItemStack stack) {
-		return skyblocker$experimentSolvers$getStack(focusedSlot, stack);
+	private ItemStack modifyToolTipStackForExperimentSolver(ItemStack stack) {
+		return getExperimentSolverStack(focusedSlot, stack);
 	}
 
 	@ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)
-	private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, @Local(argsOnly = true) Slot slot) {
-		return skyblocker$experimentSolvers$getStack(slot, stack);
+	private ItemStack replaceDisplayStackForExperimentSolver(ItemStack stack, @Local(argsOnly = true) Slot slot) {
+		return getExperimentSolverStack(slot, stack);
 	}
 
 	/**
 	 * Avoids getting currentSolver again when it's already in the scope for some usages of this method.
 	 *
-	 * @see #skyblocker$experimentSolvers$getStack(Slot, ItemStack, ContainerSolver)
+	 * @see #getExperimentSolverStack(Slot, ItemStack, ContainerSolver)
 	 */
 	@Unique
-	private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack) {
-		return skyblocker$experimentSolvers$getStack(slot, stack, ContainerSolverManager.getCurrentSolver());
+	private ItemStack getExperimentSolverStack(Slot slot, @NotNull ItemStack stack) {
+		return getExperimentSolverStack(slot, stack, ContainerSolverManager.getCurrentSolver());
 	}
 
 	/**
 	 * Redirects getStack calls to account for different stacks in experiment solvers.
 	 */
 	@Unique
-	private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack, ContainerSolver currentSolver) {
+	private ItemStack getExperimentSolverStack(Slot slot, @NotNull ItemStack stack, ContainerSolver currentSolver) {
 		if (currentSolver instanceof ExperimentSolver experimentSolver && (experimentSolver instanceof SuperpairsSolver || experimentSolver instanceof UltrasequencerSolver) && experimentSolver.getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
 			ItemStack itemStack = experimentSolver.getSlots().get(slot.getIndex());
 			return itemStack == null ? stack : itemStack;
@@ -247,12 +247,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 * @implNote This runs before {@link ScreenHandler#onSlotClick(int, int, SlotActionType, net.minecraft.entity.player.PlayerEntity)}
 	 */
 	@Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickSlot(IIILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V"), cancellable = true)
-	private void skyblocker$onSlotClick(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
+	private void onSlotClick(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
 		if (!Utils.isOnSkyblock()) return;
 
 		// Item Protection
 		// When you try and drop the item by picking it up then clicking outside the screen
-		if (slotId == OUT_OF_BOUNDS_SLOT && ItemProtection.isItemProtected(this.handler.getCursorStack())) {
+		if (slotId == skyblocker$OUT_OF_BOUNDS_SLOT && ItemProtection.isItemProtected(this.handler.getCursorStack())) {
 			ci.cancel();
 			return;
 		}
@@ -260,10 +260,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		if (slot == null) return;
 		String title = getTitle().getString();
 		ContainerSolver currentSolver = ContainerSolverManager.getCurrentSolver();
-		ItemStack stack = skyblocker$experimentSolvers$getStack(slot, slot.getStack(), currentSolver);
+		ItemStack stack = getExperimentSolverStack(slot, slot.getStack(), currentSolver);
 
 		// Prevent clicks on filler items
-		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && FILLER_ITEMS.contains(stack.getName().getString()) &&
+		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && skyblocker$FILLER_ITEMS.contains(stack.getName().getString()) &&
 				// Allow clicks in Ultrasequencer and Superpairs
 				(!UltrasequencerSolver.INSTANCE.test(title) || SkyblockerConfigManager.get().helpers.experiments.enableUltrasequencerSolver)) {
 			ci.cancel();
@@ -326,14 +326,14 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	}
 
 	@Inject(at = @At("HEAD"), method = "mouseClicked")
-	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+	public void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
 		if (VisitorHelper.shouldRender()) {
 			VisitorHelper.handleMouseClick(mouseX, mouseY, button, this.textRenderer);
 		}
 	}
 
 	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
-	private void skyblocker$drawOnItem(DrawContext context, Slot slot, CallbackInfo ci) {
+	private void drawOnItem(DrawContext context, Slot slot, CallbackInfo ci) {
 		if (Utils.isOnSkyblock()) {
 			ItemBackgroundManager.drawBackgrounds(slot.getStack(), context, slot.x, slot.y);
 		}
@@ -351,7 +351,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	}
 
 	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawStackOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V"))
-	private void skyblocker$drawSlotText(DrawContext context, Slot slot, CallbackInfo ci) {
+	private void drawSlotText(DrawContext context, Slot slot, CallbackInfo ci) {
 		if (Utils.isOnSkyblock()) {
 			SlotTextManager.renderSlotText(context, textRenderer, slot);
 		}

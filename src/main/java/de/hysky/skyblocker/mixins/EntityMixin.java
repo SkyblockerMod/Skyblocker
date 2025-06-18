@@ -48,7 +48,7 @@ public abstract class EntityMixin {
 	public abstract boolean isInvisible();
 
 	@ModifyExpressionValue(method = "isInvisibleTo", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"))
-	public boolean skyblocker$showInvisibleArmorStands(boolean isSpectator, PlayerEntity player) {
+	public boolean showInvisibleArmorStands(boolean isSpectator, PlayerEntity player) {
 		return isSpectator || (isInvisible() && Utils.isOnHypixel() && Debug.debugEnabled() && SkyblockerConfigManager.get().debug.showInvisibleArmorStands && type.equals(EntityType.ARMOR_STAND));
 	}
 
