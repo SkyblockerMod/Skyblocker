@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.render;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -13,8 +14,8 @@ import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.*;
-import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.sound.SoundEvents;
@@ -35,7 +36,6 @@ public class RenderHelper {
     private static final Identifier TRANSLUCENT_DRAW = Identifier.of(SkyblockerMod.NAMESPACE, "translucent_draw");
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-    private static final BufferAllocator ALLOCATOR = new BufferAllocator(1536);
 
     @Init
     public static void init() {
@@ -79,8 +79,7 @@ public class RenderHelper {
         matrices.push();
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
-        VertexConsumerProvider consumers = context.consumers();
-        VertexConsumer buffer = consumers.getBuffer(throughWalls ? SkyblockerRenderLayers.FILLED_THROUGH_WALLS : SkyblockerRenderLayers.FILLED);
+        BufferBuilder buffer = Renderer.getBuffer(throughWalls ? SkyblockerRenderPipelines.FILLED_THROUGH_WALLS : RenderPipelines.DEBUG_FILLED_BOX);
 
         VertexRendering.drawFilledBox(matrices, buffer, minX, minY, minZ, maxX, maxY, maxZ, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
 
@@ -128,12 +127,11 @@ public class RenderHelper {
             matrices.push();
             matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
 
-            VertexConsumerProvider.Immediate consumers = (VertexConsumerProvider.Immediate) context.consumers();
-            RenderLayer layer = throughWalls ? SkyblockerRenderLayers.getLinesThroughWalls(lineWidth) : SkyblockerRenderLayers.getLines(lineWidth);
-            VertexConsumer buffer = consumers.getBuffer(layer);
+            RenderSystem.lineWidth(lineWidth);
+            RenderPipeline pipeline = throughWalls ? SkyblockerRenderPipelines.LINES_THROUGH_WALLS : RenderPipelines.LINES;
+            BufferBuilder buffer = Renderer.getBuffer(pipeline);
 
             VertexRendering.drawBox(matrices, buffer, minX, minY, minZ, maxX, maxY, maxZ, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
-            consumers.draw(layer);
 
             matrices.pop();
         }
@@ -162,9 +160,9 @@ public class RenderHelper {
 
         MatrixStack.Entry entry = matrices.peek();
 
-        VertexConsumerProvider.Immediate consumers = (VertexConsumerProvider.Immediate) context.consumers();
-        RenderLayer layer = throughWalls ? SkyblockerRenderLayers.getLinesThroughWalls(lineWidth) : SkyblockerRenderLayers.getLines(lineWidth);
-        VertexConsumer buffer = consumers.getBuffer(layer);
+        RenderSystem.lineWidth(lineWidth);
+        RenderPipeline pipeline = throughWalls ? SkyblockerRenderPipelines.LINES_THROUGH_WALLS : RenderPipelines.LINES;
+        BufferBuilder buffer = Renderer.getBuffer(pipeline);
 
         for (int i = 0; i < points.length; i++) {
             Vec3d nextPoint = points[i + 1 == points.length ? i - 1 : i + 1];
@@ -181,7 +179,6 @@ public class RenderHelper {
                     .normal(entry, normalVec);
         }
 
-        consumers.draw(layer);
         matrices.pop();
     }
 
@@ -194,9 +191,9 @@ public class RenderHelper {
 
         MatrixStack.Entry entry = matrices.peek();
 
-        VertexConsumerProvider.Immediate consumers = (VertexConsumerProvider.Immediate) context.consumers();
-        RenderLayer layer = SkyblockerRenderLayers.getLinesThroughWalls(lineWidth);
-        VertexConsumer buffer = consumers.getBuffer(layer);
+        RenderSystem.lineWidth(lineWidth);
+        RenderPipeline pipeline = SkyblockerRenderPipelines.LINES_THROUGH_WALLS;
+        BufferBuilder buffer = Renderer.getBuffer(pipeline);
 
         // Start drawing the line from a point slightly in front of the camera
         Vec3d cameraPoint = camera.add(Vec3d.fromPolar(context.camera().getPitch(), context.camera().getYaw()));
@@ -212,7 +209,6 @@ public class RenderHelper {
                 .color(colorComponents[0], colorComponents[1], colorComponents[2], alpha)
                 .normal(entry, normal);
 
-        consumers.draw(layer);
         matrices.pop();
     }
 
@@ -222,15 +218,12 @@ public class RenderHelper {
 
         positionMatrix.translate((float) -camera.x, (float) -camera.y, (float) -camera.z);
 
-        VertexConsumerProvider.Immediate consumers = (VertexConsumerProvider.Immediate) context.consumers();
-        RenderLayer layer = throughWalls ? SkyblockerRenderLayers.QUADS_THROUGH_WALLS : SkyblockerRenderLayers.QUADS;
-        VertexConsumer buffer = consumers.getBuffer(layer);
+        RenderPipeline pipeline = throughWalls ? SkyblockerRenderPipelines.QUADS_THROUGH_WALLS : RenderPipelines.DEBUG_QUADS;
+        BufferBuilder buffer = Renderer.getBuffer(pipeline);
 
         for (int i = 0; i < 4; i++) {
             buffer.vertex(positionMatrix, (float) points[i].getX(), (float) points[i].getY(), (float) points[i].getZ()).color(colorComponents[0], colorComponents[1], colorComponents[2], alpha);
         }
-
-        consumers.draw(layer);
     }
 
 	/**
@@ -255,9 +248,9 @@ public class RenderHelper {
 				.translate((float) (pos.getX() - cameraPos.getX()), (float) (pos.getY() - cameraPos.getY()), (float) (pos.getZ() - cameraPos.getZ()))
 				.rotate(camera.getRotation());
 
-		VertexConsumerProvider.Immediate consumers = (VertexConsumerProvider.Immediate) context.consumers();
-		RenderLayer layer = throughWalls ? SkyblockerRenderLayers.getTextureThroughWalls(texture) : SkyblockerRenderLayers.getTexture(texture);
-		VertexConsumer buffer = consumers.getBuffer(layer);
+		RenderSystem.setShaderTexture(0, CLIENT.getTextureManager().getTexture(texture).getGlTextureView());
+		RenderPipeline pipeline = throughWalls ? SkyblockerRenderPipelines.TEXTURE_THROUGH_WALLS : SkyblockerRenderPipelines.TEXTURE;
+		BufferBuilder buffer = Renderer.getBuffer(pipeline);
 
 		int color = ColorHelper.fromFloats(alpha, shaderColor[0], shaderColor[1], shaderColor[2]);
 
@@ -265,8 +258,6 @@ public class RenderHelper {
 		buffer.vertex(positionMatrix, (float) renderOffset.getX(), (float) renderOffset.getY() + height, (float) renderOffset.getZ()).texture(1, 1).color(color);
 		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY() + height	, (float) renderOffset.getZ()).texture(1 - textureWidth, 1).color(color);
 		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY(), (float) renderOffset.getZ()).texture(1 - textureWidth, 1 - textureHeight).color(color);
-
-		consumers.draw(layer);
 	}
 
     public static void renderText(WorldRenderContext context, Text text, Vec3d pos, boolean throughWalls) {
@@ -301,10 +292,8 @@ public class RenderHelper {
 
         float xOffset = -textRenderer.getWidth(text) / 2f;
 
-        VertexConsumerProvider.Immediate consumers = VertexConsumerProvider.immediate(ALLOCATOR);
-
-        textRenderer.draw(text, xOffset, yOffset, 0xFFFFFFFF, false, positionMatrix, consumers, throughWalls ? TextRenderer.TextLayerType.SEE_THROUGH : TextRenderer.TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
-        consumers.draw();
+        textRenderer.draw(text, xOffset, yOffset, 0xFFFFFFFF, false, positionMatrix, context.consumers(), throughWalls ? TextRenderer.TextLayerType.SEE_THROUGH : TextRenderer.TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+        ((VertexConsumerProvider.Immediate) context.consumers()).draw();
     }
 
     /**
@@ -321,7 +310,7 @@ public class RenderHelper {
     	matrices.push();
     	matrices.translate(-camera.x, -camera.y, -camera.z);
 
-    	VertexConsumer buffer = context.consumers().getBuffer(SkyblockerRenderLayers.CYLINDER);
+    	BufferBuilder buffer = Renderer.getBuffer(SkyblockerRenderPipelines.CYLINDER);
     	Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
     	float halfHeight = height / 2.0f;
 
@@ -338,16 +327,13 @@ public class RenderHelper {
     }
 
     /**
-     * This is called after all {@link WorldRenderEvents#AFTER_TRANSLUCENT} listeners have been called so that we can draw all remaining render layers.
+     * This is called after all {@link WorldRenderEvents#AFTER_TRANSLUCENT} listeners have been called, this is used for drawing all buffered objects.
      */
     private static void drawTranslucents(WorldRenderContext context) {
     	Profiler profiler = Profilers.get();
 
-    	profiler.push("skyblockerTranslucentDraw");
-    	VertexConsumerProvider.Immediate immediate = (VertexConsumerProvider.Immediate) context.consumers();
-
-    	//Draw all render layers that haven't been drawn yet - drawing a specific layer does nothing and idk why (IF bug maybe?)
-    	immediate.draw();
+    	profiler.push("skyblockerDraw");
+    	Renderer.executeDraws();
         profiler.pop();
     }
 

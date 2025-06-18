@@ -57,7 +57,6 @@
     "accessors.BeaconBlockEntityRendererInvoker",
     "accessors.BufferManagerInvoker",
     "accessors.CheckboxWidgetAccessor",
-    "accessors.DrawContextAccessor",
     "accessors.EndermanEntityAccessor",
     "accessors.EntityRenderDispatcherAccessor",
     "accessors.FrustumInvoker",

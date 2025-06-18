@@ -4,7 +4,6 @@ import java.awt.Color;
 
 import org.joml.Matrix3x2f;
 
-import de.hysky.skyblocker.mixins.accessors.DrawContextAccessor;
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.HorizontalGradientGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.OutlinedTextGuiElementRenderState;
@@ -34,22 +33,18 @@ public class HudHelper {
     }
 
 	public static void drawHorizontalGradient(DrawContext context, float startX, float startY, float endX, float endY, int colorStart, int colorEnd) {
-		DrawContextAccessor accessor = (DrawContextAccessor) context;
-
-		accessor.getState().addSimpleElement(new HorizontalGradientGuiElementRenderState(RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), (int) startX, (int) startY, (int) endX, (int) endY, colorStart, colorEnd, accessor.getScissorStack().peekLast()));
+		context.state.addSimpleElement(new HorizontalGradientGuiElementRenderState(RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), (int) startX, (int) startY, (int) endX, (int) endY, colorStart, colorEnd, context.scissorStack.peekLast()));
 	}
 
 	public static void drawEquipment(DrawContext context, EquipmentRenderer equipmentRenderer, EquipmentModel.LayerType layerType, RegistryKey<EquipmentAsset> assetKey, Model model, ItemStack stack, int x1, int y1, int x2, int y2, float rotation, float scale, float offset) {
-		DrawContextAccessor accessor = (DrawContextAccessor) context;
-		EquipmentGuiElementRenderState renderState = new EquipmentGuiElementRenderState(equipmentRenderer, layerType, assetKey, model, stack, x1, y1, x2, y2, rotation, scale, offset, accessor.getScissorStack().peekLast());
+		EquipmentGuiElementRenderState renderState = new EquipmentGuiElementRenderState(equipmentRenderer, layerType, assetKey, model, stack, x1, y1, x2, y2, rotation, scale, offset, context.scissorStack.peekLast());
 
-		accessor.getState().addSpecialElement(renderState);
+		context.state.addSpecialElement(renderState);
 	}
 
 	public static void drawOutlinedText(DrawContext context, OrderedText text, int x, int y, int color, int outlineColor) {
-		DrawContextAccessor accessor = (DrawContextAccessor) context;
-		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text, new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, accessor.getScissorStack().peekLast());
+		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text, new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, context.scissorStack.peekLast());
 
-		accessor.getState().addText(renderState);
+		context.state.addText(renderState);
 	}
 }

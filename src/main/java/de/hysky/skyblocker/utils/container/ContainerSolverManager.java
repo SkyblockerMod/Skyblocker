@@ -27,10 +27,11 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix3x2fStack;
 
 import java.util.List;
 
@@ -75,13 +76,6 @@ public class ContainerSolverManager {
 	public static void init() {
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
-				ScreenEvents.afterRender(screen).register((screen1, context, mouseX, mouseY, delta) -> {
-					Matrix3x2fStack matrices = context.getMatrices();
-					matrices.pushMatrix();
-					matrices.translate(((HandledScreenAccessor) genericContainerScreen).getX(), ((HandledScreenAccessor) genericContainerScreen).getY());
-					onDraw(context, genericContainerScreen, genericContainerScreen.getScreenHandler().slots);
-					matrices.popMatrix();
-				});
 				ScreenEvents.remove(screen).register(screen1 -> clearScreen());
 				onSetScreen(genericContainerScreen);
 			} else {
@@ -133,14 +127,20 @@ public class ContainerSolverManager {
 		return currentSolver != null && currentSolver.onClickSlot(slot, stack, screenId);
 	}
 
-	public static void onDraw(DrawContext context, GenericContainerScreen genericContainerScreen, List<Slot> slots) {
+	public static void onDraw(DrawContext context, HandledScreen<GenericContainerScreenHandler> handledScreen, List<Slot> slots) {
 		if (currentSolver == null) return;
-		if (highlights == null) highlights = currentSolver.getColors(slotMap(currentSolver instanceof ContainerAndInventorySolver ? slots : slots.subList(0, genericContainerScreen.getScreenHandler().getRows() * 9)));
+
+		context.getMatrices().pushMatrix();
+		context.getMatrices().translate(((HandledScreenAccessor) handledScreen).getX(), ((HandledScreenAccessor) handledScreen).getY());
+
+		if (highlights == null) highlights = currentSolver.getColors(slotMap(currentSolver instanceof ContainerAndInventorySolver ? slots : slots.subList(0, handledScreen.getScreenHandler().getRows() * 9)));
 		for (ColorHighlight highlight : highlights) {
 			Slot slot = slots.get(highlight.slot());
 			int color = highlight.color();
 			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, color);
 		}
+
+		context.getMatrices().popMatrix();
 	}
 
 	public static Int2ObjectMap<ItemStack> slotMap(List<Slot> slots) {

@@ -1,0 +1,292 @@
+package de.hysky.skyblocker.utils.render;
+
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+
+import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4fStack;
+import org.joml.Vector4f;
+import org.lwjgl.system.MemoryUtil;
+
+import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.systems.CommandEncoder;
+import com.mojang.blaze3d.systems.RenderPass;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.systems.RenderSystem.ShapeIndexBuffer;
+import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat.DrawMode;
+import com.mojang.blaze3d.vertex.VertexFormat.IndexType;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.MappableRingBuffer;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BuiltBuffer;
+import net.minecraft.client.render.BuiltBuffer.DrawParameters;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.util.BufferAllocator;
+
+/**
+ * This class automatically handles buffering and drawing of objects within the world.
+ * 
+ * Mostly modelled off the {@link net.minecraft.client.gui.render.GuiRenderer}.
+ */
+public class Renderer {
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final BufferAllocator ALLOCATOR = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
+	private static final Vector4f COLOR_MODULATOR = new Vector4f(1f, 1f, 1f, 1f);
+	private static final Map<VertexFormat, MappableRingBuffer> VERTEX_BUFFERS = new Object2ObjectOpenHashMap<>();
+	private static final List<PreparedDraw> PREPARED_DRAWS = new ArrayList<>();
+	private static final List<Draw> DRAWS = new ArrayList<>();
+	private static RenderPipeline currentPipeline;
+	private static BufferBuilder currentBufferBuilder;
+	private static GpuTextureView currentTexture;
+	private static float currentLineWidth = 1f;
+
+	/**
+	 * Before fetching the buffer, any texture or line width state must be set otherwise things may not be buffered
+	 * as expected.
+	 */
+	protected static BufferBuilder getBuffer(RenderPipeline pipeline) {
+		if (currentBufferBuilder == null || shouldEndBatch(pipeline)) {
+			endBatch(currentPipeline);
+
+			currentPipeline = pipeline;
+			currentBufferBuilder = new BufferBuilder(ALLOCATOR, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
+			currentTexture = RenderSystem.getShaderTexture(0);
+			currentLineWidth = RenderSystem.getShaderLineWidth();
+
+			return currentBufferBuilder;
+		} else {
+			return currentBufferBuilder;
+		}
+	}
+
+	/**
+	 * End the batch if the pipeline is different or when the texture & line width changes (where applicable).
+	 */
+	private static boolean shouldEndBatch(RenderPipeline pipeline) {
+		boolean textureChanged = pipeline.getVertexFormat().contains(VertexFormatElement.UV0) && currentTexture != RenderSystem.getShaderTexture(0);
+		boolean lineWidthChanged = pipeline.getVertexFormatMode() == DrawMode.LINES && currentLineWidth != RenderSystem.getShaderLineWidth();
+
+		return pipeline != currentPipeline || textureChanged || lineWidthChanged;
+	}
+
+	private static void endBatch(RenderPipeline pipeline) {
+		if (currentBufferBuilder != null) {
+			BuiltBuffer builtBuffer = currentBufferBuilder.end();
+			PreparedDraw preparation = new PreparedDraw(builtBuffer, pipeline, currentTexture, currentLineWidth);
+
+			PREPARED_DRAWS.add(preparation);
+		}
+	}
+
+	protected static void executeDraws() {
+		//End any left over buffering and reset state
+		if (currentPipeline != null) {
+			endBatch(currentPipeline);
+			currentPipeline = null;
+			currentBufferBuilder = null;
+			currentTexture = null;
+			currentLineWidth = 1f;
+		}
+
+		//Setup the draws
+		setupDraws();
+
+		//Execute the draws
+		for (Draw draw : DRAWS) {
+			draw(draw);
+		}
+
+		//Rotate the buffers - ensures that we're likely to be using buffers that the GPU isn't (prevents synchronization/stalls)
+		for (MappableRingBuffer buffer : VERTEX_BUFFERS.values()) {
+			buffer.rotate();
+		}
+
+		PREPARED_DRAWS.clear();
+		DRAWS.clear();
+	}
+
+	private static void setupDraws() {
+		setupVertexBuffers();
+		Object2IntMap<VertexFormat> vertexBufferPositions = new Object2IntOpenHashMap<>();
+
+		for (PreparedDraw prepared : PREPARED_DRAWS) {
+			BuiltBuffer builtBuffer = prepared.builtBuffer();
+			DrawParameters drawParameters = builtBuffer.getDrawParameters();
+			VertexFormat format = drawParameters.format();
+
+			MappableRingBuffer vertices = VERTEX_BUFFERS.get(format);
+			ByteBuffer vertexData = builtBuffer.getBuffer();
+			int vertexBufferPosition = vertexBufferPositions.getInt(format);
+			int remainingVertexBytes = vertexData.remaining();
+
+			//Copy vertex data into the shared vertex buffer
+			copyDataInto(vertices, vertexData, vertexBufferPosition, remainingVertexBytes);
+			//Update vertex buffer position
+			vertexBufferPositions.put(format, vertexBufferPosition + remainingVertexBytes);
+
+			DRAWS.add(new Draw(
+					builtBuffer,
+					vertices.getBlocking(),
+					vertexBufferPosition / format.getVertexSize(),
+					drawParameters.indexCount(),
+					prepared.pipeline(),
+					prepared.textureView(),
+					prepared.lineWidth())
+					);
+		}
+	}
+
+	/**
+	 * Maps the {@code target} buffer and copies the {@code source} data into it.
+	 */
+	private static void copyDataInto(MappableRingBuffer target, ByteBuffer source, int position, int remainingBytes) {
+		CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
+
+		try (GpuBuffer.MappedView mappedView = commandEncoder.mapBuffer(target.getBlocking().slice(position, remainingBytes), false, true)) {
+			MemoryUtil.memCopy(source, mappedView.data());
+		}
+	}
+
+	/**
+	 * Resizes/allocates the necessary vertex buffers.
+	 */
+	private static void setupVertexBuffers() {
+		Object2IntMap<VertexFormat> vertexBufferSizes = collectVertexBufferSizes();
+
+		for (Object2IntMap.Entry<VertexFormat> entry : Object2IntMaps.fastIterable(vertexBufferSizes)) {
+			VertexFormat format = entry.getKey();
+			int vertexBufferSize = entry.getIntValue();
+			MappableRingBuffer vertexBuffer = VERTEX_BUFFERS.get(format);
+
+			VERTEX_BUFFERS.put(format, initOrResizeBuffer(vertexBuffer, "Skyblocker vertex buffer for: " + format, vertexBufferSize, GpuBuffer.USAGE_VERTEX));
+		}
+	}
+
+	private static MappableRingBuffer initOrResizeBuffer(MappableRingBuffer buffer, String name, int neededSize, int usageType) {
+		if (buffer == null || buffer.size() < neededSize) {
+			if (buffer != null) {
+				buffer.close();
+			}
+
+			return new MappableRingBuffer(() -> name, GpuBuffer.USAGE_MAP_WRITE | usageType, neededSize);
+		}
+
+		return buffer;
+	}
+
+	/**
+	 * Collect the required buffer size for each vertex format in use.
+	 */
+	private static Object2IntMap<VertexFormat> collectVertexBufferSizes() {
+		//If we ever need to create our own shared index buffers then we can turn this into an Object2LongMap and pack 
+		//both the vertex & index buffer sizes into a single long (since they're two ints)
+		Object2IntMap<VertexFormat> vertexSizes = new Object2IntOpenHashMap<>();
+
+		for (PreparedDraw prepared : PREPARED_DRAWS) {
+			DrawParameters drawParameters = prepared.builtBuffer().getDrawParameters();
+			VertexFormat format = drawParameters.format();
+
+			vertexSizes.put(format, vertexSizes.getOrDefault(format, 0) + drawParameters.vertexCount() * format.getVertexSize());
+		}
+
+		return vertexSizes;
+	}
+
+	private static void draw(Draw draw) {
+		GpuBuffer indices;
+		IndexType indexType;
+
+		if (draw.pipeline().getVertexFormatMode() == DrawMode.QUADS) {
+			//The quads we're rendering are translucent so they need to be sorted for our index buffer
+			draw.builtBuffer().sortQuads(ALLOCATOR, RenderSystem.getProjectionType().getVertexSorter());
+			indices = draw.pipeline().getVertexFormat().uploadImmediateIndexBuffer(draw.builtBuffer().getSortedBuffer());
+			indexType = draw.builtBuffer().getDrawParameters().indexType();
+		} else {
+			//Use general shape index buffer for other draw modes
+			ShapeIndexBuffer shapeIndexBuffer = RenderSystem.getSequentialBuffer(draw.pipeline().getVertexFormatMode());
+			indices = shapeIndexBuffer.getIndexBuffer(draw.indexCount());
+			indexType = shapeIndexBuffer.getIndexType();
+		}
+
+		draw(draw, indices, indexType);
+	}
+
+	private static void draw(Draw draw, GpuBuffer indices, IndexType indexType) {
+		applyViewOffsetZLayering();
+		GpuBufferSlice dynamicTransforms = setupDynamicTransforms(draw.lineWidth);
+
+		try (RenderPass renderPass = RenderSystem.getDevice()
+				.createCommandEncoder()
+				.createRenderPass(() -> "skyblocker world rendering", getMainColorTexture(), OptionalInt.empty(), getMainDepthTexture(), OptionalDouble.empty())) {
+			renderPass.setPipeline(draw.pipeline);
+
+			RenderSystem.bindDefaultUniforms(renderPass);
+			renderPass.setUniform("DynamicTransforms", dynamicTransforms);
+
+			//Bind texture if applicable
+			if (draw.textureView != null) {
+				//Sampler0 is used for texture inputs in vertices
+				renderPass.bindSampler("Sampler0", draw.textureView);
+			}
+
+			renderPass.setVertexBuffer(0, draw.vertices);
+			renderPass.setIndexBuffer(indices, indexType);
+
+			renderPass.drawIndexed(draw.baseVertex, 0, draw.indexCount, 1);
+		}
+
+		draw.builtBuffer().close();
+		unapplyViewOffsetZLayering();
+	}
+
+	private static GpuBufferSlice setupDynamicTransforms(float lineWidth) {
+		GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms()
+				.write(RenderSystem.getModelViewMatrix(), COLOR_MODULATOR, RenderSystem.getModelOffset(), RenderSystem.getTextureMatrix(), lineWidth);
+
+		return dynamicTransforms;
+	}
+
+	private static GpuTextureView getMainColorTexture() {
+		return CLIENT.getFramebuffer().getColorAttachmentView();
+	}
+
+	private static GpuTextureView getMainDepthTexture() {
+		return CLIENT.getFramebuffer().getDepthAttachmentView();
+	}
+
+	private static void applyViewOffsetZLayering() {
+		Matrix4fStack modelViewStack = RenderSystem.getModelViewStack();
+		modelViewStack.pushMatrix();
+		RenderSystem.getProjectionType().apply(modelViewStack, 1f);
+	}
+
+	private static void unapplyViewOffsetZLayering() {
+		RenderSystem.getModelViewStack().popMatrix();
+	}
+
+	public static void close() {
+		ALLOCATOR.close();
+
+		for (MappableRingBuffer vertexBuffer : VERTEX_BUFFERS.values()) {
+			vertexBuffer.close();
+		}
+	}
+
+	private record Draw(BuiltBuffer builtBuffer, GpuBuffer vertices, int baseVertex, int indexCount, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {}
+
+	private record PreparedDraw(BuiltBuffer builtBuffer, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {}
+}

@@ -182,10 +182,16 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Inject(method = "drawMouseoverTooltip", at = @At("HEAD"))
+	private void skyblocker$beforeTooltipDrawn(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
+		ContainerSolverManager.onDraw(context, (HandledScreen<GenericContainerScreenHandler>) (Object) this, this.handler.slots);
+	}
+
 	@SuppressWarnings("DataFlowIssue")
 	// makes intellij be quiet about this.focusedSlot maybe being null. It's already null checked in mixined method.
 	@Inject(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/util/Identifier;)V"), cancellable = true)
-	public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci, @Local(ordinal = 0) ItemStack stack) {
+	private void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci, @Local(ordinal = 0) ItemStack stack) {
 		if (!Utils.isOnSkyblock()) return;
 
 		// Hide Empty Tooltips
