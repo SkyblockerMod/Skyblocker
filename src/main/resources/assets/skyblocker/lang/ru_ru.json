@@ -891,7 +891,7 @@
     "skyblocker.config.farming.garden.closeScreenOnPlotClick.@Tooltip": "Должен ли ваш инвентарь закрываться при телепортации на участок используя Виджет Участков Сада",
     "skyblocker.config.farming.garden.gardenPlotsWidget": "Включить Виджет Участков Сада",
     "skyblocker.config.uiAndVisuals.inputCalculator": "Калькулятор входных данных",
-    "skyblocker.museum.attemptingResync": "Пытаемся засинхронизировать выши пожертвования в музей...",
+    "skyblocker.museum.attemptingResync": "Пытаемся засинхронизировать ваши пожертвования в музей...",
     "skyblocker.tips.clickPreviousTip": "§b[Нажмите для предыдущего совета]",
     "skyblocker.chat.confirmationPromptNotification": "Нажмите где угодно на экране в течении 60 секунд, чтобы принять запрос.",
     "skyblocker.armorCustomization.cannotCustomizeColor": "Не возможно кастумизировать цвет этой вещи :(",
@@ -903,5 +903,10 @@
     "skyblocker.armorCustomization.duration": "Длительность: %s",
     "skyblocker.armorCustomization.durationTooltip": "Длительность анимации в секундах.",
     "skyblocker.armorCustomization.title": "Персонализировать Свою Броню",
-    "skyblocker.tips.waypoints": "Вы можете импортировать (включая с skytils), добавить, удалить и переключать метки на любом острове используя /skyblocker waypoints."
+    "skyblocker.tips.waypoints": "Вы можете импортировать (включая с skytils), добавить, удалить и переключать метки на любом острове используя /skyblocker waypoints.",
+    "skyblocker.corpseTracker.totalProfit": "Общий Профит: %s%s",
+    "skyblocker.powderTracker.profit": "Профит: %s Монет",
+    "skyblocker.corpseTracker.somethingWentWrong": "Что-то пошло не так с расчётом прибыли от трупов. Проверьте логи для большей информации.",
+    "skyblocker.corpseTracker.hoverText": "Нажмите, чтобы открыть историю добычи трупов",
+    "skyblocker.corpseTracker.corpseProfit": "Профит от Трупа: %s"
 }
