@@ -908,5 +908,11 @@
     "skyblocker.powderTracker.profit": "Профит: %s Монет",
     "skyblocker.corpseTracker.somethingWentWrong": "Что-то пошло не так с расчётом прибыли от трупов. Проверьте логи для большей информации.",
     "skyblocker.corpseTracker.hoverText": "Нажмите, чтобы открыть историю добычи трупов",
-    "skyblocker.corpseTracker.corpseProfit": "Профит от Трупа: %s"
+    "skyblocker.corpseTracker.corpseProfit": "Профит от Трупа: %s",
+    "skyblocker.events.startsNow": "%s начинается!",
+    "skyblocker.museum.resyncSuccess": "Ваши пожертвования в музей были успешно засинхронизированны!",
+    "skyblocker.museum.resyncFailure": "Не удалось засинхронизировать ваши пожертвования в музей!",
+    "skyblocker.events.tab.endsIn": "Заканчивается через %s",
+    "skyblocker.events.tab.startsIn": "Начинается через %s",
+    "skyblocker.events.startsSoon": "%s скоро начнется!"
 }
