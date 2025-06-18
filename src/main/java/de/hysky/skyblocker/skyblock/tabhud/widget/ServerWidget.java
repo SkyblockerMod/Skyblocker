@@ -36,7 +36,7 @@ public class ServerWidget extends TabHudWidget {
 				case String s when s.contains("crystals") -> this.addComponent(new IcoTextComponent(Ico.EMERALD, text));
 				case String s when s.contains("copper") -> this.addComponent(new IcoTextComponent(Ico.COPPER, text));
 				case String s when s.contains("garden") -> this.addComponent(new IcoTextComponent(Ico.EXPERIENCE_BOTTLE, text));
-				case String s when s.contains("fairy") -> this.addComponent(new IcoTextComponent(Ico.DIAMOND, text));
+				case String s when s.contains("fairy") -> this.addComponent(new IcoTextComponent(Ico.FAIRY_SOUL, text));
 				case String s when s.contains("rain") -> this.addComponent(new IcoTextComponent(Ico.WATER, text));
 				case String s when s.contains("brood") -> this.addComponent(new IcoTextComponent(Ico.SPIDER_EYE, text));
 				default -> this.addComponent(new PlainTextComponent(text));
