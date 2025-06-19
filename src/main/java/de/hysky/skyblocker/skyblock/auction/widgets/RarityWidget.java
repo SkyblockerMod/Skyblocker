@@ -2,8 +2,8 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
-import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.item.background.adders.ItemRarityBackground;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -84,7 +84,7 @@ public class RarityWidget extends ClickableWidget {
     public void setText(List<Text> tooltip, String current) {
         this.tooltip = tooltip;
         this.current = current;
-        for (Map.Entry<String, SkyblockItemRarity> rarity : ItemRarityBackgrounds.LORE_RARITIES.entrySet()) {
+        for (Map.Entry<String, SkyblockItemRarity> rarity : ItemRarityBackground.LORE_RARITIES.entrySet()) {
             if (current.toUpperCase().contains(rarity.getKey())) {
                 this.color = rarity.getValue().color | 0xFF000000;
                 return;

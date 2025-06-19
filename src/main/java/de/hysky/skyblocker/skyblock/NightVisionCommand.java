@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -32,9 +31,8 @@ public class NightVisionCommand {
 	}
 
 	private static int writeStrength(CommandContext<FabricClientCommandSource> context, int strength) {
-		SkyblockerConfigManager.get().uiAndVisuals.nightVisionStrength = strength;
+		SkyblockerConfigManager.update(config -> config.uiAndVisuals.nightVisionStrength = strength);
 		context.getSource().sendFeedback(Text.translatable("skyblocker.nightVision.success", strength));
-		SkyblockerConfigManager.save();
 		return 1;
 	}
 }

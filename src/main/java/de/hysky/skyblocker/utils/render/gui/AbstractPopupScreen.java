@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -34,7 +33,7 @@ public class AbstractPopupScreen extends Screen {
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
         this.backgroundScreen.render(context, -1, -1, delta);
         context.draw();
-        RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT);
+        RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(this.client.getFramebuffer().getDepthAttachment(), 1.0);
         this.renderInGameBackground(context);
     }
 

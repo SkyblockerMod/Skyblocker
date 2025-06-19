@@ -9,9 +9,8 @@ import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.command.argumenttypes.EggTypeArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
-import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
+import de.hysky.skyblocker.utils.waypoint.SeenWaypoint;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -27,6 +26,7 @@ import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.BlockPos;
 import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,8 +74,11 @@ public class EggFinder {
 			if (!isLocationCorrect || SkyblockTime.skyblockSeason.get() != SkyblockTime.Season.SPRING) return;
 			for (EggType type : EggType.entries) {
 				Egg egg = type.egg;
-				if (egg != null && !egg.seen && FrustumUtils.isVisible(egg.entity.getBoundingBox()) && client.player.canSee(egg.entity)) {
-					type.setSeen();
+				if (egg != null && !egg.isSeen()) {
+					egg.tick(client);
+					if (egg.isSeen()) {
+						type.setSeen();
+					}
 				}
 			}
 		});
@@ -127,11 +130,11 @@ public class EggFinder {
 	}
 
 	private static void handleArmorStand(ArmorStandEntity armorStand) {
-		for (ItemStack itemStack : armorStand.getArmorItems()) {
+		for (ItemStack itemStack : ItemUtils.getArmor(armorStand)) {
 			ItemUtils.getHeadTextureOptional(itemStack).ifPresent(texture -> {
 				for (EggType type : EggType.entries) { //Compare blockPos rather than entity to avoid incorrect matches when the entity just moves rather than a new one being spawned elsewhere
 					if (texture.equals(type.texture) && (type.egg == null || !type.egg.entity.getBlockPos().equals(armorStand.getBlockPos()))) {
-						type.egg = new Egg(armorStand, new Waypoint(armorStand.getBlockPos().up(2), SkyblockerConfigManager.get().helpers.chocolateFactory.waypointType, ColorUtils.getFloatComponents(type.color)), false);
+						type.egg = new Egg(armorStand, armorStand.getBlockPos().up(2), SkyblockerConfigManager.get().helpers.chocolateFactory.waypointType, ColorUtils.getFloatComponents(type.color));
 						return;
 					}
 				}
@@ -143,7 +146,7 @@ public class EggFinder {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		for (EggType type : EggType.entries) {
 			Egg egg = type.egg;
-			if (egg != null && egg.waypoint.shouldRender() && egg.seen) egg.waypoint.render(context);
+			if (egg != null) egg.render(context);
 		}
 	}
 
@@ -155,7 +158,7 @@ public class EggFinder {
 				EggType eggType = EggType.valueOf(matcher.group(1).toUpperCase());
 				eggType.collected = true;
 				Egg egg = eggType.egg;
-				if (egg != null) egg.waypoint.setFound();
+				if (egg != null) egg.setFound();
 			} catch (IllegalArgumentException e) {
 				logger.error("[Skyblocker Egg Finder] Failed to find egg type for egg found message. Tried to match against: {}", matcher.group(0), e);
 			}
@@ -203,10 +206,9 @@ public class EggFinder {
 		}
 
 		public void setSeen() {
-			egg.seen = true;
 			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.sendEggFoundMessages || System.currentTimeMillis() - messageLastSent < 1000) return;
 			if (collected) {
-				egg.waypoint.setFound();
+				egg.setFound();
 				return;
 			}
 			messageLastSent = System.currentTimeMillis();
@@ -216,8 +218,8 @@ public class EggFinder {
 							.append(Text.literal("Chocolate " + this + " Egg")
 									.withColor(color))
 							.append(" at " + egg.entity.getBlockPos().up(2).toShortString() + "!")
-							.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker eggFinder shareLocation " + PosUtils.toSpaceSeparatedString(egg.waypoint.pos) + " " + this))
-									.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))), false);
+							.styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker eggFinder shareLocation " + PosUtils.toSpaceSeparatedString(egg.pos) + " " + this))
+									.withHoverEvent(new HoverEvent.ShowText(Text.literal("Click to share the location in chat!").formatted(Formatting.GREEN)))), false);
 		}
 
 		@Override
@@ -226,15 +228,12 @@ public class EggFinder {
 		}
 	}
 
-	static class Egg {
+	static class Egg extends SeenWaypoint {
 		private final ArmorStandEntity entity;
-		private final Waypoint waypoint;
-		private boolean seen;
 
-		Egg(ArmorStandEntity entity, Waypoint waypoint, boolean seen) {
+		Egg(ArmorStandEntity entity, BlockPos pos, Type type, float[] colorComponents) {
+			super(pos, type, colorComponents);
 			this.entity = entity;
-			this.waypoint = waypoint;
-			this.seen = seen;
 		}
 	}
 }

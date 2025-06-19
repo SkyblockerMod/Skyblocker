@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -119,7 +121,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		this(icon, colors, hasOverflow, textColor, Text.empty());
 	}
 
-	private int transparency(int color) {
+	protected int transparency(int color) {
 		if (inMouse) return (color & 0x00FFFFFF) | 0x44_000000;
 		return color;
 	}
@@ -130,24 +132,28 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		int transparency = transparency(-1);
 		switch (iconPosition) {
 			case LEFT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x, y, 9, 9, transparency);
-			case RIGHT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x + width - 9, y, 9, transparency);
+			case RIGHT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x + width - 9, y, 9, 9, transparency);
 		}
 
 		int barWith = iconPosition.equals(IconPosition.OFF) ? width : width - 10;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? x + 10 : x;
 		context.drawGuiTexture(RenderLayer::getGuiTextured, BAR_BACK, barX, y + 1, barWith, 7, transparency);
-		RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
-
-
-		if (hasOverflow && overflowFill > 0) {
-			RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
-		}
+		drawBarFill(context, barX, barWith);
 		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
 		if (showText()) {
 			context.getMatrices().push();
 			context.getMatrices().translate(0, 0, 100);
 			renderText(context);
 			context.getMatrices().pop();
+		}
+	}
+
+	protected void drawBarFill(DrawContext context, int barX, int barWith) {
+		RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
+
+
+		if (hasOverflow && overflowFill > 0) {
+			RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
 		}
 	}
 
@@ -173,14 +179,14 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		}
 		int y = this.y - 3;
 
-		context.draw(vertex -> textRenderer.drawWithOutline(
+		context.draw(consumers -> textRenderer.drawWithOutline(
 				Text.of(text).asOrderedText(),
 				x,
 				y,
 				transparency((textColor == null ? colors[0] : textColor).getRGB()),
 				transparency(0),
 				context.getMatrices().peek().getPositionMatrix(),
-				vertex,
+				consumers,
 				15728880
 				));
 	}
@@ -409,5 +415,31 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		object.addProperty("icon_position", iconPosition.asString());
 		object.addProperty("text_position", textPosition.asString());
 		return object;
+	}
+
+	public static class ManaStatusBar extends StatusBar {
+
+		public ManaStatusBar(Identifier icon, Color[] colors, boolean hasOverflow, @Nullable Color textColor, Text name) {
+			super(icon, colors, hasOverflow, textColor, name);
+		}
+
+		public ManaStatusBar(Identifier icon, Color[] colors, boolean hasOverflow, @Nullable Color textColor) {
+			super(icon, colors, hasOverflow, textColor);
+		}
+
+		@Override
+		protected void drawBarFill(DrawContext context, int barX, int barWith) {
+			if (hasOverflow() && overflowFill > 0) {
+				if (overflowFill > fill && SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.IN_FRONT) {
+					RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+					RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+				} else {
+					RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+					RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+				}
+			} else {
+				RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+			}
+		}
 	}
 }

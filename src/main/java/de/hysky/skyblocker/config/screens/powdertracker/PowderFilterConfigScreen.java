@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.config.screens.powdertracker;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dwarven.PowderMiningTracker;
+import de.hysky.skyblocker.skyblock.dwarven.profittrackers.PowderMiningTracker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -34,7 +34,7 @@ public class PowderFilterConfigScreen extends Screen {
 			assert client != null;
 			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter.screenTitle").formatted(Formatting.BOLD), width / 2, (32 - client.textRenderer.fontHeight) / 2, 0xFFFFFF);
 		});
-		ItemTickList itemTickList = addDrawableChild(new ItemTickList(MinecraftClient.getInstance(), width, height - 96, 32, 24, filters, allItems).init());
+		ItemTickList<String> itemTickList = addDrawableChild(new ItemTickList<>(MinecraftClient.getInstance(), width, height - 96, 32, 24, filters, allItems).init());
 		//Grid code gratuitously stolen from WaypointsScreen. Same goes for the y and heights above.
 		GridWidget gridWidget = new GridWidget();
 		gridWidget.getMainPositioner().marginX(5).marginY(2);
@@ -61,9 +61,8 @@ public class PowderFilterConfigScreen extends Screen {
 	}
 
 	public void saveFilters() {
-		SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter = filters;
-		SkyblockerConfigManager.save();
-		PowderMiningTracker.recalculateAll();
+		SkyblockerConfigManager.update(config -> config.mining.crystalHollows.powderTrackerFilter = filters);
+		PowderMiningTracker.INSTANCE.recalculateAll();
 	}
 
 	@Override

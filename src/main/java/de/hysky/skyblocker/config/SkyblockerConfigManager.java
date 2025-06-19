@@ -25,9 +25,12 @@ import net.minecraft.util.Identifier;
 
 import java.lang.StackWalker.Option;
 import java.nio.file.Path;
+import java.util.function.Consumer;
+
+import org.apache.commons.lang3.function.Consumers;
 
 public class SkyblockerConfigManager {
-    public static final int CONFIG_VERSION = 3;
+    public static final int CONFIG_VERSION = 4;
     private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("skyblocker.json");
     private static final ConfigClassHandler<SkyblockerConfig> HANDLER = ConfigClassHandler.createBuilder(SkyblockerConfig.class)
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
@@ -35,7 +38,7 @@ public class SkyblockerConfigManager {
                     .setJson5(false)
                     .appendGsonBuilder(builder -> builder
                             .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
-                            .registerTypeHierarchyAdapter(Identifier.class, new Identifier.Serializer()))
+                            .registerTypeHierarchyAdapter(Identifier.class, new CodecTypeAdapter<>(Identifier.CODEC)))
                     .build())
             .build();
 
@@ -65,8 +68,17 @@ public class SkyblockerConfigManager {
         });
     }
 
+    @Deprecated(since = "1.21.5", forRemoval = true)
     public static void save() {
-        HANDLER.save();
+        update(Consumers.nop());
+    }
+
+    /**
+     * Executes the given {@code action} to update fields in the config, then saves the changes.
+     */
+    public static void update(Consumer<SkyblockerConfig> action) {
+    	action.accept(get());
+    	HANDLER.save();
     }
 
     public static Screen createGUI(Screen parent) {
@@ -76,10 +88,11 @@ public class SkyblockerConfigManager {
                     .category(UIAndVisualsCategory.create(defaults, config))
                     .category(HelperCategory.create(defaults, config))
                     .category(DungeonsCategory.create(defaults, config))
-                    //.category(ForagingCategory.create(defaults, config))
+                    .category(ForagingCategory.create(defaults, config))
                     .category(CrimsonIsleCategory.create(defaults, config))
                     .category(MiningCategory.create(defaults, config))
                     .category(FarmingCategory.create(defaults, config))
+                    .category(HuntingCategory.create(defaults, config))
                     .category(OtherLocationsCategory.create(defaults, config))
                     .category(SlayersCategory.create(defaults, config))
                     .category(ChatCategory.create(defaults, config))

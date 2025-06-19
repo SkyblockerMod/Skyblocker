@@ -1,7 +1,9 @@
 package de.hysky.skyblocker.skyblock;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -20,53 +22,54 @@ public class StatusBarTracker {
 	private static final Pattern MANA_USE = Pattern.compile("§b-([\\d,]+) Mana \\(§.*?\\) *");
 	private static final Pattern MANA_STATUS = Pattern.compile("§b(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|§3(?<overflow>[\\d,]+)ʬ) *");
 
-	private final MinecraftClient client = MinecraftClient.getInstance();
-	private Resource health = new Resource(100, 100, 0);
-	private Resource mana = new Resource(100, 100, 0);
-	private Resource speed = new Resource(100, 400, 0);
-	private int defense = 0;
+	private static final MinecraftClient client = MinecraftClient.getInstance();
+	private static Resource health = new Resource(100, 100, 0);
+	private static Resource mana = new Resource(100, 100, 0);
+	private static Resource speed = new Resource(100, 400, 0);
+	private static int defense = 0;
 
-	public void init() {
-		ClientReceiveMessageEvents.ALLOW_GAME.register(this::allowOverlayMessage);
-		ClientReceiveMessageEvents.MODIFY_GAME.register(this::onOverlayMessage);
-		Scheduler.INSTANCE.scheduleCyclic(this::tick, 1);
+	@Init
+	public static void init() {
+		ClientReceiveMessageEvents.ALLOW_GAME.register(StatusBarTracker::allowOverlayMessage);
+		ClientReceiveMessageEvents.MODIFY_GAME.register(StatusBarTracker::onOverlayMessage);
+		Scheduler.INSTANCE.scheduleCyclic(StatusBarTracker::tick, 1);
 	}
 
-	public Resource getHealth() {
-		return this.health;
+	public static Resource getHealth() {
+		return health;
 	}
 
-	public Resource getMana() {
-		return this.mana;
+	public static Resource getMana() {
+		return mana;
 	}
 
-	public int getDefense() {
-		return this.defense;
+	public static int getDefense() {
+		return defense;
 	}
 
-	public Resource getSpeed() {
-		return this.speed;
+	public static Resource getSpeed() {
+		return speed;
 	}
 
-	private void tick() {
+	private static void tick() {
 		if (client == null || client.player == null) return;
 		updateHealth(health.value, health.max, health.overflow);
 		updateSpeed();
 	}
 
-	private boolean allowOverlayMessage(Text text, boolean overlay) {
+	private static boolean allowOverlayMessage(Text text, boolean overlay) {
 		onOverlayMessage(text, overlay);
 		return true;
 	}
 
-	private Text onOverlayMessage(Text text, boolean overlay) {
+	private static Text onOverlayMessage(Text text, boolean overlay) {
 		if (!overlay || !Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars || Utils.isInTheRift()) {
 			return text;
 		}
 		return Text.of(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));
 	}
 
-	public String update(String actionBar, boolean filterManaUse) {
+	public static String update(String actionBar, boolean filterManaUse) {
 		var sb = new StringBuilder();
 
 		// Match health and don't add it to the string builder
@@ -99,13 +102,13 @@ public class StatusBarTracker {
 		return res.isEmpty() ? null : res;
 	}
 
-	private void updateHealth(Matcher matcher) {
+	private static void updateHealth(Matcher matcher) {
 		int health = RegexUtils.parseIntFromMatcher(matcher, "health");
 		int max = RegexUtils.parseIntFromMatcher(matcher, "max");
 		updateHealth(health, max, Math.max(0, health - max));
 	}
 
-	private void updateHealth(int value, int max, int overflow) {
+	private static void updateHealth(int value, int max, int overflow) {
 		if (client != null && client.player != null) {
 			value = (int) (client.player.getHealth() * max / client.player.getMaxHealth());
 			overflow = (int) (client.player.getAbsorptionAmount() * max / client.player.getMaxHealth());
@@ -113,14 +116,14 @@ public class StatusBarTracker {
 		health = new Resource(Math.min(value, max), max, Math.min(overflow, max));
 	}
 
-	private void updateMana(Matcher m) {
+	private static void updateMana(Matcher m) {
 		int mana = RegexUtils.parseIntFromMatcher(m, "mana");
 		int max = RegexUtils.parseIntFromMatcher(m, "max");
 		int overflow = m.group("overflow") == null ? 0 : RegexUtils.parseIntFromMatcher(m, "overflow");
-		this.mana = new Resource(mana, max, overflow);
+		StatusBarTracker.mana = new Resource(mana, max, overflow);
 	}
 
-	private void updateSpeed() {
+	private static void updateSpeed() {
 		// Black cat and racing helm are untested - I don't have the money to test atm, but no reason why they shouldn't work
 		assert client.player != null;
 		int value = (int) (client.player.isSprinting() ? (client.player.getMovementSpeed() / 1.3f) * 1000 : client.player.getMovementSpeed() * 1000);
@@ -128,7 +131,7 @@ public class StatusBarTracker {
 		if (client.player.getMainHandStack().getName().getString().contains("Cactus Knife") && Utils.getLocation() == Location.GARDEN) {
 			max = 500;
 		}
-		Iterable<ItemStack> armor = client.player.getArmorItems();
+		Iterable<ItemStack> armor = ItemUtils.getArmor(client.player);
 		int youngDragCount = 0;
 		for (ItemStack armorPiece : armor) {
 			if (armorPiece.getName().getString().contains("Racing Helmet")) {
@@ -149,7 +152,7 @@ public class StatusBarTracker {
 				max = 100;
 			}
 		}
-		this.speed = new Resource(value, max, 0);
+		speed = new Resource(value, max, 0);
 	}
 
 	public record Resource(int value, int max, int overflow) {}

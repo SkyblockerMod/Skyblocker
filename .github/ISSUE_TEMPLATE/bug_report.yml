@@ -38,6 +38,7 @@ body:
         - "1.21.0/1.21.1"
         - "1.21.2/1.21.3"
         - "1.21.4"
+        - "1.21.5"
     validations:
       required: true
   - type: input
@@ -45,7 +46,7 @@ body:
     attributes:
       label: Skyblocker Version
       description: What version of Skyblocker are you running? Every part is important! If you do not know what version you are using, look at the file name in your "mods" folder.
-      placeholder: ex. skyblocker-1.22.2+1.21.3.jar
+      placeholder: ex. skyblocker-5.0.0+1.21.5.jar
     validations:
       required: true
   - type: textarea

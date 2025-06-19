@@ -11,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
@@ -41,10 +43,14 @@ public class WorldRendererMixin {
 
 	@Inject(method = "method_62214",
 			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;canDrawEntityOutlines()Z")),
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/Framebuffer;clear()V", ordinal = 0, shift = At.Shift.AFTER)
+			at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;clearColorAndDepthTextures(Lcom/mojang/blaze3d/textures/GpuTexture;ILcom/mojang/blaze3d/textures/GpuTexture;D)V", ordinal = 0, shift = At.Shift.AFTER)
 	)
-	private void skyblocker$copyFramebufferDepth2AdjustGlowVisibility(CallbackInfo ci) {
-		if (MobGlow.atLeastOneMobHasCustomGlow()) framebufferSet.entityOutlineFramebuffer.get().copyDepthFrom(client.getFramebuffer());
+	private void skyblocker$copyFramebufferDepth2AdjustGlowVisibility(CallbackInfo ci, @Share(namespace = "c", value = "copiedOutlineDepth") LocalBooleanRef copiedOutlineDepth) {
+		if (MobGlow.atLeastOneMobHasCustomGlow() && !copiedOutlineDepth.get()) {
+			framebufferSet.entityOutlineFramebuffer.get().copyDepthFrom(client.getFramebuffer());
+			//Ensures that the depth isn't copied multiple times with other mods since copying it multiple times just wastes performance
+			copiedOutlineDepth.set(true);
+		}
 	}
 
 	@ModifyVariable(method = "renderEntities",

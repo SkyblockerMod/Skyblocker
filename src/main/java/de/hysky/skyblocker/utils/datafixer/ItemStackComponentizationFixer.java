@@ -7,7 +7,7 @@ import java.util.Optional;
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Dynamic;
 
-import net.minecraft.client.MinecraftClient;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.command.argument.ItemStringReader;
 import net.minecraft.command.argument.ItemStringReader.ItemResult;
 import net.minecraft.component.Component;
@@ -18,10 +18,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.util.Identifier;
 
 /**
@@ -31,11 +29,10 @@ import net.minecraft.util.Identifier;
  */
 public class ItemStackComponentizationFixer {
 	private static final int ITEM_NBT_DATA_VERSION = 3817;
-	private static final int ITEM_COMPONENTS_DATA_VERSION = 3825;
-	private static final WrapperLookup LOOKUP = BuiltinRegistries.createWrapperLookup();
+	private static final int ITEM_COMPONENTS_DATA_VERSION = 4325;
 
 	public static ItemStack fixUpItem(NbtCompound nbt) {
-		Dynamic<NbtElement> dynamic = Schemas.getFixer().update(TypeReferences.ITEM_STACK, new Dynamic<>(getRegistryLookup().getOps(NbtOps.INSTANCE), nbt), ITEM_NBT_DATA_VERSION, ITEM_COMPONENTS_DATA_VERSION);
+		Dynamic<NbtElement> dynamic = Schemas.getFixer().update(TypeReferences.ITEM_STACK, new Dynamic<>(Utils.getRegistryWrapperLookup().getOps(NbtOps.INSTANCE), nbt), ITEM_NBT_DATA_VERSION, ITEM_COMPONENTS_DATA_VERSION);
 
 		return ItemStack.CODEC.parse(dynamic).getOrThrow();
 	}
@@ -46,7 +43,7 @@ public class ItemStackComponentizationFixer {
 	 * @return The {@link ItemStack}'s components as a string which is in the format that the {@code /give} command accepts.
 	 */
 	public static String componentsAsString(ItemStack stack) {
-		RegistryOps<NbtElement> nbtRegistryOps = getRegistryLookup().getOps(NbtOps.INSTANCE);
+		RegistryOps<NbtElement> nbtRegistryOps = Utils.getRegistryWrapperLookup().getOps(NbtOps.INSTANCE);
 
 		return Arrays.toString(stack.getComponentChanges().entrySet().stream().map(entry -> {
 			ComponentType<?> componentType = entry.getKey();
@@ -69,7 +66,7 @@ public class ItemStackComponentizationFixer {
 	 * @return an {@link ItemStack} or {@link ItemStack#EMPTY} if there was an exception thrown.
 	 */
 	public static ItemStack fromComponentsString(String itemId, int count, String componentsString) {
-		ItemStringReader reader = new ItemStringReader(getRegistryLookup());
+		ItemStringReader reader = new ItemStringReader(Utils.getRegistryWrapperLookup());
 
 		try {
 			ItemResult result = reader.consume(new StringReader(itemId + componentsString));
@@ -84,11 +81,4 @@ public class ItemStackComponentizationFixer {
 		return ItemStack.EMPTY;
 	}
 
-	/**
-	 * Tries to get the dynamic registry manager instance currently in use or else returns {@link #LOOKUP}
-	 */
-	public static WrapperLookup getRegistryLookup() {
-		MinecraftClient client = MinecraftClient.getInstance();
-		return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : LOOKUP;
-	}
 }

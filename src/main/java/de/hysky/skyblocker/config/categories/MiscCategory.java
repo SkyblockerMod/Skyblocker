@@ -7,6 +7,7 @@ import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import net.minecraft.text.Text;
 
@@ -17,6 +18,15 @@ public class MiscCategory {
                 .name(Text.translatable("skyblocker.config.misc"))
 
                 //Uncategorized Options
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.literal("cat"))
+						.binding(
+								defaults.misc.cat,
+								() -> config.misc.cat,
+								newValue -> config.misc.cat = newValue)
+						.controller(opt -> BooleanControllerBuilder.create(opt).formatValue(b -> b ? Text.literal("yay kitty") : Text.literal(":(")))
+						.build()
+				)
 
                 //Discord RPC
                 .group(OptionGroup.createBuilder()

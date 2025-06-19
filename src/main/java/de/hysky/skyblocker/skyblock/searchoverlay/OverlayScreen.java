@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -20,17 +21,20 @@ import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
 public class OverlayScreen extends Screen {
 
     protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.ofVanilla("icon/search");
+	protected static final Identifier DELETE_ICON_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/pending_invite/reject.png");
     private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("social_interactions/background");
     private static final int rowHeight = 20;
+	private static final int specialButtonSize = rowHeight;
     private TextFieldWidget searchField;
     private ButtonWidget finishedButton;
     private ButtonWidget maxPetButton;
     private ButtonWidget dungeonStarButton;
     private ButtonWidget[] suggestionButtons;
     private ButtonWidget[] historyButtons;
+	private ButtonWidget[] deleteButtons;
 
-    public OverlayScreen(Text title) {
-        super(title);
+    public OverlayScreen() {
+        super(Text.empty());
     }
 
     /**
@@ -52,8 +56,7 @@ public class OverlayScreen extends Screen {
         // finish buttons
         finishedButton = ButtonWidget.builder(Text.literal(""), a -> close())
                 .position(startX + rowWidth - rowHeight, startY)
-                .size(rowHeight, rowHeight).build();
-
+                .size(specialButtonSize, specialButtonSize).build();
 
         // suggested item buttons
         int rowOffset = rowHeight;
@@ -69,24 +72,34 @@ public class OverlayScreen extends Screen {
             suggestionButtons[i].visible = false;
             rowOffset += rowHeight;
         }
+
         // history item buttons
         rowOffset += (int) (rowHeight * 0.75);
         int historyLength = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.historyLength;
         this.historyButtons = new ButtonWidget[historyLength];
+		this.deleteButtons = new ButtonWidget[historyLength];
         for (int i = 0; i < historyLength; i++) {
             String text = SearchOverManager.getHistory(i);
             if (text != null) {
                 historyButtons[i] = ButtonWidget.builder(Text.literal(text).setStyle(Style.EMPTY), (a) -> {
                             SearchOverManager.updateSearch(a.getMessage().getString());
                             close();
-                        })
-                        .position(startX, startY + rowOffset)
-                        .size(rowWidth, rowHeight).build();
+				}).position(startX, startY + rowOffset)
+				.size(rowWidth-rowHeight, rowHeight).build();
+
+				final int slotId = i;
+				deleteButtons[i] = ButtonWidget.builder(Text.empty(), (a) -> {
+					SearchOverManager.removeHistoryItem(slotId);
+					clearAndInit();
+				}).position(startX+rowWidth-rowHeight, startY + rowOffset)
+				.tooltip(Tooltip.of(Text.translatable("skyblocker.config.general.searchOverlay.deleteTooltip")))
+				.size(specialButtonSize, specialButtonSize).build();
                 rowOffset += rowHeight;
             } else {
                 break;
             }
         }
+
         //auction only elements
         if (SearchOverManager.isAuction) {
             //max pet level button
@@ -118,6 +131,11 @@ public class OverlayScreen extends Screen {
                 addDrawableChild(historyOption);
             }
         }
+		for (ButtonWidget deleteButton : deleteButtons) {
+			if (deleteButton != null) {
+				addDrawableChild(deleteButton);
+			}
+		}
         addDrawableChild(finishedButton);
 
         if (SearchOverManager.isAuction) {
@@ -218,6 +236,10 @@ public class OverlayScreen extends Screen {
         for (int i = 0; i < historyButtons.length; i++) {
             drawItemAndTooltip(context, mouseX, mouseY, SearchOverManager.getHistoryId(i), historyButtons[i], renderOffset);
         }
+		for (ButtonWidget deleteButton : deleteButtons) {
+			if (deleteButton == null) continue;
+			context.drawTexture(RenderLayer::getGuiTextured, DELETE_ICON_TEXTURE, deleteButton.getX() + renderOffset, deleteButton.getY() + renderOffset, 0, 0, 16, 16, 16, 16);
+		}
     }
 
     /**
@@ -266,6 +288,11 @@ public class OverlayScreen extends Screen {
             close();
             return true;
         }
+		if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+			SearchOverManager.search = "";
+			close();
+			return true;
+		}
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 

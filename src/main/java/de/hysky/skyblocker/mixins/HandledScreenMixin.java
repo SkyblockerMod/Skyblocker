@@ -2,8 +2,6 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.InventorySearch;
@@ -11,8 +9,9 @@ import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
-import de.hysky.skyblocker.skyblock.garden.VisitorHelper;
+import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.*;
+import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
@@ -118,8 +117,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		if (this.client != null && this.client.player != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 			//wiki lookup
-			if (config.general.wikiLookup.enableWikiLookup && WikiLookup.wikiLookup.matchesKey(keyCode, scanCode)) {
-				WikiLookup.openWiki(this.focusedSlot, client.player);
+			if (config.general.wikiLookup.enableWikiLookup) {
+				if (WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode)) {
+					WikiLookup.openWiki(this.focusedSlot, client.player, true);
+				} else if (WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
+					WikiLookup.openWiki(this.focusedSlot, client.player, false);
+				}
 			}
 			//item protection
 			if (ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
@@ -133,13 +136,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			if (config.helpers.itemPrice.enableItemPriceRefresh && ItemPrice.ITEM_PRICE_REFRESH.matchesKey(keyCode, scanCode)) {
 				ItemPrice.refreshItemPrices(this.client.player);
 			}
-		}
-	}
-
-	@Inject(at = @At("HEAD"), method = "mouseClicked")
-	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		if (SkyblockerConfigManager.get().farming.garden.visitorHelper && (Utils.getLocationRaw().equals("garden") && !getTitle().getString().contains("Logbook") || getTitle().getString().startsWith("Bazaar"))) {
-			VisitorHelper.onMouseClicked(mouseX, mouseY, button, this.textRenderer);
 		}
 	}
 
@@ -212,7 +208,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
-	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "LOAD", ordinal = 0))
+	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "STORE"))
 	private ItemStack skyblocker$experimentSolvers$replaceTooltipDisplayStack(ItemStack stack) {
 		return skyblocker$experimentSolvers$getStack(focusedSlot, stack);
 	}
@@ -224,6 +220,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	/**
 	 * Avoids getting currentSolver again when it's already in the scope for some usages of this method.
+	 *
 	 * @see #skyblocker$experimentSolvers$getStack(Slot, ItemStack, ContainerSolver)
 	 */
 	@Unique
@@ -297,8 +294,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		switch (this.handler) {
 			case GenericContainerScreenHandler genericContainerScreenHandler when genericContainerScreenHandler.getRows() == 6 -> {
-				VisitorHelper.onSlotClick(slot, slotId, title, genericContainerScreenHandler.getSlot(13).getStack());
-
+				VisitorHelper.onSlotClick(slot, slotId, title, genericContainerScreenHandler.getSlot(13));
 				// Prevent selling to NPC shops
 				ItemStack sellStack = this.handler.slots.get(49).getStack();
 				if (sellStack.getName().getString().equals("Sell Item") || ItemUtils.getLoreLineIf(sellStack, text -> text.contains("buyback")) != null) {
@@ -329,16 +325,24 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
+	@Inject(at = @At("HEAD"), method = "mouseClicked")
+	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+		if (VisitorHelper.shouldRender()) {
+			VisitorHelper.handleMouseClick(mouseX, mouseY, button, this.textRenderer);
+		}
+	}
+
 	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
 	private void skyblocker$drawOnItem(DrawContext context, Slot slot, CallbackInfo ci) {
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds)
-			ItemRarityBackgrounds.tryDraw(slot.getStack(), context, slot.x, slot.y);
+		if (Utils.isOnSkyblock()) {
+			ItemBackgroundManager.drawBackgrounds(slot.getStack(), context, slot.x, slot.y);
+		}
+
 		// Item Protection
 		if (ItemProtection.isItemProtected(slot.getStack())) {
-			RenderSystem.enableBlend();
 			context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
-			RenderSystem.disableBlend();
 		}
+
 		// Search
 		// Darken the slots
 		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {

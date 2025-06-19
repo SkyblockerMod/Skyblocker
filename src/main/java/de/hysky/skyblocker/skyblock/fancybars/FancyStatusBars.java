@@ -34,7 +34,6 @@ public class FancyStatusBars {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FancyStatusBars.class);
 
 	private final MinecraftClient client = MinecraftClient.getInstance();
-	private final StatusBarTracker statusBarTracker = SkyblockerMod.getInstance().statusBarTracker;
 
 	public static BarPositioner barPositioner = new BarPositioner();
 	public static Map<StatusBarType, StatusBar> statusBars = new EnumMap<>(StatusBarType.class);
@@ -295,16 +294,19 @@ public class FancyStatusBars {
 
 		Collection<StatusBar> barCollection = statusBars.values();
 		for (StatusBar statusBar : barCollection) {
-			if (statusBar.anchor != null) statusBar.render(context, -1, -1, client.getRenderTickCounter().getLastFrameDuration());
+			if (statusBar.anchor != null) statusBar.render(context, -1, -1, client.getRenderTickCounter().getDynamicDeltaTicks());
 		}
 
-		StatusBarTracker.Resource health = statusBarTracker.getHealth();
+		StatusBarTracker.Resource health = StatusBarTracker.getHealth();
 		statusBars.get(StatusBarType.HEALTH).updateValues(health.value() / (float) health.max(), health.overflow() / (float) health.max(), health.value());
-		StatusBarTracker.Resource intelligence = statusBarTracker.getMana();
-		statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / (float) intelligence.max(), intelligence.overflow() / (float) intelligence.max(), intelligence.value());
-		int defense = statusBarTracker.getDefense();
+		StatusBarTracker.Resource intelligence = StatusBarTracker.getMana();
+		if (SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.ACCURATE) {
+			float totalIntelligence = (float) intelligence.max() + intelligence.overflow();
+			statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / totalIntelligence + intelligence.overflow() / totalIntelligence, intelligence.overflow() / totalIntelligence, intelligence.value());
+		} else statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / (float) intelligence.max(), intelligence.overflow() / (float) intelligence.max(), intelligence.value());
+		int defense = StatusBarTracker.getDefense();
 		statusBars.get(StatusBarType.DEFENSE).updateValues(defense / (defense + 100.f), 0, defense);
-		StatusBarTracker.Resource speed = statusBarTracker.getSpeed();
+		StatusBarTracker.Resource speed = StatusBarTracker.getSpeed();
 		statusBars.get(StatusBarType.SPEED).updateValues(speed.value() / (float) speed.max(), 0, speed.value());
 		statusBars.get(StatusBarType.EXPERIENCE).updateValues(player.experienceProgress, 0, player.experienceLevel);
 		return true;

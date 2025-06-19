@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.datafixer;
 
+import de.hysky.skyblocker.utils.Utils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ public class ItemStackComponentizationFixerTest {
 	private final ItemStack TEST_STACK = Util.make(new ItemStack(Items.DIAMOND_SWORD, 1), item -> {
 		ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(ItemEnchantmentsComponent.DEFAULT);
 
-		builder.add(ItemStackComponentizationFixer.getRegistryLookup().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
+		builder.add(Utils.getRegistryWrapperLookup().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
 		item.set(DataComponentTypes.ENCHANTMENTS, builder.build());
 	});
 
@@ -44,7 +45,7 @@ public class ItemStackComponentizationFixerTest {
 	@Test
 	void testDataFixer() {
 		ItemStack fixedStack = ItemStackComponentizationFixer.fixUpItem(NBT);
-		JsonElement stackJson = ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), fixedStack).getOrThrow();
+		JsonElement stackJson = ItemStack.CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(JsonOps.INSTANCE), fixedStack).getOrThrow();
 
 		Assertions.assertEquals("{\"id\":\"minecraft:diamond_sword\",\"count\":1,\"components\":{\"minecraft:custom_data\":{\"ExtraAttributes\":{\"id\":\"TEST\"}}}}", GSON.toJson(stackJson));
 	}
@@ -53,12 +54,12 @@ public class ItemStackComponentizationFixerTest {
 	void testComponentsAsString() {
 		String componentString = ItemStackComponentizationFixer.componentsAsString(TEST_STACK);
 
-		Assertions.assertEquals("[minecraft:enchantments={levels:{\"minecraft:sharpness\":1}}]", componentString);
+		Assertions.assertEquals("[minecraft:enchantments={\"minecraft:sharpness\":1}]", componentString);
 	}
 
 	@Test
 	void testFromComponentsString() {
-		String componentString = "[minecraft:enchantments={levels:{\"minecraft:sharpness\":1}}]";
+		String componentString = "[minecraft:enchantments={\"minecraft:sharpness\":1}]";
 		ItemStack stack = ItemStackComponentizationFixer.fromComponentsString("minecraft:diamond_sword", 1, componentString);
 
 		Assertions.assertTrue(ItemStack.areItemsAndComponentsEqual(stack, TEST_STACK));
@@ -66,7 +67,7 @@ public class ItemStackComponentizationFixerTest {
 
 	@Test
 	void testFromComponentsStringWithInvalidItem() {
-		String componentString = "[minecraft:enchantments={levels:{\"minecraft:sharpness\":1}}]";
+		String componentString = "[minecraft:enchantments={\"minecraft:sharpness\":1}]";
 		ItemStack stack = ItemStackComponentizationFixer.fromComponentsString("minecraft:does_not_exist", 1, componentString);
 
 		Assertions.assertEquals(stack, ItemStack.EMPTY);
@@ -82,7 +83,7 @@ public class ItemStackComponentizationFixerTest {
 
 	private static NbtCompound convertToNbt(String nbt) {
 		try {
-			return StringNbtReader.parse(nbt);
+			return StringNbtReader.readCompound(nbt);
 		} catch (Exception e) {
 			return new NbtCompound();
 		}

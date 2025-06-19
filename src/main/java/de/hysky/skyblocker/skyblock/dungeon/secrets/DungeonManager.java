@@ -241,9 +241,7 @@ public class DungeonManager {
     @Init
     public static void init() {
         CUSTOM_WAYPOINTS_DIR = SkyblockerMod.CONFIG_DIR.resolve("custom_secret_waypoints.json");
-        if (!SkyblockerConfigManager.get().dungeons.secretWaypoints.enableRoomMatching) {
-            return;
-        }
+
         // Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
         CompletableFuture.runAsync(DungeonManager::load, MinecraftClient.getInstance()).exceptionally(e -> {
             LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);
@@ -488,7 +486,7 @@ public class DungeonManager {
                 context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get player or world."));
                 return Command.SINGLE_SUCCESS;
             }
-            ItemStack stack = client.player.getInventory().main.get(8);
+            ItemStack stack = client.player.getInventory().getMainStacks().get(8);
             if (!stack.isOf(Items.FILLED_MAP)) {
                 context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map."));
                 return Command.SINGLE_SUCCESS;
@@ -565,12 +563,20 @@ public class DungeonManager {
         if (client.player == null || client.world == null) {
             return;
         }
-        if (physicalEntrancePos == null) {
-            Vec3d playerPos = client.player.getPos();
-            physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(playerPos);
-            currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
-        }
-        MapState map = FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().main.get(8)), client.world);
+
+		if (physicalEntrancePos == null) {
+			//The check for the area should delay this until after the player's position has been set by the server (since the scoreboard should be sent after the player position)
+			//this is necessary otherwise the default position of (0, 0) or whatever will mess up the entrance calculation which will break all sorts of things
+			if (!Utils.getIslandArea().contains("The Catacombs")) {
+				return;
+			}
+
+			Vec3d playerPos = client.player.getPos();
+			physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(playerPos);
+			currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
+		}
+
+        MapState map = FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().getMainStacks().get(8)), client.world);
         if (map == null) {
             return;
         }
@@ -782,12 +788,12 @@ public class DungeonManager {
     }
 
     /**
-     * Checks if {@link DungeonsConfig.SecretWaypoints#enableRoomMatching room matching} is enabled and the player is in a dungeon.
+     * Checks if the player is in a dungeon.
      *
      * @return whether room matching and dungeon secrets should be processed
      */
     private static boolean shouldProcess() {
-        return SkyblockerConfigManager.get().dungeons.secretWaypoints.enableRoomMatching && Utils.isInDungeons();
+        return Utils.isInDungeons();
     }
 
     /**

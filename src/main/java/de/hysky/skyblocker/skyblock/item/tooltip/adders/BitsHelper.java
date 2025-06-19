@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
@@ -22,7 +23,6 @@ import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +33,6 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	private static final Pattern CATEGORY_PATTERN = Pattern.compile("Click to browse!");
 	@Language("RegExp")
 	private static final String TITLE_PATTERN = ".*(?:Community Shop|Bits Shop).*";
-	private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
 	private static final String LOGS_PREFIX = "[Skyblocker Bits Helper] ";
 
 	//region Constants
@@ -214,22 +213,22 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 		if (itemID.isEmpty()) {   // a bit dirty, but basically if itemID is empty then it is normal item and NOT category
 			lines.add(Text.empty()
 					.append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
-					.append(Text.literal(DECIMAL_FORMAT.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
+					.append(Text.literal(Formatters.INTEGER_NUMBERS.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
 		} else if (foundItemStack != null && isGreen) {
 			lines.add(Text.empty()
 					.append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
-					.append(Text.literal(DECIMAL_FORMAT.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
+					.append(Text.literal(Formatters.INTEGER_NUMBERS.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
 			lines.add(Text.literal("From " + foundItemStack.getName().getString()).formatted(Formatting.GREEN));
 		} else if (foundItemStack != null) {
 			lines.add(Text.empty()
 					.append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
-					.append(Text.literal(DECIMAL_FORMAT.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
+					.append(Text.literal(Formatters.INTEGER_NUMBERS.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
 			lines.add(Text.literal("From " + foundItemStack.getName().getString()).formatted(Formatting.DARK_AQUA));
 		} else {    // if below so it won't clog logs with that cursed enchanted book
 			if (!stack.getName().getString().equals("Stacking Enchants")) LOGGER.warn(LOGS_PREFIX + "ItemStack not found for {}", itemID);
 			lines.add(Text.empty()
 					.append(Text.literal("Bits Cost: ").formatted(Formatting.AQUA))
-					.append(Text.literal(DECIMAL_FORMAT.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
+					.append(Text.literal(Formatters.INTEGER_NUMBERS.format(coinsPerBit) + " Coins per bit").formatted(Formatting.DARK_AQUA)));
 			lines.add(Text.literal("From " + itemID).formatted(Formatting.DARK_AQUA));
 		}
 	}

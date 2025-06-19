@@ -20,6 +20,7 @@ public class SkyblockTime {
 	public static final AtomicReference<Month> skyblockMonth = new AtomicReference<>(Month.EARLY_SPRING);
 	public static final AtomicInteger skyblockDay = new AtomicInteger(0);
 	public static final AtomicInteger skyblockHour = new AtomicInteger(0);
+	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Time");
 
 	//All time lengths are in milliseconds
@@ -122,7 +123,7 @@ public class SkyblockTime {
 			HOUR_CHANGE.invoker().onHourChange(hour);
 		}
 		TIME_UPDATE.invoker().onTimeUpdate(year, season, month, day, hour);
-		LOGGER.info("[Skyblocker Time] Skyblock time updated to Year {}, Season {}, Month {}, Day {}, Hour {}", year, season, month, day, hour);
+		//LOGGER.info("[Skyblocker Time] Skyblock time updated to Year {}, Season {}, Month {}, Day {}, Hour {}", year, season, month, day, hour);
 	}
 
 	public static MutableText formatTime(double seconds) {

@@ -6,6 +6,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
@@ -14,29 +15,20 @@ import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
 
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
 @RegisterWidget
 public class EndHudWidget extends ComponentBasedWidget {
 	private static final MutableText TITLE = Text.literal("The End").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
+	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.THE_END);
 
 	private static EndHudWidget instance = null;
 
-	private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
-	private static final ItemStack ENDERMAN_HEAD = new ItemStack(Items.PLAYER_HEAD);
-	private static final ItemStack POPPY = new ItemStack(Items.POPPY);
-
-	static {
-		DECIMAL_FORMAT.setMinimumFractionDigits(0);
-		DECIMAL_FORMAT.setMaximumFractionDigits(2);
-
-		ENDERMAN_HEAD.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap()));
-		POPPY.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
-	}
+	private static final ItemStack ENDERMAN_HEAD = Util.make(new ItemStack(Items.PLAYER_HEAD), stack -> stack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("MHF_Enderman"), Optional.empty(), new PropertyMap())));
+	private static final ItemStack POPPY = Util.make(new ItemStack(Items.POPPY), stack -> stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true));
 
 	public EndHudWidget() {
 		super(TITLE, Formatting.DARK_PURPLE.getColorValue(), "hud_end");
@@ -61,7 +53,7 @@ public class EndHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public Set<Location> availableLocations() {
-		return Set.of(Location.THE_END);
+		return AVAILABLE_LOCATIONS;
 	}
 
 	@Override
@@ -72,7 +64,7 @@ public class EndHudWidget extends ComponentBasedWidget {
 			addComponent(new IcoTextComponent(ENDERMAN_HEAD, Text.literal("Zealots").formatted(Formatting.BOLD)));
 			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsSinceLastEye", endStats.zealotsSinceLastEye())));
 			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.zealotsTotalKills", endStats.totalZealotKills())));
-			String avg = endStats.eyes() == 0 ? "???" : DECIMAL_FORMAT.format((float) endStats.totalZealotKills() / endStats.eyes());
+			String avg = endStats.eyes() == 0 ? "???" : Formatters.DOUBLE_NUMBERS.format((float) endStats.totalZealotKills() / endStats.eyes());
 			addComponent(new PlainTextComponent(Text.translatable("skyblocker.end.hud.avgKillsPerEye", avg)));
 		}
 
