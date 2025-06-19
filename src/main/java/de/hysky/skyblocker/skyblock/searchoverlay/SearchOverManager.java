@@ -124,6 +124,11 @@ public class SearchOverManager {
                         name = name.replace("Ultimate ", "");
                     }
 
+					// Fix Turbo-Cane / other turbo books
+					if (name.startsWith("Turbo ")) {
+						name = name.replace("Turbo ", "Turbo-");
+					}
+
                     String level = matcher.group(2);
                     name += " " + RomanNumerals.decimalToRoman(Integer.parseInt(level));
                     bazaarItems.add(name);
