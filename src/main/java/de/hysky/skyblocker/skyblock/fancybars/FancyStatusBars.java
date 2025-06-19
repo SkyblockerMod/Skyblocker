@@ -56,6 +56,7 @@ public class FancyStatusBars {
 		statusBars.put(StatusBarType.DEFENSE, StatusBarType.DEFENSE.newStatusBar());
 		statusBars.put(StatusBarType.EXPERIENCE, StatusBarType.EXPERIENCE.newStatusBar());
 		statusBars.put(StatusBarType.SPEED, StatusBarType.SPEED.newStatusBar());
+		statusBars.put(StatusBarType.AIR, StatusBarType.AIR.newStatusBar());
 
 		// Fetch from old status bar config
 		int[] counts = new int[3]; // counts for RIGHT, LAYER1, LAYER2
@@ -65,6 +66,7 @@ public class FancyStatusBars {
 		initBarPosition(statusBars.get(StatusBarType.DEFENSE), counts, barPositions.defenceBarPosition);
 		initBarPosition(statusBars.get(StatusBarType.EXPERIENCE), counts, barPositions.experienceBarPosition);
 		initBarPosition(statusBars.get(StatusBarType.SPEED), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
+		initBarPosition(statusBars.get(StatusBarType.AIR), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
 
 		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig).thenAccept(object -> {
 			if (object != null) {
@@ -309,6 +311,8 @@ public class FancyStatusBars {
 		StatusBarTracker.Resource speed = StatusBarTracker.getSpeed();
 		statusBars.get(StatusBarType.SPEED).updateValues(speed.value() / (float) speed.max(), 0, speed.value());
 		statusBars.get(StatusBarType.EXPERIENCE).updateValues(player.experienceProgress, 0, player.experienceLevel);
+		StatusBarTracker.Resource air = StatusBarTracker.getAir();
+		statusBars.get(StatusBarType.AIR).updateValues(air.value() / (float) air.max(), 0, air.value());
 		return true;
 	}
 }
