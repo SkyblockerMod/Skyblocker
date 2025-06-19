@@ -338,7 +338,7 @@
     "skyblocker.config.dungeons.livid": "提示真Livid的顏色",
     "skyblocker.config.dungeons.mimicMessage.mimicMessage.@Tooltip": "殺死Mimic後將在聊天中發送的訊息。 建議保留預設值。",
     "skyblocker.config.dungeons.professor.fireFreezeStaffTimer.@Tooltip": "在F3/M3的Boss戰中顯示Fire Freeze Staff的計時器。",
-    "skyblocker.config.mining": "矮人礦井",
+    "skyblocker.config.mining": "挖礦",
     "skyblocker.config.chat.filter.hideDeath.@Tooltip": "過濾聊天欄中玩家死亡的訊息。",
     "skyblocker.config.chat.filter.hideDeath": "隱藏玩家死亡訊息",
     "skyblocker.quiverWarning.10Left": "你的箭袋裡只剩10支箭了！",
