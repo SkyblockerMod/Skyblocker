@@ -61,7 +61,7 @@ public class TimeTowerReminder {
 	private static void sendMessage() {
 		if (MinecraftClient.getInstance().player == null || !Utils.isOnSkyblock()) return;
 		if (SkyblockerConfigManager.get().helpers.chocolateFactory.enableTimeTowerReminder) {
-			MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.literal("Your Chocolate Factory's Time Tower has deactivated!").formatted(Formatting.RED)), false);
+			MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.chocolateFactory.sendTimeTowerReminderMessage").formatted(Formatting.RED)), false);
 		}
 		File tempFile = SkyblockerMod.CONFIG_DIR.resolve(TIME_TOWER_FILE).toFile();
 		try {

@@ -426,6 +426,7 @@
   "skyblocker.config.helpers.chocolateFactory.enableEggFinder.@Tooltip": "Highlights eggs from Hoppity's Hunt.",
   "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder": "Enable Time Tower Reminder",
   "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder.@Tooltip": "Sends a message in chat when your Time Tower deactivates.",
+  "skyblocker.config.helpers.chocolateFactory.sendTimeTowerReminderMessage": "Your Chocolate Factory's Time Tower has deactivated!",
   "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages": "Send Egg Found Messages",
   "skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages.@Tooltip": "Sends a message in chat when an egg is found in the current island.",
   "skyblocker.config.helpers.chocolateFactory.straySound": "Stray Rabbit Sound",
