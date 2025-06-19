@@ -26,7 +26,7 @@ public class StatusBarTracker {
 	private static Resource health = new Resource(100, 100, 0);
 	private static Resource mana = new Resource(100, 100, 0);
 	private static Resource speed = new Resource(100, 400, 0);
-	private static Resource air = new Resource(100, 100, 0);
+	private static Resource air = new Resource(100, 300, 0);
 	private static int defense = 0;
 
 	@Init
