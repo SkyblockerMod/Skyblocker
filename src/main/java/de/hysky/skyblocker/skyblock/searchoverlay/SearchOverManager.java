@@ -120,7 +120,7 @@ public class SearchOverManager {
                 Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(name);
                 if (matcher.matches()) {//format enchantments
                     name = matcher.group(1);
-                    if (!name.contains("Ultimate Wise")) {
+                    if (!name.contains("Ultimate Wise") && !name.contains("Ultimate Jerry")) {
                         name = name.replace("Ultimate ", "");
                     }
 
