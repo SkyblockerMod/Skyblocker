@@ -33,7 +33,6 @@
     "skyblocker.config.chat.filter.hideImplosion": "Implosionsmeldung ausblenden",
     "skyblocker.config.chat.filter.hideMoltenWave": "Nachricht über Molten Wave ausblenden",
     "skyblocker.config.chat.filter.hideAds": "Werbung im öffentlichen Chat ausblenden",
-    "key.wikiLookup": "In der Wiki nachschlagen",
     "key.skyblocker.defaultTgl": "Tab-HUD auf Standard umstellen",
     "key.skyblocker.toggleA": "Sekundäre Ansicht des Tab-HUD anzeigen",
     "skyblocker.config.helpers.experiments.enableSuperpairsSolver": "Superpairs Solver aktivieren",
@@ -83,5 +82,8 @@
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Kuudra wird dunkel Orange umrandet.",
     "key.skyblocker.debug.dumpNearbyEntities": "Objekte in der Nähe entsorgen",
     "skyblocker.config.debug": "Debuggen",
-    "skyblocker.config.debug.showInvisibleArmorStands": "Unsichtbare Rüstungsständer anzeigen"
+    "skyblocker.config.debug.showInvisibleArmorStands": "Unsichtbare Rüstungsständer anzeigen",
+    "skyblocker.itemTooltip.nullMessage": "§b[§6Skyblocker§b] §cItem-Preise auf dem Tooltip werden innerhalb der nächsten 60 Sekunden aktualisiert. Wenn nicht, überprüfe latest.log",
+    "skyblocker.itemTooltip.noData": "§cKeine Daten",
+    "key.wikiLookup.official": "Nachschlagen im Hypixel Wiki"
 }
