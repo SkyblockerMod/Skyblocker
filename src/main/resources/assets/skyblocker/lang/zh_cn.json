@@ -49,7 +49,7 @@
     "skyblocker.config.dungeons.terminals.solveColor": "选色终端助手",
     "skyblocker.config.dungeons.terminals.solveOrder": "排序终端助手",
     "skyblocker.config.dungeons.terminals.solveStartsWith": "首字母谜题终端助手",
-    "skyblocker.config.mining": "矮人矿井",
+    "skyblocker.config.mining": "挖矿",
     "skyblocker.config.mining.enableDrillFuel": "显示钻头燃料",
     "skyblocker.config.mining.dwarvenMines.solveFetchur": "解决Fetchur的谜题",
     "skyblocker.config.mining.dwarvenMines.solvePuzzler": "解决Puzzler的谜题",
