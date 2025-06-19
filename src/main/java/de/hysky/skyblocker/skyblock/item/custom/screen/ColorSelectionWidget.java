@@ -8,7 +8,7 @@ import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
-import de.hysky.skyblocker.utils.render.gui.RGBTextInput;
+import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -42,7 +42,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	private static final String DELAY_TEXT = "skyblocker.armorCustomization.delay";
 
 	private final ColorPickerWidget colorPicker;
-	private final RGBTextInput rgbTextInput;
+	private final ARGBTextInput ARGBTextInput;
 
 	private final AnimatedDyeTimelineWidget timelineWidget;
 	private final CheckboxWidget cycleBackCheckbox;
@@ -65,12 +65,12 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 		colorPicker = new ColorPickerWidget(x + 3, y + 3, height1 * 2, height1);
 		colorPicker.setOnColorChange(this::onPickerColorChanged);
-		rgbTextInput = new RGBTextInput(0, y + 3, textRenderer, true);
-		rgbTextInput.setX(colorPicker.getRight() + 5);
-		rgbTextInput.setOnChange(this::onTextInputColorChanged);
+		ARGBTextInput = new ARGBTextInput(0, y + 3, textRenderer, true);
+		ARGBTextInput.setX(colorPicker.getRight() + 5);
+		ARGBTextInput.setOnChange(this::onTextInputColorChanged);
 		timelineWidget = new AnimatedDyeTimelineWidget(getX() + 3, getBottom() - 18, getWidth() - 6, 15, this::onTimelineFrameSelected);
 
-		resetColorButton = ButtonWidget.builder(RESET_COLOR_TEXT, this::onRemoveCustomColor).width(Math.min(150, x + width - rgbTextInput.getRight() - 5)).build();
+		resetColorButton = ButtonWidget.builder(RESET_COLOR_TEXT, this::onRemoveCustomColor).width(Math.min(150, x + width - ARGBTextInput.getRight() - 5)).build();
 
 		resetColorButton.setPosition(getRight() - resetColorButton.getWidth() - 3, getY() + 3);
 
@@ -126,11 +126,11 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		});
 		durationSlider.setTooltip(Tooltip.of(DURATION_TOOLTIP_TEXT));
 
-		children = List.of(colorPicker, rgbTextInput, timelineWidget, resetColorButton, animatedCheckbox, notCustomizableText, cycleBackCheckbox, delaySlider, durationSlider);
+		children = List.of(colorPicker, ARGBTextInput, timelineWidget, resetColorButton, animatedCheckbox, notCustomizableText, cycleBackCheckbox, delaySlider, durationSlider);
 	}
 
 	private void onPickerColorChanged(int argb, boolean release) {
-		rgbTextInput.setRGBColor(argb);
+		ARGBTextInput.setARGBColor(argb);
 		if (!animated) {
 			SkyblockerConfigManager.get().general.customDyeColors.put(ItemUtils.getItemUuid(currentItem), ColorHelper.fullAlpha(argb));
 		} else if (release) {
@@ -150,7 +150,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	}
 
 	private void onTimelineFrameSelected(int color, float time) {
-		rgbTextInput.setRGBColor(color);
+		ARGBTextInput.setARGBColor(color);
 		colorPicker.setRGBColor(color);
 	}
 
@@ -164,7 +164,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		SkyblockerConfigManager.get().general.customAnimatedDyes.remove(itemUuid);
 
 		int color = DyedColorComponent.getColor(currentItem, -1);
-		rgbTextInput.setRGBColor(color);
+		ARGBTextInput.setARGBColor(color);
 		colorPicker.setRGBColor(color);
 	}
 
@@ -186,7 +186,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		} else {
 			int color = SkyblockerConfigManager.get().general.customDyeColors.getOrDefault(itemUuid, DyedColorComponent.getColor(currentItem, -1));
 			colorPicker.setRGBColor(color);
-			rgbTextInput.setRGBColor(color);
+			ARGBTextInput.setARGBColor(color);
 			SkyblockerConfigManager.get().general.customAnimatedDyes.remove(itemUuid);
 		}
 	}
@@ -205,7 +205,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 	private void changeVisibilities() {
 		colorPicker.visible = customizable;
-		rgbTextInput.visible = customizable;
+		ARGBTextInput.visible = customizable;
 
 		timelineWidget.visible = customizable && animated;
 		cycleBackCheckbox.visible = customizable && animated;
@@ -272,12 +272,12 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		} else if (SkyblockerConfigManager.get().general.customDyeColors.containsKey(itemUuid)) {
 			animated = false;
 			int color = SkyblockerConfigManager.get().general.customDyeColors.getInt(itemUuid);
-			rgbTextInput.setRGBColor(color);
+			ARGBTextInput.setARGBColor(color);
 			colorPicker.setRGBColor(color);
 		} else {
 			animated = false;
 			int color = DyedColorComponent.getColor(currentItem, -1);
-			rgbTextInput.setRGBColor(color);
+			ARGBTextInput.setARGBColor(color);
 			colorPicker.setRGBColor(color);
 		}
 		changeVisibilities();

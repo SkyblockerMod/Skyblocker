@@ -19,19 +19,20 @@ import java.util.Locale;
 import java.util.OptionalInt;
 import java.util.function.IntConsumer;
 
-public class RGBTextInput extends ClickableWidget {
+public class ARGBTextInput extends ClickableWidget {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	private static final String SAMPLE_TEXT = "AAAAAA";
-	private static final Formatting[] FORMATTINGS = new Formatting[] {Formatting.RED, Formatting.GREEN, Formatting.BLUE};
+	private static final Formatting[] FORMATTINGS = new Formatting[] {Formatting.WHITE, Formatting.RED, Formatting.GREEN, Formatting.BLUE};
 	private static final String HEXADECIMAL_CHARS = "0123456789aAbBcCdDeEfF";
 
-	private static final int LENGTH = 6;
+	private final int length;
 	private final boolean drawBackground;
 	private final TextRenderer textRenderer;
+	private final boolean hasAlpha;
 
-	private String input = "FFFFFF";
+	private String input;
 	int index = 0;
+	private final int colorMask;
 
 	private @Nullable IntConsumer onChange = null;
 
@@ -39,25 +40,36 @@ public class RGBTextInput extends ClickableWidget {
 	 * Creates a new widget.
 	 * <p>
 	 * Height and width are automatically computed to be the size of the hex number + some padding if {@code drawBackground} is true.
-	 * If the size needs to be changed, use {@link RGBTextInput#setWidth(int)} and {@link RGBTextInput#setHeight(int)}.
+	 * If the size needs to be changed, use {@link ARGBTextInput#setWidth(int)} and {@link ARGBTextInput#setHeight(int)}.
 	 *
-	 * @see RGBTextInput#setOnChange(IntConsumer)
+	 * @see ARGBTextInput#setOnChange(IntConsumer)
 	 *
 	 * @param x x position
 	 * @param y y position
 	 * @param textRenderer text renderer to render the text (duh!)
 	 * @param drawBackground draws a black background and a white border if true
+	 * @param hasAlpha if the controller allows to change the alpha color. If false alpha is FF.
 	 *
 	 */
-	public RGBTextInput(int x, int y, TextRenderer textRenderer, boolean drawBackground) {
-		super(x, y, textRenderer.getWidth(SAMPLE_TEXT) + (drawBackground ? 6 : 0), 10 + (drawBackground ? 4 : 0), Text.of("RGBTextInput"));
+	public ARGBTextInput(int x, int y, TextRenderer textRenderer, boolean drawBackground, boolean hasAlpha) {
+		super(x, y, textRenderer.getWidth(hasAlpha ? "AAAAAAAA" : "AAAAAA") + (drawBackground ? 6 : 0), 10 + (drawBackground ? 4 : 0), Text.of("ARGBTextInput"));
 		this.drawBackground = drawBackground;
 		this.textRenderer = textRenderer;
+		this.length = hasAlpha ? 8 : 6;
+		this.hasAlpha = hasAlpha;
+		this.colorMask = hasAlpha ? 0 : 0xFF000000;
+		this.input = hasAlpha ? "FFFFFFFF" : "FFFFFF";
 	}
 
-	protected OptionalInt getOptionalRGBColor(String input) {
+	public ARGBTextInput(int x, int y, TextRenderer textRenderer, boolean drawBackground) {
+		this(x, y, textRenderer, drawBackground, false);
+	}
+
+	protected OptionalInt getOptionalARGBColor(String input) {
 		try {
-			return OptionalInt.of(0xFF000000 | Integer.parseInt(input, 16));
+			int i = Integer.parseUnsignedInt(input, 16);
+			System.out.println(i);
+			return OptionalInt.of(colorMask | i);
 		} catch (NumberFormatException e) {
 			LOGGER.error("Could not parse rgb color", e);
 		}
@@ -67,16 +79,16 @@ public class RGBTextInput extends ClickableWidget {
 	/**
 	 * @return the color, or white if something somehow went wrong
 	 */
-	public int getRGBColor() {
-		return getOptionalRGBColor(input).orElse(-1);
+	public int getARGBColor() {
+		return getOptionalARGBColor(input).orElse(-1);
 	}
 
-	public void setRGBColor(int rgb) {
-		input = String.format("%06X",rgb & 0x00FFFFFF);
+	public void setARGBColor(int argb) {
+		input = String.format(hasAlpha ? "%08X" : "%06X",argb & (~colorMask));
 	}
 
 	/**
-	 * Sets a consumer that will be called whenever the color is changed by the user (and not when {@link RGBTextInput#setRGBColor(int)} is called) with the new color.
+	 * Sets a consumer that will be called whenever the color is changed by the user (and not when {@link ARGBTextInput#setARGBColor(int)} is called) with the new color.
 	 * The alpha channel will be at 255 (or FF)
 	 * @param onChange the consumer
 	 */
@@ -89,7 +101,7 @@ public class RGBTextInput extends ClickableWidget {
 		int selectionStart = textRenderer.getWidth(input.substring(0, index));
 		int selectionEnd = textRenderer.getWidth(input.substring(0, index + 1));
 		int textX = getX() + (drawBackground ? 3 : 0);
-		int textY = getY() + (drawBackground ? 3 : 0);
+		int textY = getY() + (getHeight() - textRenderer.fontHeight) / 2;
 		if (drawBackground) {
 			context.fill(getX(), getY(), getRight(), getBottom(), isFocused() ? Colors.WHITE: Colors.GRAY);
 			context.fill(getX() + 1, getY() + 1, getRight() - 1, getBottom() - 1, Colors.BLACK);
@@ -114,7 +126,7 @@ public class RGBTextInput extends ClickableWidget {
 		context.drawText(
 				textRenderer,
 				visitor -> {
-					for (int i = 0; i < input.length(); i++) {
+					for (int i = hasAlpha ? 0 : 2; i < input.length(); i++) {
 						if (!visitor.accept(i, isSelected() ? Style.EMPTY.withFormatting(FORMATTINGS[i / 2]) : Style.EMPTY, input.charAt(i))) return false;
 					}
 					return true;
@@ -127,9 +139,7 @@ public class RGBTextInput extends ClickableWidget {
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-
-	}
+	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
@@ -153,7 +163,7 @@ public class RGBTextInput extends ClickableWidget {
 				yield true;
 			}
 			case GLFW.GLFW_KEY_RIGHT -> {
-				index = Math.min(LENGTH - 1, index + 1);
+				index = Math.min(length - 1, index + 1);
 				yield true;
 			}
 			default -> false;
@@ -168,7 +178,7 @@ public class RGBTextInput extends ClickableWidget {
 			} else if (Screen.isPaste(keyCode)) {
 				String clipboard = MinecraftClient.getInstance().keyboard.getClipboard();
 				String s = clipboard.substring(0, 6);
-				getOptionalRGBColor(s.toUpperCase(Locale.ENGLISH)).ifPresent(color -> {
+				getOptionalARGBColor(s.toUpperCase(Locale.ENGLISH)).ifPresent(color -> {
 					input = s;
 					callOnChange();
 				});
@@ -184,7 +194,7 @@ public class RGBTextInput extends ClickableWidget {
 		if (!isFocused()) return false;
 		if (HEXADECIMAL_CHARS.indexOf(chr) >= 0) {
 			input = new	StringBuilder(input).replace(index, index+1, String.valueOf(chr).toUpperCase(Locale.ENGLISH)).toString();
-			index = Math.min(LENGTH - 1, index + 1);
+			index = Math.min(length - 1, index + 1);
 			callOnChange();
 			return true;
 		}
@@ -194,7 +204,7 @@ public class RGBTextInput extends ClickableWidget {
 
 	protected void callOnChange() {
 		if (onChange != null) {
-			onChange.accept(getRGBColor());
+			onChange.accept(getARGBColor());
 		}
 	}
 
@@ -211,7 +221,7 @@ public class RGBTextInput extends ClickableWidget {
 	}
 
 	private void findClickedChar(int mouseX) {
-		index = Math.clamp(textRenderer.trimToWidth(input, mouseX - getX() - (drawBackground ? 3 : 0)).length(), 0, LENGTH - 1);
+		index = Math.clamp(textRenderer.trimToWidth(input, mouseX - getX() - (drawBackground ? 3 : 0)).length(), 0, length - 1);
 	}
 
 

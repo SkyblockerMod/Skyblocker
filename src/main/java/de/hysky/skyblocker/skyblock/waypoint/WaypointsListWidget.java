@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.waypoint;
 
 import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
@@ -14,6 +15,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ColorHelper;
 
 import java.util.*;
 
@@ -31,7 +33,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
     @Override
     public int getRowWidth() {
-        return super.getRowWidth() + 110;
+        return super.getRowWidth() + 116;
     }
 
     @Override
@@ -150,7 +152,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
                 WaypointsListWidget.this.children().remove(this);
                 waypoints.remove(group);
             }).width(38).build();
-			Text arrow = Text.of(collapsed ? "▼" :"▲");
+			Text arrow = Text.of(collapsed ? "▲" :"▼");
 			collapseWaypoint = ButtonWidget.builder(arrow, button -> {
 				if (collapsed) collapsedGroups.remove(group); else collapsedGroups.add(group);
 				updateEntries();
@@ -191,8 +193,8 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			collapseWaypoint.setPosition(x, y + (entryHeight - collapseWaypoint.getHeight()) / 2);
-			enabled.setPosition(x + 12, y + 1);
-            nameField.setPosition(x + 34, y);
+			enabled.setPosition(x + 16, y + 1);
+            nameField.setPosition(enabled.getRight() + 5, y);
             ordered.setPosition(x + entryWidth - 190, y + 1);
             buttonNewWaypoint.setPosition(x + entryWidth - 115, y);
             buttonDelete.setPosition(x + entryWidth - 38, y);
@@ -211,7 +213,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         private final TextFieldWidget xField;
         private final TextFieldWidget yField;
         private final TextFieldWidget zField;
-        private final TextFieldWidget colorField;
+        private final ARGBTextInput colorField;
         private final ButtonWidget buttonDelete;
 
         public WaypointEntry(WaypointGroupEntry groupEntry) {
@@ -237,9 +239,11 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             zField.setText(Integer.toString(waypoint.pos.getZ()));
             zField.setTextPredicate(this::checkInt);
             zField.setChangedListener(this::updateZ);
-            colorField = new TextFieldWidget(client.textRenderer, 56, 20, Text.literal("Color"));
-            colorField.setText(String.format("%02X%02X%02X%02X", (int) (waypoint.alpha * 255), (int) (waypoint.colorComponents[0] * 255), (int) (waypoint.colorComponents[1] * 255), (int) (waypoint.colorComponents[2] * 255)));
-            colorField.setChangedListener(this::updateColor);
+            colorField = new ARGBTextInput(0, 0, client.textRenderer, true, true);
+			int color = ColorHelper.fromFloats(waypoint.alpha, waypoint.colorComponents[0], waypoint.colorComponents[1], waypoint.colorComponents[2]);
+			colorField.setARGBColor(color);
+			colorField.setHeight(20);
+			colorField.setOnChange(this::updateColor);
             buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.deleteButton"), button -> {
                 groupEntry.group.waypoints().remove(waypoint);
                 WaypointsListWidget.this.children().remove(this);
@@ -301,42 +305,32 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             }
         }
 
-        private void updateColor(String colorString) {
-            try {
-                int index = groupEntry.group.waypoints().indexOf(waypoint);
-                int colorInt = parseEmptiableInt(colorString, 16);
-                float[] colorComponents = {((colorInt & 0x00FF0000) >> 16) / 255f, ((colorInt & 0x0000FF00) >> 8) / 255f, (colorInt & 0x000000FF) / 255f};
-                float alpha = ((colorInt & 0xFF000000) >>> 24) / 255f;
-                if (Arrays.equals(waypoint.colorComponents, colorComponents) && waypoint.alpha == alpha) return;
-                waypoint = waypoint.withColor(colorComponents, alpha);
-                if (index >= 0) {
-                    groupEntry.group.waypoints().set(index, waypoint);
-                }
-            } catch (NumberFormatException e) {
-                Waypoints.LOGGER.warn("[Skyblocker Waypoints] Failed to parse color: {}", colorString, e);
-            }
+        private void updateColor(int colorInt) {
+			int index = groupEntry.group.waypoints().indexOf(waypoint);
+			float[] colorComponents = {((colorInt & 0x00FF0000) >> 16) / 255f, ((colorInt & 0x0000FF00) >> 8) / 255f, (colorInt & 0x000000FF) / 255f};
+			float alpha = ((colorInt & 0xFF000000) >>> 24) / 255f;
+			if (Arrays.equals(waypoint.colorComponents, colorComponents) && waypoint.alpha == alpha) return;
+			waypoint = waypoint.withColor(colorComponents, alpha);
+			if (index >= 0) {
+				groupEntry.group.waypoints().set(index, waypoint);
+			}
         }
 
         private int parseEmptiableInt(String value) throws NumberFormatException {
             return value.isEmpty() || value.equals("-") ? 0 : Integer.parseInt(value);
         }
 
-        @SuppressWarnings("SameParameterValue")
-        private int parseEmptiableInt(String value, int radix) throws NumberFormatException {
-            return value.isEmpty() || value.equals("-") ? 0 : Integer.parseInt(value, radix);
-        }
-
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            context.drawTextWithShadow(client.textRenderer, "X:", width / 2 - 56, y + 6, 0xFFFFFF);
-            context.drawTextWithShadow(client.textRenderer, "Y:", width / 2 - 19, y + 6, 0xFFFFFF);
-            context.drawTextWithShadow(client.textRenderer, "Z:", width / 2 + 18, y + 6, 0xFFFFFF);
+            context.drawTextWithShadow(client.textRenderer, "X:", width / 2 - 48, y + 6, 0xFFFFFF);
+            context.drawTextWithShadow(client.textRenderer, "Y:", width / 2 - 11, y + 6, 0xFFFFFF);
+            context.drawTextWithShadow(client.textRenderer, "Z:", width / 2 + 26, y + 6, 0xFFFFFF);
             context.drawTextWithShadow(client.textRenderer, "#", x + entryWidth - 105, y + 6, 0xFFFFFF);
-            enabled.setPosition(x + 20, y + 1);
-            nameField.setPosition(x + 42, y);
-            xField.setPosition(width / 2 - 48, y);
-            yField.setPosition(width / 2 - 11, y);
-            zField.setPosition(width / 2 + 26, y);
+            enabled.setPosition(x + 26, y + 1);
+            nameField.setPosition(enabled.getRight() + 5, y);
+            xField.setPosition(width / 2 - 40, y);
+            yField.setPosition(width / 2 - 3, y);
+            zField.setPosition(width / 2 + 34, y);
             colorField.setPosition(x + entryWidth - 99, y);
             buttonDelete.setPosition(x + entryWidth - 38, y);
             for (ClickableWidget child : children) {
