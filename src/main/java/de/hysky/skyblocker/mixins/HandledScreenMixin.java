@@ -21,6 +21,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
+import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -204,15 +205,23 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
-	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "STORE"))
-	private ItemStack skyblocker$experimentSolvers$replaceTooltipDisplayStack(ItemStack stack) {
-		return skyblocker$experimentSolvers$getStack(focusedSlot, stack);
-	}
+    @ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "STORE"))
+    private ItemStack skyblocker$modifyTooltipDisplayStack(ItemStack stack) {
+            ContainerSolver solver = ContainerSolverManager.getCurrentSolver();
+            stack = skyblocker$experimentSolvers$getStack(focusedSlot, stack, solver);
+            if (solver instanceof StackDisplayModifier modifier && focusedSlot != null)
+                    stack = modifier.modifyDisplayStack(focusedSlot.id, stack);
+            return stack;
+    }
 
-	@ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)
-	private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, @Local(argsOnly = true) Slot slot) {
-		return skyblocker$experimentSolvers$getStack(slot, stack);
-	}
+    @ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)
+    private ItemStack skyblocker$modifyDisplayStack(ItemStack stack, @Local(argsOnly = true) Slot slot) {
+            ContainerSolver solver = ContainerSolverManager.getCurrentSolver();
+            stack = skyblocker$experimentSolvers$getStack(slot, stack, solver);
+            if (solver instanceof StackDisplayModifier modifier)
+                    stack = modifier.modifyDisplayStack(slot.getIndex(), stack);
+            return stack;
+    }
 
 	/**
 	 * Avoids getting currentSolver again when it's already in the scope for some usages of this method.

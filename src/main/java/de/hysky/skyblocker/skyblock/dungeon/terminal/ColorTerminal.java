@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon.terminal;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.item.Item;
@@ -17,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 
-public final class ColorTerminal extends SimpleContainerSolver implements TerminalSolver {
+public final class ColorTerminal extends SimpleContainerSolver implements TerminalSolver, StackDisplayModifier {
     private static final Logger LOGGER = LoggerFactory.getLogger(ColorTerminal.class.getName());
     private static final Map<String, DyeColor> colorFromName;
     private DyeColor targetColor;
@@ -36,7 +37,6 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
     @Override
     public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
         ContainerSolver.trimEdges(slots, 6);
-        List<ColorHighlight> highlights = new ArrayList<>();
         String colorString = groups[0];
         if (targetColor == null) {
             targetColor = colorFromName.get(colorString);
@@ -45,13 +45,8 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
                 return Collections.emptyList();
             }
         }
-        for (Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
-            ItemStack itemStack = slot.getValue();
-            if (!itemStack.hasGlint() && targetColor.equals(itemColor.get(itemStack.getItem()))) {
-                highlights.add(ColorHighlight.green(slot.getIntKey()));
-            }
-        }
-        return highlights;
+        // No highlights; items not matching the color will be hidden instead.
+        return Collections.emptyList();
     }
 
     @Override
@@ -61,6 +56,14 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
         }
 
         return false;
+    }
+
+    @Override
+    public ItemStack modifyDisplayStack(int slotIndex, ItemStack stack) {
+        if (targetColor != null && !targetColor.equals(itemColor.get(stack.getItem()))) {
+            return ItemStack.EMPTY;
+        }
+        return stack;
     }
 
     static {
