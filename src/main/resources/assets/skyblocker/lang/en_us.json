@@ -496,6 +496,7 @@
   "skyblocker.config.helpers.jerry": "Jerry",
   "skyblocker.config.helpers.jerry.enableJerryTimer": "Enable Jerry Timer",
   "skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip": "Sends a message in chat and plays a sound when the hidden jerry spawn cooldown is over.",
+  "skyblocker.config.helpers.jerry.sendJerryTimerMessage": "Jerry cooldown is over!",
 
   "skyblocker.config.helpers.mythologicalRitual": "Mythological Ritual Helper",
   "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "Enable Mythological Ritual Helper",

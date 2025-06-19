@@ -728,6 +728,7 @@
     "skyblocker.config.helpers.jerry": "Jerry",
     "skyblocker.config.helpers.jerry.enableJerryTimer": "启用Jerry计时器",
     "skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip": "当隐藏的Jerry生成冷却结束后发送一条信息并播放音效。",
+    "skyblocker.config.helpers.jerry.sendJerryTimerMessage": "Jerry生成冷却结束！",
     "skyblocker.config.otherLocations.rift.blobbercystGlow": "Blobbercyst高亮",
     "skyblocker.tips.compactDamage": "在设置中的简洁伤害数值可以定制你造成的攻击伤害。",
     "skyblocker.utils.locationUpdateError": "无法更新你的位置！模组的某些功能可能无法正常工作 :(",
