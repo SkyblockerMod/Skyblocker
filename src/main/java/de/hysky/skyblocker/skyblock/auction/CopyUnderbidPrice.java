@@ -67,7 +67,7 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 
 		if (client.player != null) {
 			client.player.sendMessage(Constants.PREFIX.get()
-					.append(Text.literal("Underbid price: ").formatted(Formatting.GRAY))
+					.append(Text.literal("Copied underbid price: ").formatted(Formatting.GRAY))
 					.append(Text.literal(Formatters.INTEGER_NUMBERS.format(underbid)).formatted(Formatting.GOLD)), false);
 		}
 
