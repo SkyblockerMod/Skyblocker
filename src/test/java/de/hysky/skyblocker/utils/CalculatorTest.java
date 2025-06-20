@@ -18,6 +18,17 @@ public class CalculatorTest {
 		assertCalculation(9, "5 + 2 * 2");
 		assertCalculation(4, "5 - 2 / 2");
 		assertCalculation(15, "5 * (1 + 2)");
+		assertCalculation(48, "3*4^2");
+		assertCalculation(35, "3^3+(2^3)");
+	}
+
+	@Test
+	void testInvalids() {
+		assertThrows("5+asdf");
+		assertThrows("5++3");
+		assertThrows("2^");
+		assertThrows("^");
+		assertThrows("9 + 3* (0) )");
 	}
 
 	@Test
@@ -38,5 +49,9 @@ public class CalculatorTest {
 
 	private void assertCalculation(double expected, String input) {
 		Assertions.assertEquals(expected, Calculator.calculate(input));
+	}
+
+	private void assertThrows(String input) {
+		Assertions.assertThrows(UnsupportedOperationException.class, () -> Calculator.calculate(input));
 	}
 }

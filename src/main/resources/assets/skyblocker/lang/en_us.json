@@ -922,7 +922,7 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "Only show the calculator when the message starts with \"=\".",
   "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter": "Close signs with enter",
   "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter.@Tooltip": "Close the current open sign screen with the enter key",
-  "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation: ",
 
 
   "skyblocker.config.uiAndVisuals.inventorySearch": "Inventory Search",
