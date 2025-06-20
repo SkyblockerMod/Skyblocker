@@ -14,6 +14,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import me.shedaniel.math.Rectangle;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -61,6 +62,17 @@ public class VisitorHelper {
 		boolean isHelperEnabled = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelper;
 		boolean isGardenMode = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelperGardenOnly;
 		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getIslandArea().contains("Bazaar"));
+	}
+
+	public static List<Rectangle> getExclusionZones() {
+		if (activeVisitors.isEmpty()) return List.of();
+
+		int maxXPosition = X_OFFSET + 215;
+		int textFontHeight = MinecraftClient.getInstance().textRenderer.fontHeight;
+		int count = groupedItems.size() + activeVisitors.size();
+		int maxYPosition = Y_OFFSET + count * (LINE_HEIGHT + textFontHeight);
+
+		return List.of(new Rectangle(X_OFFSET, Y_OFFSET, maxXPosition, maxYPosition));
 	}
 
 	/**
