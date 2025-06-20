@@ -26,12 +26,12 @@ public class BazaarPriceTooltip extends SimpleTooltipAdder {
 			int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
 			BazaarProduct product = TooltipInfoType.BAZAAR.getData().get(skyblockApiId);
-			lines.add(Text.literal(String.format("%-18s", "Bazaar buy Price:"))
+			lines.add(Text.literal(String.format("%-18s", "Bazaar Buy Price:"))
 						  .formatted(Formatting.GOLD)
 						  .append(product.buyPrice().isEmpty()
 								  ? Text.literal("No data").formatted(Formatting.RED)
 								  : ItemTooltip.getCoinsMessage(product.buyPrice().getAsDouble(), count)));
-			lines.add(Text.literal(String.format("%-19s", "Bazaar sell Price:"))
+			lines.add(Text.literal(String.format("%-19s", "Bazaar Sell Price:"))
 						  .formatted(Formatting.GOLD)
 						  .append(product.sellPrice().isEmpty()
 								  ? Text.literal("No data").formatted(Formatting.RED)
