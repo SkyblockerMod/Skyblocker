@@ -947,6 +947,11 @@
   "skyblocker.config.uiAndVisuals.itemPickup.lifeTime": "Item Lifetime (s)",
   "skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip": "How long should items stay on the widget",
 
+  "skyblocker.config.uiAndVisuals.deployablesOverlay": "Deployables Widget",
+  "skyblocker.config.uiAndVisuals.deployablesOverlay.hud.screen": "Deployables Widget Config...",
+  "skyblocker.config.uiAndVisuals.deployablesOverlay.warnWhenExpiring": "Warn when expiring",
+  "skyblocker.config.uiAndVisuals.deployablesOverlay.warnWhenExpiring.@Tooltip": "Shows a title/plays a sound when the deployable is about to expire",
+
   "skyblocker.config.uiAndVisuals.slotText": "Slot Text",
   "skyblocker.config.uiAndVisuals.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level",
   "skyblocker.config.uiAndVisuals.slotText.mode.ENABLED": "Enabled",
