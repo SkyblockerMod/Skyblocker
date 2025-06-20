@@ -58,7 +58,15 @@ public class HelperCategory {
 								newValue -> config.helpers.enableDateCalculator = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
-
+				// Copy Underbid Price
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.enableCopyUnderbidPrice"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.helpers.enableCopyUnderbidPrice.@Tooltip")))
+						.binding(defaults.helpers.enableCopyUnderbidPrice,
+								() -> config.helpers.enableCopyUnderbidPrice,
+								newValue -> config.helpers.enableCopyUnderbidPrice = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
                 //Mythological Ritual
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.helpers.mythologicalRitual"))
