@@ -7,7 +7,6 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.component.DataComponentTypes;
@@ -15,11 +14,11 @@ import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -34,7 +33,11 @@ public class DeployablesOverlayWidget extends ComponentBasedWidget {
 
 	private static DeployablesOverlayWidget instance;
 
-	public static final Map<String, DeployableType> deployablesMap = new Object2ObjectOpenHashMap<>();
+	private static final Map<String, DeployableType> deployableTypes = new Object2ObjectOpenHashMap<>();
+	private static final Map<UUID, Deployable> currentActiveDeployables = new Object2ObjectOpenHashMap<>();
+
+	private static final Comparator<Deployable> deployableComparator = Comparator.comparing((Deployable d) -> d.type.priority)
+			.thenComparing(Deployable::timeLeft);
 
 	static {
 		for (DeployableType type : DeployableType.values()) { // grab all the custom skull models from the skull textures to display on players hud
@@ -43,20 +46,13 @@ public class DeployablesOverlayWidget extends ComponentBasedWidget {
 					ItemUtils.propertyMapWithTexture(type.skullTexture)
 			));
 
-			deployablesMap.put(type.name, type);
+			deployableTypes.put(type.name, type);
 		}
 	}
 
 	public DeployablesOverlayWidget() {
 		super(Text.literal("Deployables"), Formatting.AQUA.getColorValue(), "Deployables Overlay");
 		instance = this;
-
-		// todo there must be a better way. I need to refresh the armour stands preferably not every frame
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (!(MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen)) {
-				updateContent();
-			}
-		});
 	}
 
 	public static DeployablesOverlayWidget getInstance() { return instance;}
@@ -73,21 +69,18 @@ public class DeployablesOverlayWidget extends ComponentBasedWidget {
 			return;
 		}
 
-		MinecraftClient client = MinecraftClient.getInstance();
-		if (client.world == null || client.player == null) {
-			return; // should never happen but check anyway
+		if (!currentDeployableIsValid()) {
+			recalculateBestDeployable();
 		}
 
-		// todo test this in more detail, power orb bounds seem to be a square not euclidean distance
-		List<ArmorStandEntity> armorStands = client.world.getEntitiesByClass(ArmorStandEntity.class, client.player.getBoundingBox().expand(20d), EntityPredicates.NOT_MOUNTED);
-		refreshDeployable(armorStands);
+		if (current == null) {
+			return;
+		}
 
-		if (current != null) {
-			addSimpleIcoText(current.type.stack, current.type.name + " ", getTimerColor(), current.timeLeft + "s"); // todo name colour
+		addSimpleIcoText(current.type.stack, current.type.name + " ", getTimerColor(), current.timeLeft + "s"); // todo name colour
 
-			if (current.timeLeft <= 0) {
-				playExpiredWarning();
-			}
+		if (current.timeLeft <= 1) {
+			playExpiringWarning();
 		}
 	}
 
@@ -95,7 +88,7 @@ public class DeployablesOverlayWidget extends ComponentBasedWidget {
 	public boolean shouldRender(Location location) {
 		if (super.shouldRender(location)) {
 			if (SkyblockerConfigManager.get().uiAndVisuals.deployablesOverlay.enabled) {
-				return current != null && current.timeLeft > 0;
+				return currentDeployableIsValid();
 			}
 		}
 		return false;
@@ -116,40 +109,71 @@ public class DeployablesOverlayWidget extends ComponentBasedWidget {
 		return SkyblockerConfigManager.get().uiAndVisuals.deployablesOverlay.enabled;
 	}
 
-	private static void refreshDeployable(List<ArmorStandEntity> armorStands) {
-		current = null;
-
-		for (ArmorStandEntity armorStand : armorStands) {
-
-			String name = armorStand.getName().getString();
-			if (!name.endsWith("s")) { // nametag should end with 's' for num of seconds left
-				continue;
-			}
-
-			float distanceToPlayer = armorStand.distanceTo(MinecraftClient.getInstance().player);
-
-			if ((distanceToPlayer > 20) || (!name.startsWith("Plasmaflux") && distanceToPlayer > 18f)) {
-				continue; // plasmaflux has slightly greater bounds, this should account for it.
-			}
-
-			Matcher deployableMatcher = deployablePattern.matcher(name);
-			if (!deployableMatcher.find()) {
-				continue;
-			}
-
-
-			DeployableType type = deployablesMap.get(deployableMatcher.group(1));
-			int timeLeft = Integer.parseInt(deployableMatcher.group(2));
-
-
-			if (type != null && (current == null || type.priority > current.type.priority)) {
-				current = new Deployable(type, timeLeft);
-			}
+	public static void refreshDeployable(ArmorStandEntity armorStand) {
+		var player = MinecraftClient.getInstance().player;
+		if (player == null) {
+			return;
 		}
+		if (!SkyblockerConfigManager.get().uiAndVisuals.deployablesOverlay.enabled) {
+			return;
+		}
+
+		String name = armorStand.getName().getString();
+		if (!name.endsWith("s")) { // nametag should end with 's' for num of seconds left
+			return;
+		}
+
+		Matcher deployableMatcher = deployablePattern.matcher(name);
+		if (!deployableMatcher.find()) {
+			return;
+		}
+
+
+		DeployableType type = deployableTypes.get(deployableMatcher.group(1));
+		int timeLeft = Integer.parseInt(deployableMatcher.group(2));
+
+		Deployable deployable = new Deployable(type, timeLeft, System.currentTimeMillis(), armorStand.getPos());
+
+		if (!deployable.isWithinDistance(player.getPos())) {
+			return;
+		}
+
+		currentActiveDeployables.put(armorStand.getUuid(), deployable);
+
+		// remove if last update more than 3 seconds ago - should account for lag
+		currentActiveDeployables.values().removeIf(Deployable::dirty);
+
+		recalculateBestDeployable();
+	}
+
+	private static void recalculateBestDeployable() {
+		current = currentActiveDeployables.values().stream()
+				.filter(d -> d.isWithinDistance(MinecraftClient.getInstance().player.getPos())).max(deployableComparator)
+				.orElse(null);
+	}
+
+	private static boolean currentDeployableIsValid() {
+		if (current == null || MinecraftClient.getInstance().player == null) {
+			return false;
+		}
+		return !current.dirty() && current.isWithinDistance(MinecraftClient.getInstance().player.getPos());
 	}
 
 
-	private record Deployable(DeployableType type, int timeLeft) {}
+	public record Deployable(DeployableType type, int timeLeft, long lastUpdate, Vec3d pos) {
+		public boolean isWithinDistance(Vec3d playerPos) {
+			double distance = pos.distanceTo(playerPos);
+
+			// todo test this in more detail, power orb bounds seem to be a square not euclidean distance
+			// plasmaflux has slightly greater bounds, this should account for it.
+			return (distance <= 18) || (type == DeployableType.PLASMA_FLUX && distance <= 20);
+		}
+
+		// if the deployable needs to be refreshed/removed from the map
+		public boolean dirty() {
+			return System.currentTimeMillis() - lastUpdate >= 2000 || timeLeft <= 0;
+		}
+	}
 
 	public enum DeployableType {
 		RADIANT("Radiant", 1, null, "ewogICJ0aW1lc3RhbXAiIDogMTYwNzQ0Nzk4NTQxNCwKICAicHJvZmlsZUlkIiA6ICI2OTBkMDM2OGM2NTE0OGM5ODZjMzEwN2FjMmRjNjFlYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJ5emZyXzciLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzk0ZDBhMDY4ZWE1MGE5ZGUyY2VmMjNhOTJiY2E0YjM2NzhkMTJjYThhMTgxNWQxM2JlYWM5NGRmZDU1NzEyNSIKICAgIH0KICB9Cn0="),
@@ -170,9 +194,9 @@ public class DeployablesOverlayWidget extends ComponentBasedWidget {
 		}
 	}
 
-	private static void playExpiredWarning() {
-		if (System.currentTimeMillis() - lastWarn < 1000) {
-			return;  // need > 1 second since last warn
+	private static void playExpiringWarning() {
+		if (System.currentTimeMillis() - lastWarn < 10_000) {
+			return;  // need > 10 seconds since last warn
 		}
 		if (!SkyblockerConfigManager.get().uiAndVisuals.deployablesOverlay.warnWhenExpiring) {
 			return;
@@ -183,9 +207,8 @@ public class DeployablesOverlayWidget extends ComponentBasedWidget {
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
 		player.playSound(SoundEvents.ENTITY_ELDER_GUARDIAN_CURSE);
 
-		// todo is this the right way to display a title? seems to work fine
 		MinecraftClient.getInstance().inGameHud.setTitleTicks(0, 30, 0);
-		MinecraftClient.getInstance().inGameHud.setTitle(Text.literal("Power orb expired!").withColor(Colors.RED));
+		MinecraftClient.getInstance().inGameHud.setTitle(Text.literal("Power orb expiring!").withColor(Colors.RED));
 	}
 
 
