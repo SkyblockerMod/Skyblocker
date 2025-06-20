@@ -143,7 +143,7 @@ public class BackpackPreview {
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7, 256, 256);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        context.drawText(textRenderer, storages[index].name(), x + 8, y + 6, 0x404040, false);
+        context.drawText(textRenderer, storages[index].name(), x + 8, y + 6, 0xFF404040, false);
 
         for (int i = 9; i < storages[index].size(); ++i) {
             ItemStack currentStack = storages[index].getStack(i);

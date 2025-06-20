@@ -20,6 +20,8 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.Colors;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
@@ -140,7 +142,7 @@ public class SlotTextManager {
 					case BOTTOM_RIGHT -> matrices.translate(16f - length, 16f - textRenderer.fontHeight + 2f);
 				}
 			}
-			context.drawText(textRenderer, slotText.text(), x, y, 0xFFFFFF, true);
+			context.drawText(textRenderer, slotText.text(), x, y, Colors.WHITE, true);
 			matrices.popMatrix();
 		}
 	}
