@@ -40,6 +40,11 @@ public class Calculator {
                     token.type = TokenType.OPERATOR;
                     token.value = String.valueOf(input.charAt(i));
                     token.tokenLength = 1;
+
+					// cant have double operators e.g. "5 ++ 2"
+					if (!tokens.isEmpty() && tokens.getLast().type == TokenType.OPERATOR) {
+						throw new UnsupportedOperationException("Unexpected duplicate operator " + token.value);
+					}
                 }
 
                 case '(' -> {
@@ -166,8 +171,11 @@ public class Calculator {
             switch (token.type) {
                 case NUMBER -> values.push(calculateValue(token.value));
                 case OPERATOR -> {
-                    double right = values.pop();
-                    double left = values.pop();
+                    Double right = values.pollFirst();
+					Double left = values.pollFirst();
+					if (left == null || right == null) {
+						throw new UnsupportedOperationException("Missing value around operator " + token.value);
+					}
                     switch (token.value) {
                         case "+" -> values.push(left + right);
                         case "-" -> values.push(left - right);
