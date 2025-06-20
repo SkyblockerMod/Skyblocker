@@ -309,6 +309,8 @@
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Displays a colored background behind an item. The color represents the item's rarity.",
   "skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds": "Jacob's Contest Medal Background",
   "skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds.@Tooltip": "Displays a colored background behind a Jacob's Farming Contest entry. The color represents the medal earned during the contest.",
+  "skyblocker.config.general.itemInfoDisplay.attributeBackgrounds": "Attribute Background",
+  "skyblocker.config.general.itemInfoDisplay.attributeBackgrounds.@Tooltip": "Highlights items with attributes by adding a red background.",
 
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
