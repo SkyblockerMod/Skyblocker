@@ -36,7 +36,7 @@ public class Calculator {
         while (i < input.length()) {
             Token token = new Token();
             switch (input.charAt(i)) {
-                case '+', '-', '*', '/' -> {
+                case '+', '-', '*', '/', '^' -> {
                     token.type = TokenType.OPERATOR;
                     token.value = String.valueOf(input.charAt(i));
                     token.tokenLength = 1;
@@ -149,6 +149,9 @@ public class Calculator {
             case "*", "/" -> {
                 return 1;
             }
+			case "^" -> {
+				return 2;
+			}
             default -> throw new UnsupportedOperationException("Invalid operator");
         }
     }
@@ -175,6 +178,7 @@ public class Calculator {
                             values.push(left / right);
                         }
                         case "*" -> values.push(left * right);
+						case "^" -> values.push(Math.pow(left, right));
                     }
                 }
                 case L_PARENTHESIS, R_PARENTHESIS -> throw new UnsupportedOperationException("Equation is not in RPN");
