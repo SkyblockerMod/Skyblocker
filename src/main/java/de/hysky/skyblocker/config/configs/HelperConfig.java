@@ -22,6 +22,9 @@ public class HelperConfig {
 	@SerialEntry
 	public boolean enableDateCalculator = true;
 
+	@SerialEntry
+	public boolean enableCopyUnderbidPrice = true;
+
     @SerialEntry
     public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
