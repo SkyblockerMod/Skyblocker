@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.item.background.adders.ItemRarityBackground;
+import it.unimi.dsi.fastutil.objects.ObjectReferencePair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
@@ -15,7 +16,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
-import java.util.Map;
 
 import org.joml.Matrix3x2fStack;
 
@@ -85,9 +85,9 @@ public class RarityWidget extends ClickableWidget {
     public void setText(List<Text> tooltip, String current) {
         this.tooltip = tooltip;
         this.current = current;
-        for (Map.Entry<String, SkyblockItemRarity> rarity : ItemRarityBackground.LORE_RARITIES.entrySet()) {
-            if (current.toUpperCase().contains(rarity.getKey())) {
-                this.color = rarity.getValue().color | 0xFF000000;
+        for (ObjectReferencePair<String, SkyblockItemRarity> rarity : ItemRarityBackground.LORE_RARITIES) {
+            if (current.toUpperCase().contains(rarity.left())) {
+                this.color = rarity.right().color | 0xFF000000;
                 return;
             }
         }
