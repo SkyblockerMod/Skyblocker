@@ -22,6 +22,10 @@ public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+		if (TooltipInfoType.BAZAAR.getData() != null && TooltipInfoType.BAZAAR.getData().containsKey(stack.getSkyblockApiId())) {
+			return; // Bazaar price already displayed
+		}
+
 		int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
 		NetworthResult result = NetworthCalculator.getItemNetworth(stack, count);
