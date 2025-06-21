@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -89,11 +90,14 @@ public class UIAndVisualsConfig {
     @SerialEntry
     public CompactDamage compactDamage = new CompactDamage();
 
-	@SerialEntry
-	public HealthBars healthBars = new HealthBars();
+	  @SerialEntry
+	  public HealthBars healthBars = new HealthBars();
 
-	@SerialEntry
-	public ItemPickup itemPickup = new ItemPickup();
+	  @SerialEntry
+    public GyroKineticWandOverlay gyroOverlay = new GyroKineticWandOverlay();
+    
+    @SerialEntry
+	  public ItemPickup itemPickup = new ItemPickup();
 
     public static class ChestValue {
         @SerialEntry
@@ -330,6 +334,8 @@ public class UIAndVisualsConfig {
         public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
     }
 
+
+
     public static class TeleportOverlay {
         @SerialEntry
         public boolean enableTeleportOverlays = true;
@@ -436,47 +442,62 @@ public class UIAndVisualsConfig {
         public Color critDamageGradientEnd = new Color(0xFF5555);
     }
 
-	public static class HealthBars {
-		@SerialEntry
-		public boolean enabled = false;
+    public static class HealthBars {
+        @SerialEntry
+        public boolean enabled = false;
 
-		@SerialEntry
-		public float scale = 1.5f;
+        @SerialEntry
+        public float scale = 1.5f;
 
-		@SerialEntry
-		public boolean removeHealthFromName = true;
+        @SerialEntry
+        public boolean removeHealthFromName = true;
 
-		@SerialEntry
-		public boolean removeMaxHealthFromName = true;
+        @SerialEntry
+        public boolean removeMaxHealthFromName = true;
 
-		@SerialEntry
-		public boolean applyToHealthOnlyMobs = true;
+        @SerialEntry
+        public boolean applyToHealthOnlyMobs = true;
 
-		@SerialEntry
-		public boolean hideFullHealth = false;
+        @SerialEntry
+        public boolean hideFullHealth = false;
 
 
-		@SerialEntry
-		public Color fullBarColor = new Color(0x00FF00);
+        @SerialEntry
+        public Color fullBarColor = new Color(0x00FF00);
 
-		@SerialEntry
-		public Color halfBarColor = new Color(0xFF4600);
+        @SerialEntry
+        public Color halfBarColor = new Color(0xFF4600);
 
-		@SerialEntry
-		public Color emptyBarColor = new Color(0xFF0000);
-	}
+        @SerialEntry
+        public Color emptyBarColor = new Color(0xFF0000);
+    }
 
-	public static class ItemPickup {
-		@SerialEntry
-		public boolean enabled = false;
+    public static class GyroKineticWandOverlay {
 
-		@SerialEntry
-		public boolean sackNotifications = false;
+        @SerialEntry
+        public GyroOverlay.Mode gyroOverlayMode = GyroOverlay.Mode.OFF;
 
-		@SerialEntry
-		public boolean showItemName = true;
+        @SerialEntry
+        public Color gyroOverlayColor = new Color(0x7F761594, true);
+    }
+
+
+    public static class ItemPickup {
+        @SerialEntry
+        public boolean enabled = false;
+
+        @SerialEntry
+        public boolean sackNotifications = false;
+
+        @SerialEntry
+        public boolean showItemName = true;
+
+        @SerialEntry
+        public int lifeTime = 3;
+    }
 
 		@SerialEntry
 		public int lifeTime = 3;
 	}
+
 }
