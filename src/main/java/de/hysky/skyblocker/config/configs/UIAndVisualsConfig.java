@@ -36,7 +36,7 @@ public class UIAndVisualsConfig {
     public boolean fancyCraftingTable = true;
 
     @SerialEntry
-    public boolean hideStatusEffectOverlay = false;
+    public boolean hideStatusEffectOverlay = true;
 
     @SerialEntry
     public boolean showEquipmentInInventory = true;
