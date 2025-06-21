@@ -28,7 +28,6 @@ public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 
 		int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
-
 		NetworthResult result = NetworthCalculator.getItemNetworth(stack, count);
 
 		if (result.price() > 0) {
