@@ -159,6 +159,9 @@ public class DungeonsConfig {
         @SerialEntry
         public boolean solveColor = true;
 
+		@SerialEntry
+		public boolean solveSameColor = true;
+
         @SerialEntry
         public boolean solveOrder = true;
 
