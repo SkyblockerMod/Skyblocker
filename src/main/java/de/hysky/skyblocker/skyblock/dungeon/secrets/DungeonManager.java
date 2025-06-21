@@ -15,7 +15,6 @@ import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
@@ -39,6 +38,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
@@ -530,6 +530,25 @@ public class DungeonManager {
         return room;
     }
 
+
+    /**
+     * Gets the Mort NPC's location. This allows us to precisely locate the dungeon entrance
+     */
+    public static Vec3d getMortArmorStandPos() {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.world == null) return null;
+
+        for (var entity : client.world.getEntities()) {
+            if (entity instanceof ArmorStandEntity armorStand) {
+                Text name = armorStand.getCustomName();
+                if (name != null && name.getString().contains("Mort")) {
+                    return armorStand.getPos();
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Updates the dungeon. The general idea is similar to the Dungeon Rooms Mod.
      * <p></p>
@@ -567,12 +586,13 @@ public class DungeonManager {
 		if (physicalEntrancePos == null) {
 			//The check for the area should delay this until after the player's position has been set by the server (since the scoreboard should be sent after the player position)
 			//this is necessary otherwise the default position of (0, 0) or whatever will mess up the entrance calculation which will break all sorts of things
-			if (!Utils.getIslandArea().contains("The Catacombs")) {
-				return;
-			}
+			Vec3d mortPos = getMortArmorStandPos();
+            if (mortPos == null) {
+                LOGGER.warn("[Skyblocker Dungeon Secrets] Failed to find Mort armor stand, retrying...");
+                return;
+            }
 
-			Vec3d playerPos = client.player.getPos();
-			physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(playerPos);
+			physicalEntrancePos = DungeonMapUtils.getPhysicalRoomPos(mortPos);
 			currentRoom = newRoom(Room.Type.ENTRANCE, physicalEntrancePos);
 		}
 
