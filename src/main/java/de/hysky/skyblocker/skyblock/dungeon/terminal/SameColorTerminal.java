@@ -88,7 +88,7 @@ public final class SameColorTerminal extends SimpleContainerSolver implements Te
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		computeClicks(slots);
-		return Collections.emptyList();
+		return List.of();
 	}
 
 	@Override
