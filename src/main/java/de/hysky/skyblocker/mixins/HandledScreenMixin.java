@@ -19,10 +19,12 @@ import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.ContainerAndInventorySolver;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -45,6 +47,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -99,6 +102,17 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	@Unique
 	private List<QuickNavButton> quickNavButtons;
+
+	@Unique
+	private boolean skyblocker$shouldDisplayStack = true;
+	@Unique
+	private boolean skyblocker$isSolverSlot(Slot slot, ContainerSolver solver) {
+		if (solver instanceof ContainerAndInventorySolver) return true;
+		if (handler instanceof GenericContainerScreenHandler generic) {
+			return slot.id < generic.getRows() * 9;
+		}
+		return slot.inventory != (client != null ? client.player.getInventory() : null);
+	}
 
 	protected HandledScreenMixin(Text title) {
 		super(title);
@@ -185,6 +199,11 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci, @Local(ordinal = 0) ItemStack stack) {
 		if (!Utils.isOnSkyblock()) return;
 
+		if (!skyblocker$shouldDisplayStack) {
+			ci.cancel();
+			return;
+		}
+
 		// Hide Empty Tooltips
 		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && stack.getName().getString().equals(" ")) {
 			ci.cancel();
@@ -205,32 +224,30 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
-    @ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "STORE"))
-    private ItemStack skyblocker$modifyTooltipDisplayStack(ItemStack stack) {
-            ContainerSolver solver = ContainerSolverManager.getCurrentSolver();
-            stack = skyblocker$experimentSolvers$getStack(focusedSlot, stack, solver);
-            if (solver instanceof StackDisplayModifier modifier && focusedSlot != null)
-                    stack = modifier.modifyDisplayStack(focusedSlot.id, stack);
-            return stack;
-    }
+	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "STORE"))
+	private ItemStack skyblocker$modifyTooltipDisplayStack(ItemStack stack) {
+		ContainerSolver solver = ContainerSolverManager.getCurrentSolver();
+		stack = skyblocker$experimentSolvers$getStack(focusedSlot, stack, solver);
+		if (solver instanceof StackDisplayModifier modifier && focusedSlot != null && skyblocker$isSolverSlot(focusedSlot, solver)) {
+			skyblocker$shouldDisplayStack = modifier.shouldDisplayStack(focusedSlot.id, stack);
+			stack = modifier.modifyDisplayStack(focusedSlot.id, stack);
+		} else {
+			skyblocker$shouldDisplayStack = true;
+		}
+		return stack;
+	}
 
-    @ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)
-    private ItemStack skyblocker$modifyDisplayStack(ItemStack stack, @Local(argsOnly = true) Slot slot) {
-            ContainerSolver solver = ContainerSolverManager.getCurrentSolver();
-            stack = skyblocker$experimentSolvers$getStack(slot, stack, solver);
-            if (solver instanceof StackDisplayModifier modifier)
-                    stack = modifier.modifyDisplayStack(slot.getIndex(), stack);
-            return stack;
-    }
-
-	/**
-	 * Avoids getting currentSolver again when it's already in the scope for some usages of this method.
-	 *
-	 * @see #skyblocker$experimentSolvers$getStack(Slot, ItemStack, ContainerSolver)
-	 */
-	@Unique
-	private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack) {
-		return skyblocker$experimentSolvers$getStack(slot, stack, ContainerSolverManager.getCurrentSolver());
+	@ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)
+	private ItemStack skyblocker$modifyDisplayStack(ItemStack stack, @Local(argsOnly = true) Slot slot) {
+		ContainerSolver solver = ContainerSolverManager.getCurrentSolver();
+		stack = skyblocker$experimentSolvers$getStack(slot, stack, solver);
+		if (solver instanceof StackDisplayModifier modifier && skyblocker$isSolverSlot(slot, solver)) {
+			skyblocker$shouldDisplayStack = modifier.shouldDisplayStack(slot.getIndex(), stack);
+			stack = modifier.modifyDisplayStack(slot.getIndex(), stack);
+		} else {
+			skyblocker$shouldDisplayStack = true;
+		}
+		return stack;
 	}
 
 	/**
@@ -238,7 +255,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	 */
 	@Unique
 	private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack, ContainerSolver currentSolver) {
-		if (currentSolver instanceof ExperimentSolver experimentSolver && (experimentSolver instanceof SuperpairsSolver || experimentSolver instanceof UltrasequencerSolver) && experimentSolver.getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
+		if (currentSolver instanceof ExperimentSolver experimentSolver
+				&& (experimentSolver instanceof SuperpairsSolver || experimentSolver instanceof UltrasequencerSolver)
+				&& experimentSolver.getState() == ExperimentSolver.State.SHOW
+				&& slot.inventory instanceof SimpleInventory) {
 			ItemStack itemStack = experimentSolver.getSlots().get(slot.getIndex());
 			return itemStack == null ? stack : itemStack;
 		}
@@ -348,10 +368,23 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
 		}
 
-		// Search
-		// Darken the slots
+		// Search - darken non-matching slots
 		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {
 			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 100, 0x88_000000);
+		}
+	}
+
+	@Redirect(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
+	private void skyblocker$maybeDrawItem(DrawContext instance, ItemStack stack, int x, int y, int seed) {
+		if (skyblocker$shouldDisplayStack) {
+			instance.drawItem(stack, x, y, seed);
+		}
+	}
+
+	@Redirect(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawStackOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V"))
+	private void skyblocker$maybeDrawOverlay(DrawContext instance, TextRenderer textRenderer, ItemStack stack, int x, int y, String countLabel) {
+		if (skyblocker$shouldDisplayStack) {
+			instance.drawStackOverlay(textRenderer, stack, x, y, countLabel);
 		}
 	}
 

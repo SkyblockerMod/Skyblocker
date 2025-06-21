@@ -58,14 +58,11 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
         return false;
     }
 
-    @Override
-    public ItemStack modifyDisplayStack(int slotIndex, ItemStack stack) {
-        if (targetColor != null && !targetColor.equals(itemColor.get(stack.getItem()))) {
-            return ItemStack.EMPTY;
-        }
-        return stack;
-    }
-
+	@Override
+	public boolean shouldDisplayStack(int slotIndex, ItemStack stack) {
+		if (slotIndex >= 54) return true; // rows * 9
+		return targetColor == null || targetColor.equals(itemColor.get(stack.getItem()));
+	}
     static {
         colorFromName = new HashMap<>();
         for (DyeColor color : DyeColor.values())
