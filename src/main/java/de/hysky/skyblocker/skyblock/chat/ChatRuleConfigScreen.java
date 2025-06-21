@@ -120,7 +120,7 @@ public class ChatRuleConfigScreen extends Screen {
 		filterLabel = textWidget(currentPos, rootPos, yOffset, filterText);
 		nextColumn(currentPos, client.textRenderer.getWidth(filterText));
 		filterInput = new TextFieldWidget(client.textRenderer, rootPos.leftInt() + currentPos.leftInt(), rootPos.rightInt() + currentPos.rightInt(), textFieldWidth, ROW_HEIGHT, Text.of(""));
-		filterInput.setMaxLength(96);
+		filterInput.setMaxLength(256);
 		filterInput.setText(chatRule.getFilter());
 		filterInput.setTooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.filter.@Tooltip")));
 		nextRow(currentPos);

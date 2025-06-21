@@ -23,6 +23,7 @@ import java.util.Set;
 @RegisterWidget
 public class EndHudWidget extends ComponentBasedWidget {
 	private static final MutableText TITLE = Text.literal("The End").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
+	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.THE_END);
 
 	private static EndHudWidget instance = null;
 
@@ -52,7 +53,7 @@ public class EndHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public Set<Location> availableLocations() {
-		return Set.of(Location.THE_END);
+		return AVAILABLE_LOCATIONS;
 	}
 
 	@Override
