@@ -1198,5 +1198,6 @@
     "skyblocker.config.helpers.chocolateFactory.sendTimeTowerReminderMessage": "你的巧克力工廠Time Tower已失效！",
     "skyblocker.config.helpers.fishing.fishingHookDisplay.HUD": "HUD中",
     "skyblocker.config.helpers.fishing.fishingHookDisplay.CROSSHAIR": "十字準星",
-    "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "將Skyblock的釣魚計時器顯示在螢幕上\n  十字準星：顯示在螢幕中央\n  HUD中：顯示在釣魚HUD中"
+    "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "將Skyblock的釣魚計時器顯示在螢幕上\n  十字準星：顯示在螢幕中央\n  HUD中：顯示在釣魚HUD中",
+    "skyblocker.bars.config.air": "空氣"
 }
