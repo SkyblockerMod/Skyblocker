@@ -38,15 +38,20 @@ public class SackMessagePrice {
 	private static final Pattern ITEM_COUNT_PATTERN = Pattern.compile("([-+][\\d,]+)");
 	private static final Logger LOGGER = LoggerFactory.getLogger(SackMessagePrice.class);
 	/**
+	 * <p>
 	 * Cache that holds item name to NEU ID mappings.
 	 * This helps over time when farming similar items in the same world, as it avoids repeated lookups in a very large item list.
 	 * The Sack message is only sent like every 30s in a normal farming case, so there's not much performance impact anyway, but it still helps.
+	 * </p>
+	 * <p>
+	 * Additionally, there are 2 identical hover events per message, and they are processed separately, so this cache will be hit at least once per message, cutting the lookup time in half or more.
+	 * </p>
 	 */
-	private static final Object2ObjectOpenHashMap<String, String> ITEM_2_ID_CACHE = new Object2ObjectOpenHashMap<>();
+	private static final Object2ObjectOpenHashMap<String, String> NAME_2_ID_CACHE = new Object2ObjectOpenHashMap<>();
 
 	@Init
 	public static void init() {
-		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register(((client, world) -> ITEM_2_ID_CACHE.clear()));
+		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register(((client, world) -> NAME_2_ID_CACHE.clear()));
 		ClientReceiveMessageEvents.MODIFY_GAME.register(SackMessagePrice::onMessage);
 	}
 
@@ -94,10 +99,8 @@ public class SackMessagePrice {
 						var sellPrice = itemData.sellPrice();
 						if (sellPrice.isPresent()) bazaarSellPrice += sellPrice.getAsDouble() * count;
 					} else {
-						LOGGER.warn("No item data found for item `{}` in bazaar.", neuId);
+						LOGGER.warn("No item data found for item `{}` in bazaar price data.", neuId);
 					}
-				} else {
-					LOGGER.warn("No bazaar data found for item: `{}`", neuId);
 				}
 			}
 			textList.add(ScreenTexts.LINE_BREAK);
@@ -127,29 +130,34 @@ public class SackMessagePrice {
 	}
 
 	/**
-	 * Recursively creates a deep copy of a {@link Text} object
+	 * Recursively creates a deep copy of a {@link Text} object.
 	 *
 	 * @param text The text to copy
 	 * @return A deep copy of the text, with the same content and style, but no references to the original text
 	 * @implNote Technically, this is not a deep <i>deep</i> copy, as it does not clone the underlying objects in the style.
-	 * 		However, there's a special case for hover events, which are cloned to ensure that the hover text is also a deep copy.
+	 * 		However, there's a special case for hover events, which are cloned to ensure that the hover text is also a deep copy, and that's enough for our use case.
+	 * 		If you need a true deep copy, do not copy this directly and expect it to work.
 	 */
 	private static MutableText deepCopy(Text text) {
 		MutableText copy = text.copyContentOnly();
 
 		if (text.getStyle().getHoverEvent() instanceof ShowText(Text showText)) {
+			// DO NOT simplify to `text.getStyle().withHoverEvent(new ShowText(showText);`,
+			// Style.withHoverEvent(hoverEvent) checks if the given value is equal to the current one, and since our text clone is equal by value, it will not create a new style.
+			// This means the original hover event will still be used which is immutable, and our list modifications will fail with an UnsupportedOperationException in #onMessage.
 			copy.setStyle(Style.EMPTY.withHoverEvent(new ShowText(deepCopy(showText))).withParent(text.getStyle()));
 		} else copy.setStyle(text.getStyle());
 
 		for (Text sibling : text.getSiblings()) {
 			copy.append(deepCopy(sibling));
 		}
+
 		return copy;
 	}
 
 	@Nullable
 	private static String getNeuId(@NotNull String itemName) {
-		return ITEM_2_ID_CACHE.computeIfAbsent(itemName, ignored ->
+		return NAME_2_ID_CACHE.computeIfAbsent(itemName, ignored ->
 				NEURepoManager.NEU_REPO.getItems()
 									   .getItems()
 									   .values()
@@ -185,17 +193,28 @@ public class SackMessagePrice {
 	@SuppressWarnings("ConstantValue") // It's much easier to read this way.
 	@NotNull
 	private static Object2IntArrayMap<String> parseItems(@NotNull List<Text> texts) {
+		/*
+			The hover message's structure is as follows:
+			- Added items:
+			  - item count
+			  - item name
+			  - sack name
+			  (for any other item, repeat the above three lines with a newline in between)
+			  - \n\n
+			  - `This message can be toggled off in the settings` warning
+
+			  We only care about the groups of three lines that make up each item entry.
+		 */
 		Object2IntArrayMap<String> items = new Object2IntArrayMap<>();
 		Integer lastCount = null;
 		String lastItemName = null;
-		// This could be done in much fewer lines with stream gatherers or kotlin stream extensions, but alas, we are in java 21.
 		for (Text text : texts) {
 			if (text.getContent() instanceof Literal(String content)) {
 				if (content.equals("\n\n")) break; // End of items list, we can stop parsing here - NOTE: This has to come before the isBlank check, otherwise it will be skipped.
 				if (content.isBlank()) continue; // This includes \n lines, which we don't want to try and parse as item names or counts
 
 				String trimmed = content.trim();
-				if (lastCount == null && lastItemName == null) { //Initial state, item count comes first
+				if (lastCount == null && lastItemName == null) { // Initial state, item count comes first
 					Matcher matcher = ITEM_COUNT_PATTERN.matcher(trimmed);
 					OptionalInt count = RegexUtils.findIntFromMatcher(matcher);
 					if (count.isEmpty()) {
