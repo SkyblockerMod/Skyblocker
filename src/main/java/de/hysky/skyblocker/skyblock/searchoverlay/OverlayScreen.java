@@ -5,12 +5,12 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -61,14 +61,13 @@ public class OverlayScreen extends Screen {
         // suggested item buttons
         int totalSuggestions = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.maxSuggestions;
         this.suggestionButtons = new ButtonWidget[totalSuggestions];
-        GridWidget suggestionGridWidget = new GridWidget(startX, startY + rowHeight);
-        GridWidget.Adder suggestionAdder = suggestionGridWidget.createAdder(1);
+        DirectionalLayoutWidget suggestionLayoutWidget = new DirectionalLayoutWidget(startX, startY + rowHeight, DirectionalLayoutWidget.DisplayAxis.VERTICAL);
         for (int i = 0; i < totalSuggestions; i++) {
-            suggestionButtons[i] = ButtonWidget.builder(Text.literal(SearchOverManager.getSuggestion(i)).setStyle(Style.EMPTY), a -> {
+            suggestionButtons[i] = ButtonWidget.builder(Text.empty(), a -> {
                 SearchOverManager.updateSearch(a.getMessage().getString());
                 close();
             }).size(rowWidth, rowHeight).build();
-            suggestionAdder.add(suggestionButtons[i]);
+            suggestionLayoutWidget.add(suggestionButtons[i]);
             suggestionButtons[i].visible = false;
         }
 
@@ -117,12 +116,12 @@ public class OverlayScreen extends Screen {
             updateStars();
         }
 
-        suggestionGridWidget.refreshPositions();
+        suggestionLayoutWidget.refreshPositions();
         historyGridWidget.refreshPositions();
 
         //add drawables in order to make tab navigation sensible
         addDrawableChild(searchField);
-        suggestionGridWidget.forEachChild(this::addDrawableChild);
+        suggestionLayoutWidget.forEachChild(this::addDrawableChild);
         historyGridWidget.forEachChild(this::addDrawableChild);
         addDrawableChild(finishedButton);
 
@@ -202,7 +201,7 @@ public class OverlayScreen extends Screen {
                 continue;
             }
 
-            historyButtons[i].setMessage(Text.literal(text).setStyle(Style.EMPTY));
+            historyButtons[i].setMessage(Text.literal(text));
             historyButtons[i].visible = true;
             deleteButtons[i].visible = true;
         }
@@ -281,7 +280,7 @@ public class OverlayScreen extends Screen {
                 boolean isNewText = !text.equals(suggestionButtons[i].getMessage().getString());
                 if (!isNewText) continue;
 
-                suggestionButtons[i].setMessage(Text.literal(text).setStyle(Style.EMPTY));
+                suggestionButtons[i].setMessage(Text.literal(text));
             } else {
                 suggestionButtons[i].visible = false;
             }
