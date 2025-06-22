@@ -171,7 +171,7 @@ public class FancyStatusBars {
 		}
 	}
 
-	public static void updatePositions() {
+	public static void updatePositions(boolean ignoreVisibility) {
 		if (!configLoaded) return;
 		final int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
 		final int height = MinecraftClient.getInstance().getWindow().getScaledHeight();
@@ -231,15 +231,22 @@ public class FancyStatusBars {
 				}
 			}
 
-			for (int row = 0; row < barPositioner.getRowCount(barAnchor); row++) {
-				List<StatusBar> barRow = barPositioner.getRow(barAnchor, row);
+			int row = 0;
+			for (int i = 0; i < barPositioner.getRowCount(barAnchor); i++) {
+				List<StatusBar> barRow = barPositioner.getRow(barAnchor, i);
 				if (barRow.isEmpty()) continue;
 
 
 				// Update the positions
 				float widthPerSize;
-				if (sizeRule.isTargetSize())
-					widthPerSize = (float) sizeRule.totalWidth() / targetSize;
+				if (sizeRule.isTargetSize()) {
+					int size = 0;
+					for (StatusBar bar : barRow) {
+						if (bar.visible || ignoreVisibility) size += bar.size;
+					}
+					widthPerSize = (float) sizeRule.totalWidth() / size;
+
+				}
 				else
 					widthPerSize = sizeRule.widthPerSize();
 
@@ -247,13 +254,13 @@ public class FancyStatusBars {
 
 				int currSize = 0;
 				int rowSize = barRow.size();
-				for (int i = 0; i < rowSize; i++) {
+				for (int j = 0; j < rowSize; j++) {
 					// A bit of a padding
 					int offsetX = 0;
 					int lessWidth = 0;
 					if (rowSize > 1) { // Technically bars in the middle of 3+ bars will be smaller than the 2 side ones but shh
-						if (i == 0) lessWidth = 1;
-						else if (i == rowSize - 1) {
+						if (j == 0) lessWidth = 1;
+						else if (j == rowSize - 1) {
 							lessWidth = 1;
 							offsetX = 1;
 						} else {
@@ -261,8 +268,10 @@ public class FancyStatusBars {
 							offsetX = 1;
 						}
 					}
-					StatusBar statusBar = barRow.get(i);
+					StatusBar statusBar = barRow.get(j);
 					statusBar.size = Math.clamp(statusBar.size, sizeRule.minSize(), sizeRule.maxSize());
+
+					if (!statusBar.visible && !ignoreVisibility) continue;
 
 					float x = barAnchor.isRight() ?
 							anchorPosition.x() + (visibleHealthMove ? sizeRule.totalWidth() / 2.f : 0) + currSize * widthPerSize :
@@ -276,8 +285,8 @@ public class FancyStatusBars {
 
 					statusBar.setWidth(MathHelper.floor(statusBar.size * widthPerSize) - lessWidth);
 					currSize += statusBar.size;
-
 				}
+				if (currSize > 0) row++;
 			}
 
 		}
@@ -294,25 +303,30 @@ public class FancyStatusBars {
 
 		Collection<StatusBar> barCollection = statusBars.values();
 		for (StatusBar statusBar : barCollection) {
-			if (statusBar.anchor == null) continue;
+			if (statusBar.anchor == null || !statusBar.visible) continue;
 			if (statusBar == statusBars.get(StatusBarType.AIR) && !player.isSubmergedInWater()) continue;
 			statusBar.render(context, -1, -1, client.getRenderTickCounter().getDynamicDeltaTicks());
 		}
 
 		StatusBarTracker.Resource health = StatusBarTracker.getHealth();
-		statusBars.get(StatusBarType.HEALTH).updateValues(health.value() / (float) health.max(), health.overflow() / (float) health.max(), health.value());
+		statusBars.get(StatusBarType.HEALTH).updateWithResource(health);
 		StatusBarTracker.Resource intelligence = StatusBarTracker.getMana();
 		if (SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.ACCURATE) {
 			float totalIntelligence = (float) intelligence.max() + intelligence.overflow();
-			statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / totalIntelligence + intelligence.overflow() / totalIntelligence, intelligence.overflow() / totalIntelligence, intelligence.value());
-		} else statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / (float) intelligence.max(), intelligence.overflow() / (float) intelligence.max(), intelligence.value());
+			statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / totalIntelligence + intelligence.overflow() / totalIntelligence, intelligence.overflow() / totalIntelligence, intelligence.value(), intelligence.max(), intelligence.overflow());
+		} else statusBars.get(StatusBarType.INTELLIGENCE).updateWithResource(intelligence);
 		int defense = StatusBarTracker.getDefense();
-		statusBars.get(StatusBarType.DEFENSE).updateValues(defense / (defense + 100.f), 0, defense);
+		statusBars.get(StatusBarType.DEFENSE).updateValues(defense / (defense + 100.f), 0, defense, null, null);
 		StatusBarTracker.Resource speed = StatusBarTracker.getSpeed();
-		statusBars.get(StatusBarType.SPEED).updateValues(speed.value() / (float) speed.max(), 0, speed.value());
-		statusBars.get(StatusBarType.EXPERIENCE).updateValues(player.experienceProgress, 0, player.experienceLevel);
+		statusBars.get(StatusBarType.SPEED).updateWithResource(speed);
+		statusBars.get(StatusBarType.EXPERIENCE).updateValues(player.experienceProgress, 0, player.experienceLevel, null, null);
 		StatusBarTracker.Resource air = StatusBarTracker.getAir();
-		statusBars.get(StatusBarType.AIR).updateValues(air.value() / (float) air.max(), 0, air.value());
+		StatusBar airBar = statusBars.get(StatusBarType.AIR);
+		airBar.updateWithResource(air);
+		if (player.isSubmergedInWater() != airBar.visible) {
+			airBar.visible = player.isSubmergedInWater();
+			updatePositions(false);
+		}
 		return true;
 	}
 }

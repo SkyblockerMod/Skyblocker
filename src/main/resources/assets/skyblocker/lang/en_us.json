@@ -1102,6 +1102,8 @@
   "skyblocker.bars.config.speed": "Speed",
   "skyblocker.bars.config.air": "Air",
   "skyblocker.bars.config.text": "Text",
+  "skyblocker.bars.config.showMax": "Show Max",
+  "skyblocker.bars.config.showOverflow": "Show Overflow",
   "skyblocker.bars.config.textColor": "Text Color",
   "skyblocker.bars.config.textPosition.CENTER": "Center",
   "skyblocker.bars.config.textPosition.BAR_CENTER": "Bar Center",
