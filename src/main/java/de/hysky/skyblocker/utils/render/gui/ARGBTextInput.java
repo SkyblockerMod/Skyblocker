@@ -25,20 +25,27 @@ public class ARGBTextInput extends ClickableWidget {
 	private static final Formatting[] FORMATTINGS = new Formatting[] {Formatting.WHITE, Formatting.RED, Formatting.GREEN, Formatting.BLUE};
 	private static final String HEXADECIMAL_CHARS = "0123456789aAbBcCdDeEfF";
 
+	/**
+	 * Length in characters of the input
+	 */
 	private final int length;
 	private final boolean drawBackground;
 	private final TextRenderer textRenderer;
+	/**
+	 * Whether the alpha channel can be changed
+	 */
 	private final boolean hasAlpha;
+	/**
+	 * Mask to have full alpha if {@link ARGBTextInput#hasAlpha} is {@code false}
+	 */
+	private final int alphaMask;
 
 	private String input;
 	int index = 0;
-	private final int colorMask;
 
 	private @Nullable IntConsumer onChange = null;
 
 	/**
-	 * Creates a new widget.
-	 * <p>
 	 * Height and width are automatically computed to be the size of the hex number + some padding if {@code drawBackground} is true.
 	 * If the size needs to be changed, use {@link ARGBTextInput#setWidth(int)} and {@link ARGBTextInput#setHeight(int)}.
 	 *
@@ -57,10 +64,24 @@ public class ARGBTextInput extends ClickableWidget {
 		this.textRenderer = textRenderer;
 		this.length = hasAlpha ? 8 : 6;
 		this.hasAlpha = hasAlpha;
-		this.colorMask = hasAlpha ? 0 : 0xFF000000;
+		this.alphaMask = hasAlpha ? 0 : 0xFF000000;
 		this.input = hasAlpha ? "FFFFFFFF" : "FFFFFF";
 	}
 
+	/**
+	 * Constructor without alpha channel control.
+	 * <br/>
+	 * Height and width are automatically computed to be the size of the hex number + some padding if {@code drawBackground} is true.
+	 * If the size needs to be changed, use {@link ARGBTextInput#setWidth(int)} and {@link ARGBTextInput#setHeight(int)}.
+	 *
+	 * @see ARGBTextInput#setOnChange(IntConsumer)
+	 *
+	 * @param x x position
+	 * @param y y position
+	 * @param textRenderer text renderer to render the text (duh!)
+	 * @param drawBackground draws a black background and a white border if true
+	 *
+	 */
 	public ARGBTextInput(int x, int y, TextRenderer textRenderer, boolean drawBackground) {
 		this(x, y, textRenderer, drawBackground, false);
 	}
@@ -68,8 +89,7 @@ public class ARGBTextInput extends ClickableWidget {
 	protected OptionalInt getOptionalARGBColor(String input) {
 		try {
 			int i = Integer.parseUnsignedInt(input, 16);
-			System.out.println(i);
-			return OptionalInt.of(colorMask | i);
+			return OptionalInt.of(alphaMask | i);
 		} catch (NumberFormatException e) {
 			LOGGER.error("Could not parse rgb color", e);
 		}
@@ -80,11 +100,11 @@ public class ARGBTextInput extends ClickableWidget {
 	 * @return the color, or white if something somehow went wrong
 	 */
 	public int getARGBColor() {
-		return getOptionalARGBColor(input).orElse(-1);
+		return getOptionalARGBColor(input).orElse(Colors.WHITE);
 	}
 
 	public void setARGBColor(int argb) {
-		input = String.format(hasAlpha ? "%08X" : "%06X",argb & (~colorMask));
+		input = String.format(hasAlpha ? "%08X" : "%06X", argb & (~alphaMask));
 	}
 
 	/**
@@ -113,21 +133,22 @@ public class ARGBTextInput extends ClickableWidget {
 					textY,
 					textX + selectionEnd,
 					textY + textRenderer.fontHeight,
-					0xff00bbff
+					0xFF_00_BB_FF
 			);
 			context.fill(
 					textX + selectionStart,
 					textY + textRenderer.fontHeight - 1,
 					textX + selectionEnd,
 					textY + textRenderer.fontHeight,
-					-1
+					Colors.WHITE
 			);
 		}
 		context.drawText(
 				textRenderer,
 				visitor -> {
-					for (int i = hasAlpha ? 0 : 2; i < input.length(); i++) {
-						if (!visitor.accept(i, isSelected() ? Style.EMPTY.withFormatting(FORMATTINGS[i / 2]) : Style.EMPTY, input.charAt(i))) return false;
+					int start = hasAlpha ? 0 : 1;
+					for (int i = 0; i < input.length(); i++) {
+						if (!visitor.accept(i, isSelected() ? Style.EMPTY.withFormatting(FORMATTINGS[i / 2 + start]) : Style.EMPTY, input.charAt(i))) return false;
 					}
 					return true;
 				},

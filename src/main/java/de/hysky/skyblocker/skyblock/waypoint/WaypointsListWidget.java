@@ -322,10 +322,10 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            context.drawTextWithShadow(client.textRenderer, "X:", width / 2 - 48, y + 6, 0xFFFFFF);
-            context.drawTextWithShadow(client.textRenderer, "Y:", width / 2 - 11, y + 6, 0xFFFFFF);
-            context.drawTextWithShadow(client.textRenderer, "Z:", width / 2 + 26, y + 6, 0xFFFFFF);
-            context.drawTextWithShadow(client.textRenderer, "#", x + entryWidth - 105, y + 6, 0xFFFFFF);
+            context.drawTextWithShadow(client.textRenderer, "X:", width / 2 - 48, y + 6, 0xFF_FFFFFF);
+            context.drawTextWithShadow(client.textRenderer, "Y:", width / 2 - 11, y + 6, 0xFF_FFFFFF);
+            context.drawTextWithShadow(client.textRenderer, "Z:", width / 2 + 26, y + 6, 0xFF_FFFFFF);
+            context.drawTextWithShadow(client.textRenderer, "#", x + entryWidth - 105, y + 6, 0xFF_FFFFFF);
             enabled.setPosition(x + 26, y + 1);
             nameField.setPosition(enabled.getRight() + 5, y);
             xField.setPosition(width / 2 - 40, y);
