@@ -73,7 +73,7 @@ public class ItemProtection {
 				if (!protectedItems.contains(itemUuid)) {
 					protectedItems.add(itemUuid);
 					SkyblockerConfigManager.save();
-					if(notifyConfiguration) {
+					if (notifyConfiguration) {
 						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())));
 					}
 				} else {
