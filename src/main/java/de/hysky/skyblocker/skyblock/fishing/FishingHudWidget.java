@@ -18,6 +18,7 @@ import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Set;
@@ -113,6 +114,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			}else{
 				maxTime = 20;
 			}
+			time = MathHelper.clamp(time, 0, maxTime);
 			addComponent(Components.progressComponent(Ico.CLOCK, Text.of("Bobber Time"), SkyblockTime.formatTime(maxTime - time),  100 - (time / maxTime) * 100));
 		}
 		// rod reel timer
