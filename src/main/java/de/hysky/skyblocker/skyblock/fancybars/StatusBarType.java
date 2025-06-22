@@ -13,7 +13,8 @@ public enum StatusBarType implements StringIdentifiable {
 	INTELLIGENCE("intelligence", BarPositioner.BarAnchor.HOTBAR_TOP, 0, new Color[]{new Color(0, 255, 255), new Color(180, 0, 255)}, true, new Color(85, 255, 255), Text.translatable("skyblocker.bars.config.intelligence")),
 	DEFENSE("defense", BarPositioner.BarAnchor.HOTBAR_RIGHT, 0, new Color[]{new Color(255, 255, 255)}, false, new Color(185, 185, 185), Text.translatable("skyblocker.bars.config.defense")),
 	EXPERIENCE("experience", BarPositioner.BarAnchor.HOTBAR_TOP, 1, new Color[]{new Color(100, 230, 70)}, false, new Color(128, 255, 32), Text.translatable("skyblocker.bars.config.experience")),
-	SPEED("speed", BarPositioner.BarAnchor.HOTBAR_RIGHT, 0, new Color[]{new Color(255, 255, 255)}, false, new Color(185, 185, 185), Text.translatable("skyblocker.bars.config.speed"));
+	SPEED("speed", BarPositioner.BarAnchor.HOTBAR_RIGHT, 0, new Color[]{new Color(255, 255, 255)}, false, new Color(185, 185, 185), Text.translatable("skyblocker.bars.config.speed")),
+	AIR("air", BarPositioner.BarAnchor.HOTBAR_RIGHT, 1, new Color[]{new Color(135, 206, 250)}, false, new Color(150, 230, 255), Text.translatable("skyblocker.bars.config.air"));
 
 	private final String id;
 	private final BarPositioner.BarAnchor defaultAnchor;

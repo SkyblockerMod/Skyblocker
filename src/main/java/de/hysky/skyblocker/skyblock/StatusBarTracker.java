@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,6 +27,7 @@ public class StatusBarTracker {
 	private static Resource health = new Resource(100, 100, 0);
 	private static Resource mana = new Resource(100, 100, 0);
 	private static Resource speed = new Resource(100, 400, 0);
+	private static Resource air = new Resource(100, 300, 0);
 	private static int defense = 0;
 
 	@Init
@@ -51,10 +53,15 @@ public class StatusBarTracker {
 		return speed;
 	}
 
+	public static Resource getAir() {
+		return air;
+	}
+
 	private static void tick() {
 		if (client == null || client.player == null) return;
 		updateHealth(health.value, health.max, health.overflow);
 		updateSpeed();
+		updateAir();
 	}
 
 	private static boolean allowOverlayMessage(Text text, boolean overlay) {
@@ -153,6 +160,13 @@ public class StatusBarTracker {
 			}
 		}
 		speed = new Resource(value, max, 0);
+	}
+
+	private static void updateAir() {
+		assert client.player != null;
+		int max = client.player.getMaxAir();
+		int value = MathHelper.clamp(client.player.getAir(), 0, max);
+		air = new Resource(value, max, 0);
 	}
 
 	public record Resource(int value, int max, int overflow) {}

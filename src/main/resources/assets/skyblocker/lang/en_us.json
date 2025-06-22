@@ -1093,6 +1093,7 @@
   "skyblocker.bars.config.mainColor": "Main Color",
   "skyblocker.bars.config.overflowColor": "Overflow Color",
   "skyblocker.bars.config.speed": "Speed",
+  "skyblocker.bars.config.air": "Air",
   "skyblocker.bars.config.text": "Text",
   "skyblocker.bars.config.textColor": "Text Color",
   "skyblocker.bars.config.textPosition.CENTER": "Center",
