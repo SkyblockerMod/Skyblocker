@@ -123,7 +123,7 @@ public class ItemProtection {
 			} else {
 				protectedItems.remove(itemUuid);
 				SkyblockerConfigManager.save();
-				if(notifyConfiguration) {
+					if (notifyConfiguration) {
 					playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())), false);
 				}
 			}
