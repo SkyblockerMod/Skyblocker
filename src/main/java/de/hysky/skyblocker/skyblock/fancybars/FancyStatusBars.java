@@ -5,6 +5,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -48,7 +49,7 @@ public class FancyStatusBars {
 
 	public static boolean isBarEnabled(StatusBarType type) {
 		StatusBar statusBar = statusBars.get(type);
-		return statusBar.anchor != null || statusBar.inMouse;
+		return Debug.isTestEnvironment() || statusBar.anchor != null || statusBar.inMouse;
 	}
 
 	@SuppressWarnings("deprecation")
