@@ -33,12 +33,14 @@ public final class SameColorTerminal extends SimpleContainerSolver implements Te
 			Items.GREEN_STAINED_GLASS_PANE,
 			Items.BLUE_STAINED_GLASS_PANE
 	};
-	private static final Map<Item, Integer> INDEX = new HashMap<>();
+	private static final Map<Item, Integer> INDEX;
 
 	static {
+		Map<Item, Integer> map = new HashMap<>(ORDER.length);
 		for (int i = 0; i < ORDER.length; i++) {
-			INDEX.put(ORDER[i], i);
+			map.put(ORDER[i], i);
 		}
+		INDEX = Collections.unmodifiableMap(map);
 	}
 
 	private final Int2IntMap clickMap = new Int2IntOpenHashMap();
