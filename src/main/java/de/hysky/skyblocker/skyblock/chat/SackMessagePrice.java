@@ -4,13 +4,11 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.RegexUtils;
 import io.github.moulberry.repo.data.NEUItem;
-import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.*;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.screen.ScreenTexts;
@@ -27,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,17 +85,17 @@ public class SackMessagePrice {
 					continue; // If we couldn't find the item ID, we skip this item
 				}
 
-				var npcData = TooltipInfoType.NPC.getData();
+				Object2DoubleMap<String> npcData = TooltipInfoType.NPC.getData();
 				if (npcData != null) npcPrice += npcData.getOrDefault(neuId, 0) * count;
 				else LOGGER.warn("No NPC data found for item: `{}`", neuId);
 
-				var bazaarData = TooltipInfoType.BAZAAR.getData();
+				Object2ObjectMap<String, BazaarProduct> bazaarData = TooltipInfoType.BAZAAR.getData();
 				if (bazaarData != null) {
-					var itemData = bazaarData.get(neuId);
+					BazaarProduct itemData = bazaarData.get(neuId);
 					if (itemData != null) {
-						var buyPrice = itemData.buyPrice();
+						OptionalDouble buyPrice = itemData.buyPrice();
 						if (buyPrice.isPresent()) bazaarBuyPrice += buyPrice.getAsDouble() * count;
-						var sellPrice = itemData.sellPrice();
+						OptionalDouble sellPrice = itemData.sellPrice();
 						if (sellPrice.isPresent()) bazaarSellPrice += sellPrice.getAsDouble() * count;
 					} else {
 						LOGGER.warn("No item data found for item `{}` in bazaar price data.", neuId);
