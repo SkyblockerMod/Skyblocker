@@ -19,14 +19,14 @@ repositories {
 	}
 
 	maven {
-		name 'Maven Central'
-		url 'https://repo.maven.apache.org/maven2'
+		name = 'Maven Central'
+		url = 'https://repo.maven.apache.org/maven2'
 	}
 
 	// For ModMenu and EMI
 	exclusiveContent {
 		forRepository {
-			maven { url "https://maven.terraformersmc.com/releases" }
+			maven { url = "https://maven.terraformersmc.com/releases" }
 		}
 
 		filter {
@@ -38,7 +38,7 @@ repositories {
 	// For REI
 	exclusiveContent {
 		forRepository {
-			maven { url "https://maven.shedaniel.me/" }
+			maven { url = "https://maven.shedaniel.me/" }
 		}
 
 		filter {
@@ -64,7 +64,7 @@ repositories {
 
 	// YACL
 	maven {
-		url "https://maven.isxander.dev/releases"
+		url = "https://maven.isxander.dev/releases"
 
 		content {
 			includeGroup "dev.isxander"
@@ -74,7 +74,7 @@ repositories {
 
 	// For Minecraft snapshots
 	maven {
-		url "https://maven.isxander.dev/snapshots"
+		url = "https://maven.isxander.dev/snapshots"
 
 		content {
 			includeGroup "dev.isxander"
@@ -98,7 +98,7 @@ repositories {
 	// For Occlusion Culling library
 	exclusiveContent {
 		forRepository {
-			maven { url "https://repo.codemc.io/repository/maven-public/" }
+			maven { url = "https://repo.codemc.io/repository/maven-public/" }
 		}
 
 		filter {
@@ -109,7 +109,7 @@ repositories {
 	// For NEU repo parser
 	exclusiveContent {
 		forRepository {
-			maven { url "https://repo.nea.moe/releases" }
+			maven { url = "https://repo.nea.moe/releases" }
 		}
 
 		filter {
@@ -118,7 +118,7 @@ repositories {
 	}
 
 	maven {
-		url "https://maven.azureaaron.net/releases"
+		url = "https://maven.azureaaron.net/releases"
 
 		content {
 			includeGroup "net.azureaaron"
@@ -126,7 +126,7 @@ repositories {
 	}
 
 	maven {
-		url "https://maven.azureaaron.net/snapshots"
+		url = "https://maven.azureaaron.net/snapshots"
 
 		content {
 			includeGroup "net.azureaaron"
