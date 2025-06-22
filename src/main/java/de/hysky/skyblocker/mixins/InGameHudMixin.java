@@ -5,6 +5,9 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
@@ -24,9 +27,12 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.text.Text;
@@ -59,10 +65,10 @@ public abstract class InGameHudMixin {
     private MinecraftClient client;
 
 	@Unique
-	private boolean isQuiver = false;
+	private boolean isQuiverSlot = false;
 
 	@Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbarItem(Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/client/render/RenderTickCounter;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V", ordinal = 0))
-    public void skyblocker$renderHotbarItemLockOrBackground(CallbackInfo ci, @Local(argsOnly = true) DrawContext context, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y, @Local PlayerEntity player) {
+    public void skyblocker$renderHotbarItemLockOrBackground(CallbackInfo ci, @Local(argsOnly = true) DrawContext context, @Local(ordinal = 4, name = "m") int index, @Local(ordinal = 5, name = "n") int x, @Local(ordinal = 6, name = "o") int y, @Local PlayerEntity player, @Share(namespace = SkyblockerMod.NAMESPACE, value = "slotIndex") LocalIntRef ref) {
         if (Utils.isOnSkyblock()) {
 			ItemBackgroundManager.drawBackgrounds(player.getInventory().getMainStacks().get(index), context, x, y);
 
@@ -75,14 +81,35 @@ public abstract class InGameHudMixin {
             if (ItemProtection.isItemProtected(player.getInventory().getMainStacks().get(index))) {
                 context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
             }
-			isQuiver = index == 8;
+			isQuiverSlot = index == 8;
         }
-    }
+		ref.set(index);
+	}
+
+	@Unique
+	private static int prevHash = 0;
+	@Unique
+	private static boolean prevQuiverSlot = false;
+
+	@Unique
+	private static boolean isQuiverItem(ItemStack stack) {
+		int hashCode = System.identityHashCode(stack);
+		if (hashCode == prevHash) {
+			return prevQuiverSlot;
+		}
+		System.out.println("math'd");
+		prevHash = hashCode;
+		NbtComponent component = stack.get(DataComponentTypes.CUSTOM_DATA);
+		if (component == null) return false;
+		NbtCompound compound = component.copyNbt();
+		NbtElement element = compound.get("quiver_arrow");
+		prevQuiverSlot = element != null && (element.asBoolean().orElse(false) || element.asString().orElse("false").equals("true"));
+		return prevQuiverSlot;
+	}
 
 	@WrapOperation(method = "renderHotbarItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawStackOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;II)V"))
 	private void skyblocker$drawQuiverAmount(DrawContext instance, TextRenderer textRenderer, ItemStack stack, int x, int y, Operation<Void> original) {
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.trueQuiverCount && isQuiver && stack.getItem() == Items.ARROW) {
-			isQuiver = false;
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.trueQuiverCount && isQuiverSlot && isQuiverItem(stack)) {
 			String arrow = ItemUtils.getLoreLineIf(stack, s -> s.trim().startsWith("Active Arrow"));
 			if (arrow == null) {
 				original.call(instance, textRenderer, stack, x, y);
