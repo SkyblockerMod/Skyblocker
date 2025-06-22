@@ -139,7 +139,7 @@
     "skyblocker.config.debug.dumpRange.@Tooltip": "El rango en bloques alrededor del jugador para soltar entidades.",
     "skyblocker.config.debug.showInvisibleArmorStands": "Mostrar soporte de armadura invisible",
     "skyblocker.config.debug.debugWebSockets": "Habilitar mensajes de depuración de Websocket",
-    "skyblocker.config.dungeons.goldorWaypoints": "Indicador de terminales durante la fase de Goldor (F7/M7)",
+    "skyblocker.config.dungeons.goldorWaypoints": "Puntos de referencia de terminales durante la fase de Goldor (F7/M7)",
     "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "Cambia el color del brillo de tus compañeros de equipo para que se base en su clase en lugar de su rango.",
     "skyblocker.config.dungeons.classBasedPlayerGlow": "Brillo basado en la clase del jugador"
 }
