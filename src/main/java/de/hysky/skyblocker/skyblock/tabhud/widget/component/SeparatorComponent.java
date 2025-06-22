@@ -29,7 +29,7 @@ public class SeparatorComponent extends Component {
 
 	@Override
 	public void render(DrawContext context, int x, int y) {
-		if(text != null && !text.equals(Text.of(""))) {
+		if (text != null && !text.equals(Text.of(""))) {
 			context.fill(x - 2, y + this.height / 2, x + 2, y + this.height / 2 + 1, 0xff55ffff);
 			context.drawText(txtRend, text, x + 4, y, 0xff55ffff, false);
 			context.fill(x + 6 + textWidth, y + this.height / 2, x + width + 10, y + this.height / 2 +1, 0xff55ffff);
