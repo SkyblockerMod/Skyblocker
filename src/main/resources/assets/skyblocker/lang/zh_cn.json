@@ -1249,5 +1249,6 @@
     "skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter": "启用海洋生物追踪器",
     "skyblocker.config.helpers.fishing.fishingHookDisplay.CROSSHAIR": "十字准星",
     "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "将Skyblock的钓鱼计时器显示在屏幕上\n  十字准星：显示在屏幕中央\n  HUD中：显示在钓鱼HUD中",
-    "skyblocker.config.helpers.fishing.fishingHookDisplay.HUD": "HUD中"
+    "skyblocker.config.helpers.fishing.fishingHookDisplay.HUD": "HUD中",
+    "skyblocker.bars.config.air": "空气"
 }
