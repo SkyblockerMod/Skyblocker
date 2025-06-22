@@ -79,7 +79,7 @@ public class ItemProtection {
 				} else {
 					protectedItems.remove(itemUuid);
 					SkyblockerConfigManager.save();
-					if(notifyConfiguration) {
+					if (notifyConfiguration) {
 						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())));
 					}
 				}
