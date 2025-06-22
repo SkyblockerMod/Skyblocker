@@ -74,5 +74,6 @@
     "skyblocker.armorCustomization.cannotCustomizeColor": "Cannot customize this piece's colour :(",
     "skyblocker.armorCustomization.resetColor": "Reset colour",
     "skyblocker.armorCustomization.title": "Customize Your Armour",
-    "skyblocker.armorCustomization.titleSecret": "Pimp Your Armour"
+    "skyblocker.armorCustomization.titleSecret": "Pimp Your Armour",
+    "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "Display the skyblock fishing hook timer on the screen \n On crosshair -> in the centre of screen \n In Hud -> In the fishing Hud"
 }
