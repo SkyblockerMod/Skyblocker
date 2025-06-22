@@ -42,6 +42,7 @@ import net.minecraft.world.biome.Biome;
 
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.util.List;
 
@@ -85,6 +86,7 @@ public class Debug {
 						.then(EventNotifications.debugToasts())
 						.then(dumpBiome())
 						.then(dumpActionBar())
+						.then(auditMixins())
 				)
 		));
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -191,6 +193,15 @@ public class Debug {
 						Text pretty = NbtHelper.toPrettyPrintedText(TextCodecs.CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(NbtOps.INSTANCE), actionBar).getOrThrow());
 						source.sendFeedback(Constants.PREFIX.get().append("Action Bar: ").append(pretty));
 					}
+
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> auditMixins() {
+		return literal("auditMixins")
+				.executes(context -> {
+					MixinEnvironment.getCurrentEnvironment().audit();
 
 					return Command.SINGLE_SUCCESS;
 				});

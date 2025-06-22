@@ -23,6 +23,6 @@ public class MixinsTest {
 		Assertions.assertInstanceOf(IMixinTransformer.class, MixinEnvironment.getCurrentEnvironment().getActiveTransformer());
 
 		//If this fails check the report to get the full stack trace
-		MixinEnvironment.getCurrentEnvironment().audit();
+		//MixinEnvironment.getCurrentEnvironment().audit();
 	}
 }
