@@ -113,6 +113,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			}else{
 				maxTime = 20;
 			}
+			time = Math.clamp(time, 0, maxTime);
 			addComponent(Components.progressComponent(Ico.CLOCK, Text.of("Bobber Time"), SkyblockTime.formatTime(maxTime - time),  100 - (time / maxTime) * 100));
 		}
 		// rod reel timer
