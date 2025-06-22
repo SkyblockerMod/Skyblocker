@@ -3,7 +3,7 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.BazaarQuickQuantities;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarQuickQuantities;
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import de.hysky.skyblocker.skyblock.speedPreset.SpeedPresets;
 import de.hysky.skyblocker.utils.Utils;
