@@ -38,14 +38,17 @@ public class FancyStatusBars {
 	public static BarPositioner barPositioner = new BarPositioner();
 	public static Map<StatusBarType, StatusBar> statusBars = new EnumMap<>(StatusBarType.class);
 
-	public static boolean isHealthFancyBarVisible() {
-		StatusBar health = statusBars.get(StatusBarType.HEALTH);
-		return health.anchor != null || health.inMouse;
+	public static boolean isHealthFancyBarEnabled() {
+		return isBarEnabled(StatusBarType.HEALTH);
 	}
 
-	public static boolean isExperienceFancyBarVisible() {
-		StatusBar experience = statusBars.get(StatusBarType.EXPERIENCE);
-		return experience.anchor != null || experience.inMouse;
+	public static boolean isExperienceFancyBarEnabled() {
+		return isBarEnabled(StatusBarType.EXPERIENCE);
+	}
+
+	public static boolean isBarEnabled(StatusBarType type) {
+		StatusBar statusBar = statusBars.get(type);
+		return statusBar.anchor != null || statusBar.inMouse;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -192,7 +195,7 @@ public class FancyStatusBars {
 			BarPositioner.SizeRule sizeRule = barAnchor.getSizeRule();
 
 			int targetSize = sizeRule.targetSize();
-			boolean visibleHealthMove = barAnchor == BarPositioner.BarAnchor.HOTBAR_TOP && !isHealthFancyBarVisible();
+			boolean visibleHealthMove = barAnchor == BarPositioner.BarAnchor.HOTBAR_TOP && !isHealthFancyBarEnabled();
 			if (visibleHealthMove) {
 				targetSize /= 2;
 			}

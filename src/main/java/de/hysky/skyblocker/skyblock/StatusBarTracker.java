@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
+import de.hysky.skyblocker.skyblock.fancybars.StatusBarType;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -87,12 +89,14 @@ public class StatusBarTracker {
 		if (matcher.group("healing") != null) {
 			sb.append("§c❤");
 		}
-		matcher.appendReplacement(sb, "$3");
+		if (!FancyStatusBars.isHealthFancyBarEnabled()) matcher.appendReplacement(sb, "$0");
+		else matcher.appendReplacement(sb, "$3");
 
 		// Match defense or mana use and don't add it to the string builder
 		if (matcher.usePattern(DEFENSE_STATUS).find()) {
 			defense = RegexUtils.parseIntFromMatcher(matcher, "defense");
-			matcher.appendReplacement(sb, "");
+			if (FancyStatusBars.isBarEnabled(StatusBarType.DEFENSE)) matcher.appendReplacement(sb, "");
+			else matcher.appendReplacement(sb, "$0");
 		} else if (filterManaUse && matcher.usePattern(MANA_USE).find()) {
 			matcher.appendReplacement(sb, "");
 		}
@@ -100,7 +104,8 @@ public class StatusBarTracker {
 		// Match mana and don't add it to the string builder
 		if (matcher.usePattern(MANA_STATUS).find()) {
 			updateMana(matcher);
-			matcher.appendReplacement(sb, "");
+			if (FancyStatusBars.isBarEnabled(StatusBarType.INTELLIGENCE)) matcher.appendReplacement(sb, "");
+			else matcher.appendReplacement(sb, "$0");
 		}
 
 		// Append the rest of the message to the string builder
