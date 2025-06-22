@@ -10,6 +10,11 @@ import java.util.Objects;
 import java.util.Set;
 
 public abstract class HudWidget extends AbstractWidget {
+	/**
+	 * Single constant set for representing all possible locations for a {@code HudWidget} to prevent unnecessarily
+	 * recreating this set many times over (not the best for efficiency).
+	 */
+	protected static final Set<Location> ALL_LOCATIONS = Set.of(Location.values());
 	private final String internalID;
 
 

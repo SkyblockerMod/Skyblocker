@@ -32,7 +32,7 @@ public final class JerryTimer {
 			ClientPlayerEntity player = MinecraftClient.getInstance().player;
 			Scheduler.INSTANCE.schedule(() -> {
 				if (player == null || !Utils.isOnSkyblock()) return;
-				player.sendMessage(Constants.PREFIX.get().append(Text.literal("Jerry cooldown is over!")).formatted(Formatting.GREEN), false);
+				player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.jerry.sendJerryTimerMessage")).formatted(Formatting.GREEN), false);
 				player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_TRADE, SoundCategory.NEUTRAL, 100f, 1.0f);
 			}, 20*60*6); // 6 minutes
 		});

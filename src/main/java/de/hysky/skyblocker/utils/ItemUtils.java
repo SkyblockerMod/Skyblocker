@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonParser;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.brigadier.Command;
@@ -40,6 +41,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.Codecs;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -65,6 +67,7 @@ public final class ItemUtils {
     ).apply(instance, ItemStack::new)));
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemUtils.class);
     private static final Pattern STORED_PATTERN = Pattern.compile("Stored: ([\\d,]+)/\\S+");
+    private static final Pattern STASH_COUNT_PATTERN = Pattern.compile("x([\\d,]+)$"); // This is used with Matcher#find, not #matches
     private static final short LOG_INTERVAL = 1000;
 	private static long lastLog = Util.getMeasuringTimeMs();
 
@@ -191,7 +194,7 @@ public final class ItemUtils {
             case "NEW_YEAR_CAKE" -> {
                 return id + "_" + customData.getInt("new_years_cake", 0);
             }
-            case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024" -> {
+            case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> {
                 return id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
             }
             case "PARTY_HAT_SLOTH" -> {
@@ -257,7 +260,7 @@ public final class ItemUtils {
             }
             case "POTION" -> "POTION_" + customData.getString("potion", "").toUpperCase(Locale.ENGLISH) + ";" + customData.getInt("potion_level", 0);
             case "ATTRIBUTE_SHARD" -> "ATTRIBUTE_SHARD";
-            case "PARTY_HAT_CRAB", "BALLOON_HAT_2024" -> id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
+            case "PARTY_HAT_CRAB", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
             case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH) + "_ANIMATED";
             case "PARTY_HAT_SLOTH" -> id + "_" + customData.getString("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
             default -> id.replace(":", "-");
@@ -441,15 +444,25 @@ public final class ItemUtils {
         return Optional.of(texture);
     }
 
-    public static @NotNull ItemStack getSkyblockerStack() {
-        try {
-            ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-            stack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("SkyblockerStack"), Optional.of(java.util.UUID.randomUUID()), propertyMapWithTexture("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=")));
-            return stack;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public static @NotNull ItemStack createSkull(String textureBase64) {
+		GameProfile profile = new GameProfile(java.util.UUID.randomUUID(), "a");
+		profile.getProperties().put("textures", new Property("textures", textureBase64));
+		return createSkull(profile);
+	}
+
+	public static @NotNull ItemStack createSkull(GameProfile profile) {
+		try {
+			ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
+			stack.set(DataComponentTypes.PROFILE, new ProfileComponent(profile));
+			return stack;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static @NotNull ItemStack getSkyblockerStack() {
+		return createSkull("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=");
+	}
 
     /**
      * Utility method.
@@ -484,8 +497,22 @@ public final class ItemUtils {
      * @param lines The tooltip lines to search in. This isn't equivalent to the item's lore.
      * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
      */
+    @NotNull
     public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines) {
-        if (lines.size() >= 2 && lines.get(1).getString().endsWith("Sack")) {
+        return getItemCountInSack(itemStack, lines, false);
+    }
+
+    /**
+     * Finds the number of items stored in a sack from a list of texts.
+     * @param itemStack The item stack this list of texts belong to. This is used for logging purposes.
+     * @param lines A list of text lines that represent the tooltip of the item stack.
+     * @param isLore Whether the lines are from the item's lore or not. This is useful to figure out which line to look at, as lore and tooltip lines are different due to the first line being the item's name.
+     * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
+     */
+    @NotNull
+    public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines, boolean isLore) {
+        // Gemstone sack is a special case, it has a different 2nd line.
+		if (lines.size() >= 2 && StringUtils.endsWithAny(lines.get(isLore ? 0 : 1).getString(), "Sack", "Gemstones")) {
 			// Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
             // Which equals: `Stored: 0/20k`
 			Matcher matcher = TextUtils.matchInList(lines, STORED_PATTERN);
@@ -499,5 +526,25 @@ public final class ItemUtils {
 			} else return RegexUtils.parseOptionalIntFromMatcher(matcher, 1);
 		}
 		return OptionalInt.empty();
+    }
+
+    /**
+     * Finds the number of items stored in a stash based on item's name.
+     * @param itemStack The item stack.
+     * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
+     */
+    @NotNull
+    public static OptionalInt getItemCountInStash(@NotNull ItemStack itemStack) {
+        return getItemCountInStash(itemStack.getName());
+    }
+
+    /**
+     * Finds the number of items stored in a stash based on item's name.
+     * @param itemName The name of the item to look in.
+     * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
+     */
+    @NotNull
+    public static OptionalInt getItemCountInStash(@NotNull Text itemName) {
+        return RegexUtils.findIntFromMatcher(STASH_COUNT_PATTERN.matcher(itemName.getString()));
     }
 }
