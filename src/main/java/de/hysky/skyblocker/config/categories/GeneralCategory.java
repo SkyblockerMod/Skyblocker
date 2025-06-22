@@ -320,11 +320,11 @@ public class GeneralCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.attributeBackgrounds"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.attributeBackgrounds.@Tooltip")))
-								.binding(defaults.general.itemInfoDisplay.attributeBackgrounds,
-										() -> config.general.itemInfoDisplay.attributeBackgrounds,
-										newValue -> config.general.itemInfoDisplay.attributeBackgrounds = newValue)
+								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds.@Tooltip")))
+								.binding(defaults.general.itemInfoDisplay.legacyAttributeBackgrounds,
+										() -> config.general.itemInfoDisplay.legacyAttributeBackgrounds,
+										newValue -> config.general.itemInfoDisplay.legacyAttributeBackgrounds = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())

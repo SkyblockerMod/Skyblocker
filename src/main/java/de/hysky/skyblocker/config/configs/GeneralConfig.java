@@ -208,7 +208,7 @@ public class GeneralConfig {
 		public boolean jacobMedalBackgrounds = true;
 
 		@SerialEntry
-		public boolean attributeBackgrounds = true;
+		public boolean legacyAttributeBackgrounds = true;
     }
 
     public enum ItemBackgroundStyle {
