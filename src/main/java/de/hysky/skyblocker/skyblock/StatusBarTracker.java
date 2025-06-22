@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -163,8 +164,8 @@ public class StatusBarTracker {
 
 	private static void updateAir() {
 		assert client.player != null;
-		int value = client.player.getAir();
 		int max = client.player.getMaxAir();
+		int value = MathHelper.clamp(client.player.getAir(), 0, max);
 		air = new Resource(value, max, 0);
 	}
 

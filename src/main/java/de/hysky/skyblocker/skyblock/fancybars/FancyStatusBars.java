@@ -296,7 +296,9 @@ public class FancyStatusBars {
 
 		Collection<StatusBar> barCollection = statusBars.values();
 		for (StatusBar statusBar : barCollection) {
-			if (statusBar.anchor != null) statusBar.render(context, -1, -1, client.getRenderTickCounter().getDynamicDeltaTicks());
+			if (statusBar.anchor == null) continue;
+			if (statusBar == statusBars.get(StatusBarType.AIR) && !player.isSubmergedInWater()) continue;
+			statusBar.render(context, -1, -1, client.getRenderTickCounter().getDynamicDeltaTicks());
 		}
 
 		StatusBarTracker.Resource health = StatusBarTracker.getHealth();
