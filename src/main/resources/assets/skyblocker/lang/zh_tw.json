@@ -1190,5 +1190,13 @@
     "key.wikiLookup.fandom": "Fandom Wiki查詢",
     "skyblocker.config.farming.general.noCameraEntity": "無相機實體",
     "skyblocker.config.farming.general.yaw": "偏航角：%s",
-    "skyblocker.config.farming.general.pitch": "俯仰角：%s"
+    "skyblocker.config.farming.general.pitch": "俯仰角：%s",
+    "skyblocker.config.helpers.jerry.sendJerryTimerMessage": "Jerry生成冷卻結束！",
+    "skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter": "啟用海洋生物追蹤器",
+    "skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn": "僅當囤魚時顯示",
+    "skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn.@Tooltip": "僅當囤魚時顯示海洋生物追蹤器。",
+    "skyblocker.config.helpers.chocolateFactory.sendTimeTowerReminderMessage": "你的巧克力工廠Time Tower已失效！",
+    "skyblocker.config.helpers.fishing.fishingHookDisplay.HUD": "HUD中",
+    "skyblocker.config.helpers.fishing.fishingHookDisplay.CROSSHAIR": "十字準星",
+    "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "將Skyblock的釣魚計時器顯示在螢幕上\n  十字準星：顯示在螢幕中央\n  HUD中：顯示在釣魚HUD中"
 }
