@@ -1,0 +1,334 @@
+{
+  "SILK_EDGE_SWORD": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "LEAPING_SWORD": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "GRAPPLING_HOOK": {
+    "cooldown": 2000,
+    "trigger": "right_click",
+    "condition": "hasFishingHookAndNotBatArmor"
+  },
+  "ROGUE_SWORD": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  },
+  "SPIRIT_LEAP": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  },
+  "INFINITE_SPIRIT_LEAP": {
+    "cooldown": 2000,
+    "trigger": "right_click"
+  },
+  "LIVID_DAGGER": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  },
+  "SHADOW_FURY": {
+    "cooldown": 15000,
+    "trigger": "right_click"
+  },
+  "STARRED_SHADOW_FURY": {
+    "cooldown": 15000,
+    "trigger": "right_click"
+  },
+  "INK_WAND": {
+    "cooldown": 30000,
+    "trigger": "right_click"
+  },
+  "GIANTS_SWORD": {
+    "cooldown": 30000,
+    "trigger": "right_click"
+  },
+  "GREAT_SPOOK_STAFF": {
+    "cooldown": 60000,
+    "trigger": "right_click"
+  },
+  "JUNGLE_AXE": {
+    "cooldown": 2000,
+    "cooldown_type": "foraging",
+    "trigger": "block_break",
+    "block_tag": "minecraft:logs",
+    "cooldown_group": "jungle_axe"
+  },
+  "TREECAPITATOR_AXE": {
+    "cooldown": 2000,
+    "cooldown_type": "foraging",
+    "trigger": "block_break",
+    "block_tag": "minecraft:logs",
+    "cooldown_group": "jungle_axe"
+  },
+  "WITHER_CLOAK": {
+    "cooldown": 10000,
+    "trigger": "right_click",
+    "toggle": true
+  },
+  "GOLEM_SWORD": {
+    "cooldown": 3000,
+    "trigger": "right_click"
+  },
+  "ASPECT_OF_THE_JERRY": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  },
+  "SWORD_OF_BAD_HEALTH": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  },
+  "PIGMAN_SWORD": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  },
+  "YETI_SWORD": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "STARRED_YETI_SWORD": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "RAGNAROCK_AXE": {
+    "cooldown": 20000,
+    "trigger": "right_click"
+  },
+  "FIRE_FREEZE_STAFF": {
+    "cooldown": 10000,
+    "trigger": "right_click"
+  },
+  "RUNIC_STAFF": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "MIDAS_STAFF": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "STARRED_MIDAS_STAFF": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "ENRAGER": {
+    "cooldown": 20000,
+    "trigger": "right_click"
+  },
+  "EMBER_ROD": {
+    "cooldown": 30000,
+    "trigger": "right_click"
+  },
+  "ASPECT_OF_THE_JERRY_SIGNATURE": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  },
+  "REAPER_SCYTHE": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "ATOMSPLIT_KATANA": {
+    "cooldown": 4000,
+    "trigger": "right_click"
+  },
+  "VORPAL_KATANA": {
+    "cooldown": 4000,
+    "trigger": "right_click"
+  },
+  "VOIDEDGE_KATANA": {
+    "cooldown": 4000,
+    "trigger": "right_click"
+  },
+  "ICE_SPRAY_WAND": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  },
+  "STARRED_ICE_SPRAY_WAND": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  },
+  "FLOWER_OF_TRUTH": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "BOUQUET_OF_LIES": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "SPIRIT_SWORD": {
+    "cooldown": 10000,
+    "trigger": "right_click"
+  },
+  "NECROMANCER_SWORD": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "ENDER_BOW": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  },
+  "MACHINE_GUN_BOW": {
+    "cooldown": 100000,
+    "trigger": "right_click"
+  },
+  "VOODOO_DOLL": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  },
+  "VOODOO_DOLL_WILTED": {
+    "cooldown": 3000,
+    "trigger": "right_click"
+  },
+  "STARLIGHT_WAND": {
+    "cooldown": 2000,
+    "trigger": "right_click"
+  },
+  "STAFF_OF_THE_VOLCANO": {
+    "cooldown": 30000,
+    "trigger": "right_click"
+  },
+  "FIRE_FURY_STAFF": {
+    "cooldown": 20000,
+    "trigger": "right_click"
+  },
+  "BINGO_BLASTER": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "SILENT_DEATH": {
+    "cooldown": 60000,
+    "trigger": "right_click"
+  },
+  "SKYMART_VACUUM": {
+    "cooldown": 1000,
+    "trigger": "left_click"
+  },
+  "SKYMART_TURBO_VACUUM": {
+    "cooldown": 1000,
+    "trigger": "left_click"
+  },
+  "SKYMART_HYPER_VACUUM": {
+    "cooldown": 1000,
+    "trigger": "left_click"
+  },
+  "INFINI_VACUUM": {
+    "cooldown": 1000,
+    "trigger": "left_click"
+  },
+  "INFINI_VACUUM_HOOVERIUS": {
+    "cooldown": 1000,
+    "trigger": "left_click"
+  },
+  "FIRE_VEIL_WAND": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "WAND_OF_STRENGTH": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "WAND_OF_HEALING": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "WAND_OF_MENDING": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "WAND_OF_RESTORATION": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "WAND_OF_ATONEMENT": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "GYROKINETIC_WAND": {
+    "cooldown": 30000,
+    "trigger": "right_click"
+  },
+  "WEIRD_TUBA": {
+    "cooldown": 20000,
+    "trigger": "right_click"
+  },
+  "WEIRDER_TUBA": {
+    "cooldown": 20000,
+    "trigger": "right_click"
+  },
+  "SPRAYONATOR": {
+    "cooldown": 3000,
+    "trigger": "right_click"
+  },
+  "GLOOMLOCK_GRIMOIRE": {
+    "cooldown": 1000,
+    "trigger": "left_click"
+  },
+  "TACTICAL_INSERTION": {
+    "cooldown": 20000,
+    "trigger": "right_click"
+  },
+  "SUMMONING_RING": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "HOLY_ICE": {
+    "cooldown": 4000,
+    "trigger": "right_click"
+  },
+  "ANCESTRAL_SPADE": {
+    "cooldown": 3000,
+    "trigger": "right_click"
+  },
+  "MOODY_GRAPPLESHOT": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "INFINITE_SUPERBOOM_TNT": {
+    "cooldown": 2000,
+    "trigger": "right_click"
+  },
+  "ROYAL_COMPASS": {
+    "cooldown": 3000,
+    "trigger": "right_click"
+  },
+  "SECRET_TRACKER": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  },
+  "FAKE_SHURIKEN": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "DEAD_CAT_DETECTOR": {
+    "cooldown": 9000,
+    "trigger": "right_click"
+  },
+  "HOTSPOT_RADAR": {
+    "cooldown": 2000,
+    "trigger": "right_click"
+  },
+  "TALBOTS_THEODOLITE": {
+    "cooldown": 10000,
+    "trigger": "right_click"
+  },
+  "EMMETT_POINTER": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "EGGLOCATOR": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  },
+  "DETECTIVE_SCANNER": {
+    "cooldown": 4000,
+    "trigger": "right_click"
+  },
+  "JINGLE_BELLS": {
+    "cooldown": 1000,
+    "trigger": "right_click"
+  },
+  "ROYAL_PIGEON": {
+    "cooldown": 5000,
+    "trigger": "right_click"
+  }
+}
