@@ -66,9 +66,9 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 		client.keyboard.setClipboard(String.valueOf(underbid));
 
 		if (client.player != null) {
+			Text priceText = Text.literal(Formatters.INTEGER_NUMBERS.format(underbid)).formatted(Formatting.GOLD);
 			client.player.sendMessage(Constants.PREFIX.get()
-					.append(Text.literal("Copied underbid price: ").formatted(Formatting.GRAY))
-					.append(Text.literal(Formatters.INTEGER_NUMBERS.format(underbid)).formatted(Formatting.GOLD)), false);
+					.append(Text.translatable("skyblocker.copyUnderbidPrice.copied", priceText).formatted(Formatting.GRAY)), false);
 		}
 
 		copied = true;

@@ -1344,6 +1344,8 @@
 
   "skyblocker.reorderHelper.tooltip": "[Skyblocker] You can copy the amount of items\nby holding CTRL while clicking on the item!",
 
+  "skyblocker.copyUnderbidPrice.copied": "Copied underbid price: %s",
+
   "skyblocker.fancyAuctionHouse.editBid": "Click to edit bid!",
   "skyblocker.fancyAuctionHouse.price": "Price:",
   "skyblocker.fancyAuctionHouse.newBid": "New Bid:",
