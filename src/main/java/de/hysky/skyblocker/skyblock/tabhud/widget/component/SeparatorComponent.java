@@ -32,9 +32,9 @@ public class SeparatorComponent extends Component {
 		if (text != null && !text.equals(Text.of(""))) {
 			context.fill(x - 2, y + this.height / 2, x + 2, y + this.height / 2 + 1, 0xff55ffff);
 			context.drawText(txtRend, text, x + 4, y, 0xff55ffff, false);
-			context.fill(x + 6 + textWidth, y + this.height / 2, x + width + 10, y + this.height / 2 +1, 0xff55ffff);
+			context.fill(x + 6 + textWidth, y + this.height / 2, x + width + 10, y + this.height / 2 + 1, 0xff55ffff);
 		} else {
-			context.fill(x - 2, y + this.height / 2, x + width, y + this.height / 2 +1, 0xff55ffff);
+			context.fill(x - 2, y + this.height / 2, x + width + 10, y + this.height / 2 + 1, 0xff55ffff);
 		}
 
 	}
