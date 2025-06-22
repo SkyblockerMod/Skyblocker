@@ -1137,8 +1137,6 @@
     "skyblocker.config.debug.dumpFormat.@Tooltip": "轉儲物品資料時所使用的格式 ，SNBT格式文字已上色以增強可讀性而JSON格式文字帶有轉義符號（如部分雙引號前）。",
     "skyblocker.config.debug.dumpRange": "實體轉儲範圍",
     "skyblocker.config.debug.dumpRange.@Tooltip": "玩家附近多少格範圍內的實體可被轉儲。",
-    "skyblocker.config.helpers.fishing.enableFishingHookDisplay.@Tooltip": "將skyblock魚鉤的計時器顯示在螢幕中央而非浮標上方。",
-    "skyblocker.config.helpers.fishing.enableFishingHookDisplay": "啟用魚鉤顯示",
     "skyblocker.config.foraging.galatea.enableForestNodeHelper": "啟用樹林節點助手",
     "skyblocker.config.farming.garden.farmingHud.type": "價格來源",
     "skyblocker.config.farming.garden.farmingHud.type.@Tooltip": "計算農耕HUD的金幣時要使用哪一個價格。\n「全部」會使用二者中較高的價格。",

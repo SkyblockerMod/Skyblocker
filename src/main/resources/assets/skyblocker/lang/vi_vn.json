@@ -335,8 +335,6 @@
     "skyblocker.config.helpers.fishing.seaCreatureCapNotification.notification": "Đã đạt giới hạn Sea Creature",
     "skyblocker.config.helpers.fishing.minimumNotificationRarity": "Thông báo Sea Creature hiếm",
     "skyblocker.config.helpers.fishing.minimumNotificationRarity.@Tooltip": "Độ hiếm tối thiểu của sea creature để thông báo . (UNKNOWN = tắt)",
-    "skyblocker.config.helpers.fishing.enableFishingHookDisplay": "Bật hiển thị móc câu cá",
-    "skyblocker.config.helpers.fishing.enableFishingHookDisplay.@Tooltip": "Hiển thị bộ đếm của móc câu trong skyblock trên màn hình thay vì trên cần câu.",
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "Bật Tra cứu giá vật phẩm",
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "Không tìm thấy vật phẩm trong Bazaar và AH",
     "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "Bật Làm mới giá vật phẩm",
