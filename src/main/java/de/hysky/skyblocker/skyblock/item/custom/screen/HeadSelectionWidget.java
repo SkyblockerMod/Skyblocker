@@ -80,11 +80,11 @@ public class HeadSelectionWidget extends ContainerWidget {
 	private void updateButtons() {
 		for (HeadButton b : allButtons) {
 			boolean selected = Objects.equals(b.texture, selectedTexture);
-			b.active = !selected;
+			b.active = true;
 			b.selected = selected;
 		}
 		boolean noneSelected = selectedTexture == null;
-		noneButton.active = !noneSelected;
+		noneButton.active = true;
 		noneButton.selected = noneSelected;
 	}
 
@@ -163,7 +163,9 @@ public class HeadSelectionWidget extends ContainerWidget {
 	@Override
 	protected int getContentsHeightWithPadding() {
 		int rows = Math.ceilDiv(visibleButtons.size(), buttonsPerRow);
-		return rows * 20 + 6;
+		// 3px top padding + search bar height + 3px gap before the grid +
+		// button rows + 3px bottom padding
+		return rows * 20 + searchField.getHeight() + 9;
 	}
 
 	@Override
@@ -187,7 +189,6 @@ public class HeadSelectionWidget extends ContainerWidget {
 		private final String texture;
 		private final ItemStack head;
 		private boolean selected = false;
-
 		public HeadButton(String name, String texture, ItemStack head, Runnable onPress) {
 			super(0, 0, 20, 20, Text.empty());
 			this.name = name;
@@ -195,25 +196,21 @@ public class HeadSelectionWidget extends ContainerWidget {
 			this.head = head;
 			this.onPress = onPress;
 		}
-
 		private final Runnable onPress;
-
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			context.drawItem(head, getX() + 2, getY() + 2);
+			context.drawItem(head, getX()+2, getY()+2);
 			if (selected) {
-				context.drawBorder(getX(), getY(), getWidth(), getHeight(), net.minecraft.util.Colors.YELLOW);
+				context.fill(getX(), getY(), getX()+getWidth(), getY()+getHeight(), 0x3000FF00);
 			}
 			if (isHovered()) {
-				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x20FFFFFF);
+				context.fill(getX(), getY(), getX()+getWidth(), getY()+getHeight(), 0x20FFFFFF);
 			}
 		}
-
 		@Override
 		public void onClick(double mouseX, double mouseY) {
 			onPress.run();
 		}
-
 		@Override
 		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 	}
