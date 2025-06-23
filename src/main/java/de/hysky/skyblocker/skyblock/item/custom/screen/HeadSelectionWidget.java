@@ -116,13 +116,16 @@ public class HeadSelectionWidget extends ContainerWidget {
 		searchField.render(context, mouseX, mouseY, delta);
 
 		int startY = searchField.getBottom() + 3;
-		context.enableScissor(getX() + 2, startY, getX() + getWidth() - 2, getY() + getHeight() - 2);
+		int startX = getX() + 2;
+		int endX = getX() + getWidth() - 2;
+		int endY = getY() + getHeight() - 2;
+		context.enableScissor(startX, startY, endX, endY);
 		int scrollY = (int) getScrollY();
 		HeadButton hovered = null;
 		for (HeadButton b : visibleButtons) {
 			b.setY(b.getY() - scrollY);
 			b.render(context, mouseX, mouseY, delta);
-			if (b.isMouseOver(mouseX, mouseY)) {
+			if (b.isMouseOver(mouseX, mouseY) && mouseX >= startX && mouseX < endX && mouseY >= startY && mouseY < endY) {
 				hovered = b;
 			}
 			b.setY(b.getY() + scrollY);
@@ -141,7 +144,21 @@ public class HeadSelectionWidget extends ContainerWidget {
 			setFocused(searchField);
 			return true;
 		}
-		return super.mouseClicked(mouseX, mouseY + this.getScrollY(), button);
+
+		double adjustedMouseY = mouseY + getScrollY();
+		if (overflows()) {
+			int scrollbarX = getScrollbarX();
+			// Default scrollbar width is 6 pixels
+			if (mouseX >= scrollbarX && mouseX < scrollbarX + 6) {
+				int thumbY = getScrollbarThumbY();
+				int thumbHeight = getScrollbarThumbHeight();
+				if (mouseY >= thumbY && mouseY < thumbY + thumbHeight) {
+					adjustedMouseY = mouseY;
+				}
+			}
+		}
+
+		return super.mouseClicked(mouseX, adjustedMouseY, button);
 	}
 
 	@Override
