@@ -39,6 +39,7 @@ public class SlotTextManager {
 			new ChoosePetLevelAdder(),
 			new SkyblockLevelAdder(),
 			new HotmPerkLevelAdder(),
+			new HotfPerkLevelAdder(),
 			new SkillLevelAdder(),
 			new CatacombsLevelAdder.Dungeoneering(),
 			new CatacombsLevelAdder.DungeonClasses(),
