@@ -119,8 +119,12 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             this(new WaypointGroup("New Group", island, new ArrayList<>()), false);
         }
 
-        public WaypointGroupEntry(WaypointGroup group, boolean collapsed) {
-            this.group = group;
+        public WaypointGroupEntry(WaypointGroup initialGroup, boolean collapsed) {
+            this.group = initialGroup;
+            //After this point do not use the initialGroup parameter (especially in lambdas!)
+            //doing so will result in any changes made not being saved if the group is replaced such as by editing its name
+            //or checking the ordered tick box as those methods replace the instance and the lambdas capture the instance on creation
+            //and will thus write to the old group instance rather than the latest one
             enabled = CheckboxWidget.builder(Text.literal(""), client.textRenderer).checked(shouldBeChecked()).callback((checkbox, checked) -> group.waypoints().forEach(waypoint -> screen.enabledChanged(waypoint, checked))).build();
             nameField = new TextFieldWidget(client.textRenderer, 70, 20, Text.literal("Name"));
             nameField.setText(group.name());
@@ -220,9 +224,10 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             this(groupEntry, groupEntry.group.createWaypoint(getDefaultPos()));
         }
 
-        public WaypointEntry(WaypointGroupEntry groupEntry, NamedWaypoint waypoint) {
+        public WaypointEntry(WaypointGroupEntry groupEntry, NamedWaypoint initialWaypoint) {
             this.groupEntry = groupEntry;
-            this.waypoint = waypoint;
+            this.waypoint = initialWaypoint;
+            //Do not use the initialWaypoint parameter after here for the same reasons as the group one
             enabled = CheckboxWidget.builder(Text.literal(""), client.textRenderer).checked(screen.isEnabled(waypoint)).callback((checkbox, checked) -> screen.enabledChanged(waypoint, checked)).build();
             nameField = new TextFieldWidget(client.textRenderer, 65, 20, Text.literal("Name"));
             nameField.setText(waypoint.getName().getString());
