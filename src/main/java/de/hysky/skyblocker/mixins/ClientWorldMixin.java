@@ -3,6 +3,8 @@ package de.hysky.skyblocker.mixins;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.device.SimonSays;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
+import de.hysky.skyblocker.skyblock.galatea.LushlilacHighlighter;
+import de.hysky.skyblocker.skyblock.galatea.SeaLumiesHighlighter;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.BeaconHighlighter;
 import de.hysky.skyblocker.utils.Utils;
@@ -45,6 +47,9 @@ public abstract class ClientWorldMixin implements BlockView {
 			BeaconHighlighter.beaconPositions.remove(pos);
 
 			if (state.isOf(Blocks.BEACON)) BeaconHighlighter.beaconPositions.add(pos.toImmutable());
+		} else if (Utils.isInGalatea()) {
+			LushlilacHighlighter.INSTANCE.onBlockUpdate(pos, state);
+			SeaLumiesHighlighter.INSTANCE.onBlockUpdate(pos, state);
 		}
 
 		SimonSays.onBlockUpdate(pos, state, oldState.get());
