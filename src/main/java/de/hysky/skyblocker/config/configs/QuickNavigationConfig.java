@@ -27,7 +27,7 @@ public class QuickNavigationConfig {
      * " \\([12]/2\\)" : match on the page either " (1/2)" or " (2/2)"
      */
     @SerialEntry
-    public QuickNavItem button4 = new QuickNavItem(new ItemData(Items.LEATHER_CHESTPLATE, "[minecraft:dyed_color={rgb:8991416}]"), "Wardrobe \\([12]/2\\)", "/wardrobe", "Wardrobe");
+    public QuickNavItem button4 = new QuickNavItem(new ItemData(Items.LEATHER_CHESTPLATE, "[minecraft:dyed_color=8991416]"), "Wardrobe \\([12]/2\\)", "/wardrobe", "Wardrobe");
 
     @SerialEntry
     public QuickNavItem button5 = new QuickNavItem(new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={id:[I;-2081424676,-57521078,-2073572414,158072763],name:\"\",properties:[{name:\"textures\",value:\"ewogICJ0aW1lc3RhbXAiIDogMTU5MTMxMDU4NTYwOSwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODBhMDc3ZTI0OGQxNDI3NzJlYTgwMDg2NGY4YzU3OGI5ZDM2ODg1YjI5ZGFmODM2YjY0YTcwNjg4MmI2ZWMxMCIKICAgIH0KICB9Cn0=\"}]}]"), "Sack of Sacks", "/sacks", "Sacks");

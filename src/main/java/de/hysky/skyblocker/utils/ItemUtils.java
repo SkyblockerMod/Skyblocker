@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonParser;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.brigadier.Command;
@@ -9,10 +10,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -24,9 +25,12 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.ComponentHolder;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.component.type.ProfileComponent;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -35,14 +39,15 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.Codecs;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.OptionalDouble;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,12 +65,17 @@ public final class ItemUtils {
             Codec.INT.orElse(1).fieldOf("count").forGetter(ItemStack::getCount),
             ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(ItemStack::getComponentChanges)
     ).apply(instance, ItemStack::new)));
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemUtils.class);
+    private static final Pattern STORED_PATTERN = Pattern.compile("Stored: ([\\d,]+)/\\S+");
+    private static final Pattern STASH_COUNT_PATTERN = Pattern.compile("x([\\d,]+)$"); // This is used with Matcher#find, not #matches
+    private static final short LOG_INTERVAL = 1000;
+	private static long lastLog = Util.getMeasuringTimeMs();
 
     private ItemUtils() {}
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
         return literal("dumpHeldItem").executes(context -> {
-            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
+            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(JsonOps.INSTANCE), context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
             return Command.SINGLE_SUCCESS;
         });
     }
@@ -95,7 +105,7 @@ public final class ItemUtils {
      */
     public static @NotNull Optional<String> getItemIdOptional(@NotNull ComponentHolder stack) {
         NbtCompound customData = getCustomData(stack);
-        return customData.contains(ID) ? Optional.of(customData.getString(ID)) : Optional.empty();
+        return customData.getString(ID);
     }
 
     /**
@@ -105,7 +115,7 @@ public final class ItemUtils {
      * @return the Skyblock item id of the item stack, or an empty string if the item stack does not have a Skyblock id
      */
     public static @NotNull String getItemId(@NotNull ComponentHolder stack) {
-        return getCustomData(stack).getString(ID);
+        return getCustomData(stack).getString(ID, "");
     }
 
     /**
@@ -116,7 +126,7 @@ public final class ItemUtils {
      */
     public static @NotNull Optional<String> getItemUuidOptional(@NotNull ComponentHolder stack) {
         NbtCompound customData = getCustomData(stack);
-        return customData.contains(UUID) ? Optional.of(customData.getString(UUID)) : Optional.empty();
+        return customData.getString(UUID);
     }
 
     /**
@@ -126,7 +136,7 @@ public final class ItemUtils {
      * @return the UUID of the item stack, or an empty string if the item stack does not have a UUID
      */
     public static @NotNull String getItemUuid(@NotNull ComponentHolder stack) {
-        return getCustomData(stack).getString(UUID);
+        return getCustomData(stack).getString(UUID, "");
     }
 
     /**
@@ -135,7 +145,7 @@ public final class ItemUtils {
      */
     public static @NotNull String getSkyblockApiId(@NotNull ComponentHolder itemStack) {
         NbtCompound customData = getCustomData(itemStack);
-        String id = customData.getString(ID);
+        String id = customData.getString(ID, "");
 
         // Transformation to API format.
         //TODO future - remove this and just handle it directly for the NEU id conversion because this whole system is confusing and hard to follow
@@ -146,15 +156,15 @@ public final class ItemUtils {
         switch (id) {
             case "ENCHANTED_BOOK" -> {
                 if (customData.contains("enchantments")) {
-                    NbtCompound enchants = customData.getCompound("enchantments");
+                    NbtCompound enchants = customData.getCompoundOrEmpty("enchantments");
                     Optional<String> firstEnchant = enchants.getKeys().stream().findFirst();
                     String enchant = firstEnchant.orElse("");
-                    return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getInt(enchant);
+                    return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getInt(enchant, 0);
                 }
             }
             case "PET" -> {
                 if (customData.contains("petInfo")) {
-                    PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
+                    PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo", ""))).getOrThrow();
                     return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
                 }
             }
@@ -163,58 +173,40 @@ public final class ItemUtils {
                 String extended = customData.contains("extended") ? "_EXTENDED" : "";
                 String splash = customData.contains("splash") ? "_SPLASH" : "";
                 if (customData.contains("potion") && customData.contains("potion_level")) {
-                    return (customData.getString("potion") + "_" + id + "_" + customData.getInt("potion_level")
+                    return (customData.getString("potion", "") + "_" + id + "_" + customData.getInt("potion_level", 0)
                             + enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
                 }
             }
             case "RUNE" -> {
                 if (customData.contains("runes")) {
-                    NbtCompound runes = customData.getCompound("runes");
+                    NbtCompound runes = customData.getCompoundOrEmpty("runes");
                     String rune = runes.getKeys().stream().findFirst().orElse("");
-                    return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getInt(rune);
+                    return rune.toUpperCase(Locale.ENGLISH) + "_RUNE_" + runes.getInt(rune, 0);
                 }
             }
             case "ATTRIBUTE_SHARD" -> {
                 if (customData.contains("attributes")) {
-                    NbtCompound shards = customData.getCompound("attributes");
+                    NbtCompound shards = customData.getCompoundOrEmpty("attributes");
                     String shard = shards.getKeys().stream().findFirst().orElse("");
-                    return id + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard);
+                    return id + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard, 0);
                 }
             }
             case "NEW_YEAR_CAKE" -> {
-                return id + "_" + customData.getInt("new_years_cake");
+                return id + "_" + customData.getInt("new_years_cake", 0);
             }
-            case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024" -> {
-                return id + "_" + customData.getString("party_hat_color").toUpperCase(Locale.ENGLISH);
+            case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> {
+                return id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
             }
             case "PARTY_HAT_SLOTH" -> {
-                return id + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ENGLISH);
-            }
-            case "CRIMSON_HELMET", "CRIMSON_CHESTPLATE", "CRIMSON_LEGGINGS", "CRIMSON_BOOTS" -> {
-                NbtCompound attributes = customData.getCompound("attributes");
-                if (attributes.contains("magic_find") && attributes.contains("veteran")) {
-                    return id + "-MAGIC_FIND-VETERAN";
-                }
-            }
-            case "AURORA_HELMET", "AURORA_CHESTPLATE", "AURORA_LEGGINGS", "AURORA_BOOTS" -> {
-                NbtCompound attributes = customData.getCompound("attributes");
-                if (attributes.contains("mana_pool") && attributes.contains("mana_regeneration")) {
-                    return id + "-MANA_POOL-MANA_REGENERATION";
-                }
-            }
-            case "TERROR_HELMET", "TERROR_CHESTPLATE", "TERROR_LEGGINGS", "TERROR_BOOTS" -> {
-                NbtCompound attributes = customData.getCompound("attributes");
-                if (attributes.contains("lifeline") && attributes.contains("mana_pool")) {
-                    return id + "-LIFELINE-MANA_POOL";
-                }
+                return id + "_" + customData.getString("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
             }
             case "MIDAS_SWORD" -> {
-                if (customData.getInt("winning_bid") >= 50000000) {
+                if (customData.getInt("winning_bid", 0) >= 50000000) {
                     return id + "_50M";
                 }
             }
             case "MIDAS_STAFF" -> {
-                if (customData.getInt("winning_bid") >= 100000000) {
+                if (customData.getInt("winning_bid", 0) >= 100000000) {
                     return id + "_100M";
                 }
             }
@@ -234,39 +226,39 @@ public final class ItemUtils {
         NbtCompound customData = ItemUtils.getCustomData(stack);
         return switch (id) {
             case "ENCHANTED_BOOK" -> {
-                NbtCompound enchantments = customData.getCompound("enchantments");
+                NbtCompound enchantments = customData.getCompoundOrEmpty("enchantments");
                 String enchant = enchantments.getKeys().stream().findFirst().orElse("");
-                yield enchant.toUpperCase(Locale.ENGLISH) + ";" + enchantments.getInt(enchant);
+                yield enchant.toUpperCase(Locale.ENGLISH) + ";" + enchantments.getInt(enchant, 0);
             }
             case "PET" -> {
                 if (!customData.contains("petInfo")) yield id;
-                PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo"))).getOrThrow();
+                PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getString("petInfo", ""))).getOrThrow();
                 yield petInfo.type() + ';' + petInfo.tierIndex();
             }
             case "RUNE" -> {
-                NbtCompound runes = customData.getCompound("runes");
+                NbtCompound runes = customData.getCompoundOrEmpty("runes");
                 String rune = runes.getKeys().stream().findFirst().orElse("");
-                yield rune.toUpperCase(Locale.ENGLISH) + "_RUNE;" + runes.getInt(rune);
+                yield rune.toUpperCase(Locale.ENGLISH) + "_RUNE;" + runes.getInt(rune, 0);
             }
-            case "POTION" -> "POTION_" + customData.getString("potion").toUpperCase(Locale.ENGLISH) + ";" + customData.getInt("potion_level");
+            case "POTION" -> "POTION_" + customData.getString("potion", "").toUpperCase(Locale.ENGLISH) + ";" + customData.getInt("potion_level", 0);
             case "ATTRIBUTE_SHARD" -> "ATTRIBUTE_SHARD";
-            case "PARTY_HAT_CRAB", "BALLOON_HAT_2024" -> id + "_" + customData.getString("party_hat_color").toUpperCase(Locale.ENGLISH);
-            case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getString("party_hat_color").toUpperCase(Locale.ENGLISH) + "_ANIMATED";
-            case "PARTY_HAT_SLOTH" -> id + "_" + customData.getString("party_hat_emoji").toUpperCase(Locale.ENGLISH);
+            case "PARTY_HAT_CRAB", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
+            case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH) + "_ANIMATED";
+            case "PARTY_HAT_SLOTH" -> id + "_" + customData.getString("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
             default -> id.replace(":", "-");
         };
     }
 
     /**
      * Parses the {@code petInfo} field from a pet item that has it into the {@link PetInfo} record.
-     * 
+     *
      * @return the parsed {@link PetInfo} if successful, or {@link PetInfo#EMPTY}
      */
     @NotNull
     public static PetInfo getPetInfo(ComponentHolder stack) {
     	if (!getItemId(stack).equals("PET")) return PetInfo.EMPTY;
 
-    	String petInfo = getCustomData(stack).getString("petInfo");
+    	String petInfo = getCustomData(stack).getString("petInfo", "");
 
     	if (!petInfo.isEmpty()) {
     		try {
@@ -346,7 +338,7 @@ public final class ItemUtils {
 
     public static boolean hasCustomDurability(@NotNull ItemStack stack) {
         NbtCompound customData = getCustomData(stack);
-        return !customData.isEmpty() && (customData.contains("drill_fuel") || customData.getString(ID).equals("PICKONIMBUS"));
+        return !customData.isEmpty() && (customData.contains("drill_fuel") || customData.getString(ID, "").equals("PICKONIMBUS"));
     }
 
     @Nullable
@@ -358,7 +350,7 @@ public final class ItemUtils {
         // TODO Cache the max durability and only update the current durability on inventory tick
 
         if (stack.getSkyblockId().equals("PICKONIMBUS")) {
-            int pickonimbusDurability = customData.getInt("pickonimbus_durability");
+            int pickonimbusDurability = customData.getInt("pickonimbus_durability", 0);
 
             return IntIntPair.of(customData.contains("pickonimbus_durability") ? pickonimbusDurability : 2000, 2000);
         }
@@ -394,13 +386,7 @@ public final class ItemUtils {
      */
     @Nullable
     public static Matcher getLoreLineIfMatch(ItemStack stack, Pattern pattern) {
-        Matcher matcher = pattern.matcher("");
-        for (Text line : getLore(stack)) {
-            if (matcher.reset(line.getString()).matches()) {
-                return matcher;
-            }
-        }
-        return null;
+        return TextUtils.matchInList(getLore(stack), pattern);
     }
 
     /**
@@ -411,13 +397,7 @@ public final class ItemUtils {
      */
     @Nullable
     public static Matcher getLoreLineIfContainsMatch(ItemStack stack, Pattern pattern) {
-        Matcher matcher = pattern.matcher("");
-        for (Text line : getLore(stack)) {
-            if (matcher.reset(line.getString()).find()) {
-                return matcher;
-            }
-        }
-        return null;
+        return TextUtils.findInList(getLore(stack), pattern);
     }
 
     public static @NotNull List<Text> getLore(ItemStack stack) {
@@ -446,15 +426,25 @@ public final class ItemUtils {
         return Optional.of(texture);
     }
 
-    public static @NotNull ItemStack getSkyblockerStack() {
-        try {
-            ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-            stack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("SkyblockerStack"), Optional.of(java.util.UUID.randomUUID()), propertyMapWithTexture("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=")));
-            return stack;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public static @NotNull ItemStack createSkull(String textureBase64) {
+		GameProfile profile = new GameProfile(java.util.UUID.randomUUID(), "a");
+		profile.getProperties().put("textures", new Property("textures", textureBase64));
+		return createSkull(profile);
+	}
+
+	public static @NotNull ItemStack createSkull(GameProfile profile) {
+		try {
+			ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
+			stack.set(DataComponentTypes.PROFILE, new ProfileComponent(profile));
+			return stack;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static @NotNull ItemStack getSkyblockerStack() {
+		return createSkull("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=");
+	}
 
     /**
      * Utility method.
@@ -474,5 +464,69 @@ public final class ItemUtils {
             if (i != lore.size() - 1) stringBuilder.append(" ");
         }
         return stringBuilder.toString();
+    }
+
+    public static List<ItemStack> getArmor(LivingEntity entity) {
+    	return AttributeModifierSlot.ARMOR.getSlots().stream()
+    			.filter(es -> es.getType() == EquipmentSlot.Type.HUMANOID_ARMOR)
+    			.map(entity::getEquippedStack)
+    			.toList();
+    }
+
+    /**
+     * Finds the number of items stored in a sack based on the tooltip lines.
+     * @param itemStack The item stack these lines belong to. This is used for logging purposes.
+     * @param lines The tooltip lines to search in. This isn't equivalent to the item's lore.
+     * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
+     */
+    @NotNull
+    public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines) {
+        return getItemCountInSack(itemStack, lines, false);
+    }
+
+    /**
+     * Finds the number of items stored in a sack from a list of texts.
+     * @param itemStack The item stack this list of texts belong to. This is used for logging purposes.
+     * @param lines A list of text lines that represent the tooltip of the item stack.
+     * @param isLore Whether the lines are from the item's lore or not. This is useful to figure out which line to look at, as lore and tooltip lines are different due to the first line being the item's name.
+     * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
+     */
+    @NotNull
+    public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines, boolean isLore) {
+        // Gemstone sack is a special case, it has a different 2nd line.
+		if (lines.size() >= 2 && StringUtils.endsWithAny(lines.get(isLore ? 0 : 1).getString(), "Sack", "Gemstones")) {
+			// Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
+            // Which equals: `Stored: 0/20k`
+			Matcher matcher = TextUtils.matchInList(lines, STORED_PATTERN);
+			if (matcher == null) {
+				// Log a warning every second if the amount couldn't be found, to prevent spamming the logs every frame (which can be hundreds of times per second)
+				if (Util.getMeasuringTimeMs() - lastLog > LOG_INTERVAL) {
+					LOGGER.warn("Failed to find stored amount in sack tooltip for item `{}`", Debug.DumpFormat.JSON.format(itemStack).getString()); // This is a very unintended way of serializing the item stack, but it's so much cleaner than actually using the codec
+					lastLog = Util.getMeasuringTimeMs();
+				}
+				return OptionalInt.empty();
+			} else return RegexUtils.parseOptionalIntFromMatcher(matcher, 1);
+		}
+		return OptionalInt.empty();
+    }
+
+    /**
+     * Finds the number of items stored in a stash based on item's name.
+     * @param itemStack The item stack.
+     * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
+     */
+    @NotNull
+    public static OptionalInt getItemCountInStash(@NotNull ItemStack itemStack) {
+        return getItemCountInStash(itemStack.getName());
+    }
+
+    /**
+     * Finds the number of items stored in a stash based on item's name.
+     * @param itemName The name of the item to look in.
+     * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
+     */
+    @NotNull
+    public static OptionalInt getItemCountInStash(@NotNull Text itemName) {
+        return RegexUtils.findIntFromMatcher(STASH_COUNT_PATTERN.matcher(itemName.getString()));
     }
 }

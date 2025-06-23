@@ -3,16 +3,14 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.utils.Formatters;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,12 +19,7 @@ import java.util.regex.Pattern;
 @RegisterWidget
 public class PowderWidget extends TabHudWidget {
 	private static final MutableText TITLE = Text.literal("Powders").formatted(Formatting.DARK_AQUA, Formatting.BOLD);
-	private static final DecimalFormat DECIMAL_FORMAT = (DecimalFormat) NumberFormat.getInstance(Locale.ENGLISH);
 	private static final short UPDATE_INTERVAL = 2000;
-
-	static {
-		DECIMAL_FORMAT.setPositivePrefix("+"); // Causes the positive sign to be displayed for positive numbers, while the negative sign is always displayed for negative numbers. This removes the need to prepend a + if positive.
-	}
 
 	// Patterns to match the playerlist lines against
 	private static final Pattern MITHRIL_PATTERN = Pattern.compile("Mithril: ([\\d,]+)");
@@ -109,7 +102,7 @@ public class PowderWidget extends TabHudWidget {
 	}
 
 	private MutableText getAppendix(int diff, Formatting formatting) {
-		return Text.literal(" (" + DECIMAL_FORMAT.format(diff) + ")").formatted(formatting);
+		return Text.literal(" (" + Formatters.DIFF_NUMBERS.format(diff) + ")").formatted(formatting);
 	}
 
 	// Decides whether the appendix should be appended to the line

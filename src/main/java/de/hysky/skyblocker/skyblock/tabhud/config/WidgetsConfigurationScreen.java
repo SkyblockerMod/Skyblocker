@@ -4,7 +4,7 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.preview.PreviewTab;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -39,7 +39,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	private @Nullable GenericContainerScreenHandler handler;
 	private String titleLowercase;
 	public final boolean noHandler;
-	private ScreenMaster.ScreenLayer widgetsLayer = null;
+	private WidgetManager.ScreenLayer widgetsLayer = null;
 	private Screen parent = null;
 
 	private boolean tabPreview = false;
@@ -87,7 +87,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	 * @param handler        the container handler
 	 * @param titleLowercase the title in lowercase
 	 */
-	private WidgetsConfigurationScreen(@Nullable GenericContainerScreenHandler handler, String titleLowercase, Location targetLocation, @Nullable ScreenMaster.ScreenLayer widgetLayerToGoTo) {
+	private WidgetsConfigurationScreen(@Nullable GenericContainerScreenHandler handler, String titleLowercase, Location targetLocation, @Nullable WidgetManager.ScreenLayer widgetLayerToGoTo) {
 		super(Text.literal("Widgets Configuration"));
 		this.handler = handler;
 		this.titleLowercase = titleLowercase;
@@ -99,7 +99,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 			currentLocation = targetLocation;
 			widgetsLayer = widgetLayerToGoTo;
 		}
-		ScreenMaster.getScreenBuilder(currentLocation).backupPositioning();
+		WidgetManager.getScreenBuilder(currentLocation).backupPositioning();
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	 * @param widgetLayerToGoTo go to this widget's layer
 	 */
 	public WidgetsConfigurationScreen(Location targetLocation, String widgetLayerToGoTo, Screen parent) {
-		this(null, "", targetLocation, ScreenMaster.getScreenBuilder(targetLocation).getPositionRuleOrDefault(widgetLayerToGoTo).screenLayer());
+		this(null, "", targetLocation, WidgetManager.getScreenBuilder(targetLocation).getPositionRuleOrDefault(widgetLayerToGoTo).screenLayer());
 		this.parent = parent;
 	}
 
@@ -129,7 +129,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 	 * @param targetLocation open the preview to this location
 	 * @param layerToGo      go to this layer
 	 */
-	public WidgetsConfigurationScreen(Location targetLocation, ScreenMaster.ScreenLayer layerToGo, Screen parent) {
+	public WidgetsConfigurationScreen(Location targetLocation, WidgetManager.ScreenLayer layerToGo, Screen parent) {
 		this(null, "", targetLocation, layerToGo);
 		this.parent = parent;
 	}
@@ -177,7 +177,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 
 	public void updateCustomWidgets() {
 		List<WidgetEntry> entries = new ArrayList<>();
-		for (HudWidget value : ScreenMaster.widgetInstances.values()) {
+		for (HudWidget value : WidgetManager.widgetInstances.values()) {
 			if (!value.availableLocations().contains(currentLocation)) continue;
 			entries.add(new WidgetEntry(value, currentLocation));
 		}
@@ -188,7 +188,7 @@ public class WidgetsConfigurationScreen extends Screen implements ScreenHandlerL
 		Location old = this.currentLocation;
 		currentLocation = location;
 		if (old != currentLocation) {
-			ScreenMaster.getScreenBuilder(currentLocation).backupPositioning();
+			WidgetManager.getScreenBuilder(currentLocation).backupPositioning();
 			updateCustomWidgets();
 		}
 	}

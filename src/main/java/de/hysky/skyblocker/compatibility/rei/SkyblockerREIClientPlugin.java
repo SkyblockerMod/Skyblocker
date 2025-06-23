@@ -2,6 +2,7 @@ package de.hysky.skyblocker.compatibility.rei;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
@@ -17,6 +18,7 @@ import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
@@ -56,6 +58,11 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
             if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return List.of();
             HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
             return List.of(new Rectangle(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
+        });
+
+        zones.register(Screen.class, screen -> {
+            if (!VisitorHelper.shouldRender()) return List.of();
+            return VisitorHelper.getExclusionZones();
         });
     }
 

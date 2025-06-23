@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UIAndVisualsConfig {
+
+	@SerialEntry
+	public boolean swingOnAbilities = false;
+
 	@SerialEntry
 	public int nightVisionStrength = 100;
 
@@ -32,7 +36,7 @@ public class UIAndVisualsConfig {
     public boolean fancyCraftingTable = true;
 
     @SerialEntry
-    public boolean hideStatusEffectOverlay = false;
+    public boolean hideStatusEffectOverlay = true;
 
     @SerialEntry
     public boolean showEquipmentInInventory = true;
@@ -84,6 +88,12 @@ public class UIAndVisualsConfig {
 
     @SerialEntry
     public CompactDamage compactDamage = new CompactDamage();
+
+	@SerialEntry
+	public HealthBars healthBars = new HealthBars();
+
+	@SerialEntry
+	public ItemPickup itemPickup = new ItemPickup();
 
     public static class ChestValue {
         @SerialEntry
@@ -206,10 +216,10 @@ public class UIAndVisualsConfig {
         public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
 
         @Deprecated
-        public boolean plainPlayerNames = false;
+        public transient boolean plainPlayerNames = false;
 
         @Deprecated
-        public NameSorting nameSorting = NameSorting.DEFAULT;
+        public transient NameSorting nameSorting = NameSorting.DEFAULT;
     }
 
 	public enum TabHudStyle {
@@ -267,12 +277,21 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public boolean enableBars = true;
 
+		@SerialEntry
+		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
+
         // Kept in for backwards compatibility, remove if needed
         @SuppressWarnings("DeprecatedIsStillUsed")
         @Deprecated
         @SerialEntry
         public LegacyBarPositions barPositions = new LegacyBarPositions();
     }
+
+	public enum IntelligenceDisplay {
+		ORIGINAL,
+		ACCURATE,
+		IN_FRONT;
+	}
 
     /**
      * Backwards compat.
@@ -314,6 +333,9 @@ public class UIAndVisualsConfig {
     public static class TeleportOverlay {
         @SerialEntry
         public boolean enableTeleportOverlays = true;
+
+        @SerialEntry
+        public Color teleportOverlayColor = new Color(0x7F761594, true);
 
         @SerialEntry
         public boolean enableWeirdTransmission = true;
@@ -413,4 +435,48 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public Color critDamageGradientEnd = new Color(0xFF5555);
     }
+
+	public static class HealthBars {
+		@SerialEntry
+		public boolean enabled = false;
+
+		@SerialEntry
+		public float scale = 1.5f;
+
+		@SerialEntry
+		public boolean removeHealthFromName = true;
+
+		@SerialEntry
+		public boolean removeMaxHealthFromName = true;
+
+		@SerialEntry
+		public boolean applyToHealthOnlyMobs = true;
+
+		@SerialEntry
+		public boolean hideFullHealth = false;
+
+
+		@SerialEntry
+		public Color fullBarColor = new Color(0x00FF00);
+
+		@SerialEntry
+		public Color halfBarColor = new Color(0xFF4600);
+
+		@SerialEntry
+		public Color emptyBarColor = new Color(0xFF0000);
+	}
+
+	public static class ItemPickup {
+		@SerialEntry
+		public boolean enabled = false;
+
+		@SerialEntry
+		public boolean sackNotifications = false;
+
+		@SerialEntry
+		public boolean showItemName = true;
+
+		@SerialEntry
+		public int lifeTime = 3;
+	}
 }

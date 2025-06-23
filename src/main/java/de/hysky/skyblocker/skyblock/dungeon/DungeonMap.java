@@ -1,14 +1,16 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -22,15 +24,17 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
+import net.minecraft.util.Identifier;
 
 public class DungeonMap {
+	private static final Identifier DUNGEON_MAP = Identifier.of(SkyblockerMod.NAMESPACE, "dungeon_map");
     private static final MapIdComponent DEFAULT_MAP_ID_COMPONENT = new MapIdComponent(1024);
     private static final MapRenderState MAP_RENDER_STATE = new MapRenderState();
     private static MapIdComponent cachedMapIdComponent = null;
 
     @Init
     public static void init() {
-    	HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> render(context));
+		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.STATUS_EFFECTS, DUNGEON_MAP, (context, tickCounter) -> render(context)));
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
                 .then(ClientCommandManager.literal("hud")
                         .then(ClientCommandManager.literal("dungeon")
@@ -45,7 +49,7 @@ public class DungeonMap {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) return;
 
-        MapIdComponent mapId = getMapIdComponent(client.player.getInventory().main.get(8));
+        MapIdComponent mapId = getMapIdComponent(client.player.getInventory().getMainStacks().get(8));
 
         MapState state = FilledMapItem.getMapState(mapId, client.world);
         if (state == null) return;

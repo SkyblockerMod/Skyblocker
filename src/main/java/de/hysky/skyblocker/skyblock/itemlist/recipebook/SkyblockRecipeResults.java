@@ -18,7 +18,6 @@ import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.component.DataComponentTypes;
@@ -195,7 +194,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 
 	/**
 	 * Handles updating the search results when a character is typed into the search bar,
-	 * 
+	 *
 	 * @implNote The {@code query} is always passed as lower case.
 	 */
 	@Override
@@ -357,14 +356,17 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 
 	@Override
 	public boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
-		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup
-			&& WikiLookup.wikiLookup.matchesKey(keyCode, scanCode))
-			return this.resultButtons.stream()
-					.filter(button -> button.isMouseOver(mouseX, mouseY))
-					.findFirst().map(button -> {
-						WikiLookup.openWiki(button.getDisplayStack(), client.player);
-						return true;
-					}).orElse(false);
+		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
+			boolean officialWikiLookup = WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode);
+			if (officialWikiLookup || WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
+				return this.resultButtons.stream()
+						.filter(button -> button.isMouseOver(mouseX, mouseY))
+						.findFirst().map(button -> {
+							WikiLookup.openWiki(button.getDisplayStack(), client.player, officialWikiLookup);
+							return true;
+						}).orElse(false);
+			}
+		}
 		return false;
 	}
 }

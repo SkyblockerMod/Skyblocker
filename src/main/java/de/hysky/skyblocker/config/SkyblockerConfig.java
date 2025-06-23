@@ -32,6 +32,9 @@ public class SkyblockerConfig {
     public FarmingConfig farming = new FarmingConfig();
 
     @SerialEntry
+    public HuntingConfig hunting = new HuntingConfig();
+
+    @SerialEntry
     public OtherLocationsConfig otherLocations = new OtherLocationsConfig();
 
     @SerialEntry

@@ -18,17 +18,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.nbt.visitor.StringNbtWriter;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -36,7 +34,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * <p>Adds equipment slots to the inventory screen and moves the offhand slot.</p>
@@ -65,9 +62,8 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         }
         Path resolve = FOLDER.resolve(profileId + ".nbt");
 
-        try (BufferedWriter writer = Files.newBufferedWriter(resolve)) {
-
-            writer.write(new StringNbtWriter().apply(CODEC.encodeStart(NbtOps.INSTANCE, ArrayUtils.addAll(equipment, equipment_rift)).getOrThrow()));
+        try {
+            NbtIo.write(CODEC.encodeStart(NbtOps.INSTANCE, ArrayUtils.addAll(equipment, equipment_rift)).getOrThrow(), new DataOutputStream(Files.newOutputStream(resolve)));
         } catch (Exception e) {
             LOGGER.error("[Skyblocker] Failed to save Equipment data", e);
         }
@@ -76,8 +72,8 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     private static void load(String profileId) {
         Path resolve = FOLDER.resolve(profileId + ".nbt");
         CompletableFuture.supplyAsync(() -> {
-            try (BufferedReader reader = Files.newBufferedReader(resolve)) {
-                return CODEC.parse(NbtOps.INSTANCE, StringNbtReader.parse(reader.lines().collect(Collectors.joining()))).getOrThrow();
+            try {
+                return CODEC.parse(NbtOps.INSTANCE, NbtIo.read(resolve)).getOrThrow();
             } catch (NoSuchFileException ignored) {
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker] Failed to load Equipment data", e);

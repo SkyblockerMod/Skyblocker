@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.debug;
 
+import com.google.gson.JsonElement;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.serialization.JsonOps;
@@ -7,10 +8,11 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.InGameHudInvoker;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -30,8 +32,12 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
+import net.minecraft.world.biome.Biome;
+
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -45,6 +51,13 @@ public class Debug {
 
 	public static boolean debugEnabled() {
 		return DEBUG_ENABLED || FabricLoader.getInstance().isDevelopmentEnvironment() || SnapshotDebug.isInSnapshot();
+	}
+
+	/**
+	 * Used for checking if unit tests are being run.
+	 */
+	public static boolean isTestEnvironment() {
+		return Boolean.getBoolean("IS_TEST_ENV");
 	}
 
 	public static boolean webSocketDebug() {
@@ -66,6 +79,8 @@ public class Debug {
 						.then(dumpArmorStandHeadTextures())
 						.then(toggleWebSocketDebug())
 						.then(EventNotifications.debugToasts())
+						.then(dumpBiome())
+						.then(dumpActionBar())
 				)
 		));
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -107,8 +122,7 @@ public class Debug {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> toggleShowingInvisibleArmorStands() {
 		return literal("toggleShowingInvisibleArmorStands")
 				.executes(context -> {
-					SkyblockerConfigManager.get().debug.showInvisibleArmorStands = !SkyblockerConfigManager.get().debug.showInvisibleArmorStands;
-					SkyblockerConfigManager.save();
+					SkyblockerConfigManager.update(config -> config.debug.showInvisibleArmorStands = !config.debug.showInvisibleArmorStands);
 					context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.debug.toggledShowingInvisibleArmorStands", SkyblockerConfigManager.get().debug.showInvisibleArmorStands)));
 					return Command.SINGLE_SUCCESS;
 				});
@@ -117,8 +131,7 @@ public class Debug {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> toggleWebSocketDebug() {
 		return literal("toggleWebSocketDebug")
 				.executes(context -> {
-					SkyblockerConfigManager.get().debug.webSocketDebug = !SkyblockerConfigManager.get().debug.webSocketDebug;
-					SkyblockerConfigManager.save();
+					SkyblockerConfigManager.update(config -> config.debug.webSocketDebug = !SkyblockerConfigManager.get().debug.webSocketDebug);
 					context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.debug.toggledWebSocketDebug", SkyblockerConfigManager.get().debug.webSocketDebug)));
 					return Command.SINGLE_SUCCESS;
 				});
@@ -130,7 +143,7 @@ public class Debug {
 					List<ArmorStandEntity> armorStands = context.getSource().getWorld().getEntitiesByClass(ArmorStandEntity.class, context.getSource().getPlayer().getBoundingBox().expand(8d), EntityPredicates.NOT_MOUNTED);
 
 					for (ArmorStandEntity armorStand : armorStands) {
-						Iterable<ItemStack> equippedItems = armorStand.getEquippedItems();
+						Iterable<ItemStack> equippedItems = ItemUtils.getArmor(armorStand);
 
 						for (ItemStack stack : equippedItems) {
 							ItemUtils.getHeadTextureOptional(stack).ifPresent(texture -> context.getSource().sendFeedback(Text.of(texture)));
@@ -141,20 +154,53 @@ public class Debug {
 				});
 	}
 
+	private static LiteralArgumentBuilder<FabricClientCommandSource> dumpBiome() {
+		return literal("dumpBiome")
+				.executes(context -> {
+					FabricClientCommandSource source = context.getSource();
+					RegistryEntry<Biome> biome = source.getWorld().getBiome(source.getPlayer().getBlockPos());
+
+					if (biome != null && biome.value() != null) {
+						String biomeData = Biome.CODEC.encodeStart(JsonOps.INSTANCE, biome.value())
+								.map(JsonElement::toString)
+								.setPartial("")
+								.getPartialOrThrow();
+						source.sendFeedback(Constants.PREFIX.get().append(Text.literal(String.format("Biome ID: %s, Data: %s", biome.getIdAsString(), biomeData))));
+					}
+
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> dumpActionBar() {
+		return literal("dumpActionBar")
+				.executes(context -> {
+					FabricClientCommandSource source = context.getSource();
+					Text actionBar = ((InGameHudInvoker) (source.getClient().inGameHud)).getOverlayMessage();
+
+					if (actionBar != null) {
+						Text pretty = NbtHelper.toPrettyPrintedText(TextCodecs.CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(NbtOps.INSTANCE), actionBar).getOrThrow());
+						source.sendFeedback(Constants.PREFIX.get().append("Action Bar: ").append(pretty));
+					}
+
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
 	public enum DumpFormat {
 		JSON {
 			@Override
 			public Text format(ItemStack stack) {
-				return Text.literal(SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), stack).getOrThrow()));
+				return Text.literal(SkyblockerMod.GSON_COMPACT.toJson(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(JsonOps.INSTANCE), stack).getOrThrow()));
 			}
 		},
 		SNBT {
 			@Override
 			public Text format(ItemStack stack) {
-				return NbtHelper.toPrettyPrintedText(ItemStack.CODEC.encodeStart(MinecraftClient.getInstance().player.getRegistryManager().getOps(NbtOps.INSTANCE), stack).getOrThrow());
+				return NbtHelper.toPrettyPrintedText(ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.encodeStart(MinecraftClient.getInstance().player.getRegistryManager().getOps(NbtOps.INSTANCE), stack).getOrThrow());
 			}
 		};
 
-		abstract Text format(ItemStack stack);
+		public abstract Text format(ItemStack stack);
 	}
 }

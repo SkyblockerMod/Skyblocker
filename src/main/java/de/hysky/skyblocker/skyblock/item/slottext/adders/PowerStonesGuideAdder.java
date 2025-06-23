@@ -30,8 +30,8 @@ public class PowerStonesGuideAdder extends SimpleSlotTextAdder {
         if (match == null) return List.of();
         String symbol = match.group("symbol");
         Text text = symbol.equals("✖")
-                ? Text.literal("✖").withColor(0xFF7276)
-                : Text.literal("✔").withColor(0x90ee90);
+                ? Text.literal("✘").withColor(SlotText.LIGHT_RED)
+                : Text.literal("✔").withColor(SlotText.LIGHT_GREEN);
 
         return SlotText.bottomRightList(text);
     }

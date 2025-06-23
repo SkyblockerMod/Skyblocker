@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 
@@ -18,7 +19,7 @@ import net.minecraft.item.tooltip.TooltipAppender;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,10 +27,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack {
@@ -66,21 +65,21 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 		return original;
 	}
 
-	@ModifyVariable(method = "appendTooltip", at = @At("STORE"))
-	private TooltipAppender skyblocker$hideVanillaEnchants(TooltipAppender original) {
-		return Utils.isOnSkyblock() && original instanceof ItemEnchantmentsComponent component ? component.withShowInTooltip(false) : original;
+	@ModifyExpressionValue(method = "appendComponentTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/component/type/TooltipDisplayComponent;shouldDisplay(Lnet/minecraft/component/ComponentType;)Z"))
+	private boolean skyblocker$hideVanillaEnchants(boolean shouldDisplay, @Local TooltipAppender component) {
+		return shouldDisplay && !(Utils.isOnSkyblock() && component instanceof ItemEnchantmentsComponent);
 	}
 
-	@Inject(method = "getTooltip",
+	@Inject(method = "appendTooltip",
 			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/registry/DefaultedRegistry;getId(Ljava/lang/Object;)Lnet/minecraft/util/Identifier;")),
-			at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.AFTER, ordinal = 0)
+			at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", shift = At.Shift.AFTER, ordinal = 0)
 	)
-	private void skyblocker$skyblockIdTooltip(CallbackInfoReturnable<List<Text>> cir, @Local List<Text> lines) {
+	private void skyblocker$skyblockIdTooltip(CallbackInfo ci, @Local(argsOnly = true) Consumer<Text> textConsumer) {
 		if (Utils.isOnSkyblock()) {
 			String skyblockId = getSkyblockId();
 
 			if (!skyblockId.isEmpty()) {
-				lines.add(Text.literal("skyblock:" + skyblockId).formatted(Formatting.DARK_GRAY));
+				textConsumer.accept(Text.literal("skyblock:" + skyblockId).formatted(Formatting.DARK_GRAY));
 			}
 		}
 	}
@@ -129,7 +128,7 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@Unique
 	private boolean skyblocker$shouldProcess() { // Durability bar renders atop of tooltips in ProfileViewer so disable on this screen
-		return !(MinecraftClient.getInstance().currentScreen instanceof ProfileViewerScreen) && Utils.isOnSkyblock() && SkyblockerConfigManager.get().mining.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
+		return !(MinecraftClient.getInstance() != null && MinecraftClient.getInstance().currentScreen instanceof ProfileViewerScreen) && Utils.isOnSkyblock() && SkyblockerConfigManager.get().mining.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
 	}
 
 	@Unique

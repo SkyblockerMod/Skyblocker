@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.9-SNAPSHOT'
+	id 'fabric-loom' version '1.10-SNAPSHOT'
 	id 'maven-publish'
 	id "me.modmuss50.mod-publish-plugin" version "0.8.1"
 	id "de.hysky.skyblocker.annotation-processor"
@@ -19,14 +19,14 @@ repositories {
 	}
 
 	maven {
-		name 'Maven Central'
-		url 'https://repo.maven.apache.org/maven2'
+		name = 'Maven Central'
+		url = 'https://repo.maven.apache.org/maven2'
 	}
 
 	// For ModMenu and EMI
 	exclusiveContent {
 		forRepository {
-			maven { url "https://maven.terraformersmc.com/releases" }
+			maven { url = "https://maven.terraformersmc.com/releases" }
 		}
 
 		filter {
@@ -38,7 +38,7 @@ repositories {
 	// For REI
 	exclusiveContent {
 		forRepository {
-			maven { url "https://maven.shedaniel.me/" }
+			maven { url = "https://maven.shedaniel.me/" }
 		}
 
 		filter {
@@ -64,7 +64,7 @@ repositories {
 
 	// YACL
 	maven {
-		url "https://maven.isxander.dev/releases"
+		url = "https://maven.isxander.dev/releases"
 
 		content {
 			includeGroup "dev.isxander"
@@ -74,7 +74,7 @@ repositories {
 
 	// For Minecraft snapshots
 	maven {
-		url "https://maven.isxander.dev/snapshots"
+		url = "https://maven.isxander.dev/snapshots"
 
 		content {
 			includeGroup "dev.isxander"
@@ -95,21 +95,10 @@ repositories {
 		}
 	}
 
-	// For Occlusion Culling library
-	exclusiveContent {
-		forRepository {
-			maven { url "https://repo.codemc.io/repository/maven-public/" }
-		}
-
-		filter {
-			includeGroup "com.logisticscraft"
-		}
-	}
-
 	// For NEU repo parser
 	exclusiveContent {
 		forRepository {
-			maven { url "https://repo.nea.moe/releases" }
+			maven { url = "https://repo.nea.moe/releases" }
 		}
 
 		filter {
@@ -118,7 +107,7 @@ repositories {
 	}
 
 	maven {
-		url "https://maven.azureaaron.net/releases"
+		url = "https://maven.azureaaron.net/releases"
 
 		content {
 			includeGroup "net.azureaaron"
@@ -126,7 +115,7 @@ repositories {
 	}
 
 	maven {
-		url "https://maven.azureaaron.net/snapshots"
+		url = "https://maven.azureaaron.net/snapshots"
 
 		content {
 			includeGroup "net.azureaaron"
@@ -146,6 +135,9 @@ dependencies {
 	}
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
+	// Loom does not always add this
+	implementation "ca.weblite:java-objc-bridge:1.1"
+
 	// Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
@@ -159,8 +151,9 @@ dependencies {
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
 	// REI
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:${project.rei_version}"
+	modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
+		exclude group: "net.fabricmc.fabric-api" //Stop this from importing an old version of FAPI that crashes everything
+	}
 	//modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
 	// EMI
@@ -174,9 +167,6 @@ dependencies {
 	compileOnly "com.demonwav.mcdev:annotations:${project.mcdev_annotations_version}"
 
 	include modImplementation("meteordevelopment:discord-ipc:1.1")
-
-	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
-	include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
 
 	// NEU RepoParser
 	include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
@@ -203,13 +193,14 @@ loom {
 	mixin {
 		useLegacyMixinAp = false
 	}
+}
 
-	runs {
-		clientGametest {
-			inherit client
-			name "Client Game Test"
-			vmArg "-Dfabric.client.gametest"
-		}
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "skyblocker-test"
+		enableGameTests = false
+		eula = true
 	}
 }
 
@@ -242,6 +233,8 @@ jar {
 
 test {
 	useJUnitPlatform()
+
+	systemProperty("IS_TEST_ENV", "true")
 }
 
 publishMods {
