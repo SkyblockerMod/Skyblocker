@@ -19,6 +19,7 @@ import java.util.Set;
 
 @RegisterWidget
 public class SlayerHudWidget extends ComponentBasedWidget {
+	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.CRIMSON_ISLE, Location.HUB, Location.SPIDERS_DEN, Location.THE_END, Location.THE_PARK, Location.THE_RIFT);
 	private static SlayerHudWidget instance;
 	private final MinecraftClient client = MinecraftClient.getInstance();
 
@@ -28,13 +29,18 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 		update();
 	}
 
+	@Override
+	public boolean shouldUpdateBeforeRendering() {
+		return true;
+	}
+
 	public static SlayerHudWidget getInstance() {
 		return instance;
 	}
 
 	@Override
 	public Set<Location> availableLocations() {
-		return Set.of(Location.CRIMSON_ISLE, Location.HUB, Location.SPIDERS_DEN, Location.THE_END, Location.THE_PARK, Location.THE_RIFT);
+		return AVAILABLE_LOCATIONS;
 	}
 
 	@Override

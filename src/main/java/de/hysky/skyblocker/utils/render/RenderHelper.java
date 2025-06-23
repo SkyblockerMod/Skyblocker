@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.BeaconBlockEntityRendererInvoker;
-import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -63,15 +62,9 @@ public class RenderHelper {
     }
 
     public static void renderFilled(WorldRenderContext context, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, float[] colorComponents, float alpha, boolean throughWalls) {
-        if (throughWalls) {
-            if (FrustumUtils.isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
-                renderFilledInternal(context, minX, minY, minZ, maxX, maxY, maxZ, colorComponents, alpha, true);
-            }
-        } else {
-            if (OcclusionCulling.getRegularCuller().isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
-                renderFilledInternal(context, minX, minY, minZ, maxX, maxY, maxZ, colorComponents, alpha, false);
-            }
-        }
+    	if (FrustumUtils.isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
+    		renderFilledInternal(context, minX, minY, minZ, maxX, maxY, maxZ, colorComponents, alpha, throughWalls);
+    	}
     }
 
     private static void renderFilledInternal(WorldRenderContext context, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, float[] colorComponents, float alpha, boolean throughWalls) {
@@ -197,7 +190,7 @@ public class RenderHelper {
         MatrixStack.Entry entry = matrices.peek();
 
         VertexConsumerProvider.Immediate consumers = (VertexConsumerProvider.Immediate) context.consumers();
-        RenderLayer layer = SkyblockerRenderLayers.getLines(lineWidth);
+        RenderLayer layer = SkyblockerRenderLayers.getLinesThroughWalls(lineWidth);
         VertexConsumer buffer = consumers.getBuffer(layer);
 
         // Start drawing the line from a point slightly in front of the camera
@@ -310,6 +303,36 @@ public class RenderHelper {
     }
 
     /**
+     * Renders a cylinder without the top or bottom faces.
+     * 
+     * @param pos      The position that the cylinder will be centred around.
+     * @param height   The total height of the cylinder with {@code pos} as the midpoint.
+     * @param segments The amount of triangles used to approximate the circle.
+     */
+    public static void renderCylinder(WorldRenderContext context, Vec3d centre, float radius, float height, int segments, int color) {
+    	MatrixStack matrices = context.matrixStack();
+    	Vec3d camera = context.camera().getPos();
+
+    	matrices.push();
+    	matrices.translate(-camera.x, -camera.y, -camera.z);
+
+    	VertexConsumer buffer = context.consumers().getBuffer(SkyblockerRenderLayers.CYLINDER);
+    	Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+    	float halfHeight = height / 2.0f;
+
+    	for (int i = 0; i <= segments; i++) {
+    		double angle = Math.TAU * i / segments;
+    		float dx = (float) Math.cos(angle) * radius;
+    		float dz = (float) Math.sin(angle) * radius;
+
+    		buffer.vertex(positionMatrix, (float) centre.getX() + dx, (float) centre.getY() + halfHeight, (float) centre.getZ() + dz).color(color);
+    		buffer.vertex(positionMatrix, (float) centre.getX() + dx, (float) centre.getY() - halfHeight, (float) centre.getZ() + dz).color(color);
+    	}
+
+    	matrices.pop();
+    }
+
+    /**
      * This is called after all {@link WorldRenderEvents#AFTER_TRANSLUCENT} listeners have been called so that we can draw all remaining render layers.
      */
     private static void drawTranslucents(WorldRenderContext context) {
@@ -388,4 +411,15 @@ public class RenderHelper {
     public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, Color color) {
         renderNineSliceColored(context, texture, x, y, width, height, ColorHelper.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
     }
+
+	public static void drawHorizontalGradient(DrawContext context, float startX, float startY, float endX, float endY, int colorStart, int colorEnd) {
+		context.draw(provider -> {
+			VertexConsumer vertexConsumer = provider.getBuffer(RenderLayer.getGui());
+			Matrix4f positionMatrix = context.getMatrices().peek().getPositionMatrix();
+			vertexConsumer.vertex(positionMatrix, startX, startY, 0).color(colorStart);
+			vertexConsumer.vertex(positionMatrix, startX, endY, 0).color(colorStart);
+			vertexConsumer.vertex(positionMatrix, endX, endY, 0).color(colorEnd);
+			vertexConsumer.vertex(positionMatrix, endX, startY, 0).color(colorEnd);
+		});
+	}
 }

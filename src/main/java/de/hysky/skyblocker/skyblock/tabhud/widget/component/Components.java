@@ -8,6 +8,13 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Range;
 
 public class Components {
+	public static Component iconTextComponent(ItemStack icon, Text text) {
+		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
+			case MINIMAL, SIMPLE -> new PlainTextComponent(text);
+			case CLASSIC, FANCY -> new IcoTextComponent(icon, text);
+		};
+	}
+
 	/**
 	 * Returns a progress component based on the configured style.
 	 *

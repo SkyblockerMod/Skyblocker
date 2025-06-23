@@ -1,7 +1,8 @@
-package de.hysky.skyblocker.skyblock.item;
+package de.hysky.skyblocker.skyblock.item.custom;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
@@ -29,7 +30,10 @@ public class CustomItemNames {
 						.then(ClientCommandManager.literal("renameItem")
 								.executes(context -> renameItem(context.getSource(), null))
 								.then(ClientCommandManager.argument("textComponent", TextArgumentType.text(registryAccess))
-										.executes(context -> renameItem(context.getSource(), context.getArgument("textComponent", Text.class)))))));
+										.executes(context -> renameItem(context.getSource(), context.getArgument("textComponent", Text.class))))
+								// greedy string will only consume the arg if the text component parsing fails.
+								.then(ClientCommandManager.argument("basicText", StringArgumentType.greedyString())
+										.executes(context -> renameItem(context.getSource(), Text.of(context.getArgument("basicText", String.class))))))));
 	}
 
 	@SuppressWarnings("SameReturnValue")

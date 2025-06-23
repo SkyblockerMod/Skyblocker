@@ -14,6 +14,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.function.Consumer;
 
+// TODO use the new color things after collapse buttons is merged
 public class EditBarColorPopup extends AbstractPopupScreen {
 
     private final Consumer<Color> setColor;

@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 import org.apache.commons.lang3.function.Consumers;
 
 public class SkyblockerConfigManager {
-    public static final int CONFIG_VERSION = 3;
+    public static final int CONFIG_VERSION = 4;
     private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("skyblocker.json");
     private static final ConfigClassHandler<SkyblockerConfig> HANDLER = ConfigClassHandler.createBuilder(SkyblockerConfig.class)
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
@@ -88,10 +88,11 @@ public class SkyblockerConfigManager {
                     .category(UIAndVisualsCategory.create(defaults, config))
                     .category(HelperCategory.create(defaults, config))
                     .category(DungeonsCategory.create(defaults, config))
-                    //.category(ForagingCategory.create(defaults, config))
+                    .category(ForagingCategory.create(defaults, config))
                     .category(CrimsonIsleCategory.create(defaults, config))
                     .category(MiningCategory.create(defaults, config))
                     .category(FarmingCategory.create(defaults, config))
+                    .category(HuntingCategory.create(defaults, config))
                     .category(OtherLocationsCategory.create(defaults, config))
                     .category(SlayersCategory.create(defaults, config))
                     .category(ChatCategory.create(defaults, config))

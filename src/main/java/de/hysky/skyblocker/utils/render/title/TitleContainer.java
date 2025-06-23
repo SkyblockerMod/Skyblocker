@@ -93,6 +93,7 @@ public class TitleContainer {
 	}
 
 	protected static void render(DrawContext context, Set<Title> titles, int xPos, int yPos, float tickDelta) {
+		if (titles.isEmpty()) return;
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
 		// Calculate Scale to use
