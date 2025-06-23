@@ -19,6 +19,7 @@ import de.hysky.skyblocker.skyblock.dwarven.fossil.FossilSolver;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
+import de.hysky.skyblocker.skyblock.hunting.HuntingBoxHelper;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.BitsHelper;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
@@ -56,7 +57,8 @@ public class ContainerSolverManager {
 			new ReorderHelper(),
 			BitsHelper.INSTANCE,
 			new RaffleTaskHighlight(),
-			new FossilSolver()
+			new FossilSolver(),
+			new HuntingBoxHelper()
 	};
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;
