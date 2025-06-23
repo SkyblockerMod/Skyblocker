@@ -200,24 +200,6 @@ public final class ItemUtils {
             case "PARTY_HAT_SLOTH" -> {
                 return id + "_" + customData.getString("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
             }
-            case "CRIMSON_HELMET", "CRIMSON_CHESTPLATE", "CRIMSON_LEGGINGS", "CRIMSON_BOOTS" -> {
-                NbtCompound attributes = customData.getCompoundOrEmpty("attributes");
-                if (attributes.contains("magic_find") && attributes.contains("veteran")) {
-                    return id + "-MAGIC_FIND-VETERAN";
-                }
-            }
-            case "AURORA_HELMET", "AURORA_CHESTPLATE", "AURORA_LEGGINGS", "AURORA_BOOTS" -> {
-                NbtCompound attributes = customData.getCompoundOrEmpty("attributes");
-                if (attributes.contains("mana_pool") && attributes.contains("mana_regeneration")) {
-                    return id + "-MANA_POOL-MANA_REGENERATION";
-                }
-            }
-            case "TERROR_HELMET", "TERROR_CHESTPLATE", "TERROR_LEGGINGS", "TERROR_BOOTS" -> {
-                NbtCompound attributes = customData.getCompoundOrEmpty("attributes");
-                if (attributes.contains("lifeline") && attributes.contains("mana_pool")) {
-                    return id + "-LIFELINE-MANA_POOL";
-                }
-            }
             case "MIDAS_SWORD" -> {
                 if (customData.getInt("winning_bid", 0) >= 50000000) {
                     return id + "_50M";
