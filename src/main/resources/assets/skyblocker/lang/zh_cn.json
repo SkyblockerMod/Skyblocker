@@ -526,7 +526,7 @@
     "skyblocker.config.helpers.fishing.hideOtherPlayers": "隐藏其他玩家的钓竿",
     "skyblocker.config.helpers.fishing.hideOtherPlayers.@Tooltip": "隐藏其他玩家的钓鱼竿，使其不显示在自己的屏幕上",
     "skyblocker.config.helpers.fishing.enableFishingTimer": "启用计时器",
-    "skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip": "在浮标上方显示钓鱼时间",
+    "skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip": "将浮标时间添加到HUD中",
     "skyblocker.config.helpers.fishing.changeTimerColor": "在20秒时改变计时器",
     "skyblocker.config.helpers.fishing.changeTimerColor.@Tooltip": "当20秒过去后将计时器变为绿色",
     "skyblocker.config.helpers.fishing.fishingTimerScale": "钓鱼计时器缩放",
@@ -1250,5 +1250,10 @@
     "skyblocker.config.helpers.fishing.fishingHookDisplay.CROSSHAIR": "十字准星",
     "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "将Skyblock的钓鱼计时器显示在屏幕上\n  十字准星：显示在屏幕中央\n  HUD中：显示在钓鱼HUD中",
     "skyblocker.config.helpers.fishing.fishingHookDisplay.HUD": "HUD中",
-    "skyblocker.bars.config.air": "空气"
+    "skyblocker.bars.config.air": "空气",
+    "skyblocker.config.foraging.galatea.enableLushlilacHighlighter": "启用Lushlilac高亮",
+    "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter": "启用Sea Lumies高亮",
+    "skyblocker.config.helpers.fishing.fishingHookDisplay": "鱼钩显示",
+    "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds.@Tooltip": "为拥有旧版属性的物品添加红色背景颜色。",
+    "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds": "旧版属性背景色"
 }
