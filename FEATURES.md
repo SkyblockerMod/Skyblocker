@@ -41,6 +41,11 @@
 - **Dungeon Class-based player glow**
 - **Spirit Leap Overlay**
 
+### Foraging Features:
+- **Waypoints to forest nodes**
+- **Lushlilac and Sea Lumies Highlighters**
+- **Forest temple puzzle solver**
+
 ### Kuudra Features:
 - **Kuudra waypoints:**
     - *Supplies*
@@ -250,6 +255,7 @@
 - **Calendar Event Notifications**
 - **Sign calculator**
 - **CTRL/CMD + F to search inventory**
+- **legacy attribute background**
 
 ### Barn Features:
 - **Barn Solver:**
@@ -273,7 +279,6 @@
     - *Sky Mall*
 
 ### Miscellaneous Helpers:
-- **Waypoints to forest nodes**
 - **Experiments Solvers**
 - **Fishing:**
     - Helper (Includes sound notifications)

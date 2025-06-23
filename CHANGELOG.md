@@ -2,6 +2,10 @@
 
 ## Highlight
 * Fancy Armor Customization GUI
+* Added legacy attribute background 
+* Add Lushlilac and Sea Lumies Highlighters 
+* Add forest temple puzzle solver 
+* Add collapse button to waypoint screen
 * Item pickup Widget
 * Adds an oxygen bar
 * Add waypoints to forest nodes
@@ -47,6 +51,10 @@
 * Fix Bobber Time widget not working after max time was exceeded
 * Fix Only allow placing protected items into item frames while on Private Island or Garden
 * Fix Fancy Party Finder Debug button only in debugging mode
+* Fixed issues with waypoints not saving
+* Fixed bugs with dungeon secret waypoints and puzzle solvers not working
+* Fixed issues with the fishing helper being inaccurate
+* Fixed showing profile id fallback messages
 
 ## What's Changed
 * fix gradle timout by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1251

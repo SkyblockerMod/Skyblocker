@@ -59,6 +59,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Dungeon Class-based player glow**
 - **Spirit Leap Overlay**
 
+### Foraging Features:
+- **Waypoints to forest nodes**
+- **Lushlilac and Sea Lumies Highlighters**
+- **Forest temple puzzle solver**
+
 ### Kuudra Features:
 - **Kuudra waypoints:**
     - *Supplies*
@@ -78,9 +83,9 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 ### Item and Armor Customization:
 - *Item Renaming*
 - **Fancy Armor Customization GUI**
-  - *Custom Armor Dye Colors*
-  - *Custom Armor Trims*
-  - *Custom Animated Dyes*
+    - *Custom Armor Dye Colors*
+    - *Custom Armor Trims*
+    - *Custom Animated Dyes*
 
 ### Health and Status Bars:
 - **Bars:**
@@ -134,7 +139,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Provides information on Dwarven Mines / Crystal Hollows / Glacite Mining quests*
 - **Powder HUD**
 - **Ordered Waypoints**
-  - Basic ordered waypoint commands
+    - Basic ordered waypoint commands
 
 ### Rift Features:
 - **Mirrorverse Waypoints**
@@ -268,6 +273,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Calendar Event Notifications**
 - **Sign calculator**
 - **CTRL/CMD + F to search inventory**
+- **legacy attribute background**
 
 ### Barn Features:
 - **Barn Solver:**
@@ -291,7 +297,6 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Sky Mall*
 
 ### Miscellaneous Helpers:
-- **Waypoints to forest nodes**
 - **Experiments Solvers**
 - **Fishing:**
     - Helper (Includes sound notifications)
