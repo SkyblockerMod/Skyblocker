@@ -3,8 +3,10 @@ package de.hysky.skyblocker.skyblock.item;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.FurfskyCompatibility;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -21,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
@@ -110,6 +113,9 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
     public SkyblockInventoryScreen(PlayerEntity player) {
         super(player);
+		if (FurfskyCompatibility.isFurfskyPresent) {
+			((ScreenAccessor) this).setTitle(Text.literal("InventoryScreenEquipmentSkyblocker"));
+		}
 	    SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);
 	    for (int i = 0; i < 4; i++) {
 		    equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
