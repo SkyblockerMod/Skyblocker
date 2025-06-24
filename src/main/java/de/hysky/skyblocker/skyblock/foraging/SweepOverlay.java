@@ -32,7 +32,7 @@ public class SweepOverlay {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SweepOverlay.class);
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 	private static float[] colorComponents;
-	private static final int DEFAULT_MAX_WOOD = 0;
+	private static final int MAX_WOOD_CAP = 35;
 	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile("Sweep:\\s*(?:∮|§[0-9a-fk-or])*(\\d+)");
 	private static final HashMap<Block, Float> TOUGHNESS_MAP = new HashMap<>();
 	private static final Set<String> VALID_AXES = Set.of(
@@ -163,14 +163,19 @@ public class SweepOverlay {
 
 	/**
 	 * Calculates the maximum number of logs that can be chopped based on Sweep stat and toughness.
+	 * A hard cap of {@value #MAX_WOOD_CAP} logs is enforced.
 	 *
 	 * @param sweepStat the player's Sweep stat
 	 * @param toughness the toughness of the log
-	 * @return the maximum number of logs
+	 * @return the maximum number of logs that can be broken
 	 */
 	private static int calculateMaxWood(float sweepStat, float toughness) {
-		if (toughness <= 0) return DEFAULT_MAX_WOOD;
-		return (int) Math.floor(sweepStat / toughness);
+		if (toughness <= 0) {
+			return Math.min(MAX_WOOD_CAP, (int) Math.floor(sweepStat));
+		}
+
+		int logs = (int) Math.floor(sweepStat / toughness);
+		return Math.min(MAX_WOOD_CAP, logs);
 	}
 
 	/**
