@@ -28,6 +28,7 @@ public class PlayerHeadHashCache {
 			.map(profile -> JsonParser.parseString(profile).getAsJsonObject())
 			.map(profile -> profile.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString())
 			.map(PlayerHeadHashCache::getSkinHash)
+			.filter(hash -> hash != null && !hash.isEmpty())
 			.mapToInt(String::hashCode)
 			.forEach(CACHE::add);
 
@@ -42,7 +43,7 @@ public class PlayerHeadHashCache {
 		if (url != null && url.equals("ETF pre test, skin check")) {
 			return "";
 		}
-		
+
 		try {
 			return FilenameUtils.getBaseName(new URI(url).getPath());
 		} catch (Exception e) {
