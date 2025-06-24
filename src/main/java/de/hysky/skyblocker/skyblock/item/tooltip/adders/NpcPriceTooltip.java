@@ -11,7 +11,6 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.OptionalInt;
 
 public class NpcPriceTooltip extends SimpleTooltipAdder {
 
@@ -35,9 +34,7 @@ public class NpcPriceTooltip extends SimpleTooltipAdder {
 		double price = TooltipInfoType.NPC.getData().getOrDefault(internalID, -1); // The original default return value of 0 can be an actual price, so we use a value that can't be a price
 		if (price < 0) return;
 
-		OptionalInt optCount = ItemUtils.getItemCountInSack(stack, lines);
-		// This clamp is here to ensure that the tooltip doesn't show a useless price of 0 coins if the item count is 0.
-		int count = optCount.isPresent() ? Math.max(optCount.getAsInt(), 1) : stack.getCount();
+		int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
 		lines.add(Text.literal(String.format("%-21s", "NPC Sell Price:"))
 					  .formatted(Formatting.YELLOW)

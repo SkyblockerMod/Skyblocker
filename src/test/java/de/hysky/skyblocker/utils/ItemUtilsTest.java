@@ -94,9 +94,6 @@ public class ItemUtilsTest {
 		Assertions.assertEquals("ENCHANTMENT_FEATHER_FALLING_10", ENCHANTED_BOOK.getSkyblockApiId());
 		Assertions.assertEquals("ATTRIBUTE_SHARD-TROPHY_HUNTER_1", ATTRIBUTE_SHARD.getSkyblockApiId());
 		Assertions.assertEquals("SHINY_WITHER_CHESTPLATE", WITHER_CHESTPLATE.getSkyblockApiId());
-		Assertions.assertEquals("CRIMSON_CHESTPLATE-MAGIC_FIND-VETERAN", CRIMSON_CHESTPLATE.getSkyblockApiId());
-		Assertions.assertEquals("AURORA_CHESTPLATE-MANA_POOL-MANA_REGENERATION", AURORA_CHESTPLATE.getSkyblockApiId());
-		Assertions.assertEquals("TERROR_CHESTPLATE-LIFELINE-MANA_POOL", TERROR_CHESTPLATE.getSkyblockApiId());
 		Assertions.assertEquals("LVL_1_LEGENDARY_WITHER_SKELETON", WITHER_SKELETON_PET.getSkyblockApiId());
 	}
 

@@ -17,6 +17,7 @@ public class ForagingCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
 				.name(Text.translatable("skyblocker.config.foraging"))
+
 				//Galatea
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.foraging.galatea"))
@@ -26,6 +27,30 @@ public class ForagingCategory {
 								.binding(defaults.foraging.galatea.enableForestNodeHelper,
 										() -> config.foraging.galatea.enableForestNodeHelper,
 										newValue -> config.foraging.galatea.enableForestNodeHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.solveForestTemplePuzzle"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip")))
+								.binding(defaults.foraging.galatea.solveForestTemplePuzzle,
+										() -> config.foraging.galatea.solveForestTemplePuzzle,
+										newValue -> config.foraging.galatea.solveForestTemplePuzzle = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.enableLushlilacHighlighter"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip")))
+								.binding(defaults.foraging.galatea.enableLushlilacHighlighter,
+										() -> config.foraging.galatea.enableLushlilacHighlighter,
+										newValue -> config.foraging.galatea.enableLushlilacHighlighter = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter.@Tooltip")))
+								.binding(defaults.foraging.galatea.enableSeaLumiesHighlighter,
+										() -> config.foraging.galatea.enableSeaLumiesHighlighter,
+										newValue -> config.foraging.galatea.enableSeaLumiesHighlighter = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
@@ -52,12 +77,6 @@ public class ForagingCategory {
 								.controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
 								.build())
 						.build())
-				//Hunting - YACL doesn't like empty option groups
-				/*.group(OptionGroup.createBuilder()
-						.name(Text.translatable("skyblocker.config.foraging.hunting"))
-
-						.build())*/
-				
 				.build();
 	}
 }

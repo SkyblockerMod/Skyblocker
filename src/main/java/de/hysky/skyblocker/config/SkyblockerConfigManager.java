@@ -92,6 +92,7 @@ public class SkyblockerConfigManager {
                     .category(CrimsonIsleCategory.create(defaults, config))
                     .category(MiningCategory.create(defaults, config))
                     .category(FarmingCategory.create(defaults, config))
+                    .category(HuntingCategory.create(defaults, config))
                     .category(OtherLocationsCategory.create(defaults, config))
                     .category(SlayersCategory.create(defaults, config))
                     .category(ChatCategory.create(defaults, config))

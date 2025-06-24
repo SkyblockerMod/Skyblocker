@@ -80,6 +80,10 @@ public class AccessoriesHelper {
 		if (!ACCESSORY_DATA.containsKey(accessoryId) || Utils.getProfileId().isEmpty()) return Pair.of(AccessoryReport.INELIGIBLE, null);
 
 		Accessory accessory = ACCESSORY_DATA.get(accessoryId);
+
+		//Ignore rift-only accessories
+		if (accessory.origin().orElse("").equals("RIFT")) return Pair.of(AccessoryReport.INELIGIBLE, null);
+
 		Set<Accessory> collectedAccessories = COLLECTED_ACCESSORIES.computeIfAbsent(ProfileAccessoryData::createDefault).pages().values().stream()
 				.flatMap(ObjectOpenHashSet::stream)
 				.filter(ACCESSORY_DATA::containsKey)
@@ -151,11 +155,12 @@ public class AccessoriesHelper {
 	 * @author AzureAaron
 	 * @implSpec <a href="https://github.com/AzureAaron/aaron-mod/blob/1.20/src/main/java/net/azureaaron/mod/commands/MagicalPowerCommand.java#L475">Aaron's Mod</a>
 	 */
-	public record Accessory(String id, Optional<String> family, int tier) {
+	public record Accessory(String id, Optional<String> family, int tier, Optional<String> origin) {
 		private static final Codec<Accessory> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("id").forGetter(Accessory::id),
 				Codec.STRING.optionalFieldOf("family").forGetter(Accessory::family),
-				Codec.INT.optionalFieldOf("tier", 0).forGetter(Accessory::tier)
+				Codec.INT.optionalFieldOf("tier", 0).forGetter(Accessory::tier),
+				Codec.STRING.optionalFieldOf("origin").forGetter(Accessory::origin)
 		).apply(instance, Accessory::new));
 		public static final Codec<Map<String, Accessory>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC);
 

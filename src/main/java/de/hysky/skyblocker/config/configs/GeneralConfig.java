@@ -206,6 +206,9 @@ public class GeneralConfig {
 
 		@SerialEntry
 		public boolean jacobMedalBackgrounds = true;
+
+		@SerialEntry
+		public boolean legacyAttributeBackgrounds = true;
     }
 
     public enum ItemBackgroundStyle {
@@ -252,8 +255,8 @@ public class GeneralConfig {
         @SerialEntry
         public boolean enableWikiLookup = true;
 
-        @SerialEntry
-        public boolean officialWiki = true;
+		@Deprecated
+		public transient boolean officialWiki = true;
     }
 
     public static class SpecialEffects {

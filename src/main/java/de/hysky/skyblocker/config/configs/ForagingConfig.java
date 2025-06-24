@@ -10,18 +10,20 @@ public class ForagingConfig {
 	public Galatea galatea = new Galatea();
 
 	@SerialEntry
-	public Hunting hunting = new Hunting();
-
-	@SerialEntry
 	public SweepOverlay sweepOverlay = new SweepOverlay();
 
 	public static class Galatea {
 		@SerialEntry
 		public boolean enableForestNodeHelper = true;
-	}
 
-	public static class Hunting {
-		
+		@SerialEntry
+		public boolean solveForestTemplePuzzle = true;
+
+		@SerialEntry
+		public boolean enableLushlilacHighlighter = true;
+
+		@SerialEntry
+		public boolean enableSeaLumiesHighlighter = true;
 	}
 
 	public static class SweepOverlay {

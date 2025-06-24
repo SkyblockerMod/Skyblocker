@@ -1,15 +1,8 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import java.util.List;
-import java.util.Locale;
-
-import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
-import net.minecraft.screen.ScreenHandler;
-import org.jetbrains.annotations.Nullable;
-
 import com.google.common.collect.Lists;
-
 import de.hysky.skyblocker.mixins.accessors.RecipeBookWidgetAccessor;
+import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -23,9 +16,14 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.recipe.RecipeFinder;
 import net.minecraft.recipe.display.RecipeDisplay;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.context.ContextParameterMap;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Based on {@link net.minecraft.client.gui.screen.recipebook.RecipeBookWidget}.
@@ -38,13 +36,14 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	// 81 is the search field's width, 4 is the space between it and the toggle crafting button, and 26 is the toggle crafting button's width, which we replace
 	// with the filtering button. 26 - 14 - 4 = 12 - 4 = 8 (The additional space left to the search field.)
 	private static final int SEARCH_FIELD_WIDTH = 81 + 4 + 8;
+	private static String lastSearch = "";
 	/**
 	 * The tabs in the Skyblock recipe book.
 	 */
 	private final List<RecipeTab> tabs = List.of(
 			new SkyblockCraftingTab(this, SkyblockCraftingTab.CRAFTING_TABLE, new SkyblockCraftingRecipeResults()),
 			new UpcomingEventsTab()
-			);
+	);
 	private final List<Pair<RecipeTab, SkyblockRecipeTabButton>> tabButtons = Lists.newArrayList();
 	private Pair<RecipeTab, SkyblockRecipeTabButton> currentTab;
 
@@ -65,29 +64,41 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 		int left = accessor().invokeGetLeft();
 		int top = accessor().invokeGetTop();
 
-		//Init Search Field
-		String defaultSearchText = this.searchField != null ? this.searchField.getText() : "";
-		this.searchField = new TextFieldWidget(this.client.textRenderer, left + 25, top + 13, SEARCH_FIELD_WIDTH, 9 + 5, Text.translatable("itemGroup.search"));
-		this.searchField.setMaxLength(60); //Set at 60 due to the longest Skyblock item name being 55 characters long
+		// Init Search Field only once
+		if (this.searchField == null) {
+			this.searchField = new TextFieldWidget(this.client.textRenderer, left + 25, top + 13, SEARCH_FIELD_WIDTH, 14, Text.translatable("itemGroup.search"));
+			this.searchField.setMaxLength(60); //Set at 60 due to the longest Skyblock item name being 55 characters long
+			this.searchField.setEditableColor(0xFFFFFF);
+			this.searchField.setText(lastSearch);
+			this.searchField.setPlaceholder(SEARCH_HINT_TEXT);
+		}
+
+		this.searchField.setX(left + 25);
+		this.searchField.setY(top + 13);
 		this.searchField.setVisible(true);
-		this.searchField.setEditableColor(0xFFFFFF);
-		this.searchField.setText(defaultSearchText);
-		this.searchField.setPlaceholder(SEARCH_HINT_TEXT);
+
 		//This field's name is misleading, the rectangle is actually the area of the magnifying glass icon rather than the entire search field
 		this.searchFieldRect = ScreenRect.of(NavigationAxis.HORIZONTAL, left + 8, this.searchField.getY(), this.searchField.getX() - left, this.searchField.getHeight());
 
-		this.filterOption = new CyclingTextureWidget<>(this.searchField.getRight() + 4, this.searchField.getY(), 14, 14, FilterOption.ALL);
-		this.filterOption.setCycleListener(this::refilterSearchResults);
-		this.filterOption.setTextSupplier(option -> Text.translatable("skyblocker.config.general.itemList.filter." + option.name().toLowerCase(Locale.ENGLISH)));
+		// Init filter option once
+		if (this.filterOption == null) {
+			this.filterOption = new CyclingTextureWidget<>(this.searchField.getRight() + 4, this.searchField.getY(), 14, 14, FilterOption.ALL);
+			this.filterOption.setCycleListener(this::refilterSearchResults);
+			this.filterOption.setTextSupplier(option -> Text.translatable("skyblocker.config.general.itemList.filter." + option.name().toLowerCase(Locale.ENGLISH)));
+		}
 
-		//Setup Tabs
+		// Always update position of filter option
+		this.filterOption.setX(this.searchField.getRight() + 4);
+		this.filterOption.setY(this.searchField.getY());
+
+		// Setup Tabs
 		this.tabButtons.clear();
 
 		for (RecipeTab tab : this.tabs) {
 			this.tabButtons.add(Pair.of(tab, new SkyblockRecipeTabButton(tab.icon())));
 		}
 
-		//Since we clear the tabs when this is called, if a tab is set we need to update the instance
+		// Since we clear the tabs when this is called, if a tab is set we need to update the instance
 		if (this.currentTab != null) {
 			this.currentTab = this.tabButtons.stream()
 					.filter(button -> button.first().equals(this.currentTab.first()))
@@ -95,18 +106,17 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 					.orElse(null);
 		}
 
-		//If there is no current tab, set it to the first one
+		// If there is no current tab, set it to the first one
 		if (this.currentTab == null) {
 			this.currentTab = this.tabButtons.getFirst();
 		}
 
-		//Set the current tab as toggled & refresh positions
 		this.currentTab.right().setToggled(true);
 		this.refreshTabButtons(false);
 
-		//Tab Init
+		// Tab Init
 		this.currentTab.left().initialize(this.client, left, top);
-		this.currentTab.left().updateSearchResults(defaultSearchText, FilterOption.ALL);
+		this.currentTab.left().updateSearchResults(this.searchField.getText().toLowerCase(Locale.ENGLISH), this.filterOption.getCurrent());
 	}
 
 	@Override
@@ -204,6 +214,7 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 
 	protected void refilterSearchResults(FilterOption filterOption) {
 		assert this.searchField != null;
+		lastSearch = this.searchField.getText();
 		String query = this.searchField.getText().toLowerCase(Locale.ENGLISH);
 		// Doesn't trigger the pirate speak check since the query wasn't changed.
 		this.currentTab.left().updateSearchResults(query, filterOption, true);
@@ -212,6 +223,7 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	@Override
 	protected void refreshSearchResults() {
 		assert this.searchField != null;
+		lastSearch = this.searchField.getText();
 		String query = this.searchField.getText().toLowerCase(Locale.ENGLISH);
 
 		this.triggerPirateSpeakEasterEgg(query);
