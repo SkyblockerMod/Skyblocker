@@ -10,9 +10,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.WorldChunk;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
@@ -40,6 +42,21 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 	@Init
 	public static void initClass() {
 		INSTANCE.init();
+	}
+
+	@Override
+	protected void onChunkUnload(ClientWorld world, WorldChunk chunk) {
+		if (!shouldProcess()) return;
+		Iterator<BlockPos> iterator = this.allBlocks.iterator();
+		while (iterator.hasNext()) {
+			BlockPos pos = iterator.next();
+			Chunk holder = world.getChunk(pos);
+
+			if (holder.equals(chunk)) {
+				iterator.remove();
+				highlightedBlocks.remove(pos);
+			}
+		}
 	}
 
 	@Override
