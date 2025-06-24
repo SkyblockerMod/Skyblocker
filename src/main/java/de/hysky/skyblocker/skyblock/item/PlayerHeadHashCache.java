@@ -39,6 +39,10 @@ public class PlayerHeadHashCache {
 
 	//From MinecraftProfileTexture#getHash
 	public static String getSkinHash(String url) {
+		if (url != null && url.equals("ETF pre test, skin check")) {
+			return "";
+		}
+		
 		try {
 			return FilenameUtils.getBaseName(new URI(url).getPath());
 		} catch (Exception e) {
