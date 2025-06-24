@@ -2,10 +2,15 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
+import dev.isxander.yacl3.api.ButtonOption;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.OptionGroup;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class ForagingCategory {
@@ -49,7 +54,20 @@ public class ForagingCategory {
 										newValue -> config.foraging.galatea.enableSeaLumiesHighlighter = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
-						.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip")))
+								.binding(defaults.foraging.galatea.enableTreeBreakProgress,
+										() -> config.foraging.galatea.enableTreeBreakProgress,
+										newValue -> config.foraging.galatea.enableTreeBreakProgress = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakHud"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, TreeBreakProgressHud.getInstance().getInternalID(), screen)))
+								.build())
+							.build())
 				.build();
 	}
 }
