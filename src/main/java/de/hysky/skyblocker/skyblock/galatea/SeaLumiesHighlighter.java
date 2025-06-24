@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.galatea;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SeaPickleBlock;
@@ -13,12 +14,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.WorldChunk;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
-	private final List<BlockPos> allBlocks = new ArrayList<>();
+	private final Set<BlockPos> allBlocks = new ObjectOpenHashSet<>();
 
 	@Override
 	public void onBlockUpdate(BlockPos pos, BlockState state) {
