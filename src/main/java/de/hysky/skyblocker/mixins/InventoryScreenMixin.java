@@ -78,10 +78,10 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
 		recipeBookToggleCallbacks.clear();
     }
 
-	@Inject(method = "<init>", at = @At("TAIL"), order = 900)
+	@Inject(method = "<init>", at = @At("TAIL"), order = 900) // run it a little earlier in case firmament do stuff
 	private void skyblocker$furfskyCompat(CallbackInfo ci) {
 		if (Utils.isOnSkyblock() && FurfskyCompatibility.isFurfskyPresent) {
-			((ScreenAccessor) this).setTitle(Text.literal("InventoryScreenSkyblocker"));
+			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenSkyblocker": "InventoryScreenQuickNavSkyblocker"));
 		}
 	}
 
