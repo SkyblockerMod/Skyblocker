@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -394,7 +395,7 @@ public class SmoothAOTE {
 			}
 
 			//if the player is close to the floor (including diagonally) save Y and when player goes bellow this y finish teleport
-			if (offset != 0 && (isBlockFloor(checkPos.down()) || (isBlockFloor(checkPos.down().subtract(xDiagonalOffset)) && isBlockFloor(checkPos.down().subtract(zDiagonalOffset)))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
+			if ((isBlockFloor(checkPos.down()) || (isBlockFloor(checkPos.down().subtract(xDiagonalOffset)) && isBlockFloor(checkPos.down().subtract(zDiagonalOffset)))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
 				closeFloorY = checkPos.getY() - 1;
 			}
 
