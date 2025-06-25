@@ -1459,5 +1459,17 @@
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
+
+  "skyblocker.galatea.hud.sweepDetails": "Sweep Details",
+  "skyblocker.galatea.hud.sweepDetails.inactive":  "Break a tree!",
+  "skyblocker.galatea.hud.sweepDetails.treeType":  "%s Tree",
+  "skyblocker.galatea.hud.sweepDetails.toughness":  "Toughness: %s",
+  "skyblocker.galatea.hud.sweepDetails.sweep":  "Sweep: %s",
+  "skyblocker.galatea.hud.sweepDetails.throwPenalty":  "Axe Throw Penalty (%s)",
+  "skyblocker.galatea.hud.sweepDetails.stylePenalty":  "Tree Style Penalty (%s)",
+  "skyblocker.galatea.hud.sweepDetails.correctStyle":  "Style: %s",
+
+
+
   "emi.category.skyblocker.skyblock": "Skyblock"
 }

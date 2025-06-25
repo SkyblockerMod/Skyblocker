@@ -9,6 +9,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Set;
@@ -18,23 +19,22 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
     MinecraftClient CLIENT = MinecraftClient.getInstance();
 
     public SweepDetailsHudWidget() {
-        super(Text.literal("Sweep Details"), 0xFF6E37CC, "sweepDetails");
+        super(Text.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweepDetails");
         update();
     }
 
-    // todo: localization, combine toughness with tree name maybe? indent / add emoji for penalty text + test
     @Override
     public void updateContent() {
         if (CLIENT.player == null || CLIENT.currentScreen instanceof WidgetsConfigurationScreen) {
-            addComponent(new IcoTextComponent(new ItemStack(Items.STRIPPED_SPRUCE_LOG), Text.literal("Fig Tree")));
-            addComponent(new PlainTextComponent(Text.literal("Toughness: 3.5")));
-            addComponent(new PlainTextComponent(Text.literal("Sweep: 314.15")));
+            addComponent(new IcoTextComponent(new ItemStack(Items.STRIPPED_SPRUCE_LOG), Text.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
+            addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)));
+            addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));
             return;
         }
 
         if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
             SweepDetailsListener.active = false;
-            addComponent(new IcoTextComponent(new ItemStack(Items.STONE_AXE), Text.literal("Punch a tree!")));
+            addComponent(new IcoTextComponent(new ItemStack(Items.STONE_AXE), Text.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
             return;
         }
 
@@ -47,24 +47,29 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
             logItemStack = new ItemStack(Items.MANGROVE_LOG);
         }
 
-        addComponent(new IcoTextComponent(logItemStack, Text.literal(SweepDetailsListener.lastTreeType + " Tree")));
-        addComponent(new PlainTextComponent(Text.literal("Toughness: " + SweepDetailsListener.toughness)));
+        addComponent(new IcoTextComponent(logItemStack, Text.translatable("skyblocker.galatea.hud.sweepDetails.treeType", SweepDetailsListener.lastTreeType)));
+        addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.toughness", SweepDetailsListener.toughness)));
 
         Text sweepAmount;
+        final int greenColor = 0xFF00FF00;
+        final int redColor = 0xFFFF5555;
+        final int defaultColor = 0xFFFFFFFF;
         if (SweepDetailsListener.maxSweep > SweepDetailsListener.lastSweep) {
-            sweepAmount = Text.literal(SweepDetailsListener.lastSweep + " (" + SweepDetailsListener.maxSweep + ")");
+            MutableText lastSweep = Text.literal(Float.toString(SweepDetailsListener.lastSweep)).withColor(redColor);
+            Text thisSweep = Text.literal(Float.toString(SweepDetailsListener.maxSweep)).withColor(greenColor);
+            sweepAmount = lastSweep.append(Text.literal(" (").withColor(defaultColor)).append(thisSweep).append(Text.literal(")").withColor(defaultColor));
         } else {
-            sweepAmount = Text.literal(Float.toString(SweepDetailsListener.maxSweep));
+            sweepAmount = Text.literal(Float.toString(SweepDetailsListener.maxSweep)).withColor(greenColor);
         }
-        addComponent(new PlainTextComponent(Text.literal("Sweep: ").append(sweepAmount)));
+        addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.sweep", sweepAmount)));
 
         if (SweepDetailsListener.axePenalty) {
-            addComponent(new IcoTextComponent(new ItemStack(Items.BARRIER), Text.literal("Axe Throw Penalty (" + SweepDetailsListener.axePenaltyAmount + "%)")));
+            addComponent(new IcoTextComponent(new ItemStack(Items.BARRIER), Text.translatable("skyblocker.galatea.hud.sweepDetails.throwPenalty", SweepDetailsListener.axePenaltyAmount + "%")));
         }
 
         if (SweepDetailsListener.stylePenalty) {
-            addComponent(new IcoTextComponent(new ItemStack(Items.BARRIER), Text.literal("Style Penalty (" + SweepDetailsListener.stylePenaltyAmount + "%)")));
-            addComponent(new PlainTextComponent(Text.literal("Correct Style: " + SweepDetailsListener.correctStyle)));
+            addComponent(new IcoTextComponent(new ItemStack(Items.BARRIER), Text.translatable("skyblocker.galatea.hud.sweepDetails.stylePenalty", SweepDetailsListener.stylePenaltyAmount + "%")));
+            addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.correctStyle", SweepDetailsListener.correctStyle)));
         }
     }
 
