@@ -9,9 +9,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.WorldChunk;
 
@@ -92,10 +94,15 @@ public abstract class AbstractBlockHighlighter {
 	}
 
 	private void render(WorldRenderContext context) {
-		if (!shouldProcess()) return;
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (!shouldProcess() || client.world == null) return;
 
 		for (BlockPos highlight : this.highlightedBlocks) {
-			RenderHelper.renderFilled(context, highlight, this.colour, 0.4f, false);
+			Box outline = RenderHelper.getBlockBoundingBox(client.world, highlight);
+
+			if (outline != null) {
+				RenderHelper.renderFilled(context, outline, this.colour, 0.4f, false);
+			}
 		}
 	}
 
