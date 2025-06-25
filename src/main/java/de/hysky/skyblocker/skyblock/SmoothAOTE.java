@@ -25,6 +25,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +36,10 @@ public class SmoothAOTE {
 
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
 	private static final long MAX_TELEPORT_TIME = 2500; //2.5 seconds
+	/**
+	 * Stores blocks that are known to not have a collision
+	 */
+	private static final HashSet<Block> NON_COLLISION_BLOCKS = new HashSet<Block>(Arrays.asList(Blocks.BROWN_MUSHROOM,Blocks.RED_MUSHROOM,Blocks.NETHER_WART,Blocks.REDSTONE_WIRE,Blocks.LADDER,Blocks.FIRE,Blocks.WATER,Blocks.LAVA,Blocks.SEAGRASS,Blocks.TALL_SEAGRASS,Blocks.SEA_PICKLE,Blocks.KELP,Blocks.VINE));
 
 	private static long startTime;
 	private static Vec3d startPos;
@@ -332,7 +338,7 @@ public class SmoothAOTE {
 	 * @param distance maximum distance
 	 * @return teleport vector
 	 */
-	private static Vec3d raycast(int distance, Vec3d direction, Vec3d startPos) {
+	protected static Vec3d raycast(int distance, Vec3d direction, Vec3d startPos) {
 		if (CLIENT.world == null || direction == null || startPos == null) {
 			return null;
 		}
@@ -419,7 +425,7 @@ public class SmoothAOTE {
 			return true;
 		}
 		Block block = blockState.getBlock();
-		return block instanceof ButtonBlock || block instanceof CarpetBlock || block instanceof CropBlock || block instanceof FlowerPotBlock || block.equals(Blocks.BROWN_MUSHROOM) || block.equals(Blocks.RED_MUSHROOM) || block.equals(Blocks.NETHER_WART) || block.equals(Blocks.REDSTONE_WIRE) || block.equals(Blocks.LADDER) || block.equals(Blocks.FIRE) || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
+		return block instanceof ButtonBlock || block instanceof CarpetBlock || block instanceof CropBlock || block instanceof FlowerPotBlock || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || NON_COLLISION_BLOCKS.contains(block);
 	}
 
 	/**
@@ -438,7 +444,7 @@ public class SmoothAOTE {
 		if (shape.isEmpty()) {
 			return false;
 		}
-		return shape.getBoundingBox().maxY >= 1;
+		return shape.getBoundingBox().maxY >= 0.8; //this is bellow 1 to account for things like mud blocks but discount slabs
 	}
 
 	/**
