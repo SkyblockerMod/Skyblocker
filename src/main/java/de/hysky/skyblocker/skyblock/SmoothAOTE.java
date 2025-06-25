@@ -364,6 +364,7 @@ public class SmoothAOTE {
 		//loop though each block of a teleport checking each block if there are blocks in the way
 		for (double offset = 0; offset <= distance; offset++) {
 			Vec3d pos = startPos.add(direction.multiply(offset));
+
 			BlockPos checkPos = BlockPos.ofFloored(pos);
 
 			//check if there is a block at the check location
@@ -389,8 +390,11 @@ public class SmoothAOTE {
 				return direction.multiply(offset - 1);
 			}
 
-			//check the diagonals to make sure player is not going through diagonal wall (full height block in the way on both sides at either height)
-			if (offset != 0 && (isBlockFloor(checkPos.add(xDiagonalOffset)) || isBlockFloor(checkPos.up().add(xDiagonalOffset))) && (isBlockFloor(checkPos.add(zDiagonalOffset)) || isBlockFloor(checkPos.up().add(zDiagonalOffset)))) {
+			//check for diagonal walls for some reason this check is directional, and you can go through from some directions. This seems to emulate this as best as possible
+			if (offset != 0 && direction.getX() < 0 && (isBlockFloor(checkPos.east())) && (isBlockFloor(BlockPos.ofFloored(pos.subtract(direction)).subtract(zDiagonalOffset)))) {
+				return direction.multiply(offset - 1);
+			}
+			if (offset != 0 && direction.getZ() < 0 && direction.getX() < 0 && (isBlockFloor(checkPos.south())) && (isBlockFloor(BlockPos.ofFloored(pos.subtract(direction)).subtract(xDiagonalOffset)))) {
 				return direction.multiply(offset - 1);
 			}
 
