@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
@@ -16,7 +17,8 @@ import java.util.Set;
 
 @RegisterWidget
 public class SweepDetailsHudWidget extends ComponentBasedWidget {
-    MinecraftClient CLIENT = MinecraftClient.getInstance();
+    private final Set<Location> LOCATIONS_SET = Set.of(Location.GALATEA, Location.THE_PARK);
+    private final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
     public SweepDetailsHudWidget() {
         super(Text.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweepDetails");
@@ -75,20 +77,19 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 
     @Override
     public Set<Location> availableLocations() {
-        return Set.of(Location.GALATEA);
+        return LOCATIONS_SET;
     }
 
     @Override
     public void setEnabledIn(Location location, boolean enabled) {
-        if (location != Location.GALATEA) return;
-        // todo: add config option here
+        if (!availableLocations().contains(location)) return;
+        SkyblockerConfigManager.get().foraging.galatea.enableSweepDetailsWidget = enabled;
     }
 
     @Override
     public boolean isEnabledIn(Location location) {
-        if (location != Location.GALATEA) return false;
-        // todo: replace with config option here
-        return true;
+        if (!availableLocations().contains(location)) return false;
+        return SkyblockerConfigManager.get().foraging.galatea.enableSweepDetailsWidget;
     }
 
     @Override
