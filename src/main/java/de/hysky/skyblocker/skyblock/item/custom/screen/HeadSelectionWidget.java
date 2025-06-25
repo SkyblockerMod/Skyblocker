@@ -104,7 +104,16 @@ public class HeadSelectionWidget extends ContainerWidget {
 
 	@Override
 	public List<? extends Element> children() {
-		List<Element> list = new ArrayList<>(visibleButtons);
+		int startY = searchField.getBottom() + 3;
+		int endY = getY() + getHeight() - 2;
+		int scrollY = (int) getScrollY();
+		List<Element> list = new ArrayList<>();
+		for (HeadButton b : visibleButtons) {
+			int y = b.getY() - scrollY;
+			if (y + b.getHeight() > startY && y < endY) {
+				list.add(b);
+			}
+		}
 		list.add(searchField);
 		return list;
 	}
@@ -123,12 +132,17 @@ public class HeadSelectionWidget extends ContainerWidget {
 		int scrollY = (int) getScrollY();
 		HeadButton hovered = null;
 		for (HeadButton b : visibleButtons) {
-			b.setY(b.getY() - scrollY);
+			int originalY = b.getY();
+			int y = originalY - scrollY;
+			if (y + b.getHeight() <= startY || y >= endY) {
+				continue;
+			}
+			b.setY(y);
 			b.render(context, mouseX, mouseY, delta);
 			if (b.isMouseOver(mouseX, mouseY) && mouseX >= startX && mouseX < endX && mouseY >= startY && mouseY < endY) {
 				hovered = b;
 			}
-			b.setY(b.getY() + scrollY);
+			b.setY(originalY);
 		}
 		drawScrollbar(context);
 		context.disableScissor();
