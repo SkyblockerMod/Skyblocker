@@ -1,3 +1,138 @@
+# Release 5.3.0
+
+## Highlight
+* Fancy Armor Customization GUI
+* Added legacy attribute background 
+* Add Lushlilac and Sea Lumies Highlighters 
+* Add forest temple puzzle solver 
+* Add collapse button to waypoint screen
+* Item pickup Widget
+* Adds an oxygen bar
+* Add waypoints to forest nodes
+* Add Absorb Stacking Enchant Progress
+* One flow waterboard solver
+* Visitor helper added a copy amount and open Bazaar option
+* Treasure Hunter Waypoints
+* Farming HUD choose between NPC, Bazaar, or Both for calculating coin/h
+* Farming HUD now displays which pricing source is being used
+* Fancy Bar Overflow display options
+* Add ingame fishing hook timer display
+* Add basic ordered waypoint commands
+* Item Background Refactor + Jacob's Contest Medal Background Colors
+* Add /warp garden and /setspawn buttons to gardens plots widget
+* Add slottext for "choose pet" and "skyblock guide"
+* Confirmation Prompt Helper 2.0
+* Refresh inventory search highlight when slot changes
+* Show all warp autocompletes for Bingo profiles
+* Add optional item name parameter to search overlay commands
+* Add separate wiki lookup keybinds
+* Add more slot text to chocolate factory
+* Add Deleting Items from AH/BZ Search Overlay History
+* Increase Chat Rule Character Limit
+* Set the default of hideStatusEffectOverlay to true
+* Removes the Estimated Price from Bazaar Items
+* Highlights items with attributes
+* Recipe book search bar remember your last input
+* Fix CompactorDeletorPreview related crash
+* Fix Croesus Profit
+* Fix jacobs event toast being too small in certain languages
+* Fix wishing compass solver distance
+* Fix npc price tooltip to include price * itemCount
+* Improve scheduler thread safety to prevent crashes
+* Fixed a bug where the fishing widget would not update
+* Fix customize button not moving when recipe book is toggled + refactor
+* Fixed the garden plot widget not being clickable
+* Fix Inventory status effects are now hidden while the garden plot widget is active
+* Fix allow numpad enter key to close signs
+* Fix chest value not accounting for item count in sacks & stashes
+* Fix some tabwidget icons being incorrect
+* Fix Turbo books and Ultimate Jerry names in Search Overlay
+* Fix update cooldown for new axe throw ability
+* Fix Bobber Time widget not working after max time was exceeded
+* Fix Only allow placing protected items into item frames while on Private Island or Garden
+* Fix Fancy Party Finder Debug button only in debugging mode
+* Fixed issues with waypoints not saving
+* Fixed bugs with dungeon secret waypoints and puzzle solvers not working
+* Fixed issues with the fishing helper being inaccurate
+* Fixed showing profile id fallback messages
+
+## What's Changed
+* fix gradle timout by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1251
+* Add basic ordered waypoint commands by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1232
+* Remove Legacy Ordered Waypoints by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1242
+* Confirmation Prompt Helper 2.0 by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/1245
+* Add slottext for "choose pet" and "skyblock guide" by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1264
+* Add /warp garden and /setspawn buttons to gardens plots widget by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1266
+* Item Background Refactor + Jacob's Contest Medal Background Colors by @Aerhhh in https://github.com/SkyblockerMod/Skyblocker/pull/1262
+* Fix CompactorDeletorPreview related crash by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1274
+* Fix Croesus Profit by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/1290
+* Epic Armor Customization GUI by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1215
+* Treasure Hunter Waypoints by @Fluboxer in https://github.com/SkyblockerMod/Skyblocker/pull/1246
+* Add ingame fishing hook timer display by @RoxareX in https://github.com/SkyblockerMod/Skyblocker/pull/1269
+* fix jacobs event toast being too small in certain languages by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1292
+* Things by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1285
+* Refresh inventory search highlight when slot changes by @Ownwn in https://github.com/SkyblockerMod/Skyblocker/pull/1259
+* fix wishing compass solver distance by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1296
+* Show all warp autocompletes for Bingo profiles. by @Kaluub in https://github.com/SkyblockerMod/Skyblocker/pull/1297
+* Change tips to use to new armour customization gui by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1299
+* more status bar anchors by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1298
+* Fix npc price tooltip to include price * itemCount by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1301
+* optional parse int by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1303
+* un-hardcode slot ids in SkillLevelAdder by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1305
+* Improve scheduler thread safety to prevent crashes by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1306
+* Verify Json Files by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1310
+* kitty yay by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1293
+* Fixed a bug where the fishing widget would not update by @Teyxos in https://github.com/SkyblockerMod/Skyblocker/pull/1294
+* Item pickup Widget by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1295
+* Bar changes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1307
+* Remove hover text on chat waypoint suggestion message by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1314
+* Fix customize button not moving when recipe book is toggled + refactor by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1316
+* Clarify Search Overlay translation for Bazaar/AH by @jani270 in https://github.com/SkyblockerMod/Skyblocker/pull/1329
+* space by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1332
+* fix npe by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1336
+* Add waypoints to forest nodes by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1325
+* Add Absorb Stacking Enchant Progress by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/1339
+* Update EnchantmentLevelAdder.java by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/1338
+* Garden fixes by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1271
+* One flow waterboard solver by @SpaceMonkeyy86 in https://github.com/SkyblockerMod/Skyblocker/pull/1283
+* Allow numpad enter key to close signs by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1333
+* Update EnchantmentLevelAdder again by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/1347
+* Add periods to sentences by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1348
+* Add optional item name parameter to search overlay commands by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1323
+* Add separate wiki lookup keybinds by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1324
+* Fix chest value not accounting for item count in sacks & stashes by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1337
+* Add more slot text to CF by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1342
+* Increase Chat Rule Character Limit by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/1356
+* Make custom item rename more friendly by @Ownwn in https://github.com/SkyblockerMod/Skyblocker/pull/1355
+* Add Deleting Items from AH/BZ Search Overlay History by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1346
+* Capitalize "buy"/"sell" in BazaarPriceTooltip by @Aerhhh in https://github.com/SkyblockerMod/Skyblocker/pull/1358
+* Clean up fishing stuff by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1340
+* fix: some tabwidget icons being incorrect by @j10a1n15 in https://github.com/SkyblockerMod/Skyblocker/pull/1362
+* Add translatable text by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1363
+* Fix Turbo- books and Ultimate Jerry names in Search Overlay by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1366
+* Adds an oxygen bar by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1367
+* update cooldown for new axe throw ability by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1343
+* Add REI exclusion zone for Visitor Helper Gui by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1371
+* Fix dungeon entrance pos detection by @GatienDoesStuff in https://github.com/SkyblockerMod/Skyblocker/pull/1374
+* Set the default of hideStatusEffectOverlay to true by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1376
+* Removes the Estimated Price from Bazaar Items by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1377
+* Highlights items with attributes by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1369
+* Remove deprecated space assignments from build.gradle by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1386
+* Fix Bobber Time widget not working after max time was exceeded by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1384
+* Small Fixes and Recipe Book Search Persistence by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1276
+
+## New Contributors
+* @Aerhhh made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1262
+* @RoxareX made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1269
+* @Teyxos made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1294
+* @Alex33856 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1314
+* @jani270 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1329
+* @PeytonBrown made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1325
+* @Bedrock-Armor made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1339
+* @SpaceMonkeyy86 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1283
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.2.0...v5.3.0
+___
 # Release 5.2.0
 
 ## Highlight

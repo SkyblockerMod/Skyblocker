@@ -13,5 +13,11 @@ public class ForagingConfig {
 
 		@SerialEntry
 		public boolean solveForestTemplePuzzle = true;
+
+		@SerialEntry
+		public boolean enableLushlilacHighlighter = true;
+
+		@SerialEntry
+		public boolean enableSeaLumiesHighlighter = true;
 	}
 }

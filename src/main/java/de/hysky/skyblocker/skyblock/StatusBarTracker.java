@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
+import de.hysky.skyblocker.skyblock.fancybars.StatusBarType;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -26,6 +28,7 @@ public class StatusBarTracker {
 	private static Resource health = new Resource(100, 100, 0);
 	private static Resource mana = new Resource(100, 100, 0);
 	private static Resource speed = new Resource(100, 400, 0);
+	private static Resource air = new Resource(100, 300, 0);
 	private static int defense = 0;
 
 	@Init
@@ -51,10 +54,15 @@ public class StatusBarTracker {
 		return speed;
 	}
 
+	public static Resource getAir() {
+		return air;
+	}
+
 	private static void tick() {
 		if (client == null || client.player == null) return;
 		updateHealth(health.value, health.max, health.overflow);
 		updateSpeed();
+		updateAir();
 	}
 
 	private static boolean allowOverlayMessage(Text text, boolean overlay) {
@@ -80,12 +88,14 @@ public class StatusBarTracker {
 		if (matcher.group("healing") != null) {
 			sb.append("§c❤");
 		}
-		matcher.appendReplacement(sb, "$3");
+		if (!FancyStatusBars.isHealthFancyBarEnabled()) matcher.appendReplacement(sb, "$0");
+		else matcher.appendReplacement(sb, "$3");
 
 		// Match defense or mana use and don't add it to the string builder
 		if (matcher.usePattern(DEFENSE_STATUS).find()) {
 			defense = RegexUtils.parseIntFromMatcher(matcher, "defense");
-			matcher.appendReplacement(sb, "");
+			if (FancyStatusBars.isBarEnabled(StatusBarType.DEFENSE)) matcher.appendReplacement(sb, "");
+			else matcher.appendReplacement(sb, "$0");
 		} else if (filterManaUse && matcher.usePattern(MANA_USE).find()) {
 			matcher.appendReplacement(sb, "");
 		}
@@ -93,7 +103,8 @@ public class StatusBarTracker {
 		// Match mana and don't add it to the string builder
 		if (matcher.usePattern(MANA_STATUS).find()) {
 			updateMana(matcher);
-			matcher.appendReplacement(sb, "");
+			if (FancyStatusBars.isBarEnabled(StatusBarType.INTELLIGENCE)) matcher.appendReplacement(sb, "");
+			else matcher.appendReplacement(sb, "$0");
 		}
 
 		// Append the rest of the message to the string builder
@@ -153,6 +164,13 @@ public class StatusBarTracker {
 			}
 		}
 		speed = new Resource(value, max, 0);
+	}
+
+	private static void updateAir() {
+		assert client.player != null;
+		int max = client.player.getMaxAir();
+		int value = Math.clamp(client.player.getAir(), 0, max);
+		air = new Resource(value, max, 0);
 	}
 
 	public record Resource(int value, int max, int overflow) {}

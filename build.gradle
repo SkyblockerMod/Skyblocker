@@ -19,14 +19,14 @@ repositories {
 	}
 
 	maven {
-		name 'Maven Central'
-		url 'https://repo.maven.apache.org/maven2'
+		name = 'Maven Central'
+		url = 'https://repo.maven.apache.org/maven2'
 	}
 
 	// For ModMenu and EMI
 	exclusiveContent {
 		forRepository {
-			maven { url "https://maven.terraformersmc.com/releases" }
+			maven { url = "https://maven.terraformersmc.com/releases" }
 		}
 
 		filter {
@@ -38,7 +38,7 @@ repositories {
 	// For REI
 	exclusiveContent {
 		forRepository {
-			maven { url "https://maven.shedaniel.me/" }
+			maven { url = "https://maven.shedaniel.me/" }
 		}
 
 		filter {
@@ -64,7 +64,7 @@ repositories {
 
 	// YACL
 	maven {
-		url "https://maven.isxander.dev/releases"
+		url = "https://maven.isxander.dev/releases"
 
 		content {
 			includeGroup "dev.isxander"
@@ -74,7 +74,7 @@ repositories {
 
 	// For Minecraft snapshots
 	maven {
-		url "https://maven.isxander.dev/snapshots"
+		url = "https://maven.isxander.dev/snapshots"
 
 		content {
 			includeGroup "dev.isxander"
@@ -95,21 +95,10 @@ repositories {
 		}
 	}
 
-	// For Occlusion Culling library
-	exclusiveContent {
-		forRepository {
-			maven { url "https://repo.codemc.io/repository/maven-public/" }
-		}
-
-		filter {
-			includeGroup "com.logisticscraft"
-		}
-	}
-
 	// For NEU repo parser
 	exclusiveContent {
 		forRepository {
-			maven { url "https://repo.nea.moe/releases" }
+			maven { url = "https://repo.nea.moe/releases" }
 		}
 
 		filter {
@@ -118,7 +107,7 @@ repositories {
 	}
 
 	maven {
-		url "https://maven.azureaaron.net/releases"
+		url = "https://maven.azureaaron.net/releases"
 
 		content {
 			includeGroup "net.azureaaron"
@@ -126,7 +115,7 @@ repositories {
 	}
 
 	maven {
-		url "https://maven.azureaaron.net/snapshots"
+		url = "https://maven.azureaaron.net/snapshots"
 
 		content {
 			includeGroup "net.azureaaron"
@@ -178,9 +167,6 @@ dependencies {
 	compileOnly "com.demonwav.mcdev:annotations:${project.mcdev_annotations_version}"
 
 	include modImplementation("meteordevelopment:discord-ipc:1.1")
-
-	// Occlusion Culling (https://github.com/LogisticsCraft/OcclusionCulling)
-	include implementation("com.logisticscraft:occlusionculling:${project.occlusionculling_version}")
 
 	// NEU RepoParser
 	include implementation("moe.nea:neurepoparser:${project.repoparser_version}")

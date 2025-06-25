@@ -79,9 +79,10 @@ public class SeaCreatureTracker {
 	private static void checkRarityNotification() {
 		SkyblockItemRarity rarityThreshold = SkyblockerConfigManager.get().helpers.fishing.minimumNotificationRarity;
 		if (rarityThreshold == SkyblockItemRarity.UNKNOWN) return;
-		SkyblockItemRarity lastCreatureRarity = seaCreatures.sequencedValues().getLast().seaCreature.rarity;
+		SeaCreature lastCreature = seaCreatures.sequencedValues().getLast().seaCreature;
+		SkyblockItemRarity lastCreatureRarity = lastCreature.rarity;
 		if (lastCreatureRarity.compareTo(rarityThreshold) >= 0) {
-			TitleContainer.addTitle(new Title(Text.translatable("skyblocker.config.helpers.fishing.minimumNotificationRarity.notification", lastCreatureRarity).formatted(lastCreatureRarity.formatting)), 60);
+			TitleContainer.addTitle(new Title(Text.literal(lastCreature.name).formatted(lastCreatureRarity.formatting)), 60);
 			if (CLIENT.player == null) return;
 			CLIENT.player.playSound(SoundEvents.ENTITY_ARROW_HIT_PLAYER, 100f, 0.1f);
 		}

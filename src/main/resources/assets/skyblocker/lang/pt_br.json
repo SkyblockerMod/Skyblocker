@@ -1,7 +1,6 @@
 {
     "key.skyblocker.defaultTgl": "Trocar HUD da tab para padrão",
-    "key.skyblocker.toggleA": "Alternar HUD da tab para tela A",
-    "key.wikiLookup": "Olhar na Wiki",
+    "key.skyblocker.toggleA": "Mostrar visualização secundária do HUD da guia",
     "skyblocker.config.general": "Geral",
     "skyblocker.config.uiAndVisuals.bars": "Barra de Vida, Mana, Defesa & XP",
     "skyblocker.config.uiAndVisuals.bars.enableBars": "Ativar Barras",
@@ -152,8 +151,6 @@
     "skyblocker.config.general.wikiLookup": "Olhar na Wiki",
     "skyblocker.config.general.wikiLookup.enableWikiLookup": "Ativar Olhar na Wiki",
     "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "Abrir a pagina da wiki do item com o mouse em cima com F4.",
-    "skyblocker.config.general.wikiLookup.officialWiki": "Usar Wiki Oficial",
-    "skyblocker.config.general.wikiLookup.officialWiki.@Tooltip": "Usar a wiki oficial em vez da wiki do Fandom.",
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds": "Fundos de Raridade de Item",
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Mostra um fundo colorido atrás de um item, a cor representa a raridade do item.",
     "skyblocker.config.dungeons.map.mapScreen": "Configuração da posição do Mapa da Dungeon e Pontuação...",
@@ -231,7 +228,6 @@
     "skyblocker.config.otherLocations.spidersDen.relics.enableRelicsHelper": "Ativar guia para relíquias escondidas",
     "skyblocker.config.otherLocations.spidersDen.relics.highlightFoundRelics": "Destacar Relíquias Encontradas",
     "skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints": "Ativar marcadores de Superboom",
-    "skyblocker.wikiLookup.noArticleFound": "§rFoi incapaz de localizar um artigo da wiki para esse item...",
     "skyblocker.config.dungeons.secretWaypoints.enableItemWaypoints": "Ativar marcadores de item",
     "skyblocker.config.dungeons.secretWaypoints.enableEntranceWaypoints": "Ativar marcadores da entrada",
     "skyblocker.config.quickNav.button": "Botão %d",
@@ -335,5 +331,12 @@
     "text.skyblocker.undo": "Anular",
     "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Te avisa quando puxares um arco e não teres Flecha Venenosa de Poison no teu inventário",
     "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "Construir pontos de Waypoints da Ballista",
-    "key.itemPriceRefresh": "Atualizar Bazaar"
+    "key.itemPriceRefresh": "Atualizar Bazaar",
+    "text.skyblocker.offline": "Desligado",
+    "key.skyblocker.debug.dumpHoveredItem": "Despejar item pairado",
+    "skyblocker.config.debug.dumpRange.@Tooltip": "O intervalo em blocos ao redor do jogador para despejar entidades dentro.",
+    "skyblocker.config.debug.corpseFinderDebug": "Depurar o localizador de cadáveres",
+    "skyblocker.config.crimsonIsle.kuudra.suppliesAndFuelWaypointType": "Tipo de ponto de referência de suprimentos/combustível",
+    "text.skyblocker.reset": "Reiniciar",
+    "skyblocker.config.debug.dumpFormat.@Tooltip": "O formato a ser usado ao despejar itens. SNBT é colorido e mais fácil de ler, enquanto JSON tem caracteres de string de escape (aspas duplas)."
 }
