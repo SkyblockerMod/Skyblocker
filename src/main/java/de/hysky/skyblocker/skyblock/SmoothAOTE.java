@@ -345,19 +345,10 @@ public class SmoothAOTE {
 		}
 
 		//based on which way the ray is going get the needed vector for checking diagonals
-		BlockPos xDiagonalOffset;
-		BlockPos zDiagonalOffset;
-		if (direction.getX() > 0) {
-			xDiagonalOffset = new BlockPos(-1, 0, 0);
-		} else {
-			xDiagonalOffset = new BlockPos(1, 0, 0);
-		}
-		if (direction.getZ() > 0) {
-			zDiagonalOffset = new BlockPos(0, 0, -1);
-		} else {
-			zDiagonalOffset = new BlockPos(0, 0, 1);
-		}
+		BlockPos xDiagonalOffset = direction.getX() > 0? new BlockPos(1, 0, 0): new BlockPos(-1, 0, 0) ;
+		BlockPos zDiagonalOffset = direction.getZ() > 0? new BlockPos(0, 0, 1): new BlockPos(0, 0, -1) ;
 
+	
 		//initialise the closest floor value outside of possible values
 		int closeFloorY = 1000;
 
@@ -391,15 +382,15 @@ public class SmoothAOTE {
 			}
 
 			//check for diagonal walls for some reason this check is directional, and you can go through from some directions. This seems to emulate this as best as possible
-			if (offset != 0 && direction.getX() < 0 && (isBlockFloor(checkPos.east())) && (isBlockFloor(BlockPos.ofFloored(pos.subtract(direction)).subtract(zDiagonalOffset)))) {
+			if (offset != 0 && direction.getX() < 0 && (isBlockFloor(checkPos.east())) && (isBlockFloor(BlockPos.ofFloored(pos.subtract(direction)).add(zDiagonalOffset)))) {
 				return direction.multiply(offset - 1);
 			}
-			if (offset != 0 && direction.getZ() < 0 && direction.getX() < 0 && (isBlockFloor(checkPos.south())) && (isBlockFloor(BlockPos.ofFloored(pos.subtract(direction)).subtract(xDiagonalOffset)))) {
+			if (offset != 0 && direction.getZ() < 0 && direction.getX() < 0 && (isBlockFloor(checkPos.south())) && (isBlockFloor(BlockPos.ofFloored(pos.subtract(direction)).add(xDiagonalOffset)))) {
 				return direction.multiply(offset - 1);
 			}
 
 			//if the player is close to the floor (including diagonally) save Y and when player goes bellow this y finish teleport
-			if ((isBlockFloor(checkPos.down()) || (isBlockFloor(checkPos.down().subtract(xDiagonalOffset)) && isBlockFloor(checkPos.down().subtract(zDiagonalOffset)))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
+			if ((isBlockFloor(checkPos.down()) || (isBlockFloor(checkPos.down().add(xDiagonalOffset)) && isBlockFloor(checkPos.down().add(zDiagonalOffset)))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
 				closeFloorY = checkPos.getY() - 1;
 			}
 
