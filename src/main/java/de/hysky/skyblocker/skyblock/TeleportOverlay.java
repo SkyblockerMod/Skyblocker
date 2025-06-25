@@ -15,6 +15,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 
@@ -84,28 +85,16 @@ public class TeleportOverlay {
      * @implNote {@link MinecraftClient#player} and {@link MinecraftClient#world} must not be null when calling this method.
      */
     private static void render(WorldRenderContext wrc, int range) {
-        if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK && client.crosshairTarget instanceof BlockHitResult blockHitResult && client.crosshairTarget.getPos().isInRange(client.player.getPos(), range)) {
-            render(wrc, blockHitResult);
-        } else if (client.interactionManager != null && range > client.player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).getValue()) {
-            HitResult result = client.player.raycast(range, wrc.tickCounter().getTickProgress(true), false);
-            if (result.getType() == HitResult.Type.BLOCK && result instanceof BlockHitResult blockHitResult) {
-                render(wrc, blockHitResult);
-            }
-        }
-    }
-
-    /**
-     * Renders the teleport overlay at the given {@link BlockHitResult}.
-     *
-     * @implNote {@link MinecraftClient#world} must not be null when calling this method.
-     */
-    private static void render(WorldRenderContext wrc, BlockHitResult blockHitResult) {
-        BlockPos pos = blockHitResult.getBlockPos();
-        @SuppressWarnings("DataFlowIssue")
-        BlockState state = client.world.getBlockState(pos);
-        if (!state.isAir() && client.world.getBlockState(pos.up()).isAir() && client.world.getBlockState(pos.up(2)).isAir()) {
-            RenderHelper.renderFilled(wrc, pos, colorComponents, colorComponents[3], false);
-        }
+		if (client.player == null || client.world == null) return;
+		float pitch = client.player.getPitch();
+		float yaw = client.player.getYaw();
+		Vec3d look = client.player.getRotationVector(pitch, yaw);
+		Vec3d statPos = client.player.getPos().add(0, 1.62, 0);
+		Vec3d raycast = SmoothAOTE.raycast(range,look,statPos);
+		if (raycast != null) {
+			BlockPos target = BlockPos.ofFloored(statPos.add(raycast)).down(); //todo new setting show in air
+			RenderHelper.renderFilled(wrc, target, colorComponents, colorComponents[3], false);
+		}
     }
 
     public static void configCallback(Color color) {
