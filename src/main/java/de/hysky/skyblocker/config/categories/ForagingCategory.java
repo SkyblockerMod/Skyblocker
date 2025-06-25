@@ -66,6 +66,13 @@ public class ForagingCategory {
 										newValue -> config.foraging.sweepOverlay.enableSweepOverlay = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay"))
+								.binding(defaults.foraging.sweepOverlay.enableThrownAbilityOverlay,
+										() -> config.foraging.sweepOverlay.enableThrownAbilityOverlay,
+										newValue -> config.foraging.sweepOverlay.enableThrownAbilityOverlay = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.sweepOverlay.sweepOverlayColor"))
 								.binding(defaults.foraging.sweepOverlay.sweepOverlayColor,

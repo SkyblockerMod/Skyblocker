@@ -31,6 +31,9 @@ public class ForagingConfig {
 		public boolean enableSweepOverlay = true;
 
 		@SerialEntry
+		public boolean enableThrownAbilityOverlay = true;
+
+		@SerialEntry
 		public Color sweepOverlayColor = new Color(0x40FF9600, true);
 	}
 }

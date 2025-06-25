@@ -100,7 +100,7 @@ public class SweepOverlay {
 		if (isValidAxe && client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK
 				&& client.crosshairTarget instanceof BlockHitResult hitResult) {
 			blockHitResult = hitResult;
-		} else if (isThrowableAxe) {
+		} else if (isThrowableAxe && config.enableThrownAbilityOverlay) {
 			// Cast a ray up to 50 blocks for throwable axes
 			// #todo gravity prediction
 			Vec3d start = client.player.getCameraPosVec(1.0f);
