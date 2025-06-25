@@ -21,28 +21,28 @@ import net.minecraft.world.chunk.WorldChunk;
  */
 public abstract class AbstractBlockHighlighter {
 	private final Set<BlockPos> highlightedBlocks = new HashSet<>();
-	private final Block target;
-	private final float[] colour;
+	protected final Block target;
+	protected final float[] color;
 
-	protected AbstractBlockHighlighter(Block target, DyeColor colour) {
+	protected AbstractBlockHighlighter(Block target, DyeColor color) {
 		this.target = target;
-		this.colour = ColorUtils.getFloatComponents(colour);
+		this.color = ColorUtils.getFloatComponents(color);
 	}
 
 	protected void init() {
 		ClientChunkEvents.CHUNK_LOAD.register(this::onChunkLoad);
 		ClientChunkEvents.CHUNK_UNLOAD.register(this::onChunkUnload);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(this::render);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> this.reset());
+		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 	}
 
 	public void onBlockUpdate(BlockPos pos, BlockState state) {
 		if (!shouldProcess()) return;
 
 		if (shouldHighlight(state)) {
-			this.highlightedBlocks.add(pos.toImmutable());
+			highlightedBlocks.add(pos.toImmutable());
 		} else {
-			this.highlightedBlocks.remove(pos);
+			highlightedBlocks.remove(pos);
 		}
 	}
 
@@ -58,7 +58,7 @@ public abstract class AbstractBlockHighlighter {
 		if (!shouldProcess()) return;
 
 		chunk.forEachBlockMatchingPredicate(this::shouldHighlight, (pos, state) -> {
-			this.highlightedBlocks.add(pos.toImmutable());
+			highlightedBlocks.add(pos.toImmutable());
 		});
 	}
 
@@ -67,7 +67,7 @@ public abstract class AbstractBlockHighlighter {
 	 */
 	private void onChunkUnload(ClientWorld world, WorldChunk chunk) {
 		if (!shouldProcess()) return;
-		Iterator<BlockPos> iterator = this.highlightedBlocks.iterator();
+		Iterator<BlockPos> iterator = highlightedBlocks.iterator();
 
 		while (iterator.hasNext()) {
 			BlockPos pos = iterator.next();
@@ -82,17 +82,17 @@ public abstract class AbstractBlockHighlighter {
 	private void render(WorldRenderContext context) {
 		if (!shouldProcess()) return;
 
-		for (BlockPos highlight : this.highlightedBlocks) {
+		for (BlockPos highlight : highlightedBlocks) {
 			renderBlock(highlight, context);
 		}
 	}
 
 	protected void renderBlock(BlockPos pos, WorldRenderContext context) {
-		RenderHelper.renderFilled(context, pos, this.colour, 0.5f, false);
+		RenderHelper.renderFilled(context, pos, color, 0.5f, false);
 	}
 
 	private void reset() {
-		this.highlightedBlocks.clear();
+		highlightedBlocks.clear();
 	}
 
 	protected abstract boolean shouldProcess();
