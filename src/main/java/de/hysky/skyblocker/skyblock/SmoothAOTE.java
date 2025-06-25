@@ -472,7 +472,7 @@ public class SmoothAOTE {
 		if (shape.isEmpty()) {
 			return false;
 		}
-		return shape.getBoundingBox().maxY >= 0.8; //this is bellow 1 to account for things like mud blocks but discount slabs
+		return shape.getBoundingBox().maxY >= 1 || blockState.getBlock() == Blocks.MUD; //every thing 1 or above counts but there is some added extras like mud
 	}
 
 	/**
