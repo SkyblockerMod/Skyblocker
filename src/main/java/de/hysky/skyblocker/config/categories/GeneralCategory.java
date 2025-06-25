@@ -319,6 +319,14 @@ public class GeneralCategory {
 										newValue -> config.general.itemInfoDisplay.jacobMedalBackgrounds = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds.@Tooltip")))
+								.binding(defaults.general.itemInfoDisplay.legacyAttributeBackgrounds,
+										() -> config.general.itemInfoDisplay.legacyAttributeBackgrounds,
+										newValue -> config.general.itemInfoDisplay.legacyAttributeBackgrounds = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.build())
 
                 //Item Protection

@@ -120,9 +120,14 @@ public class SearchOverManager {
                 Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(name);
                 if (matcher.matches()) {//format enchantments
                     name = matcher.group(1);
-                    if (!name.contains("Ultimate Wise")) {
+                    if (!name.contains("Ultimate Wise") && !name.contains("Ultimate Jerry")) {
                         name = name.replace("Ultimate ", "");
                     }
+
+					// Fix Turbo-Cane / other turbo books
+					if (name.startsWith("Turbo ")) {
+						name = name.replace("Turbo ", "Turbo-");
+					}
 
                     String level = matcher.group(2);
                     name += " " + RomanNumerals.decimalToRoman(Integer.parseInt(level));

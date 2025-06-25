@@ -23,13 +23,10 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class ForestNodes {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ForestNodes.class);
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 	private static final Map<BlockPos, ForestNode> forestNodes = new HashMap<>();
 
