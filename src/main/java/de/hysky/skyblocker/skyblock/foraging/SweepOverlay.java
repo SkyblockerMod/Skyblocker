@@ -80,8 +80,13 @@ public class SweepOverlay {
 	}
 
 	/**
-	 * Renders an overlay for logs that can be chopped when holding a valid axe.
-	 * For throwable axes, casts a ray up to 50 blocks and highlights logs with half the sweep value and a dimmer color.
+	 * Entry point from the world renderer. Displays colored boxes around
+	 * logs that will be destroyed when sweeping.
+	 * <p>
+	 * If a throwable axe is equipped and the "Thrown Ability Overlay" option
+	 * is enabled, a ray trace up to 50 blocks is performed to highlight logs
+	 * at the target point. This ray-cast overlay is skipped while the axe's
+	 * ability is on cooldown.
 	 *
 	 * @param wrc the world render context
 	 */
@@ -149,7 +154,11 @@ public class SweepOverlay {
 	}
 
 	/**
-	 * Retrieves the Sweep stat from the player list or falls back to item-based values.
+	 * Retrieves the player's Sweep stat.
+	 * <p>
+	 * The value is parsed from the tab list when available. If it cannot be
+	 * found, an informational chat message is sent once asking the player to
+	 * update their tab list using <code>/tablist</code>.
 	 *
 	 * @return the Sweep stat as a float
 	 */
@@ -210,8 +219,11 @@ public class SweepOverlay {
 	}
 
 	/**
-	 * Renders an overlay highlighting connected logs that can be chopped based on the player's Sweep stat.
-	 * For ray-cast hits (throwable axes), uses half the sweep stat and a dimmer color.
+	 * Highlights all logs connected to the targeted block. A breadth-first
+	 * search continues until the calculated maximum wood count is reached.
+	 * <p>
+	 * When triggered via a thrown axe, the overlay is drawn with a dimmer
+	 * color and the blocks broken is halved.
 	 *
 	 * @param wrc           the world render context
 	 * @param blockHitResult the block hit result from the crosshair or ray cast
