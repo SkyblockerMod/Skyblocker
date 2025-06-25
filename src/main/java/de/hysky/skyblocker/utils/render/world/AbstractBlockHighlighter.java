@@ -1,8 +1,6 @@
-package de.hysky.skyblocker.skyblock.galatea;
+package de.hysky.skyblocker.utils.render.world;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -21,9 +19,8 @@ import net.minecraft.world.chunk.WorldChunk;
 /**
  * Abstract class for a simple feature that highlights a certain type of block.
  */
-//TODO Move this to a more generic package since this is not Galatea specific (maybe make a world rendering utility package?)
 public abstract class AbstractBlockHighlighter {
-	private final List<BlockPos> highlightedBlocks = new ArrayList<>();
+	private final Set<BlockPos> highlightedBlocks = new HashSet<>();
 	private final Block target;
 	private final float[] colour;
 
@@ -42,11 +39,15 @@ public abstract class AbstractBlockHighlighter {
 	public void onBlockUpdate(BlockPos pos, BlockState state) {
 		if (!shouldProcess()) return;
 
-		if (state.getBlock().equals(this.target)) {
+		if (shouldHighlight(state)) {
 			this.highlightedBlocks.add(pos.toImmutable());
 		} else {
 			this.highlightedBlocks.remove(pos);
 		}
+	}
+
+	protected boolean shouldHighlight(BlockState state) {
+		return state.isOf(target);
 	}
 
 	/**
@@ -56,7 +57,7 @@ public abstract class AbstractBlockHighlighter {
 	private void onChunkLoad(ClientWorld world, WorldChunk chunk) {
 		if (!shouldProcess()) return;
 
-		chunk.forEachBlockMatchingPredicate(state -> state.getBlock().equals(this.target), (pos, state) -> {
+		chunk.forEachBlockMatchingPredicate(this::shouldHighlight, (pos, state) -> {
 			this.highlightedBlocks.add(pos.toImmutable());
 		});
 	}
@@ -82,8 +83,12 @@ public abstract class AbstractBlockHighlighter {
 		if (!shouldProcess()) return;
 
 		for (BlockPos highlight : this.highlightedBlocks) {
-			RenderHelper.renderFilled(context, highlight, this.colour, 0.5f, false);
+			renderBlock(highlight, context);
 		}
+	}
+
+	protected void renderBlock(BlockPos pos, WorldRenderContext context) {
+		RenderHelper.renderFilled(context, pos, this.colour, 0.5f, false);
 	}
 
 	private void reset() {
