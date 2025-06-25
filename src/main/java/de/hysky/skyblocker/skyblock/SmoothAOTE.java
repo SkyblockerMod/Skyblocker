@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -40,7 +39,7 @@ public class SmoothAOTE {
 	/**
 	 * Stores blocks that are known to not have a collision
 	 */
-	private static final HashSet<Block> NON_COLLISION_BLOCKS = new HashSet<Block>(Arrays.asList(Blocks.BROWN_MUSHROOM,Blocks.RED_MUSHROOM,Blocks.NETHER_WART,Blocks.REDSTONE_WIRE,Blocks.LADDER,Blocks.FIRE,Blocks.WATER,Blocks.LAVA,Blocks.SEAGRASS,Blocks.TALL_SEAGRASS,Blocks.SEA_PICKLE,Blocks.KELP,Blocks.VINE));
+	private static final HashSet<Block> NON_COLLISION_BLOCKS = new HashSet<Block>(Arrays.asList(Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM, Blocks.NETHER_WART, Blocks.REDSTONE_WIRE, Blocks.LADDER, Blocks.FIRE, Blocks.WATER, Blocks.LAVA, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.SEA_PICKLE, Blocks.KELP, Blocks.VINE));
 
 	private static long startTime;
 	private static Vec3d startPos;
@@ -345,12 +344,12 @@ public class SmoothAOTE {
 		}
 
 		//based on which way the ray is going get the needed vector for checking diagonals
-		BlockPos xDiagonalOffset = direction.getX() > 0? new BlockPos(1, 0, 0): new BlockPos(-1, 0, 0) ;
-		BlockPos zDiagonalOffset = direction.getZ() > 0? new BlockPos(0, 0, 1): new BlockPos(0, 0, -1) ;
+		BlockPos xDiagonalOffset = direction.getX() > 0 ? new BlockPos(1, 0, 0) : new BlockPos(-1, 0, 0);
+		BlockPos zDiagonalOffset = direction.getZ() > 0 ? new BlockPos(0, 0, 1) : new BlockPos(0, 0, -1);
 
-	
+
 		//initialise the closest floor value outside of possible values
-		int closeFloorY = 1000;
+		int closeFloorY = Integer.MAX_VALUE;
 
 		//loop though each block of a teleport checking each block if there are blocks in the way
 		for (double offset = 0; offset <= distance; offset++) {
@@ -365,6 +364,12 @@ public class SmoothAOTE {
 					return null;
 				}
 				return direction.multiply(offset - 1);
+			}
+
+			//stops on vine if found
+			int isVine = checkVine(checkPos, direction.getX() > 0, direction.getZ() > 0);
+			if (isVine != -1) {
+				return direction.multiply(offset - isVine);
 			}
 
 			//check if the block at head height is free
@@ -402,6 +407,33 @@ public class SmoothAOTE {
 
 		//return full distance if no collision found
 		return direction.multiply(distance);
+	}
+
+	/**
+	 * check if there is a vine. The player can teleport into the same block only from 1 direction
+	 *
+	 * @param blockPos  location
+	 * @param positiveX is the player moving positive X
+	 * @param positiveZ is the player moving positive Z
+	 * @return the offset. -1 if no vine
+	 */
+	private static int checkVine(BlockPos blockPos, boolean positiveX, boolean positiveZ) {
+		if (CLIENT.world == null) return -1;
+		BlockState blockState = CLIENT.world.getBlockState(blockPos);
+		if (!blockState.getBlock().equals(Blocks.VINE)) return -1;
+		//work out if coming from open side of vine. If so let the player stay there else move 1 back
+
+		if (blockState.get(Properties.NORTH) && (!positiveZ)) {
+			return 0;
+		} else if (blockState.get(Properties.SOUTH) && (positiveZ)) {
+			return 0;
+		} else if (blockState.get(Properties.WEST) && (!positiveX)) {
+			return 0;
+		} else if (blockState.get(Properties.EAST) && (!positiveX)) {
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 
 	/**
