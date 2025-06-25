@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
@@ -21,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -48,7 +50,7 @@ public class SmoothAOTE {
 	/**
 	 * Stores blocks that are known to not have a collision
 	 */
-	private static final HashSet<Block> NON_COLLISION_BLOCKS = new HashSet<>(Set.of(Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM, Blocks.NETHER_WART, Blocks.REDSTONE_WIRE, Blocks.LADDER, Blocks.FIRE, Blocks.WATER, Blocks.LAVA, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.SEA_PICKLE, Blocks.KELP, Blocks.VINE));
+	private static final HashSet<Block> NON_COLLISION_BLOCKS = new HashSet<Block>(Arrays.asList(Blocks.BROWN_MUSHROOM,Blocks.RED_MUSHROOM,Blocks.NETHER_WART,Blocks.REDSTONE_WIRE,Blocks.LADDER,Blocks.FIRE,Blocks.WATER,Blocks.LAVA,Blocks.SEAGRASS,Blocks.TALL_SEAGRASS,Blocks.SEA_PICKLE,Blocks.KELP,Blocks.VINE));
 
 	private static long startTime;
 	private static Vec3d startPos;
