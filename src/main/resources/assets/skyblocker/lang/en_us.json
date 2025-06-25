@@ -1467,6 +1467,7 @@
   "skyblocker.galatea.hud.sweepDetails.treeType":  "%s Tree",
   "skyblocker.galatea.hud.sweepDetails.toughness":  "Toughness: %s",
   "skyblocker.galatea.hud.sweepDetails.sweep":  "Sweep: %s",
+  "skyblocker.galatea.hud.sweepDetails.logs":  "Logs: %s",
   "skyblocker.galatea.hud.sweepDetails.throwPenalty":  "Axe Throw Penalty (%s)",
   "skyblocker.galatea.hud.sweepDetails.stylePenalty":  "Tree Style Penalty (%s)",
   "skyblocker.galatea.hud.sweepDetails.correctStyle":  "Style: %s",

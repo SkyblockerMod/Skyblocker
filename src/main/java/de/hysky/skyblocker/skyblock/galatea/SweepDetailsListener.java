@@ -12,17 +12,17 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings("RegExpRepeatedSpace") // followup messages have 2 leading spaces
 public class SweepDetailsListener implements ChatMessageListener {
-    protected static final Pattern SWEEP_DETAILS = Pattern.compile("Sweep Details: (\\d+(?:\\.\\d+)?)∮ Sweep");
-    protected static final Pattern TREE_TOUGHNESS = Pattern.compile("  (Fig|Mangrove) Tree Toughness: (\\d+(?:\\.\\d+)?) (\\d*(?:\\.\\d+)?) Logs");
-    protected static final Pattern AXE_THROW_PENALTY = Pattern.compile("  Axe throw: (-\\d+)% Sweep (\\d+(?:\\.\\d+)?) Logs");
-    protected static final Pattern WRONG_STYLE_PENALTY = Pattern.compile("  Wrong Style: (-\\d+)% Sweep (\\d+(?:\\.\\d+)?) Logs ([a-zA-Z ]*)!!");
+    protected static final Pattern SWEEP_DETAILS = Pattern.compile("Sweep Details: ([\\d.]+)∮ Sweep");
+    protected static final Pattern TREE_TOUGHNESS = Pattern.compile("  (.+?) Tree Toughness: ([\\d.]+) ([\\d.]+) Logs");
+    protected static final Pattern AXE_THROW_PENALTY = Pattern.compile("  Axe throw: (-\\d+)% Sweep ([\\d.]+) Logs");
+    protected static final Pattern WRONG_STYLE_PENALTY = Pattern.compile("  Wrong Style: (-\\d+)% Sweep ([\\d.]+) Logs ([a-zA-Z ]*)!!");
 
     public static boolean active = false;
     public static float lastMatch = -1;
 
     public static float maxSweep = -1;
     public static float lastSweep = -1;
-    public static String lastTreeType;
+    public static String lastTreeType = "Unknown";
     public static String toughness;
     public static String logs;
     public static boolean axePenalty;
@@ -36,13 +36,14 @@ public class SweepDetailsListener implements ChatMessageListener {
         lastMatch = -1;
         maxSweep = -1;
         lastSweep = -1;
+		lastTreeType = "Unknown";
         axePenalty = false;
         stylePenalty = false;
     }
 
     @Override
     public ChatFilterResult onMessage(Text message, String asString) {
-        if (!Utils.isInGalatea()) return ChatFilterResult.PASS;
+        if (!SweepDetailsHudWidget.locations.contains(Utils.getLocation())) return ChatFilterResult.PASS;
         if (!SkyblockerConfigManager.get().foraging.galatea.enableSweepDetailsWidget) return ChatFilterResult.PASS;
         String msg = message.getString();
 
@@ -62,6 +63,9 @@ public class SweepDetailsListener implements ChatMessageListener {
 
             return ChatFilterResult.FILTER;
         }
+
+		if (active && System.currentTimeMillis() > lastMatch + 1_000) active = false;
+		if (!active) return ChatFilterResult.PASS;
 
         Matcher treeToughness = TREE_TOUGHNESS.matcher(msg);
         if (treeToughness.matches() && treeToughness.groupCount() == 3) {
