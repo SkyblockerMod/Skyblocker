@@ -438,7 +438,7 @@ public class SmoothAOTE {
 		if (shape.isEmpty()) {
 			return false;
 		}
-		return shape.getBoundingBox().maxY == 1;
+		return shape.getBoundingBox().maxY >= 1;
 	}
 
 	/**
@@ -453,7 +453,7 @@ public class SmoothAOTE {
 		}
 		long gap = System.currentTimeMillis() - startTime;
 		//make sure the player is actually getting teleported if not disable teleporting until they are teleported again
-		if (System.currentTimeMillis() - lastTeleportTime > Math.min(Math.max(lastPing, currentTeleportPing) + SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.maximumAddedLag, MAX_TELEPORT_TIME)) {
+		if (System.currentTimeMillis() - lastTeleportTime > Math.min(Math.max(lastPing, currentTeleportPing) + ((long) SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.maximumAddedLag * teleportsAhead), MAX_TELEPORT_TIME)) {
 			teleportDisabled = true;
 			startPos = null;
 			teleportVector = null;
