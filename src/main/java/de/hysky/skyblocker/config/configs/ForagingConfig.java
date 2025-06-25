@@ -18,8 +18,14 @@ public class ForagingConfig {
 		public boolean enableLushlilacHighlighter = true;
 
 		@SerialEntry
+		public float lushlilacHighlighterOpacity = 0.5f;
+
+		@SerialEntry
 		public boolean enableSeaLumiesHighlighter = true;
-		
+
+		@SerialEntry
+		public float seaLumiesHighlighterOpacity = 0.5f;
+
 		@SerialEntry
 		public boolean enableTreeBreakProgress = true;
 	}
