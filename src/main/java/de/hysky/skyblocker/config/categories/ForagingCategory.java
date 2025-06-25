@@ -33,6 +33,22 @@ public class ForagingCategory {
 										newValue -> config.foraging.galatea.solveForestTemplePuzzle = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.enableLushlilacHighlighter"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip")))
+								.binding(defaults.foraging.galatea.enableLushlilacHighlighter,
+										() -> config.foraging.galatea.enableLushlilacHighlighter,
+										newValue -> config.foraging.galatea.enableLushlilacHighlighter = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter.@Tooltip")))
+								.binding(defaults.foraging.galatea.enableSeaLumiesHighlighter,
+										() -> config.foraging.galatea.enableSeaLumiesHighlighter,
+										newValue -> config.foraging.galatea.enableSeaLumiesHighlighter = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.build())
 				.build();
 	}
