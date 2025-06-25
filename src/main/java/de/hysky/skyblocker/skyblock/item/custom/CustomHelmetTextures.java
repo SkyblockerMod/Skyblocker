@@ -23,7 +23,7 @@ import java.util.UUID;
  * Caches generated ProfileComponents for custom player head textures.
  */
 public class CustomHelmetTextures {
-    private static final Identifier TEXTURE_LIST = Identifier.of(SkyblockerMod.NAMESPACE, "head_textures.json");
+    private static final Identifier TEXTURE_LIST = Identifier.of(SkyblockerMod.NAMESPACE, "textures/playerhead_textures.json");
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Type LIST_TYPE = new TypeToken<List<NamedTexture>>() {}.getType();
 
