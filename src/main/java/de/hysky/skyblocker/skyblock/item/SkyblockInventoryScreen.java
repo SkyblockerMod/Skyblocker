@@ -115,7 +115,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     public SkyblockInventoryScreen(PlayerEntity player) {
         super(player);
 		if (FurfskyCompatibility.isFurfskyPresent) {
-			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenEquipmentSkyblocker": "InventoryScreenEquipmentQuickNavSkyblocker"));
+			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenEquipmentQuickNavSkyblocker": "InventoryScreenEquipmentSkyblocker"));
 		}
 	    SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);
 	    for (int i = 0; i < 4; i++) {
