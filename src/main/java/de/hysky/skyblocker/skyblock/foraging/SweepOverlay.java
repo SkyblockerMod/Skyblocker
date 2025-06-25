@@ -2,7 +2,9 @@ package de.hysky.skyblocker.skyblock.foraging;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -12,6 +14,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -34,6 +38,7 @@ public class SweepOverlay {
 	private static float[] colorComponents;
 	private static final int MAX_WOOD_CAP = 35;
 	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile("Sweep:\\s*(?:∮|§[0-9a-fk-or])*(\\d+)");
+	private static boolean sweepStatNoticeShown = false;
 	private static final HashMap<Block, Float> TOUGHNESS_MAP = new HashMap<>();
 	private static final Set<String> VALID_AXES = Set.of(
 			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE",
@@ -49,7 +54,7 @@ public class SweepOverlay {
 			new BlockPos(-1, 1, -1),  new BlockPos(-1, 1, 0),  new BlockPos(-1, 1, 1),
 
 			new BlockPos(0, -1, -1),  new BlockPos(0, -1, 0),  new BlockPos(0, -1, 1),
-			new BlockPos(0, 0, -1),   						   		   new BlockPos(0, 0, 1),
+			new BlockPos(0, 0, -1),   						   new BlockPos(0, 0, 1),
 			new BlockPos(0, 1, -1),   new BlockPos(0, 1, 0),   new BlockPos(0, 1, 1),
 
 			new BlockPos(1, -1, -1),  new BlockPos(1, -1, 0),  new BlockPos(1, -1, 1),
@@ -100,7 +105,7 @@ public class SweepOverlay {
 		if (isValidAxe && client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK
 				&& client.crosshairTarget instanceof BlockHitResult hitResult) {
 			blockHitResult = hitResult;
-		} else if (isThrowableAxe && config.enableThrownAbilityOverlay) {
+		} else if (isThrowableAxe && config.enableThrownAbilityOverlay && !ItemCooldowns.isOnCooldown(heldItem)) {
 			// Cast a ray up to 50 blocks for throwable axes
 			// #todo gravity prediction
 			Vec3d start = client.player.getCameraPosVec(1.0f);
@@ -131,6 +136,15 @@ public class SweepOverlay {
 	 * @return true if the block is a valid log or wood type
 	 */
 	private static boolean isLog(BlockState state) {
+		if (Utils.isInGalatea()) {
+			return state.isOf(Blocks.STRIPPED_SPRUCE_LOG)
+					|| state.isOf(Blocks.STRIPPED_SPRUCE_WOOD)
+					|| state.isOf(Blocks.MANGROVE_LOG)
+					|| state.isOf(Blocks.MANGROVE_WOOD);
+		} else if (Utils.isInHub()) {
+			return state.isOf(Blocks.OAK_LOG) || state.isOf(Blocks.OAK_WOOD);
+		}
+
 		return state.isIn(BlockTags.LOGS);
 	}
 
@@ -156,6 +170,13 @@ public class SweepOverlay {
 					}
 				}
 			}
+		}
+		if (!sweepStatNoticeShown && Utils.isInPark() && client.player != null) {
+			client.player.sendMessage(Constants.PREFIX.get().append(
+							Text.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
+									.formatted(Formatting.RED)),
+					false);
+			sweepStatNoticeShown = true;
 		}
 
 		return 0.0f;
@@ -201,9 +222,6 @@ public class SweepOverlay {
 		BlockPos startPos = blockHitResult.getBlockPos();
 		World world = client.world;
 		float sweepStat = getSweepStat();
-		if (isThrown) {
-			sweepStat *= 0.5f; // Halve the sweep stat for ray-cast hits
-		}
 		if (sweepStat <= 0) return;
 
 		// Adjust color for ray-cast hits (dimmer: multiply RGB by 0.7, keep alpha)
@@ -222,6 +240,9 @@ public class SweepOverlay {
 		int woodCount = 0;
 		float toughness = getToughness(state);
 		int maxWood = calculateMaxWood(sweepStat, toughness);
+		if (isThrown) {
+			maxWood *= 0.5f;
+		}
 
 		queue.add(startPos);
 		visited.add(startPos);
