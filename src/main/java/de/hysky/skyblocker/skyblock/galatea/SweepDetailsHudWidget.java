@@ -34,7 +34,7 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 
         if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
             SweepDetailsListener.active = false;
-            addComponent(new PlainTextComponent(Text.literal("Punch a tree!")));
+            addComponent(new IcoTextComponent(new ItemStack(Items.STONE_AXE), Text.literal("Punch a tree!")));
             return;
         }
 
