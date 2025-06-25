@@ -54,6 +54,8 @@ public class ItemRepository {
     private static void loadItem(NEUItem item) {
         try {
             ItemStack stack = ItemStackBuilder.fromNEUItem(item);
+            StackOverlays.applyOverlay(item, stack);
+
             items.add(stack);
             itemsMap.put(item.getSkyblockItemId(), stack);
         } catch (Exception e) {
