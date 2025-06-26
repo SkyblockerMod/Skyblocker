@@ -293,6 +293,8 @@
   "skyblocker.config.foraging.galatea.enableTreeBreakProgress": "Enable Tree Break Progress HUD",
   "skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip": "Renders tree break progress in HUD",
   "skyblocker.config.foraging.galatea.enableTreeBreakHud": "Tree Break Progress HUD",
+  "skyblocker.config.foraging.galatea.disableFishingNetPlacement": "Disable Placing Fishing Nets",
+  "skyblocker.config.foraging.galatea.disableFishingNetPlacement.@Tooltip": "Disables placing down Fishing Nets",
   "skyblocker.config.foraging.hunting": "Hunting",
 
   "skyblocker.config.general": "General",

@@ -96,6 +96,14 @@ public class ForagingCategory {
 										})
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 4).step(1))
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.disableFishingNetPlacement"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.disableFishingNetPlacement.@Tooltip")))
+								.binding(defaults.foraging.galatea.disableFishingNetPlacement,
+										() -> config.foraging.galatea.disableFishingNetPlacement,
+										newValue -> config.foraging.galatea.disableFishingNetPlacement = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.build())
 				.build();
 	}
