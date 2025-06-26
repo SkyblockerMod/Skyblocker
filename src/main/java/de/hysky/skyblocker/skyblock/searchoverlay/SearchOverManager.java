@@ -1,5 +1,9 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -29,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -104,6 +109,20 @@ public class SearchOverManager {
         HashSet<String> auctionPets = new HashSet<>();
         HashSet<String> starableItems = new HashSet<>();
         HashMap<String, String> namesToNeuId = new HashMap<>();
+		HashMap<String, String> shardIdToNeuId = new HashMap<>();
+
+		// get shards skyblock id to neu id map - remove when bazaar stocks is added to neu repo lib.
+		try (InputStream stream = NEURepoManager.NEU_REPO.file("constants/bazaarstocks.json").stream()) {
+			JsonArray list = JsonParser.parseString(new String(stream.readAllBytes())).getAsJsonArray();
+			for (JsonElement element : list) {
+				JsonObject object = element.getAsJsonObject();
+				String skyblockId = object.get("stock").getAsString();
+				String neuId = object.get("id").getAsString();
+				shardIdToNeuId.put(skyblockId, neuId);
+			}
+		} catch (Exception ex) {
+			LOGGER.error("[Skyblocker Search Overlay] Failed to create attribute id conversion map", ex);
+		}
 
         //get bazaar items
         try {
@@ -135,6 +154,12 @@ public class SearchOverManager {
                     namesToNeuId.put(name, id.substring(0, id.lastIndexOf('_')).replace("ENCHANTMENT_", "") + ";" + level);
                     continue;
                 }
+
+                // Format Shards
+                if (id.startsWith("SHARD_")) {
+					id = shardIdToNeuId.get(id);
+                }
+
                 //look up id for name
                 NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
                 if (neuItem != null) {
