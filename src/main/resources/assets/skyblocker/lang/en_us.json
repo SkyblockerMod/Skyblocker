@@ -282,6 +282,8 @@
   "skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip": "Highlights Lushlilacs in magenta to assist in locating them.",
   "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter": "Enable Sea Lumies Highlighter",
   "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter.@Tooltip": "Highlights Sea Lumies in cyan to assist in locating them.",
+  "skyblocker.config.foraging.galatea.seaLumieMinCount": "Minimum Sea Lumie Count to Highlight",
+  "skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip": "The minimum number of Sea Lumies that must be present within a block for it to be highlighted.",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Solve Forest Temple Puzzle",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Displays the amount of times you need to rotate the terracotta blocks. For positive rotations you right click while for negative rotations you left click.",
 
@@ -971,8 +973,8 @@
   "skyblocker.config.uiAndVisuals.slotText.mode.DISABLED": "Disabled",
   "skyblocker.config.uiAndVisuals.slotText.separator": "Individual Toggles",
 
-  "skyblocker.config.uiAndVisuals.slotText.attributeShard": "Attribute Shards",
-  "skyblocker.config.uiAndVisuals.slotText.attributeShard.@Tooltip": "Displays the attribute's level and the initials of the attribute's name.",
+  "skyblocker.config.uiAndVisuals.slotText.attributeLevels": "Attribute Level",
+  "skyblocker.config.uiAndVisuals.slotText.attributeLevels.@Tooltip": "Displays the level of the attribute in the Attribute Menu.",
   "skyblocker.config.uiAndVisuals.slotText.catacombsLevel": "Catacombs Class Level",
   "skyblocker.config.uiAndVisuals.slotText.choosePetPetLevel": "Pet Level (in choose pet)",
   "skyblocker.config.uiAndVisuals.slotText.collectionLevel": "Collection Level",

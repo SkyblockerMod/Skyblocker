@@ -2,10 +2,9 @@ package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.OptionGroup;
+import de.hysky.skyblocker.skyblock.galatea.SeaLumiesHighlighter;
+import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.text.Text;
 
 public class ForagingCategory {
@@ -48,6 +47,14 @@ public class ForagingCategory {
 										() -> config.foraging.galatea.enableSeaLumiesHighlighter,
 										newValue -> config.foraging.galatea.enableSeaLumiesHighlighter = newValue)
 								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip")))
+								.binding(defaults.foraging.galatea.seaLumiesMinimumCount,
+										() -> config.foraging.galatea.seaLumiesMinimumCount,
+										newValue -> config.foraging.galatea.seaLumiesMinimumCount = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 4).step(1))
 								.build())
 						.build())
 				.build();
