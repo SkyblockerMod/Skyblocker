@@ -46,7 +46,6 @@ public class SlotTextManager {
 			new CatacombsLevelAdder.DungeonClasses(),
 			new CatacombsLevelAdder.ReadyUp(),
 			new RancherBootsSpeedAdder(),
-			new AttributeShardAdder(),
 			new PrehistoricEggAdder(),
 			new PotionLevelAdder(),
 			new CollectionAdder(),
