@@ -11,6 +11,8 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.skyblock.hunting.Attribute;
+import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -185,11 +187,9 @@ public final class ItemUtils {
                 }
             }
             case "ATTRIBUTE_SHARD" -> {
-                if (customData.contains("attributes")) {
-                    NbtCompound shards = customData.getCompoundOrEmpty("attributes");
-                    String shard = shards.getKeys().stream().findFirst().orElse("");
-                    return id + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard, 0);
-                }
+            	Attribute attribute = Attributes.getAttributeFromItemName(itemStack);
+
+                if (attribute != null) return attribute.apiId();
             }
             case "NEW_YEAR_CAKE" -> {
                 return id + "_" + customData.getInt("new_years_cake", 0);
