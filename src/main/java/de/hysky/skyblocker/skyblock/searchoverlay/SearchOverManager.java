@@ -156,7 +156,7 @@ public class SearchOverManager {
                 }
 
                 // Format Shards
-                if (id.startsWith("SHARD_")) {
+                if (id.startsWith("SHARD_") && shardIdToNeuId.containsKey(id)) {
 					id = shardIdToNeuId.get(id);
                 }
 
