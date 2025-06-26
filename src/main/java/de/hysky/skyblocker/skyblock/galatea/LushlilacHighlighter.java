@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.world.AbstractBlockHighlighter;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.DyeColor;
 
@@ -22,6 +23,11 @@ public class LushlilacHighlighter extends AbstractBlockHighlighter {
 
 	@Override
 	protected boolean shouldProcess() {
-		return Utils.isInGalatea() && SkyblockerConfigManager.get().foraging.galatea.enableLushlilacHighlighter;
+		return Utils.isInGalatea();
+	}
+
+	@Override
+	protected boolean shouldRenderBlock(BlockState state) {
+		return SkyblockerConfigManager.get().foraging.galatea.enableLushlilacHighlighter;
 	}
 }

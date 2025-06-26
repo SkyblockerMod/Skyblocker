@@ -32,14 +32,14 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 	}
 
 	@Override
-	protected void renderBlock(BlockPos pos, WorldRenderContext context) {
-		if (SkyblockerConfigManager.get().foraging.galatea.enableSeaLumiesHighlighter) {
-			BlockState state = context.world().getBlockState(pos);
-			int pickles = state.get(SeaPickleBlock.PICKLES, -1);
+	protected boolean shouldRenderBlock(BlockState state) {
+		return SkyblockerConfigManager.get().foraging.galatea.enableSeaLumiesHighlighter &&
+				state.contains(SeaPickleBlock.PICKLES) &&
+				state.get(SeaPickleBlock.PICKLES) >= SkyblockerConfigManager.get().foraging.galatea.seaLumiesMinimumCount;
+	}
 
-			if (pickles >= SkyblockerConfigManager.get().foraging.galatea.seaLumiesMinimumCount) {
-				RenderHelper.renderFilled(context, pos, color, 0.2f * pickles, false);
-			}
-		}
+	@Override
+	protected float blockAlpha(BlockState state) {
+		return state.get(SeaPickleBlock.PICKLES, 0) * 0.2f;
 	}
 }

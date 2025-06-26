@@ -48,15 +48,11 @@ public abstract class AbstractBlockHighlighter {
 	public void onBlockUpdate(BlockPos pos, BlockState state) {
 		if (!shouldProcess()) return;
 
-		if (shouldTrack(state)) {
+		if (state.isOf(target)) {
 			trackedBlocks.add(pos.toImmutable());
 		} else {
 			trackedBlocks.remove(pos);
 		}
-	}
-
-	protected boolean shouldTrack(BlockState state) {
-		return state.isOf(target);
 	}
 
 	/**
@@ -66,7 +62,7 @@ public abstract class AbstractBlockHighlighter {
 	protected void onChunkLoad(ClientWorld world, WorldChunk chunk) {
 		if (!shouldProcess()) return;
 
-		chunk.forEachBlockMatchingPredicate(this::shouldTrack, (pos, state) -> {
+		chunk.forEachBlockMatchingPredicate(state -> state.isOf(target), (pos, state) -> {
 			trackedBlocks.add(pos.toImmutable());
 		});
 	}
@@ -92,16 +88,21 @@ public abstract class AbstractBlockHighlighter {
 		if (!shouldProcess()) return;
 
 		for (BlockPos highlight : trackedBlocks) {
-			renderBlock(highlight, context);
+			BlockState state = context.world().getBlockState(highlight);
+
+			if (shouldRenderBlock(state)) {
+				// Fill in the entire block, so the highlight is clearly visible even if the block is a cuboid (like a single sea pickle).
+				RenderHelper.renderFilled(context, highlight, this.color, blockAlpha(state), false);
+			}
 		}
 	}
 
-	protected void renderBlock(BlockPos pos, WorldRenderContext context) {
-		Box outline = RenderHelper.getBlockBoundingBox(context.world(), pos);
+	protected boolean shouldRenderBlock(BlockState state) {
+		return true;
+	}
 
-		if (outline != null) {
-			RenderHelper.renderFilled(context, outline, this.color, 0.4f, false);
-		}
+	protected float blockAlpha(BlockState state) {
+		return 0.5f;
 	}
 
 	public void reset() {
