@@ -70,7 +70,7 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 		ClientWorld world = client.world;
 
 		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen) {
-			addSimpleIcoText(Ico.SPRUCE_WOOD, "", Formatting.GREEN, "FIG TREE 37%");
+			addSimpleIcoText(Ico.STRIPPED_SPRUCE_WOOD, "Fig Tree ", Formatting.GREEN, "37%");
 			return;
 		}
 
@@ -91,7 +91,8 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 				.min(Comparator.comparingDouble(e -> e.squaredDistanceTo(client.player)))
 				.orElse(null);
 		if (closest == null) return;
-		ItemStack woodIcon = closest.getCustomName().getString().contains("FIG") ? Ico.SPRUCE_WOOD : Ico.MANGROVE_LOG;
+		ItemStack woodIcon = closest.getCustomName().getString().contains("FIG") ? Ico.STRIPPED_SPRUCE_WOOD : Ico.MANGROVE_LOG;
+		String treeName = closest.getCustomName().getString().contains("FIG") ? "Fig Tree" : "Mangrove Tree";
 		double x = closest.getPos().getX();
 		double y = closest.getPos().getY();
 		double z = closest.getPos().getZ();
@@ -108,7 +109,7 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 			return name.contains(client.player.getName().getString());
 		 }))
 			return;
-		addSimpleIcoText(woodIcon, "", Formatting.GREEN, closest.getCustomName().getString());
+		addSimpleIcoText(woodIcon, treeName + " ", Formatting.GREEN, closest.getCustomName().getString().replaceAll("[^0-9%]", ""));		
 
 	}
 
