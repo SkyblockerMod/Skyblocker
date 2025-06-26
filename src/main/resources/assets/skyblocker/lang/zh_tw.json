@@ -1145,8 +1145,6 @@
     "skyblocker.armorCustomization.animated": "動態",
     "skyblocker.armorCustomization.cannotCustomizeColor": "無法自訂這件護甲的顏色 :(",
     "skyblocker.config.hunting": "狩獵",
-    "skyblocker.config.uiAndVisuals.slotText.attributeShard.@Tooltip": "顯示屬性等級與屬性名首字母。",
-    "skyblocker.config.uiAndVisuals.slotText.attributeShard": "屬性碎片",
     "skyblocker.config.uiAndVisuals.slotText.skyblockGuide": "Skyblock指南",
     "skyblocker.gardenPlots.openDesk": "打開桌面",
     "skyblocker.armorCustomization.title": "自訂你的護甲",
