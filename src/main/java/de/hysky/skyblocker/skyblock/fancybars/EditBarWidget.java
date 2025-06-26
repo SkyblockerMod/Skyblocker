@@ -27,18 +27,23 @@ public class EditBarWidget extends ContainerWidget {
 	private final EnumCyclingOption<StatusBar.IconPosition> iconOption;
 	private final EnumCyclingOption<StatusBar.TextPosition> textOption;
 
+	private final BooleanOption showMaxOption;
+	private final BooleanOption showOverflowOption;
+
 	private final ColorOption color1;
 	private final ColorOption color2;
 	private final ColorOption textColor;
-	private final TextWidget nameWidget;
+
 	private final RunnableOption hideOption;
+
+	private final TextWidget nameWidget;
 
 	private final List<? extends ClickableWidget> options;
 
 	private int contentsWidth = 0;
 
 	public EditBarWidget(int x, int y, Screen parent) {
-		super(x, y, 100, 77, Text.literal("Edit bar"));
+		super(x, y, 100, 99, Text.literal("Edit bar"));
 
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
@@ -52,24 +57,32 @@ public class EditBarWidget extends ContainerWidget {
 		textOption = new EnumCyclingOption<>(0, 22, getWidth(), translatable, StatusBar.TextPosition.class);
 		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + textOption.getLongestOptionWidth() + 10);
 
+		translatable = Text.translatable("skyblocker.bars.config.showMax");
+		showMaxOption = new BooleanOption(0, 33, getWidth(), translatable);
+		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + 9 + 10);
+
+		translatable = Text.translatable("skyblocker.bars.config.showOverflow");
+		showOverflowOption = new BooleanOption(0, 44, getWidth(), translatable);
+		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + 9 + 10);
+
 		// COLO(u)RS
 		translatable = Text.translatable("skyblocker.bars.config.mainColor");
 		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + 9 + 10);
-		color1 = new ColorOption(0, 33, getWidth(), translatable, parent);
+		color1 = new ColorOption(0, 55, getWidth(), translatable, parent);
 
 		translatable = Text.translatable("skyblocker.bars.config.overflowColor");
 		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + 9 + 10);
-		color2 = new ColorOption(0, 44, getWidth(), translatable, parent);
+		color2 = new ColorOption(0, 66, getWidth(), translatable, parent);
 
 		translatable = Text.translatable("skyblocker.bars.config.textColor");
 		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + 9 + 10);
-		textColor = new ColorOption(0, 55, getWidth(), translatable, parent);
+		textColor = new ColorOption(0, 77, getWidth(), translatable, parent);
 
 		translatable = Text.translatable("skyblocker.bars.config.hide");
 		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + 9 + 10);
-		hideOption = new RunnableOption(0, 66, getWidth(), translatable);
+		hideOption = new RunnableOption(0, 88, getWidth(), translatable);
 
-		options = List.of(iconOption, textOption, color1, color2, textColor, hideOption);
+		options = List.of(iconOption, textOption, showMaxOption, showOverflowOption, color1, color2, textColor, hideOption);
 
 		setWidth(contentsWidth);
 	}
@@ -121,6 +134,13 @@ public class EditBarWidget extends ContainerWidget {
 		color1.setCurrent(statusBar.getColors()[0].getRGB());
 		color1.setOnChange(color -> statusBar.getColors()[0] = color);
 
+		showMaxOption.active = statusBar.hasMax();
+		showMaxOption.setCurrent(statusBar.showMax);
+		showOverflowOption.active = statusBar.hasOverflow();
+		showOverflowOption.setCurrent(statusBar.showOverflow);
+		showMaxOption.setOnChange(showMax -> statusBar.showMax = showMax);
+		showOverflowOption.setOnChange(showOverflow -> statusBar.showOverflow = showOverflow);
+
 		color2.active = statusBar.hasOverflow();
 		if (color2.active) {
 			color2.setCurrent(statusBar.getColors()[1].getRGB());
@@ -135,7 +155,7 @@ public class EditBarWidget extends ContainerWidget {
 		hideOption.setRunnable(() -> {
 			if (statusBar.anchor != null)
 				FancyStatusBars.barPositioner.removeBar(statusBar.anchor, statusBar.gridY, statusBar);
-			FancyStatusBars.updatePositions();
+			FancyStatusBars.updatePositions(true);
 		});
 
 		MutableText formatted = statusBar.getName().copy().formatted(Formatting.BOLD);
@@ -235,10 +255,6 @@ public class EditBarWidget extends ContainerWidget {
 		}
 	}
 
-	/**
-	 * Unused but could always come in handy I guess
-	 */
-	@SuppressWarnings("unused")
 	public static class BooleanOption extends ClickableWidget {
 
 		private boolean current = false;
@@ -254,9 +270,9 @@ public class EditBarWidget extends ContainerWidget {
 				context.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
 			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, -1, true);
-			context.drawBorder(getRight() - 10, getY() + 1, 9, 9, -1);
-			if (current) context.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, -1);
+			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : Colors.GRAY, true);
+			context.drawBorder(getRight() - 10, getY() + 1, 9, 9, active ? -1 : Colors.GRAY);
+			if (current && active) context.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, -1);
 		}
 
 		@Override

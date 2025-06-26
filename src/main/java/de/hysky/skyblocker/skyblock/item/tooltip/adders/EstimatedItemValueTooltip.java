@@ -1,9 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -14,6 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 
@@ -23,7 +22,11 @@ public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(stack.getCount()), 1);
+		if (TooltipInfoType.BAZAAR.getData() != null && TooltipInfoType.BAZAAR.getData().containsKey(stack.getSkyblockApiId())) {
+			return; // Bazaar price already displayed
+		}
+
+		int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
 		NetworthResult result = NetworthCalculator.getItemNetworth(stack, count);
 
