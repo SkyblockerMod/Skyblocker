@@ -6,9 +6,7 @@ import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -25,7 +23,6 @@ import java.util.List;
 
 public class TunerSolver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TunerSolver.class);
-	private static final MinecraftClient client = MinecraftClient.getInstance();
 
 	private static final Item[] COLOR_CYCLE = {
 			Items.MAGENTA_DYE, Items.LIGHT_BLUE_DYE, Items.YELLOW_DYE, Items.LIME_DYE,
@@ -48,13 +45,46 @@ public class TunerSolver {
 	private static final float[] PITCH_VALUES = {0.0952381f, 0.7936508f, 1.4920635f};
 
 	private static final int[] SPEED_CYCLE = {1, 2, 3, 4, 5};
-	private static final int[][] SPEED_RANGES = {
-			{50, 64}, // Speed 1
-			{40, 49}, // Speed 2
-			{30, 39}, // Speed 3
-			{20, 29}, // Speed 4
-			{10, 19}  // Speed 5
-	};
+        private static final int[][] SPEED_RANGES = {
+                        {50, 64}, // Speed 1
+                        {40, 49}, // Speed 2
+                        {30, 39}, // Speed 3
+                        {20, 29}, // Speed 4
+                        {10, 19}  // Speed 5
+        };
+
+        // Solver results
+        private static int colorClicks = 0;
+        private static int speedClicks = 0;
+        private static int pitchClicks = 0;
+
+        private static boolean colorSolved = false;
+        private static boolean speedSolved = false;
+        private static boolean pitchSolved = false;
+
+        public static boolean isColorSolved() {
+                return colorSolved;
+        }
+
+        public static boolean isSpeedSolved() {
+                return speedSolved;
+        }
+
+        public static boolean isPitchSolved() {
+                return pitchSolved;
+        }
+
+        public static int getColorClicks() {
+                return colorClicks;
+        }
+
+        public static int getSpeedClicks() {
+                return speedClicks;
+        }
+
+        public static int getPitchClicks() {
+                return pitchClicks;
+        }
 
 	// Flag to ensure getRequiredClicks runs only once per screen
 	private static boolean hasProcessed = false;
@@ -68,9 +98,9 @@ public class TunerSolver {
 	private static final int MAX_PITCH_SAMPLES = 5;
 
 	// Target pane movement tracking
-	private static int lastTargetSlot = -1;
-	private static int ticksSinceLastMove = 0;
-	private static int targetSpeed = -1; // Latest target speed from tick interval
+        private static int lastTargetSlot = -1;
+        private static int ticksSinceLastMove = 0;
+        private static int targetSpeed = -1; // Latest target speed from tick interval
 
 	@Init
 	public static void init() {
@@ -152,23 +182,39 @@ public class TunerSolver {
 				LOGGER.warn("Tick interval {} does not match any speed range", ticks);
 			}
 
-			ticksSinceLastMove = 0;
-		} else if (currentTargetSlot != -1) {
-			ticksSinceLastMove++;
-		}
+                        ticksSinceLastMove = 0;
+
+                        if (!speedSolved) {
+                                maybeSolveSpeed(slots);
+                        }
+                } else if (currentTargetSlot != -1) {
+                        ticksSinceLastMove++;
+                }
 
 		lastTargetSlot = currentTargetSlot;
 	}
 
-	private static void processContainer(GenericContainerScreen screen) {
-		Int2ObjectMap<ItemStack> slots = getSlots(screen);
-		if (slots.isEmpty()) {
-			LOGGER.warn("No slots available in container");
-			return;
-		}
-		int colorClicks = getRequiredClicks(slots, screen);
-		LOGGER.info("Required clicks to match dye to target pane: {}", colorClicks >= 0 ? "+" + colorClicks : colorClicks);
-	}
+       private static void processContainer(GenericContainerScreen screen) {
+               Int2ObjectMap<ItemStack> slots = getSlots(screen);
+               if (slots.isEmpty()) {
+                       LOGGER.warn("No slots available in container");
+                       return;
+               }
+
+               if (!colorSolved) {
+                       colorClicks = computeColorClicks(slots);
+                       colorSolved = true;
+                       LOGGER.info("Required clicks to match dye to target pane: {}", colorClicks >= 0 ? "+" + colorClicks : colorClicks);
+               }
+
+               if (!speedSolved) {
+                       maybeSolveSpeed(slots);
+               }
+
+               if (!pitchSolved) {
+                       currentPitch = readCurrentPitch(slots);
+               }
+       }
 
 	/**
 	 * Determines the number of clicks needed to match the dye color in slot 46
@@ -179,16 +225,15 @@ public class TunerSolver {
 	 * @param screen Current container screen for clicking
 	 * @return Number of clicks for color (+ for forward, - for backward, 0 if invalid)
 	 */
-	private static int getRequiredClicks(Int2ObjectMap<ItemStack> slots, GenericContainerScreen screen) {
-		// Log all slots
-		LOGGER.info("Listing all container slots:");
-		for (var entry : slots.int2ObjectEntrySet()) {
-			int slot = entry.getIntKey();
-			ItemStack stack = entry.getValue();
-			String itemName = stack == null || stack.isEmpty() ? "Empty" : stack.getItem().getTranslationKey();
-			String itemType = stack == null || stack.isEmpty() ? "None" : stack.getItem().toString();
-			LOGGER.info("Slot {}: Type={}, Name={}", slot, itemType, itemName);
-		}
+       private static int computeColorClicks(Int2ObjectMap<ItemStack> slots) {
+               LOGGER.info("Listing all container slots:");
+               for (var entry : slots.int2ObjectEntrySet()) {
+                       int slot = entry.getIntKey();
+                       ItemStack stack = entry.getValue();
+                       String itemName = stack == null || stack.isEmpty() ? "Empty" : stack.getItem().getTranslationKey();
+                       String itemType = stack == null || stack.isEmpty() ? "None" : stack.getItem().toString();
+                       LOGGER.info("Slot {}: Type={}, Name={}", slot, itemType, itemName);
+               }
 
 		// Read dye in slot 46
 		ItemStack dyeStack = slots.get(46);
@@ -204,77 +249,6 @@ public class TunerSolver {
 		}
 		LOGGER.info("Found dye in slot 46: Type={}, Name={}", dyeItem.toString(), dyeItem.getTranslationKey());
 
-		// Read speed in slot 48 from lore
-		ItemStack speedStack = slots.get(48);
-		int currentSpeed = 0;
-		if (speedStack != null && !speedStack.isEmpty()) {
-			List<Text> lore = ItemUtils.getLore(speedStack);
-			if (!lore.isEmpty() && lore.size() >= 2) {
-				try {
-					String speedText = lore.get(3).getString();
-					String[] parts = speedText.split(": "); // Splits on ": "
-					currentSpeed = Integer.parseInt(parts[1].trim()); // Takes the second part and parses it
-					if (currentSpeed < 1 || currentSpeed > 5) {
-						LOGGER.warn("Invalid speed value in slot 48 lore: {}", speedText);
-						currentSpeed = 0;
-					}
-				} catch (NumberFormatException e) {
-					LOGGER.warn("Failed to parse speed from slot 48 lore: {}", lore.get(1).getString());
-				}
-			} else {
-				LOGGER.warn("No valid lore found for speed item in slot 48");
-			}
-		} else {
-			LOGGER.warn("No item in slot 48 for speed");
-		}
-		if (currentSpeed > 0) {
-			LOGGER.info("Current speed (slot 48): {}", currentSpeed);
-		}
-
-		// Adjust speed if target speed is valid
-		if (targetSpeed != -1 && currentSpeed != 0) {
-			int currentIndex = getSpeedIndex(currentSpeed);
-			int targetIndex = getSpeedIndex(targetSpeed);
-			if (currentIndex != -1 && targetIndex != -1) {
-				int speedClicks = calculateSpeedClicks(currentIndex, targetIndex);
-				LOGGER.info("Speed mismatch: Current={}, Target={}, Required clicks={}",
-						currentSpeed, targetSpeed, speedClicks >= 0 ? "+" + speedClicks : speedClicks);
-			} else {
-				LOGGER.warn("Invalid speed indices: current={}, target={}", currentSpeed, targetSpeed);
-			}
-		} else if (targetSpeed == -1) {
-			LOGGER.warn("No valid target speed determined yet");
-		}
-
-		// Read pitch in slot 50 from lore
-		ItemStack pitchStack = slots.get(50);
-		currentPitch = null;
-		if (pitchStack != null && !pitchStack.isEmpty()) {
-			List<Text> lore = ItemUtils.getLore(pitchStack);
-			if (!lore.isEmpty() && lore.size() >= 2) {
-				String pitchText = lore.get(2).getString();
-				if (pitchText.contains("Low")) {
-					currentPitch = "Low";
-				}
-				else if (pitchText.contains("Normal")){
-					currentPitch = "Normal";
-				}
-				else if (pitchText.contains("High"))
-				{
-					currentPitch = "High";
-				}
-				else {
-					LOGGER.warn("Invalid pitch value in slot 50 lore: {}", pitchText);
-				}
-			} else {
-				LOGGER.warn("No valid lore found for pitch item in slot 50");
-			}
-		} else {
-			LOGGER.warn("No item in slot 50 for pitch");
-		}
-		if (currentPitch != null) {
-			LOGGER.info("Pitch (slot 50): {}", currentPitch);
-		}
 
 		// Find the moving glass pane in slots 28–34
 		ItemStack movingPane = null;
@@ -328,10 +302,10 @@ public class TunerSolver {
 		return calculateClicks(dyeIndex, targetIndex);
 	}
 
-	public static void onSound(PlaySoundS2CPacket packet) {
-		if (!Utils.isInGalatea() || !isInMenu || !packet.getSound().value().id().equals(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value().id())) {
-			return;
-		}
+        public static void onSound(PlaySoundS2CPacket packet) {
+                if (pitchSolved || !Utils.isInGalatea() || !isInMenu || !packet.getSound().value().id().equals(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value().id())) {
+                        return;
+                }
 
 		float packetPitch = packet.getPitch();
 		recentPitches.add(packetPitch);
@@ -349,12 +323,14 @@ public class TunerSolver {
 		}
 
 		float expectedPitch = getPitchValue(currentPitch);
-		boolean allMatch = recentPitches.stream().allMatch(p -> Math.abs(p - expectedPitch) < 0.0001f);
-		if (allMatch) {
-			LOGGER.info("All {} pitches match current pitch: {}", MAX_PITCH_SAMPLES, currentPitch);
-			recentPitches.clear();
-			return;
-		}
+                boolean allMatch = recentPitches.stream().allMatch(p -> Math.abs(p - expectedPitch) < 0.0001f);
+                if (allMatch) {
+                        LOGGER.info("All {} pitches match current pitch: {}", MAX_PITCH_SAMPLES, currentPitch);
+                        pitchClicks = 0;
+                        pitchSolved = true;
+                        recentPitches.clear();
+                        return;
+                }
 
 		// Get the latest pitch and find the target pitch
 		float latestPitch = recentPitches.get(recentPitches.size() - 1);
@@ -374,12 +350,63 @@ public class TunerSolver {
 			return;
 		}
 
-		int clicks = calculatePitchClicks(currentIndex, targetIndex);
-		LOGGER.info("Pitch mismatch: Current={}, Target={}, Required clicks={}",
-				currentPitch, targetPitch, clicks >= 0 ? "+" + clicks : clicks);
+                int clicks = calculatePitchClicks(currentIndex, targetIndex);
+                LOGGER.info("Pitch mismatch: Current={}, Target={}, Required clicks={}",
+                                currentPitch, targetPitch, clicks >= 0 ? "+" + clicks : clicks);
+                pitchClicks = clicks;
+                pitchSolved = true;
 
-		recentPitches.clear();
-	}
+                recentPitches.clear();
+        }
+
+        private static int readCurrentSpeed(Int2ObjectMap<ItemStack> slots) {
+                ItemStack speedStack = slots.get(48);
+                if (speedStack != null && !speedStack.isEmpty()) {
+                        List<Text> lore = ItemUtils.getLore(speedStack);
+                        if (!lore.isEmpty() && lore.size() >= 2) {
+                                try {
+                                        String speedText = lore.get(3).getString();
+                                        String[] parts = speedText.split(": ");
+                                        int currentSpeed = Integer.parseInt(parts[1].trim());
+                                        if (currentSpeed >= 1 && currentSpeed <= 5) {
+                                                return currentSpeed;
+                                        }
+                                } catch (NumberFormatException ignored) {
+                                }
+                        }
+                }
+                return 0;
+        }
+
+        private static String readCurrentPitch(Int2ObjectMap<ItemStack> slots) {
+                ItemStack pitchStack = slots.get(50);
+                if (pitchStack != null && !pitchStack.isEmpty()) {
+                        List<Text> lore = ItemUtils.getLore(pitchStack);
+                        if (!lore.isEmpty() && lore.size() >= 2) {
+                                String pitchText = lore.get(2).getString();
+                                if (pitchText.contains("Low")) return "Low";
+                                if (pitchText.contains("Normal")) return "Normal";
+                                if (pitchText.contains("High")) return "High";
+                        }
+                }
+                return null;
+        }
+
+        private static void maybeSolveSpeed(Int2ObjectMap<ItemStack> slots) {
+                int currentSpeed = readCurrentSpeed(slots);
+                if (currentSpeed > 0 && targetSpeed != -1) {
+                        int currentIndex = getSpeedIndex(currentSpeed);
+                        int targetIndex = getSpeedIndex(targetSpeed);
+                        if (currentIndex != -1 && targetIndex != -1) {
+                                speedClicks = calculateSpeedClicks(currentIndex, targetIndex);
+                                speedSolved = true;
+                                LOGGER.info("Speed mismatch: Current={}, Target={}, Required clicks={}",
+                                                currentSpeed, targetSpeed, speedClicks >= 0 ? "+" + speedClicks : speedClicks);
+                        } else {
+                                LOGGER.warn("Invalid speed indices: current={}, target={}", currentSpeed, targetSpeed);
+                        }
+                }
+        }
 
 	private static int getSpeedIndex(int speed) {
 		for (int i = 0; i < SPEED_CYCLE.length; i++) {
