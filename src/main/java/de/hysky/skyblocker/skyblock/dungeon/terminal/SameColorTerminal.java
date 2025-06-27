@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
+import com.google.common.collect.ImmutableMap;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -33,14 +34,14 @@ public final class SameColorTerminal extends SimpleContainerSolver implements Te
 			Items.GREEN_STAINED_GLASS_PANE,
 			Items.BLUE_STAINED_GLASS_PANE
 	};
-	private static final Map<Item, Integer> INDEX;
+	private static final ImmutableMap<Item, Integer> INDEX;
 
 	static {
-		Map<Item, Integer> map = new HashMap<>(ORDER.length);
+		ImmutableMap.Builder<Item, Integer> builder = ImmutableMap.builderWithExpectedSize(ORDER.length);
 		for (int i = 0; i < ORDER.length; i++) {
-			map.put(ORDER[i], i);
+			builder.put(ORDER[i], i);
 		}
-		INDEX = Collections.unmodifiableMap(map);
+		INDEX = builder.build();
 	}
 
 	private final Int2IntMap clickMap = new Int2IntOpenHashMap();
