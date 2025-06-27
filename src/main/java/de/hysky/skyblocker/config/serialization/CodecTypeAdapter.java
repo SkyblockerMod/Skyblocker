@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.config;
+package de.hysky.skyblocker.config.serialization;
 
 import java.lang.reflect.Type;
 

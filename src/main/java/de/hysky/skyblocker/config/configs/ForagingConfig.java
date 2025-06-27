@@ -21,6 +21,9 @@ public class ForagingConfig {
                 public boolean enableSeaLumiesHighlighter = true;
 
                 @SerialEntry
+                public int seaLumiesMinimumCount = 3;
+
+                @SerialEntry
                 public boolean enableTunerSolver = true;
-        }
+	}
 }

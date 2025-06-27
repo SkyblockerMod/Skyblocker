@@ -102,12 +102,15 @@ public class SimonSays {
 				//Also don't do anything if the button isn't there which means the device is showing the sequence
 				if (!CLICKED_BUTTONS.contains(buttonPos) && state.getBlock().equals(Blocks.STONE_BUTTON)) {
 					Box outline = RenderHelper.getBlockBoundingBox(world, state, buttonPos);
-					float[] colour = buttonsRendered == 0 ? GREEN : YELLOW;
 
-					RenderHelper.renderFilled(context, outline, colour, 0.5f, true);
-					RenderHelper.renderOutline(context, outline, colour, 5f, true);
+					if (outline != null) {
+						float[] colour = buttonsRendered == 0 ? GREEN : YELLOW;
 
-					if (++buttonsRendered == 2) return;
+						RenderHelper.renderFilled(context, outline, colour, 0.5f, true);
+						RenderHelper.renderOutline(context, outline, colour, 5f, true);
+
+						if (++buttonsRendered == 2) return;
+					}
 				}
 			}
 		}
