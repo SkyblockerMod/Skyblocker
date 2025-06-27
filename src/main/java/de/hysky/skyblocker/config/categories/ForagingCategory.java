@@ -61,6 +61,7 @@ public class ForagingCategory {
 											SeaLumiesHighlighter.INSTANCE.configCallback();
 										})
 								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 4).step(1))
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver"))
 								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip")))
