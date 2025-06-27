@@ -153,7 +153,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	@Inject(method = "onPlaySound", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
 	private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
 		CrystalsChestHighlighter.onSound(packet);
-		TunerSolver.onSound(packet);
+		TunerSolver.INSTANCE.onSound(packet);
 		SoundEvent sound = packet.getSound().value();
 
 		// Mute Enderman sounds in the End

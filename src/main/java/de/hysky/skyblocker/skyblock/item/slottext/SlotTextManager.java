@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.WardrobeKeybinds;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
+import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
 import de.hysky.skyblocker.skyblock.hunting.AttributeLevelHelper;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
@@ -53,9 +54,9 @@ public class SlotTextManager {
 			new YourEssenceAdder(),
 			new PowerStonesGuideAdder(),
 			new BazaarHelper(),
-                        new StatsTuningAdder(),
-                        new TunerClicksAdder(),
-                        ChocolateFactorySolver.INSTANCE,
+			new StatsTuningAdder(),
+			TunerSolver.INSTANCE,
+			ChocolateFactorySolver.INSTANCE,
 			new EvolvingItemAdder(),
 			new NewYearCakeAdder(),
 			WardrobeKeybinds.INSTANCE,

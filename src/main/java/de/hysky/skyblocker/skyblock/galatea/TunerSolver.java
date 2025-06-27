@@ -1,9 +1,12 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
-import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.container.SlotTextAdder;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -22,24 +25,33 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TunerSolver {
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder {
     private static final Logger LOGGER = LoggerFactory.getLogger(TunerSolver.class);
 
+    public static final TunerSolver INSTANCE = new TunerSolver();
+
+    private TunerSolver() {
+        super("^Tune Frequency$");
+    }
+
     private static final Item[] COLOR_CYCLE = {
-        Items.MAGENTA_DYE, Items.LIGHT_BLUE_DYE, Items.YELLOW_DYE, Items.LIME_DYE,
-        Items.PINK_DYE, Items.CYAN_DYE, Items.PURPLE_DYE, Items.LAPIS_LAZULI,
-        Items.COCOA_BEANS, Items.GREEN_DYE, Items.RED_DYE, Items.BONE_MEAL,
-        Items.ORANGE_DYE
+            Items.MAGENTA_DYE, Items.LIGHT_BLUE_DYE, Items.YELLOW_DYE, Items.LIME_DYE,
+            Items.PINK_DYE, Items.CYAN_DYE, Items.PURPLE_DYE, Items.LAPIS_LAZULI,
+            Items.COCOA_BEANS, Items.GREEN_DYE, Items.RED_DYE, Items.BONE_MEAL,
+            Items.ORANGE_DYE
     };
 
     private static final Item[] GLASS_CYCLE = {
-        Items.MAGENTA_STAINED_GLASS_PANE, Items.LIGHT_BLUE_STAINED_GLASS_PANE,
-        Items.YELLOW_STAINED_GLASS_PANE, Items.LIME_STAINED_GLASS_PANE,
-        Items.PINK_STAINED_GLASS_PANE, Items.CYAN_STAINED_GLASS_PANE,
-        Items.PURPLE_STAINED_GLASS_PANE, Items.BLUE_STAINED_GLASS_PANE,
-        Items.BROWN_STAINED_GLASS_PANE, Items.GREEN_STAINED_GLASS_PANE,
-        Items.RED_STAINED_GLASS_PANE, Items.WHITE_STAINED_GLASS_PANE,
-        Items.ORANGE_STAINED_GLASS_PANE
+            Items.MAGENTA_STAINED_GLASS_PANE, Items.LIGHT_BLUE_STAINED_GLASS_PANE,
+            Items.YELLOW_STAINED_GLASS_PANE, Items.LIME_STAINED_GLASS_PANE,
+            Items.PINK_STAINED_GLASS_PANE, Items.CYAN_STAINED_GLASS_PANE,
+            Items.PURPLE_STAINED_GLASS_PANE, Items.BLUE_STAINED_GLASS_PANE,
+            Items.BROWN_STAINED_GLASS_PANE, Items.GREEN_STAINED_GLASS_PANE,
+            Items.RED_STAINED_GLASS_PANE, Items.WHITE_STAINED_GLASS_PANE,
+            Items.ORANGE_STAINED_GLASS_PANE
     };
 
     private static final String[] PITCH_CYCLE = {"Low", "Normal", "High"};
@@ -47,122 +59,119 @@ public class TunerSolver {
 
     private static final int[] SPEED_CYCLE = {1, 2, 3, 4, 5};
     private static final int[][] SPEED_RANGES = {
-        {50, 64}, // Speed 1
-        {40, 49}, // Speed 2
-        {30, 39}, // Speed 3
-        {20, 29}, // Speed 4
-        {10, 19}  // Speed 5
+            {50, 64}, // Speed 1
+            {40, 49}, // Speed 2
+            {30, 39}, // Speed 3
+            {20, 29}, // Speed 4
+            {10, 19}  // Speed 5
     };
 
-        // Solver results
-        private static int colorClicks = 0;
-        private static int speedClicks = 0;
-        private static int pitchClicks = 0;
+    // Solver results
+    private int colorClicks = 0;
+    private int speedClicks = 0;
+    private int pitchClicks = 0;
 
-        private static boolean colorSolved = false;
-        private static boolean speedSolved = false;
-        private static boolean pitchSolved = false;
+    private boolean colorSolved = false;
+    private boolean speedSolved = false;
+    private boolean pitchSolved = false;
 
-        public static boolean isColorSolved() {
-                return colorSolved;
+    // Flag to ensure getRequiredClicks runs only once per screen
+    private boolean hasProcessed = false;
+    private boolean isInMenu = false;
+
+    // Pitch tracking
+    private String currentPitch = null;
+    private final List<Float> recentPitches = new ArrayList<>();
+    private static final int MAX_PITCH_SAMPLES = 5;
+
+    // Target pane movement tracking
+    private int lastTargetSlot = -1;
+    private int ticksSinceLastMove = 0;
+    private int targetSpeed = -1; // Latest target speed from tick interval
+    private int lastSpeedTicks = 0;
+
+    @Override
+    public boolean isEnabled() {
+        return SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver;
+    }
+
+    @Override
+    public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
+        if (!hasProcessed) {
+            ItemStack dyeStack = slots.get(46);
+            if (dyeStack != null && !dyeStack.isEmpty() && isDye(dyeStack.getItem())) {
+                if (!colorSolved) {
+                    colorClicks = computeColorClicks(slots);
+                    colorSolved = true;
+                }
+                if (!speedSolved) {
+                    maybeSolveSpeed(slots);
+                }
+                if (!pitchSolved) {
+                    currentPitch = readCurrentPitch(slots);
+                }
+                hasProcessed = true;
+            }
         }
+        return List.of();
+    }
 
-        public static boolean isSpeedSolved() {
-                return speedSolved;
+    @Override
+    public void start(GenericContainerScreen screen) {
+        resetState();
+        isInMenu = true;
+        ScreenEvents.afterTick(screen).register(s -> {
+            Int2ObjectMap<ItemStack> slots = getSlots(screen);
+            trackTargetPaneMovement(slots);
+        });
+        ScreenEvents.remove(screen).register(s -> resetState());
+    }
+
+    @Override
+    public void reset() {
+        resetState();
+    }
+
+    @Override
+    public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+        if (!isEnabled()) {
+            return List.of();
         }
-
-        public static boolean isPitchSolved() {
-                return pitchSolved;
+        if (slotId == 46 && colorSolved) {
+            return SlotText.bottomRightList(Text.literal(String.valueOf(colorClicks)).withColor(SlotText.LIGHT_GREEN));
         }
-
-        public static int getColorClicks() {
-                return colorClicks;
+        if (slotId == 48 && speedSolved) {
+            return SlotText.bottomRightList(Text.literal(String.valueOf(speedClicks)).withColor(SlotText.LIGHT_GREEN));
         }
-
-        public static int getSpeedClicks() {
-                return speedClicks;
+        if (slotId == 50 && pitchSolved) {
+            return SlotText.bottomRightList(Text.literal(String.valueOf(pitchClicks)).withColor(SlotText.LIGHT_GREEN));
         }
+        return List.of();
+    }
 
-        public static int getPitchClicks() {
-                return pitchClicks;
-        }
-
-	// Flag to ensure getRequiredClicks runs only once per screen
-	private static boolean hasProcessed = false;
-	private static boolean isInMenu = false;
-	private static int tickCounter = 0;
-	private static final int TIMEOUT_TICKS = 100; // ~5 seconds
-
-	// Pitch tracking
-	private static String currentPitch = null;
-	private static final List<Float> recentPitches = new ArrayList<>();
-	private static final int MAX_PITCH_SAMPLES = 5;
-
-	// Target pane movement tracking
-        private static int lastTargetSlot = -1;
-        private static int ticksSinceLastMove = 0;
-        private static int targetSpeed = -1; // Latest target speed from tick interval
-        private static int lastSpeedTicks = 0;
-
-	/**
-	 * Updates the remaining click counters when the corresponding tuner slot
-	 * is clicked. Left clicks decrement and right clicks increment the
-	 * counter. This method is invoked by the screen mixin.
-	 */
-    public static void onSlotClick(int slotId, int button) {
+    /**
+     * Updates the remaining click counters when the corresponding tuner slot
+     * is clicked. Left clicks decrement and right clicks increment the
+     * counter. This method is invoked by the screen mixin.
+     */
+    public void onSlotClick(int slotId, int button) {
         if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) return;
         if (!isInMenu) return;
 
-		if (button == 0) { // left click => decrement
-			if (colorSolved && slotId == 46) colorClicks--;
-			else if (speedSolved && slotId == 48) speedClicks--;
-			else if (pitchSolved && slotId == 50) pitchClicks--;
-		} else if (button == 1) { // right click => increment
-			if (colorSolved && slotId == 46) colorClicks++;
-			else if (speedSolved && slotId == 48) speedClicks++;
-			else if (pitchSolved && slotId == 50) pitchClicks++;
-		}
-	}
-
-    @Init
-    public static void init() {
-        if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) {
-            return;
+        if (button == 0) { // left click => decrement
+            if (colorSolved && slotId == 46) colorClicks--;
+            else if (speedSolved && slotId == 48) speedClicks--;
+            else if (pitchSolved && slotId == 50) pitchClicks--;
+        } else if (button == 1) { // right click => increment
+            if (colorSolved && slotId == 46) colorClicks++;
+            else if (speedSolved && slotId == 48) speedClicks++;
+            else if (pitchSolved && slotId == 50) pitchClicks++;
         }
-        ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
-            if (Utils.isInGalatea() && screen instanceof GenericContainerScreen genericContainerScreen) {
-                if (genericContainerScreen.getTitle().getString().equals("Tune Frequency")) {
-                    resetState();
-                    isInMenu = true;
-                    ScreenEvents.afterTick(screen).register(_screen -> {
-                        // Track target pane movement each tick
-                        trackTargetPaneMovement(genericContainerScreen);
-
-                        // Process container when dye is detected
-                        if (!hasProcessed) {
-                            Int2ObjectMap<ItemStack> slots = getSlots(genericContainerScreen);
-                            ItemStack dyeStack = slots.get(46);
-                            if (dyeStack != null && !dyeStack.isEmpty() && isDye(dyeStack.getItem())) {
-                                processContainer(genericContainerScreen);
-                                hasProcessed = true;
-                            } else {
-                                tickCounter++;
-                                if (tickCounter >= TIMEOUT_TICKS) {
-                                    LOGGER.warn("No dye detected in slot 46 after {} ticks", TIMEOUT_TICKS);
-                                    tickCounter = 0;
-                                }
-                            }
-                        }
-                    });
-                    ScreenEvents.remove(screen).register(_screen -> resetState());
-                }
-            }
-        });
     }
 
-    private static void resetState() {
+
+    private void resetState() {
         hasProcessed = false;
-        tickCounter = 0;
         isInMenu = false;
         colorSolved = false;
         speedSolved = false;
@@ -178,197 +187,175 @@ public class TunerSolver {
         lastSpeedTicks = 0;
     }
 
-	private static void trackTargetPaneMovement(GenericContainerScreen screen) {
-		Int2ObjectMap<ItemStack> slots = getSlots(screen);
-		int currentTargetSlot = -1;
+    private void trackTargetPaneMovement(Int2ObjectMap<ItemStack> slots) {
+        int currentTargetSlot = -1;
 
-		// Find the current target pane in slots 10–16
-		for (int slot = 10; slot <= 16; slot++) {
-			ItemStack stack = slots.get(slot);
-			if (stack != null && isStainedGlassPane(stack.getItem())) {
-				currentTargetSlot = slot;
-				break;
-			}
-		}
+        // Find the current target pane in slots 10–16
+        for (int slot = 10; slot <= 16; slot++) {
+            ItemStack stack = slots.get(slot);
+            if (stack != null && isStainedGlassPane(stack.getItem())) {
+                currentTargetSlot = slot;
+                break;
+            }
+        }
 
-		// Check if the target pane slot has changed
-		if (currentTargetSlot != lastTargetSlot && lastTargetSlot != -1) {
+        // Check if the target pane slot has changed
+        if (currentTargetSlot != lastTargetSlot && lastTargetSlot != -1) {
 
-			// Calculate target speed from tick interval
-                        int ticks = ticksSinceLastMove;
-                        targetSpeed = -1;
-                        for (int i = 0; i < SPEED_RANGES.length; i++) {
-                                if (ticks >= SPEED_RANGES[i][0] && ticks <= SPEED_RANGES[i][1]) {
-                                        targetSpeed = SPEED_CYCLE[i];
-                                        break;
-                                }
-                        }
-                        if (targetSpeed == -1) {
-                                LOGGER.warn("Tick interval {} does not match any speed range", ticks);
-                        }
-                        lastSpeedTicks = ticks;
-
-                        ticksSinceLastMove = 0;
-
-                        if (!speedSolved) {
-                                maybeSolveSpeed(slots);
-                        }
-                } else if (currentTargetSlot != -1) {
-                        ticksSinceLastMove++;
+            // Calculate target speed from tick interval
+            int ticks = ticksSinceLastMove;
+            targetSpeed = -1;
+            for (int i = 0; i < SPEED_RANGES.length; i++) {
+                if (ticks >= SPEED_RANGES[i][0] && ticks <= SPEED_RANGES[i][1]) {
+                    targetSpeed = SPEED_CYCLE[i];
+                    break;
                 }
+            }
+            if (targetSpeed == -1) {
+                LOGGER.warn("Tick interval {} does not match any speed range", ticks);
+            }
+            lastSpeedTicks = ticks;
 
-		lastTargetSlot = currentTargetSlot;
-	}
+            ticksSinceLastMove = 0;
 
-       private static void processContainer(GenericContainerScreen screen) {
-               Int2ObjectMap<ItemStack> slots = getSlots(screen);
-               if (slots.isEmpty()) {
-                       LOGGER.warn("No slots available in container");
-                       return;
-               }
+            if (!speedSolved) {
+                maybeSolveSpeed(slots);
+            }
+        } else if (currentTargetSlot != -1) {
+            ticksSinceLastMove++;
+        }
 
-               if (!colorSolved) {
-                       colorClicks = computeColorClicks(slots);
-                       colorSolved = true;
-               }
+        lastTargetSlot = currentTargetSlot;
+    }
 
-               if (!speedSolved) {
-                       maybeSolveSpeed(slots);
-               }
-
-               if (!pitchSolved) {
-                       currentPitch = readCurrentPitch(slots);
-               }
-       }
-
-/**
- * Determines the number of clicks needed to match the dye color in slot 46
- * to the target glass pane color in slots 10–16.
- *
- * @param slots map of slot indices to their {@link ItemStack}
- * @return number of clicks for color (+ for forward, - for backward, 0 if invalid)
- */
+    /**
+     * Determines the number of clicks needed to match the dye color in slot 46
+     * to the target glass pane color in slots 10–16.
+     *
+     * @param slots map of slot indices to their {@link ItemStack}
+     * @return number of clicks for color (+ for forward, - for backward, 0 if invalid)
+     */
     private static int computeColorClicks(Int2ObjectMap<ItemStack> slots) {
 
-		// Read dye in slot 46
-		ItemStack dyeStack = slots.get(46);
-		if (dyeStack == null || dyeStack.isEmpty()) {
-			LOGGER.warn("No dye found in slot 46");
-			return 0;
-		}
-                Item dyeItem = dyeStack.getItem();
-                int dyeIndex = getColorIndex(dyeItem, COLOR_CYCLE);
-                if (dyeIndex == -1) {
-                        LOGGER.warn("Invalid dye item in slot 46: {}", dyeItem);
-                        return 0;
-                }
-
-		// Find the moving glass pane in slots 28–34
-		ItemStack movingPane = null;
-		int movingSlot = -1;
-		for (int slot = 28; slot <= 34; slot++) {
-			ItemStack stack = slots.get(slot);
-			if (stack != null && isStainedGlassPane(stack.getItem())) {
-				movingPane = stack;
-				movingSlot = slot;
-				break;
-			}
-		}
-		if (movingPane == null) {
-			LOGGER.warn("No stained glass pane found in slots 28–34");
-			return 0;
-		}
-		Item movingItem = movingPane.getItem();
-		int movingIndex = getColorIndex(movingItem, GLASS_CYCLE);
-		if (movingIndex == -1) {
-			LOGGER.warn("Invalid glass pane item in slot {}: {}", movingSlot, movingItem);
-			return 0;
-		}
-
-		// Find the target glass pane in slots 10–16
-		ItemStack targetPane = null;
-		int targetSlot = -1;
-		for (int slot = 10; slot <= 16; slot++) {
-			ItemStack stack = slots.get(slot);
-			if (stack != null && isStainedGlassPane(stack.getItem())) {
-				targetPane = stack;
-				targetSlot = slot;
-				break;
-			}
-		}
-		if (targetPane == null) {
-			LOGGER.warn("No stained glass pane found in slots 10–16");
-			return 0;
-		}
-		Item targetItem = targetPane.getItem();
-		int targetIndex = getColorIndex(targetItem, GLASS_CYCLE);
-		if (targetIndex == -1) {
-			LOGGER.warn("Invalid glass pane item in slot {}: {}", targetSlot, targetItem);
-			return 0;
-		}
-
-                // Calculate clicks to match dye to target pane
-                int clicks = calculateClicks(dyeIndex, targetIndex);
-                LOGGER.info("Color solved: Dye={}, Target={}, Required clicks={}",
-                                dyeStack.getName().getString(),
-                                targetPane.getName().getString(),
-                                clicks >= 0 ? "+" + clicks : clicks);
-                return clicks;
+        // Read dye in slot 46
+        ItemStack dyeStack = slots.get(46);
+        if (dyeStack == null || dyeStack.isEmpty()) {
+            LOGGER.warn("No dye found in slot 46");
+            return 0;
+        }
+        Item dyeItem = dyeStack.getItem();
+        int dyeIndex = getColorIndex(dyeItem, COLOR_CYCLE);
+        if (dyeIndex == -1) {
+            LOGGER.warn("Invalid dye item in slot 46: {}", dyeItem);
+            return 0;
         }
 
-    public static void onSound(PlaySoundS2CPacket packet) {
-                if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver
-                        || pitchSolved || !Utils.isInGalatea() || !isInMenu
-                        || !packet.getSound().value().id().equals(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value().id())) {
-                        return;
-                }
-
-                float packetPitch = packet.getPitch();
-                recentPitches.add(packetPitch);
-                int sampleCount = recentPitches.size();
-                String name = getPitchName(packetPitch);
-
-                if (currentPitch == null) {
-                        LOGGER.warn("Current pitch not set, cannot compare");
-                        recentPitches.clear();
-                        return;
-                }
-
-                float expectedPitch = getPitchValue(currentPitch);
-                if (Math.abs(packetPitch - expectedPitch) > 0.0001f) {
-                        String targetPitch = name;
-                        if (targetPitch == null) {
-                                LOGGER.warn("Invalid pitch value received: {}", packetPitch);
-                                recentPitches.clear();
-                                return;
-                        }
-
-                        int currentIndex = getPitchIndex(currentPitch);
-                        int targetIndex = getPitchIndex(targetPitch);
-                        if (currentIndex == -1 || targetIndex == -1) {
-                                LOGGER.warn("Invalid pitch indices: current={}, target={}", currentPitch, targetPitch);
-                                recentPitches.clear();
-                                return;
-                        }
-
-                        int clicks = calculatePitchClicks(currentIndex, targetIndex);
-                        LOGGER.info("Pitch solved: Current={}, Target={}, Required clicks={}",
-                                        currentPitch, targetPitch, clicks >= 0 ? "+" + clicks : clicks);
-                        pitchClicks = clicks;
-                        pitchSolved = true;
-                        recentPitches.clear();
-                        return;
-                }
-
-                if (sampleCount >= MAX_PITCH_SAMPLES) {
-                        pitchClicks = 0;
-                        pitchSolved = true;
-                        LOGGER.info("Pitch solved: Current={}, Target={}, Required clicks=+0 (all samples match)",
-                                        currentPitch,
-                                        currentPitch);
-                        recentPitches.clear();
-                }
+        // Find the moving glass pane in slots 28–34
+        ItemStack movingPane = null;
+        int movingSlot = -1;
+        for (int slot = 28; slot <= 34; slot++) {
+            ItemStack stack = slots.get(slot);
+            if (stack != null && isStainedGlassPane(stack.getItem())) {
+                movingPane = stack;
+                movingSlot = slot;
+                break;
+            }
         }
+        if (movingPane == null) {
+            LOGGER.warn("No stained glass pane found in slots 28–34");
+            return 0;
+        }
+        Item movingItem = movingPane.getItem();
+        int movingIndex = getColorIndex(movingItem, GLASS_CYCLE);
+        if (movingIndex == -1) {
+            LOGGER.warn("Invalid glass pane item in slot {}: {}", movingSlot, movingItem);
+            return 0;
+        }
+
+        // Find the target glass pane in slots 10–16
+        ItemStack targetPane = null;
+        int targetSlot = -1;
+        for (int slot = 10; slot <= 16; slot++) {
+            ItemStack stack = slots.get(slot);
+            if (stack != null && isStainedGlassPane(stack.getItem())) {
+                targetPane = stack;
+                targetSlot = slot;
+                break;
+            }
+        }
+        if (targetPane == null) {
+            LOGGER.warn("No stained glass pane found in slots 10–16");
+            return 0;
+        }
+        Item targetItem = targetPane.getItem();
+        int targetIndex = getColorIndex(targetItem, GLASS_CYCLE);
+        if (targetIndex == -1) {
+            LOGGER.warn("Invalid glass pane item in slot {}: {}", targetSlot, targetItem);
+            return 0;
+        }
+
+        // Calculate clicks to match dye to target pane
+        int clicks = calculateClicks(dyeIndex, targetIndex);
+        LOGGER.info("Color solved: Dye={}, Target={}, Required clicks={}",
+                dyeStack.getName().getString(),
+                targetPane.getName().getString(),
+                clicks >= 0 ? "+" + clicks : clicks);
+        return clicks;
+    }
+
+    public void onSound(PlaySoundS2CPacket packet) {
+        if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver
+                || pitchSolved || !Utils.isInGalatea() || !isInMenu
+                || !packet.getSound().value().id().equals(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value().id())) {
+            return;
+        }
+
+        float packetPitch = packet.getPitch();
+        recentPitches.add(packetPitch);
+        int sampleCount = recentPitches.size();
+        String name = getPitchName(packetPitch);
+
+        if (currentPitch == null) {
+            LOGGER.warn("Current pitch not set, cannot compare");
+            recentPitches.clear();
+            return;
+        }
+
+        float expectedPitch = getPitchValue(currentPitch);
+        if (Math.abs(packetPitch - expectedPitch) > 0.0001f) {
+            String targetPitch = name;
+            if (targetPitch == null) {
+                LOGGER.warn("Invalid pitch value received: {}", packetPitch);
+                recentPitches.clear();
+                return;
+            }
+
+            int currentIndex = getPitchIndex(currentPitch);
+            int targetIndex = getPitchIndex(targetPitch);
+            if (currentIndex == -1 || targetIndex == -1) {
+                LOGGER.warn("Invalid pitch indices: current={}, target={}", currentPitch, targetPitch);
+                recentPitches.clear();
+                return;
+            }
+
+            int clicks = calculatePitchClicks(currentIndex, targetIndex);
+            LOGGER.info("Pitch solved: Current={}, Target={}, Required clicks={}",
+                    currentPitch, targetPitch, clicks >= 0 ? "+" + clicks : clicks);
+            pitchClicks = clicks;
+            pitchSolved = true;
+            recentPitches.clear();
+            return;
+        }
+
+        if (sampleCount >= MAX_PITCH_SAMPLES) {
+            pitchClicks = 0;
+            pitchSolved = true;
+            LOGGER.info("Pitch solved: Current={}, Target={}, Required clicks=+0 (all samples match)",
+                    currentPitch,
+                    currentPitch);
+            recentPitches.clear();
+        }
+    }
 
     private static int readCurrentSpeed(Int2ObjectMap<ItemStack> slots) {
         ItemStack speedStack = slots.get(48);
@@ -403,7 +390,7 @@ public class TunerSolver {
         return null;
     }
 
-    private static void maybeSolveSpeed(Int2ObjectMap<ItemStack> slots) {
+    private void maybeSolveSpeed(Int2ObjectMap<ItemStack> slots) {
         int currentSpeed = readCurrentSpeed(slots);
         if (currentSpeed > 0 && targetSpeed != -1) {
             int currentIndex = getSpeedIndex(currentSpeed);
@@ -412,11 +399,11 @@ public class TunerSolver {
                 speedClicks = calculateSpeedClicks(currentIndex, targetIndex);
                 speedSolved = true;
                 LOGGER.info(
-                    "Speed solved: Current={}, Target={}, Ticks={}, Required clicks={}",
-                    currentSpeed,
-                    targetSpeed,
-                    lastSpeedTicks,
-                    speedClicks >= 0 ? "+" + speedClicks : speedClicks);
+                        "Speed solved: Current={}, Target={}, Ticks={}, Required clicks={}",
+                        currentSpeed,
+                        targetSpeed,
+                        lastSpeedTicks,
+                        speedClicks >= 0 ? "+" + speedClicks : speedClicks);
             } else {
                 LOGGER.warn("Invalid speed indices: current={}, target={}", currentSpeed, targetSpeed);
             }
