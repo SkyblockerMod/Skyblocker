@@ -1090,6 +1090,7 @@
 
   "skyblocker.config.uiAndVisuals.teleportOverlay": "Teleport Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableEtherTransmission": "Enable Ether Transmission Overlay",
+  "skyblocker.config.uiAndVisuals.teleportOverlay.showWhenInAir": "Show Overlay Mid Air",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableInstantTransmission": "Enable Instant Transmission Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission": "Enable Sinrecall Transmission Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableTeleportOverlays": "Enable Teleport Overlays",
