@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 public abstract class AbstractBlockHighlighter {
 	protected final Set<BlockPos> highlightedBlocks = new ObjectOpenHashSet<>();
 	protected final float[] colour;
+	protected final float alpha;
 	protected final Predicate<BlockState> statePredicate;
 
 	/**
@@ -35,18 +36,21 @@ public abstract class AbstractBlockHighlighter {
 	 *
 	 * @param target Block to highlight.
 	 * @param colour Color to use for highlighting.
+	 * @param alpha Alpha for highlighting
 	 */
-	protected AbstractBlockHighlighter(Block target, DyeColor colour) {
-		this(state -> state.isOf(target), colour);
+	protected AbstractBlockHighlighter(Block target, DyeColor colour, Float alpha) {
+		this(state -> state.isOf(target), colour, alpha);
 	}
 
 	/**
 	 * @param statePredicate Predicate that the blockstate must match to be highlighted.
 	 * @param colour Color to use for highlighting.
+	 * @param alpha Alpha for highlighting
 	 */
-	protected AbstractBlockHighlighter(Predicate<BlockState> statePredicate, DyeColor colour) {
+	protected AbstractBlockHighlighter(Predicate<BlockState> statePredicate, DyeColor colour, Float alpha) {
 		this.statePredicate = statePredicate;
 		this.colour = ColorUtils.getFloatComponents(colour);
+		this.alpha = alpha;
 	}
 
 	protected void init() {
@@ -101,7 +105,7 @@ public abstract class AbstractBlockHighlighter {
 			Box outline = RenderHelper.getBlockBoundingBox(client.world, highlight);
 
 			if (outline != null) {
-				RenderHelper.renderFilled(context, outline, this.colour, 0.4f, false);
+				RenderHelper.renderFilled(context, outline, this.colour, alpha, false);
 			}
 		}
 	}
