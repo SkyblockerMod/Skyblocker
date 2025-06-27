@@ -334,6 +334,9 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public boolean enableTeleportOverlays = true;
 
+		@SerialEntry
+		public boolean showWhenInAir = false;
+
         @SerialEntry
         public Color teleportOverlayColor = new Color(0x7F761594, true);
 
