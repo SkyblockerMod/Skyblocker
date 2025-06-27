@@ -15,6 +15,7 @@ import de.hysky.skyblocker.skyblock.dungeon.terminal.ColorTerminal;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.LightsOnTerminal;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.OrderTerminal;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.StartsWithTerminal;
+import de.hysky.skyblocker.skyblock.dungeon.terminal.SameColorTerminal;
 import de.hysky.skyblocker.skyblock.dwarven.CommissionHighlight;
 import de.hysky.skyblocker.skyblock.dwarven.fossil.FossilSolver;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
@@ -59,9 +60,9 @@ public class ContainerSolverManager {
 			BitsHelper.INSTANCE,
 			new RaffleTaskHighlight(),
 			new FossilSolver(),
+			SameColorTerminal.INSTANCE,
 			new CopyUnderbidPrice(),
 			new HuntingBoxHelper()
-
 	};
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;
