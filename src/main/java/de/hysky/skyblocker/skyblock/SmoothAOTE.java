@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -12,7 +13,10 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.Perspective;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -20,13 +24,18 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -269,6 +278,13 @@ public class SmoothAOTE {
 		float yaw = CLIENT.player.getYaw();
 		Vec3d look = CLIENT.player.getRotationVector(pitch, yaw);
 
+		//make sure the player is not talking to an npc. And if they are cancel the teleport
+		if (IsTargetingNPC(CLIENT.player, 4, startPos, look)) {
+			startPos = null;
+			teleportVector = null;
+			return;
+		}
+
 		//find target location depending on how far the item they are using takes them
 		teleportVector = raycast(distance, look, startPos);
 		if (teleportVector == null) {
@@ -283,6 +299,44 @@ public class SmoothAOTE {
 		//add 1 to teleports ahead
 		teleportsAhead += 1;
 	}
+
+	/**
+	 * Checks if the player is targeting an entity and then checks if it has a CLICK tag suggesting it has an interaction that will block the teleport
+	 * @param player player
+	 * @param maxDistance max distance this is needed
+	 * @param startPos player starting location
+	 * @param look players looking direction
+	 * @return if an NPC is targeted
+	 */
+	private static Boolean IsTargetingNPC(PlayerEntity player, double maxDistance, Vec3d startPos, Vec3d look) {
+		// Calculate end position for raycast
+		Vec3d endPos = startPos.add(look.multiply(maxDistance));
+
+		// First: Raycast for blocks (to check obstructions)
+		World world = player.getWorld();
+		RaycastContext context = new RaycastContext(startPos, endPos, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, player);
+		double blockHitDistance = world.raycast(context).getPos().distanceTo(startPos);
+
+		// Second: Raycast for entities (within valid range)
+		Box searchBox = player
+				.getBoundingBox()
+				.stretch(look.multiply(maxDistance)) // Extend box in look direction
+				.expand(1); // Margin for safety
+
+		EntityHitResult entityHit = ProjectileUtil.raycast(player, startPos, endPos, searchBox, entity ->
+						!entity.isSpectator() && entity != player,
+						MathHelper.square(blockHitDistance) // Max distance (squared)
+		);
+		//if not looking at any entity return false
+		if (entityHit == null) return false;
+
+		//look for armorstand saying click to see if it's A npc or not
+		Entity entity = entityHit.getEntity();
+		List<ArmorStandEntity> armorStands = MobGlow.getArmorStands(entity);
+
+		return armorStands.stream().anyMatch(armorStand -> armorStand.getName().getString().equals("CLICK"));
+	}
+
 
 	/**
 	 * Rounds a value to the nearest 0.5
