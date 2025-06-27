@@ -10,6 +10,7 @@ import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
+import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
@@ -318,12 +319,19 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			PetCache.handlePetEquip(slot, slotId);
 		}
 
-		if (currentSolver != null) {
-			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack);
+                if (currentSolver != null) {
+                        boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack);
 
-			if (disallowed) ci.cancel();
-		}
-	}
+                        if (disallowed) {
+                                ci.cancel();
+                                return;
+                        }
+                }
+
+                if (!ci.isCancelled()) {
+                        TunerSolver.onSlotClick(slotId, button);
+                }
+        }
 
 	@Inject(at = @At("HEAD"), method = "mouseClicked")
 	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {

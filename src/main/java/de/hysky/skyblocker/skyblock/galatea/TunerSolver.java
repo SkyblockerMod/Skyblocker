@@ -102,6 +102,25 @@ public class TunerSolver {
         private static int ticksSinceLastMove = 0;
         private static int targetSpeed = -1; // Latest target speed from tick interval
 
+	/**
+	 * Updates the remaining click counters when the corresponding tuner slot
+	 * is clicked. Left clicks decrement and right clicks increment the
+	 * counter. This method is invoked by the screen mixin.
+	 */
+	public static void onSlotClick(int slotId, int button) {
+		if (!isInMenu) return;
+
+		if (button == 0) { // left click => decrement
+			if (colorSolved && slotId == 46) colorClicks--;
+			else if (speedSolved && slotId == 48) speedClicks--;
+			else if (pitchSolved && slotId == 50) pitchClicks--;
+		} else if (button == 1) { // right click => increment
+			if (colorSolved && slotId == 46) colorClicks++;
+			else if (speedSolved && slotId == 48) speedClicks++;
+			else if (pitchSolved && slotId == 50) pitchClicks++;
+		}
+	}
+
 	@Init
 	public static void init() {
 		ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
@@ -110,6 +129,12 @@ public class TunerSolver {
 					hasProcessed = false;
 					tickCounter = 0;
 					isInMenu = true;
+					colorSolved = false;
+					speedSolved = false;
+					pitchSolved = false;
+					colorClicks = 0;
+					speedClicks = 0;
+					pitchClicks = 0;
 					currentPitch = null;
 					recentPitches.clear();
 					lastTargetSlot = -1;
@@ -139,6 +164,12 @@ public class TunerSolver {
 						hasProcessed = false;
 						tickCounter = 0;
 						isInMenu = false;
+						colorSolved = false;
+						speedSolved = false;
+						pitchSolved = false;
+						colorClicks = 0;
+						speedClicks = 0;
+						pitchClicks = 0;
 						currentPitch = null;
 						recentPitches.clear();
 						lastTargetSlot = -1;
