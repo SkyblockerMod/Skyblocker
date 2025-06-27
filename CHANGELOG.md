@@ -23,6 +23,7 @@
 * Fix Item Pickup Widget Network Protocol Error Disconnect
 * Get rid of ETF log spam
 * Fix suggestions flashing sometimes when removing history entry
+* New items like Fig and Mangrove Logs are now displayed as the correct item (not a player head)
 
 ## What's Changed
 * Add HOTF perk level slot text adder by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1391
