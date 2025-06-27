@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
+import de.hysky.skyblocker.skyblock.item.tooltip.TooltipManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -194,7 +195,8 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 			for (ItemStack stack : ItemRepository.getItems()) {
 				String name = stack.getName().getString().toLowerCase(Locale.ENGLISH);
 				if (!filterOption.test(name)) continue;
-				List<Text> lore = ItemUtils.getLore(stack);
+
+				List<Text> lore = TooltipManager.addToTooltip(null, stack, new ArrayList<>(ItemUtils.getLore(stack)));
 
 				if (name.contains(query) || lore.stream().map(Text::getString)
 						.map(string -> string.toLowerCase(Locale.ENGLISH))

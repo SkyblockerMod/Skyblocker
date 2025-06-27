@@ -176,9 +176,11 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
         super.drawBackground(context, delta, mouseX, mouseY);
-        for (int i = 0; i < 4; i++) {
-            context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, x + 76 + (i == 3 ? 21 : 0), y + 7 + i * 18, 18, 18);
+        for (int i = 0; i < 3; i++) {
+            context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, x + 76, y + 7 + i * 18, 18, 18);
         }
+		Slot slot = handler.slots.get(45);
+		context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, slot.x, slot.y, 18, 18);
     }
 
     @Override
