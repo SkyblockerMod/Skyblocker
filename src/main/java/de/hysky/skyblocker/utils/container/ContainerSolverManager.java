@@ -5,6 +5,7 @@ import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.RaffleTaskHighlight;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
+import de.hysky.skyblocker.skyblock.auction.CopyUnderbidPrice;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusHelper;
@@ -60,6 +61,7 @@ public class ContainerSolverManager {
 			new RaffleTaskHighlight(),
 			new FossilSolver(),
 			SameColorTerminal.INSTANCE,
+			new CopyUnderbidPrice(),
 			new HuntingBoxHelper()
 	};
 	private static ContainerSolver currentSolver = null;
