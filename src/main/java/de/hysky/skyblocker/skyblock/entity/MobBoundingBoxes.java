@@ -4,7 +4,10 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
+import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.AttunementColors;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -14,6 +17,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.entity.mob.BlazeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Box;
 
@@ -54,7 +58,35 @@ public class MobBoundingBoxes {
 	public static float[] getBoxColor(Entity entity) {
 		int color = MobGlow.getMobGlow(entity);
 
+		if (color == MobGlow.NO_GLOW) {
+			color = computeBoxColor(entity);
+		}
+
 		return new float[] { ((color >> 16) & 0xFF) / 255f, ((color >> 8) & 0xFF) / 255f, (color & 0xFF) / 255f };
+	}
+
+	private static int computeBoxColor(Entity entity) {
+		String name = entity.getName().getString();
+
+		if (Utils.isInDungeons()) {
+			return switch (entity) {
+				case PlayerEntity p when !DungeonManager.getBoss().isFloor(4) && name.equals("Lost Adventurer") -> 0xfee15c;
+				case PlayerEntity p when !DungeonManager.getBoss().isFloor(4) && name.equals("Shadow Assassin") -> 0x5b2cb2;
+				case PlayerEntity p when !DungeonManager.getBoss().isFloor(4) && name.equals("Diamond Guy") -> 0x57c2f7;
+				case PlayerEntity p when entity.getId() == LividColor.getCorrectLividId() && LividColor.shouldDrawBoundingBox(name) -> LividColor.getGlowColor(name);
+				default -> MobGlow.isStarred(entity) ? 0xf57738 : 0xFFFFFF;
+			};
+		}
+
+		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.HITBOX)) {
+			return switch (entity) {
+				case ArmorStandEntity e when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(e);
+				case BlazeEntity e when SlayerManager.isInSlayerType(SlayerType.DEMONLORD) -> AttunementColors.getColor(e);
+				default -> 0xf57738;
+			};
+		}
+
+		return 0xffffff;
 	}
 
 	public static void submitBox2BeRendered(Box box, float[] colorComponents) {
