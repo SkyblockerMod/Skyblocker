@@ -136,8 +136,8 @@ public class ContainerSolverManager {
 	/**
 	 * @return Whether the click should be disallowed.
 	 */
-	public static boolean onSlotClick(int slot, ItemStack stack) {
-		return currentSolver != null && currentSolver.onClickSlot(slot, stack, screenId);
+	public static boolean onSlotClick(int slot, ItemStack stack, int button) {
+		return currentSolver != null && currentSolver.onClickSlot(slot, stack, screenId, button);
 	}
 
 	public static void onDraw(DrawContext context, GenericContainerScreen genericContainerScreen, List<Slot> slots) {

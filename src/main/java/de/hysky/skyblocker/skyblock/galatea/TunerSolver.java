@@ -149,25 +149,27 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
         return List.of();
     }
 
-    /**
-     * Updates the remaining click counters when the corresponding tuner slot
-     * is clicked. Left clicks decrement and right clicks increment the
-     * counter. This method is invoked by the screen mixin.
-     */
-    public void onSlotClick(int slotId, int button) {
-        if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) return;
-        if (!isInMenu) return;
+	/**
+	 * Updates the remaining click counters when the corresponding tuner slot
+	 * is clicked. Left clicks decrement and right clicks increment the
+	 * counter. Invoked via {@link ContainerSolverManager#onSlotClick(int, ItemStack, int)}.
+	 */
+	@Override
+	public boolean onClickSlot(int slotId, ItemStack stack, int screenId, int button) {
+		if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) return false;
+		if (!isInMenu) return false;
 
-        if (button == 0) { // left click => decrement
-            if (colorSolved && slotId == 46) colorClicks--;
-            else if (speedSolved && slotId == 48) speedClicks--;
-            else if (pitchSolved && slotId == 50) pitchClicks--;
-        } else if (button == 1) { // right click => increment
-            if (colorSolved && slotId == 46) colorClicks++;
-            else if (speedSolved && slotId == 48) speedClicks++;
-            else if (pitchSolved && slotId == 50) pitchClicks++;
-        }
-    }
+		if (button == 0) { // left click => decrement
+			if (colorSolved && slotId == 46) colorClicks--;
+			else if (speedSolved && slotId == 48) speedClicks--;
+			else if (pitchSolved && slotId == 50) pitchClicks--;
+		} else if (button == 1) { // right click => increment
+			if (colorSolved && slotId == 46) colorClicks++;
+			else if (speedSolved && slotId == 48) speedClicks++;
+			else if (pitchSolved && slotId == 50) pitchClicks++;
+		}
+		return false;
+	}
 
 
     private void resetState() {

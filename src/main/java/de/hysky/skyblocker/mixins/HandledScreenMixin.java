@@ -319,19 +319,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			PetCache.handlePetEquip(slot, slotId);
 		}
 
-                if (currentSolver != null) {
-                        boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack);
+		if (currentSolver != null) {
+			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack, button);
 
-                        if (disallowed) {
-                                ci.cancel();
-                                return;
-                        }
-                }
-
-                if (!ci.isCancelled() && SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) {
-                        TunerSolver.INSTANCE.onSlotClick(slotId, button);
-                }
-        }
+			if (disallowed) ci.cancel();
+		}
+	}
 
 	@Inject(at = @At("HEAD"), method = "mouseClicked")
 	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
