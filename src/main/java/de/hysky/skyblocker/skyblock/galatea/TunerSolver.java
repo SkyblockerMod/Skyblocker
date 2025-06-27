@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -108,8 +109,9 @@ public class TunerSolver {
 	 * is clicked. Left clicks decrement and right clicks increment the
 	 * counter. This method is invoked by the screen mixin.
 	 */
-	public static void onSlotClick(int slotId, int button) {
-		if (!isInMenu) return;
+    public static void onSlotClick(int slotId, int button) {
+        if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) return;
+        if (!isInMenu) return;
 
 		if (button == 0) { // left click => decrement
 			if (colorSolved && slotId == 46) colorClicks--;
@@ -124,6 +126,9 @@ public class TunerSolver {
 
     @Init
     public static void init() {
+        if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) {
+            return;
+        }
         ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
             if (Utils.isInGalatea() && screen instanceof GenericContainerScreen genericContainerScreen) {
                 if (genericContainerScreen.getTitle().getString().equals("Tune Frequency")) {
@@ -311,8 +316,9 @@ public class TunerSolver {
                 return clicks;
         }
 
-        public static void onSound(PlaySoundS2CPacket packet) {
-                if (pitchSolved || !Utils.isInGalatea() || !isInMenu
+    public static void onSound(PlaySoundS2CPacket packet) {
+                if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver
+                        || pitchSolved || !Utils.isInGalatea() || !isInMenu
                         || !packet.getSound().value().id().equals(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value().id())) {
                         return;
                 }

@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import net.minecraft.item.ItemStack;
@@ -18,6 +19,9 @@ public class TunerClicksAdder extends SimpleSlotTextAdder {
 
     @Override
     public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+        if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) {
+            return List.of();
+        }
         if (slotId == 46 && TunerSolver.isColorSolved()) {
             return SlotText.bottomRightList(Text.literal(String.valueOf(TunerSolver.getColorClicks())).withColor(SlotText.LIGHT_GREEN));
         }

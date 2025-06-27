@@ -7,17 +7,20 @@ public class ForagingConfig {
 	@SerialEntry
 	public Galatea galatea = new Galatea();
 
-	public static class Galatea {
-		@SerialEntry
-		public boolean enableForestNodeHelper = true;
+        public static class Galatea {
+                @SerialEntry
+                public boolean enableForestNodeHelper = true;
 
-		@SerialEntry
-		public boolean solveForestTemplePuzzle = true;
+                @SerialEntry
+                public boolean solveForestTemplePuzzle = true;
 
-		@SerialEntry
-		public boolean enableLushlilacHighlighter = true;
+                @SerialEntry
+                public boolean enableLushlilacHighlighter = true;
 
-		@SerialEntry
-		public boolean enableSeaLumiesHighlighter = true;
-	}
+                @SerialEntry
+                public boolean enableSeaLumiesHighlighter = true;
+
+                @SerialEntry
+                public boolean enableTunerSolver = true;
+        }
 }

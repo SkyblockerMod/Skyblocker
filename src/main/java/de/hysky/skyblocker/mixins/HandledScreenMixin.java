@@ -328,7 +328,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
                         }
                 }
 
-                if (!ci.isCancelled()) {
+                if (!ci.isCancelled() && SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) {
                         TunerSolver.onSlotClick(slotId, button);
                 }
         }
