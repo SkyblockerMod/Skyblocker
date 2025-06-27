@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
 import de.hysky.skyblocker.skyblock.auction.CopyUnderbidPrice;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
+import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusHelper;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusProfit;
 import de.hysky.skyblocker.skyblock.dungeon.SalvageHelper;
@@ -55,6 +56,7 @@ public class ContainerSolverManager {
 			new NewYearCakeBagHelper(),
 			NewYearCakesHelper.INSTANCE,
 			ChocolateFactorySolver.INSTANCE,
+			TunerSolver.INSTANCE,
 			new ReorderHelper(),
 			BitsHelper.INSTANCE,
 			new RaffleTaskHighlight(),
