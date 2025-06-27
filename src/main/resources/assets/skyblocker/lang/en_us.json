@@ -331,6 +331,8 @@
   "skyblocker.config.general.itemProtection": "Item Protection",
   "skyblocker.config.general.itemProtection.protectValuableConsumables": "Protect Valuable Consumables",
   "skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip": "Prevents consuming items such as Bottles of Jyrre, Dark Cacao Truffles, and Discrite before they have evolved.",
+  "skyblocker.config.general.itemProtection.displayChatNotification": "Display Chat Notifications",
+  "skyblocker.config.general.itemProtection.displayChatNotification.@Tooltip": "Displays a chat notification when toggling the protection state of an item.",
   "skyblocker.config.general.itemProtection.slotLockStyle": "Slot Lock Icon Style",
   "skyblocker.config.general.itemProtection.slotLockStyle.@Tooltip": "Choose between the fancy or the classic slot lock icon.",
   "skyblocker.config.general.itemProtection.slotLockStyle.style.CLASSIC": "Classic",
@@ -452,6 +454,9 @@
 
   "skyblocker.config.helpers.enableDateCalculator": "Enable Date Calculator",
   "skyblocker.config.helpers.enableDateCalculator.@Tooltip": "Shows the date and time of events in the future, such as calendar events.",
+
+  "skyblocker.config.helpers.enableCopyUnderbidPrice": "Enable Copy Underbid Price",
+  "skyblocker.config.helpers.enableCopyUnderbidPrice.@Tooltip": "Copies the lowest BIN price minus one coin to your clipboard when opening the Create BIN Auction screen.",
 
   "skyblocker.config.helpers.experiments": "Experiments Solver",
   "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Enable Chronomatron Solver",
@@ -942,6 +947,17 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter.@Tooltip": "Close the current open sign screen with the enter key",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
 
+  "skyblocker.config.uiAndVisuals.inputCalculator.badNotationError": "Equation is not in RPN",
+  "skyblocker.config.uiAndVisuals.inputCalculator.divisionByZeroError": "Cannot divide by 0",
+  "skyblocker.config.uiAndVisuals.inputCalculator.duplicateOperatorError": "Unexpected duplicate operator",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError": "Invalid operator",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidCharacterError": "Invalid character",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError": "Invalid number",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidMagnitudeError": "Invalid magnitude",
+  "skyblocker.config.uiAndVisuals.inputCalculator.unbalancedParenthesisError": "Unbalanced left parenthesis",
+  "skyblocker.config.uiAndVisuals.inputCalculator.emptyEquationError": "Equation is empty",
+  "skyblocker.config.uiAndVisuals.inputCalculator.missingValueError": "Missing value around operator",
+
 
   "skyblocker.config.uiAndVisuals.inventorySearch": "Inventory Search",
   "skyblocker.config.uiAndVisuals.inventorySearch.ctrlK": "Use CTRL + K for inventory search instead of CTRL + F",
@@ -1015,7 +1031,11 @@
   "skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions": "Maximum Suggestions",
   "skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions.@Tooltip": "The maximum number of suggested items to show.",
 
+  "skyblocker.config.uiAndVisuals.showCustomizeButton": "Show Customize Armor Button",
+  "skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip": "Adds a little paint brush icon in your inventory next to the player model to open the Armor Customization screen.",
   "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
+  "skyblocker.config.uiAndVisuals.showConfigButton": "Show Config Button",
+  "skyblocker.config.uiAndVisuals.showConfigButton.@Tooltip": "Adds a button in the skyblock menu to open the Skyblocker config.",
 
   "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
   "skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip": "Smooths out teleporting with right click teleport abilities.",
@@ -1362,6 +1382,8 @@
   "skyblocker.partyFinder.join": "Click to join",
 
   "skyblocker.reorderHelper.tooltip": "[Skyblocker] You can copy the amount of items\nby holding CTRL while clicking on the item!",
+
+  "skyblocker.copyUnderbidPrice.copied": "Copied underbid price: %s",
 
   "skyblocker.fancyAuctionHouse.editBid": "Click to edit bid!",
   "skyblocker.fancyAuctionHouse.price": "Price:",
