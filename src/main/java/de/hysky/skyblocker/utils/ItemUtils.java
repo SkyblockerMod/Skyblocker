@@ -11,6 +11,8 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.skyblock.hunting.Attribute;
+import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -68,6 +70,7 @@ public final class ItemUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemUtils.class);
     private static final Pattern STORED_PATTERN = Pattern.compile("Stored: ([\\d,]+)/\\S+");
     private static final Pattern STASH_COUNT_PATTERN = Pattern.compile("x([\\d,]+)$"); // This is used with Matcher#find, not #matches
+    private static final Pattern HUNTING_BOX_COUNT_PATTERN = Pattern.compile("Owned: (?<shards>\\d+) Shards?");
     private static final short LOG_INTERVAL = 1000;
 	private static long lastLog = Util.getMeasuringTimeMs();
 
@@ -185,11 +188,9 @@ public final class ItemUtils {
                 }
             }
             case "ATTRIBUTE_SHARD" -> {
-                if (customData.contains("attributes")) {
-                    NbtCompound shards = customData.getCompoundOrEmpty("attributes");
-                    String shard = shards.getKeys().stream().findFirst().orElse("");
-                    return id + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard, 0);
-                }
+            	Attribute attribute = Attributes.getAttributeFromItemName(itemStack);
+
+                if (attribute != null) return attribute.apiId();
             }
             case "NEW_YEAR_CAKE" -> {
                 return id + "_" + customData.getInt("new_years_cake", 0);
@@ -528,5 +529,15 @@ public final class ItemUtils {
     @NotNull
     public static OptionalInt getItemCountInStash(@NotNull Text itemName) {
         return RegexUtils.findIntFromMatcher(STASH_COUNT_PATTERN.matcher(itemName.getString()));
+    }
+
+    /**
+     * Finds the number of shards the player owns inside of the hunting box.
+     */
+    @NotNull
+    public static OptionalInt getItemCountInHuntingBox(@NotNull ItemStack stack) {
+    	Matcher matcher = ItemUtils.getLoreLineIfContainsMatch(stack, HUNTING_BOX_COUNT_PATTERN);
+
+    	return matcher != null ? RegexUtils.parseOptionalIntFromMatcher(matcher, "shards") : OptionalInt.empty();
     }
 }

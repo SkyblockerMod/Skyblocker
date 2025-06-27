@@ -3,17 +3,17 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 
-public class HotmPerkLevelAdder extends HeartOfTheXAdder {
+public class HotfPerkLevelAdder extends HeartOfTheXAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
-			"hotm_perk_level",
-			"skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel");
+			"hotf_perk_level",
+			"skyblocker.config.uiAndVisuals.slotText.hotfPerkLevel");
 
-	public HotmPerkLevelAdder() {
-		super("^Heart of the Mountain$", CONFIG_INFORMATION);
+	public HotfPerkLevelAdder() {
+		super("^Heart of the Forest$", CONFIG_INFORMATION);
 	}
 
 	@Override
 	protected Item getNonLeveledItem() {
-		return Items.COAL;
+		return Items.PLAYER_HEAD;
 	}
 }

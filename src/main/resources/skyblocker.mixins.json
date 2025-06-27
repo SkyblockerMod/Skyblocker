@@ -55,6 +55,7 @@
     "YggdrasilServicesKeyInfoMixin",
     "accessors.BeaconBlockEntityRendererInvoker",
     "accessors.CheckboxWidgetAccessor",
+	"accessors.ConfigClassHandlerImplAccessor",
     "accessors.DrawContextInvoker",
     "accessors.EndermanEntityAccessor",
     "accessors.EntityRenderDispatcherAccessor",
