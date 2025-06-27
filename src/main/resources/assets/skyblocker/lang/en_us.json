@@ -1030,7 +1030,11 @@
   "skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions": "Maximum Suggestions",
   "skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions.@Tooltip": "The maximum number of suggested items to show.",
 
+  "skyblocker.config.uiAndVisuals.showCustomizeButton": "Show Customize Armor Button",
+  "skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip": "Adds a little paint brush icon in your inventory next to the player model to open the Armor Customization screen.",
   "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
+  "skyblocker.config.uiAndVisuals.showConfigButton": "Show Config Button",
+  "skyblocker.config.uiAndVisuals.showConfigButton.@Tooltip": "Adds a button in the skyblock menu to open the Skyblocker config.",
 
   "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
   "skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip": "Smooths out teleporting with right click teleport abilities.",

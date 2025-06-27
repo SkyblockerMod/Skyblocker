@@ -71,7 +71,7 @@ public class CustomizeArmorScreen extends Screen {
 				ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("custom").executes(Scheduler.queueOpenScreenCommand(() -> new CustomizeArmorScreen(null))))
 		));
 		ScreenEvents.AFTER_INIT.register((client1, screen, scaledWidth, scaledHeight) -> {
-			if (Utils.isOnSkyblock() && screen instanceof InventoryScreen inventoryScreen) {
+			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showCustomizeButton && screen instanceof InventoryScreen inventoryScreen) {
 				CustomizeButton button = new CustomizeButton(
 						((HandledScreenAccessor) inventoryScreen).getX() + 63,
 						((HandledScreenAccessor) inventoryScreen).getY() + 10
