@@ -30,7 +30,7 @@ public class StatusBarsConfigScreen extends Screen {
 	private static final Identifier HOTBAR_TEXTURE = Identifier.ofVanilla("hud/hotbar");
 	private static final int HOTBAR_WIDTH = 182;
 	public static final long RESIZE_CURSOR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HRESIZE_CURSOR);
-	// prioritize left and right cuz they are much smaller space than up and down
+	// prioritize left and right cuz they are much smaller than up and down
 	private static final NavigationDirection[] DIRECTION_CHECK_ORDER = new NavigationDirection[]{NavigationDirection.LEFT, NavigationDirection.RIGHT, NavigationDirection.UP, NavigationDirection.DOWN};
 
 	private static boolean resizeCursor = false;
@@ -47,6 +47,9 @@ public class StatusBarsConfigScreen extends Screen {
 	}
 
 	private final Map<ScreenRect, Pair<StatusBar, BarLocation>> rectToBar = new HashMap<>();
+	/**
+	 * Contains the hovered bar and a boolean that is true if hovering the right side or false otherwise.
+	 */
 	private final ObjectBooleanPair<@Nullable StatusBar> resizeHover = new ObjectBooleanMutablePair<>(null, false);
 	private final Pair<@Nullable StatusBar, @Nullable StatusBar> resizedBars = ObjectObjectMutablePair.of(null, null);
 
@@ -151,9 +154,9 @@ public class StatusBarsConfigScreen extends Screen {
 				FancyStatusBars.updatePositions(true);
 				cursorBar.setX(width + 5);
 			}
-		} else {
+		} else { // Not dragging around a bar
 			if (resizing) { // actively resizing one or 2 bars
-				int middleX;
+				int middleX; // the point between the 2 bars
 
 				StatusBar rightBar = resizedBars.right();
 				StatusBar leftBar = resizedBars.left();
@@ -168,7 +171,7 @@ public class StatusBarsConfigScreen extends Screen {
 					middleX = rightBar.getX();
 				}
 
-				if (barAnchor != null) {
+				if (barAnchor != null) { // If is on an anchor
 					BarPositioner.SizeRule sizeRule = barAnchor.getSizeRule();
 					boolean doResize = true;
 
@@ -210,7 +213,7 @@ public class StatusBarsConfigScreen extends Screen {
 							}
 						}
 					}
-				} else {
+				} else { // Freely moving around
 					if (hasLeft) {
 						leftBar.setWidth(Math.max(30, mouseX - leftBar.getX()));
 					} else if (hasRight) {
