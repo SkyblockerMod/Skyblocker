@@ -109,19 +109,19 @@ public class SearchOverManager {
         HashSet<String> auctionPets = new HashSet<>();
         HashSet<String> starableItems = new HashSet<>();
         HashMap<String, String> namesToNeuId = new HashMap<>();
-		HashMap<String, String> shardIdToNeuId = new HashMap<>();
 
-		// get shards skyblock id to neu id map - remove when bazaar stocks is added to neu repo lib.
+		// get bazaar stock skyblock id to neu id map - remove when added to neu repo lib
+		HashMap<String, String> bazaarStockIdToNeuId = new HashMap<>();
 		try (InputStream stream = NEURepoManager.NEU_REPO.file("constants/bazaarstocks.json").stream()) {
 			JsonArray list = JsonParser.parseString(new String(stream.readAllBytes())).getAsJsonArray();
 			for (JsonElement element : list) {
 				JsonObject object = element.getAsJsonObject();
 				String skyblockId = object.get("stock").getAsString();
 				String neuId = object.get("id").getAsString();
-				shardIdToNeuId.put(skyblockId, neuId);
+				bazaarStockIdToNeuId.put(skyblockId, neuId);
 			}
 		} catch (Exception ex) {
-			LOGGER.error("[Skyblocker Search Overlay] Failed to create attribute id conversion map", ex);
+			LOGGER.error("[Skyblocker Search Overlay] Failed to create Bazaar Skyblock ID to NEU ID conversion map", ex);
 		}
 
         //get bazaar items
@@ -136,8 +136,10 @@ public class SearchOverManager {
                 int sellVolume = product.sellVolume();
                 if (sellVolume == 0)
                     continue; //do not add items that do not sell e.g. they are not actual in the bazaar
+
+				// Format Enchantments
                 Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(name);
-                if (matcher.matches()) {//format enchantments
+                if (matcher.matches() && bazaarStockIdToNeuId.containsKey(id)) {
                     name = matcher.group(1);
                     if (!name.contains("Ultimate Wise") && !name.contains("Ultimate Jerry")) {
                         name = name.replace("Ultimate ", "");
@@ -151,13 +153,13 @@ public class SearchOverManager {
                     String level = matcher.group(2);
                     name += " " + RomanNumerals.decimalToRoman(Integer.parseInt(level));
                     bazaarItems.add(name);
-                    namesToNeuId.put(name, id.substring(0, id.lastIndexOf('_')).replace("ENCHANTMENT_", "") + ";" + level);
+                    namesToNeuId.put(name, bazaarStockIdToNeuId.get(id));
                     continue;
                 }
 
                 // Format Shards
-                if (id.startsWith("SHARD_") && shardIdToNeuId.containsKey(id)) {
-					id = shardIdToNeuId.get(id);
+                if (id.startsWith("SHARD_") && bazaarStockIdToNeuId.containsKey(id)) {
+					id = bazaarStockIdToNeuId.get(id);
                 }
 
                 //look up id for name
@@ -166,7 +168,6 @@ public class SearchOverManager {
                     name = Formatting.strip(neuItem.getDisplayName());
                     bazaarItems.add(name);
                     namesToNeuId.put(name, id);
-                    continue;
                 }
             }
         } catch (Exception e) {
