@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProfileViewerTextWidget {
 	private static final int ROW_GAP = 9;
@@ -82,8 +84,22 @@ public class ProfileViewerTextWidget {
 				}
 
 				if (inventoryData.has("wardrobe_contents")) {
+					int activeSlot = inventoryData.get("wardrobe_equipped_slot").getAsInt();
+					Set<Integer> skip = new HashSet<>();
+					if (activeSlot != -1) {
+						for (int i = 0; i < 4; i++) {
+							int baseIndex = (activeSlot - 1) % 9;
+							int page = (activeSlot - 1) / 9;
+							int slotIndex = (page * 36) + (i * 9) + baseIndex;
+							skip.add(slotIndex);
+						}
+					}
+
 					WardrobeInventoryItemLoader loader = new WardrobeInventoryItemLoader(inventoryData);
-					for (ItemStack stack : loader.loadItems(inventoryData.getAsJsonObject("wardrobe_contents"))) {
+					List<ItemStack> wardrobeItems = loader.loadItems(inventoryData.getAsJsonObject("wardrobe_contents"));
+					for (int index = 0; index < wardrobeItems.size(); index++) {
+						if (skip.contains(index)) continue;
+						ItemStack stack = wardrobeItems.get(index);
 						double p = NetworthCalculator.getItemNetworth(stack).price();
 						value += p;
 						if (p > 0) {
