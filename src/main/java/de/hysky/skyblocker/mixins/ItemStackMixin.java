@@ -13,8 +13,14 @@ import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.ComponentHolder;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.MergedComponentMap;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.component.type.LoreComponent;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipAppender;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -50,11 +56,25 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	@Unique
 	private PetInfo petInfo;
 
+	@Unique
+	private boolean isShortbow;
+
 	@Shadow
 	public abstract int getDamage();
 
 	@Shadow
 	public abstract void setDamage(int damage);
+
+	@Shadow
+	public abstract Item getItem();
+
+	@Inject(method = "<init>(Lnet/minecraft/item/ItemConvertible;ILnet/minecraft/component/MergedComponentMap;)V", at = @At("TAIL"))
+	private void skyblocker$readItemComponents(ItemConvertible item, int count, MergedComponentMap components, CallbackInfo ci) {
+		if (Utils.isOnSkyblock() && this.getItem() == Items.BOW) {
+			this.isShortbow = components.getOrDefault(DataComponentTypes.LORE, LoreComponent.DEFAULT)
+					.styledLines().stream().anyMatch(line -> line.getString().contains("Shortbow: Instantly shoots!"));
+		}
+	}
 
 	@ModifyReturnValue(method = "getName", at = @At("RETURN"))
 	private Text skyblocker$customItemNames(Text original) {
@@ -178,5 +198,10 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	public PetInfo getPetInfo() {
 		if (petInfo != null) return petInfo;
 		return petInfo = ItemUtils.getPetInfo(this);
+	}
+
+	@Override
+	public boolean isShortbow() {
+		return isShortbow;
 	}
 }
