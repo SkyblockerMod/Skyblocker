@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public interface SlotTextAdder extends ContainerMatcher {
 
@@ -40,7 +41,7 @@ public interface SlotTextAdder extends ContainerMatcher {
 		return null;
 	}
 
-	record ConfigInformation(String id, Text name, @Nullable Text description) {
+	record ConfigInformation(String id, Text name, @Nullable OptionDescription description) {
 		public ConfigInformation(String id, Text name) {
 			this(id, name, null);
 		}
@@ -49,17 +50,22 @@ public interface SlotTextAdder extends ContainerMatcher {
 			this(id, Text.translatable(name));
 		}
 
-		public ConfigInformation(String id, @Translatable String name, @Translatable String description) {
-			this(id, Text.translatable(name), Text.translatable(description));
+		public ConfigInformation(String id, @Translatable String name, @Translatable String... descriptionLines) {
+			this(id, name, Stream.of(descriptionLines).map(Text::translatable).toArray(Text[]::new));
+		}
+
+		// Additional constructor in case the description lines have any formatting
+		public ConfigInformation(String id, @Translatable String name, Text... descriptionLines) {
+			this(id, Text.translatable(name), OptionDescription.of(descriptionLines));
 		}
 
 		public Option<Boolean> getOption(SkyblockerConfig config) {
 			return Option.<Boolean>createBuilder()
 					.name(name)
-					.description(description != null ? OptionDescription.of(description) : OptionDescription.EMPTY)
+					.description(description != null ? description : OptionDescription.EMPTY)
 					.binding(true,
 							() -> config.uiAndVisuals.slotText.textEnabled.getOrDefault(id, true),
-							newValue -> config.uiAndVisuals.slotText.textEnabled.put(id, (boolean) newValue))
+							newValue -> config.uiAndVisuals.slotText.textEnabled.put(id, newValue.booleanValue()))
 					.controller(ConfigUtils::createBooleanController)
 					.build();
 		}

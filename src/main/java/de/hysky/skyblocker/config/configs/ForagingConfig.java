@@ -19,5 +19,8 @@ public class ForagingConfig {
 
 		@SerialEntry
 		public boolean enableSeaLumiesHighlighter = true;
+
+		@SerialEntry
+		public int seaLumiesMinimumCount = 3;
 	}
 }

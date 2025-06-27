@@ -198,9 +198,10 @@ public class ARGBTextInput extends ClickableWidget {
 				return true;
 			} else if (Screen.isPaste(keyCode)) {
 				String clipboard = MinecraftClient.getInstance().keyboard.getClipboard();
-				String s = clipboard.substring(0, 6);
+				if (clipboard.startsWith("#")) clipboard = clipboard.substring(1);
+				String s = clipboard.substring(0, Math.min(hasAlpha ? 8 : 6, clipboard.length()));
 				getOptionalARGBColor(s.toUpperCase(Locale.ENGLISH)).ifPresent(color -> {
-					input = s;
+					setARGBColor(color);
 					callOnChange();
 				});
 				return true;

@@ -1,0 +1,1046 @@
+[
+	{
+		"name": "Nature Elemental",
+		"shardName": "Grove",
+		"id": "C1",
+		"apiId": "SHARD_GROVE"
+	},
+	{
+		"name": "Fog Elemental",
+		"shardName": "Mist",
+		"id": "C2",
+		"apiId": "SHARD_MIST"
+	},
+	{
+		"name": "Light Elemental",
+		"shardName": "Flash",
+		"id": "C3",
+		"apiId": "SHARD_FLASH"
+	},
+	{
+		"name": "Nocturnal Animal",
+		"shardName": "Phanpyre",
+		"id": "C4",
+		"apiId": "SHARD_PHANPYRE"
+	},
+	{
+		"name": "Cheapstake",
+		"shardName": "Cod",
+		"id": "C5",
+		"apiId": "SHARD_COD"
+	},
+	{
+		"name": "Moonglade Mastery",
+		"shardName": "Phanflare",
+		"id": "C7",
+		"apiId": "SHARD_PHANFLARE"
+	},
+	{
+		"name": "Fisherman",
+		"shardName": "Night Squid",
+		"id": "C8",
+		"apiId": "SHARD_NIGHT_SQUID"
+	},
+	{
+		"name": "Experience",
+		"shardName": "Lapis Zombie",
+		"id": "C9",
+		"apiId": "SHARD_LAPIS_ZOMBIE"
+	},
+	{
+		"name": "Mossy Box",
+		"shardName": "Hideonleaf",
+		"id": "C10",
+		"apiId": "SHARD_HIDEONLEAF"
+	},
+	{
+		"name": "Forest Fishing",
+		"shardName": "Verdant",
+		"id": "C11",
+		"apiId": "SHARD_VERDANT"
+	},
+	{
+		"name": "Skeletal Ruler",
+		"shardName": "Chill",
+		"id": "C12",
+		"apiId": "SHARD_CHILL"
+	},
+	{
+		"name": "Monster Bait",
+		"shardName": "Sea Archer",
+		"id": "C14",
+		"apiId": "SHARD_SEA_ARCHER"
+	},
+	{
+		"name": "Arthropod Resistance",
+		"shardName": "Voracious Spider",
+		"id": "C15",
+		"apiId": "SHARD_VORACIOUS_SPIDER"
+	},
+	{
+		"name": "Happy Box",
+		"shardName": "Hideongift",
+		"id": "C16",
+		"apiId": "SHARD_HIDEONGIFT"
+	},
+	{
+		"name": "Yummy",
+		"shardName": "Birries",
+		"id": "C17",
+		"apiId": "SHARD_BIRRIES"
+	},
+	{
+		"name": "Undead Resistance",
+		"shardName": "Tank Zombie",
+		"id": "C18",
+		"apiId": "SHARD_TANK_ZOMBIE"
+	},
+	{
+		"name": "Fig Sharpening",
+		"shardName": "Crow",
+		"id": "C19",
+		"apiId": "SHARD_CROW"
+	},
+	{
+		"name": "Unity is Strength",
+		"shardName": "Tadgang",
+		"id": "C20",
+		"apiId": "SHARD_TADGANG"
+	},
+	{
+		"name": "Ender Resistance",
+		"shardName": "Zealot",
+		"id": "C21",
+		"apiId": "SHARD_ZEALOT"
+	},
+	{
+		"name": "Bucket Lover",
+		"shardName": "Coralot",
+		"id": "C23",
+		"apiId": "SHARD_CORALOT"
+	},
+	{
+		"name": "Tree Lurker",
+		"shardName": "Harpy",
+		"id": "C24",
+		"apiId": "SHARD_HARPY"
+	},
+	{
+		"name": "Visitor Bait",
+		"shardName": "Mudworm",
+		"id": "C25",
+		"apiId": "SHARD_MUDWORM"
+	},
+	{
+		"name": "Midas Touch",
+		"shardName": "Golden Ghoul",
+		"id": "C27",
+		"apiId": "SHARD_GOLDEN_GHOUL"
+	},
+	{
+		"name": "Forest Strength",
+		"shardName": "Azure",
+		"id": "C29",
+		"apiId": "SHARD_AZURE"
+	},
+	{
+		"name": "Blazing Resistance",
+		"shardName": "Bezal",
+		"id": "C30",
+		"apiId": "SHARD_BEZAL"
+	},
+	{
+		"name": "Yog Membrane",
+		"shardName": "Yog",
+		"id": "C33",
+		"apiId": "SHARD_YOG"
+	},
+	{
+		"name": "Owl Friend",
+		"shardName": "Boreal Owl",
+		"id": "C34",
+		"apiId": "SHARD_BOREAL_OWL"
+	},
+	{
+		"name": "Decent Karma",
+		"shardName": "Newt",
+		"id": "C35",
+		"apiId": "SHARD_NEWT"
+	},
+	{
+		"name": "Rotten Pickaxe",
+		"shardName": "Miner Zombie",
+		"id": "C36",
+		"apiId": "SHARD_MINER_ZOMBIE"
+	},
+	{
+		"name": "Wood Elemental",
+		"shardName": "Bramble",
+		"id": "U1",
+		"apiId": "SHARD_BRAMBLE"
+	},
+	{
+		"name": "Water Elemental",
+		"shardName": "Tide",
+		"id": "U2",
+		"apiId": "SHARD_TIDE"
+	},
+	{
+		"name": "Stone Elemental",
+		"shardName": "Quake",
+		"id": "U3",
+		"apiId": "SHARD_QUAKE"
+	},
+	{
+		"name": "Fig Collector",
+		"shardName": "Sparrow",
+		"id": "U4",
+		"apiId": "SHARD_SPARROW"
+	},
+	{
+		"name": "Gold Bait",
+		"shardName": "Goldfin",
+		"id": "U5",
+		"apiId": "SHARD_GOLDFIN"
+	},
+	{
+		"name": "Mountain Climber",
+		"shardName": "Troglobyte",
+		"id": "U6",
+		"apiId": "SHARD_TROGLOBYTE"
+	},
+	{
+		"name": "Bigger Box",
+		"shardName": "Hideoncave",
+		"id": "U7",
+		"apiId": "SHARD_HIDEONCAVE"
+	},
+	{
+		"name": "Good Karma",
+		"shardName": "Salamander",
+		"id": "U8",
+		"apiId": "SHARD_SALAMANDER"
+	},
+	{
+		"name": "Echo of Boxes",
+		"shardName": "Cuboa",
+		"id": "U9",
+		"apiId": "SHARD_CUBOA"
+	},
+	{
+		"name": "Pest Luck",
+		"shardName": "Pest",
+		"id": "U10",
+		"apiId": "SHARD_PEST"
+	},
+	{
+		"name": "Forest Trap",
+		"shardName": "Mossybit",
+		"id": "U11",
+		"apiId": "SHARD_MOSSYBIT"
+	},
+	{
+		"name": "Mana Steal",
+		"shardName": "Rain Slime",
+		"id": "U12",
+		"apiId": "SHARD_RAIN_SLIME"
+	},
+	{
+		"name": "Dragon Shortbow Improvement",
+		"shardName": "Seer",
+		"id": "U15",
+		"apiId": "SHARD_SEER"
+	},
+	{
+		"name": "Mangrove Sharpening",
+		"shardName": "Heron",
+		"id": "U16",
+		"apiId": "SHARD_HERON"
+	},
+	{
+		"name": "Speed",
+		"shardName": "Obsidian Defender",
+		"id": "U18",
+		"apiId": "SHARD_OBSIDIAN_DEFENDER"
+	},
+	{
+		"name": "Lost and Found",
+		"shardName": "Salmon",
+		"id": "U20",
+		"apiId": "SHARD_SALMON"
+	},
+	{
+		"name": "Hunter's Fang",
+		"shardName": "Viper",
+		"id": "U21",
+		"apiId": "SHARD_VIPER"
+	},
+	{
+		"name": "Insect Power",
+		"shardName": "Praying Mantis",
+		"id": "U22",
+		"apiId": "SHARD_PRAYING_MANTIS"
+	},
+	{
+		"name": "Undead Ruler",
+		"shardName": "Zombie Soldier",
+		"id": "U24",
+		"apiId": "SHARD_ZOMBIE_SOLDIER"
+	},
+	{
+		"name": "Strong Arms",
+		"shardName": "Bambuleaf",
+		"id": "U25",
+		"apiId": "SHARD_BAMBULEAF"
+	},
+	{
+		"name": "Life Recovery",
+		"shardName": "Sycophant",
+		"id": "U27",
+		"apiId": "SHARD_SYCOPHANT"
+	},
+	{
+		"name": "Mangrove Collector",
+		"shardName": "Seagull",
+		"id": "U28",
+		"apiId": "SHARD_SEAGULL"
+	},
+	{
+		"name": "Spirit Axe",
+		"shardName": "Ent",
+		"id": "U29",
+		"apiId": "SHARD_ENT"
+	},
+	{
+		"name": "Combo",
+		"shardName": "Soul of the Alpha",
+		"id": "U30",
+		"apiId": "SHARD_SOUL_OF_THE_ALPHA"
+	},
+	{
+		"name": "Strong Legs",
+		"shardName": "Mochibear",
+		"id": "U31",
+		"apiId": "SHARD_MOCHIBEAR"
+	},
+	{
+		"name": "Infection",
+		"shardName": "Magma Slug",
+		"id": "U32",
+		"apiId": "SHARD_MAGMA_SLUG"
+	},
+	{
+		"name": "Arthropod Ruler",
+		"shardName": "Flaming Spider",
+		"id": "U33",
+		"apiId": "SHARD_FLAMING_SPIDER"
+	},
+	{
+		"name": "Kat's Favorite",
+		"shardName": "Kiwi",
+		"id": "U34",
+		"apiId": "SHARD_KIWI"
+	},
+	{
+		"name": "Ender Ruler",
+		"shardName": "Bruiser",
+		"id": "U36",
+		"apiId": "SHARD_BRUISER"
+	},
+	{
+		"name": "Magmatic Ruler",
+		"shardName": "Stridersurfer",
+		"id": "U38",
+		"apiId": "SHARD_STRIDER_SURFER"
+	},
+	{
+		"name": "Battle Frog",
+		"shardName": "Rana",
+		"id": "U39",
+		"apiId": "SHARD_RANA"
+	},
+	{
+		"name": "Infiltration",
+		"shardName": "Termite",
+		"id": "U40",
+		"apiId": "SHARD_TERMITE"
+	},
+	{
+		"name": "Forest Elemental",
+		"shardName": "Sylvan",
+		"id": "R1",
+		"apiId": "SHARD_SYLVAN"
+	},
+	{
+		"name": "Torrent Elemental",
+		"shardName": "Cascade",
+		"id": "R2",
+		"apiId": "SHARD_CASCADE"
+	},
+	{
+		"name": "Lightning Elemental",
+		"shardName": "Bolt",
+		"id": "R3",
+		"apiId": "SHARD_BOLT"
+	},
+	{
+		"name": "Animal Expertise",
+		"shardName": "Bambloom",
+		"id": "R4",
+		"apiId": "SHARD_BAMBLOOM"
+	},
+	{
+		"name": "Frog Legs",
+		"shardName": "Toad",
+		"id": "R5",
+		"apiId": "SHARD_TOAD"
+	},
+	{
+		"name": "Essence of Ice",
+		"shardName": "Glacite Walker",
+		"id": "R6",
+		"apiId": "SHARD_GLACITE_WALKER"
+	},
+	{
+		"name": "Beacon Zealot",
+		"shardName": "Beaconmite",
+		"id": "R7",
+		"apiId": "SHARD_BEACONMITE"
+	},
+	{
+		"name": "Great Karma",
+		"shardName": "Lizard King",
+		"id": "R8",
+		"apiId": "SHARD_LIZARD_KING"
+	},
+	{
+		"name": "Hunter's Pressure",
+		"shardName": "Python",
+		"id": "R9",
+		"apiId": "SHARD_PYTHON"
+	},
+	{
+		"name": "Fancy Visit",
+		"shardName": "Invisibug",
+		"id": "R10",
+		"apiId": "SHARD_INVISIBUG"
+	},
+	{
+		"name": "Moonglade Serendipity",
+		"shardName": "Piranha",
+		"id": "R11",
+		"apiId": "SHARD_PIRANHA"
+	},
+	{
+		"name": "Catacombs Box",
+		"shardName": "Hideongeon",
+		"id": "R13",
+		"apiId": "SHARD_HIDEONGEON"
+	},
+	{
+		"name": "Bone Font",
+		"shardName": "Lapis Skeleton",
+		"id": "R15",
+		"apiId": "SHARD_LAPIS_SKELETON"
+	},
+	{
+		"name": "Crop Bug",
+		"shardName": "Cropeetle",
+		"id": "R16",
+		"apiId": "SHARD_CROPEETLE"
+	},
+	{
+		"name": "Humanoid Ruler",
+		"shardName": "Drowned",
+		"id": "R18",
+		"apiId": "SHARD_DROWNED"
+	},
+	{
+		"name": "Atomized Mithril",
+		"shardName": "Star Sentry",
+		"id": "R21",
+		"apiId": "SHARD_STAR_SENTRY"
+	},
+	{
+		"name": "Kuudra's Box",
+		"shardName": "Hideondra",
+		"id": "R22",
+		"apiId": "SHARD_HIDEONDRA"
+	},
+	{
+		"name": "Dwarven Serendipity",
+		"shardName": "Abyssal Lanternfish",
+		"id": "R23",
+		"apiId": "SHARD_ABYSSAL_LANTERN"
+	},
+	{
+		"name": "Essence of Arthropods",
+		"shardName": "Arachne",
+		"id": "R24",
+		"apiId": "SHARD_ARACHNE"
+	},
+	{
+		"name": "Cookie Eater",
+		"shardName": "Bitbug",
+		"id": "R25",
+		"apiId": "SHARD_BITBUG"
+	},
+	{
+		"name": "Essence of Unliving",
+		"shardName": "Revenant",
+		"id": "R27",
+		"apiId": "SHARD_REVENANT"
+	},
+	{
+		"name": "Crystal Serendipity",
+		"shardName": "Silentdepth",
+		"id": "R29",
+		"apiId": "SHARD_SILENTDEPTH"
+	},
+	{
+		"name": "Deadeye",
+		"shardName": "Skeletor",
+		"id": "R30",
+		"apiId": "SHARD_SKELETOR"
+	},
+	{
+		"name": "Atomized Crystals",
+		"shardName": "Thyst",
+		"id": "R31",
+		"apiId": "SHARD_THYST"
+	},
+	{
+		"name": "Quartz Speed",
+		"shardName": "Quartzfang",
+		"id": "R33",
+		"apiId": "SHARD_QUARTZFANG"
+	},
+	{
+		"name": "Accessory Size",
+		"shardName": "Hideonring",
+		"id": "R34",
+		"apiId": "SHARD_HIDEONRING"
+	},
+	{
+		"name": "Winter's Serendipity",
+		"shardName": "Snowfin",
+		"id": "R35",
+		"apiId": "SHARD_SNOWFIN"
+	},
+	{
+		"name": "Lifeline",
+		"shardName": "Kada Knight",
+		"id": "R36",
+		"apiId": "SHARD_KADA_KNIGHT"
+	},
+	{
+		"name": "Rabbit Crew",
+		"shardName": "Carrot King",
+		"id": "R38",
+		"apiId": "SHARD_CARROT_KING"
+	},
+	{
+		"name": "Breeze",
+		"shardName": "Wither Specter",
+		"id": "R39",
+		"apiId": "SHARD_WITHER_SPECTER"
+	},
+	{
+		"name": "Ignition",
+		"shardName": "Matcho",
+		"id": "R42",
+		"apiId": "SHARD_MATCHO"
+	},
+	{
+		"name": "Pretty Clothes",
+		"shardName": "Ladybug",
+		"id": "R43",
+		"apiId": "SHARD_LADYBUG"
+	},
+	{
+		"name": "Extreme Pressure",
+		"shardName": "Lumisquid",
+		"id": "R44",
+		"apiId": "SHARD_LUMISQUID"
+	},
+	{
+		"name": "Pure Reptile",
+		"shardName": "Crocodile",
+		"id": "R45",
+		"apiId": "SHARD_CROCODILE"
+	},
+	{
+		"name": "Berry Enjoyer",
+		"shardName": "Bullfrog",
+		"id": "R46",
+		"apiId": "SHARD_BULLFROG"
+	},
+	{
+		"name": "Essence of the Forest",
+		"shardName": "Dreadwing",
+		"id": "R49",
+		"apiId": "SHARD_DREADWING"
+	},
+	{
+		"name": "Deep Diving",
+		"shardName": "Joydive",
+		"id": "R50",
+		"apiId": "SHARD_JOYDIVE"
+	},
+	{
+		"name": "Atomized Glacite",
+		"shardName": "Stalagmight",
+		"id": "R51",
+		"apiId": "SHARD_STALAGMIGHT"
+	},
+	{
+		"name": "Fungy Luck",
+		"shardName": "Fungloom",
+		"id": "R52",
+		"apiId": "SHARD_FUNGLOOM"
+	},
+	{
+		"name": "Eelastic",
+		"shardName": "Eel",
+		"id": "R53",
+		"apiId": "SHARD_EEL"
+	},
+	{
+		"name": "Hunter's Grasp",
+		"shardName": "King Cobra",
+		"id": "R54",
+		"apiId": "SHARD_KING_COBRA"
+	},
+	{
+		"name": "Blazing Fortune",
+		"shardName": "Lava Flame",
+		"id": "R56",
+		"apiId": "SHARD_LAVA_FLAME"
+	},
+	{
+		"name": "Essence of Dragons",
+		"shardName": "Draconic",
+		"id": "R57",
+		"apiId": "SHARD_DRACONIC"
+	},
+	{
+		"name": "Battle Experience",
+		"shardName": "Falcon",
+		"id": "R58",
+		"apiId": "SHARD_FALCON"
+	},
+	{
+		"name": "Crimson Serendipity",
+		"shardName": "Inferno Koi",
+		"id": "R59",
+		"apiId": "SHARD_INFERNO_KOI"
+	},
+	{
+		"name": "Essence of Wither",
+		"shardName": "Wither",
+		"id": "R60",
+		"apiId": "SHARD_WITHER"
+	},
+	{
+		"name": "Echo of Sharpening",
+		"shardName": "Gecko",
+		"id": "R61",
+		"apiId": "SHARD_GECKO"
+	},
+	{
+		"name": "Earth Elemental",
+		"shardName": "Terra",
+		"id": "E1",
+		"apiId": "SHARD_TERRA"
+	},
+	{
+		"name": "Frost Elemental",
+		"shardName": "Cryo",
+		"id": "E2",
+		"apiId": "SHARD_CRYO"
+	},
+	{
+		"name": "Wind Elemental",
+		"shardName": "Aero",
+		"id": "E3",
+		"apiId": "SHARD_AERO"
+	},
+	{
+		"name": "Foraging Wisdom",
+		"shardName": "Pandarai",
+		"id": "E4",
+		"apiId": "SHARD_PANDARAI"
+	},
+	{
+		"name": "Excellent Karma",
+		"shardName": "Leviathan",
+		"id": "E5",
+		"apiId": "SHARD_LEVIATHAN"
+	},
+	{
+		"name": "Echo of Resistance",
+		"shardName": "Alligator",
+		"id": "E6",
+		"apiId": "SHARD_ALLIGATOR"
+	},
+	{
+		"name": "Berry Mogul",
+		"shardName": "Fenlord",
+		"id": "E7",
+		"apiId": "SHARD_FENLORD"
+	},
+	{
+		"name": "Hunter's Suppress",
+		"shardName": "Basilisk",
+		"id": "E9",
+		"apiId": "SHARD_BASILISK"
+	},
+	{
+		"name": "Echo of Atomized",
+		"shardName": "Iguana",
+		"id": "E10",
+		"apiId": "SHARD_IGUANA"
+	},
+	{
+		"name": "Lucky Rod",
+		"shardName": "Moray Eel",
+		"id": "E11",
+		"apiId": "SHARD_MORAY_EEL"
+	},
+	{
+		"name": "Dominance",
+		"shardName": "Thorn",
+		"id": "E12",
+		"apiId": "SHARD_THORN"
+	},
+	{
+		"name": "Lunar Power",
+		"shardName": "Lunar Moth",
+		"id": "E13",
+		"apiId": "SHARD_LUNAR_MOTH"
+	},
+	{
+		"name": "Trophy Hunter",
+		"shardName": "Fire Eel",
+		"id": "E14",
+		"apiId": "SHARD_FIRE_EEL"
+	},
+	{
+		"name": "Deep Technique",
+		"shardName": "Bal",
+		"id": "E15",
+		"apiId": "SHARD_BAL"
+	},
+	{
+		"name": "Sack Size",
+		"shardName": "Hideonsack",
+		"id": "E16",
+		"apiId": "SHARD_HIDEONSACK"
+	},
+	{
+		"name": "Fishing Speed",
+		"shardName": "Water Hydra",
+		"id": "E17",
+		"apiId": "SHARD_WATER_HYDRA"
+	},
+	{
+		"name": "Blazing",
+		"shardName": "Flare",
+		"id": "E18",
+		"apiId": "SHARD_FLARE"
+	},
+	{
+		"name": "Sea Wisdom",
+		"shardName": "Sea Emperor",
+		"id": "E20",
+		"apiId": "SHARD_SEA_EMPEROR"
+	},
+	{
+		"name": "Reborn",
+		"shardName": "Prince",
+		"id": "E21",
+		"apiId": "SHARD_PRINCE"
+	},
+	{
+		"name": "Echo of Essence",
+		"shardName": "Komodo Dragon",
+		"id": "E22",
+		"apiId": "SHARD_KOMODO_DRAGON"
+	},
+	{
+		"name": "Faker",
+		"shardName": "Mimic",
+		"id": "E24",
+		"apiId": "SHARD_MIMIC"
+	},
+	{
+		"name": "Shell",
+		"shardName": "Shellwise",
+		"id": "E26",
+		"apiId": "SHARD_SHELLWISE"
+	},
+	{
+		"name": "Warrior",
+		"shardName": "Barbarian Duke X",
+		"id": "E27",
+		"apiId": "SHARD_BARBARIAN_DUKE_X"
+	},
+	{
+		"name": "Why Not More",
+		"shardName": "Toucan",
+		"id": "E28",
+		"apiId": "SHARD_TOUCAN"
+	},
+	{
+		"name": "Matriarch Cubs",
+		"shardName": "Hellwisp",
+		"id": "E29",
+		"apiId": "SHARD_HELLWISP"
+	},
+	{
+		"name": "Echo of Ruler",
+		"shardName": "Caiman",
+		"id": "E30",
+		"apiId": "SHARD_CAIMAN"
+	},
+	{
+		"name": "Solar Power",
+		"shardName": "Firefly",
+		"id": "E31",
+		"apiId": "SHARD_FIREFLY"
+	},
+	{
+		"name": "Echo of Hunter",
+		"shardName": "Sea Serpent",
+		"id": "E32",
+		"apiId": "SHARD_SEA_SERPENT"
+	},
+	{
+		"name": "Veil",
+		"shardName": "Ghost",
+		"id": "E33",
+		"apiId": "SHARD_GHOST"
+	},
+	{
+		"name": "Mana Regeneration",
+		"shardName": "XYZ",
+		"id": "E34",
+		"apiId": "SHARD_XYZ"
+	},
+	{
+		"name": "Hunt Wisdom",
+		"shardName": "Leatherback",
+		"id": "E35",
+		"apiId": "SHARD_LEATHERBACK"
+	},
+	{
+		"name": "Cavern Wisdom",
+		"shardName": "Cavernshade",
+		"id": "E36",
+		"apiId": "SHARD_CAVERNSHADE"
+	},
+	{
+		"name": "Garden Wisdom",
+		"shardName": "Dragonfly",
+		"id": "E37",
+		"apiId": "SHARD_DRAGONFLY"
+	},
+	{
+		"name": "Shadow Elemental",
+		"shardName": "Tenebris",
+		"id": "L1",
+		"apiId": "SHARD_TENEBRIS"
+	},
+	{
+		"name": "Snow Elemental",
+		"shardName": "Blizzard",
+		"id": "L2",
+		"apiId": "SHARD_BLIZZARD"
+	},
+	{
+		"name": "Storm Elemental",
+		"shardName": "Tempest",
+		"id": "L3",
+		"apiId": "SHARD_TEMPEST"
+	},
+	{
+		"name": "Reptiloid",
+		"shardName": "Chameleon",
+		"id": "L4",
+		"apiId": "SHARD_CHAMELEON"
+	},
+	{
+		"name": "Echo of Echoes",
+		"shardName": "Tiamat",
+		"id": "L6",
+		"apiId": "SHARD_TIAMAT"
+	},
+	{
+		"name": "Echo of Wisdom",
+		"shardName": "Wyvern",
+		"id": "L7",
+		"apiId": "SHARD_WYVERN"
+	},
+	{
+		"name": "Cloak Improvement",
+		"shardName": "Tortoise",
+		"id": "L8",
+		"apiId": "SHARD_TORTOISE"
+	},
+	{
+		"name": "Paramount Fortitude",
+		"shardName": "Endstone Protector",
+		"id": "L9",
+		"apiId": "SHARD_ENDSTONE_PROTECTOR"
+	},
+	{
+		"name": "Charmed",
+		"shardName": "Naga",
+		"id": "L11",
+		"apiId": "SHARD_NAGA"
+	},
+	{
+		"name": "Book Wisdom",
+		"shardName": "Lapis Creeper",
+		"id": "L12",
+		"apiId": "SHARD_LAPIS_CREEPER"
+	},
+	{
+		"name": "Wart Eater",
+		"shardName": "Wartybug",
+		"id": "L13",
+		"apiId": "SHARD_WARTYBUG"
+	},
+	{
+		"name": "Payback",
+		"shardName": "Spike",
+		"id": "L14",
+		"apiId": "SHARD_SPIKE"
+	},
+	{
+		"name": "Vitality",
+		"shardName": "Kraken",
+		"id": "L15",
+		"apiId": "SHARD_KRAKEN"
+	},
+	{
+		"name": "Maximal Torment",
+		"shardName": "Taurus",
+		"id": "L17",
+		"apiId": "SHARD_TAURUS"
+	},
+	{
+		"name": "Pity",
+		"shardName": "Daemon",
+		"id": "L18",
+		"apiId": "SHARD_DAEMON"
+	},
+	{
+		"name": "Star Bait",
+		"shardName": "Moltenfish",
+		"id": "L20",
+		"apiId": "SHARD_MOLTENFISH"
+	},
+	{
+		"name": "Help From Above",
+		"shardName": "Shinyfish",
+		"id": "L23",
+		"apiId": "SHARD_SHINYFISH"
+	},
+	{
+		"name": "Wings of Destiny",
+		"shardName": "Ananke",
+		"id": "L24",
+		"apiId": "SHARD_ANANKE"
+	},
+	{
+		"name": "Tuning Box",
+		"shardName": "Hideonbox",
+		"id": "L25",
+		"apiId": "SHARD_HIDEONBOX"
+	},
+	{
+		"name": "Crimson Hook",
+		"shardName": "Lord Jawbus",
+		"id": "L26",
+		"apiId": "SHARD_LORD_JAWBUS"
+	},
+	{
+		"name": "Attack Speed",
+		"shardName": "Burningsoul",
+		"id": "L27",
+		"apiId": "SHARD_BURNINGSOUL"
+	},
+	{
+		"name": "Magic Find",
+		"shardName": "Cinderbat",
+		"id": "L28",
+		"apiId": "SHARD_CINDER_BAT"
+	},
+	{
+		"name": "Hunter's Karma",
+		"shardName": "Megalith",
+		"id": "L29",
+		"apiId": "SHARD_MEGALITH"
+	},
+	{
+		"name": "Elite",
+		"shardName": "Power Dragon",
+		"id": "L30",
+		"apiId": "SHARD_POWER_DRAGON"
+	},
+	{
+		"name": "Pet Wisdom",
+		"shardName": "Condor",
+		"id": "L31",
+		"apiId": "SHARD_CONDOR"
+	},
+	{
+		"name": "Starborn",
+		"shardName": "Sun Fish",
+		"id": "L32",
+		"apiId": "SHARD_SUN_FISH"
+	},
+	{
+		"name": "Veteran",
+		"shardName": "Apex Dragon",
+		"id": "L33",
+		"apiId": "SHARD_APEX_DRAGON"
+	},
+	{
+		"name": "Rare Bird",
+		"shardName": "Dodo",
+		"id": "L34",
+		"apiId": "SHARD_DODO"
+	},
+	{
+		"name": "Unlimited Power",
+		"shardName": "Jormung",
+		"id": "L36",
+		"apiId": "SHARD_JORMUNG"
+	},
+	{
+		"name": "Unlimited Energy",
+		"shardName": "Etherdrake",
+		"id": "L39",
+		"apiId": "SHARD_ETHERDRAKE"
+	},
+	{
+		"name": "Ultimate DNA",
+		"shardName": "Galaxy Fish",
+		"id": "L41",
+		"apiId": "SHARD_GALAXY_FISH"
+	},
+	{
+		"name": "Almighty",
+		"shardName": "Molthorn",
+		"id": "L42",
+		"apiId": "SHARD_MOLTHORN"
+	},
+	{
+		"name": "Echo of Elemental",
+		"shardName": "Starborn",
+		"id": "L44",
+		"apiId": "SHARD_STARBORN"
+	}
+]
