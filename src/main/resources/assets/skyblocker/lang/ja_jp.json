@@ -204,7 +204,6 @@
     "skyblocker.end.hud.protectorLocations.center": "中部",
     "skyblocker.end.hud.protectorLocations.back": "後ろ",
     "skyblocker.bars.config.explanationTitle": "これは何？",
-    "skyblocker.config.foraging.hunting": "狩猟",
     "skyblocker.config.general.itemProtection.slotLockStyle.style.CLASSIC": "クラシック",
     "skyblocker.config.crimsonIsle.extendNetherFog": "ネザーの霧を広げる",
     "key.skyblocker.debug.dumpNearbyEntities": "近くのエンティティをダンプする",

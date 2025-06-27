@@ -613,7 +613,6 @@
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "无效方程",
     "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "暴击伤害渐变颜色的结束色",
     "skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote": "\n\n\n此选项并不适用于所有路径点。某些路径点（例如地牢秘密路径点）有自己的路径点类型选项。",
-    "skyblocker.config.foraging.hunting": "狩猎",
     "skyblocker.config.foraging": "林业",
     "skyblocker.config.helpers.chocolateFactory": "巧克力工厂",
     "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "启用巧克力工厂助手",

@@ -646,7 +646,6 @@
     "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[4]": "\n(изменения вступят в силу, когда обновятся комиссии)",
     "skyblocker.config.dungeons.hideSoulweaverSkulls": "Скрыть черепа от Soulweaver Gloves",
     "skyblocker.config.foraging": "Собирательство",
-    "skyblocker.config.foraging.hunting": "Охота",
     "skyblocker.config.crimsonIsle.extendNetherFog": "Увеличить дальность тумана в аду",
     "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "Когда в Crimson Isle, предотвращает появление тумана поблизости игрока, как это происходит в ванильных незер биомах.",
     "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Подсвечивает правильные рычаги для нажатия в красный",
