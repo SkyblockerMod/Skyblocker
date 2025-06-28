@@ -418,7 +418,6 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 			object.addProperty("y", gridY);
 			object.addProperty("size", size);
 		} else {
-			System.out.println(type.name() + " x " + x + " y " + y + " size " + width);
 			object.addProperty("size", width);
 			object.addProperty("x", x);
 			object.addProperty("y", y);
