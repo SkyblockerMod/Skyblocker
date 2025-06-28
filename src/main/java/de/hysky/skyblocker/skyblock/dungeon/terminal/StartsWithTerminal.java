@@ -12,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -36,7 +37,7 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
         String prefix = groups[0];
         if (SkyblockerConfigManager.get().dungeons.terminals.solverAccessibility) {
             // No highlights; items not matching the prefix will be hidden instead.
-            return java.util.Collections.emptyList();
+            return Collections.emptyList();
         }
 
         List<ColorHighlight> highlights = new ArrayList<>();
