@@ -35,11 +35,11 @@ public class HuntingCategory {
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightHideongift"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightHideongift.@Tooltip")))
-								.binding(defaults.hunting.huntingMobs.highlightHideongift,
-										() -> config.hunting.huntingMobs.highlightHideongift,
-										newValue -> config.hunting.huntingMobs.highlightHideongift = newValue)
+								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightHideonleaf"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip")))
+								.binding(defaults.hunting.huntingMobs.highlightHideonleaf,
+										() -> config.hunting.huntingMobs.highlightHideonleaf,
+										newValue -> config.hunting.huntingMobs.highlightHideonleaf = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())

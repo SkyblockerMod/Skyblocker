@@ -525,8 +525,8 @@
   "skyblocker.config.hunting.huntingMobs": "Hunting Mobs",
   "skyblocker.config.hunting.huntingMobs.silencePhantoms": "Silence Phantoms",
   "skyblocker.config.hunting.huntingMobs.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while on Galatea.",
-  "skyblocker.config.hunting.huntingMobs.highlightHideongift": "Highlight Hideongift",
-  "skyblocker.config.hunting.huntingMobs.highlightHideongift.@Tooltip": "Highlights Hideongifts in yellow to make them easier to see.",
+  "skyblocker.config.hunting.huntingMobs.highlightHideonleaf": "Highlight Hideonleaf",
+  "skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip": "Highlights Hideonleaves in yellow to make them easier to see.",
 
   "skyblocker.config.chat": "Chat",
 
