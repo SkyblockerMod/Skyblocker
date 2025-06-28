@@ -117,5 +117,14 @@
     "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Tıklanması gereken doğru butonu yeşil renkle, bir sonraki butonu ise sarı renkle vurgular.",
     "argument.color.rgb.incomplete": "Tamamlanmamış (3 renk değeri bekleniyor).",
     "argument.color.hex.invalidString": "Hex değeri tam olarak 6 karakter uzunluğunda olmalı, %d karakter bulundu.",
-    "argument.color.hex.invalidChar": "Hex değeri için uygunsuz karakter: %s. Uygun karakterler: [0-9a-fA-F]"
+    "argument.color.hex.invalidChar": "Hex değeri için uygunsuz karakter: %s. Uygun karakterler: [0-9a-fA-F]",
+    "key.wikiLookup.official": "Hypixel Wiki'sinde arat",
+    "key.wikiLookup.fandom": "Fandom Wiki'sinde arat",
+    "text.skyblocker.confirm": "Onayla",
+    "text.skyblocker.reset": "Sıfırla",
+    "text.skyblocker.config": "Ayarları Aç",
+    "text.skyblocker.source": "Kaynak",
+    "key.itemPriceLookup": "Bazaar'da arat",
+    "key.itemPriceRefresh": "Bazaar'ı yenile",
+    "text.skyblocker.undo": "Geri al"
 }

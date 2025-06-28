@@ -78,12 +78,19 @@
     "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "Perlen Wegpunkte",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Gefahrenwarnung",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Zeigt eine Warnung, wenn du in Gefahr von TNT oder tentakel schlag bist. Die Farbe der Warnung passt sich der Gefahrenstufe an!",
-    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra strahlen",
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra-Leuchten",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Kuudra wird dunkel Orange umrandet.",
     "key.skyblocker.debug.dumpNearbyEntities": "Objekte in der Nähe entsorgen",
     "skyblocker.config.debug": "Debuggen",
     "skyblocker.config.debug.showInvisibleArmorStands": "Unsichtbare Rüstungsständer anzeigen",
     "skyblocker.itemTooltip.nullMessage": "§b[§6Skyblocker§b] §cItem-Preise auf dem Tooltip werden innerhalb der nächsten 60 Sekunden aktualisiert. Wenn nicht, überprüfe latest.log",
     "skyblocker.itemTooltip.noData": "§cKeine Daten",
-    "key.wikiLookup.official": "Nachschlagen im Hypixel Wiki"
+    "key.wikiLookup.official": "Nachschlagen im Hypixel Wiki",
+    "key.skyblocker.debug.dumpHoveredItem": "Gehaltenes Item ablegen",
+    "key.wikiLookup.fandom": "Fandom-Wiki-Suche",
+    "text.skyblocker.dead": "Tot",
+    "skyblocker.config.crimsonIsle.kuudra.safeSpotWaypoints": "Sichere-Punkte-Wegpunkte",
+    "text.skyblocker.offline": "Offline",
+    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Warnschwelle für Pfeilgift",
+    "skyblocker.config.crimsonIsle.kuudra.suppliesAndFuelWaypointType": "Versorgung-/Treibstoff-Wegpunkttyp"
 }
