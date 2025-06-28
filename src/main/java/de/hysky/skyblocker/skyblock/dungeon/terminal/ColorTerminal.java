@@ -45,8 +45,20 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
                 return Collections.emptyList();
             }
         }
-        // No highlights; items not matching the color will be hidden instead.
-        return Collections.emptyList();
+
+        if (SkyblockerConfigManager.get().dungeons.terminals.solverAccessibility) {
+            // No highlights; items not matching the color will be hidden instead.
+            return Collections.emptyList();
+        }
+
+        List<ColorHighlight> highlights = new ArrayList<>();
+        for (Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
+            ItemStack itemStack = slot.getValue();
+            if (!itemStack.hasGlint() && targetColor.equals(itemColor.get(itemStack.getItem()))) {
+                highlights.add(ColorHighlight.green(slot.getIntKey()));
+            }
+        }
+        return highlights;
     }
 
     @Override
@@ -58,11 +70,14 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
         return false;
     }
 
-	@Override
-	public boolean shouldDisplayStack(int slotIndex, ItemStack stack) {
-		if (slotIndex >= 54) return true; // rows * 9
-		return targetColor == null || targetColor.equals(itemColor.get(stack.getItem()));
-	}
+    @Override
+    public boolean shouldDisplayStack(int slotIndex, ItemStack stack) {
+        if (!SkyblockerConfigManager.get().dungeons.terminals.solverAccessibility) {
+            return true;
+        }
+        if (slotIndex >= 54) return true; // rows * 9
+        return targetColor == null || targetColor.equals(itemColor.get(stack.getItem()));
+    }
     static {
         colorFromName = new HashMap<>();
         for (DyeColor color : DyeColor.values())

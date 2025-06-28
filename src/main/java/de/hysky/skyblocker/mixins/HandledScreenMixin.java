@@ -103,16 +103,21 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@Unique
 	private List<QuickNavButton> quickNavButtons;
 
-	@Unique
-	private boolean skyblocker$shouldDisplayStack = true;
-	@Unique
-	private boolean skyblocker$isSolverSlot(Slot slot, ContainerSolver solver) {
-		if (solver instanceof ContainerAndInventorySolver) return true;
-		if (handler instanceof GenericContainerScreenHandler generic) {
-			return slot.id < generic.getRows() * 9;
-		}
-		return slot.inventory != (client != null ? client.player.getInventory() : null);
-	}
+        @Unique
+        private boolean skyblocker$shouldDisplayStack = true;
+        @Unique
+        private boolean skyblocker$isSolverSlot(Slot slot, ContainerSolver solver) {
+                if (solver instanceof ContainerAndInventorySolver) return true;
+                if (handler instanceof GenericContainerScreenHandler generic) {
+                        return slot.id < generic.getRows() * 9;
+                }
+                return slot.inventory != (client != null ? client.player.getInventory() : null);
+        }
+
+        @Unique
+        private boolean skyblocker$accessibilityEnabled() {
+                return SkyblockerConfigManager.get().dungeons.terminals.solverAccessibility;
+        }
 
 	protected HandledScreenMixin(Text title) {
 		super(title);
@@ -232,12 +237,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	private ItemStack skyblocker$modifyTooltipDisplayStack(ItemStack stack) {
 		ContainerSolver solver = ContainerSolverManager.getCurrentSolver();
 		stack = skyblocker$experimentSolvers$getStack(focusedSlot, stack, solver);
-		if (solver instanceof StackDisplayModifier modifier && focusedSlot != null && skyblocker$isSolverSlot(focusedSlot, solver)) {
-			skyblocker$shouldDisplayStack = modifier.shouldDisplayStack(focusedSlot.id, stack);
-			stack = modifier.modifyDisplayStack(focusedSlot.id, stack);
-		} else {
-			skyblocker$shouldDisplayStack = true;
-		}
+                if (skyblocker$accessibilityEnabled() && solver instanceof StackDisplayModifier modifier && focusedSlot != null && skyblocker$isSolverSlot(focusedSlot, solver)) {
+                        skyblocker$shouldDisplayStack = modifier.shouldDisplayStack(focusedSlot.id, stack);
+                        stack = modifier.modifyDisplayStack(focusedSlot.id, stack);
+                } else {
+                        skyblocker$shouldDisplayStack = true;
+                }
 		return stack;
 	}
 
@@ -245,12 +250,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	private ItemStack skyblocker$modifyDisplayStack(ItemStack stack, @Local(argsOnly = true) Slot slot) {
 		ContainerSolver solver = ContainerSolverManager.getCurrentSolver();
 		stack = skyblocker$experimentSolvers$getStack(slot, stack, solver);
-		if (solver instanceof StackDisplayModifier modifier && skyblocker$isSolverSlot(slot, solver)) {
-			skyblocker$shouldDisplayStack = modifier.shouldDisplayStack(slot.getIndex(), stack);
-			stack = modifier.modifyDisplayStack(slot.getIndex(), stack);
-		} else {
-			skyblocker$shouldDisplayStack = true;
-		}
+                if (skyblocker$accessibilityEnabled() && solver instanceof StackDisplayModifier modifier && skyblocker$isSolverSlot(slot, solver)) {
+                        skyblocker$shouldDisplayStack = modifier.shouldDisplayStack(slot.getIndex(), stack);
+                        stack = modifier.modifyDisplayStack(slot.getIndex(), stack);
+                } else {
+                        skyblocker$shouldDisplayStack = true;
+                }
 		return stack;
 	}
 

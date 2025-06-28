@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon.terminal;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public final class StartsWithTerminal extends SimpleContainerSolver implements TerminalSolver {
+public final class StartsWithTerminal extends SimpleContainerSolver implements TerminalSolver, StackDisplayModifier {
 	private final Int2ObjectOpenHashMap<ItemState> trackedItemStates = new Int2ObjectOpenHashMap<>();
 	private int lastKnownScreenId = Integer.MIN_VALUE;
 
@@ -32,26 +33,31 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 		ContainerSolver.trimEdges(slots, 6);
 		setupState(slots);
 
-		String prefix = groups[0];
-		List<ColorHighlight> highlights = new ArrayList<>();
+        String prefix = groups[0];
+        if (SkyblockerConfigManager.get().dungeons.terminals.solverAccessibility) {
+            // No highlights; items not matching the prefix will be hidden instead.
+            return java.util.Collections.emptyList();
+        }
 
-		for (Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
-			ItemStack stack = slot.getValue();
-			ItemState state = trackedItemStates.getOrDefault(slot.getIntKey(), ItemState.DEFAULT);
+        List<ColorHighlight> highlights = new ArrayList<>();
 
-			//If the item hasn't been marked as clicked and it matches the starts with condition
-			//We keep track of the clicks ourselves instead of using the enchantment glint because some items like nether stars have the glint override component by default
-			//so even if Hypixel tries to change that to the same thing it was before (true) it won't work and the solver would permanently consider the item to be clicked
-			//even if it hasn't been yet
-			if (!state.clicked() && stack.getName().getString().startsWith(prefix)) {
-				highlights.add(ColorHighlight.green(slot.getIntKey()));
-			}
-		}
-		return highlights;
+        for (Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
+            ItemStack stack = slot.getValue();
+            ItemState state = trackedItemStates.getOrDefault(slot.getIntKey(), ItemState.DEFAULT);
+
+            //If the item hasn't been marked as clicked and it matches the starts with condition
+            //We keep track of the clicks ourselves instead of using the enchantment glint because some items like nether stars have the glint override component by default
+            //so even if Hypixel tries to change that to the same thing it was before (true) it won't work and the solver would permanently consider the item to be clicked
+            //even if it hasn't been yet
+            if (!state.clicked() && stack.getName().getString().startsWith(prefix)) {
+                highlights.add(ColorHighlight.green(slot.getIntKey()));
+            }
+        }
+        return highlights;
 	}
 
 	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
+    public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
 		//Some random glass pane was clicked or something
 		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return false;
 
@@ -72,8 +78,18 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 			return shouldBlockIncorrectClicks();
 		}
 
-		return false;
-	}
+        return false;
+    }
+
+    @Override
+    public boolean shouldDisplayStack(int slotIndex, ItemStack stack) {
+        if (!SkyblockerConfigManager.get().dungeons.terminals.solverAccessibility) {
+            return true;
+        }
+        if (slotIndex >= 54) return true; // rows * 9
+        String prefix = groups[0];
+        return stack.getName().getString().startsWith(prefix);
+    }
 
 	//We only set up the state when all items aren't null or empty. This prevents the state from being reset due to unsent items or server lag spikes/bad TPS (fix ur servers Hypixel)
 	private void setupState(Int2ObjectMap<ItemStack> usefulSlots) {
