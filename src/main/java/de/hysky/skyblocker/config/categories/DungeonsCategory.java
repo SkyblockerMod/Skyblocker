@@ -321,6 +321,13 @@ public class DungeonsCategory {
                                         newValue -> config.dungeons.terminals.solveStartsWith = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.terminals.solveSameColor"))
+								.binding(defaults.dungeons.terminals.solveSameColor,
+										() -> config.dungeons.terminals.solveSameColor,
+										newValue -> config.dungeons.terminals.solveSameColor = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.terminals.blockIncorrectClicks"))
                                 .binding(defaults.dungeons.terminals.blockIncorrectClicks,

@@ -248,6 +248,10 @@ public class CroesusProfit extends SimpleContainerSolver {
         map.put("Watcher Disc", "DUNGEON_DISC_3");
         map.put("Old Disc", "DUNGEON_DISC_4");
         map.put("Necron Disc", "DUNGEON_DISC_5");
+
+        map.put("Wither", "SHARD_WITHER");
+        map.put("Apex Dragon", "SHARD_APEX_DRAGON");
+        map.put("Power Dragon", "SHARD_POWER_DRAGON");
     });
 }
 

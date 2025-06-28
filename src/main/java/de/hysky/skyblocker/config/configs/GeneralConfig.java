@@ -231,6 +231,9 @@ public class GeneralConfig {
         @SerialEntry
         public SlotLockStyle slotLockStyle = SlotLockStyle.FANCY;
 
+		@SerialEntry
+		public boolean displayChatNotification = true;
+
         @SerialEntry
         public boolean protectValuableConsumables = true;
     }
