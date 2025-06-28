@@ -67,7 +67,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Hunting box helper**
 - **Hunting Mobs features**
     - Silence Phantoms
-    - Highlight Hideongift
+    - Highlight Hideonleaves
 - **Hunting Box Shard Prices**
 
 ### Kuudra Features:

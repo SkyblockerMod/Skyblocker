@@ -18,6 +18,7 @@
 * Calculator improvements
 * Config for config button and customize button
 * Add attribute list for bazaar price support
+* Add new shards to dungeon profit calculators
 * Sea Lumies Highlighter improvements
 * Fix ARGBTextInput crash when pasting
 * Fix Item Pickup Widget Network Protocol Error Disconnect
