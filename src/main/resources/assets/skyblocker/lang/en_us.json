@@ -405,6 +405,13 @@
   "skyblocker.config.general.specialEffects.rareDyeDropEffects": "Rare Dye Drop Effects",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "Adds a special visual effect triggered upon dropping a rare dye!",
 
+  "skyblocker.config.general.backup": "Config Backups",
+  "skyblocker.config.general.backup.manage": "Manage Backups...",
+  "skyblocker.config.backup.title": "Config Backups",
+  "skyblocker.config.backup.restore": "Restore",
+  "skyblocker.config.backup.confirm.title": "Restore Backup",
+  "skyblocker.config.backup.confirm.text": "Restore backup %s? This will overwrite your current config.",
+
   "skyblocker.config.general.updateChannel": "Update Channel",
   "skyblocker.config.general.updateChannel.@Tooltip": "Choose between receiving notifications for releases, for both releases and betas, or for releases; betas; and alphas.",
   "skyblocker.config.general.updateChannel.channel.ALPHA": "Alpha",
