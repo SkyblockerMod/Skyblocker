@@ -34,12 +34,11 @@ import java.util.regex.Pattern;
 
 public class SweepOverlay {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SweepOverlay.class);
-	private static final MinecraftClient client = MinecraftClient.getInstance();
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static float[] colorComponents;
 	private static final int MAX_WOOD_CAP = 35;
 	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile("Sweep:\\s*(?:∮|§[0-9a-fk-or])*(\\d+)");
 	private static boolean sweepStatNoticeShown = false;
-	private static final HashMap<Block, Float> TOUGHNESS_MAP = new HashMap<>();
 	private static final Set<String> VALID_AXES = Set.of(
 			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE",
 			"ROOKIE_AXE", "PROMISING_AXE", "SWEET_AXE", "EFFICIENT_AXE"
@@ -62,12 +61,12 @@ public class SweepOverlay {
 			new BlockPos(1, 1, -1),   new BlockPos(1, 1, 0),   new BlockPos(1, 1, 1)
 	};
 
-	static {
-		TOUGHNESS_MAP.put(Blocks.STRIPPED_SPRUCE_LOG, 7.0f);
-		TOUGHNESS_MAP.put(Blocks.STRIPPED_SPRUCE_WOOD, 7.0f);
-		TOUGHNESS_MAP.put(Blocks.MANGROVE_LOG, 50.0f);
-		TOUGHNESS_MAP.put(Blocks.MANGROVE_WOOD, 50.0f);
-	}
+	private static final Map<Block, Float> TOUGHNESS_MAP = Map.of(
+			Blocks.STRIPPED_SPRUCE_LOG, 7.0f,
+			Blocks.STRIPPED_SPRUCE_WOOD, 7.0f,
+			Blocks.MANGROVE_LOG, 50.0f,
+			Blocks.MANGROVE_WOOD, 50.0f
+	);
 
 	@Init
 	public static void init() {
@@ -92,11 +91,11 @@ public class SweepOverlay {
 	 */
 	private static void render(WorldRenderContext wrc) {
 		var config = SkyblockerConfigManager.get().foraging.sweepOverlay;
-		if (!isValidLocation() || !config.enableSweepOverlay || client.player == null || client.world == null) {
+		if (!isValidLocation() || !config.enableSweepOverlay || CLIENT.player == null || CLIENT.world == null) {
 			return;
 		}
 
-		ItemStack heldItem = client.player.getMainHandStack();
+		ItemStack heldItem = CLIENT.player.getMainHandStack();
 		String itemId = ItemUtils.getItemId(heldItem);
 		boolean isValidAxe = VALID_AXES.contains(itemId);
 		boolean isThrowableAxe = THROWABLE_AXES.contains(itemId);
@@ -107,19 +106,19 @@ public class SweepOverlay {
 		BlockHitResult blockHitResult = null;
 		boolean isThrown = false;
 
-		if (isValidAxe && client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK
-				&& client.crosshairTarget instanceof BlockHitResult hitResult) {
+		if (isValidAxe && CLIENT.crosshairTarget != null && CLIENT.crosshairTarget.getType() == HitResult.Type.BLOCK
+				&& CLIENT.crosshairTarget instanceof BlockHitResult hitResult) {
 			blockHitResult = hitResult;
 		} else if (isThrowableAxe && config.enableThrownAbilityOverlay && !ItemCooldowns.isOnCooldown(heldItem)) {
 			// Cast a ray up to 50 blocks for throwable axes
 			// #todo gravity prediction
-			Vec3d start = client.player.getCameraPosVec(1.0f);
-			Vec3d look = client.player.getRotationVec(1.0f);
+			Vec3d start = CLIENT.player.getCameraPosVec(1.0f);
+			Vec3d look = CLIENT.player.getRotationVec(1.0f);
 			Vec3d end = start.add(look.multiply(50.0));
 			RaycastContext context = new RaycastContext(
-					start, end, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, client.player
+					start, end, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, CLIENT.player
 			);
-			HitResult hitResult = client.world.raycast(context);
+			HitResult hitResult = CLIENT.world.raycast(context);
 			if (hitResult.getType() == HitResult.Type.BLOCK && hitResult instanceof BlockHitResult rayHitResult) {
 				blockHitResult = rayHitResult;
 				isThrown = true;
@@ -127,7 +126,7 @@ public class SweepOverlay {
 		}
 
 		if (blockHitResult != null) {
-			BlockState state = client.world.getBlockState(blockHitResult.getBlockPos());
+			BlockState state = CLIENT.world.getBlockState(blockHitResult.getBlockPos());
 			if (isLog(state)) {
 				renderConnectedLogs(wrc, blockHitResult, state, isThrown);
 			}
@@ -163,7 +162,7 @@ public class SweepOverlay {
 	 * @return the Sweep stat as a float
 	 */
 	private static float getSweepStat() {
-		if (client.player == null) {
+		if (CLIENT.player == null) {
 			return 0.0f;
 		}
 
@@ -180,8 +179,8 @@ public class SweepOverlay {
 				}
 			}
 		}
-		if (!sweepStatNoticeShown && Utils.isInPark() && client.player != null) {
-			client.player.sendMessage(Constants.PREFIX.get().append(
+		if (!sweepStatNoticeShown && Utils.isInPark() && CLIENT.player != null) {
+			CLIENT.player.sendMessage(Constants.PREFIX.get().append(
 							Text.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
 									.formatted(Formatting.RED)),
 					false);
@@ -232,7 +231,7 @@ public class SweepOverlay {
 	 */
 	private static void renderConnectedLogs(WorldRenderContext wrc, BlockHitResult blockHitResult, BlockState state, boolean isThrown) {
 		BlockPos startPos = blockHitResult.getBlockPos();
-		World world = client.world;
+		World world = CLIENT.world;
 		float sweepStat = getSweepStat();
 		if (sweepStat <= 0) return;
 
