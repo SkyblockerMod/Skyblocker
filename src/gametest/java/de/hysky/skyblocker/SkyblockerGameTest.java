@@ -41,7 +41,7 @@ public class SkyblockerGameTest implements FabricClientGameTest {
 					bar.gridX = counts[type.getDefaultAnchor().ordinal()]++;
 				});
 				FancyStatusBars.placeBarsInPositioner();
-				FancyStatusBars.updatePositions();
+				FancyStatusBars.updatePositions(false);
 				return curConfig;
 			});
 
@@ -53,7 +53,7 @@ public class SkyblockerGameTest implements FabricClientGameTest {
 			context.runOnClient(client -> {
 				config.forEach(pair -> FancyStatusBars.statusBars.get(pair.key()).loadFromJson(pair.value()));
 				FancyStatusBars.placeBarsInPositioner();
-				FancyStatusBars.updatePositions();
+				FancyStatusBars.updatePositions(false);
 			});
 		}
 	}

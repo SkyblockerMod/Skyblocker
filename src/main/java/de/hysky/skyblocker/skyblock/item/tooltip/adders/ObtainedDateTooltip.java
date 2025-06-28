@@ -11,15 +11,20 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+
+import com.mojang.logging.LogUtils;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.Locale;
 
 public class ObtainedDateTooltip extends SimpleTooltipAdder {
+	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final DateTimeFormatter OBTAINED_DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d, yyyy").withZone(ZoneId.systemDefault()).localizedBy(Locale.ENGLISH);
 	private static final DateTimeFormatter OLD_OBTAINED_DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yy h:m a").withZone(ZoneId.of("UTC")).localizedBy(Locale.ENGLISH);
 
@@ -50,7 +55,11 @@ public class ObtainedDateTooltip extends SimpleTooltipAdder {
 		}
 
 		if (customData != null && customData.get("timestamp") instanceof NbtString(String value)) {
-			return OLD_OBTAINED_DATE_FORMAT.parse(value);
+			try {
+				return OLD_OBTAINED_DATE_FORMAT.parse(value);
+			} catch (DateTimeParseException e) {
+				LOGGER.error("[Skyblocker ObtainedDateTooltip] Failed to parse date: {}", value, e);
+			}
 		}
 
 		return null;

@@ -7,6 +7,7 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
@@ -46,6 +47,7 @@ public class ChestValue {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChestValue.class);
 	private static final Set<String> DUNGEON_CHESTS = Set.of("Wood Chest", "Gold Chest", "Diamond Chest", "Emerald Chest", "Obsidian Chest", "Bedrock Chest");
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence x(?<amount>\\d+)");
+	private static final Pattern SHARD_PATTERN = Pattern.compile("[A-Za-z ]+ Shard x(?<amount>\\d+)");
 	private static final Pattern MINION_PATTERN = Pattern.compile("Minion (I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII)$");
 	private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
 
@@ -129,6 +131,37 @@ public class ChestValue {
 
 						//Add the price of the essence to the profit
 						profit += priceData.leftDouble() * amount;
+
+						continue;
+					}
+				}
+
+				//Shard Prices
+				if (name.contains("Shard")) {
+					Matcher matcher = SHARD_PATTERN.matcher(name);
+
+					if (matcher.matches()) {
+						//I do not believe it is possible to get more than 1 in a single chest but in the interest of
+						//future-proofing we will handle it anyways
+						int shards = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
+						String shardApiId = switch (name) {
+							case String s when s.startsWith("Wither") -> "SHARD_WITHER";
+							case String s when s.startsWith("Apex Dragon") -> "SHARD_APEX_DRAGON";
+							case String s when s.startsWith("Power Dragon") -> "SHARD_POWER_DRAGON";
+							default -> "";
+						};
+
+						if (shardApiId.isEmpty()) {
+							LOGGER.warn("[Skyblocker Profit Calculator] Encountered unknown shard {}", name);
+							continue;
+						}
+
+						DoubleBooleanPair priceData = ItemUtils.getItemPrice(shardApiId);
+
+						if (!priceData.rightBoolean()) hasIncompleteData = true;
+
+						//Add the price of the shard to the profit
+						profit += priceData.leftDouble() * shards;
 
 						continue;
 					}

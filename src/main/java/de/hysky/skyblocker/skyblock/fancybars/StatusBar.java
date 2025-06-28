@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
@@ -30,64 +32,34 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
 	private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
 
-
-   /* public static final Codec<StatusBar> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    Codec.INT.fieldOf("size").forGetter(bar -> bar.size),
-                    Codec.INT.fieldOf("x").forGetter(bar -> bar.gridX),
-                    Codec.INT.fieldOf("y").forGetter(bar -> bar.gridY),
-                    Codec.STRING.listOf().fieldOf("colors").xmap(
-                                    strings -> strings.stream().map(s -> Integer.parseInt(s, 16)).map(Color::new).toArray(Color[]::new),
-                                    colors -> Arrays.stream(colors).map(color -> Integer.toHexString(color.getRGB())).toList())
-                            .forGetter(StatusBar::getColors),
-                    Codec.STRING.optionalFieldOf("text_color").xmap(
-                                    s -> {
-                                        if (s.isPresent()) {
-                                            return Optional.of(new Color(Integer.parseInt(s.get(), 16)));
-                                        } else return Optional.empty();
-                                    },
-                                    o -> o.map(object -> Integer.toHexString(((Color) object).getRGB())))
-                            .forGetter(bar -> {
-                                if (bar.getTextColor() != null) {
-                                    return Optional.of(bar.getTextColor());
-                                } else return Optional.empty();
-                            }),
-                    Codec.BOOL.optionalFieldOf("show_text", true).forGetter(StatusBar::showText),
-                    Codec.STRING.fieldOf("icon_position").xmap(
-                            IconPosition::valueOf,
-                            Enum::toString
-                    ).forGetter(bar -> bar.iconPosition)
-            )
-
-            .apply(instance, ));*/
-
 	private final Identifier icon;
+	private final StatusBarType type;
+	private Color[] colors;
+	private @Nullable Color textColor;
 
 	public Color[] getColors() {
 		return colors;
 	}
 
 	public boolean hasOverflow() {
-		return hasOverflow;
+		return type.hasOverflow();
+	}
+
+	public boolean hasMax() {
+		return type.hasMax();
 	}
 
 	public @Nullable Color getTextColor() {
 		return textColor;
 	}
 
-	private Color[] colors;
-	private final boolean hasOverflow;
-
 	public void setTextColor(@Nullable Color textColor) {
 		this.textColor = textColor;
 	}
 
-	private @Nullable Color textColor;
-
 	public Text getName() {
-		return name;
+		return type.getName();
 	}
-
-	private final Text name;
 
 	private @Nullable OnClick onClick = null;
 	public int gridX = 0;
@@ -100,8 +72,14 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	public float fill = 0;
 	public float overflowFill = 0;
 	public boolean inMouse = false;
+	/**
+	 * Used to hide the bar dynamically, like the oxygen bar
+	 */
+	public boolean visible = true;
 
 	private Object value = "???";
+	private @Nullable Object max = "???";
+	private @Nullable Object overflow = "???";
 
 	private int x = 0;
 	private int y = 0;
@@ -109,16 +87,14 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	private IconPosition iconPosition = IconPosition.LEFT;
 	private TextPosition textPosition = TextPosition.BAR_CENTER;
 
-	public StatusBar(Identifier icon, Color[] colors, boolean hasOverflow, @Nullable Color textColor, Text name) {
-		this.icon = icon;
-		this.colors = colors;
-		this.hasOverflow = hasOverflow;
-		this.textColor = textColor;
-		this.name = name;
-	}
+	public boolean showMax = false;
+	public boolean showOverflow = false;
 
-	public StatusBar(Identifier icon, Color[] colors, boolean hasOverflow, @Nullable Color textColor) {
-		this(icon, colors, hasOverflow, textColor, Text.empty());
+	public StatusBar(StatusBarType type) {
+		this.icon = Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/" + type.asString());
+		this.colors = type.getColors();
+		this.textColor = type.getTextColor();
+		this.type = type;
 	}
 
 	protected int transparency(int color) {
@@ -152,15 +128,21 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
 
 
-		if (hasOverflow && overflowFill > 0) {
+		if (hasOverflow() && overflowFill > 0) {
 			RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
 		}
 	}
 
-	public void updateValues(float fill, float overflowFill, Object text) {
+	public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
 		this.value = text;
 		this.fill = fill;
 		this.overflowFill = overflowFill;
+		this.max = max;
+		this.overflow = overflow;
+	}
+
+	public void updateWithResource(StatusBarTracker.Resource resource) {
+		updateValues(resource.value() / (float) resource.max(), resource.overflow() / (float) resource.max(), resource.value(), resource.max(), resource.overflow() > 0 ? resource.overflow() : null);
 	}
 
 	public void renderText(DrawContext context) {
@@ -168,7 +150,18 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		int barWith = iconPosition.equals(IconPosition.OFF) ? width : width - 10;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? x + 11 : x;
-		String text = this.value.toString();
+		String stringValue = this.value.toString();
+		MutableText text = Text.literal(stringValue).styled(style -> style.withColor((textColor == null ? colors[0] : textColor).getRGB()));
+
+		if (hasMax() && showMax && max != null) {
+			text.append("/").append(max.toString());
+		}
+		if (hasOverflow() && showOverflow && overflow != null) {
+			MutableText literal = Text.literal(" + ").styled(style -> style.withColor(colors[1].getRGB()));
+			literal.append(overflow.toString());
+			text.append(literal);
+		}
+
 		int textWidth = textRenderer.getWidth(text);
 		int x;
 		switch (textPosition) {
@@ -180,10 +173,10 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		int y = this.y - 3;
 
 		context.draw(consumers -> textRenderer.drawWithOutline(
-				Text.of(text).asOrderedText(),
+				text.asOrderedText(),
 				x,
 				y,
-				transparency((textColor == null ? colors[0] : textColor).getRGB()),
+				transparency(-1),
 				transparency(0),
 				context.getMatrices().peek().getPositionMatrix(),
 				consumers,
@@ -294,7 +287,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
-				.append("name", name)
+				.append("name", getName())
 				.append("gridX", gridX)
 				.append("gridY", gridY)
 				.append("size", size)
@@ -370,7 +363,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		// Make colors optional, so it's easy to reset to default
 		if (object.has("colors")) {
 			JsonArray colors1 = object.get("colors").getAsJsonArray();
-			if (colors1.size() < 2 && hasOverflow) {
+			if (colors1.size() < 2 && hasOverflow()) {
 				throw new IllegalStateException("Missing second color of bar that has overflow");
 			}
 			Color[] newColors = new Color[colors1.size()];
@@ -393,6 +386,8 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		// backwards compat teehee
 		if (object.has("show_text")) this.textPosition = object.get("show_text").getAsBoolean() ? TextPosition.BAR_CENTER : TextPosition.OFF;
 		if (object.has("text_position")) this.textPosition = TextPosition.valueOf(object.get("text_position").getAsString().trim());
+		if (object.has("show_max")) this.showMax = object.get("show_max").getAsBoolean();
+		if (object.has("show_overflow")) this.showOverflow = object.get("show_overflow").getAsBoolean();
 
 	}
 
@@ -414,17 +409,15 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		object.addProperty("y", gridY);
 		object.addProperty("icon_position", iconPosition.asString());
 		object.addProperty("text_position", textPosition.asString());
+		object.addProperty("show_max", showMax);
+		object.addProperty("show_overflow", showOverflow);
 		return object;
 	}
 
 	public static class ManaStatusBar extends StatusBar {
 
-		public ManaStatusBar(Identifier icon, Color[] colors, boolean hasOverflow, @Nullable Color textColor, Text name) {
-			super(icon, colors, hasOverflow, textColor, name);
-		}
-
-		public ManaStatusBar(Identifier icon, Color[] colors, boolean hasOverflow, @Nullable Color textColor) {
-			super(icon, colors, hasOverflow, textColor);
+		public ManaStatusBar(StatusBarType type) {
+			super(type);
 		}
 
 		@Override

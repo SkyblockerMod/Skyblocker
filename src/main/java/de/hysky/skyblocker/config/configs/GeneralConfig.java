@@ -206,6 +206,9 @@ public class GeneralConfig {
 
 		@SerialEntry
 		public boolean jacobMedalBackgrounds = true;
+
+		@SerialEntry
+		public boolean legacyAttributeBackgrounds = true;
     }
 
     public enum ItemBackgroundStyle {
@@ -227,6 +230,9 @@ public class GeneralConfig {
     public static class ItemProtection {
         @SerialEntry
         public SlotLockStyle slotLockStyle = SlotLockStyle.FANCY;
+
+		@SerialEntry
+		public boolean displayChatNotification = true;
 
         @SerialEntry
         public boolean protectValuableConsumables = true;
