@@ -96,8 +96,17 @@ public class DungeonsConfig {
         @SerialEntry
         public boolean creeperSolver = true;
 
+		@Deprecated
+		public transient boolean solveWaterboard = true;
+
         @SerialEntry
-        public boolean solveWaterboard = true;
+        public boolean waterboardOneFlow = true;
+
+		@SerialEntry
+		public boolean previewWaterPath = true;
+
+		@SerialEntry
+		public boolean previewLeverEffects = true;
 
         @SerialEntry
         public boolean blazeSolver = true;
@@ -149,6 +158,9 @@ public class DungeonsConfig {
     public static class Terminals {
         @SerialEntry
         public boolean solveColor = true;
+
+		@SerialEntry
+		public boolean solveSameColor = true;
 
         @SerialEntry
         public boolean solveOrder = true;

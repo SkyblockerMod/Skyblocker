@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.BeaconBlockEntityRendererInvoker;
-import de.hysky.skyblocker.utils.render.culling.OcclusionCulling;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -28,6 +27,9 @@ import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.profiler.Profilers;
+import net.minecraft.util.shape.VoxelShape;
+
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -63,15 +65,9 @@ public class RenderHelper {
     }
 
     public static void renderFilled(WorldRenderContext context, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, float[] colorComponents, float alpha, boolean throughWalls) {
-        if (throughWalls) {
-            if (FrustumUtils.isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
-                renderFilledInternal(context, minX, minY, minZ, maxX, maxY, maxZ, colorComponents, alpha, true);
-            }
-        } else {
-            if (OcclusionCulling.getRegularCuller().isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
-                renderFilledInternal(context, minX, minY, minZ, maxX, maxY, maxZ, colorComponents, alpha, false);
-            }
-        }
+    	if (FrustumUtils.isVisible(minX, minY, minZ, maxX, maxY, maxZ)) {
+    		renderFilledInternal(context, minX, minY, minZ, maxX, maxY, maxZ, colorComponents, alpha, throughWalls);
+    	}
     }
 
     private static void renderFilledInternal(WorldRenderContext context, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, float[] colorComponents, float alpha, boolean throughWalls) {
@@ -368,12 +364,16 @@ public class RenderHelper {
      * @param pos   The position of the block.
      * @return The bounding box of the block.
      */
+    @Nullable
     public static Box getBlockBoundingBox(ClientWorld world, BlockPos pos) {
         return getBlockBoundingBox(world, world.getBlockState(pos), pos);
     }
 
+    @Nullable
     public static Box getBlockBoundingBox(ClientWorld world, BlockState state, BlockPos pos) {
-        return state.getOutlineShape(world, pos).asCuboid().getBoundingBox().offset(pos);
+    	VoxelShape shape = state.getOutlineShape(world, pos).asCuboid();
+
+        return shape.isEmpty() ? null : shape.getBoundingBox().offset(pos);
     }
 
     /**

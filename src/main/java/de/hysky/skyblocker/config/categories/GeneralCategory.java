@@ -5,6 +5,7 @@ import de.hysky.skyblocker.UpdateNotifications;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import de.hysky.skyblocker.skyblock.speedPreset.SpeedPresetsScreen;
@@ -318,6 +319,14 @@ public class GeneralCategory {
 										newValue -> config.general.itemInfoDisplay.jacobMedalBackgrounds = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds.@Tooltip")))
+								.binding(defaults.general.itemInfoDisplay.legacyAttributeBackgrounds,
+										() -> config.general.itemInfoDisplay.legacyAttributeBackgrounds,
+										newValue -> config.general.itemInfoDisplay.legacyAttributeBackgrounds = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
 						.build())
 
                 //Item Protection
@@ -340,6 +349,14 @@ public class GeneralCategory {
                                         newValue -> config.general.itemProtection.protectValuableConsumables = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemProtection.displayChatNotification"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemProtection.displayChatNotification.@Tooltip")))
+								.binding(defaults.general.itemProtection.displayChatNotification,
+										() -> config.general.itemProtection.displayChatNotification,
+										newValue -> config.general.itemProtection.displayChatNotification = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 //Wiki Lookup
@@ -348,21 +365,14 @@ public class GeneralCategory {
                         .collapsed(true)
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip")))
+                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip",
+										WikiLookup.officialWikiLookup.getBoundKeyLocalizedText(), WikiLookup.fandomWikiLookup.getBoundKeyLocalizedText())))
                                 .binding(defaults.general.wikiLookup.enableWikiLookup,
                                         () -> config.general.wikiLookup.enableWikiLookup,
                                         newValue -> config.general.wikiLookup.enableWikiLookup = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .option(ConfigUtils.createShortcutToKeybindsScreen())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.general.wikiLookup.officialWiki"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.general.wikiLookup.officialWiki.@Tooltip")))
-                                .binding(defaults.general.wikiLookup.officialWiki,
-                                        () -> config.general.wikiLookup.officialWiki,
-                                        newValue -> config.general.wikiLookup.officialWiki = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
                         .build())
 
                 //Special Effects

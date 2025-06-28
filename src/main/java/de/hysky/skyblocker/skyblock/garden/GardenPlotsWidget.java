@@ -374,6 +374,15 @@ public class GardenPlotsWidget extends ContainerWidget {
 		}
 	}
 
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (isMouseOver(mouseX, mouseY) && isValidClickButton(button)) {
+			onClick(mouseX, mouseY);
+			return true;
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
 	private record GardenPlot(Item item, String name) {
 	}
 }
