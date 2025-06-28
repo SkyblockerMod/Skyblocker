@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.container.ContainerSolver;
+import de.hysky.skyblocker.utils.container.ContainerUtil;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -43,7 +43,7 @@ public final class OrderTerminal extends SimpleContainerSolver implements Termin
     }
 
     public boolean orderSlots(Int2ObjectMap<ItemStack> slots) {
-        ContainerSolver.trimEdges(slots, 4);
+        ContainerUtil.trimEdges(slots, 4);
         orderedSlots = new int[PANES_NUM];
         for(Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
             if(Items.AIR.equals(slot.getValue().getItem())) {

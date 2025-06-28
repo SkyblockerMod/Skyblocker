@@ -5,6 +5,7 @@ import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.dwarven.fossil.FossilSolver;
+import de.hysky.skyblocker.skyblock.hunting.AttributeLevelTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
@@ -47,7 +48,8 @@ public class TooltipManager {
 			new ColorTooltip(12),
 			new AccessoryTooltip(13),
 			new DateCalculatorTooltip(14),
-			new HuntingBoxPriceTooltip(15)
+			new HuntingBoxPriceTooltip(15),
+			new AttributeLevelTooltip(16),
 	};
 	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
 

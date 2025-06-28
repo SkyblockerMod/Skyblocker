@@ -6,7 +6,7 @@ import de.hysky.skyblocker.skyblock.WardrobeKeybinds;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.SameColorTerminal;
-import de.hysky.skyblocker.skyblock.hunting.AttributeLevelHelper;
+import de.hysky.skyblocker.skyblock.hunting.AttributeLevelSlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.Utils;
@@ -61,7 +61,7 @@ public class SlotTextManager {
 			WardrobeKeybinds.INSTANCE,
 			new SkyblockGuideAdder(),
 			SameColorTerminal.INSTANCE,
-			AttributeLevelHelper.INSTANCE
+			AttributeLevelSlotText.INSTANCE
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 	private static final KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, "key.categories.skyblocker"));

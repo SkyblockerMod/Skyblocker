@@ -13,16 +13,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-//TODO: Add required amount of shards to reach max level in the tooltip via a TooltipAdder implementation once people get enough shards to figure them out
-//      It can be seen by clicking on the attribute but that's too much effort, we could bring that up a layer, into the tooltip of the attribute
-public class AttributeLevelHelper extends SimpleSlotTextAdder {
-	public static final AttributeLevelHelper INSTANCE = new AttributeLevelHelper();
+public class AttributeLevelSlotText extends SimpleSlotTextAdder {
+	public static final AttributeLevelSlotText INSTANCE = new AttributeLevelSlotText();
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation("attribute_levels",
 			"skyblocker.config.uiAndVisuals.slotText.attributeLevels",
 			"skyblocker.config.uiAndVisuals.slotText.attributeLevels.@Tooltip");
 
 
-	private AttributeLevelHelper() {
+	private AttributeLevelSlotText() {
 		super("Attribute Menu", CONFIG_INFORMATION);
 	}
 

@@ -32,15 +32,4 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 	default boolean onClickSlot(int slot, ItemStack stack, int screenId) {
 		return false;
 	}
-
-	static void trimEdges(Int2ObjectMap<ItemStack> slots, int rows) {
-		for (int i = 0; i < rows; i++) {
-			slots.remove(9 * i);
-			slots.remove(9 * i + 8);
-		}
-		for (int i = 1; i < 8; i++) {
-			slots.remove(i);
-			slots.remove((rows - 1) * 9 + i);
-		}
-	}
 }
