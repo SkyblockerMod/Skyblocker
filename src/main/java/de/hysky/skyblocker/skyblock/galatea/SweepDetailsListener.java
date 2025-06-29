@@ -48,7 +48,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 		String msg = message.getString();
 
 		Matcher sweepDetails = SWEEP_DETAILS.matcher(msg);
-		if (sweepDetails.matches() && sweepDetails.groupCount() == 1) {
+		if (sweepDetails.matches()) {
 			resetStats();
 			active = true;
 			lastMatch = System.currentTimeMillis();
@@ -68,7 +68,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 		if (!active) return ChatFilterResult.PASS;
 
 		Matcher treeToughness = TREE_TOUGHNESS.matcher(msg);
-		if (treeToughness.matches() && treeToughness.groupCount() == 3) {
+		if (treeToughness.matches()) {
 
 			lastTreeType = treeToughness.group(1);
 			toughness = treeToughness.group(2);
@@ -77,7 +77,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 		}
 
 		Matcher axeThrow = AXE_THROW_PENALTY.matcher(msg);
-		if (axeThrow.matches() && axeThrow.groupCount() == 2) {
+		if (axeThrow.matches()) {
 			axePenalty = true;
 
 			String rawAxePenaltyAmount = axeThrow.group(1);
@@ -93,7 +93,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 		}
 
 		Matcher wrongStyle = WRONG_STYLE_PENALTY.matcher(msg);
-		if (wrongStyle.matches() && wrongStyle.groupCount() == 3) {
+		if (wrongStyle.matches()) {
 			stylePenalty = true;
 
 			String rawStylePenaltyAmount = wrongStyle.group(1);
