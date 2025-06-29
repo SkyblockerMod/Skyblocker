@@ -72,6 +72,9 @@ public class HelperConfig {
 
         @SerialEntry
         public boolean enableUltrasequencerSolver = true;
+
+        @SerialEntry
+        public boolean blockIncorrectClicks = false;
     }
 
     public static class Fishing {
