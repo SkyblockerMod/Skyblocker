@@ -99,6 +99,11 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
+	public Text getDisplayName() {
+		return Text.translatable("skyblocker.galatea.hud.sweepDetails");
+	}
+
+	@Override
 	public boolean shouldUpdateBeforeRendering() {
 		return true;
 	}
