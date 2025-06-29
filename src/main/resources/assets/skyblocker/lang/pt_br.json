@@ -1,5 +1,5 @@
 {
-    "key.skyblocker.defaultTgl": "Trocar HUD do tab para padrão",
+    "key.skyblocker.defaultTgl": "Alternar a aba HUD para a visualização padrão",
     "key.skyblocker.toggleA": "Mostrar visualização secundária do HUD da guia",
     "skyblocker.config.general": "Geral",
     "skyblocker.config.uiAndVisuals.bars": "Barra de Vida, Mana, Defesa & XP",
@@ -325,11 +325,11 @@
     "skyblocker.config.debug.dumpRange": "Alcance de despejo de Entidade",
     "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "Waypoints de Pérola",
     "skyblocker.config.crimsonIsle.kuudra.safeSpotWaypoints": "Waypoints de Pontos Seguros",
-    "skyblocker.config.dungeons.allowDroppingProtectedItems": "Ativar Droppar Items Protegidos & em Slots Bloqueados",
+    "skyblocker.config.dungeons.allowDroppingProtectedItems": "Drop de Itens Protegidos e em Slots Bloqueados habilitado",
     "skyblocker.config.crimsonIsle.kuudra.supplyWaypoints": "Waypoints de Fornecimento",
     "skyblocker.config.debug.dumpFormat": "Despejar Formato",
     "text.skyblocker.undo": "Anular",
-    "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Te avisa quando puxares um arco e não teres Flecha Venenosa de Poison no teu inventário",
+    "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Avisa quando você saca um arco e não tem Toxic Arrow Poison no seu inventário. Só funciona durante a fase DPS.",
     "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "Construir pontos de Waypoints da Ballista",
     "key.itemPriceRefresh": "Atualizar Bazar",
     "text.skyblocker.offline": "Desligado",
@@ -359,5 +359,8 @@
     "skyblocker.fancyAuctionHouse.auctionEnded": "Leilão encerrado!",
     "skyblocker.fancyAuctionHouse.cancelAuction": "Cancelar leilão",
     "skyblocker.gardenPlots.openDesk": "Abrir Mesa",
-    "skyblocker.gardenPlots.tp": "Clique para se Teleportar!"
+    "skyblocker.gardenPlots.tp": "Clique para se Teleportar!",
+    "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Habilita marcadores para terminais/aparelhos/alavancas durante Goldor",
+    "skyblocker.config.dungeons.devices.solveLightsOn": "Resolve Lights On",
+    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.HIGHLIGHT": "Destaque"
 }
