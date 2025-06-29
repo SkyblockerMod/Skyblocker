@@ -254,7 +254,7 @@
     "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints": "Aktiviere Enderperlen Wegpunkte",
     "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Zeigt den Profit einer Dungeon-Truhe im Titel des Truhenfensters an.\nGrün, wenn es einen Profit gibt.\nRot, wenn es keinen Profit gibt.\nGrau, wenn es weder Profit noch Verlust gibt.\nBlau, wenn die Berechnungen auf unvollständigen Daten basieren.",
     "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Text, der während des Kampfes gegen Livid im Chat gesendet wird. Die Zeichenfolge „[color]“ wird durch die Farbe vom richtigen Livid ersetzt.",
-    "skyblocker.config.dungeons.playerSecretsTracker.@Tooltip": "Trackt die Anzahl der Secrets, die Mitspieler in Dungeon Lauf einsammeln.",
+    "skyblocker.config.dungeons.playerSecretsTracker.@Tooltip": "Trackt die Anzahl der Secrets, die Mitspieler in einer Dungeon Runde sammeln.",
     "skyblocker.customItemNames.unableToSetName": "§Item kann nicht umbenannt werden :( (Bist du in Skyblock?, Hältst du ein Item?)",
     "skyblocker.rift.healNow": "Jetzt heilen!",
     "skyblocker.fishing.reelNow": "Jetzt einholen!",
@@ -335,5 +335,10 @@
     "skyblocker.config.general.itemProtection": "Itemschutz",
     "skyblocker.config.general.stashValue.@Tooltip": "Berechne den Wert der Items in diesem Stash.",
     "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "Hebt Baumstämme bei Nutzung der Axt-Wurf-Fähigkeit hervor.",
-    "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Sweep-Overlay aktivieren"
+    "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Sweep-Overlay aktivieren",
+    "skyblocker.config.general.itemTooltip.enableAvgBIN": "Durchschnittlicher Sofortkaufpreis aktivieren",
+    "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Basar-Kauf-/Verkaufspreise aktivieren",
+    "skyblocker.config.general.itemTooltip.dungeonQuality": "Dungeon Qualität",
+    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper": "Zubehör-Hilfe aktivieren",
+    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]": "Beim Darüberfahren mit der Maus über ein Zubehörteil erhältst du Informationen darüber, ob du es bereits besitzt, und ob es schlechter oder besser ist als das, was du bereits gesammelt hast."
 }
