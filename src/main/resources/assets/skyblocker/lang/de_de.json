@@ -245,7 +245,6 @@
     "skyblocker.config.farming.visitorHelper.visitorHelper.@Tooltip": "Erleichtert das Verwalten von Besuchern, indem ähnliche Anfragen gruppiert, Item-Mengen kopiert und der Bazaar zum schnellen Einkauf geöffnet wird.",
     "skyblocker.config.farming.visitorHelper.visitorHelperGardenOnly": "Nur im Garden",
     "skyblocker.config.farming.general.coinsPerHour": "Coins/h: %s",
-    "skyblocker.config.farming.general.cropsPerMin": "",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage.@Tooltip": "Nachricht, die im Chat gesendet wird, wenn der Schwellenwert erreicht wird, bevor man 5+ Crypts erhält. Die Zeichenfolge \"[crypts]\" wird durch die Anzahl der Crypts ersetzt.",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Die Voreinstellung 270 ist für S+ Läufe gedacht, bei denen du bei einem Score von 300+ weitergehst - normalerweise F5-F7 und M5-M7.\nWenn du S-Läufe durchführst (mit 270 Score), solltest du in Erwägung ziehen, den Wert auf 250 oder weniger zu senken, da er sonst nutzlos ist.",
     "skyblocker.config.dungeons.dungeonChestProfit.includeEssence.@Tooltip": "Das Deaktivieren ist **nicht empfohlen**, wenn du vergesslich bist.",
