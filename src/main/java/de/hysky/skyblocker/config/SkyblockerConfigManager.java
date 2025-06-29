@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config;
 import com.google.gson.FieldNamingPolicy;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.backup.ConfigBackupManager;
 import de.hysky.skyblocker.config.categories.*;
 import de.hysky.skyblocker.config.serialization.CodecTypeAdapter;
 import de.hysky.skyblocker.config.serialization.ItemTypeAdapter;
@@ -56,6 +57,14 @@ public class SkyblockerConfigManager {
     public static SkyblockerConfig get() {
         return HANDLER.instance();
     }
+	
+	public static Path getConfigPath() {
+		    return CONFIG_FILE;
+	}
+
+	public static void reload() {
+		    HANDLER.load();
+	}
 
     /**
      * This method is caller sensitive and can only be called by the mod initializer,
@@ -89,6 +98,7 @@ public class SkyblockerConfigManager {
      */
     public static void update(Consumer<SkyblockerConfig> action) {
     	action.accept(get());
+		ConfigBackupManager.backupConfig();
     	HANDLER.save();
     }
 
