@@ -116,7 +116,7 @@ public class ProfileViewerScreen extends Screen {
         }
 
 
-        if (textWidget != null) textWidget.render(context, textRenderer, rootX + 8, rootY + 120);
+		if (textWidget != null) textWidget.render(context, textRenderer, rootX + 8, rootY + 120, mouseX, mouseY);
         drawPlayerEntity(context, playerName != null ? playerName : "Loading...", rootX, rootY, mouseX, mouseY);
 
         if (profileViewerPages[activePage] != null) {
