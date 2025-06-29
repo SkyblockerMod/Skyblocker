@@ -78,7 +78,7 @@ public class FarmingHud {
 		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
 			if (shouldRender() && overlay) {
 				Matcher matcher = FARMING_XP.matcher(Formatting.strip(message.getString()));
-				if (matcher.matches()) {
+				if (matcher.find()) {
 					try {
 						farmingXp.offer(FloatLongPair.of(NUMBER_FORMAT.parse(matcher.group("xp")).floatValue(), System.currentTimeMillis()));
 						farmingXpPercentProgress = NUMBER_FORMAT.parse(matcher.group("percent")).floatValue();
