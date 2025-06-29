@@ -219,6 +219,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         private final TextFieldWidget zField;
         private final ARGBTextInput colorField;
         private final ButtonWidget buttonDelete;
+        private final ButtonWidget buttonNewWaypoint;
 
         public WaypointEntry(WaypointGroupEntry groupEntry) {
             this(groupEntry, groupEntry.group.createWaypoint(getDefaultPos()));
@@ -249,11 +250,19 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			colorField.setARGBColor(color);
 			colorField.setHeight(20);
 			colorField.setOnChange(this::updateColor);
+            buttonNewWaypoint = ButtonWidget.builder(Text.translatable("skyblocker.waypoints.new"), buttonNewWaypoint -> {
+        				WaypointEntry waypointEntry = new WaypointEntry(this.groupEntry);
+                int entryIndex = WaypointsListWidget.this.children().indexOf(this) - 1;
+                this.groupEntry.group.waypoints().add(entryIndex, waypointEntry.waypoint);
+                WaypointsListWidget.this.children().add(entryIndex, waypointEntry);
+                this.groupEntry.updateOrdered(true);
+                updateEntries();
+            }).width(38).build();
             buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.deleteButton"), button -> {
                 groupEntry.group.waypoints().remove(waypoint);
                 WaypointsListWidget.this.children().remove(this);
             }).width(38).build();
-            children = List.of(enabled, nameField, xField, yField, zField, colorField, buttonDelete);
+            children = List.of(enabled, nameField, xField, yField, zField, colorField, buttonDelete, buttonNewWaypoint);
         }
 
         @Override
@@ -338,6 +347,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             zField.setPosition(width / 2 + 34, y);
             colorField.setPosition(x + entryWidth - 99, y);
             buttonDelete.setPosition(x + entryWidth - 38, y);
+            buttonNewWaypoint.setPosition(x, y);
             for (ClickableWidget child : children) {
                 child.render(context, mouseX, mouseY, tickDelta);
             }
