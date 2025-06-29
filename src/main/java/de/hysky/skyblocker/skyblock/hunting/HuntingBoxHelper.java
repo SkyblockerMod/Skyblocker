@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.hunting;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.container.ContainerSolver;
+import de.hysky.skyblocker.utils.container.ContainerUtil;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -29,7 +29,7 @@ public class HuntingBoxHelper extends SimpleContainerSolver {
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		ArrayList<ColorHighlight> highlights = new ArrayList<>();
-		ContainerSolver.trimEdges(slots, 6);
+		ContainerUtil.trimEdges(slots, 6);
 		for (var entry : slots.int2ObjectEntrySet()) {
 			ItemStack stack = entry.getValue();
 			if (stack.isEmpty()) continue;
