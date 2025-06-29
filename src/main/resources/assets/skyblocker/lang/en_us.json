@@ -288,6 +288,16 @@
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Solve Forest Temple Puzzle",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Displays the amount of times you need to rotate the terracotta blocks. For positive rotations you right click while for negative rotations you left click.",
 
+   "skyblocker.config.foraging.sweepOverlay": "Sweep Overlay",
+  "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Enable Sweep Overlay",
+  "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay.@Tooltip": "Highlights logs that will be destroyed from sweep.",
+  "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay": "Show Overlay for Thrown Ability",
+  "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "Highlights logs when using an axe's thrown ability.",
+  "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "Sweep Overlay Color",
+  "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "Sweep Missing: Add the Sweep stat to your player list with /tablist",
+  
+  "skyblocker.config.foraging.hunting": "Hunting",
+
   "skyblocker.config.general": "General",
 
   "skyblocker.config.general.chestValue.@Tooltip": "Calculate the value of this container.",
