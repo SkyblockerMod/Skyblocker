@@ -1,16 +1,16 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
+import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -59,46 +59,41 @@ public class OverlayScreen extends Screen {
                 .size(specialButtonSize, specialButtonSize).build();
 
         // suggested item buttons
-        int rowOffset = rowHeight;
         int totalSuggestions = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.maxSuggestions;
         this.suggestionButtons = new ButtonWidget[totalSuggestions];
+        DirectionalLayoutWidget suggestionLayoutWidget = new DirectionalLayoutWidget(startX, startY + rowHeight, DirectionalLayoutWidget.DisplayAxis.VERTICAL);
         for (int i = 0; i < totalSuggestions; i++) {
-            suggestionButtons[i] = ButtonWidget.builder(Text.literal(SearchOverManager.getSuggestion(i)).setStyle(Style.EMPTY), a -> {
-                        SearchOverManager.updateSearch(a.getMessage().getString());
-                        close();
-                    })
-                    .position(startX, startY + rowOffset)
-                    .size(rowWidth, rowHeight).build();
+            suggestionButtons[i] = ButtonWidget.builder(Text.empty(), a -> {
+                SearchOverManager.updateSearch(a.getMessage().getString());
+                close();
+            }).size(rowWidth, rowHeight).build();
+            suggestionLayoutWidget.add(suggestionButtons[i]);
             suggestionButtons[i].visible = false;
-            rowOffset += rowHeight;
         }
 
         // history item buttons
-        rowOffset += (int) (rowHeight * 0.75);
+        int historyOffset = (int) (rowHeight * (totalSuggestions + 1.75));
         int historyLength = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.historyLength;
         this.historyButtons = new ButtonWidget[historyLength];
-		this.deleteButtons = new ButtonWidget[historyLength];
+        this.deleteButtons = new ButtonWidget[historyLength];
+        GridWidget historyGridWidget = new GridWidget(startX, startY + historyOffset);
+        GridWidget.Adder historyAdder = historyGridWidget.createAdder(2);
         for (int i = 0; i < historyLength; i++) {
-            String text = SearchOverManager.getHistory(i);
-            if (text != null) {
-                historyButtons[i] = ButtonWidget.builder(Text.literal(text).setStyle(Style.EMPTY), (a) -> {
-                            SearchOverManager.updateSearch(a.getMessage().getString());
-                            close();
-				}).position(startX, startY + rowOffset)
-				.size(rowWidth-rowHeight, rowHeight).build();
+            historyButtons[i] = ButtonWidget.builder(Text.empty(), (a) -> {
+                SearchOverManager.search = a.getMessage().getString();
+                SearchOverManager.updateSearch(a.getMessage().getString());
+                close();
+            }).size(rowWidth - rowHeight, rowHeight).build();
+            historyButtons[i].visible = false;
+            historyAdder.add(historyButtons[i]);
 
-				final int slotId = i;
-				deleteButtons[i] = ButtonWidget.builder(Text.empty(), (a) -> {
-					SearchOverManager.removeHistoryItem(slotId);
-					clearAndInit();
-				}).position(startX+rowWidth-rowHeight, startY + rowOffset)
-				.tooltip(Tooltip.of(Text.translatable("skyblocker.config.general.searchOverlay.deleteTooltip")))
-				.size(specialButtonSize, specialButtonSize).build();
-                rowOffset += rowHeight;
-            } else {
-                break;
-            }
+            final int slotId = i;
+            deleteButtons[i] = ButtonWidget.builder(Text.empty(), (a) -> removeHistoryItem(slotId)).size(specialButtonSize, specialButtonSize)
+                    .tooltip(Tooltip.of(Text.translatable("skyblocker.config.general.searchOverlay.deleteTooltip"))).build();
+            deleteButtons[i].visible = false;
+            historyAdder.add(deleteButtons[i]);
         }
+        updateHistoryButtons();
 
         //auction only elements
         if (SearchOverManager.isAuction) {
@@ -121,21 +116,13 @@ public class OverlayScreen extends Screen {
             updateStars();
         }
 
+        suggestionLayoutWidget.refreshPositions();
+        historyGridWidget.refreshPositions();
+
         //add drawables in order to make tab navigation sensible
         addDrawableChild(searchField);
-        for (ButtonWidget suggestion : suggestionButtons) {
-            addDrawableChild(suggestion);
-        }
-        for (ButtonWidget historyOption : historyButtons) {
-            if (historyOption != null) {
-                addDrawableChild(historyOption);
-            }
-        }
-		for (ButtonWidget deleteButton : deleteButtons) {
-			if (deleteButton != null) {
-				addDrawableChild(deleteButton);
-			}
-		}
+        suggestionLayoutWidget.forEachChild(this::addDrawableChild);
+        historyGridWidget.forEachChild(this::addDrawableChild);
         addDrawableChild(finishedButton);
 
         if (SearchOverManager.isAuction) {
@@ -199,6 +186,27 @@ public class OverlayScreen extends Screen {
         dungeonStarButton.setMessage(stars);
     }
 
+    private void removeHistoryItem(int slotId) {
+        SearchOverManager.removeHistoryItem(slotId);
+        updateHistoryButtons();
+    }
+
+    private void updateHistoryButtons() {
+        int historyLength = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.historyLength;
+        for (int i = 0; i < historyLength; i++) {
+            String text = SearchOverManager.getHistory(i);
+            if (text == null) {
+                historyButtons[i].visible = false;
+                deleteButtons[i].visible = false;
+                continue;
+            }
+
+            historyButtons[i].setMessage(Text.literal(text));
+            historyButtons[i].visible = true;
+            deleteButtons[i].visible = true;
+        }
+    }
+
     /**
      * Renders the background for the search using the social interactions background
      * @param context context
@@ -236,10 +244,10 @@ public class OverlayScreen extends Screen {
         for (int i = 0; i < historyButtons.length; i++) {
             drawItemAndTooltip(context, mouseX, mouseY, SearchOverManager.getHistoryId(i), historyButtons[i], renderOffset);
         }
-		for (ButtonWidget deleteButton : deleteButtons) {
-			if (deleteButton == null) continue;
-			context.drawTexture(RenderLayer::getGuiTextured, DELETE_ICON_TEXTURE, deleteButton.getX() + renderOffset, deleteButton.getY() + renderOffset, 0, 0, 16, 16, 16, 16);
-		}
+        for (ButtonWidget deleteButton : deleteButtons) {
+            if (!deleteButton.visible) break;
+            context.drawTexture(RenderLayer::getGuiTextured, DELETE_ICON_TEXTURE, deleteButton.getX() + renderOffset, deleteButton.getY() + renderOffset, 0, 0, 16, 16, 16, 16);
+        }
     }
 
     /**
@@ -272,7 +280,7 @@ public class OverlayScreen extends Screen {
                 boolean isNewText = !text.equals(suggestionButtons[i].getMessage().getString());
                 if (!isNewText) continue;
 
-                suggestionButtons[i].setMessage(Text.literal(text).setStyle(Style.EMPTY));
+                suggestionButtons[i].setMessage(Text.literal(text));
             } else {
                 suggestionButtons[i].visible = false;
             }

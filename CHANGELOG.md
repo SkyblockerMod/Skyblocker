@@ -1,3 +1,54 @@
+# Release 5.4.0
+
+## Highlight
+* Use custom vanilla GSON config serialization
+  The mysterious config wipe errors were the result of malformed json,
+  normal GSON is extensively tested and is highly unlikely to produce that
+  itself but YACL uses an intermediary parser that has had similar
+  problems with this stuff in the past.
+* Add HOTF perk level slot text adder
+* Add hunting box helper
+* Hunting Mobs features
+* Hunting Box Shard Prices
+* Add a minimum pickle count to sea lumies
+* Add attribute level slot text
+* Same Color Terminal Solver
+* Copy Underbid Price to Clipboard
+* Add a config option to toggle item protection chat notifications
+* Calculator improvements
+* Config for config button and customize button
+* Add attribute list for bazaar price support
+* Add new shards to dungeon profit calculators
+* Sea Lumies Highlighter improvements
+* Fix ARGBTextInput crash when pasting
+* Fix Item Pickup Widget Network Protocol Error Disconnect
+* Get rid of ETF log spam
+* Fix suggestions flashing sometimes when removing history entry
+* New items like Fig and Mangrove Logs are now displayed as the correct item (not a player head)
+
+## What's Changed
+* Add HOTF perk level slot text adder by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1391
+* ignore seen waypoints outside loaded chunks by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1392
+* Add hunting box helper by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1394
+* fix ARGBTextInput crash when pasting by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1408
+* Fix Item Pickup Widget Network Protocol Error Disconnect by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1416
+* Add a minimum pickle count to sea lumies by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1395
+* Fix hunting box helper not matching non-player head items by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1400
+* Add attribute level slot text by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1399
+* Get rid of ETF log spam by @ninjaguardian in https://github.com/SkyblockerMod/Skyblocker/pull/1404
+* Copy Underbid Price to Clipboard by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1370
+* Add a config option to toggle item protection chat notifications by @salbeira in https://github.com/SkyblockerMod/Skyblocker/pull/1382
+* Fix suggestions flashing sometimes when removing history entry by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1383
+* Calculator improvements by @Ownwn in https://github.com/SkyblockerMod/Skyblocker/pull/1368
+* config for config button and customize button by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1390
+* Same Color Terminal Solver by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1372
+
+## New Contributors
+* @ninjaguardian made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1404
+* @salbeira made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1382
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.3.0...v5.4.0
+___
 # Release 5.3.0
 
 ## Highlight
