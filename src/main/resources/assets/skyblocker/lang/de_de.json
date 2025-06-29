@@ -4,7 +4,7 @@
     "skyblocker.config.title": "Skyblocker-Einstellungen",
     "skyblocker.config.general": "Allgemein",
     "skyblocker.config.uiAndVisuals.bars": "Balken für Gesundheit, Mana, Verteidigung, Geschwindigkeit & XP",
-    "skyblocker.config.uiAndVisuals.tabHud": "Schönere HUD und TAB",
+    "skyblocker.config.uiAndVisuals.tabHud": "Schöneres HUD und TAB",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudEnabled": "Schöneres Tab-HUD aktivieren",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudScale": "Skalierungsfaktor für schöneres Tab-HUD",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip": "Wert in %, relativ zur Skalierung des Vanilla-GUIs",
