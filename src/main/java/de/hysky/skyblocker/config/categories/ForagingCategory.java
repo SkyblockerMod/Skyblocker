@@ -9,8 +9,13 @@ import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import de.hysky.skyblocker.skyblock.foraging.SweepOverlay;
 import de.hysky.skyblocker.skyblock.galatea.SeaLumiesHighlighter;
+import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
 import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 import java.awt.*;
@@ -48,6 +53,14 @@ public class ForagingCategory {
 										newValue -> config.foraging.galatea.enableLushlilacHighlighter = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.lushlilacHighlighterOpacity"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.lushlilacHighlighterOpacity.@Tooltip")))
+								.binding(defaults.foraging.galatea.lushlilacHighlighterOpacity,
+										() -> config.foraging.galatea.lushlilacHighlighterOpacity,
+										newValue -> config.foraging.galatea.lushlilacHighlighterOpacity = newValue)
+								.controller(opt -> FloatFieldControllerBuilder.create(opt).range(0.0f, 1.0f))
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter"))
 								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter.@Tooltip")))
@@ -58,6 +71,27 @@ public class ForagingCategory {
 											SeaLumiesHighlighter.INSTANCE.configCallback();
 										})
 								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.seaLumiesHighlighterOpacity"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.seaLumiesHighlighterOpacity.@Tooltip")))
+								.binding(defaults.foraging.galatea.seaLumiesHighlighterOpacity,
+										() -> config.foraging.galatea.seaLumiesHighlighterOpacity,
+										newValue -> config.foraging.galatea.seaLumiesHighlighterOpacity = newValue)
+								.controller(opt -> FloatFieldControllerBuilder.create(opt).range(0.0f, 1.0f))
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip")))
+								.binding(defaults.foraging.galatea.enableTreeBreakProgress,
+										() -> config.foraging.galatea.enableTreeBreakProgress,
+										newValue -> config.foraging.galatea.enableTreeBreakProgress = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakHud"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, TreeBreakProgressHud.getInstance().getInternalID(), screen)))
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount"))
