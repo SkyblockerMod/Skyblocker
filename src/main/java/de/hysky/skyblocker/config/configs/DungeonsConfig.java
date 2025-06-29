@@ -15,6 +15,9 @@ public class DungeonsConfig {
 	@SerialEntry
 	public boolean salvageHelper = true;
 
+	@SerialEntry
+	public boolean bloodCampHelper = false;
+
     @SerialEntry
     public boolean playerSecretsTracker = false;
 

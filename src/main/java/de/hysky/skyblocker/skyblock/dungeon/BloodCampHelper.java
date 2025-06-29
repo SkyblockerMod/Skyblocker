@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -16,14 +17,11 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -70,14 +68,14 @@ public class BloodCampHelper {
 	}
 
 	private static void onEntityLoad(Entity entity, ClientWorld world) {
-		if (!Utils.isInDungeons()) return;
+		if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().dungeons.bloodCampHelper) return;
 		if (entity instanceof ZombieEntity zombie) {
 			PENDING_WATCHERS.put(zombie, 1);
 		}
 	}
 
 	private static void onEntityUnload(Entity entity, ClientWorld world) {
-		if (!Utils.isInDungeons()) return;
+		if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().dungeons.bloodCampHelper) return;
 		if (entity instanceof ZombieEntity zombie) {
 			WATCHERS.remove(zombie);
 			PENDING_WATCHERS.remove(zombie);
@@ -87,7 +85,7 @@ public class BloodCampHelper {
 	}
 
 	private static void tick() {
-		if (!Utils.isInDungeons()) return;
+		if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().dungeons.bloodCampHelper) return;
 		long now = System.currentTimeMillis();
 		// Process any newly loaded zombies waiting to be checked
 		PENDING_WATCHERS.entrySet().removeIf(e -> !e.getKey().isAlive());
@@ -126,7 +124,7 @@ public class BloodCampHelper {
 	}
 
 	private static void render(WorldRenderContext context) {
-		if (!Utils.isInDungeons()) return;
+		if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().dungeons.bloodCampHelper) return;
 		for (TrackedMob mob : MOBS.values()) {
 			if (mob.predictedPos != null && mob.inMotion) {
 				RenderHelper.renderOutline(context, mob.entity.getBoundingBox().offset(0f, 2f, 0f), LINE_COLOR, 2, true);
