@@ -81,7 +81,7 @@ public class ChatRuleConfigScreen extends Screen {
 	public ChatRuleConfigScreen(Screen parent, int chatRuleIndex) {
 		super(Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen"));
 		this.chatRuleIndex = chatRuleIndex;
-		this.chatRule = ChatRulesHandler.chatRuleList.get(chatRuleIndex);
+		this.chatRule = ChatRulesHandler.chatRuleList.getData().get(chatRuleIndex);
 		this.parent = parent;
 		this.currentSoundIndex = getCurrentSoundIndex();
 
@@ -540,7 +540,7 @@ public class ChatRuleConfigScreen extends Screen {
 		chatRule.setFilter(filterInput.getText());
 		chatRule.setReplaceMessage(replaceMessageInput.getText());
 
-		ChatRulesHandler.chatRuleList.set(chatRuleIndex, chatRule);
+		ChatRulesHandler.chatRuleList.getData().set(chatRuleIndex, chatRule);
 	}
 
 	private MutableText getSoundName() {

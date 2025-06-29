@@ -10,10 +10,7 @@ import net.minecraft.sound.SoundEvent;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -46,6 +43,7 @@ public class ChatRule {
 			Codec.STRING.optionalFieldOf("replaceMessage").forGetter(ChatRule::getReplaceMessageOpt),
 			SoundEvent.CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOpt)
 	).apply(instance, ChatRule::new));
+
 	public static final Codec<List<ChatRule>> LIST_CODEC = CODEC.listOf();
 
 	private String name;
@@ -271,6 +269,18 @@ public class ChatRule {
 		return Arrays.stream(string.split(", ?"))
 					 .map(Location::fromFriendlyName)
 					 .collect(CollectionUtils.enumSetCollector(Location.class));
+	}
+
+	// Allow value equality checks for ChatRule objects
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof ChatRule chatRule)) return false;
+		return getEnabled() == chatRule.getEnabled() && getPartialMatch() == chatRule.getPartialMatch() && getRegex() == chatRule.getRegex() && getIgnoreCase() == chatRule.getIgnoreCase() && getHideMessage() == chatRule.getHideMessage() && getShowActionBar() == chatRule.getShowActionBar() && getShowAnnouncement() == chatRule.getShowAnnouncement() && Objects.equals(getName(), chatRule.getName()) && Objects.equals(getFilter(), chatRule.getFilter()) && Objects.equals(getValidLocations(), chatRule.getValidLocations()) && Objects.equals(getReplaceMessage(), chatRule.getReplaceMessage()) && Objects.equals(getCustomSound(), chatRule.getCustomSound());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getName(), getEnabled(), getPartialMatch(), getRegex(), getIgnoreCase(), getFilter(), getValidLocations(), getHideMessage(), getShowActionBar(), getShowAnnouncement(), getReplaceMessage(), getCustomSound());
 	}
 }
 
