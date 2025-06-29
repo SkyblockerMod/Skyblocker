@@ -486,7 +486,7 @@
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[1]": "你已擁有該系列中最高級的飾品。",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[3]": "該飾品可以升級。 同時顯示目前擁有該系列中哪個等級的飾品。",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[5]": "你沒有該系列的飾品。",
-    "emi.category.skyblocker.skyblock": "Skyblock",
+    "emi.category.skyblocker.skyblock_crafting": "Skyblock",
     "skyblocker.config.uiAndVisuals.titleContainer": "標題容器",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]": "當將滑鼠懸停在某個飾品上時，你將得知是否已經擁有它，以及它與當前的飾品相比更差還是更好。 狀態列表：",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[2]": "該飾品是現有同系列飾品升級後的版本。 同時展示了該飾品在其係列中的等級。",

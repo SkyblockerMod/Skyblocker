@@ -484,7 +484,7 @@
     "skyblocker.config.helpers.enableNewYearCakesHelper": "启用新年蛋糕助手",
     "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "以绿色高亮显示缺少的新年蛋糕、红色高亮显示已有的蛋糕。\n\n需要至少打开一次蛋糕背包才能生效。",
     "skyblocker.config.slayer.vampireSlayer.maniaUpdateFrequency.@Tooltip": "值越低，更新越频繁，可能会导致卡顿。",
-    "emi.category.skyblocker.skyblock": "Skyblock",
+    "emi.category.skyblocker.skyblock_crafting": "Skyblock",
     "skyblocker.config.uiAndVisuals.fancyCraftingTable": "花哨的工作台UI",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]": "当将鼠标悬停在某个饰品上时，你将得知是否已经拥有它，以及它与当前的饰品相比更差还是更好。状态列表：",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper": "启用饰品助手",
