@@ -470,6 +470,7 @@
   "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Enable Chronomatron Solver",
   "skyblocker.config.helpers.experiments.enableSuperpairsSolver": "Enable Superpairs Solver",
   "skyblocker.config.helpers.experiments.enableUltrasequencerSolver": "Enable Ultrasequencer Solver",
+  "skyblocker.config.helpers.experiments.blockIncorrectClicks": "Block Incorrect Clicks",
 
   "skyblocker.config.helpers.fairySouls": "Fairy Souls Helper",
   "skyblocker.config.helpers.fairySouls.enableFairySoulsHelper": "Enable Fairy Souls Helper",

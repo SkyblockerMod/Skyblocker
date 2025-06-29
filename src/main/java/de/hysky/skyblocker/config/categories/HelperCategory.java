@@ -1,4 +1,4 @@
- package de.hysky.skyblocker.config.categories;
+package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
@@ -67,18 +67,18 @@ public class HelperCategory {
 								newValue -> config.helpers.enableCopyUnderbidPrice = newValue)
 						.controller(ConfigUtils::createBooleanController)
 						.build())
-                //Mythological Ritual
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.helpers.mythologicalRitual"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper"))
-                                .binding(defaults.helpers.mythologicalRitual.enableMythologicalRitualHelper,
-                                        () -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper,
-                                        newValue -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .build())
-                        .build())
+				//Mythological Ritual
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.mythologicalRitual"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper"))
+								.binding(defaults.helpers.mythologicalRitual.enableMythologicalRitualHelper,
+										() -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper,
+										newValue -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.build())
 
 				//Jerry Timer
 				.group(OptionGroup.createBuilder()
@@ -117,6 +117,13 @@ public class HelperCategory {
 								.binding(defaults.helpers.experiments.enableUltrasequencerSolver,
 										() -> config.helpers.experiments.enableUltrasequencerSolver,
 										newValue -> config.helpers.experiments.enableUltrasequencerSolver = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.experiments.blockIncorrectClicks"))
+								.binding(defaults.helpers.experiments.blockIncorrectClicks,
+										() -> config.helpers.experiments.blockIncorrectClicks,
+										newValue -> config.helpers.experiments.blockIncorrectClicks = newValue)
 								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build())
