@@ -12,7 +12,7 @@ import de.hysky.skyblocker.utils.Utils;
 public class PlayerSkinProviderMixin {
 
 	@WrapWithCondition(method = "method_54647", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
-	private static boolean skyblocker$dontLogInvalidSignatureWarnings(Logger logger, String message, Object profileId) {
+	private static boolean dontLogInvalidSignatureWarnings(Logger logger, String message, Object profileId) {
 		return !Utils.isOnHypixel();
 	}
 }

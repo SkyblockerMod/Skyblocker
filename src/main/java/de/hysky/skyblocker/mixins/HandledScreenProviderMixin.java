@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 
 	@Inject(method = "open", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$open(Text name, ScreenHandlerType<T> type, MinecraftClient client, int id, CallbackInfo ci) {
+	private void open(Text name, ScreenHandlerType<T> type, MinecraftClient client, int id, CallbackInfo ci) {
 		ClientPlayerEntity player = client.player;
 		if (player == null) return;
 		if (!Utils.isOnSkyblock()) return;

@@ -12,7 +12,7 @@ import net.minecraft.client.gui.hud.PlayerListHud;
 public class PlayerListHudMixin {
 
 	@Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$hideLatencyIcon(CallbackInfo ci) {
+	private void hideLatencyIcon(CallbackInfo ci) {
 		if (Utils.isOnSkyblock()) ci.cancel();
 	}
 }
