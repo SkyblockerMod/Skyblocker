@@ -163,7 +163,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		if (split && !(this.addedSackCount.isEmpty() && this.removedSackCount.isEmpty())) {
 			// Remove the borders and some random 8 value I do not know where that comes from from the width of the widget to make it fit.
 			int offset = ComponentBasedWidget.BORDER_SZE_W + ComponentBasedWidget.BORDER_SZE_E + 8;
-			this.addComponent(new SeparatorComponent(Text.of("Sacks"), this.getWidth() - offset));
+			this.addComponent(new SeparatorComponent(Text.of("Sacks")));
 			for (String item : addedSackCount.keySet()) {
 				ChangeData entry = addedSackCount.get(item);
 				String itemName = checkNextItem(entry);

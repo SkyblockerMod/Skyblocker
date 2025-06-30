@@ -66,6 +66,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	}
 
 	public void addComponent(Component c) {
+		c.setParent(this);
 		this.components.add(c);
 	}
 
