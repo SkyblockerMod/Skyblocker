@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.compatibility.rei;
 
+import de.hysky.skyblocker.skyblock.hunting.Attribute;
+import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -22,8 +24,20 @@ public class SkyblockCraftingDisplayGenerator implements DynamicDisplayGenerator
         List<SkyblockCraftingRecipe> filteredRecipes = ItemRepository.getRecipesStream()
                 .filter(recipe -> {
                     ItemStack itemStack = inputItem.getValue();
-                    ItemStack itemStack1 = recipe.getResult();
-                    return ItemUtils.getItemId(itemStack1).equals(ItemUtils.getItemId(itemStack));
+					ItemStack itemStack2 = recipe.getResult();
+					String itemId = ItemUtils.getItemId(itemStack);
+					String itemId2 = ItemUtils.getItemId(itemStack2);
+
+					if (!itemId.equals("ATTRIBUTE_SHARD")) {
+						return itemId.equals(itemId2);
+					}
+
+					// Special case for attribute shards since all have the same Item ID
+					if (!itemId2.equals("ATTRIBUTE_SHARD")) return false;
+					Attribute attributeName = Attributes.getAttributeFromItemName(itemStack);
+					Attribute attributeName2 = Attributes.getAttributeFromItemName(itemStack2);
+					if (attributeName == null || attributeName2 == null) return false;
+					return attributeName.name().equals(attributeName2.name());
                 })
                 .toList();
 
