@@ -212,6 +212,8 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         private final WaypointGroupEntry groupEntry;
         private NamedWaypoint waypoint;
         private final List<ClickableWidget> children;
+        private final ButtonWidget buttonUp;
+        private final ButtonWidget buttonDown;
         private final CheckboxWidget enabled;
         private final TextFieldWidget nameField;
         private final TextFieldWidget xField;
@@ -228,6 +230,12 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             this.groupEntry = groupEntry;
             this.waypoint = initialWaypoint;
             //Do not use the initialWaypoint parameter after here for the same reasons as the group one
+            buttonUp = ButtonWidget.builder(Text.of("↑"), button -> {
+            	this.shiftWaypointIndex(-1);
+            }).size(11, 11).build();
+            buttonDown = ButtonWidget.builder(Text.of("↓"), button -> {
+            	this.shiftWaypointIndex(1);
+            }).size(11, 11).build();
             enabled = CheckboxWidget.builder(Text.literal(""), client.textRenderer).checked(screen.isEnabled(waypoint)).callback((checkbox, checked) -> screen.enabledChanged(waypoint, checked)).build();
             nameField = new TextFieldWidget(client.textRenderer, 65, 20, Text.literal("Name"));
             nameField.setText(waypoint.getName().getString());
@@ -253,7 +261,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
                 groupEntry.group.waypoints().remove(waypoint);
                 WaypointsListWidget.this.children().remove(this);
             }).width(38).build();
-            children = List.of(enabled, nameField, xField, yField, zField, colorField, buttonDelete);
+            children = List.of(buttonUp, buttonDown, enabled, nameField, xField, yField, zField, colorField, buttonDelete);
         }
 
         @Override
@@ -264,6 +272,15 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         @Override
         public List<? extends Element> children() {
             return children;
+        }
+
+        private void shiftWaypointIndex(int shift) {
+        	int currentIndex = groupEntry.group.waypoints().indexOf(waypoint);
+        	int newIndex = Math.clamp(currentIndex + shift, 0, groupEntry.group.waypoints().size() - 1);
+
+        	groupEntry.group.waypoints().remove(currentIndex);
+        	groupEntry.group.waypoints().add(newIndex, waypoint);
+        	WaypointsListWidget.this.updateEntries();
         }
 
         private void updateName(String name) {
@@ -331,6 +348,8 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             context.drawTextWithShadow(client.textRenderer, "Y:", width / 2 - 11, y + 6, 0xFF_FFFFFF);
             context.drawTextWithShadow(client.textRenderer, "Z:", width / 2 + 26, y + 6, 0xFF_FFFFFF);
             context.drawTextWithShadow(client.textRenderer, "#", x + entryWidth - 105, y + 6, 0xFF_FFFFFF);
+            buttonUp.setPosition(x + 3, y + (entryHeight - buttonUp.getHeight()) / 2);
+            buttonDown.setPosition(x + 14, y + (entryHeight - buttonDown.getHeight()) / 2);
             enabled.setPosition(x + 26, y + 1);
             nameField.setPosition(enabled.getRight() + 5, y);
             xField.setPosition(width / 2 - 40, y);
