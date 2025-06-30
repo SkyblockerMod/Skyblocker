@@ -36,13 +36,19 @@ public class UIAndVisualsConfig {
     public boolean fancyCraftingTable = true;
 
     @SerialEntry
-    public boolean hideStatusEffectOverlay = false;
+    public boolean hideStatusEffectOverlay = true;
 
     @SerialEntry
     public boolean showEquipmentInInventory = true;
 
     @SerialEntry
     public boolean cancelComponentUpdateAnimation = true;
+
+	@SerialEntry
+	public boolean showCustomizeButton = true;
+
+	@SerialEntry
+	public boolean showConfigButton = false;
 
     @SerialEntry
     public ChestValue chestValue = new ChestValue();

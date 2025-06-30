@@ -6,7 +6,6 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import de.hysky.skyblocker.skyblock.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
-import de.hysky.skyblocker.skyblock.fishing.FishingHudWidget;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -114,6 +113,22 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.cancelComponentUpdateAnimation = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.showCustomizeButton"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip")))
+						.binding(defaults.uiAndVisuals.showCustomizeButton,
+								() -> config.uiAndVisuals.showCustomizeButton,
+								newValue -> config.uiAndVisuals.showCustomizeButton = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.showConfigButton"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.showConfigButton.@Tooltip")))
+						.binding(defaults.uiAndVisuals.showConfigButton,
+								() -> config.uiAndVisuals.showConfigButton,
+								newValue -> config.uiAndVisuals.showConfigButton = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
                 //Chest Value FIXME change dropdown to color controller
                 .group(OptionGroup.createBuilder()

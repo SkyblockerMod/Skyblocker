@@ -55,6 +55,7 @@ public class Utils {
     private static final String PROFILE_PREFIX = "Profile: ";
     private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
     public static final String PROFILE_ID_PREFIX = "Profile ID: ";
+    private static final String PROFILE_ID_SUGGEST_PREFIX = "CLICK THIS TO SUGGEST IT IN CHAT";
 	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
 	private static final RegistryWrapper.WrapperLookup LOOKUP = BuiltinRegistries.createWrapperLookup();
 	private static boolean isOnHypixel = false;
@@ -88,8 +89,8 @@ public class Utils {
     /**
      * The server from which we last received the profile id message from.
      */
-    @NotNull
     private static int profileIdRequest = 0;
+    private static int profileSuggestionMessages = Integer.MAX_VALUE / 2;
     /**
      * The following fields store data returned from the Mod API: {@link #environment}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
      */
@@ -496,7 +497,10 @@ public class Utils {
 
 		    @Override
 		    public void run() {
-		        if (requestId == profileIdRequest) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid", true);
+		        if (requestId == profileIdRequest) {
+		        	MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid", true);
+		        	profileSuggestionMessages = 0;
+		        }
 		    }
         }, 20 * 8); //8 seconds
     }
@@ -557,6 +561,11 @@ public class Utils {
 					SkyblockEvents.PROFILE_INIT.invoker().onSkyblockProfileInit(profileId);
 	                firstProfileUpdate = false;
                 }
+            } else if (Formatting.strip(message).startsWith(PROFILE_ID_SUGGEST_PREFIX)) {
+            	int suggestions = profileSuggestionMessages;
+            	profileSuggestionMessages++;
+
+            	return suggestions > 2;
             }
         }
 
