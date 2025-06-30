@@ -34,10 +34,10 @@ public class SkyblockCraftingDisplayGenerator implements DynamicDisplayGenerator
 
 					// Special case for attribute shards since all have the same Item ID
 					if (!itemId2.equals("ATTRIBUTE_SHARD")) return false;
-					Attribute attributeName = Attributes.getAttributeFromItemName(itemStack);
-					Attribute attributeName2 = Attributes.getAttributeFromItemName(itemStack2);
-					if (attributeName == null || attributeName2 == null) return false;
-					return attributeName.name().equals(attributeName2.name());
+					Attribute attribute = Attributes.getAttributeFromItemName(itemStack);
+					Attribute attribute2 = Attributes.getAttributeFromItemName(itemStack2);
+					if (attribute == null || attribute2 == null) return false;
+					return attribute.name().equals(attribute2.name());
                 })
                 .toList();
 
