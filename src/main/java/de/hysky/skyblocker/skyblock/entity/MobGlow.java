@@ -152,7 +152,7 @@ public class MobGlow {
 
 		if (Utils.isInGalatea()) {
 			return switch (entity) {
-				case ShulkerEntity shulker when shulker.getColor() == DyeColor.GREEN && SkyblockerConfigManager.get().hunting.huntingMobs.highlightHideongift -> DyeColor.YELLOW.getSignColor();
+				case ShulkerEntity shulker when shulker.getColor() == DyeColor.GREEN && SkyblockerConfigManager.get().hunting.huntingMobs.highlightHideonleaf -> DyeColor.YELLOW.getSignColor();
 
 				default -> NO_GLOW;
 			};

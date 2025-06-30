@@ -19,6 +19,6 @@ public class HuntingConfig {
 		public boolean silencePhantoms = true;
 
 		@SerialEntry
-		public boolean highlightHideongift = true;
+		public boolean highlightHideonleaf = true;
 	}
 }
