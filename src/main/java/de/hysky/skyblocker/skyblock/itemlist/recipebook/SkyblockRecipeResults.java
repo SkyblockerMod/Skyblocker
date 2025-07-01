@@ -84,6 +84,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 		this.nextPageButton.setTextures(RecipeBookResults.PAGE_FORWARD_TEXTURES);
 		this.prevPageButton = new ToggleButtonWidget(parentLeft + 38, parentTop + 137, 12, 17, true);
 		this.prevPageButton.setTextures(RecipeBookResults.PAGE_BACKWARD_TEXTURES);
+		updateResultButtons();
 	}
 
 	@Override

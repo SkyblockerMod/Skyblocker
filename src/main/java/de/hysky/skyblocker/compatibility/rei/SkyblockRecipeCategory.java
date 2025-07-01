@@ -78,7 +78,7 @@ public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDis
                     .backgroundEnabled(outputSlot.showBackground())
                     .entry(EntryStacks.of(outputSlot.stack())));
         }
-        out.add(Widgets.wrapRenderer((Rectangle) null, (context, bounds1, mouseX, mouseY, delta) -> {
+        out.add(Widgets.wrapRenderer(bounds, (context, bounds1, mouseX, mouseY, delta) -> {
             MatrixStack matrices = context.getMatrices();
             matrices.push();
             matrices.translate(bounds.getX(), bounds.getY(), 0.f);
