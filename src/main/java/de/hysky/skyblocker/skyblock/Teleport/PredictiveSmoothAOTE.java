@@ -169,8 +169,9 @@ public class PredictiveSmoothAOTE {
 		if (CLIENT.player == null || CLIENT.world == null) {
 			return;
 		}
-		//get return item
-		ItemStack stack = CLIENT.player.getStackInHand(hand);
+
+		// make sure the predictive algorithm is selected
+		if (!SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.predictive) return;
 
 		//make sure it's not disabled
 		if (teleportDisabled) {
