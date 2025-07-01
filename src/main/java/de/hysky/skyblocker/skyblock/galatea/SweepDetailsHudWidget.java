@@ -13,29 +13,29 @@ import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
+import java.text.DecimalFormat;
+import java.util.Map;
 import java.util.Set;
 
 @RegisterWidget
 public class SweepDetailsHudWidget extends ComponentBasedWidget {
-	private final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Map<String, ItemStack> LOG_TO_ITEM = Map.of(
+			"Fig", new ItemStack(Items.STRIPPED_SPRUCE_LOG),
+			"Mangrove", new ItemStack(Items.MANGROVE_LOG),
+			"Jungle", new ItemStack(Items.JUNGLE_LOG),
+			"Acacia", new ItemStack(Items.ACACIA_LOG),
+			"Dark Oak", new ItemStack(Items.DARK_OAK_LOG),
+			"Spruce", new ItemStack(Items.SPRUCE_LOG),
+			"Birch", new ItemStack(Items.BIRCH_LOG)
+	);
+	private static final ItemStack RED_CONCRETE = new ItemStack(Items.RED_CONCRETE);
+	private static final DecimalFormat FORMATTER = new DecimalFormat("0.00");
 	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.THE_PARK);
 
 	public SweepDetailsHudWidget() {
 		super(Text.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweepDetails");
 		update();
-	}
-
-	private ItemStack getLogItem(String logName) {
-		return switch (logName) {
-			case "Fig" -> new ItemStack(Items.STRIPPED_SPRUCE_LOG);
-			case "Mangrove" -> new ItemStack(Items.MANGROVE_LOG);
-			case "Jungle" -> new ItemStack(Items.JUNGLE_LOG);
-			case "Acacia" -> new ItemStack(Items.ACACIA_LOG);
-			case "Dark Oak" -> new ItemStack(Items.DARK_OAK_LOG);
-			case "Spruce" -> new ItemStack(Items.SPRUCE_LOG);
-			case "Birch" -> new ItemStack(Items.BIRCH_LOG);
-			default -> new ItemStack(Items.RED_CONCRETE);
-		};
 	}
 
 	@Override
@@ -53,7 +53,8 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 			return;
 		}
 
-		addComponent(new IcoTextComponent(getLogItem(SweepDetailsListener.lastTreeType), Text.translatable("skyblocker.galatea.hud.sweepDetails.treeType", SweepDetailsListener.lastTreeType)));
+		ItemStack logItem = LOG_TO_ITEM.getOrDefault(SweepDetailsListener.lastTreeType, RED_CONCRETE);
+		addComponent(new IcoTextComponent(logItem, Text.translatable("skyblocker.galatea.hud.sweepDetails.treeType", SweepDetailsListener.lastTreeType)));
 		addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.toughness", SweepDetailsListener.toughness)));
 
 		Text sweepAmount;
@@ -61,11 +62,11 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 		final int redColor = 0xFFFF5555;
 		final int defaultColor = 0xFFFFFFFF;
 		if (SweepDetailsListener.maxSweep > SweepDetailsListener.lastSweep) {
-			MutableText lastSweep = Text.literal(Float.toString(SweepDetailsListener.lastSweep)).withColor(redColor);
-			Text thisSweep = Text.literal(Float.toString(SweepDetailsListener.maxSweep)).withColor(greenColor);
+			MutableText lastSweep = Text.literal(FORMATTER.format(SweepDetailsListener.lastSweep)).withColor(redColor);
+			Text thisSweep = Text.literal(FORMATTER.format(SweepDetailsListener.maxSweep)).withColor(greenColor);
 			sweepAmount = lastSweep.append(Text.literal(" (").withColor(defaultColor)).append(thisSweep).append(Text.literal(")").withColor(defaultColor));
 		} else {
-			sweepAmount = Text.literal(Float.toString(SweepDetailsListener.maxSweep)).withColor(greenColor);
+			sweepAmount = Text.literal(FORMATTER.format(SweepDetailsListener.maxSweep)).withColor(greenColor);
 		}
 		addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.sweep", sweepAmount)));
 

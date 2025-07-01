@@ -39,6 +39,22 @@ public class SweepDetailsListener implements ChatMessageListener {
 		lastTreeType = "Unknown";
 		axePenalty = false;
 		stylePenalty = false;
+		toughness = "";
+		logs = "";
+		axePenaltyAmount = -1;
+		stylePenaltyAmount = -1;
+		correctStyle = "";
+	}
+
+	private static float parsePenalty(String rawPenaltyAmount) {
+		float penaltyAmount;
+		if (NumberUtils.isCreatable(rawPenaltyAmount)) {
+			penaltyAmount = Float.parseFloat(rawPenaltyAmount);
+			lastSweep *= 1 - (-penaltyAmount / 100f);
+		} else {
+			penaltyAmount = -1f;
+		}
+		return penaltyAmount;
 	}
 
 	@Override
@@ -69,7 +85,6 @@ public class SweepDetailsListener implements ChatMessageListener {
 
 		Matcher treeToughness = TREE_TOUGHNESS.matcher(msg);
 		if (treeToughness.matches()) {
-
 			lastTreeType = treeToughness.group(1);
 			toughness = treeToughness.group(2);
 			logs = treeToughness.group(3);
@@ -79,15 +94,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 		Matcher axeThrow = AXE_THROW_PENALTY.matcher(msg);
 		if (axeThrow.matches()) {
 			axePenalty = true;
-
-			String rawAxePenaltyAmount = axeThrow.group(1);
-			if (NumberUtils.isCreatable(rawAxePenaltyAmount)) {
-				axePenaltyAmount = Float.parseFloat(rawAxePenaltyAmount);
-				lastSweep *= -axePenaltyAmount / 100;
-			} else {
-				axePenaltyAmount = -1;
-			}
-
+			axePenaltyAmount = parsePenalty(axeThrow.group(1));
 			logs = axeThrow.group(2);
 			return ChatFilterResult.FILTER;
 		}
@@ -95,16 +102,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 		Matcher wrongStyle = WRONG_STYLE_PENALTY.matcher(msg);
 		if (wrongStyle.matches()) {
 			stylePenalty = true;
-
-			String rawStylePenaltyAmount = wrongStyle.group(1);
-			if (NumberUtils.isCreatable(rawStylePenaltyAmount)) {
-				stylePenaltyAmount = Float.parseFloat(rawStylePenaltyAmount);
-				lastSweep *= -stylePenaltyAmount / 100;
-				System.out.println(lastSweep);
-			} else {
-				stylePenaltyAmount = -1;
-			}
-
+			stylePenaltyAmount = parsePenalty(wrongStyle.group(1));
 			logs = wrongStyle.group(2);
 			correctStyle = wrongStyle.group(3);
 			return ChatFilterResult.FILTER;
