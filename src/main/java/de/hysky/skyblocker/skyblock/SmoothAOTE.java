@@ -280,6 +280,7 @@ public class SmoothAOTE {
 		Vec3d look = CLIENT.player.getRotationVector(pitch, yaw);
 
 		//make sure the player is not talking to an npc. And if they are cancel the teleport
+		if (startPos == null) return;
 		if (IsTargetingNPC(CLIENT.player, 4, startPos, look)) {
 			startPos = null;
 			teleportVector = null;
@@ -310,6 +311,7 @@ public class SmoothAOTE {
 	 * @return if an NPC is targeted
 	 */
 	private static Boolean IsTargetingNPC(PlayerEntity player, double maxDistance, Vec3d startPos, Vec3d look) {
+		if (startPos == null) return false;
 		// Calculate end position for raycast
 		Vec3d endPos = startPos.add(look.multiply(maxDistance));
 
