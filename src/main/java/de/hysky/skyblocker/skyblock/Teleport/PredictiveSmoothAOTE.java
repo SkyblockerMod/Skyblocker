@@ -1,8 +1,9 @@
-package de.hysky.skyblocker.skyblock;
+package de.hysky.skyblocker.skyblock.Teleport;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
@@ -41,7 +42,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SmoothAOTE {
+public class PredictiveSmoothAOTE {
 
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
@@ -64,8 +65,8 @@ public class SmoothAOTE {
 
 	@Init
 	public static void init() {
-		UseItemCallback.EVENT.register(SmoothAOTE::onItemInteract);
-		UseBlockCallback.EVENT.register(SmoothAOTE::onBlockInteract);
+		UseItemCallback.EVENT.register(PredictiveSmoothAOTE::onItemInteract);
+		UseBlockCallback.EVENT.register(PredictiveSmoothAOTE::onBlockInteract);
 	}
 
 	/**
@@ -186,65 +187,14 @@ public class SmoothAOTE {
 			return;
 		}
 
-		//work out if the player is holding a teleporting item that is enabled and if so how far the item will take them
 		ItemStack heldItem = CLIENT.player.getMainHandStack();
 		String itemId = heldItem.getSkyblockId();
 		NbtCompound customData = ItemUtils.getCustomData(heldItem);
-
-		int distance;
-		switch (itemId) {
-			case "ASPECT_OF_THE_LEECH_1" -> {
-				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWeirdTransmission) {
-					distance = 3;
-					break;
-				}
-				return;
-
-			}
-			case "ASPECT_OF_THE_LEECH_2" -> {
-				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWeirdTransmission) {
-					distance = 4;
-					break;
-				}
-				return;
-			}
-			case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
-				if (CLIENT.options.sneakKey.isPressed() && customData.getInt("ethermerge", 0) == 1) {
-					if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission) {
-						distance = extractTunedCustomData(customData, 57);
-						break;
-					}
-				} else if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableInstantTransmission) {
-					distance = extractTunedCustomData(customData, 8);
-					break;
-				}
-				return;
-			}
-			case "ETHERWARP_CONDUIT" -> {
-				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission) {
-					distance = extractTunedCustomData(customData, 57);
-					break;
-				}
-				return;
-			}
-			case "SINSEEKER_SCYTHE" -> {
-				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableSinrecallTransmission) {
-					distance = extractTunedCustomData(customData, 4);
-					break;
-				}
-				return;
-			}
-			case "NECRON_BLADE", "ASTRAEA", "HYPERION", "SCYLLA", "VALKYRIE" -> {
-				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWitherImpact) {
-					distance = 10;
-					break;
-				}
-				return;
-			}
-			default -> {
-				return;
-			}
+		int distance = getItemDistance(itemId, customData);
+		if(distance == -1) {
+			return;
 		}
+
 		//make sure the player has enough mana to do the teleport
 		Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem, MANA_LORE);
 		if (manaNeeded != null && manaNeeded.matches()) {
@@ -301,6 +251,72 @@ public class SmoothAOTE {
 		teleportVector = teleportVector.subtract(offsetVec);
 		//add 1 to teleports ahead
 		teleportsAhead += 1;
+	}
+
+	/**
+	 * work out if the player is holding a teleporting item that is enabled and if so how far the item will take them
+	 * @param itemId id of item to check
+	 * @param customData custom data of item to check
+	 * @return distance the item teleports or -1 if not valid
+	 */
+	protected static int getItemDistance(String itemId, NbtCompound customData){
+
+
+		int distance;
+		switch (itemId) {
+			case "ASPECT_OF_THE_LEECH_1" -> {
+				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWeirdTransmission) {
+					distance = 3;
+					break;
+				}
+				return -1;
+
+			}
+			case "ASPECT_OF_THE_LEECH_2" -> {
+				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWeirdTransmission) {
+					distance = 4;
+					break;
+				}
+				return -1;
+			}
+			case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {
+				if (CLIENT.options.sneakKey.isPressed() && customData.getInt("ethermerge", 0) == 1) {
+					if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission) {
+						distance = extractTunedCustomData(customData, 57);
+						break;
+					}
+				} else if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableInstantTransmission) {
+					distance = extractTunedCustomData(customData, 8);
+					break;
+				}
+				return -1;
+			}
+			case "ETHERWARP_CONDUIT" -> {
+				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableEtherTransmission) {
+					distance = extractTunedCustomData(customData, 57);
+					break;
+				}
+				return -1;
+			}
+			case "SINSEEKER_SCYTHE" -> {
+				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableSinrecallTransmission) {
+					distance = extractTunedCustomData(customData, 4);
+					break;
+				}
+				return -1;
+			}
+			case "NECRON_BLADE", "ASTRAEA", "HYPERION", "SCYLLA", "VALKYRIE" -> {
+				if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.enableWitherImpact) {
+					distance = 10;
+					break;
+				}
+				return -1;
+			}
+			default -> {
+				return -1;
+			}
+		}
+		return distance;
 	}
 
 	/**

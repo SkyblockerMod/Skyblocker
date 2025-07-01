@@ -4,7 +4,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.ItemPickupWidget;
-import de.hysky.skyblocker.skyblock.TeleportOverlay;
+import de.hysky.skyblocker.skyblock.Teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
@@ -454,6 +454,14 @@ public class UIAndVisualsCategory {
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE"))
                         .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip")))
                         .collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.predictive"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip")))
+								.binding(defaults.uiAndVisuals.smoothAOTE.predictive,
+										() -> config.uiAndVisuals.smoothAOTE.predictive,
+										newValue -> config.uiAndVisuals.smoothAOTE.predictive = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip")))
