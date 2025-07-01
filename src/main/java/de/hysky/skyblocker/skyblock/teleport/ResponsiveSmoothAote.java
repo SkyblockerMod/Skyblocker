@@ -44,9 +44,7 @@ public class ResponsiveSmoothAote {
 		Vec3d teleportVector = CLIENT.player.getEyePos().subtract(lastPosition);
 		double progressDiff = progress - lastProgress;
 		double relativeProgress = progressDiff / (1 - lastProgress);
-		System.out.println(progressDiff);
-		System.out.println(relativeProgress);
-		System.out.println(lastPosition);
+
 
 		//return interpolated pos
 		if (lastPosition == null) return null; // some who still a problem here 
