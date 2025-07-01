@@ -85,6 +85,6 @@ public abstract class SignEditScreenMixin extends Screen {
 
 	@Unique
 	private boolean isInputSign() {
-		return messages[1].equals("^^^^^^^^^^^^^^^");
+		return messages[1].equals("^^^^^^^^^^^^^^^") || messages[1].equals("^^Flipping^^");
 	}
 }
