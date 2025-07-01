@@ -69,7 +69,7 @@
     "key.itemPriceRefresh": "Bazaar neuladen",
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Wenn die Menge an Toxic Arrow Poison in deinem Inventar unter dem festegelegten Wert liegt, wirst du gewarnt.\n\n16 ist das absolute Minimum.\nFür eine fehlerfreie 'DPS'-Phase mit Prefire sind 32 empfohlen.",
     "skyblocker.config.crimsonIsle.kuudra.fuelWaypoints": "Treibstoff Wegpunkte",
-    "argument.color.rgb.incomplete": "Unvollständig (3 Farbwerte erwartet)",
+    "argument.color.rgb.incomplete": "Unvollständig (3 Farbwerte erwartet).",
     "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning": "Warnung: Kein Arrow Poison",
     "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Warnt dich, wenn du einen Bogen zückst und kein Toxic Arrow Poison in deinem Inventar hast. Funktioniert nur während der DPS-Phase.",
     "text.skyblocker.reset": "Zurücksetzen",
