@@ -2,8 +2,8 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.Teleport.PredictiveSmoothAOTE;
-import de.hysky.skyblocker.skyblock.Teleport.ResponsiveSmoothAote;
+import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
+import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAote;
 import net.minecraft.client.render.Camera;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;

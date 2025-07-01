@@ -10,8 +10,8 @@ import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.HealthBars;
-import de.hysky.skyblocker.skyblock.Teleport.PredictiveSmoothAOTE;
-import de.hysky.skyblocker.skyblock.Teleport.ResponsiveSmoothAote;
+import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
+import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAote;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
@@ -111,7 +111,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	private void skyblocker$onTeleport(PlayerPositionLookS2CPacket packet, CallbackInfo ci, @Share("playerBeforeTeleportBlockPos") LocalRef<BlockPos> beforeTeleport) {
 		//player has been teleported by the server, tell the smooth AOTE this
 		PredictiveSmoothAOTE.playerTeleported();
-		ResponsiveSmoothAote.playerTeleported();
 		TeleportMaze.INSTANCE.onTeleport(client, beforeTeleport.get(), client.player.getBlockPos().toImmutable());
 	}
 

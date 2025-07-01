@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.Teleport;
+package de.hysky.skyblocker.skyblock.teleport;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;

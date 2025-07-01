@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.skyblock.Teleport.PredictiveSmoothAOTE;
+import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.network.PingMeasurer;
