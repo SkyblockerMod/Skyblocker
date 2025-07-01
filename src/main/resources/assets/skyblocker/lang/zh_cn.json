@@ -1261,5 +1261,8 @@
     "skyblocker.config.uiAndVisuals.showCustomizeButton": "显示自定义护甲按钮",
     "skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip": "在背包界面的玩家模型旁边显示一个用于打开自定义护甲界面的刷子图标。",
     "skyblocker.config.uiAndVisuals.showConfigButton.@Tooltip": "在Skyblock菜单中添加一个用于打开Skyblocker设置的按钮。",
-    "skyblocker.config.uiAndVisuals.slotText.hotfPerkLevel": "HOTF能力等级"
+    "skyblocker.config.uiAndVisuals.slotText.hotfPerkLevel": "HOTF能力等级",
+    "skyblocker.config.hunting.huntingMobs.silencePhantoms.@Tooltip": "将Galatea岛上所有幻翼相关的声音静音",
+    "skyblocker.config.uiAndVisuals.inputCalculator.divisionByZeroError": "除数不可为0",
+    "skyblocker.config.hunting.huntingMobs.silencePhantoms": "静音恼人的幻翼"
 }
