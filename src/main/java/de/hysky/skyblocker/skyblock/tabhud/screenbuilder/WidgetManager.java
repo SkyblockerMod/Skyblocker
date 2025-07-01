@@ -27,6 +27,7 @@ import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
@@ -35,10 +36,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -53,6 +51,10 @@ public class WidgetManager {
 	private static final Map<Location, ScreenBuilder> BUILDER_MAP = new EnumMap<>(Arrays.stream(Location.values()).collect(Collectors.toMap(Function.identity(), ScreenBuilder::new)));
 
 	public static final Map<String, HudWidget> widgetInstances = new HashMap<>();
+
+	public static @Nullable HudWidget getWidget(String id) {
+		return widgetInstances.get(id);
+	}
 
 	public static ScreenBuilder getScreenBuilder(Location location) {
 		return BUILDER_MAP.get(location);
@@ -202,7 +204,7 @@ public class WidgetManager {
 	 * Do not change the signature unless you know what you're doing.
 	 */
 	public static void addWidgetInstance(HudWidget widget) {
-		HudWidget put = widgetInstances.put(widget.getInternalID(), widget);
+		HudWidget put = widgetInstances.put(widget.getInformation().id(), widget);
 		if (widget instanceof TabHudWidget tabHudWidget) {
 			PlayerListManager.tabWidgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
 		}
@@ -215,11 +217,7 @@ public class WidgetManager {
 	public enum ScreenLayer implements StringIdentifiable {
 		MAIN_TAB,
 		SECONDARY_TAB,
-		HUD,
-		/**
-		 * Default is only present for config and isn't used anywhere else
-		 */
-		DEFAULT;
+		HUD;
 
 		public static final Codec<ScreenLayer> CODEC = StringIdentifiable.createCodec(ScreenLayer::values);
 
@@ -229,13 +227,12 @@ public class WidgetManager {
 				case MAIN_TAB -> "Main Tab";
 				case SECONDARY_TAB -> "Secondary Tab";
 				case HUD -> "HUD";
-				case DEFAULT -> "Default";
 			};
 		}
 
 		@Override
 		public String asString() {
-			return name();
+			return name().toLowerCase(Locale.ENGLISH);
 		}
 	}
 }

@@ -57,10 +57,8 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 *
 	 * @param title      title
 	 * @param colorValue the colour
-	 * @param internalID the internal ID, for config, positioning depending on other widgets, all that good stuff
 	 */
-	public ComponentBasedWidget(MutableText title, Integer colorValue, String internalID) {
-		super(internalID);
+	public ComponentBasedWidget(MutableText title, Integer colorValue) {
 		this.title = title;
 		this.color = 0xff000000 | colorValue;
 	}
@@ -81,10 +79,16 @@ public abstract class ComponentBasedWidget extends HudWidget {
 			this.components.clear();
 			this.components.addAll(ERROR_COMPONENTS);
 		}
-		this.pack();
+		this.pack(this.components);
 	}
 
 	public abstract void updateContent();
+
+	protected abstract List<Component> getConfigComponents();
+
+	public boolean shouldUpdateBeforeRendering() {
+		return false;
+	}
 
 	/**
 	 * Shorthand function for simple components.
@@ -113,7 +117,20 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	}
 
 	@Override
-	public final void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	public final void renderWidget(DrawContext context, float delta) {
+		if (shouldUpdateBeforeRendering()) update();
+		renderInternal(context, this.components);
+	}
+
+	@Override
+	public void renderConfig(DrawContext context, float delta) {
+		// TODO do not pack every time maybe
+		List<Component> configComponents = getConfigComponents();
+		this.pack(configComponents);
+		this.renderInternal(context, configComponents);
+	}
+
+	private void renderInternal(DrawContext context, List<Component> components) {
 		MatrixStack ms = context.getMatrices();
 
 		ms.push();
@@ -158,7 +175,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 * <b>Must be called before returning from the widget constructor and after all
 	 * components are added!</b>
 	 */
-	private void pack() {
+	private void pack(List<Component> components) {
 		h = 0;
 		w = 0;
 		for (Component c : components) {

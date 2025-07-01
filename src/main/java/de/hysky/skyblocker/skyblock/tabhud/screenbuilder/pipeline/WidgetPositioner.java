@@ -5,8 +5,6 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import net.minecraft.client.gui.ScreenPos;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
-
 public abstract class WidgetPositioner {
 	protected final int screenWidth;
 	protected final int screenHeight;
@@ -24,9 +22,9 @@ public abstract class WidgetPositioner {
 	 */
 	public abstract void finalizePositioning();
 
-	public static void applyRuleToWidget(HudWidget widget, int screenWidth, int screenHeight, Function<String, PositionRule> ruleProvider) {
+	public static void applyRuleToWidget(HudWidget widget, int screenWidth, int screenHeight) {
 		widget.setPositioned(true);
-		PositionRule rule = ruleProvider.apply(widget.getInternalID());
+		PositionRule rule = widget.getPositionRule();
 		if (rule == null) return;
 
 		int startX;
@@ -38,7 +36,7 @@ public abstract class WidgetPositioner {
 		} else {
 			HudWidget parentWidget = WidgetManager.widgetInstances.get(rule.parent());
 			if (parentWidget == null) return;
-			if (!parentWidget.isPositioned()) applyRuleToWidget(parentWidget, screenWidth, screenHeight, ruleProvider);
+			if (!parentWidget.isPositioned()) applyRuleToWidget(parentWidget, screenWidth, screenHeight);
 
 			// size 0 part 2
 			if (parentWidget.isVisible()) {

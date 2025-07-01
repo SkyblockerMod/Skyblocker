@@ -16,7 +16,6 @@ import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @RegisterWidget
@@ -95,7 +94,7 @@ public class CrystalsHudWidget extends HudWidget {
 	}
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void renderWidget(DrawContext context, float delta) {
 		float scale = SkyblockerConfigManager.get().mining.crystalsHud.mapScaling;
 
 		//make sure the map renders infront of some stuff - improve this in the future with better layering (1.20.5?)
