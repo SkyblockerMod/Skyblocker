@@ -188,6 +188,12 @@ public class WidgetManager {
 					new PositionRule(CommsWidget.ID, new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, WidgetManager.ScreenLayer.HUD)
 			);
 		}
+
+		screenBuilder = getScreenBuilder(Location.DUNGEON);
+		screenBuilder.setPositionRule(
+				"dungeon_splits",
+				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, 5, 5, WidgetManager.ScreenLayer.HUD)
+		);
 	}
 
 
