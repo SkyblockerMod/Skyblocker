@@ -22,7 +22,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	public static final UltrasequencerSolver INSTANCE = new UltrasequencerSolver();
 	/**
 	 * The playable slots of Ultrasequencer in the Metaphysical level.
-	 * 
+	 * <p>
 	 * Even though the Supreme/Transcendent levels have less playable slots we filter out black glass panes later on
 	 * since black isn't in the color sequence.
 	 */
@@ -51,7 +51,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	/**
 	 * Saves the shown items to {@link #slots the slot map}.
 	 */
-	@SuppressWarnings({ "JavadocReference", "incomplete-switch" })
+	@SuppressWarnings({"JavadocReference", "incomplete-switch"})
 	@Override
 	protected void tick(GenericContainerScreen screen) {
 		switch (getState()) {
@@ -108,13 +108,17 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	@SuppressWarnings("JavadocReference")
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
-		if (getState() == State.SHOW && slot == ultrasequencerNextSlot) {
-			int count = getSlots().get(ultrasequencerNextSlot).getCount() + 1;
-			getSlots().int2ObjectEntrySet().stream()
-					.filter(entry -> entry.getValue().getCount() == count)
-					.findAny()
-					.map(Int2ObjectMap.Entry::getIntKey)
-					.ifPresent(nextSlot -> this.ultrasequencerNextSlot = nextSlot);
+		if (getState() == State.SHOW) {
+			if (slot == ultrasequencerNextSlot) {
+				int count = getSlots().get(ultrasequencerNextSlot).getCount() + 1;
+				getSlots().int2ObjectEntrySet().stream()
+						.filter(entry -> entry.getValue().getCount() == count)
+						.findAny()
+						.map(Int2ObjectMap.Entry::getIntKey)
+						.ifPresent(nextSlot -> this.ultrasequencerNextSlot = nextSlot);
+			} else {
+				return shouldBlockIncorrectClicks();
+			}
 		}
 		return super.onClickSlot(slot, stack, screenId);
 	}
