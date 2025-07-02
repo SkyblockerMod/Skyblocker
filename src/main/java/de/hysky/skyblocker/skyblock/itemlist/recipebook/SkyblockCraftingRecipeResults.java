@@ -22,6 +22,7 @@ import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenTexts;
+import net.minecraft.screen.Screen;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
