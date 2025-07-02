@@ -586,5 +586,14 @@
     "skyblocker.powderTracker.historyReset": "現在のプロファイルのパウダー収集の追跡がリセットされました。",
     "skyblocker.powderTracker.rewardsFilteredOut": "フィルタリングの後、パウダー収集の報酬リストは空です (´・ω・｀)",
     "skyblocker.config.mining.glacite.fossilSolver.toolTip.possiblePatterns": "考えられるパターン: ",
-    "skyblocker.config.dungeons.terminals.solveSameColor": "すべてを同じ色に変更する"
+    "skyblocker.config.dungeons.terminals.solveSameColor": "すべてを同じ色に変更する",
+    "skyblocker.config.foraging.sweepOverlay": "Sweep オーバーレイ",
+    "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Sweep オーバーレイを有効",
+    "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay.@Tooltip": "Sweepによって破壊される原木をハイライトします。",
+    "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay": "投擲アビリティのオーバーレイを表示",
+    "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "斧の投擲アビリティを使用するときに原木をハイライトします。",
+    "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "Sweepオーバーレイの色",
+    "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "Sweepが見つかりません: /tablist でSweep統計をプレイヤーリストに追加してください",
+    "skyblocker.config.foraging.galatea.seaLumieMinCount": "Sea Lumie をハイライトするための最小回数",
+    "skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip": "ブロックをハイライトするために、ブロック内に存在する必要がある Sea Lumies の最小数。"
 }
