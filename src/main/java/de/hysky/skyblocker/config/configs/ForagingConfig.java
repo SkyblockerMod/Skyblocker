@@ -16,9 +16,6 @@ public class ForagingConfig {
     @SerialEntry
     public boolean enableForestNodeHelper = true;
 
-		@SerialEntry
-		public boolean enableForestNodeHelper = true;
-
     @SerialEntry
     public boolean solveForestTemplePuzzle = true;
 
