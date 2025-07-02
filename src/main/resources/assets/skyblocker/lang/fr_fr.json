@@ -300,7 +300,6 @@
     "skyblocker.config.dungeons.puzzle.solveWaterboard": "Résous le puzzle du mur d'eau",
     "skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip": "Active les leviers indiqués dans le temps imparti pour résoudre le puzzle.",
     "skyblocker.config.dungeons.puzzle.creeperSolver.@Tooltip": "Surligne le meilleur rayon à faire et les cibles à toucher.",
-    "emi.category.skyblocker.skyblock": "Skyblock",
     "skyblocker.config.dungeons.puzzle.creeperSolver": "Résoudre le puzzle de rayons de creeper",
     "skyblocker.config.dungeons.secretWaypoints": "Waypoints des secrets de donjon",
     "skyblocker.config.dungeons.puzzle.blazeSolver.@Tooltip": "Encadre le blaze correct en vert, dessine aussi une ligne et encadre le prochain blaze à tuer en blanc.",

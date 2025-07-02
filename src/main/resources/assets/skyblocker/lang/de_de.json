@@ -261,7 +261,6 @@
     "skyblocker.fairySouls.markAllFound": "§rAlle Fairy Souls auf dieser Insel als gefunden markiert",
     "skyblocker.fairySouls.markAllMissing": "§rAlle Fairy Souls auf dieser Insel als nicht gefunden markiert",
     "skyblocker.shortcuts.commandSuggestionTooltip": "Vorschläge für Befehle funktionieren aufgrund von Beschränkungen in Minecraft erst nach einem Neustart des Spiels.",
-    "emi.category.skyblocker.skyblock": "Skyblock",
     "skyblocker.config.farming.general.noCameraEntity": "Keine Kamera-Entität",
     "skyblocker.config.farming.general.yaw": "Winkel: %s",
     "skyblocker.config.farming.general.pitch": "Höhe: %s",
