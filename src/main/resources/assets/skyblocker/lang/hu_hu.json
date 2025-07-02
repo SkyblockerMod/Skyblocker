@@ -49,5 +49,10 @@
     "skyblocker.config.crimsonIsle.kuudra.suppliesAndFuelWaypointType": "Kellékek/üzemanyag útpont típusa",
     "skyblocker.config.crimsonIsle.kuudra.supplyWaypoints": "Kellékek útpontja",
     "skyblocker.config.debug": "Debug",
-    "skyblocker.config.debug.dumpFormat": "Dump Formátum"
+    "skyblocker.config.debug.dumpFormat": "Dump Formátum",
+    "skyblocker.config.debug.dumpRange": "Üres Dump Hatáskör",
+    "skyblocker.config.dungeons.croesusHelper": "Croesus segítő",
+    "text.skyblocker.offline": "Offline",
+    "skyblocker.config.debug.corpseFinderDebug": "Debug Test Kereső",
+    "skyblocker.config.dungeons": "Dungeons"
 }
