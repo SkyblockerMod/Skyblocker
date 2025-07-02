@@ -236,6 +236,7 @@
   "skyblocker.config.dungeons.terminals.solveColor": "Solve Select Colored",
   "skyblocker.config.dungeons.terminals.solveOrder": "Solve Click In Order",
   "skyblocker.config.dungeons.terminals.solveStartsWith": "Solve Starts With",
+  "skyblocker.config.dungeons.terminals.solveSameColor": "Solve Change All to Same Color",
 
   "skyblocker.config.farming": "Farming",
 
@@ -288,6 +289,14 @@
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Solve Forest Temple Puzzle",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Displays the amount of times you need to rotate the terracotta blocks. For positive rotations you right click while for negative rotations you left click.",
 
+   "skyblocker.config.foraging.sweepOverlay": "Sweep Overlay",
+  "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Enable Sweep Overlay",
+  "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay.@Tooltip": "Highlights logs that will be destroyed from sweep.",
+  "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay": "Show Overlay for Thrown Ability",
+  "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "Highlights logs when using an axe's thrown ability.",
+  "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "Sweep Overlay Color",
+  "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "Sweep Missing: Add the Sweep stat to your player list with /tablist",
+  
   "skyblocker.config.foraging.hunting": "Hunting",
 
   "skyblocker.config.general": "General",
@@ -523,6 +532,12 @@
   "skyblocker.config.hunting": "Hunting",
   "skyblocker.config.hunting.huntingBoxHelper": "Enable Hunting Box Helper",
   "skyblocker.config.hunting.huntingBoxHelper.@Tooltip": "Highlights shards that you have enough of to syphon and reach the next tier of the attribute in the Hunting Box. Also displays the sell price of shards in the tooltip.",
+
+  "skyblocker.config.hunting.huntingMobs": "Hunting Mobs",
+  "skyblocker.config.hunting.huntingMobs.silencePhantoms": "Silence Phantoms",
+  "skyblocker.config.hunting.huntingMobs.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while on Galatea.",
+  "skyblocker.config.hunting.huntingMobs.highlightHideonleaf": "Highlight Hideonleaf",
+  "skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip": "Highlights Hideonleaves in yellow to make them easier to see.",
 
   "skyblocker.config.chat": "Chat",
 

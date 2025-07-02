@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.WardrobeKeybinds;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
+import de.hysky.skyblocker.skyblock.dungeon.terminal.SameColorTerminal;
 import de.hysky.skyblocker.skyblock.hunting.AttributeLevelHelper;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
@@ -61,6 +62,7 @@ public class SlotTextManager {
 			new NewYearCakeAdder(),
 			WardrobeKeybinds.INSTANCE,
 			new SkyblockGuideAdder(),
+			SameColorTerminal.INSTANCE,
 			AttributeLevelHelper.INSTANCE
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
