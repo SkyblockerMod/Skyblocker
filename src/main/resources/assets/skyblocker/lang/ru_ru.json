@@ -563,7 +563,7 @@
     "skyblocker.partyFinder.partyCard.minDungeonLevel": "Необходимый мин. уровень данжа: %d",
     "skyblocker.partyFinder.noParties": "Ничего не найдено. Печалька :(",
     "skyblocker.partyFinder.loadingError": "Если вы смотрите на это более 5 секунд, то что-то, наверное, пошло не так...",
-    "emi.category.skyblocker.skyblock": "Скайблок",
+    "emi.category.skyblocker.skyblock_crafting": "Скайблок",
     "skyblocker.waypoints.ordered.import.skyblocker.fail": "§cНе удалось импортировать метки из формата Skyblocker Ordered Waypoints. Убедитесь, что данные меток скопированы в буфер обмена!",
     "skyblocker.crimson.kuudra.lowArrowPoison": "Мало Отравленных стрел!",
     "skyblocker.partyFinder.deList": "Нажми чтобы выйти из поиска",
