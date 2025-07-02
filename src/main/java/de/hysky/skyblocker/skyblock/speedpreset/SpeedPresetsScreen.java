@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.speedPreset;
+package de.hysky.skyblocker.skyblock.speedpreset;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
