@@ -6,6 +6,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.SinglePreparationResourceReloader;
@@ -25,7 +26,7 @@ public class FurfskyCompatibility {
 
 	@Init(priority = -1)
 	public static void init() {
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new ReloadListener());
+		if (FabricLoader.getInstance().isModLoaded("firmament")) ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new ReloadListener());
 	}
 
 	private static final class ReloadListener extends SinglePreparationResourceReloader<Collection<String>> implements IdentifiableResourceReloadListener {

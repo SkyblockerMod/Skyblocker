@@ -180,7 +180,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
             context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, x + 76, y + 7 + i * 18, 18, 18);
         }
 		Slot slot = handler.slots.get(45);
-		context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, slot.x, slot.y, 18, 18);
+		context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, x + slot.x - 1, y + slot.y - 1, 18, 18);
     }
 
     @Override
