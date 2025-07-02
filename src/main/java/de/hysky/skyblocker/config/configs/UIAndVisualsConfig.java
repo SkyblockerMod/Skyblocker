@@ -44,6 +44,12 @@ public class UIAndVisualsConfig {
     @SerialEntry
     public boolean cancelComponentUpdateAnimation = true;
 
+	@SerialEntry
+	public boolean showCustomizeButton = true;
+
+	@SerialEntry
+	public boolean showConfigButton = false;
+
     @SerialEntry
     public ChestValue chestValue = new ChestValue();
 

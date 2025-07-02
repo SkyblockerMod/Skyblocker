@@ -77,7 +77,7 @@
     "skyblocker.shortcuts.config": "Configurações de atalhos",
     "skyblocker.shortcuts.new": "Novo Atalho",
     "skyblocker.shortcuts.deleteQuestion": "Você tem certeza que quer remover esse atalho?",
-    "emi.category.skyblocker.skyblock": "Skyblock",
+    "emi.category.skyblocker.skyblock_crafting": "Skyblock",
     "skyblocker.config.uiAndVisuals.backpackPreviewWithoutShift": "Ver preview da mochila sem segurar Shift",
     "skyblocker.shortcuts.commandSuggestionTooltip": "Devido às limitações do Minecraft, sugestões de comando vai apenas funcionar após entrando em um novo mundo.",
     "skyblocker.shortcuts.deleteWarning": "Atalho '%s' vai ser perdido para sempre! (Por um longo tempo!)",
