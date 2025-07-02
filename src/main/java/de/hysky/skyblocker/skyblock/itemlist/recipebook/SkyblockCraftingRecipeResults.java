@@ -196,7 +196,7 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 				String name = stack.getName().getString().toLowerCase(Locale.ENGLISH);
 				if (!filterOption.test(name)) continue;
 
-				List<Text> lore = TooltipManager.addToTooltip(null, stack, new ArrayList<>(ItemUtils.getLore(stack)));
+				List<Text> lore = Screen.getTooltipFromItem(MinecraftClient.getInstance(), stack);
 
 				if (name.contains(query) || lore.stream().map(Text::getString)
 						.map(string -> string.toLowerCase(Locale.ENGLISH))
