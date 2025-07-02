@@ -58,7 +58,7 @@ public class FurfskyCompatibility {
 
 		@Override
 		protected void apply(Collection<String> prepared, ResourceManager manager, Profiler profiler) {
-			isFurfskyPresent = prepared.contains("FURFSKY_FULL");
+			isFurfskyPresent = prepared.contains("FURFSKY_GUI");
 			if (isFurfskyPresent) {
 				LOGGER.info("Furfsky detected. Enabling compatibility names.");
 			}
