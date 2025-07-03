@@ -33,7 +33,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -281,7 +280,7 @@ public class SmoothAOTE {
 
 		//make sure the player is not talking to an npc. And if they are cancel the teleport
 		if (startPos == null) return;
-		if (IsTargetingNPC(CLIENT.player, 4, startPos, look)) {
+		if (isTargetingNPC(CLIENT.player, 4, startPos, look)) {
 			startPos = null;
 			teleportVector = null;
 			return;
@@ -310,7 +309,7 @@ public class SmoothAOTE {
 	 * @param look players looking direction
 	 * @return if an NPC is targeted
 	 */
-	private static Boolean IsTargetingNPC(PlayerEntity player, double maxDistance, Vec3d startPos, Vec3d look) {
+	private static Boolean isTargetingNPC(PlayerEntity player, double maxDistance, Vec3d startPos, Vec3d look) {
 		if (startPos == null) return false;
 		// Calculate end position for raycast
 		Vec3d endPos = startPos.add(look.multiply(maxDistance));
@@ -486,7 +485,7 @@ public class SmoothAOTE {
 			return 0;
 		} else if (blockState.get(Properties.WEST) && (!positiveX)) {
 			return 0;
-		} else if (blockState.get(Properties.EAST) && (!positiveX)) {
+		} else if (blockState.get(Properties.EAST) && (positiveX)) {
 			return 0;
 		} else {
 			return 1;

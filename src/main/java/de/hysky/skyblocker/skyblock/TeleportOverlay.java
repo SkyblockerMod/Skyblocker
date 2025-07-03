@@ -91,13 +91,13 @@ public class TeleportOverlay {
 		float pitch = client.player.getPitch();
 		float yaw = client.player.getYaw();
 		Vec3d look = client.player.getRotationVector(pitch, yaw);
-		Vec3d statPos = client.player.getPos().add(0, 1.62, 0);
-		Vec3d raycast = SmoothAOTE.raycast(range,look,statPos);
+		Vec3d startPos = client.player.getPos().add(0, 1.62, 0);
+		Vec3d raycast = SmoothAOTE.raycast(range,look,startPos);
 
 		if (raycast != null) {
-			BlockPos target = BlockPos.ofFloored(statPos.add(raycast)).down();
+			BlockPos target = BlockPos.ofFloored(startPos.add(raycast)).down();
 			//do not render if in air and disabled in air
-			if (!SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.showWhenInAir && client.world.getBlockState(target).getBlock() == Blocks.AIR) return;
+			if (!SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.showWhenInAir && client.world.getBlockState(target).isAir()) return;
 			//render they highlight
 			RenderHelper.renderFilled(wrc, target, colorComponents, colorComponents[3], false);
 		}
