@@ -28,8 +28,6 @@ public class AttributeLevelTooltip extends SimpleTooltipAdder {
 	static final Pattern SOURCE_PATTERN = Pattern.compile("Source: (?<shardName>[A-Za-z ]+?) Shard \\((?<id>[CUREL]\\d+)\\)");
 	private static final Pattern RARITY_PATTERN = Pattern.compile("Rarity: (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY)");
 	private static final Pattern LEVEL_PATTERN = Pattern.compile("Level: (\\d+)");
-	private static final Pattern SYPHON_COUNT_PATTERN = Pattern.compile("Syphon (\\d+) more to level up!");
-	private static final Pattern OWNED_PATTERN = Pattern.compile("Owned: (\\d+) Shards?");
 	private static final Pattern RARITY_AND_ID_PATTERN = Pattern.compile("(COMMON|UNCOMMON|RARE|EPIC|LEGENDARY).*?SHARD \\(ID ([CUREL]\\d+)\\)");
 	private static final Pattern NAME_AND_LEVEL_PATTERN = Pattern.compile(".*? ([IVX]+) \\(.*\\)");
 
@@ -68,7 +66,7 @@ public class AttributeLevelTooltip extends SimpleTooltipAdder {
 				rarity = matcher.group(1);
 			} else if (levelStr == null && matcher.usePattern(LEVEL_PATTERN).matches()) {
 				levelStr = matcher.group(1);
-			} else if (matcher.usePattern(SYPHON_COUNT_PATTERN).matches()) {
+			} else if (matcher.usePattern(HuntingBoxHelper.SYPHON_PATTERN).matches()) {
 				syphonCountStr = matcher.group(1);
 				break; // This is the last line.
 			}
@@ -105,9 +103,9 @@ public class AttributeLevelTooltip extends SimpleTooltipAdder {
 			matcher.reset(lineText);
 			if (levelStr == null && matcher.usePattern(NAME_AND_LEVEL_PATTERN).matches()) {
 				levelStr = matcher.group(1);
-			} else if (ownedStr == null && matcher.usePattern(OWNED_PATTERN).matches()) {
-				ownedStr = matcher.group(1);
-			} else if (syphonCountStr == null && matcher.usePattern(SYPHON_COUNT_PATTERN).matches()) {
+			} else if (ownedStr == null && matcher.usePattern(HuntingBoxHelper.OWNED_PATTERN).matches()) {
+				ownedStr = matcher.group(1).replace(",", "");
+			} else if (syphonCountStr == null && matcher.usePattern(HuntingBoxHelper.SYPHON_PATTERN).matches()) {
 				syphonCountStr = matcher.group(1);
 			} else if (matcher.usePattern(RARITY_AND_ID_PATTERN).matches()) {
 				rarity = matcher.group(1);

@@ -18,8 +18,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HuntingBoxHelper extends SimpleContainerSolver {
-	private static final Pattern OWNED_PATTERN = Pattern.compile("Owned: (\\d+) Shards?");
-	private static final Pattern SYPHON_PATTERN = Pattern.compile("Syphon (\\d+) more to level up!");
+	static final Pattern OWNED_PATTERN = Pattern.compile("Owned: ([\\d,]+) Shards?");
+	static final Pattern SYPHON_PATTERN = Pattern.compile("Syphon (\\d+) more to level up!");
 	private static final Logger LOGGER = LoggerFactory.getLogger(HuntingBoxHelper.class);
 
 	public HuntingBoxHelper() {
@@ -42,7 +42,7 @@ public class HuntingBoxHelper extends SimpleContainerSolver {
 				String text = line.getString();
 				if (owned == null) {
 					Matcher matcher = OWNED_PATTERN.matcher(text);
-					if (matcher.matches()) owned = matcher.group(1);
+					if (matcher.matches()) owned = matcher.group(1).replace(",", "");
 				} else {
 					Matcher matcher = SYPHON_PATTERN.matcher(text);
 					if (matcher.matches()) syphon = matcher.group(1);
