@@ -70,5 +70,72 @@
 
         <module name="OuterTypeFilename"/>
         <module name="PackageDeclaration"/>
+
+        <module name="InvalidJavadocPosition"/>
+        <module name="AtclauseOrder"/>
+
+        <!-- Prevent non-@Unique fields in Mixin classes -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //OBJBLOCK/VARIABLE_DEF[
+                    not(
+                        ./MODIFIERS/ANNOTATION/IDENT[
+                            @text='Unique'
+                            or @text='Shadow'
+                        ]
+                    )
+                    and
+                    ../../../CLASS_DEF[
+                        ./MODIFIERS/ANNOTATION/IDENT[@text='Mixin']
+                    ]
+                ]
+            "/>
+            <message key="matchxpath.match" value="Mixin fields must be annotated with @Unique or @Shadow"/>
+        </module>
+
+        <!-- Prevent non-@Unique methods in Mixin classes -->
+        <!-- All Mixin and MixinExtras annotations must be listed here -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //METHOD_DEF[
+                    not(
+                        ./MODIFIERS/ANNOTATION/IDENT[
+                            @text='Unique'
+                            or @text='Inject'
+                            or @text='ModifyArg'
+                            or @text='ModifyExpressionValue'
+                            or @text='ModifyReturnValue'
+                            or @text='ModifyVariable'
+                            or @text='Override'
+                            or @text='Overwrite'
+                            or @text='Redirect'
+                            or @text='Shadow'
+                            or @text='WrapMethod'
+                            or @text='WrapOperation'
+                            or @text='WrapWithCondition'
+                        ]
+                    )
+                    and
+                    ../../../CLASS_DEF[
+                        ./MODIFIERS/ANNOTATION/IDENT[@text='Mixin']
+                    ]
+                ]
+            "/>
+            <message key="matchxpath.match" value="Mixin methods must be annotated with @Unique or one of the Mixin annotations"/>
+        </module>
+
+        <!-- Prevent @Inject local capture, @Local is preferred -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //METHOD_DEF[
+                    ./MODIFIERS/ANNOTATION[
+                        ./IDENT[@text='Inject']
+                        and
+                        ./ANNOTATION_MEMBER_VALUE_PAIR/IDENT[@text='locals']
+                    ]
+                ]
+            "/>
+            <message key="matchxpath.match" value="Inject local capture is not allowed, use @Local instead"/>
+        </module>
     </module>
 </module>

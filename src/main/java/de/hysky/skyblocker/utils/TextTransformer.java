@@ -19,10 +19,10 @@ public class TextTransformer {
 	/**
 	 * Converts strings with section symbol/legacy formatting to MutableText objects.
 	 *
+	 * @author AzureAaron
+	 *
 	 * @param legacy The string with legacy formatting to be transformed
 	 * @return A {@link MutableText} object matching the exact formatting of the input
-	 *
-	 * @author AzureAaron
 	 */
 	public static MutableText fromLegacy(@NotNull String legacy) {
 		MutableText newText = Text.empty();
