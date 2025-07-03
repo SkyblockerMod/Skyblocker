@@ -14,7 +14,7 @@ import net.minecraft.util.Formatting;
  * @author AzureAaron
  */
 public class TextTransformer {
-	private static final CharList FORMAT_CODES = CharList.of('4', 'c', '6', 'e', '2', 'a','b', '3', '1', '9', 'd', '5', 'f', '7', '8', '0', 'r', 'k', 'l', 'm', 'n', 'o');
+	private static final CharList FORMAT_CODES = CharList.of('4', 'c', '6', 'e', '2', 'a', 'b', '3', '1', '9', 'd', '5', 'f', '7', '8', '0', 'r', 'k', 'l', 'm', 'n', 'o');
 
 	/**
 	 * Converts strings with section symbol/legacy formatting to MutableText objects.

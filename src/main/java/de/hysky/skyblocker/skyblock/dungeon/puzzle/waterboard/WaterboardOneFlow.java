@@ -472,7 +472,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 			LeverType lever = leverData.getKey();
 			for (int i = 0; i < leverData.getValue().size(); i++) {
 				double nextTime = leverData.getValue().getDouble(i);
-				long remainingTime = waterStartMillis + (long)(nextTime * 1000) - System.currentTimeMillis();
+				long remainingTime = waterStartMillis + (long) (nextTime * 1000) - System.currentTimeMillis();
 				Text text;
 
 				if (lever == LeverType.WATER && nextTime == 0.0 && nextLever != LeverType.WATER) {

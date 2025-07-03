@@ -305,11 +305,11 @@ public class LegacyStringNbtReader {
 			}
 
 			if (typeReader == NbtByte.TYPE) {
-				list.add((T) Byte.valueOf(((AbstractNbtNumber)nbtElement).byteValue()));
+				list.add((T) Byte.valueOf(((AbstractNbtNumber) nbtElement).byteValue()));
 			} else if (typeReader == NbtLong.TYPE) {
-				list.add((T) Long.valueOf(((AbstractNbtNumber)nbtElement).longValue()));
+				list.add((T) Long.valueOf(((AbstractNbtNumber) nbtElement).longValue()));
 			} else {
-				list.add((T) Integer.valueOf(((AbstractNbtNumber)nbtElement).intValue()));
+				list.add((T) Integer.valueOf(((AbstractNbtNumber) nbtElement).intValue()));
 			}
 
 			if (!this.readComma()) {

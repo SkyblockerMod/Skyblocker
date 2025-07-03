@@ -148,7 +148,7 @@ public class CroesusProfit extends SimpleContainerSolver {
         map.put("Fuming Potato Book", "FUMING_POTATO_BOOK");
         map.put("Recombobulator 3000", "RECOMBOBULATOR_3000");
         map.put("Necromancer's Brooch", "NECROMANCER_BROOCH");
-        map.put("ESSENCE_WITHER","ESSENCE_WITHER");     // Essences. Really stupid way of doing this
+        map.put("ESSENCE_WITHER", "ESSENCE_WITHER");     // Essences. Really stupid way of doing this
         map.put("ESSENCE_UNDEAD", "ESSENCE_UNDEAD");
         map.put("ESSENCE_DRAGON", "ESSENCE_DRAGON");
         map.put("ESSENCE_SPIDER", "ESSENCE_SPIDER");
@@ -254,4 +254,3 @@ public class CroesusProfit extends SimpleContainerSolver {
         map.put("Power Dragon", "SHARD_POWER_DRAGON");
     });
 }
-

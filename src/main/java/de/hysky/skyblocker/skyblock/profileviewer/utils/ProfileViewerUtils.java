@@ -33,7 +33,7 @@ public class ProfileViewerUtils {
         } else if (amount >= 1_000) {
             return String.format("%.4gK", amount / 1_000);
         } else {
-            return String.valueOf((int)(amount));
+            return String.valueOf((int) amount);
         }
     }
 }

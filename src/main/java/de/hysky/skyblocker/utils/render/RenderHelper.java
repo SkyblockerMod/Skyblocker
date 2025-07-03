@@ -261,7 +261,7 @@ public class RenderHelper {
 
 		buffer.vertex(positionMatrix, (float) renderOffset.getX(), (float) renderOffset.getY(), (float) renderOffset.getZ()).texture(1, 1 - textureHeight).color(color);
 		buffer.vertex(positionMatrix, (float) renderOffset.getX(), (float) renderOffset.getY() + height, (float) renderOffset.getZ()).texture(1, 1).color(color);
-		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY() + height	, (float) renderOffset.getZ()).texture(1 - textureWidth, 1).color(color);
+		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY() + height, (float) renderOffset.getZ()).texture(1 - textureWidth, 1).color(color);
 		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY(), (float) renderOffset.getZ()).texture(1 - textureWidth, 1 - textureHeight).color(color);
 
 		consumers.draw(layer);

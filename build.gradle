@@ -246,6 +246,7 @@ spotless {
 		removeUnusedImports()
 		//indentWithTabs() // TODO: turn on when more files are converted to tabs
 		trimTrailingWhitespace()
+		endWithNewline()
 	}
 
 	json {

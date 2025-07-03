@@ -97,6 +97,11 @@ public abstract class HudWidget extends AbstractWidget {
 		return Objects.equals(getInternalID(), widget.getInternalID());
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(internalID);
+	}
+
 	public String getInternalID() {
 		return internalID;
 	}
