@@ -67,7 +67,12 @@ public class IndividualWaypoint extends NamedWaypoint {
 
 	private static int setWaypoint(Consumer<Text> feedback, int x, int y, int z, String area) {
 		setWaypoint(x, y, z, area);
-		feedback.accept(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.displayed", x, y, z, area)));
+		if (area != null && !area.isEmpty()) {
+			area = "| " + area;
+			feedback.accept(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.displayed", x, y, z, area)));
+		} else {
+			feedback.accept(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.displayed", x, y, z, "")));
+		}
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -86,7 +91,7 @@ public class IndividualWaypoint extends NamedWaypoint {
 	}
 
 	private static void onTick(MinecraftClient client) {
-		if (waypoint != null && client.player != null && client.player.squaredDistanceTo(waypoint.centerPos) <= 8) {
+		if (waypoint != null && client.player != null && client.player.squaredDistanceTo(waypoint.centerPos) <= 36) {
 			waypoint = null;
 		}
 	}

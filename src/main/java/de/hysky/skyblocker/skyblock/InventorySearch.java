@@ -85,6 +85,10 @@ public class InventorySearch {
 
 	}
 
+	public static void refreshSlot(int slotId) {
+		slotToMatch.remove(slotId);
+	}
+
 	/**
 	 * Button to open the search bar, for accessibility reasons (pojav and general preferences)
 	 */

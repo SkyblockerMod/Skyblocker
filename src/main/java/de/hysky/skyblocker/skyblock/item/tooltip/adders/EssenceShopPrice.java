@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.utils.BazaarProduct;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
@@ -13,7 +14,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.OptionalDouble;
@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 
 public class EssenceShopPrice extends SimpleTooltipAdder {
 	private static final Pattern ESSENCE_PATTERN = Pattern.compile("Cost (?<amount>[\\d,]+) (?<type>[A-Za-z]+) Essence");
-	private static final NumberFormat DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
 	private static final String[] ESSENCE_TYPES = {"WITHER", "SPIDER", "UNDEAD", "DRAGON", "GOLD", "DIAMOND", "ICE", "CRIMSON"};
 	private static final Object2LongArrayMap<String> ESSENCE_PRICES = new Object2LongArrayMap<>(ESSENCE_TYPES, new long[8]);
 
@@ -59,9 +58,9 @@ public class EssenceShopPrice extends SimpleTooltipAdder {
 
 		lines.add(Text.empty()
 				.append(Text.literal("Essence Cost:      ").formatted(Formatting.AQUA))
-				.append(Text.literal(DECIMAL_FORMAT.format(priceData * cost.getAsLong()) + " coins").formatted(Formatting.DARK_AQUA))
+				.append(Text.literal(Formatters.INTEGER_NUMBERS.format(priceData * cost.getAsLong()) + " coins").formatted(Formatting.DARK_AQUA))
 				.append(Text.literal(" (").formatted(Formatting.GRAY))
-				.append(Text.literal(DECIMAL_FORMAT.format(priceData) + " each").formatted(Formatting.GRAY))
+				.append(Text.literal(Formatters.INTEGER_NUMBERS.format(priceData) + " each").formatted(Formatting.GRAY))
 				.append(Text.literal(")").formatted(Formatting.GRAY))
 		);
 	}

@@ -43,7 +43,6 @@
     "skyblocker.config.misc.richPresence.enableRichPresence": "Aktif",
     "skyblocker.config.mining.dwarvenMines.solvePuzzler": "Puzzler'ın bulmacasını çöz",
     "key.hotbarSlotLock": "Slot Kilidi (Araç Çubuğu)",
-    "key.wikiLookup": "Wiki Araması",
     "skyblocker.config.title": "Skyblocker Ayarları",
     "skyblocker.config.general": "Genel",
     "skyblocker.config.uiAndVisuals.bars": "Can, Mana, Defans ve XP Barları",
@@ -118,5 +117,14 @@
     "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Tıklanması gereken doğru butonu yeşil renkle, bir sonraki butonu ise sarı renkle vurgular.",
     "argument.color.rgb.incomplete": "Tamamlanmamış (3 renk değeri bekleniyor).",
     "argument.color.hex.invalidString": "Hex değeri tam olarak 6 karakter uzunluğunda olmalı, %d karakter bulundu.",
-    "argument.color.hex.invalidChar": "Hex değeri için uygunsuz karakter: %s. Uygun karakterler: [0-9a-fA-F]"
+    "argument.color.hex.invalidChar": "Hex değeri için uygunsuz karakter: %s. Uygun karakterler: [0-9a-fA-F]",
+    "key.wikiLookup.official": "Hypixel Wiki'sinde arat",
+    "key.wikiLookup.fandom": "Fandom Wiki'sinde arat",
+    "text.skyblocker.confirm": "Onayla",
+    "text.skyblocker.reset": "Sıfırla",
+    "text.skyblocker.config": "Ayarları Aç",
+    "text.skyblocker.source": "Kaynak",
+    "key.itemPriceLookup": "Bazaar'da arat",
+    "key.itemPriceRefresh": "Bazaar'ı yenile",
+    "text.skyblocker.undo": "Geri al"
 }

@@ -26,12 +26,14 @@ public class FormattersTest {
 	void testDoubleNumbers() {
 		Assertions.assertEquals("100,000,000.15", Formatters.DOUBLE_NUMBERS.format(100_000_000.152341));
 		Assertions.assertEquals("99,999,999.98", Formatters.DOUBLE_NUMBERS.format(99_999_999.978));
+		Assertions.assertEquals("10,000", Formatters.DOUBLE_NUMBERS.format(10_000.00));
 	}
 
 	@Test
 	void testFloatNumbers() {
 		Assertions.assertEquals("100,000,000.8", Formatters.FLOAT_NUMBERS.format(100_000_000.7834));
 		Assertions.assertEquals("99,999,999.8", Formatters.FLOAT_NUMBERS.format(99_999_999.84243));
+		Assertions.assertEquals("10,000", Formatters.FLOAT_NUMBERS.format(10_000.00));
 	}
 
 	@Test
@@ -46,6 +48,19 @@ public class FormattersTest {
 		Assertions.assertEquals("14.5B", Formatters.SHORT_FLOAT_NUMBERS.format(14_500_000_000L));
 		Assertions.assertEquals("8.3M", Formatters.SHORT_FLOAT_NUMBERS.format(8_300_000));
 		Assertions.assertEquals("24.7K", Formatters.SHORT_FLOAT_NUMBERS.format(24_740));
+	}
+
+	@Test
+	void testDiffNumbers() {
+		Assertions.assertEquals("+123,456.789", Formatters.DIFF_NUMBERS.format(123_456.789));
+		Assertions.assertEquals("-100,000,000", Formatters.DIFF_NUMBERS.format(-100_000_000.000));
+	}
+
+	@Test
+	void testParseNumbers() {
+		Assertions.assertInstanceOf(Long.class, Formatters.parseNumber("1,024"));
+		Assertions.assertEquals(1024, Formatters.parseNumber("1,024").intValue());
+		Assertions.assertEquals(123_456.789, Formatters.parseNumber("123,456.789"));
 	}
 
 	@Test

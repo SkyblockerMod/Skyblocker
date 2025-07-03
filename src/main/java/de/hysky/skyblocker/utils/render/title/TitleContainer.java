@@ -1,22 +1,26 @@
 package de.hysky.skyblocker.utils.render.title;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.events.HudRenderEvents;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class TitleContainer {
+	private static final Identifier TITLE_CONTAINER = Identifier.of(SkyblockerMod.NAMESPACE, "title_container");
 	/**
 	 * The set of titles which will be rendered.
 	 *
@@ -29,7 +33,7 @@ public class TitleContainer {
 
 	@Init
 	public static void init() {
-		HudRenderEvents.BEFORE_CHAT.register(TitleContainer::render);
+		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.TITLE_AND_SUBTITLE, TITLE_CONTAINER, TitleContainer::render));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
 				.then(ClientCommandManager.literal("hud")
 						.then(ClientCommandManager.literal("titleContainer")
@@ -85,10 +89,11 @@ public class TitleContainer {
 	}
 
 	private static void render(DrawContext context, RenderTickCounter tickCounter) {
-		render(context, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickCounter.getTickDelta(true));
+		render(context, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickCounter.getTickProgress(true));
 	}
 
 	protected static void render(DrawContext context, Set<Title> titles, int xPos, int yPos, float tickDelta) {
+		if (titles.isEmpty()) return;
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
 		// Calculate Scale to use

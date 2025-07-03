@@ -1,263 +1,277 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.sound.SoundEvent;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.regex.Pattern;
-
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.utils.CollectionUtils;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
+import net.minecraft.sound.SoundEvent;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
+
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 
 /**
  * Data class to contain all the settings for a chat rule
  */
 public class ChatRule {
-    private static final Codec<ChatRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("name").forGetter(ChatRule::getName),
-            Codec.BOOL.fieldOf("enabled").forGetter(ChatRule::getEnabled),
-            Codec.BOOL.fieldOf("isPartialMatch").forGetter(ChatRule::getPartialMatch),
-            Codec.BOOL.fieldOf("isRegex").forGetter(ChatRule::getRegex),
-            Codec.BOOL.fieldOf("isIgnoreCase").forGetter(ChatRule::getIgnoreCase),
-            Codec.STRING.fieldOf("filter").forGetter(ChatRule::getFilter),
-            Codec.STRING.fieldOf("validLocations").forGetter(ChatRule::getValidLocations),
-            Codec.BOOL.fieldOf("hideMessage").forGetter(ChatRule::getHideMessage),
-            Codec.BOOL.fieldOf("showActionBar").forGetter(ChatRule::getShowActionBar),
-            Codec.BOOL.fieldOf("showAnnouncement").forGetter(ChatRule::getShowAnnouncement),
-            Codec.STRING.optionalFieldOf("replaceMessage").forGetter(ChatRule::getReplaceMessageOpt),
-            SoundEvent.CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOpt))
-            .apply(instance, ChatRule::new));
-    public static final Codec<List<ChatRule>> LIST_CODEC = CODEC.listOf();
+	/**
+	 * Codec that can decode both {@link String} and {@link EnumSet} of locations, while encoding only {@link EnumSet} of locations.
+	 * <br>
+	 * This is necessary due to a change in how the locations are stored in the config.
+	 */
+	@VisibleForTesting
+	static final Codec<EnumSet<Location>> LOCATION_FIXING_CODEC = Codec.either(Location.SET_CODEC, Codec.STRING).xmap(
+			either -> either.map(Function.identity(), ChatRule::encodeString),
+			Either::left
+	);
 
-    private String name;
+	private static final Codec<ChatRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.STRING.fieldOf("name").forGetter(ChatRule::getName),
+			Codec.BOOL.fieldOf("enabled").forGetter(ChatRule::getEnabled),
+			Codec.BOOL.fieldOf("isPartialMatch").forGetter(ChatRule::getPartialMatch),
+			Codec.BOOL.fieldOf("isRegex").forGetter(ChatRule::getRegex),
+			Codec.BOOL.fieldOf("isIgnoreCase").forGetter(ChatRule::getIgnoreCase),
+			Codec.STRING.fieldOf("filter").forGetter(ChatRule::getFilter),
+			LOCATION_FIXING_CODEC.fieldOf("validLocations").forGetter(ChatRule::getValidLocations),
+			Codec.BOOL.fieldOf("hideMessage").forGetter(ChatRule::getHideMessage),
+			Codec.BOOL.fieldOf("showActionBar").forGetter(ChatRule::getShowActionBar),
+			Codec.BOOL.fieldOf("showAnnouncement").forGetter(ChatRule::getShowAnnouncement),
+			Codec.STRING.optionalFieldOf("replaceMessage").forGetter(ChatRule::getReplaceMessageOpt),
+			SoundEvent.CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOpt)
+	).apply(instance, ChatRule::new));
+	public static final Codec<List<ChatRule>> LIST_CODEC = CODEC.listOf();
 
-    //inputs
-    private Boolean enabled;
-    private Boolean isPartialMatch;
-    private Boolean isRegex;
-    private Boolean isIgnoreCase;
-    private String filter;
-    private String validLocations;
+	private String name;
 
-    //output
-    private Boolean hideMessage;
-    private Boolean showActionBar;
-    private Boolean showAnnouncement;
-    private String replaceMessage;
-    private SoundEvent customSound;
-    /**
-     * Creates a chat rule with default options.
-     */
-    protected ChatRule() {
-        this.name = "New Rule";
+	// Inputs
+	private boolean enabled;
+	private boolean isPartialMatch;
+	private boolean isRegex;
+	private boolean isIgnoreCase;
+	private String filter;
+	private EnumSet<Location> validLocations;
 
-        this.enabled = true;
-        this.isPartialMatch = false;
-        this.isRegex = false;
-        this.isIgnoreCase = true;
-        this.filter = "";
-        this.validLocations = "";
+	// Outputs
+	private boolean hideMessage;
+	private boolean showActionBar;
+	private boolean showAnnouncement;
+	private String replaceMessage;
+	private SoundEvent customSound;
 
-        this.hideMessage = true;
-        this.showActionBar = false;
-        this.showAnnouncement = false;
-        this.replaceMessage = null;
-        this.customSound = null;
-    }
+	/**
+	 * Creates a chat rule with default options.
+	 */
+	protected ChatRule() {
+		this.name = "New Rule";
 
-    public ChatRule(String name, Boolean enabled, Boolean isPartialMatch, Boolean isRegex, Boolean isIgnoreCase, String filter, String validLocations, Boolean hideMessage, Boolean showActionBar, Boolean showAnnouncement, String replaceMessage, SoundEvent customSound) {
-        this.name = name;
-        this.enabled = enabled;
-        this.isPartialMatch = isPartialMatch;
-        this.isRegex = isRegex;
-        this.isIgnoreCase = isIgnoreCase;
-        this.filter = filter;
-        this.validLocations = validLocations;
-        this.hideMessage = hideMessage;
-        this.showActionBar = showActionBar;
-        this.showAnnouncement = showAnnouncement;
-        this.replaceMessage = replaceMessage;
-        this.customSound = customSound;
-    }
+		this.enabled = true;
+		this.isPartialMatch = false;
+		this.isRegex = false;
+		this.isIgnoreCase = true;
+		this.filter = "";
+		this.validLocations = EnumSet.noneOf(Location.class);
 
-    private ChatRule(String name, Boolean enabled, Boolean isPartialMatch, Boolean isRegex, Boolean isIgnoreCase, String filter, String validLocations, Boolean hideMessage, Boolean showActionBar, Boolean showAnnouncement, Optional<String> replaceMessage, Optional<SoundEvent> customSound) {
-        this(name, enabled, isPartialMatch, isRegex, isIgnoreCase, filter, validLocations, hideMessage, showActionBar, showAnnouncement, replaceMessage.orElse(null), customSound.orElse(null));
-    }
+		this.hideMessage = true;
+		this.showActionBar = false;
+		this.showAnnouncement = false;
+		this.replaceMessage = null;
+		this.customSound = null;
+	}
 
-    protected String getName() {
-        return name;
-    }
+	public ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, boolean showActionBar, boolean showAnnouncement, @Nullable String replaceMessage, @Nullable SoundEvent customSound) {
+		this.name = name;
+		this.enabled = enabled;
+		this.isPartialMatch = isPartialMatch;
+		this.isRegex = isRegex;
+		this.isIgnoreCase = isIgnoreCase;
+		this.filter = filter;
+		this.validLocations = validLocations;
+		this.hideMessage = hideMessage;
+		this.showActionBar = showActionBar;
+		this.showAnnouncement = showAnnouncement;
+		this.replaceMessage = replaceMessage;
+		this.customSound = customSound;
+	}
 
-    protected void setName(String name) {
-        this.name = name;
-    }
+	private ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, boolean showActionBar, boolean showAnnouncement, Optional<String> replaceMessage, Optional<SoundEvent> customSound) {
+		this(name, enabled, isPartialMatch, isRegex, isIgnoreCase, filter, validLocations, hideMessage, showActionBar, showAnnouncement, replaceMessage.orElse(null), customSound.orElse(null));
+	}
 
-    protected Boolean getEnabled() {
-        return enabled;
-    }
+	protected String getName() {
+		return name;
+	}
 
-    protected void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
+	protected void setName(String name) {
+		this.name = name;
+	}
 
-    protected Boolean getPartialMatch() {
-        return isPartialMatch;
-    }
+	protected boolean getEnabled() {
+		return enabled;
+	}
 
-    protected void setPartialMatch(Boolean partialMatch) {
-        isPartialMatch = partialMatch;
-    }
+	protected void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
-    protected Boolean getRegex() {
-        return isRegex;
-    }
+	protected boolean getPartialMatch() {
+		return isPartialMatch;
+	}
 
-    protected void setRegex(Boolean regex) {
-        isRegex = regex;
-    }
+	protected void setPartialMatch(boolean partialMatch) {
+		isPartialMatch = partialMatch;
+	}
 
-    protected Boolean getIgnoreCase() {
-        return isIgnoreCase;
-    }
+	protected boolean getRegex() {
+		return isRegex;
+	}
 
-    protected void setIgnoreCase(Boolean ignoreCase) {
-        isIgnoreCase = ignoreCase;
-    }
+	protected void setRegex(boolean regex) {
+		isRegex = regex;
+	}
 
-    protected String getFilter() {
-        return filter;
-    }
+	protected boolean getIgnoreCase() {
+		return isIgnoreCase;
+	}
 
-    protected void setFilter(String filter) {
-        this.filter = filter;
-    }
+	protected void setIgnoreCase(boolean ignoreCase) {
+		isIgnoreCase = ignoreCase;
+	}
 
-    protected Boolean getHideMessage() {
-        return hideMessage;
-    }
+	protected String getFilter() {
+		return filter;
+	}
 
-    protected void setHideMessage(Boolean hideMessage) {
-        this.hideMessage = hideMessage;
-    }
+	protected void setFilter(String filter) {
+		this.filter = filter;
+	}
 
-    protected Boolean getShowActionBar() {
-        return showActionBar;
-    }
+	protected boolean getHideMessage() {
+		return hideMessage;
+	}
 
-    protected void setShowActionBar(Boolean showActionBar) {
-        this.showActionBar = showActionBar;
-    }
+	protected void setHideMessage(boolean hideMessage) {
+		this.hideMessage = hideMessage;
+	}
 
-    protected Boolean getShowAnnouncement() {
-        return showAnnouncement;
-    }
+	protected boolean getShowActionBar() {
+		return showActionBar;
+	}
 
-    protected void setShowAnnouncement(Boolean showAnnouncement) {
-        this.showAnnouncement = showAnnouncement;
-    }
+	protected void setShowActionBar(boolean showActionBar) {
+		this.showActionBar = showActionBar;
+	}
 
-    protected String getReplaceMessage() {
-        return replaceMessage;
-    }
+	protected boolean getShowAnnouncement() {
+		return showAnnouncement;
+	}
 
-    private Optional<String> getReplaceMessageOpt() {
-        return replaceMessage == null ? Optional.empty() : Optional.of(replaceMessage);
-    }
+	protected void setShowAnnouncement(boolean showAnnouncement) {
+		this.showAnnouncement = showAnnouncement;
+	}
 
-    protected void setReplaceMessage(String replaceMessage) {
-        this.replaceMessage = replaceMessage;
-    }
+	protected String getReplaceMessage() {
+		return replaceMessage;
+	}
 
-    protected SoundEvent getCustomSound() {
-       return customSound;
-    }
+	private Optional<String> getReplaceMessageOpt() {
+		return Optional.ofNullable(replaceMessage);
+	}
 
-    private Optional<SoundEvent> getCustomSoundOpt() {
-        return customSound == null ? Optional.empty() : Optional.of(customSound);
-    }
+	protected void setReplaceMessage(String replaceMessage) {
+		this.replaceMessage = replaceMessage;
+	}
 
-    protected void setCustomSound(SoundEvent customSound) {
-        this.customSound = customSound;
-    }
+	protected SoundEvent getCustomSound() {
+		return customSound;
+	}
 
-    protected String getValidLocations() {
-        return validLocations;
-    }
+	private Optional<SoundEvent> getCustomSoundOpt() {
+		return Optional.ofNullable(customSound);
+	}
 
-    protected void setValidLocations(String validLocations) {
-        this.validLocations = validLocations;
-    }
+	protected void setCustomSound(SoundEvent customSound) {
+		this.customSound = customSound;
+	}
 
-    /**
-     * checks every input option and if the games state and the inputted str matches them returns true.
-     * @param inputString the chat message to check if fits
-     * @return if the inputs are all true and the outputs should be performed
-     */
-    protected Boolean isMatch(String inputString) {
-        //enabled
-        if (!enabled) return false;
+	protected EnumSet<Location> getValidLocations() {
+		return validLocations;
+	}
 
-        //ignore case
-        String testString;
-        String testFilter;
+	protected void setValidLocations(EnumSet<Location> validLocations) {
+		this.validLocations = validLocations;
+	}
 
-        if (isIgnoreCase) {
-            testString = inputString.toLowerCase();
-            testFilter = filter.toLowerCase();
-        } else {
-            testString = inputString;
-            testFilter = filter;
-        }
+	/**
+	 * checks every input option and if the games state and the inputted str matches them returns true.
+	 *
+	 * @param inputString the chat message to check if fits
+	 * @return if the inputs are all true and the outputs should be performed
+	 */
+	protected boolean isMatch(String inputString) {
+		//enabled
+		if (!enabled) return false;
 
-        //filter
-        if (testFilter.isBlank()) return false;
-        if (isRegex) {
-            if (isPartialMatch) {
-               if (!Pattern.compile(testFilter).matcher(testString).find()) return false;
-            } else {
-                if (!testString.matches(testFilter)) return false;
-            }
-        } else {
-            if (isPartialMatch) {
-                if (!testString.contains(testFilter)) return false;
-            } else {
-                if (!testFilter.equals(testString)) return false;
-            }
-        }
+		//ignore case
+		String testString;
+		String testFilter;
 
-        //location
-        if (validLocations.isBlank()) { //if no locations do not check
-            return true;
-        }
+		if (isIgnoreCase) {
+			testString = inputString.toLowerCase();
+			testFilter = filter.toLowerCase();
+		} else {
+			testString = inputString;
+			testFilter = filter;
+		}
 
-        String cleanedMapLocation = Utils.getMap().toLowerCase().replace(" ", "");
-        Boolean isLocationValid = null;
-        for (String validLocation : validLocations.replace(" ", "").toLowerCase().split(",")) {//the locations are split by "," and start with ! if not locations
-            if (validLocation == null) continue;
-            if (validLocation.startsWith("!")) {//not location
-                if (Objects.equals(validLocation.substring(1), cleanedMapLocation)) {
-                    isLocationValid = false;
-                    break;
-                } else {
-                    isLocationValid = true;
-                }
-            } else {
-                if (Objects.equals(validLocation, cleanedMapLocation)) { //normal location
-                    isLocationValid = true;
-                    break;
-                }
-            }
-        }
+		//filter
+		if (testFilter.isBlank()) return false;
+		if (isRegex) {
+			if (isPartialMatch) {
+				if (!Pattern.compile(testFilter).matcher(testString).find()) return false;
+			} else {
+				if (!testString.matches(testFilter)) return false;
+			}
+		} else {
+			if (isPartialMatch) {
+				if (!testString.contains(testFilter)) return false;
+			} else {
+				if (!testFilter.equals(testString)) return false;
+			}
+		}
 
-        //if location is not in the list at all and is a not a "!" location or and is a normal location
-        if (isLocationValid != null && isLocationValid) {
-            return true;
-        }
+		// As a special case, if there are no valid locations all locations are valid.
+		// This exists because it doesn't make sense to remove all valid locations, you should disable the chat rule if you want to do that.
+		// This way, we can also default to an empty set for validLocations.
+		if (validLocations.isEmpty()) return true;
+		// UNKNOWN isn't a valid location, so we act the same as the list being empty.
+		if (validLocations.size() == 1 && validLocations.contains(Location.UNKNOWN)) return true;
+		return validLocations.contains(Utils.getLocation());
+	}
 
-        return false;
-    }
+	// This maps invalid entries to `Location.UNKNOWN`, which is better than failing outright.
+	private static EnumSet<Location> encodeString(String string) {
+		// Necessary for empty strings, which would've been decoded as UNKNOWN otherwise.
+		if (string.isEmpty()) return EnumSet.noneOf(Location.class);
+
+		// If a location's name contains a ! prefix, it's negated, meaning every location except that one is valid.
+		if (string.contains("!")) return EnumSet.complementOf(
+				Arrays.stream(string.split(", ?"))
+					  .filter(s1 -> s1.startsWith("!")) // Filter out the non-negated locations because the negation of any element in the list already implies those non-negated locations being valid.
+					  .map(s -> s.substring(1)) // Skip the `!`
+					  .map(Location::fromFriendlyName)
+					  .collect(CollectionUtils.enumSetCollector(Location.class))
+		);
+		return Arrays.stream(string.split(", ?"))
+					 .map(Location::fromFriendlyName)
+					 .collect(CollectionUtils.enumSetCollector(Location.class));
+	}
 }
 
 

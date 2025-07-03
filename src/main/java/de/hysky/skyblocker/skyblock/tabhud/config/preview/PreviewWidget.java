@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.config.preview;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.InGameHudInvoker;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import net.minecraft.client.MinecraftClient;
@@ -61,7 +61,7 @@ public class PreviewWidget extends ClickableWidget {
 		scaledScreenWidth = tab.parent.width / scale;
 		scaledScreenHeight = tab.parent.height / scale;
 
-		ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(tab.getCurrentLocation());
+		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
 		context.drawBorder(getX() - 1, getY() - 1, getWidth() + 2, getHeight() + 2, -1);
 		context.enableScissor(getX(), getY(), getRight(), getBottom());
 		MatrixStack matrices = context.getMatrices();
@@ -199,7 +199,7 @@ public class PreviewWidget extends ClickableWidget {
 		// TODO releasing a widget outside of the area causes weird behavior, might wanna look into that
 		// Update positioning real
 		if (selectedWidget != null && selectedOriginalPos != null) {
-			ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(tab.getCurrentLocation());
+			ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
 			PositionRule oldRule = screenBuilder.getPositionRule(selectedWidget.getInternalID());
 			if (oldRule == null) oldRule = PositionRule.DEFAULT;
 			int relativeX = selectedWidget.getX() - selectedOriginalPos.x();
@@ -226,7 +226,7 @@ public class PreviewWidget extends ClickableWidget {
 		double localMouseY = (mouseY - getY()) / scaledRatio;
 		if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
 			List<HudWidget> hoveredThingies = new ArrayList<>();
-			for (HudWidget hudWidget : ScreenMaster.getScreenBuilder(tab.getCurrentLocation()).getHudWidgets(tab.getCurrentScreenLayer())) {
+			for (HudWidget hudWidget : WidgetManager.getScreenBuilder(tab.getCurrentLocation()).getHudWidgets(tab.getCurrentScreenLayer())) {
 				if (hudWidget.isMouseOver(localMouseX, localMouseY)) hoveredThingies.add(hudWidget);
 			}
 			if (hoveredThingies.size() == 1) selectedWidget = hoveredThingies.getFirst();
@@ -239,7 +239,7 @@ public class PreviewWidget extends ClickableWidget {
 			}
 			return true;
 		}
-		ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(tab.getCurrentLocation());
+		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
 		if (pickParent && selectedWidget != null && !selectedWidget.equals(hoveredWidget)) {
 			PositionRule oldRule = screenBuilder.getPositionRule(selectedWidget.getInternalID());
 			if (oldRule == null) oldRule = PositionRule.DEFAULT;
@@ -283,7 +283,7 @@ public class PreviewWidget extends ClickableWidget {
 				case GLFW.GLFW_KEY_LEFT -> x = -multiplier;
 				case GLFW.GLFW_KEY_RIGHT -> x = multiplier;
 			}
-			ScreenBuilder screenBuilder = ScreenMaster.getScreenBuilder(tab.getCurrentLocation());
+			ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
 			PositionRule oldRule = screenBuilder.getPositionRuleOrDefault(selectedWidget.getInternalID());
 
 			screenBuilder.setPositionRule(selectedWidget.getInternalID(), new PositionRule(

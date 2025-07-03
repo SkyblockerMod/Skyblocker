@@ -41,7 +41,9 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	}
 
 	/**
-	 * Controlled by hypxiel and PlayerListMgr
+	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
+	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
+	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
 	 */
 	@Override
 	public final boolean shouldRender(Location location) {
@@ -49,16 +51,28 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	}
 
 	/**
-	 * Controlled by hypxiel and PlayerListMgr
+	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
+	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
+	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
 	 */
 	@Override
 	public final Set<Location> availableLocations() {
 		return Set.of();
 	}
 
+	/**
+	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
+	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
+	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
+	 */
 	@Override
 	public final void setEnabledIn(Location location, boolean enabled) {}
 
+	/**
+	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
+	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
+	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
+	 */
 	@Override
 	public final boolean isEnabledIn(Location location) {
 		return false;

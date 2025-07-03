@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
@@ -62,8 +63,8 @@ public class SkyblockerJEIPlugin implements IModPlugin {
     public void registerRecipes(@NotNull IRecipeRegistration registration) {
     	//FIXME no clue what to replace any of this with, we can't use items as that does not work
         /*registration.getIngredientManager().addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ItemRepository.getItems());
-        registration.addRecipes(skyblockCraftingRecipeCategory.getRecipeType(), ItemRepository.getRecipesStream().map(recipe ->
-                new RecipeEntry<CraftingRecipe>(recipe.getId(), new ShapedRecipe("", CraftingRecipeCategory.MISC, RawShapedRecipe.create(Map.of(
+        registration.addRecipes(skyblockCraftingRecipeCategory.getRecipeType(), ItemRepository.getRecipesStream().filter(skyblockRecipe -> skyblockRecipe instanceof SkyblockCraftingRecipe).map(SkyblockCraftingRecipe.class::cast).map(recipe ->
+                new RecipeEntry<CraftingRecipe>(recipe.getRecipeIdentifier(), new ShapedRecipe("", CraftingRecipeCategory.MISC, RawShapedRecipe.create(Map.of(
                         'a', Ingredient.ofStacks(recipe.getGrid().get(0)),
                         'b', Ingredient.ofStacks(recipe.getGrid().get(1)),
                         'c', Ingredient.ofStacks(recipe.getGrid().get(2)),

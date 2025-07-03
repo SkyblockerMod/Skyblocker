@@ -34,6 +34,11 @@ public class ConfigUtils {
 		return EnumControllerBuilder.create(opt).enumClass((Class<E>) opt.stateManager().get().getClass());
 	}
 
+	public static <E extends Enum<E>> Function<Option<E>, ControllerBuilder<E>> getFormattedEnumCyclingControllerFactory(Class<E> enumType, ValueFormatter<E> formatter) {
+		return opt -> EnumControllerBuilder.create(opt).enumClass(enumType).formatValue(formatter);
+	}
+
+
 	/**
 	 * Creates a factory for {@link EnumDropdownControllerBuilder}s with the given function for converting enum constants to texts.
 	 * Use this if a custom formatter function for an enum is needed.

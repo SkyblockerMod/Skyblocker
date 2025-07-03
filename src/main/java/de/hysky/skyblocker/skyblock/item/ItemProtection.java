@@ -2,12 +2,12 @@ package de.hysky.skyblocker.skyblock.item;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -27,7 +27,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -50,8 +49,8 @@ public class ItemProtection {
 
 	public static boolean isItemProtected(ItemStack stack) {
 		if (stack == null) return false;
-        String itemUuid = ItemUtils.getItemUuid(stack);
-        return SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid);
+		String itemUuid = ItemUtils.getItemUuid(stack);
+		return SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid);
 	}
 
 	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
@@ -61,6 +60,7 @@ public class ItemProtection {
 	}
 
 	private static int protectMyItem(FabricClientCommandSource source) {
+		boolean notifyConfiguration = SkyblockerConfigManager.get().general.itemProtection.displayChatNotification;
 		ItemStack heldItem = source.getPlayer().getMainHandStack();
 
 		if (Utils.isOnSkyblock()) {
@@ -72,13 +72,15 @@ public class ItemProtection {
 				if (!protectedItems.contains(itemUuid)) {
 					protectedItems.add(itemUuid);
 					SkyblockerConfigManager.save();
-
-					source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())));
+					if (notifyConfiguration) {
+						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())));
+					}
 				} else {
 					protectedItems.remove(itemUuid);
 					SkyblockerConfigManager.save();
-
-					source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())));
+					if (notifyConfiguration) {
+						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())));
+					}
 				}
 			} else {
 				source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")));
@@ -91,8 +93,10 @@ public class ItemProtection {
 	}
 
 	public static void handleKeyPressed(ItemStack heldItem) {
+		boolean notifyConfiguration = SkyblockerConfigManager.get().general.itemProtection.displayChatNotification;
+
 		PlayerEntity playerEntity = MinecraftClient.getInstance().player;
-		if (playerEntity == null){
+		if (playerEntity == null) {
 			return;
 		}
 		if (!Utils.isOnSkyblock()) {
@@ -100,10 +104,10 @@ public class ItemProtection {
 			return;
 		}
 
-        if (heldItem.isEmpty()) {
+		if (heldItem.isEmpty()) {
 			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")), false);
-            return;
-        }
+			return;
+		}
 
 		String itemUuid = ItemUtils.getItemUuid(heldItem);
 		if (!itemUuid.isEmpty()) {
@@ -112,13 +116,15 @@ public class ItemProtection {
 			if (!protectedItems.contains(itemUuid)) {
 				protectedItems.add(itemUuid);
 				SkyblockerConfigManager.save();
-
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())), false);
+					if (notifyConfiguration) {
+					playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())), false);
+				}
 			} else {
 				protectedItems.remove(itemUuid);
 				SkyblockerConfigManager.save();
-
-				playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())), false);
+					if (notifyConfiguration) {
+					playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())), false);
+				}
 			}
 		} else {
 			playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")), false);
@@ -134,8 +140,13 @@ public class ItemProtection {
 
 	private static ActionResult onEntityInteract(PlayerEntity playerEntity, World world, Hand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
 		if (!Utils.isOnSkyblock() || !world.isClient) return ActionResult.PASS;
+
+		Location location = Utils.getLocation();
+		if (!(location == Location.PRIVATE_ISLAND || location == Location.GARDEN)) {
+			return ActionResult.PASS;
+		}
 		if (entity instanceof ItemFrameEntity itemFrame && itemFrame.getHeldItemStack().isEmpty()) {
-			if (isItemProtected(playerEntity.getStackInHand(hand)) || HotbarSlotLock.isLocked(playerEntity.getInventory().selectedSlot)) {
+			if (isItemProtected(playerEntity.getStackInHand(hand)) || HotbarSlotLock.isLocked(playerEntity.getInventory().getSelectedSlot())) {
 				return ActionResult.FAIL;
 			}
 		}

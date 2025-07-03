@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfigListWidget.AbstractChatRuleEntry> {
     private final ChatRulesConfigScreen screen;
-    private Boolean hasChanged;
+    private boolean hasChanged;
 
     public ChatRulesConfigListWidget(MinecraftClient client, ChatRulesConfigScreen screen, int width, int height, int y, int itemHeight) {
         super(client, width, height, y, itemHeight);
@@ -51,6 +51,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         children().add(newIndex + 1, new ChatRuleConfigEntry(newIndex));
     }
 
+	@Override
     protected boolean removeEntry(AbstractChatRuleEntry entry) {
         hasChanged = true;
         return super.removeEntry(entry);
@@ -65,7 +66,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         return (hasChanged || children().stream().filter(ChatRuleConfigEntry.class::isInstance).map(ChatRuleConfigEntry.class::cast).anyMatch(ChatRuleConfigEntry::isChange));
     }
 
-    protected static abstract class AbstractChatRuleEntry extends ElementListWidget.Entry<ChatRulesConfigListWidget.AbstractChatRuleEntry> {
+	protected abstract static class AbstractChatRuleEntry extends ElementListWidget.Entry<ChatRulesConfigListWidget.AbstractChatRuleEntry> {
     }
 
     private class ChatRuleLabelsEntry extends AbstractChatRuleEntry {
@@ -115,9 +116,8 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
                     .position(width / 2 - 25, 5)
                     .build();
 
-            openConfigButton = ButtonWidget.builder(Text.translatable("skyblocker.config.chat.chatRules.screen.editRule"), a -> {
-                        client.setScreen(new ChatRuleConfigScreen(screen, chatRuleIndex));
-                    })
+            openConfigButton = ButtonWidget.builder(Text.translatable("skyblocker.config.chat.chatRules.screen.editRule"),
+		                                           a -> client.setScreen(new ChatRuleConfigScreen(screen, chatRuleIndex)))
                     .size(50, 20)
                     .position(width / 2 + 45, 5)
                     .tooltip(Tooltip.of(Text.translatable("skyblocker.config.chat.chatRules.screen.editRule.@Tooltip")))
@@ -192,7 +192,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         }
 
         public boolean isChange() {
-            return (!chatRule.getEnabled().equals(ChatRulesHandler.chatRuleList.get(chatRuleIndex).getEnabled()));
+            return chatRule.getEnabled() != ChatRulesHandler.chatRuleList.get(chatRuleIndex).getEnabled();
         }
     }
 }

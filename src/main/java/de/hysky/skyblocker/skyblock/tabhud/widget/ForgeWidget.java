@@ -60,7 +60,7 @@ public class ForgeWidget extends TabHudWidget {
 						} else {
 							l2 = Text.literal("Done in: ").formatted(Formatting.GRAY).append(Text.literal(parts[1]).formatted(Formatting.WHITE));
 						}
-						c = new IcoFatTextComponent(Ico.FIRE, l1, l2);
+						c = new IcoFatTextComponent(Ico.CAMPFIRE, l1, l2);
 					}
 				}
 			}

@@ -66,11 +66,12 @@ public class DungeonMapConfigScreen extends Screen {
 
 	@Override
 	public void close() {
-		SkyblockerConfigManager.get().dungeons.dungeonMap.mapX = mapX;
-		SkyblockerConfigManager.get().dungeons.dungeonMap.mapY = mapY;
-		SkyblockerConfigManager.get().dungeons.dungeonScore.scoreX = scoreX;
-		SkyblockerConfigManager.get().dungeons.dungeonScore.scoreY = scoreY;
-		SkyblockerConfigManager.save();
+		SkyblockerConfigManager.update(config -> {
+			config.dungeons.dungeonMap.mapX = mapX;
+			config.dungeons.dungeonMap.mapY = mapY;
+			config.dungeons.dungeonScore.scoreX = scoreX;
+			config.dungeons.dungeonScore.scoreY = scoreY;
+		});
 
 		this.client.setScreen(parent);
 	}

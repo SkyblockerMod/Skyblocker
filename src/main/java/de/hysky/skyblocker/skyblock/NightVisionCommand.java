@@ -31,9 +31,8 @@ public class NightVisionCommand {
 	}
 
 	private static int writeStrength(CommandContext<FabricClientCommandSource> context, int strength) {
-		SkyblockerConfigManager.get().uiAndVisuals.nightVisionStrength = strength;
+		SkyblockerConfigManager.update(config -> config.uiAndVisuals.nightVisionStrength = strength);
 		context.getSource().sendFeedback(Text.translatable("skyblocker.nightVision.success", strength));
-		SkyblockerConfigManager.save();
 		return 1;
 	}
 }

@@ -1,9 +1,14 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import java.util.Arrays;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.utils.EnumUtils;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.math.ColorHelper;
 
 public enum SkyblockItemRarity implements StringIdentifiable {
 	COMMON(Formatting.WHITE),
@@ -43,5 +48,13 @@ public enum SkyblockItemRarity implements StringIdentifiable {
 
 	public SkyblockItemRarity next() {
 		return EnumUtils.cycle(this);
+	}
+
+	@Nullable
+	public static SkyblockItemRarity fromColor(int color) {
+		return Arrays.stream(SkyblockItemRarity.values())
+				.filter(rarity -> ColorHelper.fromFloats(1f, rarity.r, rarity.g, rarity.b) == ColorHelper.fullAlpha(color))
+				.findFirst()
+				.orElse(null);
 	}
 }

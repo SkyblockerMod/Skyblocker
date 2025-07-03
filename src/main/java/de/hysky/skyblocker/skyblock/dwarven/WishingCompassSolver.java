@@ -53,9 +53,9 @@ public class WishingCompassSolver {
      */
     private static final double PARTICLES_MAX_DISTANCE = 0.9;
     /**
-     * the distance squared the player has to be from where they used the first compass to where they use the second
+     * the distance the player has to be from where they used the first compass to where they use the second
      */
-    private static final long DISTANCE_BETWEEN_USES = 64;
+    private static final long DISTANCE_BETWEEN_USES = 8;
 	/**
 	 * Arbitrary distance below which skyblocker will consider two compass trails to be intersecting
 	 */
@@ -118,7 +118,7 @@ public class WishingCompassSolver {
     }
 
     private static boolean isKeyInInventory() {
-        return CLIENT.player != null && CLIENT.player.getInventory().main.stream().anyMatch(stack -> stack != null && stack.getSkyblockId().equals("JUNGLE_KEY"));
+        return CLIENT.player != null && CLIENT.player.getInventory().getMainStacks().stream().anyMatch(stack -> stack != null && stack.getSkyblockId().equals("JUNGLE_KEY"));
     }
 
     private static Zone getZoneOfLocation(Vec3d location) {

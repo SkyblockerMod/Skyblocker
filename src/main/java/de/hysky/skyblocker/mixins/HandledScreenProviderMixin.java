@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.mixins;
 
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.auction.AuctionBrowserScreen;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
 import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;
+import de.hysky.skyblocker.skyblock.dungeon.LeapOverlay;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreen;
@@ -101,6 +101,14 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 					case WidgetsConfigurationScreen screen -> screen.updateHandler(containerScreenHandler, nameLowercase);
 					case null, default -> client.setScreen(new WidgetsConfigurationScreen(containerScreenHandler, nameLowercase));
 				}
+				ci.cancel();
+			}
+
+			// Leap Overlay
+			case GenericContainerScreenHandler containerScreenHandler when Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.spiritLeapOverlay && nameLowercase.contains(LeapOverlay.TITLE.toLowerCase()) -> {
+				client.player.currentScreenHandler = containerScreenHandler;
+				client.setScreen(new LeapOverlay(containerScreenHandler));
+
 				ci.cancel();
 			}
 

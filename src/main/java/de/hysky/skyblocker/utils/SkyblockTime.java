@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +21,7 @@ public class SkyblockTime {
 	public static final AtomicReference<Month> skyblockMonth = new AtomicReference<>(Month.EARLY_SPRING);
 	public static final AtomicInteger skyblockDay = new AtomicInteger(0);
 	public static final AtomicInteger skyblockHour = new AtomicInteger(0);
+	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Time");
 
 	//All time lengths are in milliseconds
@@ -122,13 +124,16 @@ public class SkyblockTime {
 			HOUR_CHANGE.invoker().onHourChange(hour);
 		}
 		TIME_UPDATE.invoker().onTimeUpdate(year, season, month, day, hour);
-		LOGGER.info("[Skyblocker Time] Skyblock time updated to Year {}, Season {}, Month {}, Day {}, Hour {}", year, season, month, day, hour);
+		//LOGGER.info("[Skyblocker Time] Skyblock time updated to Year {}, Season {}, Month {}, Day {}, Hour {}", year, season, month, day, hour);
 	}
 
 	public static MutableText formatTime(double seconds) {
-		seconds = Math.ceil(seconds);
 		if (seconds <= 0) return Text.literal("Now").formatted(Formatting.GREEN);
+		return Text.literal(formatTimeString(seconds));
+	}
 
+	public static @NotNull String formatTimeString(double seconds) {
+		seconds = Math.ceil(Math.max(seconds, 0));
 		StringBuilder builder = new StringBuilder();
 		if (seconds >= 86400) {
 			builder.append((int) (seconds / 86400)).append("d ");
@@ -145,7 +150,7 @@ public class SkyblockTime {
 		if (seconds >= 1) {
 			builder.append((int) seconds).append("s");
 		}
-		return Text.literal(builder.toString());
+		return builder.toString().trim();
 	}
 
 	public enum Season {

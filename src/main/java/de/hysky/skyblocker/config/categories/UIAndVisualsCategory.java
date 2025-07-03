@@ -3,12 +3,14 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.skyblock.ItemPickupWidget;
+import de.hysky.skyblocker.skyblock.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenMaster;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -35,6 +37,14 @@ public class UIAndVisualsCategory {
 				.name(Text.translatable("skyblocker.config.uiAndVisuals"))
 
                 //Ungrouped Options
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.swingOnAbilities"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip")))
+						.binding(defaults.uiAndVisuals.swingOnAbilities,
+								() -> config.uiAndVisuals.swingOnAbilities,
+								newValue -> config.uiAndVisuals.swingOnAbilities = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 				.option(Option.<Integer>createBuilder()
 						.name(Text.translatable("skyblocker.config.uiAndVisuals.nightVisionStrength"))
 						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.nightVisionStrength.@Tooltip")))
@@ -103,6 +113,22 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.cancelComponentUpdateAnimation = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.showCustomizeButton"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip")))
+						.binding(defaults.uiAndVisuals.showCustomizeButton,
+								() -> config.uiAndVisuals.showCustomizeButton,
+								newValue -> config.uiAndVisuals.showCustomizeButton = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.showConfigButton"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.showConfigButton.@Tooltip")))
+						.binding(defaults.uiAndVisuals.showConfigButton,
+								() -> config.uiAndVisuals.showConfigButton,
+								newValue -> config.uiAndVisuals.showConfigButton = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
                 //Chest Value FIXME change dropdown to color controller
                 .group(OptionGroup.createBuilder()
@@ -228,7 +254,7 @@ public class UIAndVisualsCategory {
 									if (Utils.isOnSkyblock()) {
 										MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
 									} else {
-										MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, ScreenMaster.ScreenLayer.MAIN_TAB, screen));
+										MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, WidgetManager.ScreenLayer.MAIN_TAB, screen));
 									}
 								})
 								.build())
@@ -321,6 +347,14 @@ public class UIAndVisualsCategory {
                                 .text(Text.translatable("text.skyblocker.open"))
                                 .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new StatusBarsConfigScreen()))
                                 .build())
+						.option(Option.<UIAndVisualsConfig.IntelligenceDisplay>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay"))
+								.binding(defaults.uiAndVisuals.bars.intelligenceDisplay,
+										() -> config.uiAndVisuals.bars.intelligenceDisplay,
+										newValue -> config.uiAndVisuals.bars.intelligenceDisplay = newValue)
+								.controller(ConfigUtils.getFormattedEnumCyclingControllerFactory(UIAndVisualsConfig.IntelligenceDisplay.class, intelligenceDisplay -> Text.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay." + intelligenceDisplay.name())))
+								.build()
+						)
                         .build())
 
                 //Waypoints
@@ -360,6 +394,16 @@ public class UIAndVisualsCategory {
                                         () -> config.uiAndVisuals.teleportOverlay.enableTeleportOverlays,
                                         newValue -> config.uiAndVisuals.teleportOverlay.enableTeleportOverlays = newValue)
                                 .controller(ConfigUtils::createBooleanController)
+                                .build())
+                        .option(Option.<Color>createBuilder()
+                                .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor"))
+                                .binding(defaults.uiAndVisuals.teleportOverlay.teleportOverlayColor,
+                                        () -> config.uiAndVisuals.teleportOverlay.teleportOverlayColor,
+                                        newValue -> {
+                                            config.uiAndVisuals.teleportOverlay.teleportOverlayColor = newValue;
+                                            TeleportOverlay.configCallback(newValue);
+                                       })
+                                .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
                                 .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableWeirdTransmission"))
@@ -602,6 +646,119 @@ public class UIAndVisualsCategory {
                         .build()
                 )
 
+				//Custom Health bars
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.enabled"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.enabled.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.enabled,
+										() -> config.uiAndVisuals.healthBars.enabled,
+										newValue -> config.uiAndVisuals.healthBars.enabled = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.scale"))
+								.binding(defaults.uiAndVisuals.healthBars.scale,
+										() -> config.uiAndVisuals.healthBars.scale,
+										newValue -> config.uiAndVisuals.healthBars.scale = newValue)
+								.controller(FloatFieldControllerBuilder::create)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.removeHealthFromName.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.removeHealthFromName,
+										() -> config.uiAndVisuals.healthBars.removeHealthFromName,
+										newValue -> config.uiAndVisuals.healthBars.removeHealthFromName = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.removeMaxHealthFromName"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.removeMaxHealthFromName.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.removeMaxHealthFromName,
+										() -> config.uiAndVisuals.healthBars.removeMaxHealthFromName,
+										newValue -> config.uiAndVisuals.healthBars.removeMaxHealthFromName = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.applyToHealthOnlyMobs"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.applyToHealthOnlyMobs.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.applyToHealthOnlyMobs,
+										() -> config.uiAndVisuals.healthBars.applyToHealthOnlyMobs,
+										newValue -> config.uiAndVisuals.healthBars.applyToHealthOnlyMobs = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.hideFullHealth"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.hideFullHealth.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.hideFullHealth,
+										() -> config.uiAndVisuals.healthBars.hideFullHealth,
+										newValue -> config.uiAndVisuals.healthBars.hideFullHealth = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.fullBarColor"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.fullBarColor.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.fullBarColor,
+										() -> config.uiAndVisuals.healthBars.fullBarColor,
+										newValue -> config.uiAndVisuals.healthBars.fullBarColor = newValue)
+								.controller(ColorControllerBuilder::create)
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.halfBarColor"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.halfBarColor.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.halfBarColor,
+										() -> config.uiAndVisuals.healthBars.halfBarColor,
+										newValue -> config.uiAndVisuals.healthBars.halfBarColor = newValue)
+								.controller(ColorControllerBuilder::create)
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.emptyBarColor"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip")))
+								.binding(defaults.uiAndVisuals.healthBars.emptyBarColor,
+										() -> config.uiAndVisuals.healthBars.emptyBarColor,
+										newValue -> config.uiAndVisuals.healthBars.emptyBarColor = newValue)
+								.controller(ColorControllerBuilder::create)
+								.build())
+						.build()
+				)
+
+				//item pickup widget
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup"))
+						.collapsed(true)
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.hud.screen"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, ItemPickupWidget.getInstance().getInternalID(), screen)))
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications.@Tooltip")))
+								.binding(defaults.uiAndVisuals.itemPickup.sackNotifications,
+										() -> config.uiAndVisuals.itemPickup.sackNotifications,
+										newValue -> config.uiAndVisuals.itemPickup.sackNotifications = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.showItemName"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip")))
+								.binding(defaults.uiAndVisuals.itemPickup.showItemName,
+										() -> config.uiAndVisuals.itemPickup.showItemName,
+										newValue -> config.uiAndVisuals.itemPickup.showItemName = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.lifeTime"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip")))
+								.binding(defaults.uiAndVisuals.itemPickup.lifeTime,
+										() -> config.uiAndVisuals.itemPickup.lifeTime,
+										newValue -> config.uiAndVisuals.itemPickup.lifeTime = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
+								.build())
+						.build()
+				)
                 .build();
     }
 

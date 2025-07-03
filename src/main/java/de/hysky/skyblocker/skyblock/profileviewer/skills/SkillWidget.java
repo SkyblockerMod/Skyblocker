@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
@@ -101,7 +102,7 @@ public class SkillWidget {
         if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 10 && mouseY < y + 19){
             List<Text> tooltipText = new ArrayList<>();
             tooltipText.add(Text.literal(this.SKILL_NAME).formatted(Formatting.GREEN));
-            tooltipText.add(Text.literal("XP: " + ProfileViewerUtils.COMMA_FORMATTER.format(this.SKILL_LEVEL.xp)).formatted(Formatting.GOLD));
+            tooltipText.add(Text.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.SKILL_LEVEL.xp)).formatted(Formatting.GOLD));
             context.drawTooltip(textRenderer, tooltipText, mouseX, mouseY);
         }
     }
