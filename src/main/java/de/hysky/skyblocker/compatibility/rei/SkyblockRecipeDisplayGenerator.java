@@ -1,11 +1,8 @@
 package de.hysky.skyblocker.compatibility.rei;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.NEURepoManager;
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;
 import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;

@@ -60,7 +60,7 @@ public class LegacyStringNbtReader {
 
 	/**
 	 * {@return the NBT compound parsed from the {@code string}}
-	 * 
+	 *
 	 * @throws CommandSyntaxException if the reader detects a syntax error (including
 	 * {@linkplain #TRAILING trailing strings})
 	 */
@@ -149,7 +149,7 @@ public class LegacyStringNbtReader {
 
 	/**
 	 * {@return the parsed NBT element}
-	 * 
+	 *
 	 * @throws CommandSyntaxException if the reader detects a syntax error
 	 */
 	public NbtElement parseElement() throws CommandSyntaxException {
@@ -174,7 +174,7 @@ public class LegacyStringNbtReader {
 
 	/**
 	 * {@return the parsed NBT compound}
-	 * 
+	 *
 	 * @throws CommandSyntaxException if the reader detects a syntax error
 	 */
 	public NbtCompound parseCompound() throws CommandSyntaxException {

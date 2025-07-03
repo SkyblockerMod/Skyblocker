@@ -307,7 +307,7 @@ public class RenderHelper {
 
     /**
      * Renders a cylinder without the top or bottom faces.
-     * 
+     *
      * @param pos      The position that the cylinder will be centred around.
      * @param height   The total height of the cylinder with {@code pos} as the midpoint.
      * @param segments The amount of triangles used to approximate the circle.

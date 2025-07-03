@@ -251,7 +251,7 @@ spotless {
 	json {
 		target 'src/**/lang/en_us.json'
 		targetExclude 'src/**/generated/**'
-		gson().indentWithSpaces(2)
+		//gson().sortByKeys().indentWithSpaces(2) // TODO: turn on in the future
 	}
 
 	groovyGradle {

@@ -1,8 +1,6 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
