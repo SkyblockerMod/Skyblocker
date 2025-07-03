@@ -38,7 +38,7 @@ public class FossilCalculations {
 		int[] total = new int[EXCAVATOR_WIDTH * EXCAVATOR_HEIGHT];
 		minimumTiles = EXCAVATOR_WIDTH * EXCAVATOR_HEIGHT;
 		AtomicInteger fossilCount = new AtomicInteger();
-		Arrays.stream(tiles.state()).forEach(row -> Arrays.stream(row).forEach(tile -> {if (tile.equals(Structures.TileState.FOSSIL)) fossilCount.getAndIncrement();}));
+		Arrays.stream(tiles.state()).forEach(row -> Arrays.stream(row).forEach(tile -> {if (tile.equals(Structures.TileState.FOSSIL)) fossilCount.getAndIncrement(); }));
 
 		//loop though tile options and if they are valid
 		List<Structures.permutation> validStates = new ArrayList<>();
@@ -229,7 +229,7 @@ public class FossilCalculations {
 				Structures.TileGrid output = new Structures.TileGrid(new Structures.TileState[grid.width()][grid.height()]);
 				for (int originalX = 0; originalX < grid.width(); originalX++) {
 					for (int originalY = 0; originalY < grid.height(); originalY++) {
-						output.updateSlot(originalY,startingWidth - originalX, grid.getSlot(originalX, originalY));
+						output.updateSlot(originalY, startingWidth - originalX, grid.getSlot(originalX, originalY));
 					}
 				}
 				return output;

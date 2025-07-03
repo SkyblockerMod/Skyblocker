@@ -97,4 +97,3 @@ public class GuardianHealth {
         return !display.equals("Armor Stand") && guardianRegex.matcher(display).matches();
     }
 }
-

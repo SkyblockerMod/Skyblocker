@@ -329,9 +329,9 @@ public class ChestValue {
 	}
 
 	private static class ChestValueTextWidget extends TextWidget {
-		public boolean shadow = false;
+		private static final boolean shadow = false;
 
-		public ChestValueTextWidget(int width, int height, Text message, TextRenderer textRenderer) {
+		private ChestValueTextWidget(int width, int height, Text message, TextRenderer textRenderer) {
 			super(width, height, message, textRenderer);
 			alignLeft();
 		}

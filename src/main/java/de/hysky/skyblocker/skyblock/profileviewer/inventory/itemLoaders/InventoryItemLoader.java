@@ -18,7 +18,7 @@ public class InventoryItemLoader extends ItemLoader {
             switch (inventory) {
                 case "inv_armor" -> inventoryItems.addAll(inv.reversed());
                 case "inv_contents" -> {
-                        inventoryItems.addAll(inv.subList(9,inv.size()));
+                        inventoryItems.addAll(inv.subList(9, inv.size()));
                         inventoryItems.addAll(inv.subList(0, 9));
                     }
                 default -> inventoryItems.addAll(inv);

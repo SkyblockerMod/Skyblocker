@@ -4,7 +4,7 @@ import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
 
 class TriviaTest extends ChatPatternListenerTest<Trivia> {
-    public TriviaTest() {
+    TriviaTest() {
         super(new Trivia());
     }
 

@@ -1,21 +1,18 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
-import io.github.moulberry.repo.data.NEUCraftingRecipe;
-import io.github.moulberry.repo.data.NEUItem;
-import io.github.moulberry.repo.data.NEURecipe;
+import io.github.moulberry.repo.data.*;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class ItemRepository {
@@ -23,7 +20,7 @@ public class ItemRepository {
 
     private static final List<ItemStack> items = new ArrayList<>();
     private static final Map<String, ItemStack> itemsMap = new HashMap<>();
-    private static final List<SkyblockCraftingRecipe> recipes = new ArrayList<>();
+    private static final List<SkyblockRecipe> recipes = new ArrayList<>();
     private static boolean filesImported = false;
 
     @Init
@@ -64,11 +61,7 @@ public class ItemRepository {
     }
 
     private static void loadRecipes(NEUItem item) {
-        for (NEURecipe recipe : item.getRecipes()) {
-            if (recipe instanceof NEUCraftingRecipe neuCraftingRecipe) {
-                recipes.add(SkyblockCraftingRecipe.fromNEURecipe(neuCraftingRecipe));
-            }
-        }
+        item.getRecipes().stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull).forEach(recipes::add);
     }
 
     public static String getWikiLink(String neuId, boolean useOfficial) {
@@ -89,20 +82,8 @@ public class ItemRepository {
         return null;
     }
 
-    public static List<SkyblockCraftingRecipe> getRecipes(String neuId) {
-        List<SkyblockCraftingRecipe> result = new ArrayList<>();
-        for (SkyblockCraftingRecipe recipe : recipes) {
-            if (ItemUtils.getItemId(recipe.getResult()).equals(neuId)) result.add(recipe);
-        }
-        for (SkyblockCraftingRecipe recipe : recipes) {
-            for (ItemStack ingredient : recipe.getGrid()) {
-                if (!ingredient.getItem().equals(Items.AIR) && ItemUtils.getItemId(ingredient).equals(neuId)) {
-                    result.add(recipe);
-                    break;
-                }
-            }
-        }
-        return result;
+    public static List<SkyblockRecipe> getRecipesAndUsages(ItemStack stack) {
+        return Stream.concat(getRecipes(stack), getUsages(stack)).toList();
     }
 
     public static boolean filesImported() {
@@ -130,8 +111,21 @@ public class ItemRepository {
         return itemsMap.get(neuId);
     }
 
-    public static Stream<SkyblockCraftingRecipe> getRecipesStream() {
-        return recipes.stream();
+    public static Stream<SkyblockRecipe> getRecipesStream() {return recipes.stream(); }
+
+    public static Stream<SkyblockRecipe> getRecipes(ItemStack stack) {
+        return NEURepoManager.RECIPE_CACHE.getRecipes().getOrDefault(stack.getNeuName(), Set.of()).stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull);
+    }
+
+    public static Stream<SkyblockRecipe> getUsages(ItemStack stack) {
+        return NEURepoManager.RECIPE_CACHE.getUsages().getOrDefault(stack.getNeuName(), Set.of()).stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull);
+    }
+
+    private static SkyblockRecipe toSkyblockRecipe(NEURecipe neuRecipe) {
+        return switch (neuRecipe) {
+            case NEUCraftingRecipe craftingRecipe -> new SkyblockCraftingRecipe(craftingRecipe);
+            case NEUForgeRecipe forgeRecipe -> new SkyblockForgeRecipe(forgeRecipe);
+            case null, default -> null;
+        };
     }
 }
-

@@ -261,7 +261,7 @@ public class RenderHelper {
 
 		buffer.vertex(positionMatrix, (float) renderOffset.getX(), (float) renderOffset.getY(), (float) renderOffset.getZ()).texture(1, 1 - textureHeight).color(color);
 		buffer.vertex(positionMatrix, (float) renderOffset.getX(), (float) renderOffset.getY() + height, (float) renderOffset.getZ()).texture(1, 1).color(color);
-		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY() + height	, (float) renderOffset.getZ()).texture(1 - textureWidth, 1).color(color);
+		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY() + height, (float) renderOffset.getZ()).texture(1 - textureWidth, 1).color(color);
 		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY(), (float) renderOffset.getZ()).texture(1 - textureWidth, 1 - textureHeight).color(color);
 
 		consumers.draw(layer);
@@ -307,7 +307,7 @@ public class RenderHelper {
 
     /**
      * Renders a cylinder without the top or bottom faces.
-     * 
+     *
      * @param pos      The position that the cylinder will be centred around.
      * @param height   The total height of the cylinder with {@code pos} as the midpoint.
      * @param segments The amount of triangles used to approximate the circle.
