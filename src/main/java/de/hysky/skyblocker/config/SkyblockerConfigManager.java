@@ -4,12 +4,15 @@ import com.google.gson.FieldNamingPolicy;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.categories.*;
+import de.hysky.skyblocker.config.serialization.CodecTypeAdapter;
+import de.hysky.skyblocker.config.serialization.ItemTypeAdapter;
+import de.hysky.skyblocker.config.serialization.VanillaGsonConfigSerializer;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
-import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -20,9 +23,13 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.item.Item;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Identifier;
 
+import java.awt.Color;
 import java.lang.StackWalker.Option;
 import java.nio.file.Path;
 import java.util.function.Consumer;
@@ -33,13 +40,17 @@ public class SkyblockerConfigManager {
     public static final int CONFIG_VERSION = 4;
     private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("skyblocker.json");
     private static final ConfigClassHandler<SkyblockerConfig> HANDLER = ConfigClassHandler.createBuilder(SkyblockerConfig.class)
-            .serializer(config -> GsonConfigSerializerBuilder.create(config)
-                    .setPath(CONFIG_FILE)
-                    .setJson5(false)
-                    .appendGsonBuilder(builder -> builder
+            .serializer(config -> new VanillaGsonConfigSerializer<>(config, CONFIG_FILE, builder -> builder
                             .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
-                            .registerTypeHierarchyAdapter(Identifier.class, new CodecTypeAdapter<>(Identifier.CODEC)))
-                    .build())
+                            .setPrettyPrinting()
+                            .serializeNulls()
+                            .registerTypeHierarchyAdapter(Color.class, new CodecTypeAdapter<>(CodecUtils.COLOR_CODEC))
+                            .registerTypeHierarchyAdapter(Text.class, new CodecTypeAdapter<>(TextCodecs.CODEC))
+                            .registerTypeHierarchyAdapter(Style.class, new CodecTypeAdapter<>(Style.Codecs.CODEC))
+                            .registerTypeHierarchyAdapter(Identifier.class, new CodecTypeAdapter<>(Identifier.CODEC))
+                            .registerTypeHierarchyAdapter(Item.class, new ItemTypeAdapter())
+                            )
+            		)
             .build();
 
     public static SkyblockerConfig get() {
@@ -58,7 +69,7 @@ public class SkyblockerConfigManager {
         HANDLER.load();
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(optionsLiteral("config")).then(optionsLiteral("options")))));
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (screen instanceof GenericContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
+            if (get().uiAndVisuals.showConfigButton && screen instanceof GenericContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
                 Screens.getButtons(screen).add(ButtonWidget
                         .builder(Text.literal("\uD83D\uDD27"), buttonWidget -> client.setScreen(createGUI(screen)))
                         .dimensions(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)

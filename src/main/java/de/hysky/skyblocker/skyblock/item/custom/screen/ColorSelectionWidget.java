@@ -261,7 +261,12 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		this.currentItem = currentItem;
 		String itemUuid = ItemUtils.getItemUuid(currentItem);
 		customizable = currentItem.isIn(ItemTags.DYEABLE);
-		if (!customizable) return;
+		if (!customizable) {
+			animated = false;
+			((CheckboxWidgetAccessor) animatedCheckbox).setChecked(false);
+			changeVisibilities();
+			return;
+		}
 		if (SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(itemUuid)) {
 			animated = true;
 			CustomArmorAnimatedDyes.AnimatedDye animatedDye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);

@@ -36,10 +36,15 @@ public class Calculator {
         while (i < input.length()) {
             Token token = new Token();
             switch (input.charAt(i)) {
-                case '+', '-', '*', '/' -> {
+                case '+', '-', '*', '/', '^' -> {
                     token.type = TokenType.OPERATOR;
                     token.value = String.valueOf(input.charAt(i));
                     token.tokenLength = 1;
+
+					// cant have double operators e.g. "5 ++ 2"
+					if (!tokens.isEmpty() && tokens.getLast().type == TokenType.OPERATOR) {
+						throw new UnsupportedOperationException("skyblocker.config.uiAndVisuals.inputCalculator.duplicateOperatorError");
+					}
                 }
 
                 case '(' -> {
@@ -68,7 +73,7 @@ public class Calculator {
                     token.type = TokenType.NUMBER;
                     Matcher numberMatcher = NUMBER_PATTERN.matcher(input.substring(i));
                     if (!numberMatcher.find()) {//invalid value to lex
-                        throw new UnsupportedOperationException("invalid character");
+                        throw new UnsupportedOperationException("skyblocker.config.uiAndVisuals.inputCalculator.invalidCharacterError");
                     }
                     int end = numberMatcher.end();
                     token.value = input.substring(i, i + end);
@@ -117,7 +122,7 @@ public class Calculator {
                 case R_PARENTHESIS -> {
                     while (true) {
                         if (operatorStack.isEmpty()) {
-                            throw new UnsupportedOperationException("Unbalanced left parenthesis");
+                            throw new UnsupportedOperationException("skyblocker.config.uiAndVisuals.inputCalculator.unbalancedParenthesisError");
                         }
                         Token leftToken = operatorStack.pop();
                         if (leftToken.type == TokenType.L_PARENTHESIS) {
@@ -149,7 +154,10 @@ public class Calculator {
             case "*", "/" -> {
                 return 1;
             }
-            default -> throw new UnsupportedOperationException("Invalid operator");
+			case "^" -> {
+				return 2;
+			}
+            default -> throw new UnsupportedOperationException("skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError");
         }
     }
 
@@ -163,25 +171,29 @@ public class Calculator {
             switch (token.type) {
                 case NUMBER -> values.push(calculateValue(token.value));
                 case OPERATOR -> {
-                    double right = values.pop();
-                    double left = values.pop();
+                    Double right = values.pollFirst();
+					Double left = values.pollFirst();
+					if (left == null || right == null) {
+						throw new UnsupportedOperationException("skyblocker.config.uiAndVisuals.inputCalculator.missingValueError");
+					}
                     switch (token.value) {
                         case "+" -> values.push(left + right);
                         case "-" -> values.push(left - right);
                         case "/" -> {
                             if (right == 0) {
-                                throw new UnsupportedOperationException("Can not divide by 0");
+                                throw new UnsupportedOperationException("skyblocker.config.uiAndVisuals.inputCalculator.divisionByZeroError");
                             }
                             values.push(left / right);
                         }
                         case "*" -> values.push(left * right);
+						case "^" -> values.push(Math.pow(left, right));
                     }
                 }
-                case L_PARENTHESIS, R_PARENTHESIS -> throw new UnsupportedOperationException("Equation is not in RPN");
+                case L_PARENTHESIS, R_PARENTHESIS -> throw new UnsupportedOperationException("skyblocker.config.uiAndVisuals.inputCalculator.badEquationNotation");
             }
         }
         if (values.isEmpty()) {
-            throw new UnsupportedOperationException("Equation is empty");
+            throw new UnsupportedOperationException("skyblocker.config.uiAndVisuals.inputCalculator.emptyEquationError");
         }
         return values.pop();
     }
@@ -189,14 +201,14 @@ public class Calculator {
     private static double calculateValue(String value) {
         Matcher numberMatcher = NUMBER_PATTERN.matcher(value.toLowerCase());
         if (!numberMatcher.matches()) {
-            throw new UnsupportedOperationException("Invalid number");
+            throw new UnsupportedOperationException("skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError");
         }
         double number = Double.parseDouble(numberMatcher.group(1));
         String magnitude = numberMatcher.group(2);
 
         if (!magnitude.isEmpty()) {
             if (!MAGNITUDE_VALUES.containsKey(magnitude)) {//its invalid if its another letter
-                throw new UnsupportedOperationException("Invalid magnitude");
+                throw new UnsupportedOperationException("skyblocker.config.uiAndVisuals.inputCalculator.invalidMagnitudeError");
             }
             number *= MAGNITUDE_VALUES.getLong(magnitude);
         }

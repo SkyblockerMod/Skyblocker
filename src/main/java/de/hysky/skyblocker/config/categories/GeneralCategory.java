@@ -349,6 +349,14 @@ public class GeneralCategory {
                                         newValue -> config.general.itemProtection.protectValuableConsumables = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemProtection.displayChatNotification"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemProtection.displayChatNotification.@Tooltip")))
+								.binding(defaults.general.itemProtection.displayChatNotification,
+										() -> config.general.itemProtection.displayChatNotification,
+										newValue -> config.general.itemProtection.displayChatNotification = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .build())
 
                 //Wiki Lookup
