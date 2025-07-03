@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AdFilterTest extends ChatPatternListenerTest<AdFilter> {
-    public AdFilterTest() {
+    AdFilterTest() {
         super(new AdFilter());
     }
 

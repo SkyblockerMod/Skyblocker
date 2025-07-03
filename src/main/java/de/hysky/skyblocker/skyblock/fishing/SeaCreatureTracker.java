@@ -56,7 +56,7 @@ public class SeaCreatureTracker {
 			checkCapNotification();
 			checkRarityNotification();
 			//schedule notification for end of timer
-			Scheduler.INSTANCE.schedule(SeaCreatureTracker::checkTimerNotification,SkyblockerConfigManager.get().helpers.fishing.timerLength * 20);
+			Scheduler.INSTANCE.schedule(SeaCreatureTracker::checkTimerNotification, SkyblockerConfigManager.get().helpers.fishing.timerLength * 20);
 		}
 	}
 
@@ -171,4 +171,3 @@ public class SeaCreatureTracker {
 
 	record LiveSeaCreature(SeaCreature seaCreature, Entity entity, Long spawnTime) {}
 }
-

@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(InGameHud.class)
 public interface InGameHudInvoker {
-	
+
 	@Accessor
 	@Nullable
 	Text getOverlayMessage();
