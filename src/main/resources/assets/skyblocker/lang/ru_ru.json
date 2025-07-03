@@ -596,7 +596,7 @@
     "skyblocker.updateRepository.failed": "§cОшибка обновления локальных репозиториев. Смотрите логи для более детального анализа.",
     "skyblocker.dwarvenMines.metalDetectorHelper.possibleTreasureLocationsMessage": "Возможное расположение сокровища: ",
     "skyblocker.dwarvenMines.metalDetectorHelper.somethingWentWrongMessage": "С металлоискателем что-то пошло не так. Повторите попытку",
-    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Обычно 270 предназначено для S+ забегов, когда заходите при 300+ очках - обычно для 5-7 этажей (F5-F7) и 5-7 мастер этажей (M5-M7).\nЕсли вы пробегаете на S ранг (вход при 270 очках), то рекомендуется понизить это значение до 250 или ниже, а то это может быть бесполезным",
+    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Обычно 270 предназначено для S+ забегов, когда заходите при 300+ очках - обычно для 5-7 этажей (F5-F7) и 5-7 мастер этажей (M5-M7).\nЕсли вы пробегаете на S ранг (вход при 270 очках), то рекомендуется понизить это значение до 250 или ниже, а то это может быть бесполезным.",
     "skyblocker.bars.config.explanation": "Добро пожаловать на экран настройки панелей статусов!\n\nПеретащите панели к точкам (белые квадраты) или к другим панелям.\nВы можете нажать ПКМ по ним, чтобы настроить несколько свойств.\nПри наведении курсона на \"стык\" двух панелей вы сможете изменить их размер.\n\nНастройки сохраняются при выходе",
     "skyblocker.updateRepository.loading": "§cДругие процессы в данный момент обновляют локальный репозиторий, повторите попытку позже.",
     "skyblocker.updateRepository.deleted": "§bСтарые репозитории успешно удалены, идёт установка новых файлов... Это может занять некоторое время!",
@@ -913,5 +913,11 @@
     "skyblocker.museum.resyncFailure": "Не удалось засинхронизировать ваши пожертвования в музей!",
     "skyblocker.events.tab.endsIn": "Заканчивается через %s",
     "skyblocker.events.tab.startsIn": "Начинается через %s",
-    "skyblocker.events.startsSoon": "%s скоро начнется!"
+    "skyblocker.events.startsSoon": "%s скоро начнется!",
+    "skyblocker.config.dungeons.goldorWaypoints.waypointType": "Тип меток Голдора",
+    "skyblocker.config.dungeons.puzzle.solveTeleportMaze": "Решатель головоломок \"Лабиринт из телепортов\"",
+    "text.skyblocker.dead": "Смерть",
+    "text.skyblocker.offline": "Оффлайн",
+    "key.wikiLookup.official": "Посмотреть на Hypixel Wiki",
+    "key.wikiLookup.fandom": "Посмотреть на Fandom Wiki"
 }
