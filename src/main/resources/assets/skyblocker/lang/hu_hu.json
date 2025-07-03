@@ -39,11 +39,11 @@
     "skyblocker.config.crimsonIsle.extendNetherFog": "Hosszabb Nether Köd",
     "skyblocker.config.crimsonIsle.kuudra": "Kuudra",
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Nyílméreg Figyelmeztetési Küszöb",
-    "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "Útpontok a ballista felépítéséhez",
-    "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Veszély figyelmeztetés",
-    "skyblocker.config.crimsonIsle.kuudra.fuelWaypoints": "Üzemanyag útpontjai",
-    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra ragyogása",
-    "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning": "\"Nincs nyíl méreg\" figyelmeztetés",
+    "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "Helyjelölők a Ballista Felépítéséhez",
+    "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Veszély Figyelmeztetés",
+    "skyblocker.config.crimsonIsle.kuudra.fuelWaypoints": "Üzemanyag Helyjelölők",
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra Fénylése",
+    "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning": "Nincs Nyílméreg Figyelmeztetés",
     "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "Pearl útpont",
     "skyblocker.config.crimsonIsle.kuudra.safeSpotWaypoints": "Biztonságos Hely útpont",
     "skyblocker.config.crimsonIsle.kuudra.suppliesAndFuelWaypointType": "Kellékek/üzemanyag útpont típusa",
@@ -55,5 +55,7 @@
     "text.skyblocker.offline": "Offline",
     "skyblocker.config.debug.corpseFinderDebug": "Debug Test Kereső",
     "skyblocker.config.dungeons": "Dungeons",
-    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Ha kevesebb Nyílméreg van a felszerelésedben a beállított küszöbnél, akkor kapsz egy figyelmeztetést.\n\n16 a lehető legkevesebb.\n32 az ajánlott egy 'DPS' fázishoz előtüzeléssel."
+    "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "Ha kevesebb Nyílméreg van a felszerelésedben a beállított küszöbnél, akkor kapsz egy figyelmeztetést.\n\n16 a lehető legkevesebb.\n32 az ajánlott egy 'DPS' fázishoz előtüzeléssel.",
+    "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Figyelmeztet ha veszélyben vagy egy csáp csapása vagy TNT miatt. A figyelmeztetés színe a veszély mértéketől függ!",
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Megjelöli Kuudra körvonalát egy mély narancssárgával."
 }
