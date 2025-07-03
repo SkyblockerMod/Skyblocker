@@ -96,4 +96,3 @@ public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRari
 		}
 	}
 }
-

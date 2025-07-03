@@ -194,7 +194,7 @@ public class Utils {
 
     /**
      * <b>Note: Under no circumstances should you skip checking the location if you also need the area.</b>
-     * 
+     *
      * @return the area parsed from the scoreboard.
      */
     @NotNull

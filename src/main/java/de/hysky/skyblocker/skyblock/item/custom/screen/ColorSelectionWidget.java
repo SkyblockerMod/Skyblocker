@@ -156,7 +156,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 	private void onRemoveCustomColor(ButtonWidget button) {
 		animated = false;
-		((CheckboxWidgetAccessor)animatedCheckbox).setChecked(false);
+		((CheckboxWidgetAccessor) animatedCheckbox).setChecked(false);
 		changeVisibilities();
 
 		String itemUuid = ItemUtils.getItemUuid(currentItem);
@@ -299,7 +299,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 		private boolean clicked = false;
 
-		public Slider(int x, int y, int width, float min, float max, float step, boolean linear, @Translatable String translatable, FloatConsumer onValueChanged) {
+		private Slider(int x, int y, int width, float min, float max, float step, boolean linear, @Translatable String translatable, FloatConsumer onValueChanged) {
 			super(x, y, width, 15, Text.empty(), 0);
 			if (min >= max || step <= 0 || step > (max - min)) throw new IllegalArgumentException("Invalid slider parameters: min=" + min + ", max=" + max + ", step=" + step);
 			this.minValue = min;
