@@ -31,7 +31,7 @@ public class IndividualWaypoint extends NamedWaypoint {
 	@Init
 	public static void init() {
 		ClientTickEvents.END_CLIENT_TICK.register(IndividualWaypoint::onTick);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {if (waypoint != null) waypoint.render(context);});
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> { if (waypoint != null) waypoint.render(context); });
 		ClientPlayConnectionEvents.JOIN.register((ignore, ignore2, ignore3) -> waypoint = null);
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("waypoints").then(ClientCommandManager.literal("individual")

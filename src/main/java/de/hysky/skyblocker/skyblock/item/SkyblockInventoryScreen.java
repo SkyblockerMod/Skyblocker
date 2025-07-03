@@ -193,7 +193,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
     private static class EquipmentSlot extends Slot {
 
-        public EquipmentSlot(Inventory inventory, int index, int x, int y) {
+        private EquipmentSlot(Inventory inventory, int index, int x, int y) {
             super(inventory, index, x, y);
         }
 

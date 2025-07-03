@@ -55,6 +55,11 @@ public abstract class HudWidget extends AbstractWidget {
 		this.positionRule = positionRule;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(internalID);
+	}
+
 	public final float getScale() {
 		return scale;
 	}
