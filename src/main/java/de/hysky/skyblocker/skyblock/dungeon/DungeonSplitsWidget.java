@@ -40,7 +40,13 @@ public class DungeonSplitsWidget extends ComponentBasedWidget {
 	private static final Pattern F4_ENTRY = Pattern.compile("^\\[BOSS] Thorn: Welcome Adventurers! I am Thorn, the Spirit! And host of the Vegan Trials!$");
 	private static final Pattern F5_ENTRY = Pattern.compile("^\\[BOSS] Livid: Welcome, you've arrived right on time\\. I am Livid, the Master of Shadows\\.$");
 	private static final Pattern F6_ENTRY = Pattern.compile("^\\[BOSS] Sadan: So you made it all the way here\\.\\.\\. Now you wish to defy me\\? Sadan\\?!$");
+
 	private static final Pattern F7_ENTRY = Pattern.compile("^\\[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!$");
+	private static final Pattern F7_MAXOR = Pattern.compile("^\\[BOSS] Storm: Pathetic Maxor, just like expected\\.$");
+	private static final Pattern F7_STORM = Pattern.compile("^\\[BOSS] Goldor: Who dares trespass into my domain\\?$");
+	private static final Pattern F7_TERMINALS = Pattern.compile("^The Core entrance is opening!$");
+	private static final Pattern F7_GOLDOR = Pattern.compile("^\\[BOSS] Necron: You went further than any human before, congratulations\\.$");
+	private static final Pattern F7_NECRON = Pattern.compile("^\\[BOSS] Necron: All this, for nothing\\.\\.\\.$");
 
 	private static final Pattern BONZO_SIKE = Pattern.compile("\\[BOSS] Bonzo: Oh I'm dead!");
 	private static final Pattern SCARF_MINIONS = Pattern.compile("^\\[BOSS] Scarf: Did you forget\\? I was taught by the best! Let's dance\\.$");
@@ -112,11 +118,11 @@ public class DungeonSplitsWidget extends ComponentBasedWidget {
 				new Split("Blood Open", BLOOD_OPEN),
 				new Split("Blood Clear", BLOOD_CLEAR),
 				new Split("Portal Entry", F7_ENTRY),
-				new Split("Maxor", F7_ENTRY),
-				new Split("Storm", F7_ENTRY),
-				new Split("Terminals", F7_ENTRY),
-				new Split("Goldor", F7_ENTRY),
-				new Split("Necron", F7_ENTRY),
+				new Split("Maxor", F7_MAXOR),
+				new Split("Storm", F7_STORM),
+				new Split("Terminals", F7_TERMINALS),
+				new Split("Goldor", F7_GOLDOR),
+				new Split("Necron", F7_NECRON),
 				new Split("Finish", DUNGEON_END)
 		));
 	}
@@ -198,7 +204,9 @@ public class DungeonSplitsWidget extends ComponentBasedWidget {
 				long time = System.currentTimeMillis() - startTime;
 				split.complete(time);
 
-				updateBest(split, time);
+				long prev = i == 0 ? 0L : splits.get(i - 1).completedTime;
+				long segment = time - prev;
+				updateBest(split, segment);
 
 				if (i == splits.size() - 1) {
 					stopTimer();
@@ -313,7 +321,8 @@ public class DungeonSplitsWidget extends ComponentBasedWidget {
 			String completedTimeStr = formatTime(split.completedTime);
 
 			if (split.completed) {
-				long diff = split.completedTime - previous;
+				long segmentTime = split.completedTime - previous;
+				long diff = segmentTime - split.bestTime;
 				Formatting fmt = diff <= 0 ? Formatting.GREEN : Formatting.RED;
 				String diffStr = String.format("%+.2fs", diff / 1000.0);
 				row.middle = Text.literal(diffStr).formatted(fmt);

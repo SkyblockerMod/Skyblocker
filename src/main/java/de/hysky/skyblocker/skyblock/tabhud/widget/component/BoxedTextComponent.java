@@ -13,12 +13,12 @@ public class BoxedTextComponent extends PlainTextComponent {
 		super(text);
 		this.borderColor = 0xff000000 | borderColor;
 		this.width += 4;
-		this.height += 8;
+		this.height += 9;
 	}
 
 	@Override
 	public void render(DrawContext context, int x, int y) {
 		context.drawBorder(x, y, this.width, this.height, this.borderColor);
-		super.render(context, x + 2, y + 4);
+		super.render(context, x + 2, y + 5);
 	}
 }
