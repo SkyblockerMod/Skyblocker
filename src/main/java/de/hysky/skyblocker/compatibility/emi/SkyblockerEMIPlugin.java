@@ -40,7 +40,7 @@ public class SkyblockerEMIPlugin implements EmiPlugin {
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
         ItemRepository.getItemsStream().map(EmiStack::of).forEach(emiStack -> {
             registry.addEmiStack(emiStack);
-            registry.setDefaultComparison(emiStack, Comparison.compareData(emiStack1 -> emiStack1.getItemStack().getSkyblockId()));
+			registry.setDefaultComparison(emiStack, Comparison.compareData(emiStack1 -> emiStack1.getItemStack().skyblocker$getSkyblockId()));
         });
         registry.addCategory(SKYBLOCK_CRAFTING);
         registry.addCategory(SKYBLOCK_FORGE);
