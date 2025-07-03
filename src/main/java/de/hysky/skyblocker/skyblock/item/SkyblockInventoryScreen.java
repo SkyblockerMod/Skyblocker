@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.item;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.compatibility.FurfskyCompatibility;
+import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
@@ -114,7 +114,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
     public SkyblockInventoryScreen(PlayerEntity player) {
         super(player);
-		if (FurfskyCompatibility.isFurfskyPresent) {
+		if (ResourcePackCompatibility.options.renameInventoryScreen().orElse(false)) {
 			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenEquipmentQuickNavSkyblocker": "InventoryScreenEquipmentSkyblocker"));
 		}
 	    SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);

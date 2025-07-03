@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.compatibility.FurfskyCompatibility;
+import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.auction.AuctionBrowserScreen;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
@@ -92,7 +92,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 				SkyblockCraftingTableScreenHandler skyblockCraftingTableScreenHandler = new SkyblockCraftingTableScreenHandler(containerScreenHandler, player.getInventory());
 				client.player.currentScreenHandler = skyblockCraftingTableScreenHandler;
 				client.setScreen(new SkyblockCraftingTableScreen(skyblockCraftingTableScreenHandler, player.getInventory(),
-						FurfskyCompatibility.isFurfskyPresent ? Text.literal("CraftingTableSkyblocker") : Text.literal("Craft Item")));
+						ResourcePackCompatibility.options.renameCraftingTable().orElse(false) ? Text.literal("CraftingTableSkyblocker") : Text.literal("Craft Item")));
 				ci.cancel();
 			}
 
