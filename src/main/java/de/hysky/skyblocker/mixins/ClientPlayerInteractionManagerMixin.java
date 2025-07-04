@@ -42,15 +42,15 @@ public class ClientPlayerInteractionManagerMixin {
 	}
 
 	@Inject(method = "interactBlockInternal",
-			at = @At(value = "HEAD",target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;interactBlockInternal(Lnet/minecraft/client/network/ClientPlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;)Lnet/minecraft/util/ActionResult;"))
-	public ActionResult interactBlock(ClientPlayerEntity playerEntity, Hand hand, BlockHitResult blockhitresult, CallbackInfoReturnable cir) {
+			at = @At(value = "HEAD", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;interactBlockInternal(Lnet/minecraft/client/network/ClientPlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;)Lnet/minecraft/util/ActionResult;"),
+			cancellable = true)
+	public ActionResult interactBlock(ClientPlayerEntity playerEntity, Hand hand, BlockHitResult blockhitresult, CallbackInfoReturnable<ActionResult> cir) {
 		if (!SkyblockerConfigManager.get().foraging.galatea.disableFishingNetPlacement) return ActionResult.PASS;
 		ItemStack heldItem = playerEntity.getStackInHand(hand);
-
 		if (heldItem.getItem() == Items.COBWEB && heldItem.getName().getString().contains("Fishing Net")) {
-			return ActionResult.PASS;
+			cir.setReturnValue(ActionResult.FAIL);
 		}
 		return ActionResult.PASS;
 	}
-	
+
 }

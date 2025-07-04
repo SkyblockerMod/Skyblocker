@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
-import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -8,26 +7,21 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.utils.Location;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+
 @RegisterWidget
 public class TreeBreakProgressHud extends ComponentBasedWidget {
 
@@ -48,11 +42,11 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
         });
     }
 	public TreeBreakProgressHud() {
-		super(Text.literal("Tree Break Progress").formatted(Formatting.GREEN, Formatting.BOLD),Formatting.GREEN.getColorValue(), "hud_treeprogress");
+		super(Text.literal("Tree Break Progress").formatted(Formatting.GREEN, Formatting.BOLD), Formatting.GREEN.getColorValue(), "hud_treeprogress");
 		instance = this;
 		update();
 	}
-	
+
 
 	public static void onEntityUpdate(ArmorStandEntity entity) {
 		if (entity.getCustomName() != null) {
@@ -84,7 +78,7 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 	public boolean isEnabledIn(Location location) {
 		return availableLocations().contains(location) && SkyblockerConfigManager.get().foraging.galatea.enableTreeBreakProgress;
 	}
-	
+
 	@Override
 	public boolean shouldRender(Location location) {
 		return super.shouldRender(location) && isOwnTree(getClosestTree());
@@ -110,14 +104,14 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 		List<ArmorStandEntity> groupedArmorStands = armorstands.values().stream()
         .filter(e -> {
             Vec3d pos = e.getPos();
-            return Math.abs(pos.x - treePos.x) < 0.1 && 
-                   Math.abs(pos.y - treePos.y) < 2 && 
+            return Math.abs(pos.x - treePos.x) < 0.1 &&
+                   Math.abs(pos.y - treePos.y) < 2 &&
                    Math.abs(pos.z - treePos.z) < 0.1;
         })
         .collect(Collectors.toList());
 
 		String playerName = client.player.getName().getString();
-    	
+
 		return groupedArmorStands.stream().anyMatch(armorStand -> {
         	String name = armorStand.getName().getString();
         	return name.contains(playerName) || name.contains(" players");
@@ -141,7 +135,7 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 		String closestName = closest.getCustomName().getString();
 		String treeName = closestName.contains("FIG") ? "Fig Tree" : "Mangrove Tree";
 		ItemStack woodIcon = closestName.contains("FIG") ? Ico.STRIPPED_SPRUCE_WOOD : Ico.MANGROVE_LOG;
-		addSimpleIcoText(woodIcon, treeName + " ", Formatting.GREEN, closestName.replaceAll("[^0-9%]", ""));		
+		addSimpleIcoText(woodIcon, treeName + " ", Formatting.GREEN, closestName.replaceAll("[^0-9%]", ""));
 	}
 
 	@Override
