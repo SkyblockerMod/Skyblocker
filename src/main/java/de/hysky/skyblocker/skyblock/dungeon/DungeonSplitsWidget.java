@@ -76,7 +76,7 @@ public class DungeonSplitsWidget extends TableWidget {
 				new Split("Blood Open", BLOOD_OPEN),
 				new Split("Blood Clear", BLOOD_CLEAR),
 				new Split("Bonzo Entry", F1_ENTRY),
-				new Split("Bonzo P2", BONZO_SIKE),
+				new Split("Bonzo's Sike", BONZO_SIKE),
 				new Split("Finish", DUNGEON_END)
 		));
 		FLOOR_SPLITS.put("F2", List.of(
@@ -136,6 +136,7 @@ public class DungeonSplitsWidget extends TableWidget {
 	private long startTime = 0L;
 	private long elapsedTime = 0L;
 	private boolean running = false;
+	private Formatting timerColor = Formatting.YELLOW;
 	private String floor = "?";
 	/**
 	 * The floor that the splits list was last loaded for.
@@ -148,7 +149,7 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	public DungeonSplitsWidget() {
 		super(Text.literal("Splits").formatted(Formatting.GOLD, Formatting.BOLD),
-				Formatting.GOLD.getColorValue(), "dungeon_splits", 3, 0 , false);
+				Formatting.GOLD.getColorValue(), "dungeon_splits", 3, 0, false);
 		instance = this;
 
 		BEST_SPLITS.init();
@@ -166,6 +167,7 @@ public class DungeonSplitsWidget extends TableWidget {
 		running = false;
 		elapsedTime = 0L;
 		startTime = 0L;
+		timerColor = Formatting.YELLOW;
 		loadedFloor = null; // force reloading splits once the scoreboard is ready
 		updateFloor();
 		loadFloorSplits();
@@ -173,6 +175,9 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	private void onLocationChange(Location location) {
 		if (location != Location.DUNGEON) {
+			if (running) {
+				stopTimer(false);
+			}
 			running = false;
 			elapsedTime = 0L;
 			startTime = 0L;
@@ -190,6 +195,7 @@ public class DungeonSplitsWidget extends TableWidget {
 			startTime = System.currentTimeMillis();
 			elapsedTime = 0L;
 			running = true;
+			timerColor = Formatting.YELLOW;
 			for (Split split : splits) {
 				split.reset();
 			}
@@ -209,9 +215,22 @@ public class DungeonSplitsWidget extends TableWidget {
 				updateBest(split, segment);
 
 				if (i == splits.size() - 1) {
-					stopTimer();
+					stopTimer(true);
 				}
-				break;
+				return;
+			}
+		}
+
+		if (stripped.contains("EXTRA STATS")) {
+			boolean allCompleted = true;
+			for (Split split : splits) {
+				if (!split.completed) {
+					allCompleted = false;
+					break;
+				}
+			}
+			if (!allCompleted) {
+				stopTimer(false);
 			}
 		}
 	}
@@ -253,7 +272,6 @@ public class DungeonSplitsWidget extends TableWidget {
 	}
 
 
-
 	@Override
 	public boolean shouldUpdateBeforeRendering() {
 		return true;
@@ -286,7 +304,7 @@ public class DungeonSplitsWidget extends TableWidget {
 		super.updateContent();
 
 		long now = running ? System.currentTimeMillis() - startTime : (startTime == 0L ? 0L : elapsedTime);
-		addComponent(new PlainTextComponent(Text.literal(formatTime(now)).formatted(Formatting.YELLOW)));
+		addComponent(new PlainTextComponent(Text.literal(formatTime(now)).formatted(timerColor)));
 	}
 
 	@Override
@@ -332,36 +350,38 @@ public class DungeonSplitsWidget extends TableWidget {
 	}
 
 
-
 	private static String padSpaces(int pixelWidth, TextRenderer tr) {
 		int spaceWidth = tr.getWidth(" ");
 		int count = (pixelWidth + spaceWidth - 1) / spaceWidth;
 		return " ".repeat(count);
 	}
 
-	private void stopTimer() {
+	private void stopTimer(boolean success) {
 		if (running) {
 			elapsedTime = System.currentTimeMillis() - startTime;
 			running = false;
 
-			Map<String, Map<String, Long>> data = new HashMap<>(BEST_SPLITS.computeIfAbsent(HashMap::new));
-			Map<String, Long> floorData = new HashMap<>(data.getOrDefault(floor, new HashMap<>()));
-			boolean updated = false;
-			for (Split split : splits) {
-				if (split.completed) {
-					long currentBest = floorData.getOrDefault(split.name, 0L);
-					if (currentBest == 0L || split.completedTime < currentBest) {
-						floorData.put(split.name, split.completedTime);
-						updated = true;
+			if (success) {
+				Map<String, Map<String, Long>> data = new HashMap<>(BEST_SPLITS.computeIfAbsent(HashMap::new));
+				Map<String, Long> floorData = new HashMap<>(data.getOrDefault(floor, new HashMap<>()));
+				boolean updated = false;
+				for (Split split : splits) {
+					if (split.completed) {
+						long currentBest = floorData.getOrDefault(split.name, 0L);
+						if (currentBest == 0L || split.completedTime < currentBest) {
+							floorData.put(split.name, split.completedTime);
+							updated = true;
+						}
 					}
 				}
-			}
-			if (updated) {
-				data.put(floor, floorData);
-				BEST_SPLITS.put(data);
-				BEST_SPLITS.save();
+				if (updated) {
+					data.put(floor, floorData);
+					BEST_SPLITS.put(data);
+					BEST_SPLITS.save();
+				}
 			}
 		}
+		timerColor = success ? Formatting.GREEN : Formatting.RED;
 	}
 
 	private void updateBest(Split split, long completionTime) {
