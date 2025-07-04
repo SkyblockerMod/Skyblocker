@@ -15,7 +15,7 @@ public class BlockNetPlace {
 
 	@Init
 	public static void init() {
-		UseBlockCallback.EVENT.register(BlockNetPlace::onBlockPlace);
+		//UseBlockCallback.EVENT.register(BlockNetPlace::onBlockPlace);
 	}
 
 	private static ActionResult onBlockPlace(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {

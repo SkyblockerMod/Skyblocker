@@ -25,6 +25,7 @@ import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
 import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
 import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
 import de.hysky.skyblocker.skyblock.galatea.ForestNodes;
+import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
@@ -83,6 +84,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		HealthBars.healthBar(armorStandEntity);
 		SeaCreatureTracker.onEntitySpawn(armorStandEntity);
 		FishingHelper.checkIfFishWasCaught(armorStandEntity);
+		TreeBreakProgressHud.onEntityUpdate(armorStandEntity);
 		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
 			CompactDamage.compactDamage(armorStandEntity);
 		} catch (Exception e) {
