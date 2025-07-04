@@ -192,7 +192,13 @@ public class WidgetManager {
 		screenBuilder = getScreenBuilder(Location.DUNGEON);
 		screenBuilder.setPositionRule(
 				"dungeon_splits",
-				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, 5, 5, WidgetManager.ScreenLayer.HUD)
+				new PositionRule(
+						"screen",
+						new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
+						new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
+						5,
+						0,
+						WidgetManager.ScreenLayer.HUD)
 		);
 	}
 

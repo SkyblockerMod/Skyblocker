@@ -15,7 +15,6 @@ import de.hysky.skyblocker.utils.profile.ProfiledData;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.client.font.TextRenderer;
 import com.mojang.serialization.Codec;
 
 import java.nio.file.Path;
@@ -74,89 +73,89 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	static {
 		List<Split> floor1Splits = List.of(
-				new Split("Blood Open", BLOOD_OPEN),
-				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Portal Entry", F1_ENTRY),
-				new Split("Bonzo's Sike", BONZO_SIKE),
-				new Split("Bonzo", DUNGEON_END)
+				new Split("skyblocker.dungeons.splits.bloodOpen", BLOOD_OPEN),
+				new Split("skyblocker.dungeons.splits.bloodClear", BLOOD_CLEAR),
+				new Split("skyblocker.dungeons.splits.portalEntry", F1_ENTRY),
+				new Split("skyblocker.dungeons.splits.bonzoSike", BONZO_SIKE),
+				new Split("skyblocker.dungeons.splits.bonzo", DUNGEON_END)
 		);
 		FLOOR_SPLITS.put("F1", floor1Splits);
 		FLOOR_SPLITS.put("M1", floor1Splits);
 
 
 		List<Split> floor2Splits = List.of(
-				new Split("Blood Open", BLOOD_OPEN),
-				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Portal Entry", F2_ENTRY),
-				new Split("Scarf's Minions", SCARF_MINIONS),
-				new Split("Scarf", DUNGEON_END)
+				new Split("skyblocker.dungeons.splits.bloodOpen", BLOOD_OPEN),
+				new Split("skyblocker.dungeons.splits.bloodClear", BLOOD_CLEAR),
+				new Split("skyblocker.dungeons.splits.portalEntry", F2_ENTRY),
+				new Split("skyblocker.dungeons.splits.scarfMinions", SCARF_MINIONS),
+				new Split("skyblocker.dungeons.splits.scarf", DUNGEON_END)
 		);
 		FLOOR_SPLITS.put("F2", floor2Splits);
 		FLOOR_SPLITS.put("M2", floor2Splits);
 
 
 		List<Split> floor3Splits = List.of(
-				new Split("Blood Open", BLOOD_OPEN),
-				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Portal Entry", F3_ENTRY),
-				new Split("Guardians", GUARDIANS),
-				new Split("The Professor", PROFESSOR),
-				new Split("The Transformed Professor", DUNGEON_END)
+				new Split("skyblocker.dungeons.splits.bloodOpen", BLOOD_OPEN),
+				new Split("skyblocker.dungeons.splits.bloodClear", BLOOD_CLEAR),
+				new Split("skyblocker.dungeons.splits.portalEntry", F3_ENTRY),
+				new Split("skyblocker.dungeons.splits.guardians", GUARDIANS),
+				new Split("skyblocker.dungeons.splits.professor", PROFESSOR),
+				new Split("skyblocker.dungeons.splits.transformedProfessor", DUNGEON_END)
 		);
 		FLOOR_SPLITS.put("F3", floor3Splits);
 		FLOOR_SPLITS.put("M3", floor3Splits);
 
 
 		List<Split> floor4Splits = List.of(
-				new Split("Blood Open", BLOOD_OPEN),
-				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Portal Entry", F4_ENTRY),
-				new Split("Thorn", DUNGEON_END)
+				new Split("skyblocker.dungeons.splits.bloodOpen", BLOOD_OPEN),
+				new Split("skyblocker.dungeons.splits.bloodClear", BLOOD_CLEAR),
+				new Split("skyblocker.dungeons.splits.portalEntry", F4_ENTRY),
+				new Split("skyblocker.dungeons.splits.thorn", DUNGEON_END)
 		);
 		FLOOR_SPLITS.put("F4", floor4Splits);
 		FLOOR_SPLITS.put("M4", floor4Splits);
 
 
 		List<Split> floor5Splits = List.of(
-				new Split("Blood Open", BLOOD_OPEN),
-				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Portal Entry", F5_ENTRY),
-				new Split("Livid", DUNGEON_END)
+				new Split("skyblocker.dungeons.splits.bloodOpen", BLOOD_OPEN),
+				new Split("skyblocker.dungeons.splits.bloodClear", BLOOD_CLEAR),
+				new Split("skyblocker.dungeons.splits.portalEntry", F5_ENTRY),
+				new Split("skyblocker.dungeons.splits.livid", DUNGEON_END)
 		);
 		FLOOR_SPLITS.put("F5", floor5Splits);
 		FLOOR_SPLITS.put("M5", floor5Splits);
 
 		List<Split> floor6Splits = List.of(
-				new Split("Blood Open", BLOOD_OPEN),
-				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Portal Entry", F6_ENTRY),
-				new Split("Terracottas", TERRACOTTAS),
-				new Split("Sadan's Giants", SADAN_GIANTS),
-				new Split("Sadan", DUNGEON_END)
+				new Split("skyblocker.dungeons.splits.bloodOpen", BLOOD_OPEN),
+				new Split("skyblocker.dungeons.splits.bloodClear", BLOOD_CLEAR),
+				new Split("skyblocker.dungeons.splits.portalEntry", F6_ENTRY),
+				new Split("skyblocker.dungeons.splits.terracottas", TERRACOTTAS),
+				new Split("skyblocker.dungeons.splits.sadanGiants", SADAN_GIANTS),
+				new Split("skyblocker.dungeons.splits.sadan", DUNGEON_END)
 		);
 		FLOOR_SPLITS.put("F6", floor6Splits);
 		FLOOR_SPLITS.put("M6", floor6Splits);
 
 		FLOOR_SPLITS.put("F7", List.of(
-				new Split("Blood Open", BLOOD_OPEN),
-				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Portal Entry", F7_ENTRY),
-				new Split("Maxor", F7_MAXOR),
-				new Split("Storm", F7_STORM),
-				new Split("Terminals", F7_TERMINALS),
-				new Split("Goldor", F7_GOLDOR),
-				new Split("Necron", DUNGEON_END)
+				new Split("skyblocker.dungeons.splits.bloodOpen", BLOOD_OPEN),
+				new Split("skyblocker.dungeons.splits.bloodClear", BLOOD_CLEAR),
+				new Split("skyblocker.dungeons.splits.portalEntry", F7_ENTRY),
+				new Split("skyblocker.dungeons.splits.maxor", F7_MAXOR),
+				new Split("skyblocker.dungeons.splits.storm", F7_STORM),
+				new Split("skyblocker.dungeons.splits.terminals", F7_TERMINALS),
+				new Split("skyblocker.dungeons.splits.goldor", F7_GOLDOR),
+				new Split("skyblocker.dungeons.splits.necron", DUNGEON_END)
 		));
 		FLOOR_SPLITS.put("M7", List.of(
-				new Split("Blood Open", BLOOD_OPEN),
-				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Portal Entry", F7_ENTRY),
-				new Split("Maxor", F7_MAXOR),
-				new Split("Storm", F7_STORM),
-				new Split("Terminals", F7_TERMINALS),
-				new Split("Goldor", F7_GOLDOR),
-				new Split("Necron", F7_NECRON),
-				new Split("Wither King", DUNGEON_END)
+				new Split("skyblocker.dungeons.splits.bloodOpen", BLOOD_OPEN),
+				new Split("skyblocker.dungeons.splits.bloodClear", BLOOD_CLEAR),
+				new Split("skyblocker.dungeons.splits.portalEntry", F7_ENTRY),
+				new Split("skyblocker.dungeons.splits.maxor", F7_MAXOR),
+				new Split("skyblocker.dungeons.splits.storm", F7_STORM),
+				new Split("skyblocker.dungeons.splits.terminals", F7_TERMINALS),
+				new Split("skyblocker.dungeons.splits.goldor", F7_GOLDOR),
+				new Split("skyblocker.dungeons.splits.necron", F7_NECRON),
+				new Split("skyblocker.dungeons.splits.witherKing", DUNGEON_END)
 		));
 	}
 
@@ -176,10 +175,6 @@ public class DungeonSplitsWidget extends TableWidget {
 	 * The floor that the splits list was last loaded for.
 	 */
 	private String loadedFloor = null;
-
-	private int nameWidth = 0;
-	private int midWidth = 0;
-	private int rightWidth = 0;
 
 	public DungeonSplitsWidget() {
 		super(Text.literal("Splits").formatted(Formatting.GOLD, Formatting.BOLD),
@@ -381,13 +376,6 @@ public class DungeonSplitsWidget extends TableWidget {
 			rows.add(new Row(List.of(name, mid, right), border));
 		}
 		return rows;
-	}
-
-
-	private static String padSpaces(int pixelWidth, TextRenderer tr) {
-		int spaceWidth = tr.getWidth(" ");
-		int count = (pixelWidth + spaceWidth - 1) / spaceWidth;
-		return " ".repeat(count);
 	}
 
 	private void stopTimer(boolean success) {
