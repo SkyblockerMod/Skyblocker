@@ -286,7 +286,7 @@
   "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter": "Enable Sea Lumies Highlighter",
   "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter.@Tooltip": "Highlights Sea Lumies in cyan to assist in locating them.",
   "skyblocker.config.foraging.galatea.seaLumiesHighlighterOpacity": "Sea Lumies Highlighter Opacity",
-  "skyblocker.config.foraging.galatea.seaLumiesHighlighterOpacity.@Tooltip": "Opacity for Sea Lumies Highligher",
+  "skyblocker.config.foraging.galatea.seaLumiesHighlighterOpacity.@Tooltip": "Opacity for Sea Lumies Highlighter",
   "skyblocker.config.foraging.galatea.seaLumieMinCount": "Minimum Sea Lumie Count to Highlight",
   "skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip": "The minimum number of Sea Lumies that must be present within a block for it to be highlighted.",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Solve Forest Temple Puzzle",

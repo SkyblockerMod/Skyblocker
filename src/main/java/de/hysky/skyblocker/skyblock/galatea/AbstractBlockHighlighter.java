@@ -28,7 +28,7 @@ import java.util.function.Predicate;
 public abstract class AbstractBlockHighlighter {
 	protected final Set<BlockPos> highlightedBlocks = new ObjectOpenHashSet<>();
 	protected final float[] colour;
-	protected final float alpha;
+	protected float alpha;
 	protected final Predicate<BlockState> statePredicate;
 
 	/**
@@ -105,7 +105,7 @@ public abstract class AbstractBlockHighlighter {
 			Box outline = RenderHelper.getBlockBoundingBox(client.world, highlight);
 
 			if (outline != null) {
-				RenderHelper.renderFilled(context, outline, this.colour, alpha, false);
+				RenderHelper.renderFilled(context, outline, this.colour, this.alpha, false);
 			}
 		}
 	}
