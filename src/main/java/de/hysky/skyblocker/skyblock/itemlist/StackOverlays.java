@@ -18,7 +18,7 @@ import net.minecraft.nbt.StringNbtReader;
  * Handles applying "overlays" to modern {@code ItemStack}s from the NEU Repository. Overlays are already in the modern components
  * format according to the data version of the given directory which matches the vanilla data version number. This system allows the
  * NEU Repository to provide support for modern items while maintaining backwards compatibility with 1.8 and older modern releases (say 1.21.1).
- * 
+ *
  * Note that overlays do not contain all the original components, lore and custom name are notably left out for ease of maintenance.
  */
 public class StackOverlays {

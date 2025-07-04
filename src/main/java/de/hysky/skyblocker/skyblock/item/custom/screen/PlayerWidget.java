@@ -33,8 +33,8 @@ public class PlayerWidget extends ClickableWidget {
 	@Override
 	protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
 		super.onDrag(mouseX, mouseY, deltaX, deltaY);
-		this.xRotation = MathHelper.clamp(this.xRotation - (float)deltaY * 2.5F, -50.0F, 50.0F);
-		this.yRotation += (float)deltaX * 2.5F;
+		this.xRotation = MathHelper.clamp(this.xRotation - (float) deltaY * 2.5F, -50.0F, 50.0F);
+		this.yRotation += (float) deltaX * 2.5F;
 	}
 
 	@Override

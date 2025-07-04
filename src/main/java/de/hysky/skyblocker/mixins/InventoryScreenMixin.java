@@ -1,7 +1,9 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
 import de.hysky.skyblocker.injected.RecipeBookHolder;
+import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -75,6 +77,13 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
     private void skyblocker$clearRecipeToggleCallbacks(CallbackInfo ci) {
 		recipeBookToggleCallbacks.clear();
     }
+
+	@Inject(method = "<init>", at = @At("TAIL"), order = 900) // run it a little earlier in case firmament do stuff
+	private void skyblocker$furfskyCompat(CallbackInfo ci) {
+		if (Utils.isOnSkyblock() && ResourcePackCompatibility.options.renameInventoryScreen().orElse(false)) {
+			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenQuickNavSkyblocker": "InventoryScreenSkyblocker"));
+		}
+	}
 
 	@Override
 	public void registerRecipeBookToggleCallback(Runnable runnable) {

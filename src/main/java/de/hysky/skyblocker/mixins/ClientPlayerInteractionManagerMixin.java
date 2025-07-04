@@ -15,6 +15,7 @@ import net.minecraft.util.hit.BlockHitResult;
 
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
@@ -35,6 +36,7 @@ public class ClientPlayerInteractionManagerMixin {
 		}
 	}
 
+	@Unique
 	private void swingHandWithoutPackets(PlayerEntity playerEntity, Hand hand) {
 		playerEntity.swingHand(hand, false); // The playerEntity override for swingHand is the other method with just the hand parameter, this one isn't overridden and doesn't lead to sending packets.
 	}
