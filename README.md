@@ -37,10 +37,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Simon Says*
     - *Lights On*
     - *Teleport Maze*
-    - Terminal:
+    - Terminal (F7/M7):
         - *Order*
         - *Coloured Items*
         - *Item Name*
+        - *Same Color*
 - **Rare Drop Special Effects**
 - **Chest Profit Calculator**
 - **F3/M3 Fire Freeze Staff Timer**
@@ -63,6 +64,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Waypoints to forest nodes**
 - **Lushlilac and Sea Lumies Highlighters**
 - **Forest temple puzzle solver**
+- **Hunting box helper**
+- **Hunting Mobs features**
+    - Silence Phantoms
+    - Highlight Hideonleaves
+- **Hunting Box Shard Prices**
 
 ### Kuudra Features:
 - **Kuudra waypoints:**
@@ -223,7 +229,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Equipment in inventory**
 - **Search overlays for bz and ah**
 - **Slot Text:**
-    - *Attribute Shard Info Display*
+    - *Attribute level*
     - *Catacombs level*
     - *Collection level*
     - *Enchantment book level*
@@ -247,6 +253,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Enchantment abbreviations*
     - *Choose Pet*
     - *Skyblock Guide*
+    - *HOTM*
+    - *HOTF*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
@@ -317,6 +325,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
 - **Item Protection**
+    - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
 - **Wiki Lookup:** Press F4 to open the wiki page about the held item.
 - **OptiFabric Compatibility**
@@ -329,6 +338,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Skin transparency correction**
 - **Skyblock XP Messages**
 - **Share position and set waypoint**
+- **Copy Underbid Price to Clipboard**
 
 </details>
 
@@ -815,6 +825,20 @@ information.
     SpaceMonkeyy86
    </a>
   </td>
+  <td align="center" width="150">
+   <a href="https://github.com/ninjaguardian">
+    <img alt="ninjaguardian" src="https://github.com/ninjaguardian.png" width="100"/>
+    <br/>
+    ninjaguardian
+   </a>
+  </td>
+  <td align="center" width="150">
+   <a href="https://github.com/salbeira">
+    <img alt="salbeira" src="https://github.com/salbeira.png" width="100"/>
+    <br/>
+    salbeira
+   </a>
+  </td>
  </tr>
 </table>
 
@@ -827,14 +851,14 @@ We thank all our translators for their valuable support!
 
 | Language              | Translator                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 |-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| German                | [LifeIsAParadox](https://github.com/LifeIsAParadox), [msg-programs](https://github.com/msg-programs), [Chris579](https://github.com/Chris579), [Superjamp](https://github.com/Superjamp), [Vanja](https://github.com/Vanja), [IHaveNoWLAN](https://github.com/IHaveNoWLAN)                                                                                                                                                                                                                                                                                          |
+| German                | [LifeIsAParadox](https://github.com/LifeIsAParadox), [msg-programs](https://github.com/msg-programs), [Chris579](https://github.com/Chris579), [Superjamp](https://github.com/Superjamp), [Vanja](https://github.com/Vanja), [IHaveNoWLAN](https://github.com/IHaveNoWLAN), [callmespa-dev](https://github.com/callmespa-dev)                                                                                                                                                                                                                                       |
 | Indonesian            | [null2264](https://github.com/null2264)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | Russian               | [HyperSoop](https://github.com/HyperSoop), [CrimsonIsle](https://github.com/CrimsonIsle), [Ghost-3](https://github.com/Ghost-3), [wilson-wtf](https://github.com/wilson-wtf), [R2kip](https://github.com/R2kip), [Kolobok125040](https://github.com/Kolobok125040), [BLACKUM](https://github.com/BLACKUM), [CheckMeJava](https://github.com/CheckMeJava), [TheMychenik](https://github.com/TheMychenik), [LacticWhale](https://github.com/LacticWhale), [iMekky](https://github.com/iMekky), [anysad](https://github.com/anysad), [Vanja](https://github.com/Vanja) |
 | French                | [edgarogh](https://github.com/edgarogh), [Julienraptor01](https://github.com/Julienraptor01), [viciscat](https://github.com/viciscat), [Kiverty](https://github.com/Kiverty), [maDU59](https://github.com/maDU59), [Kaelig2102](https://github.com/Kaelig2102), [SimplSurro](https://github.com/SimplSurro), [Siroz555](https://github.com/Siroz555), [TheGallium](https://github.com/TheGallium)                                                                                                                                                                   |
 | Japanese              | [hirochisan](https://github.com/hirochisan), [AC19970](https://github.com/AC19970), [WhyHina](https://github.com/WhyHina), [tdnpgm](https://github.com/tdnpgm), [aoipop0117](https://github.com/aoipop0117), [tokumeika](https://github.com/tokumeika)                                                                                                                                                                                                                                                                                                              |
 | Chinese (Traditional) | [catandA](https://github.com/catandA), [AC19970](https://github.com/AC19970)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | 
 | Chinese (Simplified)  | [catandA](https://github.com/catandA), [PumpkinXD](https://github.com/PumpkinXD), [user123321111](https://github.com/user123321111), [sunnytia](https://github.com/sunnytia), [AC19970](https://github.com/AC19970), [x-yingcan-x](https://github.com/x-yingcan-x), [xyx986](https://github.com/xyx986), [Typogalaxy](https://github.com/Typogalaxy), [SimplSurro](https://github.com/SimplSurro), [layou233](https://github.com/layou233), [Launium](https://github.com/Launium), [HenryXiaoYang](https://github.com/HenryXiaoYang)                                |
-| Korean                | [lantice3720](https://github.com/lantice3720), [lanthanide](https://github.com/lanthanide)                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Korean                | [lantice3720](https://github.com/lantice3720), [lanthanide](https://github.com/lanthanide), [DaysSky](https://github.com/DaysSky)                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | Spanish               | [IngeSebastian](https://github.com/IngeSebastian), [NickdaWizIsDev](https://github.com/NickdaWizIsDev), [Teyxos](https://github.com/Teyxos), [Dopjs](https://github.com/Dopjs), [urdaknows](https://github.com/urdaknows), [Fjrtyy](https://github.com/Fjrtyy)                                                                                                                                                                                                                                                                                                      |
 | Norwegian Bokmål      | [KdGaming0](https://github.com/KdGaming0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | Norwegian Nynorsk     | [KdGaming0](https://github.com/KdGaming0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -847,3 +871,4 @@ We thank all our translators for their valuable support!
 | Vietnamese            | [ThanhZ](https://github.com/ThanhZ), [HuydinhVN](https://github.com/HuydinhVN)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | Danish                | [NugzZ3D](https://github.com/NugzZ3D)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Swedish               | [Ski11](https://github.com/Ski11)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Hungarian             | [Toastie](https://github.com/Toastie)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |

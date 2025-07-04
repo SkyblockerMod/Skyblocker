@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.chat.filters;
 import org.junit.jupiter.api.Test;
 
 class ImplosionFilterTest extends ChatFilterTest<ImplosionFilter> {
-    public ImplosionFilterTest() {
+    ImplosionFilterTest() {
         super(new ImplosionFilter());
     }
 

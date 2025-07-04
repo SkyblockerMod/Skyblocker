@@ -236,6 +236,7 @@
   "skyblocker.config.dungeons.terminals.solveColor": "Solve Select Colored",
   "skyblocker.config.dungeons.terminals.solveOrder": "Solve Click In Order",
   "skyblocker.config.dungeons.terminals.solveStartsWith": "Solve Starts With",
+  "skyblocker.config.dungeons.terminals.solveSameColor": "Solve Change All to Same Color",
 
   "skyblocker.config.farming": "Farming",
 
@@ -282,11 +283,22 @@
   "skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip": "Highlights Lushlilacs in magenta to assist in locating them.",
   "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter": "Enable Sea Lumies Highlighter",
   "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter.@Tooltip": "Highlights Sea Lumies in cyan to assist in locating them.",
+  "skyblocker.config.foraging.galatea.seaLumieMinCount": "Minimum Sea Lumie Count to Highlight",
+  "skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip": "The minimum number of Sea Lumies that must be present within a block for it to be highlighted.",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Solve Forest Temple Puzzle",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Displays the amount of times you need to rotate the terracotta blocks. For positive rotations you right click while for negative rotations you left click.",
   "skyblocker.config.foraging.galatea.enableTreeBreakProgress": "Enable Tree Break Progress HUD",
   "skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip": "Renders tree break progress in HUD",
   "skyblocker.config.foraging.galatea.enableTreeBreakHud": "Tree Break Progress HUD",
+
+   "skyblocker.config.foraging.sweepOverlay": "Sweep Overlay",
+  "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Enable Sweep Overlay",
+  "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay.@Tooltip": "Highlights logs that will be destroyed from sweep.",
+  "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay": "Show Overlay for Thrown Ability",
+  "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "Highlights logs when using an axe's thrown ability.",
+  "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "Sweep Overlay Color",
+  "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "Sweep Missing: Add the Sweep stat to your player list with /tablist",
+  
   "skyblocker.config.foraging.hunting": "Hunting",
 
   "skyblocker.config.general": "General",
@@ -330,6 +342,8 @@
   "skyblocker.config.general.itemProtection": "Item Protection",
   "skyblocker.config.general.itemProtection.protectValuableConsumables": "Protect Valuable Consumables",
   "skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip": "Prevents consuming items such as Bottles of Jyrre, Dark Cacao Truffles, and Discrite before they have evolved.",
+  "skyblocker.config.general.itemProtection.displayChatNotification": "Display Chat Notifications",
+  "skyblocker.config.general.itemProtection.displayChatNotification.@Tooltip": "Displays a chat notification when toggling the protection state of an item.",
   "skyblocker.config.general.itemProtection.slotLockStyle": "Slot Lock Icon Style",
   "skyblocker.config.general.itemProtection.slotLockStyle.@Tooltip": "Choose between the fancy or the classic slot lock icon.",
   "skyblocker.config.general.itemProtection.slotLockStyle.style.CLASSIC": "Classic",
@@ -452,6 +466,9 @@
   "skyblocker.config.helpers.enableDateCalculator": "Enable Date Calculator",
   "skyblocker.config.helpers.enableDateCalculator.@Tooltip": "Shows the date and time of events in the future, such as calendar events.",
 
+  "skyblocker.config.helpers.enableCopyUnderbidPrice": "Enable Copy Underbid Price",
+  "skyblocker.config.helpers.enableCopyUnderbidPrice.@Tooltip": "Copies the lowest BIN price minus one coin to your clipboard when opening the Create BIN Auction screen.",
+
   "skyblocker.config.helpers.experiments": "Experiments Solver",
   "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Enable Chronomatron Solver",
   "skyblocker.config.helpers.experiments.enableSuperpairsSolver": "Enable Superpairs Solver",
@@ -516,7 +533,13 @@
 
   "skyblocker.config.hunting": "Hunting",
   "skyblocker.config.hunting.huntingBoxHelper": "Enable Hunting Box Helper",
-  "skyblocker.config.hunting.huntingBoxHelper.@Tooltip": "Highlights shards that you have enough of to syphon and reach the next tier of the attribute in the Hunting Box.",
+  "skyblocker.config.hunting.huntingBoxHelper.@Tooltip": "Highlights shards that you have enough of to syphon and reach the next tier of the attribute in the Hunting Box. Also displays the sell price of shards in the tooltip.",
+
+  "skyblocker.config.hunting.huntingMobs": "Hunting Mobs",
+  "skyblocker.config.hunting.huntingMobs.silencePhantoms": "Silence Phantoms",
+  "skyblocker.config.hunting.huntingMobs.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while on Galatea.",
+  "skyblocker.config.hunting.huntingMobs.highlightHideonleaf": "Highlight Hideonleaf",
+  "skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip": "Highlights Hideonleaves in yellow to make them easier to see.",
 
   "skyblocker.config.chat": "Chat",
 
@@ -941,6 +964,17 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter.@Tooltip": "Close the current open sign screen with the enter key",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
 
+  "skyblocker.config.uiAndVisuals.inputCalculator.badNotationError": "Equation is not in RPN",
+  "skyblocker.config.uiAndVisuals.inputCalculator.divisionByZeroError": "Cannot divide by 0",
+  "skyblocker.config.uiAndVisuals.inputCalculator.duplicateOperatorError": "Unexpected duplicate operator",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError": "Invalid operator",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidCharacterError": "Invalid character",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError": "Invalid number",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidMagnitudeError": "Invalid magnitude",
+  "skyblocker.config.uiAndVisuals.inputCalculator.unbalancedParenthesisError": "Unbalanced left parenthesis",
+  "skyblocker.config.uiAndVisuals.inputCalculator.emptyEquationError": "Equation is empty",
+  "skyblocker.config.uiAndVisuals.inputCalculator.missingValueError": "Missing value around operator",
+
 
   "skyblocker.config.uiAndVisuals.inventorySearch": "Inventory Search",
   "skyblocker.config.uiAndVisuals.inventorySearch.ctrlK": "Use CTRL + K for inventory search instead of CTRL + F",
@@ -973,8 +1007,8 @@
   "skyblocker.config.uiAndVisuals.slotText.mode.DISABLED": "Disabled",
   "skyblocker.config.uiAndVisuals.slotText.separator": "Individual Toggles",
 
-  "skyblocker.config.uiAndVisuals.slotText.attributeShard": "Attribute Shards",
-  "skyblocker.config.uiAndVisuals.slotText.attributeShard.@Tooltip": "Displays the attribute's level and the initials of the attribute's name.",
+  "skyblocker.config.uiAndVisuals.slotText.attributeLevels": "Attribute Level",
+  "skyblocker.config.uiAndVisuals.slotText.attributeLevels.@Tooltip": "Displays the level of the attribute in the Attribute Menu.",
   "skyblocker.config.uiAndVisuals.slotText.catacombsLevel": "Catacombs Class Level",
   "skyblocker.config.uiAndVisuals.slotText.choosePetPetLevel": "Pet Level (in choose pet)",
   "skyblocker.config.uiAndVisuals.slotText.collectionLevel": "Collection Level",
@@ -1014,7 +1048,11 @@
   "skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions": "Maximum Suggestions",
   "skyblocker.config.uiAndVisuals.searchOverlay.maxSuggestions.@Tooltip": "The maximum number of suggested items to show.",
 
+  "skyblocker.config.uiAndVisuals.showCustomizeButton": "Show Customize Armor Button",
+  "skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip": "Adds a little paint brush icon in your inventory next to the player model to open the Armor Customization screen.",
   "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
+  "skyblocker.config.uiAndVisuals.showConfigButton": "Show Config Button",
+  "skyblocker.config.uiAndVisuals.showConfigButton.@Tooltip": "Adds a button in the skyblock menu to open the Skyblocker config.",
 
   "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
   "skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip": "Smooths out teleporting with right click teleport abilities.",
@@ -1362,6 +1400,8 @@
 
   "skyblocker.reorderHelper.tooltip": "[Skyblocker] You can copy the amount of items\nby holding CTRL while clicking on the item!",
 
+  "skyblocker.copyUnderbidPrice.copied": "Copied underbid price: %s",
+
   "skyblocker.fancyAuctionHouse.editBid": "Click to edit bid!",
   "skyblocker.fancyAuctionHouse.price": "Price:",
   "skyblocker.fancyAuctionHouse.newBid": "New Bid:",
@@ -1459,5 +1499,6 @@
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
-  "emi.category.skyblocker.skyblock": "Skyblock"
+  "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
+  "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)"
 }

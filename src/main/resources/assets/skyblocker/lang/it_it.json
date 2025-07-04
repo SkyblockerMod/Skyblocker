@@ -70,7 +70,7 @@
     "skyblocker.end.hud.protectorLocations.left": "Sinistra",
     "skyblocker.end.hud.protectorLocations.front": "Davanti",
     "skyblocker.end.hud.protectorLocations.center": "Centro",
-    "emi.category.skyblocker.skyblock": "Skyblock",
+    "emi.category.skyblocker.skyblock_crafting": "Skyblock",
     "text.skyblocker.quit_config_sure": "Sei sicuro di voler uscire dalle impostazioni? Le modifiche non verranno salvate!",
     "skyblocker.config.general.enableTips": "Attiva Suggerimenti",
     "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Attiva Risolutore per Chronomatron",

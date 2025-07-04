@@ -144,8 +144,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 
 	private class DropdownList extends ElementListWidget<Entry> {
 
-
-		public DropdownList(MinecraftClient minecraftClient, int x, int y, int width, int height) {
+		private DropdownList(MinecraftClient minecraftClient, int x, int y, int width, int height) {
 			super(minecraftClient, width, height, y, ENTRY_HEIGHT);
 			setX(x);
 		}
@@ -231,7 +230,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 
 		private final T entry;
 
-		public Entry(T element) {
+		private Entry(T element) {
 			this.entry = element;
 		}
 

@@ -48,7 +48,7 @@
     "java": ">=21"
   },
   "conflicts": {
-    "immediatelyfast": "*"
+    "iris": "*"
   },
   "breaks": {
     "forcecloseworldloadingscreen": "<=2.2.0",

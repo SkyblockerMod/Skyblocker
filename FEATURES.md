@@ -19,10 +19,11 @@
     - *Simon Says*
     - *Lights On*
     - *Teleport Maze*
-    - Terminal:
+    - Terminal (F7/M7):
         - *Order*
         - *Coloured Items*
         - *Item Name*
+        - *Same Color*
 - **Rare Drop Special Effects**
 - **Chest Profit Calculator**
 - **F3/M3 Fire Freeze Staff Timer**
@@ -45,6 +46,11 @@
 - **Waypoints to forest nodes**
 - **Lushlilac and Sea Lumies Highlighters**
 - **Forest temple puzzle solver**
+- **Hunting box helper**
+- **Hunting Mobs features**
+  - Silence Phantoms
+  - Highlight Hideonleaves
+- **Hunting Box Shard Prices**
 
 ### Kuudra Features:
 - **Kuudra waypoints:**
@@ -205,7 +211,7 @@
 - **Equipment in inventory**
 - **Search overlays for bz and ah**
 - **Slot Text:**
-    - *Attribute Shard Info Display*
+    - *Attribute level*
     - *Catacombs level*
     - *Collection level*
     - *Enchantment book level*
@@ -229,6 +235,8 @@
     - *Enchantment abbreviations*
     - *Choose Pet*
     - *Skyblock Guide*
+    - *HOTM*
+    - *HOTF*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
@@ -299,6 +307,7 @@
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
 - **Item Protection**
+  - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
 - **Wiki Lookup:** Press F4 to open the wiki page about the held item.
 - **OptiFabric Compatibility**
@@ -311,3 +320,4 @@
 - **Skin transparency correction**
 - **Skyblock XP Messages**
 - **Share position and set waypoint**
+- **Copy Underbid Price to Clipboard**

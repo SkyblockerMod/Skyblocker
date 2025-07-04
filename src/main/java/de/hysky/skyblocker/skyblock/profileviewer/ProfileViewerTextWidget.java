@@ -39,6 +39,6 @@ public class ProfileViewerTextWidget {
         context.drawText(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 6 + ROW_GAP, Colors.WHITE, true);
         context.drawText(textRenderer, "§6Purse:§r " + ProfileViewerUtils.numLetterFormat(PURSE), root_x + 2, root_y + 6 + ROW_GAP * 2, Colors.WHITE, true);
         context.drawText(textRenderer, "§6Bank:§r " + ProfileViewerUtils.numLetterFormat(BANK), root_x + 2, root_y + 6 + ROW_GAP * 3, Colors.WHITE, true);
-        context.drawText(textRenderer, "§6NW:§r " + "Soon™", root_x + 2, root_y + 6 + ROW_GAP * 4, Colors.WHITE, true );
+        context.drawText(textRenderer, "§6NW:§r " + "Soon™", root_x + 2, root_y + 6 + ROW_GAP * 4, Colors.WHITE, true);
     }
 }

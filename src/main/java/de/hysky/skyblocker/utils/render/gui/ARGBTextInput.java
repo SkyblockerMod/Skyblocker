@@ -49,14 +49,13 @@ public class ARGBTextInput extends ClickableWidget {
 	 * Height and width are automatically computed to be the size of the hex number + some padding if {@code drawBackground} is true.
 	 * If the size needs to be changed, use {@link ARGBTextInput#setWidth(int)} and {@link ARGBTextInput#setHeight(int)}.
 	 *
-	 * @see ARGBTextInput#setOnChange(IntConsumer)
-	 *
 	 * @param x x position
 	 * @param y y position
 	 * @param textRenderer text renderer to render the text (duh!)
 	 * @param drawBackground draws a black background and a white border if true
 	 * @param hasAlpha if the controller allows to change the alpha color. If false alpha is FF.
 	 *
+	 * @see ARGBTextInput#setOnChange(IntConsumer)
 	 */
 	public ARGBTextInput(int x, int y, TextRenderer textRenderer, boolean drawBackground, boolean hasAlpha) {
 		super(x, y, textRenderer.getWidth(hasAlpha ? "AAAAAAAA" : "AAAAAA") + (drawBackground ? 6 : 0), 10 + (drawBackground ? 4 : 0), Text.of("ARGBTextInput"));
@@ -74,13 +73,12 @@ public class ARGBTextInput extends ClickableWidget {
 	 * Height and width are automatically computed to be the size of the hex number + some padding if {@code drawBackground} is true.
 	 * If the size needs to be changed, use {@link ARGBTextInput#setWidth(int)} and {@link ARGBTextInput#setHeight(int)}.
 	 *
-	 * @see ARGBTextInput#setOnChange(IntConsumer)
-	 *
 	 * @param x x position
 	 * @param y y position
 	 * @param textRenderer text renderer to render the text (duh!)
 	 * @param drawBackground draws a black background and a white border if true
 	 *
+	 * @see ARGBTextInput#setOnChange(IntConsumer)
 	 */
 	public ARGBTextInput(int x, int y, TextRenderer textRenderer, boolean drawBackground) {
 		this(x, y, textRenderer, drawBackground, false);
@@ -198,9 +196,10 @@ public class ARGBTextInput extends ClickableWidget {
 				return true;
 			} else if (Screen.isPaste(keyCode)) {
 				String clipboard = MinecraftClient.getInstance().keyboard.getClipboard();
-				String s = clipboard.substring(0, 6);
+				if (clipboard.startsWith("#")) clipboard = clipboard.substring(1);
+				String s = clipboard.substring(0, Math.min(hasAlpha ? 8 : 6, clipboard.length()));
 				getOptionalARGBColor(s.toUpperCase(Locale.ENGLISH)).ifPresent(color -> {
-					input = s;
+					setARGBColor(color);
 					callOnChange();
 				});
 				return true;

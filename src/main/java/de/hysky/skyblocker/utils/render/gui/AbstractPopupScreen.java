@@ -69,7 +69,7 @@ public class AbstractPopupScreen extends Screen {
             this(textRenderer, 0, 0, width, height, text, onEnter);
         }
 
-        public EnterConfirmTextFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text,Runnable onEnter) {
+        public EnterConfirmTextFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text, Runnable onEnter) {
             this(textRenderer, x, y, width, height, null, text, onEnter);
         }
 

@@ -48,10 +48,15 @@ public class Structures {
 		@Override
 		public boolean equals(Object o) {
 			if (this == o) return true;
-			if(o instanceof TileGrid(TileState[][] state2)) {
+			if (o instanceof TileGrid(TileState[][] state2)) {
 				return Arrays.deepEquals(state, state2);
 			}
 			return false;
+		}
+
+		@Override
+		public int hashCode() {
+			return Arrays.deepHashCode(state);
 		}
 	}
 

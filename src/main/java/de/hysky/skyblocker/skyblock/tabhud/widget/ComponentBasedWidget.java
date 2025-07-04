@@ -88,7 +88,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	/**
 	 * Shorthand function for simple components.
-	 * If the entry at idx has the format "<textA>: <textB>", an IcoTextComponent is
+	 * If the entry at idx has the format "[textA]: [textB]", an IcoTextComponent is
 	 * added as such:
 	 * [ico] [string] [textB.formatted(fmt)]
 	 */

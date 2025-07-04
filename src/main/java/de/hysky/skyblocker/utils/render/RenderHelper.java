@@ -27,6 +27,9 @@ import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.profiler.Profilers;
+import net.minecraft.util.shape.VoxelShape;
+
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -258,7 +261,7 @@ public class RenderHelper {
 
 		buffer.vertex(positionMatrix, (float) renderOffset.getX(), (float) renderOffset.getY(), (float) renderOffset.getZ()).texture(1, 1 - textureHeight).color(color);
 		buffer.vertex(positionMatrix, (float) renderOffset.getX(), (float) renderOffset.getY() + height, (float) renderOffset.getZ()).texture(1, 1).color(color);
-		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY() + height	, (float) renderOffset.getZ()).texture(1 - textureWidth, 1).color(color);
+		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY() + height, (float) renderOffset.getZ()).texture(1 - textureWidth, 1).color(color);
 		buffer.vertex(positionMatrix, (float) renderOffset.getX() + width, (float) renderOffset.getY(), (float) renderOffset.getZ()).texture(1 - textureWidth, 1 - textureHeight).color(color);
 
 		consumers.draw(layer);
@@ -304,7 +307,7 @@ public class RenderHelper {
 
     /**
      * Renders a cylinder without the top or bottom faces.
-     * 
+     *
      * @param pos      The position that the cylinder will be centred around.
      * @param height   The total height of the cylinder with {@code pos} as the midpoint.
      * @param segments The amount of triangles used to approximate the circle.
@@ -361,12 +364,16 @@ public class RenderHelper {
      * @param pos   The position of the block.
      * @return The bounding box of the block.
      */
+    @Nullable
     public static Box getBlockBoundingBox(ClientWorld world, BlockPos pos) {
         return getBlockBoundingBox(world, world.getBlockState(pos), pos);
     }
 
+    @Nullable
     public static Box getBlockBoundingBox(ClientWorld world, BlockState state, BlockPos pos) {
-        return state.getOutlineShape(world, pos).asCuboid().getBoundingBox().offset(pos);
+    	VoxelShape shape = state.getOutlineShape(world, pos).asCuboid();
+
+        return shape.isEmpty() ? null : shape.getBoundingBox().offset(pos);
     }
 
     /**
