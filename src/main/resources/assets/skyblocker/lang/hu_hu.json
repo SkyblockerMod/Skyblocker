@@ -237,5 +237,8 @@
     "skyblocker.config.farming.general.yaw": "Függőleges Elfordulás: %s",
     "skyblocker.config.farming.general.pitch": "Vízszintes Elfordulás: %s",
     "skyblocker.config.farming.general.noData": "Nincs Adat",
-    "skyblocker.config.foraging": "Favágás"
+    "skyblocker.config.foraging": "Favágás",
+    "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Erdei Halmok Segítő Engedélyezése",
+    "skyblocker.config.foraging.galatea.enableLushlilacHighlighter": "Lushlilac Megjelölő Engedélyezése",
+    "skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip": "Megjelöli a Lushlilacokat magentával, így egyszerűbb azokat megtalálni."
 }
