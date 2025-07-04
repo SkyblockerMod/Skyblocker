@@ -240,5 +240,13 @@
     "skyblocker.config.foraging": "Favágás",
     "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Erdei Halmok Segítő Engedélyezése",
     "skyblocker.config.foraging.galatea.enableLushlilacHighlighter": "Lushlilac Megjelölő Engedélyezése",
-    "skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip": "Megjelöli a Lushlilacokat magentával, így egyszerűbb azokat megtalálni."
+    "skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip": "Megjelöli a Lushlilacokat magentával, így egyszerűbb azokat megtalálni.",
+    "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter": "Tengeri Zsákállat (Sea Lumies) Megjelölő Engedélyezése",
+    "skyblocker.config.foraging.sweepOverlay": "Sweep Átfedés",
+    "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Sweep Átfedés Engedélyezése",
+    "skyblocker.config.foraging.galatea.seaLumieMinCount": "Minimum Tengeri Zsákállat a Megjelöléshez",
+    "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter.@Tooltip": "Megjelöli a Tengeri Zsákállatokat türkizék színnel, így egyszerűbb azokat megtalálni.",
+    "skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip": "A Minimum számú Tengeri Zsákállat, ami egy blokkban van jelen ahhoz, hogy meg legyen jelölve.",
+    "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Erdei Templom Rejtvény Megoldása",
+    "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Megmutatja, hogy mennyiszer kell elforgatnod a terrakotta blokkokat. Pozitív forgatáshoz jobb-, a negatív forgatásokhoz a bal egérgombot használd."
 }
