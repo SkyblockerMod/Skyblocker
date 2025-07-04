@@ -3,6 +3,8 @@
 ## Highlight
 * Resource pack compatibility
 * Sweep Overlay
+  Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations
+  the sweep formula is currently unknown.
 * Forge recipe 
 * Show Input Calculator on Bazaar flip input sign
 * Add up/down buttons to move waypoint indices
