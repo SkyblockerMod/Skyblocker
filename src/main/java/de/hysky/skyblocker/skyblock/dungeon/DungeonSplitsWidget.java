@@ -6,15 +6,14 @@ import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.TableWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.BoxedTextComponent;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.profile.ProfiledData;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.client.font.TextRenderer;
 import com.mojang.serialization.Codec;
@@ -26,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RegisterWidget
-public class DungeonSplitsWidget extends ComponentBasedWidget {
+public class DungeonSplitsWidget extends TableWidget {
 	private static final Pattern FLOOR_PATTERN = Pattern.compile(".*?(?=T)The Catacombs \\((?<floor>[EFM]\\D*\\d*)\\)");
 
 	private static final Pattern DUNGEON_START = Pattern.compile("\\[NPC] Mort: Here, I found this map when I first entered the dungeon\\.|\\[NPC] Mort: Right-click the Orb for spells, and Left-click \\(or Drop\\) to use your Ultimate!");
@@ -148,7 +147,8 @@ public class DungeonSplitsWidget extends ComponentBasedWidget {
 	private int rightWidth = 0;
 
 	public DungeonSplitsWidget() {
-		super(Text.literal("Splits").formatted(Formatting.GOLD, Formatting.BOLD), Formatting.GOLD.getColorValue(), "dungeon_splits");
+		super(Text.literal("Splits").formatted(Formatting.GOLD, Formatting.BOLD),
+				Formatting.GOLD.getColorValue(), "dungeon_splits", 3, 0 , false);
 		instance = this;
 
 		BEST_SPLITS.init();
@@ -249,23 +249,10 @@ public class DungeonSplitsWidget extends ComponentBasedWidget {
 				long best = floorData != null ? floorData.getOrDefault(s.name, 0L) : 0L;
 				splits.add(new Split(s.name, s.trigger, best));
 			}
-			computeColumnWidths();
 		}
 	}
 
-	/**
-	 * Recalculate the column widths used for padding rows.
-	 */
-	private void computeColumnWidths() {
-		TextRenderer tr = MinecraftClient.getInstance().textRenderer;
-		nameWidth = 0;
-		rightWidth = 0;
-		for (Split split : splits) {
-			nameWidth = Math.max(nameWidth, tr.getWidth(split.name));
-			rightWidth = Math.max(rightWidth, tr.getWidth(formatTime(split.bestTime)));
-		}
-		midWidth = Math.max(tr.getWidth("+00.00s"), tr.getWidth("99:59.99"));
-	}
+
 
 	@Override
 	public boolean shouldUpdateBeforeRendering() {
@@ -293,84 +280,58 @@ public class DungeonSplitsWidget extends ComponentBasedWidget {
 			updateFloor();
 			loadFloorSplits();
 		}
+
 		addComponent(new PlainTextComponent(Text.literal("Floor: " + floor)));
 
+		super.updateContent();
+
+		long now = running ? System.currentTimeMillis() - startTime : (startTime == 0L ? 0L : elapsedTime);
+		addComponent(new PlainTextComponent(Text.literal(formatTime(now)).formatted(Formatting.YELLOW)));
+	}
+
+	@Override
+	protected List<Row> buildRows() {
 		long now = running ? System.currentTimeMillis() - startTime : (startTime == 0L ? 0L : elapsedTime);
 		long previous = 0L;
 		boolean showingCurrent = false;
-
-		class RowData {
-			Text name;
-			Text middle;
-			Text right;
-			boolean active;
-			int nLen;
-			int mLen;
-			int rLen;
-		}
-		List<RowData> rows = new ArrayList<>();
-		int nameMax = nameWidth;
-		int midMax = midWidth;
-		int rightMax = rightWidth;
+		List<Row> rows = new ArrayList<>();
 
 		for (int idx = 0; idx < splits.size(); idx++) {
 			Split split = splits.get(idx);
-			RowData row = new RowData();
-			row.name = Text.literal(split.name).withColor(SPLIT_COLORS[idx % SPLIT_COLORS.length]);
+			Component name = new PlainTextComponent(Text.literal(split.name)
+					.withColor(SPLIT_COLORS[idx % SPLIT_COLORS.length]));
+
 			String bestStr = formatTime(split.bestTime);
-			String completedTimeStr = formatTime(split.completedTime);
+			Component mid;
+			Component right;
+			int border = 0;
 
 			if (split.completed) {
 				long segmentTime = split.completedTime - previous;
 				long diff = segmentTime - split.bestTime;
 				Formatting fmt = diff <= 0 ? Formatting.GREEN : Formatting.RED;
 				String diffStr = String.format("%+.2fs", diff / 1000.0);
-				row.middle = Text.literal(diffStr).formatted(fmt);
-				row.right = Text.literal(completedTimeStr).formatted(Formatting.YELLOW);
+				mid = new PlainTextComponent(Text.literal(diffStr).formatted(fmt));
+				right = new PlainTextComponent(Text.literal(formatTime(split.completedTime))
+						.formatted(Formatting.YELLOW));
 				previous = split.completedTime;
 			} else if (!showingCurrent && (running || startTime != 0L)) {
 				long segmentTime = now - previous;
-				row.middle = Text.literal(formatTime(segmentTime));
-				row.right = Text.literal(bestStr);
-				row.active = true;
+				mid = new PlainTextComponent(Text.literal(formatTime(segmentTime)));
+				right = new PlainTextComponent(Text.literal(bestStr));
 				showingCurrent = true;
+				border = SPLIT_COLORS[idx % SPLIT_COLORS.length];
 			} else {
-				row.middle = Text.literal("--");
-				row.right = Text.literal(bestStr);
+				mid = new PlainTextComponent(Text.literal("--"));
+				right = new PlainTextComponent(Text.literal(bestStr));
 			}
 
-			TextRenderer tr = MinecraftClient.getInstance().textRenderer;
-			row.nLen = tr.getWidth(row.name.getString());
-			row.mLen = tr.getWidth(row.middle.getString());
-			row.rLen = tr.getWidth(row.right.getString());
-			rows.add(row);
+			rows.add(new Row(List.of(name, mid, right), border));
 		}
-
-		for (int i = 0; i < rows.size(); i++) {
-			RowData row = rows.get(i);
-			MutableText line = Text.empty();
-			TextRenderer tr = MinecraftClient.getInstance().textRenderer;
-			int padName = nameMax - row.nLen;
-			line.append(row.name);
-			if (padName > 0) line.append(padSpaces(padName, tr));
-			line.append(" ");
-
-			int padMid = midMax - row.mLen;
-			line.append(row.middle);
-			if (padMid > 0) line.append(padSpaces(padMid, tr));
-			line.append(" ");
-
-			line.append(row.right);
-
-			if (row.active) {
-				addComponent(new BoxedTextComponent(line, SPLIT_COLORS[i % SPLIT_COLORS.length]));
-			} else {
-				addComponent(new PlainTextComponent(line));
-			}
-		}
-
-		addComponent(new PlainTextComponent(Text.literal(formatTime(now)).formatted(Formatting.YELLOW)));
+		return rows;
 	}
+
+
 
 	private static String padSpaces(int pixelWidth, TextRenderer tr) {
 		int spaceWidth = tr.getWidth(" ");
@@ -412,7 +373,6 @@ public class DungeonSplitsWidget extends ComponentBasedWidget {
 			data.put(floor, floorData);
 			BEST_SPLITS.put(data);
 			BEST_SPLITS.save();
-			computeColumnWidths();
 		}
 	}
 
