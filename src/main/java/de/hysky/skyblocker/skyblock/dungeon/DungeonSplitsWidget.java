@@ -49,70 +49,94 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	private static final Pattern BONZO_SIKE = Pattern.compile("\\[BOSS] Bonzo: Oh I'm dead!");
 	private static final Pattern SCARF_MINIONS = Pattern.compile("^\\[BOSS] Scarf: Did you forget\\? I was taught by the best! Let's dance\\.$");
-	private static final Pattern PROFESSOR_TRANSFORM = Pattern.compile("^\\[BOSS] The Professor: Oh\\? You found my Guardians' one weakness\\?$");
+	private static final Pattern GUARDIANS = Pattern.compile("^\\[BOSS] The Professor: Oh\\? You found my Guardians' one weakness\\?$");
+	private static final Pattern PROFESSOR = Pattern.compile("^\\[BOSS] The Professor: I see. You have forced me to use my ultimate technique.\\?$");
 	private static final Pattern TERRACOTTAS = Pattern.compile("^\\[BOSS] Sadan: ENOUGH!$");
-	private static final Pattern SADAN_GIANTS = Pattern.compile("^\\[BOSS] Sadan: ENOUGH!$");
+	private static final Pattern SADAN_GIANTS = Pattern.compile("^\\[BOSS] Sadan: You did it. I understand now, you have earned my respect.$");
 
 	/**
 	 * Colors used for split names in rainbow order.
 	 */
 	private static final int[] SPLIT_COLORS = {
-			0xfd5858, // red
-			0xfdab58, // orange
-			0xfdfd58, // yellow
-			0xabfd58, // chartreuse
-			0x58fd58, // green
-			0x58fdab, // aqua
-			0x58abfd, // blue
-			0x5858fd, // indigo
-			0xab58fd, // violet
-			0xfd58fd  // pink
+			0xfd5858,
+			0xfdab58,
+			0xfdfd58,
+			0xabfd58,
+			0x58fd58,
+			0x58fdab,
+			0x58abfd,
+			0x5858fd,
+			0xab58fd,
+			0xfd58fd
 	};
 
 	private static final Map<String, List<Split>> FLOOR_SPLITS = new HashMap<>();
 
 	static {
-		FLOOR_SPLITS.put("F1", List.of(
+		List<Split> floor1Splits = List.of(
 				new Split("Blood Open", BLOOD_OPEN),
 				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Bonzo Entry", F1_ENTRY),
+				new Split("Portal Entry", F1_ENTRY),
 				new Split("Bonzo's Sike", BONZO_SIKE),
-				new Split("Finish", DUNGEON_END)
-		));
-		FLOOR_SPLITS.put("F2", List.of(
+				new Split("Bonzo", DUNGEON_END)
+		);
+		FLOOR_SPLITS.put("F1", floor1Splits);
+		FLOOR_SPLITS.put("M1", floor1Splits);
+
+
+		List<Split> floor2Splits = List.of(
 				new Split("Blood Open", BLOOD_OPEN),
 				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Scarf Entry", F2_ENTRY),
-				new Split("Scarf Minions", SCARF_MINIONS),
-				new Split("Finish", DUNGEON_END)
-		));
-		FLOOR_SPLITS.put("F3", List.of(
+				new Split("Portal Entry", F2_ENTRY),
+				new Split("Scarf's Minions", SCARF_MINIONS),
+				new Split("Scarf", DUNGEON_END)
+		);
+		FLOOR_SPLITS.put("F2", floor2Splits);
+		FLOOR_SPLITS.put("M2", floor2Splits);
+
+
+		List<Split> floor3Splits = List.of(
 				new Split("Blood Open", BLOOD_OPEN),
 				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Professor Entry", F3_ENTRY),
-				new Split("Professor Transform", PROFESSOR_TRANSFORM),
-				new Split("Finish", DUNGEON_END)
-		));
-		FLOOR_SPLITS.put("F4", List.of(
+				new Split("Portal Entry", F3_ENTRY),
+				new Split("Guardians", GUARDIANS),
+				new Split("The Professor", PROFESSOR),
+				new Split("The Transformed Professor", DUNGEON_END)
+		);
+		FLOOR_SPLITS.put("F3", floor3Splits);
+		FLOOR_SPLITS.put("M3", floor3Splits);
+
+
+		List<Split> floor4Splits = List.of(
 				new Split("Blood Open", BLOOD_OPEN),
 				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Thorn Entry", F4_ENTRY),
-				new Split("Finish", DUNGEON_END)
-		));
-		FLOOR_SPLITS.put("F5", List.of(
+				new Split("Portal Entry", F4_ENTRY),
+				new Split("Thorn", DUNGEON_END)
+		);
+		FLOOR_SPLITS.put("F4", floor4Splits);
+		FLOOR_SPLITS.put("M4", floor4Splits);
+
+
+		List<Split> floor5Splits = List.of(
 				new Split("Blood Open", BLOOD_OPEN),
 				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Livid Entry", F5_ENTRY),
-				new Split("Finish", DUNGEON_END)
-		));
-		FLOOR_SPLITS.put("F6", List.of(
+				new Split("Portal Entry", F5_ENTRY),
+				new Split("Livid", DUNGEON_END)
+		);
+		FLOOR_SPLITS.put("F5", floor5Splits);
+		FLOOR_SPLITS.put("M5", floor5Splits);
+
+		List<Split> floor6Splits = List.of(
 				new Split("Blood Open", BLOOD_OPEN),
 				new Split("Blood Clear", BLOOD_CLEAR),
-				new Split("Sadan Entry", F6_ENTRY),
+				new Split("Portal Entry", F6_ENTRY),
 				new Split("Terracottas", TERRACOTTAS),
-				new Split("Giants", SADAN_GIANTS),
-				new Split("Finish", DUNGEON_END)
-		));
+				new Split("Sadan's Giants", SADAN_GIANTS),
+				new Split("Sadan", DUNGEON_END)
+		);
+		FLOOR_SPLITS.put("F6", floor6Splits);
+		FLOOR_SPLITS.put("M6", floor6Splits);
+
 		FLOOR_SPLITS.put("F7", List.of(
 				new Split("Blood Open", BLOOD_OPEN),
 				new Split("Blood Clear", BLOOD_CLEAR),
@@ -121,8 +145,18 @@ public class DungeonSplitsWidget extends TableWidget {
 				new Split("Storm", F7_STORM),
 				new Split("Terminals", F7_TERMINALS),
 				new Split("Goldor", F7_GOLDOR),
+				new Split("Necron", DUNGEON_END)
+		));
+		FLOOR_SPLITS.put("M7", List.of(
+				new Split("Blood Open", BLOOD_OPEN),
+				new Split("Blood Clear", BLOOD_CLEAR),
+				new Split("Portal Entry", F7_ENTRY),
+				new Split("Maxor", F7_MAXOR),
+				new Split("Storm", F7_STORM),
+				new Split("Terminals", F7_TERMINALS),
+				new Split("Goldor", F7_GOLDOR),
 				new Split("Necron", F7_NECRON),
-				new Split("Finish", DUNGEON_END)
+				new Split("Wither King", DUNGEON_END)
 		));
 	}
 
