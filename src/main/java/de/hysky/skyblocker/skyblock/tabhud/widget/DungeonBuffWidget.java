@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -19,7 +20,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 			Formatting.BOLD);
 
 	public DungeonBuffWidget() {
-		super("Dungeon Buffs", TITLE, Formatting.DARK_PURPLE.getColorValue());
+		super("Dungeon Buffs", TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
 	}
 
 	@Override

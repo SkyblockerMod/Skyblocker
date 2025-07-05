@@ -3,20 +3,14 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import de.hysky.skyblocker.skyblock.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
@@ -250,13 +244,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
 								.text(Text.translatable("text.skyblocker.open"))
-								.action((screen, opt) -> {
-									if (Utils.isOnSkyblock()) {
-										MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
-									} else {
-										MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, WidgetManager.ScreenLayer.MAIN_TAB, screen));
-									}
-								})
+								.action((screen, opt) -> {})
 								.build())
                         .option(Option.<Integer>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudScale"))
@@ -731,7 +719,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.hud.screen"))
 								.text(Text.translatable("text.skyblocker.open"))
-								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, ItemPickupWidget.getInstance().getInternalID(), screen)))
+								.action((screen, opt) -> {})
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications"))

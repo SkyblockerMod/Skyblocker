@@ -3,14 +3,10 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
-import de.hysky.skyblocker.skyblock.slayers.hud.SlayerHudWidget;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class SlayersCategory {
@@ -91,7 +87,7 @@ public class SlayersCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.enableHud"))
 						.text(Text.translatable("text.skyblocker.open"))
-						.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
+						.action((screen, opt) -> {})
 						.build())
 
 				//Enderman Slayer

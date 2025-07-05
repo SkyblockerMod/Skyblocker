@@ -6,7 +6,9 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -19,13 +21,12 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @RegisterWidget
 public class FarmingHudWidget extends ComponentBasedWidget {
 	private static final MutableText TITLE = Text.literal("Farming").formatted(Formatting.YELLOW, Formatting.BOLD);
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GARDEN);
 	public static final Map<String, String> FARMING_TOOLS = Map.ofEntries(
 			Map.entry("THEORETICAL_HOE_WHEAT_1", "WHEAT"),
 			Map.entry("THEORETICAL_HOE_WHEAT_2", "WHEAT"),
@@ -66,7 +67,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 	private final MinecraftClient client = MinecraftClient.getInstance();
 
 	public FarmingHudWidget() {
-		super(TITLE, Formatting.YELLOW.getColorValue(), "hud_farming");
+		super(TITLE, Formatting.YELLOW.getColorValue(), new Information("hud_farming", Text.literal("Farming HUD"), l -> l == Location.GARDEN)); // TODO translatable
 		instance = this;
 		update();
 	}
@@ -108,6 +109,11 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 		if (LowerSensitivity.isSensitivityLowered()) {
 			addComponent(new PlainTextComponent(Text.translatable("skyblocker.garden.hud.mouseLocked").formatted(Formatting.ITALIC)));
 		}
+	}
+
+	@Override
+	protected List<Component> getConfigComponents() {
+		return List.of(new IcoTextComponent(Ico.BARRIER, Text.literal("TODO"))); // TODO
 	}
 
 	/**
@@ -165,26 +171,5 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 
 		// Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6.
 		return hasValidPrice ? Text.literal(FarmingHud.NUMBER_FORMAT.format((int) (priceToUse * cropsPerMinute * 0.6) * 100)).append(sourceLabel) : Text.translatable("skyblocker.config.farming.general.noData");
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return location.equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!location.equals(Location.GARDEN)) return;
-		SkyblockerConfigManager.get().farming.garden.farmingHud.enableHud = enabled;
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public Text getDisplayName() {
-		return Text.literal("Farming HUD");
 	}
 }

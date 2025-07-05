@@ -4,11 +4,8 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.end.EndHudWidget;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class OtherLocationsCategory {
@@ -129,7 +126,7 @@ public class OtherLocationsCategory {
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.otherLocations.end.screen"))
                                 .text(Text.translatable("text.skyblocker.open")) // Reusing again lol
-                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.THE_END, EndHudWidget.getInstance().getInternalID(), screen)))
+                                .action((screen, opt) -> {})
                                 .build())
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.otherLocations.end.resetName"))

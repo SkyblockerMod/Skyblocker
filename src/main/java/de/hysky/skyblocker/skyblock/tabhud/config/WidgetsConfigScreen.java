@@ -1,0 +1,232 @@
+package de.hysky.skyblocker.skyblock.tabhud.config;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenPos;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+public class WidgetsConfigScreen extends Screen implements WidgetConfig {
+
+	@Init
+	public static void initCommands() {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
+				ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("hud").executes(Scheduler.queueOpenScreenCommand(WidgetsConfigScreen::new)))
+		));
+	}
+
+	/**
+	 * The currently edited location. {@link Location#UNKNOWN} if editing the global skyblock screen.
+	 */
+	private @NotNull Location currentLocation;
+	private @NotNull WidgetManager.ScreenLayer currentScreenLayer;
+
+	private @NotNull ScreenBuilder builder;
+
+	private SidePanelWidget sidePanelWidget;
+	private AddWidgetWidget addWidgetWidget;
+
+	private @Nullable HudWidget hoveredWidget;
+	private @Nullable HudWidget selectedWidget;
+	/**
+	 * Where the user started dragging relative to the widget's position. Null if not dragging.
+	 */
+	private @Nullable ScreenPos dragRelative = null;
+
+	private @Nullable SelectWidgetPrompt selectWidgetPrompt = null;
+
+	protected WidgetsConfigScreen() {
+		super(Text.literal("amogus"));
+		currentLocation = Utils.getLocation();
+		currentScreenLayer = WidgetManager.ScreenLayer.HUD;
+		builder = WidgetManager.getScreenBuilder(currentLocation, currentScreenLayer);
+	}
+
+	public void setCurrentLocation(@NotNull Location newLocation) {
+		builder.updateConfig();
+		this.currentLocation = newLocation;
+		builder = WidgetManager.getScreenBuilder(newLocation, currentScreenLayer);
+		builder.updateWidgetsList();
+	}
+
+	public void setCurrentScreenLayer(@NotNull WidgetManager.ScreenLayer newScreenLayer) {
+		builder.updateConfig();
+		this.currentScreenLayer = newScreenLayer;
+		builder = WidgetManager.getScreenBuilder(currentLocation, newScreenLayer);
+		builder.updateWidgetsList();
+	}
+
+	public boolean isGlobalScreen() {
+		return currentLocation == Location.UNKNOWN;
+	}
+
+	@Override
+	protected void init() {
+		super.init();
+		sidePanelWidget = new SidePanelWidget(width / 4, height);
+		addWidgetWidget = new AddWidgetWidget(client, this::addWidget);
+		addSelectableChild(addWidgetWidget);
+		addSelectableChild(sidePanelWidget);
+	}
+
+	private void addWidget(HudWidget widget) {
+		builder.addWidget(widget);
+		// TODO default config stuff
+		widget.setPositionRule(
+				new PositionRule(
+						"screen",
+						PositionRule.Point.DEFAULT,
+						PositionRule.Point.DEFAULT,
+						(int) client.mouse.getScaledX(client.getWindow()),
+						(int) client.mouse.getScaledY(client.getWindow())
+				)
+		);
+	}
+
+	@Override
+	protected void refreshWidgetPositions() {
+		sidePanelWidget.setWidth(width / 4);
+		sidePanelWidget.setHeight(height);
+	}
+
+	@Override
+	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		super.render(context, mouseX, mouseY, deltaTicks);
+		builder.render(context, width, height, true);
+		sidePanelWidget.render(context, mouseX, mouseY, deltaTicks);
+		hoveredWidget = null;
+		for (HudWidget hudWidget : builder.getWidgets()) {
+			if (hudWidget.isMouseOver(mouseX, mouseY)) {
+				hoveredWidget = hudWidget;
+				break;
+			}
+		}
+
+		if (hoveredWidget != null) {
+			context.drawBorder(hoveredWidget.getX() - 1, hoveredWidget.getY() - 1, hoveredWidget.getScaledWidth() + 2, hoveredWidget.getScaledHeight() + 2, Colors.YELLOW);
+		}
+		if (selectedWidget != null) {
+			context.drawBorder(selectedWidget.getX() - 1, selectedWidget.getY() - 1, selectedWidget.getScaledWidth() + 2, selectedWidget.getScaledHeight() + 2, Colors.GREEN);
+		}
+
+		// Render on top of everything
+		addWidgetWidget.render(context, mouseX, mouseY, deltaTicks);
+	}
+
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+		if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) return true;
+		if (selectedWidget != null && dragRelative != null) {
+			ScreenPos startPosition = WidgetPositioner.getStartPosition(selectedWidget, width, height);
+			PositionRule oldRule = selectedWidget.getPositionRule();
+			PositionRule newRule = new PositionRule(
+					oldRule.parent(),
+					oldRule.parentPoint(),
+					oldRule.thisPoint(),
+					(int) mouseX - startPosition.x() - dragRelative.x() + (int) (selectedWidget.getScaledWidth() * oldRule.thisPoint().horizontalPoint().getPercentage()),
+					(int) mouseY - startPosition.y() - dragRelative.y() + (int) (selectedWidget.getScaledHeight() * oldRule.thisPoint().verticalPoint().getPercentage())
+			);
+			selectedWidget.setPositionRule(newRule);
+			updatePositions();
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void tick() {
+		if (selectedWidget == null && sidePanelWidget.isOpen()) sidePanelWidget.close();
+	}
+
+	@Override
+	public void removed() {
+		builder.updateConfig();
+		builder.updateWidgetsList();
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (super.mouseClicked(mouseX, mouseY, button)) return true;
+		if (selectWidgetPrompt != null) {
+			if (hoveredWidget != null && !selectWidgetPrompt.allowItself() && hoveredWidget.equals(selectedWidget)) return true;
+			selectWidgetPrompt.callback().accept(hoveredWidget);
+			selectWidgetPrompt = null;
+			sidePanelWidget.open();
+			return true;
+		}
+		if (hoveredWidget == null) {
+			if (sidePanelWidget.isOpen()) sidePanelWidget.close();
+			selectedWidget = null;
+			if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+				List<HudWidget> availableWidgets = new ArrayList<>(WidgetManager.getWidgetsAvailableIn(currentLocation));
+				availableWidgets.removeAll(builder.getWidgets()); // remove already present widgets
+				addWidgetWidget.openWith(availableWidgets);
+				addWidgetWidget.setX(Math.clamp((int) mouseX, 5, width - addWidgetWidget.getWidth() - 5));
+				addWidgetWidget.setY(Math.clamp((int) mouseY, 5, height - addWidgetWidget.getHeight() - 5));
+			}
+			return true;
+		}
+		if (!hoveredWidget.equals(selectedWidget)) {
+			selectedWidget = hoveredWidget;
+		}
+		dragRelative = new ScreenPos((int) (mouseX - selectedWidget.getX()), (int) (mouseY - selectedWidget.getY()));
+		if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && (!sidePanelWidget.isOpen() || !selectedWidget.equals(sidePanelWidget.getHudWidget()))) {
+			boolean rightSide = selectedWidget.getX() + selectedWidget.getWidth() / 2 < width / 2;
+			sidePanelWidget.open(selectedWidget, this, rightSide, rightSide ? width - sidePanelWidget.getWidth() : 0);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		dragRelative = null;
+		return super.mouseReleased(mouseX, mouseY, button);
+	}
+
+	@Override
+	public void updatePositions() {
+		builder.updatePositions(width, height);
+	}
+
+	@Override
+	public void promptSelectWidget(@NotNull Consumer<@Nullable HudWidget> callback, boolean allowItself) {
+		selectWidgetPrompt = new SelectWidgetPrompt(callback, allowItself);
+		sidePanelWidget.close();
+	}
+
+	@Override
+	public HudWidget getEditedWidget() {
+		return selectedWidget;
+	}
+
+	@Override
+	public int getScreenWidth() {
+		return width;
+	}
+
+	@Override
+	public int getScreenHeight() {
+		return height;
+	}
+
+	private record SelectWidgetPrompt(@NotNull Consumer<@Nullable HudWidget> callback, boolean allowItself) {}
+}

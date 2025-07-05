@@ -12,6 +12,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
@@ -34,7 +35,7 @@ public class CrystalsHudWidget extends HudWidget {
 	}
 
 	public CrystalsHudWidget() {
-		super("hud_crystals");
+		super();
 		instance = this;
 	}
 
@@ -68,22 +69,6 @@ public class CrystalsHudWidget extends HudWidget {
 		return (clipped * 360f) / 16f;
 	}
 
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return location.equals(Location.CRYSTAL_HOLLOWS) && SkyblockerConfigManager.get().mining.crystalsHud.enabled;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!location.equals(Location.CRYSTAL_HOLLOWS)) return;
-		SkyblockerConfigManager.get().mining.crystalsHud.enabled = enabled;
-	}
-
 	public void update() {
 		if (CLIENT.player == null || CLIENT.getNetworkHandler() == null || !SkyblockerConfigManager.get().mining.crystalsHud.enabled) return;
 
@@ -101,7 +86,6 @@ public class CrystalsHudWidget extends HudWidget {
 		//and set position and scale
 		MatrixStack matrices = context.getMatrices();
 		matrices.push();
-		matrices.translate(x, y, 0f);
 		matrices.scale(scale, scale, 0f);
 		w = h = (int) (62 * scale);
 
@@ -150,7 +134,12 @@ public class CrystalsHudWidget extends HudWidget {
 	}
 
 	@Override
-	public Text getDisplayName() {
-		return Text.of("Crystals HUD");
+	protected void renderConfig(DrawContext context, float delta) {
+		renderWidget(context, delta);
+	}
+
+	@Override
+	public @NotNull Information getInformation() {
+		return new Information("hud_crystals", Text.literal("Crystals HUD"), l -> l == Location.CRYSTAL_HOLLOWS); // TODO translatable
 	}
 }

@@ -149,6 +149,11 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		return !Utils.isOnHypixel();
 	}
 
+	@Inject(method = "onPlayerList", at = @At("HEAD"))
+	private void skyblocker$onListChange(PlayerListS2CPacket packet, CallbackInfo ci) {
+		PlayerListManager.shouldUpdateNextTick = true;
+	}
+
 	@Inject(method = "onPlaySound", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
 	private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
 		CrystalsChestHighlighter.onSound(packet);

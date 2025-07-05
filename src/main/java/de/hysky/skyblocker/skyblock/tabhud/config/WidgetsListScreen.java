@@ -1,56 +1,39 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.*;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.tab.Tab;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.GenericContainerScreenHandler;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 
 // TODO: recommend disabling spacing and enabling wrapping
-public class WidgetsListTab implements Tab {
-	private final WidgetsElementList widgetsElementList;
-	private final ButtonWidget back;
-	private final ButtonWidget previousPage;
-	private final ButtonWidget nextPage;
-	private final ButtonWidget thirdColumnButton;
-	private @Nullable GenericContainerScreenHandler handler;
-	private final MinecraftClient client;
+public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
+	private WidgetsElementList widgetsElementList;
+	private ButtonWidget back;
+	private ButtonWidget previousPage;
+	private ButtonWidget nextPage;
+	private ButtonWidget thirdColumnButton;
+	private String titleLowercase;
+	private @NotNull GenericContainerScreenHandler handler;
 	private boolean waitingForServer = false;
 
 	private final Int2ObjectMap<WidgetsListSlotEntry> entries = new Int2ObjectOpenHashMap<>();
-	private final List<WidgetEntry> customWidgetEntries = new ArrayList<>();
 	private boolean listNeedsUpdate = false;
-	private boolean shouldShowCustomWidgetEntries = false;
-
-
-	public void setCustomWidgetEntries(Collection<WidgetEntry> entries) {
-		this.customWidgetEntries.clear();
-		this.customWidgetEntries.addAll(entries);
-		listNeedsUpdate = true;
-	}
-
-	public List<WidgetEntry> getCustomWidgetEntries() {
-		return customWidgetEntries;
-	}
 
 	public boolean listNeedsUpdate() {
 		boolean b = listNeedsUpdate;
@@ -62,29 +45,11 @@ public class WidgetsListTab implements Tab {
 		return entries.int2ObjectEntrySet();
 	}
 
-	public WidgetsListTab(MinecraftClient client, @Nullable GenericContainerScreenHandler handler) {
-		widgetsElementList = new WidgetsElementList(this, client, 0, 0, 0);
-		this.client = client;
+	public WidgetsListScreen(@NotNull GenericContainerScreenHandler handler, String titleLowercase) {
+		super(Text.literal("Widgets List"));
 		this.handler = handler;
-		back = ButtonWidget.builder(Text.literal("Back"), button -> clickAndWaitForServer(48, 0))
-				.size(64, 15)
-				.build();
-		thirdColumnButton = ButtonWidget.builder(Text.literal("3rd Column:"), button -> clickAndWaitForServer(50, 0))
-				.size(120, 15)
-				.build();
-		thirdColumnButton.setTooltip(Tooltip.of(Text.literal("It is recommended to have this enabled, to have more info be displayed!")));
-		previousPage = ButtonWidget.builder(Text.literal("Previous Page"), button -> clickAndWaitForServer(45, 0))
-				.size(100, 15)
-				.build();
-		nextPage = ButtonWidget.builder(Text.literal("Next Page"), button -> clickAndWaitForServer(53, 0))
-				.size(100, 15)
-				.build();
-		if (handler == null) {
-			back.visible = false;
-			previousPage.visible = false;
-			nextPage.visible = false;
-			thirdColumnButton.visible = false;
-		}
+		this.titleLowercase = titleLowercase;
+		handler.addListener(this);
 	}
 
 	@Override
@@ -92,24 +57,15 @@ public class WidgetsListTab implements Tab {
 		return Text.literal("Widgets");
 	}
 
-	@Override
-	public void forEachChild(Consumer<ClickableWidget> consumer) {
-		consumer.accept(back);
-		consumer.accept(previousPage);
-		consumer.accept(nextPage);
-		consumer.accept(thirdColumnButton);
-		consumer.accept(widgetsElementList);
-	}
-
 	public void clickAndWaitForServer(int slot, int button) {
-		if (waitingForServer || handler == null) return;
+		if (waitingForServer) return;
 		if (client.interactionManager == null || this.client.player == null) return;
 		client.interactionManager.clickSlot(handler.syncId, slot, button, SlotActionType.PICKUP, this.client.player);
 		waitingForServer = true;
 	}
 
 	public void shiftClickAndWaitForServer(int slot, int button) {
-		if (waitingForServer || handler == null) return;
+		if (waitingForServer) return;
 		if (client.interactionManager == null || this.client.player == null) return;
 		client.interactionManager.clickSlot(handler.syncId, slot, button, SlotActionType.QUICK_MOVE, this.client.player);
 		// When moving a widget down it gets stuck sometimes
@@ -117,9 +73,9 @@ public class WidgetsListTab implements Tab {
 		waitingForServer = true;
 	}
 
-	public void updateHandler(GenericContainerScreenHandler newHandler) {
+	public void updateHandler(@NotNull GenericContainerScreenHandler newHandler, String titleLowercase) {
 		this.handler = newHandler;
-		back.visible = handler != null;
+		this.titleLowercase = titleLowercase;
 		entries.clear();
 		listNeedsUpdate = true;
 	}
@@ -196,20 +152,77 @@ public class WidgetsListTab implements Tab {
 	}
 
 	@Override
-	public void refreshGrid(ScreenRect tabArea) {
-		back.setPosition(16, tabArea.getTop() + 4);
-		widgetsElementList.setY(tabArea.getTop());
-		widgetsElementList.setDimensions(tabArea.width(), tabArea.height() - 20);
+	protected void init() {
+		super.init();
+		widgetsElementList = new WidgetsElementList(this, client, 0, 0, 0);
+		back = ButtonWidget.builder(Text.literal("Back"), button -> clickAndWaitForServer(48, 0))
+				.size(64, 15)
+				.build();
+		thirdColumnButton = ButtonWidget.builder(Text.literal("3rd Column:"), button -> clickAndWaitForServer(50, 0))
+				.size(120, 15)
+				.build();
+		thirdColumnButton.setTooltip(Tooltip.of(Text.literal("It is recommended to have this enabled, to have more info be displayed!")));
+		previousPage = ButtonWidget.builder(Text.literal("Previous Page"), button -> clickAndWaitForServer(45, 0))
+				.size(100, 15)
+				.build();
+		nextPage = ButtonWidget.builder(Text.literal("Next Page"), button -> clickAndWaitForServer(53, 0))
+				.size(100, 15)
+				.build();
+	}
+
+	@Override
+	protected void refreshWidgetPositions() {
+		super.refreshWidgetPositions();
+		back.setPosition(16, 4);
+		widgetsElementList.setY(0);
+		widgetsElementList.setDimensions(width, height - 20);
 		previousPage.setPosition(widgetsElementList.getRowLeft(), widgetsElementList.getBottom() + 4);
 		nextPage.setPosition(widgetsElementList.getScrollbarX() - 100, widgetsElementList.getBottom() + 4);
 		thirdColumnButton.setPosition(widgetsElementList.getScrollbarX() + 5, widgetsElementList.getBottom() + 4);
 	}
 
-	public boolean shouldShowCustomWidgetEntries() {
-		return shouldShowCustomWidgetEntries;
+	@Override
+	public void close() {
+		assert this.client != null;
+		assert this.client.player != null;
+		this.client.player.closeHandledScreen();
+		super.close();
 	}
 
-	public void setShouldShowCustomWidgetEntries(boolean shouldShowCustomWidgetEntries) {
-		this.shouldShowCustomWidgetEntries = shouldShowCustomWidgetEntries;
+	@Override
+	public void removed() {
+		if (this.client != null && this.client.player != null) {
+			this.handler.onClosed(this.client.player);
+		}
+		handler.removeListener(this);
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		assert this.client != null;
+		assert this.client.player != null;
+		if (!this.client.player.isAlive() || this.client.player.isRemoved()) {
+			this.client.player.closeHandledScreen();
+		}
+	}
+
+	@Override
+	public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
+		if (slotId == 13) {
+			if (stack.isOf(Items.HOPPER)) {
+				hopper(ItemUtils.getLore(stack));
+			} else {
+				hopper(null);
+			}
+		}
+		if (slotId > (titleLowercase.startsWith("tablist widgets") ? 9 : 18) && slotId < this.handler.getRows() * 9 - 9 || slotId == 45 || slotId == 53 || slotId == 50) {
+			onSlotChange(slotId, stack);
+		}
+	}
+
+	@Override
+	public void onPropertyUpdate(ScreenHandler handler, int property, int value) {
+
 	}
 }

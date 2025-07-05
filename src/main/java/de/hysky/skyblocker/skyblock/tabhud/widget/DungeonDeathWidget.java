@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -25,7 +26,7 @@ public class DungeonDeathWidget extends TabHudWidget {
 	private static final Pattern DEATH_PATTERN = Pattern.compile("Team Deaths: (?<deathnum>\\d+).*");
 
 	public DungeonDeathWidget() {
-		super("Dungeon Deaths", TITLE, Formatting.DARK_PURPLE.getColorValue());
+		super("Team Deaths", TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
 	}
 
 	@Override

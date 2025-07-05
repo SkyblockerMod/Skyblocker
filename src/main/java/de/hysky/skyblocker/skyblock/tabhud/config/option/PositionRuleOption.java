@@ -77,7 +77,7 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 
 		private final WidgetConfig widgetConfig;
 
-		public PositionRuleOptionWidget(WidgetConfig config) {
+		private PositionRuleOptionWidget(WidgetConfig config) {
 			super(0, 0, 0, 0, Text.literal("hi"));
 			this.widgetConfig = config;
 			layout.getMainPositioner().alignHorizontalCenter();
@@ -89,6 +89,8 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 			add(coordsDisplay);
 			add(parentPoint);
 			add(thisPoint);
+			layout.refreshPositions();
+			setHeight(layout.getHeight());
 		}
 
 		private void add(ClickableWidget widget) {
@@ -113,8 +115,34 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 					thisAnchorX - otherAnchorX,
 					thisAnchorY - otherAnchorY
 			);
-
+			if (selectedWidget != null) {
+				parentButton.setMessage(Text.literal("Parent: ").append(selectedWidget.getInformation().displayName()));
+			} else {
+				parentButton.setMessage(Text.literal("Parent: ").append("Screen"));
+			}
 			valueSetter.accept(newRule);
+		}
+
+		@Override
+		public void setWidth(int width) {
+			super.setWidth(width);
+			for (ClickableWidget widget : widgets) {
+				widget.setWidth(width);
+			}
+			layout.refreshPositions();
+			setHeight(layout.getHeight());
+		}
+
+		@Override
+		public void setX(int x) {
+			super.setX(x);
+			layout.setX(x);
+		}
+
+		@Override
+		public void setY(int y) {
+			super.setY(y);
+			layout.setY(y);
 		}
 
 		private Text getParentName() {
@@ -122,9 +150,8 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 			if (rule.parent().equals("screen")) {
 				return Text.literal("Screen");
 			} else {
-				HudWidget widget = WidgetManager.getWidget(rule.parent());
-				if (widget == null) return Text.literal(rule.parent());
-				else return widget.getInformation().displayName();
+				HudWidget widget = WidgetManager.getWidgetOrPlaceholder(rule.parent());
+				return widget.getInformation().displayName();
 			}
 		}
 
@@ -160,7 +187,7 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 		private @Nullable PositionRule.Point hoveredPoint = null;
 		private final WidgetConfig widgetConfig;
 
-		public AnchorSelectionWidget(WidgetConfig config, Text text, boolean parent) {
+		private AnchorSelectionWidget(WidgetConfig config, Text text, boolean parent) {
 			super(0, 0, 20, 40, text);
 			this.parent = parent;
 			widgetConfig = config;

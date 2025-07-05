@@ -3,25 +3,29 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import com.demonwav.mcdev.annotations.Translatable;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.TextUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Abstract base class for a component based Widget.
@@ -34,12 +38,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	private static final TextRenderer txtRend = MinecraftClient.getInstance().textRenderer;
 
-	private String lastError = null;
 	private static final List<Component> ERROR_COMPONENTS = List.of(new PlainTextComponent(Text.literal("An error occurred! Please check logs.").withColor(0xFFFF0000)));
-
-	private final ArrayList<Component> components = new ArrayList<>();
-
-	private int prevW = 0, prevH = 0;
 
 	static final int BORDER_SZE_N = txtRend.fontHeight + 4;
 	static final int BORDER_SZE_S = 4;
@@ -51,16 +50,43 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	private final int color;
 	private final Text title;
+	private final ArrayList<Component> components = new ArrayList<>();
+	private String lastError = null;
+	private final @NotNull Information information;
 
 	/**
 	 * Most often than not this should be instantiated only once.
 	 *
 	 * @param title      title
-	 * @param colorValue the colour
+	 * @param color the color for the border
 	 */
-	public ComponentBasedWidget(MutableText title, Integer colorValue) {
+	public ComponentBasedWidget(Text title, int color, @NotNull Information information) {
 		this.title = title;
-		this.color = 0xff000000 | colorValue;
+		this.color = 0xff000000 | color;
+		this.information = information;
+	}
+
+	public ComponentBasedWidget(Text title, int color, String id) {
+		this(title, color, new Information(id, TextUtils.merge(title.withoutStyle()), l -> true));
+	}
+
+	public ComponentBasedWidget(Text title, int color, String id, Predicate<Location> availableIn) {
+		this(title, color, new Information(id, TextUtils.merge(title.withoutStyle()), availableIn));
+	}
+
+	/**
+	 * @param availableLocations {@link java.util.EnumSet} IS VERY ENCOURAGED.
+	 */
+	public ComponentBasedWidget(Text title, int color, String id, Set<Location> availableLocations) {
+		this(title, color, id, availableLocations::contains);
+	}
+
+	public ComponentBasedWidget(Text title, int color, String id, Location availableLocation) {
+		this(title, color, id, EnumSet.of(availableLocation));
+	}
+
+	public ComponentBasedWidget(Text title, int color, String id, Location availableLocation, Location... otherAvailableLocations) {
+		this(title, color, id, EnumSet.of(availableLocation, otherAvailableLocations));
 	}
 
 	public void addComponent(Component c) {
@@ -82,10 +108,17 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		this.pack(this.components);
 	}
 
+	/**
+	 * @see ComponentBasedWidget#shouldUpdateBeforeRendering()
+	 */
 	public abstract void updateContent();
 
 	protected abstract List<Component> getConfigComponents();
 
+	/**
+	 * @return true if this should be updated before rendering.
+	 * @implNote Will not,update if {@link HudWidget#shouldRender()} is false.
+	 */
 	public boolean shouldUpdateBeforeRendering() {
 		return false;
 	}
@@ -138,9 +171,9 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			GameOptions options = MinecraftClient.getInstance().options;
 			int textBackgroundColor = options.getTextBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
-			context.fill(x + 1, y, x + w - 1, y + h, textBackgroundColor);
-			context.fill(x, y + 1, x + 1, y + h - 1, textBackgroundColor);
-			context.fill(x + w - 1, y + 1, x + w, y + h - 1, textBackgroundColor);
+			context.fill(1, 0, w - 1, h, textBackgroundColor);
+			context.fill(0, 1, 1, h - 1, textBackgroundColor);
+			context.fill(w - 1, 1, w, h - 1, textBackgroundColor);
 		}
 		// move above background (if exists)
 		ms.translate(0, 0, 100);
@@ -148,22 +181,22 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		int strHeightHalf = txtRend.fontHeight / 2;
 		int strAreaWidth = txtRend.getWidth(title) + 4;
 
-		context.drawText(txtRend, title, x + 8, y + 2, this.color, false);
+		context.drawText(txtRend, title, 8, 2, this.color, false);
 
 		// Only draw borders if not in minimal mode
 		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal()) {
-			this.drawHLine(context, x + 2, y + 1 + strHeightHalf, 4);
-			this.drawHLine(context, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
-			this.drawHLine(context, x + 2, y + h - 2, w - 4);
+			this.drawHLine(context, 2, 1 + strHeightHalf, 4);
+			this.drawHLine(context, 2 + strAreaWidth + 4, 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
+			this.drawHLine(context, 2, h - 2, w - 4);
 
-			this.drawVLine(context, x + 1, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
-			this.drawVLine(context, x + w - 2, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.drawVLine(context, 1, 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.drawVLine(context, w - 2, 2 + strHeightHalf, h - 4 - strHeightHalf);
 		}
 
-		int yOffs = y + BORDER_SZE_N;
+		int yOffs = BORDER_SZE_N;
 
 		for (Component c : components) {
-			c.render(context, x + BORDER_SZE_W, yOffs);
+			c.render(context, BORDER_SZE_W, yOffs);
 			yOffs += c.getHeight() + Component.PAD_L;
 		}
 		// pop manipulations above
@@ -190,9 +223,11 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		// min width is dependent on title
 		w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + txtRend.getWidth(title) + 4 + 4 + 1);
 		// update the positions so it doesn't wait for the next tick or something
-		if (h != prevH || w != prevW) ScreenBuilder.markDirty();
-		prevW = w;
-		prevH = h;
+	}
+
+	@Override
+	public @NotNull Information getInformation() {
+		return information;
 	}
 
 	private void drawHLine(DrawContext context, int xpos, int ypos, int width) {

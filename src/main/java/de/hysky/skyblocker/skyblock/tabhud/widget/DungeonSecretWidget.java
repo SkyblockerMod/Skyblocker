@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -19,7 +20,7 @@ public class DungeonSecretWidget extends TabHudWidget {
 	private static final Pattern DISCOVERIES = Pattern.compile("Discoveries: (\\d+)");
 
 	public DungeonSecretWidget() {
-		super("Dungeon Discoveries", TITLE, Formatting.DARK_PURPLE.getColorValue());
+		super("Discoveries", TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
 	}
 
 	@Override

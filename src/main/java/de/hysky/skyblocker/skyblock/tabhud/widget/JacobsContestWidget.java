@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
@@ -40,7 +41,7 @@ public class JacobsContestWidget extends TabHudWidget {
 	);
 
 	public JacobsContestWidget() {
-		super("Jacob's Contest", TITLE, Formatting.YELLOW.getColorValue());
+		super("Jacob's Contest", TITLE, Formatting.YELLOW.getColorValue(), Location.HUB, Location.THE_FARMING_ISLAND, Location.GARDEN);
 	}
 
 	@Override

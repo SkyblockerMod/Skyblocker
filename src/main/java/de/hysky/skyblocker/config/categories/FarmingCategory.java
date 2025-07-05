@@ -3,11 +3,7 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.FarmingConfig;
-import de.hysky.skyblocker.skyblock.garden.FarmingHudWidget;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import dev.isxander.yacl3.api.*;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class FarmingCategory {
@@ -30,7 +26,7 @@ public class FarmingCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.farming.garden.farmingHud"))
 								.text(Text.translatable("text.skyblocker.open"))
-								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GARDEN, FarmingHudWidget.getInstance().getInternalID(), screen)))
+								.action((screen, opt) -> {})
 								.build())
 						.option(Option.<FarmingConfig.Type>createBuilder()
 								.name(Text.translatable("skyblocker.config.farming.garden.farmingHud.type"))

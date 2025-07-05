@@ -65,25 +65,29 @@ public class FloatOption implements WidgetOption<Float> {
 
 	@Override
 	public @NotNull ClickableWidget createNewWidget(WidgetConfig config) {
-		return new Slider();
+		return new Slider(config);
 	}
 
 	private class Slider extends SliderWidget {
 
-		public Slider() {
-			super(0, 0, 0, 0, name, 0);
+		private final WidgetConfig config;
+
+		private Slider(WidgetConfig config) {
+			super(0, 0, 0, 20, name, 0);
+			this.config = config;
 			value = toProgress(valueGetter.get());
 			updateMessage();
 		}
 
 		@Override
 		protected void updateMessage() {
-			setMessage(name.copy().append(": ").append(Formatters.SHORT_FLOAT_NUMBERS.format(min + value * (max - min))));
+			setMessage(name.copy().append(": ").append(Formatters.FLOAT_NUMBERS.format(min + value * (max - min))));
 		}
 
 		@Override
 		protected void applyValue() {
 			valueSetter.accept(fromProgress(value));
+			config.updatePositions();
 		}
 
 		private double toProgress(float val) {

@@ -4,14 +4,10 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.config.screens.powdertracker.PowderFilterConfigScreen;
-import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
 import de.hysky.skyblocker.skyblock.dwarven.CarpetHighlighter;
 import de.hysky.skyblocker.skyblock.dwarven.profittrackers.PowderMiningTracker;
-import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
@@ -46,7 +42,7 @@ public class MiningCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Text.translatable("skyblocker.config.mining.dwarvenHud.screen"))
 						.text(Text.translatable("text.skyblocker.open"))
-						.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, CommsWidget.ID, screen)))
+						.action((screen, opt) -> {})
 						.build())
 
                 //Dwarven Mines
@@ -155,7 +151,7 @@ public class MiningCategory {
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.crystalsHud.screen"))
                                 .text(Text.translatable("text.skyblocker.open"))
-                                .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.CRYSTAL_HOLLOWS, CrystalsHudWidget.getInstance().getInternalID(), screen)))
+                                .action((screen, opt) -> {})
                                 .build())
                         .option(Option.<Float>createBuilder()
                                 .name(Text.translatable("skyblocker.config.mining.crystalsHud.mapScaling"))
