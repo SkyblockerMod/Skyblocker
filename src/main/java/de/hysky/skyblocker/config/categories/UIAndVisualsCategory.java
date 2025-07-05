@@ -21,6 +21,7 @@ import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder;
+import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -550,6 +551,48 @@ public class UIAndVisualsCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
+
+				// Bazaar Quick Quantities
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.bazaarQuickQuantities"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled.@Tooltip")))
+								.binding(defaults.uiAndVisuals.bazaarQuickQuantities.enabled,
+										() -> config.uiAndVisuals.bazaarQuickQuantities.enabled,
+										newValue -> config.uiAndVisuals.bazaarQuickQuantities.enabled = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse"))
+								.binding(defaults.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse,
+										() -> config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse,
+										newValue -> config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.bazaarQuickQuantities.slotQuantity", 1))
+								.binding(defaults.uiAndVisuals.bazaarQuickQuantities.slot1Quantity,
+										() -> config.uiAndVisuals.bazaarQuickQuantities.slot1Quantity,
+										newValue -> config.uiAndVisuals.bazaarQuickQuantities.slot1Quantity = newValue)
+								.controller(opt -> IntegerFieldControllerBuilder.create(opt).range(0, 71680))
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.bazaarQuickQuantities.slotQuantity", 2))
+								.binding(defaults.uiAndVisuals.bazaarQuickQuantities.slot2Quantity,
+										() -> config.uiAndVisuals.bazaarQuickQuantities.slot2Quantity,
+										newValue -> config.uiAndVisuals.bazaarQuickQuantities.slot2Quantity = newValue)
+								.controller(opt -> IntegerFieldControllerBuilder.create(opt).range(0, 71680))
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.bazaarQuickQuantities.slotQuantity", 3))
+								.binding(defaults.uiAndVisuals.bazaarQuickQuantities.slot3Quantity,
+										() -> config.uiAndVisuals.bazaarQuickQuantities.slot3Quantity,
+										newValue -> config.uiAndVisuals.bazaarQuickQuantities.slot3Quantity = newValue)
+								.controller(opt -> IntegerFieldControllerBuilder.create(opt).range(0, 71680))
+								.build())
+						.build())
 
                 //Input Calculator
                 .group(OptionGroup.createBuilder()
