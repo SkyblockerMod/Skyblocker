@@ -96,6 +96,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@Shadow
 	protected abstract List<Text> getTooltipFromItem(ItemStack stack);
 
+	@Shadow
+	@Nullable
+	protected abstract Slot getSlotAt(double x, double y);
+
 	@Unique
 	private List<QuickNavButton> quickNavButtons;
 
@@ -329,6 +333,14 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
 		if (VisitorHelper.shouldRender()) {
 			VisitorHelper.handleMouseClick(mouseX, mouseY, button, this.textRenderer);
+		}
+		if (SkyblockerConfigManager.get().hunting.shardFusion.enableQuickShardFusion) {
+			Slot slot = this.getSlotAt(mouseX, mouseY);
+			if (slot == null) return;
+			String title = getTitle().getString();
+			if (title.equals("Confirm Fusion") && slot.id == 47) {
+				client.interactionManager.clickSlot(this.handler.syncId, 33, 0, SlotActionType.PICKUP, client.player);
+			}
 		}
 	}
 

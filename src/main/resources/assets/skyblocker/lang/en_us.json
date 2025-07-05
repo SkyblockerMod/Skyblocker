@@ -531,6 +531,8 @@
   "skyblocker.config.hunting": "Hunting",
   "skyblocker.config.hunting.huntingBoxHelper": "Enable Hunting Box Helper",
   "skyblocker.config.hunting.huntingBoxHelper.@Tooltip": "Highlights shards that you have enough of to syphon and reach the next tier of the attribute in the Hunting Box. Also displays the sell price of shards in the tooltip.",
+  "skyblocker.config.hunting.shardFusion.shardFusionHelper": "Quick Shard Fusion",
+  "skyblocker.config.hunting.shardFusion.shardFusionHelper.@Tooltip": "Redirects clicks on quick fusion slot to confirm, so when mass fusing shards the mouse doesn't move.",
 
   "skyblocker.config.hunting.huntingMobs": "Hunting Mobs",
   "skyblocker.config.hunting.huntingMobs.silencePhantoms": "Silence Phantoms",

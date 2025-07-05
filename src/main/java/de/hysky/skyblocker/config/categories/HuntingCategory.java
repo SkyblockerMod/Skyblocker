@@ -21,6 +21,14 @@ public class HuntingCategory {
 						.controller(ConfigUtils::createBooleanController)
 						.description(OptionDescription.of(Text.translatable("skyblocker.config.hunting.huntingBoxHelper.@Tooltip")))
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.hunting.shardFusion.shardFusionHelper"))
+						.binding(defaults.hunting.shardFusion.enableQuickShardFusion,
+								() -> config.hunting.shardFusion.enableQuickShardFusion,
+								value -> config.hunting.shardFusion.enableQuickShardFusion = value)
+						.controller(ConfigUtils::createBooleanController)
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.hunting.shardFusion.shardFusionHelper.@Tooltip")))
+						.build())
 
 				//Hunting Mob Features
 				.group(OptionGroup.createBuilder()
