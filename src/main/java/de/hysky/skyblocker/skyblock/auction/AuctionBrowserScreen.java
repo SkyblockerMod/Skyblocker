@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.auction;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.auction.widgets.AuctionTypeWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.CategoryTabWidget;
@@ -73,7 +74,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     private String search = "";
 
     public AuctionBrowserScreen(AuctionHouseScreenHandler handler, PlayerInventory inventory) {
-        super(handler, inventory, Text.literal("Auctions Browser"));
+        super(handler, inventory, ResourcePackCompatibility.options.renameAuctionBrowser().orElse(false) ? Text.literal("AuctionBrowserSkyblocker") : Text.literal("Auctions Browser"));
         this.backgroundHeight = 187;
         this.playerInventoryTitleY = 92;
         this.titleX = 999;

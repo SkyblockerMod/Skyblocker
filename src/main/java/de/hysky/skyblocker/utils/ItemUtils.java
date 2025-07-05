@@ -447,6 +447,10 @@ public final class ItemUtils {
 		return createSkull("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=");
 	}
 
+	public static @NotNull ItemStack getSkyblockerForgeStack() {
+		return createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzJkZGQ4OWE2YWU5NTdmNzY2ZDMwMDAxMWZmNDQ3MTQ4MWMzYmI2MWI2NzYwNzhhOGM2YzNjNDA4MzIwMWI1YzIifX19");
+	}
+
     /**
      * Utility method.
      */

@@ -1497,5 +1497,6 @@
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
-  "emi.category.skyblocker.skyblock": "Skyblock"
+  "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
+  "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)"
 }

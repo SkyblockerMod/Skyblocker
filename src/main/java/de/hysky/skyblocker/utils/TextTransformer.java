@@ -10,19 +10,19 @@ import net.minecraft.util.Formatting;
 
 /**
  * Contains utilities for transforming text. These methods are from Aaron's Mod.
- * 
+ *
  * @author AzureAaron
  */
 public class TextTransformer {
-	private static final CharList FORMAT_CODES = CharList.of('4', 'c', '6', 'e', '2', 'a','b', '3', '1', '9', 'd', '5', 'f', '7', '8', '0', 'r', 'k', 'l', 'm', 'n', 'o');
+	private static final CharList FORMAT_CODES = CharList.of('4', 'c', '6', 'e', '2', 'a', 'b', '3', '1', '9', 'd', '5', 'f', '7', '8', '0', 'r', 'k', 'l', 'm', 'n', 'o');
 
 	/**
 	 * Converts strings with section symbol/legacy formatting to MutableText objects.
 	 *
+	 * @author AzureAaron
+	 *
 	 * @param legacy The string with legacy formatting to be transformed
 	 * @return A {@link MutableText} object matching the exact formatting of the input
-	 * 
-	 * @author AzureAaron
 	 */
 	public static MutableText fromLegacy(@NotNull String legacy) {
 		MutableText newText = Text.empty();

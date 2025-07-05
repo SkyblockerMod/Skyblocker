@@ -114,7 +114,7 @@ public class Pet {
      * Converts NEU item data into an ItemStack.
      * <p> This method converts NEU item data into a Pet by using the placeholder
      * information from NEU-REPO and injecting the player's calculated pet stats into the lore and transforming
-     * the NBT Data into modern DataComponentTypes before returning the final ItemStack </p
+     * the NBT Data into modern DataComponentTypes before returning the final ItemStack.
      *
      * @param item The NEUItem representing the pet.
      * @param heldItem The ItemStack of the pet's held item, if any.
