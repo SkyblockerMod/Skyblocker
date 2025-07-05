@@ -303,10 +303,11 @@ public class SmoothAOTE {
 
 	/**
 	 * Checks if the player is targeting an entity and then checks if it has a CLICK tag suggesting it has an interaction that will block the teleport
-	 * @param player player
+	 *
+	 * @param player      player
 	 * @param maxDistance max distance this is needed
-	 * @param startPos player starting location
-	 * @param look players looking direction
+	 * @param startPos    player starting location
+	 * @param look        players looking direction
 	 * @return if an NPC is targeted
 	 */
 	private static Boolean isTargetingNPC(PlayerEntity player, double maxDistance, Vec3d startPos, Vec3d look) {
@@ -327,7 +328,7 @@ public class SmoothAOTE {
 
 		EntityHitResult entityHit = ProjectileUtil.raycast(player, startPos, endPos, searchBox, entity ->
 						!entity.isSpectator() && entity != player,
-						MathHelper.square(blockHitDistance) // Max distance (squared)
+				MathHelper.square(blockHitDistance) // Max distance (squared)
 		);
 		//if not looking at any entity return false
 		if (entityHit == null) return false;
