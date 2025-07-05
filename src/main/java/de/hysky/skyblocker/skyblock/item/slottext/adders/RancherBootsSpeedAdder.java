@@ -26,7 +26,7 @@ public class RancherBootsSpeedAdder extends SimpleSlotTextAdder {
 
 	@Override
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		if (!stack.isOf(Items.LEATHER_BOOTS) && !stack.getSkyblockId().equals("RANCHERS_BOOTS")) return List.of();
+		if (!stack.isOf(Items.LEATHER_BOOTS) && !stack.skyblocker$getSkyblockId().equals("RANCHERS_BOOTS")) return List.of();
 		Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, SPEED_PATTERN);
 		if (matcher == null) return List.of();
 		String speed = matcher.group(2);

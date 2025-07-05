@@ -14,7 +14,7 @@ import net.minecraft.client.gl.RenderPipelines;
 public class RenderPipelineMixin {
 
 	@ModifyReturnValue(method = "getDepthTestFunction", at = @At("RETURN"))
-	private DepthTestFunction skyblocker$modifyGlowDepthTest(DepthTestFunction original) {
+	private DepthTestFunction modifyGlowDepthTest(DepthTestFunction original) {
 		return ((Object) this == RenderPipelines.OUTLINE_CULL || (Object) this == RenderPipelines.OUTLINE_NO_CULL) && MobGlow.atLeastOneMobHasCustomGlow() ? DepthTestFunction.LEQUAL_DEPTH_TEST : original;
 	}
 }

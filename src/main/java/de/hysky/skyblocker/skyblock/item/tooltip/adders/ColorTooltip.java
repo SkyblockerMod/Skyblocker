@@ -29,7 +29,7 @@ public class ColorTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		final String internalID = stack.getSkyblockId();
+		final String internalID = stack.skyblocker$getSkyblockId();
 		if (TooltipInfoType.COLOR.hasOrNullWarning(internalID) && stack.contains(DataComponentTypes.DYED_COLOR)) {
 			//DyedColorComponent#getColor can be ARGB so we mask out the alpha bits
 			int dyeColor = stack.get(DataComponentTypes.DYED_COLOR).rgb() & 0x00FFFFFF;
@@ -93,7 +93,7 @@ public class ColorTooltip extends SimpleTooltipAdder {
 			case String it when Constants.CRYSTAL_HEXES.contains(it) -> DyeType.CRYSTAL;
 			case String it when Constants.FAIRY_HEXES.contains(it) -> DyeType.FAIRY;
 			case String it when Constants.OG_FAIRY_HEXES.contains(it) -> DyeType.OG_FAIRY;
-			case String it when Constants.SPOOK.contains(it) && stack.getSkyblockId().startsWith("FAIRY_") -> DyeType.SPOOK;
+			case String it when Constants.SPOOK.contains(it) && stack.skyblocker$getSkyblockId().startsWith("FAIRY_") -> DyeType.SPOOK;
 			case String it when Constants.GLITCHED.contains(it) && isGlitched(stack, hex) -> DyeType.GLITCHED;
 			default -> DyeType.EXOTIC;
 		};
@@ -105,7 +105,7 @@ public class ColorTooltip extends SimpleTooltipAdder {
 
 	//Thanks to TGWaffles' guidance on how to make this more accurate
 	private static boolean isGlitched(ItemStack stack, String hex) {
-		String id = stack.getSkyblockId();
+		String id = stack.skyblocker$getSkyblockId();
 
 		if (id.contains("WITHER")) {
 			return isWitherGlitched(id, hex, ObtainedDateTooltip.getLongTimestamp(stack));

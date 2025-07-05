@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class DyedColorComponentMixin {
 
 	@ModifyReturnValue(method = "getColor", at = @At("RETURN"))
-	private static int skyblocker$customDyeColor(int originalColor, @Local(argsOnly = true) ItemStack stack) {
+	private static int customDyeColor(int originalColor, @Local(argsOnly = true) ItemStack stack) {
 		if (Utils.isOnSkyblock()) {
 			String itemUuid = ItemUtils.getItemUuid(stack);
 

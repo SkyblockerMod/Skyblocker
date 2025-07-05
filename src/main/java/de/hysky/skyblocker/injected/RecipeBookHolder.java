@@ -8,5 +8,5 @@ public interface RecipeBookHolder {
 	 * @implNote {@code BEFORE_INIT} may be called before the callback list is emptied.
 	 * @param callback the callback
 	 */
-	void registerRecipeBookToggleCallback(Runnable callback);
+	void skyblocker$registerRecipeBookToggleCallback(Runnable callback);
 }

@@ -77,7 +77,7 @@ public class CustomizeArmorScreen extends Screen {
 						((HandledScreenAccessor) inventoryScreen).getY() + 10
 				);
 				Screens.getButtons(inventoryScreen).add(button);
-				((RecipeBookHolder) inventoryScreen).registerRecipeBookToggleCallback(() -> button.setPosition(
+				((RecipeBookHolder) inventoryScreen).skyblocker$registerRecipeBookToggleCallback(() -> button.setPosition(
 						((HandledScreenAccessor) inventoryScreen).getX() + 63,
 						((HandledScreenAccessor) inventoryScreen).getY() + 10
 				));

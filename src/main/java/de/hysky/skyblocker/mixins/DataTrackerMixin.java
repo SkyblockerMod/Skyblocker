@@ -31,7 +31,7 @@ public abstract class DataTrackerMixin {
 
     @SuppressWarnings("ConstantValue")
     @Inject(method = "writeUpdatedEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/data/DataTracker;copyToFrom(Lnet/minecraft/entity/data/DataTracker$Entry;Lnet/minecraft/entity/data/DataTracker$SerializedEntry;)V"))
-    private <T> void skyblocker$onWriteUpdatedEntries(CallbackInfo ci, @Local DataTracker.Entry<T> entry, @Local DataTracker.SerializedEntry<T> serializedEntry) {
+    private <T> void onWriteUpdatedEntries(CallbackInfo ci, @Local DataTracker.Entry<T> entry, @Local DataTracker.SerializedEntry<T> serializedEntry) {
         if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.enableYangGlyphsNotification && entry.getData() == EndermanEntityAccessor.getCARRIED_BLOCK() && entry.get() instanceof Optional<?> value && value.isPresent() && value.get() instanceof BlockState state && state.isOf(Blocks.BEACON) && ((Optional<?>) serializedEntry.value()).isEmpty()) {
             MinecraftClient client = MinecraftClient.getInstance();
             if (trackedEntity instanceof Entity entity && MobGlow.getArmorStands(entity).stream().anyMatch(armorStand -> armorStand.getName().getString().contains(client.getSession().getUsername()))) {
@@ -43,7 +43,7 @@ public abstract class DataTrackerMixin {
     }
 
     @Inject(method = "copyToFrom", at = @At(value = "NEW", target = "Ljava/lang/IllegalStateException;"), cancellable = true)
-    public void skyblocker$ignoreInvalidDataExceptions(CallbackInfo ci) {
+    public void ignoreInvalidDataExceptions(CallbackInfo ci) {
         //These exceptions cause annoying small lag spikes for some reason
         if (Utils.isOnHypixel()) ci.cancel();
     }

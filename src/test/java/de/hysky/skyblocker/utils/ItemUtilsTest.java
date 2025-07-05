@@ -85,33 +85,33 @@ public class ItemUtilsTest {
 
 	@Test
 	void testGetSkyblockApiId() {
-		Assertions.assertEquals("DARK_CLAYMORE", DARK_CLAYMORE.getSkyblockApiId());
-		Assertions.assertEquals("TITANIUM_DRILL_4", TITANIUM_DRILL_DR_X655.getSkyblockApiId());
-		Assertions.assertEquals("ASTRAEA", ASTRAEA.getSkyblockApiId());
-		Assertions.assertEquals("BALLOON_HAT_2024_RED", BALLOON_HAT_2024.getSkyblockApiId());
-		Assertions.assertEquals("FORAGING_XP_BOOST_POTION_3", POTION.getSkyblockApiId());
-		Assertions.assertEquals("ICE_RUNE_1", RUNE.getSkyblockApiId());
-		Assertions.assertEquals("ENCHANTMENT_FEATHER_FALLING_10", ENCHANTED_BOOK.getSkyblockApiId());
-		Assertions.assertEquals("ATTRIBUTE_SHARD", ATTRIBUTE_SHARD.getSkyblockApiId()); //Does not work due to the file needing to be loaded
-		Assertions.assertEquals("SHINY_WITHER_CHESTPLATE", WITHER_CHESTPLATE.getSkyblockApiId());
-		Assertions.assertEquals("LVL_1_LEGENDARY_WITHER_SKELETON", WITHER_SKELETON_PET.getSkyblockApiId());
+		Assertions.assertEquals("DARK_CLAYMORE", DARK_CLAYMORE.skyblocker$getSkyblockApiId());
+		Assertions.assertEquals("TITANIUM_DRILL_4", TITANIUM_DRILL_DR_X655.skyblocker$getSkyblockApiId());
+		Assertions.assertEquals("ASTRAEA", ASTRAEA.skyblocker$getSkyblockApiId());
+		Assertions.assertEquals("BALLOON_HAT_2024_RED", BALLOON_HAT_2024.skyblocker$getSkyblockApiId());
+		Assertions.assertEquals("FORAGING_XP_BOOST_POTION_3", POTION.skyblocker$getSkyblockApiId());
+		Assertions.assertEquals("ICE_RUNE_1", RUNE.skyblocker$getSkyblockApiId());
+		Assertions.assertEquals("ENCHANTMENT_FEATHER_FALLING_10", ENCHANTED_BOOK.skyblocker$getSkyblockApiId());
+		Assertions.assertEquals("ATTRIBUTE_SHARD", ATTRIBUTE_SHARD.skyblocker$getSkyblockApiId()); //Does not work due to the file needing to be loaded
+		Assertions.assertEquals("SHINY_WITHER_CHESTPLATE", WITHER_CHESTPLATE.skyblocker$getSkyblockApiId());
+		Assertions.assertEquals("LVL_1_LEGENDARY_WITHER_SKELETON", WITHER_SKELETON_PET.skyblocker$getSkyblockApiId());
 	}
 
 	@Test
 	void testGetNeuId() {
-		Assertions.assertEquals("DARK_CLAYMORE", DARK_CLAYMORE.getNeuName());
-		Assertions.assertEquals("TITANIUM_DRILL_4", TITANIUM_DRILL_DR_X655.getNeuName());
-		Assertions.assertEquals("ASTRAEA", ASTRAEA.getNeuName());
-		Assertions.assertEquals("BALLOON_HAT_2024_RED", BALLOON_HAT_2024.getNeuName());
-		Assertions.assertEquals("POTION_FORAGING_XP_BOOST;3", POTION.getNeuName());
-		Assertions.assertEquals("ICE_RUNE;1", RUNE.getNeuName());
-		Assertions.assertEquals("FEATHER_FALLING;10", ENCHANTED_BOOK.getNeuName());
-		Assertions.assertEquals("ATTRIBUTE_SHARD", ATTRIBUTE_SHARD.getNeuName());
-		Assertions.assertEquals("WITHER_CHESTPLATE", WITHER_CHESTPLATE.getNeuName());
-		Assertions.assertEquals("CRIMSON_CHESTPLATE", CRIMSON_CHESTPLATE.getNeuName());
-		Assertions.assertEquals("AURORA_CHESTPLATE", AURORA_CHESTPLATE.getNeuName());
-		Assertions.assertEquals("TERROR_CHESTPLATE", TERROR_CHESTPLATE.getNeuName());
-		Assertions.assertEquals("WITHER_SKELETON;4", WITHER_SKELETON_PET.getNeuName());
+		Assertions.assertEquals("DARK_CLAYMORE", DARK_CLAYMORE.skyblocker$getNeuName());
+		Assertions.assertEquals("TITANIUM_DRILL_4", TITANIUM_DRILL_DR_X655.skyblocker$getNeuName());
+		Assertions.assertEquals("ASTRAEA", ASTRAEA.skyblocker$getNeuName());
+		Assertions.assertEquals("BALLOON_HAT_2024_RED", BALLOON_HAT_2024.skyblocker$getNeuName());
+		Assertions.assertEquals("POTION_FORAGING_XP_BOOST;3", POTION.skyblocker$getNeuName());
+		Assertions.assertEquals("ICE_RUNE;1", RUNE.skyblocker$getNeuName());
+		Assertions.assertEquals("FEATHER_FALLING;10", ENCHANTED_BOOK.skyblocker$getNeuName());
+		Assertions.assertEquals("ATTRIBUTE_SHARD", ATTRIBUTE_SHARD.skyblocker$getNeuName());
+		Assertions.assertEquals("WITHER_CHESTPLATE", WITHER_CHESTPLATE.skyblocker$getNeuName());
+		Assertions.assertEquals("CRIMSON_CHESTPLATE", CRIMSON_CHESTPLATE.skyblocker$getNeuName());
+		Assertions.assertEquals("AURORA_CHESTPLATE", AURORA_CHESTPLATE.skyblocker$getNeuName());
+		Assertions.assertEquals("TERROR_CHESTPLATE", TERROR_CHESTPLATE.skyblocker$getNeuName());
+		Assertions.assertEquals("WITHER_SKELETON;4", WITHER_SKELETON_PET.skyblocker$getNeuName());
 	}
 
 	@Test

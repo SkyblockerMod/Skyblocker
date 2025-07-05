@@ -113,7 +113,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 						((HandledScreenAccessor) inventoryScreen).getY());
 				Screens.getButtons(inventoryScreen).add(widget);
 
-				((RecipeBookHolder) inventoryScreen).registerRecipeBookToggleCallback(() -> widget.setPosition(
+				((RecipeBookHolder) inventoryScreen).skyblocker$registerRecipeBookToggleCallback(() -> widget.setPosition(
 						((HandledScreenAccessor) inventoryScreen).getX() + ((HandledScreenAccessor) inventoryScreen).getBackgroundWidth() + 4,
 						((HandledScreenAccessor) inventoryScreen).getY()
 				));
