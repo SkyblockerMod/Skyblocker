@@ -9,6 +9,9 @@ public class HuntingConfig {
 	@SerialEntry
 	public HuntingMobs huntingMobs = new HuntingMobs();
 
+	@SerialEntry
+	public ShardFusion shardFusion = new ShardFusion();
+
 	public static class HuntingBox {
 		@SerialEntry
 		public boolean enabled = true;
@@ -20,5 +23,10 @@ public class HuntingConfig {
 
 		@SerialEntry
 		public boolean highlightHideonleaf = true;
+	}
+
+	public static class ShardFusion {
+		@SerialEntry
+		public boolean enableQuickShardFusion = true;
 	}
 }
