@@ -340,6 +340,9 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public boolean enableTeleportOverlays = true;
 
+		@SerialEntry
+		public boolean showWhenInAir = false;
+
         @SerialEntry
         public Color teleportOverlayColor = new Color(0x7F761594, true);
 
@@ -360,6 +363,8 @@ public class UIAndVisualsConfig {
     }
 
     public static class SmoothAOTE {
+		@SerialEntry
+		public boolean predictive = false;
 
         @SerialEntry
         public boolean enableWeirdTransmission = false;
