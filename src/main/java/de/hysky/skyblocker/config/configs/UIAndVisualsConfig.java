@@ -484,5 +484,8 @@ public class UIAndVisualsConfig {
 
 		@SerialEntry
 		public int lifeTime = 3;
+
+		@SerialEntry
+		public boolean splitNotifications = false;
 	}
 }
