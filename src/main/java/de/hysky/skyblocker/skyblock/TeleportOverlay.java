@@ -87,7 +87,7 @@ public class TeleportOverlay {
 		float yaw = client.player.getYaw();
 		Vec3d look = client.player.getRotationVector(pitch, yaw);
 		Vec3d startPos = client.player.getPos().add(0, 1.62, 0);
-		Vec3d raycast = SmoothAOTE.raycast(range,look,startPos);
+		Vec3d raycast = SmoothAOTE.raycast(range, look, startPos);
 
 		if (raycast != null) {
 			BlockPos target = BlockPos.ofFloored(startPos.add(raycast)).down();
