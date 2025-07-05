@@ -65,6 +65,7 @@ public class ResourcePackCompatibility {
 		protected void apply(List<Pair<String, ResourcePackOptions>> prepared, ResourceManager manager, Profiler profiler) {
 			if (prepared.stream().anyMatch(p -> "FURFSKY_GUI".equals(p.first()))) {
 				options = new ResourcePackOptions(Optional.of(true), Optional.of(true), Optional.of(true));
+				options = new ResourcePackOptions(Optional.of(true), Optional.of(true), Optional.of(false));
 				LOGGER.info("FURFSKY_GUI detected. Enabling compatibility names.");
 				return;
 			}
