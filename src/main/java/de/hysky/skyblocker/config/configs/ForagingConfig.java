@@ -26,6 +26,9 @@ public class ForagingConfig {
 		public boolean enableSeaLumiesHighlighter = true;
 
 		@SerialEntry
+		public boolean enableTreeBreakProgress = true;
+
+		@SerialEntry
 		public int seaLumiesMinimumCount = 3;
 	}
 
