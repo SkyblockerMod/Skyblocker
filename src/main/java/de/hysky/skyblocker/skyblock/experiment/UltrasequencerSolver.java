@@ -107,7 +107,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	 */
 	@SuppressWarnings("JavadocReference")
 	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		if (getState() == State.SHOW && slot == ultrasequencerNextSlot) {
 			int count = getSlots().get(ultrasequencerNextSlot).getCount() + 1;
 			getSlots().int2ObjectEntrySet().stream()
@@ -116,7 +116,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 					.map(Int2ObjectMap.Entry::getIntKey)
 					.ifPresent(nextSlot -> this.ultrasequencerNextSlot = nextSlot);
 		}
-		return super.onClickSlot(slot, stack, screenId);
+		return super.onClickSlot(slot, stack, screenId, button);
 	}
 
 	/**

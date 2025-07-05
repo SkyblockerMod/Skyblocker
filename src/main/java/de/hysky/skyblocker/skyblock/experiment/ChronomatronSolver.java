@@ -125,14 +125,14 @@ public final class ChronomatronSolver extends ExperimentSolver {
 	 * Increments {@link #chronomatronCurrentOrdinal} if the item clicked matches the item at {@link #chronomatronCurrentOrdinal the current index} in the chain.
 	 */
 	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		if (getState() == State.SHOW) {
 			Item item = chronomatronSlots.get(chronomatronCurrentOrdinal);
 			if ((stack.isOf(item) || ChronomatronSolver.TERRACOTTA_TO_GLASS.get(stack.getItem()) == item) && ++chronomatronCurrentOrdinal >= chronomatronSlots.size()) {
 				setState(ExperimentSolver.State.END);
 			}
 		}
-		return super.onClickSlot(slot, stack, screenId);
+		return super.onClickSlot(slot, stack, screenId, button);
 	}
 
 	@Override

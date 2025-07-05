@@ -10,6 +10,7 @@ import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
+import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
@@ -319,7 +320,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 
 		if (currentSolver != null) {
-			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack);
+			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack, button);
 
 			if (disallowed) ci.cancel();
 		}

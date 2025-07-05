@@ -27,6 +27,9 @@ public class ForagingConfig {
 
 		@SerialEntry
 		public int seaLumiesMinimumCount = 3;
+
+		@SerialEntry
+		public boolean enableTunerSolver = true;
 	}
 
 	public static class SweepOverlay {
