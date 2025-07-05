@@ -294,8 +294,8 @@ public class DungeonSplitsWidget extends TableWidget {
 			Map<String, Map<String, Long>> data = BEST_SPLITS.computeIfAbsent(HashMap::new);
 			Map<String, Long> floorData = data.get(floor);
 			for (Split s : group) {
-				long best = floorData != null ? floorData.getOrDefault(s.name, 0L) : 0L;
-				splits.add(new Split(s.name, s.trigger, best));
+				long best = floorData != null ? floorData.getOrDefault(s.key, 0L) : 0L;
+				splits.add(new Split(s.key, s.trigger, best));
 			}
 		}
 	}
@@ -345,7 +345,7 @@ public class DungeonSplitsWidget extends TableWidget {
 
 		for (int idx = 0; idx < splits.size(); idx++) {
 			Split split = splits.get(idx);
-			Component name = new PlainTextComponent(Text.literal(split.name)
+			Component name = new PlainTextComponent(Text.translatable(split.key)
 					.withColor(SPLIT_COLORS[idx % SPLIT_COLORS.length]));
 
 			String bestStr = formatTime(split.bestTime);
@@ -389,9 +389,9 @@ public class DungeonSplitsWidget extends TableWidget {
 				boolean updated = false;
 				for (Split split : splits) {
 					if (split.completed) {
-						long currentBest = floorData.getOrDefault(split.name, 0L);
+						long currentBest = floorData.getOrDefault(split.key, 0L);
 						if (currentBest == 0L || split.completedTime < currentBest) {
-							floorData.put(split.name, split.completedTime);
+							floorData.put(split.key, split.completedTime);
 							updated = true;
 						}
 					}
@@ -409,9 +409,9 @@ public class DungeonSplitsWidget extends TableWidget {
 	private void updateBest(Split split, long completionTime) {
 		Map<String, Map<String, Long>> data = new HashMap<>(BEST_SPLITS.computeIfAbsent(HashMap::new));
 		Map<String, Long> floorData = new HashMap<>(data.getOrDefault(floor, new HashMap<>()));
-		long currentBest = floorData.getOrDefault(split.name, 0L);
+		long currentBest = floorData.getOrDefault(split.key, 0L);
 		if (currentBest == 0L || completionTime < currentBest) {
-			floorData.put(split.name, completionTime);
+			floorData.put(split.key, completionTime);
 			data.put(floor, floorData);
 			BEST_SPLITS.put(data);
 			BEST_SPLITS.save();
@@ -427,21 +427,18 @@ public class DungeonSplitsWidget extends TableWidget {
 	}
 
 	private static class Split {
-		final String name;
+		final String key;
 		final Pattern trigger;
-		/**
-		 * Best total time when this split was reached.
-		 */
 		long bestTime;
 		long completedTime;
 		boolean completed;
 
-		Split(String name, Pattern trigger) {
-			this(name, trigger, 0);
+		Split(String key, Pattern trigger) {
+			this(key, trigger, 0);
 		}
 
-		Split(String name, Pattern trigger, long bestTime) {
-			this.name = name;
+		Split(String key, Pattern trigger, long bestTime) {
+			this.key = key;
 			this.trigger = trigger;
 			this.bestTime = bestTime;
 		}
