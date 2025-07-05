@@ -32,14 +32,7 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 	private static ArmorStandEntity closest;
 
 	static {
-			System.out.println("Registering ENTITY_UNLOAD listener");
-            ClientEntityEvents.ENTITY_UNLOAD.register((entity, clientWorld) -> {
-				System.out.println("ENTITY_UNLOAD triggered for: " + entity);
-                armorstands.remove(entity.getId());
-				if (entity.getCustomName() != null)
-				System.out.println("removed" + entity.getCustomName().getString());
-            System.out.println("TreeBreakProgressHud events registered after client start");
-        });
+            ClientEntityEvents.ENTITY_UNLOAD.register((entity, clientWorld) -> armorstands.remove(entity.getId()));
     }
 	public TreeBreakProgressHud() {
 		super(Text.literal("Tree Break Progress").formatted(Formatting.GREEN, Formatting.BOLD), Formatting.GREEN.getColorValue(), "hud_treeprogress");
