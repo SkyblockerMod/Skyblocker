@@ -57,6 +57,7 @@ public class Room implements Tickable, Renderable {
     private final Type type;
     @NotNull
     final Set<Vector2ic> segments;
+    private boolean isCleared = false;
 
     /**
      * The shape of the room. See {@link #getShape(IntSortedSet, IntSortedSet)}.
@@ -520,7 +521,7 @@ public class Room implements Tickable, Renderable {
         }
 
         synchronized (this) {
-            if (SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
+            if (SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints && isMatched() && !isCleared) {
                 for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
                     if (secretWaypoint.shouldRender()) {
                         secretWaypoint.render(context);
@@ -535,8 +536,9 @@ public class Room implements Tickable, Renderable {
      */
     protected void onChatMessage(String message) {
         if (isAllSecretsFound(message)) {
-            markAllSecrets(true);
+            isCleared = true;
         } else if (LOCKED_CHEST.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
+            isCleared = false;
             secretWaypoints.column(lastChestSecret).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
                     .ifPresent(secretWaypoint -> markSecretsAndLogInfo(secretWaypoint, false, "[Skyblocker Dungeon Secrets] Detected locked chest interaction, setting secret #{} as missing", secretWaypoint.secretIndex));
         }
