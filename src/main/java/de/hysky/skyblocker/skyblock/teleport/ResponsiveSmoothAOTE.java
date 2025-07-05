@@ -9,7 +9,7 @@ import net.minecraft.util.math.Vec3d;
 
 import static de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE.getItemDistance;
 
-public class ResponsiveSmoothAote {
+public class ResponsiveSmoothAOTE {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	private static long startTime;
@@ -47,7 +47,7 @@ public class ResponsiveSmoothAote {
 
 
 		//return interpolated pos
-		if (lastPosition == null) return null; // some who still a problem here 
+		if (lastPosition == null) return null; // some who still a problem here
 		lastPosition = lastPosition.add(teleportVector.multiply(relativeProgress));
 		lastProgress = progress;
 		return lastPosition;
