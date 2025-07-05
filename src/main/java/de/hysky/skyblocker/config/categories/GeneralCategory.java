@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerScreen;
 import de.hysky.skyblocker.UpdateNotifications;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.backup.ConfigBackupScreen;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
@@ -58,7 +59,16 @@ public class GeneralCategory {
                                 newValue -> config.general.acceptReparty = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
-
+				//Config Backups
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.general.backup"))
+						.collapsed(true)
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.general.backup.manage"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new ConfigBackupScreen(screen)))
+								.build())
+						.build())
 				// Speed Presets
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.general.speedPresets"))
@@ -396,7 +406,6 @@ public class GeneralCategory {
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
                         .build())
-
 				//Hitboxes
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.general.hitbox"))
