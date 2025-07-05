@@ -18,6 +18,7 @@ public class ConfigNullFieldsFix {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final String CONFIGS_PACKAGE = "de.hysky.skyblocker.config.configs";
 
+	@SuppressWarnings("removal")
 	public static void init() {
 		SkyblockerConfig current = SkyblockerConfigManager.get();
 		SkyblockerConfig clean = new SkyblockerConfig();
