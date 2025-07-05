@@ -170,6 +170,9 @@ public class DungeonsConfig {
 
         @SerialEntry
         public boolean blockIncorrectClicks = false;
+
+        @SerialEntry
+        public boolean solverAccessibility = false;
     }
 
     public static class Devices {
