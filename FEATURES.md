@@ -52,6 +52,7 @@
   - Highlight Hideonleaves
 - **Hunting Box Shard Prices**
 - **Sweep Overlay**
+  - Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations. The sweep formula is currently unknown.
 
 ### Kuudra Features:
 - **Kuudra waypoints:**
