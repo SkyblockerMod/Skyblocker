@@ -71,6 +71,9 @@ public class GeneralConfig {
     @SerialEntry
     public Object2ObjectOpenHashMap<String, CustomArmorAnimatedDyes.AnimatedDye> customAnimatedDyes = new Object2ObjectOpenHashMap<>();
 
+    @SerialEntry
+    public Object2ObjectOpenHashMap<String, String> customHelmetTextures = new Object2ObjectOpenHashMap<>();
+
 	public static class SpeedPresets {
 
 		@SerialEntry
