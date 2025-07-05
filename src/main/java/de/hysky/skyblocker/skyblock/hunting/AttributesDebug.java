@@ -1,5 +1,23 @@
 package de.hysky.skyblocker.skyblock.hunting;
 
+import com.mojang.logging.LogUtils;
+import com.mojang.serialization.JsonOps;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RomanNumerals;
+import de.hysky.skyblocker.utils.container.ContainerSolverManager;
+import de.hysky.skyblocker.utils.container.ContainerUtil;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.item.ItemStack;
+import net.minecraft.screen.GenericContainerScreenHandler;
+import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -8,33 +26,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.lwjgl.glfw.GLFW;
-import org.slf4j.Logger;
-
-import com.mojang.logging.LogUtils;
-import com.mojang.serialization.JsonOps;
-
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.RomanNumerals;
-import de.hysky.skyblocker.utils.container.ContainerSolver;
-import de.hysky.skyblocker.utils.container.ContainerSolverManager;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.GenericContainerScreenHandler;
+import static de.hysky.skyblocker.skyblock.hunting.AttributeLevelTooltip.SOURCE_PATTERN;
 
 public class AttributesDebug {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final List<Attribute> DUMPED_ATTRIBUTES = new ArrayList<>();
-	private static final Pattern SOURCE_PATTERN = Pattern.compile("Source: (?<shardName>[A-za-z ]+) Shard \\((?<id>[CUREL]\\d+)\\)");
 	private static final Path ATTRIBUTE_EXPORT_DEST = SkyblockerMod.CONFIG_DIR.resolve("attribute_export.json");
 
 	//@Init
@@ -54,7 +52,7 @@ public class AttributesDebug {
 		if (CLIENT.currentScreen instanceof HandledScreen<?> screen && screen.getTitle().getString().equals("Attribute Menu")) {
 			@SuppressWarnings("unchecked")
 			Int2ObjectMap<ItemStack> slots = ContainerSolverManager.slotMap(screen.getScreenHandler().slots.subList(0, ((HandledScreen<GenericContainerScreenHandler>) screen).getScreenHandler().getRows() * 9));
-			ContainerSolver.trimEdges(slots, 6);
+			ContainerUtil.trimEdges(slots, 6);
 
 			for (ItemStack stack : slots.values()) {
 				if (stack.isEmpty()) continue;

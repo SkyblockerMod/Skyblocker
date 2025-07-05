@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.container.ContainerSolver;
+import de.hysky.skyblocker.utils.container.ContainerUtil;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -29,7 +29,7 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
-		ContainerSolver.trimEdges(slots, 6);
+		ContainerUtil.trimEdges(slots, 6);
 		setupState(slots);
 
 		String prefix = groups[0];
