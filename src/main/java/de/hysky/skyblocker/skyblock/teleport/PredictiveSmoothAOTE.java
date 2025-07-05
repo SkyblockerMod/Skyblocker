@@ -49,7 +49,7 @@ public class PredictiveSmoothAOTE {
 	/**
 	 * Stores blocks that are known to not have a collision
 	 */
-	private static final HashSet<Block> NON_COLLISION_BLOCKS = new HashSet<Block>(Arrays.asList(Blocks.BROWN_MUSHROOM,Blocks.RED_MUSHROOM,Blocks.NETHER_WART,Blocks.REDSTONE_WIRE,Blocks.LADDER,Blocks.FIRE,Blocks.WATER,Blocks.LAVA,Blocks.SEAGRASS,Blocks.TALL_SEAGRASS,Blocks.SEA_PICKLE,Blocks.KELP,Blocks.VINE));
+	private static final HashSet<Block> NON_COLLISION_BLOCKS = new HashSet<Block>(Arrays.asList(Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM, Blocks.NETHER_WART, Blocks.REDSTONE_WIRE, Blocks.LADDER, Blocks.FIRE, Blocks.WATER, Blocks.LAVA, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.SEA_PICKLE, Blocks.KELP, Blocks.VINE));
 
 	private static long startTime;
 	private static Vec3d startPos;
@@ -190,7 +190,7 @@ public class PredictiveSmoothAOTE {
 		String itemId = heldItem.getSkyblockId();
 		NbtCompound customData = ItemUtils.getCustomData(heldItem);
 		int distance = getItemDistance(itemId, customData);
-		if(distance == -1) {
+		if (distance == -1) {
 			return;
 		}
 
@@ -254,11 +254,12 @@ public class PredictiveSmoothAOTE {
 
 	/**
 	 * work out if the player is holding a teleporting item that is enabled and if so how far the item will take them
-	 * @param itemId id of item to check
+	 *
+	 * @param itemId     id of item to check
 	 * @param customData custom data of item to check
 	 * @return distance the item teleports or -1 if not valid
 	 */
-	protected static int getItemDistance(String itemId, NbtCompound customData){
+	protected static int getItemDistance(String itemId, NbtCompound customData) {
 
 
 		int distance;
