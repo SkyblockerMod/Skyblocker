@@ -1,5 +1,9 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -29,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -105,6 +110,20 @@ public class SearchOverManager {
         HashSet<String> starableItems = new HashSet<>();
         HashMap<String, String> namesToNeuId = new HashMap<>();
 
+		// get bazaar stock skyblock id to neu id map - remove when added to neu repo lib
+		HashMap<String, String> bazaarStockIdToNeuId = new HashMap<>();
+		try (InputStream stream = NEURepoManager.NEU_REPO.file("constants/bazaarstocks.json").stream()) {
+			JsonArray list = JsonParser.parseString(new String(stream.readAllBytes())).getAsJsonArray();
+			for (JsonElement element : list) {
+				JsonObject object = element.getAsJsonObject();
+				String skyblockId = object.get("stock").getAsString();
+				String neuId = object.get("id").getAsString();
+				bazaarStockIdToNeuId.put(skyblockId, neuId);
+			}
+		} catch (Exception ex) {
+			LOGGER.error("[Skyblocker Search Overlay] Failed to create Bazaar Skyblock ID to NEU ID conversion map", ex);
+		}
+
         //get bazaar items
         try {
             if (TooltipInfoType.BAZAAR.getData() == null) TooltipInfoType.BAZAAR.run();
@@ -117,8 +136,10 @@ public class SearchOverManager {
                 int sellVolume = product.sellVolume();
                 if (sellVolume == 0)
                     continue; //do not add items that do not sell e.g. they are not actual in the bazaar
+
+				// Format Enchantments
                 Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(name);
-                if (matcher.matches()) {//format enchantments
+                if (matcher.matches() && bazaarStockIdToNeuId.containsKey(id)) {
                     name = matcher.group(1);
                     if (!name.contains("Ultimate Wise") && !name.contains("Ultimate Jerry")) {
                         name = name.replace("Ultimate ", "");
@@ -132,16 +153,21 @@ public class SearchOverManager {
                     String level = matcher.group(2);
                     name += " " + RomanNumerals.decimalToRoman(Integer.parseInt(level));
                     bazaarItems.add(name);
-                    namesToNeuId.put(name, id.substring(0, id.lastIndexOf('_')).replace("ENCHANTMENT_", "") + ";" + level);
+                    namesToNeuId.put(name, bazaarStockIdToNeuId.get(id));
                     continue;
                 }
+
+                // Format Shards
+                if (id.startsWith("SHARD_") && bazaarStockIdToNeuId.containsKey(id)) {
+					id = bazaarStockIdToNeuId.get(id);
+                }
+
                 //look up id for name
                 NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
                 if (neuItem != null) {
                     name = Formatting.strip(neuItem.getDisplayName());
                     bazaarItems.add(name);
                     namesToNeuId.put(name, id);
-                    continue;
                 }
             }
         } catch (Exception e) {
