@@ -32,17 +32,17 @@ public class BestiaryLevelAdder extends SimpleSlotTextAdder {
 
 	@Override
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		if (slotId < 54) { // Prevent accidentally adding text to slots which also match the pattern in the inventory (like minions)
-			Matcher matcher = BESTIARY.matcher(stack.getName().getString());
-			if (matcher.matches()) {
-				int level = RomanNumerals.romanToDecimal(matcher.group("level"));
-				if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Overall Progress: 100%")) != null) {
-					return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.GOLD));
-				} else {
-					return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
-				}
+		if (slotId > 53) return List.of(); // Prevent accidentally adding text to slots which also match the pattern in the inventory (like minions)
+		Matcher matcher = BESTIARY.matcher(stack.getName().getString());
+		if (matcher.matches()) {
+			int level = RomanNumerals.romanToDecimal(matcher.group("level"));
+			if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Overall Progress: 100%")) != null) {
+				return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.GOLD));
+			} else {
+				return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
 			}
 		}
+
 		return List.of();
 	}
 }

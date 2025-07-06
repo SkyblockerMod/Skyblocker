@@ -27,17 +27,17 @@ public class CollectionAdder extends SimpleSlotTextAdder {
 
     @Override
     public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		if (slotId < 54) {
-			Matcher matcher = COLLECTION.matcher(stack.getName().getString());
-			if (matcher.matches()) {
-				int level = RomanNumerals.romanToDecimal(matcher.group("level"));
-				if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Progress to ")) != null) {
-					return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
-				} else {
-					return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.GOLD));
-				}
+		if (slotId > 53) return List.of();
+		Matcher matcher = COLLECTION.matcher(stack.getName().getString());
+		if (matcher.matches()) {
+			int level = RomanNumerals.romanToDecimal(matcher.group("level"));
+			if (ItemUtils.getLoreLineIf(stack, s -> s.contains("Progress to ")) != null) {
+				return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.CREAM));
+			} else {
+				return SlotText.bottomRightList(Text.literal(String.valueOf(level)).withColor(SlotText.GOLD));
 			}
 		}
-        return List.of();
+
+		return List.of();
     }
 }
