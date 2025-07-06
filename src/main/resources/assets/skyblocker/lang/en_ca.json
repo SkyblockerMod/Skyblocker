@@ -82,5 +82,17 @@
     "text.skyblocker.undo": "Undo",
     "text.skyblocker.config": "Open Config...",
     "text.skyblocker.open": "Open",
-    "text.skyblocker.reset": "Reset"
+    "text.skyblocker.reset": "Reset",
+    "skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip": "Adds a little paint brush icon in your inventory next to the player model to open the Armour Customization screen.",
+    "skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip": "The colour to display when the price data is incomplete.",
+    "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor.@Tooltip": "The colour to display when the price data is incomplete.",
+    "skyblocker.config.uiAndVisuals.showCustomizeButton": "Show Customize Armour Button",
+    "skyblocker.config.mining.commissionWaypoints.useColor": "Coloured Waypoints",
+    "skyblocker.config.mining.commissionWaypoints.useColor.@Tooltip": "Colour the waypoint text to match the block it's for.",
+    "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor": "Incomplete Colour",
+    "skyblocker.config.debug.showInvisibleArmorStands": "Show Invisible Armour Stands",
+    "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "Sweep Overlay Colour",
+    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing armour from the wardrobe by pressing hotbar keys 1-9 while the menu is open. The corresponding armour set in the wardrobe menu will be equipped.",
+    "skyblocker.config.uiAndVisuals.chestValue.color": "Chest Value Colour",
+    "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "Incomplete Colour"
 }
