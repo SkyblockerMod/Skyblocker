@@ -2,6 +2,7 @@ package de.hysky.skyblocker.compatibility.rei;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -62,7 +63,8 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
-		if (!SkyblockerConfigManager.get().general.itemList.enableCollapsibleEntries) return;
+		GeneralConfig.ItemList config = SkyblockerConfigManager.get().general.itemList;
+		if (!config.enableItemList || !config.enableCollapsibleEntries) return;
         if (!ItemRepository.filesImported() || NEURepoManager.isLoading()) return;
 
         NEURepoManager.NEU_REPO.getConstants().getParents().getParents().forEach((parentId, childrenList) -> {
