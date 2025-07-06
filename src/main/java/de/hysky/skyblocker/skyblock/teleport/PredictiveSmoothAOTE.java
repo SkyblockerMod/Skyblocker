@@ -34,9 +34,9 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,7 +49,7 @@ public class PredictiveSmoothAOTE {
 	/**
 	 * Stores blocks that are known to not have a collision
 	 */
-	private static final HashSet<Block> NON_COLLISION_BLOCKS = new HashSet<Block>(Arrays.asList(Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM, Blocks.NETHER_WART, Blocks.REDSTONE_WIRE, Blocks.LADDER, Blocks.FIRE, Blocks.WATER, Blocks.LAVA, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.SEA_PICKLE, Blocks.KELP, Blocks.VINE));
+	private static final HashSet<Block> NON_COLLISION_BLOCKS = new HashSet<>(Set.of(Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM, Blocks.NETHER_WART, Blocks.REDSTONE_WIRE, Blocks.LADDER, Blocks.FIRE, Blocks.WATER, Blocks.LAVA, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.SEA_PICKLE, Blocks.KELP, Blocks.VINE));
 
 	private static long startTime;
 	private static Vec3d startPos;
