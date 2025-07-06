@@ -17,7 +17,6 @@ import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.Items;
@@ -32,7 +31,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
     @Override
     public void registerCategories(CategoryRegistry categoryRegistry) {
-        if (!SkyblockerConfigManager.get().general.itemList.enableItemList || (FabricLoader.getInstance().isModLoaded("firmament") && SkyblockerConfigManager.get().general.itemList.prioritizeFirmamentREI)) return;
+        if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
         categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.IDENTIFIER), EntryStacks.of(Items.CRAFTING_TABLE));
         categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.IDENTIFIER), EntryStacks.of(Items.ANVIL));
         categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
@@ -41,13 +40,13 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
     @Override
     public void registerDisplays(DisplayRegistry displayRegistry) {
-        if (!SkyblockerConfigManager.get().general.itemList.enableItemList || (FabricLoader.getInstance().isModLoaded("firmament") && SkyblockerConfigManager.get().general.itemList.prioritizeFirmamentREI)) return;
+        if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
         displayRegistry.registerGlobalDisplayGenerator(new SkyblockRecipeDisplayGenerator());
     }
 
     @Override
     public void registerEntries(EntryRegistry entryRegistry) {
-        if (!SkyblockerConfigManager.get().general.itemList.enableItemList || (FabricLoader.getInstance().isModLoaded("firmament") && SkyblockerConfigManager.get().general.itemList.prioritizeFirmamentREI)) return;
+        if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
         entryRegistry.removeEntryIf(entryStack -> true);
         entryRegistry.addEntries(ItemRepository.getItemsStream().map(EntryStacks::of).toList());
     }
@@ -68,6 +67,6 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
 	public double getPriority() {
-		return 4096;
+		return -100;
 	}
 }

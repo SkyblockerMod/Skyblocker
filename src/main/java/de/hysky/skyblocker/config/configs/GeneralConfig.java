@@ -103,9 +103,6 @@ public class GeneralConfig {
     public static class ItemList {
         @SerialEntry
         public boolean enableItemList = true;
-
-		@SerialEntry
-		public boolean prioritizeFirmamentREI = true;
     }
 
     public static class ItemTooltip {

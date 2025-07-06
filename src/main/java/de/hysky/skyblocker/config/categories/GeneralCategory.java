@@ -150,14 +150,6 @@ public class GeneralCategory {
                                         newValue -> config.general.itemList.enableItemList = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.general.itemList.prioritizeFirmamentREI"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.general.itemList.prioritizeFirmamentREI.@Tooltip")))
-								.binding(defaults.general.itemList.prioritizeFirmamentREI,
-										() -> config.general.itemList.prioritizeFirmamentREI,
-										newValue -> config.general.itemList.prioritizeFirmamentREI = newValue)
-								.controller(ConfigUtils::createBooleanController)
-								.build())
                         .build())
 
                 //Item Tooltip
