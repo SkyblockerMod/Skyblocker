@@ -67,6 +67,6 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
 	public double getPriority() {
-		return 4096;
+		return -100;
 	}
 }
