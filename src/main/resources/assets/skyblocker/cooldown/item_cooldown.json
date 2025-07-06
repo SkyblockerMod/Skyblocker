@@ -49,17 +49,33 @@
     "trigger": "right_click"
   },
   "JUNGLE_AXE": {
-    "cooldown": 2000,
-    "cooldown_type": "foraging",
-    "trigger": "block_break",
-    "block_tag": "minecraft:logs",
+    "cooldown": 1000,
+    "trigger": "right_click",
     "cooldown_group": "jungle_axe"
   },
   "TREECAPITATOR_AXE": {
-    "cooldown": 2000,
-    "cooldown_type": "foraging",
-    "trigger": "block_break",
-    "block_tag": "minecraft:logs",
+    "cooldown": 1000,
+    "trigger": "right_click",
+    "cooldown_group": "jungle_axe"
+  },
+  "SERIOUSLY_DAMAGED_AXE": {
+    "cooldown": 1000,
+    "trigger": "right_click",
+    "cooldown_group": "jungle_axe"
+  },
+  "DECENT_AXE": {
+    "cooldown": 1000,
+    "trigger": "right_click",
+    "cooldown_group": "jungle_axe"
+  },
+  "FIG_AXE": {
+    "cooldown": 1000,
+    "trigger": "right_click",
+    "cooldown_group": "jungle_axe"
+  },
+  "FIGSTONE_AXE": {
+    "cooldown": 1000,
+    "trigger": "right_click",
     "cooldown_group": "jungle_axe"
   },
   "WITHER_CLOAK": {
@@ -244,7 +260,7 @@
     "trigger": "right_click"
   },
   "GYROKINETIC_WAND": {
-    "cooldown": 30000,
+    "cooldown": 10000,
     "trigger": "right_click"
   },
   "WEIRD_TUBA": {
