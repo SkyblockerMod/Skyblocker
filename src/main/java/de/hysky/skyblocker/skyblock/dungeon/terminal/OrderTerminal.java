@@ -30,13 +30,13 @@ public final class OrderTerminal extends SimpleContainerSolver implements Termin
 
     @Override
     public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
-        if(orderedSlots == null && !orderSlots(slots))
+        if (orderedSlots == null && !orderSlots(slots))
             return Collections.emptyList();
-        while(currentNum < PANES_NUM && slots.containsKey(orderedSlots[currentNum]) && Items.LIME_STAINED_GLASS_PANE.equals(slots.get(orderedSlots[currentNum]).getItem()))
+        while (currentNum < PANES_NUM && slots.containsKey(orderedSlots[currentNum]) && Items.LIME_STAINED_GLASS_PANE.equals(slots.get(orderedSlots[currentNum]).getItem()))
             currentNum++;
         List<ColorHighlight> highlights = new ArrayList<>(3);
         int last = Integer.min(3, PANES_NUM - currentNum);
-        for(int i = 0; i < last; i++) {
+        for (int i = 0; i < last; i++) {
             highlights.add(new ColorHighlight(orderedSlots[currentNum + i], (224 - 64 * i) << 24 | 64 << 16 | 96 << 8 | 255));
         }
         return highlights;
@@ -45,8 +45,8 @@ public final class OrderTerminal extends SimpleContainerSolver implements Termin
     public boolean orderSlots(Int2ObjectMap<ItemStack> slots) {
         ContainerSolver.trimEdges(slots, 4);
         orderedSlots = new int[PANES_NUM];
-        for(Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
-            if(Items.AIR.equals(slot.getValue().getItem())) {
+        for (Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
+            if (Items.AIR.equals(slot.getValue().getItem())) {
                 orderedSlots = null;
                 return false;
             }

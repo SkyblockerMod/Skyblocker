@@ -166,7 +166,7 @@ public class Relics {
     }
 
     private static class Relic extends ProfileAwareWaypoint {
-        public Relic(BlockPos pos, Supplier<Type> typeSupplier, float[] missingColor, float[] foundColor) {
+        private Relic(BlockPos pos, Supplier<Type> typeSupplier, float[] missingColor, float[] foundColor) {
             super(pos, typeSupplier, missingColor, foundColor);
         }
 

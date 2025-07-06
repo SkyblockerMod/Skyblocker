@@ -422,7 +422,7 @@ public class PlayerListManager {
 	}
 
 	private static final class DefaultTabHudWidget extends TabHudWidget {
-		public DefaultTabHudWidget(String hypixelWidgetName, MutableText title, int color) {
+		private DefaultTabHudWidget(String hypixelWidgetName, MutableText title, int color) {
 			super(hypixelWidgetName, title, color);
 		}
 

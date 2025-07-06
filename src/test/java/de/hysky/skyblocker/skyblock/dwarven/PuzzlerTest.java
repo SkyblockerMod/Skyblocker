@@ -4,7 +4,7 @@ import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
 
 class PuzzlerTest extends ChatPatternListenerTest<Puzzler> {
-    public PuzzlerTest() {
+    PuzzlerTest() {
         super(new Puzzler());
     }
 
