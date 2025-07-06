@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.compatibility.rei;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import me.shedaniel.math.Rectangle;
@@ -18,6 +20,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.Items;
+import net.minecraft.text.Text;
 
 import java.util.List;
 
@@ -25,21 +28,26 @@ import java.util.List;
  * REI integration
  */
 public class SkyblockerREIClientPlugin implements REIClientPlugin {
-    public static final CategoryIdentifier<SkyblockCraftingDisplay> SKYBLOCK = CategoryIdentifier.of(SkyblockerMod.NAMESPACE, "skyblock");
 
     @Override
     public void registerCategories(CategoryRegistry categoryRegistry) {
-        categoryRegistry.addWorkstations(SKYBLOCK, EntryStacks.of(Items.CRAFTING_TABLE));
-        categoryRegistry.add(new SkyblockCategory());
+        if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
+        categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.IDENTIFIER), EntryStacks.of(Items.CRAFTING_TABLE));
+        categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.IDENTIFIER), EntryStacks.of(Items.ANVIL));
+        categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
+        categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_forge"), ItemUtils.getSkyblockerForgeStack(), 84));
     }
 
     @Override
     public void registerDisplays(DisplayRegistry displayRegistry) {
-        displayRegistry.registerDisplayGenerator(SKYBLOCK, new SkyblockCraftingDisplayGenerator());
+        if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
+        displayRegistry.registerGlobalDisplayGenerator(new SkyblockRecipeDisplayGenerator());
     }
 
     @Override
     public void registerEntries(EntryRegistry entryRegistry) {
+        if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
+        entryRegistry.removeEntryIf(entryStack -> true);
         entryRegistry.addEntries(ItemRepository.getItemsStream().map(EntryStacks::of).toList());
     }
 
@@ -56,4 +64,9 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
             return VisitorHelper.getExclusionZones();
         });
     }
+
+	@Override
+	public double getPriority() {
+		return 4096;
+	}
 }

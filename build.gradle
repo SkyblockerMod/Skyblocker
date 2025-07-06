@@ -1,8 +1,12 @@
 plugins {
+	// Building
 	id 'fabric-loom' version '1.10-SNAPSHOT'
+	id "de.hysky.skyblocker.annotation-processor"
+	id "com.diffplug.spotless" version "6.20.0"
+	id "checkstyle"
+	// Publishing
 	id 'maven-publish'
 	id "me.modmuss50.mod-publish-plugin" version "0.8.1"
-	id "de.hysky.skyblocker.annotation-processor"
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -235,6 +239,31 @@ test {
 	useJUnitPlatform()
 
 	systemProperty("IS_TEST_ENV", "true")
+}
+
+spotless {
+	java {
+		removeUnusedImports()
+		//indentWithTabs() // TODO: turn on when more files are converted to tabs
+		trimTrailingWhitespace()
+		endWithNewline()
+	}
+
+	json {
+		target 'src/**/lang/en_us.json'
+		targetExclude 'src/**/generated/**'
+		//gson().sortByKeys().indentWithSpaces(2) // TODO: turn on in the future
+	}
+
+	groovyGradle {
+		target 'src/**/*.gradle', '*.gradle', 'gradle/*.gradle'
+		greclipse()
+	}
+}
+
+checkstyle {
+	toolVersion = "10.20.2"
+	configFile = rootProject.file("checkstyle.xml")
 }
 
 publishMods {

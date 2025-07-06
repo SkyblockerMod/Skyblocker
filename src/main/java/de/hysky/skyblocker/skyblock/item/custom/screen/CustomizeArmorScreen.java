@@ -200,7 +200,7 @@ public class CustomizeArmorScreen extends Screen {
 
 		private final boolean[] selectable;
 
-		public PieceSelectionWidget(int x, int y) {
+		private PieceSelectionWidget(int x, int y) {
 			super(x, y, 84, 24, Text.of(""));
 			selectable = new boolean[armor.length];
 			for (int i = 0; i < armor.length; i++) {
@@ -262,7 +262,7 @@ public class CustomizeArmorScreen extends Screen {
 		// thanks to @yuflow
 		private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "armor_customization_screen/button");
 
-		public CustomizeButton(int x, int y) {
+		private CustomizeButton(int x, int y) {
 			super(x, y, 10, 10, Text.empty());
 		}
 
