@@ -54,9 +54,9 @@ public class DungeonSplitsWidget extends TableWidget {
 	private static final Pattern BONZO_SIKE = Pattern.compile("\\[BOSS] Bonzo: Oh I'm dead!");
 	private static final Pattern SCARF_MINIONS = Pattern.compile("^\\[BOSS] Scarf: Did you forget\\? I was taught by the best! Let's dance\\.$");
 	private static final Pattern GUARDIANS = Pattern.compile("^\\[BOSS] The Professor: Oh\\? You found my Guardians' one weakness\\?$");
-	private static final Pattern PROFESSOR = Pattern.compile("^\\[BOSS] The Professor: I see. You have forced me to use my ultimate technique.\\?$");
+	private static final Pattern PROFESSOR = Pattern.compile("^\\[BOSS] The Professor: I see. You have forced me to use my ultimate technique\\.$");
 	private static final Pattern TERRACOTTAS = Pattern.compile("^\\[BOSS] Sadan: ENOUGH!$");
-	private static final Pattern SADAN_GIANTS = Pattern.compile("^\\[BOSS] Sadan: You did it. I understand now, you have earned my respect.$");
+	private static final Pattern SADAN_GIANTS = Pattern.compile("^\\[BOSS] Sadan: You did it. I understand now, you have earned my respect\\.$");
 
 	/**
 	 * Colors used for split names in rainbow order.
