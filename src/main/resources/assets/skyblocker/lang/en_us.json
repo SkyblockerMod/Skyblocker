@@ -330,7 +330,7 @@
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
   "skyblocker.config.general.itemList.enableCollapsibleEntries": "Enable Collapsable Entry Groups",
-  "skyblocker.config.general.itemList.enableCollapsibleEntries.@Tooltip": "Group together similar items into one entry which can be expanded by clicking on it.",
+  "skyblocker.config.general.itemList.enableCollapsibleEntries.@Tooltip": "Group together similar items into one entry which can be expanded by clicking on it.\n\nRequires rejoining or reloading REI plugins to apply!",
 
   "skyblocker.config.general.itemList.filter.all": "All",
   "skyblocker.config.general.itemList.filter.entities": "Entities",
