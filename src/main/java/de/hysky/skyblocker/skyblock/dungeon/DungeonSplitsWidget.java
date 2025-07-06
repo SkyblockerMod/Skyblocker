@@ -11,11 +11,16 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.profile.ProfiledData;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.nio.file.Path;
 
@@ -160,8 +165,10 @@ public class DungeonSplitsWidget extends TableWidget {
 	}
 
 	private static final Path BEST_FILE = SkyblockerMod.CONFIG_DIR.resolve("dungeon_split_bests.json");
-	private static final Codec<Map<String, Map<String, Long>>> BEST_CODEC = Codec.unboundedMap(Codec.STRING, Codec.unboundedMap(Codec.STRING, Codec.LONG));
-	private static final ProfiledData<Map<String, Map<String, Long>>> BEST_SPLITS = new ProfiledData<>(BEST_FILE, BEST_CODEC, true, true);
+	private static final Codec<Object2ObjectMap<String, Object2LongMap<String>>> BEST_CODEC =
+			CodecUtils.object2ObjectMapCodec(Codec.STRING, CodecUtils.object2LongMapCodec(Codec.STRING));
+	private static final ProfiledData<Object2ObjectMap<String, Object2LongMap<String>>> BEST_SPLITS =
+			new ProfiledData<>(BEST_FILE, BEST_CODEC, true, true);
 
 	private static DungeonSplitsWidget instance;
 
@@ -291,8 +298,8 @@ public class DungeonSplitsWidget extends TableWidget {
 
 		List<Split> group = FLOOR_SPLITS.get(floor);
 		if (group != null) {
-			Map<String, Map<String, Long>> data = BEST_SPLITS.computeIfAbsent(HashMap::new);
-			Map<String, Long> floorData = data.get(floor);
+			Object2ObjectMap<String, Object2LongMap<String>> data = BEST_SPLITS.computeIfAbsent(Object2ObjectOpenHashMap::new);
+			Object2LongMap<String> floorData = data.get(floor);
 			for (Split s : group) {
 				long best = floorData != null ? floorData.getOrDefault(s.key, 0L) : 0L;
 				splits.add(new Split(s.key, s.trigger, best));
@@ -384,8 +391,8 @@ public class DungeonSplitsWidget extends TableWidget {
 			running = false;
 
 			if (success) {
-				Map<String, Map<String, Long>> data = new HashMap<>(BEST_SPLITS.computeIfAbsent(HashMap::new));
-				Map<String, Long> floorData = new HashMap<>(data.getOrDefault(floor, new HashMap<>()));
+				Object2ObjectMap<String, Object2LongMap<String>> data = new Object2ObjectOpenHashMap<>(BEST_SPLITS.computeIfAbsent(Object2ObjectOpenHashMap::new));
+				Object2LongMap<String> floorData = new Object2LongOpenHashMap<>(data.getOrDefault(floor, new Object2LongOpenHashMap<>()));
 				boolean updated = false;
 				for (Split split : splits) {
 					if (split.completed) {
@@ -407,8 +414,8 @@ public class DungeonSplitsWidget extends TableWidget {
 	}
 
 	private void updateBest(Split split, long completionTime) {
-		Map<String, Map<String, Long>> data = new HashMap<>(BEST_SPLITS.computeIfAbsent(HashMap::new));
-		Map<String, Long> floorData = new HashMap<>(data.getOrDefault(floor, new HashMap<>()));
+		Object2ObjectMap<String, Object2LongMap<String>> data = new Object2ObjectOpenHashMap<>(BEST_SPLITS.computeIfAbsent(Object2ObjectOpenHashMap::new));
+		Object2LongMap<String> floorData = new Object2LongOpenHashMap<>(data.getOrDefault(floor, new Object2LongOpenHashMap<>()));
 		long currentBest = floorData.getOrDefault(split.key, 0L);
 		if (currentBest == 0L || completionTime < currentBest) {
 			floorData.put(split.key, completionTime);
