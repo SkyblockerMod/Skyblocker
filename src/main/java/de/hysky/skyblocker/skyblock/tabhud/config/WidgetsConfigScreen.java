@@ -44,6 +44,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 
 	private SidePanelWidget sidePanelWidget;
 	private AddWidgetWidget addWidgetWidget;
+	private TopBarWidget topBarWidget;
 
 	private @Nullable HudWidget hoveredWidget;
 	private @Nullable HudWidget selectedWidget;
@@ -59,6 +60,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		currentLocation = Utils.getLocation();
 		currentScreenLayer = WidgetManager.ScreenLayer.HUD;
 		builder = WidgetManager.getScreenBuilder(currentLocation, currentScreenLayer);
+		builder.updateWidgetsList();
 	}
 
 	public void setCurrentLocation(@NotNull Location newLocation) {
@@ -84,8 +86,11 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		super.init();
 		sidePanelWidget = new SidePanelWidget(width / 4, height);
 		addWidgetWidget = new AddWidgetWidget(client, this::addWidget);
+		topBarWidget = new TopBarWidget(width, this::setCurrentLocation, this::setCurrentScreenLayer);
 		addSelectableChild(addWidgetWidget);
+		addSelectableChild(topBarWidget);
 		addSelectableChild(sidePanelWidget);
+		refreshWidgetPositions();
 	}
 
 	private void addWidget(HudWidget widget) {
@@ -129,6 +134,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		}
 
 		// Render on top of everything
+		topBarWidget.render(context, mouseX, mouseY, deltaTicks);
 		addWidgetWidget.render(context, mouseX, mouseY, deltaTicks);
 	}
 

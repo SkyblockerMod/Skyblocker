@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SidePanelWidget extends ContainerWidget {
+	private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_outer_space");
 
 	private final MinecraftClient client = MinecraftClient.getInstance();
 	private final List<ClickableWidget> widgets = new ArrayList<>();
@@ -67,7 +68,7 @@ public class SidePanelWidget extends ContainerWidget {
 				animation = -1f;
 			}
 		}
-		context.drawGuiTexture(RenderLayer::getGuiTextured, Identifier.of(SkyblockerMod.NAMESPACE, "menu_outer_space"), getX() - 4, getY() - 4, getWidth() + 8, getHeight() + 8);
+		context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, getX() - 4, getY() - 4, getWidth() + 8, getHeight() + 8);
 		context.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
 
 		for (ClickableWidget clickableWidget : this.widgets) {

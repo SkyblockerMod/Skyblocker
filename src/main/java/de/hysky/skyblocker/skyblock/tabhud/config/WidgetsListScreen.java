@@ -46,7 +46,7 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 	}
 
 	public WidgetsListScreen(@NotNull GenericContainerScreenHandler handler, String titleLowercase) {
-		super(Text.literal("Widgets List"));
+		super(Text.literal("Widgets EntryList"));
 		this.handler = handler;
 		this.titleLowercase = titleLowercase;
 		handler.addListener(this);
@@ -168,11 +168,11 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 		nextPage = ButtonWidget.builder(Text.literal("Next Page"), button -> clickAndWaitForServer(53, 0))
 				.size(100, 15)
 				.build();
+		refreshWidgetPositions();
 	}
 
 	@Override
 	protected void refreshWidgetPositions() {
-		super.refreshWidgetPositions();
 		back.setPosition(16, 4);
 		widgetsElementList.setY(0);
 		widgetsElementList.setDimensions(width, height - 20);
