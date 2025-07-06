@@ -1,14 +1,12 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 /**
- * Component that consists of an icon and two lines of text
+ * Component that draws a line with optional text across a widget box.
+ * Can be used to separate information visible in a widget into different categories.
  */
 public class SeparatorComponent extends Component {
 
