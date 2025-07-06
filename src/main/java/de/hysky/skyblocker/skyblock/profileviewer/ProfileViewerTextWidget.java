@@ -35,7 +35,7 @@ public class ProfileViewerTextWidget {
 	private double NETWORTH = 0;
 	private List<Text> networthTooltip = List.of();
 
-	public ProfileViewerTextWidget(JsonObject hypixelProfile, JsonObject playerProfile){
+	public ProfileViewerTextWidget(JsonObject hypixelProfile, JsonObject playerProfile) {
 		try {
 			this.PROFILE_NAME = hypixelProfile.get("cute_name").getAsString();
 			this.SKYBLOCK_LEVEL = playerProfile.getAsJsonObject("leveling").get("experience").getAsInt() / 100;
@@ -53,33 +53,18 @@ public class ProfileViewerTextWidget {
 			JsonObject inventoryData = playerProfile.getAsJsonObject("inventory");
 			if (inventoryData != null) {
 				for (ItemStack stack : new InventoryItemLoader().loadItems(inventoryData)) {
-					double p = NetworthCalculator.getItemNetworth(stack).price();
-					value += p;
-					if (p > 0) {
-						top.offer(new ItemValue(stack.getName().getString(), p));
-						if (top.size() > 10) top.poll();
-					}
+					value += addItemNetworth(top, stack);
 				}
 
 				if (inventoryData.has("ender_chest_contents")) {
 					for (ItemStack stack : new ItemLoader().loadItems(inventoryData.getAsJsonObject("ender_chest_contents"))) {
-						double p = NetworthCalculator.getItemNetworth(stack).price();
-						value += p;
-						if (p > 0) {
-							top.offer(new ItemValue(stack.getName().getString(), p));
-							if (top.size() > 10) top.poll();
-						}
+						value += addItemNetworth(top, stack);
 					}
 				}
 
 				if (inventoryData.has("backpack_contents")) {
 					for (ItemStack stack : new BackpackItemLoader().loadItems(inventoryData.getAsJsonObject("backpack_contents"))) {
-						double p = NetworthCalculator.getItemNetworth(stack).price();
-						value += p;
-						if (p > 0) {
-							top.offer(new ItemValue(stack.getName().getString(), p));
-							if (top.size() > 10) top.poll();
-						}
+						value += addItemNetworth(top, stack);
 					}
 				}
 
@@ -100,34 +85,19 @@ public class ProfileViewerTextWidget {
 					for (int index = 0; index < wardrobeItems.size(); index++) {
 						if (skip.contains(index)) continue;
 						ItemStack stack = wardrobeItems.get(index);
-						double p = NetworthCalculator.getItemNetworth(stack).price();
-						value += p;
-						if (p > 0) {
-							top.offer(new ItemValue(stack.getName().getString(), p));
-							if (top.size() > 10) top.poll();
-						}
+						value += addItemNetworth(top, stack);
 					}
 				}
 
 				if (inventoryData.has("bag_contents") && inventoryData.getAsJsonObject("bag_contents").has("talisman_bag")) {
 					for (ItemStack stack : new ItemLoader().loadItems(inventoryData.getAsJsonObject("bag_contents").getAsJsonObject("talisman_bag"))) {
-						double p = NetworthCalculator.getItemNetworth(stack).price();
-						value += p;
-						if (p > 0) {
-							top.offer(new ItemValue(stack.getName().getString(), p));
-							if (top.size() > 10) top.poll();
-						}
+						value += addItemNetworth(top, stack);
 					}
 				}
 			}
 
 			for (ItemStack stack : new PetsInventoryItemLoader().loadItems(playerProfile)) {
-				double p = NetworthCalculator.getItemNetworth(stack).price();
-				value += p;
-				if (p > 0) {
-					top.offer(new ItemValue(stack.getName().getString(), p));
-					if (top.size() > 10) top.poll();
-				}
+				value += addItemNetworth(top, stack);
 			}
 		} catch (Exception ignored) {}
 
@@ -144,7 +114,16 @@ public class ProfileViewerTextWidget {
 		return value;
 	}
 
-	public void render(DrawContext context, TextRenderer textRenderer, int root_x, int root_y, int mouseX, int mouseY){
+	private double addItemNetworth(PriorityQueue<ItemValue> top, ItemStack stack) {
+		double p = NetworthCalculator.getItemNetworth(stack).price();
+		if (p > 0) {
+			top.offer(new ItemValue(stack.getName().getString(), p));
+			if (top.size() > 10) top.poll();
+		}
+		return p;
+	}
+
+	public void render(DrawContext context, TextRenderer textRenderer, int root_x, int root_y, int mouseX, int mouseY) {
 		// Profile Icon
 		MatrixStack matrices = context.getMatrices();
 		matrices.push();
@@ -154,14 +133,14 @@ public class ProfileViewerTextWidget {
 		context.drawItem(Ico.PAINTING, rootAdjustedX, rootAdjustedY);
 		matrices.pop();
 
-		context.drawText(textRenderer, "§n"+PROFILE_NAME, root_x + 14, root_y + 3, Colors.WHITE, true);
+		context.drawText(textRenderer, "§n" + PROFILE_NAME, root_x + 14, root_y + 3, Colors.WHITE, true);
 		context.drawText(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 6 + ROW_GAP, Colors.WHITE, true);
 		context.drawText(textRenderer, "§6Purse:§r " + ProfileViewerUtils.numLetterFormat(PURSE), root_x + 2, root_y + 6 + ROW_GAP * 2, Colors.WHITE, true);
 		context.drawText(textRenderer, "§6Bank:§r " + ProfileViewerUtils.numLetterFormat(BANK), root_x + 2, root_y + 6 + ROW_GAP * 3, Colors.WHITE, true);
 		String nwString = "§6NW:§r " + ProfileViewerUtils.numLetterFormat(NETWORTH);
 		int nwX = root_x + 2;
 		int nwY = root_y + 6 + ROW_GAP * 4;
-		context.drawText(textRenderer, nwString, nwX, nwY, Colors.WHITE, true );
+		context.drawText(textRenderer, nwString, nwX, nwY, Colors.WHITE, true);
 		if (mouseX >= nwX && mouseX <= nwX + textRenderer.getWidth(nwString)
 				&& mouseY >= nwY && mouseY <= nwY + textRenderer.fontHeight) {
 			context.drawTooltip(textRenderer, networthTooltip, mouseX, mouseY);
