@@ -273,6 +273,3 @@ public class ChatRule {
 					 .collect(CollectionUtils.enumSetCollector(Location.class));
 	}
 }
-
-
-

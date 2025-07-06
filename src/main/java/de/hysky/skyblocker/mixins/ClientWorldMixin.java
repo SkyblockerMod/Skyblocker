@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.device.SimonSays;
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
@@ -11,6 +12,7 @@ import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
@@ -53,5 +55,12 @@ public abstract class ClientWorldMixin implements BlockView {
 		}
 
 		SimonSays.onBlockUpdate(pos, state, oldState.get());
+	}
+
+	@Inject(method = "playSound(DDDLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FFZJ)V", at = @At("HEAD"), cancellable = true)
+	private void skyblocker$silencePhantoms(CallbackInfo ci, @Local(argsOnly = true) SoundEvent soundEvent) {
+		if (SkyblockerConfigManager.get().hunting.huntingMobs.silencePhantoms && soundEvent.id().getPath().startsWith("entity.phantom")) {
+			ci.cancel();
+		}
 	}
 }

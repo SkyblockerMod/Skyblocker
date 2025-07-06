@@ -79,19 +79,19 @@ public class HelperConfig {
         public boolean enableFishingHelper = true;
 
 		@Deprecated
-        @SerialEntry
-        public transient boolean enableFishingHookDisplay = true;
+		@SerialEntry
+		public transient boolean enableFishingHookDisplay = true;
 
         @SerialEntry
         public boolean enableFishingTimer = false;
 
 		@Deprecated
-        @SerialEntry
-        public transient boolean changeTimerColor = true;
+		@SerialEntry
+		public transient boolean changeTimerColor = true;
 
 		@Deprecated
-        @SerialEntry
-        public transient float fishingTimerScale = 1f;
+		@SerialEntry
+		public transient float fishingTimerScale = 1f;
 
         @SerialEntry
         public boolean hideOtherPlayersRods = false;

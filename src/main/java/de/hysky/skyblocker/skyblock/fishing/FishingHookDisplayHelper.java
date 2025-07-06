@@ -28,7 +28,7 @@ public class FishingHookDisplayHelper {
 	public static void init() {
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> fishingHookArmorStand = null);
 
-		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.TITLE_AND_SUBTITLE,FISHING_HOOK_DISPLAY,FishingHookDisplayHelper::render));
+		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.TITLE_AND_SUBTITLE, FISHING_HOOK_DISPLAY, FishingHookDisplayHelper::render));
 	}
 
 	public static void render(DrawContext context, RenderTickCounter tickDelta) {
@@ -58,7 +58,7 @@ public class FishingHookDisplayHelper {
 			// Scale the text by 3x
 			context.getMatrices().push();
 			context.getMatrices().scale(3.0F, 3.0F, 1.0F);
-			context.drawCenteredTextWithShadow(client.textRenderer, armorStandName, (int) (x / 3.0F), (int) (y / 3.0F),0);
+			context.drawCenteredTextWithShadow(client.textRenderer, armorStandName, (int) (x / 3.0F), (int) (y / 3.0F), 0);
 			context.getMatrices().pop();
 		}
 		//else update the tab
