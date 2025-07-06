@@ -184,16 +184,16 @@ public class GeneralConfig {
         public boolean slotText = true;
 
 		@Deprecated
-        @SerialEntry
-        public SlotTextMode slotTextMode = SlotTextMode.ENABLED;
+		@SerialEntry
+		public SlotTextMode slotTextMode = SlotTextMode.ENABLED;
 
 		@Deprecated
-        @SerialEntry
-        public boolean slotTextToggled = true;
+		@SerialEntry
+		public boolean slotTextToggled = true;
 
 		@Deprecated
-        @SerialEntry
-        public boolean attributeShardInfo = true;
+		@SerialEntry
+		public boolean attributeShardInfo = true;
 
 		@SerialEntry
 		public ItemBackgroundStyle itemBackgroundStyle = ItemBackgroundStyle.SQUARE;

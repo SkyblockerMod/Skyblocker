@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.List;

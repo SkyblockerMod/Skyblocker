@@ -2,7 +2,7 @@ package de.hysky.skyblocker.utils;
 
 /**
  * Implements color interpolation in the OkLab color space.
- * 
+ *
  * @see <a href="https://bottosson.github.io/posts/oklab">OkLab Colour Space</a>
  * @see <a href="https://www.sjbrown.co.uk/posts/gamma-correct-rendering/">Gamma Correct Rendering</a>
  */
@@ -11,7 +11,7 @@ public class OkLabColor {
 
 	/**
 	 * Converts a linear SRGB color to the OkLab color space.
-	 * 
+	 *
 	 * @param r the linearized red channel
 	 * @param g the linearized green channel
 	 * @param b the linearized blue channel
@@ -67,11 +67,11 @@ public class OkLabColor {
 
 	/**
 	 * Interpolates two colors using the OkLab color space.
-	 * 
+	 *
 	 * @param firstColor  the RGB color at the left end of the gradient
 	 * @param secondColor the RGB color at the right end of the gradient
 	 * @param progress    a float from [0, 1] representing the position in the gradient
-	 * 
+	 *
 	 * @return the interpolated color in the RGB format
 	 */
 	//Escape analysis should hopefully take care of the objects :')
