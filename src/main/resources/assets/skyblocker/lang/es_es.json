@@ -159,5 +159,11 @@
     "skyblocker.config.dungeons.dungeonChestProfit.neutralThreshold": "Límite Neutral",
     "skyblocker.config.dungeons.dungeonScore": "Puntuación de la Dungeon",
     "skyblocker.config.dungeons.dungeonChestProfit.neutralColor": "Color Neutral",
-    "skyblocker.config.dungeons.goldorWaypoints.waypointType": "Tipo de marcador"
+    "skyblocker.config.dungeons.goldorWaypoints.waypointType": "Tipo de marcador",
+    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage.@Tooltip": "Mensaje que se enviará al chat cuando se alcance el límite de puntuación antes de conseguir +5 criptas. El texto \"[criptas]\" será sustituido por la cantidad de criptas.",
+    "skyblocker.config.dungeons.dungeonChestProfit.includeKismet.@Tooltip": "Cuando esté activado, si has usado una Kismet, su precio será restado de las ganancias",
+    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold": "Puntaje de envío del mensaje de criptas",
+    "key.wikiLookup.official": "Búsqueda en la Wiki de Hypixel",
+    "key.wikiLookup.fandom": "Búsqueda en la Wiki de Fandom",
+    "skyblocker.config.dungeons.dungeonChestProfit.lossColor": "Color de pérdida"
 }
