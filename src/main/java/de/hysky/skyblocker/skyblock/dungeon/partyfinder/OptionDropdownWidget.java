@@ -123,7 +123,7 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
             matrices.pop();
         }
     }
-    
+
     @Override
     protected void drawHeaderAndFooterSeparators(DrawContext context) {
     }

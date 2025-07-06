@@ -170,7 +170,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 		private final boolean draggable;
 
-		public KeyframeWidget(int color, float time, boolean draggable) {
+		private KeyframeWidget(int color, float time, boolean draggable) {
 			super(0, AnimatedDyeTimelineWidget.this.getY(), 7, AnimatedDyeTimelineWidget.this.getHeight(), Text.literal("Keyframe"));
 			this.draggable = draggable;
 			this.color = color;
@@ -242,11 +242,11 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 	@Override
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 	@Override
-	protected int getContentsHeightWithPadding() {return getHeight();}
+	protected int getContentsHeightWithPadding() { return getHeight(); }
 	@Override
-	protected double getDeltaYPerScroll() {return 0;}
+	protected double getDeltaYPerScroll() { return 0; }
 	@Override
-	public void close() {gradientTexture.close();}
+	public void close() { gradientTexture.close(); }
 
 	public interface FrameCallback {
 		void onFrameSelected(int color, float time);
