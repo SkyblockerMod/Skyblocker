@@ -5,6 +5,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -81,7 +83,7 @@ public class BloodCampHelper {
 	/**
 	 * Newly loaded zombies to check for watcher status after a tick.
 	 */
-	private static final Map<ZombieEntity, Integer> PENDING_WATCHERS = new HashMap<>();
+	private static final Object2IntMap<ZombieEntity> PENDING_WATCHERS = new Object2IntOpenHashMap<>();
 	/**
 	 * Counts how many mobs have started moving and received a predicted position.
 	 * Used to determine which mobs are part of the first wave.
@@ -109,7 +111,7 @@ public class BloodCampHelper {
 		if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().dungeons.bloodCampHelper) return;
 		if (entity instanceof ZombieEntity zombie) {
 			WATCHERS.remove(zombie);
-			PENDING_WATCHERS.remove(zombie);
+			PENDING_WATCHERS.removeInt(zombie);
 		} else if (entity instanceof ArmorStandEntity stand) {
 			MOBS.remove(stand);
 		}
@@ -119,10 +121,10 @@ public class BloodCampHelper {
 		if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().dungeons.bloodCampHelper) return;
 		long now = System.currentTimeMillis();
 		// Process any newly loaded zombies waiting to be checked
-		PENDING_WATCHERS.entrySet().removeIf(e -> !e.getKey().isAlive());
+		PENDING_WATCHERS.object2IntEntrySet().removeIf(e -> !e.getKey().isAlive());
 		PENDING_WATCHERS.replaceAll((z, ticks) -> ticks - 1);
-		PENDING_WATCHERS.entrySet().removeIf(e -> {
-			if (e.getValue() <= 0) {
+		PENDING_WATCHERS.object2IntEntrySet().removeIf(e -> {
+			if (e.getIntValue() <= 0) {
 				ZombieEntity zombie = e.getKey();
 				if (zombie.hasStackEquipped(EquipmentSlot.HEAD)) {
 					String texture = ItemUtils.getHeadTexture(zombie.getEquippedStack(EquipmentSlot.HEAD));
@@ -140,7 +142,7 @@ public class BloodCampHelper {
 			if (!watcher.isAlive()) continue;
 			var stands = watcher.getWorld().getEntitiesByClass(
 					ArmorStandEntity.class,
-					watcher.getBoundingBox().expand(8),
+					watcher.getBoundingBox().expand(2),
 					stand -> stand.hasStackEquipped(EquipmentSlot.HEAD) && !MOBS.containsKey(stand)
 			);
 			for (ArmorStandEntity stand : stands) {
@@ -217,8 +219,7 @@ public class BloodCampHelper {
 				for (Vec3d d : deltas) {
 					totalDelta = totalDelta.add(d);
 				}
-				Vec3d avg = totalDelta.multiply(1.0 / deltas.size());
-				Vec3d dir = avg.normalize();
+				Vec3d dir = totalDelta.normalize();
 
 				firstWave = mobsPredicted < 4;
 				mobsPredicted++;
