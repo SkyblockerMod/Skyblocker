@@ -161,8 +161,8 @@ dependencies {
 	// YACL
 	include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
 
-	// MoulConfig
-	include modImplementation("org.notenoughupdates.moulconfig:${project.moulconfig_flavour}:${project.moulconfig_version}")
+	// MoulConfig - Dandelion shades it in already
+	modImplementation("org.notenoughupdates.moulconfig:${project.moulconfig_flavour}:${project.moulconfig_version}")
 
 	// HM API (Hypixel Mod API Library)
 	include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
