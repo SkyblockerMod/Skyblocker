@@ -32,7 +32,7 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
         GridWidget.Adder adder = gridWidget.createAdder(2);
         adder.add(ButtonWidget.builder(Text.translatable("skyblocker.waypoints.importWaypointsSkyblocker"), buttonImport -> {
             try {
-                List<WaypointGroup> waypointGroups = Waypoints.fromSkyblocker(client.keyboard.getClipboard());
+                List<WaypointGroup> waypointGroups = Waypoints.fromSkyblocker(client.keyboard.getClipboard(), island);
                 for (WaypointGroup waypointGroup : waypointGroups) {
                     selectedWaypoints.addAll(waypointGroup.waypoints());
                     waypoints.put(waypointGroup.island(), waypointGroup);

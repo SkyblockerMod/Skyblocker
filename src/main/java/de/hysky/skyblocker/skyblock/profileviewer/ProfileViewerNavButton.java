@@ -13,8 +13,8 @@ import net.minecraft.util.Identifier;
 import java.util.Map;
 
 public class ProfileViewerNavButton extends ClickableWidget {
-    private final static Identifier BUTTON_TEXTURES_TOGGLED = Identifier.of("container/creative_inventory/tab_top_selected_2");
-    private final static Identifier BUTTON_TEXTURES = Identifier.of("container/creative_inventory/tab_top_unselected_2");
+    private static final Identifier BUTTON_TEXTURES_TOGGLED = Identifier.of("container/creative_inventory/tab_top_selected_2");
+    private static final Identifier BUTTON_TEXTURES = Identifier.of("container/creative_inventory/tab_top_unselected_2");
     private boolean toggled;
     private final int index;
     private final ProfileViewerScreen screen;

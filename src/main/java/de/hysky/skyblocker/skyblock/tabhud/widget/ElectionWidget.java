@@ -33,14 +33,14 @@ public class ElectionWidget extends TabHudWidget {
 	private static final Pattern VOTE_PATTERN = Pattern.compile("(?<mayor>\\S*): \\|+ \\((?<pcnt>\\d*)%\\)");
 
 	static {
-		MAYOR_DATA.put("Aatrox", Ico.DIASWORD);
+		MAYOR_DATA.put("Aatrox", Ico.DIA_SWORD);
 		MAYOR_DATA.put("Cole", Ico.IRON_PICKAXE);
 		MAYOR_DATA.put("Diana", Ico.BONE);
 		MAYOR_DATA.put("Diaz", Ico.GOLD);
 		MAYOR_DATA.put("Finnegan", Ico.IRON_HOE);
 		MAYOR_DATA.put("Foxy", Ico.SUGAR);
 		MAYOR_DATA.put("Paul", Ico.COMPASS);
-		MAYOR_DATA.put("Scorpius", Ico.MOREGOLD);
+		MAYOR_DATA.put("Scorpius", Ico.GOLDEN_APPLE);
 		MAYOR_DATA.put("Jerry", Ico.VILLAGER);
 		MAYOR_DATA.put("Derpy", Ico.DBUSH);
 		MAYOR_DATA.put("Marina", Ico.FISH_ROD);

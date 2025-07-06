@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class InstancedUtilsTest {
 
 	@SuppressWarnings("EqualsWithItself")
-    @Test
+	@Test
 	void testSameInstanceEqual() {
 		Vector3i vec1 = new Vector3i(8, 8, 8);
 
@@ -47,9 +47,9 @@ public class InstancedUtilsTest {
 
 	@Test
 	void testToString() {
-		Vector3i vec1 = new Vector3i(8, 8, 8);
+		Vector3i vec1 = new Vector3i(1, 2, 3);
 
-		Assertions.assertEquals(vec1.toString(), "Vector3i[x=8, y=8, z=8]");
+		Assertions.assertEquals("Vector3i[x=1, y=2, z=3]", vec1.toString());
 	}
 
 	@SuppressWarnings("unused")

@@ -15,7 +15,7 @@ public class MiningConfig {
     public DwarvenMines dwarvenMines = new DwarvenMines();
 
 	@Deprecated
-    public DwarvenHud dwarvenHud = new DwarvenHud();
+    public transient DwarvenHud dwarvenHud = new DwarvenHud();
 
     @SerialEntry
     public CrystalHollows crystalHollows = new CrystalHollows();
@@ -121,8 +121,8 @@ public class MiningConfig {
         public boolean enabled = true;
 
 		@Deprecated
-        @SerialEntry
-        public float textScale = 1;
+		@SerialEntry
+		public transient float textScale = 1;
 
         @SerialEntry
         public boolean findInChat = true;
@@ -139,8 +139,8 @@ public class MiningConfig {
         public CommissionWaypointMode mode = CommissionWaypointMode.BOTH;
 
 		@Deprecated
-        @SerialEntry
-        public float textScale = 1;
+		@SerialEntry
+		public transient float textScale = 1;
 
         @SerialEntry
         public boolean useColor = true;

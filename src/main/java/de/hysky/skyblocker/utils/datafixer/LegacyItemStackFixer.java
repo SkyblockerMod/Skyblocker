@@ -6,6 +6,7 @@ import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getLatestVersion
 
 import java.util.List;
 
+import de.hysky.skyblocker.utils.Utils;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -30,7 +31,7 @@ public class LegacyItemStackFixer {
 	//Static import things to avoid class name conflicts
 	@SuppressWarnings("deprecation")
 	public static ItemStack fixLegacyStack(NbtCompound nbt) {
-		RegistryOps<NbtElement> ops = ItemStackComponentizationFixer.getRegistryLookup().getOps(NbtOps.INSTANCE);
+		RegistryOps<NbtElement> ops = Utils.getRegistryWrapperLookup().getOps(NbtOps.INSTANCE);
 		Dynamic<NbtElement> fixed = getFixer().update(TypeReferences.LEGACY_ITEM_STACK, new Dynamic<>(ops, nbt), getFirstVersion(), getLatestVersion());
 		ItemStack stack = ItemStack.CODEC.parse(fixed)
 				.setPartial(ItemStack.EMPTY)
@@ -59,7 +60,7 @@ public class LegacyItemStackFixer {
 			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(stack.get(DataComponentTypes.CUSTOM_DATA).getNbt().getCompoundOrEmpty("ExtraAttributes")));
 		}
 
-		//Hide Attributes & Vanilla Enchantments		
+		//Hide Attributes & Vanilla Enchantments
 		TooltipDisplayComponent display = stack.getOrDefault(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplayComponent.DEFAULT)
 				.with(DataComponentTypes.ATTRIBUTE_MODIFIERS, true)
 				.with(DataComponentTypes.ENCHANTMENTS, true);

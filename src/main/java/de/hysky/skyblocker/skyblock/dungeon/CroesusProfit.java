@@ -140,7 +140,7 @@ public class CroesusProfit extends SimpleContainerSolver {
         map.put("Enchanted Book (Rejuvenate I)", "ENCHANTMENT_REJUVENATE_1");
         map.put("Enchanted Book (Rejuvenate II)", "ENCHANTMENT_REJUVENATE_2");
         map.put("Enchanted Book (Rejuvenate III)", "ENCHANTMENT_REJUVENATE_3");
-        map.put("Enchanted Book (Overload)", "ENCHANTMENT_OVERLOAD_1");
+        map.put("Enchanted Book (Overload I)", "ENCHANTMENT_OVERLOAD_1");
         map.put("Enchanted Book (Lethality VI)", "ENCHANTMENT_LETHALITY_6");
         map.put("Enchanted Book (Thunderlord VII)", "ENCHANTMENT_THUNDERLORD_7");  // enchanted books end
 
@@ -148,7 +148,7 @@ public class CroesusProfit extends SimpleContainerSolver {
         map.put("Fuming Potato Book", "FUMING_POTATO_BOOK");
         map.put("Recombobulator 3000", "RECOMBOBULATOR_3000");
         map.put("Necromancer's Brooch", "NECROMANCER_BROOCH");
-        map.put("ESSENCE_WITHER","ESSENCE_WITHER");     // Essences. Really stupid way of doing this
+        map.put("ESSENCE_WITHER", "ESSENCE_WITHER");     // Essences. Really stupid way of doing this
         map.put("ESSENCE_UNDEAD", "ESSENCE_UNDEAD");
         map.put("ESSENCE_DRAGON", "ESSENCE_DRAGON");
         map.put("ESSENCE_SPIDER", "ESSENCE_SPIDER");
@@ -248,6 +248,9 @@ public class CroesusProfit extends SimpleContainerSolver {
         map.put("Watcher Disc", "DUNGEON_DISC_3");
         map.put("Old Disc", "DUNGEON_DISC_4");
         map.put("Necron Disc", "DUNGEON_DISC_5");
+
+        map.put("Wither", "SHARD_WITHER");
+        map.put("Apex Dragon", "SHARD_APEX_DRAGON");
+        map.put("Power Dragon", "SHARD_POWER_DRAGON");
     });
 }
-

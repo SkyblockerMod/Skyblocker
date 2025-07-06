@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import de.hysky.skyblocker.skyblock.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
@@ -112,6 +113,22 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.cancelComponentUpdateAnimation = newValue)
                         .controller(ConfigUtils::createBooleanController)
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.showCustomizeButton"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip")))
+						.binding(defaults.uiAndVisuals.showCustomizeButton,
+								() -> config.uiAndVisuals.showCustomizeButton,
+								newValue -> config.uiAndVisuals.showCustomizeButton = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.showConfigButton"))
+						.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.showConfigButton.@Tooltip")))
+						.binding(defaults.uiAndVisuals.showConfigButton,
+								() -> config.uiAndVisuals.showConfigButton,
+								newValue -> config.uiAndVisuals.showConfigButton = newValue)
+						.controller(ConfigUtils::createBooleanController)
+						.build())
 
                 //Chest Value FIXME change dropdown to color controller
                 .group(OptionGroup.createBuilder()
@@ -330,6 +347,14 @@ public class UIAndVisualsCategory {
                                 .text(Text.translatable("text.skyblocker.open"))
                                 .action((screen, opt) -> MinecraftClient.getInstance().setScreen(new StatusBarsConfigScreen()))
                                 .build())
+						.option(Option.<UIAndVisualsConfig.IntelligenceDisplay>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay"))
+								.binding(defaults.uiAndVisuals.bars.intelligenceDisplay,
+										() -> config.uiAndVisuals.bars.intelligenceDisplay,
+										newValue -> config.uiAndVisuals.bars.intelligenceDisplay = newValue)
+								.controller(ConfigUtils.getFormattedEnumCyclingControllerFactory(UIAndVisualsConfig.IntelligenceDisplay.class, intelligenceDisplay -> Text.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay." + intelligenceDisplay.name())))
+								.build()
+						)
                         .build())
 
                 //Waypoints
@@ -374,9 +399,9 @@ public class UIAndVisualsCategory {
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor"))
                                 .binding(defaults.uiAndVisuals.teleportOverlay.teleportOverlayColor,
                                         () -> config.uiAndVisuals.teleportOverlay.teleportOverlayColor,
-                                        newValue -> { 
+                                        newValue -> {
                                             config.uiAndVisuals.teleportOverlay.teleportOverlayColor = newValue;
-                                            TeleportOverlay.configCallback(newValue); 
+                                            TeleportOverlay.configCallback(newValue);
                                        })
                                 .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
                                 .build())
@@ -699,6 +724,41 @@ public class UIAndVisualsCategory {
 						.build()
 				)
 
+				//item pickup widget
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup"))
+						.collapsed(true)
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.hud.screen"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, ItemPickupWidget.getInstance().getInternalID(), screen)))
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications.@Tooltip")))
+								.binding(defaults.uiAndVisuals.itemPickup.sackNotifications,
+										() -> config.uiAndVisuals.itemPickup.sackNotifications,
+										newValue -> config.uiAndVisuals.itemPickup.sackNotifications = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.showItemName"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip")))
+								.binding(defaults.uiAndVisuals.itemPickup.showItemName,
+										() -> config.uiAndVisuals.itemPickup.showItemName,
+										newValue -> config.uiAndVisuals.itemPickup.showItemName = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.lifeTime"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip")))
+								.binding(defaults.uiAndVisuals.itemPickup.lifeTime,
+										() -> config.uiAndVisuals.itemPickup.lifeTime,
+										newValue -> config.uiAndVisuals.itemPickup.lifeTime = newValue)
+								.controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 10).step(1))
+								.build())
+						.build()
+				)
                 .build();
     }
 

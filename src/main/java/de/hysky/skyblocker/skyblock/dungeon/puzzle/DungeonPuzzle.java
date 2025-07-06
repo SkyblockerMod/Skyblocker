@@ -36,17 +36,17 @@ public abstract class DungeonPuzzle implements Tickable, Renderable, Resettable 
                 shouldSolve = true;
             }
         });
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(puzzleName).then(literal("solve").executes(context -> {
-            Room currentRoom = DungeonManager.getCurrentRoom();
-            if (currentRoom != null) {
-                reset();
-                currentRoom.addSubProcess(this);
-                context.getSource().sendFeedback(Constants.PREFIX.get().append("§aSolving " + puzzleName + " puzzle in the current room."));
-            } else {
-                context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null."));
-            }
-            return Command.SINGLE_SUCCESS;
-        })))))));
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(puzzleName).then(literal("solve").executes(context -> {
+			Room currentRoom = DungeonManager.getCurrentRoom();
+			if (currentRoom != null) {
+				reset();
+				currentRoom.addSubProcess(this);
+				context.getSource().sendFeedback(Constants.PREFIX.get().append("§aSolving " + puzzleName + " puzzle in the current room."));
+			} else {
+				context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null."));
+			}
+			return Command.SINGLE_SUCCESS;
+		})))))));
         ClientPlayConnectionEvents.JOIN.register(this);
     }
 

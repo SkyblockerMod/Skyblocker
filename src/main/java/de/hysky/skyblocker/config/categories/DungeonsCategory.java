@@ -155,11 +155,25 @@ public class DungeonsCategory {
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.puzzle.solveWaterboard"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip")))
-                                .binding(defaults.dungeons.puzzleSolvers.solveWaterboard,
-                                        () -> config.dungeons.puzzleSolvers.solveWaterboard,
-                                        newValue -> config.dungeons.puzzleSolvers.solveWaterboard = newValue)
+                                .binding(defaults.dungeons.puzzleSolvers.waterboardOneFlow,
+                                        () -> config.dungeons.puzzleSolvers.waterboardOneFlow,
+                                        newValue -> config.dungeons.puzzleSolvers.waterboardOneFlow = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.puzzle.previewWaterPath"))
+								.binding(defaults.dungeons.puzzleSolvers.previewWaterPath,
+										() -> config.dungeons.puzzleSolvers.previewWaterPath,
+										newValue -> config.dungeons.puzzleSolvers.previewWaterPath = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.puzzle.previewLeverEffects"))
+								.binding(defaults.dungeons.puzzleSolvers.previewLeverEffects,
+										() -> config.dungeons.puzzleSolvers.previewLeverEffects,
+										newValue -> config.dungeons.puzzleSolvers.previewLeverEffects = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.puzzle.blazeSolver"))
                                 .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.puzzle.blazeSolver.@Tooltip")))
@@ -307,6 +321,13 @@ public class DungeonsCategory {
                                         newValue -> config.dungeons.terminals.solveStartsWith = newValue)
                                 .controller(ConfigUtils::createBooleanController)
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.terminals.solveSameColor"))
+								.binding(defaults.dungeons.terminals.solveSameColor,
+										() -> config.dungeons.terminals.solveSameColor,
+										newValue -> config.dungeons.terminals.solveSameColor = newValue)
+								.controller(ConfigUtils::createBooleanController)
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.terminals.blockIncorrectClicks"))
                                 .binding(defaults.dungeons.terminals.blockIncorrectClicks,
@@ -362,15 +383,6 @@ public class DungeonsCategory {
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.dungeons.secretWaypoints"))
                         .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableRoomMatching"))
-                                .description(OptionDescription.of(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableRoomMatching.@Tooltip")))
-                                .binding(defaults.dungeons.secretWaypoints.enableRoomMatching,
-                                        () -> config.dungeons.secretWaypoints.enableRoomMatching,
-                                        newValue -> config.dungeons.secretWaypoints.enableRoomMatching = newValue)
-                                .controller(ConfigUtils::createBooleanController)
-                                .flag(OptionFlag.GAME_RESTART)
-                                .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableSecretWaypoints"))
                                 .binding(defaults.dungeons.secretWaypoints.enableSecretWaypoints,

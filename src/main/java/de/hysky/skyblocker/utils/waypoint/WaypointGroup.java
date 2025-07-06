@@ -25,6 +25,14 @@ public class WaypointGroup {
             NamedWaypoint.SKYTILS_CODEC.listOf().fieldOf("waypoints").forGetter(WaypointGroup::waypoints)
     ).apply(instance, WaypointGroup::new));
     public static final Codec<WaypointGroup> COLEWEIGHT_CODEC = NamedWaypoint.COLEWEIGHT_CODEC.listOf().xmap(coleWeightWaypoints -> new WaypointGroup("Coleweight", Location.UNKNOWN, coleWeightWaypoints, true), WaypointGroup::waypoints);
+	public static final Codec<WaypointGroup> SKYBLOCKER_LEGACY_ORDERED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.STRING.fieldOf("name").forGetter(WaypointGroup::name),
+			Codec.BOOL.fieldOf("enabled").forGetter(group -> !group.waypoints().isEmpty() && group.waypoints().stream().allMatch(Waypoint::isEnabled)),
+			NamedWaypoint.SKYBLOCKER_LEGACY_ORDERED_CODEC.listOf().fieldOf("waypoints").forGetter(WaypointGroup::waypoints)
+	).apply(instance, (name, enabled, waypoints) -> {
+		waypoints.forEach(enabled ? Waypoint::setMissing : Waypoint::setFound);
+		return new WaypointGroup(name, Location.UNKNOWN, waypoints, true);
+	}));
     public static final int WAYPOINT_ACTIVATION_RADIUS = 2;
 
     private final String name;
@@ -60,6 +68,21 @@ public class WaypointGroup {
     public boolean ordered() {
         return ordered;
     }
+
+	public int currentIndex() {
+		return currentIndex;
+	}
+
+	public void setCurrentIndex(int currentIndex) {
+		this.currentIndex = currentIndex;
+	}
+
+	/**
+	 * Resets the current ordered waypoint index on world change.
+	 */
+	public void resetCurrentIndex() {
+		setCurrentIndex(0);
+	}
 
     public WaypointGroup withName(String name) {
         return new WaypointGroup(name, island, waypoints, ordered);
@@ -132,13 +155,6 @@ public class WaypointGroup {
                 waypoint.render(context);
             }
         }
-    }
-
-    /**
-     * Resets the current ordered waypoint index on world change.
-     */
-    public void resetIndex() {
-    	currentIndex = 0;
     }
 
     @Override

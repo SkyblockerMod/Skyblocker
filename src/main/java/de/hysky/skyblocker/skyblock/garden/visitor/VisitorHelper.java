@@ -3,11 +3,18 @@ package de.hysky.skyblocker.skyblock.garden.visitor;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.*;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import me.shedaniel.math.Rectangle;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -19,7 +26,6 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -36,6 +42,7 @@ public class VisitorHelper {
 	private static final int ICON_SIZE = 16;
 	private static final int LINE_HEIGHT = 3;
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
+	private static final Object2LongMap<Text> copiedTimestamps = new Object2LongOpenHashMap<>();
 
 	// Used to prevent adding the visitor again after the player clicks accept or refuse.
 	private static boolean processVisitor = false;
@@ -55,6 +62,17 @@ public class VisitorHelper {
 		boolean isHelperEnabled = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelper;
 		boolean isGardenMode = SkyblockerConfigManager.get().farming.visitorHelper.visitorHelperGardenOnly;
 		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getIslandArea().contains("Bazaar"));
+	}
+
+	public static List<Rectangle> getExclusionZones() {
+		if (activeVisitors.isEmpty()) return List.of();
+
+		int maxXPosition = X_OFFSET + 215;
+		int textFontHeight = MinecraftClient.getInstance().textRenderer.fontHeight;
+		int count = groupedItems.size() + activeVisitors.size();
+		int maxYPosition = Y_OFFSET + count * (LINE_HEIGHT + textFontHeight);
+
+		return List.of(new Rectangle(X_OFFSET, Y_OFFSET, maxXPosition, maxYPosition));
 	}
 
 	/**
@@ -179,24 +197,29 @@ public class VisitorHelper {
 			}
 
 			MutableText name = cachedStack != null ? cachedStack.getName().copy() : itemName.copy();
-			Text itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
-					? name
-					.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
-					: name
-					.append(" x" + totalAmount);
+			MutableText itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
+					? name.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
+					: name.append(" x" + totalAmount);
 
-			int itemTextWidth = textRenderer.getWidth(itemText);
-			int copyTextX = textX + itemTextWidth;
+			double mouseX = MinecraftClient.getInstance().mouse.getX() / MinecraftClient.getInstance().getWindow().getScaleFactor();
+			double mouseY = MinecraftClient.getInstance().mouse.getY() / MinecraftClient.getInstance().getWindow().getScaleFactor();
 
-			context.drawText(textRenderer, itemText, textX, yPosition, -1, true);
-			context.drawText(textRenderer, Text.literal(" [Copy Amount]").setStyle(Style.EMPTY.withColor(Formatting.YELLOW)), copyTextX, yPosition, -1, true);
+			if (copiedTimestamps.containsKey(itemName)) {
+				long timeSinceCopy = System.currentTimeMillis() - copiedTimestamps.getLong(itemName);
+				if (timeSinceCopy < 1000) {
+					itemText.append(Text.literal(" ✔ ").formatted(Formatting.GREEN));
+				} else {
+					copiedTimestamps.removeLong(itemName);
+				}
+			}
+
+			drawTextWithHoverUnderline(context, textRenderer, itemText, textX, yPosition, mouseX, mouseY);
 
 			index++;
 		}
 
 		context.getMatrices().pop();
 	}
-
 
 	/**
 	 * Handles mouse click events on the visitor UI.
@@ -205,7 +228,6 @@ public class VisitorHelper {
 		if (mouseButton != 0) return;
 
 		int index = 0;
-		int yOffsetAdjustment = -5;
 
 		for (Object2IntMap.Entry<Text> entry : groupedItems.object2IntEntrySet()) {
 			Text itemName = entry.getKey();
@@ -219,29 +241,19 @@ public class VisitorHelper {
 
 				int iconX = X_OFFSET + 12;
 				int textX = iconX + (int) (ICON_SIZE * 0.95f) + 4;
-				int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight) -
-						(int) ((float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2) + yOffsetAdjustment;
+				int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
+				MutableText name = itemName.copy();
 				Text itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
-						? itemName.copy()
-						.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
-						: itemName.copy()
-						.append(" x" + totalAmount);
+						? name.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
+						: name.append(" x" + totalAmount);
 
-				int itemTextWidth = textRenderer.getWidth(itemText);
-				int copyTextX = textX + itemTextWidth;
+				if (isMouseOverText(textRenderer, itemText, textX, yPosition, mouseX, mouseY)) {
+					MinecraftClient.getInstance().keyboard.setClipboard(String.valueOf(totalAmount));
+					copiedTimestamps.put(itemName, System.currentTimeMillis());
 
-				if (isMouseOverText(mouseX, mouseY, textX, yPosition, itemTextWidth, textRenderer.fontHeight)) {
 					MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName.getString(), true);
-					return;
-				}
 
-				if (isMouseOverText(mouseX, mouseY, copyTextX, yPosition, textRenderer.getWidth(" [Copy Amount]"), textRenderer.fontHeight)) {
-					MinecraftClient client = MinecraftClient.getInstance();
-					client.keyboard.setClipboard(String.valueOf(totalAmount));
-					if (client.player != null) {
-						client.player.sendMessage(Constants.PREFIX.get().append("Copied amount successfully"), false);
-					}
 					return;
 				}
 
@@ -265,10 +277,22 @@ public class VisitorHelper {
 		updateItems();
 	}
 
+	private static void drawTextWithHoverUnderline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, double mouseX, double mouseY) {
+		context.getMatrices().push();
+		context.getMatrices().translate(0, 0, 500);
+		context.drawText(textRenderer, text, x, y, -1, true);
+
+		if (isMouseOverText(textRenderer, text, x, y, mouseX, mouseY)) {
+			context.drawHorizontalLine(x, x + textRenderer.getWidth(text), y + textRenderer.fontHeight, -1);
+		}
+
+		context.getMatrices().pop();
+	}
+
 	/**
 	 * Checks if the mouse is over a specific rectangular region.
 	 */
-	private static boolean isMouseOverText(double mouseX, double mouseY, int x, int y, int width, int height) {
-		return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+	private static boolean isMouseOverText(TextRenderer textRenderer, Text text, int x, int y, double mouseX, double mouseY) {
+		return RenderHelper.pointIsInArea(mouseX, mouseY, x, y, x + textRenderer.getWidth(text), y + textRenderer.fontHeight);
 	}
 }

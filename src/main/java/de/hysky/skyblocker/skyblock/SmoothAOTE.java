@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
@@ -233,7 +232,7 @@ public class SmoothAOTE {
 		Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem, MANA_LORE);
 		if (manaNeeded != null && manaNeeded.matches()) {
 			int manaCost = Integer.parseInt(manaNeeded.group(1));
-			int predictedMana = SkyblockerMod.getInstance().statusBarTracker.getMana().value() - teleportsAhead * manaCost;
+			int predictedMana = StatusBarTracker.getMana().value() - teleportsAhead * manaCost;
 			if (predictedMana < manaCost) { // todo the players mana can lag behind as it is updated server side. client side mana calculations would help with this
 				return;
 			}

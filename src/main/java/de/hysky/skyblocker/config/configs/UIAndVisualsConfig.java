@@ -36,13 +36,19 @@ public class UIAndVisualsConfig {
     public boolean fancyCraftingTable = true;
 
     @SerialEntry
-    public boolean hideStatusEffectOverlay = false;
+    public boolean hideStatusEffectOverlay = true;
 
     @SerialEntry
     public boolean showEquipmentInInventory = true;
 
     @SerialEntry
     public boolean cancelComponentUpdateAnimation = true;
+
+	@SerialEntry
+	public boolean showCustomizeButton = true;
+
+	@SerialEntry
+	public boolean showConfigButton = false;
 
     @SerialEntry
     public ChestValue chestValue = new ChestValue();
@@ -91,6 +97,9 @@ public class UIAndVisualsConfig {
 
 	@SerialEntry
 	public HealthBars healthBars = new HealthBars();
+
+	@SerialEntry
+	public ItemPickup itemPickup = new ItemPickup();
 
     public static class ChestValue {
         @SerialEntry
@@ -213,10 +222,10 @@ public class UIAndVisualsConfig {
         public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
 
         @Deprecated
-        public boolean plainPlayerNames = false;
+        public transient boolean plainPlayerNames = false;
 
         @Deprecated
-        public NameSorting nameSorting = NameSorting.DEFAULT;
+        public transient NameSorting nameSorting = NameSorting.DEFAULT;
     }
 
 	public enum TabHudStyle {
@@ -274,12 +283,21 @@ public class UIAndVisualsConfig {
         @SerialEntry
         public boolean enableBars = true;
 
+		@SerialEntry
+		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
+
         // Kept in for backwards compatibility, remove if needed
         @SuppressWarnings("DeprecatedIsStillUsed")
         @Deprecated
         @SerialEntry
         public LegacyBarPositions barPositions = new LegacyBarPositions();
     }
+
+	public enum IntelligenceDisplay {
+		ORIGINAL,
+		ACCURATE,
+		IN_FRONT;
+	}
 
     /**
      * Backwards compat.
@@ -452,5 +470,19 @@ public class UIAndVisualsConfig {
 
 		@SerialEntry
 		public Color emptyBarColor = new Color(0xFF0000);
+	}
+
+	public static class ItemPickup {
+		@SerialEntry
+		public boolean enabled = false;
+
+		@SerialEntry
+		public boolean sackNotifications = false;
+
+		@SerialEntry
+		public boolean showItemName = true;
+
+		@SerialEntry
+		public int lifeTime = 3;
 	}
 }

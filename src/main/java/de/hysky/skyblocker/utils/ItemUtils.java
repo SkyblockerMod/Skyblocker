@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonParser;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.brigadier.Command;
@@ -9,10 +10,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.skyblock.hunting.Attribute;
+import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -38,9 +41,13 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.Codecs;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -60,12 +67,18 @@ public final class ItemUtils {
             Codec.INT.orElse(1).fieldOf("count").forGetter(ItemStack::getCount),
             ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(ItemStack::getComponentChanges)
     ).apply(instance, ItemStack::new)));
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemUtils.class);
+    private static final Pattern STORED_PATTERN = Pattern.compile("Stored: ([\\d,]+)/\\S+");
+    private static final Pattern STASH_COUNT_PATTERN = Pattern.compile("x([\\d,]+)$"); // This is used with Matcher#find, not #matches
+    private static final Pattern HUNTING_BOX_COUNT_PATTERN = Pattern.compile("Owned: (?<shards>\\d+) Shards?");
+    private static final short LOG_INTERVAL = 1000;
+	private static long lastLog = Util.getMeasuringTimeMs();
 
     private ItemUtils() {}
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
         return literal("dumpHeldItem").executes(context -> {
-            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(ItemStackComponentizationFixer.getRegistryLookup().getOps(JsonOps.INSTANCE), context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
+            context.getSource().sendFeedback(Text.literal("[Skyblocker Debug] Held Item: " + SkyblockerMod.GSON_COMPACT.toJson(ItemStack.CODEC.encodeStart(Utils.getRegistryWrapperLookup().getOps(JsonOps.INSTANCE), context.getSource().getPlayer().getMainHandStack()).getOrThrow())));
             return Command.SINGLE_SUCCESS;
         });
     }
@@ -175,38 +188,18 @@ public final class ItemUtils {
                 }
             }
             case "ATTRIBUTE_SHARD" -> {
-                if (customData.contains("attributes")) {
-                    NbtCompound shards = customData.getCompoundOrEmpty("attributes");
-                    String shard = shards.getKeys().stream().findFirst().orElse("");
-                    return id + "-" + shard.toUpperCase(Locale.ENGLISH) + "_" + shards.getInt(shard, 0);
-                }
+            	Attribute attribute = Attributes.getAttributeFromItemName(itemStack);
+
+                if (attribute != null) return attribute.apiId();
             }
             case "NEW_YEAR_CAKE" -> {
                 return id + "_" + customData.getInt("new_years_cake", 0);
             }
-            case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024" -> {
+            case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> {
                 return id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
             }
             case "PARTY_HAT_SLOTH" -> {
                 return id + "_" + customData.getString("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
-            }
-            case "CRIMSON_HELMET", "CRIMSON_CHESTPLATE", "CRIMSON_LEGGINGS", "CRIMSON_BOOTS" -> {
-                NbtCompound attributes = customData.getCompoundOrEmpty("attributes");
-                if (attributes.contains("magic_find") && attributes.contains("veteran")) {
-                    return id + "-MAGIC_FIND-VETERAN";
-                }
-            }
-            case "AURORA_HELMET", "AURORA_CHESTPLATE", "AURORA_LEGGINGS", "AURORA_BOOTS" -> {
-                NbtCompound attributes = customData.getCompoundOrEmpty("attributes");
-                if (attributes.contains("mana_pool") && attributes.contains("mana_regeneration")) {
-                    return id + "-MANA_POOL-MANA_REGENERATION";
-                }
-            }
-            case "TERROR_HELMET", "TERROR_CHESTPLATE", "TERROR_LEGGINGS", "TERROR_BOOTS" -> {
-                NbtCompound attributes = customData.getCompoundOrEmpty("attributes");
-                if (attributes.contains("lifeline") && attributes.contains("mana_pool")) {
-                    return id + "-LIFELINE-MANA_POOL";
-                }
             }
             case "MIDAS_SWORD" -> {
                 if (customData.getInt("winning_bid", 0) >= 50000000) {
@@ -250,7 +243,7 @@ public final class ItemUtils {
             }
             case "POTION" -> "POTION_" + customData.getString("potion", "").toUpperCase(Locale.ENGLISH) + ";" + customData.getInt("potion_level", 0);
             case "ATTRIBUTE_SHARD" -> "ATTRIBUTE_SHARD";
-            case "PARTY_HAT_CRAB", "BALLOON_HAT_2024" -> id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
+            case "PARTY_HAT_CRAB", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> id + "_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH);
             case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getString("party_hat_color", "").toUpperCase(Locale.ENGLISH) + "_ANIMATED";
             case "PARTY_HAT_SLOTH" -> id + "_" + customData.getString("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
             default -> id.replace(":", "-");
@@ -434,15 +427,29 @@ public final class ItemUtils {
         return Optional.of(texture);
     }
 
-    public static @NotNull ItemStack getSkyblockerStack() {
-        try {
-            ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-            stack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of("SkyblockerStack"), Optional.of(java.util.UUID.randomUUID()), propertyMapWithTexture("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=")));
-            return stack;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public static @NotNull ItemStack createSkull(String textureBase64) {
+		GameProfile profile = new GameProfile(java.util.UUID.randomUUID(), "a");
+		profile.getProperties().put("textures", new Property("textures", textureBase64));
+		return createSkull(profile);
+	}
+
+	public static @NotNull ItemStack createSkull(GameProfile profile) {
+		try {
+			ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
+			stack.set(DataComponentTypes.PROFILE, new ProfileComponent(profile));
+			return stack;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static @NotNull ItemStack getSkyblockerStack() {
+		return createSkull("e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=");
+	}
+
+	public static @NotNull ItemStack getSkyblockerForgeStack() {
+		return createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzJkZGQ4OWE2YWU5NTdmNzY2ZDMwMDAxMWZmNDQ3MTQ4MWMzYmI2MWI2NzYwNzhhOGM2YzNjNDA4MzIwMWI1YzIifX19");
+	}
 
     /**
      * Utility method.
@@ -469,5 +476,72 @@ public final class ItemUtils {
     			.filter(es -> es.getType() == EquipmentSlot.Type.HUMANOID_ARMOR)
     			.map(entity::getEquippedStack)
     			.toList();
+    }
+
+    /**
+     * Finds the number of items stored in a sack based on the tooltip lines.
+     * @param itemStack The item stack these lines belong to. This is used for logging purposes.
+     * @param lines The tooltip lines to search in. This isn't equivalent to the item's lore.
+     * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
+     */
+    @NotNull
+    public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines) {
+        return getItemCountInSack(itemStack, lines, false);
+    }
+
+    /**
+     * Finds the number of items stored in a sack from a list of texts.
+     * @param itemStack The item stack this list of texts belong to. This is used for logging purposes.
+     * @param lines A list of text lines that represent the tooltip of the item stack.
+     * @param isLore Whether the lines are from the item's lore or not. This is useful to figure out which line to look at, as lore and tooltip lines are different due to the first line being the item's name.
+     * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
+     */
+    @NotNull
+    public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines, boolean isLore) {
+        // Gemstone sack is a special case, it has a different 2nd line.
+		if (lines.size() >= 2 && StringUtils.endsWithAny(lines.get(isLore ? 0 : 1).getString(), "Sack", "Gemstones")) {
+			// Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
+            // Which equals: `Stored: 0/20k`
+			Matcher matcher = TextUtils.matchInList(lines, STORED_PATTERN);
+			if (matcher == null) {
+				// Log a warning every second if the amount couldn't be found, to prevent spamming the logs every frame (which can be hundreds of times per second)
+				if (Util.getMeasuringTimeMs() - lastLog > LOG_INTERVAL) {
+					LOGGER.warn("Failed to find stored amount in sack tooltip for item `{}`", Debug.DumpFormat.JSON.format(itemStack).getString()); // This is a very unintended way of serializing the item stack, but it's so much cleaner than actually using the codec
+					lastLog = Util.getMeasuringTimeMs();
+				}
+				return OptionalInt.empty();
+			} else return RegexUtils.parseOptionalIntFromMatcher(matcher, 1);
+		}
+		return OptionalInt.empty();
+    }
+
+    /**
+     * Finds the number of items stored in a stash based on item's name.
+     * @param itemStack The item stack.
+     * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
+     */
+    @NotNull
+    public static OptionalInt getItemCountInStash(@NotNull ItemStack itemStack) {
+        return getItemCountInStash(itemStack.getName());
+    }
+
+    /**
+     * Finds the number of items stored in a stash based on item's name.
+     * @param itemName The name of the item to look in.
+     * @return An {@link OptionalInt} containing the number of items stored in the stash, or an empty {@link OptionalInt} if the item is not a stash or the amount could not be found.
+     */
+    @NotNull
+    public static OptionalInt getItemCountInStash(@NotNull Text itemName) {
+        return RegexUtils.findIntFromMatcher(STASH_COUNT_PATTERN.matcher(itemName.getString()));
+    }
+
+    /**
+     * Finds the number of shards the player owns inside of the hunting box.
+     */
+    @NotNull
+    public static OptionalInt getItemCountInHuntingBox(@NotNull ItemStack stack) {
+    	Matcher matcher = ItemUtils.getLoreLineIfContainsMatch(stack, HUNTING_BOX_COUNT_PATTERN);
+
+    	return matcher != null ? RegexUtils.parseOptionalIntFromMatcher(matcher, "shards") : OptionalInt.empty();
     }
 }

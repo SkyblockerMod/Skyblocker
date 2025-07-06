@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 /**
  * A widget designed for cycling through a set of textures, represented by an enum.
  *
- * @param <T> The type of the enum entries, which must be an {@link Enum} and implement {@link Supplier<Identifier>}.
+ * @param <T> The type of the enum entries, which must be an {@link Enum} and implement {@link Supplier}{@code <}{@link Identifier}{@code >}.
  */
 public class CyclingTextureWidget<T extends Enum<T> & Supplier<Identifier>> extends ClickableWidget {
 
