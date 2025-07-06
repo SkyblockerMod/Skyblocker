@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import de.hysky.skyblocker.skyblock.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
@@ -721,6 +722,31 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.healthBars.emptyBarColor = newValue)
 								.controller(ColorControllerBuilder::create)
 								.build())
+						.build()
+				)
+				//Gyro Overlay
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay"))
+						.collapsed(true)
+						.option(Option.<GyroOverlay.Mode>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect"))
+								.binding(defaults.uiAndVisuals.gyroOverlay.gyroOverlayMode,
+										() -> config.uiAndVisuals.gyroOverlay.gyroOverlayMode,
+										newValue -> config.uiAndVisuals.gyroOverlay.gyroOverlayMode = newValue)
+								.controller(ConfigUtils::createEnumCyclingListController)
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay.Color"))
+								.binding(defaults.uiAndVisuals.gyroOverlay.gyroOverlayColor,
+										() -> config.uiAndVisuals.gyroOverlay.gyroOverlayColor,
+										newValue -> {
+											config.uiAndVisuals.gyroOverlay.gyroOverlayColor = newValue;
+											GyroOverlay.configCallback(newValue);
+
+										})
+								.controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
+								.build())
+
 						.build()
 				)
 
