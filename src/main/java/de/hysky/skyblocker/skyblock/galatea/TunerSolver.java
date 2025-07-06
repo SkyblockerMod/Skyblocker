@@ -151,24 +151,43 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 
 	/**
 	 * Updates the remaining click counters when the corresponding tuner slot
-	 * is clicked. Left clicks decrement and right clicks increment the
-	 * counter.
+	 * is clicked. The counters are adjusted based on the cycle length of the
+	 * element to correctly handle wrapping when clicking through the cycle
+	 * multiple times.
 	 */
 	@Override
 	public boolean onClickSlot(int slotId, ItemStack stack, int screenId, int button) {
 		if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) return false;
 		if (!isInMenu) return false;
 
-		if (button == 0) { // left click => decrement
-			if (colorSolved && slotId == 46) colorClicks--;
-			else if (speedSolved && slotId == 48) speedClicks--;
-			else if (pitchSolved && slotId == 50) pitchClicks--;
-		} else if (button == 1) { // right click => increment
-			if (colorSolved && slotId == 46) colorClicks++;
-			else if (speedSolved && slotId == 48) speedClicks++;
-			else if (pitchSolved && slotId == 50) pitchClicks++;
+		if (button != 0 && button != 1) return false;
+
+		int delta = button == 0 ? -1 : 1;
+
+		if (colorSolved && slotId == 46) {
+			colorClicks = updateClicks(colorClicks, COLOR_CYCLE.length, delta);
+		} else if (speedSolved && slotId == 48) {
+			speedClicks = updateClicks(speedClicks, SPEED_CYCLE.length, delta);
+		} else if (pitchSolved && slotId == 50) {
+			pitchClicks = updateClicks(pitchClicks, PITCH_CYCLE.length, delta);
 		}
 		return false;
+	}
+
+	/**
+	 * Adjusts the remaining clicks taking into account the cycle length so that
+	 * looping through the values keeps the counter accurate.
+	 *
+	 * @param clicks      current remaining clicks
+	 * @param cycleLength length of the cycle (number of options)
+	 * @param delta       change in clicks; {@code -1} for decrement, {@code 1} for increment
+	 * @return the updated click count
+	 */
+	private static int updateClicks(int clicks, int cycleLength, int delta) {
+		int forward = clicks >= 0 ? clicks : cycleLength + clicks; // distance when moving forward
+		forward = (forward + delta + cycleLength) % cycleLength;
+		int backward = cycleLength - forward;
+		return forward <= backward ? forward : -backward;
 	}
 
 
