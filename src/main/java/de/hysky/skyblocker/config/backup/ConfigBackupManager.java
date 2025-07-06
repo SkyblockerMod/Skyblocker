@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.backup;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -29,8 +30,9 @@ public class ConfigBackupManager {
 		} catch (IOException e) {
 			LOGGER.error("[Skyblocker] Failed to create backup directory!", e);
 		}
-	}
 
+		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> backupConfig());
+	}
 	public static void backupConfig() {
 		try {
 			Path configPath = SkyblockerConfigManager.getConfigPath();
