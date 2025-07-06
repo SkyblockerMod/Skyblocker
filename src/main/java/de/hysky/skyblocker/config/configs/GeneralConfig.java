@@ -103,6 +103,9 @@ public class GeneralConfig {
     public static class ItemList {
         @SerialEntry
         public boolean enableItemList = true;
+
+		@SerialEntry
+		public boolean enableCollapsibleEntries = false;
     }
 
     public static class ItemTooltip {

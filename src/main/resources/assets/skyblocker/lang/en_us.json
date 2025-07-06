@@ -295,7 +295,7 @@
   "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "Highlights logs when using an axe's thrown ability.",
   "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "Sweep Overlay Color",
   "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "Sweep Missing: Add the Sweep stat to your player list with /tablist",
-  
+
   "skyblocker.config.foraging.hunting": "Hunting",
 
   "skyblocker.config.general": "General",
@@ -329,6 +329,8 @@
 
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
+  "skyblocker.config.general.itemList.enableCollapsibleEntries": "Enable Collapsable Entry Groups",
+  "skyblocker.config.general.itemList.enableCollapsibleEntries.@Tooltip": "Group together similar items into one entry which can be expanded by clicking on it.",
 
   "skyblocker.config.general.itemList.filter.all": "All",
   "skyblocker.config.general.itemList.filter.entities": "Entities",

@@ -62,7 +62,8 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
-        if (NEURepoManager.isLoading()) return;
+		if (!SkyblockerConfigManager.get().general.itemList.enableCollapsibleEntries) return;
+        if (!ItemRepository.filesImported() || NEURepoManager.isLoading()) return;
 
         NEURepoManager.NEU_REPO.getConstants().getParents().getParents().forEach((parentId, childrenList) -> {
             Optional<ItemStack> parentItem = ItemRepository.getItemsStream().filter(itemStack -> itemStack.getNeuName().equals(parentId)).findFirst();
