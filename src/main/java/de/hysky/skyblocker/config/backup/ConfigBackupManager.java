@@ -33,6 +33,7 @@ public class ConfigBackupManager {
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> backupConfig());
 	}
+
 	public static void backupConfig() {
 		try {
 			Path configPath = SkyblockerConfigManager.getConfigPath();

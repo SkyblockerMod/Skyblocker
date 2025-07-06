@@ -96,7 +96,7 @@ public class ConfigBackupScreen extends Screen {
 						Text.stringifiedTranslatable("skyblocker.config.backup.confirm.text", selected.getFileName().toString()),
 						ScreenTexts.YES, ScreenTexts.NO));
 			}
-		}).size(90,20).position(width / 2 - 95, height - 28).build();
+		}).size(90, 20).position(width / 2 - 95, height - 28).build();
 		addDrawableChild(restoreBtn);
 		ButtonWidget done = ButtonWidget.builder(ScreenTexts.DONE, b -> close()).size(90, 20).position(width / 2 + 5, height - 28).build();
 		addDrawableChild(done);
