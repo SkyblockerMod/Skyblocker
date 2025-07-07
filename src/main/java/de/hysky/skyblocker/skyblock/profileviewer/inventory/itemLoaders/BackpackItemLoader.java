@@ -31,7 +31,7 @@ public class BackpackItemLoader extends ItemLoader {
             for (int j = 0; j < paddingNeeded; j++) {
                 ItemStack paddingItem = Ico.GRAY_DYE.copy();
                 paddingItem.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("skyblocker.profileviewer.inventory.inactive"));
-                paddingItem.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.translatable("skyblocker.profileviewer.inventory.inactive.description.backpack"),Text.translatable("skyblocker.profileviewer.inventory.inactive.description.general"))));
+                paddingItem.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.translatable("skyblocker.profileviewer.inventory.inactive.description.backpack"), Text.translatable("skyblocker.profileviewer.inventory.inactive.description.general"))));
                 backpackItems.add(paddingItem);
             }
         }

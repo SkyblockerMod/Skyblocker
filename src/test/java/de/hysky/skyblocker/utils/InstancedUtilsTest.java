@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class InstancedUtilsTest {
 
 	@SuppressWarnings("EqualsWithItself")
-    @Test
+	@Test
 	void testSameInstanceEqual() {
 		Vector3i vec1 = new Vector3i(8, 8, 8);
 

@@ -60,7 +60,7 @@ public class LegacyStringNbtReader {
 
 	/**
 	 * {@return the NBT compound parsed from the {@code string}}
-	 * 
+	 *
 	 * @throws CommandSyntaxException if the reader detects a syntax error (including
 	 * {@linkplain #TRAILING trailing strings})
 	 */
@@ -149,7 +149,7 @@ public class LegacyStringNbtReader {
 
 	/**
 	 * {@return the parsed NBT element}
-	 * 
+	 *
 	 * @throws CommandSyntaxException if the reader detects a syntax error
 	 */
 	public NbtElement parseElement() throws CommandSyntaxException {
@@ -174,7 +174,7 @@ public class LegacyStringNbtReader {
 
 	/**
 	 * {@return the parsed NBT compound}
-	 * 
+	 *
 	 * @throws CommandSyntaxException if the reader detects a syntax error
 	 */
 	public NbtCompound parseCompound() throws CommandSyntaxException {
@@ -305,11 +305,11 @@ public class LegacyStringNbtReader {
 			}
 
 			if (typeReader == NbtByte.TYPE) {
-				list.add((T) Byte.valueOf(((AbstractNbtNumber)nbtElement).byteValue()));
+				list.add((T) Byte.valueOf(((AbstractNbtNumber) nbtElement).byteValue()));
 			} else if (typeReader == NbtLong.TYPE) {
-				list.add((T) Long.valueOf(((AbstractNbtNumber)nbtElement).longValue()));
+				list.add((T) Long.valueOf(((AbstractNbtNumber) nbtElement).longValue()));
 			} else {
-				list.add((T) Integer.valueOf(((AbstractNbtNumber)nbtElement).intValue()));
+				list.add((T) Integer.valueOf(((AbstractNbtNumber) nbtElement).intValue()));
 			}
 
 			if (!this.readComma()) {

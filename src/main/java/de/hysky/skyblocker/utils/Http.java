@@ -54,7 +54,7 @@ public class Http {
 
 		return new ApiResponse(body, response.statusCode(), getCacheStatuses(headers), getAge(headers));
 	}
-	
+
 	public static InputStream downloadContent(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.GET()
@@ -69,7 +69,7 @@ public class Http {
 
 		return getDecodedInputStream(response);
 	}
-	
+
 	public static String sendGetRequest(String url) throws IOException, InterruptedException {
 		return sendCacheableGetRequest(url, null).content();
 	}
@@ -113,7 +113,7 @@ public class Http {
 	 * @param endpoint the endpoint - do not include any leading or trailing slashes
 	 * @param query the query string - use empty string if n/a
 	 * @return the requested data with zero pre-processing applied
-	 * 
+	 *
 	 * @implNote the {@code v2} prefix is automatically added
 	 */
 	public static ApiResponse sendHypixelRequest(String endpoint, @NotNull String query) throws IOException, InterruptedException {
@@ -149,7 +149,7 @@ public class Http {
 
 	/**
 	 * Returns the cache statuses of the resource. All possible cache status values conform to Cloudflare's.
-	 * 
+	 *
 	 * @see <a href="https://developers.cloudflare.com/cache/concepts/cache-responses/">Cloudflare Cache Docs</a>
 	 */
 	private static String[] getCacheStatuses(HttpHeaders headers) {

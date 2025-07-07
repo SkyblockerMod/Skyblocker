@@ -108,11 +108,12 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			float maxTime;
 			PetInfo pet = PetCache.getCurrentPet();
 			if (pet != null && pet.type().contains("SLUG")){
-				int level = LevelFinder.getLevelInfo("PET_"+pet.tier(),(long)pet.exp()).level;
+				int level = LevelFinder.getLevelInfo("PET_"+pet.tier(), (long) pet.exp()).level;
 				maxTime =20 * (1 - (level/200f));
-			}else{
+			} else {
 				maxTime = 20;
 			}
+			time = Math.clamp(time, 0, maxTime);
 			addComponent(Components.progressComponent(Ico.CLOCK, Text.of("Bobber Time"), SkyblockTime.formatTime(maxTime - time),  100 - (time / maxTime) * 100));
 		}
 		// rod reel timer
