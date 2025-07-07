@@ -7,6 +7,7 @@ import java.util.Locale;
 import com.google.common.collect.Lists;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
@@ -356,18 +357,29 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 		return false;
 	}
 
+	private @Nullable ItemStack getHoveredItemStack(double mouseX, double mouseY) {
+		return resultButtons.stream().filter(btn -> btn.isMouseOver(mouseX, mouseY)).findFirst().map(SkyblockRecipeResultButton::getDisplayStack).orElse(null);
+	}
+
 	@Override
 	public boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
 		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
 			boolean officialWikiLookup = WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode);
 			if (officialWikiLookup || WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
-				return this.resultButtons.stream()
-						.filter(button -> button.isMouseOver(mouseX, mouseY))
-						.findFirst().map(button -> {
-							WikiLookup.openWiki(button.getDisplayStack(), client.player, officialWikiLookup);
-							return true;
-						}).orElse(false);
+				ItemStack hovered = getHoveredItemStack(mouseX, mouseY);
+				if (hovered == null) return false;
+
+				WikiLookup.openWiki(hovered, client.player, officialWikiLookup);
+				return true;
 			}
+		}
+
+		if (SkyblockerConfigManager.get().helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(keyCode, scanCode)) {
+			ItemStack hovered = getHoveredItemStack(mouseX, mouseY);
+			if (hovered == null) return false;
+
+			ItemPrice.itemPriceLookup(client.player, hovered);
+			return true;
 		}
 		return false;
 	}
