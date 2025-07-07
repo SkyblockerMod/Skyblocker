@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.ContainerAndInventorySolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -28,6 +29,7 @@ public class SalvageHelper extends SimpleContainerSolver implements ContainerAnd
 		return slots.int2ObjectEntrySet().stream()
 				.filter(entry -> ItemUtils.getLoreLineIfContainsMatch(entry.getValue(), DUNGEON_SALVAGABLE) != null)
 				.filter(entry -> isPriceWithinRange(entry.getValue()))
+				.filter(entry -> wasDonatedToMuseum(entry.getValue()))
 				.map(entry -> ColorHighlight.yellow(entry.getIntKey()))
 				.toList();
 	}
@@ -38,6 +40,13 @@ public class SalvageHelper extends SimpleContainerSolver implements ContainerAnd
 	private boolean isPriceWithinRange(ItemStack stack) {
 		NetworthResult result = NetworthCalculator.getItemNetworth(stack);
 		return result.price() > 0 && result.price() < 100_000;
+	}
+
+	private boolean wasDonatedToMuseum(ItemStack stack) {
+		if (!SkyblockerConfigManager.get().dungeons.onlyHighlightUndonatedItems) return true;
+
+		String itemId = ItemUtils.getItemId(stack);
+		return MuseumItemCache.hasItemInMuseum(itemId);
 	}
 
 	@Override

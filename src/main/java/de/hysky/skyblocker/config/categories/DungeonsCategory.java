@@ -52,6 +52,13 @@ public class DungeonsCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.salvageHelper.onlyUndonated"))
+						.binding(defaults.dungeons.onlyHighlightUndonatedItems,
+								() -> config.dungeons.onlyHighlightUndonatedItems,
+								newValue -> config.dungeons.onlyHighlightUndonatedItems = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+                .option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter"))
 						.description(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip"))
 						.binding(defaults.dungeons.sellableItemsHighlighter,
