@@ -1,7 +1,7 @@
 {
     "key.categories.skyblocker": "Skyblocker",
     "key.hotbarSlotLock": "ホットバースロットのロック",
-    "skyblocker.config.title": "Skyblockerの設定",
+    "skyblocker.config.title": "Skyblocker%s",
     "skyblocker.config.general": "一般",
     "skyblocker.config.uiAndVisuals.bars": "体力,マナ,ディフェンス,経験値のバー",
     "skyblocker.config.uiAndVisuals.bars.enableBars": "バーを有効にする",
@@ -232,7 +232,7 @@
     "skyblocker.config.dungeons.dungeonChestProfit": "ダンジョンチェストの利益",
     "key.skyblocker.slottext": "スロットテキスト",
     "skyblocker.config.shortcutToKeybindsSettings": "キーバインドを編集する",
-    "skyblocker.config.shortcutToKeybindsSettings.@Text": "クリック... (キーバインド設定を開く)",
+    "skyblocker.config.shortcutToKeybindsSettings.@Text": "キーバインドメニュー",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "危険の警告を表示",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudraのグローエフェクト",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "触手による叩きつけやTNTによる危険にさらされているときに警告を表示します。警告の色は危険レベルに応じて変化します！",
