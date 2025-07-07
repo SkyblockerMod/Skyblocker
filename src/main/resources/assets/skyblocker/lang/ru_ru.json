@@ -1,7 +1,7 @@
 {
     "key.categories.skyblocker": "Skyblocker",
     "key.hotbarSlotLock": "Блокировка слота (хотбар)",
-    "skyblocker.config.title": "Настройки Skyblocker",
+    "skyblocker.config.title": "%s Skyblocker",
     "skyblocker.config.general": "Основные",
     "skyblocker.config.uiAndVisuals.bars": "Полоски здоровья, маны, защиты, скорости и опыта",
     "skyblocker.config.uiAndVisuals.bars.enableBars": "Включить полоски",
