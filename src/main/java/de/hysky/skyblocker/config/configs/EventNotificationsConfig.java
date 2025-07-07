@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.config.configs;
 
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.sound.SoundEvent;
@@ -10,13 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EventNotificationsConfig {
-    @SerialEntry
     public Criterion criterion = Criterion.SKYBLOCK;
 
-    @SerialEntry
     public Sound reminderSound = Sound.PLING;
 
-    @SerialEntry
     public Map<String, IntList> eventsReminderTimes = new HashMap<>();
 
     public enum Criterion {

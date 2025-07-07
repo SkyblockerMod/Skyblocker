@@ -63,7 +63,8 @@ public class SlotTextManager {
 			WardrobeKeybinds.INSTANCE,
 			new SkyblockGuideAdder(),
 			SameColorTerminal.INSTANCE,
-			AttributeLevelHelper.INSTANCE
+			AttributeLevelHelper.INSTANCE,
+			new BestiaryLevelAdder()
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 	private static final KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, "key.categories.skyblocker"));
