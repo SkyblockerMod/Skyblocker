@@ -26,8 +26,6 @@ import java.util.function.Supplier;
 
 public class PositionRuleOption implements WidgetOption<PositionRule> {
 
-	// TODO for selection of the parent widget create a method on the screen like "selectWidget(Consumer<HudWidget>)" or something like that
-
 	private final Supplier<PositionRule> valueGetter;
 	private final Consumer<PositionRule> valueSetter;
 
@@ -81,8 +79,10 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 			super(0, 0, 0, 0, Text.literal("hi"));
 			this.widgetConfig = config;
 			layout.getMainPositioner().alignHorizontalCenter();
+			// TODO translatable
 			parentButton = ButtonWidget.builder(Text.literal("Parent: ").append(getParentName()), ignored -> config.promptSelectWidget(this::onWidgetSelected, false)).build();
 			coordsDisplay = new TextWidget(Text.literal("hi"), MinecraftClient.getInstance().textRenderer);
+			coordsDisplay.setHeight(coordsDisplay.getHeight() + 6);
 			AnchorSelectionWidget parentPoint = new AnchorSelectionWidget(config, Text.literal("Parent Point"), true);
 			AnchorSelectionWidget thisPoint = new AnchorSelectionWidget(config, Text.literal("This Point"), false);
 			add(parentButton);

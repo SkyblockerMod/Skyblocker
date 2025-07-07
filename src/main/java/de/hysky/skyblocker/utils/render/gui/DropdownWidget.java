@@ -76,8 +76,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 	protected void renderHeader(DrawContext context, int mouseX, int mouseY, float delta) {
 		context.fill(getX(), getY(), getRight(), getY() + headerHeight + 1, 0xFF << 24);
 		context.drawBorder(getX(), getY(), getWidth(), headerHeight + 1, -1);
-		drawScrollableText(context, client.textRenderer, Text.literal(
-						selected.toString()),
+		drawScrollableText(context, client.textRenderer, formatter.apply(selected),
 				getX() + 2,
 				getY() + 2,
 				getRight() - 2,

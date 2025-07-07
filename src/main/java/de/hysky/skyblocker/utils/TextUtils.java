@@ -1,8 +1,6 @@
 package de.hysky.skyblocker.utils;
 
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -110,15 +108,5 @@ public final class TextUtils {
 		}
 
 		return null;
-	}
-
-	public static Text merge(@NotNull List<Text> texts) {
-		if (texts.isEmpty()) return Text.empty();
-		if (texts.size() == 1) return texts.getFirst().copy();
-		MutableText first = texts.getFirst().copy();
-		for (int i = 1; i < texts.size(); i++) {
-			first.append(texts.get(i).copy());
-		}
-		return first;
 	}
 }

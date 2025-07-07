@@ -14,7 +14,9 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
+import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import org.jetbrains.annotations.NotNull;
@@ -52,6 +54,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	 * Where the user started dragging relative to the widget's position. Null if not dragging.
 	 */
 	private @Nullable ScreenPos dragRelative = null;
+	private boolean openPanelAfterDragging = false;
 
 	private @Nullable SelectWidgetPrompt selectWidgetPrompt = null;
 
@@ -96,6 +99,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	private void addWidget(HudWidget widget) {
 		builder.addWidget(widget);
 		// TODO default config stuff
+		widget.setInherited(false);
 		widget.setPositionRule(
 				new PositionRule(
 						"screen",
@@ -117,7 +121,6 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 		super.render(context, mouseX, mouseY, deltaTicks);
 		builder.render(context, width, height, true);
-		sidePanelWidget.render(context, mouseX, mouseY, deltaTicks);
 		hoveredWidget = null;
 		for (HudWidget hudWidget : builder.getWidgets()) {
 			if (hudWidget.isMouseOver(mouseX, mouseY)) {
@@ -132,10 +135,18 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		if (selectedWidget != null) {
 			context.drawBorder(selectedWidget.getX() - 1, selectedWidget.getY() - 1, selectedWidget.getScaledWidth() + 2, selectedWidget.getScaledHeight() + 2, Colors.GREEN);
 		}
+		topBarWidget.visible = selectedWidget == null || selectedWidget.getY() >= 16;
 
+		MatrixStack matrices = context.getMatrices();
+		matrices.push();
+		matrices.translate(0, 0, 100);
+		sidePanelWidget.render(context, mouseX, mouseY, deltaTicks);
 		// Render on top of everything
+		matrices.translate(0, 0, 25);
 		topBarWidget.render(context, mouseX, mouseY, deltaTicks);
+		matrices.translate(0, 0, 25);
 		addWidgetWidget.render(context, mouseX, mouseY, deltaTicks);
+		matrices.pop();
 	}
 
 	@Override
@@ -153,6 +164,10 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 			);
 			selectedWidget.setPositionRule(newRule);
 			updatePositions();
+			if (sidePanelWidget.isOpen() && new ScreenRect(sidePanelWidget.getX(), sidePanelWidget.getY(), sidePanelWidget.getWidth(), sidePanelWidget.getHeight()).overlaps(new ScreenRect(selectedWidget.getX(), selectedWidget.getY(), selectedWidget.getScaledWidth(), selectedWidget.getScaledHeight()))) {
+				sidePanelWidget.close();
+				openPanelAfterDragging = true;
+			}
 			return true;
 		}
 		return false;
@@ -167,6 +182,9 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	public void removed() {
 		builder.updateConfig();
 		builder.updateWidgetsList();
+		if (currentLocation == Location.UNKNOWN) {
+			WidgetManager.getScreenBuilder(Utils.getLocation(), WidgetManager.ScreenLayer.HUD).updateWidgetsList();
+		}
 	}
 
 	@Override
@@ -196,15 +214,24 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		}
 		dragRelative = new ScreenPos((int) (mouseX - selectedWidget.getX()), (int) (mouseY - selectedWidget.getY()));
 		if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && (!sidePanelWidget.isOpen() || !selectedWidget.equals(sidePanelWidget.getHudWidget()))) {
-			boolean rightSide = selectedWidget.getX() + selectedWidget.getWidth() / 2 < width / 2;
-			sidePanelWidget.open(selectedWidget, this, rightSide, rightSide ? width - sidePanelWidget.getWidth() : 0);
+			openSidePanel();
 		}
 		return true;
+	}
+
+	private void openSidePanel() {
+		if (selectedWidget == null) return;
+		boolean rightSide = selectedWidget.getX() + selectedWidget.getWidth() / 2 < width / 2;
+		sidePanelWidget.open(selectedWidget, this, rightSide, rightSide ? width - sidePanelWidget.getWidth() : 0);
 	}
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		dragRelative = null;
+		if (openPanelAfterDragging) {
+			openPanelAfterDragging = false;
+			openSidePanel();
+		}
 		return super.mouseReleased(mouseX, mouseY, button);
 	}
 
@@ -217,6 +244,14 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	public void promptSelectWidget(@NotNull Consumer<@Nullable HudWidget> callback, boolean allowItself) {
 		selectWidgetPrompt = new SelectWidgetPrompt(callback, allowItself);
 		sidePanelWidget.close();
+	}
+
+	@Override
+	public void removeWidget(@NotNull HudWidget widget) {
+		builder.removeWidget(widget);
+		sidePanelWidget.close();
+		selectedWidget = null;
+		updatePositions();
 	}
 
 	@Override

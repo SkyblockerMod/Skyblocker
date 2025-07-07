@@ -35,12 +35,11 @@ public class DropdownThing<T> extends DropdownWidget<T> {
         context.drawVerticalLine(getRight() + 1, y, y2, ColorHelper.withAlpha(15, 0));
 
         if (isHovered() && mouseY < y2) {
-            context.fill(getX(), y, getRight(), y2, ColorHelper.withAlpha(100, 0));
+            context.fill(getX(), y, getRight() + 1, y2, ColorHelper.withAlpha(100, 0));
         } else {
-            context.fill(getX(), y, getRight(), y2, ColorHelper.withAlpha(50, 0));
+            context.fill(getX(), y, getRight() + 1, y2, ColorHelper.withAlpha(50, 0));
         }
-        drawScrollableText(context, client.textRenderer, Text.literal(
-                        selected.toString()),
+        drawScrollableText(context, client.textRenderer, formatter.apply(selected),
                 getX() + 2,
                 getY() + 2,
                 getRight() - 2,
@@ -50,7 +49,7 @@ public class DropdownThing<T> extends DropdownWidget<T> {
 
     @Override
     protected void drawMenuListBackground(DrawContext context, int listX, int listY, int listWidth, int listHeight) {
-        context.enableScissor(listX, listY - 1, listX + listWidth, listY + listHeight);
+        context.enableScissor(listX, listY - 1, listX + listWidth, listY + listHeight + 2);
         context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, listX, listY - 3, listWidth, listHeight + 5);
         context.disableScissor();
     }

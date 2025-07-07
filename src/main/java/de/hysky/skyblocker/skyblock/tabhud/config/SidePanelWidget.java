@@ -21,7 +21,7 @@ public class SidePanelWidget extends ContainerWidget {
 	private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_outer_space");
 
 	private final MinecraftClient client = MinecraftClient.getInstance();
-	private final List<ClickableWidget> widgets = new ArrayList<>();
+	private final List<ClickableWidget> optionWidgets = new ArrayList<>();
 
 	private DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
 	private boolean rightSide = false;
@@ -40,7 +40,7 @@ public class SidePanelWidget extends ContainerWidget {
 
 	@Override
 	public List<? extends Element> children() {
-		return widgets;
+		return optionWidgets;
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class SidePanelWidget extends ContainerWidget {
 		context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, getX() - 4, getY() - 4, getWidth() + 8, getHeight() + 8);
 		context.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
 
-		for (ClickableWidget clickableWidget : this.widgets) {
+		for (ClickableWidget clickableWidget : this.optionWidgets) {
 			if (isNotVisible(clickableWidget.getY(), clickableWidget.getBottom())) continue;
 			clickableWidget.render(context, mouseX, mouseY, deltaTicks);
 		}
@@ -80,6 +80,7 @@ public class SidePanelWidget extends ContainerWidget {
 	}
 
 	public void open() {
+		if (isOpen()) return;
 		visible = true;
 		animation = 0.0f;
 		animationEnd = targetX;
@@ -89,24 +90,40 @@ public class SidePanelWidget extends ContainerWidget {
 
 	public void open(HudWidget hudWidget, WidgetConfig config, boolean rightSide, int x) {
 		this.hudWidget = hudWidget;
-		this.rightSide = rightSide;
-		layout = DirectionalLayoutWidget.vertical().spacing(2);
-		widgets.clear();
+		layout = DirectionalLayoutWidget.vertical().spacing(5);
+		optionWidgets.clear();
 		add(new TextWidget(0, 15, hudWidget.getInformation().displayName(), client.textRenderer));
-		add(ButtonWidget.builder(Text.literal("remove"), b -> {}).build());
-		layout.add(EmptyWidget.ofHeight(10));
-		for (WidgetOption<?> option : hudWidget.getOptions()) {
-			add(option.createNewWidget(config));
+		add(ButtonWidget.builder(Text.literal("Remove"), b -> config.removeWidget(hudWidget)).build()); // TODO translatable
+		layout.add(EmptyWidget.ofHeight(5));
+
+		if (hudWidget.isInherited()) {
+			add(new TextWidget(Text.literal("This widget is from a parent screen, edit it there or create a copy."), client.textRenderer));
+			add(ButtonWidget.builder(Text.literal("Create Copy"), b -> { // TODO translatable
+				hudWidget.setInherited(false);
+				open(hudWidget, config, rightSide, x);
+			}).build());
 		}
-		for (ClickableWidget widget : widgets) {
+		else {
+			List<WidgetOption<?>> options = new ArrayList<>();
+			hudWidget.getOptions(options);
+			for (WidgetOption<?> option : options) {
+				add(option.createNewWidget(config));
+			}
+		}
+		for (ClickableWidget widget : optionWidgets) {
 			widget.setWidth(getWidth() - 6 - 1); // remove 6 for scrollbar and one for a liiiitle padding
 		}
 		layout.refreshPositions();
+		if (isOpen() && (x != targetX || rightSide != this.rightSide)) {
+			isOpen = false;
+		}
+		this.rightSide = rightSide;
 		targetX = x;
 		open();
 	}
 
 	public void close() {
+		if (!isOpen()) return;
 		animationStart = getX();
 		animationEnd = getX() + (rightSide ? (getWidth() + 8) : (-getWidth() - 8));
 		animation = 0;
@@ -136,7 +153,7 @@ public class SidePanelWidget extends ContainerWidget {
 	@Override
 	public void setWidth(int width) {
 		super.setWidth(width);
-		for (ClickableWidget widget : widgets) {
+		for (ClickableWidget widget : optionWidgets) {
 			widget.setWidth(getWidth() - 6 - 1); // remove 6 for scrollbar and one for a liiiitle padding
 		}
 		layout.refreshPositions();
@@ -147,7 +164,7 @@ public class SidePanelWidget extends ContainerWidget {
 	}
 
 	private void add(@NotNull ClickableWidget widget) {
-		widgets.add(widget);
+		optionWidgets.add(widget);
 		layout.add(widget);
 	}
 

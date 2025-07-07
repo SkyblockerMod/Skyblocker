@@ -168,6 +168,12 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 		nextPage = ButtonWidget.builder(Text.literal("Next Page"), button -> clickAndWaitForServer(53, 0))
 				.size(100, 15)
 				.build();
+		addDrawableChild(widgetsElementList);
+		addDrawableChild(back);
+		addDrawableChild(thirdColumnButton);
+		addDrawableChild(thirdColumnButton);
+		addDrawableChild(previousPage);
+		addDrawableChild(nextPage);
 		refreshWidgetPositions();
 	}
 

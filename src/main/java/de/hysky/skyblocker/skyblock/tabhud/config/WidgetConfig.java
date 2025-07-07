@@ -17,6 +17,8 @@ public interface WidgetConfig {
 	 */
 	void promptSelectWidget(@NotNull Consumer<@Nullable HudWidget> callback, boolean allowItself);
 
+	void removeWidget(@NotNull HudWidget widget);
+
 	HudWidget getEditedWidget();
 
 	int getScreenWidth();

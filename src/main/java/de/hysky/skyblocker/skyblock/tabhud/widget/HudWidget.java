@@ -12,7 +12,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
@@ -58,11 +57,14 @@ public abstract class HudWidget extends AbstractWidget {
 		renderWidget(context, delta);
 	}
 
-	public List<WidgetOption<?>> getOptions() {
-		List<WidgetOption<?>> options = new ArrayList<>();
+	/**
+	 * Add options to the list that will be saved and show up in the config screen. These options should be per widget, not global.
+	 * @param options list to add to.
+	 * @apiNote REMEMBER TO CALL SUPER
+	 */
+	public void getOptions(List<WidgetOption<?>> options) {
 		options.add(new FloatOption("scale", Text.literal("Scale"), this::getScale, this::setScale).setMinAndMax(0.2f, 2f));
 		options.add(new PositionRuleOption(this::getPositionRule, this::setPositionRule));
-		return options;
 	}
 
 	public final PositionRule getPositionRule() {
@@ -106,6 +108,10 @@ public abstract class HudWidget extends AbstractWidget {
 
 	private boolean positioned = false;
 	private boolean visible = false;
+	/**
+	 * Used for the config screen.
+	 */
+	private boolean inherited = false;
 
 
 	public final boolean isPositioned() {
@@ -122,6 +128,14 @@ public abstract class HudWidget extends AbstractWidget {
 
 	public final void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+
+	public final boolean isInherited() {
+		return inherited;
+	}
+
+	public final void setInherited(boolean inherited) {
+		this.inherited = inherited;
 	}
 
 	@Override

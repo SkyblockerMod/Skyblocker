@@ -3,21 +3,23 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import com.demonwav.mcdev.annotations.Translatable;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.config.option.BooleanOption;
+import de.hysky.skyblocker.skyblock.tabhud.config.option.FloatOption;
+import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.TextUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -54,6 +56,9 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	private String lastError = null;
 	private final @NotNull Information information;
 
+	protected boolean drawBorder = true;
+	protected float backgroundOpacity = 0.75f;
+
 	/**
 	 * Most often than not this should be instantiated only once.
 	 *
@@ -67,11 +72,11 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	}
 
 	public ComponentBasedWidget(Text title, int color, String id) {
-		this(title, color, new Information(id, TextUtils.merge(title.withoutStyle()), l -> true));
+		this(title, color, new Information(id, title.copyContentOnly(), l -> true));
 	}
 
 	public ComponentBasedWidget(Text title, int color, String id, Predicate<Location> availableIn) {
-		this(title, color, new Information(id, TextUtils.merge(title.withoutStyle()), availableIn));
+		this(title, color, new Information(id, title.copyContentOnly(), availableIn));
 	}
 
 	/**
@@ -168,23 +173,27 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 		ms.push();
 
-		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
-			GameOptions options = MinecraftClient.getInstance().options;
-			int textBackgroundColor = options.getTextBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground && backgroundOpacity > 0) {
+			int textBackgroundColor = ColorHelper.fromFloats(backgroundOpacity, 0, 0, 0);
 			context.fill(1, 0, w - 1, h, textBackgroundColor);
 			context.fill(0, 1, 1, h - 1, textBackgroundColor);
 			context.fill(w - 1, 1, w, h - 1, textBackgroundColor);
 		}
 		// move above background (if exists)
-		ms.translate(0, 0, 100);
+		ms.translate(0, 0, 10);
 
 		int strHeightHalf = txtRend.fontHeight / 2;
-		int strAreaWidth = txtRend.getWidth(title) + 4;
+		int strWidth = txtRend.getWidth(title);
+		int strAreaWidth = strWidth + 4;
 
-		context.drawText(txtRend, title, 8, 2, this.color, false);
+		if (drawBorder) {
+			context.drawText(txtRend, title, 8, 2, this.color, false);
+		} else {
+			context.drawText(txtRend, title, (w - strWidth) / 2, 2, this.color, false);
+		}
 
 		// Only draw borders if not in minimal mode
-		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal()) {
+		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() && drawBorder) {
 			this.drawHLine(context, 2, 1 + strHeightHalf, 4);
 			this.drawHLine(context, 2 + strAreaWidth + 4, 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
 			this.drawHLine(context, 2, h - 2, w - 4);
@@ -193,10 +202,10 @@ public abstract class ComponentBasedWidget extends HudWidget {
 			this.drawVLine(context, w - 2, 2 + strHeightHalf, h - 4 - strHeightHalf);
 		}
 
-		int yOffs = BORDER_SZE_N;
+		int yOffs = BORDER_SZE_N + (drawBorder ? 0 : -2);
 
 		for (Component c : components) {
-			c.render(context, BORDER_SZE_W, yOffs);
+			c.render(context, BORDER_SZE_W + (drawBorder ? 0 : -3), yOffs);
 			yOffs += c.getHeight() + Component.PAD_L;
 		}
 		// pop manipulations above
@@ -217,17 +226,24 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		}
 
 		h -= Component.PAD_L / 2; // less padding after lowest/last component
-		h += BORDER_SZE_N + BORDER_SZE_S - 2;
-		w += BORDER_SZE_E + BORDER_SZE_W;
+		h += BORDER_SZE_N + BORDER_SZE_S - 2 + (drawBorder ? 0 : -6);
+		w += BORDER_SZE_E + BORDER_SZE_W + (drawBorder ? 0 : -6);
 
 		// min width is dependent on title
-		w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + txtRend.getWidth(title) + 4 + 4 + 1);
+		w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + (drawBorder ? 0 : -6) + txtRend.getWidth(title) + 4 + 4 + 1);
 		// update the positions so it doesn't wait for the next tick or something
 	}
 
 	@Override
 	public @NotNull Information getInformation() {
 		return information;
+	}
+
+	@Override
+	public void getOptions(List<WidgetOption<?>> options) {
+		super.getOptions(options);
+		options.add(new BooleanOption("draw_border", Text.literal("Draw Border"), () -> drawBorder, b -> drawBorder = b));
+		options.add(new FloatOption("background_opacity", Text.literal("Background Opacity"), () -> backgroundOpacity, b -> backgroundOpacity = b));
 	}
 
 	private void drawHLine(DrawContext context, int xpos, int ypos, int width) {

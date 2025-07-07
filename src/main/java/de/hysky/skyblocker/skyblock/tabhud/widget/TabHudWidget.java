@@ -77,7 +77,7 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 			}
 		} else {
 			List<Text> list = new ArrayList<>(widget.lines().size() + 1);
-			list.add(widget.detail());
+			if (!widget.detail().getString().isBlank()) list.add(widget.detail());
 			list.addAll(widget.lines());
 			updateContent(list, widget.playerListEntries());
 		}

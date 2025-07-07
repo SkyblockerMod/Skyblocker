@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.TopAlignedWidg
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.profiler.Profilers;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 public class ScreenBuilder {
 
@@ -76,17 +78,21 @@ public class ScreenBuilder {
 	 */
 	public void updateConfig() {
 		JsonObject newConfig = new JsonObject();
+		Set<String> widgetIds = widgets.stream().map(w -> w.getInformation().id()).collect(Collectors.toCollection(ObjectOpenHashSet::new));
 		for (HudWidget widget : widgets) {
+			if (widget.isInherited()) continue; // don't want to save inherited stuff
 			JsonObject widgetConfig = new JsonObject();
-			for (WidgetOption<?> option : widget.getOptions()) {
+			List<WidgetOption<?>> options = new ArrayList<>();
+			widget.getOptions(options);
+			for (WidgetOption<?> option : options) {
 				widgetConfig.add(option.getId(), option.toJson());
 			}
 			newConfig.add(widget.getInformation().id(), widgetConfig);
 		}
 		if (parent != null) {
 			for (String s : parent.getFullConfig(false).keySet()) {
-				if (!newConfig.has(s)) {
-					newConfig.addProperty(s, false);
+				if (!widgetIds.contains(s)) {
+					newConfig.addProperty(s, false); // explicitly mark it has disabled if parent(s) has it but not this.
 				}
 			}
 		}
@@ -99,14 +105,17 @@ public class ScreenBuilder {
 	public void updateWidgetsList() {
 		Profilers.get().push("skyblocker:updateWidgetsList");
 		widgets.clear();
-		for (Map.Entry<String, JsonElement> entry : getFullConfig(false).entrySet()) {
+		for (Map.Entry<String, JsonElement> entry : getFullConfig(true).entrySet()) {
 			if (!entry.getValue().isJsonObject()) {
 				if (entry.getValue().isJsonPrimitive() && !entry.getValue().getAsJsonPrimitive().getAsBoolean()) continue;
 				throw new IllegalStateException("Invalid widget config: " + entry.getKey());
 			}
 			HudWidget widget = WidgetManager.getWidgetOrPlaceholder(entry.getKey());
 			JsonObject object = entry.getValue().getAsJsonObject();
-			for (WidgetOption<?> option : widget.getOptions()) {
+			widget.setInherited(object.has("inherited") && object.get("inherited").getAsBoolean());
+			List<WidgetOption<?>> options = new ArrayList<>();
+			widget.getOptions(options);
+			for (WidgetOption<?> option : options) {
 				JsonElement element = object.get(option.getId());
 				if (element == null) {
 					LOGGER.warn("Widget {} has no value for option {}", entry.getKey(), option.getId());

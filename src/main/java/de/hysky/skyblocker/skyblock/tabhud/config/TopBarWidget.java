@@ -11,6 +11,7 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class TopBarWidget extends ContainerWidget {
 		locations.remove(Location.UNKNOWN);
 		locations.addFirst(Location.UNKNOWN);
 		locationDropdown = new DropdownThing<>(width / 2 - 100 - 5, 0, 100, 200, locations, onLocationSelected, Utils.getLocation());
+		locationDropdown.setFormatter(location -> location == Location.UNKNOWN ? Text.literal("Everywhere").formatted(Formatting.YELLOW) : Text.literal(location.toString()));
 		screenLayerDropdown = new DropdownThing<>(width / 2 + 5, 0, 100, 200, List.of(WidgetManager.ScreenLayer.values()), onLayerSelected, WidgetManager.ScreenLayer.HUD);
 	}
 
