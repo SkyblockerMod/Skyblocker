@@ -1251,5 +1251,12 @@
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError": "無效的運算符",
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidCharacterError": "無效字元",
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError": "無效數值",
-    "skyblocker.config.uiAndVisuals.slotText.attributeLevels": "屬性等級"
+    "skyblocker.config.uiAndVisuals.slotText.attributeLevels": "屬性等級",
+    "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "集市快捷數量",
+    "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled": "已啟用",
+    "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled.@Tooltip": "增加三個用於快速填寫集市購買訂單數量的按鈕",
+    "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.slotQuantity": "欄位#%s數量",
+    "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse": "點擊後關閉告示牌",
+    "skyblocker.config.misc.configBackend": "後端設定",
+    "skyblocker.config.misc.configBackend.@Tooltip": "你可以在YetAnotherConfigLib（YACL）和MoulConfig兩種設定介面之中選擇一種。"
 }
