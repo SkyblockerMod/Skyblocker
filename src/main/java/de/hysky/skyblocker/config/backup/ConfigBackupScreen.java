@@ -73,19 +73,7 @@ public class ConfigBackupScreen extends Screen {
 							// ignore
 						}
 						if (parent != null) {
-							Screen refreshed;
-							if (parent instanceof YACLScreen yacl) {
-								try {
-									Field f = YACLScreen.class.getDeclaredField("parent");
-									f.setAccessible(true);
-									refreshed = SkyblockerConfigManager.createGUI((Screen) f.get(yacl));
-								} catch (Exception e) {
-									refreshed = SkyblockerConfigManager.createGUI(null);
-								}
-							} else {
-								refreshed = SkyblockerConfigManager.createGUI(null);
-							}
-							client.setScreen(refreshed);
+							client.setScreen(SkyblockerConfigManager.createGUI(parent));
 						} else {
 							client.setScreen(null);
 						}

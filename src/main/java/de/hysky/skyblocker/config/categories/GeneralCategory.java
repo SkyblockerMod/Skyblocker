@@ -72,8 +72,8 @@ public class GeneralCategory {
 						.collapsed(true)
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.general.backup.manage"))
-								.text(Text.translatable("text.skyblocker.open"))
-								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new ConfigBackupScreen(screen)))
+								.prompt(Text.translatable("text.skyblocker.open"))
+								.action(screen -> MinecraftClient.getInstance().setScreen(new ConfigBackupScreen(screen)))
 								.build())
 						.build())
 				// Speed Presets
