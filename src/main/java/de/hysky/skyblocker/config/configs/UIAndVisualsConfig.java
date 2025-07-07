@@ -264,6 +264,8 @@ public class UIAndVisualsConfig {
 	public static class Bars {
 		public boolean enableBars = true;
 
+		public boolean enableVanillaStyleManaBar = true;
+
 		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
 
 		// Kept in for backwards compatibility, remove if needed

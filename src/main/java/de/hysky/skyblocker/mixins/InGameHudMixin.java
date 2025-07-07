@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
+import de.hysky.skyblocker.skyblock.fancybars.VanillaStyleManaBar;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
@@ -56,9 +58,16 @@ public abstract class InGameHudMixin {
     @Unique
     private static final Pattern DICER_TITLE_BLACKLIST = Pattern.compile(".+? DROP!");
 
+    @Unique
+    private final FancyStatusBars statusBars = new FancyStatusBars();
+    @Unique
+    final VanillaStyleManaBar vanillaStyleManaBar = new VanillaStyleManaBar();
+
     @Shadow
     @Final
     private MinecraftClient client;
+    @Shadow
+    private int ticks;
 
 	@Unique
 	private boolean isQuiverSlot = false;
@@ -200,5 +209,24 @@ public abstract class InGameHudMixin {
 	@WrapWithCondition(method = "renderPlayerList", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/gui/DrawContext;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"))
 	private boolean skyblocker$shouldRenderHud(PlayerListHud playerListHud, DrawContext context, int scaledWindowWidth, Scoreboard scoreboard, ScoreboardObjective objective) {
 		return !Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.shouldRenderVanilla() || MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen;
+	}
+
+    @Inject(method = "renderFood", at = @At("HEAD"), cancellable = true)
+    private void skyblocker$renderManaOverFood(DrawContext context, PlayerEntity player, int top, int right, CallbackInfo ci) {
+        if (Utils.isOnSkyblock() && vanillaStyleManaBar.render(context, top, right, ticks)) ci.cancel();
+    }
+
+	@Inject(method= "renderMountHealth", at = @At("HEAD"), cancellable = true)
+	private void skyblocker$renderManaOverMouthHealth(DrawContext context, CallbackInfo ci) {
+		// Values copied from InGameHud.renderMountHealth
+		int right = context.getScaledWindowWidth() / 2 + 91;
+		int top = context.getScaledWindowHeight() - 39;
+
+		if (Utils.isOnSkyblock() && vanillaStyleManaBar.render(context, top, right, ticks)) ci.cancel();
+	}
+
+	@ModifyReturnValue(method = "getAirBubbleY", at = @At("RETURN"))
+	private int skyblocker$moveBubblesUp(int original) {
+		return original - 10;
 	}
 }
