@@ -370,5 +370,7 @@
     "skyblocker.config.general.searchOverlay.historyLabel": "Historie:",
     "skyblocker.config.general.quiverWarning.enableQuiverWarningAfterDungeon": "Aktiviere Köcher Warnung nach einem Dungeon",
     "skyblocker.config.general.searchOverlay.starsTooltip": "Sternzähler für Dungeon Artikel",
-    "skyblocker.config.general.searchOverlay.maxPet": "Maximaler Pet Level"
+    "skyblocker.config.general.searchOverlay.maxPet": "Maximaler Pet Level",
+    "skyblocker.config.general.speedPresets": "Geschwindigkeit Vorsteinstellung",
+    "skyblocker.config.general.searchOverlay.deleteTooltip": "Entferne Historie eintrag"
 }
