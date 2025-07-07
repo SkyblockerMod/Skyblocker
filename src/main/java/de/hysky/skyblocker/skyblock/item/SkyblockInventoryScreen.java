@@ -3,8 +3,11 @@ package de.hysky.skyblocker.skyblock.item;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -21,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
@@ -110,6 +114,9 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
     public SkyblockInventoryScreen(PlayerEntity player) {
         super(player);
+		if (ResourcePackCompatibility.options.renameInventoryScreen().orElse(false)) {
+			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenEquipmentQuickNavSkyblocker": "InventoryScreenEquipmentSkyblocker"));
+		}
 	    SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);
 	    for (int i = 0; i < 4; i++) {
 		    equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
@@ -169,9 +176,11 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
         super.drawBackground(context, delta, mouseX, mouseY);
-        for (int i = 0; i < 4; i++) {
-            context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, x + 76 + (i == 3 ? 21 : 0), y + 7 + i * 18, 18, 18);
+        for (int i = 0; i < 3; i++) {
+            context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, x + 76, y + 7 + i * 18, 18, 18);
         }
+		Slot slot = handler.slots.get(45);
+		context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, x + slot.x - 1, y + slot.y - 1, 18, 18);
     }
 
     @Override
@@ -184,7 +193,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
     private static class EquipmentSlot extends Slot {
 
-        public EquipmentSlot(Inventory inventory, int index, int x, int y) {
+        private EquipmentSlot(Inventory inventory, int index, int x, int y) {
             super(inventory, index, x, y);
         }
 

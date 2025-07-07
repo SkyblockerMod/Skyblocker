@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
@@ -301,6 +300,8 @@ public class SmoothAOTE {
 		} else if (Utils.getIslandArea().equals("⏣ Jungle Temple")) { //do not allow in jungle temple
 			return false;
 		} else if (Utils.getLocation() == Location.PRIVATE_ISLAND && !Utils.getIslandArea().equals("⏣ Your Island")) { //do not allow it when visiting
+			return false;
+		} else if (Utils.getIslandArea().equals("⏣ Dojo")) { //do not allow in dojo
 			return false;
 		} else if (Utils.isInDungeons()) { //check places in dungeons where you can't teleport
 			if (DungeonManager.isInBoss() && DungeonManager.getBoss() == DungeonBoss.MAXOR) {

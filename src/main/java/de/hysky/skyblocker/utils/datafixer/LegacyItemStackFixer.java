@@ -60,7 +60,7 @@ public class LegacyItemStackFixer {
 			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(stack.get(DataComponentTypes.CUSTOM_DATA).getNbt().getCompoundOrEmpty("ExtraAttributes")));
 		}
 
-		//Hide Attributes & Vanilla Enchantments		
+		//Hide Attributes & Vanilla Enchantments
 		TooltipDisplayComponent display = stack.getOrDefault(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplayComponent.DEFAULT)
 				.with(DataComponentTypes.ATTRIBUTE_MODIFIERS, true)
 				.with(DataComponentTypes.ENCHANTMENTS, true);
