@@ -76,7 +76,6 @@ public class GeneralConfig {
     public static class ItemList {
         public boolean enableItemList = true;
 
-		@SerialEntry
 		public boolean enableCollapsibleEntries = false;
     }
 
