@@ -1,7 +1,7 @@
 {
     "key.categories.skyblocker": "Skyblocker",
     "key.hotbarSlotLock": "锁定快捷栏",
-    "skyblocker.config.title": "Skyblocker设置",
+    "skyblocker.config.title": "Skyblocker%s",
     "skyblocker.config.general": "通用",
     "skyblocker.config.uiAndVisuals.bars": "生命值、法力、防御、速度和经验条",
     "skyblocker.config.uiAndVisuals.bars.enableBars": "启用属性条",
@@ -801,7 +801,7 @@
     "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.changingZoneMessage": "更换了区域。正在重新启动……",
     "skyblocker.config.dungeons.livid.enableLividColorBoundingBox": "启用Livid边界箱",
     "key.skyblocker.slottext": "槽位文本",
-    "skyblocker.config.shortcutToKeybindsSettings.@Text": "点击…（打开按键绑定选项）",
+    "skyblocker.config.shortcutToKeybindsSettings.@Text": "按键绑定菜单",
     "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "当处于绯红岛时，阻止迷雾出现在离玩家更近的地方，就像原版的下界生物群系那样。",
     "skyblocker.config.crimsonIsle.extendNetherFog": "调整下界迷雾距离",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "当面临触手重击或TNT的危险情况时显示警告。警告的颜色根据危险级别而定！",
