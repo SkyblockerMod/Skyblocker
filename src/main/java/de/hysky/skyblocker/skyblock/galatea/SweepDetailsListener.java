@@ -1,17 +1,21 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
+import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("RegExpRepeatedSpace") // followup messages have 2 leading spaces
 public class SweepDetailsListener implements ChatMessageListener {
+	// Used to keep cancelled sweep messages in logs
+	private static final Logger LOGGER = LogUtils.getLogger();
 	protected static final Pattern SWEEP_DETAILS = Pattern.compile("Sweep Details: ([\\d.]+)∮ Sweep");
 	protected static final Pattern TREE_TOUGHNESS = Pattern.compile("  (.+?) Tree Toughness: ([\\d.]+) ([\\d.]+) Logs");
 	protected static final Pattern AXE_THROW_PENALTY = Pattern.compile("  Axe throw: (-\\d+)% Sweep ([\\d.]+) Logs");
@@ -77,6 +81,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 			}
 			lastSweep = maxSweep;
 
+			LOGGER.info(msg);
 			return ChatFilterResult.FILTER;
 		}
 
@@ -88,6 +93,8 @@ public class SweepDetailsListener implements ChatMessageListener {
 			lastTreeType = treeToughness.group(1);
 			toughness = treeToughness.group(2);
 			logs = treeToughness.group(3);
+
+			LOGGER.info(msg);
 			return ChatFilterResult.FILTER;
 		}
 
@@ -96,6 +103,8 @@ public class SweepDetailsListener implements ChatMessageListener {
 			axePenalty = true;
 			axePenaltyAmount = parsePenalty(axeThrow.group(1));
 			logs = axeThrow.group(2);
+
+			LOGGER.info(msg);
 			return ChatFilterResult.FILTER;
 		}
 
@@ -105,6 +114,8 @@ public class SweepDetailsListener implements ChatMessageListener {
 			stylePenaltyAmount = parsePenalty(wrongStyle.group(1));
 			logs = wrongStyle.group(2);
 			correctStyle = wrongStyle.group(3);
+
+			LOGGER.info(msg);
 			return ChatFilterResult.FILTER;
 		}
 
