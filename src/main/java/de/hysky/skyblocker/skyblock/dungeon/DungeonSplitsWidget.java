@@ -170,6 +170,8 @@ public class DungeonSplitsWidget extends TableWidget {
 	private static final ProfiledData<Object2ObjectMap<String, Object2LongMap<String>>> BEST_SPLITS =
 			new ProfiledData<>(BEST_FILE, BEST_CODEC, true, true);
 
+	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.DUNGEON);
+
 	private static DungeonSplitsWidget instance;
 
 	private final List<Split> splits = new ArrayList<>();
@@ -204,7 +206,7 @@ public class DungeonSplitsWidget extends TableWidget {
 		elapsedTime = 0L;
 		startTime = 0L;
 		timerColor = Formatting.YELLOW;
-		loadedFloor = null; // force reloading splits once the scoreboard is ready
+		loadedFloor = null; // force reloading splits once Mort has been located
 		updateFloor();
 		loadFloorSplits();
 	}
@@ -315,7 +317,7 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	@Override
 	public Set<Location> availableLocations() {
-		return Set.of(Location.DUNGEON);
+		return AVAILABLE_LOCATIONS;
 	}
 
 	@Override

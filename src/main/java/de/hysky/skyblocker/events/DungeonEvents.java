@@ -32,7 +32,7 @@ public class DungeonEvents {
 	});
 
 	/**
-	 * Called when the player loads into a dungeon after the location is sent to the scoreboard.
+	 * Called when the player loads into a dungeon once Mort has been located.
 	 */
 	public static final Event<DungeonLoaded> DUNGEON_LOADED = EventFactory.createArrayBacked(DungeonLoaded.class, callbacks -> () -> {
 		for (DungeonLoaded callback : callbacks) {
