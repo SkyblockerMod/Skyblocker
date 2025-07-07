@@ -288,7 +288,7 @@
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Solve Forest Temple Puzzle",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Displays the amount of times you need to rotate the terracotta blocks. For positive rotations you right click while for negative rotations you left click.",
   "skyblocker.config.foraging.galatea.enableSweepDetailsWidget": "Enable Sweep Details Widget",
-  "skyblocker.config.foraging.galatea.enableSweepDetailsWidget.@Tooltip": "Displays Sweep Detail information on the HUD.\n\nRequires enabling Sweep Details at Swoop in Galatea",
+  "skyblocker.config.foraging.galatea.enableSweepDetailsWidget.@Tooltip": "Displays Sweep Detail information on the HUD.\n\nRequires enabling Sweep Details at Swoop in Galatea.",
 
    "skyblocker.config.foraging.sweepOverlay": "Sweep Overlay",
   "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Enable Sweep Overlay",
@@ -1502,14 +1502,14 @@
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
   "skyblocker.galatea.hud.sweepDetails": "Sweep Details",
-  "skyblocker.galatea.hud.sweepDetails.inactive":  "Break a tree!",
-  "skyblocker.galatea.hud.sweepDetails.treeType":  "%s Tree",
-  "skyblocker.galatea.hud.sweepDetails.toughness":  "Toughness: %s",
-  "skyblocker.galatea.hud.sweepDetails.sweep":  "Sweep: %s",
-  "skyblocker.galatea.hud.sweepDetails.logs":  "Logs: %s",
-  "skyblocker.galatea.hud.sweepDetails.throwPenalty":  "Axe Throw Penalty (%s)",
-  "skyblocker.galatea.hud.sweepDetails.stylePenalty":  "Tree Style Penalty (%s)",
-  "skyblocker.galatea.hud.sweepDetails.correctStyle":  "Style: %s",
+  "skyblocker.galatea.hud.sweepDetails.inactive": "Break a tree!",
+  "skyblocker.galatea.hud.sweepDetails.treeType": "%s Tree",
+  "skyblocker.galatea.hud.sweepDetails.toughness": "Toughness: %s",
+  "skyblocker.galatea.hud.sweepDetails.sweep": "Sweep: %s",
+  "skyblocker.galatea.hud.sweepDetails.logs": "Logs: %s",
+  "skyblocker.galatea.hud.sweepDetails.throwPenalty": "Axe Throw Penalty (%s)",
+  "skyblocker.galatea.hud.sweepDetails.stylePenalty": "Tree Style Penalty (%s)",
+  "skyblocker.galatea.hud.sweepDetails.correctStyle": "Style: %s",
 
   "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
   "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)"

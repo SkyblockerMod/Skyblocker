@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -13,7 +14,6 @@ import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
-import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,7 +30,6 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 			"Birch", new ItemStack(Items.BIRCH_LOG)
 	);
 	private static final ItemStack RED_CONCRETE = new ItemStack(Items.RED_CONCRETE);
-	private static final DecimalFormat FORMATTER = new DecimalFormat("0.00");
 	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.THE_PARK);
 
 	public SweepDetailsHudWidget() {
@@ -62,11 +61,11 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 		final int redColor = 0xFFFF5555;
 		final int defaultColor = 0xFFFFFFFF;
 		if (SweepDetailsListener.maxSweep > SweepDetailsListener.lastSweep) {
-			MutableText lastSweep = Text.literal(FORMATTER.format(SweepDetailsListener.lastSweep)).withColor(redColor);
-			Text thisSweep = Text.literal(FORMATTER.format(SweepDetailsListener.maxSweep)).withColor(greenColor);
+			MutableText lastSweep = Text.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.lastSweep)).withColor(redColor);
+			Text thisSweep = Text.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.maxSweep)).withColor(greenColor);
 			sweepAmount = lastSweep.append(Text.literal(" (").withColor(defaultColor)).append(thisSweep).append(Text.literal(")").withColor(defaultColor));
 		} else {
-			sweepAmount = Text.literal(FORMATTER.format(SweepDetailsListener.maxSweep)).withColor(greenColor);
+			sweepAmount = Text.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.maxSweep)).withColor(greenColor);
 		}
 		addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.sweep", sweepAmount)));
 
