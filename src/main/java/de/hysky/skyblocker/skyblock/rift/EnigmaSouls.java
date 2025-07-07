@@ -161,7 +161,7 @@ public class EnigmaSouls {
 	}
 
 	private static class EnigmaSoul extends ProfileAwareWaypoint {
-		public EnigmaSoul(BlockPos pos, Supplier<Type> typeSupplier, float[] missingColor, float[] foundColor) {
+		private EnigmaSoul(BlockPos pos, Supplier<Type> typeSupplier, float[] missingColor, float[] foundColor) {
 			super(pos, typeSupplier, missingColor, foundColor);
 		}
 

@@ -41,7 +41,7 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	 * The tabs in the Skyblock recipe book.
 	 */
 	private final List<RecipeTab> tabs = List.of(
-			new SkyblockCraftingTab(this, SkyblockCraftingTab.CRAFTING_TABLE, new SkyblockCraftingRecipeResults()),
+			new SkyblockCraftingTab(this, SkyblockCraftingTab.CRAFTING_TABLE, new SkyblockRecipeResults()),
 			new UpcomingEventsTab()
 	);
 	private final List<Pair<RecipeTab, SkyblockRecipeTabButton>> tabButtons = Lists.newArrayList();
@@ -244,7 +244,7 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 
 	/**
 	 * Sets the "Toggle Craftable" Button texture.
-	 * 
+	 *
 	 * No-op as we don't use the button.
 	 */
 	@Override

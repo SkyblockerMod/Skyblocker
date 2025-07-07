@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.utils.waypoint;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

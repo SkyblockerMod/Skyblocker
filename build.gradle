@@ -1,8 +1,12 @@
 plugins {
+	// Building
 	id 'fabric-loom' version '1.10-SNAPSHOT'
+	id "de.hysky.skyblocker.annotation-processor"
+	id "com.diffplug.spotless" version "6.20.0"
+	id "checkstyle"
+	// Publishing
 	id 'maven-publish'
 	id "me.modmuss50.mod-publish-plugin" version "0.8.1"
-	id "de.hysky.skyblocker.annotation-processor"
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -121,6 +125,16 @@ repositories {
 			includeGroup "net.azureaaron"
 		}
 	}
+
+	maven {
+		url = "https://maven.notenoughupdates.org/releases"
+
+		content {
+			includeGroup "org.notenoughupdates.moulconfig"
+		}
+	}
+
+	//mavenLocal()
 }
 
 dependencies {
@@ -141,8 +155,14 @@ dependencies {
 	// Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
+	// Dandelion
+	include modImplementation("net.azureaaron:dandelion:${project.dandelion_version}")
+
 	// YACL
 	include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
+
+	// MoulConfig - Dandelion shades it in already
+	modImplementation("org.notenoughupdates.moulconfig:${project.moulconfig_flavour}:${project.moulconfig_version}")
 
 	// HM API (Hypixel Mod API Library)
 	include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
@@ -185,6 +205,9 @@ dependencies {
 
 	// Apache Commons Text
 	include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
+
+	// Fabric Language Kotlin for using MoulConfig - we are still a Java-exclusive mod
+	modImplementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}")
 }
 
 loom {
@@ -235,6 +258,31 @@ test {
 	useJUnitPlatform()
 
 	systemProperty("IS_TEST_ENV", "true")
+}
+
+spotless {
+	java {
+		removeUnusedImports()
+		//indentWithTabs() // TODO: turn on when more files are converted to tabs
+		trimTrailingWhitespace()
+		endWithNewline()
+	}
+
+	json {
+		target 'src/**/lang/en_us.json'
+		targetExclude 'src/**/generated/**'
+		//gson().sortByKeys().indentWithSpaces(2) // TODO: turn on in the future
+	}
+
+	groovyGradle {
+		target 'src/**/*.gradle', '*.gradle', 'gradle/*.gradle'
+		greclipse()
+	}
+}
+
+checkstyle {
+	toolVersion = "10.20.2"
+	configFile = rootProject.file("checkstyle.xml")
 }
 
 publishMods {

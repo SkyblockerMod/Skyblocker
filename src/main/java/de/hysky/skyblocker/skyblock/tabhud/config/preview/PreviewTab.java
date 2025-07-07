@@ -391,7 +391,7 @@ public class PreviewTab implements Tab {
 		private final List<ClickableWidget> widgets = new ArrayList<>();
 		private int height = 0;
 
-		public WidgetOptionsScrollable() {
+		private WidgetOptionsScrollable() {
 			super(0, 0, 0, 0, Text.literal("Widget Options Scrollable"));
 		}
 
@@ -436,11 +436,11 @@ public class PreviewTab implements Tab {
 		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 		}
 
-		void clearWidgets() {
+		private void clearWidgets() {
 			widgets.clear();
 		}
 
-		void addWidget(ClickableWidget clickableWidget) {
+		private void addWidget(ClickableWidget clickableWidget) {
 			widgets.add(clickableWidget);
 		}
 	}
@@ -449,7 +449,7 @@ public class PreviewTab implements Tab {
 		private final boolean other;
 		private @Nullable PositionRule.Point hoveredPoint = null;
 
-		public AnchorSelectionWidget(int width, Text text, boolean other) {
+		private AnchorSelectionWidget(int width, Text text, boolean other) {
 			super(0, 0, width, 40, text);
 			this.other = other;
 		}

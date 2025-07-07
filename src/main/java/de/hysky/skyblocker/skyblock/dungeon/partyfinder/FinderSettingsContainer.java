@@ -173,8 +173,8 @@ public class FinderSettingsContainer extends ContainerWidget {
                 //System.out.println("Min and max: " + minAndMax[0] + " " + minAndMax[1]);
                 int leMin = -1;
                 int leMax = -1;
-                try {leMin = Integer.parseInt(minAndMax[0].trim());} catch (NumberFormatException ignored) {}
-                try {leMax = Integer.parseInt(minAndMax[1].trim());} catch (NumberFormatException ignored) {}
+                try {leMin = Integer.parseInt(minAndMax[0].trim()); } catch (NumberFormatException ignored) {}
+                try {leMax = Integer.parseInt(minAndMax[1].trim()); } catch (NumberFormatException ignored) {}
 
                 widget.setMinAndMax(leMin, leMax);
                 return true;
