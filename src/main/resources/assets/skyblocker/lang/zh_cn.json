@@ -1288,5 +1288,12 @@
     "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "高亮显示通过斧头的投掷能力能够破坏的原木。",
     "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "横扫覆盖层颜色",
     "skyblocker.config.foraging.hunting": "狩猎",
-    "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "缺失横扫信息：请使用 /tablist 将横扫信息添加到玩家列表"
+    "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "缺失横扫信息：请使用 /tablist 将横扫信息添加到玩家列表",
+    "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled": "已启用",
+    "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled.@Tooltip": "添加三个用于快速填写集市购买订单数量的按钮",
+    "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse": "点击后关闭告示牌",
+    "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.slotQuantity": "栏位#%s数量",
+    "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "集市快捷数量",
+    "skyblocker.config.misc.configBackend.@Tooltip": "你可以在YetAnotherConfigLib（YACL）和MoulConfig两种设置界面之中选择一种。",
+    "skyblocker.config.misc.configBackend": "后端设置"
 }
