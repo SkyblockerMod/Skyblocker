@@ -9,9 +9,7 @@ public class DungeonsConfig {
 
 	public boolean croesusHelper = true;
 
-	  public boolean salvageHelper = true;
-
-	  public boolean bloodCampHelper = false;
+	public boolean salvageHelper = true;
 
 	public boolean bloodCampHelper = false;
 
