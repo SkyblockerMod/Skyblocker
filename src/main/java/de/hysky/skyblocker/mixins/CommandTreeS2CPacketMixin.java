@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
+import de.hysky.skyblocker.skyblock.JoinInstanceAutocomplete;
 import de.hysky.skyblocker.skyblock.SackItemAutocomplete;
 import de.hysky.skyblocker.skyblock.ViewstashAutocomplete;
 import de.hysky.skyblocker.skyblock.WarpAutocomplete;
@@ -24,6 +25,9 @@ public class CommandTreeS2CPacketMixin {
 				case String s when s.equals("getfromsacks") && SackItemAutocomplete.longCommandNode != null -> SackItemAutocomplete.longCommandNode;
 				case String s when s.equals("gfs") && SackItemAutocomplete.shortCommandNode != null -> SackItemAutocomplete.shortCommandNode;
 				case String s when s.equals("viewstash") -> ViewstashAutocomplete.getCommandNode();
+				case String s when s.equals("joininstance") && JoinInstanceAutocomplete.joinInstanceCommand != null -> JoinInstanceAutocomplete.joinInstanceCommand;
+				case String s when s.equals("joindungeon") && JoinInstanceAutocomplete.dungeonCommand != null -> JoinInstanceAutocomplete.dungeonCommand;
+				case String s when s.equals("joinkuudra") && JoinInstanceAutocomplete.kuudraCommand != null -> JoinInstanceAutocomplete.kuudraCommand;
 				default -> original;
 			};
 		}
