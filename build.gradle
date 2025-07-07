@@ -125,6 +125,16 @@ repositories {
 			includeGroup "net.azureaaron"
 		}
 	}
+
+	maven {
+		url = "https://maven.notenoughupdates.org/releases"
+
+		content {
+			includeGroup "org.notenoughupdates.moulconfig"
+		}
+	}
+
+	//mavenLocal()
 }
 
 dependencies {
@@ -145,8 +155,14 @@ dependencies {
 	// Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
+	// Dandelion
+	include modImplementation("net.azureaaron:dandelion:${project.dandelion_version}")
+
 	// YACL
 	include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
+
+	// MoulConfig - Dandelion shades it in already
+	modImplementation("org.notenoughupdates.moulconfig:${project.moulconfig_flavour}:${project.moulconfig_version}")
 
 	// HM API (Hypixel Mod API Library)
 	include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
@@ -189,6 +205,9 @@ dependencies {
 
 	// Apache Commons Text
 	include implementation("org.apache.commons:commons-text:${project.commons_text_version}")
+
+	// Fabric Language Kotlin for using MoulConfig - we are still a Java-exclusive mod
+	modImplementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}")
 }
 
 loom {
