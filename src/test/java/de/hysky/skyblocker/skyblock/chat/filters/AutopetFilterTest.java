@@ -4,7 +4,7 @@ import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
 
 class AutopetFilterTest extends ChatPatternListenerTest<AutopetFilter> {
-    public AutopetFilterTest() {
+    AutopetFilterTest() {
         super(new AutopetFilter());
     }
 

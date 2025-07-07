@@ -37,10 +37,10 @@
 
   "skyblocker.skyblockerScreen": "Skyblocker Main Screen",
 
-  "skyblocker.config.title": "Skyblocker Settings",
+  "skyblocker.config.title": "Skyblocker %s",
 
   "skyblocker.config.shortcutToKeybindsSettings": "Edit Keybind",
-  "skyblocker.config.shortcutToKeybindsSettings.@Text": "Click... (Opens up Keybinds Options)",
+  "skyblocker.config.shortcutToKeybindsSettings.@Text": "Keybinds Menu",
 
   "skyblocker.config.crimsonIsle": "Crimson Isle",
 
@@ -759,6 +759,9 @@
 
   "skyblocker.config.misc": "Misc",
 
+  "skyblocker.config.misc.configBackend": "Config Backend",
+  "skyblocker.config.misc.configBackend.@Tooltip": "You can choose between having YetAnotherConfigLib (YACL) or MoulConfig as the Config Backend.",
+
   "skyblocker.config.misc.richPresence": "Discord RPC",
   "skyblocker.config.misc.richPresence.customMessage": "Custom Message",
   "skyblocker.config.misc.richPresence.cycleMode": "Cycle Skyblock Info",
@@ -952,6 +955,12 @@
   "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor": "Empty Health Bar Color",
   "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip": "Color of health bar when mob is at full hp",
 
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled.@Tooltip": "Adds 3 buttons to quickly fill out Bazaar buy order amounts",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse": "Close Sign on Use",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.slotQuantity": "Slot #%s Quantity",
+
   "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "Enable Sign Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "Enables the ability for you to do calculations when inputting values such as price for the ah.\n Key:\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\n purse/P = current purse value",
@@ -1030,6 +1039,7 @@
   "skyblocker.config.uiAndVisuals.slotText.statsTuning": "Stats Tuning",
   "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "Displays your assigned and unassigned tuning points",
   "skyblocker.config.uiAndVisuals.slotText.yourEssence": "Your Essence",
+  "skyblocker.config.uiAndVisuals.slotText.bestiaryLevel": "Bestiary Level",
 
   "skyblocker.config.uiAndVisuals.searchOverlay": "AH/BZ Search Overlay",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",
@@ -1501,5 +1511,6 @@
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
-  "emi.category.skyblocker.skyblock": "Skyblock"
+  "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
+  "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)"
 }

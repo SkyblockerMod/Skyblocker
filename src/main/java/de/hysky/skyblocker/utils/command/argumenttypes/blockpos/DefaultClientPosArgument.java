@@ -28,7 +28,7 @@ public class DefaultClientPosArgument implements ClientPosArgument {
 	@Override
 	public Vec2f toAbsoluteRotation(FabricClientCommandSource source) {
 		Vec2f vec2f = source.getRotation();
-		return new Vec2f((float)this.x.toAbsoluteCoordinate(vec2f.x), (float)this.y.toAbsoluteCoordinate(vec2f.y));
+		return new Vec2f((float) this.x.toAbsoluteCoordinate(vec2f.x), (float) this.y.toAbsoluteCoordinate(vec2f.y));
 	}
 
 	@Override
