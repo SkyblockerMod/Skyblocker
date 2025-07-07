@@ -1,7 +1,7 @@
 {
     "key.categories.skyblocker": "Skyblocker",
     "key.hotbarSlotLock": "Slot Sperre (Hotbar)",
-    "skyblocker.config.title": "Skyblocker-Einstellungen",
+    "skyblocker.config.title": "Skyblocker-%s",
     "skyblocker.config.general": "Allgemein",
     "skyblocker.config.uiAndVisuals.bars": "Balken für Gesundheit, Mana, Verteidigung, Geschwindigkeit & XP",
     "skyblocker.config.uiAndVisuals.tabHud": "Schöneres HUD und TAB",
@@ -62,7 +62,7 @@
     "skyblocker.config.crimsonIsle.kuudra": "Kuudra",
     "key.skyblocker.slottext": "Slot Text",
     "skyblocker.config.shortcutToKeybindsSettings": "Tastenbelegung ändern",
-    "skyblocker.config.shortcutToKeybindsSettings.@Text": "Click... (Offnet die Tastenbelegungen)",
+    "skyblocker.config.shortcutToKeybindsSettings.@Text": "Tastenbelegungen",
     "text.skyblocker.clickToSend.@Tooltip": "Klicke hier, um dies im Chat zu senden.",
     "text.skyblocker.clickToSend": "[Anklicken um im Chat zu senden]",
     "key.itemPriceLookup": "Im Bazzar aufrufen",
@@ -371,6 +371,8 @@
     "skyblocker.config.general.quiverWarning.enableQuiverWarningAfterDungeon": "Aktiviere Köcher Warnung nach einem Dungeon",
     "skyblocker.config.general.searchOverlay.starsTooltip": "Sternzähler für Dungeon Artikel",
     "skyblocker.config.general.searchOverlay.maxPet": "Maximaler Pet Level",
-    "skyblocker.config.general.speedPresets": "Geschwindigkeit Vorsteinstellung",
-    "skyblocker.config.general.searchOverlay.deleteTooltip": "Entferne Historie eintrag"
+    "skyblocker.config.general.speedPresets": "Geschwindigkeits-Vorsteinstellungen",
+    "skyblocker.config.general.searchOverlay.deleteTooltip": "Entferne Historie eintrag",
+    "skyblocker.config.general.searchOverlay.maxPet.@Tooltip": "Zeige nur Haustiere auf höchster Stufe",
+    "skyblocker.config.general.quiverWarning.enableQuiverWarningInDungeons": "Aktiviere Köcher Warnung im Dungeon"
 }
