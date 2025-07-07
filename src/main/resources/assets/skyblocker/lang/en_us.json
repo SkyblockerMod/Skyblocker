@@ -957,7 +957,7 @@
 
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled": "Enabled",
-  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled.@Tooltip": "Adds 3 buttons to quickly fill out Bazaar buy order amounts",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled.@Tooltip": "Adds 3 buttons to quickly fill out Bazaar buy order amounts.",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse": "Close Sign on Use",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.slotQuantity": "Slot #%s Quantity",
 
