@@ -73,11 +73,11 @@ public class ForagingCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip")))
+								.description(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip"))
 								.binding(defaults.foraging.galatea.enableTunerSolver,
 										() -> config.foraging.galatea.enableTunerSolver,
 										newValue -> config.foraging.galatea.enableTunerSolver = newValue)
-								.controller(ConfigUtils::createBooleanController)
+								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
 				//Sweep Overlays
