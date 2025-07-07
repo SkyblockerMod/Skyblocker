@@ -73,11 +73,11 @@ public class ForagingCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableSweepDetailsWidget"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.foraging.galatea.enableSweepDetailsWidget.@Tooltip")))
+								.description(Text.translatable("skyblocker.config.foraging.galatea.enableSweepDetailsWidget.@Tooltip"))
 								.binding(defaults.foraging.galatea.enableSweepDetailsWidget,
 										() -> config.foraging.galatea.enableSweepDetailsWidget,
 										newValue -> config.foraging.galatea.enableSweepDetailsWidget = newValue)
-								.controller(ConfigUtils::createBooleanController)
+								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
 				//Sweep Overlays

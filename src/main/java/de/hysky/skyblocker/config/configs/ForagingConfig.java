@@ -19,7 +19,6 @@ public class ForagingConfig {
 
 		public int seaLumiesMinimumCount = 3;
 
-		@SerialEntry
 		public boolean enableSweepDetailsWidget = true;
 	}
 
