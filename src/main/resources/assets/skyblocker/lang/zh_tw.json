@@ -1,5 +1,5 @@
 {
-    "skyblocker.config.title": "Skyblocker設定",
+    "skyblocker.config.title": "Skyblocker%s",
     "skyblocker.config.general": "一般設定",
     "key.hotbarSlotLock": "鎖定快捷欄",
     "key.categories.skyblocker": "Skyblocker",
@@ -797,7 +797,7 @@
     "skyblocker.crimson.dojo.controlHelper": "啟用Control助手",
     "skyblocker.crimson.dojo.controlHelper.@Tooltip": "圍繞目標位置繪製輪廓。",
     "key.skyblocker.slottext": "槽位文本",
-    "skyblocker.config.shortcutToKeybindsSettings.@Text": "點擊…（開啟按鍵綁定選項）",
+    "skyblocker.config.shortcutToKeybindsSettings.@Text": "按鍵綁定選單",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage": "啟用地牢地穴訊息",
     "skyblocker.config.crimsonIsle.extendNetherFog": "調整下界迷霧距離",
     "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "當處於緋紅島時，阻止迷霧出現在離玩家更近的地方，就像原版的下界生物群系那樣。",
