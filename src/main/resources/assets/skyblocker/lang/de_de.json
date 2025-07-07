@@ -379,7 +379,7 @@
     "skyblocker.config.general.speedPresets.config.title": "Titel",
     "skyblocker.config.general.speedPresets.config.speed": "Geschwindigkeit",
     "skyblocker.config.general.speedPresets.enableSpeedPresets": "Aktiviere Geschwindigkeits-Voreinstellung",
-    "skyblocker.config.general.shortcuts": "Abkürzungen",
+    "skyblocker.config.general.shortcuts": "Tastenkürzel",
     "skyblocker.config.general.shortcuts.config": "Abkürzungen Konfig...",
     "skyblocker.config.general.shortcuts.enableShortcuts": "Aktiviere Abkürzungen",
     "skyblocker.config.general.specialEffects": "Spezielle Effekte",
