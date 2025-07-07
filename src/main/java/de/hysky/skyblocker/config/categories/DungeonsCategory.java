@@ -346,7 +346,7 @@ public class DungeonsCategory {
                                 .binding(defaults.dungeons.terminals.solverAccessibility,
                                         () -> config.dungeons.terminals.solverAccessibility,
                                         newValue -> config.dungeons.terminals.solverAccessibility = newValue)
-                                .controller(ConfigUtils::createBooleanController)
+								.controller(ConfigUtils.createBooleanController())
                                 .build())
                         .build())
 

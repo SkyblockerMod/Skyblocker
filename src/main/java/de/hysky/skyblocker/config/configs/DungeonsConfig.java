@@ -119,7 +119,6 @@ public class DungeonsConfig {
 
         public boolean blockIncorrectClicks = false;
 
-        @SerialEntry
         public boolean solverAccessibility = false;
     }
 
