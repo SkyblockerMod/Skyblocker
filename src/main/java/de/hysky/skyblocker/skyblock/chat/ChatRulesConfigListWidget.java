@@ -107,7 +107,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         private double oldScrollAmount = 0;
 
 
-        public ChatRuleConfigEntry(int chatRuleIndex) {
+        private ChatRuleConfigEntry(int chatRuleIndex) {
             this.chatRuleIndex = chatRuleIndex;
             this.chatRule = ChatRulesHandler.chatRuleList.get(chatRuleIndex);
 
@@ -168,7 +168,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
 
                 @Override
                 public void appendNarrations(NarrationMessageBuilder builder) {
-                    builder.put(NarrationPart.TITLE,chatRule.getName());
+                    builder.put(NarrationPart.TITLE, chatRule.getName());
                 }
             });
         }

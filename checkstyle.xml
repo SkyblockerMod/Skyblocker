@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "https://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+<module name="Checker">
+    <property name="charset" value="UTF-8"/>
+    <property name="fileExtensions" value="java"/>
+    <property name="localeLanguage" value="en"/>
+    <property name="localeCountry" value="US"/>
+    <property name="tabWidth" value="4"/>
+
+    <module name="NewlineAtEndOfFile"/>
+
+    <!-- disallow trailing whitespace -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\s+$"/>
+        <property name="message" value="trailing whitespace"/>
+    </module>
+
+    <module name="TreeWalker">
+        <!-- Allow "//CHECKSTYLE.OFF: <InspectionName>" and "//CHECKSTYLE.ON: <InspectionName>" pairs to toggle some inspections -->
+        <module name="SuppressionCommentFilter">
+            <property name="offCommentFormat" value="CHECKSTYLE.OFF\: ([\w\|]+)"/>
+            <property name="onCommentFormat" value="CHECKSTYLE.ON\: ([\w\|]+)"/>
+            <property name="checkFormat" value="$1"/>
+        </module>
+
+        <!-- Ensure all imports are ship shape -->
+        <module name="IllegalImport"/>
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+
+        <module name="SeparatorWrap">
+            <property name="tokens" value="DOT,ELLIPSIS,AT"/>
+            <property name="option" value="nl"/>
+        </module>
+        <module name="SeparatorWrap">
+            <property name="tokens" value="COMMA,SEMI"/>
+            <property name="option" value="eol"/>
+        </module>
+
+        <module name="ParenPad"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="NoWhitespaceAfter">
+            <!-- allow ARRAY_INIT -->
+            <property name="tokens" value="AT,INC,DEC,UNARY_MINUS,UNARY_PLUS,BNOT,LNOT,DOT,ARRAY_DECLARATOR,INDEX_OP"/>
+        </module>
+        <module name="WhitespaceAfter"/>
+        <module name="GenericWhitespace"/>
+
+        <module name="ArrayTypeStyle"/>
+        <module name="DefaultComesLast">
+            <property name="skipIfLastAndSharedWithCase" value="true"/>
+        </module>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="StringLiteralEquality"/>
+        <module name="EqualsHashCode"/>
+
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+
+        <module name="AnnotationLocation"/>
+        <module name="MissingOverride"/>
+
+        <!-- Enforce tabs -->
+        <!-- TODO: enforce tabs in the future -->
+        <!--<module name="RegexpSinglelineJava">-->
+            <!--<property name="format" value="^\t* ([^*]|\*[^ /])"/>-->
+            <!--<property name="message" value="non-tab indentation"/>-->
+        <!--</module>-->
+
+        <module name="OuterTypeFilename"/>
+        <module name="PackageDeclaration"/>
+
+        <module name="InvalidJavadocPosition"/>
+        <module name="AtclauseOrder"/>
+
+        <!-- Prevent non-@Unique fields in Mixin classes -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //OBJBLOCK/VARIABLE_DEF[
+                    not(
+                        ./MODIFIERS/ANNOTATION/IDENT[
+                            @text='Unique'
+                            or @text='Shadow'
+                        ]
+                    )
+                    and
+                    ../../../CLASS_DEF[
+                        ./MODIFIERS/ANNOTATION/IDENT[@text='Mixin']
+                    ]
+                ]
+            "/>
+            <message key="matchxpath.match" value="Mixin fields must be annotated with @Unique or @Shadow"/>
+        </module>
+
+        <!-- Prevent non-@Unique methods in Mixin classes -->
+        <!-- All Mixin and MixinExtras annotations must be listed here -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //METHOD_DEF[
+                    not(
+                        ./MODIFIERS/ANNOTATION/IDENT[
+                            @text='Unique'
+                            or @text='Inject'
+                            or @text='ModifyArg'
+                            or @text='ModifyExpressionValue'
+                            or @text='ModifyReturnValue'
+                            or @text='ModifyVariable'
+                            or @text='Override'
+                            or @text='Overwrite'
+                            or @text='Redirect'
+                            or @text='Shadow'
+                            or @text='WrapMethod'
+                            or @text='WrapOperation'
+                            or @text='WrapWithCondition'
+                        ]
+                    )
+                    and
+                    ../../../CLASS_DEF[
+                        ./MODIFIERS/ANNOTATION/IDENT[@text='Mixin']
+                    ]
+                ]
+            "/>
+            <message key="matchxpath.match" value="Mixin methods must be annotated with @Unique or one of the Mixin annotations"/>
+        </module>
+
+        <!-- Prevent @Inject local capture, @Local is preferred -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //METHOD_DEF[
+                    ./MODIFIERS/ANNOTATION[
+                        ./IDENT[@text='Inject']
+                        and
+                        ./ANNOTATION_MEMBER_VALUE_PAIR/IDENT[@text='locals']
+                    ]
+                ]
+            "/>
+            <message key="matchxpath.match" value="Inject local capture is not allowed, use @Local instead"/>
+        </module>
+    </module>
+</module>

@@ -172,6 +172,3 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 
 
 }
-
-
-

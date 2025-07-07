@@ -39,7 +39,7 @@ public abstract class SignEditScreenMixin extends Screen {
     private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
 		if (Utils.isOnSkyblock()) {
 			var config = SkyblockerConfigManager.get();
-			if (messages[1].equals("^^^^^^") && config.general.speedPresets.enableSpeedPresets) {
+			if (isSpeedInputSign() && config.general.speedPresets.enableSpeedPresets) {
 				var presets = SpeedPresets.getInstance();
 				if (presets.hasPreset(messages[0])) {
 					context.drawCenteredTextWithShadow(this.textRenderer, Text.literal(String.format("%s » %d", messages[0], presets.getPreset(messages[0]))).formatted(Formatting.GREEN),
@@ -65,7 +65,7 @@ public abstract class SignEditScreenMixin extends Screen {
 		var config = SkyblockerConfigManager.get();
         if (Utils.isOnSkyblock()) {
 			//if the sign is being used to enter the speed cap, retrieve the value from speed presets.
-			if (messages[1].equals("^^^^^^") && config.general.speedPresets.enableSpeedPresets) {
+			if (isSpeedInputSign() && config.general.speedPresets.enableSpeedPresets) {
 				var presets = SpeedPresets.getInstance();
 				if (presets.hasPreset(messages[0])) {
 					messages[0] = String.valueOf(presets.getPreset(messages[0]));
@@ -84,7 +84,19 @@ public abstract class SignEditScreenMixin extends Screen {
     }
 
 	@Unique
+	private static final String SPEED_INPUT_MARKER = "^^^^^^";
+	@Unique
+	private static final String INPUT_SIGN_MARKER = "^^^^^^^^^^^^^^^";
+	@Unique
+	private static final String BAZAAR_FLIP_MARKER = "^^Flipping^^";
+
+	@Unique
+	private boolean isSpeedInputSign() {
+		return messages[1].equals(SPEED_INPUT_MARKER);
+	}
+
+	@Unique
 	private boolean isInputSign() {
-		return messages[1].equals("^^^^^^^^^^^^^^^");
+		return messages[1].equals(INPUT_SIGN_MARKER) || messages[1].equals(BAZAAR_FLIP_MARKER);
 	}
 }

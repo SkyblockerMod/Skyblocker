@@ -17,7 +17,6 @@ import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.Items;
@@ -68,6 +67,6 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
 	public double getPriority() {
-		return 4096;
+		return -50;
 	}
 }
