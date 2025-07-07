@@ -374,5 +374,9 @@
     "skyblocker.config.general.speedPresets": "Geschwindigkeits-Vorsteinstellungen",
     "skyblocker.config.general.searchOverlay.deleteTooltip": "Entferne Historie eintrag",
     "skyblocker.config.general.searchOverlay.maxPet.@Tooltip": "Zeige nur Haustiere auf höchster Stufe",
-    "skyblocker.config.general.quiverWarning.enableQuiverWarningInDungeons": "Aktiviere Köcher Warnung im Dungeon"
+    "skyblocker.config.general.quiverWarning.enableQuiverWarningInDungeons": "Aktiviere Köcher Warnung im Dungeon",
+    "skyblocker.config.general.speedPresets.config": "Geschwindigkeit Vorsteinstellung Konfig...",
+    "skyblocker.config.general.speedPresets.config.title": "Titel",
+    "skyblocker.config.general.speedPresets.config.speed": "Geschwindigkeit",
+    "skyblocker.config.general.speedPresets.enableSpeedPresets": "Aktiviere Geschwindigkeit Einstellung"
 }
