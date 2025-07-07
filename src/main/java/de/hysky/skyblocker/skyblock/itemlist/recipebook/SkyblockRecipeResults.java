@@ -18,7 +18,6 @@ import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.component.DataComponentTypes;
@@ -211,7 +210,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 				String name = stack.getName().getString().toLowerCase(Locale.ENGLISH);
 				if (!filterOption.test(name)) continue;
 
-				List<Text> lore = Screen.getTooltipFromItem(MinecraftClient.getInstance(), stack);
+				List<Text> lore = ItemUtils.getLore(stack);
 
 				if (name.contains(query) || lore.stream().map(Text::getString)
 						.map(string -> string.toLowerCase(Locale.ENGLISH))
