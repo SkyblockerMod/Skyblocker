@@ -73,18 +73,18 @@ public class HelperCategory {
 								newValue -> config.helpers.enableCopyUnderbidPrice = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
-        //Mythological Ritual
-        .group(OptionGroup.createBuilder()
-                .name(Text.translatable("skyblocker.config.helpers.mythologicalRitual"))
-                .collapsed(true)
-                .option(Option.<Boolean>createBuilder()
-                        .name(Text.translatable("skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper"))
-                        .binding(defaults.helpers.mythologicalRitual.enableMythologicalRitualHelper,
-                                () -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper,
-                                newValue -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper = newValue)
-                        .controller(ConfigUtils.createBooleanController())
-                        .build())
-                .build())
+				//Mythological Ritual
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.mythologicalRitual"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper"))
+								.binding(defaults.helpers.mythologicalRitual.enableMythologicalRitualHelper,
+										() -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper,
+										newValue -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
 
 				//Jerry Timer
 				.group(OptionGroup.createBuilder()
@@ -130,7 +130,7 @@ public class HelperCategory {
 								.binding(defaults.helpers.experiments.blockIncorrectClicks,
 										() -> config.helpers.experiments.blockIncorrectClicks,
 										newValue -> config.helpers.experiments.blockIncorrectClicks = newValue)
-								.controller(ConfigUtils::createBooleanController)
+								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
 
