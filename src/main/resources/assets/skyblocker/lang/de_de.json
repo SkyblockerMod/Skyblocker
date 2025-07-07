@@ -354,7 +354,7 @@
     "skyblocker.config.general.itemTooltip.craft.BUY_ORDER": "Kaufauftrag",
     "skyblocker.config.general.itemTooltip.enableMuseumInfo.@Tooltip": "Wenn dieser Gegenstand für das Museum gespendet werden kann, wird die Kategorie des Gegenstands im Museum angezeigt. Außerdem wird eine Markierung angezeigt, die angibt, ob Sie diesen Gegenstand für Ihr Museum gespendet haben oder nicht (Freebies werden noch nicht unterstützt).\n\nStellen Sie sicher, dass Sie Ihre Museums-API aktivieren, um genaue Informationen zu erhalten!",
     "skyblocker.config.general.itemTooltip.enableMotesPrice.@Tooltip": "Zeigt den Motes-Verkaufspreis eines Gegenstandes in dem Rift an.",
-    "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress": "Aktiviere Stapel Enchant Prozes",
+    "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress": "Aktiviere Stapel Enchant Prozess",
     "skyblocker.config.general.itemTooltip.enableEstimatedItemValue": "Geschätzten Artikelwert aktivieren",
     "skyblocker.config.general.itemTooltip.enableNPCPrice": "NPC-Preis aktivieren",
     "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress.@Tooltip": "Zeigt den Fortschritt bis zur nächsten Stufe einer Stapelverzauberung an, wenn diese noch nicht maximiert wurde.",
@@ -366,5 +366,9 @@
     "skyblocker.config.general.itemTooltip.enableObtainedDate": "Aktivieren Erreichtes Datum",
     "skyblocker.config.general.itemTooltip.showEssenceCost": "Zeige Essenzkosten",
     "skyblocker.config.general.quiverWarning": "Köcherwarnung",
-    "skyblocker.config.general.quiverWarning.enableQuiverWarning": "Köcherwarnung einschalten"
+    "skyblocker.config.general.quiverWarning.enableQuiverWarning": "Köcherwarnung einschalten",
+    "skyblocker.config.general.searchOverlay.historyLabel": "Historie:",
+    "skyblocker.config.general.quiverWarning.enableQuiverWarningAfterDungeon": "Aktiviere Köcher Warnung nach einem Dungeon",
+    "skyblocker.config.general.searchOverlay.starsTooltip": "Sternzähler für Dungeon Artikel",
+    "skyblocker.config.general.searchOverlay.maxPet": "Maximaler Pet Level"
 }
