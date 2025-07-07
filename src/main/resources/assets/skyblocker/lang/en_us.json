@@ -1033,6 +1033,7 @@
   "skyblocker.config.uiAndVisuals.slotText.statsTuning": "Stats Tuning",
   "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "Displays your assigned and unassigned tuning points",
   "skyblocker.config.uiAndVisuals.slotText.yourEssence": "Your Essence",
+  "skyblocker.config.uiAndVisuals.slotText.bestiaryLevel": "Bestiary Level",
 
   "skyblocker.config.uiAndVisuals.searchOverlay": "AH/BZ Search Overlay",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",
