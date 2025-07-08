@@ -13,11 +13,9 @@ import net.minecraft.text.Text;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import dev.isxander.yacl3.gui.YACLScreen;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -239,7 +237,8 @@ public class ConfigBackupScreen extends Screen {
 			}
 		}
 
-		private record JsonLine(String text, @Nullable String path) {}
+		private record JsonLine(String text, @Nullable String path) {
+		}
 
 		private void formatJson(String key, JsonElement element, String path, int indent, boolean last, List<JsonLine> out) {
 			String ind = "  ".repeat(indent);
