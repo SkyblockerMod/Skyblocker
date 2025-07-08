@@ -14,7 +14,7 @@ public class ForagingConfig {
 		public boolean solveForestTemplePuzzle = true;
 
 		public boolean enableLushlilacHighlighter = true;
-		
+
 		public float lushlilacHighlighterOpacity = 0.5f;
 
 		public boolean enableSeaLumiesHighlighter = true;
@@ -22,8 +22,6 @@ public class ForagingConfig {
 		public float seaLumiesHighlighterOpacity = 0.5f;
 
 		public boolean enableTreeBreakProgress = true;
-
-		public boolean enableSeaLumiesHighlighter = true;
 
 		public int seaLumiesMinimumCount = 3;
 	}
