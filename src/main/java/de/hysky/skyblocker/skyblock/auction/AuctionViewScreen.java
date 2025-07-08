@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.NonClosingPopupScreen;
 import net.minecraft.client.gui.screen.PopupScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -293,13 +294,19 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         updateLayout();
     }
 
-    public PopupScreen getConfirmPurchasePopup(Text title) {
+    public NonClosingPopupScreen getConfirmPurchasePopup(Text title) {
         // This really shouldn't be possible to be null in its ACTUAL use case.
         //noinspection DataFlowIssue
-        return new PopupScreen.Builder(this, title)
+        return new NonClosingPopupScreen.Builder(this, title)
                 .button(Text.translatable("text.skyblocker.confirm"), popupScreen -> this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 11, 0, SlotActionType.PICKUP, client.player))
-                .button(Text.translatable("gui.cancel"), popupScreen -> this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 15, 0, SlotActionType.PICKUP, client.player))
-                .message((isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid")).append(" ").append(priceText)).build();
+                .button(Text.translatable("gui.cancel"), PopupScreen::close)
+                .message((isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid")).append(" ").append(priceText))
+				.onClosed(() -> {
+					// This really shouldn't be possible to be null in its ACTUAL use case.
+					//noinspection DataFlowIssue
+					this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 15, 0, SlotActionType.PICKUP, client.player);
+				})
+				.build();
     }
 
     private enum BuyState {
