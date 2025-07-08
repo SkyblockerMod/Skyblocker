@@ -6,6 +6,10 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import io.github.moulberry.repo.data.NEUCraftingRecipe;
+import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.data.NEURecipe;
+import io.github.moulberry.repo.util.NEUId;
 import io.github.moulberry.repo.data.*;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -21,12 +25,14 @@ public class ItemRepository {
     private static final List<ItemStack> items = new ArrayList<>();
     private static final Map<String, ItemStack> itemsMap = new HashMap<>();
     private static final List<SkyblockRecipe> recipes = new ArrayList<>();
+	private static final HashMap<String, @NEUId String> bazaarStocks = new HashMap<>();
     private static boolean filesImported = false;
 
     @Init
     public static void init() {
         NEURepoManager.runAsyncAfterLoad(ItemStackBuilder::loadPetNums);
         NEURepoManager.runAsyncAfterLoad(ItemRepository::importItemFiles);
+		NEURepoManager.runAsyncAfterLoad(ItemRepository::loadBazaarStocks);
     }
 
     private static void importItemFiles() {
@@ -63,6 +69,11 @@ public class ItemRepository {
     private static void loadRecipes(NEUItem item) {
         item.getRecipes().stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull).forEach(recipes::add);
     }
+
+	private static void loadBazaarStocks() {
+		bazaarStocks.clear();
+		NEURepoManager.NEU_REPO.getConstants().getBazaarStocks().getStocks().forEach((String neuId, String skyblockId) -> bazaarStocks.put(skyblockId, neuId));
+	}
 
     public static String getWikiLink(String neuId, boolean useOfficial) {
         NEUItem item = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(neuId);
@@ -102,6 +113,10 @@ public class ItemRepository {
 		if (!filesImported) return Stream.empty();
         return items.stream();
     }
+
+	public static Map<String, @NEUId String> getBazaarStocks() {
+		return bazaarStocks;
+	}
 
     /**
      * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link ItemUtils#getNeuId(ItemStack) ItemTooltip#getNeuName(String, String)}
