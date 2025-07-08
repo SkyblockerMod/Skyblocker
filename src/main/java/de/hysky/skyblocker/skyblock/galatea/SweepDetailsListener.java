@@ -61,6 +61,11 @@ public class SweepDetailsListener implements ChatMessageListener {
 		return penaltyAmount;
 	}
 
+	// Allow existing regexes/scripts to work with our messages
+	private static void logMessage(String chatMessage) {
+		LOGGER.info("[CHAT] {}", chatMessage);
+	}
+
 	@Override
 	public ChatFilterResult onMessage(Text message, String asString) {
 		if (!SweepDetailsHudWidget.LOCATIONS.contains(Utils.getLocation())) return ChatFilterResult.PASS;
@@ -81,7 +86,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 			}
 			lastSweep = maxSweep;
 
-			LOGGER.info(msg);
+			logMessage(msg);
 			return ChatFilterResult.FILTER;
 		}
 
@@ -94,7 +99,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 			toughness = treeToughness.group(2);
 			logs = treeToughness.group(3);
 
-			LOGGER.info(msg);
+			logMessage(msg);
 			return ChatFilterResult.FILTER;
 		}
 
@@ -104,7 +109,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 			axePenaltyAmount = parsePenalty(axeThrow.group(1));
 			logs = axeThrow.group(2);
 
-			LOGGER.info(msg);
+			logMessage(msg);
 			return ChatFilterResult.FILTER;
 		}
 
@@ -115,7 +120,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 			logs = wrongStyle.group(2);
 			correctStyle = wrongStyle.group(3);
 
-			LOGGER.info(msg);
+			logMessage(msg);
 			return ChatFilterResult.FILTER;
 		}
 
