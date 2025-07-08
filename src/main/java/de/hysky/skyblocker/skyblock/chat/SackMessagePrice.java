@@ -9,7 +9,6 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.RegexUtils;
 import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.objects.*;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.HoverEvent.ShowText;
@@ -36,21 +35,9 @@ import java.util.regex.Pattern;
 public class SackMessagePrice {
 	private static final Pattern ITEM_COUNT_PATTERN = Pattern.compile("([-+][\\d,]+)");
 	private static final Logger LOGGER = LoggerFactory.getLogger(SackMessagePrice.class);
-	/**
-	 * <p>
-	 * Cache that holds item name to NEU ID mappings.
-	 * This helps over time when farming similar items in the same world, as it avoids repeated lookups in a very large item list.
-	 * The Sack message is only sent like every 30s in a normal farming case, so there's not much performance impact anyway, but it still helps.
-	 * </p>
-	 * <p>
-	 * Additionally, there are 2 identical hover events per message, and they are processed separately, so this cache will be hit at least once per message, cutting the lookup time in half or more.
-	 * </p>
-	 */
-	private static final Object2ObjectOpenHashMap<String, String> NAME_2_ID_CACHE = new Object2ObjectOpenHashMap<>();
 
 	@Init
 	public static void init() {
-		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register(((client, world) -> NAME_2_ID_CACHE.clear()));
 		ClientReceiveMessageEvents.MODIFY_GAME.register(SackMessagePrice::onMessage);
 	}
 
@@ -156,19 +143,14 @@ public class SackMessagePrice {
 
 	@Nullable
 	private static String getNeuId(@NotNull String itemName) {
-		return NAME_2_ID_CACHE.computeIfAbsent(itemName, ignored ->
-				NEURepoManager.NEU_REPO.getItems()
-									   .getItems()
-									   .values()
-									   .stream()
-									   .filter(item -> Formatting.strip(item.getDisplayName()).equals(itemName))
-									   .findFirst()
-									   .map(NEUItem::getSkyblockItemId)
-									   .orElseGet(() -> {
-										   LOGGER.warn("Failed to find item ID for item: {}", itemName);
-										   return null; // This won't be entered into the cache, nor will it be used to calculate the price
-									   })
-		);
+		return NEURepoManager.getItemByName(itemName)
+				.stream()
+				.findFirst()
+				.map(NEUItem::getSkyblockItemId)
+				.orElseGet(() -> {
+					LOGGER.warn("Failed to find the NEU item ID for item: {}", itemName);
+					return null; // This won't be used to calculate the price
+				});
 	}
 
 	@NotNull
