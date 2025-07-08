@@ -6,15 +6,15 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import io.github.moulberry.repo.data.NEUItem;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.component.type.ProfileComponent;
 import org.slf4j.Logger;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -38,7 +38,7 @@ public class CustomHelmetTextures {
 
 	private static void loadTextures() {
 		try {
-			Set<String> seen = new HashSet<>();
+			ObjectSet<String> seen = new ObjectOpenHashSet<>();
 			for (NEUItem item : NEURepoManager.NEU_REPO.getItems().getItems().values()) {
 				if (!"minecraft:skull".equals(item.getMinecraftItemId())) continue;
 				String texture = extractTexture(item.getNbttag());

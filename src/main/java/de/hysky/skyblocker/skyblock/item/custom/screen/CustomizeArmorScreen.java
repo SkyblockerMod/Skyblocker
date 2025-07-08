@@ -209,13 +209,13 @@ public class CustomizeArmorScreen extends Screen {
 	private void updateWidgets() {
 		if (nothingCustomizable) return;
 		ItemStack item = armor[selectedSlot];
-		boolean helmet = item.isOf(Items.PLAYER_HEAD);
+		boolean isPlayerHead = item.isOf(Items.PLAYER_HEAD);
 		headSelectionWidget.setCurrentItem(item);
 		trimSelectionWidget.setCurrentItem(item);
 		colorSelectionWidget.setCurrentItem(item);
-		headSelectionWidget.visible = helmet;
-		trimSelectionWidget.visible = !helmet;
-		colorSelectionWidget.visible = !helmet;
+		headSelectionWidget.visible = isPlayerHead;
+		trimSelectionWidget.visible = !isPlayerHead;
+		colorSelectionWidget.visible = !isPlayerHead;
 	}
 
 	private class PieceSelectionWidget extends ClickableWidget {
