@@ -176,7 +176,7 @@ public class SackMessagePrice {
 		ObjectArrayList<List<Text>> listList = new ObjectArrayList<>();
 		for (Text sibling : text.getSiblings()) {
 			if (sibling.getStyle().getHoverEvent() instanceof ShowText(Text hoverText)
-					&& hoverText.getContent() instanceof Literal(String rootContent)
+					&& hoverText.getContent() instanceof Literal(String rootContent) // Only match the root content since we only need the root content.
 					&& StringUtils.startsWithAny(rootContent, "Added items:", "Removed items:")) {
 				listList.add(hoverText.getSiblings());
 			}
@@ -208,7 +208,7 @@ public class SackMessagePrice {
 		Integer lastCount = null;
 		String lastItemName = null;
 		for (Text text : texts) {
-			if (text.getContent() instanceof Literal(String content)) {
+			if (text.getContent() instanceof Literal(String content)) { // Only match the root content since we only need the root content.
 				if (content.equals("\n\n")) break; // End of items list, we can stop parsing here - NOTE: This has to come before the isBlank check, otherwise it will be skipped.
 				if (content.isBlank()) continue; // This includes \n lines, which we don't want to try and parse as item names or counts
 
