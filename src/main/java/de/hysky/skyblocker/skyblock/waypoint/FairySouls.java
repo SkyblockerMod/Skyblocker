@@ -198,7 +198,7 @@ public class FairySouls {
     }
 
     private static class FairySoul extends ProfileAwareWaypoint {
-        public FairySoul(BlockPos pos, Supplier<Type> typeSupplier, float[] missingColor, float[] foundColor) {
+        private FairySoul(BlockPos pos, Supplier<Type> typeSupplier, float[] missingColor, float[] foundColor) {
             super(pos, typeSupplier, missingColor, foundColor);
         }
 

@@ -41,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public sealed abstract class TrimElementButton extends PressableWidget permits TrimElementButton.Pattern, TrimElementButton.Material {
+public abstract sealed class TrimElementButton extends PressableWidget permits TrimElementButton.Pattern, TrimElementButton.Material {
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 	protected final @Nullable Identifier element;
 	protected ItemStack stack;

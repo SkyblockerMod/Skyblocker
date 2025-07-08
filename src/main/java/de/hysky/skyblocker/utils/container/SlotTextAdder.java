@@ -5,8 +5,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
+import net.azureaaron.dandelion.systems.Option;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -15,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public interface SlotTextAdder extends ContainerMatcher {
 
@@ -40,27 +40,32 @@ public interface SlotTextAdder extends ContainerMatcher {
 		return null;
 	}
 
-	record ConfigInformation(String id, Text name, @Nullable Text description) {
+	record ConfigInformation(String id, Text name, @Nullable Text... description) {
 		public ConfigInformation(String id, Text name) {
-			this(id, name, null);
+			this(id, name, (Text[]) null);
 		}
 
 		public ConfigInformation(String id, @Translatable String name) {
 			this(id, Text.translatable(name));
 		}
 
-		public ConfigInformation(String id, @Translatable String name, @Translatable String description) {
-			this(id, Text.translatable(name), Text.translatable(description));
+		public ConfigInformation(String id, @Translatable String name, @Translatable String... descriptionLines) {
+			this(id, name, Stream.of(descriptionLines).map(Text::translatable).toArray(Text[]::new));
+		}
+
+		// Additional constructor in case the description lines have any formatting
+		public ConfigInformation(String id, @Translatable String name, Text... descriptionLines) {
+			this(id, Text.translatable(name), descriptionLines);
 		}
 
 		public Option<Boolean> getOption(SkyblockerConfig config) {
 			return Option.<Boolean>createBuilder()
 					.name(name)
-					.description(description != null ? OptionDescription.of(description) : OptionDescription.EMPTY)
+					.description(description != null ? description : new Text[0])
 					.binding(true,
 							() -> config.uiAndVisuals.slotText.textEnabled.getOrDefault(id, true),
-							newValue -> config.uiAndVisuals.slotText.textEnabled.put(id, (boolean) newValue))
-					.controller(ConfigUtils::createBooleanController)
+							newValue -> config.uiAndVisuals.slotText.textEnabled.put(id, newValue.booleanValue()))
+					.controller(ConfigUtils.createBooleanController())
 					.build();
 		}
 

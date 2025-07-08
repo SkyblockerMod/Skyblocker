@@ -62,7 +62,7 @@ public class EditBarColorPopup extends AbstractPopupScreen {
 
         private final EnterConfirmTextFieldWidget textFieldWidget;
 
-        public BasicColorSelector(int x, int y, int width, Runnable onEnter) {
+        private BasicColorSelector(int x, int y, int width, Runnable onEnter) {
             super(x, y, width, 15, Text.literal("edit color"));
             textFieldWidget = new EnterConfirmTextFieldWidget(MinecraftClient.getInstance().textRenderer, getX() + 16, getY(), width - 16, 15, Text.empty(), onEnter);
             textFieldWidget.setChangedListener(this::onTextChange);
@@ -74,7 +74,7 @@ public class EditBarColorPopup extends AbstractPopupScreen {
             return List.of(textFieldWidget);
         }
 
-        public int getColor() {
+        private int getColor() {
             return color;
         }
 

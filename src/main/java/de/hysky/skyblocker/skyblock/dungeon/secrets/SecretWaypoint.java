@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
@@ -85,7 +86,12 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj) || obj instanceof SecretWaypoint other && secretIndex == other.secretIndex && category == other.category && name.equals(other.name) && pos.equals(other.pos);
+        return this == obj || super.equals(obj) && obj instanceof SecretWaypoint other && secretIndex == other.secretIndex && category == other.category;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), secretIndex, category);
     }
 
     @Override
