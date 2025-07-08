@@ -621,6 +621,8 @@
   "skyblocker.config.chat.filter.hideShowOff": "Hide Show Off Messages",
   "skyblocker.config.chat.filter.hideShowOff.@Tooltip": "Filters messages from the /show command",
   "skyblocker.config.chat.filter.hideTeleportPad": "Hide Teleport Pad Messages",
+  "skyblocker.config.chat.filter.hideToggleLottery": "Hide Toggle Lottery Messages",
+  "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "Hides those pesky messages telling you to disable the Lottery HOTF perk when you want it enabled!",
   "skyblocker.config.chat.filter.hideToggleSkyMall": "Hide Toggle Sky Mall Messages",
   "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "Hides those pesky messages telling you to disable the Sky Mall HOTM perk when you want it enabled!",
 
