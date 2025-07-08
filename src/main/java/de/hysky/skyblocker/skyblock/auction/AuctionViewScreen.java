@@ -4,7 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.NonClosingPopupScreen;
+import de.hysky.skyblocker.utils.render.gui.NonClosingPopupScreen;
 import net.minecraft.client.gui.screen.PopupScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;

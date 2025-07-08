@@ -1,7 +1,9 @@
-package net.minecraft.client.gui.screen;
+package de.hysky.skyblocker.utils.render.gui;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screen.PopupScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
