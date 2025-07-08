@@ -7,6 +7,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.RomanNumerals;
@@ -117,8 +118,10 @@ public class SearchOverManager {
                 int sellVolume = product.sellVolume();
                 if (sellVolume == 0)
                     continue; //do not add items that do not sell e.g. they are not actual in the bazaar
+
+				// Format Enchantments
                 Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(name);
-                if (matcher.matches()) {//format enchantments
+                if (matcher.matches() && ItemRepository.getBazaarStocks().containsKey(id)) {
                     name = matcher.group(1);
                     if (!name.contains("Ultimate Wise") && !name.contains("Ultimate Jerry")) {
                         name = name.replace("Ultimate ", "");
@@ -132,16 +135,21 @@ public class SearchOverManager {
                     String level = matcher.group(2);
                     name += " " + RomanNumerals.decimalToRoman(Integer.parseInt(level));
                     bazaarItems.add(name);
-                    namesToNeuId.put(name, id.substring(0, id.lastIndexOf('_')).replace("ENCHANTMENT_", "") + ";" + level);
+                    namesToNeuId.put(name, ItemRepository.getBazaarStocks().get(id));
                     continue;
                 }
+
+                // Format Shards
+                if (id.startsWith("SHARD_") && ItemRepository.getBazaarStocks().containsKey(id)) {
+					id = ItemRepository.getBazaarStocks().get(id);
+                }
+
                 //look up id for name
                 NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
                 if (neuItem != null) {
                     name = Formatting.strip(neuItem.getDisplayName());
                     bazaarItems.add(name);
                     namesToNeuId.put(name, id);
-                    continue;
                 }
             }
         } catch (Exception e) {

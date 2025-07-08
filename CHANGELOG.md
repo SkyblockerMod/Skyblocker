@@ -1,3 +1,31 @@
+# Release 5.5.0
+
+## Highlight
+* Resource pack compatibility
+* Sweep Overlay
+  Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations
+  the sweep formula is currently unknown.
+* Forge recipe 
+* Show Input Calculator on Bazaar flip input sign
+* Add up/down buttons to move waypoint indices
+* Fix ColorSelectionWidget showing on chain armor
+* Fix Farming Hud Skill EXP not working when Fancy Status bars are disabled
+
+## What's Changed
+* Initial Sweep Overlay by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1415
+* Small improvement to Swing Animation by @contionability in https://github.com/SkyblockerMod/Skyblocker/pull/1440
+* Fix ColorSelectionWidget showing on chain armor. by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1438
+* Item list things and forge!!!!!! by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/948
+* Add Spotless and Checkstyle by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1189
+* Fix Farming Hud Skill EXP not working when Fancy Status bars are disabled by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1449
+* Show Input Calculator on Bazaar flip input sign by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1457
+* resourcepack compatibility by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1407
+
+## New Contributors
+* @contionability made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1440
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.4.0...v5.5.0
+___
 # Release 5.4.0
 
 ## Highlight
