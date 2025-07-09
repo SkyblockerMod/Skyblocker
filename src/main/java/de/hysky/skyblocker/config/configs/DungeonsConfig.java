@@ -25,6 +25,8 @@ public class DungeonsConfig {
 
 	public boolean allowDroppingProtectedItems = false;
 
+	public boolean dungeonSplits = true;
+
 	public boolean hideSoulweaverSkulls = false;
 
 	public DungeonMap dungeonMap = new DungeonMap();
@@ -181,7 +183,9 @@ public class DungeonsConfig {
 		public Type doorHighlightType = Type.OUTLINED_HIGHLIGHT;
 
 		public enum Type {
-			HIGHLIGHT, OUTLINED_HIGHLIGHT, OUTLINE;
+			HIGHLIGHT,
+			OUTLINED_HIGHLIGHT,
+			OUTLINE;
 
 			@Override
 			public String toString() {
