@@ -120,6 +120,14 @@ public class ChatCategory {
                                         newValue -> config.chat.hideToggleSkyMall = newValue)
                                 .controller(ConfigUtils.createEnumController())
                                 .build())
+                        .option(Option.<ChatFilterResult>createBuilder()
+                                .name(Text.translatable("skyblocker.config.chat.filter.hideToggleLottery"))
+                                .description(Text.translatable("skyblocker.config.chat.filter.hideToggleLottery.@Tooltip"))
+                                .binding(defaults.chat.hideToggleLottery,
+                                        () -> config.chat.hideToggleLottery,
+                                        newValue -> config.chat.hideToggleLottery = newValue)
+                                .controller(ConfigUtils.createEnumController())
+                                .build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.chat.filter.hideMana"))
                                 .description(Text.translatable("skyblocker.config.chat.filter.hideMana.@Tooltip"))
