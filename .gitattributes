@@ -88,14 +88,6 @@
 # Text files where line endings should be preserved
 *.patch    -text
 
-#
-# Exclude files from exporting
-#
-
-.gitattributes export-ignore
-.gitignore     export-ignore
-.gitkeep       export-ignore
-
 # Java sources
 *.java          text diff=java
 *.kt            text diff=kotlin
