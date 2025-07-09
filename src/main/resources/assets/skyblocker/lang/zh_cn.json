@@ -1090,7 +1090,7 @@
     "skyblocker.corpseTracker.totalProfit": "总利润：%s%s",
     "skyblocker.corpseTracker.corpseProfit": "尸体利润：%s",
     "skyblocker.corpseTracker.incompletePriceData": " （价格数据不完整）",
-    "skyblocker.powderTracker.profit": "利润：%s Coins",
+    "skyblocker.powderTracker.profit": "利润：%s金币",
     "skyblocker.powderTracker.emptyHistory": "你的powder mining奖励历史记录是空的 :(",
     "skyblocker.powderTracker.rewardsFilteredOut": "经过筛选后，你的powder mining奖励历史记录是空的 :(",
     "skyblocker.corpseTracker.historyReset": "尸体利润记录已因切换存档而重置。",
