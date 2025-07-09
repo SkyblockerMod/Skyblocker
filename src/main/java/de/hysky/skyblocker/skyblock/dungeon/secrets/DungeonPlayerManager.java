@@ -24,7 +24,7 @@ public class DungeonPlayerManager {
 	 * Group 2: class (or literal "EMPTY" pre dungeon start)
 	 * Group 3: level (or nothing, if pre dungeon start)
 	 * This regex filters out the ironman icon as well as rank prefixes and emblems
-	 * \[\d*\] (?:\[[A-Za-z]+\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\((?<class>\S*) ?(?<level>[LXVI]*)\)
+	 * \[\d*\] (?:\[[A-Za-z]+\] )?(?&lt;name&gt;[A-Za-z0-9_]*) (?:.* )?\((?&lt;class&gt;\S*) ?(?&lt;level&gt;[LXVI]*)\)
 	 */
 	public static final Pattern PLAYER_TAB_PATTERN = Pattern.compile("\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\\((?<class>\\S*) ?(?<level>[LXVI]*)\\)");
 	private static final Object2ReferenceMap<String, DungeonClass> PLAYER_CLASSES = new Object2ReferenceOpenHashMap<>(5);
