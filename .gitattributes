@@ -61,7 +61,6 @@
 # Serialisation
 *.json     text
 *.toml     text
-*.xml      text
 *.yaml     text
 *.yml      text
 
@@ -134,9 +133,6 @@
 *.war           binary
 *.jks           binary
 
-# Common build-tool wrapper scripts ('.cmd' versions are handled by 'Common.gitattributes')
+# Common build-tool wrapper scripts
 mvnw            text eol=lf
 gradlew         text eol=lf
-
-# These are explicitly windows files and should use crlf
-*.bat           text eol=crlf
