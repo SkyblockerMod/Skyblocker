@@ -67,7 +67,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 		if (!config.enableItemList || !config.enableCollapsibleEntries) return;
         if (!ItemRepository.filesImported() || NEURepoManager.isLoading()) return;
 
-        NEURepoManager.NEU_REPO.getConstants().getParents().getParents().forEach((parentId, childrenList) -> {
+        NEURepoManager.getConstants().getParents().getParents().forEach((parentId, childrenList) -> {
             Optional<ItemStack> parentItem = ItemRepository.getItemsStream().filter(itemStack -> itemStack.getNeuName().equals(parentId)).findFirst();
             if (parentItem.isEmpty()) return;
 
