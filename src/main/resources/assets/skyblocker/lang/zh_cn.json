@@ -1295,5 +1295,11 @@
     "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.slotQuantity": "栏位#%s数量",
     "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "集市快捷数量",
     "skyblocker.config.misc.configBackend.@Tooltip": "你可以在YetAnotherConfigLib（YACL）和MoulConfig两种设置界面之中选择一种。",
-    "skyblocker.config.misc.configBackend": "后端设置"
+    "skyblocker.config.misc.configBackend": "后端设置",
+    "skyblocker.disableAll.confirm": "你确定要禁用所用功能吗？%s",
+    "skyblocker.disableAll.confirmYes": "§c[禁用全部功能]",
+    "skyblocker.disableAll.success": "§c全部功能已被禁用。",
+    "skyblocker.disableAll.notPending": "§c请先使用 /skyblocker disableAll 。",
+    "skyblocker.disableAll.failed": "§c未能禁用所有功能。",
+    "skyblocker.config.helpers.experiments.blockIncorrectClicks": "阻止错误点击"
 }
