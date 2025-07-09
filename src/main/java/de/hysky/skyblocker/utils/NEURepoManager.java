@@ -176,7 +176,6 @@ public class NEURepoManager {
 
 		REPO_LOADING = CompletableFuture.runAsync(() -> {
 			try {
-				ItemRepository.setFilesImported();
 				FileUtils.recursiveDelete(NEURepoManager.LOCAL_REPO_DIR);
 				sendMessage(player, Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.deleted")));
 				sendMessage(player, Constants.PREFIX.get().append(Text.translatable(loadRepository().join() ? "skyblocker.updateRepository.success" : "skyblocker.updateRepository.failed")));

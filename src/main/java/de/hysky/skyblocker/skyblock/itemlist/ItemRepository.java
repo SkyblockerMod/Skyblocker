@@ -43,6 +43,13 @@ public class ItemRepository {
 	}
 
 	private static void importItemFiles() {
+		itemsImported = false;
+		filesImported = false;
+
+		items.clear();
+		itemsMap.clear();
+		recipes.clear();
+
 		NEURepoManager.forEachItem(ItemRepository::loadItem);
 		items.sort(Comparator.<ItemStack, String>comparing(stack -> ItemUtils.getItemId(stack).replaceAll(".\\d+$", ""))
 				.thenComparingInt(stack -> ItemUtils.getItemId(stack).length())
