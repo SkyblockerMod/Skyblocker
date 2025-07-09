@@ -6,6 +6,7 @@ import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getLatestVersion
 
 import java.util.List;
 
+import de.hysky.skyblocker.utils.Utils;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -14,10 +15,9 @@ import com.mojang.serialization.Dynamic;
 import de.hysky.skyblocker.utils.TextTransformer;
 import net.azureaaron.legacyitemdfu.TypeReferences;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.AttributeModifiersComponent;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -31,7 +31,7 @@ public class LegacyItemStackFixer {
 	//Static import things to avoid class name conflicts
 	@SuppressWarnings("deprecation")
 	public static ItemStack fixLegacyStack(NbtCompound nbt) {
-		RegistryOps<NbtElement> ops = ItemStackComponentizationFixer.getRegistryLookup().getOps(NbtOps.INSTANCE);
+		RegistryOps<NbtElement> ops = Utils.getRegistryWrapperLookup().getOps(NbtOps.INSTANCE);
 		Dynamic<NbtElement> fixed = getFixer().update(TypeReferences.LEGACY_ITEM_STACK, new Dynamic<>(ops, nbt), getFirstVersion(), getLatestVersion());
 		ItemStack stack = ItemStack.CODEC.parse(fixed)
 				.setPartial(ItemStack.EMPTY)
@@ -57,14 +57,14 @@ public class LegacyItemStackFixer {
 
 		//Remap Custom Data
 		if (stack.contains(DataComponentTypes.CUSTOM_DATA)) {
-			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(stack.get(DataComponentTypes.CUSTOM_DATA).getNbt().getCompound("ExtraAttributes")));
+			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(stack.get(DataComponentTypes.CUSTOM_DATA).getNbt().getCompoundOrEmpty("ExtraAttributes")));
 		}
 
-		//Hide Vanilla Attributes
-		stack.set(DataComponentTypes.ATTRIBUTE_MODIFIERS, AttributeModifiersComponent.DEFAULT.withShowInTooltip(false));
-
-		//Hide Vanilla Enchantments
-		stack.set(DataComponentTypes.ENCHANTMENTS, stack.getOrDefault(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT).withShowInTooltip(false));
+		//Hide Attributes & Vanilla Enchantments
+		TooltipDisplayComponent display = stack.getOrDefault(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplayComponent.DEFAULT)
+				.with(DataComponentTypes.ATTRIBUTE_MODIFIERS, true)
+				.with(DataComponentTypes.ENCHANTMENTS, true);
+		stack.set(DataComponentTypes.TOOLTIP_DISPLAY, display);
 
 		return stack;
 	}

@@ -9,7 +9,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.CompactDamage;
-import de.hysky.skyblocker.skyblock.FishingHelper;
 import de.hysky.skyblocker.skyblock.HealthBars;
 import de.hysky.skyblocker.skyblock.SmoothAOTE;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
@@ -22,6 +21,10 @@ import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
 import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
 import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
+import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
+import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
+import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
+import de.hysky.skyblocker.skyblock.galatea.ForestNodes;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
@@ -78,11 +81,16 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		EggFinder.checkIfEgg(armorStandEntity);
 		CorpseFinder.checkIfCorpse(armorStandEntity);
 		HealthBars.healthBar(armorStandEntity);
+		SeaCreatureTracker.onEntitySpawn(armorStandEntity);
+		FishingHelper.checkIfFishWasCaught(armorStandEntity);
 		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
 			CompactDamage.compactDamage(armorStandEntity);
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Compact Damage] Failed to compact damage number", e);
 		}
+
+
+		FishingHookDisplayHelper.onArmorStandSpawn(armorStandEntity);
 	}
 
 	@Inject(method = "method_64896", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V"))
@@ -143,7 +151,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 
 	@Inject(method = "onPlaySound", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
 	private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
-		FishingHelper.onSound(packet);
 		CrystalsChestHighlighter.onSound(packet);
 		SoundEvent sound = packet.getSound().value();
 
@@ -180,6 +187,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		DojoManager.onParticle(packet);
 		CrystalsChestHighlighter.onParticle(packet);
 		EnderNodes.onParticle(packet);
+		ForestNodes.onParticle(packet);
 		WishingCompassSolver.onParticle(packet);
 	}
 

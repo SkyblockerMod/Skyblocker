@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.entity;
 
-import com.google.common.collect.Streams;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
@@ -29,6 +28,7 @@ import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
@@ -150,6 +150,14 @@ public class MobGlow {
 			};
 		}
 
+		if (Utils.isInGalatea()) {
+			return switch (entity) {
+				case ShulkerEntity shulker when shulker.getColor() == DyeColor.GREEN && SkyblockerConfigManager.get().hunting.huntingMobs.highlightHideonleaf -> DyeColor.YELLOW.getSignColor();
+
+				default -> NO_GLOW;
+			};
+		}
+
 		return switch (entity) {
 			// Rift Blobbercyst
 			case PlayerEntity p when SkyblockerConfigManager.get().otherLocations.rift.blobbercystGlow && Utils.isInTheRift() && name.equals("Blobbercyst ") -> Formatting.GREEN.getColorValue();
@@ -218,15 +226,13 @@ public class MobGlow {
 	 * Compares the armor items of an armor stand to the Nukekubi head texture to determine if it is a Nukekubi head.
 	 */
 	private static boolean isNukekubiHead(ArmorStandEntity entity) {
-		return Streams.stream(entity.getArmorItems()).map(ItemUtils::getHeadTexture).anyMatch(headTexture -> headTexture.contains(NUKEKUBI_HEAD_TEXTURE));
+		return ItemUtils.getHeadTexture(entity.getEquippedStack(EquipmentSlot.HEAD)).contains(NUKEKUBI_HEAD_TEXTURE);
 	}
 
 	/**
 	 * Compares the armor items of an armor stand to the Pest head texture to determine if it is a Pest head.
 	 */
 	private static boolean isPestHead(ArmorStandEntity entity) {
-		return Streams.stream(entity.getArmorItems())
-				.map(ItemUtils::getHeadTexture)
-				.anyMatch(PEST_HEAD_TEXTURES::contains);
+		return PEST_HEAD_TEXTURES.contains(ItemUtils.getHeadTexture(entity.getEquippedStack(EquipmentSlot.HEAD)));
 	}
 }

@@ -16,7 +16,6 @@ import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @RegisterWidget
@@ -25,6 +24,7 @@ public class CrystalsHudWidget extends HudWidget {
 	protected static final Identifier MAP_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/crystals_map.png");
 	private static final Identifier MAP_ICON = Identifier.ofVanilla("textures/map/decorations/player.png");
 	private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Unknown");
+	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.CRYSTAL_HOLLOWS);
 
 	private static CrystalsHudWidget instance = null;
 
@@ -70,7 +70,7 @@ public class CrystalsHudWidget extends HudWidget {
 
 	@Override
 	public Set<Location> availableLocations() {
-		return Set.of(Location.CRYSTAL_HOLLOWS);
+		return AVAILABLE_LOCATIONS;
 	}
 
 	@Override

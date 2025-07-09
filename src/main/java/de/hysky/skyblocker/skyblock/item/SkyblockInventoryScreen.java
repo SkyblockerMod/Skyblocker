@@ -3,8 +3,11 @@ package de.hysky.skyblocker.skyblock.item;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -18,17 +21,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.nbt.visitor.StringNbtWriter;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -36,7 +38,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * <p>Adds equipment slots to the inventory screen and moves the offhand slot.</p>
@@ -65,9 +66,8 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         }
         Path resolve = FOLDER.resolve(profileId + ".nbt");
 
-        try (BufferedWriter writer = Files.newBufferedWriter(resolve)) {
-
-            writer.write(new StringNbtWriter().apply(CODEC.encodeStart(NbtOps.INSTANCE, ArrayUtils.addAll(equipment, equipment_rift)).getOrThrow()));
+        try {
+            NbtIo.write(CODEC.encodeStart(NbtOps.INSTANCE, ArrayUtils.addAll(equipment, equipment_rift)).getOrThrow(), new DataOutputStream(Files.newOutputStream(resolve)));
         } catch (Exception e) {
             LOGGER.error("[Skyblocker] Failed to save Equipment data", e);
         }
@@ -76,8 +76,8 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     private static void load(String profileId) {
         Path resolve = FOLDER.resolve(profileId + ".nbt");
         CompletableFuture.supplyAsync(() -> {
-            try (BufferedReader reader = Files.newBufferedReader(resolve)) {
-                return CODEC.parse(NbtOps.INSTANCE, StringNbtReader.parse(reader.lines().collect(Collectors.joining()))).getOrThrow();
+            try {
+                return CODEC.parse(NbtOps.INSTANCE, NbtIo.read(resolve)).getOrThrow();
             } catch (NoSuchFileException ignored) {
             } catch (Exception e) {
                 LOGGER.error("[Skyblocker] Failed to load Equipment data", e);
@@ -114,6 +114,9 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
     public SkyblockInventoryScreen(PlayerEntity player) {
         super(player);
+		if (ResourcePackCompatibility.options.renameInventoryScreen().orElse(false)) {
+			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenEquipmentQuickNavSkyblocker": "InventoryScreenEquipmentSkyblocker"));
+		}
 	    SimpleInventory inventory = new SimpleInventory(Utils.isInTheRift() ? equipment_rift: equipment);
 	    for (int i = 0; i < 4; i++) {
 		    equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
@@ -173,9 +176,11 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
         super.drawBackground(context, delta, mouseX, mouseY);
-        for (int i = 0; i < 4; i++) {
-            context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, x + 76 + (i == 3 ? 21 : 0), y + 7 + i * 18, 18, 18);
+        for (int i = 0; i < 3; i++) {
+            context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, x + 76, y + 7 + i * 18, 18, 18);
         }
+		Slot slot = handler.slots.get(45);
+		context.drawGuiTexture(RenderLayer::getGuiTextured, SLOT_TEXTURE, x + slot.x - 1, y + slot.y - 1, 18, 18);
     }
 
     @Override
@@ -188,7 +193,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
     private static class EquipmentSlot extends Slot {
 
-        public EquipmentSlot(Inventory inventory, int index, int x, int y) {
+        private EquipmentSlot(Inventory inventory, int index, int x, int y) {
             super(inventory, index, x, y);
         }
 

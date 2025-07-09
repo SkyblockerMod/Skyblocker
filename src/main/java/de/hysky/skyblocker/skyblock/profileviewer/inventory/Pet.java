@@ -96,25 +96,23 @@ public class Pet {
 
     private ItemStack createIcon() {
         if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return Ico.BARRIER;
-        Map<String, NEUItem> items = NEURepoManager.NEU_REPO.getItems().getItems();
-        if (items == null) return Ico.BARRIER;
 
         String targetItemId = this.getName() + ";" + (this.getTier() + (heldItem.isPresent() && heldItem.get().equals("PET_ITEM_TIER_BOOST") ? 1 : 0));
-        NEUItem item = NEURepoManager.NEU_REPO.getItems().getItems().get(targetItemId);
+        NEUItem item = NEURepoManager.getItemByNeuId(targetItemId);
 
         // For cases life RIFT_FERRET Where it can be tier boosted into a pet that otherwise can't exist
         if (item == null && heldItem.isPresent() && heldItem.get().equals("PET_ITEM_TIER_BOOST")) {
-            item = NEURepoManager.NEU_REPO.getItems().getItems().get(getName() + ";" + getTier());
+            item = NEURepoManager.getItemByNeuId(getName() + ";" + getTier());
         }
 
-        return fromNEUItem(item, this.heldItem.map(ItemRepository::getItemStack).orElse(null));
+        return item == null ? Ico.BARRIER : fromNEUItem(item, this.heldItem.map(ItemRepository::getItemStack).orElse(null));
     }
 
     /**
      * Converts NEU item data into an ItemStack.
      * <p> This method converts NEU item data into a Pet by using the placeholder
      * information from NEU-REPO and injecting the player's calculated pet stats into the lore and transforming
-     * the NBT Data into modern DataComponentTypes before returning the final ItemStack </p
+     * the NBT Data into modern DataComponentTypes before returning the final ItemStack.
      *
      * @param item The NEUItem representing the pet.
      * @param heldItem The ItemStack of the pet's held item, if any.
@@ -148,7 +146,8 @@ public class Pet {
 
         // Skin Head Texture
         if (skinTexture.isPresent() && skin.isPresent()) {
-            formattedLore.set(0, Text.of(formattedLore.getFirst().getString() + ", " + Formatting.strip(NEURepoManager.NEU_REPO.getItems().getItems().get("PET_SKIN_" + skin.get()).getDisplayName())));
+            NEUItem skinItem = NEURepoManager.getItemByNeuId("PET_SKIN_" + skin.get());
+            if (skinItem != null) formattedLore.set(0, Text.of(formattedLore.getFirst().getString() + ", " + Formatting.strip(skinItem.getDisplayName())));
             petStack.set(DataComponentTypes.PROFILE, skinTexture.get());
         }
 
@@ -169,7 +168,7 @@ public class Pet {
      * @return Formatted lore with injected stats inserted into the tooltip
      */
     private List<Text> processLore(List<String> lore, ItemStack heldItem) {
-        Map<String, Map<Rarity, PetNumbers>> petNums = NEURepoManager.NEU_REPO.getConstants().getPetNumbers();
+        Map<String, Map<Rarity, PetNumbers>> petNums = NEURepoManager.getConstants().getPetNumbers();
         Rarity rarity = Rarity.values()[getTier()];
         PetNumbers data = petNums.get(getName()).get(rarity);
         List<Text> formattedLore = new ArrayList<>();

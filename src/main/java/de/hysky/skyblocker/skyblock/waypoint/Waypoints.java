@@ -4,22 +4,32 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Multimaps;
 import com.google.gson.*;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.command.argument.EnumArgumentType;
+import net.minecraft.text.Text;
+import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,24 +38,26 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class Waypoints {
     public static final Logger LOGGER = LoggerFactory.getLogger(Waypoints.class);
     private static final Codec<List<WaypointGroup>> CODEC = WaypointGroup.CODEC.listOf();
     private static final Codec<List<WaypointGroup>> SKYTILS_CODEC = WaypointGroup.SKYTILS_CODEC.listOf();
+	private static final Codec<Collection<WaypointGroup>> SKYBLOCKER_LEGACY_ORDERED_CODEC = Codec.unboundedMap(Codec.STRING, WaypointGroup.SKYBLOCKER_LEGACY_ORDERED_CODEC).xmap(Map::values, groups -> groups.stream().collect(Collectors.toMap(WaypointGroup::name, Function.identity())));
     private static final String PREFIX = "[Skyblocker-Waypoint-Data-V1]";
+	private static final String SKYBLOCKER_LEGACY_ORDERED = "[Skyblocker::OrderedWaypoints::v1]";
     protected static final SystemToast.Type WAYPOINTS_TOAST_TYPE = new SystemToast.Type();
 
-    private static final Path waypointsFile = FabricLoader.getInstance().getConfigDir().resolve(SkyblockerMod.NAMESPACE).resolve("waypoints.json");
+    private static final Path WAYPOINTS_FILE = SkyblockerMod.CONFIG_DIR.resolve("waypoints.json");
+	private static final Path SKYBLOCKER_LEGACY_ORDERED_FILE = SkyblockerMod.CONFIG_DIR.resolve("ordered_waypoints.json");
     private static final Multimap<Location, WaypointGroup> waypoints = MultimapBuilder.enumKeys(Location.class).arrayListValues().build();
 
     @Init
@@ -53,21 +65,60 @@ public class Waypoints {
         loadWaypoints();
         ClientLifecycleEvents.CLIENT_STOPPING.register(Waypoints::saveWaypoints);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(Waypoints::render);
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(MinecraftClient.getInstance().currentScreen))))));
+        ClientCommandRegistrationCallback.EVENT.register(Waypoints::registerCommands);
+		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
     }
+
+	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess access) {
+		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
+				.then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(MinecraftClient.getInstance().currentScreen)))
+						.then(literal("ordered").then(argument("action", OrderedAction.ArgumentType.orderedAction()).executes(Waypoints::executeOrderedWaypointAction)))
+				));
+	}
+
+	private static int executeOrderedWaypointAction(CommandContext<FabricClientCommandSource> context) {
+		Optional<WaypointGroup> groupOptional = waypoints.get(Utils.getLocation()).stream()
+				.filter(group -> group.ordered() && !group.waypoints().isEmpty() && group.waypoints().stream().allMatch(Waypoint::isEnabled))
+				.findFirst();
+		if (groupOptional.isEmpty()) {
+			context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.literal("No ordered group enabled here! (make sure all waypoints in the group are enabled)")));
+			return Command.SINGLE_SUCCESS;
+		}
+		WaypointGroup group = groupOptional.get();
+		OrderedAction action = OrderedAction.ArgumentType.getOrderedAction(context, "action");
+		int index = group.currentIndex();
+		int waypointCount = group.waypoints().size();
+		switch (action) {
+			case FIRST, RESET -> group.resetCurrentIndex();
+			case NEXT -> group.setCurrentIndex((index + 1) % waypointCount);
+			case PREVIOUS -> group.setCurrentIndex((index - 1 + waypointCount) % waypointCount);
+		}
+		return Command.SINGLE_SUCCESS;
+	}
 
     public static void loadWaypoints() {
         waypoints.clear();
-        try (BufferedReader reader = Files.newBufferedReader(waypointsFile)) {
+        try (BufferedReader reader = Files.newBufferedReader(WAYPOINTS_FILE)) {
             List<WaypointGroup> waypointGroups = CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
             waypointGroups.forEach(Waypoints::putWaypointGroup);
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading waypoints", e);
         }
-    }
+		try (BufferedReader reader = Files.newBufferedReader(SKYBLOCKER_LEGACY_ORDERED_FILE)) {
+			Collection<WaypointGroup> waypointGroups = SKYBLOCKER_LEGACY_ORDERED_CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonObject.class)).resultOrPartial(LOGGER::error).orElseThrow();
+			for (WaypointGroup group : waypointGroups) {
+				Waypoints.putWaypointGroup(group.withIsland(Location.DWARVEN_MINES).deepCopy());
+				Waypoints.putWaypointGroup(group.withIsland(Location.DWARVEN_MINES).deepCopy());
+			}
+			Files.move(SKYBLOCKER_LEGACY_ORDERED_FILE, SkyblockerMod.CONFIG_DIR.resolve("legacy_ordered_waypoints.json"));
+			LOGGER.info("[Skyblocker Waypoints] Successfully migrated {} ordered waypoints from {} groups to waypoints!", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size());
+		} catch (IOException e) {
+			LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading legacy ordered waypoints", e);
+		}
+	}
 
     public static void saveWaypoints(MinecraftClient client) {
-        try (BufferedWriter writer = Files.newBufferedWriter(waypointsFile)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(WAYPOINTS_FILE)) {
             JsonElement waypointsJson = CODEC.encodeStart(JsonOps.INSTANCE, List.copyOf(waypoints.values())).resultOrPartial(LOGGER::error).orElseThrow();
             SkyblockerMod.GSON.toJson(waypointsJson, writer);
             LOGGER.info("[Skyblocker Waypoints] Saved waypoints");
@@ -76,14 +127,20 @@ public class Waypoints {
         }
     }
 
-    public static List<WaypointGroup> fromSkyblocker(String waypointsString) {
+    public static List<WaypointGroup> fromSkyblocker(String waypointsString, Location defaultIsland) {
         if (waypointsString.startsWith(PREFIX)) {
             try (GZIPInputStream reader = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(waypointsString.replace(PREFIX, ""))))) {
                 return CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(new String(reader.readAllBytes()), JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
             } catch (IOException e) {
                 LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skyblocker waypoint data", e);
             }
-        }
+        } else if (waypointsString.startsWith(SKYBLOCKER_LEGACY_ORDERED)) {
+			try (GZIPInputStream reader = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(waypointsString.replace(SKYBLOCKER_LEGACY_ORDERED, ""))))) {
+				return applyDefaultLocation(SKYBLOCKER_LEGACY_ORDERED_CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(new String(reader.readAllBytes()), JsonObject.class)).resultOrPartial(LOGGER::error).orElseThrow(), defaultIsland);
+			} catch (IOException e) {
+				LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skyblocker legacy ordered waypoint data", e);
+			}
+		}
         return Collections.emptyList();
     }
 
@@ -133,7 +190,7 @@ public class Waypoints {
             waypointGroupsJson.add(waypointGroupJson);
         }
         List<WaypointGroup> waypointGroups = SKYTILS_CODEC.parse(JsonOps.INSTANCE, waypointGroupsJson).resultOrPartial(LOGGER::error).orElseThrow();
-        return waypointGroups.stream().map(waypointGroup -> waypointGroup.island() == Location.UNKNOWN ? waypointGroup.withIsland(defaultIsland) : waypointGroup).toList();
+        return applyDefaultLocation(waypointGroups, defaultIsland);
     }
 
     public static String toSkytilsBase64(List<WaypointGroup> waypointGroups) {
@@ -149,6 +206,10 @@ public class Waypoints {
     public static WaypointGroup fromColeweightJson(String waypointsJson, Location defaultIsland) {
         return WaypointGroup.COLEWEIGHT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(waypointsJson)).resultOrPartial(LOGGER::error).orElseThrow().withIsland(defaultIsland);
     }
+
+	public static List<WaypointGroup> applyDefaultLocation(Collection<WaypointGroup> waypointGroups, Location defaultIsland) {
+		return waypointGroups.stream().map(waypointGroup -> waypointGroup.island() == Location.UNKNOWN ? waypointGroup.withIsland(defaultIsland) : waypointGroup).toList();
+	}
 
 	/**
 	 * Gets the waypoint groups for the specified island.
@@ -202,4 +263,36 @@ public class Waypoints {
             }
         }
     }
+
+	private static void reset() {
+		waypoints.values().forEach(WaypointGroup::resetCurrentIndex);
+	}
+
+	private enum OrderedAction implements StringIdentifiable {
+		NEXT,
+		PREVIOUS,
+		FIRST,
+		RESET;
+
+		private static final Codec<OrderedAction> CODEC = StringIdentifiable.createCodec(OrderedAction::values);
+
+		@Override
+		public String asString() {
+			return name().toLowerCase(Locale.ENGLISH);
+		}
+
+		static class ArgumentType extends EnumArgumentType<OrderedAction> {
+			protected ArgumentType() {
+				super(CODEC, OrderedAction::values);
+			}
+
+			static ArgumentType orderedAction() {
+				return new ArgumentType();
+			}
+
+			static <S> OrderedAction getOrderedAction(CommandContext<S> context, String name) {
+				return context.getArgument(name, OrderedAction.class);
+			}
+		}
+	}
 }

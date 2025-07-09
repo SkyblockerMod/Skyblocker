@@ -102,7 +102,7 @@ public class ChatRulesHandler {
             }
 
             if (rule.getShowAnnouncement()) {
-                TitleContainer.addTitle(new Title(newMessage.copy()), SkyblockerConfigManager.get().chat.chatRuleConfig.announcementLength) ;
+                TitleContainer.addTitle(new Title(newMessage.copy()), SkyblockerConfigManager.get().chat.chatRuleConfig.announcementLength);
             }
 
             //show in action bar

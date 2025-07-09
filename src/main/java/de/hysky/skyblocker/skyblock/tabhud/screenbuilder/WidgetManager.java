@@ -8,7 +8,6 @@ import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
@@ -62,8 +61,6 @@ public class WidgetManager {
 	// we probably want this to run pretty early?
 	@Init(priority = -1)
 	public static void init() {
-		SkyblockEvents.LOCATION_CHANGE.register(location -> ScreenBuilder.positionsNeedsUpdating = true);
-
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
 
 			instantiateWidgets();
@@ -191,6 +188,18 @@ public class WidgetManager {
 					new PositionRule(CommsWidget.ID, new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, WidgetManager.ScreenLayer.HUD)
 			);
 		}
+
+		screenBuilder = getScreenBuilder(Location.DUNGEON);
+		screenBuilder.setPositionRule(
+				"Dungeon Splits",
+				new PositionRule(
+						"screen",
+						new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
+						new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
+						5,
+						0,
+						WidgetManager.ScreenLayer.HUD)
+		);
 	}
 
 

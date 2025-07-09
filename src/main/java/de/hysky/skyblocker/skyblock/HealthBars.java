@@ -209,7 +209,7 @@ public class HealthBars {
 		Color emptyColor = SkyblockerConfigManager.get().uiAndVisuals.healthBars.emptyBarColor;
 		boolean hideFullHealth = SkyblockerConfigManager.get().uiAndVisuals.healthBars.hideFullHealth;
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.healthBars.scale;
-		float tickDelta = context.tickCounter().getTickDelta(false);
+		float tickDelta = context.tickCounter().getTickProgress(false);
 		float width = scale;
 		float height = scale * 0.1f;
 

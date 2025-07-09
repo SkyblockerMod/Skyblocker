@@ -28,6 +28,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.scoreboard.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -38,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.OptionalInt;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,8 +55,10 @@ public class Utils {
     private static final String PROFILE_PREFIX = "Profile: ";
     private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
     public static final String PROFILE_ID_PREFIX = "Profile ID: ";
+    private static final String PROFILE_ID_SUGGEST_PREFIX = "CLICK THIS TO SUGGEST IT IN CHAT";
 	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
-    private static boolean isOnHypixel = false;
+	private static final RegistryWrapper.WrapperLookup LOOKUP = BuiltinRegistries.createWrapperLookup();
+	private static boolean isOnHypixel = false;
     private static boolean isOnSkyblock = false;
 
     /**
@@ -84,8 +89,8 @@ public class Utils {
     /**
      * The server from which we last received the profile id message from.
      */
-    @NotNull
     private static int profileIdRequest = 0;
+    private static int profileSuggestionMessages = Integer.MAX_VALUE / 2;
     /**
      * The following fields store data returned from the Mod API: {@link #environment}, {@link #server}, {@link #gameType}, {@link #locationRaw}, and {@link #map}.
      */
@@ -154,9 +159,17 @@ public class Utils {
         return location == Location.CRIMSON_ISLE;
     }
 
-    public static boolean isInModernForagingIsland() {
-        return location == Location.MODERN_FORAGING_ISLAND;
-    }
+    public static boolean isInGalatea() { return location == Location.GALATEA; }
+
+	public static boolean isInHub() { return location == Location.HUB; }
+
+	public static boolean isInPrivateIsland() { return location == Location.PRIVATE_ISLAND; }
+
+	public static boolean isInPark() { return location == Location.THE_PARK; }
+
+	public static boolean isOnBingo() {
+		return profile.endsWith("Ⓑ");
+	}
 
     /**
      * @return the profile parsed from the player list.
@@ -181,7 +194,7 @@ public class Utils {
 
     /**
      * <b>Note: Under no circumstances should you skip checking the location if you also need the area.</b>
-     * 
+     *
      * @return the area parsed from the scoreboard.
      */
     @NotNull
@@ -488,7 +501,10 @@ public class Utils {
 
 		    @Override
 		    public void run() {
-		        if (requestId == profileIdRequest) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid", true);
+		        if (requestId == profileIdRequest) {
+		        	MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid", true);
+		        	profileSuggestionMessages = 0;
+		        }
 		    }
         }, 20 * 8); //8 seconds
     }
@@ -549,6 +565,11 @@ public class Utils {
 					SkyblockEvents.PROFILE_INIT.invoker().onSkyblockProfileInit(profileId);
 	                firstProfileUpdate = false;
                 }
+            } else if (Formatting.strip(message).startsWith(PROFILE_ID_SUGGEST_PREFIX)) {
+            	int suggestions = profileSuggestionMessages;
+            	profileSuggestionMessages++;
+
+            	return suggestions > 2;
             }
         }
 
@@ -575,4 +596,27 @@ public class Utils {
     public static String getUndashedUuid() {
         return UndashedUuid.toString(getUuid());
     }
+
+	/**
+	 * Tries to get the dynamic registry manager instance currently in use or else returns {@link #LOOKUP}
+	 */
+	public static RegistryWrapper.WrapperLookup getRegistryWrapperLookup() {
+		MinecraftClient client = MinecraftClient.getInstance();
+		// Null check on client for tests
+		return client != null && client.getNetworkHandler() != null && client.getNetworkHandler().getRegistryManager() != null ? client.getNetworkHandler().getRegistryManager() : LOOKUP;
+	}
+
+	/**
+	 * Parses an int from a string
+	 * @param input the string to parse
+	 * @return the int parsed or an empty optional if it failed
+	 * @implNote Does not log the exception if thrown
+	 */
+	public static OptionalInt parseInt(String input) {
+		try {
+			return OptionalInt.of(Integer.parseInt(input));
+		} catch (NumberFormatException e) {
+			return OptionalInt.empty();
+		}
+	}
 }

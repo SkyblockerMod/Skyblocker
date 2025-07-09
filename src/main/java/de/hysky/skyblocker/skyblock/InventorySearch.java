@@ -85,6 +85,10 @@ public class InventorySearch {
 
 	}
 
+	public static void refreshSlot(int slotId) {
+		slotToMatch.remove(slotId);
+	}
+
 	/**
 	 * Button to open the search bar, for accessibility reasons (pojav and general preferences)
 	 */
@@ -94,7 +98,7 @@ public class InventorySearch {
 		private final HandledScreen<?> screen;
 		private boolean hoveredState = false;
 
-		public SearchTextWidget(HandledScreen<?> handledScreen) {
+		private SearchTextWidget(HandledScreen<?> handledScreen) {
 			super(Text.translatable("skyblocker.inventorySearch.clickHereToSearch"), Screens.getTextRenderer(handledScreen));
 			setPosition((handledScreen.width - this.getWidth()) / 2, 15);
 			underlinedText = getMessage().copy().formatted(Formatting.UNDERLINE);

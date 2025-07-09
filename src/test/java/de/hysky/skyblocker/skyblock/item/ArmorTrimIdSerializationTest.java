@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 
-import de.hysky.skyblocker.skyblock.item.CustomArmorTrims.ArmorTrimId;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims.ArmorTrimId;
 import net.minecraft.util.Identifier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

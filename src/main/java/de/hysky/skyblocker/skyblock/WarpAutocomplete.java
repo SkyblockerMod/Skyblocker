@@ -62,6 +62,6 @@ public class WarpAutocomplete {
     }
 
     private static boolean shouldShowWarp(Object2BooleanMap.Entry<String> entry) {
-        return entry.getBooleanValue() ? RankType.compare(Utils.getRank(), PackageRank.MVP_PLUS) >= 0 : true;
+        return !entry.getBooleanValue() || Utils.isOnBingo() || RankType.compare(Utils.getRank(), PackageRank.MVP_PLUS) >= 0;
     }
 }

@@ -133,10 +133,7 @@ public abstract class HudConfigScreen extends Screen {
 
 	@Override
 	public final void close() {
-		SkyblockerConfig skyblockerConfig = SkyblockerConfigManager.get();
-		savePos(skyblockerConfig, widgets);
-		SkyblockerConfigManager.save();
-
+		SkyblockerConfigManager.update(config -> savePos(config, widgets));
 		client.setScreen(parent);
 	}
 

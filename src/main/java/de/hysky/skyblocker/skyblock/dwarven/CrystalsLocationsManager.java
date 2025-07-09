@@ -231,8 +231,8 @@ public class CrystalsLocationsManager {
             }
             int locationColor = WAYPOINT_LOCATIONS.get(waypointLocation).getColor();
             text.append(Text.literal("[" + waypointLocation + "]").withColor(locationColor).styled(style -> style
-                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints add " + location + " " + waypointLocation))
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("skyblocker.config.mining.crystalsWaypoints.getLocationHover.add").withColor(locationColor))))
+                    .withClickEvent(new ClickEvent.RunCommand("/skyblocker crystalWaypoints add " + location + " " + waypointLocation))
+                    .withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.config.mining.crystalsWaypoints.getLocationHover.add").withColor(locationColor))))
             );
         }
 
@@ -266,8 +266,8 @@ public class CrystalsLocationsManager {
         for (String waypointLocation : activeWaypoints.keySet()) {
             int locationColor = WAYPOINT_LOCATIONS.get(waypointLocation).getColor();
             text.append(Text.literal("[" + waypointLocation + "]").withColor(locationColor).styled(style -> style
-                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skyblocker crystalWaypoints " + action + " " + waypointLocation))
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage.withColor(locationColor))))
+                    .withClickEvent(new ClickEvent.RunCommand("/skyblocker crystalWaypoints " + action + " " + waypointLocation))
+                    .withHoverEvent(new HoverEvent.ShowText(hoverMessage.withColor(locationColor))))
             );
         }
 

@@ -5,9 +5,22 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Range;
 
 public class Components {
-	public static Component progressComponent(ItemStack icon, Text description, float percent) {
+	public static Component iconTextComponent(ItemStack icon, Text text) {
+		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
+			case MINIMAL, SIMPLE -> new PlainTextComponent(text);
+			case CLASSIC, FANCY -> new IcoTextComponent(icon, text);
+		};
+	}
+
+	/**
+	 * Returns a progress component based on the configured style.
+	 *
+	 * @param percent the percentage from 0 to 100
+	 */
+	public static Component progressComponent(ItemStack icon, Text description, @Range(from = 0, to = 100) float percent) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
 			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
 			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
@@ -15,7 +28,12 @@ public class Components {
 		};
 	}
 
-	public static Component progressComponent(ItemStack icon, Text description, float percent, int color) {
+	/**
+	 * Returns a progress component based on the configured style.
+	 *
+	 * @param percent the percentage from 0 to 100
+	 */
+	public static Component progressComponent(ItemStack icon, Text description, @Range(from = 0, to = 100) float percent, int color) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
 			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(Text.literal(percent + "%").withColor(color)));
 			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(color)));
@@ -23,7 +41,12 @@ public class Components {
 		};
 	}
 
-	public static Component progressComponent(ItemStack icon, Text description, Text bar, float percent) {
+	/**
+	 * Returns a progress component based on the configured style.
+	 *
+	 * @param percent the percentage from 0 to 100
+	 */
+	public static Component progressComponent(ItemStack icon, Text description, Text bar, @Range(from = 0, to = 100) float percent) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
 			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
 			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
@@ -31,7 +54,12 @@ public class Components {
 		};
 	}
 
-	public static Component progressComponent(ItemStack icon, Text description, Text bar, float percent, int color) {
+	/**
+	 * Returns a progress component based on the configured style.
+	 *
+	 * @param percent the percentage from 0 to 100
+	 */
+	public static Component progressComponent(ItemStack icon, Text description, Text bar, @Range(from = 0, to = 100) float percent, int color) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
 			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(bar.copy().withColor(color)));
 			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(bar.copy().withColor(color)));

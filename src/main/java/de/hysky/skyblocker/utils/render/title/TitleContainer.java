@@ -128,10 +128,11 @@ public class TitleContainer {
 	}
 
 	private static void render(DrawContext context, RenderTickCounter tickCounter) {
-		render(context, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickCounter.getTickDelta(true));
+		render(context, titles, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y, tickCounter.getTickProgress(true));
 	}
 
 	protected static void render(DrawContext context, Set<Title> titles, int xPos, int yPos, float tickDelta) {
+		if (titles.isEmpty()) return;
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
 		// Calculate Scale to use

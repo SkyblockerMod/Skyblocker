@@ -122,8 +122,8 @@ public class PreviewTab implements Tab {
 		scoreboard.getOrCreateScore(createHolder(Text.literal("enough lines bye")), placeHolderObjective).setScore(-9);
 		scoreboard.getOrCreateScore(createHolder(Text.literal("NEVER GONNA GIVE Y-")), placeHolderObjective).setScore(-10);
 
-		WidgetManager.getScreenBuilder(getCurrentLocation()).positionWidgets(client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight(), true);
 		locationDropdown = parent.createLocationDropdown(location -> updateWidgets());
+		updateWidgets();
 	}
 
 	private ScoreHolder createHolder(Text name) {
@@ -251,7 +251,9 @@ public class PreviewTab implements Tab {
 		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
 		updatePlayerListFromPreview();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
-		screenBuilder.positionWidgets((int) (parent.width / scale), (int) (parent.height / scale), true);
+		screenBuilder.updateWidgetLists(true);
+		screenBuilder.updateWidgets(currentScreenLayer);
+		screenBuilder.positionWidgets((int) (parent.width / scale), (int) (parent.height / scale));
 	}
 
 	public enum Mode {
@@ -389,7 +391,7 @@ public class PreviewTab implements Tab {
 		private final List<ClickableWidget> widgets = new ArrayList<>();
 		private int height = 0;
 
-		public WidgetOptionsScrollable() {
+		private WidgetOptionsScrollable() {
 			super(0, 0, 0, 0, Text.literal("Widget Options Scrollable"));
 		}
 
@@ -434,11 +436,11 @@ public class PreviewTab implements Tab {
 		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 		}
 
-		void clearWidgets() {
+		private void clearWidgets() {
 			widgets.clear();
 		}
 
-		void addWidget(ClickableWidget clickableWidget) {
+		private void addWidget(ClickableWidget clickableWidget) {
 			widgets.add(clickableWidget);
 		}
 	}
@@ -447,7 +449,7 @@ public class PreviewTab implements Tab {
 		private final boolean other;
 		private @Nullable PositionRule.Point hoveredPoint = null;
 
-		public AnchorSelectionWidget(int width, Text text, boolean other) {
+		private AnchorSelectionWidget(int width, Text text, boolean other) {
 			super(0, 0, width, 40, text);
 			this.other = other;
 		}

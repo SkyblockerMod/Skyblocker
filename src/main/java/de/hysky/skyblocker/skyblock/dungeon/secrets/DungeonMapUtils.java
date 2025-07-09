@@ -230,6 +230,15 @@ public class DungeonMapUtils {
         };
     }
 
+	public static Vec3d actualToRelative(Room.Direction direction, Vector2ic physicalCornerPos, Vec3d pos) {
+		return switch (direction) {
+			case NW -> new Vec3d(pos.getX() - physicalCornerPos.x(), pos.getY(), pos.getZ() - physicalCornerPos.y());
+			case NE -> new Vec3d(pos.getZ() - physicalCornerPos.y(), pos.getY(), -pos.getX() + physicalCornerPos.x());
+			case SW -> new Vec3d(-pos.getZ() + physicalCornerPos.y(), pos.getY(), pos.getX() - physicalCornerPos.x());
+			case SE -> new Vec3d(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
+		};
+	}
+
     public static BlockPos relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, JsonObject posJson) {
         return relativeToActual(direction, physicalCornerPos, new BlockPos(posJson.get("x").getAsInt(), posJson.get("y").getAsInt(), posJson.get("z").getAsInt()));
     }
@@ -242,6 +251,15 @@ public class DungeonMapUtils {
             case SE -> new BlockPos(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
         };
     }
+
+	public static Vec3d relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, Vec3d pos) {
+		return switch (direction) {
+			case NW -> new Vec3d(pos.getX() + physicalCornerPos.x(), pos.getY(), pos.getZ() + physicalCornerPos.y());
+			case NE -> new Vec3d(-pos.getZ() + physicalCornerPos.x(), pos.getY(), pos.getX() + physicalCornerPos.y());
+			case SW -> new Vec3d(pos.getZ() + physicalCornerPos.x(), pos.getY(), -pos.getX() + physicalCornerPos.y());
+			case SE -> new Vec3d(-pos.getX() + physicalCornerPos.x(), pos.getY(), -pos.getZ() + physicalCornerPos.y());
+		};
+	}
 
     public static Room.Type getRoomType(MapState map, Vector2ic mapPos) {
         return switch (getColor(map, mapPos)) {
