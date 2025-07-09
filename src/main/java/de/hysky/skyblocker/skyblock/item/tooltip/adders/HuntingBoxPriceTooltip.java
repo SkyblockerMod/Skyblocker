@@ -25,6 +25,7 @@ public class HuntingBoxPriceTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+		if (focusedSlot == null || focusedSlot.id > 53) return;
 		Attribute attribute = Attributes.getAttributeFromItemName(stack);
 
 		if (attribute != null && TooltipInfoType.BAZAAR.hasOrNullWarning(attribute.apiId())) {
