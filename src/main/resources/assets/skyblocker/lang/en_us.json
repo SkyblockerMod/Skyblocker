@@ -143,6 +143,9 @@
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nNote: This only works correctly if death messages are enabled in your skyblock settings. If you want to hide death messages, use this mod's Hide Player Death Messages setting instead to allow further processing of death messages.",
   "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Score Scaling",
 
+  "skyblocker.config.dungeons.dungeonSplits": "Dungeon Splits Widget",
+  "skyblocker.config.dungeons.dungeonSplits.@Tooltip": "Enables a widget that shows your fastest times in each dungeon section.",
+
   "skyblocker.config.dungeons.fancyPartyFinder": "Fancy Party Finder",
 
   "skyblocker.config.dungeons.hideSoulweaverSkulls": "Hide Soulweaver Skulls",
@@ -472,6 +475,7 @@
   "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Enable Chronomatron Solver",
   "skyblocker.config.helpers.experiments.enableSuperpairsSolver": "Enable Superpairs Solver",
   "skyblocker.config.helpers.experiments.enableUltrasequencerSolver": "Enable Ultrasequencer Solver",
+  "skyblocker.config.helpers.experiments.blockIncorrectClicks": "Block Incorrect Clicks",
 
   "skyblocker.config.helpers.fairySouls": "Fairy Souls Helper",
   "skyblocker.config.helpers.fairySouls.enableFairySoulsHelper": "Enable Fairy Souls Helper",
@@ -622,6 +626,8 @@
   "skyblocker.config.chat.filter.hideShowOff": "Hide Show Off Messages",
   "skyblocker.config.chat.filter.hideShowOff.@Tooltip": "Filters messages from the /show command",
   "skyblocker.config.chat.filter.hideTeleportPad": "Hide Teleport Pad Messages",
+  "skyblocker.config.chat.filter.hideToggleLottery": "Hide Toggle Lottery Messages",
+  "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "Hides those pesky messages telling you to disable the Lottery HOTF perk when you want it enabled!",
   "skyblocker.config.chat.filter.hideToggleSkyMall": "Hide Toggle Sky Mall Messages",
   "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "Hides those pesky messages telling you to disable the Sky Mall HOTM perk when you want it enabled!",
 
@@ -957,6 +963,12 @@
   "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor": "Empty Health Bar Color",
   "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip": "Color of health bar when mob is at full hp",
 
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled.@Tooltip": "Adds 3 buttons to quickly fill out Bazaar buy order amounts",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse": "Close Sign on Use",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.slotQuantity": "Slot #%s Quantity",
+
   "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "Enable Sign Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "Enables the ability for you to do calculations when inputting values such as price for the ah.\n Key:\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\n purse/P = current purse value",
@@ -1035,6 +1047,7 @@
   "skyblocker.config.uiAndVisuals.slotText.statsTuning": "Stats Tuning",
   "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "Displays your assigned and unassigned tuning points",
   "skyblocker.config.uiAndVisuals.slotText.yourEssence": "Your Essence",
+  "skyblocker.config.uiAndVisuals.slotText.bestiaryLevel": "Bestiary Level",
 
   "skyblocker.config.uiAndVisuals.searchOverlay": "AH/BZ Search Overlay",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",
@@ -1192,6 +1205,28 @@
   "skyblocker.dungeons.secretsTracker.feedback": "%s§f found %s§f secrets. %s",
   "skyblocker.dungeons.secretsTracker.failFeedback": "§cUnable to calculate the number of secrets everybody did this run!",
 
+  "skyblocker.dungeons.splits.bloodOpen": "Blood Open",
+  "skyblocker.dungeons.splits.bloodClear": "Blood Clear",
+  "skyblocker.dungeons.splits.portalEntry": "Portal Entry",
+  "skyblocker.dungeons.splits.bonzoSike": "Bonzo's Sike",
+  "skyblocker.dungeons.splits.bonzo": "Bonzo",
+  "skyblocker.dungeons.splits.scarfMinions": "Scarf's Minions",
+  "skyblocker.dungeons.splits.scarf": "Scarf",
+  "skyblocker.dungeons.splits.guardians": "Guardians",
+  "skyblocker.dungeons.splits.professor": "The Professor",
+  "skyblocker.dungeons.splits.transformedProfessor": "Transformed Professor",
+  "skyblocker.dungeons.splits.thorn": "Thorn",
+  "skyblocker.dungeons.splits.livid": "Livid",
+  "skyblocker.dungeons.splits.terracottas": "Terracottas",
+  "skyblocker.dungeons.splits.sadanGiants": "Sadan's Giants",
+  "skyblocker.dungeons.splits.sadan": "Sadan",
+  "skyblocker.dungeons.splits.maxor": "Maxor",
+  "skyblocker.dungeons.splits.storm": "Storm",
+  "skyblocker.dungeons.splits.terminals": "Terminals",
+  "skyblocker.dungeons.splits.goldor": "Goldor",
+  "skyblocker.dungeons.splits.necron": "Necron",
+  "skyblocker.dungeons.splits.witherKing": "Wither King",
+
   "skyblocker.api.cache.HIT": "This data was cached!\nIt's %d seconds old.",
   "skyblocker.api.cache.MISS": "This data wasn't cached!",
   "skyblocker.api.token.authFailure": "Failed to refresh your Skyblocker API token, some features may not work temporarily!",
@@ -1345,6 +1380,11 @@
   "skyblocker.tips.clickDisable": "§c[Click to Disable Tips]",
   "skyblocker.tips.clickPreviousTip": "§b[Click for Previous Tip]",
   "skyblocker.tips.clickNextTip": "§a[Click for Next Tip]",
+  "skyblocker.disableAll.confirm": "Are you sure you want to disable all features? %s",
+  "skyblocker.disableAll.confirmYes": "§c[Disable All]",
+  "skyblocker.disableAll.success": "§cAll features disabled.",
+  "skyblocker.disableAll.failed": "§cFailed to disable all features.",
+  "skyblocker.disableAll.notPending": "§cRun /skyblocker disableAll first.",
   "skyblocker.tips.tip": "§aTip: %s\n",
   "skyblocker.tips.customItemNames": "Customize the names of your items with /skyblocker custom renameItem",
   "skyblocker.tips.customArmorDyeColors": "Apply a custom dye color to your leather armor with /skyblocker custom.",
