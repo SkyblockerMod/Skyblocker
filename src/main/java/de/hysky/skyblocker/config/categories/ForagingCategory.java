@@ -71,6 +71,17 @@ public class ForagingCategory {
 										})
 								.controller(IntegerController.createBuilder().range(1, 4).slider(1).build())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.disableFishingNetPlacement"))
+								.description(Text.translatable("skyblocker.config.foraging.galatea.disableFishingNetPlacement.@Tooltip"))
+								.binding(defaults.foraging.galatea.enableSeaLumiesHighlighter,
+										() -> config.foraging.galatea.enableSeaLumiesHighlighter,
+										newValue -> {
+											config.foraging.galatea.disableFishingNetPlacement = newValue;
+											SeaLumiesHighlighter.INSTANCE.configCallback();
+										})
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 				//Sweep Overlays
 				.group(OptionGroup.createBuilder()

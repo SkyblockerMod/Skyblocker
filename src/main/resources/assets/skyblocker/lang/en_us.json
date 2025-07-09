@@ -295,6 +295,8 @@
   "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "Highlights logs when using an axe's thrown ability.",
   "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "Sweep Overlay Color",
   "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "Sweep Missing: Add the Sweep stat to your player list with /tablist",
+  "skyblocker.config.foraging.galatea.disableFishingNetPlacement": "Disable Placing Fishing Nets",
+  "skyblocker.config.foraging.galatea.disableFishingNetPlacement.@Tooltip": "Disables placing down Fishing Nets",
   
   "skyblocker.config.foraging.hunting": "Hunting",
 
