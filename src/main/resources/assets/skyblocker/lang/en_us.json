@@ -143,6 +143,9 @@
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nNote: This only works correctly if death messages are enabled in your skyblock settings. If you want to hide death messages, use this mod's Hide Player Death Messages setting instead to allow further processing of death messages.",
   "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Score Scaling",
 
+  "skyblocker.config.dungeons.dungeonSplits": "Dungeon Splits Widget",
+  "skyblocker.config.dungeons.dungeonSplits.@Tooltip": "Enables a widget that shows your fastest times in each dungeon section.",
+
   "skyblocker.config.dungeons.fancyPartyFinder": "Fancy Party Finder",
 
   "skyblocker.config.dungeons.hideSoulweaverSkulls": "Hide Soulweaver Skulls",

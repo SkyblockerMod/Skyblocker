@@ -191,7 +191,7 @@ public class WidgetManager {
 
 		screenBuilder = getScreenBuilder(Location.DUNGEON);
 		screenBuilder.setPositionRule(
-				"dungeon_splits",
+				"Dungeon Splits",
 				new PositionRule(
 						"screen",
 						new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),

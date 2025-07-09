@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
@@ -187,7 +188,7 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	public DungeonSplitsWidget() {
 		super(Text.literal("Splits").formatted(Formatting.GOLD, Formatting.BOLD),
-				Formatting.GOLD.getColorValue(), "dungeon_splits", 3, 0, false);
+				Formatting.GOLD.getColorValue(), "Dungeon Splits", 3, 0, false);
 		instance = this;
 
 		BEST_SPLITS.init();
@@ -322,12 +323,13 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
-// always enabled when in dungeons
+		if (location != Location.DUNGEON) return;
+		SkyblockerConfigManager.get().dungeons.dungeonSplits = enabled;
 	}
 
 	@Override
 	public boolean isEnabledIn(Location location) {
-		return location == Location.DUNGEON;
+		return location == Location.DUNGEON && SkyblockerConfigManager.get().dungeons.dungeonSplits;
 	}
 
 	@Override
