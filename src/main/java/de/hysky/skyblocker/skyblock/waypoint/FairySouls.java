@@ -71,8 +71,8 @@ public class FairySouls {
 
     private static void loadFairySouls() {
         fairySoulsLoaded = NEURepoManager.runAsyncAfterLoad(() -> {
-            maxSouls = NEURepoManager.NEU_REPO.getConstants().getFairySouls().getMaxSouls();
-            NEURepoManager.NEU_REPO.getConstants().getFairySouls().getSoulLocations().forEach((location, fairiesForLocation) -> fairySouls.put(location, fairiesForLocation.stream().map(coordinate -> new BlockPos(coordinate.getX(), coordinate.getY(), coordinate.getZ())).collect(Collectors.toUnmodifiableMap(pos -> pos, pos -> new FairySoul(pos, TYPE_SUPPLIER, ColorUtils.getFloatComponents(DyeColor.GREEN), ColorUtils.getFloatComponents(DyeColor.RED))))));
+            maxSouls = NEURepoManager.getConstants().getFairySouls().getMaxSouls();
+            NEURepoManager.getConstants().getFairySouls().getSoulLocations().forEach((location, fairiesForLocation) -> fairySouls.put(location, fairiesForLocation.stream().map(coordinate -> new BlockPos(coordinate.getX(), coordinate.getY(), coordinate.getZ())).collect(Collectors.toUnmodifiableMap(pos -> pos, pos -> new FairySoul(pos, TYPE_SUPPLIER, ColorUtils.getFloatComponents(DyeColor.GREEN), ColorUtils.getFloatComponents(DyeColor.RED))))));
             LOGGER.debug("[Skyblocker] Loaded {} fairy souls across {} locations", fairySouls.values().stream().mapToInt(Map::size).sum(), fairySouls.size());
 
             try (BufferedReader reader = Files.newBufferedReader(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json"))) {

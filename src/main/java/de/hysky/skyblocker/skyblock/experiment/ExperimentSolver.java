@@ -41,6 +41,10 @@ public abstract sealed class ExperimentSolver extends SimpleContainerSolver perm
 
     protected abstract boolean isEnabled(HelperConfig.Experiments experimentsConfig);
 
+    protected boolean shouldBlockIncorrectClicks() {
+        return SkyblockerConfigManager.get().helpers.experiments.blockIncorrectClicks;
+    }
+
     @Override
     public void start(GenericContainerScreen screen) {
         state = State.REMEMBER;

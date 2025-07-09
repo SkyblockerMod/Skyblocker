@@ -5,8 +5,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
+import net.azureaaron.dandelion.systems.Option;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -41,9 +40,9 @@ public interface SlotTextAdder extends ContainerMatcher {
 		return null;
 	}
 
-	record ConfigInformation(String id, Text name, @Nullable OptionDescription description) {
+	record ConfigInformation(String id, Text name, @Nullable Text... description) {
 		public ConfigInformation(String id, Text name) {
-			this(id, name, null);
+			this(id, name, (Text[]) null);
 		}
 
 		public ConfigInformation(String id, @Translatable String name) {
@@ -56,17 +55,17 @@ public interface SlotTextAdder extends ContainerMatcher {
 
 		// Additional constructor in case the description lines have any formatting
 		public ConfigInformation(String id, @Translatable String name, Text... descriptionLines) {
-			this(id, Text.translatable(name), OptionDescription.of(descriptionLines));
+			this(id, Text.translatable(name), descriptionLines);
 		}
 
 		public Option<Boolean> getOption(SkyblockerConfig config) {
 			return Option.<Boolean>createBuilder()
 					.name(name)
-					.description(description != null ? description : OptionDescription.EMPTY)
+					.description(description != null ? description : new Text[0])
 					.binding(true,
 							() -> config.uiAndVisuals.slotText.textEnabled.getOrDefault(id, true),
 							newValue -> config.uiAndVisuals.slotText.textEnabled.put(id, newValue.booleanValue()))
-					.controller(ConfigUtils::createBooleanController)
+					.controller(ConfigUtils.createBooleanController())
 					.build();
 		}
 

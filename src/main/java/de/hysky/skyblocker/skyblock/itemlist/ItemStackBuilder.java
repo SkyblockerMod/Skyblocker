@@ -27,7 +27,7 @@ public class ItemStackBuilder {
 
 	protected static void loadPetNums() {
 		try {
-			petNums = NEURepoManager.NEU_REPO.getConstants().getPetNumbers();
+			petNums = NEURepoManager.getConstants().getPetNumbers();
 		} catch (Exception e) {
 			ItemRepository.LOGGER.error("Failed to load petnums.json");
 		}

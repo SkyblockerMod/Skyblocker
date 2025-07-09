@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 public class GuardianHealth {
     private static final Box bossRoom = new Box(34, 65, -32, -32, 100, 36);
     private static final Pattern guardianRegex = Pattern.compile("^(.*?) Guardian (.*?)([A-Za-z])❤$");
-    private static final Pattern professorRegex = Pattern.compile("^﴾ The Professor (.*?)([A-za-z])❤ ﴿$");
+    private static final Pattern professorRegex = Pattern.compile("^﴾ (The Professor) (.*?)([A-za-z])❤ ﴿$");
     private static boolean inBoss;
 
     @Init
@@ -51,16 +51,17 @@ public class GuardianHealth {
                                 GuardianHealth::isGuardianName);
 
                 for (ArmorStandEntity armorStand : armorStands) {
+					if (armorStand.getDisplayName() == null) continue;
                     String display = armorStand.getDisplayName().getString();
                     boolean professor = display.contains("The Professor");
                     Matcher matcher =
                             professor
                                     ? professorRegex.matcher(display)
                                     : guardianRegex.matcher(display);
-                    matcher.matches(); // name is validated in isGuardianName
+                    if (!matcher.matches()) continue;
 
-                    String health = matcher.group(professor ? 1 : 2);
-                    String quantity = matcher.group(professor ? 2 : 3);
+                    String health = matcher.group(2);
+                    String quantity = matcher.group(3);
 
                     double distance = context.camera().getPos().distanceTo(guardian.getPos());
 
@@ -88,6 +89,7 @@ public class GuardianHealth {
     }
 
     private static boolean isGuardianName(ArmorStandEntity entity) {
+		if (entity.getDisplayName() == null) return false;
         String display = entity.getDisplayName().getString();
 
         if (display.contains("The Professor")) {

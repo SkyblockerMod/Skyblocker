@@ -27,14 +27,13 @@ public class SignCalculator {
 		calculate(message);
 
         render(context, message, renderX, renderY);
-
-        lastInput = message;
     }
 
 	@VisibleForTesting
 	public static void calculate(String message) {
 		//only update output if new input
 		if (!message.equals(lastInput)) {
+			lastInput = message;
 			try {
 				output = Calculator.calculate(message);
 			} catch (Exception e) {

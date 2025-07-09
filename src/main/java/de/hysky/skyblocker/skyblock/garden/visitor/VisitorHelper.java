@@ -141,9 +141,8 @@ public class VisitorHelper {
 		return cachedItems.computeIfAbsent(cleanName, name -> {
 			if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return null;
 
-			return NEURepoManager.NEU_REPO.getItems().getItems()
-					.values().stream()
-					.filter(item -> Formatting.strip(item.getDisplayName()).equals(name))
+			return NEURepoManager.getItemByName(itemName)
+					.stream()
 					.findFirst()
 					.map(NEUItem::getSkyblockItemId)
 					.map(ItemRepository::getItemStack)

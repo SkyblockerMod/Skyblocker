@@ -51,6 +51,8 @@
   - Silence Phantoms
   - Highlight Hideonleaves
 - **Hunting Box Shard Prices**
+- **Sweep Overlay**
+  - Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations. The sweep formula is currently unknown.
 
 ### Kuudra Features:
 - **Kuudra waypoints:**
@@ -255,6 +257,8 @@
     - *Skyblock ID*
 - **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
+  - Crafting
+  - Forge
 - **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
 - **New Year Cakes Helper**
 - **Fancy Crafting Table**
@@ -306,6 +310,8 @@
 
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
+  - Crafting
+  - Forge
 - **Item Protection**
   - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
@@ -321,3 +327,4 @@
 - **Skyblock XP Messages**
 - **Share position and set waypoint**
 - **Copy Underbid Price to Clipboard**
+- **Resource pack compatibility**

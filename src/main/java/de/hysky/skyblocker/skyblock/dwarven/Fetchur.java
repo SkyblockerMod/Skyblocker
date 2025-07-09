@@ -46,7 +46,7 @@ public class Fetchur extends ChatPatternListener {
         answers.put("useful during celebrations", Text.translatable("item.minecraft.firework_rocket").getString());
         answers.put("hot and gives energy", "Cheap / Decent / Black Coffee");
         answers.put("tall and can be opened", String.format("%s / %s",
-                Text.translatable("block.minecraft.oak_door").getString(),
+                Text.literal("Any Wooden Door").getString(),
                 Text.translatable("block.minecraft.iron_door").getString()));
         answers.put("brown and fluffy", Text.translatable("item.minecraft.rabbit_foot").getString());
         answers.put("explosive but more than usual", "Superboom TNT");
