@@ -362,5 +362,6 @@
     "skyblocker.gardenPlots.tp": "Clique para se Teleportar!",
     "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Habilita marcadores para terminais/aparelhos/alavancas durante Goldor",
     "skyblocker.config.dungeons.devices.solveLightsOn": "Resolve Lights On",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.HIGHLIGHT": "Destaque"
+    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.HIGHLIGHT": "Destaque",
+    "emi.category.skyblocker.skyblock_forge": "Forja de Dwarven (Skyblock)"
 }
