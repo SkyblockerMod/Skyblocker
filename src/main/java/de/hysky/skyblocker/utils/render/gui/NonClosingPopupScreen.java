@@ -4,15 +4,14 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.PopupScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+@Environment(EnvType.CLIENT)
 public class NonClosingPopupScreen extends PopupScreen {
 	public NonClosingPopupScreen(Screen backgroundScreen, int width, @Nullable Identifier image, Text title, Text message, List<PopupScreen.Button> buttons, @Nullable Runnable onClosed) {
 		super(backgroundScreen, width, image, title, message, buttons, onClosed);
@@ -20,58 +19,53 @@ public class NonClosingPopupScreen extends PopupScreen {
 
 	@Override
 	public void close() {
-		if (this.onClosed != null) {
-			this.onClosed.run();
+		if (super.onClosed != null) {
+			super.onClosed.run();
 		}
 	}
 
 	@Environment(EnvType.CLIENT)
-	public static class Builder {
-		private final Screen backgroundScreen;
-		private final Text title;
-		private Text message = ScreenTexts.EMPTY;
-		private int width = 250;
-		@Nullable
-		private Identifier image;
-		private final List<PopupScreen.Button> buttons = new ArrayList<>();
-		@Nullable
-		private Runnable onClosed = null;
-
+	public static class Builder extends PopupScreen.Builder {
 		public Builder(Screen backgroundScreen, Text title) {
-			this.backgroundScreen = backgroundScreen;
-			this.title = title;
+			super(backgroundScreen, title);
 		}
 
-		public NonClosingPopupScreen.Builder width(int width) {
-			this.width = width;
+		@Override
+		public Builder width(int width) {
+			super.width(width);
 			return this;
 		}
 
-		public NonClosingPopupScreen.Builder image(Identifier image) {
-			this.image = image;
+		@Override
+		public Builder image(Identifier image) {
+			super.image(image);
 			return this;
 		}
 
-		public NonClosingPopupScreen.Builder message(Text message) {
-			this.message = message;
+		@Override
+		public Builder message(Text message) {
+			super.message(message);
 			return this;
 		}
 
-		public NonClosingPopupScreen.Builder button(Text message, Consumer<PopupScreen> action) {
-			this.buttons.add(new PopupScreen.Button(message, action));
+		@Override
+		public Builder button(Text message, Consumer<PopupScreen> action) {
+			super.button(message, action);
 			return this;
 		}
 
-		public NonClosingPopupScreen.Builder onClosed(Runnable onClosed) {
-			this.onClosed = onClosed;
+		@Override
+		public Builder onClosed(Runnable onClosed) {
+			super.onClosed(onClosed);
 			return this;
 		}
 
+		@Override
 		public NonClosingPopupScreen build() {
-			if (this.buttons.isEmpty()) {
+			if (super.buttons.isEmpty()) {
 				throw new IllegalStateException("Popup must have at least one button");
 			} else {
-				return new NonClosingPopupScreen(this.backgroundScreen, this.width, this.image, this.title, this.message, List.copyOf(this.buttons), this.onClosed);
+				return new NonClosingPopupScreen(super.backgroundScreen, super.width, super.image, super.title, super.message, List.copyOf(super.buttons), super.onClosed);
 			}
 		}
 	}

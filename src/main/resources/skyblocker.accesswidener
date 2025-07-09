@@ -26,6 +26,12 @@ accessible field net/minecraft/block/CarpetBlock SHAPE Lnet/minecraft/util/shape
 
 # Popup Screen
 accessible class net/minecraft/client/gui/screen/PopupScreen$Button
-accessible method net/minecraft/client/gui/screen/PopupScreen$Button <init> (Lnet/minecraft/text/Text;Ljava/util/function/Consumer;)V
 accessible field net/minecraft/client/gui/screen/PopupScreen onClosed Ljava/lang/Runnable;
 accessible method net/minecraft/client/gui/screen/PopupScreen <init> (Lnet/minecraft/client/gui/screen/Screen;ILnet/minecraft/util/Identifier;Lnet/minecraft/text/Text;Lnet/minecraft/text/Text;Ljava/util/List;Ljava/lang/Runnable;)V
+accessible field net/minecraft/client/gui/screen/PopupScreen$Builder backgroundScreen Lnet/minecraft/client/gui/screen/Screen;
+accessible field net/minecraft/client/gui/screen/PopupScreen$Builder width I
+accessible field net/minecraft/client/gui/screen/PopupScreen$Builder image Lnet/minecraft/util/Identifier;
+accessible field net/minecraft/client/gui/screen/PopupScreen$Builder title Lnet/minecraft/text/Text;
+accessible field net/minecraft/client/gui/screen/PopupScreen$Builder message Lnet/minecraft/text/Text;
+accessible field net/minecraft/client/gui/screen/PopupScreen$Builder buttons Ljava/util/List;
+accessible field net/minecraft/client/gui/screen/PopupScreen$Builder onClosed Ljava/lang/Runnable;
