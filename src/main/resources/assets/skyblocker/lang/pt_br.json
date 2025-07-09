@@ -363,5 +363,15 @@
     "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Habilita marcadores para terminais/aparelhos/alavancas durante Goldor",
     "skyblocker.config.dungeons.devices.solveLightsOn": "Resolve Lights On",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.HIGHLIGHT": "Destaque",
-    "emi.category.skyblocker.skyblock_forge": "Forja de Dwarven (Skyblock)"
+    "emi.category.skyblocker.skyblock_forge": "Forja de Dwarven (Skyblock)",
+    "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip": "Cancela a animação de baixo-para-cima na sua mão que é reproduzida quando os componentes de um item são atualizados.",
+    "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip": "O numero de dígitos a serem exibidos após o ponto decimal.",
+    "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.ORIGINAL": "Original",
+    "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.ACCURATE": "Precisão",
+    "skyblocker.config.uiAndVisuals.compactDamage.precision": "Precisão",
+    "skyblocker.config.uiAndVisuals.compactDamage.enabled": "Habilitado",
+    "skyblocker.config.uiAndVisuals": "Interface & Visuais",
+    "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled": "Habilitado",
+    "skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip": "A cor que será exibida quando os dados do preço estão incompletos.",
+    "skyblocker.config.uiAndVisuals.compactDamage": "Dano Compacto"
 }
