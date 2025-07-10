@@ -29,17 +29,24 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapDecoration;
+import net.minecraft.item.map.MapDecorationTypes;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.UUID;
 
 public class DungeonMap {
+	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonMap.class);
 	private static final Identifier DUNGEON_MAP = Identifier.of(SkyblockerMod.NAMESPACE, "dungeon_map");
 	private static final MapIdComponent DEFAULT_MAP_ID_COMPONENT = new MapIdComponent(1024);
 	private static final MapRenderState MAP_RENDER_STATE = new MapRenderState();
@@ -96,7 +103,7 @@ public class DungeonMap {
 		vertices.draw();
 
 		UUID hoveredHead = null;
-		if (fancy) hoveredHead = renderPlayerHeads(context, client.world, state, mouseX / scale, mouseY / scale, client.player.getUuid(), enlarge);
+		if (fancy) hoveredHead = renderPlayerHeads(context, client.world, state, mouseX / scale, mouseY / scale, enlarge);
 		context.getMatrices().pop();
 		return hoveredHead;
 	}
@@ -109,21 +116,33 @@ public class DungeonMap {
 		} else return cachedMapIdComponent != null ? cachedMapIdComponent : DEFAULT_MAP_ID_COMPONENT;
 	}
 
-	private static UUID renderPlayerHeads(DrawContext context, World world, MapState state, double mouseX, double mouseY, UUID selfUuid, @Nullable UUID enlarge) {
+	@Nullable
+	private static UUID renderPlayerHeads(DrawContext context, World world, MapState state, double mouseX, double mouseY, @Nullable UUID enlarge) {
 		if (!DungeonManager.isClearingDungeon()) return null;
 
-		System.out.println(((MapStateAccessor) state).getDecorations()); // FIXME: debug
-
-		int i = 0;
+		// Used to index through the player list to find which dungeon player corresponds to which map decoration.
+		// Start at 1 because the first entry in the player list is the self player.
+		int i = 1;
 		UUID hovered = null;
-		for (@Nullable DungeonPlayerManager.DungeonPlayer dungeonPlayer : DungeonPlayerManager.getPlayers()) {
-			if (dungeonPlayer == null || !dungeonPlayer.alive()) continue; // The only reason to skip i++ is if the player is dead and therefore doesn't have a corresponding map decoration
+		for (Map.Entry<String, MapDecoration> mapDecoration : ((MapStateAccessor) state).getDecorations().entrySet()) {
+			// Get the corresponding dungeon player for the map decoration.
+			DungeonPlayerManager.DungeonPlayer dungeonPlayer = null;
+			// If the map decoration is the self player, use the first player in this list. The self player is always the first player in the list.
+			if (mapDecoration.getValue().type().value().equals(MapDecorationTypes.FRAME.value())) {
+				if (!SkyblockerConfigManager.get().dungeons.dungeonMap.showSelfHead) continue;
+				dungeonPlayer = DungeonPlayerManager.getPlayers()[0];
+			} else while (i < DungeonPlayerManager.getPlayers().length && (dungeonPlayer == null || !dungeonPlayer.alive())) { // Find the next alive player in the player list.
+				dungeonPlayer = DungeonPlayerManager.getPlayers()[i];
+				i++;
+			}
+			// If we still didn't find a valid dungeon player after searching though the entire player list, something is wrong.
+			if (dungeonPlayer == null || !dungeonPlayer.alive()) {
+				LOGGER.error("[Skyblocker Dungeon Map] Dungeon player for map decoration '{}' not found or not alive. Player list index (zero-indexed): {}. Player list: {}. Map decorations: {}", mapDecoration.getKey(), i - 1, Arrays.toString(DungeonPlayerManager.getPlayers()), ((MapStateAccessor) state).getDecorations());
+				continue;
+			}
+			PlayerRenderState player = PlayerRenderState.of(world, dungeonPlayer, mapDecoration.getValue());
 
-			PlayerRenderState player = PlayerRenderState.of(world, dungeonPlayer, ((MapStateAccessor) state).getDecorations().get("frame-" + i)); // todo: find pattern for id
-			i++;
-
-			if (player.uuid().equals(selfUuid) && !SkyblockerConfigManager.get().dungeons.dungeonMap.showSelfHead) continue;
-
+			// Actually render the player head
 			context.getMatrices().push();
 			context.getMatrices().translate(player.mapPos().x(), player.mapPos().y(), 0);
 			context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(player.deg() + 180));
@@ -153,7 +172,7 @@ public class DungeonMap {
 	}
 
 	public record PlayerRenderState(UUID uuid, String name, Vector2dc mapPos, float deg) {
-		public static PlayerRenderState of(World world, DungeonPlayerManager.DungeonPlayer dungeonPlayer, MapDecoration mapDecoration) {
+		public static PlayerRenderState of(@NotNull World world, @NotNull DungeonPlayerManager.DungeonPlayer dungeonPlayer, @NotNull MapDecoration mapDecoration) {
 			// Use the player entity if it exists, since it gives the most accurate position and rotation
 			PlayerEntity playerEntity = world.getPlayerByUuid(dungeonPlayer.uuid());
 			Vector2dc mapPos = playerEntity != null ? DungeonMapUtils.getMapPosFromPhysical(DungeonManager.getPhysicalEntrancePos(), DungeonManager.getMapEntrancePos(), DungeonManager.getMapRoomSize(), playerEntity.getPos()) : new Vector2d(mapDecoration.x() / 2d + 64, mapDecoration.z() / 2d + 64);

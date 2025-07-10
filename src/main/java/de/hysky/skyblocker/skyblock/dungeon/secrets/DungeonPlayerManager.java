@@ -1,13 +1,16 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.InstancedUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -31,6 +34,8 @@ public class DungeonPlayerManager {
 	 * \[\d*\] (?:\[[A-Za-z]+\] )?(?&lt;name&gt;[A-Za-z0-9_]*) (?:.* )?\((?&lt;class&gt;\S*) ?(?&lt;level&gt;[LXVI]*)\)
 	 */
 	public static final Pattern PLAYER_TAB_PATTERN = Pattern.compile("\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\\((?<class>\\S*) ?(?<level>[LXVI]*)\\)");
+	public static final Pattern PLAYER_GHOST_PATTERN = Pattern.compile(" ☠ (?<name>[A-Za-z0-9_]+) .+became a ghost");
+	private static boolean dungeonLoaded;
 	/**
 	 * Use an array to ensure order, since the order of players in the player list is used to determine which decoration corresponds to which player in the dungeon map.
 	 */
@@ -38,7 +43,9 @@ public class DungeonPlayerManager {
 
 	@Init
 	public static void init() {
+		DungeonEvents.DUNGEON_LOADED.register(() -> dungeonLoaded = true);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonPlayerManager::updatePlayers, 1);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonPlayerManager::onPlayerGhost);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 	}
 
@@ -50,16 +57,22 @@ public class DungeonPlayerManager {
 		return Arrays.stream(players).filter(Objects::nonNull).filter(p -> p.name.equals(name)).findAny();
 	}
 
+	/**
+	 * @implNote If a player is currently a ghost, this will return {@link DungeonClass#UNKNOWN}.
+	 */
 	public static DungeonClass getClassFromPlayer(PlayerEntity player) {
 		return getClassFromPlayer(player.getGameProfile().getName());
 	}
 
+	/**
+	 * @implNote If a player is currently a ghost, this will return {@link DungeonClass#UNKNOWN}.
+	 */
 	public static DungeonClass getClassFromPlayer(String name) {
 		return getPlayer(name).map(DungeonPlayer::dungeonClass).orElse(DungeonClass.UNKNOWN);
 	}
 
 	private static void updatePlayers() {
-		if (!Utils.isInDungeons() && !DungeonManager.isClearingDungeon() && !DungeonManager.isInBoss()) return;
+		if (!dungeonLoaded) return;
 
 		for (int i = 0; i < 5; i++) {
 			Matcher matcher = getPlayerFromTab(i + 1);
@@ -80,22 +93,34 @@ public class DungeonPlayerManager {
 		}
 	}
 
-	private static void reset() {
-		Arrays.fill(players, null);
-	}
-
 	public static Matcher getPlayerFromTab(@Range(from = 1, to = 5) int index) {
 		return PlayerListManager.regexAt(1 + (index - 1) * 4, PLAYER_TAB_PATTERN);
+	}
+
+	private static boolean onPlayerGhost(Text text, boolean overlay) {
+		if (!dungeonLoaded) return true;
+
+		Matcher matcher = PLAYER_GHOST_PATTERN.matcher(text.getString());
+		if (!matcher.find()) return true;
+
+		getPlayer(matcher.group("name")).ifPresentOrElse(DungeonPlayer::ghost, () -> DungeonManager.LOGGER.error("[Skyblocker Dungeon Player Manager] Received ghost message for player '{}' but player was not found in the player list: {}", matcher.group("name"), Arrays.toString(players)));
+
+		return true;
+	}
+
+	private static void reset() {
+		dungeonLoaded = false;
+		Arrays.fill(players, null);
 	}
 
 	public static class DungeonPlayer {
 		private @Nullable UUID uuid;
 		private final @NotNull String name;
-		private @NotNull DungeonClass dungeonClass;
+		private @NotNull DungeonClass dungeonClass = DungeonClass.UNKNOWN;
 		private boolean alive;
+		private long lastGhostTime; // Used to prevent player list from overriding a recently ghosted player. The player list may have a few seconds of delay.
 
 		public DungeonPlayer(@NotNull String name, @NotNull DungeonClass dungeonClass) {
-			assert MinecraftClient.getInstance().world != null;
 			this.uuid = findPlayerUuid(name);
 			this.name = name;
 			update(dungeonClass);
@@ -105,6 +130,7 @@ public class DungeonPlayerManager {
 		}
 
 		private static @Nullable UUID findPlayerUuid(@NotNull String name) {
+			assert MinecraftClient.getInstance().world != null;
 			return StreamSupport.stream(MinecraftClient.getInstance().world.getEntities().spliterator(), false)
 					.filter(PlayerEntity.class::isInstance)
 					.map(PlayerEntity.class::cast)
@@ -115,8 +141,17 @@ public class DungeonPlayerManager {
 		}
 
 		private void update(DungeonClass dungeonClass) {
+			// Prevent the player list from overriding a recently ghosted player back to normal, since the player list may have a few seconds of delay.
+			if (this.dungeonClass == DungeonClass.UNKNOWN && lastGhostTime + 2000 > System.currentTimeMillis()) {
+				return;
+			}
 			this.dungeonClass = dungeonClass;
 			alive = dungeonClass != DungeonClass.UNKNOWN;
+		}
+
+		private void ghost() {
+			update(DungeonClass.UNKNOWN);
+			lastGhostTime = System.currentTimeMillis();
 		}
 
 		public @Nullable UUID uuid() {
@@ -134,6 +169,15 @@ public class DungeonPlayerManager {
 
 		public boolean alive() {
 			return alive;
+		}
+
+		@Override
+		public String toString() {
+			try {
+				return (String) InstancedUtils.toString(getClass()).invokeExact(this);
+			} catch (Throwable ignored) {
+				return super.toString();
+			}
 		}
 	}
 }
