@@ -8,6 +8,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -28,7 +29,7 @@ public class CustomItemNames {
 		dispatcher.register(ClientCommandManager.literal("skyblocker")
 				.then(ClientCommandManager.literal("custom")
 						.then(ClientCommandManager.literal("renameItem")
-								.executes(context -> renameItem(context.getSource(), null))
+								.executes(Scheduler.queueOpenScreenCommand(CustomizeNameScreen::new))
 								.then(ClientCommandManager.argument("textComponent", TextArgumentType.text(registryAccess))
 										.executes(context -> renameItem(context.getSource(), context.getArgument("textComponent", Text.class))))
 								// greedy string will only consume the arg if the text component parsing fails.
