@@ -74,8 +74,8 @@ public class ForagingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.disableFishingNetPlacement"))
 								.description(Text.translatable("skyblocker.config.foraging.galatea.disableFishingNetPlacement.@Tooltip"))
-								.binding(defaults.foraging.galatea.enableSeaLumiesHighlighter,
-										() -> config.foraging.galatea.enableSeaLumiesHighlighter,
+								.binding(defaults.foraging.galatea.disableFishingNetPlacement,
+										() -> config.foraging.galatea.disableFishingNetPlacement,
 										newValue -> {
 											config.foraging.galatea.disableFishingNetPlacement = newValue;
 											SeaLumiesHighlighter.INSTANCE.configCallback();
