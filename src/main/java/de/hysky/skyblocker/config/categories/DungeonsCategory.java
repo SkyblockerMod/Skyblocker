@@ -113,6 +113,14 @@ public class DungeonsCategory {
 								newValue -> config.dungeons.dungeonSplits = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.bloodCampHelper"))
+						.description(Text.translatable("skyblocker.config.dungeons.bloodCampHelper.@Tooltip"))
+						.binding(defaults.dungeons.bloodCampHelper,
+								() -> config.dungeons.bloodCampHelper,
+								newValue -> config.dungeons.bloodCampHelper = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 
 				// Map
 				.group(OptionGroup.createBuilder()
