@@ -1,16 +1,8 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import java.util.*;
-import java.util.function.Supplier;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
-import de.hysky.skyblocker.mixins.accessors.MapStateAccessor;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -25,7 +17,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -36,6 +27,12 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.*;
+import java.util.function.Supplier;
 
 public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	public static final String TITLE = "Spirit Leap";
@@ -163,13 +160,13 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 		@Override
 		public void onClick(double mouseX, double mouseY) {
+			if (LeapOverlay.this.hovered == null) return;
+
 			assert client != null && client.player != null && client.interactionManager != null;
-			Optional.ofNullable(FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().getMainStacks().get(8)), client.world))
-					.stream().map(MapStateAccessor.class::cast).map(MapStateAccessor::getDecorations).map(Map::entrySet).flatMap(Set::stream)
-					.map(DungeonMap.PlayerRenderState::of).flatMap(Optional::stream)
-					.filter(player -> DungeonMap.isPlayerHovered(player, (mouseX - getX()) / CONFIG.scale, (mouseY - getY()) / CONFIG.scale))
-					.flatMap(player -> references.stream().filter(ref -> ref.uuid().equals(player.uuid())))
-					.findAny().ifPresent(ref -> client.interactionManager.clickSlot(ref.syncId(), ref.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, client.player));
+			references.stream()
+					.filter(ref -> ref.uuid().equals(LeapOverlay.this.hovered))
+					.findAny()
+					.ifPresent(ref -> client.interactionManager.clickSlot(ref.syncId(), ref.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, client.player));
 		}
 
 		@Override
@@ -205,7 +202,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			matrices.push();
 			matrices.translate(centreX, this.getY() + halfFontHeight, 0f);
 			matrices.scale(scale, scale, 1f);
-			context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.dungeonClass().displayName(), 0, 0, ColorHelper.fullAlpha(reference.dungeonClass().color()));
+			context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.dungeonClass().displayName(), 0, 0, reference.dungeonClass().color());
 			matrices.pop();
 
 			//Draw name next to head
