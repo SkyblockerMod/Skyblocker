@@ -152,18 +152,19 @@
   "skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip": "Hides the Haunted Skulls spawned that are spawned as a result of using Soulweaver Gloves.",
 
   "skyblocker.config.dungeons.livid": "Livid (F5/M5)",
-  "skyblocker.config.dungeons.livid.enableSolidColor": "Enable Glow and/or Bounding use same color",
-  "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Instead of Livid color an Red color is Shown",
+  "skyblocker.config.dungeons.livid.enableSolidColor": "Enable Custom Livid Color",
+  "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Use the custom color instead of the Livid color for glow and bounding box.",
+  "skyblocker.config.dungeons.livid.customColor": "Custom Livid Color",
   "skyblocker.config.dungeons.livid.enableLividColorGlow": "Enable Livid Color Glow",
   "skyblocker.config.dungeons.livid.enableLividColorGlow.@Tooltip": "Applies the glowing effect to the correct Livid in F5/M5.",
   "skyblocker.config.dungeons.livid.enableLividColorBoundingBox": "Enable Livid Color Bounding Box",
-  "skyblocker.config.dungeons.livid.enableLividColorBoundingBox.@Tooltip": "Applies a bounding box to the correct Livid in F5/M5.",
-  "skyblocker.config.dungeons.livid.enableLividColorText": "Enable Livid Color Text",
-  "skyblocker.config.dungeons.livid.enableLividColorText.@Tooltip": "Send the livid color in the chat during the Livid boss fight.",
+  "skyblocker.config.dungeons.livid.enableLividColorBoundingBox.@Tooltip": "Shows a bounding box on the correct Livid in F5/M5.",
   "skyblocker.config.dungeons.livid.enableLividColorTitle": "Enable Livid Color Title",
-  "skyblocker.config.dungeons.livid.enableLividColorTitle.@Tooltip": "Display the livid color in the title during the Livid boss fight.",
-  "skyblocker.config.dungeons.livid.lividColorText": "Livid Color Text",
-  "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Text which will be sent in the chat during the Livid boss fight. The string \"[color]\" will be replaced with the livid color.",
+  "skyblocker.config.dungeons.livid.enableLividColorTitle.@Tooltip": "Display the Livid color as a title during the boss fight.",
+  "skyblocker.config.dungeons.livid.enableLividColorText": "Send Livid Color in Chat",
+  "skyblocker.config.dungeons.livid.enableLividColorText.@Tooltip": "Whether to send the Livid color in the chat during the boss fight.",
+  "skyblocker.config.dungeons.livid.lividColorText": "Livid Color Chat Message",
+  "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Text for the chat message, the string \"[color]\" will be replaced with the livid color.",
 
   "skyblocker.config.dungeons.map": "Map",
   "skyblocker.config.dungeons.map.enableMap": "Enable Map",
@@ -298,7 +299,7 @@
   "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "Highlights logs when using an axe's thrown ability.",
   "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "Sweep Overlay Color",
   "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "Sweep Missing: Add the Sweep stat to your player list with /tablist",
-  
+
   "skyblocker.config.foraging.hunting": "Hunting",
 
   "skyblocker.config.general": "General",
