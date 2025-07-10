@@ -3,6 +3,7 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.SwingAnimation;
+import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,7 +48,7 @@ public class ClientPlayerInteractionManagerMixin {
 	public ActionResult interactBlock(ClientPlayerEntity playerEntity, Hand hand, BlockHitResult blockhitresult, CallbackInfoReturnable<ActionResult> cir) {
 		if (!SkyblockerConfigManager.get().foraging.galatea.disableFishingNetPlacement) return ActionResult.PASS;
 		ItemStack heldItem = playerEntity.getStackInHand(hand);
-		if (heldItem.getItem() == Items.COBWEB && heldItem.getName().getString().contains("Fishing Net")) {
+		if (heldItem.getItem() == Items.COBWEB && ItemUtils.getItemId(heldItem).contains("_FISHING_NET")) {
 			cir.setReturnValue(ActionResult.FAIL);
 		}
 		return ActionResult.PASS;
