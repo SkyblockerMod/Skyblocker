@@ -42,7 +42,7 @@ public class UIAndVisualsConfig {
 	/**
 	 * Show the tooltip toggle button in container screens.
 	 */
-	public boolean showTooltipToggleButton = true;
+	public boolean showTooltipToggleButton = false;
 
 	public ChestValue chestValue = new ChestValue();
 
