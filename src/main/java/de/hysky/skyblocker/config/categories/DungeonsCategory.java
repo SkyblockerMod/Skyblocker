@@ -350,14 +350,13 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.terminals.solveSameColor = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-            .option(Option.<Boolean>createBuilder()
-                .name(Text.translatable("skyblocker.config.dungeons.terminals.solverAccessibility"))
-                .binding(defaults.dungeons.terminals.solverAccessibility,
-                    () -> config.dungeons.terminals.solverAccessibility,
-                    newValue -> config.dungeons.terminals.solverAccessibility = newValue)
-                .controller(ConfigUtils.createBooleanController())
-                .build())
-            .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.terminals.solverAccessibility"))
+								.binding(defaults.dungeons.terminals.solverAccessibility,
+										() -> config.dungeons.terminals.solverAccessibility,
+										newValue -> config.dungeons.terminals.solverAccessibility = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.terminals.blockIncorrectClicks"))
 								.binding(defaults.dungeons.terminals.blockIncorrectClicks,
