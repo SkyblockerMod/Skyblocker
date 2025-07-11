@@ -11,6 +11,8 @@ public class DungeonsConfig {
 
 	public boolean salvageHelper = true;
 
+	public boolean bloodCampHelper = false;
+
 	public boolean playerSecretsTracker = false;
 
 	public boolean classBasedPlayerGlow = true;
