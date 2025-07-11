@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = MessageHandler.class, priority = 600) //Inject before the default of 1000 so it bypasses fabric's injections
+@Mixin(value = MessageHandler.class, priority = 400) //Inject before the default of 1000 so it bypasses fabric's injections and some from other mods
 public class MessageHandlerMixin {
 	@Inject(method = "onGameMessage", at = @At("HEAD"))
 	private void monitorGameMessage(Text message, boolean overlay, CallbackInfo ci) {

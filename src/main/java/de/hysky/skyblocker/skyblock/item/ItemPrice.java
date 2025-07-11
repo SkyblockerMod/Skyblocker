@@ -52,6 +52,10 @@ public class ItemPrice {
 
     public static void itemPriceLookup(ClientPlayerEntity player, @NotNull Slot slot) {
         ItemStack stack = slot.getStack();
+		itemPriceLookup(player, stack);
+	}
+
+	public static void itemPriceLookup(ClientPlayerEntity player, ItemStack stack) {
         String skyblockApiId = stack.skyblocker$getSkyblockApiId();
         ItemStack neuStack = ItemRepository.getItemStack(stack.skyblocker$getNeuName());
         if (neuStack != null && !neuStack.isEmpty()) {

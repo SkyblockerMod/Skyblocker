@@ -41,7 +41,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 			return;
 		}
 
-		NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(stack.skyblocker$getNeuName());
+		NEUItem neuItem = NEURepoManager.getItemByNeuId(stack.skyblocker$getNeuName());
 		if (neuItem == null) return;
 
 		List<NEURecipe> neuRecipes = neuItem.getRecipes();
@@ -87,7 +87,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 				cachedCraftCosts.put(inputItemName, itemCost);
 			}
 
-			NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(inputItemName);
+			NEUItem neuItem = NEURepoManager.getItemByNeuId(inputItemName);
 			if (neuItem != null) {
 				List<NEURecipe> neuRecipes = neuItem.getRecipes();
 				if (!neuRecipes.isEmpty()) {

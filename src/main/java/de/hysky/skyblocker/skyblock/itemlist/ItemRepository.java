@@ -10,6 +10,7 @@ import io.github.moulberry.repo.data.NEUCraftingRecipe;
 import io.github.moulberry.repo.data.NEUForgeRecipe;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
+import io.github.moulberry.repo.util.NEUId;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -19,116 +20,137 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class ItemRepository {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(ItemRepository.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(ItemRepository.class);
 
-    private static final List<ItemStack> items = new ArrayList<>();
-    private static final Map<String, ItemStack> itemsMap = new HashMap<>();
-    private static final List<SkyblockRecipe> recipes = new ArrayList<>();
-    private static boolean filesImported = false;
+	private static final List<ItemStack> items = new ArrayList<>();
+	private static final Map<String, ItemStack> itemsMap = new HashMap<>();
+	private static final List<SkyblockRecipe> recipes = new ArrayList<>();
+	private static final HashMap<String, @NEUId String> bazaarStocks = new HashMap<>();
+	/**
+	 * Consumers must check this field when accessing `items` and `itemsMap`, or else thread safety is not guaranteed.
+	 */
+	private static boolean itemsImported = false;
+	/**
+	 * Consumers must check this field when accessing `recipes`, or else thread safety is not guaranteed.
+	 */
+	private static boolean filesImported = false;
 
-    @Init
-    public static void init() {
-        NEURepoManager.runAsyncAfterLoad(ItemStackBuilder::loadPetNums);
-        NEURepoManager.runAsyncAfterLoad(ItemRepository::importItemFiles);
-    }
+	@Init
+	public static void init() {
+		NEURepoManager.runAsyncAfterLoad(ItemStackBuilder::loadPetNums);
+		NEURepoManager.runAsyncAfterLoad(ItemRepository::importItemFiles);
+		NEURepoManager.runAsyncAfterLoad(ItemRepository::loadBazaarStocks);
+	}
 
-    private static void importItemFiles() {
-        NEURepoManager.NEU_REPO.getItems().getItems().values().forEach(ItemRepository::loadItem);
-        NEURepoManager.NEU_REPO.getItems().getItems().values().forEach(ItemRepository::loadRecipes);
+	private static void importItemFiles() {
+		itemsImported = false;
+		filesImported = false;
 
-        items.sort((lhs, rhs) -> {
-            String lhsInternalName = ItemUtils.getItemId(lhs);
-            String lhsFamilyName = lhsInternalName.replaceAll(".\\d+$", "");
-            String rhsInternalName = ItemUtils.getItemId(rhs);
-            String rhsFamilyName = rhsInternalName.replaceAll(".\\d+$", "");
-            if (lhsFamilyName.equals(rhsFamilyName)) {
-                if (lhsInternalName.length() != rhsInternalName.length())
-                    return lhsInternalName.length() - rhsInternalName.length();
-                else return lhsInternalName.compareTo(rhsInternalName);
-            }
-            return lhsFamilyName.compareTo(rhsFamilyName);
-        });
-        filesImported = true;
-    }
+		items.clear();
+		itemsMap.clear();
+		recipes.clear();
 
-    private static void loadItem(NEUItem item) {
-        try {
-            ItemStack stack = ItemStackBuilder.fromNEUItem(item);
-            StackOverlays.applyOverlay(item, stack);
+		NEURepoManager.forEachItem(ItemRepository::loadItem);
+		items.sort(Comparator.<ItemStack, String>comparing(stack -> ItemUtils.getItemId(stack).replaceAll(".\\d+$", ""))
+				.thenComparingInt(stack -> ItemUtils.getItemId(stack).length())
+				.thenComparing(ItemUtils::getItemId)
+		);
+		itemsImported = true;
 
-            items.add(stack);
-            itemsMap.put(item.getSkyblockItemId(), stack);
-        } catch (Exception e) {
-            LOGGER.error("[Skyblocker Item Repo Loader] Failed to load item, please report this! Skyblock Id: {}", item.getSkyblockItemId(), e);
-        }
-    }
+		NEURepoManager.forEachItem(ItemRepository::loadRecipes);
+		filesImported = true;
+	}
 
-    private static void loadRecipes(NEUItem item) {
-        item.getRecipes().stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull).forEach(recipes::add);
-    }
+	private static void loadItem(NEUItem item) {
+		try {
+			ItemStack stack = ItemStackBuilder.fromNEUItem(item);
+			StackOverlays.applyOverlay(item, stack);
 
-    public static String getWikiLink(String neuId, boolean useOfficial) {
-        NEUItem item = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(neuId);
-        if (item == null || item.getInfo() == null || item.getInfo().isEmpty()) {
-            return null;
-        }
+			items.add(stack);
+			itemsMap.put(item.getSkyblockItemId(), stack);
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Item Repo Loader] Failed to load item, please report this! Skyblock Id: {}", item.getSkyblockItemId(), e);
+		}
+	}
 
-        List<String> info = item.getInfo();
-        String wikiLink0 = info.getFirst();
-        String wikiLink1 = info.size() > 1 ? info.get(1) : "";
-        String wikiDomain = useOfficial ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
-        if (wikiLink0.startsWith(wikiDomain)) {
-            return wikiLink0;
-        } else if (wikiLink1.startsWith(wikiDomain)) {
-            return wikiLink1;
-        }
-        return null;
-    }
+	private static void loadRecipes(NEUItem item) {
+		item.getRecipes().stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull).forEach(recipes::add);
+	}
 
-    public static List<SkyblockRecipe> getRecipesAndUsages(ItemStack stack) {
-        return Stream.concat(getRecipes(stack), getUsages(stack)).toList();
-    }
+	private static void loadBazaarStocks() {
+		bazaarStocks.clear();
+		NEURepoManager.getConstants().getBazaarStocks().getStocks().forEach((String neuId, String skyblockId) -> bazaarStocks.put(skyblockId, neuId));
+	}
 
-    public static boolean filesImported() {
-        return filesImported;
-    }
+	public static String getWikiLink(String neuId, boolean useOfficial) {
+		NEUItem item = NEURepoManager.getItemByNeuId(neuId);
+		if (item == null || item.getInfo() == null || item.getInfo().isEmpty()) {
+			return null;
+		}
 
-    public static void setFilesImported(boolean filesImported) {
-        ItemRepository.filesImported = filesImported;
-    }
+		List<String> info = item.getInfo();
+		String wikiLink0 = info.getFirst();
+		String wikiLink1 = info.size() > 1 ? info.get(1) : "";
+		String wikiDomain = useOfficial ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
+		if (wikiLink0.startsWith(wikiDomain)) {
+			return wikiLink0;
+		} else if (wikiLink1.startsWith(wikiDomain)) {
+			return wikiLink1;
+		}
+		return null;
+	}
 
-    public static List<ItemStack> getItems() {
-        return items;
-    }
+	public static List<SkyblockRecipe> getRecipesAndUsages(ItemStack stack) {
+		return Stream.concat(getRecipes(stack), getUsages(stack)).toList();
+	}
 
-    public static Stream<ItemStack> getItemsStream() {
-		if (!filesImported) return Stream.empty();
-        return items.stream();
-    }
+	public static boolean filesImported() {
+		return filesImported;
+	}
 
-    /**
+	public static void setFilesImported() {
+		itemsImported = false;
+		filesImported = false;
+	}
+
+	public static List<ItemStack> getItems() {
+		return itemsImported ? items : List.of();
+	}
+
+	public static Stream<ItemStack> getItemsStream() {
+		return itemsImported ? items.stream() : Stream.empty();
+	}
+
+	public static Map<String, @NEUId String> getBazaarStocks() {
+		// This is not protected by `filesImported` because it is loaded asynchronously separately from `items`, `itemsMap`, and `recipes`.
+		return bazaarStocks;
+	}
+
+	/**
 	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#skyblocker$getNeuName()}, or {@link ItemUtils#getNeuId(ItemStack) ItemTooltip#getNeuName(String, String)}
-     */
-    @Nullable
-    public static ItemStack getItemStack(String neuId) {
-        return itemsMap.get(neuId);
-    }
+	 */
+	@Nullable
+	public static ItemStack getItemStack(String neuId) {
+		return itemsImported ? itemsMap.get(neuId) : null;
+	}
 
-    public static Stream<SkyblockRecipe> getRecipesStream() {return recipes.stream(); }
+	public static Stream<SkyblockRecipe> getRecipesStream() {
+		return filesImported ? recipes.stream() : Stream.empty();
+	}
 
-    public static Stream<SkyblockRecipe> getRecipes(ItemStack stack) {
-		return NEURepoManager.RECIPE_CACHE.getRecipes().getOrDefault(stack.skyblocker$getNeuName(), Set.of()).stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull);
-    }
+	public static Stream<SkyblockRecipe> getRecipes(ItemStack stack) {
+		return NEURepoManager.getRecipes().getOrDefault(stack.skyblocker$getNeuName(), Set.of()).stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull);
+	}
 
-    public static Stream<SkyblockRecipe> getUsages(ItemStack stack) {
-		return NEURepoManager.RECIPE_CACHE.getUsages().getOrDefault(stack.skyblocker$getNeuName(), Set.of()).stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull);
-    }
+	public static Stream<SkyblockRecipe> getUsages(ItemStack stack) {
+		return NEURepoManager.getUsages().getOrDefault(stack.skyblocker$getNeuName(), Set.of()).stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull);
+	}
 
-    private static SkyblockRecipe toSkyblockRecipe(NEURecipe neuRecipe) {
-        return switch (neuRecipe) {
-            case NEUCraftingRecipe craftingRecipe -> new SkyblockCraftingRecipe(craftingRecipe);
-            case NEUForgeRecipe forgeRecipe -> new SkyblockForgeRecipe(forgeRecipe);
-            case null, default -> null;
-        };
-    }
+	private static SkyblockRecipe toSkyblockRecipe(NEURecipe neuRecipe) {
+		return switch (neuRecipe) {
+			case NEUCraftingRecipe craftingRecipe -> new SkyblockCraftingRecipe(craftingRecipe);
+			case NEUForgeRecipe forgeRecipe -> new SkyblockForgeRecipe(forgeRecipe);
+			case null, default -> null;
+		};
+	}
 }
