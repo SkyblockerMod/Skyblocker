@@ -34,7 +34,7 @@ public class DungeonPlayerManager {
 	 * \[\d*\] (?:\[[A-Za-z]+\] )?(?&lt;name&gt;[A-Za-z0-9_]*) (?:.* )?\((?&lt;class&gt;\S*) ?(?&lt;level&gt;[LXVI]*)\)
 	 */
 	public static final Pattern PLAYER_TAB_PATTERN = Pattern.compile("\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\\((?<class>\\S*) ?(?<level>[LXVI]*)\\)");
-	public static final Pattern PLAYER_GHOST_PATTERN = Pattern.compile(" ☠ (?<name>[A-Za-z0-9_]+) .+became a ghost");
+	public static final Pattern PLAYER_GHOST_PATTERN = Pattern.compile(" ☠ (?<name>[A-Za-z0-9_]+) .+ became a ghost\\.");
 	private static boolean dungeonLoaded;
 	/**
 	 * Use an array to ensure order, since the order of players in the player list is used to determine which decoration corresponds to which player in the dungeon map.
