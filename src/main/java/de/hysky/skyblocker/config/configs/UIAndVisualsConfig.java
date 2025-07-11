@@ -388,5 +388,8 @@ public class UIAndVisualsConfig {
 		public boolean showItemName = true;
 
 		public int lifeTime = 3;
+
+		@SerialEntry
+		public boolean splitNotifications = false;
 	}
 }
