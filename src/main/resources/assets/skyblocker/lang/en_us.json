@@ -1069,6 +1069,8 @@
   "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
   "skyblocker.config.uiAndVisuals.showConfigButton": "Show Config Button",
   "skyblocker.config.uiAndVisuals.showConfigButton.@Tooltip": "Adds a button in the skyblock menu to open the Skyblocker config.",
+  "skyblocker.config.uiAndVisuals.showTooltipToggleButton": "Show Tooltip Toggle Button",
+  "skyblocker.config.uiAndVisuals.showTooltipToggleButton.@Tooltip": "Adds a button in container screens to toggle tooltips for that container.",
 
   "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
   "skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip": "Smooths out teleporting with right click teleport abilities.",
@@ -1541,6 +1543,10 @@
   "skyblocker.armorCustomization.titleSecret": "Pimp Your Armor",
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
+
+  "skyblocker.ui.tooltipToggle.button": "Tooltips",
+  "skyblocker.ui.tooltipToggle.disabled": "Tooltips Disabled",
+  "skyblocker.ui.tooltipToggle.enabled": "Tooltips Enabled",
 
   "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
   "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)"
