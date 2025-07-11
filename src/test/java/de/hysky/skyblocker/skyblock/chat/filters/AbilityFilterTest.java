@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.chat.filters;
 import org.junit.jupiter.api.Test;
 
 class AbilityFilterTest extends ChatFilterTest<AbilityFilter> {
-    public AbilityFilterTest() {
+    AbilityFilterTest() {
         super(new AbilityFilter());
     }
 

@@ -32,6 +32,7 @@ public class EssenceShopAdder extends SimpleSlotTextAdder {
 
     @Override
     public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+		if (slotId > 53) return List.of();
         Matcher essenceLevelMatcher = ESSENCELEVEL.matcher(stack.getName().getString());
         Matcher essenceAmountMatcher = ItemUtils.getLoreLineIfMatch(stack, ESSENCE);
 

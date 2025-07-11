@@ -107,7 +107,7 @@ public class LevelFinder {
 
     private static List<LevelInfo> createGenericSlayerBoundaries() {
         List<LevelInfo> boundaries = new ArrayList<>();
-        long[] cumulativeXp = {0L, 5L, 15L, 200L, 1000L, 5000L,20000L,100000L,400000L,1000000L};
+        long[] cumulativeXp = {0L, 5L, 15L, 200L, 1000L, 5000L, 20000L, 100000L, 400000L, 1000000L};
         for (int i = 0; i < cumulativeXp.length; i++) {
             boundaries.add(new LevelInfo(cumulativeXp[i], i));
         }
@@ -257,7 +257,7 @@ public class LevelFinder {
 
     public static LevelInfo getLevelInfo(String name, long xp) {
         List<LevelInfo> boundaries = getLevelBoundaries(name, xp);
-        for (int i = boundaries.size() - 1; i >= 0 ; i--) {
+        for (int i = boundaries.size() - 1; i >= 0; i--) {
             if (xp >= boundaries.get(i).xp) {
                 double fill;
                 double xpInCurrentLevel;
@@ -288,7 +288,7 @@ public class LevelFinder {
             case "PET_UNCOMMON" -> UNCOMMON_PET_BOUNDARIES;
             case "PET_RARE" -> RARE_PET_BOUNDARIES;
             case "PET_EPIC" -> EPIC_PET_BOUNDARIES;
-            case "PET_LEGENDARY", "PET_MYTHIC" -> LEGENDARY_PET_BOUNDARIES.subList(0,101);
+            case "PET_LEGENDARY", "PET_MYTHIC" -> LEGENDARY_PET_BOUNDARIES.subList(0, 101);
             case "PET_GREG" -> LEGENDARY_PET_BOUNDARIES;
             case "Social" -> SOCIAL_SKILL_BOUNDARIES;
             case "Runecraft" -> RUNECRAFT_SKILL_BOUNDARIES;
@@ -299,7 +299,7 @@ public class LevelFinder {
 
     private static List<LevelInfo> calculateCatacombsSkillBoundaries(long xp) {
         if (xp >= CATACOMBS_SKILL_BOUNDARIES.getLast().xp) {
-            int additionalLevels = (int) ((xp - CATACOMBS_SKILL_BOUNDARIES.getLast().xp) / CATA_XP_PER_LEVEL) ;
+            int additionalLevels = (int) ((xp - CATACOMBS_SKILL_BOUNDARIES.getLast().xp) / CATA_XP_PER_LEVEL);
 
             List<LevelInfo> updatedBoundaries = new ArrayList<>(CATACOMBS_SKILL_BOUNDARIES);
             for (int i = 0; i <= additionalLevels; i++) {

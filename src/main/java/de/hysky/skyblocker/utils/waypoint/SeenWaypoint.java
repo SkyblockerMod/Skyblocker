@@ -43,7 +43,7 @@ public class SeenWaypoint extends Waypoint implements Tickable {
 
 	@Override
 	public void tick(MinecraftClient client) {
-		if (!seen && shouldRender() && client.world != null && client.player != null && FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
+		if (!seen && shouldRender() && client.world != null && client.player != null && FrustumUtils.isVisible(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1) && client.world.getChunkAsView(pos.getX() >> 4, pos.getZ() >> 4) != null) {
 			BlockHitResult blockHitResult = client.world.raycast(new RaycastContext(client.player.getEyePos(), Vec3d.ofCenter(pos), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, client.player));
 			if (blockHitResult.getType() == HitResult.Type.MISS || blockHitResult.getBlockPos().equals(pos)) {
 				seen = true;

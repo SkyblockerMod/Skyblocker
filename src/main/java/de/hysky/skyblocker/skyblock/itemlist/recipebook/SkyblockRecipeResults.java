@@ -7,9 +7,12 @@ import java.util.Locale;
 import com.google.common.collect.Lists;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.itemlist.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -20,18 +23,21 @@ import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
 
 //TODO when in recipe view set search hint to talk about close or smth
 /**
  * Based off {@link net.minecraft.client.gui.screen.recipebook.RecipeBookResults}.
  */
-public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
+public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	/**
 	 * The width before text will go outside of the recipe book area.
 	 */
@@ -39,6 +45,8 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 	private static final String ELLIPSIS_STRING = ScreenTexts.ELLIPSIS.getString();
 
 	private final List<SkyblockRecipeResultButton> resultButtons = Lists.newArrayListWithCapacity(20);
+	private final List<SkyblockRecipeResultButton> recipeSlotButtons = Lists.newArrayListWithCapacity(16);
+	private @Nullable ItemStack recipeIcon = null;
 	private MinecraftClient client;
 	private ToggleButtonWidget nextPageButton;
 	private ToggleButtonWidget prevPageButton;
@@ -49,7 +57,7 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 	 * Text to be displayed as a tooltip.
 	 */
 	private Text hoveredText;
-	private List<SkyblockCraftingRecipe> recipeResults = new ArrayList<>();
+	private List<SkyblockRecipe> recipeResults = new ArrayList<>();
 	private int pageCount = 0;
 	private int currentPage = 0;
 	/**
@@ -57,7 +65,7 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 	 */
 	private boolean recipeView = false;
 
-	protected SkyblockCraftingRecipeResults() {
+	protected SkyblockRecipeResults() {
 		for (int i = 0; i < 20; i++) {
 			this.resultButtons.add(new SkyblockRecipeResultButton());
 		}
@@ -77,6 +85,7 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 		this.nextPageButton.setTextures(RecipeBookResults.PAGE_FORWARD_TEXTURES);
 		this.prevPageButton = new ToggleButtonWidget(parentLeft + 38, parentTop + 137, 12, 17, true);
 		this.prevPageButton.setTextures(RecipeBookResults.PAGE_BACKWARD_TEXTURES);
+		updateResultButtons();
 	}
 
 	@Override
@@ -102,11 +111,13 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 		//Render the results
 		this.hoveredResultButton = null;
 
-		for (SkyblockRecipeResultButton resultButton : resultButtons) {
+		for (SkyblockRecipeResultButton resultButton : recipeView ? recipeSlotButtons : resultButtons) {
 			resultButton.render(context, mouseX, mouseY, delta);
 
 			if (resultButton.visible && resultButton.isSelected()) this.hoveredResultButton = resultButton;
 		}
+
+
 
 		//Render the page flip buttons
 		if (this.prevPageButton.active) this.prevPageButton.render(context, mouseX, mouseY, delta);
@@ -115,8 +126,9 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 
 	//TODO enable scissor?
 	private void drawRecipeDisplay(DrawContext context, TextRenderer textRenderer, int x, int y, int mouseX, int mouseY) {
+		SkyblockRecipe recipe = this.recipeResults.get(this.currentPage);
 		//Render the "Craft Text" which is usually a requirement (e.g. Wolf Slayer 7)
-		String craftText = this.recipeResults.get(this.currentPage).getCraftText();
+		String craftText = recipe.getExtraText().getString();
 
 		if (!craftText.isEmpty()) {
 			if (textRenderer.getWidth(craftText) > MAX_TEXT_WIDTH) {
@@ -130,7 +142,7 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 		}
 
 		//Render the resulting item's name
-		Text itemName = this.recipeResults.get(this.currentPage).getResult().getName();
+		Text itemName = recipe.getOutputs().getFirst().getName();
 
 		if (textRenderer.getWidth(itemName) > MAX_TEXT_WIDTH) {
 			StringVisitable trimmed = StringVisitable.concat(textRenderer.trimToWidth(itemName, MAX_TEXT_WIDTH), ScreenTexts.ELLIPSIS);
@@ -146,6 +158,10 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 
 		//Draw the arrow that points to the recipe's result
 		context.drawTextWithShadow(textRenderer, "▶", x + 96, y + 90, 0xaaffffff);
+		if (this.hoveredText == null && mouseX >= x + 86 && mouseY >= y + 81 && mouseX < x + 86 + 25 && mouseY < y + 81 + 25 && recipe instanceof SkyblockForgeRecipe forgeRecipe) {
+			this.hoveredText = Text.of(forgeRecipe.getDurationString());
+		}
+		if (recipeIcon != null) context.drawItem(recipeIcon, x + 115, y + 61);
 	}
 
 	@Override
@@ -180,7 +196,7 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 
 	/**
 	 * Handles updating the search results when a character is typed into the search bar,
-	 * 
+	 *
 	 * @implNote The {@code query} is always passed as lower case.
 	 */
 	@Override
@@ -194,6 +210,7 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 			for (ItemStack stack : ItemRepository.getItems()) {
 				String name = stack.getName().getString().toLowerCase(Locale.ENGLISH);
 				if (!filterOption.test(name)) continue;
+
 				List<Text> lore = ItemUtils.getLore(stack);
 
 				if (name.contains(query) || lore.stream().map(Text::getString)
@@ -214,30 +231,56 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 	 */
 	private void updateResultButtons() {
 		if (this.recipeView) {
-			SkyblockCraftingRecipe recipe = this.recipeResults.get(this.currentPage);
+			SkyblockRecipe recipe = this.recipeResults.get(this.currentPage);
 
 			//Clear all result buttons to make way for displaying the recipe
 			for (SkyblockRecipeResultButton button : this.resultButtons) {
 				button.clearDisplayStack();
 			}
+			recipeSlotButtons.clear();
 
 			//Put the recipe in the proper result buttons
 
-			//Row 1
-			this.resultButtons.get(5).setDisplayStack(recipe.getGrid().getFirst());
-			this.resultButtons.get(6).setDisplayStack(recipe.getGrid().get(1));
-			this.resultButtons.get(7).setDisplayStack(recipe.getGrid().get(2));
-			//Row 2
-			this.resultButtons.get(10).setDisplayStack(recipe.getGrid().get(3));
-			this.resultButtons.get(11).setDisplayStack(recipe.getGrid().get(4));
-			this.resultButtons.get(12).setDisplayStack(recipe.getGrid().get(5));
-			//Row 3
-			this.resultButtons.get(15).setDisplayStack(recipe.getGrid().get(6));
-			this.resultButtons.get(16).setDisplayStack(recipe.getGrid().get(7));
-			this.resultButtons.get(17).setDisplayStack(recipe.getGrid().get(8));
-			//Result
-			this.resultButtons.get(14).setDisplayStack(recipe.getResult());
+			switch (recipe) {
+				case SkyblockCraftingRecipe craftingRecipe -> {
+					recipeIcon = new ItemStack(Items.CRAFTING_TABLE);
+					//Row 1
+					recipeSlotButtons.add(this.resultButtons.get(5).setDisplayStack(craftingRecipe.getGrid().getFirst()));
+					recipeSlotButtons.add(this.resultButtons.get(6).setDisplayStack(craftingRecipe.getGrid().get(1)));
+					recipeSlotButtons.add(this.resultButtons.get(7).setDisplayStack(craftingRecipe.getGrid().get(2)));
+					//Row 2
+					recipeSlotButtons.add(this.resultButtons.get(10).setDisplayStack(craftingRecipe.getGrid().get(3)));
+					recipeSlotButtons.add(this.resultButtons.get(11).setDisplayStack(craftingRecipe.getGrid().get(4)));
+					recipeSlotButtons.add(this.resultButtons.get(12).setDisplayStack(craftingRecipe.getGrid().get(5)));
+					//Row 3
+					recipeSlotButtons.add(this.resultButtons.get(15).setDisplayStack(craftingRecipe.getGrid().get(6)));
+					recipeSlotButtons.add(this.resultButtons.get(16).setDisplayStack(craftingRecipe.getGrid().get(7)));
+					recipeSlotButtons.add(this.resultButtons.get(17).setDisplayStack(craftingRecipe.getGrid().get(8)));
+					//Result
+					recipeSlotButtons.add(this.resultButtons.get(14).setDisplayStack(craftingRecipe.getResult()));
+				}
+				case SkyblockForgeRecipe forgeRecipe -> {
+
+					recipeIcon = new ItemStack(Items.LAVA_BUCKET);
+
+
+					Vector2i gridSize = forgeRecipe.getGridSize();
+					// Using this slot as a center cuz I said so
+					SkyblockRecipeResultButton button = this.resultButtons.get(11);
+					int startX = button.getX() + button.getWidth() / 2 - (gridSize.x * 25) / 2;
+					int startY = button.getY() + button.getHeight() / 2 - (gridSize.y * 25)/2;
+					for (int i = 0; i < forgeRecipe.getInputs().size(); i++) {
+						int x = startX + (i % gridSize.x) * 25;
+						int y = startY + (i / gridSize.x) * 25;
+						recipeSlotButtons.add(new SkyblockRecipeResultButton(x, y).setDisplayStack(forgeRecipe.getInputs().get(i)));
+					}
+					//Result
+					recipeSlotButtons.add(this.resultButtons.get(14).setDisplayStack(forgeRecipe.getResult()));
+				}
+				case null, default -> {}
+			}
 		} else {
+			recipeIcon = null;
 			//Update the result buttons with the stacks from the search results
 			for (int i = 0; i < resultButtons.size(); ++i) {
 				int index = this.currentPage * resultButtons.size() + i;
@@ -287,7 +330,7 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 			}
 		}
 
-		for (SkyblockRecipeResultButton resultButton : this.resultButtons) {
+		for (SkyblockRecipeResultButton resultButton : recipeView ? recipeSlotButtons : this.resultButtons) {
 			//If the result button was clicked then try and show a recipe if there is one
 			//for the item
 			if (resultButton.mouseClicked(mouseX, mouseY, button)) {
@@ -296,7 +339,7 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 				//Continue if this item doesn't have an item id
 				if (itemId.isEmpty()) continue;
 
-				List<SkyblockCraftingRecipe> recipes = ItemRepository.getRecipes(itemId);
+				List<SkyblockRecipe> recipes = ItemRepository.getRecipesAndUsages(resultButton.getDisplayStack());
 
 				//If this item has recipes then set the fields so that they can be displayed
 				if (!recipes.isEmpty()) {
@@ -314,16 +357,30 @@ public class SkyblockCraftingRecipeResults implements RecipeAreaDisplay {
 		return false;
 	}
 
+	private @Nullable ItemStack getHoveredItemStack(double mouseX, double mouseY) {
+		return resultButtons.stream().filter(btn -> btn.isMouseOver(mouseX, mouseY)).findFirst().map(SkyblockRecipeResultButton::getDisplayStack).orElse(null);
+	}
+
 	@Override
 	public boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
-		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup
-			&& WikiLookup.wikiLookup.matchesKey(keyCode, scanCode))
-			return this.resultButtons.stream()
-					.filter(button -> button.isMouseOver(mouseX, mouseY))
-					.findFirst().map(button -> {
-						WikiLookup.openWiki(button.getDisplayStack(), client.player);
-						return true;
-					}).orElse(false);
+		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
+			boolean officialWikiLookup = WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode);
+			if (officialWikiLookup || WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
+				ItemStack hovered = getHoveredItemStack(mouseX, mouseY);
+				if (hovered == null) return false;
+
+				WikiLookup.openWiki(hovered, client.player, officialWikiLookup);
+				return true;
+			}
+		}
+
+		if (SkyblockerConfigManager.get().helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(keyCode, scanCode)) {
+			ItemStack hovered = getHoveredItemStack(mouseX, mouseY);
+			if (hovered == null) return false;
+
+			ItemPrice.itemPriceLookup(client.player, hovered);
+			return true;
+		}
 		return false;
 	}
 }

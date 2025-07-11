@@ -31,7 +31,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 	private final List<TrimElementButton.Pattern> patternButtons = new ArrayList<>();
 	private final List<TrimElementButton> materialButtons = new ArrayList<>();
 	private final List<ClickableWidget> children = new ArrayList<>();
-	
+
 	private ItemStack currentItem = null;
 	private Identifier selectedPattern = null;
 	private Identifier selectedMaterial = null;

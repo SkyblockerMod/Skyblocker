@@ -24,6 +24,7 @@ import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
 import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
 import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
+import de.hysky.skyblocker.skyblock.galatea.ForestNodes;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
@@ -81,6 +82,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		CorpseFinder.checkIfCorpse(armorStandEntity);
 		HealthBars.healthBar(armorStandEntity);
 		SeaCreatureTracker.onEntitySpawn(armorStandEntity);
+		FishingHelper.checkIfFishWasCaught(armorStandEntity);
 		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
 			CompactDamage.compactDamage(armorStandEntity);
 		} catch (Exception e) {
@@ -149,7 +151,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 
 	@Inject(method = "onPlaySound", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
 	private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
-		FishingHelper.onSound(packet);
 		CrystalsChestHighlighter.onSound(packet);
 		SoundEvent sound = packet.getSound().value();
 
@@ -186,6 +187,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		DojoManager.onParticle(packet);
 		CrystalsChestHighlighter.onParticle(packet);
 		EnderNodes.onParticle(packet);
+		ForestNodes.onParticle(packet);
 		WishingCompassSolver.onParticle(packet);
 	}
 

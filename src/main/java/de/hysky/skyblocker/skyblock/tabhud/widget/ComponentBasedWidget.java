@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import com.demonwav.mcdev.annotations.Translatable;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -86,7 +88,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	/**
 	 * Shorthand function for simple components.
-	 * If the entry at idx has the format "<textA>: <textB>", an IcoTextComponent is
+	 * If the entry at idx has the format "[textA]: [textB]", an IcoTextComponent is
 	 * added as such:
 	 * [ico] [string] [textB.formatted(fmt)]
 	 */
@@ -98,6 +100,16 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	public final void addSimpleIcoText(ItemStack ico, String string, Formatting fmt, String content) {
 		Text txt = simpleEntryText(content, string, fmt);
 		this.addComponent(Components.iconTextComponent(ico, txt));
+	}
+
+	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, Formatting formatting, String content) {
+		Text text = simpleEntryTranslatableText(translationKey, content, formatting);
+		this.addComponent(new IcoTextComponent(icon, text));
+	}
+
+	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, Formatting formatting, Text content) {
+		Text text = simpleEntryTranslatableText(translationKey, content, formatting);
+		this.addComponent(new IcoTextComponent(icon, text));
 	}
 
 	@Override
@@ -201,6 +213,14 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 */
 	public static Text simpleEntryText(String entryContent, String entryName, Formatting contentFmt) {
 		return Text.literal(entryName).append(Text.literal(entryContent).formatted(contentFmt));
+	}
+
+	public static Text simpleEntryTranslatableText(String translationKey, String content, Formatting contentFormatting) {
+		return Text.translatable(translationKey, Text.literal(content).formatted(contentFormatting));
+	}
+
+	public static Text simpleEntryTranslatableText(String translationKey, Text content, Formatting contentFormatting) {
+		return Text.translatable(translationKey, content.copy().formatted(contentFormatting));
 	}
 
 	/**
