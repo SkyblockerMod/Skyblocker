@@ -19,8 +19,8 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		String skyblockApiId = stack.getSkyblockApiId();
-		String neuName = stack.getNeuName();
+		String skyblockApiId = stack.skyblocker$getSkyblockApiId();
+		String neuName = stack.skyblocker$getNeuName();
 		Average type = ItemTooltip.config.avg;
 
         if ((TooltipInfoType.ONE_DAY_AVERAGE.getData() == null && type != Average.THREE_DAY) || (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null && type != Average.ONE_DAY)) {

@@ -41,7 +41,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 			return;
 		}
 
-		NEUItem neuItem = NEURepoManager.getItemByNeuId(stack.getNeuName());
+		NEUItem neuItem = NEURepoManager.getItemByNeuId(stack.skyblocker$getNeuName());
 		if (neuItem == null) return;
 
 		List<NEURecipe> neuRecipes = neuItem.getRecipes();
@@ -58,7 +58,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 					lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)
 								  .append(ItemTooltip.getCoinsMessage(totalCraftCost / outputIngredient.getAmount(), count))));
 		} catch (Exception e) {
-			LOGGER.error("[Skyblocker Craft Price] Error calculating craftprice tooltip for: " + stack.getNeuName(), e);
+			LOGGER.error("[Skyblocker Craft Price] Error calculating craftprice tooltip for: " + stack.skyblocker$getNeuName(), e);
 		}
 	}
 

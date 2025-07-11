@@ -15,7 +15,7 @@ import net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListW
 public class SocialInteractionsPlayerListWidgetMixin {
 
 	@WrapWithCondition(method = "setPlayers", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", remap = false))
-	private boolean skyblocker$hideInvalidPlayers(Map<Object, Object> map, Object uuid, Object entry) {
+	private boolean hideInvalidPlayers(Map<Object, Object> map, Object uuid, Object entry) {
 		return !(Utils.isOnSkyblock() && !((SocialInteractionsPlayerListEntry) entry).getName().matches("[A-Za-z0-9_]+"));
 	}
 }

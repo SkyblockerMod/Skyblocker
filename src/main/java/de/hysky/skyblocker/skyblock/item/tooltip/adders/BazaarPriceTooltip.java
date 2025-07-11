@@ -20,7 +20,7 @@ public class BazaarPriceTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		String skyblockApiId = stack.getSkyblockApiId();
+		String skyblockApiId = stack.skyblocker$getSkyblockApiId();
 
 		if (TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
 			int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);

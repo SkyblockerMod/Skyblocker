@@ -25,7 +25,7 @@ public class MuseumTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		final String internalID = stack.getSkyblockId();
+		final String internalID = stack.skyblocker$getSkyblockId();
 		if (TooltipInfoType.MUSEUM.hasOrNullWarning(internalID)) {
 			String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID);
 			String format = switch (itemCategory) {
