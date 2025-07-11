@@ -104,7 +104,7 @@ public class LividColor {
                 .append(CONFIG.lividColorText.replaceAll("\\[color]", colorString))
                 .formatted(LividColor.color);
         if (CONFIG.enableLividColorText) {
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(message.getString(), false);
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + message.getString(), false);
         }
         if (CONFIG.enableLividColorTitle) {
             client.inGameHud.setDefaultTitleFade();
