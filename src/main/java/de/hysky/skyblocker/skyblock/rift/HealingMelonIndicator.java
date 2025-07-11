@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.rift;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.minecraft.client.MinecraftClient;
@@ -19,7 +18,7 @@ public class HealingMelonIndicator {
         }
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null && player.getHealth() <= SkyblockerConfigManager.get().slayers.vampireSlayer.healingMelonHealthThreshold * 2F) {
-            RenderHelper.displayInTitleContainerAndPlaySound(title);
+            TitleContainer.addTitleAndPlaySound(title);
         } else {
             TitleContainer.removeTitle(title);
         }
