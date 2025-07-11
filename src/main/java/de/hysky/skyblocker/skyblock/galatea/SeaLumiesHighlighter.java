@@ -26,7 +26,7 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 
 		if (this.statePredicate.test(state)) {
 			this.allBlocks.add(pos.toImmutable());
-			if (isEnoughPickles(state)) this.highlightedBlocks.add(pos.toImmutable());
+			if (isEnabled() && isEnoughPickles(state)) this.highlightedBlocks.add(pos.toImmutable());
 		} else {
 			this.allBlocks.remove(pos);
 			this.highlightedBlocks.remove(pos);
@@ -65,7 +65,7 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 
 		chunk.forEachBlockMatchingPredicate(statePredicate, (pos, state) -> {
 			this.allBlocks.add(pos.toImmutable());
-			if (isEnoughPickles(state)) this.highlightedBlocks.add(pos.toImmutable());
+			if (isEnabled() && isEnoughPickles(state)) this.highlightedBlocks.add(pos.toImmutable());
 		});
 	}
 
@@ -84,7 +84,7 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 	public void configCallback() {
 		this.highlightedBlocks.clear();
 		ClientWorld world = MinecraftClient.getInstance().world;
-		if (!shouldProcess() || world == null || !SkyblockerConfigManager.get().foraging.galatea.enableSeaLumiesHighlighter) {
+		if (!shouldProcess() || world == null || !isEnabled()) {
 			return;
 		}
 
@@ -98,5 +98,9 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 
 	private boolean isEnoughPickles(BlockState state) {
 		return state.contains(SeaPickleBlock.PICKLES) && state.get(SeaPickleBlock.PICKLES) >= SkyblockerConfigManager.get().foraging.galatea.seaLumiesMinimumCount;
+	}
+
+	private boolean isEnabled() {
+		return SkyblockerConfigManager.get().foraging.galatea.enableSeaLumiesHighlighter;
 	}
 }
