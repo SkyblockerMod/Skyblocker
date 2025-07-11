@@ -97,7 +97,6 @@ public abstract class InGameHudMixin {
 		if (hashCode == prevHash) {
 			return prevQuiverSlot;
 		}
-		System.out.println("math'd");
 		prevHash = hashCode;
 		NbtComponent component = stack.get(DataComponentTypes.CUSTOM_DATA);
 		if (component == null) return false;
