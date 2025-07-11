@@ -250,8 +250,7 @@ public class DungeonManager {
 		ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonManager::saveCustomWaypoints);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 5);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonManager::render);
-		ClientReceiveMessageEvents.GAME.register(DungeonManager::onChatMessage);
-		ClientReceiveMessageEvents.GAME_CANCELED.register(DungeonManager::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonManager::onChatMessage);
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
 				.then(literal("markAsFound").then(markSecretsCommand(true)))
@@ -678,41 +677,43 @@ public class DungeonManager {
 	 * <p>Used to detect when all secrets in a room are found and detect when a wither or blood door is unlocked.
 	 * To process key obtained messages, this method checks if door highlight is enabled and if the message matches a key obtained message.
 	 */
-	private static void onChatMessage(Text text, boolean overlay) {
-		if (!shouldProcess()) {
-			return;
-		}
+	private static boolean onChatMessage(Text text, boolean overlay) {
+		if (shouldProcess()) {
 
-		String message = text.getString();
 
-		if (isCurrentRoomMatched()) {
-			currentRoom.onChatMessage(message);
-		}
+			String message = text.getString();
 
-		// Process key found messages for door highlight
-		if (SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight && !bloodOpened) {
-			if (BLOOD_DOOR_OPENED.equals(message)) {
-				bloodOpened = true;
+			if (isCurrentRoomMatched()) {
+				currentRoom.onChatMessage(message);
 			}
 
-			if (KEY_FOUND.matcher(message).matches()) {
-				hasKey = true;
+			// Process key found messages for door highlight
+			if (SkyblockerConfigManager.get().dungeons.doorHighlight.enableDoorHighlight && !bloodOpened) {
+				if (BLOOD_DOOR_OPENED.equals(message)) {
+					bloodOpened = true;
+				}
+
+				if (KEY_FOUND.matcher(message).matches()) {
+					hasKey = true;
+				}
+
+				if (WITHER_DOOR_OPENED.matcher(message).matches()) {
+					hasKey = false;
+				}
 			}
 
-			if (WITHER_DOOR_OPENED.matcher(message).matches()) {
-				hasKey = false;
+			if (message.equals("§e[NPC] §bMort§f: You should find it useful if you get lost.")) {
+				DungeonEvents.DUNGEON_STARTED.invoker().onDungeonStarted();
 			}
-		}
 
-		if (message.equals("§e[NPC] §bMort§f: You should find it useful if you get lost.")) {
-			DungeonEvents.DUNGEON_STARTED.invoker().onDungeonStarted();
-		}
+			var newBoss = DungeonBoss.fromMessage(message);
+			if (!isInBoss() && newBoss.isInBoss()) {
+				reset();
+				boss = newBoss;
+			}
 
-		var newBoss = DungeonBoss.fromMessage(message);
-		if (!isInBoss() && newBoss.isInBoss()) {
-			reset();
-			boss = newBoss;
 		}
+		return true;
 	}
 
 	/**
