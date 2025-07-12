@@ -18,6 +18,8 @@ public class ForagingConfig {
 		public boolean enableSeaLumiesHighlighter = true;
 
 		public int seaLumiesMinimumCount = 3;
+
+		public boolean enableTunerSolver = true;
 	}
 
 	public static class SweepOverlay {
