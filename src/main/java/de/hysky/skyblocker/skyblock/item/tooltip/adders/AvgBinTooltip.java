@@ -21,9 +21,9 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		String skyblockApiId = stack.getSkyblockApiId();
 		String neuName = stack.getNeuName();
-		Average type = ItemTooltip.config.avg;
+		Average type = ItemTooltip.config.get().avg;
 
-        if ((TooltipInfoType.ONE_DAY_AVERAGE.getData() == null && type != Average.THREE_DAY) || (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null && type != Average.ONE_DAY)) {
+		if ((TooltipInfoType.ONE_DAY_AVERAGE.getData() == null && type != Average.THREE_DAY) || (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null && type != Average.ONE_DAY)) {
 			ItemTooltip.nullWarning();
 		} else {
                 /*
@@ -36,21 +36,21 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 				if (type == Average.ONE_DAY || type == Average.BOTH) {
 					lines.add(
 							Text.literal(String.format("%-19s", "1 Day Avg. Price:"))
-							    .formatted(Formatting.GOLD)
-							    .append(!TooltipInfoType.ONE_DAY_AVERAGE.getData().containsKey(neuName)
-									    ? Text.literal("No data").formatted(Formatting.RED)
-									    : ItemTooltip.getCoinsMessage(TooltipInfoType.ONE_DAY_AVERAGE.getData().getDouble(neuName), stack.getCount())
-							    )
+									.formatted(Formatting.GOLD)
+									.append(!TooltipInfoType.ONE_DAY_AVERAGE.getData().containsKey(neuName)
+											? Text.literal("No data").formatted(Formatting.RED)
+											: ItemTooltip.getCoinsMessage(TooltipInfoType.ONE_DAY_AVERAGE.getData().getDouble(neuName), stack.getCount())
+									)
 					);
 				}
 				if (type == Average.THREE_DAY || type == Average.BOTH) {
 					lines.add(
 							Text.literal(String.format("%-19s", "3 Day Avg. Price:"))
-							    .formatted(Formatting.GOLD)
-							    .append(!TooltipInfoType.THREE_DAY_AVERAGE.getData().containsKey(neuName)
-									    ? Text.literal("No data").formatted(Formatting.RED)
-									    : ItemTooltip.getCoinsMessage(TooltipInfoType.THREE_DAY_AVERAGE.getData().getDouble(neuName), stack.getCount())
-							    )
+									.formatted(Formatting.GOLD)
+									.append(!TooltipInfoType.THREE_DAY_AVERAGE.getData().containsKey(neuName)
+											? Text.literal("No data").formatted(Formatting.RED)
+											: ItemTooltip.getCoinsMessage(TooltipInfoType.THREE_DAY_AVERAGE.getData().getDouble(neuName), stack.getCount())
+									)
 					);
 				}
 			}
