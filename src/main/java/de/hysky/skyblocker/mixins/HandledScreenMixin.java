@@ -290,7 +290,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		String lore = String.join("\n", tooltip);
 
 		// Prevent clicks on filler items
-		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && (lore.isEmpty() || FILLER_ITEMS.contains(tooltip.getFirst())) &&
+		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && (lore.isBlank() || FILLER_ITEMS.contains(tooltip.getFirst())) &&
 				// Allow clicks in Ultrasequencer and Superpairs
 				(!UltrasequencerSolver.INSTANCE.test(title) || SkyblockerConfigManager.get().helpers.experiments.enableUltrasequencerSolver)) {
 			ci.cancel();
