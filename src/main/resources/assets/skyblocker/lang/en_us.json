@@ -13,7 +13,7 @@
   "key.wikiLookup.fandom": "Fandom Wiki Lookup",
   "key.itemProtection": "Protect Item",
   "key.skyblocker.slottext": "Slot Text",
-  "key.itemPriceLookup": "Bazaar Lookup",
+  "key.itemPriceLookup": "Item Lookup",
   "key.itemPriceRefresh": "Bazaar Refresh",
 
 
@@ -301,7 +301,7 @@
   "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "Highlights logs when using an axe's thrown ability.",
   "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "Sweep Overlay Color",
   "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "Sweep Missing: Add the Sweep stat to your player list with /tablist",
-  
+
   "skyblocker.config.foraging.hunting": "Hunting",
 
   "skyblocker.config.general": "General",
@@ -1543,5 +1543,8 @@
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
   "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
-  "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)"
+  "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)",
+  "emi.category.skyblocker.skyblock_info": "Skyblock Info",
+  "skyblocker.rei.skyblockInfo.failedToFind": "Unable to find!",
+  "skyblocker.rei.transfer.noRecipe": "No SkyBlock recipe found!"
 }
