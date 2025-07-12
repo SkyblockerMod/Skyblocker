@@ -48,8 +48,10 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
     @Override
     public void registerDisplays(DisplayRegistry displayRegistry) {
         if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
-        displayRegistry.registerGlobalDisplayGenerator(new SkyblockRecipeDisplayGenerator());
-		displayRegistry.registerGlobalDisplayGenerator(new SkyblockInfoDisplayGenerator());
+		if (displayRegistry.getGlobalDisplayGenerators().stream().noneMatch(generator -> generator instanceof SkyblockRecipeDisplayGenerator))
+			displayRegistry.registerGlobalDisplayGenerator(new SkyblockRecipeDisplayGenerator());
+		if (displayRegistry.getGlobalDisplayGenerators().stream().noneMatch(generator -> generator instanceof SkyblockInfoDisplayGenerator))
+			displayRegistry.registerGlobalDisplayGenerator(new SkyblockInfoDisplayGenerator());
     }
 
     @Override
