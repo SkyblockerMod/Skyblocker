@@ -128,8 +128,12 @@ public final class ChronomatronSolver extends ExperimentSolver {
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		if (getState() == State.SHOW) {
 			Item item = chronomatronSlots.get(chronomatronCurrentOrdinal);
-			if ((stack.isOf(item) || ChronomatronSolver.TERRACOTTA_TO_GLASS.get(stack.getItem()) == item) && ++chronomatronCurrentOrdinal >= chronomatronSlots.size()) {
-				setState(ExperimentSolver.State.END);
+			if ((stack.isOf(item) || ChronomatronSolver.TERRACOTTA_TO_GLASS.get(stack.getItem()) == item)) {
+				if (++chronomatronCurrentOrdinal >= chronomatronSlots.size()) {
+					setState(ExperimentSolver.State.END);
+				}
+			} else {
+				return shouldBlockIncorrectClicks();
 			}
 		}
 		return super.onClickSlot(slot, stack, screenId, button);
