@@ -44,7 +44,7 @@ public class SackItemAutocomplete {
 	}
 
 	private static void loadSackItems() {
-		try (InputStream stream = NEURepoManager.NEU_REPO.file("constants/sacks.json").stream()) {
+		try (InputStream stream = NEURepoManager.file("constants/sacks.json").stream()) {
 			JsonObject sacks = JsonParser.parseString(new String(stream.readAllBytes())).getAsJsonObject().getAsJsonObject("sacks");
 
 			Set<String> sackItemIds = sacks.entrySet().stream()
@@ -56,7 +56,7 @@ public class SackItemAutocomplete {
 					.collect(Collectors.toUnmodifiableSet());
 			Set<String> sackItems = sackItemIds.stream()
 					.map(neuId -> {
-						NEUItem stack = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(neuId);
+						NEUItem stack = NEURepoManager.getItemByNeuId(neuId);
 
 						return stack != null ? Formatting.strip(stack.getDisplayName()) : neuId;
 					})
