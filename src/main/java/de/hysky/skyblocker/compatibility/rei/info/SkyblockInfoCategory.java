@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
@@ -16,6 +17,8 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -61,6 +64,11 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 		return btn;
 	}
 
+	private boolean checkScreen() {
+		Screen currentScreen = MinecraftClient.getInstance().currentScreen;
+		return currentScreen instanceof GenericContainerScreen || currentScreen instanceof AbstractCustomHypixelGUI<?>;
+	}
+
 	@Override
 	public List<Widget> setupDisplay(SkyblockInfoDisplay display, Rectangle bounds) {
 		List<Widget> widgets = new ArrayList<>();
@@ -78,9 +86,8 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 		layoutWidget.add(ButtonWidget.builder(Text.translatable("key.itemPriceLookup"), (button) -> {
 			ItemPrice.itemPriceLookup(player, itemStack);
 
-			// If this screen isn't replaced with the BZ or AH screen, show that the item could not be found.
 			Scheduler.INSTANCE.schedule(() -> {
-				if (button == null) return;
+				if (checkScreen()) return;
 				button.setMessage(Text.translatable("skyblocker.rei.skyblockInfo.failedToFind").withColor(RED_ERROR_COLOR));
 				button.active = false;
 			}, 10);

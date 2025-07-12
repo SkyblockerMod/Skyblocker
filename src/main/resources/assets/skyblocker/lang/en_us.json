@@ -1546,5 +1546,6 @@
   "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)",
   "emi.category.skyblocker.skyblock_info": "Skyblock Info",
   "skyblocker.rei.skyblockInfo.failedToFind": "Unable to find!",
-  "skyblocker.rei.transfer.noRecipe": "No SkyBlock recipe found!"
+  "skyblocker.rei.transfer.noRecipe": "No Skyblock recipe found!",
+  "skyblocker.rei.transfer.failed": "Failed to open recipe!\nCheck chat for more info."
 }

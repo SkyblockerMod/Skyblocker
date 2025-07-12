@@ -4,17 +4,25 @@ import de.hysky.skyblocker.compatibility.rei.info.SkyblockInfoCategory;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
 import io.github.moulberry.repo.data.NEUForgeRecipe;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 public class SkyblockTransferHandler implements TransferHandler {
-	// This determines if the plus button should be active
+	private static final int MAX_FAIL_COUNT = 5;
+
+	private String FAILED_ITEM;
+	private int FAIL_COUNT;
+
 	@Override
 	public ApplicabilityResult checkApplicable(Context context) {
 		// Only work on our displays
@@ -36,19 +44,39 @@ public class SkyblockTransferHandler implements TransferHandler {
 
 	}
 
-	// This is run every tick
-	// When the plus button is pressed context.isActuallyCrafting() becomes true
+	private boolean hasFailed(String skyblockId) {
+		if (skyblockId.equals(FAILED_ITEM)) {
+			if (FAIL_COUNT < MAX_FAIL_COUNT) {
+				FAIL_COUNT += 1;
+				return true;
+			}
+
+			FAILED_ITEM = "";
+			FAIL_COUNT = 0;
+		}
+		return false;
+	}
+
+	private void checkScreen(String skyblockId) {
+		Screen currentScreen = MinecraftClient.getInstance().currentScreen;
+		if (!(currentScreen instanceof GenericContainerScreen)) {
+			FAIL_COUNT = 0;
+			FAILED_ITEM = skyblockId;
+		}
+	}
+
 	@Override
 	public Result handle(Context context) {
 		EntryIngredient ingredient = context.getDisplay().getOutputEntries().getFirst();
 		EntryStack<?> entryStack = ingredient.getFirst();
 		if (!(entryStack.getValue() instanceof ItemStack itemStack)) return Result.createNotApplicable();
-		if (!context.isActuallyCrafting()) return Result.createSuccessful();
 
 		String skyblockId = itemStack.getSkyblockId();
+		if (hasFailed(skyblockId)) return Result.createFailed(Text.translatable("skyblocker.rei.transfer.failed"));
+		if (!context.isActuallyCrafting()) return Result.createSuccessful();
+
 		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/viewrecipe " + skyblockId, false);
-		// TODO: The user must look in chat to see if /viewrecipe fails, maybe add a check if it has been a few ticks after pressing
-		//  (and the menu hasn't closed), return an Error result.
+		Scheduler.INSTANCE.schedule(() -> checkScreen(skyblockId), 5);
 		return Result.createSuccessful();
 	}
 }
