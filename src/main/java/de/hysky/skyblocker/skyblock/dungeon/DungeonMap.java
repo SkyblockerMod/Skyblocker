@@ -135,9 +135,16 @@ public class DungeonMap {
 				dungeonPlayer = DungeonPlayerManager.getPlayers()[i];
 				i++;
 			}
+
 			// If we still didn't find a valid dungeon player after searching though the entire player list, something is wrong.
-			if (dungeonPlayer == null || !dungeonPlayer.alive()) {
-				LOGGER.error("[Skyblocker Dungeon Map] Dungeon player for map decoration '{}' not found or not alive. Player list index (zero-indexed): {}. Player list: {}. Map decorations: {}", mapDecoration.getKey(), i - 1, Arrays.toString(DungeonPlayerManager.getPlayers()), ((MapStateAccessor) state).getDecorations());
+			if (dungeonPlayer == null) {
+				dungeonPlayerError(mapDecoration.getKey(), "not found", i - 1, DungeonPlayerManager.getPlayers(), ((MapStateAccessor) state).getDecorations());
+				continue;
+			} else if (!dungeonPlayer.alive()) {
+				dungeonPlayerError(mapDecoration.getKey(), "not alive", i - 1, DungeonPlayerManager.getPlayers(), ((MapStateAccessor) state).getDecorations());
+				continue;
+			} else if (dungeonPlayer.uuid() == null) {
+				dungeonPlayerError(mapDecoration.getKey(), "has null uuid", i - 1, DungeonPlayerManager.getPlayers(), ((MapStateAccessor) state).getDecorations());
 				continue;
 			}
 			PlayerRenderState player = PlayerRenderState.of(world, dungeonPlayer, mapDecoration.getValue());
@@ -161,6 +168,10 @@ public class DungeonMap {
 			context.getMatrices().pop();
 		}
 		return hovered;
+	}
+
+	private static void dungeonPlayerError(String decorationId, String reason, int i, DungeonPlayerManager.DungeonPlayer[] dungeonPlayers, Map<String, MapDecoration> mapDecorations) {
+		LOGGER.error("[Skyblocker Dungeon Map] Dungeon player for map decoration '{}' {}. Player list index (zero-indexed): {}. Player list: {}. Map decorations: {}", decorationId, reason, i, Arrays.toString(dungeonPlayers), mapDecorations);
 	}
 
 	public static boolean isPlayerHovered(PlayerRenderState player, double mouseX, double mouseY) {
