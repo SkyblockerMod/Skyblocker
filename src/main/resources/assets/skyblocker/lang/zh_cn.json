@@ -75,9 +75,9 @@
     "skyblocker.config.helpers.fishing": "钓鱼助手",
     "skyblocker.config.helpers.fishing.enableFishingHelper": "启用钓鱼助手",
     "skyblocker.fishing.reelNow": "收竿！",
-    "skyblocker.config.dungeons.livid.enableLividColorText": "启用真Livid的颜色提示文本",
+    "skyblocker.config.dungeons.livid.enableLividColorText": "在聊天栏中发送Livid颜色",
     "skyblocker.config.dungeons.livid": "提示真Livid的颜色",
-    "skyblocker.config.dungeons.livid.enableLividColorText.@Tooltip": "将真Livid的颜色发送到聊天栏。",
+    "skyblocker.config.dungeons.livid.enableLividColorText.@Tooltip": "是否在Boss战时将真Livid的颜色发送到聊天栏。",
     "skyblocker.config.dungeons.livid.lividColorText": "真Livid颜色提示信息文本",
     "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Livid Boss战时发送到聊天栏的信息， 字段 “[color]” 将被替换为真Livid的颜色。",
     "key.skyblocker.defaultTgl": "将tab键所显示的列表改为默认空岛生存列表",
@@ -776,8 +776,8 @@
     "skyblocker.crimson.dojo.swiftnessHelper": "启用Swiftness助手",
     "skyblocker.crimson.dojo.tenacityHelper": "启用Tenacity助手",
     "skyblocker.config.dungeons.livid.enableLividColorBoundingBox.@Tooltip": "为F5/M5中真正的Livid增加边界箱。",
-    "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "以红色代替Livid的颜色",
-    "skyblocker.config.dungeons.livid.enableSolidColor": "启用发光/边界箱使用相同的颜色",
+    "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "为Livid的发光效果和边界箱使用自定义颜色。",
+    "skyblocker.config.dungeons.livid.enableSolidColor": "启用自定义Livid颜色",
     "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "在订单顶部增加图标以显示订单的当前状态。\n\n%s：订单即将过期\n%s：订单已过期\n%s：订单部分完成，有物品/金币可领取\n%s：订单已完成",
     "skyblocker.config.mining.crystalsWaypoints.noActive": "你没有可分享或删除的路径点。",
     "skyblocker.config.mining.crystalsWaypoints.allActive": "你没有更多可创建的路径点。",
@@ -1301,5 +1301,9 @@
     "skyblocker.disableAll.success": "§c全部功能已被禁用。",
     "skyblocker.disableAll.notPending": "§c请先使用 /skyblocker disableAll 。",
     "skyblocker.disableAll.failed": "§c未能禁用所有功能。",
-    "skyblocker.config.helpers.experiments.blockIncorrectClicks": "阻止错误点击"
+    "skyblocker.config.helpers.experiments.blockIncorrectClicks": "阻止错误点击",
+    "skyblocker.config.dungeons.livid.customColor": "自定义Livid颜色",
+    "skyblocker.config.dungeons.bloodCampHelper": "Blood Camp助手",
+    "skyblocker.config.dungeons.bloodCampHelper.@Tooltip": "预测Blood Room中怪物的移动以便快速击杀。",
+    "skyblocker.config.dungeons.dungeonSplits": "地牢阶段计时小部件"
 }
