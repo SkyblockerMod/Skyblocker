@@ -34,7 +34,7 @@ public class SkyblockTransferHandler implements TransferHandler {
 		if (!(entryStack.getValue() instanceof ItemStack itemStack))
 			return ApplicabilityResult.createNotApplicable();
 
-		// Not applicable if it has 0 recipes, or no crafting/forge recipe
+		// Not applicable if it has 0 recipes, or no crafting recipe
 		String neuId = itemStack.getNeuName();
 		if (!NEURepoManager.getRecipes().containsKey(neuId) || NEURepoManager.getRecipes().get(neuId).stream().noneMatch(recipe -> recipe instanceof NEUCraftingRecipe))
 			return ApplicabilityResult.createApplicableWithError(Text.translatable("skyblocker.rei.transfer.noRecipe"));
