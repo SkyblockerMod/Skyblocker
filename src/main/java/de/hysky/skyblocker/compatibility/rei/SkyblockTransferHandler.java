@@ -6,7 +6,6 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
-import io.github.moulberry.repo.data.NEUForgeRecipe;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
@@ -37,7 +36,7 @@ public class SkyblockTransferHandler implements TransferHandler {
 
 		// Not applicable if it has 0 recipes, or no crafting/forge recipe
 		String neuId = itemStack.getNeuName();
-		if (!NEURepoManager.getRecipes().containsKey(neuId) || NEURepoManager.getRecipes().get(neuId).stream().noneMatch(recipe -> recipe instanceof NEUCraftingRecipe || recipe instanceof NEUForgeRecipe))
+		if (!NEURepoManager.getRecipes().containsKey(neuId) || NEURepoManager.getRecipes().get(neuId).stream().noneMatch(recipe -> recipe instanceof NEUCraftingRecipe))
 			return ApplicabilityResult.createApplicableWithError(Text.translatable("skyblocker.rei.transfer.noRecipe"));
 
 		return ApplicabilityResult.createApplicable();
