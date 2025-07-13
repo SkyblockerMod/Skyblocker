@@ -11,6 +11,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -94,6 +95,7 @@ public class QuickNavButton extends ClickableWidget {
             int x = accessibleScreen.getX();
             int y = accessibleScreen.getY();
             int h = accessibleScreen.getBackgroundHeight();
+			if (handledScreen instanceof GenericContainerScreen) h--; // they messed up the height on these.
             int w = accessibleScreen.getBackgroundWidth();
             this.setX(x + this.index % 7 * 25 + w / 2 - 176 / 2);
             this.setY(this.index < 7 ? y - 28 : y + h - 4);

@@ -4,12 +4,16 @@ import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 
+import java.awt.Color;
+
 public class DungeonsConfig {
 	public boolean fancyPartyFinder = true;
 
 	public boolean croesusHelper = true;
 
 	public boolean salvageHelper = true;
+
+	public boolean bloodCampHelper = false;
 
 	public boolean playerSecretsTracker = false;
 
@@ -98,6 +102,8 @@ public class DungeonsConfig {
 
 	public static class Livid {
 		public boolean enableSolidColor = false;
+
+		public Color customColor = Color.RED;
 
 		public boolean enableLividColorGlow = false;
 
