@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.dungeon.LeapOverlay;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreen;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
@@ -25,6 +26,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Arrays;
 
 @Mixin(HandledScreens.Provider.class)
 public interface HandledScreenProviderMixin<T extends ScreenHandler> {
@@ -113,6 +116,16 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 			case GenericContainerScreenHandler containerScreenHandler when Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.leapOverlay.enableLeapOverlay && nameLowercase.contains(LeapOverlay.TITLE.toLowerCase(Locale.ENGLISH)) -> {
 				client.player.currentScreenHandler = containerScreenHandler;
 				client.setScreen(new LeapOverlay(containerScreenHandler));
+
+				ci.cancel();
+			}
+
+			// radial menus
+			case GenericContainerScreenHandler containerScreenHandler when Arrays.stream(RadialMenu.MenuType.values()).anyMatch(menuType -> menuType.match(nameLowercase)) -> {
+				client.player.currentScreenHandler = containerScreenHandler;
+				RadialMenu.MenuType menuType = Arrays.stream(RadialMenu.MenuType.values()).filter(t -> t.match(nameLowercase)).findFirst().get();
+
+				client.setScreen(new RadialMenu(containerScreenHandler, menuType, name));
 
 				ci.cancel();
 			}
