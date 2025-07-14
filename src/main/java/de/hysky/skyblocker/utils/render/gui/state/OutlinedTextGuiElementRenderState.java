@@ -64,7 +64,7 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 	}
 
 	private GlyphDrawable prepareText() {
-		GlyphDrawable textPreparation = this.textRenderer.prepare(this.orderedText, (float)this.x, (float)this.y, this.color, this.shadow, this.backgroundColor);
+		GlyphDrawable textPreparation = this.textRenderer.prepare(this.orderedText, (float) this.x, (float) this.y, this.color, this.shadow, this.backgroundColor);
 
 		ScreenRect screenRect = textPreparation.getScreenRect();
 		if (screenRect != null) {
@@ -92,7 +92,7 @@ public class OutlinedTextGuiElementRenderState extends TextGuiElementRenderState
 		return this.bounds;
 	}
 
-	private static record OutlineGlyphDrawable(GlyphDrawable outline, GlyphDrawable text) implements GlyphDrawable {
+	private record OutlineGlyphDrawable(GlyphDrawable outline, GlyphDrawable text) implements GlyphDrawable {
 		@Override
 		public void draw(GlyphDrawer glyphDrawer) {
 			this.outline.draw(glyphDrawer);

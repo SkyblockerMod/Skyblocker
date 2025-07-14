@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
-	
+
 	@Inject(method = "close", at = @At("TAIL"))
 	private void skyblocker$onGameRendererClose(CallbackInfo ci) {
 		Renderer.close();

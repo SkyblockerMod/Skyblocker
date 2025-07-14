@@ -39,7 +39,7 @@ import net.minecraft.client.util.BufferAllocator;
 
 /**
  * This class automatically handles buffering and drawing of objects within the world.
- * 
+ *
  * Mostly modelled off the {@link net.minecraft.client.gui.render.GuiRenderer}.
  */
 public class Renderer {
@@ -192,7 +192,7 @@ public class Renderer {
 	 * Collect the required buffer size for each vertex format in use.
 	 */
 	private static Object2IntMap<VertexFormat> collectVertexBufferSizes() {
-		//If we ever need to create our own shared index buffers then we can turn this into an Object2LongMap and pack 
+		//If we ever need to create our own shared index buffers then we can turn this into an Object2LongMap and pack
 		//both the vertex & index buffer sizes into a single long (since they're two ints)
 		Object2IntMap<VertexFormat> vertexSizes = new Object2IntOpenHashMap<>();
 
