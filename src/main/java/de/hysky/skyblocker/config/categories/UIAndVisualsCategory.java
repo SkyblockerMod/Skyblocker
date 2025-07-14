@@ -410,7 +410,7 @@ public class UIAndVisualsCategory {
 								.binding(defaults.uiAndVisuals.teleportOverlay.showWhenInAir,
 										() -> config.uiAndVisuals.teleportOverlay.showWhenInAir,
 										newValue -> config.uiAndVisuals.teleportOverlay.showWhenInAir = newValue)
-								.controller(ConfigUtils::createBooleanController)
+								.controller(ConfigUtils.createBooleanController())
 								.build())
                         .option(Option.<Color>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor"))
