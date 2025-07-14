@@ -72,6 +72,14 @@ public class ForagingCategory {
 								.controller(IntegerController.createBuilder().range(1, 4).slider(1).build())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver"))
+								.description(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip"))
+								.binding(defaults.foraging.galatea.enableTunerSolver,
+										() -> config.foraging.galatea.enableTunerSolver,
+										newValue -> config.foraging.galatea.enableTunerSolver = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableSweepDetailsWidget"))
 								.description(Text.translatable("skyblocker.config.foraging.galatea.enableSweepDetailsWidget.@Tooltip"))
 								.binding(defaults.foraging.galatea.enableSweepDetailsWidget,

@@ -61,6 +61,8 @@ public class UIAndVisualsConfig {
 
     public SearchOverlay searchOverlay = new SearchOverlay();
 
+	public BazaarQuickQuantities bazaarQuickQuantities = new BazaarQuickQuantities();
+
     public InputCalculator inputCalculator = new InputCalculator();
 
     public FlameOverlay flameOverlay = new FlameOverlay();
@@ -319,6 +321,18 @@ public class UIAndVisualsConfig {
 
         public List<String> auctionHistory = new ArrayList<>();
     }
+
+	public static class BazaarQuickQuantities {
+		public boolean enabled = false;
+
+		public boolean closeSignOnUse = false;
+
+		public int slot1Quantity = 28;
+
+		public int slot2Quantity = 2240;
+
+		public int slot3Quantity = 256;
+	}
 
     public static class InputCalculator {
         public boolean enabled = true;
