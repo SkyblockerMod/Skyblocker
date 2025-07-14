@@ -10,18 +10,11 @@ import net.minecraft.client.gui.navigation.GuiNavigation;
 import net.minecraft.client.gui.navigation.GuiNavigationPath;
 import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.tooltip.TooltipState;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector2i;
@@ -31,7 +24,6 @@ import org.lwjgl.glfw.GLFWKeyCallbackI;
 
 import java.util.Collection;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class RadialButton implements Drawable, Element, Widget, Selectable {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -222,7 +214,7 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 
 		//get angle of mouse and adjust to use same starting point and direction as buttons and see if its within bounds
 		double angle = -Math.atan2(actualX, actualY) + Math.PI / 2;
-		return angle > startAngle && angle < startAngle + arcLength - 0.01; // make sure there is no overlap
+		return angle > startAngle && angle < startAngle + arcLength - 0.001; // make sure there is no overlap
 	}
 
 

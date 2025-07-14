@@ -1,25 +1,25 @@
 package de.hysky.skyblocker.skyblock.radialMenu;
 
-import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 public class RadialMenu extends Screen implements ScreenHandlerListener {
@@ -28,6 +28,7 @@ public class RadialMenu extends Screen implements ScreenHandlerListener {
 	private final Int2ObjectOpenHashMap<ItemStack> options = new Int2ObjectOpenHashMap<>();
 	private final Int2IntMap syncIds = new Int2IntOpenHashMap();
 	private final List<RadialButton> buttons = new ArrayList<>();
+	private final GenericContainerScreenHandler handler;
 
 
 	public RadialMenu(GenericContainerScreenHandler handler, MenuType type, Text title) {
@@ -36,16 +37,15 @@ public class RadialMenu extends Screen implements ScreenHandlerListener {
 
 		options.clear();
 		//Listen for slot updates
+		this.handler = handler;
 		handler.addListener(this);
 	}
 
 	@Override
 	protected void init() {
 		super.init();
-		//wait for all options to be loaded
-		if (options.size() != menuType.slots.size()) return;
 
-		//create buttons	System.out.println(slotId + " " + stack.getName());
+		//create buttons
 		buttons.clear();
 		float angle = 0;
 		float buttonArcSize = (float) ((2 * Math.PI) / options.size());
@@ -66,7 +66,11 @@ public class RadialMenu extends Screen implements ScreenHandlerListener {
 
 	@Override
 	public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
-		if (menuType.slots.contains(slotId)) {
+
+		if (this.handler == null || slotId >= this.handler.getRows() * 9 ) return;
+
+
+		if (menuType.itemMatches(slotId, stack)) {
 			options.put(slotId, stack);
 			syncIds.put(slotId, handler.syncId);
 			init();
@@ -79,21 +83,35 @@ public class RadialMenu extends Screen implements ScreenHandlerListener {
 	}
 
 	public enum MenuType {
-		YOURBAGS("your bags", List.of(19, 20, 21, 23, 24, 25, 48, 49)),
-		YOURSKILLS("your skills", List.of(4, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 32, 33, 34, 48, 49)),
-		SKYBLOCKMENU("skyblock menu", List.of(10, 13, 19, 20, 21, 22, 23, 24, 25, 29, 30, 31, 32, 33, 47, 48, 49, 50, 51));
+		YOURBAGS("your bags", null,  List.of(Items.BLACK_STAINED_GLASS_PANE)),
+		YOURSKILLS("your skills", null,  List.of(Items.BLACK_STAINED_GLASS_PANE)),
+		FASTTRAVEL("(fast travel)|(.* warps)", null, List.of(Items.BLACK_STAINED_GLASS_PANE)),
+		SKYBLOCKMENU("skyblock menu", null,  List.of(Items.BLACK_STAINED_GLASS_PANE));
 
-		final String name;
+		final Pattern name;
 		final List<Integer> slots;
+		final List<Item> blackList;
 
-		MenuType(String name, List<Integer> slots) {
-			this.name = name;
+		MenuType(String name, @Nullable List<Integer> slots, @Nullable List<Item> blackList) {
+			this.name = Pattern.compile(name);
 			this.slots = slots;
+			this.blackList = blackList;
 		}
 
 		public boolean match(String name) {
 			//return false;
-			return this.name.equals(name);
+			return this.name.matcher(name).matches();
+		}
+
+		public boolean itemMatches(int slotId, ItemStack stack) {
+			if (blackList != null) {
+				if (blackList.contains(stack.getItem())) return false;
+			}
+			if (slots != null) {
+				if (!slots.contains(slotId)) return false;
+			}
+
+			return true;
 		}
 	}
 }
