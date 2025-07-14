@@ -12,6 +12,7 @@ import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
 import io.github.moulberry.repo.util.NEUId;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,10 @@ public class ItemRepository {
 		try {
 			ItemStack stack = ItemStackBuilder.fromNEUItem(item);
 			StackOverlays.applyOverlay(item, stack);
+
+			if (stack.isOf(Items.ENCHANTED_BOOK) && ItemUtils.getItemId(stack).contains(";")) {
+				ItemUtils.getCustomData(stack).putString("id", "ENCHANTED_BOOK");
+			}
 
 			items.add(stack);
 			itemsMap.put(item.getSkyblockItemId(), stack);
