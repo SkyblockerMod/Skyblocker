@@ -145,7 +145,7 @@ public class SearchOverManager {
                 }
 
                 //look up id for name
-                NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
+                NEUItem neuItem = NEURepoManager.getItemByNeuId(id);
                 if (neuItem != null) {
                     name = Formatting.strip(neuItem.getDisplayName());
                     bazaarItems.add(name);
@@ -158,7 +158,7 @@ public class SearchOverManager {
 
         //get auction items
         try {
-            Set<@NEUId String> essenceCosts = NEURepoManager.NEU_REPO.getConstants().getEssenceCost().getCosts().keySet();
+            Set<@NEUId String> essenceCosts = NEURepoManager.getConstants().getEssenceCost().getCosts().keySet();
             if (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
                 TooltipInfoType.THREE_DAY_AVERAGE.run();
             }
@@ -166,7 +166,7 @@ public class SearchOverManager {
                 String id = entry.getKey();
                 //look up in NEU repo.
                 id = id.split("[+-]")[0];
-                NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
+                NEUItem neuItem = NEURepoManager.getItemByNeuId(id);
                 if (neuItem != null) {
                     String name = Formatting.strip(neuItem.getDisplayName());
                     //add names that are pets to the list of pets to work with the lvl 100 button
