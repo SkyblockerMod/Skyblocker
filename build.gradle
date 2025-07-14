@@ -168,7 +168,7 @@ dependencies {
 	include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
 
 	// Mod Menu
-	modCompileOnly "com.terraformersmc:modmenu:${project.mod_menu_version}"
+	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
 	// REI
 	modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
