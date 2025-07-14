@@ -36,7 +36,6 @@ public class StatusBarsConfigScreen extends Screen {
 
 	public StatusBarsConfigScreen() {
 		super(Text.of("Status Bars Config"));
-		FancyStatusBars.updatePositions();
 	}
 
 	private BarLocation currentInsertLocation = new BarLocation(null, 0, 0);
@@ -103,7 +102,7 @@ public class StatusBarsConfigScreen extends Screen {
 				}
 			}
 			if (inserted) {
-				FancyStatusBars.updatePositions();
+				FancyStatusBars.updatePositions(true);
 				return;
 			}
 			// check for hovering empty anchors
@@ -117,7 +116,7 @@ public class StatusBarsConfigScreen extends Screen {
 					FancyStatusBars.barPositioner.addRow(barAnchor);
 					FancyStatusBars.barPositioner.addBar(barAnchor, 0, cursorBar);
 					currentInsertLocation = BarLocation.of(cursorBar);
-					FancyStatusBars.updatePositions();
+					FancyStatusBars.updatePositions(true);
 				}
 			}
 		} else {
@@ -165,7 +164,7 @@ public class StatusBarsConfigScreen extends Screen {
 						if (doResize) {
 							if (hasRight) rightBar.size++;
 							if (hasLeft) leftBar.size--;
-							FancyStatusBars.updatePositions();
+							FancyStatusBars.updatePositions(true);
 						}
 					}
 				} else { // towards the right
@@ -182,7 +181,7 @@ public class StatusBarsConfigScreen extends Screen {
 						if (doResize) {
 							if (hasRight) rightBar.size--;
 							if (hasLeft) leftBar.size++;
-							FancyStatusBars.updatePositions();
+							FancyStatusBars.updatePositions(true);
 						}
 					}
 				}
@@ -242,6 +241,7 @@ public class StatusBarsConfigScreen extends Screen {
 	@Override
 	protected void init() {
 		super.init();
+		FancyStatusBars.updatePositions(true);
 		editBarWidget = new EditBarWidget(0, 0, this);
 		editBarWidget.visible = false;
 		addSelectableChild(editBarWidget); // rendering separately to have it above hotbar
@@ -270,7 +270,7 @@ public class StatusBarsConfigScreen extends Screen {
 		super.removed();
 		FancyStatusBars.statusBars.values().forEach(statusBar -> statusBar.setOnClick(null));
 		if (cursorBar != null) cursorBar.inMouse = false;
-		FancyStatusBars.updatePositions();
+		FancyStatusBars.updatePositions(false);
 		assert client != null;
 		GLFW.glfwSetCursor(client.getWindow().getHandle(), 0);
 		FancyStatusBars.saveBarConfig();
@@ -288,7 +288,7 @@ public class StatusBarsConfigScreen extends Screen {
 			currentInsertLocation = BarLocation.of(cursorBar);
 			if (statusBar.anchor != null)
 				FancyStatusBars.barPositioner.removeBar(statusBar.anchor, statusBar.gridY, statusBar);
-			FancyStatusBars.updatePositions();
+			FancyStatusBars.updatePositions(true);
 			cursorBar.setX(width + 5); // send it to limbo lol
 			updateScreenRects();
 		} else if (button == 1) {
@@ -317,7 +317,7 @@ public class StatusBarsConfigScreen extends Screen {
 			cursorBar.inMouse = false;
 			currentInsertLocation = BarLocation.of(cursorBar);
 			cursorBar = null;
-			FancyStatusBars.updatePositions();
+			FancyStatusBars.updatePositions(true);
 			updateScreenRects();
 			return true;
 		} else if (resizing) {

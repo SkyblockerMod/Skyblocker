@@ -11,6 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class WindowMixin {
     @Inject(method = "setScaleFactor", at = @At("TAIL"))
     public void skyblocker$onScaleFactorChange(CallbackInfo ci) {
-        FancyStatusBars.updatePositions();
+        FancyStatusBars.updatePositions(false);
     }
 }

@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.chat.filters;
 import org.junit.jupiter.api.Test;
 
 class AoteFilterTest extends ChatFilterTest<AoteFilter> {
-    public AoteFilterTest() {
+    AoteFilterTest() {
         super(new AoteFilter());
     }
 

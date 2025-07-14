@@ -29,7 +29,7 @@ public class MessageScheduler extends Scheduler {
      */
     public void sendMessageAfterCooldown(String message, boolean hide) {
         if (lastMessage + MIN_DELAY < System.currentTimeMillis()) {
-            sendMessage(message,hide);
+            sendMessage(message, hide);
             lastMessage = System.currentTimeMillis();
         } else {
             queueMessage(message, hide, 0);

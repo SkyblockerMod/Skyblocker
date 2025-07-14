@@ -115,7 +115,7 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
 
         super.renderWidget(context, mouseX, mouseY, delta);
     }
-    
+
     @Override
     protected void drawHeaderAndFooterSeparators(DrawContext context) {
     }

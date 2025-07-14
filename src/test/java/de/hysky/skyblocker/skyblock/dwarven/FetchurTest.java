@@ -4,7 +4,7 @@ import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
 
 class FetchurTest extends ChatPatternListenerTest<Fetchur> {
-    public FetchurTest() {
+    FetchurTest() {
         super(new Fetchur());
     }
 

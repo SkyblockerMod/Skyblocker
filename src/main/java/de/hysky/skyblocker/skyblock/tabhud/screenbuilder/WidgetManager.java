@@ -186,6 +186,18 @@ public class WidgetManager {
 					new PositionRule(CommsWidget.ID, new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, WidgetManager.ScreenLayer.HUD)
 			);
 		}
+
+		screenBuilder = getScreenBuilder(Location.DUNGEON);
+		screenBuilder.setPositionRule(
+				"Dungeon Splits",
+				new PositionRule(
+						"screen",
+						new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
+						new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
+						5,
+						0,
+						WidgetManager.ScreenLayer.HUD)
+		);
 	}
 
 

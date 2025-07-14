@@ -86,7 +86,7 @@ public abstract class InGameHudMixin {
 
     @Unique
     private static boolean shouldShowExperienceBar() {
-    	return !(Utils.isOnSkyblock() && FancyStatusBars.isEnabled() && FancyStatusBars.isExperienceFancyBarVisible());
+    	return !(Utils.isOnSkyblock() && FancyStatusBars.isEnabled() && FancyStatusBars.isExperienceFancyBarEnabled());
     }
 
     @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V", shift = At.Shift.AFTER), cancellable = true)
@@ -97,12 +97,12 @@ public abstract class InGameHudMixin {
     @Inject(method = "renderHealthBar", at = @At(value = "HEAD"), cancellable = true)
     private void skyblocker$renderHealthBar(DrawContext context, PlayerEntity player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking, CallbackInfo ci) {
         if (!Utils.isOnSkyblock()) return;
-        if (FancyStatusBars.isEnabled() && FancyStatusBars.isHealthFancyBarVisible()) ci.cancel();
+        if (FancyStatusBars.isEnabled() && FancyStatusBars.isHealthFancyBarEnabled()) ci.cancel();
     }
 
     @ModifyExpressionValue(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;getScaledWindowHeight()I"))
     private int skyblocker$moveHealthDown(int original) {
-        return Utils.isOnSkyblock() && FancyStatusBars.isEnabled() && !FancyStatusBars.isHealthFancyBarVisible() && FancyStatusBars.isExperienceFancyBarVisible() ? original + 6 : original;
+        return Utils.isOnSkyblock() && FancyStatusBars.isEnabled() && !FancyStatusBars.isHealthFancyBarEnabled() && FancyStatusBars.isExperienceFancyBarEnabled() ? original + 6 : original;
     }
 
     @Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)

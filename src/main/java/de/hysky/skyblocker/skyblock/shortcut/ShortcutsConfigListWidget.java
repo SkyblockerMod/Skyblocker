@@ -108,7 +108,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
         return children().stream().filter(ShortcutEntry.class::isInstance).map(ShortcutEntry.class::cast).filter(ShortcutEntry::isNotEmpty);
     }
 
-    public static abstract class AbstractShortcutEntry extends ElementListWidget.Entry<AbstractShortcutEntry> {
+    public abstract static class AbstractShortcutEntry extends ElementListWidget.Entry<AbstractShortcutEntry> {
         protected void updatePositions() {}
     }
 
