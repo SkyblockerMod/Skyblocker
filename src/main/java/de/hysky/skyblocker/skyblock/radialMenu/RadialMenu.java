@@ -5,7 +5,9 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -51,7 +53,7 @@ public class RadialMenu extends Screen implements ScreenHandlerListener {
 		float buttonArcSize = (float) ((2 * Math.PI) / options.size());
 		clearChildren();
 		for (Int2ObjectMap.Entry<ItemStack> stack : options.int2ObjectEntrySet()) {
-			RadialButton newButton = new RadialButton(angle, buttonArcSize, 50, 100, "temp", stack.getValue(), t -> this.clickSlot(stack.getIntKey()), stack.getIntKey());
+			RadialButton newButton = new RadialButton(angle, buttonArcSize, 50, 100, stack.getValue(), t -> this.clickSlot(stack.getIntKey()), stack.getIntKey());
 			buttons.add(newButton);
 			addDrawableChild(newButton);
 			angle += buttonArcSize;
@@ -76,6 +78,20 @@ public class RadialMenu extends Screen implements ScreenHandlerListener {
 			init();
 		}
 	}
+	@Override
+	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		super.render(context, mouseX, mouseY, deltaTicks);
+
+		//render menu title
+		context.drawCenteredTextWithShadow(textRenderer, getTitle(), width / 2, height / 2 - textRenderer.fontHeight, 0xFFFFFF);
+		//draw separation line
+		int textWidth = textRenderer.getWidth(getTitle());
+		context.drawHorizontalLine(width / 2 - textWidth /2,width / 2 + textWidth / 2, height / 2, 0xFFFFFFFF);
+		//render current option name
+		buttons.stream().filter(button -> button.hovered).findAny().ifPresent(hovered ->
+				context.drawCenteredTextWithShadow(textRenderer, hovered.getName(), width / 2, height / 2 + 2, 0xFFFFFFFF)); // + 2 to move out of way of line
+	}
+
 
 	@Override
 	public void onPropertyUpdate(ScreenHandler handler, int property, int value) {
@@ -99,8 +115,8 @@ public class RadialMenu extends Screen implements ScreenHandlerListener {
 		}
 
 		public boolean match(String name) {
-			//return false;
-			return this.name.matcher(name).matches();
+			return false;
+			//return this.name.matcher(name).matches();
 		}
 
 		public boolean itemMatches(int slotId, ItemStack stack) {

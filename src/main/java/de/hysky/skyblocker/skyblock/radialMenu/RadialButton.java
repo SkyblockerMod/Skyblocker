@@ -9,12 +9,14 @@ import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.navigation.GuiNavigation;
 import net.minecraft.client.gui.navigation.GuiNavigationPath;
 import net.minecraft.client.gui.navigation.NavigationDirection;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector2i;
@@ -32,24 +34,27 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 	float arcLength;
 	float internalRadius;
 	float externalRadius;
-	String name;
 	ItemStack icon;
 	boolean focused;
 	boolean hovered;
 	protected final RadialButton.PressAction onPress;
 	int linkedSlot;
 
-	public RadialButton(float startAngle, float arcLength, float internalRadius, float externalRadius, String name, ItemStack icon, RadialButton.PressAction onPress, int linkedSlot) {
+	public RadialButton(float startAngle, float arcLength, float internalRadius, float externalRadius, ItemStack icon, RadialButton.PressAction onPress, int linkedSlot) {
 		super();
 		this.startAngle = (float) (startAngle - (Math.PI / 2));//start at the top
 		this.arcLength = arcLength;
 		this.internalRadius = internalRadius;
 		this.externalRadius = externalRadius;
-		this.name = name;
 		this.icon = icon;
 		focused = false;
 		this.onPress = onPress;
 		this.linkedSlot = linkedSlot;
+	}
+	public String getName() {
+		Text customName = icon.getCustomName();
+		if (customName == null) return null;
+		return icon.getCustomName().getString();
 	}
 
 
@@ -286,7 +291,7 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 		SlotTextManager.renderSlotText(context, CLIENT.textRenderer, null, icon, linkedSlot, (int) iconPos.x, (int) iconPos.y);
 
 		//render tooltip
-		if (hovered) {
+		if (hovered && Screen.hasShiftDown()) { //todo config for shift
 			context.drawItemTooltip(CLIENT.textRenderer, icon, mouseX, mouseY);
 		}
 	}
