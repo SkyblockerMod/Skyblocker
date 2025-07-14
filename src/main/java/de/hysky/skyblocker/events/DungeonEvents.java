@@ -31,6 +31,15 @@ public class DungeonEvents {
 		}
 	});
 
+	/**
+	 * Called when the player loads into a dungeon once Mort has been located.
+	 */
+	public static final Event<DungeonLoaded> DUNGEON_LOADED = EventFactory.createArrayBacked(DungeonLoaded.class, callbacks -> () -> {
+		for (DungeonLoaded callback : callbacks) {
+			callback.onDungeonLoaded();
+		}
+	});
+
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface RoomMatched {
@@ -41,5 +50,11 @@ public class DungeonEvents {
 	@FunctionalInterface
 	public interface DungeonStarted {
 		void onDungeonStarted();
+	}
+
+	@Environment(EnvType.CLIENT)
+	@FunctionalInterface
+	public interface DungeonLoaded {
+		void onDungeonLoaded();
 	}
 }
