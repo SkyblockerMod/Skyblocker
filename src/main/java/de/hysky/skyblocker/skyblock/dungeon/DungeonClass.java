@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.ColorHelper;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -26,7 +27,7 @@ public enum DungeonClass {
 
 	DungeonClass(String name, int color, ItemStack icon) {
 		this.name = name;
-		this.color = color;
+		this.color = ColorHelper.fullAlpha(color);
 		this.icon = icon;
 	}
 
