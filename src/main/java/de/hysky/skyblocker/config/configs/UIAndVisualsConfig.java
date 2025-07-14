@@ -37,6 +37,8 @@ public class UIAndVisualsConfig {
 
 	public boolean showConfigButton = false;
 
+	public boolean trueQuiverCount = true;
+
     public ChestValue chestValue = new ChestValue();
 
     public ItemCooldown itemCooldown = new ItemCooldown();
@@ -240,7 +242,7 @@ public class UIAndVisualsConfig {
 	public enum IntelligenceDisplay {
 		ORIGINAL,
 		ACCURATE,
-		IN_FRONT;
+		IN_FRONT
 	}
 
     /**
