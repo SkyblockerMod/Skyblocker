@@ -466,11 +466,11 @@ public class UIAndVisualsCategory {
                         .collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.predictive"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip")))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip"))
 								.binding(defaults.uiAndVisuals.smoothAOTE.predictive,
 										() -> config.uiAndVisuals.smoothAOTE.predictive,
 										newValue -> config.uiAndVisuals.smoothAOTE.predictive = newValue)
-								.controller(ConfigUtils::createBooleanController)
+								.controller(ConfigUtils.createBooleanController())
 								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission"))
