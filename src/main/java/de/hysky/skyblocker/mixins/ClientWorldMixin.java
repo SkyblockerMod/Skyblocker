@@ -30,7 +30,7 @@ import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 public abstract class ClientWorldMixin implements BlockView {
 
 	@Inject(method = "handleBlockUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)Z"))
-	private void skyblocker$beforeBlockUpdate(CallbackInfo ci, @Local(argsOnly = true) BlockPos pos, @Share("old") LocalRef<@Nullable BlockState> oldState) {
+	private void beforeBlockUpdate(CallbackInfo ci, @Local(argsOnly = true) BlockPos pos, @Share("old") LocalRef<@Nullable BlockState> oldState) {
 		oldState.set(getBlockState(pos));
 	}
 
@@ -40,7 +40,7 @@ public abstract class ClientWorldMixin implements BlockView {
 	 */
 	//TODO might be worth creating an event for this
 	@Inject(method = "handleBlockUpdate", at = @At("RETURN"))
-	private void skyblocker$afterBlockUpdate(CallbackInfo ci, @Local(argsOnly = true) BlockPos pos, @Local(argsOnly = true) BlockState state, @Share("old") LocalRef<@Nullable BlockState> oldState) {
+	private void afterBlockUpdate(CallbackInfo ci, @Local(argsOnly = true) BlockPos pos, @Local(argsOnly = true) BlockState state, @Share("old") LocalRef<@Nullable BlockState> oldState) {
 		if (Utils.isInCrimson()) {
 			DojoManager.onBlockUpdate(pos.toImmutable(), state);
 		} else if (Utils.isInCrystalHollows()) {

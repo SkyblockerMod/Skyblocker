@@ -10,7 +10,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 public class SystemReaderMixin {
 
 	@ModifyReturnValue(method = "getenv", at = @At("RETURN"))
-	private String skyblocker$blockLoadingSystemGitConfig(String original, String variable) {
+	private String blockLoadingSystemGitConfig(String original, String variable) {
 		return variable.equals(Constants.GIT_CONFIG_NOSYSTEM_KEY) ? "FORCE-ENABLE" : original;
 	}
 }

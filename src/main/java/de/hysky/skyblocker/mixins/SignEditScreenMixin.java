@@ -49,7 +49,7 @@ public abstract class SignEditScreenMixin extends Screen {
 	}
 
 	@Inject(method = "render", at = @At("HEAD"))
-    private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
+    private void render(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
 		if (Utils.isOnSkyblock()) {
 			var config = SkyblockerConfigManager.get();
 			if (isSpeedInputSign() && config.general.speedPresets.enableSpeedPresets) {
@@ -67,14 +67,14 @@ public abstract class SignEditScreenMixin extends Screen {
     }
 
 	@Inject(method = "keyPressed", at = @At("HEAD"))
-	private void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+	private void closeWIthEnter(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.closeSignsWithEnter
 				&& Utils.isOnSkyblock() && isInputSign()
 				&& (keyCode == InputUtil.GLFW_KEY_ENTER || keyCode == InputUtil.GLFW_KEY_KP_ENTER)) this.close();
 	}
 
     @Inject(method = "finishEditing", at = @At("HEAD"))
-    private void skyblocker$finishEditing(CallbackInfo ci) {
+    private void modifyMessage(CallbackInfo ci) {
 		var config = SkyblockerConfigManager.get();
         if (Utils.isOnSkyblock()) {
 			//if the sign is being used to enter the speed cap, retrieve the value from speed presets.

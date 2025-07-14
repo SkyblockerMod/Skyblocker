@@ -132,7 +132,7 @@ public class ItemRepository {
 	}
 
 	/**
-	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link ItemUtils#getNeuId(ItemStack) ItemTooltip#getNeuName(String, String)}
+	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#skyblocker$getNeuName()}, or {@link ItemUtils#getNeuId(ItemStack) ItemTooltip#getNeuName(String, String)}
 	 */
 	@Nullable
 	public static ItemStack getItemStack(String neuId) {
@@ -144,11 +144,11 @@ public class ItemRepository {
 	}
 
 	public static Stream<SkyblockRecipe> getRecipes(ItemStack stack) {
-		return NEURepoManager.getRecipes().getOrDefault(stack.getNeuName(), Set.of()).stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull);
+		return NEURepoManager.getRecipes().getOrDefault(stack.skyblocker$getNeuName(), Set.of()).stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull);
 	}
 
 	public static Stream<SkyblockRecipe> getUsages(ItemStack stack) {
-		return NEURepoManager.getUsages().getOrDefault(stack.getNeuName(), Set.of()).stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull);
+		return NEURepoManager.getUsages().getOrDefault(stack.skyblocker$getNeuName(), Set.of()).stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull);
 	}
 
 	private static SkyblockRecipe toSkyblockRecipe(NEURecipe neuRecipe) {

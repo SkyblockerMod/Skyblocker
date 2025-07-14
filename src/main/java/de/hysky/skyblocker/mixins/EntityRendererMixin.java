@@ -19,7 +19,7 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 public class EntityRendererMixin {
 
 	@ModifyExpressionValue(method = "updateRenderState", slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;shouldRenderHitboxes()Z")), at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/entity/state/EntityRenderState;invisible:Z", opcode = Opcodes.GETFIELD))
-	private <E extends Entity> boolean skyblocker$armorStandHitboxVisible(boolean invisible, @Local(argsOnly = true) E entity) {
+	private <E extends Entity> boolean visibleArmorStandHitBox(boolean invisible, @Local(argsOnly = true) E entity) {
 		return (!(entity instanceof ArmorStandEntity) || !Utils.isOnHypixel() || !Debug.debugEnabled() || !SkyblockerConfigManager.get().debug.showInvisibleArmorStands) && invisible;
 	}
 }

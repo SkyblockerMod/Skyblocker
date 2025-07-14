@@ -22,7 +22,7 @@ public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		if (TooltipInfoType.BAZAAR.getData() != null && TooltipInfoType.BAZAAR.getData().containsKey(stack.getSkyblockApiId())) {
+		if (TooltipInfoType.BAZAAR.getData() != null && TooltipInfoType.BAZAAR.getData().containsKey(stack.skyblocker$getSkyblockApiId())) {
 			return; // Bazaar price already displayed
 		}
 
