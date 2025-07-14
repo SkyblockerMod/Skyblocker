@@ -15,7 +15,6 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
-import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class RadialMenu extends Screen implements ScreenHandlerListener {
 
 
 	public RadialMenu(GenericContainerScreenHandler handler, MenuType type, Text title) {
-		super(title);
+		super(type.showTitle == null ? title : Text.of(type.showTitle));
 		menuType = type;
 
 		options.clear();
@@ -69,7 +68,7 @@ public class RadialMenu extends Screen implements ScreenHandlerListener {
 
 
 		for (Int2ObjectMap.Entry<ItemStack> stack : optionOrdered) {
-			RadialButton newButton = new RadialButton(angle, buttonArcSize, 50, 100, stack.getValue(), t -> this.clickSlot(stack.getIntKey()), stack.getIntKey());
+			RadialButton newButton = new RadialButton(angle, buttonArcSize, 50, 100, stack.getValue(), button -> this.clickSlot(stack.getIntKey(),button), stack.getIntKey());
 			buttons.add(newButton);
 			addDrawableChild(newButton);
 			angle += buttonArcSize;
@@ -84,9 +83,9 @@ public class RadialMenu extends Screen implements ScreenHandlerListener {
 
 	}
 
-	private void clickSlot(int slotId) {
+	private void clickSlot(int slotId, int button) {
 		if (CLIENT.interactionManager == null || !syncIds.containsKey(slotId)) return;
-		CLIENT.interactionManager.clickSlot(syncIds.get(slotId), slotId, GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, CLIENT.player);
+		CLIENT.interactionManager.clickSlot(syncIds.get(slotId), slotId, button, SlotActionType.PICKUP, CLIENT.player);
 	}
 
 	@Override
@@ -123,32 +122,35 @@ public class RadialMenu extends Screen implements ScreenHandlerListener {
 	}
 
 	public enum MenuType {
-		YOURBAGS("your bags", null, List.of(Items.BLACK_STAINED_GLASS_PANE)),
-		YOURSKILLS("your skills", null, List.of(Items.BLACK_STAINED_GLASS_PANE)),
-		FASTTRAVEL("(fast travel)|(.* warps)", null, List.of(Items.BLACK_STAINED_GLASS_PANE)),
-		SKYBLOCKMENU("skyblock menu", null, List.of(Items.BLACK_STAINED_GLASS_PANE));
+		YOURBAGS("your bags", null, null, List.of(Items.BLACK_STAINED_GLASS_PANE)),
+		YOURSKILLS("your skills", null, null, List.of(Items.BLACK_STAINED_GLASS_PANE)),
+		FASTTRAVEL("(fast travel)|(.* warps)", null, null, List.of(Items.BLACK_STAINED_GLASS_PANE)),
+		HUNTINGTOOLKIT("hunting toolkit ➜ selection", "Hunting Toolkit", List.of(41), List.of(Items.BLACK_STAINED_GLASS_PANE,Items.GRAY_DYE)),
+		SKYBLOCKMENU("skyblock menu", null, null, List.of(Items.BLACK_STAINED_GLASS_PANE));
 
-		final Pattern name;
-		final List<Integer> slots;
-		final List<Item> blackList;
+		final Pattern title;
+		final String showTitle;
 
-		MenuType(String name, @Nullable List<Integer> slots, @Nullable List<Item> blackList) {
-			this.name = Pattern.compile(name);
-			this.slots = slots;
-			this.blackList = blackList;
+		MenuType(String title, @Nullable String showTitle, @Nullable List<Integer> blackListSlots, @Nullable List<Item> blackListItems) {
+			this.title = Pattern.compile(title);
+			this.showTitle = showTitle;
+			this.blackListSlots = blackListSlots;
+			this.blackListItems = blackListItems;
 		}
+		final List<Integer> blackListSlots;
+		final List<Item> blackListItems;
 
 		public boolean match(String name) {
 			//return false;
-			return this.name.matcher(name).matches();
+			return this.title.matcher(name).matches();
 		}
 
 		public boolean itemMatches(int slotId, ItemStack stack) {
-			if (blackList != null) {
-				if (blackList.contains(stack.getItem())) return false;
+			if (blackListItems != null) {
+				if (blackListItems.contains(stack.getItem())) return false;
 			}
-			if (slots != null) {
-				if (!slots.contains(slotId)) return false;
+			if (blackListSlots != null) {
+				if (blackListSlots.contains(slotId)) return false;
 			}
 
 			return true;

@@ -85,7 +85,7 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (hovered) {
-			this.onPress.onPress(this);
+			this.onPress.onPress(button);
 		}
 		return Element.super.mouseClicked(mouseX, mouseY, button);
 	}
@@ -366,6 +366,6 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 
 	@Environment(EnvType.CLIENT)
 	public interface PressAction {
-		void onPress(RadialButton button);
+		void onPress(int button);
 	}
 }
