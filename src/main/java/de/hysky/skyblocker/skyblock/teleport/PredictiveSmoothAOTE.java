@@ -382,6 +382,8 @@ public class PredictiveSmoothAOTE {
 			return false;
 		} else if (Utils.getLocation() == Location.PRIVATE_ISLAND && !Utils.getIslandArea().equals("⏣ Your Island")) { //do not allow it when visiting
 			return false;
+		} else if (Utils.getIslandArea().equals("⏣ Dojo")) { //do not allow in dojo
+			return false;
 		} else if (Utils.isInDungeons()) { //check places in dungeons where you can't teleport
 			if (DungeonManager.isInBoss() && DungeonManager.getBoss() == DungeonBoss.MAXOR) {
 				return false;
