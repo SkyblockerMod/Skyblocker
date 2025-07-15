@@ -53,7 +53,9 @@ public class UIAndVisualsConfig {
 
 	public SlotText slotText = new SlotText();
 
-	public InventorySearchConfig inventorySearch = new InventorySearchConfig();
+	public RadialMenu radialMenu = new RadialMenu();
+
+    public InventorySearchConfig inventorySearch = new InventorySearchConfig();
 
 	public TitleContainer titleContainer = new TitleContainer();
 
@@ -97,12 +99,20 @@ public class UIAndVisualsConfig {
 		public boolean enableItemCooldowns = true;
 	}
 
+
 	public static class SlotText {
 		public SlotTextMode slotTextMode = SlotTextMode.ENABLED;
 
 		public Object2BooleanOpenHashMap<String> textEnabled = new Object2BooleanOpenHashMap<>();
 
 		public boolean slotTextToggled = true;
+
+	}
+	public static class RadialMenu {
+		public boolean enabled = true;
+
+		public Object2BooleanOpenHashMap<String> enabledMenus = new Object2BooleanOpenHashMap<>();
+
 
 	}
 

@@ -5,26 +5,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 
-public class HuntingMenu implements RadialMenu {
+public class HuntingMenu extends RadialMenu {
 
-	@Override
 	public Text getTitle(Text title) {
 		return Text.of("Hunting Toolkit");
 	}
 
-	@Override
 	public boolean titleMatches(String title) {
-		return this.isEnabled() && title.equalsIgnoreCase("hunting toolkit ➜ selection");
+		return this.getEnabled() && title.equalsIgnoreCase("hunting toolkit ➜ selection");
 	}
 
-	@Override
 	public boolean itemMatches(int slotId, ItemStack stack) {
 		if (slotId == 41) return false;
 		return !stack.getItem().equals(Items.BLACK_STAINED_GLASS_PANE) && !stack.getItem().equals(Items.GRAY_DYE);
 	}
 
-	@Override
-	public boolean isEnabled() {
-		return true;
+	public String getConfigId() {
+		return "huntingToolkit";
 	}
+
+
 }
