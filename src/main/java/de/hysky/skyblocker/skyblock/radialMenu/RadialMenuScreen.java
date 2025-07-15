@@ -120,5 +120,11 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 
 	}
 
+	@Override
+	public void close() {
+		CLIENT	.player.closeHandledScreen();
+		super.close();
+	}
+
 
 }

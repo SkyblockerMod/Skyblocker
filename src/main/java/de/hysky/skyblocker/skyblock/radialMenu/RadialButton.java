@@ -286,7 +286,6 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 			for (Vector3f vertex : vertices) {
 				vertexConsumer.vertex(vertex).color(color);
 			}
-
 		});
 
 		//render icon
