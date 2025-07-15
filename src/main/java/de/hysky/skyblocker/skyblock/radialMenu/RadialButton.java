@@ -220,6 +220,9 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 		float actualX = (float) (mouseX * 2) - CLIENT.currentScreen.width;
 		float actualY = (float) (mouseY * 2) - CLIENT.currentScreen.height;
 
+		//return false if over hide button
+		if (actualX> CLIENT.currentScreen.width - 100 && actualY> CLIENT.currentScreen.height - 50) return false;
+
 		//get angle of mouse and adjust to use same starting point and direction as buttons and see if its within bounds
 		double angle = -Math.atan2(actualX, actualY) + Math.PI / 2;
 		return angle > startAngle && angle < startAngle + arcLength - 0.001; // make sure there is no overlap

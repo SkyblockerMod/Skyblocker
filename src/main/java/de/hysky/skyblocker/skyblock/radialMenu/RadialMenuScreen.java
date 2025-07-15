@@ -7,10 +7,15 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
+import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 
@@ -18,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
+public class  RadialMenuScreen extends Screen implements ScreenHandlerListener {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final int INTERNAL_RADIUS = 55;
 	private static final int EXTERNAL_RADIUS = 110;
@@ -28,11 +33,14 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 	private final Int2IntMap syncIds = new Int2IntOpenHashMap();
 	private final List<RadialButton> buttons = new ArrayList<>();
 	private final GenericContainerScreenHandler handler;
-
+	private final Text parentName;
 
 	public RadialMenuScreen(GenericContainerScreenHandler handler, RadialMenu type, Text title) {
 		super(type.getTitle(title));
 		menuType = type;
+
+		this.parentName = title;
+
 
 		options.clear();
 		//Listen for slot updates
@@ -55,7 +63,6 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 		Int2ObjectMap.Entry<ItemStack> backSlot = optionOrdered.stream().filter(option -> validName(option.getValue(), "Go Back")).findAny().orElse(null);
 		Int2ObjectMap.Entry<ItemStack> closeSlot = optionOrdered.stream().filter(option -> validName(option.getValue(), "Close")).findAny().orElse(null);
 		int bottom = Math.ceilDiv((optionOrdered.size() - ((closeSlot == null) ? 0 : 1) - ((backSlot == null) ? 0 : 1)), 2);
-
 		optionOrdered.remove(backSlot);
 		optionOrdered.remove(closeSlot);
 		if (backSlot != null) {
@@ -65,14 +72,25 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 			optionOrdered.add(bottom, closeSlot);
 		}
 
-
+		//create all needed radial buttons
 		for (Int2ObjectMap.Entry<ItemStack> stack : optionOrdered) {
-			RadialButton newButton = new RadialButton(angle, buttonArcSize, INTERNAL_RADIUS, EXTERNAL_RADIUS, stack.getValue(), button -> this.clickSlot(stack.getIntKey(),button), stack.getIntKey());
+			RadialButton newButton = new RadialButton(angle, buttonArcSize, INTERNAL_RADIUS, EXTERNAL_RADIUS, stack.getValue(), button -> this.clickSlot(stack.getIntKey(), button), stack.getIntKey());
 			buttons.add(newButton);
 			addDrawableChild(newButton);
 			angle += buttonArcSize;
 		}
 
+		//add button to temperately disable menu
+		addDrawableChild(ButtonWidget.builder(Text.of("Hide"), this::test)
+				.tooltip(Tooltip.of(Text.of("Show normal inventory view"))) //todo translate
+				.position(width - 50, height - 25)
+				.size(40, 15)
+				.build());
+
+	}
+
+	private void test(ButtonWidget button) {
+		CLIENT.setScreen(new GenericContainerScreen(handler, CLIENT.player.getInventory(), parentName));
 	}
 
 	private static boolean validName(ItemStack stack, String validName) {
@@ -111,7 +129,7 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 		context.drawHorizontalLine(width / 2 - textWidth / 2, width / 2 + textWidth / 2, height / 2, 0xFFFFFFFF);
 		//render current option name
 		buttons.stream().filter(button -> button.hovered).findAny().ifPresent(hovered ->
-				context.drawCenteredTextWithShadow(textRenderer, hovered.getName(), width / 2, height / 2 + 2, 0xFFFFFFFF)); // + 2 to move out of way of line
+				context.drawCenteredTextWithShadow(textRenderer, hovered.getName() == null ? "Error": hovered.getName(), width / 2, height / 2 + 2, 0xFFFFFFFF)); // + 2 to move out of way of line. Skyhanni seams to sometimes give us a null value
 	}
 
 
@@ -122,7 +140,7 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 
 	@Override
 	public void close() {
-		CLIENT	.player.closeHandledScreen();
+		CLIENT.player.closeHandledScreen();
 		super.close();
 	}
 
