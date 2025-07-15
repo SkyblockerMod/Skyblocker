@@ -11,6 +11,8 @@ import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
@@ -38,6 +40,10 @@ import java.awt.Color;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class UIAndVisualsCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
@@ -213,6 +219,20 @@ public class UIAndVisualsCategory {
 								.label(Component.translatable("skyblocker.config.uiAndVisuals.slotText.separator"))
 								.build())
 						.options(createSlotTextToggles(config))
+						.build()
+				)
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu.enabled"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu.enabled.@Tooltip"))
+								.binding(defaults.uiAndVisuals.radialMenu.enabled,
+										() -> config.uiAndVisuals.radialMenu.enabled,
+										newValue -> config.uiAndVisuals.radialMenu.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.options(createRadialToggles(config))
 						.build()
 				)
 
@@ -966,5 +986,16 @@ public class UIAndVisualsCategory {
 		return SlotTextManager.getAdderStream().map(SlotTextAdder::getConfigInformation).filter(Objects::nonNull).distinct()
 				.map(configInfo -> configInfo.getOption(config))
 				.sorted(Comparator.comparing(option -> option.name().getString())).toList();
+	}
+
+	private static List<Option<Boolean>> createRadialToggles(SkyblockerConfig config) {
+		return RadialMenuManager.getMenuStream().filter(distinctByKey(RadialMenu::getConfigId))
+				.map(configInfo -> configInfo.getOption(config))
+				.sorted(Comparator.comparing(option -> option.name().getString())).toList();
+	}
+	//
+	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+		Set<Object> seen = ConcurrentHashMap.newKeySet();
+		return t -> seen.add(keyExtractor.apply(t));
 	}
 }

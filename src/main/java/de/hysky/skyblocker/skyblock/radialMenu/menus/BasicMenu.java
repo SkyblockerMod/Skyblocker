@@ -6,30 +6,28 @@ import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 
 
-public class BasicMenu implements RadialMenu {
+public class BasicMenu extends RadialMenu {
 	final String title;
+	final String id;
 
-	public BasicMenu(String title) {
+	public BasicMenu(String title, String id) {
 		this.title = title;
+		this.id = id;
 	}
 
-	@Override
 	public Text getTitle(Text title) {
 		return title;
 	}
 
-	@Override
 	public boolean titleMatches(String title) {
-		return this.isEnabled() && title.equalsIgnoreCase(this.title);
+		return this.getEnabled() && title.equalsIgnoreCase(this.title);
 	}
 
-	@Override
 	public boolean itemMatches(int slotId, ItemStack stack) {
 		return stack.getItem() != Items.BLACK_STAINED_GLASS_PANE;
 	}
 
-	@Override
-	public boolean isEnabled() {
-		return true;
+	public String getConfigId() {
+		return id;
 	}
 }

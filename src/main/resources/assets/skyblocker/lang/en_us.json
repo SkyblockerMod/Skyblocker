@@ -1157,6 +1157,13 @@
   "skyblocker.config.uiAndVisuals.nightVisionStrength": "Night Vision Strength",
   "skyblocker.config.uiAndVisuals.nightVisionStrength.@Tooltip": "Determines the strength of the Night Vision effect.",
 
+  "skyblocker.config.uiAndVisuals.radialMenu": "Radial Menus",
+  "skyblocker.config.uiAndVisuals.radialMenu.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.radialMenu.enabled.@Tooltip": "Enable or disable all radial menus",
+  "skyblocker.config.uiAndVisuals.radialMenu.fastTravel": "Fast Travel",
+  "skyblocker.config.uiAndVisuals.radialMenu.huntingToolkit": "Hunting Toolkit",
+  "skyblocker.config.uiAndVisuals.radialMenu.general": "General Menus",
+
   "skyblocker.config.uiAndVisuals.searchOverlay": "AH/BZ Search Overlay",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse.@Tooltip": "Show custom search overlay when searching in the Auction House.",

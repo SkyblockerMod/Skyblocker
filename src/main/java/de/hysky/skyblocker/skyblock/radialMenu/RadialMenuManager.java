@@ -5,6 +5,7 @@ import de.hysky.skyblocker.skyblock.radialMenu.menus.HuntingMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.SkyblockMenu;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class RadialMenuManager {
 	private static final RadialMenu[] menus = new RadialMenu[]{
@@ -13,11 +14,15 @@ public class RadialMenuManager {
 			new SkyblockMenu()
 	};
 
-	public static boolean doseMenuExistForTitle(String title){
-		return Arrays.stream(menus).anyMatch(menu-> menu.titleMatches(title));
+	public static boolean doseMenuExistForTitle(String title) {
+		return Arrays.stream(menus).anyMatch(menu -> menu.titleMatches(title));
 	}
 
-	public static RadialMenu getMenuForTitle(String title){
-		return Arrays.stream(menus).filter( menu -> menu.titleMatches(title)).findFirst().orElse(null);
+	public static RadialMenu getMenuForTitle(String title) {
+		return Arrays.stream(menus).filter(menu -> menu.titleMatches(title)).findFirst().orElse(null);
+	}
+
+	public static Stream<RadialMenu> getMenuStream() {
+		return Arrays.stream(menus);
 	}
 }
