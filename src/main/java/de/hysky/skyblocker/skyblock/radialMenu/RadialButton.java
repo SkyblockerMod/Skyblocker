@@ -24,7 +24,9 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class RadialButton implements Drawable, Element, Widget, Selectable {
@@ -51,6 +53,7 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 		this.onPress = onPress;
 		this.linkedSlot = linkedSlot;
 	}
+
 	public String getName() {
 		Text customName = icon.getCustomName();
 		if (customName == null) return null;
@@ -264,20 +267,26 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 
 		//get bounding box
 		Vector2i center = new Vector2i(context.getScaledWindowWidth() / 2, context.getScaledWindowHeight() / 2);
-		Vector3f pos1 = getPos(center, startAngle, internal);
-		Vector3f pos2 = getPos(center, startAngle, external);
-		Vector3f pos3 = getPos(center, startAngle + arcLength, internal);
-		Vector3f pos4 = getPos(center, startAngle + arcLength, external);
+		List<Vector3f> vertices = new ArrayList<>();
+		//first rectangle
+		vertices.add(getPos(center, startAngle, internal));
+		vertices.add(getPos(center, startAngle + arcLength / 2, internal));
+		vertices.add(getPos(center, startAngle + arcLength / 2, external));
+		vertices.add(getPos(center, startAngle, external));
+		//second rectangle
+		vertices.add(getPos(center, startAngle + arcLength / 2, internal));
+		vertices.add(getPos(center, startAngle + arcLength, internal));
+		vertices.add(getPos(center, startAngle + arcLength, external));
+		vertices.add(getPos(center, startAngle + arcLength / 2, external));
 
 
 		//render background
 		context.draw(provider -> {
 			VertexConsumer vertexConsumer = provider.getBuffer(RenderLayer.getGui());
-			Matrix4f positionMatrix = context.getMatrices().peek().getPositionMatrix();
-			vertexConsumer.vertex(positionMatrix, pos1.x, pos1.y, pos1.z).color(color);
-			vertexConsumer.vertex(positionMatrix, pos3.x, pos3.y, pos3.z).color(color);
-			vertexConsumer.vertex(positionMatrix, pos4.x, pos4.y, pos4.z).color(color);
-			vertexConsumer.vertex(positionMatrix, pos2.x, pos2.y, pos2.z).color(color);
+			for (Vector3f vertex : vertices) {
+				vertexConsumer.vertex(vertex).color(color);
+			}
+
 		});
 
 		//render icon

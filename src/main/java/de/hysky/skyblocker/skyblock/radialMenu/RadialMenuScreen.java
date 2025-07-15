@@ -20,6 +20,9 @@ import java.util.List;
 
 public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final int INTERNAL_RADIUS = 55;
+	private static final int EXTERNAL_RADIUS = 110;
+
 	private final RadialMenu menuType;
 	private final Int2ObjectOpenHashMap<ItemStack> options = new Int2ObjectOpenHashMap<>();
 	private final Int2IntMap syncIds = new Int2IntOpenHashMap();
@@ -64,7 +67,7 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 
 
 		for (Int2ObjectMap.Entry<ItemStack> stack : optionOrdered) {
-			RadialButton newButton = new RadialButton(angle, buttonArcSize, 50, 100, stack.getValue(), button -> this.clickSlot(stack.getIntKey(),button), stack.getIntKey());
+			RadialButton newButton = new RadialButton(angle, buttonArcSize, INTERNAL_RADIUS, EXTERNAL_RADIUS, stack.getValue(), button -> this.clickSlot(stack.getIntKey(),button), stack.getIntKey());
 			buttons.add(newButton);
 			addDrawableChild(newButton);
 			angle += buttonArcSize;
