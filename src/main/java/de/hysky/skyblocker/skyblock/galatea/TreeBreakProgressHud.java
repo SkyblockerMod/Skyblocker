@@ -6,6 +6,8 @@ import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.utils.Location;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
@@ -16,9 +18,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,7 +28,7 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 	private final MinecraftClient client = MinecraftClient.getInstance();
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GALATEA);
 	private static TreeBreakProgressHud instance;
-	private static Map<Integer, ArmorStandEntity> armorstands = new HashMap<>();
+	private static Int2ObjectMap<ArmorStandEntity> armorstands = new Int2ObjectOpenHashMap<ArmorStandEntity>();
 	private static ArmorStandEntity closest;
 
 	static {
