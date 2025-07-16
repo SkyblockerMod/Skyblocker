@@ -1,17 +1,19 @@
 package de.hysky.skyblocker.config.categories;
 
- import de.hysky.skyblocker.SkyblockerMod;import de.hysky.skyblocker.config.ConfigUtils;
- import de.hysky.skyblocker.config.SkyblockerConfig;
- import de.hysky.skyblocker.config.configs.HelperConfig;
- import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
- import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
- import de.hysky.skyblocker.utils.waypoint.Waypoint;
- import net.azureaaron.dandelion.systems.ButtonOption;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.HelperConfig;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
+import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
- import net.azureaaron.dandelion.systems.controllers.IntegerController;
- import net.minecraft.text.Text;import net.minecraft.util.Identifier;
+import net.azureaaron.dandelion.systems.controllers.IntegerController;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 public class HelperCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
