@@ -13,6 +13,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
@@ -142,7 +143,7 @@ public class TitleContainer {
 			context.getMatrices().scale(scale, scale);
 
 			//Draw text
-			context.drawTextWithShadow(textRenderer, title.getText(), 0, 0, 0xFFFFFF);
+			context.drawTextWithShadow(textRenderer, title.getText(), 0, 0, Colors.WHITE);
 			context.getMatrices().popMatrix();
 
 			//Calculate the x and y positions for the next title

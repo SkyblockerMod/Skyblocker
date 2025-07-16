@@ -31,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 
@@ -171,7 +172,7 @@ public class CustomizeArmorScreen extends Screen {
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
-		context.drawCenteredTextWithShadow(textRenderer, getTitle(), this.width / 2, 5, -1);
+		context.drawCenteredTextWithShadow(textRenderer, getTitle(), this.width / 2, 5, Colors.WHITE);
 	}
 
 	@Override

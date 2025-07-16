@@ -27,6 +27,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
 import java.util.*;
@@ -173,7 +174,7 @@ public class VisitorHelper {
 				context.drawItem(visitor.head(), 0, 0);
 				context.getMatrices().popMatrix();
 
-				context.drawText(textRenderer, visitor.name(), X_OFFSET + (int) (ICON_SIZE * 0.95f) + 4, yPosition, -1, true);
+				context.drawText(textRenderer, visitor.name(), X_OFFSET + (int) (ICON_SIZE * 0.95f) + 4, yPosition, Colors.WHITE, true);
 
 				index++;
 			}
@@ -270,10 +271,10 @@ public class VisitorHelper {
 	}
 
 	private static void drawTextWithHoverUnderline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, double mouseX, double mouseY) {
-		context.drawText(textRenderer, text, x, y, -1, true);
+		context.drawText(textRenderer, text, x, y, Colors.WHITE, true);
 
 		if (isMouseOverText(textRenderer, text, x, y, mouseX, mouseY)) {
-			context.drawHorizontalLine(x, x + textRenderer.getWidth(text), y + textRenderer.fontHeight, -1);
+			context.drawHorizontalLine(x, x + textRenderer.getWidth(text), y + textRenderer.fontHeight, Colors.WHITE);
 		}
 	}
 

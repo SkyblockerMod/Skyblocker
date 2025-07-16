@@ -28,6 +28,7 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.Nullable;
@@ -105,7 +106,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			Text text = Text.translatable("gui.recipebook.page", this.currentPage + 1, this.pageCount);
 			int width = textRenderer.getWidth(text);
 
-			context.drawText(textRenderer, text, x - width / 2 + 73, y + 141, -1, false);
+			context.drawText(textRenderer, text, x - width / 2 + 73, y + 141, Colors.WHITE, false);
 		}
 
 		//Render the results

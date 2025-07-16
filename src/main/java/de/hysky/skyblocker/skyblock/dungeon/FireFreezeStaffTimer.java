@@ -11,6 +11,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -48,7 +49,7 @@ public class FireFreezeStaffTimer {
             int height = client.getWindow().getScaledHeight() / 2;
 
             context.drawCenteredTextWithShadow(
-                    renderer, "Fire freeze in: " + message, width, height, 0xffffff);
+                    renderer, "Fire freeze in: " + message, width, height, Colors.WHITE);
         }
     }
 

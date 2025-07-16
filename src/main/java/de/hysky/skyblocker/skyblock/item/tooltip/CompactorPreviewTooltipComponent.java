@@ -50,7 +50,7 @@ public class CompactorPreviewTooltipComponent implements TooltipComponent {
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x + columns * 18 + 7, y + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
 
         //Draw name - I don't think it needs to be translatable
-        context.drawText(textRenderer, "Contents", x + 8, y + 6, 0x404040, false);
+        context.drawText(textRenderer, "Contents", x + 8, y + 6, 0xFF404040, false);
 
         for (IntObjectPair<ItemStack> entry : items) {
             int itemX = x + entry.leftInt() % dimensions.rightInt() * 18 + 8;

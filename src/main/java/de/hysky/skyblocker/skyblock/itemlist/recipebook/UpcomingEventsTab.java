@@ -54,7 +54,7 @@ public class UpcomingEventsTab implements RecipeTab {
 
 		//Draw the title area
 		context.drawItemWithoutEntity(CLOCK, x, y + 4);
-		context.drawTextWithShadow(CLIENT.textRenderer, "Upcoming Events", x + 17, y + 7, -1);
+		context.drawTextWithShadow(CLIENT.textRenderer, "Upcoming Events", x + 17, y + 7, Colors.WHITE);
 
 		int eventsY = y + 7 + 24;
 		this.hovered = null;
@@ -104,18 +104,18 @@ public class UpcomingEventsTab implements RecipeTab {
 			long time = System.currentTimeMillis() / 1000;
 			TextRenderer textRenderer = CLIENT.textRenderer;
 
-			context.drawTextWithShadow(textRenderer, Text.literal(eventName).fillStyle(Style.EMPTY.withUnderline(isMouseOver(mouseX, mouseY, x, y))), x, y, -1);
+			context.drawTextWithShadow(textRenderer, Text.literal(eventName).fillStyle(Style.EMPTY.withUnderline(isMouseOver(mouseX, mouseY, x, y))), x, y, Colors.WHITE);
 
 			if (events.isEmpty()) {
 				context.drawText(textRenderer, Text.literal(" ").append(Text.translatable("skyblocker.events.tab.noMore")), x, y + textRenderer.fontHeight, Colors.GRAY, false);
 			} else if (events.peekFirst().start() > time) {
 				Text formatted = Text.literal(" ").append(Text.translatable("skyblocker.events.tab.startsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() - time)))).formatted(Formatting.YELLOW);
 
-				context.drawTextWithShadow(textRenderer, formatted, x, y + textRenderer.fontHeight, -1);
+				context.drawTextWithShadow(textRenderer, formatted, x, y + textRenderer.fontHeight, Colors.WHITE);
 			} else {
 				Text formatted = Text.literal(" ").append(Text.translatable("skyblocker.events.tab.endsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() + events.peekFirst().duration() - time)))).formatted(Formatting.GREEN);
 
-				context.drawTextWithShadow(textRenderer, formatted, x, y + textRenderer.fontHeight, -1);
+				context.drawTextWithShadow(textRenderer, formatted, x, y + textRenderer.fontHeight, Colors.WHITE);
 			}
 		}
 

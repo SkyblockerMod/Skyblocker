@@ -9,6 +9,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
@@ -23,7 +24,7 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 
 		@Override
 		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of("- Skyblocker Widgets -"), x + entryWidth / 2, y + (entryHeight - 9) / 2, 0xFFFFFF);
+			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of("- Skyblocker Widgets -"), x + entryWidth / 2, y + (entryHeight - 9) / 2, Colors.WHITE);
 		}
 
 		@Override

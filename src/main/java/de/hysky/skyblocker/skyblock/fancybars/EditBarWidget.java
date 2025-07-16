@@ -190,7 +190,7 @@ public class EditBarWidget extends ContainerWidget {
 				context.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
 			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1: Colors.GRAY, true);
+			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? Colors.WHITE : Colors.GRAY, true);
 		}
 
 		@Override
@@ -222,9 +222,9 @@ public class EditBarWidget extends ContainerWidget {
 				context.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
 			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, -1, true);
+			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, Colors.WHITE, true);
 			String string = current.toString();
-			context.drawText(textRenderer, string, getRight() - textRenderer.getWidth(string) - 1, getY() + 1, -1, true);
+			context.drawText(textRenderer, string, getRight() - textRenderer.getWidth(string) - 1, getY() + 1, Colors.WHITE, true);
 		}
 
 		public void setCurrent(T current) {
@@ -273,7 +273,7 @@ public class EditBarWidget extends ContainerWidget {
 			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : Colors.GRAY, true);
 			context.drawBorder(getRight() - 10, getY() + 1, 9, 9, active ? -1 : Colors.GRAY);
-			if (current && active) context.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, -1);
+			if (current && active) context.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, Colors.WHITE);
 		}
 
 		@Override
