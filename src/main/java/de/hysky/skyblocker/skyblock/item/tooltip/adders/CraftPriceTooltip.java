@@ -13,6 +13,8 @@ import io.github.moulberry.repo.data.NEUIngredient;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEUKatUpgradeRecipe;
 import io.github.moulberry.repo.data.NEURecipe;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -62,7 +64,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 		}
 	}
 
-	private double getItemCost(NEURecipe recipe, int depth) {
+	public static double getItemCost(NEURecipe recipe, int depth) {
 		if (depth >= MAX_RECURSION_DEPTH) return -1;
 
 		double totalCraftCost = 0;
@@ -76,11 +78,13 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 
 			double itemCost = 0;
 
-			if (TooltipInfoType.BAZAAR.getData().containsKey(inputItemName)) {
-				BazaarProduct product = TooltipInfoType.BAZAAR.getData().get(inputItemName);
+			Object2ObjectMap<String, BazaarProduct> bazaarData = TooltipInfoType.BAZAAR.getData();
+			Object2DoubleMap<String> lowestBinsData = TooltipInfoType.LOWEST_BINS.getData();
+			if (bazaarData != null && bazaarData.containsKey(inputItemName)) {
+				BazaarProduct product = bazaarData.get(inputItemName);
 				itemCost = SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost == Craft.BUY_ORDER ? product.buyPrice().orElse(0d) : product.sellPrice().orElse(0d);
-			} else if (TooltipInfoType.LOWEST_BINS.getData().containsKey(inputItemName)) {
-				itemCost = TooltipInfoType.LOWEST_BINS.getData().getDouble(inputItemName);
+			} else if (lowestBinsData != null && lowestBinsData.containsKey(inputItemName)) {
+				itemCost = lowestBinsData.getDouble(inputItemName);
 			}
 
 			if (itemCost > 0) {

@@ -323,7 +323,7 @@ public final class ItemUtils {
     }
 
 	public static double getCraftCost(String skyblockApiId) {
-		NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(skyblockApiId);
+		NEUItem neuItem = NEURepoManager.getItemByNeuId(skyblockApiId);
 		if (neuItem != null && !neuItem.getRecipes().isEmpty()) {
 			return CraftPriceTooltip.getItemCost(neuItem.getRecipes().getFirst(), 0);
 		}
@@ -485,19 +485,6 @@ public final class ItemUtils {
         }
         return stringBuilder.toString();
     }
-
-	/**
-	 * Checks if the given item ID represents an equipment piece.
-	 */
-	public static boolean isEquipment(String skyblockApiId) {
-		return (skyblockApiId.contains("BELT") ||
-				skyblockApiId.contains("GLOVES") ||
-				skyblockApiId.contains("CLOAK") ||
-				skyblockApiId.contains("GAUNTLET") ||
-				skyblockApiId.contains("NECKLACE") ||
-				skyblockApiId.contains("BRACELET") ||
-				skyblockApiId.contains("HAT"));
-	}
 
 	public static boolean isSoulbound(ItemStack stack) {
 		return getLore(stack).stream().anyMatch(lore -> lore.getString().toLowerCase(Locale.ENGLISH).contains("soulbound"));

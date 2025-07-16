@@ -14,6 +14,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ItemSorter {
+	private SortMode currentSortMode = SortMode.LOWEST_BIN;
+
 	// Sorting logic
 	private static final Consumer<List<Donation>> sortByLowestBIN = donations -> {
 		donations.forEach(donation -> updateDonationData(donation, false));
@@ -27,7 +29,6 @@ public class ItemSorter {
 		donations.forEach(donation -> updateDonationData(donation, true));
 		donations.sort(ItemSorter::compareCoinsPerXP);
 	};
-	private SortMode currentSortMode = SortMode.LOWEST_BIN;
 
 	// Set effective prices for the donation and its armor set pieces
 	public static void updateDonationData(Donation donation, boolean useCraftCost) {
@@ -56,6 +57,7 @@ public class ItemSorter {
 		// Update donation with computed data
 		if (donation.isSet())
 			donation.getSet().forEach(pair -> pair.right().setEffectivePrice(effectivePrice == craftCost ? pair.right().getCraftCost() : pair.right().getLBinPrice()));
+
 		donation.getPriceData().setEffectivePrice(effectivePrice);
 		donation.setXpCoinsRatio(ratio);
 		donation.setTotalXp(totalXP);
@@ -109,10 +111,6 @@ public class ItemSorter {
 	// Get the item associated with the current filter mode
 	public ItemStack getCurrentSortingItem() {
 		return currentSortMode.getAssociatedItem();
-	}
-
-	public void resetSorting() {
-		this.currentSortMode = SortMode.LOWEST_BIN;
 	}
 
 	public Tooltip getTooltip() {

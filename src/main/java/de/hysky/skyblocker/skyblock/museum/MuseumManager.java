@@ -16,9 +16,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -31,10 +29,10 @@ import java.util.Locale;
 public class MuseumManager extends ClickableWidget {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final TextRenderer TEXT_RENDERER = CLIENT.textRenderer;
-	private static final KeyBinding INVENTORY_OPEN_KEY = CLIENT.options.inventoryKey;
 	private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/recipe_book.png");
-	private static final int SEARCH_FIELD_WIDTH = 69;
-	private static final int SEARCH_FIELD_HEIGHT = 20;
+	public static final int BACKGROUND_WIDTH = 147;
+	private static final int BACKGROUND_HEIGHT = 160;
+	public static final int SPACING = 2;
 	private static final int BUTTON_SIZE = 20;
 	private static final int BUTTONS_PER_PAGE = 12;
 	private static final ItemSorter ITEM_SORTER = new ItemSorter();
@@ -54,10 +52,10 @@ public class MuseumManager extends ClickableWidget {
 	private int pageCount = 0;
 
 	public MuseumManager(Screen screen, int x, int y, int backgroundWidth) {
-		super(x + backgroundWidth + 2, y, 147, 160, Text.empty());
+		super(x + backgroundWidth + SPACING, y, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, Text.empty());
 
 		// Initialize search field
-		this.searchField = new TextFieldWidget(TEXT_RENDERER, getX() + 25, getY() + 11, SEARCH_FIELD_WIDTH, SEARCH_FIELD_HEIGHT, Text.empty());
+		this.searchField = new TextFieldWidget(TEXT_RENDERER, getX() + 25, getY() + 11, 69, 20, Text.empty());
 		this.searchField.setMaxLength(60);
 		this.searchField.setVisible(true);
 		this.searchField.setEditableColor(0xFFFFFF);
@@ -125,16 +123,6 @@ public class MuseumManager extends ClickableWidget {
 	}
 
 	/**
-	 * Resets the UI state including search text, current page, sorting, and filtering.
-	 */
-	public static void reset() {
-		searchQuery = "";
-		currentPage = 0;
-		ITEM_SORTER.resetSorting();
-		ITEM_FILTER.resetFilter();
-	}
-
-	/**
 	 * Updates visibility and content of page navigation buttons.
 	 */
 	private void updateNavigationButtons() {
@@ -159,7 +147,7 @@ public class MuseumManager extends ClickableWidget {
 			if (index < buttonsSize) {
 				donationButtons.get(i).init(visibleDonations.get(index));
 			} else {
-				donationButtons.get(i).clearDisplayStack();
+				donationButtons.get(i).resetButton();
 			}
 		}
 		updateNavigationButtons();
@@ -237,17 +225,13 @@ public class MuseumManager extends ClickableWidget {
 		if (this.nextPageButton.active) this.nextPageButton.render(context, mouseX, mouseY, delta);
 
 		this.searchField.render(context, mouseX, mouseY, delta);
-
 		this.drawTooltip(context, mouseX, mouseY);
 	}
 
 	public void drawTooltip(DrawContext context, int x, int y) {
 		// Draw the tooltip of the hovered result button if one is hovered over
-		if (this.hoveredDonationButton != null && !this.hoveredDonationButton.getDisplayStack().isEmpty()) {
-			ItemStack stack = this.hoveredDonationButton.getDisplayStack();
-			Identifier tooltipStyle = stack.get(DataComponentTypes.TOOLTIP_STYLE);
-
-			context.drawTooltip(TEXT_RENDERER, hoveredDonationButton.getItemTooltip(), x, y, tooltipStyle);
+		if (this.hoveredDonationButton != null) {
+			context.drawTooltip(TEXT_RENDERER, hoveredDonationButton.getItemTooltip(), x, y, null);
 		}
 	}
 
@@ -291,13 +275,15 @@ public class MuseumManager extends ClickableWidget {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if ((this.searchField.isActive() && INVENTORY_OPEN_KEY.matchesKey(keyCode, scanCode))
+		if ((this.searchField.isActive() && CLIENT.options.inventoryKey.matchesKey(keyCode, scanCode))
 				|| this.searchField.keyPressed(keyCode, scanCode, modifiers)) {
 			updateSearchResults(true);
 			return true;
-		} else if (WikiLookup.wikiLookup.matchesKey(keyCode, scanCode) && hoveredDonationButton != null && hoveredDonationButton.getDisplayStack() != null) {
-			WikiLookup.openWiki(hoveredDonationButton.getDisplayStack(), CLIENT.player);
-			return true;
+		}
+
+		if (hoveredDonationButton != null) {
+			ItemStack hoveredStack = hoveredDonationButton.getDisplayStack();
+			return hoveredStack != null && WikiLookup.handleWikiLookup(hoveredStack, CLIENT.player, keyCode, scanCode);
 		}
 		return false;
 	}

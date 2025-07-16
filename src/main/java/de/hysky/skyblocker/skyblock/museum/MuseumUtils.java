@@ -10,10 +10,11 @@ import net.minecraft.text.Text;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MuseumUtils {
+	private static final Set<String> EQUIPMENT_KEYWORDS = Set.of("BELT", "GLOVES", "CLOAK", "GAUNTLET", "NECKLACE", "BRACELET", "HAT");
 	private static final NumberFormat NUMBER_FORMATTER_S = NumberFormat.getCompactNumberInstance(Locale.CANADA, NumberFormat.Style.SHORT);
 
 	static {
@@ -51,14 +52,14 @@ public class MuseumUtils {
 			Style nameStyle = Style.EMPTY;
 			String setName = MuseumItemCache.ARMOR_NAMES.get(id);
 			if (setName != null) {
-				Optional<Donation> donation = MuseumItemCache.MUSEUM_DONATIONS.stream().filter(d -> d.getId().equals(id)).findFirst();
-				if (donation.isPresent()) {
-					if (!donation.get().getSet().isEmpty()) {
-						Text pieceName = getDisplayName(donation.get().getSet().getFirst().left(), false);
+				for (Donation donation : MuseumItemCache.MUSEUM_DONATIONS) {
+					if (donation.getId().equals(id) && !donation.getSet().isEmpty()) {
+						Text pieceName = getDisplayName(donation.getSet().getFirst().left(), false);
 						if (pieceName != null) {
 							List<Text> siblings = pieceName.getSiblings();
 							nameStyle = siblings.isEmpty() ? Style.EMPTY : siblings.getFirst().getStyle();
 						}
+						break;
 					}
 				}
 				return Text.literal(setName).setStyle(nameStyle);
@@ -92,8 +93,7 @@ public class MuseumUtils {
 	protected static List<String> getPiecesBySetID(String donationId) {
 		return MuseumItemCache.MUSEUM_DONATIONS.stream()
 				.filter(d -> d.getId().equals(donationId))
-				.map(Donation::getSet)
-				.flatMap(List::stream)
+				.flatMap(d -> d.getSet().stream())
 				.map(ObjectObjectMutablePair::left)
 				.collect(Collectors.toList());
 	}
@@ -119,14 +119,19 @@ public class MuseumUtils {
 
 		if (isEquipment) {
 			formattedName.append("Equipment");
-		} else if (!lowercaseKey.contains("armor") &&
-				!lowercaseKey.contains("outfit") &&
-				!lowercaseKey.contains("suit") &&
-				!lowercaseKey.contains("tuxedo")) {
+		} else if (!lowercaseKey.matches(".*(armor|outfit|suit|tuxedo).*")) {
 			formattedName.append("Armor");
 		}
 
 		return formattedName.toString().trim();
+	}
+
+	/**
+	 * Checks if the given item ID represents an equipment piece.
+	 */
+	public static boolean isEquipment(String skyblockApiId) {
+		String upperId = skyblockApiId.toUpperCase(Locale.ENGLISH);
+		return EQUIPMENT_KEYWORDS.stream().anyMatch(upperId::contains);
 	}
 
 	/**

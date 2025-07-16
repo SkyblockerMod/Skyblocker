@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -9,14 +10,13 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class WikiLookup {
@@ -41,8 +41,19 @@ public class WikiLookup {
 		));
 	}
 
-	public static void openWiki(@NotNull Slot slot, @NotNull PlayerEntity player, boolean useOfficial) {
-		WikiLookup.openWiki(slot.getStack(), player, useOfficial);
+	public static String getKeysText() {
+		return (officialWikiLookup.getBoundKeyLocalizedText().getString() + "/" + fandomWikiLookup.getBoundKeyLocalizedText().getString()).toUpperCase(Locale.ENGLISH);
+	}
+
+	public static boolean handleWikiLookup(ItemStack stack, PlayerEntity player, int keyCode, int scanCode) {
+		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
+			boolean officialWikiLookup = WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode);
+			if (officialWikiLookup || WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
+				WikiLookup.openWiki(stack, player, officialWikiLookup);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static void openWiki(ItemStack stack, PlayerEntity player, boolean useOfficial) {

@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
@@ -36,6 +37,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -46,6 +48,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -56,6 +59,9 @@ import java.util.regex.Matcher;
 
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen {
+	@Unique
+	private static final Identifier GENERIC_CONTAINER_TEXTURE = Identifier.ofVanilla("textures/gui/container/generic_54.png");
+
 	/**
 	 * This is the slot id returned for when a click is outside the screen's bounds
 	 */
@@ -122,16 +128,34 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	@Inject(method = "init", at = @At("TAIL"))
 	private void skyblocker$initMuseumOverlay(CallbackInfo ci) {
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && !client.player.isCreative() && getTitle().getString().contains("Museum")) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && getTitle().getString().contains("Museum")) {
+			int overlayWidth = MuseumManager.BACKGROUND_WIDTH; // width of the overlay
+			int spacing = MuseumManager.SPACING; // space between inventory and overlay
+
+			// Default: center inventory
+			int inventoryX = (this.width - this.backgroundWidth) / 2;
+
+			// If overlay would go off the right edge, shift inventory left
+			if (inventoryX + this.backgroundWidth + spacing + overlayWidth > this.width) {
+				inventoryX = this.width - (this.backgroundWidth + overlayWidth + spacing);
+				if (inventoryX < 0) inventoryX = 0;
+			}
+			this.x = inventoryX;
+
 			new MuseumManager(this, this.x, this.y, this.backgroundWidth);
 		}
 	}
 
-	@Inject(method = "removed", at = @At("HEAD"))
-	private void skyblocker$removeMuseumOverlay(CallbackInfo ci) {
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && !client.player.isCreative() && getTitle().getString().contains("Museum")) {
-			// Reset Overlay variables when no longer in Museum inventory
-			MuseumManager.reset();
+	@Redirect(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawBackground(Lnet/minecraft/client/gui/DrawContext;FII)V"))
+	private void skyblocker$redirectDrawBackground(HandledScreen<?> instance, DrawContext context, float delta, int mouseX, int mouseY) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && getTitle().getString().contains("Museum")) {
+			// Custom museum overlay background drawing
+			int rows = 6;
+			context.drawTexture(RenderLayer::getGuiTextured, GENERIC_CONTAINER_TEXTURE, this.x, this.y, 0.0F, 0.0F, this.backgroundWidth, rows * 18 + 17, 256, 256);
+			context.drawTexture(RenderLayer::getGuiTextured, GENERIC_CONTAINER_TEXTURE, this.x, this.y + rows * 18 + 17, 0.0F, 126.0F, this.backgroundWidth, 96, 256, 256);
+		} else {
+			// Fallback to vanilla
+			((HandledScreenAccessor) instance).callDrawBackground(context, delta, mouseX, mouseY);
 		}
 	}
 
@@ -140,13 +164,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		if (this.client != null && this.client.player != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 			//wiki lookup
-			if (config.general.wikiLookup.enableWikiLookup) {
-				if (WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode)) {
-					WikiLookup.openWiki(this.focusedSlot, client.player, true);
-				} else if (WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
-					WikiLookup.openWiki(this.focusedSlot.getStack(), client.player, false);
-				}
-			}
+			WikiLookup.handleWikiLookup(this.focusedSlot.getStack(), client.player, keyCode, scanCode);
 			//item protection
 			if (ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
 				ItemProtection.handleKeyPressed(this.focusedSlot.getStack());

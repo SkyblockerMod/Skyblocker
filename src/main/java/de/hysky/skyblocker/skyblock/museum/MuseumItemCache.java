@@ -81,7 +81,7 @@ public class MuseumItemCache {
 	 */
 	public static void loadMuseumItems() {
 		NEURepoManager.runAsyncAfterLoad(() -> {
-			NEURepoFile filePath = NEURepoManager.NEU_REPO.file(CONSTANTS_MUSEUM_DATA);
+			NEURepoFile filePath = NEURepoManager.file(CONSTANTS_MUSEUM_DATA);
 			if (filePath == null) return;
 			try (BufferedReader reader = Files.newBufferedReader(filePath.getFsPath())) {
 				// Parse the JSON file
@@ -111,7 +111,7 @@ public class MuseumItemCache {
 						if (category.equals("armor")) {
 							boolean isEquipment = true;
 							for (JsonElement jsonElement : setsToItems.get(itemID).getAsJsonArray()) {
-								if (isEquipment) isEquipment = ItemUtils.isEquipment(jsonElement.getAsString());
+								if (isEquipment) isEquipment = MuseumUtils.isEquipment(jsonElement.getAsString());
 								set.add(new ObjectObjectMutablePair<>(jsonElement.getAsString(), null));
 							}
 							String realId = itemID;

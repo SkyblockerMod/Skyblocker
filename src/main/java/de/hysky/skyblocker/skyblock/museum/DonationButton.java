@@ -14,7 +14,6 @@ import net.minecraft.client.gui.screen.recipebook.AnimatedResultButton;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -33,7 +32,7 @@ public class DonationButton extends ClickableWidget {
 	private List<Text> tooltip;
 
 	protected DonationButton(int x, int y) {
-		super(x, y, SIZE, SIZE + 2, ScreenTexts.EMPTY);
+		super(x, y, SIZE, SIZE + 2, Text.empty());
 	}
 
 	protected ItemStack getDisplayStack() {
@@ -46,7 +45,7 @@ public class DonationButton extends ClickableWidget {
 	 * @param donation The donation to associate with this button.
 	 */
 	public void init(Donation donation) {
-		this.visible = false;
+		this.visible = true;
 		this.donation = donation;
 		this.textToRender = MuseumUtils.formatPrice(donation.getPriceData().getEffectivePrice());
 
@@ -61,17 +60,13 @@ public class DonationButton extends ClickableWidget {
 						.left()
 		);
 
-		if (itemStack != null && !itemStack.isEmpty()) {
-			this.visible = true;
-			createTooltip();
-		}
+		buildTooltip();
 	}
-
 
 	/**
 	 * Clears the display stack and resets the button state.
 	 */
-	protected void clearDisplayStack() {
+	protected void resetButton() {
 		this.visible = false;
 		this.donation = null;
 		this.itemStack = null;
@@ -83,26 +78,23 @@ public class DonationButton extends ClickableWidget {
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 		context.drawGuiTexture(RenderLayer::getGuiTextured, AnimatedResultButton.SLOT_CRAFTABLE_TEXTURE, this.getX(), this.getY(), this.width, this.height);
 
-		int yOffset = 8;
-
-		if (donation.hasPrice()) {
-			context.drawCenteredTextWithShadow(TEXT_RENDERER, textToRender, this.getX() + (this.width / 2), this.getY() + ITEM_OFFSET + 13, 0xFF00FF00);
-
-			yOffset -= 4;
+		boolean hasPrice = donation.hasPrice();
+		if (itemStack != null && !itemStack.isEmpty()) {
+			context.drawItemWithoutEntity(itemStack, this.getX() + ITEM_OFFSET, this.getY() + (hasPrice ? 4 : 8));
 		}
 
-		context.drawItemWithoutEntity(itemStack, this.getX() + ITEM_OFFSET, this.getY() + yOffset);
-
+		if (hasPrice) {
+			context.drawCenteredTextWithShadow(TEXT_RENDERER, textToRender, this.getX() + (this.width / 2), this.getY() + ITEM_OFFSET + 13, 0xFF00FF00);
+		}
 	}
 
 	/**
-	 * Creates the tooltip for the button based on its associated donation data
+	 * Builds the tooltip for the button based on its associated donation data
 	 */
-	private void createTooltip() {
-		final String WIKI_LOCKUP_KEY = WikiLookup.wikiLookup.getBoundKeyTranslationKey();
+	private void buildTooltip() {
 		List<Text> tooltip = new ArrayList<>();
 
-		boolean soulbound = ItemUtils.isSoulbound(itemStack);
+		boolean soulbound = itemStack != null && !itemStack.isEmpty() && ItemUtils.isSoulbound(itemStack);
 		ObjectDoublePair<String> discount = donation.getDiscount();
 		List<ObjectIntPair<String>> countsTowards = donation.getCountsTowards();
 
@@ -130,9 +122,7 @@ public class DonationButton extends ClickableWidget {
 		Text xpText = Text.literal(String.valueOf(donation.getTotalXp())).append(" ").append(Text.translatable("skyblocker.museum.hud.skyblockXp")).formatted(Formatting.AQUA);
 		tooltip.add(Text.translatable("skyblocker.museum.hud.xpReward").append(": ").formatted(Formatting.GRAY).append(xpText));
 
-		if (soulbound) {
-			tooltip.add(Text.translatable("skyblocker.museum.hud.untradeableItem").formatted(Formatting.GRAY).append(Text.literal(" (").append(Text.translatable("skyblocker.museum.hud.soulboundItem")).append(")").formatted(Formatting.DARK_GRAY)));
-		} else {
+		if (!soulbound) {
 			PriceData priceData = donation.getPriceData();
 			Text lBinText = donation.hasLBinPrice() ? Text.literal(MuseumUtils.formatPrice(priceData.getLBinPrice())).append(" Coins").formatted(Formatting.GOLD) : Text.translatable("skyblocker.museum.hud.unknownPrice").formatted(Formatting.RED);
 			MutableText craftCostText = donation.isCraftable() ? Text.literal(MuseumUtils.formatPrice(donation.hasDiscount() ? priceData.getCraftCost() - discount.rightDouble() : priceData.getCraftCost())).append(" ").append(Text.translatable("skyblocker.museum.hud.coin")).formatted(Formatting.GOLD) : Text.translatable("skyblocker.museum.hud.unknownPrice").formatted(Formatting.RED);
@@ -159,7 +149,8 @@ public class DonationButton extends ClickableWidget {
 		}
 
 		tooltip.add(Text.empty());
-		tooltip.add(Text.translatable("skyblocker.museum.hud.wikiLookup", WIKI_LOCKUP_KEY.substring(WIKI_LOCKUP_KEY.lastIndexOf('.') + 1).toUpperCase(Locale.ENGLISH)).formatted(Formatting.YELLOW));
+		if (soulbound) tooltip.add(Text.literal("* Soulbound *").formatted(Formatting.DARK_GRAY));
+		tooltip.add(Text.translatable("skyblocker.museum.hud.wikiLookup", WikiLookup.getKeysText()).formatted(Formatting.YELLOW));
 
 		this.tooltip = tooltip;
 	}
@@ -167,7 +158,6 @@ public class DonationButton extends ClickableWidget {
 	protected List<Text> getItemTooltip() {
 		return this.tooltip;
 	}
-
 
 	@Override
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
