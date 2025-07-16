@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -92,9 +93,9 @@ public class SidePanelWidget extends ContainerWidget {
 		this.hudWidget = hudWidget;
 		layout = DirectionalLayoutWidget.vertical().spacing(5);
 		optionWidgets.clear();
-		add(new TextWidget(0, 15, hudWidget.getInformation().displayName(), client.textRenderer));
+		add(new TextWidget(0, 15, hudWidget.getInformation().displayName().copy().formatted(Formatting.UNDERLINE), client.textRenderer));
 		add(ButtonWidget.builder(Text.literal("Remove"), b -> config.removeWidget(hudWidget)).build()); // TODO translatable
-		layout.add(EmptyWidget.ofHeight(5));
+		layout.add(EmptyWidget.ofHeight(10));
 
 		if (hudWidget.isInherited()) {
 			add(new TextWidget(Text.literal("This widget is from a parent screen, edit it there or create a copy."), client.textRenderer));
@@ -102,13 +103,18 @@ public class SidePanelWidget extends ContainerWidget {
 				hudWidget.setInherited(false);
 				open(hudWidget, config, rightSide, x);
 			}).build());
-		}
-		else {
+		} else {
 			List<WidgetOption<?>> options = new ArrayList<>();
-			hudWidget.getOptions(options);
+			hudWidget.getPerScreenOptions(options);
 			for (WidgetOption<?> option : options) {
 				add(option.createNewWidget(config));
 			}
+		}
+		layout.add(EmptyWidget.ofHeight(10));
+		List<WidgetOption<?>> options = new ArrayList<>();
+		hudWidget.getOptions(options);
+		for (WidgetOption<?> option : options) {
+			add(option.createNewWidget(config));
 		}
 		for (ClickableWidget widget : optionWidgets) {
 			widget.setWidth(getWidth() - 6 - 1); // remove 6 for scrollbar and one for a liiiitle padding

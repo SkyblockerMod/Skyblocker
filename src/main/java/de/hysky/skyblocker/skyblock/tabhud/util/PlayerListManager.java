@@ -2,9 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.util;
 
 import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
@@ -336,7 +334,7 @@ public class PlayerListManager {
 	private static final class DefaultTabHudWidget extends TabHudWidget {
 
 		private DefaultTabHudWidget(String hypixelWidgetName, MutableText title, int color) {
-			super(hypixelWidgetName, title, color);
+			super(hypixelWidgetName, title, color, new Information(nameToId(hypixelWidgetName), title.copyContentOnly().append(Text.literal(" (auto)").formatted(Formatting.GRAY, Formatting.ITALIC))));
 		}
 
 		@Override

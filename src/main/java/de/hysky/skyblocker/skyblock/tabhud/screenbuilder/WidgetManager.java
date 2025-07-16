@@ -1,18 +1,27 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigScreen;
+import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.PlaceholderWidget;
+import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
@@ -25,8 +34,12 @@ import net.minecraft.util.StringIdentifiable;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class WidgetManager {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -36,9 +49,11 @@ public class WidgetManager {
 	private static final int VERSION = 2;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
+	private static Config config = new Config(Map.of(), Map.of());
+
 	private static final Map<Location, Map<ScreenLayer, ScreenBuilder>> BUILDER_MAP = new EnumMap<>(Location.class);
 
-	public static final Map<String, HudWidget> WIDGET_INSTANCES = new HashMap<>();
+	public static final Object2ObjectMap<String, HudWidget> WIDGET_INSTANCES = new Object2ObjectOpenHashMap<>();
 
 	public static @NotNull HudWidget getWidgetOrPlaceholder(String id) {
 		return WIDGET_INSTANCES.computeIfAbsent(id, PlaceholderWidget::new);
@@ -51,7 +66,7 @@ public class WidgetManager {
 	public static ScreenBuilder getScreenBuilder(Location location, ScreenLayer layer) {
 		return BUILDER_MAP
 				.computeIfAbsent(location, l -> new EnumMap<>(ScreenLayer.class))
-				.computeIfAbsent(layer, l -> new ScreenBuilder(new JsonObject(), BUILDER_MAP.get(Location.UNKNOWN).get(l)));
+				.computeIfAbsent(layer, l -> new ScreenBuilder(config.perScreenConfig().getOrDefault(location, Map.of()).getOrDefault(l, new JsonObject()).deepCopy(), location == Location.UNKNOWN ? null : getScreenBuilder(Location.UNKNOWN, l)));
 	}
 
 	// we probably want this to run pretty early?
@@ -64,7 +79,6 @@ public class WidgetManager {
 				DungeonPlayerWidget widget = new DungeonPlayerWidget(i);
 				addWidgetInstance(widget);
 			}
-
 			loadConfig();
 
 		});
@@ -119,7 +133,6 @@ public class WidgetManager {
 			layer = ScreenLayer.HUD;
 		} else return;
 		if (location != currentLocation || layer != currentLayer) {
-			System.out.println(location + " " + layer);
 			currentLocation = location;
 			currentLayer = layer;
 			currentBuilder = getScreenBuilder(currentLocation, currentLayer);
@@ -129,46 +142,45 @@ public class WidgetManager {
 	}
 
 	public static void loadConfig() {
-		/*try (BufferedReader reader = Files.newBufferedReader(FILE)) {
-			JsonObject object = SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
-			JsonObject positions = object.getAsJsonObject("positions");
-			for (Map.Entry<Location, ScreenBuilder> builderEntry : BUILDER_MAP.entrySet()) {
-				Location location = builderEntry.getKey();
-				ScreenBuilder screenBuilder = builderEntry.getValue();
-				if (positions.has(location.id())) {
-					JsonObject locationObject = positions.getAsJsonObject(location.id());
-					for (Map.Entry<String, JsonElement> entry : locationObject.entrySet()) {
-						PositionRule.CODEC.decode(JsonOps.INSTANCE, entry.getValue())
-								.ifSuccess(pair -> screenBuilder.setPositionRule(entry.getKey(), pair.getFirst()))
-								.ifError(pairError -> LOGGER.error("[Skyblocker] Failed to parse position rule: {}", pairError.messageSupplier().get()));
-					}
-				}
+		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
+			config = Config.CODEC.decode(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow().getFirst();
+			for (Object2ObjectMap.Entry<String, HudWidget> entry : WIDGET_INSTANCES.object2ObjectEntrySet()) {
+				String key = entry.getKey();
+				JsonObject jsonObject = config.widgetOptions.get(key);
+				if (jsonObject == null) continue;
+				HudWidget widget = entry.getValue();
+				setWidgetOptions(widget, jsonObject);
 			}
-		} catch (NoSuchFileException e) {
-			LOGGER.warn("[Skyblocker] No hud widget config file found, using defaults");
 		} catch (Exception e) {
-			LOGGER.error("[Skyblocker] Failed to load hud widgets config", e);
-		}*/
+			LOGGER.error("Failed to load config", e);
+		}
 	}
 
 	public static void saveConfig() {
-		/*JsonObject output = new JsonObject();
-		JsonObject positions = new JsonObject();
-		for (Map.Entry<Location, ScreenBuilder> builderEntry : BUILDER_MAP.entrySet()) {
-			Location location = builderEntry.getKey();
-			ScreenBuilder screenBuilder = builderEntry.getValue();
-			JsonObject locationObject = new JsonObject();
-			screenBuilder.forEachPositionRuleEntry((s, positionRule) -> locationObject.add(s, PositionRule.CODEC.encodeStart(JsonOps.INSTANCE, positionRule).getOrThrow()));
-			if (locationObject.isEmpty()) continue;
-			positions.add(location.id(), locationObject);
-		}
-		output.add("positions", positions);
+		Map<String, JsonObject> widgetOptions = WIDGET_INSTANCES.values().stream().map(
+				widget -> {
+					List<WidgetOption<?>> options = new ArrayList<>();
+					widget.getOptions(options);
+					JsonObject object = new JsonObject();
+					for (WidgetOption<?> option : options) {
+						object.add(option.getId(), option.toJson());
+					}
+					return Pair.of(widget.getInformation().id(), object);
+				}
+		).collect(Collectors.toMap(Pair::first, Pair::second));
+		Map<Location, Map<ScreenLayer, JsonObject>> perScreenConfig = BUILDER_MAP.entrySet().stream().collect(Collectors.toMap(
+				Map.Entry::getKey,
+				e -> e.getValue().entrySet().stream().collect(Collectors.toMap(
+						Map.Entry::getKey,
+						f -> f.getValue().getConfig()
+				))));
+		Config output = new Config(widgetOptions, perScreenConfig);
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
-			SkyblockerMod.GSON.toJson(output, writer);
+			SkyblockerMod.GSON.toJson(Config.CODEC.encodeStart(JsonOps.INSTANCE, output).getOrThrow(), writer);
 			LOGGER.info("[Skyblocker] Saved hud widget config");
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Failed to save hud widget config", e);
-		}*/
+		}
 	}
 
 
@@ -185,11 +197,29 @@ public class WidgetManager {
 	public static void addWidgetInstance(HudWidget widget) {
 		HudWidget previous = WIDGET_INSTANCES.put(widget.getInformation().id(), widget);
 		if (previous != null && !(previous instanceof PlaceholderWidget)) LOGGER.warn("[Skyblocker] Duplicate hud widget found: {}", widget);
+		JsonObject object = config.widgetOptions().get(widget.getInformation().id());
+		if (object != null) {
+			setWidgetOptions(widget, object);
+		}
 	}
 
-	/**
-	 * @implNote !! The 3 first ones shouldn't be moved, ordinal is used in some places
-	 */
+	public static void setWidgetOptions(HudWidget widget, JsonObject object) {
+		List<WidgetOption<?>> options = new ArrayList<>();
+		widget.getOptions(options);
+		for (WidgetOption<?> option : options) {
+			JsonElement element = object.get(option.getId());
+			if (element == null) continue;
+			option.fromJson(element);
+		}
+	}
+
+	private record Config(Map<String, JsonObject> widgetOptions, Map<Location, Map<ScreenLayer, JsonObject>> perScreenConfig) {
+		public static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.unboundedMap(Codec.STRING, CodecUtils.JSON_OBJECT_CODEC).fieldOf("widget_options").forGetter(Config::widgetOptions),
+				Codec.unboundedMap(Location.CODEC, Codec.unboundedMap(ScreenLayer.CODEC, CodecUtils.JSON_OBJECT_CODEC)).fieldOf("screens").forGetter(Config::perScreenConfig)
+		).apply(instance, Config::new));
+	}
+
 	public enum ScreenLayer implements StringIdentifiable {
 		MAIN_TAB,
 		SECONDARY_TAB,

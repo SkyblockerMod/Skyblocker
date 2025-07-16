@@ -62,9 +62,13 @@ public abstract class HudWidget extends AbstractWidget {
 	 * @param options list to add to.
 	 * @apiNote REMEMBER TO CALL SUPER
 	 */
-	public void getOptions(List<WidgetOption<?>> options) {
+	public void getPerScreenOptions(List<WidgetOption<?>> options) {
 		options.add(new FloatOption("scale", Text.literal("Scale"), this::getScale, this::setScale).setMinAndMax(0.2f, 2f));
 		options.add(new PositionRuleOption(this::getPositionRule, this::setPositionRule));
+	}
+
+	public void getOptions(List<WidgetOption<?>> options) {
+
 	}
 
 	public final PositionRule getPositionRule() {

@@ -83,7 +83,7 @@ public class ScreenBuilder {
 			if (widget.isInherited()) continue; // don't want to save inherited stuff
 			JsonObject widgetConfig = new JsonObject();
 			List<WidgetOption<?>> options = new ArrayList<>();
-			widget.getOptions(options);
+			widget.getPerScreenOptions(options);
 			for (WidgetOption<?> option : options) {
 				widgetConfig.add(option.getId(), option.toJson());
 			}
@@ -114,7 +114,7 @@ public class ScreenBuilder {
 			JsonObject object = entry.getValue().getAsJsonObject();
 			widget.setInherited(object.has("inherited") && object.get("inherited").getAsBoolean());
 			List<WidgetOption<?>> options = new ArrayList<>();
-			widget.getOptions(options);
+			widget.getPerScreenOptions(options);
 			for (WidgetOption<?> option : options) {
 				JsonElement element = object.get(option.getId());
 				if (element == null) {

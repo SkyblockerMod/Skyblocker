@@ -58,6 +58,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	protected boolean drawBorder = true;
 	protected float backgroundOpacity = 0.75f;
+	protected boolean roundedCorners = true;
 
 	/**
 	 * Most often than not this should be instantiated only once.
@@ -175,9 +176,13 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground && backgroundOpacity > 0) {
 			int textBackgroundColor = ColorHelper.fromFloats(backgroundOpacity, 0, 0, 0);
-			context.fill(1, 0, w - 1, h, textBackgroundColor);
-			context.fill(0, 1, 1, h - 1, textBackgroundColor);
-			context.fill(w - 1, 1, w, h - 1, textBackgroundColor);
+			if (roundedCorners) {
+				context.fill(1, 0, w - 1, h, textBackgroundColor);
+				context.fill(0, 1, 1, h - 1, textBackgroundColor);
+				context.fill(w - 1, 1, w, h - 1, textBackgroundColor);
+			} else {
+				context.fill(0, 0, w, h, textBackgroundColor);
+			}
 		}
 		// move above background (if exists)
 		ms.translate(0, 0, 10);
@@ -198,8 +203,10 @@ public abstract class ComponentBasedWidget extends HudWidget {
 			this.drawHLine(context, 2 + strAreaWidth + 4, 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
 			this.drawHLine(context, 2, h - 2, w - 4);
 
-			this.drawVLine(context, 1, 2 + strHeightHalf, h - 4 - strHeightHalf);
-			this.drawVLine(context, w - 2, 2 + strHeightHalf, h - 4 - strHeightHalf);
+			int ypos = 2 + strHeightHalf + (roundedCorners ? 0 : -1);
+			int height = h - 4 - strHeightHalf + (roundedCorners ? 0 : 2);
+			this.drawVLine(context, 1, ypos, height);
+			this.drawVLine(context, w - 2, ypos, height);
 		}
 
 		int yOffs = BORDER_SZE_N + (drawBorder ? 0 : -2);
@@ -243,6 +250,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	public void getOptions(List<WidgetOption<?>> options) {
 		super.getOptions(options);
 		options.add(new BooleanOption("draw_border", Text.literal("Draw Border"), () -> drawBorder, b -> drawBorder = b));
+		options.add(new BooleanOption("rounded_corners", Text.literal("Rounded Corners"), () -> roundedCorners, b -> roundedCorners = b));
 		options.add(new FloatOption("background_opacity", Text.literal("Background Opacity"), () -> backgroundOpacity, b -> backgroundOpacity = b));
 	}
 

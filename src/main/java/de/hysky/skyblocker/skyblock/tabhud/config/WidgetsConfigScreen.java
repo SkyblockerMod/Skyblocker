@@ -55,6 +55,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	 */
 	private @Nullable ScreenPos dragRelative = null;
 	private boolean openPanelAfterDragging = false;
+	private boolean autoAnchor = true;
 
 	private @Nullable SelectWidgetPrompt selectWidgetPrompt = null;
 
@@ -98,7 +99,6 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 
 	private void addWidget(HudWidget widget) {
 		builder.addWidget(widget);
-		// TODO default config stuff
 		widget.setInherited(false);
 		widget.setPositionRule(
 				new PositionRule(
@@ -153,14 +153,27 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
 		if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) return true;
 		if (selectedWidget != null && dragRelative != null) {
-			ScreenPos startPosition = WidgetPositioner.getStartPosition(selectedWidget, width, height);
 			PositionRule oldRule = selectedWidget.getPositionRule();
+
+			PositionRule.Point parentPoint;
+			PositionRule.Point thisPoint;
+			if (autoAnchor) {
+				int widgetCenterX = (int) mouseX - dragRelative.x() + selectedWidget.getScaledWidth() / 2 - width / 2;
+				int widgetCenterY = (int) mouseY - dragRelative.y() + selectedWidget.getScaledHeight() / 2 - height / 2;
+				PositionRule.HorizontalPoint hPoint = widgetCenterX < -25 ? PositionRule.HorizontalPoint.LEFT : widgetCenterX > 25 ? PositionRule.HorizontalPoint.RIGHT : PositionRule.HorizontalPoint.CENTER;
+				PositionRule.VerticalPoint vPoint = widgetCenterY < -25 ? PositionRule.VerticalPoint.TOP : widgetCenterY > 25 ? PositionRule.VerticalPoint.BOTTOM : PositionRule.VerticalPoint.CENTER;
+				parentPoint = thisPoint = new PositionRule.Point(vPoint, hPoint);
+			} else {
+				parentPoint = oldRule.parentPoint();
+				thisPoint = oldRule.thisPoint();
+			}
+			ScreenPos startPosition =  WidgetPositioner.getStartPosition(oldRule.parent(), width, height, parentPoint);
 			PositionRule newRule = new PositionRule(
 					oldRule.parent(),
-					oldRule.parentPoint(),
-					oldRule.thisPoint(),
-					(int) mouseX - startPosition.x() - dragRelative.x() + (int) (selectedWidget.getScaledWidth() * oldRule.thisPoint().horizontalPoint().getPercentage()),
-					(int) mouseY - startPosition.y() - dragRelative.y() + (int) (selectedWidget.getScaledHeight() * oldRule.thisPoint().verticalPoint().getPercentage())
+					parentPoint,
+					thisPoint,
+					(int) mouseX - startPosition.x() - dragRelative.x() + (int) (selectedWidget.getScaledWidth() * thisPoint.horizontalPoint().getPercentage()),
+					(int) mouseY - startPosition.y() - dragRelative.y() + (int) (selectedWidget.getScaledHeight() * thisPoint.verticalPoint().getPercentage())
 			);
 			selectedWidget.setPositionRule(newRule);
 			updatePositions();
