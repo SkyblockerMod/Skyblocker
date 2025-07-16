@@ -64,9 +64,11 @@ public class PlayerListManager {
 	}
 
 	public static List<Text> createErrorMessage(String widgetName) {
+		// TODO translatable
+		// TODO actually add the command
 		return List.of(
-				Text.literal("Missing data for ").append(widgetName).append(" widget!"),
-				Text.literal("Run /skyblocker tab for more info.")
+				Text.literal("Missing data for ").append(Text.literal(widgetName).formatted(Formatting.YELLOW)).append(" widget!"),
+				Text.literal("Run ").append(Text.literal("/skyblocker tab").formatted(Formatting.GOLD)).append(" for more info.")
 		);
 	}
 
