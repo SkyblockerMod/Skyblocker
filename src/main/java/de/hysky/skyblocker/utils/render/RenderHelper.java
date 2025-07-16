@@ -122,9 +122,8 @@ public class RenderHelper {
             matrices.push();
             matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
 
-            RenderSystem.lineWidth(lineWidth);
             RenderPipeline pipeline = throughWalls ? SkyblockerRenderPipelines.LINES_THROUGH_WALLS : RenderPipelines.LINES;
-            BufferBuilder buffer = Renderer.getBuffer(pipeline);
+            BufferBuilder buffer = Renderer.getBuffer(pipeline, lineWidth);
 
             VertexRendering.drawBox(matrices, buffer, minX, minY, minZ, maxX, maxY, maxZ, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
 
@@ -155,9 +154,8 @@ public class RenderHelper {
 
         MatrixStack.Entry entry = matrices.peek();
 
-        RenderSystem.lineWidth(lineWidth);
         RenderPipeline pipeline = throughWalls ? SkyblockerRenderPipelines.LINES_THROUGH_WALLS : RenderPipelines.LINES;
-        BufferBuilder buffer = Renderer.getBuffer(pipeline);
+        BufferBuilder buffer = Renderer.getBuffer(pipeline, lineWidth);
 
         for (int i = 0; i < points.length; i++) {
             Vec3d nextPoint = points[i + 1 == points.length ? i - 1 : i + 1];
@@ -186,9 +184,8 @@ public class RenderHelper {
 
         MatrixStack.Entry entry = matrices.peek();
 
-        RenderSystem.lineWidth(lineWidth);
         RenderPipeline pipeline = SkyblockerRenderPipelines.LINES_THROUGH_WALLS;
-        BufferBuilder buffer = Renderer.getBuffer(pipeline);
+        BufferBuilder buffer = Renderer.getBuffer(pipeline, lineWidth);
 
         // Start drawing the line from a point slightly in front of the camera
         Vec3d cameraPoint = camera.add(Vec3d.fromPolar(context.camera().getPitch(), context.camera().getYaw()));
@@ -243,9 +240,8 @@ public class RenderHelper {
 				.translate((float) (pos.getX() - cameraPos.getX()), (float) (pos.getY() - cameraPos.getY()), (float) (pos.getZ() - cameraPos.getZ()))
 				.rotate(camera.getRotation());
 
-		RenderSystem.setShaderTexture(0, CLIENT.getTextureManager().getTexture(texture).getGlTextureView());
 		RenderPipeline pipeline = throughWalls ? SkyblockerRenderPipelines.TEXTURE_THROUGH_WALLS : SkyblockerRenderPipelines.TEXTURE;
-		BufferBuilder buffer = Renderer.getBuffer(pipeline);
+		BufferBuilder buffer = Renderer.getBuffer(pipeline, CLIENT.getTextureManager().getTexture(texture).getGlTextureView());
 
 		int color = ColorHelper.fromFloats(alpha, shaderColor[0], shaderColor[1], shaderColor[2]);
 

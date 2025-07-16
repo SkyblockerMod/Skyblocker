@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
@@ -45,6 +46,7 @@ import net.minecraft.client.util.BufferAllocator;
 public class Renderer {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final BufferAllocator ALLOCATOR = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
+	private static final float DEFAULT_LINE_WIDTH = 0f;
 	private static final Vector4f COLOR_MODULATOR = new Vector4f(1f, 1f, 1f, 1f);
 	private static final Map<VertexFormat, MappableRingBuffer> VERTEX_BUFFERS = new Object2ObjectOpenHashMap<>();
 	private static final List<PreparedDraw> PREPARED_DRAWS = new ArrayList<>();
@@ -52,20 +54,28 @@ public class Renderer {
 	private static RenderPipeline currentPipeline;
 	private static BufferBuilder currentBufferBuilder;
 	private static GpuTextureView currentTexture;
-	private static float currentLineWidth = 1f;
+	private static float currentLineWidth = DEFAULT_LINE_WIDTH;
 
-	/**
-	 * Before fetching the buffer, any texture or line width state must be set otherwise things may not be buffered
-	 * as expected.
-	 */
 	protected static BufferBuilder getBuffer(RenderPipeline pipeline) {
-		if (currentBufferBuilder == null || shouldEndBatch(pipeline)) {
+		return getBuffer(pipeline, null, DEFAULT_LINE_WIDTH);
+	}
+
+	protected static BufferBuilder getBuffer(RenderPipeline pipeline, GpuTextureView texture) {
+		return getBuffer(pipeline, Objects.requireNonNull(texture, "texture must not be null"), DEFAULT_LINE_WIDTH);
+	}
+
+	protected static BufferBuilder getBuffer(RenderPipeline pipeline, float lineWidth) {
+		return getBuffer(pipeline, null, lineWidth);
+	}
+
+	private static BufferBuilder getBuffer(RenderPipeline pipeline, @Nullable GpuTextureView texture, float lineWidth) {
+		if (currentBufferBuilder == null || shouldEndBatch(pipeline, texture, lineWidth)) {
 			endBatch(currentPipeline);
 
 			currentPipeline = pipeline;
 			currentBufferBuilder = new BufferBuilder(ALLOCATOR, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
-			currentTexture = RenderSystem.getShaderTexture(0);
-			currentLineWidth = RenderSystem.getShaderLineWidth();
+			currentTexture = texture;
+			currentLineWidth = lineWidth;
 
 			return currentBufferBuilder;
 		} else {
@@ -76,9 +86,9 @@ public class Renderer {
 	/**
 	 * End the batch if the pipeline is different or when the texture & line width changes (where applicable).
 	 */
-	private static boolean shouldEndBatch(RenderPipeline pipeline) {
-		boolean textureChanged = pipeline.getVertexFormat().contains(VertexFormatElement.UV0) && currentTexture != RenderSystem.getShaderTexture(0);
-		boolean lineWidthChanged = pipeline.getVertexFormatMode() == DrawMode.LINES && currentLineWidth != RenderSystem.getShaderLineWidth();
+	private static boolean shouldEndBatch(RenderPipeline pipeline, GpuTextureView texture, float lineWidth) {
+		boolean textureChanged = pipeline.getVertexFormat().contains(VertexFormatElement.UV0) && currentTexture != texture;
+		boolean lineWidthChanged = pipeline.getVertexFormatMode() == DrawMode.LINES && currentLineWidth != lineWidth;
 
 		return pipeline != currentPipeline || textureChanged || lineWidthChanged;
 	}
@@ -99,7 +109,7 @@ public class Renderer {
 			currentPipeline = null;
 			currentBufferBuilder = null;
 			currentTexture = null;
-			currentLineWidth = 1f;
+			currentLineWidth = DEFAULT_LINE_WIDTH;
 		}
 
 		//Setup the draws
