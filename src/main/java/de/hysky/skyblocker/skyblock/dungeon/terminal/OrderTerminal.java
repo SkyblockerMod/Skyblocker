@@ -57,7 +57,7 @@ public final class OrderTerminal extends SimpleContainerSolver implements Termin
     }
 
     @Override
-    public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
         if (stack == null || stack.isEmpty()) return false;
 
         if (!stack.isOf(Items.RED_STAINED_GLASS_PANE) || stack.getCount() != currentNum + 1) {

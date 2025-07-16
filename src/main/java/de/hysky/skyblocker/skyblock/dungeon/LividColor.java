@@ -104,7 +104,7 @@ public class LividColor {
                 .append(CONFIG.lividColorText.replaceAll("\\[color]", colorString))
                 .formatted(LividColor.color);
         if (CONFIG.enableLividColorText) {
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(message.getString(), false);
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + message.getString(), false);
         }
         if (CONFIG.enableLividColorTitle) {
             client.inGameHud.setDefaultTitleFade();
@@ -126,7 +126,7 @@ public class LividColor {
 
     @SuppressWarnings("DataFlowIssue")
     public static int getGlowColor(String name) {
-        if (SkyblockerConfigManager.get().dungeons.livid.enableSolidColor) return Formatting.RED.getColorValue();
+        if (SkyblockerConfigManager.get().dungeons.livid.enableSolidColor) return SkyblockerConfigManager.get().dungeons.livid.customColor.getRGB();
         if (LIVID_TO_FORMATTING.containsKey(name)) return LIVID_TO_FORMATTING.get(name).getColorValue();
         return Formatting.WHITE.getColorValue();
     }

@@ -38,6 +38,10 @@ public final class CodecUtils {
 		return Codec.unboundedMap(keyCodec, Codec.INT).xmap(Object2IntOpenHashMap::new, Function.identity());
 	}
 
+	public static <K> Codec<Object2LongMap<K>> object2LongMapCodec(Codec<K> keyCodec) {
+		return Codec.unboundedMap(keyCodec, Codec.LONG).xmap(Object2LongOpenHashMap::new, Function.identity());
+	}
+
 	public static <K> Codec<Object2DoubleMap<K>> object2DoubleMapCodec(Codec<K> keyCodec) {
 		return Codec.unboundedMap(keyCodec, Codec.DOUBLE).xmap(Object2DoubleOpenHashMap::new, Function.identity());
 	}
@@ -50,7 +54,7 @@ public final class CodecUtils {
 	 * Creates a {@link EnumSet} codec for the given enum codec and class.
 	 *
 	 * @param enumCodec Codec of the enum
-	 * @param <E> The enum type
+	 * @param <E>       The enum type
 	 * @return EnumSet codec for the given enum
 	 */
 	public static <E extends Enum<E>> Codec<EnumSet<E>> enumSetCodec(Codec<E> enumCodec, Class<E> enumClass) {
