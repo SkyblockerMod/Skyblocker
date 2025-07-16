@@ -41,6 +41,8 @@ public class UIAndVisualsConfig {
 
     public ItemCooldown itemCooldown = new ItemCooldown();
 
+	public boolean museumOverlay = true;
+
 	public SlotText slotText = new SlotText();
 
     public InventorySearchConfig inventorySearch = new InventorySearchConfig();
