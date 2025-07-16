@@ -8,14 +8,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 
@@ -23,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class  RadialMenuScreen extends Screen implements ScreenHandlerListener {
+public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final int INTERNAL_RADIUS = 55;
 	private static final int EXTERNAL_RADIUS = 110;
@@ -59,7 +57,7 @@ public class  RadialMenuScreen extends Screen implements ScreenHandlerListener {
 		float buttonArcSize = (float) ((2 * Math.PI) / options.size());
 		List<Int2ObjectMap.Entry<ItemStack>> optionOrdered = new ArrayList<>(options.int2ObjectEntrySet().stream().toList());
 
-		//check for back and close buttons to put at bottom
+		//check for back and close buttons to put in the middle of the list so they appear at the bottom
 		Int2ObjectMap.Entry<ItemStack> backSlot = optionOrdered.stream().filter(option -> validName(option.getValue(), "Go Back")).findAny().orElse(null);
 		Int2ObjectMap.Entry<ItemStack> closeSlot = optionOrdered.stream().filter(option -> validName(option.getValue(), "Close")).findAny().orElse(null);
 		int bottom = Math.ceilDiv((optionOrdered.size() - ((closeSlot == null) ? 0 : 1) - ((backSlot == null) ? 0 : 1)), 2);
@@ -72,24 +70,24 @@ public class  RadialMenuScreen extends Screen implements ScreenHandlerListener {
 			optionOrdered.add(bottom, closeSlot);
 		}
 
-		//create all needed radial buttons
+		//create all needed radial buttons clockwise from top
 		for (Int2ObjectMap.Entry<ItemStack> stack : optionOrdered) {
-			RadialButton newButton = new RadialButton(angle, buttonArcSize, INTERNAL_RADIUS, EXTERNAL_RADIUS, stack.getValue(), button -> this.clickSlot(stack.getIntKey(), button), stack.getIntKey());
+			RadialButton newButton = new RadialButton(angle, buttonArcSize, INTERNAL_RADIUS, EXTERNAL_RADIUS, stack.getValue(), this::clickSlot, stack.getIntKey());
 			buttons.add(newButton);
 			addDrawableChild(newButton);
 			angle += buttonArcSize;
 		}
 
 		//add button to temperately disable menu
-		addDrawableChild(ButtonWidget.builder(Text.of("Hide"), this::test)
-				.tooltip(Tooltip.of(Text.of("Show normal inventory view"))) //todo translate
+		addDrawableChild(ButtonWidget.builder(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu.hideButton"), this::hide)
+				.tooltip(Tooltip.of(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu.hideButton.@Tooltip")))
 				.position(width - 50, height - 25)
 				.size(40, 15)
 				.build());
 
 	}
 
-	private void test(ButtonWidget button) {
+	private void hide(ButtonWidget button) {
 		CLIENT.setScreen(new GenericContainerScreen(handler, CLIENT.player.getInventory(), parentName));
 	}
 
@@ -129,7 +127,7 @@ public class  RadialMenuScreen extends Screen implements ScreenHandlerListener {
 		context.drawHorizontalLine(width / 2 - textWidth / 2, width / 2 + textWidth / 2, height / 2, 0xFFFFFFFF);
 		//render current option name
 		buttons.stream().filter(button -> button.hovered).findAny().ifPresent(hovered ->
-				context.drawCenteredTextWithShadow(textRenderer, hovered.getName() == null ? "Error": hovered.getName(), width / 2, height / 2 + 2, 0xFFFFFFFF)); // + 2 to move out of way of line. Skyhanni seams to sometimes give us a null value
+				context.drawCenteredTextWithShadow(textRenderer, hovered.getName() == null ? "Error" : hovered.getName(), width / 2, height / 2 + 2, 0xFFFFFFFF)); // + 2 to move out of way of line. Skyhanni seams to sometimes give us a null value
 	}
 
 

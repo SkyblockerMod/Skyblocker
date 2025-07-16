@@ -11,15 +11,15 @@ public abstract class RadialMenu {
 
 	/**
 	 * @param title the original window title
-	 * @return the title show in the radial menu
+	 * @return the title to show in the radial menu
 	 */
 	protected abstract Text getTitle(Text title);
 
 	/**
-	 * Works out if this radial menu should be used for this screen title
+	 * Works out if this radial menu should be shown
 	 *
 	 * @param title screen title to compare
-	 * @return the menu should be used
+	 * @return the menu should be shown
 	 */
 	protected abstract boolean titleMatches(String title);
 
@@ -35,7 +35,7 @@ public abstract class RadialMenu {
 	public abstract String getConfigId();
 
 	protected boolean getEnabled() {
-		return SkyblockerConfigManager.get().uiAndVisuals.radialMenu.enabledMenus.getOrDefault(getConfigId(), false);
+		return SkyblockerConfigManager.get().uiAndVisuals.radialMenu.enabled && SkyblockerConfigManager.get().uiAndVisuals.radialMenu.enabledMenus.getOrDefault(getConfigId(), false);
 	}
 
 	public Option<Boolean> getOption(SkyblockerConfig config) {

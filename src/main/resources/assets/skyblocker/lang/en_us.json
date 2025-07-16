@@ -1160,6 +1160,8 @@
   "skyblocker.config.uiAndVisuals.radialMenu": "Radial Menus",
   "skyblocker.config.uiAndVisuals.radialMenu.enabled": "Enabled",
   "skyblocker.config.uiAndVisuals.radialMenu.enabled.@Tooltip": "Enable or disable all radial menus",
+  "skyblocker.config.uiAndVisuals.radialMenu.hideButton": "Hide",
+  "skyblocker.config.uiAndVisuals.radialMenu.hideButton.@Tooltip": "Show normal inventory view",
   "skyblocker.config.uiAndVisuals.radialMenu.fastTravel": "Fast Travel",
   "skyblocker.config.uiAndVisuals.radialMenu.huntingToolkit": "Hunting Toolkit",
   "skyblocker.config.uiAndVisuals.radialMenu.general": "General Menus",
