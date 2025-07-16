@@ -122,9 +122,9 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 			}
 
 			// radial menus
-			case GenericContainerScreenHandler containerScreenHandler when RadialMenuManager.doseMenuExistForTitle(nameLowercase) -> {
+			case GenericContainerScreenHandler containerScreenHandler when RadialMenuManager.isMenuExistsFromTitle(nameLowercase) -> {
 				client.player.currentScreenHandler = containerScreenHandler;
-				RadialMenu menuType = RadialMenuManager.getMenuForTitle(nameLowercase);
+				RadialMenu menuType = RadialMenuManager.getMenuFromTitle(nameLowercase);
 
 				client.setScreen(new RadialMenuScreen(containerScreenHandler, menuType, name));
 

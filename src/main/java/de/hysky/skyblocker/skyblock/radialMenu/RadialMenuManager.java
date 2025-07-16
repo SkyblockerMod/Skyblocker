@@ -14,11 +14,11 @@ public class RadialMenuManager {
 			new SkyblockMenu()
 	};
 
-	public static boolean doseMenuExistForTitle(String title) {
+	public static boolean isMenuExistsFromTitle(String title) {
 		return Arrays.stream(menus).anyMatch(menu -> menu.titleMatches(title));
 	}
 
-	public static RadialMenu getMenuForTitle(String title) {
+	public static RadialMenu getMenuFromTitle(String title) {
 		return Arrays.stream(menus).filter(menu -> menu.titleMatches(title)).findFirst().orElse(null);
 	}
 
