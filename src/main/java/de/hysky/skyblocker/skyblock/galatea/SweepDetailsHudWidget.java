@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 
 import java.util.Map;
 import java.util.Set;
@@ -57,9 +58,9 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 		addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.toughness", SweepDetailsListener.toughness)));
 
 		Text sweepAmount;
-		final int greenColor = 0xFF00FF00;
-		final int redColor = 0xFFFF5555;
-		final int defaultColor = 0xFFFFFFFF;
+		final int greenColor = Colors.GREEN;
+		final int redColor = Colors.CYAN;
+		final int defaultColor = Colors.WHITE;
 		if (SweepDetailsListener.maxSweep > SweepDetailsListener.lastSweep) {
 			MutableText lastSweep = Text.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.lastSweep)).withColor(redColor);
 			Text thisSweep = Text.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.maxSweep)).withColor(greenColor);
