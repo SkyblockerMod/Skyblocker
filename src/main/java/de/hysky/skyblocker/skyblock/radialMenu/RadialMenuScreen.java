@@ -127,7 +127,7 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 		context.drawHorizontalLine(width / 2 - textWidth / 2, width / 2 + textWidth / 2, height / 2, 0xFFFFFFFF);
 		//render current option name
 		buttons.stream().filter(button -> button.hovered).findAny().ifPresent(hovered ->
-				context.drawCenteredTextWithShadow(textRenderer, hovered.getName() == null ? "Error" : hovered.getName(), width / 2, height / 2 + 2, 0xFFFFFFFF)); // + 2 to move out of way of line. Skyhanni seams to sometimes give us a null value
+				context.drawCenteredTextWithShadow(textRenderer, hovered.getName(), width / 2, height / 2 + 2, 0xFFFFFFFF)); // + 2 to move out of way of line. Skyhanni seams to sometimes give us a null value
 	}
 
 
