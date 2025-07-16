@@ -50,7 +50,7 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 
 	public String getName() {
 		Text customName = icon.getCustomName();
-		if (customName == null) return null;
+		if (customName == null) return "null";
 		return icon.getCustomName().getString();
 	}
 

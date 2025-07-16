@@ -5,13 +5,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 
+import java.util.regex.Pattern;
 
-public abstract class BasicMenu extends RadialMenu {
-	final String title;
-	final String id;
+public abstract class RegexMenu extends RadialMenu {
+	private final Pattern pattern;
+	private final String id;
 
-	public BasicMenu(String title, String id) {
-		this.title = title;
+	public RegexMenu(String regex, String id) {
+		pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 		this.id = id;
 	}
 
@@ -20,7 +21,7 @@ public abstract class BasicMenu extends RadialMenu {
 	}
 
 	public boolean titleMatches(String title) {
-		return this.getEnabled() && title.equalsIgnoreCase(this.title);
+		return this.getEnabled() && this.pattern.matcher(title).matches();
 	}
 
 	public boolean itemMatches(int slotId, ItemStack stack) {
@@ -30,4 +31,5 @@ public abstract class BasicMenu extends RadialMenu {
 	public String getConfigId() {
 		return id;
 	}
+
 }

@@ -1,22 +1,19 @@
 package de.hysky.skyblocker.skyblock.radialMenu.menus;
 
-import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 
-import java.util.regex.Pattern;
 
-public class FastTravelMenu extends RadialMenu {
-	private final Pattern TITLE_PATTERN = Pattern.compile("(fast travel)|(.* warps)");
+public class FastTravelMenu extends RegexMenu {
+
+	public FastTravelMenu() {
+		super("(fast travel)|(.* warps)", "fastTravel");
+	}
 
 	public Text getTitle(Text title) {
 		return title;
-	}
-
-	public boolean titleMatches(String title) {
-		return this.getEnabled() && TITLE_PATTERN.matcher(title).matches();
 	}
 
 	public boolean itemMatches(int slotId, ItemStack stack) {
@@ -28,9 +25,4 @@ public class FastTravelMenu extends RadialMenu {
 		}
 		return stack.getItem() != Items.BLACK_STAINED_GLASS_PANE;
 	}
-
-	public String getConfigId() {
-		return "fastTravel";
-	}
-
 }
