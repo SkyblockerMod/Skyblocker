@@ -34,6 +34,7 @@ public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
         SimplePositioningWidget.setPos(gridWidget, 0, this.height - 64, this.width, 64);
         gridWidget.forEachChild(this::addDrawableChild);
         updateButtons();
+        super.lateInit();
     }
 
     @Override

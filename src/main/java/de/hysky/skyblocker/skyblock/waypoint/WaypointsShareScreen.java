@@ -94,6 +94,7 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
         gridWidget.refreshPositions();
         SimplePositioningWidget.setPos(gridWidget, 0, this.height - 76, this.width, 64);
         gridWidget.forEachChild(this::addDrawableChild);
+        super.lateInit();
     }
 
     @Override
