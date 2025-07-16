@@ -118,10 +118,19 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 			//wiki lookup
 			if (config.general.wikiLookup.enableWikiLookup) {
+				var title = this.getTitle().getString();
 				if (WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode)) {
-					WikiLookup.openWiki(this.focusedSlot, client.player, true);
+					if (title.matches("^Visitor's Logbook$")) {
+						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getItemName().getString(), this.client.player, true);
+					} else {
+						WikiLookup.openWiki(this.focusedSlot, this.client.player, true);
+					}
 				} else if (WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
-					WikiLookup.openWiki(this.focusedSlot, client.player, false);
+					if (title.matches("^Visitor's Logbook$")) {
+						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getItemName().getString(), this.client.player, false);
+					} else {
+						WikiLookup.openWiki(this.focusedSlot, this.client.player, false);
+					}
 				}
 			}
 			//item protection
