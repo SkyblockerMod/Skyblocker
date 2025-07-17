@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.bazaar;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
@@ -29,7 +30,7 @@ public class ReorderHelper extends SimpleContainerSolver implements TooltipAdder
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return SkyblockerConfigManager.get().helpers.bazaar.enableReorderHelper;
 	}
 
 	@Override
