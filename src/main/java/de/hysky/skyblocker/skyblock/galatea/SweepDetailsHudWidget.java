@@ -58,19 +58,16 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 		addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.toughness", SweepDetailsListener.toughness)));
 
 		Text sweepAmount;
-		final int greenColor = Colors.GREEN;
-		final int redColor = Colors.CYAN;
-		final int defaultColor = Colors.WHITE;
 		if (SweepDetailsListener.maxSweep > SweepDetailsListener.lastSweep) {
-			MutableText lastSweep = Text.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.lastSweep)).withColor(redColor);
-			Text thisSweep = Text.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.maxSweep)).withColor(greenColor);
-			sweepAmount = lastSweep.append(Text.literal(" (").withColor(defaultColor)).append(thisSweep).append(Text.literal(")").withColor(defaultColor));
+			MutableText lastSweep = Text.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.lastSweep)).withColor(Colors.LIGHT_RED);
+			Text thisSweep = Text.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.maxSweep)).withColor(Colors.GREEN);
+			sweepAmount = lastSweep.append(Text.literal(" (").withColor(Colors.WHITE)).append(thisSweep).append(Text.literal(")").withColor(Colors.WHITE));
 		} else {
-			sweepAmount = Text.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.maxSweep)).withColor(greenColor);
+			sweepAmount = Text.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.maxSweep)).withColor(Colors.GREEN);
 		}
 		addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.sweep", sweepAmount)));
 
-		addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.logs", Text.literal(SweepDetailsListener.logs).withColor(greenColor))));
+		addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.logs", Text.literal(SweepDetailsListener.logs).withColor(Colors.GREEN))));
 
 		if (SweepDetailsListener.axePenalty) {
 			addComponent(new IcoTextComponent(new ItemStack(Items.BARRIER), Text.translatable("skyblocker.galatea.hud.sweepDetails.throwPenalty", SweepDetailsListener.axePenaltyAmount + "%")));
