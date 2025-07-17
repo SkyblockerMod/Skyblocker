@@ -24,8 +24,10 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.DrawMode;
 import com.mojang.blaze3d.vertex.VertexFormat.IndexType;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -39,78 +41,75 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.BufferAllocator;
 
 /**
- * This class automatically handles buffering and drawing of objects within the world.
+ * This class automatically handles batching, buffering, and drawing of objects within the world.
  *
  * Mostly modelled off the {@link net.minecraft.client.gui.render.GuiRenderer}.
  */
 public class Renderer {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final BufferAllocator ALLOCATOR = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
+	private static final BufferAllocator GENERAL_ALLOCATOR = new BufferAllocator(RenderLayer.DEFAULT_BUFFER_SIZE);
 	private static final float DEFAULT_LINE_WIDTH = 0f;
 	private static final Vector4f COLOR_MODULATOR = new Vector4f(1f, 1f, 1f, 1f);
+	private static final Int2ObjectMap<BufferAllocator> ALLOCATORS = new Int2ObjectArrayMap<>(5);
+	private static final Int2ObjectMap<BatchedDraw> BATCHED_DRAWS = new Int2ObjectArrayMap<>(5);
 	private static final Map<VertexFormat, MappableRingBuffer> VERTEX_BUFFERS = new Object2ObjectOpenHashMap<>();
 	private static final List<PreparedDraw> PREPARED_DRAWS = new ArrayList<>();
 	private static final List<Draw> DRAWS = new ArrayList<>();
-	private static RenderPipeline currentPipeline;
-	private static BufferBuilder currentBufferBuilder;
-	private static GpuTextureView currentTexture;
-	private static float currentLineWidth = DEFAULT_LINE_WIDTH;
 
 	protected static BufferBuilder getBuffer(RenderPipeline pipeline) {
 		return getBuffer(pipeline, null, DEFAULT_LINE_WIDTH);
 	}
 
-	protected static BufferBuilder getBuffer(RenderPipeline pipeline, GpuTextureView texture) {
-		return getBuffer(pipeline, Objects.requireNonNull(texture, "texture must not be null"), DEFAULT_LINE_WIDTH);
+	protected static BufferBuilder getBuffer(RenderPipeline pipeline, GpuTextureView textureView) {
+		return getBuffer(pipeline, Objects.requireNonNull(textureView, "textureView must not be null"), DEFAULT_LINE_WIDTH);
 	}
 
 	protected static BufferBuilder getBuffer(RenderPipeline pipeline, float lineWidth) {
 		return getBuffer(pipeline, null, lineWidth);
 	}
 
-	private static BufferBuilder getBuffer(RenderPipeline pipeline, @Nullable GpuTextureView texture, float lineWidth) {
-		if (currentBufferBuilder == null || shouldEndBatch(pipeline, texture, lineWidth)) {
-			endBatch(currentPipeline);
+	/**
+	 * Returns the appropriate {@code BufferBuilder} that should be used with the given pipeline, texture view, and line width.
+	 */
+	private static BufferBuilder getBuffer(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {
+		int hash = hash(pipeline, textureView, lineWidth);
+		BatchedDraw draw = BATCHED_DRAWS.get(hash);
 
-			currentPipeline = pipeline;
-			currentBufferBuilder = new BufferBuilder(ALLOCATOR, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
-			currentTexture = texture;
-			currentLineWidth = lineWidth;
+		if (draw == null) {
+			BufferAllocator allocator = ALLOCATORS.computeIfAbsent(hash, _hash -> new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE));
+			BufferBuilder bufferBuilder = new BufferBuilder(allocator, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
+			BATCHED_DRAWS.put(hash, new BatchedDraw(bufferBuilder, pipeline, textureView, lineWidth));
 
-			return currentBufferBuilder;
+			return bufferBuilder;
 		} else {
-			return currentBufferBuilder;
+			return draw.bufferBuilder();
 		}
 	}
 
 	/**
-	 * End the batch if the pipeline is different or when the texture & line width changes (where applicable).
+	 * Calculates the hash of the given inputs which serves as the keys to our maps where we store stuff for the batched draws.
+	 * This is much faster than using an object-based key as we do not need to create any objects to find the instances we want.
 	 */
-	private static boolean shouldEndBatch(RenderPipeline pipeline, GpuTextureView texture, float lineWidth) {
-		boolean textureChanged = pipeline.getVertexFormat().contains(VertexFormatElement.UV0) && currentTexture != texture;
-		boolean lineWidthChanged = pipeline.getVertexFormatMode() == DrawMode.LINES && currentLineWidth != lineWidth;
+	private static int hash(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {
+		//This manually calculates the hash, avoiding Objects#hash to not incur the array allocation each time
+		int hash = 1;
+		hash = 31 * hash + pipeline.hashCode();
+		hash = 31 * hash + Objects.hashCode(textureView);
+		hash = 31 * hash + Float.hashCode(lineWidth);
 
-		return pipeline != currentPipeline || textureChanged || lineWidthChanged;
+		return hash;
 	}
 
-	private static void endBatch(RenderPipeline pipeline) {
-		if (currentBufferBuilder != null) {
-			BuiltBuffer builtBuffer = currentBufferBuilder.end();
-			PreparedDraw preparation = new PreparedDraw(builtBuffer, pipeline, currentTexture, currentLineWidth);
-
-			PREPARED_DRAWS.add(preparation);
+	private static void endBatches() {
+		for (Int2ObjectMap.Entry<BatchedDraw> entry : Int2ObjectMaps.fastIterable(BATCHED_DRAWS)) {
+			BatchedDraw draw = entry.getValue();
+			PREPARED_DRAWS.add(new PreparedDraw(draw.bufferBuilder().end(), draw.pipeline(), draw.textureView(), draw.lineWidth()));
 		}
 	}
 
 	protected static void executeDraws() {
-		//End any left over buffering and reset state
-		if (currentPipeline != null) {
-			endBatch(currentPipeline);
-			currentPipeline = null;
-			currentBufferBuilder = null;
-			currentTexture = null;
-			currentLineWidth = DEFAULT_LINE_WIDTH;
-		}
+		//End all of the batches and prepare the draws
+		endBatches();
 
 		//Setup the draws
 		setupDraws();
@@ -125,6 +124,8 @@ public class Renderer {
 			buffer.rotate();
 		}
 
+		//Clear the draws from this frame
+		BATCHED_DRAWS.clear();
 		PREPARED_DRAWS.clear();
 		DRAWS.clear();
 	}
@@ -222,7 +223,7 @@ public class Renderer {
 
 		if (draw.pipeline().getVertexFormatMode() == DrawMode.QUADS) {
 			//The quads we're rendering are translucent so they need to be sorted for our index buffer
-			draw.builtBuffer().sortQuads(ALLOCATOR, RenderSystem.getProjectionType().getVertexSorter());
+			draw.builtBuffer().sortQuads(GENERAL_ALLOCATOR, RenderSystem.getProjectionType().getVertexSorter());
 			indices = draw.pipeline().getVertexFormat().uploadImmediateIndexBuffer(draw.builtBuffer().getSortedBuffer());
 			indexType = draw.builtBuffer().getDrawParameters().indexType();
 		} else {
@@ -289,7 +290,11 @@ public class Renderer {
 	}
 
 	public static void close() {
-		ALLOCATOR.close();
+		GENERAL_ALLOCATOR.close();
+
+		for (BufferAllocator allocator : ALLOCATORS.values()) {
+			allocator.close();
+		}
 
 		for (MappableRingBuffer vertexBuffer : VERTEX_BUFFERS.values()) {
 			vertexBuffer.close();
@@ -299,4 +304,6 @@ public class Renderer {
 	private record Draw(BuiltBuffer builtBuffer, GpuBuffer vertices, int baseVertex, int indexCount, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {}
 
 	private record PreparedDraw(BuiltBuffer builtBuffer, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {}
+
+	private record BatchedDraw(BufferBuilder bufferBuilder, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {}
 }
