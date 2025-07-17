@@ -349,6 +349,10 @@ public class SearchOverManager {
         if (isAuction) {
             addExtras();
         }
+		// Fix Bazaar bug - Search doesn't work if input from sign contains "null" (blocks null ovoid, etc.)
+		if (!isAuction && !isCommand && search.toLowerCase().contains("null")) {
+			search = "\"%s\"".formatted(search);
+		}
         //push
         if (isCommand) {
             pushCommand();
