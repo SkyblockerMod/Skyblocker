@@ -364,7 +364,7 @@ public class SearchOverManager {
         // pet level
         if (maxPetLevel) {
             if (auctionPets.contains(search.toLowerCase())) {
-                if (search.equalsIgnoreCase("golden dragon")) {
+                if (search.equalsIgnoreCase("golden dragon") || search.equalsIgnoreCase("jade dragon")) {
                     search = "[Lvl 200] " + search;
                 } else {
                     search = "[Lvl 100] " + search;
