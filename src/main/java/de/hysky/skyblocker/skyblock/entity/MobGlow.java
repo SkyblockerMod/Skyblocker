@@ -12,6 +12,7 @@ import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
+import de.hysky.skyblocker.skyblock.garden.PestsContestHighlight;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.AttunementColors;
@@ -175,7 +176,12 @@ public class MobGlow {
 			case ArmorStandEntity armorStand when SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads && Utils.isInTheEnd() && armorStand.isMarker() && SlayerManager.isInSlayer() && isNukekubiHead(armorStand) -> 0x990099;
 
 			// Pests
-			case ArmorStandEntity armorStand when SkyblockerConfigManager.get().farming.garden.pestHighlighter && Utils.isInGarden() && isPestHead(armorStand) -> 0xb62f00;
+			case ArmorStandEntity armorStand when SkyblockerConfigManager.get().farming.garden.pestHighlighter && Utils.isInGarden() && isPestHead(armorStand) ->
+					PestsContestHighlight.isPestNameMatchCurrentContest(armorStand) ?
+							// Pests but during Jacob's Contest
+							Formatting.GREEN.getColorValue() :
+							// Default color
+							0xb62f00;
 
 			// Blaze Slayer's Demonic minions
 			case WitherSkeletonEntity e when SkyblockerConfigManager.get().slayers.highlightBosses == SlayersConfig.HighlightSlayerEntities.GLOW && SlayerManager.isInSlayerType(SlayerType.DEMONLORD) && e.distanceTo(MinecraftClient.getInstance().player) <= 15 -> AttunementColors.getColor(e);

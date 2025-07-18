@@ -1,0 +1,89 @@
+package de.hysky.skyblocker.skyblock.garden;
+
+import static java.util.Map.entry;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.text.Text;
+import org.apache.commons.lang3.StringUtils;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+
+public class PestsContestHighlight {
+	private static final Pattern CURRENT_CROP_PATTERN = Pattern.compile("^ [○☘] (?<crop>.+) .+$");
+	private static final Pattern PEST_NAME_PATTERN = Pattern.compile("ൠ (?<name>.+) \\d+❤");
+	private static String CURRENT_CROP_CONTEST;
+	private static final Map<String, String> CROP_BY_PEST = Map.ofEntries(
+			entry("Wheat", "Fly"),
+			entry("Sugar Cane", "Mosquito"),
+			entry("Carrot", "Cricket"),
+			entry("Potato", "Locust"),
+			entry("Melon", "Earthworm"),
+			entry("Pumpkin", "Rat"),
+			entry("Cocoa Beans", "Moth"),
+			entry("Nether Wart", "Beetle"),
+			entry("Cactus", "Mite"),
+			entry("Mushroom", "Slug")
+	);
+
+	@Init
+	public static void init() {
+		ClientReceiveMessageEvents.GAME.register(PestsContestHighlight::reset);
+		Scheduler.INSTANCE.scheduleCyclic(PestsContestHighlight::update, 20);
+	}
+
+	private static void reset(Text text, boolean overlay) {
+		if (!Utils.isInGarden() || overlay) {
+			return;
+		}
+
+		String message = text.getString();
+
+		if (message.contains("The Farming Contest is over!")) {
+			CURRENT_CROP_CONTEST = null;
+		}
+	}
+
+	private static void update() {
+		for (String line : Utils.STRING_SCOREBOARD) {
+			Matcher matcher = CURRENT_CROP_PATTERN.matcher(line);
+
+			if (matcher.matches()) {
+				CURRENT_CROP_CONTEST = matcher.group("crop");
+			}
+		}
+	}
+
+	/**
+	 * Compares the armor stand name with current collected crop during Jacob's Contest.
+	 */
+	public static boolean isPestNameMatchCurrentContest(ArmorStandEntity entity) {
+		if (StringUtils.isEmpty(CURRENT_CROP_CONTEST)) {
+			return false;
+		}
+
+		// Get the list of the armor stands, then filter only pest name pattern
+		Function<String, Matcher> matcherFunction = PEST_NAME_PATTERN::matcher;
+		List<ArmorStandEntity> armorStandEntities = entity.getWorld().getEntitiesByClass(ArmorStandEntity.class, entity.getBoundingBox().expand(1, 2, 1), other -> matcherFunction.apply(other.getName().getString()).matches());
+		String pestName = CROP_BY_PEST.get(CURRENT_CROP_CONTEST);
+
+		if (armorStandEntities.isEmpty() || StringUtils.isEmpty(pestName)) {
+			return false;
+		}
+
+		Matcher matcher = matcherFunction.apply(armorStandEntities.getFirst().getName().getString());
+
+		// Found matched pest name
+		if (matcher.matches()) {
+			String name = matcher.group("name");
+			return pestName.equals(name);
+		}
+		return false;
+	}
+}
