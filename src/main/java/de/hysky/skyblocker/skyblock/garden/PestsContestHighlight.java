@@ -51,6 +51,10 @@ public class PestsContestHighlight {
 	}
 
 	private static void update() {
+		if (!Utils.isInGarden()) {
+			CURRENT_CROP_CONTEST = null;
+			return;
+		}
 		for (String line : Utils.STRING_SCOREBOARD) {
 			Matcher matcher = CURRENT_CROP_PATTERN.matcher(line);
 
