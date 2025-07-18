@@ -8,13 +8,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 
 public class PestsContestHighlight {
 	private static final Pattern CURRENT_CROP_PATTERN = Pattern.compile("^ [○☘] (?<crop>.+) .+$");
@@ -35,28 +32,20 @@ public class PestsContestHighlight {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(PestsContestHighlight::reset);
 		Scheduler.INSTANCE.scheduleCyclic(PestsContestHighlight::update, 20);
 	}
 
-	private static void reset(Text text, boolean overlay) {
-		if (!Utils.isInGarden() || overlay) {
-			return;
-		}
-
-		String message = Formatting.strip(text.getString());
-
-		if (message.contains("The Farming Contest is over!")) {
-			CURRENT_CROP_CONTEST = null;
-		}
-	}
-
 	private static void update() {
-		if (!Utils.isInGarden()) {
-			CURRENT_CROP_CONTEST = null;
+		if (!Utils.isInGarden() || CURRENT_CROP_CONTEST == null) {
 			return;
 		}
+
 		for (String line : Utils.STRING_SCOREBOARD) {
+			if (!line.contains("Jacob's Contest")) {
+				CURRENT_CROP_CONTEST = null;
+				break;
+			}
+
 			Matcher matcher = CURRENT_CROP_PATTERN.matcher(line);
 
 			if (matcher.matches()) {
