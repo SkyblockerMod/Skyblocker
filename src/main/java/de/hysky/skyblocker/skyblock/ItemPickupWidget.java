@@ -59,13 +59,12 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	 */
 	private static ItemStack getItem(String itemName) {
 		if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return new ItemStack(Items.BARRIER);
-		return NEURepoManager.NEU_REPO.getItems().getItems()
-				.values().stream()
-				.filter(item -> Formatting.strip(item.getDisplayName()).equals(itemName))
+		return NEURepoManager.getItemByName(itemName)
+				.stream()
 				.findFirst()
 				.map(NEUItem::getSkyblockItemId)
 				.map(ItemRepository::getItemStack)
-				.orElse(new ItemStack(Items.BARRIER));
+				.orElseGet(() -> new ItemStack(Items.BARRIER));
 	}
 
 	/**
