@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.garden;
 import static java.util.Map.entry;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,20 +37,22 @@ public class PestsContestHighlight {
 	}
 
 	private static void update() {
-		if (!Utils.isInGarden() || CURRENT_CROP_CONTEST == null) {
+		// Check if scoreboard text contains no 'Jacob's Contest' should be enough
+		// Detecting chat to clear CURRENT_CROP_CONTEST is not a good solution because of a scoreboard has delayed update rate
+		if (Utils.STRING_SCOREBOARD.stream().noneMatch(s -> s.contains("Jacob's Contest"))) {
+			CURRENT_CROP_CONTEST = null;
 			return;
 		}
 
 		for (String line : Utils.STRING_SCOREBOARD) {
-			if (!line.contains("Jacob's Contest")) {
-				CURRENT_CROP_CONTEST = null;
-				break;
-			}
-
 			Matcher matcher = CURRENT_CROP_PATTERN.matcher(line);
 
 			if (matcher.matches()) {
-				CURRENT_CROP_CONTEST = matcher.group("crop");
+				String crop = matcher.group("crop");
+
+				if (!Objects.equals(CURRENT_CROP_CONTEST, crop)) {
+					CURRENT_CROP_CONTEST = crop;
+				}
 			}
 		}
 	}
