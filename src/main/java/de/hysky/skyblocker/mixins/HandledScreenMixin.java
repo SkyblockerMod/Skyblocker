@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
+import de.hysky.skyblocker.skyblock.garden.VisitorWikiLookup;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
@@ -120,14 +121,14 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			if (config.general.wikiLookup.enableWikiLookup) {
 				var title = this.getTitle().getString();
 				if (WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode)) {
-					if (title.matches("^Visitor's Logbook$")) {
-						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getItemName().getString(), this.client.player, true);
+					if (VisitorWikiLookup.canSearch(title, this.focusedSlot)) {
+						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getName().getString(), this.client.player, true);
 					} else {
 						WikiLookup.openWiki(this.focusedSlot, this.client.player, true);
 					}
 				} else if (WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
-					if (title.matches("^Visitor's Logbook$")) {
-						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getItemName().getString(), this.client.player, false);
+					if (VisitorWikiLookup.canSearch(title, this.focusedSlot)) {
+						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getName().getString(), this.client.player, false);
 					} else {
 						WikiLookup.openWiki(this.focusedSlot, this.client.player, false);
 					}

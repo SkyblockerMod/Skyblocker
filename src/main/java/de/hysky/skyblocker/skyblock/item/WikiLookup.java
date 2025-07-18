@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 public class WikiLookup {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WikiLookup.class);
@@ -49,16 +48,16 @@ public class WikiLookup {
 	public static void openWiki(ItemStack stack, PlayerEntity player, boolean useOfficial) {
 		ItemUtils.getItemIdOptional(stack)
 				.map(neuId -> ItemRepository.getWikiLink(neuId, useOfficial))
-				.ifPresentOrElse(openWikiLink(player), () -> player.sendMessage(Constants.PREFIX.get().append(useOfficial ? Text.translatable("skyblocker.wikiLookup.noArticleFound.official") : Text.translatable("skyblocker.wikiLookup.noArticleFound.fandom")), false));
+				.ifPresentOrElse(wikiLink -> openWikiLink(wikiLink, player), () -> player.sendMessage(Constants.PREFIX.get().append(useOfficial ? Text.translatable("skyblocker.wikiLookup.noArticleFound.official") : Text.translatable("skyblocker.wikiLookup.noArticleFound.fandom")), false));
 	}
 
 	public static void openWikiItemName(String itemName, PlayerEntity player, boolean useOfficial) {
-		String wikiLink = ItemRepository.getWikiLink(itemName, useOfficial) + "/" + itemName;
-		openWikiLink(player).accept(wikiLink);
+		String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + itemName.replace(" ", "_");
+		openWikiLink(wikiLink, player);
 	}
 
-	private static Consumer<String> openWikiLink(PlayerEntity player) {
-		return wikiLink -> CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink)).exceptionally(e -> {
+	private static void openWikiLink(String wikiLink, PlayerEntity player) {
+		CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink)).exceptionally(e -> {
 			LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
 			player.sendMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
 			return null;
