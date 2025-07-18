@@ -1446,7 +1446,7 @@
   "skyblocker.partyFinder.deList": "Click to de-list",
   "skyblocker.partyFinder.join": "Click to join",
 
-  "skyblocker.reorderHelper.tooltip": "[Skyblocker] You can copy the amount of items\nby holding CTRL while clicking on the item!",
+  "skyblocker.reorderHelper.tooltip": "Hold CTRL to copy the remaining amount.",
 
   "skyblocker.copyUnderbidPrice.copied": "Copied underbid price: %s",
 
