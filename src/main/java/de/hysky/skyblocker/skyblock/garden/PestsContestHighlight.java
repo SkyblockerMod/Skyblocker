@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Utils;
@@ -43,7 +44,7 @@ public class PestsContestHighlight {
 			return;
 		}
 
-		String message = text.getString();
+		String message = Formatting.strip(text.getString());
 
 		if (message.contains("The Farming Contest is over!")) {
 			CURRENT_CROP_CONTEST = null;
