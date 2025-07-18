@@ -48,7 +48,8 @@ public class WikiLookup {
 	public static void openWiki(ItemStack stack, PlayerEntity player, boolean useOfficial) {
 		ItemUtils.getItemIdOptional(stack)
 				.map(neuId -> ItemRepository.getWikiLink(neuId, useOfficial))
-				.ifPresentOrElse(wikiLink -> openWikiLink(wikiLink, player), () -> player.sendMessage(Constants.PREFIX.get().append(useOfficial ? Text.translatable("skyblocker.wikiLookup.noArticleFound.official") : Text.translatable("skyblocker.wikiLookup.noArticleFound.fandom")), false));
+				.ifPresentOrElse(wikiLink -> openWikiLink(wikiLink, player),
+						() -> player.sendMessage(Constants.PREFIX.get().append(useOfficial ? Text.translatable("skyblocker.wikiLookup.noArticleFound.official") : Text.translatable("skyblocker.wikiLookup.noArticleFound.fandom")), false));
 	}
 
 	public static void openWikiItemName(String itemName, PlayerEntity player, boolean useOfficial) {
