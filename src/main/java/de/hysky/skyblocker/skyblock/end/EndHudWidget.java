@@ -3,7 +3,9 @@ package de.hysky.skyblocker.skyblock.end;
 import com.mojang.authlib.properties.PropertyMap;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Formatters;
@@ -17,13 +19,15 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 
+import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 @RegisterWidget
 public class EndHudWidget extends ComponentBasedWidget {
 	private static final MutableText TITLE = Text.literal("The End").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD);
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.THE_END);
+	private static final Set<Location> AVAILABLE_LOCATIONS = EnumSet.of(Location.THE_END);
 
 	private static EndHudWidget instance = null;
 
@@ -31,29 +35,13 @@ public class EndHudWidget extends ComponentBasedWidget {
 	private static final ItemStack POPPY = Util.make(new ItemStack(Items.POPPY), stack -> stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true));
 
 	public EndHudWidget() {
-		super(TITLE, Formatting.DARK_PURPLE.getColorValue(), "hud_end");
+		super(TITLE, Formatting.DARK_PURPLE.getColorValue(), new Information("hud_end", Text.literal("End Hud"), AVAILABLE_LOCATIONS::contains));
 		instance = this;
 		this.update();
 	}
 
 	public static EndHudWidget getInstance() {
 		return instance;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return location.equals(Location.THE_END) && SkyblockerConfigManager.get().otherLocations.end.hudEnabled;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!location.equals(Location.THE_END)) return;
-		SkyblockerConfigManager.get().otherLocations.end.hudEnabled = enabled;
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
 	}
 
 	@Override
@@ -85,8 +73,8 @@ public class EndHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	public Text getDisplayName() {
-		return Text.literal("End Hud");
+	protected List<Component> getConfigComponents() {
+		return List.of(new IcoTextComponent(Ico.BARRIER, Text.literal("TODO"))); // TODO
 	}
 
 }

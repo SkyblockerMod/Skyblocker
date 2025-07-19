@@ -7,9 +7,9 @@ import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
 import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;
 import de.hysky.skyblocker.skyblock.dungeon.LeapOverlay;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
-import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreen;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListScreen;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
@@ -97,11 +97,11 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 			}
 
 			// Excessive widgets config
-			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && (nameLowercase.startsWith("widgets in") || nameLowercase.startsWith("widgets on") || nameLowercase.equals("tablist widgets") || nameLowercase.endsWith("widget settings") || (nameLowercase.startsWith("shown") && client.currentScreen instanceof WidgetsConfigurationScreen)) -> {
+			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && (nameLowercase.startsWith("widgets in") || nameLowercase.startsWith("widgets on") || nameLowercase.equals("tablist widgets") || nameLowercase.endsWith("widget settings") || (nameLowercase.startsWith("shown") && client.currentScreen instanceof WidgetsListScreen)) -> {
 				client.player.currentScreenHandler = containerScreenHandler;
 				switch (client.currentScreen) {
-					case WidgetsConfigurationScreen screen -> screen.updateHandler(containerScreenHandler, nameLowercase);
-					case null, default -> client.setScreen(new WidgetsConfigurationScreen(containerScreenHandler, nameLowercase));
+					case WidgetsListScreen screen -> screen.updateHandler(containerScreenHandler, nameLowercase);
+					case null, default -> client.setScreen(new WidgetsListScreen(containerScreenHandler, nameLowercase));
 				}
 				ci.cancel();
 			}

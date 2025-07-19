@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -33,7 +34,7 @@ public class CommsWidget extends TabHudWidget {
 	private boolean oldDone = false;
 
 	public CommsWidget() {
-		super("Commissions", TITLE, Formatting.DARK_AQUA.getColorValue());
+		super("Commissions", TITLE, Formatting.DARK_AQUA.getColorValue(), Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFT);
 	}
 
 	@Override

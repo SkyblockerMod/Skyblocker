@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -37,7 +38,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 	// title needs to be changeable here
 	public DungeonPlayerWidget(int player) {
-		super("Dungeon Player " + player, TITLE, Formatting.DARK_PURPLE.getColorValue());
+		super("Dungeon Player " + player, TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
 		this.player = player;
 	}
 
