@@ -862,7 +862,7 @@
     "skyblocker.config.uiAndVisuals.titleContainer.alignment.MIDDLE": "中",
     "skyblocker.config.uiAndVisuals.titleContainer.direction.HORIZONTAL": "水平",
     "skyblocker.config.uiAndVisuals.titleContainer.direction.VERTICAL": "垂直",
-    "skyblocker.reorderHelper.tooltip": "[Skyblocker] 你可以在點擊物品時點擊CTRL鍵複製物品數量！",
+    "skyblocker.reorderHelper.tooltip": "你可以在點擊物品時點擊CTRL鍵複製物品數量！",
     "skyblocker.waypoints.type.WAYPOINT": "路徑點",
     "skyblocker.waypoints.type.OUTLINED_WAYPOINT": "邊框+路徑點",
     "skyblocker.waypoints.type.HIGHLIGHT": "突顯",
