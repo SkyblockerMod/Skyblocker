@@ -131,6 +131,8 @@ public class HelperConfig {
 
 	public static class Bazaar {
 		public boolean enableBazaarHelper = true;
+
+		public boolean enableReorderHelper = true;
 	}
 
 	public static class ItemPrice {
