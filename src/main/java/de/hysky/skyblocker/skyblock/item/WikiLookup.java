@@ -17,6 +17,8 @@ import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 
 public class WikiLookup {
@@ -53,7 +55,10 @@ public class WikiLookup {
 	}
 
 	public static void openWikiItemName(String itemName, PlayerEntity player, boolean useOfficial) {
-		String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + itemName.replace(" ", "_");
+		itemName = itemName.replace(" ", "_");
+		// Special case for only a visitor that has '?'
+		itemName = itemName.replace("?", URLEncoder.encode("?", StandardCharsets.UTF_8));
+		String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + itemName;
 		openWikiLink(wikiLink, player);
 	}
 
