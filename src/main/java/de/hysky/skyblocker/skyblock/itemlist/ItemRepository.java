@@ -96,13 +96,17 @@ public class ItemRepository {
 		List<String> info = item.getInfo();
 		String wikiLink0 = info.getFirst();
 		String wikiLink1 = info.size() > 1 ? info.get(1) : "";
-		String wikiDomain = useOfficial ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
+		String wikiDomain = getWikiLink(useOfficial);
 		if (wikiLink0.startsWith(wikiDomain)) {
 			return wikiLink0;
 		} else if (wikiLink1.startsWith(wikiDomain)) {
 			return wikiLink1;
 		}
 		return null;
+	}
+
+	public static String getWikiLink(boolean useOfficial) {
+		return useOfficial ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
 	}
 
 	public static List<SkyblockRecipe> getRecipesAndUsages(ItemStack stack) {
