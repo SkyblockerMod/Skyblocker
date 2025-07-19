@@ -7,14 +7,11 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 
@@ -79,33 +76,26 @@ public class TeleportOverlay {
     }
 
     /**
-     * Renders the teleport overlay with a given range. Uses {@link MinecraftClient#crosshairTarget} if it is a block and within range. Otherwise, raycasts from the player with the given range.
+     * Renders the teleport overlay with a given range. Uses {@link SmoothAOTE#raycast(int, Vec3d, Vec3d)} to predict the target
      *
      * @implNote {@link MinecraftClient#player} and {@link MinecraftClient#world} must not be null when calling this method.
      */
     private static void render(WorldRenderContext wrc, int range) {
-        if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK && client.crosshairTarget instanceof BlockHitResult blockHitResult && client.crosshairTarget.getPos().isInRange(client.player.getPos(), range)) {
-            render(wrc, blockHitResult);
-        } else if (client.interactionManager != null && range > client.player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).getValue()) {
-            HitResult result = client.player.raycast(range, wrc.tickCounter().getTickProgress(true), false);
-            if (result.getType() == HitResult.Type.BLOCK && result instanceof BlockHitResult blockHitResult) {
-                render(wrc, blockHitResult);
-            }
-        }
-    }
+		if (client.player == null || client.world == null) return;
+		//set up values for smooth AOTEs raycast
+		float pitch = client.player.getPitch();
+		float yaw = client.player.getYaw();
+		Vec3d look = client.player.getRotationVector(pitch, yaw);
+		Vec3d startPos = client.player.getPos().add(0, 1.62, 0);
+		Vec3d raycast = SmoothAOTE.raycast(range, look, startPos);
 
-    /**
-     * Renders the teleport overlay at the given {@link BlockHitResult}.
-     *
-     * @implNote {@link MinecraftClient#world} must not be null when calling this method.
-     */
-    private static void render(WorldRenderContext wrc, BlockHitResult blockHitResult) {
-        BlockPos pos = blockHitResult.getBlockPos();
-        @SuppressWarnings("DataFlowIssue")
-        BlockState state = client.world.getBlockState(pos);
-        if (!state.isAir() && client.world.getBlockState(pos.up()).isAir() && client.world.getBlockState(pos.up(2)).isAir()) {
-            RenderHelper.renderFilled(wrc, pos, colorComponents, colorComponents[3], false);
-        }
+		if (raycast != null) {
+			BlockPos target = BlockPos.ofFloored(startPos.add(raycast)).down();
+			//do not render if in air and disabled in air
+			if (!SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.showWhenInAir && client.world.getBlockState(target).isAir()) return;
+			//render they highlight
+			RenderHelper.renderFilled(wrc, target, colorComponents, colorComponents[3], false);
+		}
     }
 
     public static void configCallback(Color color) {
