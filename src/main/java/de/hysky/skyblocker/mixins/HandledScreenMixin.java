@@ -188,6 +188,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci, @Local(ordinal = 0) ItemStack stack) {
 		if (!Utils.isOnSkyblock()) return;
 
+		if (SkyblockerConfigManager.get().uiAndVisuals.tooltipBlacklist.contains(getTitle().getString())) {
+			ci.cancel();
+		}
+
 		// Hide Empty Tooltips
 		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && stack.getName().getString().equals(" ")) {
 			ci.cancel();
