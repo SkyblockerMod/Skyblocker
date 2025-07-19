@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -99,6 +100,10 @@ public class WaypointGroup {
     public WaypointGroup filterWaypoints(Predicate<NamedWaypoint> predicate) {
         return new WaypointGroup(name, island, waypoints.stream().filter(predicate).toList(), ordered);
     }
+
+	public WaypointGroup sortWaypoints(Comparator<NamedWaypoint> comparator) {
+		return new WaypointGroup(name, island, waypoints.stream().sorted(comparator).toList(), ordered);
+	}
 
     /**
      * Returns a deep copy of this {@link WaypointGroup} with a mutable waypoints list for editing.
