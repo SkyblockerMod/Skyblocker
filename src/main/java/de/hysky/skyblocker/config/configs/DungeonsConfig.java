@@ -21,9 +21,9 @@ public class DungeonsConfig {
 
 	public boolean spiritLeapOverlay = true;
 
-	public boolean starredMobGlow = false;
+	public boolean starredMobGlow = true;
 
-	public boolean starredMobBoundingBoxes = true;
+	public boolean starredMobBoundingBoxes = false;
 
 	public boolean allowDroppingProtectedItems = false;
 

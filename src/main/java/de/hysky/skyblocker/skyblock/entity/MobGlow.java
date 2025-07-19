@@ -79,10 +79,6 @@ public class MobGlow {
 		ClientTickEvents.END_WORLD_TICK.register(client -> clearCache());
 	}
 
-	public static boolean atLeastOneMobHasCustomGlow() {
-		return !CACHE.isEmpty();
-	}
-
 	public static boolean hasOrComputeMobGlow(Entity entity) {
 		if (CACHE.containsKey(entity)) {
 			return true;
