@@ -65,6 +65,7 @@
     "accessors.MessageHandlerAccessor",
     "accessors.MinecraftClientAccessor",
     "accessors.PlayerListHudAccessor",
+    "accessors.PopupBackgroundAccessor",
     "accessors.RecipeBookWidgetAccessor",
     "accessors.ScreenAccessor",
     "accessors.SlotAccessor",
