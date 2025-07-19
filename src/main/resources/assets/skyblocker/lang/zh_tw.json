@@ -862,7 +862,7 @@
     "skyblocker.config.uiAndVisuals.titleContainer.alignment.MIDDLE": "中",
     "skyblocker.config.uiAndVisuals.titleContainer.direction.HORIZONTAL": "水平",
     "skyblocker.config.uiAndVisuals.titleContainer.direction.VERTICAL": "垂直",
-    "skyblocker.reorderHelper.tooltip": "你可以在點擊物品時點擊CTRL鍵複製物品數量！",
+    "skyblocker.reorderHelper.tooltip": "按住CTRL鍵來複製剩餘數量！",
     "skyblocker.waypoints.type.WAYPOINT": "路徑點",
     "skyblocker.waypoints.type.OUTLINED_WAYPOINT": "邊框+路徑點",
     "skyblocker.waypoints.type.HIGHLIGHT": "突顯",
@@ -1263,5 +1263,18 @@
     "skyblocker.config.dungeons.bloodCampHelper.@Tooltip": "預測Blood Room中怪物的移動以便快速擊殺。",
     "skyblocker.config.dungeons.livid.customColor": "自訂Livid顏色",
     "skyblocker.config.helpers.experiments.blockIncorrectClicks": "阻止錯誤點擊",
-    "skyblocker.config.dungeons.dungeonSplits": "地下城階段計時小工具"
+    "skyblocker.config.dungeons.dungeonSplits": "地下城階段計時小工具",
+    "skyblocker.slayer.slainTime": "此次擊殺耗時%d！",
+    "skyblocker.copyUnderbidPrice.copied": "複製了最低價格：%s",
+    "skyblocker.config.helpers.bazaar.enableReorderHelper": "啟用重新下單助手",
+    "skyblocker.config.helpers.bazaar.enableReorderHelper.@Tooltip": "當取消沒有完成的購買/出售訂單時按住CTRL鍵即可將訂單剩餘數量複製到剪貼簿。",
+    "skyblocker.disableAll.confirmYes": "§c[停用全部功能]",
+    "skyblocker.config.quickNav.enableQuickNav.@Tooltip": "新增14個可自訂的背包按鈕以便透過點擊快速執行指令。",
+    "skyblocker.disableAll.success": "§c全部功能已停用。",
+    "skyblocker.disableAll.failed": "§c未能停用所有功能。",
+    "skyblocker.disableAll.notPending": "§c請先使用 /skyblocker disableAll 。",
+    "skyblocker.disableAll.confirm": "你確定要停用所用功能嗎？ %s",
+    "skyblocker.waypoints.ordered.import.skyblocker.unknownFormatHeader": "§c此匯入碼不像是Skyblocker Ordered Waypoints格式，請仔細檢查你的剪貼簿看看有沒有錯誤。",
+    "skyblocker.config.chat.filter.hideToggleLottery": "隱藏Lottery切換訊息",
+    "skyblocker.config.dungeons.dungeonSplits.@Tooltip": "該小部件將顯示你在地下城各階段所花時間及最佳紀錄。"
 }
