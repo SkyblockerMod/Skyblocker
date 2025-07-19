@@ -843,7 +843,7 @@
     "skyblocker.tips.profileViewer": "Вы можете просмотреть профили других игроков с помощью /pv.",
     "skyblocker.tips.crystalWaypointsShare": "Поделитесь метками Crystal Hollows с помощью /skyblocker crystalWaypoints share.",
     "skyblocker.tips.accessoryHelper": "Откройте сумку с аксессуарами, и Skyblocker их запомнит. Помощник по аксессуарам расскажет вам, какие аксессуары у вас есть, а каких не хватает.",
-    "skyblocker.reorderHelper.tooltip": "[Skyblocker] Вы можете скопировать количество предметов\nудерживая CTRL при нажатии на элемент!",
+    "skyblocker.reorderHelper.tooltip": "Вы можете скопировать количество предметов\nудерживая CTRL при нажатии на элемент!",
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Неверное уравнение",
     "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart": "Цвет начала градиента критического урона",
     "skyblocker.debug.toggledWebSocketDebug": "Переключена отладка WebSocket на %s",
