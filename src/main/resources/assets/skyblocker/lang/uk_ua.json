@@ -1,1 +1,14 @@
-{}
+{
+    "key.categories.skyblocker": "Skyblocker",
+    "text.skyblocker.source": "Вихідний код",
+    "text.skyblocker.website": "Вебсайт",
+    "text.skyblocker.translate": "Перекласти",
+    "text.skyblocker.modrinth": "Modrinth",
+    "text.skyblocker.discord": "Discord",
+    "skyblocker.config.title": "Skyblocker %s",
+    "skyblocker.armorCustomization.delay": "Затримка: %s",
+    "skyblocker.armorCustomization.delayTooltip": "Анімація затримається на таку кількість секунд.",
+    "argument.color.hex.invalidString": "Шістнадцяткове число повинне мати 6 символів, знайдено %d символів.",
+    "text.skyblocker.config": "Відкрити конфігурацію...",
+    "skyblocker.skyblockerScreen": "Головне меню Skyblocker"
+}
