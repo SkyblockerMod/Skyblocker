@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -18,7 +19,17 @@ public abstract class Component {
 	// these should always be the content dimensions without any padding.
 	int width, height;
 
+	private Widget parent;
+
 	public abstract void render(DrawContext context, int x, int y);
+
+	public void setParent(Widget parent) {
+		this.parent = parent;
+	}
+
+	public Widget getParent() {
+		return this.parent;
+	}
 
 	public int getWidth() {
 		return this.width;
