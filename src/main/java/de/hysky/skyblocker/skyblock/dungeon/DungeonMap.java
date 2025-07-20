@@ -59,12 +59,21 @@ public class DungeonMap {
         Matrix3x2fStack matrices = context.getMatrices();
         MapRenderer mapRenderer = client.getMapRenderer();
 
+        //Update map render state & mark all decorations for rendering (since blue markers don't render by default)
+        mapRenderer.update(mapId, state, MAP_RENDER_STATE);
+        markAllDecorationsForRendering();
+
         matrices.pushMatrix();
         matrices.translate(x, y);
         matrices.scale(scaling, scaling);
-        mapRenderer.update(mapId, state, MAP_RENDER_STATE);
         context.drawMap(MAP_RENDER_STATE);
         matrices.popMatrix();
+    }
+
+    private static void markAllDecorationsForRendering() {
+    	for (MapRenderState.Decoration decoration : MAP_RENDER_STATE.decorations) {
+    		decoration.alwaysRendered = true;
+    	}
     }
 
     public static MapIdComponent getMapIdComponent(ItemStack stack) {
