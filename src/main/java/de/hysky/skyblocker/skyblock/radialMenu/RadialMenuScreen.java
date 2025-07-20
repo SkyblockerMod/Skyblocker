@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -16,20 +17,28 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 
 public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final int INTERNAL_RADIUS = 55;
 	private static final int EXTERNAL_RADIUS = 110;
+	private static long NAVIGATION_DIRECTION_COOLDOWN_DELAY = 600;
 
 	private final RadialMenu menuType;
 	private final Int2ObjectOpenHashMap<ItemStack> options = new Int2ObjectOpenHashMap<>();
 	private final Int2IntMap syncIds = new Int2IntOpenHashMap();
 	private final List<RadialButton> buttons = new ArrayList<>();
+	private float buttonArcSize;
+	private int buttonsHoveredIndex = -1;
+	private NavigationDirection lastNavigationDirectionInput = null;
+	private long navigationDirectionLastTime;
+	private int navigationDirection = 1;
 	private final GenericContainerScreenHandler handler;
 	private final Text parentName;
 
@@ -44,6 +53,7 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 		//Listen for slot updates
 		this.handler = handler;
 		handler.addListener(this);
+
 	}
 
 	@Override
@@ -54,7 +64,8 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 		buttons.clear();
 		clearChildren();
 		float angle = 0;
-		float buttonArcSize = (float) ((2 * Math.PI) / options.size());
+		int index = 0;
+		buttonArcSize = (float) ((2 * Math.PI) / options.size());
 		List<Int2ObjectMap.Entry<ItemStack>> optionOrdered = new ArrayList<>(options.int2ObjectEntrySet().stream().toList());
 
 		//check for back and close buttons to put in the middle of the list so they appear at the bottom
@@ -72,10 +83,11 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 
 		//create all needed radial buttons clockwise from top
 		for (Int2ObjectMap.Entry<ItemStack> stack : optionOrdered) {
-			RadialButton newButton = new RadialButton(angle, buttonArcSize, INTERNAL_RADIUS, EXTERNAL_RADIUS, stack.getValue(), this::clickSlot, stack.getIntKey());
+			RadialButton newButton = new RadialButton(angle, buttonArcSize, INTERNAL_RADIUS, EXTERNAL_RADIUS, stack.getValue(), getButtonHovered(index), stack.getIntKey());
 			buttons.add(newButton);
 			addDrawableChild(newButton);
 			angle += buttonArcSize;
+			index++;
 		}
 
 		//add button to temperately disable menu
@@ -86,6 +98,104 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 				.build());
 
 	}
+
+	private BooleanSupplier getButtonHovered(int index) {
+		return () -> buttonsHoveredIndex == index;
+	}
+
+	@Override
+	public void mouseMoved(double mouseX, double mouseY) {
+		super.mouseMoved(mouseX, mouseY);
+		if (CLIENT.currentScreen == null) return;
+		float actualX = (float) (mouseX * 2) - CLIENT.currentScreen.width;
+		float actualY = (float) (mouseY * 2) - CLIENT.currentScreen.height;
+
+		//return if over hide button
+		if (actualX > CLIENT.currentScreen.width - 100 && actualY > CLIENT.currentScreen.height - 50) {
+			buttonsHoveredIndex = -1;
+			return;
+		}
+
+		//get angle of mouse and adjust to use same starting point and direction as buttons and see if its within bounds
+		double angle = -Math.atan2(actualX, actualY) + Math.PI;
+		buttonsHoveredIndex = (int) (angle / buttonArcSize);
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (buttonsHoveredIndex != -1 && buttonsHoveredIndex < buttons.size()) {
+			this.clickSlot(buttons.get(buttonsHoveredIndex).getLinkedSlot(), button);
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (keyCode == 256 && this.shouldCloseOnEsc()) {
+			this.close();
+			return true;
+		} else {
+			switch (keyCode) {
+				case 262 -> this.getArrowNavigation(NavigationDirection.RIGHT);
+				case 263 -> this.getArrowNavigation(NavigationDirection.LEFT);
+				case 264 -> this.getArrowNavigation(NavigationDirection.DOWN);
+				case 265 -> this.getArrowNavigation(NavigationDirection.UP);
+				case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_SPACE -> this.clickSlot();
+				default -> {
+					if (CLIENT.options.forwardKey.matchesKey(keyCode,scanCode)) this.getArrowNavigation(NavigationDirection.UP);
+					else if (CLIENT.options.backKey.matchesKey(keyCode,scanCode)) this.getArrowNavigation(NavigationDirection.DOWN);
+					else if (CLIENT.options.leftKey.matchesKey(keyCode,scanCode)) this.getArrowNavigation(NavigationDirection.LEFT);
+					else if (CLIENT.options.rightKey.matchesKey(keyCode,scanCode)) this.getArrowNavigation(NavigationDirection.RIGHT);
+					else return super.keyPressed(keyCode, scanCode, modifiers);
+				}
+			}
+			return false;
+		}
+	}
+
+
+
+	private void clickSlot() {
+		if (buttonsHoveredIndex != -1 && buttonsHoveredIndex < buttons.size()) {
+			clickSlot(buttons.get(buttonsHoveredIndex).getLinkedSlot(), 0);
+		}
+
+	}
+
+	private void getArrowNavigation(NavigationDirection direction) {
+		//if there is no current hovered index start at slot in direction
+		boolean skipUpdate = buttonsHoveredIndex == -1;
+		if (buttonsHoveredIndex == -1){
+			buttonsHoveredIndex = switch (direction){
+				case UP -> 0;
+				case DOWN -> buttons.size() /2 ;
+				case LEFT -> (int) (buttons.size() * 0.75) ;
+				case RIGHT -> (int) (buttons.size() * 0.25) ;
+			};
+		}
+		//calculate new direction based on current angle. then we keep this direction while the button is pressed
+		if (lastNavigationDirectionInput != direction || System.currentTimeMillis() > navigationDirectionLastTime + 500) {
+			lastNavigationDirectionInput = direction;
+			float angle = buttonsHoveredIndex * buttonArcSize;
+			navigationDirection = switch (direction) {
+				case UP  -> (angle > Math.PI) ?  +1 :  -1;
+				case DOWN -> (angle > Math.PI) ?  -1 :  +1;
+				case LEFT ->(angle > Math.PI / 2 && angle < Math.PI * 1.5) ?  +1 :  -1;
+				case RIGHT -> (angle > Math.PI / 2 && angle < Math.PI * 1.5) ?  -1 :  +1;
+			};
+		}
+		// update hovered index
+		if (skipUpdate) return;
+		buttonsHoveredIndex += navigationDirection;
+		if (buttonsHoveredIndex < 0) {
+			buttonsHoveredIndex = buttons.size() - 1;
+		}
+		if (buttonsHoveredIndex >= buttons.size()) {
+			buttonsHoveredIndex = 0;
+		}
+		navigationDirectionLastTime = System.currentTimeMillis();
+	}
+
 
 	private void hide(ButtonWidget button) {
 		CLIENT.setScreen(new GenericContainerScreen(handler, CLIENT.player.getInventory(), parentName));
@@ -126,8 +236,10 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 		int textWidth = textRenderer.getWidth(getTitle());
 		context.drawHorizontalLine(width / 2 - textWidth / 2, width / 2 + textWidth / 2, height / 2, 0xFFFFFFFF);
 		//render current option name
-		buttons.stream().filter(button -> button.hovered).findAny().ifPresent(hovered ->
-				context.drawCenteredTextWithShadow(textRenderer, hovered.getName(), width / 2, height / 2 + 2, 0xFFFFFFFF)); // + 2 to move out of way of line. Skyhanni seams to sometimes give us a null value
+		if (buttonsHoveredIndex != -1 && buttonsHoveredIndex < buttons.size()) {
+			context.drawCenteredTextWithShadow(textRenderer, buttons.get(buttonsHoveredIndex).getName(), width / 2, height / 2 + 2, 0xFFFFFFFF); // + 2 to move out of way of line.
+		}
+
 	}
 
 

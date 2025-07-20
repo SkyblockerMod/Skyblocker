@@ -21,37 +21,39 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 public class RadialButton implements Drawable, Element, Widget, Selectable {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
-	float startAngle;
-	float arcLength;
-	float internalRadius;
-	float externalRadius;
-	ItemStack icon;
-	boolean focused;
-	boolean hovered;
-	protected final RadialButton.PressAction onPress;
-	int linkedSlot;
+	private final float startAngle;
+	private final float arcLength;
+	private final float internalRadius;
+	private final float externalRadius;
+	private final ItemStack icon;
+	private final BooleanSupplier getHovered;
+	private final int linkedSlot;
 
-	public RadialButton(float startAngle, float arcLength, float internalRadius, float externalRadius, ItemStack icon, RadialButton.PressAction onPress, int linkedSlot) {
+	public RadialButton(float startAngle, float arcLength, float internalRadius, float externalRadius, ItemStack icon, BooleanSupplier getHovered, int linkedSlot) {
 		super();
 		this.startAngle = (float) (startAngle - (Math.PI / 2));//start at the top
 		this.arcLength = arcLength;
 		this.internalRadius = internalRadius;
 		this.externalRadius = externalRadius;
 		this.icon = icon;
-		focused = false;
-		this.onPress = onPress;
+		this.getHovered = getHovered;
 		this.linkedSlot = linkedSlot;
 	}
 
 	public String getName() {
 		Text customName = icon.getCustomName();
-		if (customName == null) return "null";
+		if (customName == null) return "null"; //Skyhanni seams to sometimes give us a null value
 		return icon.getCustomName().getString();
+	}
+
+	protected int getLinkedSlot() {
+		return linkedSlot;
 	}
 
 
@@ -81,43 +83,17 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 	 */
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (hovered) {
-			this.onPress.onPress(linkedSlot, button);
-		}
 		return Element.super.mouseClicked(mouseX, mouseY, button);
 	}
 
-	/**
-	 * Checks if the mouse position is within the bound
-	 * of the element.
-	 *
-	 * @param mouseX the X coordinate of the mouse
-	 * @param mouseY the Y coordinate of the mouse
-	 * @return {@code true} if the mouse is within the bound of the element, otherwise {@code false}
-	 */
-	@Override
-	public boolean isMouseOver(double mouseX, double mouseY) {
-		if (CLIENT.currentScreen == null) return false;
-		float actualX = (float) (mouseX * 2) - CLIENT.currentScreen.width;
-		float actualY = (float) (mouseY * 2) - CLIENT.currentScreen.height;
-
-		//return false if over hide button
-		if (actualX > CLIENT.currentScreen.width - 100 && actualY > CLIENT.currentScreen.height - 50) return false;
-
-		//get angle of mouse and adjust to use same starting point and direction as buttons and see if its within bounds
-		double angle = -Math.atan2(actualX, actualY) + Math.PI / 2;
-		return angle > startAngle && angle < startAngle + arcLength - 0.001; // make sure there is no overlap
-	}
-
-
 	@Override
 	public void setFocused(boolean focused) {
-		this.focused = focused;
+
 	}
 
 	@Override
 	public boolean isFocused() {
-		return this.focused;
+		return false;
 	}
 
 
@@ -130,7 +106,7 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 		//change color when hovered
-		this.hovered = this.isMouseOver(mouseX, mouseY);
+		boolean hovered = getHovered.getAsBoolean();
 		int color = hovered ? 0xFE000000 : 0x77000000;
 		float internal = internalRadius;
 		float external = hovered ? externalRadius + 5 : externalRadius;
@@ -183,7 +159,7 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 		if (this.isFocused()) {
 			return Selectable.SelectionType.FOCUSED;
 		} else {
-			return this.hovered ? Selectable.SelectionType.HOVERED : Selectable.SelectionType.NONE;
+			return this.getHovered.getAsBoolean() ? Selectable.SelectionType.HOVERED : Selectable.SelectionType.NONE;
 		}
 	}
 
