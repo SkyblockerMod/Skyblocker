@@ -351,6 +351,14 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.bazaar.enableReorderHelper"))
+								.description(Text.translatable("skyblocker.config.helpers.bazaar.enableReorderHelper.@Tooltip"))
+								.binding(defaults.helpers.bazaar.enableReorderHelper,
+										() -> config.helpers.bazaar.enableReorderHelper,
+										newValue -> config.helpers.bazaar.enableReorderHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup"))
 								.description(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip"))
 								.binding(defaults.helpers.itemPrice.enableItemPriceLookup,

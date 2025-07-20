@@ -43,7 +43,6 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	public static final PowderMiningTracker INSTANCE = new PowderMiningTracker();
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Powder Mining Tracker");
 	private static final Identifier POWDER_MINING_TRACKER = Identifier.of(SkyblockerMod.NAMESPACE, "powder_mining_tracker");
-	private static final Codec<Object2IntMap<String>> REWARDS_CODEC = CodecUtils.object2IntMapCodec(Codec.STRING);
 	private static final Object2ObjectArrayMap<String, String> NAME2ID_MAP = new Object2ObjectArrayMap<>(50);
 
 	/**
@@ -66,7 +65,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	/**
 	 * Holds the total reward maps for all accounts and profiles. {@link #currentProfileRewards} is a subset of this map, updated on profile change.
 	 */
-	private final ProfiledData<Object2IntMap<String>> allRewards = new ProfiledData<>(getRewardFilePath("powder-mining.json"), REWARDS_CODEC);
+	private final ProfiledData<Object2IntMap<String>> allRewards = new ProfiledData<>(getRewardFilePath("powder-mining.json"), CodecUtils.object2IntMapCodec(Codec.STRING));
 	private boolean insideChestMessage = false;
 	private double profit = 0;
 
