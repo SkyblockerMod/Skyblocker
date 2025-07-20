@@ -319,7 +319,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 
 		if (currentSolver != null) {
-			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack);
+			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack, button);
 
 			if (disallowed) ci.cancel();
 		}

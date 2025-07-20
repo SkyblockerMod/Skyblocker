@@ -106,7 +106,7 @@ public class SeaCreatureTracker {
 	 * @param s Message to check
 	 */
 	private static void onChatMessage(String s) {
-		if (!SkyblockerConfigManager.get().helpers.fishing.fishingHudEnabledLocations.contains(Utils.getLocation())) {
+		if (!SkyblockerConfigManager.get().helpers.fishing.enableFishingHud || !SkyblockerConfigManager.get().helpers.fishing.fishingHudEnabledLocations.contains(Utils.getLocation())) {
 			return;
 		}
 		String message = Formatting.strip(s);

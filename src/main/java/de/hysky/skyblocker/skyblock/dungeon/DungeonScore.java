@@ -22,6 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,7 +101,7 @@ public class DungeonScore {
 			}
 			if (SCORE_CONFIG.enableDungeonScore270Title) {
 				client.inGameHud.setDefaultTitleFade();
-				client.inGameHud.setTitle(Constants.PREFIX.get().append(SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270")));
+				client.inGameHud.setTitle(Text.of(SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270")));
 			}
 			if (SCORE_CONFIG.enableDungeonScore270Sound) {
 				client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
@@ -122,7 +123,7 @@ public class DungeonScore {
 			}
 			if (SCORE_CONFIG.enableDungeonScore300Title) {
 				client.inGameHud.setDefaultTitleFade();
-				client.inGameHud.setTitle(Constants.PREFIX.get().append(SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300")));
+				client.inGameHud.setTitle(Text.of(SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300")));
 			}
 			if (SCORE_CONFIG.enableDungeonScore300Sound) {
 				client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);

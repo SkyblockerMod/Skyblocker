@@ -1,344 +1,253 @@
 package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 
+import java.awt.Color;
+
 public class DungeonsConfig {
-    @SerialEntry
-    public boolean fancyPartyFinder = true;
+	public boolean fancyPartyFinder = false;
 
-    @SerialEntry
-    public boolean croesusHelper = true;
+	public boolean croesusHelper = true;
 
-	@SerialEntry
 	public boolean salvageHelper = true;
 
-    @SerialEntry
-    public boolean playerSecretsTracker = false;
+	public boolean bloodCampHelper = false;
 
-    @SerialEntry
-    public boolean classBasedPlayerGlow = true;
+	public boolean playerSecretsTracker = false;
 
-    @SerialEntry
-    public boolean spiritLeapOverlay = true;
+	public boolean classBasedPlayerGlow = true;
 
-    @SerialEntry
-    public boolean starredMobGlow = false;
+	public boolean spiritLeapOverlay = true;
 
-    @SerialEntry
-    public boolean starredMobBoundingBoxes = true;
+	public boolean starredMobGlow = false;
 
-    @SerialEntry
-    public boolean allowDroppingProtectedItems = false;
+	public boolean starredMobBoundingBoxes = true;
 
-    @SerialEntry
-    public boolean hideSoulweaverSkulls = false;
+	public boolean allowDroppingProtectedItems = false;
 
-    @SerialEntry
-    public DungeonMap dungeonMap = new DungeonMap();
+	public boolean dungeonSplits = false;
 
-    @SerialEntry
-    public PuzzleSolvers puzzleSolvers = new PuzzleSolvers();
+	public boolean hideSoulweaverSkulls = false;
 
-    @SerialEntry
-    public TheProfessor theProfessor = new TheProfessor();
+	public DungeonMap dungeonMap = new DungeonMap();
 
-    @SerialEntry
-    public Livid livid = new Livid();
+	public PuzzleSolvers puzzleSolvers = new PuzzleSolvers();
 
-    @SerialEntry
-    public Terminals terminals = new Terminals();
+	public TheProfessor theProfessor = new TheProfessor();
 
-    @SerialEntry
-    public Devices devices = new Devices();
+	public Livid livid = new Livid();
 
-	@SerialEntry
-    public Goldor goldor = new Goldor();
+	public Terminals terminals = new Terminals();
 
-    @SerialEntry
-    public SecretWaypoints secretWaypoints = new SecretWaypoints();
+	public Devices devices = new Devices();
 
-    @SerialEntry
-    public MimicMessage mimicMessage = new MimicMessage();
+	public Goldor goldor = new Goldor();
 
-    @SerialEntry
-    public DoorHighlight doorHighlight = new DoorHighlight();
+	public SecretWaypoints secretWaypoints = new SecretWaypoints();
 
-    @SerialEntry
-    public DungeonScore dungeonScore = new DungeonScore();
+	public MimicMessage mimicMessage = new MimicMessage();
 
-    @SerialEntry
-    public DungeonChestProfit dungeonChestProfit = new DungeonChestProfit();
+	public DoorHighlight doorHighlight = new DoorHighlight();
 
-    public static class DungeonMap {
-        @SerialEntry
-        public boolean enableMap = true;
+	public DungeonScore dungeonScore = new DungeonScore();
 
-        @SerialEntry
-        public float mapScaling = 1f;
+	public DungeonChestProfit dungeonChestProfit = new DungeonChestProfit();
 
-        @SerialEntry
-        public int mapX = 2;
+	public static class DungeonMap {
+		public boolean enableMap = true;
 
-        @SerialEntry
-        public int mapY = 2;
-    }
+		public float mapScaling = 1f;
 
-    public static class PuzzleSolvers {
-        @SerialEntry
-        public boolean solveTicTacToe = true;
+		public int mapX = 2;
 
-        @SerialEntry
-        public boolean solveThreeWeirdos = true;
+		public int mapY = 2;
+	}
 
-        @SerialEntry
-        public boolean creeperSolver = true;
+	public static class PuzzleSolvers {
+		public boolean solveTicTacToe = true;
+
+		public boolean solveThreeWeirdos = true;
+
+		public boolean creeperSolver = true;
 
 		@Deprecated
 		public transient boolean solveWaterboard = true;
 
-        @SerialEntry
-        public boolean waterboardOneFlow = true;
+		public boolean waterboardOneFlow = true;
 
-		@SerialEntry
 		public boolean previewWaterPath = true;
 
-		@SerialEntry
 		public boolean previewLeverEffects = true;
 
-        @SerialEntry
-        public boolean blazeSolver = true;
+		public boolean blazeSolver = true;
 
-        @SerialEntry
-        public boolean solveBoulder = true;
+		public boolean solveBoulder = true;
 
-        @SerialEntry
-        public boolean solveIceFill = true;
+		public boolean solveIceFill = true;
 
-        @SerialEntry
-        public boolean solveSilverfish = true;
+		public boolean solveSilverfish = true;
 
-        @SerialEntry
-        public boolean solveTrivia = true;
+		public boolean solveTrivia = true;
 
-		@SerialEntry
 		public boolean solveTeleportMaze = true;
-    }
+	}
 
-    public static class TheProfessor {
-        @SerialEntry
-        public boolean fireFreezeStaffTimer = true;
+	public static class TheProfessor {
+		public boolean fireFreezeStaffTimer = true;
 
-        @SerialEntry
-        public boolean floor3GuardianHealthDisplay = true;
-    }
+		public boolean floor3GuardianHealthDisplay = true;
+	}
 
-    public static class Livid {
-        @SerialEntry
-        public boolean enableSolidColor = false;
+	public static class Livid {
+		public boolean enableSolidColor = false;
 
-        @SerialEntry
-        public boolean enableLividColorGlow = false;
+		public Color customColor = Color.RED;
 
-        @SerialEntry
-        public boolean enableLividColorBoundingBox = true;
+		public boolean enableLividColorGlow = false;
 
-        @SerialEntry
-        public boolean enableLividColorText = true;
+		public boolean enableLividColorBoundingBox = true;
 
-        @SerialEntry
-        public boolean enableLividColorTitle = true;
+		public boolean enableLividColorText = true;
 
-        @SerialEntry
-        public String lividColorText = "The livid color is [color]";
-    }
+		public boolean enableLividColorTitle = true;
 
-    public static class Terminals {
-        @SerialEntry
-        public boolean solveColor = true;
+		public String lividColorText = "The livid color is [color]";
+	}
 
-		@SerialEntry
+	public static class Terminals {
+		public boolean solveColor = true;
+
 		public boolean solveSameColor = true;
 
-        @SerialEntry
-        public boolean solveOrder = true;
+		public boolean solveOrder = true;
 
-        @SerialEntry
-        public boolean solveStartsWith = true;
+		public boolean solveStartsWith = true;
 
-        @SerialEntry
-        public boolean blockIncorrectClicks = false;
-    }
+		public boolean blockIncorrectClicks = false;
+	}
 
-    public static class Devices {
-        @SerialEntry
-        public boolean solveSimonSays = true;
+	public static class Devices {
+		public boolean solveSimonSays = true;
 
-        @SerialEntry
-        public boolean solveLightsOn = true;
-    }
+		public boolean solveLightsOn = true;
+	}
 
-    public static class Goldor {
-        @SerialEntry
-        public boolean enableGoldorWaypoints = true;
+	public static class Goldor {
+		public boolean enableGoldorWaypoints = true;
 
-        @SerialEntry
-        public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
-    }
+		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+	}
 
-    public static class SecretWaypoints {
-    	@Deprecated
-    	public transient boolean enableRoomMatching = true;
+	public static class SecretWaypoints {
+		@Deprecated
+		public transient boolean enableRoomMatching = true;
 
-        @SerialEntry
-        public boolean enableSecretWaypoints = true;
+		public boolean enableSecretWaypoints = true;
 
-        @SerialEntry
-        public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 
-        @SerialEntry
-        public boolean showSecretText = true;
+		public boolean showSecretText = true;
 
-        @SerialEntry
-        public boolean enableEntranceWaypoints = true;
+		public boolean enableEntranceWaypoints = true;
 
-        @SerialEntry
-        public boolean enableSuperboomWaypoints = true;
+		public boolean enableSuperboomWaypoints = true;
 
-        @SerialEntry
-        public boolean enableChestWaypoints = true;
+		public boolean enableChestWaypoints = true;
 
-        @SerialEntry
-        public boolean enableItemWaypoints = true;
+		public boolean enableItemWaypoints = true;
 
-        @SerialEntry
-        public boolean enableBatWaypoints = true;
+		public boolean enableBatWaypoints = true;
 
-        @SerialEntry
-        public boolean enableWitherWaypoints = true;
+		public boolean enableWitherWaypoints = true;
 
-        @SerialEntry
-        public boolean enableLeverWaypoints = true;
+		public boolean enableLeverWaypoints = true;
 
-        @SerialEntry
-        public boolean enableFairySoulWaypoints = true;
+		public boolean enableFairySoulWaypoints = true;
 
-        @SerialEntry
-        public boolean enableStonkWaypoints = true;
+		public boolean enableStonkWaypoints = true;
 
-        @SerialEntry
-        public boolean enableAotvWaypoints = true;
+		public boolean enableAotvWaypoints = true;
 
-        @SerialEntry
-        public boolean enablePearlWaypoints = true;
+		public boolean enablePearlWaypoints = true;
 
-        @SerialEntry
-        public boolean enableDefaultWaypoints = true;
-    }
+		public boolean enableDefaultWaypoints = true;
+	}
 
-    public static class MimicMessage {
-        @SerialEntry
-        public boolean sendMimicMessage = true;
+	public static class MimicMessage {
+		public boolean sendMimicMessage = true;
 
-        @SerialEntry
-        public String mimicMessage = "Mimic dead!";
-    }
+		public String mimicMessage = "Mimic dead!";
+	}
 
-    public static class DoorHighlight {
-        @SerialEntry
-        public boolean enableDoorHighlight = true;
+	public static class DoorHighlight {
+		public boolean enableDoorHighlight = true;
 
-        @SerialEntry
-        public Type doorHighlightType = Type.OUTLINED_HIGHLIGHT;
+		public Type doorHighlightType = Type.OUTLINED_HIGHLIGHT;
 
-        public enum Type {
-            HIGHLIGHT,
-            OUTLINED_HIGHLIGHT,
-            OUTLINE;
+		public enum Type {
+			HIGHLIGHT,
+			OUTLINED_HIGHLIGHT,
+			OUTLINE;
 
-            @Override
-            public String toString() {
-                return I18n.translate("skyblocker.config.dungeons.doorHighlight.doorHighlightType.type." + name());
-            }
-        }
-    }
+			@Override
+			public String toString() {
+				return I18n.translate("skyblocker.config.dungeons.doorHighlight.doorHighlightType.type." + name());
+			}
+		}
+	}
 
-    public static class DungeonScore {
-        @SerialEntry
-        public boolean enableDungeonScore270Message = false;
+	public static class DungeonScore {
+		public boolean enableDungeonScore270Message = false;
 
-        @SerialEntry
-        public boolean enableDungeonScore270Title = false;
+		public boolean enableDungeonScore270Title = false;
 
-        @SerialEntry
-        public boolean enableDungeonScore270Sound = false;
+		public boolean enableDungeonScore270Sound = false;
 
-        @SerialEntry
-        public String dungeonScore270Message = "270 Score Reached!";
+		public String dungeonScore270Message = "270 Score Reached!";
 
-        @SerialEntry
-        public boolean enableDungeonScore300Message = true;
+		public boolean enableDungeonScore300Message = true;
 
-        @SerialEntry
-        public boolean enableDungeonScore300Title = true;
+		public boolean enableDungeonScore300Title = true;
 
-        @SerialEntry
-        public boolean enableDungeonScore300Sound = true;
+		public boolean enableDungeonScore300Sound = true;
 
-        @SerialEntry
-        public String dungeonScore300Message = "300 Score Reached!";
+		public String dungeonScore300Message = "300 Score Reached!";
 
-        @SerialEntry
-        public boolean enableDungeonCryptsMessage = true;
+		public boolean enableDungeonCryptsMessage = true;
 
-        @SerialEntry
-        public int dungeonCryptsMessageThreshold = 250;
+		public int dungeonCryptsMessageThreshold = 250;
 
-        @SerialEntry
-        public String dungeonCryptsMessage = "We only have [crypts] crypts out of 5, we need more!";
+		public String dungeonCryptsMessage = "We only have [crypts] crypts out of 5, we need more!";
 
-        @SerialEntry
-        public boolean enableScoreHUD = true;
+		public boolean enableScoreHUD = true;
 
-        @SerialEntry
-        public int scoreX = 29;
+		public int scoreX = 29;
 
-        @SerialEntry
-        public int scoreY = 134;
+		public int scoreY = 134;
 
-        @SerialEntry
-        public float scoreScaling = 1f;
-    }
+		public float scoreScaling = 1f;
+	}
 
-    public static class DungeonChestProfit {
-        @SerialEntry
-        public boolean enableProfitCalculator = true;
+	public static class DungeonChestProfit {
+		public boolean enableProfitCalculator = true;
 
-        @SerialEntry
-        public boolean includeKismet = false;
+		public boolean includeKismet = false;
 
-        @SerialEntry
-        public boolean includeEssence = true;
+		public boolean includeEssence = true;
 
-        @SerialEntry
-        public boolean croesusProfit = true;
+		public boolean croesusProfit = true;
 
-        @SerialEntry
-        public int neutralThreshold = 1000;
+		public int neutralThreshold = 1000;
 
-        @SerialEntry
-        public Formatting neutralColor = Formatting.DARK_GRAY;
+		public Formatting neutralColor = Formatting.DARK_GRAY;
 
-        @SerialEntry
-        public Formatting profitColor = Formatting.DARK_GREEN;
+		public Formatting profitColor = Formatting.DARK_GREEN;
 
-        @SerialEntry
-        public Formatting lossColor = Formatting.RED;
+		public Formatting lossColor = Formatting.RED;
 
-        @SerialEntry
-        public Formatting incompleteColor = Formatting.BLUE;
-    }
+		public Formatting incompleteColor = Formatting.BLUE;
+	}
 
 }
