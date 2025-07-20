@@ -66,7 +66,7 @@ public class MythologicalRitual {
         AttackBlockCallback.EVENT.register(MythologicalRitual::onAttackBlock);
         UseBlockCallback.EVENT.register(MythologicalRitual::onUseBlock);
         UseItemCallback.EVENT.register(MythologicalRitual::onUseItem);
-        ClientReceiveMessageEvents.GAME.register(MythologicalRitual::onChatMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(MythologicalRitual::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("diana")
                 .then(literal("clearGriffinBurrows").executes(context -> {
@@ -250,12 +250,14 @@ public class MythologicalRitual {
         return ActionResult.PASS;
     }
 
-    public static void onChatMessage(Text message, boolean overlay) {
+    public static boolean onChatMessage(Text message, boolean overlay) {
         if (isActive() && GRIFFIN_BURROW_DUG.matcher(message.getString()).matches()) {
             previousBurrow.confirmed = TriState.FALSE;
             previousBurrow = griffinBurrows.get(lastDugBurrowPos);
             previousBurrow.confirmed = TriState.DEFAULT;
         }
+
+        return true;
     }
 
     private static boolean isActive() {
