@@ -36,7 +36,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
@@ -108,10 +110,11 @@ public class Waypoints {
 			Collection<WaypointGroup> waypointGroups = SKYBLOCKER_LEGACY_ORDERED_CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonObject.class)).resultOrPartial(LOGGER::error).orElseThrow();
 			for (WaypointGroup group : waypointGroups) {
 				Waypoints.putWaypointGroup(group.withIsland(Location.DWARVEN_MINES).deepCopy());
-				Waypoints.putWaypointGroup(group.withIsland(Location.DWARVEN_MINES).deepCopy());
+				Waypoints.putWaypointGroup(group.withIsland(Location.CRYSTAL_HOLLOWS).deepCopy());
 			}
 			Files.move(SKYBLOCKER_LEGACY_ORDERED_FILE, SkyblockerMod.CONFIG_DIR.resolve("legacy_ordered_waypoints.json"));
 			LOGGER.info("[Skyblocker Waypoints] Successfully migrated {} ordered waypoints from {} groups to waypoints!", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size());
+		} catch (NoSuchFileException | FileAlreadyExistsException ignored) {
 		} catch (IOException e) {
 			LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading legacy ordered waypoints", e);
 		}

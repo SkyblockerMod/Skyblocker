@@ -102,7 +102,7 @@ public class GeneralConfig {
 
         public boolean dungeonQuality = true;
 
-        public boolean showEssenceCost = false;
+        public boolean showEssenceCost = true;
 
         public boolean enableEstimatedItemValue = true;
 
