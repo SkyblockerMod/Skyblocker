@@ -32,7 +32,7 @@ public class WorldRendererMixin {
 
 	@ModifyExpressionValue(method = "renderEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BufferBuilderStorage;getOutlineVertexConsumers()Lnet/minecraft/client/render/OutlineVertexConsumerProvider;"))
 	private OutlineVertexConsumerProvider skyblocker$useCustomGlowOutlineVertexConsumers(OutlineVertexConsumerProvider original, @Local Entity entity) {
-		return MobGlow.hasOrComputeMobGlow(entity) ? GlowRenderer.GLOW_OUTLINE_VERTEX_CONSUMERS : original;
+		return MobGlow.hasOrComputeMobGlow(entity) && !entity.isGlowing() ? GlowRenderer.GLOW_OUTLINE_VERTEX_CONSUMERS : original;
 	}
 
 	@ModifyVariable(method = "renderEntities",
