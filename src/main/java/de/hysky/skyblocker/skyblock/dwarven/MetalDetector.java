@@ -92,7 +92,7 @@ public class MetalDetector {
 
     @Init
     public static void init() {
-        ClientReceiveMessageEvents.GAME.register(MetalDetector::getDistanceMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(MetalDetector::getDistanceMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(MetalDetector::render);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
     }
@@ -103,15 +103,15 @@ public class MetalDetector {
      * @param text    the message sent to the player
      * @param overlay if the message is an overlay message
      */
-    private static void getDistanceMessage(Text text, boolean overlay) {
+    private static boolean getDistanceMessage(Text text, boolean overlay) {
         if (!overlay || !SkyblockerConfigManager.get().mining.crystalHollows.metalDetectorHelper || !Utils.isInCrystalHollows() || !(Utils.getIslandArea().substring(2).equals("Mines of Divan")) || CLIENT.player == null) {
             checkChestFound(text);
-            return;
+            return true;
         }
         //in the mines of divan
         Matcher treasureDistanceMature = TREASURE_PATTERN.matcher(text.getString());
         if (!treasureDistanceMature.find()) {
-            return;
+            return true;
         }
         //find new values
         double distance = Double.parseDouble(treasureDistanceMature.group(2));
@@ -146,6 +146,8 @@ public class MetalDetector {
         //update previous positions
         previousDistance = distance;
         previousPlayerPos = playerPos;
+
+        return true;
     }
 
     /**

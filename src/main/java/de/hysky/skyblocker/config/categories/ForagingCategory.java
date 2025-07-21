@@ -100,8 +100,8 @@ public class ForagingCategory {
 										})
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver"))
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver"))
 								.description(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip"))
 								.binding(defaults.foraging.galatea.enableTunerSolver,
 										() -> config.foraging.galatea.enableTunerSolver,
