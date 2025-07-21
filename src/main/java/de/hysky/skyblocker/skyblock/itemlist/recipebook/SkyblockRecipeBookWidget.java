@@ -19,6 +19,7 @@ import net.minecraft.recipe.display.RecipeDisplay;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.context.ContextParameterMap;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,7 +69,7 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 		if (this.searchField == null) {
 			this.searchField = new TextFieldWidget(this.client.textRenderer, left + 25, top + 13, SEARCH_FIELD_WIDTH, 14, Text.translatable("itemGroup.search"));
 			this.searchField.setMaxLength(60); //Set at 60 due to the longest Skyblock item name being 55 characters long
-			this.searchField.setEditableColor(0xFFFFFF);
+			this.searchField.setEditableColor(Colors.WHITE);
 			this.searchField.setText(lastSearch);
 			this.searchField.setPlaceholder(SEARCH_HINT_TEXT);
 		}
