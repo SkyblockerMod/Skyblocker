@@ -29,6 +29,8 @@ import java.util.Map;
 public class StatusBarsConfigScreen extends Screen {
 	private static final Identifier HOTBAR_TEXTURE = Identifier.ofVanilla("hud/hotbar");
 	private static final int HOTBAR_WIDTH = 182;
+	private static final float RESIZE_THRESHOLD = 0.75f;
+	private static final int BAR_MINIMUM_WIDTH = 30;
 	public static final long RESIZE_CURSOR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HRESIZE_CURSOR);
 	// prioritize left and right cuz they are much smaller than up and down
 	private static final NavigationDirection[] DIRECTION_CHECK_ORDER = new NavigationDirection[]{NavigationDirection.LEFT, NavigationDirection.RIGHT, NavigationDirection.UP, NavigationDirection.DOWN};
@@ -183,7 +185,7 @@ public class StatusBarsConfigScreen extends Screen {
 
 					// resize towards the left
 					if (mouseX < middleX) {
-						if (middleX - mouseX > widthPerSize / .75f) {
+						if (middleX - mouseX > widthPerSize / RESIZE_THRESHOLD) {
 							if (hasRight) {
 								if (rightBar.size + 1 > sizeRule.maxSize()) doResize = false;
 							}
@@ -198,7 +200,7 @@ public class StatusBarsConfigScreen extends Screen {
 							}
 						}
 					} else { // towards the right
-						if (mouseX - middleX > widthPerSize / .75f) {
+						if (mouseX - middleX > widthPerSize / RESIZE_THRESHOLD) {
 							if (hasRight) {
 								if (rightBar.size - 1 < sizeRule.minSize()) doResize = false;
 							}
@@ -215,10 +217,10 @@ public class StatusBarsConfigScreen extends Screen {
 					}
 				} else { // Freely moving around
 					if (hasLeft) {
-						leftBar.setWidth(Math.max(30, mouseX - leftBar.getX()));
+						leftBar.setWidth(Math.max(BAR_MINIMUM_WIDTH, mouseX - leftBar.getX()));
 					} else if (hasRight) {
 						int endX = rightBar.getX() + rightBar.getWidth();
-						rightBar.setX(Math.min(endX - 30, mouseX));
+						rightBar.setX(Math.min(endX - BAR_MINIMUM_WIDTH, mouseX));
 						rightBar.setWidth(endX - rightBar.getX());
 					}
 				}
@@ -360,7 +362,7 @@ public class StatusBarsConfigScreen extends Screen {
 			if (currentInsertLocation == BarLocation.NULL) {
 				cursorBar.x = (float) ((mouseX + cursorOffset.x()) / width);
 				cursorBar.y = (float) ((mouseY + cursorOffset.y()) / height);
-				cursorBar.width = Math.clamp(cursorBar.width, 30f / width, 1);
+				cursorBar.width = Math.clamp(cursorBar.width, (float) BAR_MINIMUM_WIDTH / width, 1);
 			}
 			currentInsertLocation = BarLocation.NULL;
 			cursorBar = null;

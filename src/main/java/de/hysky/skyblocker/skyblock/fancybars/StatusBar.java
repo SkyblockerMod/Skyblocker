@@ -32,6 +32,8 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
 	private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
 
+	public static final int ICON_SIZE = 9;
+
 	private final Identifier icon;
 	private final StatusBarType type;
 	private Color[] colors;
@@ -111,14 +113,14 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		if (renderWidth <= 0) return;
 		int transparency = transparency(-1);
 		switch (iconPosition) {
-			case LEFT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, renderX, renderY, 9, 9, transparency);
-			case RIGHT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, renderX + renderWidth - 9, renderY, 9, 9, transparency);
+			case LEFT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, renderX, renderY, ICON_SIZE, ICON_SIZE, transparency);
+			case RIGHT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, renderX + renderWidth - ICON_SIZE, renderY, ICON_SIZE, ICON_SIZE, transparency);
 		}
 
-		int barWith = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - 10;
-		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + 10 : renderX;
-		context.drawGuiTexture(RenderLayer::getGuiTextured, BAR_BACK, barX, renderY + 1, barWith, 7, transparency);
-		drawBarFill(context, barX, barWith);
+		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
+		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 1 : renderX;
+		context.drawGuiTexture(RenderLayer::getGuiTextured, BAR_BACK, barX, renderY + 1, barWidth, 7, transparency);
+		drawBarFill(context, barX, barWidth);
 		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
 		if (showText() && enabled) {
 			context.getMatrices().push();
@@ -152,8 +154,8 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	public void renderText(DrawContext context) {
 		if (!showText()) return;
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		int barWith = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - 10;
-		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + 11 : renderX;
+		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
+		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 2 : renderX;
 		String stringValue = this.value.toString();
 		MutableText text = Text.literal(stringValue).styled(style -> style.withColor((textColor == null ? colors[0] : textColor).getRGB()));
 
@@ -169,9 +171,9 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		int textWidth = textRenderer.getWidth(text);
 		int x;
 		switch (textPosition) {
-			case RIGHT -> x = barX + barWith - textWidth;
+			case RIGHT -> x = barX + barWidth - textWidth;
 			case CENTER -> x = this.renderX + (renderWidth - textWidth) / 2;
-			case BAR_CENTER -> x = barX + (barWith - textWidth) / 2;
+			case BAR_CENTER -> x = barX + (barWidth - textWidth) / 2;
 			case null, default -> x = barX; // Put on the left by default because I said so.
 		}
 		int y = this.renderY - 3;
