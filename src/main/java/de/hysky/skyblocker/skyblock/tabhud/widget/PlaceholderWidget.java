@@ -20,7 +20,7 @@ public class PlaceholderWidget extends HudWidget {
 	}
 
 	@Override
-	public void renderConfig(DrawContext context, float delta) {
+	public void renderWidgetConfig(DrawContext context, float delta) {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		h = 15;
 		w = textRenderer.getWidth(information.displayName()) + 10;

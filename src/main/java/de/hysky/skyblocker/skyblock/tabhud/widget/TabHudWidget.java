@@ -35,7 +35,7 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	}
 
 	private void init() {
-		PlayerListManager.addHandledTabWidget(hypixelWidgetName);
+		PlayerListManager.addHandledTabWidget(hypixelWidgetName, this);
 		cache.add(new IcoTextComponent());
 		registerAutoUpdate();
 	}

@@ -4,8 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.CenteredWidgetPositioner;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.TopAlignedWidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
@@ -17,12 +15,15 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class ScreenBuilder {
-
 	public static final Logger LOGGER = LogUtils.getLogger();
+	private static boolean positionsDirty = false;
+
+	public static void markPositionsDirty() {
+		positionsDirty = true;
+	}
 
 
 	private @NotNull JsonObject config;
@@ -146,8 +147,9 @@ public class ScreenBuilder {
 			hash = hash * 31 + Integer.hashCode(widget.getScaledWidth());
 			hash = hash * 31 + Integer.hashCode(widget.getScaledHeight());
 		}
-		if (positionsHash != hash) {
+		if (positionsDirty || positionsHash != hash) {
 			positionsHash = hash;
+			positionsDirty = false;
 			updatePositions(widgets, screenWidth, screenHeight);
 		}
 		for (HudWidget widget : widgets) {
@@ -174,21 +176,4 @@ public class ScreenBuilder {
 	public Collection<HudWidget> getWidgets() {
 		return widgets;
 	}
-
-
-	public enum DefaultPositioner {
-		TOP(TopAlignedWidgetPositioner::new),
-		CENTERED(CenteredWidgetPositioner::new);
-
-		private final BiFunction<Integer, Integer, WidgetPositioner> function;
-
-		DefaultPositioner(BiFunction<Integer, Integer, WidgetPositioner> widgetPositionerSupplier) {
-			function = widgetPositionerSupplier;
-		}
-
-		public WidgetPositioner getNewPositioner(int screenWidth, int screenHeight) {
-			return function.apply(screenWidth, screenHeight);
-		}
-	}
-
 }

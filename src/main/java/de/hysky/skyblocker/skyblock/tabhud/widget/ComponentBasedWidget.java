@@ -162,7 +162,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	}
 
 	@Override
-	public void renderConfig(DrawContext context, float delta) {
+	public void renderWidgetConfig(DrawContext context, float delta) {
 		// TODO do not pack every time maybe
 		List<Component> configComponents = getConfigComponents();
 		this.pack(configComponents);

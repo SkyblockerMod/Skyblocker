@@ -1,29 +1,44 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
+import de.hysky.skyblocker.skyblock.tabhud.config.option.EnumOption;
+import de.hysky.skyblocker.skyblock.tabhud.config.option.FloatOption;
+import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.CenteredWidgetPositioner;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.TopAlignedWidgetPositioner;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.StringIdentifiable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,7 +72,7 @@ public class PlayerListManager {
 	private static String footer;
 	private static final Map<String, TabListWidget> WIDGET_MAP = new Object2ObjectOpenHashMap<>();
 	private static final Set<Runnable> LISTENERS = new ObjectOpenHashSet<>(); // this might not actually be a set due to how lambdas work
-	private static final Set<String> HANDLED_TAB_WIDGETS = new ObjectOpenHashSet<>();
+	private static final Map<String, HudWidget> HANDLED_TAB_WIDGETS = new Object2ObjectOpenHashMap<>();
 
 	public static @Nullable TabListWidget getListWidget(String name) {
 		return WIDGET_MAP.get(name);
@@ -72,8 +87,8 @@ public class PlayerListManager {
 		);
 	}
 
-	public static void addHandledTabWidget(String name) {
-		HANDLED_TAB_WIDGETS.add(name);
+	public static void addHandledTabWidget(String name, HudWidget widget) {
+		HANDLED_TAB_WIDGETS.put(name, widget);
 	}
 
 	public static void registerListener(Runnable listener) {
@@ -155,7 +170,7 @@ public class PlayerListManager {
 
 					Pair<IntObjectPair<String>, ? extends Text> nameAndInfo = getNameAndInfo(displayName);
 					hypixelWidgetName = nameAndInfo.left();
-					if (!HANDLED_TAB_WIDGETS.contains(hypixelWidgetName.right())) {
+					if (!HANDLED_TAB_WIDGETS.containsKey(hypixelWidgetName.right())) {
 						WidgetManager.addWidgetInstance(new DefaultTabHudWidget(hypixelWidgetName.right(), Text.literal(hypixelWidgetName.right()).formatted(Formatting.BOLD), hypixelWidgetName.firstInt()));
 					}
 					if (!nameAndInfo.right().getString().isBlank()) {
@@ -357,6 +372,87 @@ public class PlayerListManager {
 			this.detail = detail.copy();
 			this.lines = lines.stream().map(Text::copy).collect(Collectors.toList());
 			this.playerListEntries = List.copyOf(playerListEntries);
+		}
+	}
+
+	@RegisterWidget
+	public static class FancyTabWidget extends HudWidget {
+		private static final Information INFORMATION = new Information("fancy_tab", Text.literal("Fancy Tab"));
+
+		private final List<HudWidget> widgets = new ObjectArrayList<>();
+		private Positioner positioner = Positioner.CENTERED;
+		private float maxHeight = 0.8f;
+
+		public FancyTabWidget() {
+			registerListener(this::update);
+		}
+
+		@Override
+		protected void renderWidget(DrawContext context, float delta) {
+			updatePositions();
+			for (HudWidget widget : widgets) {
+				widget.render(context, delta);
+			}
+			ScreenBuilder.markPositionsDirty(); // since make fucked with positioning
+		}
+
+		private void update() {
+			widgets.clear();
+			for (String s : WIDGET_MAP.keySet()) {
+				widgets.add(HANDLED_TAB_WIDGETS.get(s));
+			}
+		}
+
+		@Override
+		protected void renderWidgetConfig(DrawContext context, float delta) {
+			updatePositions();
+			for (HudWidget widget : widgets) {
+				widget.renderConfig(context, delta);
+			}
+			ScreenBuilder.markPositionsDirty();
+		}
+
+		private void updatePositions() {
+			// TODO global scale option
+			MinecraftClient client = MinecraftClient.getInstance();
+			WidgetPositioner widgetPositioner = positioner.getNewPositioner(maxHeight, client.getWindow().getScaledHeight());
+			widgets.forEach(widgetPositioner::positionWidget);
+			Vector2i widthAndHeight = widgetPositioner.finalizePositioning();
+			w = widthAndHeight.x;
+			h = widthAndHeight.y;
+		}
+
+		@Override
+		public @NotNull Information getInformation() {
+			return INFORMATION;
+		}
+
+		@Override
+		public void getOptions(List<WidgetOption<?>> options) {
+			super.getOptions(options);
+			// TODO translatable
+			options.add(new EnumOption<>(Positioner.class, "positioner", Text.literal("Positioner"), () -> positioner, v -> positioner = v));
+			options.add(new FloatOption("max_height", Text.literal("Max Height"), () -> maxHeight, v -> maxHeight = v));
+		}
+
+		public enum Positioner implements StringIdentifiable {
+			TOP(TopAlignedWidgetPositioner::new),
+			CENTERED(CenteredWidgetPositioner::new);
+
+			private final BiFunction<Float, Integer, WidgetPositioner> function;
+
+			Positioner(BiFunction<Float, Integer, WidgetPositioner> widgetPositionerSupplier) {
+				function = widgetPositionerSupplier;
+			}
+
+			public WidgetPositioner getNewPositioner(float maxHeight, int screenHeight) {
+				return function.apply(maxHeight, screenHeight);
+			}
+
+			@Override
+			public String asString() {
+				return name().toLowerCase(Locale.ENGLISH);
+			}
 		}
 	}
 }

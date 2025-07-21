@@ -134,7 +134,7 @@ public class CrystalsHudWidget extends HudWidget {
 	}
 
 	@Override
-	protected void renderConfig(DrawContext context, float delta) {
+	protected void renderWidgetConfig(DrawContext context, float delta) {
 		renderWidget(context, delta);
 	}
 

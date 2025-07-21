@@ -4,13 +4,14 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import net.minecraft.client.gui.ScreenPos;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2i;
 
 public abstract class WidgetPositioner {
-	protected final int screenWidth;
+	protected final float maxHeight;
 	protected final int screenHeight;
 
-	public WidgetPositioner(int screenWidth, int screenHeight) {
-		this.screenWidth = screenWidth;
+	public WidgetPositioner(float maxHeight, int screenHeight) {
+		this.maxHeight = maxHeight;
 		this.screenHeight = screenHeight;
 	}
 
@@ -20,7 +21,7 @@ public abstract class WidgetPositioner {
 	 * Called whenever all the widgets that need to be positioned have been fed to the positioner.
 	 * Used for centering stuff and things
 	 */
-	public abstract void finalizePositioning();
+	public abstract Vector2i finalizePositioning();
 
 	public static void applyRuleToWidget(HudWidget widget, int screenWidth, int screenHeight) {
 		widget.setPositioned(true);

@@ -26,7 +26,7 @@ public abstract class HudWidget extends AbstractWidget {
 	private PositionRule positionRule;
 	protected abstract void renderWidget(DrawContext context, float delta);
 
-	protected abstract void renderConfig(DrawContext context, float delta);
+	protected abstract void renderWidgetConfig(DrawContext context, float delta);
 
 	public abstract @NotNull Information getInformation();
 
@@ -34,22 +34,30 @@ public abstract class HudWidget extends AbstractWidget {
 		return true;
 	}
 
-	public final void render(DrawContext context) {
+	public final void render(DrawContext context, float delta) {
 		MatrixStack matrices = context.getMatrices();
 		matrices.push();
 		matrices.translate(getX(), getY(), 0);
 		matrices.scale(scale, scale, 1);
-		renderWidget(context, MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks());
+		renderWidget(context, delta);
+		matrices.pop();
+	}
+
+	public final void render(DrawContext context) {
+		render(context, MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks());
+	}
+
+	public final void renderConfig(DrawContext context, float delta) {
+		MatrixStack matrices = context.getMatrices();
+		matrices.push();
+		matrices.translate(getX(), getY(), 0);
+		matrices.scale(scale, scale, 1);
+		renderWidgetConfig(context, delta);
 		matrices.pop();
 	}
 
 	public final void renderConfig(DrawContext context) {
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.translate(getX(), getY(), 0);
-		matrices.scale(scale, scale, 1);
 		renderConfig(context, MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks());
-		matrices.pop();
 	}
 
 	@Override
