@@ -125,9 +125,6 @@ public class MobGlow {
 				case PlayerEntity p when SkyblockerConfigManager.get().dungeons.starredMobGlow && !DungeonManager.getBoss().isFloor(4) && name.equals("Diamond Guy") -> 0x57c2f7;
 				case PlayerEntity p when entity.getId() == LividColor.getCorrectLividId() && LividColor.shouldGlow(name) -> LividColor.getGlowColor(name);
 
-				//Class-based glow
-				case PlayerEntity p when SkyblockerConfigManager.get().dungeons.classBasedPlayerGlow && DungeonScore.isDungeonStarted() -> DungeonPlayerManager.getClassFromPlayer(p).color();
-
 				// Bats
 				case BatEntity b when SkyblockerConfigManager.get().dungeons.starredMobGlow -> 0xf57738;
 
@@ -148,6 +145,11 @@ public class MobGlow {
 
 				// Regular Mobs
 				case Entity e when SkyblockerConfigManager.get().dungeons.starredMobGlow && isStarred(entity) -> 0xf57738;
+
+				//Class-based glow
+				//This goes after regular mobs to ensure starred player entities like dreadlords have the glow applied
+				case PlayerEntity p when SkyblockerConfigManager.get().dungeons.classBasedPlayerGlow && DungeonScore.isDungeonStarted() -> DungeonPlayerManager.getClassFromPlayer(p).color();
+
 				default -> NO_GLOW;
 			};
 		}
