@@ -90,5 +90,20 @@
     "skyblocker.config.general.itemTooltip.avg.THREE_DAY": "Середня за 3 дні",
     "skyblocker.config.general.itemTooltip.avg.ONE_DAY": "Середня за 1 день",
     "skyblocker.config.general.itemTooltip.enableAccessoriesHelper": "Увімкнути помічник з аксесуарів",
-    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]": "При наведенні на аксесуар ви побачите, чи ви його вже маєте та чи він гірший або кращий за той, який ви вже маєте. Список статусів:"
+    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]": "При наведенні на аксесуар ви побачите, чи ви його вже маєте та чи він гірший або кращий за той, який ви вже маєте. Список статусів:",
+    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[3]": "Цей аксесуар можна покращити. Також показує ступінь цього аксесуара.",
+    "skyblocker.config.general.itemTooltip.enableMuseumInfo.@Tooltip": "Якщо цей предмет можна виставити в Museum, показуватиметься категорія предмета в ньому. Також показуватиметься позначка, чи він уже виставлений чи ні (безплатні поки не підтримуються).\n\nУвімкніть Museum API для точнішої інформації!",
+    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[1]": "У вас є такий аксесуар найвищого рівня.",
+    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[2]": "Цей аксесуар є покращенням того, який ви вже маєте. Також показує ступінь цього аксесуара.",
+    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[5]": "Ви не маєте такого аксесуара.",
+    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[4]": "Ви вже маєте кращий аксесуар. Також показує ступінь цього аксесуара.",
+    "skyblocker.config.general.itemTooltip.enableAvgBIN": "Показувати середню вартість у BIN",
+    "skyblocker.config.general.itemTooltip.craft.BUY_ORDER": "Купівля",
+    "skyblocker.config.general.itemTooltip.craft": "Показувати вартість майстрування",
+    "skyblocker.config.general.itemTooltip.craft.OFF": "Вимкнути",
+    "skyblocker.config.general.itemTooltip.craft.SELL_ORDER": "Продаж",
+    "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Показувати вартість покупки й продажу на Bazaar",
+    "skyblocker.config.general.itemTooltip.enableMuseumInfo": "Увімкнути інформацію про Museum",
+    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue": "Показувати приблизну вартість предмета",
+    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "Показує приблизну вартість предмета. §lМоже не бути на 100% точним.§r\n\nКоли продаєте предмети, завжди перевіряйте вартість предмета вручну!"
 }
