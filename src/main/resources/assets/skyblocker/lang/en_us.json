@@ -151,6 +151,9 @@
   "skyblocker.config.dungeons.hideSoulweaverSkulls": "Hide Soulweaver Skulls",
   "skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip": "Hides the Haunted Skulls spawned that are spawned as a result of using Soulweaver Gloves.",
 
+  "skyblocker.config.dungeons.highlightDoorKeys": "Highlight Door Keys",
+  "skyblocker.config.dungeons.highlightDoorKeys.@Tooltip": "Highlights Wither Door and Blood Door keys on the ground in cyan.",
+
   "skyblocker.config.dungeons.livid": "Livid (F5/M5)",
   "skyblocker.config.dungeons.livid.enableSolidColor": "Enable Custom Livid Color",
   "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Use the custom color instead of the Livid color for glow and bounding box.",
