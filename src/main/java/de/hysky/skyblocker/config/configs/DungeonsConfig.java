@@ -221,7 +221,7 @@ public class DungeonsConfig {
 
 		public int dungeonCryptsMessageThreshold = 250;
 
-		public String dungeonCryptsMessage = "We only have [crypts] crypts out of 5, we need more!";
+		public String dungeonCryptsMessage = "Crypts: [crypts]/5";
 
 		public boolean enableScoreHUD = true;
 
