@@ -59,7 +59,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public boolean isEnabledIn(Location location) {
-		return SkyblockerConfigManager.get().helpers.fishing.fishingHudEnabledLocations.contains(location);
+		return SkyblockerConfigManager.get().helpers.fishing.enableFishingHud && SkyblockerConfigManager.get().helpers.fishing.fishingHudEnabledLocations.contains(location);
 	}
 
 	@Override
@@ -108,9 +108,9 @@ public class FishingHudWidget extends ComponentBasedWidget {
 			float maxTime;
 			PetInfo pet = PetCache.getCurrentPet();
 			if (pet != null && pet.type().contains("SLUG")){
-				int level = LevelFinder.getLevelInfo("PET_"+pet.tier(),(long)pet.exp()).level;
+				int level = LevelFinder.getLevelInfo("PET_"+pet.tier(), (long) pet.exp()).level;
 				maxTime =20 * (1 - (level/200f));
-			}else{
+			} else {
 				maxTime = 20;
 			}
 			time = Math.clamp(time, 0, maxTime);

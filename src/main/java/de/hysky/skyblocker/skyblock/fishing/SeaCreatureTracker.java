@@ -56,7 +56,7 @@ public class SeaCreatureTracker {
 			checkCapNotification();
 			checkRarityNotification();
 			//schedule notification for end of timer
-			Scheduler.INSTANCE.schedule(SeaCreatureTracker::checkTimerNotification,SkyblockerConfigManager.get().helpers.fishing.timerLength * 20);
+			Scheduler.INSTANCE.schedule(SeaCreatureTracker::checkTimerNotification, SkyblockerConfigManager.get().helpers.fishing.timerLength * 20);
 		}
 	}
 
@@ -106,7 +106,7 @@ public class SeaCreatureTracker {
 	 * @param s Message to check
 	 */
 	private static void onChatMessage(String s) {
-		if (!SkyblockerConfigManager.get().helpers.fishing.fishingHudEnabledLocations.contains(Utils.getLocation())) {
+		if (!SkyblockerConfigManager.get().helpers.fishing.enableFishingHud || !SkyblockerConfigManager.get().helpers.fishing.fishingHudEnabledLocations.contains(Utils.getLocation())) {
 			return;
 		}
 		String message = Formatting.strip(s);
@@ -171,4 +171,3 @@ public class SeaCreatureTracker {
 
 	record LiveSeaCreature(SeaCreature seaCreature, Entity entity, Long spawnTime) {}
 }
-

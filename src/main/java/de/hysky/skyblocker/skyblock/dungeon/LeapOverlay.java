@@ -108,7 +108,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	public void onPropertyUpdate(ScreenHandler handler, int property, int value) {}
 
 	/**
-	 * Inserts the {@code reference} into the list if it doesn't exist or updates current value then updates the screen. 
+	 * Inserts the {@code reference} into the list if it doesn't exist or updates current value then updates the screen.
 	 */
 	private void tryInsertReference(PlayerReference reference) {
 		Optional<PlayerReference> existing = references.stream()

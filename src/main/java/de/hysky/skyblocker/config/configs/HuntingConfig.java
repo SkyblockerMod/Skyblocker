@@ -1,13 +1,17 @@
 package de.hysky.skyblocker.config.configs;
 
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
-
 public class HuntingConfig {
-	@SerialEntry
 	public HuntingBox huntingBox = new HuntingBox();
 
+	public HuntingMobs huntingMobs = new HuntingMobs();
+
 	public static class HuntingBox {
-		@SerialEntry
 		public boolean enabled = true;
+	}
+
+	public static class HuntingMobs {
+		public boolean silencePhantoms = true;
+
+		public boolean highlightHideonleaf = true;
 	}
 }

@@ -26,19 +26,21 @@ public class BeaconHighlighter {
     public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(BeaconHighlighter::render);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-        ClientReceiveMessageEvents.GAME.register(BeaconHighlighter::onMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(BeaconHighlighter::onMessage);
     }
 
     private static void reset() {
         beaconPositions.clear();
     }
 
-    private static void onMessage(Text text, boolean overlay) {
+    private static boolean onMessage(Text text, boolean overlay) {
         if (Utils.isInTheEnd() && !overlay) {
             String message = text.getString();
 
             if (message.contains("SLAYER QUEST COMPLETE!") || message.contains("NICE! SLAYER BOSS SLAIN!")) reset();
         }
+
+        return true;
     }
 
     /**

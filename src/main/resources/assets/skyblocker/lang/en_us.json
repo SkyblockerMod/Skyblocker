@@ -37,10 +37,10 @@
 
   "skyblocker.skyblockerScreen": "Skyblocker Main Screen",
 
-  "skyblocker.config.title": "Skyblocker Settings",
+  "skyblocker.config.title": "Skyblocker %s",
 
   "skyblocker.config.shortcutToKeybindsSettings": "Edit Keybind",
-  "skyblocker.config.shortcutToKeybindsSettings.@Text": "Click... (Opens up Keybinds Options)",
+  "skyblocker.config.shortcutToKeybindsSettings.@Text": "Keybinds Menu",
 
   "skyblocker.config.crimsonIsle": "Crimson Isle",
 
@@ -143,24 +143,31 @@
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nNote: This only works correctly if death messages are enabled in your skyblock settings. If you want to hide death messages, use this mod's Hide Player Death Messages setting instead to allow further processing of death messages.",
   "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Score Scaling",
 
+  "skyblocker.config.dungeons.dungeonSplits": "Dungeon Splits Widget",
+  "skyblocker.config.dungeons.dungeonSplits.@Tooltip": "Enables a widget that shows your fastest times in each dungeon section.",
+
   "skyblocker.config.dungeons.fancyPartyFinder": "Fancy Party Finder",
 
   "skyblocker.config.dungeons.hideSoulweaverSkulls": "Hide Soulweaver Skulls",
   "skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip": "Hides the Haunted Skulls spawned that are spawned as a result of using Soulweaver Gloves.",
 
+  "skyblocker.config.dungeons.highlightDoorKeys": "Highlight Door Keys",
+  "skyblocker.config.dungeons.highlightDoorKeys.@Tooltip": "Highlights Wither Door and Blood Door keys on the ground in cyan.",
+
   "skyblocker.config.dungeons.livid": "Livid (F5/M5)",
-  "skyblocker.config.dungeons.livid.enableSolidColor": "Enable Glow and/or Bounding use same color",
-  "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Instead of Livid color an Red color is Shown",
+  "skyblocker.config.dungeons.livid.enableSolidColor": "Enable Custom Livid Color",
+  "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Use the custom color instead of the Livid color for glow and bounding box.",
+  "skyblocker.config.dungeons.livid.customColor": "Custom Livid Color",
   "skyblocker.config.dungeons.livid.enableLividColorGlow": "Enable Livid Color Glow",
   "skyblocker.config.dungeons.livid.enableLividColorGlow.@Tooltip": "Applies the glowing effect to the correct Livid in F5/M5.",
   "skyblocker.config.dungeons.livid.enableLividColorBoundingBox": "Enable Livid Color Bounding Box",
-  "skyblocker.config.dungeons.livid.enableLividColorBoundingBox.@Tooltip": "Applies a bounding box to the correct Livid in F5/M5.",
-  "skyblocker.config.dungeons.livid.enableLividColorText": "Enable Livid Color Text",
-  "skyblocker.config.dungeons.livid.enableLividColorText.@Tooltip": "Send the livid color in the chat during the Livid boss fight.",
+  "skyblocker.config.dungeons.livid.enableLividColorBoundingBox.@Tooltip": "Shows a bounding box on the correct Livid in F5/M5.",
   "skyblocker.config.dungeons.livid.enableLividColorTitle": "Enable Livid Color Title",
-  "skyblocker.config.dungeons.livid.enableLividColorTitle.@Tooltip": "Display the livid color in the title during the Livid boss fight.",
-  "skyblocker.config.dungeons.livid.lividColorText": "Livid Color Text",
-  "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Text which will be sent in the chat during the Livid boss fight. The string \"[color]\" will be replaced with the livid color.",
+  "skyblocker.config.dungeons.livid.enableLividColorTitle.@Tooltip": "Display the Livid color as a title during the boss fight.",
+  "skyblocker.config.dungeons.livid.enableLividColorText": "Send Livid Color in Chat",
+  "skyblocker.config.dungeons.livid.enableLividColorText.@Tooltip": "Whether to send the Livid color in the chat during the boss fight.",
+  "skyblocker.config.dungeons.livid.lividColorText": "Livid Color Chat Message",
+  "skyblocker.config.dungeons.livid.lividColorText.@Tooltip": "Text for the chat message, the string \"[color]\" will be replaced with the livid color.",
 
   "skyblocker.config.dungeons.map": "Map",
   "skyblocker.config.dungeons.map.enableMap": "Enable Map",
@@ -204,6 +211,9 @@
   "skyblocker.config.dungeons.salvageHelper": "Salvage Helper",
   "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Highlights items picked up in dungeons that can be salvaged.",
 
+  "skyblocker.config.dungeons.bloodCampHelper": "Blood Camp Helper",
+  "skyblocker.config.dungeons.bloodCampHelper.@Tooltip": "Predicts mob movement in the Blood Room to assist camping.",
+
   "skyblocker.config.dungeons.secretWaypoints": "Dungeon Secret Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableAotvWaypoints": "Enable AOTV Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableBatWaypoints": "Enable Bat Waypoints",
@@ -236,6 +246,7 @@
   "skyblocker.config.dungeons.terminals.solveColor": "Solve Select Colored",
   "skyblocker.config.dungeons.terminals.solveOrder": "Solve Click In Order",
   "skyblocker.config.dungeons.terminals.solveStartsWith": "Solve Starts With",
+  "skyblocker.config.dungeons.terminals.solveSameColor": "Solve Change All to Same Color",
 
   "skyblocker.config.farming": "Farming",
 
@@ -284,8 +295,18 @@
   "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter.@Tooltip": "Highlights Sea Lumies in cyan to assist in locating them.",
   "skyblocker.config.foraging.galatea.seaLumieMinCount": "Minimum Sea Lumie Count to Highlight",
   "skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip": "The minimum number of Sea Lumies that must be present within a block for it to be highlighted.",
+  "skyblocker.config.foraging.galatea.enableTunerSolver": "Enable Tuner Solver",
+  "skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip": "Shows the required clicks in the Tune Frequency puzzle.",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Solve Forest Temple Puzzle",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Displays the amount of times you need to rotate the terracotta blocks. For positive rotations you right click while for negative rotations you left click.",
+
+   "skyblocker.config.foraging.sweepOverlay": "Sweep Overlay",
+  "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Enable Sweep Overlay",
+  "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay.@Tooltip": "Highlights logs that will be destroyed from sweep.",
+  "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay": "Show Overlay for Thrown Ability",
+  "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "Highlights logs when using an axe's thrown ability.",
+  "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "Sweep Overlay Color",
+  "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "Sweep Missing: Add the Sweep stat to your player list with /tablist",
 
   "skyblocker.config.foraging.hunting": "Hunting",
 
@@ -422,6 +443,8 @@
   "skyblocker.config.helpers.bazaar": "Bazaar",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Draws icons on top of orders to explain the current state of the order.\n\n%s: Order is going to expire soon\n%s: Order has expired\n%s: Order is filled to some degree and there are items/coins to claim\n%s: Order is filled",
+  "skyblocker.config.helpers.bazaar.enableReorderHelper": "Enable Reorder Helper",
+  "skyblocker.config.helpers.bazaar.enableReorderHelper.@Tooltip": "Hold CTRL when cancelling an unfilled buy/sell order to copy the unfilled amount to the clipboard.",
 
   "skyblocker.config.helpers.carnival": "Chivalrous Carnival",
   "skyblocker.config.helpers.carnival.catchAFishHelper": "Catch a Fish Helper",
@@ -461,6 +484,7 @@
   "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Enable Chronomatron Solver",
   "skyblocker.config.helpers.experiments.enableSuperpairsSolver": "Enable Superpairs Solver",
   "skyblocker.config.helpers.experiments.enableUltrasequencerSolver": "Enable Ultrasequencer Solver",
+  "skyblocker.config.helpers.experiments.blockIncorrectClicks": "Block Incorrect Clicks",
 
   "skyblocker.config.helpers.fairySouls": "Fairy Souls Helper",
   "skyblocker.config.helpers.fairySouls.enableFairySoulsHelper": "Enable Fairy Souls Helper",
@@ -522,6 +546,12 @@
   "skyblocker.config.hunting": "Hunting",
   "skyblocker.config.hunting.huntingBoxHelper": "Enable Hunting Box Helper",
   "skyblocker.config.hunting.huntingBoxHelper.@Tooltip": "Highlights shards that you have enough of to syphon and reach the next tier of the attribute in the Hunting Box. Also displays the sell price of shards in the tooltip.",
+
+  "skyblocker.config.hunting.huntingMobs": "Hunting Mobs",
+  "skyblocker.config.hunting.huntingMobs.silencePhantoms": "Silence Phantoms",
+  "skyblocker.config.hunting.huntingMobs.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while on Galatea.",
+  "skyblocker.config.hunting.huntingMobs.highlightHideonleaf": "Highlight Hideonleaf",
+  "skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip": "Highlights Hideonleaves in yellow to make them easier to see.",
 
   "skyblocker.config.chat": "Chat",
 
@@ -605,6 +635,8 @@
   "skyblocker.config.chat.filter.hideShowOff": "Hide Show Off Messages",
   "skyblocker.config.chat.filter.hideShowOff.@Tooltip": "Filters messages from the /show command",
   "skyblocker.config.chat.filter.hideTeleportPad": "Hide Teleport Pad Messages",
+  "skyblocker.config.chat.filter.hideToggleLottery": "Hide Toggle Lottery Messages",
+  "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "Hides those pesky messages telling you to disable the Lottery HOTF perk when you want it enabled!",
   "skyblocker.config.chat.filter.hideToggleSkyMall": "Hide Toggle Sky Mall Messages",
   "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "Hides those pesky messages telling you to disable the Sky Mall HOTM perk when you want it enabled!",
 
@@ -744,6 +776,9 @@
 
   "skyblocker.config.misc": "Misc",
 
+  "skyblocker.config.misc.configBackend": "Config Backend",
+  "skyblocker.config.misc.configBackend.@Tooltip": "You can choose between having YetAnotherConfigLib (YACL) or MoulConfig as the Config Backend.",
+
   "skyblocker.config.misc.richPresence": "Discord RPC",
   "skyblocker.config.misc.richPresence.customMessage": "Custom Message",
   "skyblocker.config.misc.richPresence.cycleMode": "Cycle Skyblock Info",
@@ -795,6 +830,7 @@
   "skyblocker.config.quickNav.button.tooltip.@Tooltip": "Tooltip shown when hovering your mouse over the button.\n\nYou can use text json format.\nPutting nothing will make the tooltip not render.",
   "skyblocker.config.quickNav.button.uiTitle": "UI Title",
   "skyblocker.config.quickNav.enableQuickNav": "Enable Quick Navigation",
+  "skyblocker.config.quickNav.enableQuickNav.@Tooltip": "Adds 14 customizable inventory buttons that can be styled and run a command when clicked.",
 
   "skyblocker.config.slayer": "Slayers",
 
@@ -937,6 +973,12 @@
   "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor": "Empty Health Bar Color",
   "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip": "Color of health bar when mob is at full hp",
 
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled.@Tooltip": "Adds 3 buttons to quickly fill out Bazaar buy order amounts",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse": "Close Sign on Use",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.slotQuantity": "Slot #%s Quantity",
+
   "skyblocker.config.uiAndVisuals.inputCalculator": "Input Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled": "Enable Sign Calculator",
   "skyblocker.config.uiAndVisuals.inputCalculator.enabled.@Tooltip": "Enables the ability for you to do calculations when inputting values such as price for the ah.\n Key:\n  S = 64\n  E = 160\n  K = 1,000\n  M = 1,000,000\n  B = 1,000,000,000\n\n purse/P = current purse value",
@@ -1015,6 +1057,7 @@
   "skyblocker.config.uiAndVisuals.slotText.statsTuning": "Stats Tuning",
   "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "Displays your assigned and unassigned tuning points",
   "skyblocker.config.uiAndVisuals.slotText.yourEssence": "Your Essence",
+  "skyblocker.config.uiAndVisuals.slotText.bestiaryLevel": "Bestiary Level",
 
   "skyblocker.config.uiAndVisuals.searchOverlay": "AH/BZ Search Overlay",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",
@@ -1172,6 +1215,28 @@
   "skyblocker.dungeons.secretsTracker.feedback": "%s§f found %s§f secrets. %s",
   "skyblocker.dungeons.secretsTracker.failFeedback": "§cUnable to calculate the number of secrets everybody did this run!",
 
+  "skyblocker.dungeons.splits.bloodOpen": "Blood Open",
+  "skyblocker.dungeons.splits.bloodClear": "Blood Clear",
+  "skyblocker.dungeons.splits.portalEntry": "Portal Entry",
+  "skyblocker.dungeons.splits.bonzoSike": "Bonzo's Sike",
+  "skyblocker.dungeons.splits.bonzo": "Bonzo",
+  "skyblocker.dungeons.splits.scarfMinions": "Scarf's Minions",
+  "skyblocker.dungeons.splits.scarf": "Scarf",
+  "skyblocker.dungeons.splits.guardians": "Guardians",
+  "skyblocker.dungeons.splits.professor": "The Professor",
+  "skyblocker.dungeons.splits.transformedProfessor": "Transformed Professor",
+  "skyblocker.dungeons.splits.thorn": "Thorn",
+  "skyblocker.dungeons.splits.livid": "Livid",
+  "skyblocker.dungeons.splits.terracottas": "Terracottas",
+  "skyblocker.dungeons.splits.sadanGiants": "Sadan's Giants",
+  "skyblocker.dungeons.splits.sadan": "Sadan",
+  "skyblocker.dungeons.splits.maxor": "Maxor",
+  "skyblocker.dungeons.splits.storm": "Storm",
+  "skyblocker.dungeons.splits.terminals": "Terminals",
+  "skyblocker.dungeons.splits.goldor": "Goldor",
+  "skyblocker.dungeons.splits.necron": "Necron",
+  "skyblocker.dungeons.splits.witherKing": "Wither King",
+
   "skyblocker.api.cache.HIT": "This data was cached!\nIt's %d seconds old.",
   "skyblocker.api.cache.MISS": "This data wasn't cached!",
   "skyblocker.api.token.authFailure": "Failed to refresh your Skyblocker API token, some features may not work temporarily!",
@@ -1325,6 +1390,11 @@
   "skyblocker.tips.clickDisable": "§c[Click to Disable Tips]",
   "skyblocker.tips.clickPreviousTip": "§b[Click for Previous Tip]",
   "skyblocker.tips.clickNextTip": "§a[Click for Next Tip]",
+  "skyblocker.disableAll.confirm": "Are you sure you want to disable all features? %s",
+  "skyblocker.disableAll.confirmYes": "§c[Disable All]",
+  "skyblocker.disableAll.success": "§cAll features disabled.",
+  "skyblocker.disableAll.failed": "§cFailed to disable all features.",
+  "skyblocker.disableAll.notPending": "§cRun /skyblocker disableAll first.",
   "skyblocker.tips.tip": "§aTip: %s\n",
   "skyblocker.tips.customItemNames": "Customize the names of your items with /skyblocker custom renameItem",
   "skyblocker.tips.customArmorDyeColors": "Apply a custom dye color to your leather armor with /skyblocker custom.",
@@ -1380,7 +1450,7 @@
   "skyblocker.partyFinder.deList": "Click to de-list",
   "skyblocker.partyFinder.join": "Click to join",
 
-  "skyblocker.reorderHelper.tooltip": "[Skyblocker] You can copy the amount of items\nby holding CTRL while clicking on the item!",
+  "skyblocker.reorderHelper.tooltip": "Hold CTRL to copy the remaining amount.",
 
   "skyblocker.copyUnderbidPrice.copied": "Copied underbid price: %s",
 
@@ -1481,5 +1551,6 @@
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
-  "emi.category.skyblocker.skyblock": "Skyblock"
+  "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
+  "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)"
 }

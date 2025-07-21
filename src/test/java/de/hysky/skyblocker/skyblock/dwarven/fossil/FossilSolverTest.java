@@ -5,7 +5,6 @@ import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 
 import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.*;
 

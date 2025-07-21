@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import java.util.regex.Pattern;
 
 public class SwingAnimation {
-	private static final Pattern ABILITY = Pattern.compile("^ability:\\s.*?\\s+right\\sclick$");
+	private static final Pattern ABILITY = Pattern.compile("^(⦾\\s)?ability:\\s.*?right\\sclick$");
 
 	public static boolean hasAbility(ItemStack stack) {
 		if (stack.isEmpty()) return false;

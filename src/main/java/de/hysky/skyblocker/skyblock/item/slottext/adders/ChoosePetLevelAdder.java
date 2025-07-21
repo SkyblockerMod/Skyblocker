@@ -22,7 +22,7 @@ public class ChoosePetLevelAdder extends SimpleSlotTextAdder {
 			"choose_pet_pet_level",
 			"skyblocker.config.uiAndVisuals.slotText.choosePetPetLevel");
 
-	public ChoosePetLevelAdder() {super("^Choose Pet.*", CONFIG_INFORMATION);}
+	public ChoosePetLevelAdder() { super("^Choose Pet.*", CONFIG_INFORMATION); }
 
 	@Override
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
