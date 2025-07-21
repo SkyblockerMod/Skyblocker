@@ -25,6 +25,8 @@ public class DungeonsConfig {
 
 	public boolean starredMobBoundingBoxes = true;
 
+	public boolean highlightDoorKeys = true;
+
 	public boolean allowDroppingProtectedItems = false;
 
 	public boolean dungeonSplits = false;
