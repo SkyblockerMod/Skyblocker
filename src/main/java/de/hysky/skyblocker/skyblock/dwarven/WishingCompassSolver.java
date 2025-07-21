@@ -75,7 +75,7 @@ public class WishingCompassSolver {
     public static void init() {
         UseItemCallback.EVENT.register(WishingCompassSolver::onItemInteract);
         UseBlockCallback.EVENT.register(WishingCompassSolver::onBlockInteract);
-        ClientReceiveMessageEvents.GAME.register(WishingCompassSolver::failMessageListener);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(WishingCompassSolver::failMessageListener);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
     }
 
@@ -84,13 +84,15 @@ public class WishingCompassSolver {
      * @param text message
      * @param b overlay
      */
-    private static void failMessageListener(Text text, boolean b) {
+    private static boolean failMessageListener(Text text, boolean b) {
         if (!Utils.isInCrystalHollows()) {
-            return;
+            return true;
         }
         if (Formatting.strip(text.getString()).equals("The Wishing Compass can't seem to locate anything!")) {
             currentState = SolverStates.NOT_STARTED;
         }
+
+        return true;
     }
 
     private static void reset() {

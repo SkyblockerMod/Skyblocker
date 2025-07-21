@@ -92,6 +92,14 @@ public class DungeonsCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.highlightDoorKeys"))
+						.description(Text.translatable("skyblocker.config.dungeons.highlightDoorKeys.@Tooltip"))
+						.binding(defaults.dungeons.highlightDoorKeys,
+								() -> config.dungeons.highlightDoorKeys,
+								newValue -> config.dungeons.highlightDoorKeys = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.dungeons.allowDroppingProtectedItems"))
 						.description(Text.translatable("skyblocker.config.dungeons.allowDroppingProtectedItems.@Tooltip"))
 						.binding(defaults.dungeons.allowDroppingProtectedItems,

@@ -221,7 +221,7 @@ public class UIAndVisualsConfig {
     }
 
     public static class FancyAuctionHouse {
-        public boolean enabled = true;
+        public boolean enabled = false;
 
         public boolean highlightCheapBIN = true;
     }
@@ -279,15 +279,15 @@ public class UIAndVisualsConfig {
 
         public Color teleportOverlayColor = new Color(0x7F761594, true);
 
-        public boolean enableWeirdTransmission = true;
+        public boolean enableWeirdTransmission = false;
 
-        public boolean enableInstantTransmission = true;
+        public boolean enableInstantTransmission = false;
 
         public boolean enableEtherTransmission = true;
 
-        public boolean enableSinrecallTransmission = true;
+        public boolean enableSinrecallTransmission = false;
 
-        public boolean enableWitherImpact = true;
+        public boolean enableWitherImpact = false;
     }
 
     public static class SmoothAOTE {

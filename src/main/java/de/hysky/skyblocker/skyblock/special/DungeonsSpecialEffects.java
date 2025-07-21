@@ -22,10 +22,10 @@ public class DungeonsSpecialEffects {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(DungeonsSpecialEffects::displayRareDropEffect);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonsSpecialEffects::displayRareDropEffect);
 	}
 
-	private static void displayRareDropEffect(Text message, boolean overlay) {
+	private static boolean displayRareDropEffect(Text message, boolean overlay) {
 		//We don't check if we're in dungeons because that check doesn't work in m7 which defeats the point of this
 		//It might also allow it to work with Croesus
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.specialEffects.rareDungeonDropEffects && !overlay) {
@@ -47,6 +47,8 @@ public class DungeonsSpecialEffects {
 				LOGGER.error("[Skyblocker Special Effects] An unexpected exception was encountered: ", e);
 			}
 		}
+
+		return true;
 	}
 
 	private static ItemStack getStackFromName(String itemName) {
