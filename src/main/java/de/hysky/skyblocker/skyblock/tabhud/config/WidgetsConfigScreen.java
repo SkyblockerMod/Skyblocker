@@ -15,16 +15,21 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.navigation.NavigationAxis;
+import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
+import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.function.Consumer;
 
 public class WidgetsConfigScreen extends Screen implements WidgetConfig {
@@ -56,6 +61,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	private @Nullable ScreenPos dragRelative = null;
 	private boolean openPanelAfterDragging = false;
 	private boolean autoAnchor = true;
+	private boolean snapping = true;
 
 	private @Nullable SelectWidgetPrompt selectWidgetPrompt = null;
 
@@ -118,6 +124,14 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	}
 
 	@Override
+	public void renderBackground(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		super.renderBackground(context, mouseX, mouseY, deltaTicks);
+		Text text = Text.literal("Right click to edit and add widgets."); // TODO translatable
+		int textWidth = textRenderer.getWidth(text);
+		context.drawText(textRenderer, text, (width - textWidth) / 2, (height - textRenderer.fontHeight) / 2, ColorHelper.getWhite(0.8f), false);
+	}
+
+	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 		super.render(context, mouseX, mouseY, deltaTicks);
 		builder.render(context, width, height, true);
@@ -157,23 +171,66 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 
 			PositionRule.Point parentPoint;
 			PositionRule.Point thisPoint;
-			if (autoAnchor) {
-				int widgetCenterX = (int) mouseX - dragRelative.x() + selectedWidget.getScaledWidth() / 2 - width / 2;
-				int widgetCenterY = (int) mouseY - dragRelative.y() + selectedWidget.getScaledHeight() / 2 - height / 2;
-				PositionRule.HorizontalPoint hPoint = widgetCenterX < -25 ? PositionRule.HorizontalPoint.LEFT : widgetCenterX > 25 ? PositionRule.HorizontalPoint.RIGHT : PositionRule.HorizontalPoint.CENTER;
-				PositionRule.VerticalPoint vPoint = widgetCenterY < -25 ? PositionRule.VerticalPoint.TOP : widgetCenterY > 25 ? PositionRule.VerticalPoint.BOTTOM : PositionRule.VerticalPoint.CENTER;
-				parentPoint = thisPoint = new PositionRule.Point(vPoint, hPoint);
+			if (autoAnchor && "screen".equals(oldRule.parent())) {
+				parentPoint = thisPoint = getPoint(selectedWidget, (int) mouseX - dragRelative.x(), (int) mouseY - dragRelative.y());
 			} else {
 				parentPoint = oldRule.parentPoint();
 				thisPoint = oldRule.thisPoint();
 			}
-			ScreenPos startPosition =  WidgetPositioner.getStartPosition(oldRule.parent(), width, height, parentPoint);
+			String newParent = oldRule.parent();
+			OptionalInt relativeX = OptionalInt.empty();
+			OptionalInt relativeY = OptionalInt.empty();
+			if (snapping) {
+				final NavigationDirection[] directions = NavigationDirection.values();
+
+				ScreenRect selectedRect = new ScreenRect((int) mouseX - dragRelative.x(), (int) mouseY - dragRelative.y(), selectedWidget.getScaledWidth(), selectedWidget.getScaledHeight());
+				ScreenRect[] selectedSnapBoxes = Arrays.stream(directions).map(dir -> getBorder(selectedRect, dir)).toArray(ScreenRect[]::new);
+
+				int distanceToCursor = Integer.MAX_VALUE;
+				for (HudWidget widget : builder.getWidgets()) {
+					if (widget == selectedWidget) continue;
+					ScreenRect otherRect = widget.getNavigationFocus();
+					for (NavigationDirection direction : directions) {
+						ScreenRect otherSnapBox = getBorder(otherRect, direction);
+						ScreenRect selectedSnapBox = selectedSnapBoxes[direction.getOpposite().ordinal()];
+
+						int dist = direction.getAxis() == NavigationAxis.HORIZONTAL ? Math.abs((int) mouseX - otherSnapBox.getCenter(NavigationAxis.HORIZONTAL)) : Math.abs((int) mouseY - otherSnapBox.getCenter(NavigationAxis.VERTICAL));
+						if (!selectedSnapBox.overlaps(otherSnapBox) || dist > distanceToCursor) continue;
+						PositionRule.Point point = getPoint(widget);
+						switch (direction) {
+							case LEFT -> {
+								relativeX = OptionalInt.of(-2);
+								parentPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.LEFT);
+								thisPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.RIGHT);
+							}
+							case RIGHT -> {
+								relativeX = OptionalInt.of(1);
+								parentPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.RIGHT);
+								thisPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.LEFT);
+							}
+							case UP -> {
+								relativeY = OptionalInt.of(-2);
+								parentPoint = new PositionRule.Point(PositionRule.VerticalPoint.TOP, point.horizontalPoint());
+								thisPoint = new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, point.horizontalPoint());
+							}
+							case DOWN -> {
+								relativeY = OptionalInt.of(1);
+								parentPoint = new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, point.horizontalPoint());
+								thisPoint = new PositionRule.Point(PositionRule.VerticalPoint.TOP, point.horizontalPoint());
+							}
+						}
+						newParent = widget.getInformation().id();
+						distanceToCursor = dist;
+					}
+				}
+			}
+			ScreenPos startPosition =  WidgetPositioner.getStartPosition(newParent, width, height, parentPoint);
 			PositionRule newRule = new PositionRule(
-					oldRule.parent(),
+					newParent,
 					parentPoint,
 					thisPoint,
-					(int) mouseX - startPosition.x() - dragRelative.x() + (int) (selectedWidget.getScaledWidth() * thisPoint.horizontalPoint().getPercentage()),
-					(int) mouseY - startPosition.y() - dragRelative.y() + (int) (selectedWidget.getScaledHeight() * thisPoint.verticalPoint().getPercentage())
+					relativeX.orElse((int) mouseX - dragRelative.x() - startPosition.x() + (int) (selectedWidget.getScaledWidth() * thisPoint.horizontalPoint().getPercentage())),
+					relativeY.orElse((int) mouseY - dragRelative.y() - startPosition.y() + (int) (selectedWidget.getScaledHeight() * thisPoint.verticalPoint().getPercentage()))
 			);
 			selectedWidget.setPositionRule(newRule);
 			updatePositions();
@@ -186,18 +243,16 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		return false;
 	}
 
-	@Override
-	public void tick() {
-		if (selectedWidget == null && sidePanelWidget.isOpen()) sidePanelWidget.close();
+	private @NotNull PositionRule.Point getPoint(@NotNull HudWidget widget) {
+		return getPoint(widget, widget.getX(), widget.getY());
 	}
 
-	@Override
-	public void removed() {
-		builder.updateConfig();
-		builder.updateWidgetsList();
-		if (currentLocation == Location.UNKNOWN) {
-			WidgetManager.getScreenBuilder(Utils.getLocation(), WidgetManager.ScreenLayer.HUD).updateWidgetsList();
-		}
+	private @NotNull PositionRule.Point getPoint(@NotNull HudWidget widget, int x, int y) {
+		int widgetCenterX = x + widget.getScaledWidth() / 2 - width / 2;
+		int widgetCenterY = y + widget.getScaledHeight() / 2 - height / 2;
+		PositionRule.HorizontalPoint hPoint = widgetCenterX < -25 ? PositionRule.HorizontalPoint.LEFT : widgetCenterX > 25 ? PositionRule.HorizontalPoint.RIGHT : PositionRule.HorizontalPoint.CENTER;
+		PositionRule.VerticalPoint vPoint = widgetCenterY < -25 ? PositionRule.VerticalPoint.TOP : widgetCenterY > 25 ? PositionRule.VerticalPoint.BOTTOM : PositionRule.VerticalPoint.CENTER;
+		return new PositionRule.Point(vPoint, hPoint);
 	}
 
 	@Override
@@ -232,12 +287,6 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		return true;
 	}
 
-	private void openSidePanel() {
-		if (selectedWidget == null) return;
-		boolean rightSide = selectedWidget.getX() + selectedWidget.getWidth() / 2 < width / 2;
-		sidePanelWidget.open(selectedWidget, this, rightSide, rightSide ? width - sidePanelWidget.getWidth() : 0);
-	}
-
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		dragRelative = null;
@@ -246,6 +295,67 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 			openSidePanel();
 		}
 		return super.mouseReleased(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (selectedWidget != null && selectedWidget == hoveredWidget) {
+			boolean move = true;
+			int x = 0, y = 0;
+			switch (keyCode) {
+				case GLFW.GLFW_KEY_LEFT -> x = -1;
+				case GLFW.GLFW_KEY_RIGHT -> x = 1;
+				case GLFW.GLFW_KEY_UP -> y = -1;
+				case GLFW.GLFW_KEY_DOWN -> y = 1;
+				default -> move = false;
+			}
+			if (move) {
+				PositionRule oldRule = selectedWidget.getPositionRule();
+				PositionRule newRule = new PositionRule(
+						oldRule.parent(),
+						oldRule.parentPoint(),
+						oldRule.thisPoint(),
+						oldRule.relativeX() + x,
+						oldRule.relativeY() + y
+				);
+				selectedWidget.setPositionRule(newRule);
+				updatePositions();
+				return true;
+			}
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	private void openSidePanel() {
+		if (selectedWidget == null) return;
+		boolean rightSide = selectedWidget.getX() + selectedWidget.getWidth() / 2 < width / 2;
+		sidePanelWidget.open(selectedWidget, this, rightSide, rightSide ? width - sidePanelWidget.getWidth() : 0);
+	}
+
+	@Override
+	public void tick() {
+		if (selectedWidget == null && sidePanelWidget.isOpen()) sidePanelWidget.close();
+	}
+
+	@Override
+	public void removed() {
+		builder.updateConfig();
+		builder.updateWidgetsList();
+		if (currentLocation == Location.UNKNOWN) {
+			WidgetManager.getScreenBuilder(Utils.getLocation(), WidgetManager.ScreenLayer.HUD).updateWidgetsList();
+		}
+	}
+
+	private static ScreenRect getBorder(ScreenRect rect, NavigationDirection side) {
+		final int thickness = 5;
+		int i = rect.getBoundingCoordinate(side);
+		NavigationAxis otherAxis = side.getAxis().getOther();
+		int j = rect.getBoundingCoordinate(otherAxis.getNegativeDirection());
+		int k = rect.getLength(otherAxis);
+		ScreenRect screenRect = ScreenRect.of(side.getAxis(), i, j, thickness, k);
+		int offsetX = side.getAxis() == NavigationAxis.HORIZONTAL ? (side.isPositive() ? -1 : -thickness + 2) : 0;
+		int offsetY = side.getAxis() == NavigationAxis.VERTICAL ? (side.isPositive() ? -1 : -thickness + 2) : 0;
+		return new ScreenRect(screenRect.getLeft() + offsetX, screenRect.getTop() + offsetY, screenRect.width(), screenRect.height());
 	}
 
 	@Override

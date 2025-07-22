@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
@@ -101,6 +102,11 @@ public abstract class HudWidget extends AbstractWidget {
 
 	public final int getScaledHeight() {
 		return Math.round(getHeight() * scale);
+	}
+
+	@Override
+	public ScreenRect getNavigationFocus() {
+		return new ScreenRect(getX(), getY(), getScaledWidth(), getScaledHeight());
 	}
 
 	/**
