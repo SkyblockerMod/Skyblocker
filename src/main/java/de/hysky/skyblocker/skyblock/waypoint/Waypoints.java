@@ -31,6 +31,7 @@ import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.text.Text;
 import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,21 +131,24 @@ public class Waypoints {
         }
     }
 
-    public static List<WaypointGroup> fromSkyblocker(String waypointsString, Location defaultIsland) {
+    public static @Nullable List<WaypointGroup> fromSkyblocker(String waypointsString, Location defaultIsland) {
         if (waypointsString.startsWith(PREFIX)) {
             try (GZIPInputStream reader = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(waypointsString.replace(PREFIX, ""))))) {
                 return CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(new String(reader.readAllBytes()), JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
             } catch (IOException e) {
                 LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skyblocker waypoint data", e);
+				return null;
             }
         } else if (waypointsString.startsWith(SKYBLOCKER_LEGACY_ORDERED)) {
 			try (GZIPInputStream reader = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(waypointsString.replace(SKYBLOCKER_LEGACY_ORDERED, ""))))) {
 				return applyDefaultLocation(SKYBLOCKER_LEGACY_ORDERED_CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(new String(reader.readAllBytes()), JsonObject.class)).resultOrPartial(LOGGER::error).orElseThrow(), defaultIsland);
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skyblocker legacy ordered waypoint data", e);
+				return null;
 			}
 		}
-        return Collections.emptyList();
+		LOGGER.error("[Skyblocker Waypoints] Unknown skyblocker waypoint data prefix");
+        return null;
     }
 
     public static String toSkyblocker(List<WaypointGroup> waypointGroups) {
@@ -158,7 +162,7 @@ public class Waypoints {
         return PREFIX + new String(Base64.getEncoder().encode(output.toByteArray()));
     }
 
-    public static List<WaypointGroup> fromSkytils(String waypointsString, Location defaultIsland) {
+    public static @Nullable List<WaypointGroup> fromSkytils(String waypointsString, Location defaultIsland) {
         try {
             if (waypointsString.startsWith("<Skytils-Waypoint-Data>(V")) {
                 int version = Integer.parseInt(waypointsString.substring(25, waypointsString.indexOf(')')));
@@ -173,8 +177,10 @@ public class Waypoints {
             } else return fromSkytilsJson(new String(Base64.getDecoder().decode(waypointsString)), defaultIsland);
         } catch (NumberFormatException e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skytils waypoint data version", e);
+			return null;
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while decoding Skytils waypoint data", e);
+			return null;
         }
         return Collections.emptyList();
     }
