@@ -2,11 +2,14 @@ package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.*;
@@ -17,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -32,6 +36,7 @@ public class SmoothAOTE {
 
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
+	private static final Pattern MANA_STATUS = Pattern.compile("§b(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|§3(?<overflow>[\\d,]+)ʬ) *");
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
 	private static final long MAX_TELEPORT_TIME = 2500; //2.5 seconds
 
@@ -43,12 +48,28 @@ public class SmoothAOTE {
 	private static long currentTeleportPing;
 	private static int teleportsAhead;
 	private static long lastTeleportTime;
+	private static int lastManaValue;
 	public static boolean teleportDisabled;
 
 	@Init
 	public static void init() {
 		UseItemCallback.EVENT.register(SmoothAOTE::onItemInteract);
 		UseBlockCallback.EVENT.register(SmoothAOTE::onBlockInteract);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(SmoothAOTE::onChatMessage);
+	}
+
+	private static boolean onChatMessage(Text text, boolean overlay) {
+		if (!overlay || !Utils.isOnSkyblock()) return true;
+		UIAndVisualsConfig.SmoothAOTE options = SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE;
+		if (SmoothAOTE.teleportDisabled ||  !(options.enableWeirdTransmission || options.enableEtherTransmission || options.enableInstantTransmission || options.enableSinrecallTransmission || options.enableWitherImpact)) {
+			return true;
+		}
+		Matcher matcher = MANA_STATUS.matcher(text.toString());
+		if (matcher.find()) {
+			lastManaValue = RegexUtils.parseIntFromMatcher(matcher, "mana");
+		}
+
+		return true;
 	}
 
 	/**
@@ -232,7 +253,8 @@ public class SmoothAOTE {
 		Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem, MANA_LORE);
 		if (manaNeeded != null && manaNeeded.matches()) {
 			int manaCost = Integer.parseInt(manaNeeded.group(1));
-			int predictedMana = StatusBarTracker.getMana().value() - teleportsAhead * manaCost;
+			System.out.println(lastManaValue);
+			int predictedMana = lastManaValue - teleportsAhead * manaCost;
 			if (predictedMana < manaCost) { // todo the players mana can lag behind as it is updated server side. client side mana calculations would help with this
 				return;
 			}
