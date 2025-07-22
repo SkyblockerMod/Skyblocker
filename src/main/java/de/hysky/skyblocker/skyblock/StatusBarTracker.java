@@ -77,6 +77,7 @@ public class StatusBarTracker {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars) {
 			//still update values for other parts of the mod to use
 			update(text.getString(), SkyblockerConfigManager.get().chat.hideMana);
+			return text;
 		}
 		return Text.of(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));
 	}
