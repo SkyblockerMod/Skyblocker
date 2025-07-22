@@ -663,7 +663,7 @@
     "skyblocker.events.tab.clickToWarp": "点击传送！",
     "skyblocker.events.tab.startsIn": "%s后开始",
     "skyblocker.waypoints.new": "新路径点",
-    "skyblocker.waypoints.share": "分享",
+    "skyblocker.waypoints.share": "导入/导出",
     "skyblocker.waypoints.shareWaypoints": "分享路径点",
     "skyblocker.waypoints.importWaypointsSkytils.tooltip": "从剪贴板导入路径点（Skytils格式）",
     "skyblocker.waypoints.importWaypointsSnoopy": "导入路径点（Snoopy）",
