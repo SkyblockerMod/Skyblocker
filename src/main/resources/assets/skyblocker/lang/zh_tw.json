@@ -664,7 +664,7 @@
     "skyblocker.events.tab.noMore": "今年沒有更多活動了！",
     "skyblocker.waypoints.config": "路徑點設置",
     "skyblocker.waypoints.new": "新路徑點",
-    "skyblocker.waypoints.share": "分享",
+    "skyblocker.waypoints.share": "匯入/匯出",
     "skyblocker.waypoints.shareWaypoints": "分享路徑點",
     "skyblocker.waypoints.importWaypointsSkytils.tooltip": "從剪貼簿匯入路徑點（Skytils格式）",
     "skyblocker.waypoints.importWaypointsSkytils": "匯入路徑點（Skytils）",
