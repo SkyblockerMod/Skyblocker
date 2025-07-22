@@ -61,7 +61,7 @@ public class SmoothAOTE {
 	private static boolean onChatMessage(Text text, boolean overlay) {
 		if (!overlay || !Utils.isOnSkyblock()) return true;
 		UIAndVisualsConfig.SmoothAOTE options = SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE;
-		if (SmoothAOTE.teleportDisabled ||  !(options.enableWeirdTransmission || options.enableEtherTransmission || options.enableInstantTransmission || options.enableSinrecallTransmission || options.enableWitherImpact)) {
+		if (SmoothAOTE.teleportDisabled || !(options.enableWeirdTransmission || options.enableEtherTransmission || options.enableInstantTransmission || options.enableSinrecallTransmission || options.enableWitherImpact)) {
 			return true;
 		}
 		Matcher matcher = MANA_STATUS.matcher(text.toString());
