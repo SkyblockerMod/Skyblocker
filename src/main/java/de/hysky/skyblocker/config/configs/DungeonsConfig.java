@@ -7,7 +7,7 @@ import net.minecraft.util.Formatting;
 import java.awt.Color;
 
 public class DungeonsConfig {
-	public boolean fancyPartyFinder = true;
+	public boolean fancyPartyFinder = false;
 
 	public boolean croesusHelper = true;
 
@@ -25,9 +25,11 @@ public class DungeonsConfig {
 
 	public boolean starredMobBoundingBoxes = true;
 
+	public boolean highlightDoorKeys = true;
+
 	public boolean allowDroppingProtectedItems = false;
 
-	public boolean dungeonSplits = true;
+	public boolean dungeonSplits = false;
 
 	public boolean hideSoulweaverSkulls = false;
 
@@ -219,7 +221,7 @@ public class DungeonsConfig {
 
 		public int dungeonCryptsMessageThreshold = 250;
 
-		public String dungeonCryptsMessage = "We only have [crypts] crypts out of 5, we need more!";
+		public String dungeonCryptsMessage = "Crypts: [crypts]/5";
 
 		public boolean enableScoreHUD = true;
 

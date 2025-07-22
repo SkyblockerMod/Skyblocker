@@ -56,7 +56,7 @@ public class Relics {
         ClientLifecycleEvents.CLIENT_STOPPING.register(Relics::saveFoundRelics);
         ClientCommandRegistrationCallback.EVENT.register(Relics::registerCommands);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(Relics::render);
-        ClientReceiveMessageEvents.GAME.register(Relics::onChatMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(Relics::onChatMessage);
     }
 
     private static void loadRelics(MinecraftClient client) {
@@ -144,11 +144,13 @@ public class Relics {
         }
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
+    private static boolean onChatMessage(Text text, boolean overlay) {
         String message = text.getString();
         if (message.equals("You've already found this relic!") || message.startsWith("+10,000 Coins! (") && message.endsWith("/28 Relics)")) {
             markClosestRelicFound();
         }
+
+        return true;
     }
 
     private static void markClosestRelicFound() {

@@ -255,7 +255,6 @@ public class Utils {
     @Init
     public static void init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
-        ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
 
         //Register Mod API stuff
@@ -569,7 +568,7 @@ public class Utils {
             	int suggestions = profileSuggestionMessages;
             	profileSuggestionMessages++;
 
-            	return suggestions > 2;
+            	return suggestions >= 2;
             }
         }
 

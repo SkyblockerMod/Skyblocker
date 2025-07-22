@@ -70,7 +70,7 @@ public class FarmingHud {
 				blockBreaks.enqueue(System.currentTimeMillis());
 			}
 		});
-		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
+		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 			if (shouldRender() && overlay) {
 				Matcher matcher = FARMING_XP.matcher(Formatting.strip(message.getString()));
 				if (matcher.find()) {
@@ -82,6 +82,8 @@ public class FarmingHud {
 					}
 				}
 			}
+
+			return true;
 		});
 		/*ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("hud").then(literal("farming")
 				.executes(Scheduler.queueOpenScreenCommand(() -> new WidgetsConfigurationScreen(Location.GARDEN, "hud_garden", null)))))));*/
