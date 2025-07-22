@@ -1,6 +1,12 @@
 package de.hysky.skyblocker.utils.render;
 
+import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.AddressMode;
+import com.mojang.blaze3d.textures.FilterMode;
+import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.blaze3d.textures.TextureFormat;
 
 import de.hysky.skyblocker.mixins.accessors.OutlineVertexConsumerProviderAccessor;
 import it.unimi.dsi.fastutil.objects.Object2ObjectSortedMaps;
@@ -12,24 +18,80 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.util.Util;
 
-public class GlowRenderer {
-	public static final OutlineVertexConsumerProvider GLOW_OUTLINE_VERTEX_CONSUMERS = Util.make(new OutlineVertexConsumerProvider(MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()), outlineVertexConsumers -> {
-		((OutlineVertexConsumerProviderAccessor) outlineVertexConsumers).setPlainDrawer(new GlowVertexConsumerProvider(new BufferAllocator(RenderLayer.DEFAULT_BUFFER_SIZE)));
-	});
-	private static boolean isRenderingGlow = false;
+public class GlowRenderer implements AutoCloseable {
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static GlowRenderer instance = null;
+	private final OutlineVertexConsumerProvider glowOutlineVertexConsumers;
+	private GpuTexture glowDepthTexture;
+	private GpuTextureView glowDepthTextureView;
+	private boolean isRenderingGlow = false;
 
-	private static void startRenderingGlow() {
-		isRenderingGlow = true;
-		RenderSystem.outputDepthTextureOverride = MinecraftClient.getInstance().getFramebuffer().getDepthAttachmentView();
+	private GlowRenderer() {
+		this.glowOutlineVertexConsumers = Util.make(new OutlineVertexConsumerProvider(CLIENT.getBufferBuilders().getEntityVertexConsumers()), outlineVertexConsumers -> {
+			((OutlineVertexConsumerProviderAccessor) outlineVertexConsumers).setPlainDrawer(new GlowVertexConsumerProvider(new BufferAllocator(RenderLayer.DEFAULT_BUFFER_SIZE)));
+		});
 	}
 
-	private static void stopRenderingGlow() {
-		isRenderingGlow = false;
+	public static GlowRenderer getInstance() {
+		if (instance == null) {
+			instance = new GlowRenderer();
+		}
+
+		return instance;
+	}
+
+	public OutlineVertexConsumerProvider getGlowVertexConsumers() {
+		return this.glowOutlineVertexConsumers;
+	}
+
+	public void updateGlowDepthTexDepth() {
+		tryUpdateDepthTexture();
+		RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(CLIENT.getFramebuffer().getDepthAttachment(), this.glowDepthTexture, 0, 0, 0, 0, 0, this.glowDepthTexture.getWidth(0), this.glowDepthTexture.getHeight(0));
+	}
+
+	private void startRenderingGlow() {
+		this.isRenderingGlow = true;
+		RenderSystem.outputDepthTextureOverride = this.glowDepthTextureView;
+	}
+
+	private void stopRenderingGlow() {
+		this.isRenderingGlow = false;
 		RenderSystem.outputDepthTextureOverride = null;
 	}
 
 	public static boolean isRenderingGlow() {
-		return isRenderingGlow;
+		//Iris can load this class very early, so this is a static method that does not initialize the instance
+		//to avoid crashing with it.
+		return instance != null ? instance.isRenderingGlow : false;
+	}
+
+	private void tryUpdateDepthTexture() {
+		int neededWidth = CLIENT.getWindow().getFramebufferWidth();
+		int neededHeight = CLIENT.getWindow().getFramebufferHeight();
+
+		//If the texture hasn't been created or needs resizing
+		if (this.glowDepthTexture == null || this.glowDepthTexture.getWidth(0) != neededWidth || this.glowDepthTexture.getHeight(0) != neededHeight) {
+			GpuDevice device = RenderSystem.getDevice();
+
+			//Delete the textures if they exist
+			if (this.glowDepthTexture != null) {
+				this.glowDepthTexture.close();
+				this.glowDepthTextureView.close();
+			}
+
+			this.glowDepthTexture = device.createTexture(() -> "Skyblocker Glow Depth Tex", GpuTexture.USAGE_RENDER_ATTACHMENT | GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_TEXTURE_BINDING, TextureFormat.DEPTH32, neededWidth, neededHeight, 1, 1);
+			this.glowDepthTextureView = device.createTextureView(this.glowDepthTexture);
+			this.glowDepthTexture.setTextureFilter(FilterMode.NEAREST, false);
+			this.glowDepthTexture.setAddressMode(AddressMode.CLAMP_TO_EDGE);
+		}
+	}
+
+	@Override
+	public void close() {
+		if (this.glowDepthTexture != null) {
+			this.glowDepthTexture.close();
+			this.glowDepthTextureView.close();
+		}
 	}
 
 	private static class GlowVertexConsumerProvider extends VertexConsumerProvider.Immediate {
@@ -41,9 +103,9 @@ public class GlowRenderer {
 		@Override
 		public VertexConsumer getBuffer(RenderLayer renderLayer) {
 			if (this.pending.get(renderLayer) != null && !renderLayer.areVerticesNotShared()) {
-				startRenderingGlow();
+				getInstance().startRenderingGlow();
 				VertexConsumer buffer = super.getBuffer(renderLayer);
-				stopRenderingGlow();
+				getInstance().stopRenderingGlow();
 
 				return buffer;
 			}
@@ -53,9 +115,9 @@ public class GlowRenderer {
 
 		@Override
 		public void draw(RenderLayer layer) {
-			startRenderingGlow();
+			getInstance().startRenderingGlow();
 			super.draw(layer);
-			stopRenderingGlow();
+			getInstance().stopRenderingGlow();
 		}
 	}
 }

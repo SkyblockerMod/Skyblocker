@@ -3,6 +3,7 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.GlowRenderer;
 import de.hysky.skyblocker.utils.render.Renderer;
 import net.minecraft.client.render.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,6 +17,7 @@ public class GameRendererMixin {
 	@Inject(method = "close", at = @At("TAIL"))
 	private void skyblocker$onGameRendererClose(CallbackInfo ci) {
 		Renderer.close();
+		GlowRenderer.getInstance().close();
 	}
 
 	@ModifyReturnValue(method = "getNightVisionStrength", at = @At("RETURN"))

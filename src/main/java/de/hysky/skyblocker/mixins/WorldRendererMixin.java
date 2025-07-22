@@ -30,9 +30,19 @@ public class WorldRendererMixin {
 		return allowGlow && original || customGlow;
 	}
 
+	@Inject(method = "method_62214",
+			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;canDrawEntityOutlines()Z")),
+			at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;clearColorAndDepthTextures(Lcom/mojang/blaze3d/textures/GpuTexture;ILcom/mojang/blaze3d/textures/GpuTexture;D)V", ordinal = 0, shift = At.Shift.AFTER)
+	)
+	private void skyblocker$updateGlowDepthTexDepth(CallbackInfo ci) {
+		if (MobGlow.atLeastOneMobHasCustomGlow()) {
+			GlowRenderer.getInstance().updateGlowDepthTexDepth();
+		}
+	}
+
 	@ModifyExpressionValue(method = "renderEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BufferBuilderStorage;getOutlineVertexConsumers()Lnet/minecraft/client/render/OutlineVertexConsumerProvider;"))
 	private OutlineVertexConsumerProvider skyblocker$useCustomGlowOutlineVertexConsumers(OutlineVertexConsumerProvider original, @Local Entity entity) {
-		return MobGlow.hasOrComputeMobGlow(entity) && !entity.isGlowing() ? GlowRenderer.GLOW_OUTLINE_VERTEX_CONSUMERS : original;
+		return MobGlow.getMobGlowOrDefault(entity, MobGlow.NO_GLOW) != MobGlow.NO_GLOW && !entity.isGlowing() ? GlowRenderer.getInstance().getGlowVertexConsumers() : original;
 	}
 
 	@ModifyVariable(method = "renderEntities",
@@ -57,6 +67,6 @@ public class WorldRendererMixin {
 
 	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/OutlineVertexConsumerProvider;draw()V"))
 	private void skyblocker$drawGlowVertexConsumers(CallbackInfo ci) {
-		GlowRenderer.GLOW_OUTLINE_VERTEX_CONSUMERS.draw();
+		GlowRenderer.getInstance().getGlowVertexConsumers().draw();
 	}
 }
