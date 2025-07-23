@@ -91,11 +91,18 @@ public class GyroOverlay {
 
 
 	public enum Mode implements StringIdentifiable {
-		OFF,
-		CIRCLE,
-		CIRCLE_OUTLINE,
-		SPHERE,
+		OFF("Off"),
+		CIRCLE("Circle"),
+		CIRCLE_OUTLINE("CircleOutlined"),
+		SPHERE("Sphere"),
 		;
+
+		private final String key;
+
+		Mode(String key) {
+			this.key = "skyblocker.config.uiAndVisuals.gyroOverlay.mode." + key;
+		}
+
 
 		@Override
 		public String asString() {
