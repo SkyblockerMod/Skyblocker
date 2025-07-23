@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
+import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -36,7 +37,7 @@ public class Ico {
 	public static final ItemStack S_POTION = Items.SPLASH_POTION.getDefaultStack();
 	public static final ItemStack BARRIER = Items.BARRIER.getDefaultStack();
 	public static final ItemStack PLAYER = Items.PLAYER_HEAD.getDefaultStack();
-	public static final ItemStack FAIRY_SOUL = ItemUtils.createSkull("eyJ0aW1lc3RhbXAiOjE1ODY2NjcxNjgzNzksInByb2ZpbGVJZCI6ImJlY2RkYjI4YTJjODQ5YjRhOWIwOTIyYTU4MDUxNDIwIiwicHJvZmlsZU5hbWUiOiJTdFR2Iiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yOTllYTEyMGJkODNkMGM4MWEzYzQ2MjdmNWJjZTFiMTJmYjAzYmNiNTc3NzljNjNkY2M3N2UzZjRhZThhNzkzIn19fQ==");
+	public static final ItemStack FAIRY_SOUL = ItemUtils.createSkull(HeadTextures.FAIRY_SOUL);
 	public static final ItemStack WATER = Items.WATER_BUCKET.getDefaultStack();
 	public static final ItemStack LEATHER = Items.LEATHER.getDefaultStack();
 	public static final ItemStack MITHRIL = Items.PRISMARINE_CRYSTALS.getDefaultStack();

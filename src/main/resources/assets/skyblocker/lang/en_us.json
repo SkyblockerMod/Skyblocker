@@ -1316,7 +1316,7 @@
   "skyblocker.waypoints.config": "Waypoints Config",
   "skyblocker.waypoints.newGroup": "New Waypoint Group",
   "skyblocker.waypoints.new": "New Waypoint",
-  "skyblocker.waypoints.share": "Share",
+  "skyblocker.waypoints.share": "Import/Export",
   "skyblocker.waypoints.shareWaypoints": "Share Waypoints",
   "skyblocker.waypoints.importWaypointsSkyblocker": "Import Waypoints (Skyblocker)",
   "skyblocker.waypoints.importWaypointsSkyblocker.tooltip": "Import Waypoints from Clipboard (Skyblocker Format)",
