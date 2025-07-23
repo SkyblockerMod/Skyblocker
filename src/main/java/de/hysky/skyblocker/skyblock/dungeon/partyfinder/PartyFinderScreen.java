@@ -5,6 +5,7 @@ import com.mojang.authlib.properties.PropertyMap;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.block.entity.SignBlockEntity;
@@ -221,7 +222,9 @@ public class PartyFinderScreen extends Screen {
         addDrawableChild(settingsButton);
         addDrawableChild(createPartyButton);
         addDrawableChild(settingsContainer);
-        addDrawableChild(ButtonWidget.builder(Text.of("DEBUG"), (a) -> DEBUG = !DEBUG).dimensions(width - 40, 0, 40, 20).build());
+		if (Debug.debugEnabled()) {
+			addDrawableChild(ButtonWidget.builder(Text.of("DEBUG"), (a) -> DEBUG = !DEBUG).dimensions(width - 40, 0, 40, 20).build());
+		}
 
         dirtiedTime = System.currentTimeMillis();
 

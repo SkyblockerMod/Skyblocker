@@ -28,7 +28,7 @@ public class NewYearCakesHelper extends SimpleContainerSolver {
 
     private NewYearCakesHelper() {
         super("Auctions: \".*\"");
-        ClientReceiveMessageEvents.GAME.register(this::onChatMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(this::onChatMessage);
     }
 
     public static int getCakeYear(ItemStack stack) {
@@ -57,10 +57,12 @@ public class NewYearCakesHelper extends SimpleContainerSolver {
         return cakes.computeIfAbsent(Utils.getProfile(), _profile -> new IntOpenHashSet()).add(year);
     }
 
-    private void onChatMessage(Text message, boolean overlay) {
+    private boolean onChatMessage(Text message, boolean overlay) {
         if (isEnabled()) {
             addCake(getCakeYear(NEW_YEAR_CAKE_PURCHASE, message.getString()));
         }
+
+        return true;
     }
 
     @Override

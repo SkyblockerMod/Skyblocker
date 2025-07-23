@@ -1,59 +1,57 @@
 package de.hysky.skyblocker.config.categories;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
-import de.hysky.skyblocker.skyblock.events.EventNotifications;
-import de.hysky.skyblocker.utils.config.DurationController;
-import dev.isxander.yacl3.api.*;
-import it.unimi.dsi.fastutil.ints.IntImmutableList;
-import it.unimi.dsi.fastutil.ints.IntList;
+import net.azureaaron.dandelion.systems.ConfigCategory;
+import net.azureaaron.dandelion.systems.Option;
+import net.azureaaron.dandelion.systems.OptionListener.UpdateType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.text.Text;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import net.minecraft.util.Identifier;
 
 public class EventNotificationsCategory {
 
     private static boolean shouldPlaySound = false;
 
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
+    	//return null;
         shouldPlaySound = false;
         return ConfigCategory.createBuilder()
+        		.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/eventnotifications"))
                 .name(Text.translatable("skyblocker.config.eventNotifications"))
                 .option(Option.<EventNotificationsConfig.Criterion>createBuilder()
                         .binding(defaults.eventNotifications.criterion,
                                 () -> config.eventNotifications.criterion,
                                 criterion -> config.eventNotifications.criterion = criterion)
-                        .controller(ConfigUtils::createEnumCyclingListController)
+                        .controller(ConfigUtils.createEnumController())
                         .name(Text.translatable("skyblocker.config.eventNotifications.criterion"))
                         .build())
                 .option(Option.<EventNotificationsConfig.Sound>createBuilder()
                         .binding(defaults.eventNotifications.reminderSound,
                                 () -> config.eventNotifications.reminderSound,
                                 sound -> config.eventNotifications.reminderSound = sound)
-                        .controller(ConfigUtils::createEnumCyclingListController)
+                        .controller(ConfigUtils.createEnumController())
                         .name(Text.translatable("skyblocker.config.eventNotifications.notificationSound"))
-                        .addListener((soundOption, event) -> {
-                        	if (event == OptionEventListener.Event.STATE_CHANGE) {
+                        .listener((soundOption, event) -> {
+                        	if (event == UpdateType.VALUE_CHANGE) {
                                 if (!shouldPlaySound) {
                                     shouldPlaySound = true;
                                     return;
                                 }
-                                if (soundOption.pendingValue().getSoundEvent() != null)
-                                    MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(soundOption.pendingValue().getSoundEvent(), 1f, 1f));
+                                if (soundOption.binding().get() != null)
+                                    MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(soundOption.binding().get().getSoundEvent(), 1f, 1f));
                         	}
                         })
                         .build())
-                .groups(createGroups(config))
+                //.groups(createGroups(config))
                 .build();
 
     }
 
-    private static List<OptionGroup> createGroups(SkyblockerConfig config) {
+    /*private static List<OptionGroup> createGroups(SkyblockerConfig config) {
         Map<String, IntList> eventsReminderTimes = config.eventNotifications.eventsReminderTimes;
         List<OptionGroup> groups = new ArrayList<>(eventsReminderTimes.size());
         if (eventsReminderTimes.isEmpty()) return List.of(OptionGroup.createBuilder().option(LabelOption.create(Text.translatable("skyblocker.config.eventNotifications.monologue"))).build());
@@ -73,5 +71,5 @@ public class EventNotificationsCategory {
             );
         }
         return groups;
-    }
+    }*/
 }

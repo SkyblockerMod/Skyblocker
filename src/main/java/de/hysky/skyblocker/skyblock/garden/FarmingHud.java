@@ -75,10 +75,10 @@ public class FarmingHud {
 				blockBreaks.enqueue(System.currentTimeMillis());
 			}
 		});
-		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
+		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 			if (shouldRender() && overlay) {
 				Matcher matcher = FARMING_XP.matcher(Formatting.strip(message.getString()));
-				if (matcher.matches()) {
+				if (matcher.find()) {
 					try {
 						farmingXp.offer(FloatLongPair.of(NUMBER_FORMAT.parse(matcher.group("xp")).floatValue(), System.currentTimeMillis()));
 						farmingXpPercentProgress = NUMBER_FORMAT.parse(matcher.group("percent")).floatValue();
@@ -87,6 +87,8 @@ public class FarmingHud {
 					}
 				}
 			}
+
+			return true;
 		});
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("hud").then(literal("farming")
 				.executes(Scheduler.queueOpenScreenCommand(() -> new WidgetsConfigurationScreen(Location.GARDEN, "hud_garden", null)))))));

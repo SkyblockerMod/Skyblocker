@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.chat.filters;
 import org.junit.jupiter.api.Test;
 
 class HealFilterTest extends ChatFilterTest<HealFilter> {
-    public HealFilterTest() {
+    HealFilterTest() {
         super(new HealFilter());
     }
 

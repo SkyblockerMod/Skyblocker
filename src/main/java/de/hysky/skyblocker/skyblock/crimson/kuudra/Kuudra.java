@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class Kuudra { 
+public class Kuudra {
 	public static final int KUUDRA_MAGMA_CUBE_SIZE = 30;
 
 	static KuudraPhase phase = KuudraPhase.OTHER;
@@ -15,10 +15,10 @@ public class Kuudra {
 	@Init
 	public static void init() {
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-		ClientReceiveMessageEvents.GAME.register(Kuudra::onMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(Kuudra::onMessage);
 	}
 
-	private static void onMessage(Text text, boolean overlay) {
+	private static boolean onMessage(Text text, boolean overlay) {
 		if (Utils.isInKuudra() && !overlay) {
 			String message = Formatting.strip(text.getString());
 
@@ -38,6 +38,8 @@ public class Kuudra {
 				phase = KuudraPhase.KUUDRA_LAIR;
 			}
 		}
+
+		return true;
 	}
 
 	private static void reset() {

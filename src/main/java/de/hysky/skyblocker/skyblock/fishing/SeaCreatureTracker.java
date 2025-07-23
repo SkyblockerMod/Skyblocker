@@ -56,7 +56,7 @@ public class SeaCreatureTracker {
 			checkCapNotification();
 			checkRarityNotification();
 			//schedule notification for end of timer
-			Scheduler.INSTANCE.schedule(SeaCreatureTracker::checkTimerNotification,SkyblockerConfigManager.get().helpers.fishing.timerLength * 20);
+			Scheduler.INSTANCE.schedule(SeaCreatureTracker::checkTimerNotification, SkyblockerConfigManager.get().helpers.fishing.timerLength * 20);
 		}
 	}
 
@@ -79,9 +79,10 @@ public class SeaCreatureTracker {
 	private static void checkRarityNotification() {
 		SkyblockItemRarity rarityThreshold = SkyblockerConfigManager.get().helpers.fishing.minimumNotificationRarity;
 		if (rarityThreshold == SkyblockItemRarity.UNKNOWN) return;
-		SkyblockItemRarity lastCreatureRarity = seaCreatures.sequencedValues().getLast().seaCreature.rarity;
+		SeaCreature lastCreature = seaCreatures.sequencedValues().getLast().seaCreature;
+		SkyblockItemRarity lastCreatureRarity = lastCreature.rarity;
 		if (lastCreatureRarity.compareTo(rarityThreshold) >= 0) {
-			TitleContainer.addTitle(new Title(Text.translatable("skyblocker.config.helpers.fishing.minimumNotificationRarity.notification", lastCreatureRarity).formatted(lastCreatureRarity.formatting)), 60);
+			TitleContainer.addTitle(new Title(Text.literal(lastCreature.name).formatted(lastCreatureRarity.formatting)), 60);
 			if (CLIENT.player == null) return;
 			CLIENT.player.playSound(SoundEvents.ENTITY_ARROW_HIT_PLAYER, 100f, 0.1f);
 		}
@@ -105,7 +106,7 @@ public class SeaCreatureTracker {
 	 * @param s Message to check
 	 */
 	private static void onChatMessage(String s) {
-		if (!SkyblockerConfigManager.get().helpers.fishing.fishingHudEnabledLocations.contains(Utils.getLocation())) {
+		if (!SkyblockerConfigManager.get().helpers.fishing.enableFishingHud || !SkyblockerConfigManager.get().helpers.fishing.fishingHudEnabledLocations.contains(Utils.getLocation())) {
 			return;
 		}
 		String message = Formatting.strip(s);
@@ -170,4 +171,3 @@ public class SeaCreatureTracker {
 
 	record LiveSeaCreature(SeaCreature seaCreature, Entity entity, Long spawnTime) {}
 }
-
