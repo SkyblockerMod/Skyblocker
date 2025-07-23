@@ -2,13 +2,14 @@ package de.hysky.skyblocker.skyblock.item.custom;
 
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.component.type.ProfileComponent;
+import net.minecraft.item.Items;
 import org.slf4j.Logger;
 
 import java.nio.charset.StandardCharsets;
@@ -38,14 +39,22 @@ public class CustomHelmetTextures {
 
 	private static void loadTextures() {
 		try {
-			ObjectSet<String> seen = new ObjectOpenHashSet<>();
-			for (NEUItem item : NEURepoManager.NEU_REPO.getItems().getItems().values()) {
-				if (!"minecraft:skull".equals(item.getMinecraftItemId())) continue;
-				String texture = extractTexture(item.getNbttag());
-				if (texture == null || texture.isEmpty() || !seen.add(texture)) continue;
-				String name = cleanName(item.getDisplayName());
-				TEXTURES.add(new NamedTexture(name, texture, item.getSkyblockItemId()));
+
+			if (!ItemRepository.filesImported()) {
+				NEURepoManager.runAsyncAfterLoad(CustomHelmetTextures::loadTextures);
+				return;
 			}
+
+			ObjectSet<String> seen = new ObjectOpenHashSet<>();
+			ItemRepository.getItemsStream()
+					.filter(stack -> stack.isOf(Items.PLAYER_HEAD))
+					.forEach(stack -> {
+						String texture = ItemUtils.getHeadTexture(stack);
+						if (texture.isEmpty() || !seen.add(texture)) return;
+						String name = cleanName(stack.getName().getString());
+						TEXTURES.add(new NamedTexture(name, texture, stack.getNeuName()));
+					});
+
 			TEXTURES.sort(java.util.Comparator.comparing(NamedTexture::internalName));
 			LOGGER.info("[Skyblocker] Loaded and sorted {} helmet textures from repo", TEXTURES.size());
 		} catch (Exception e) {
@@ -55,19 +64,6 @@ public class CustomHelmetTextures {
 
 	private static String cleanName(String name) {
 		return LEVEL_PATTERN.matcher(name).replaceAll("").trim();
-	}
-
-	private static String extractTexture(String nbt) {
-		String lower = nbt.toLowerCase();
-		int texIdx = lower.indexOf("textures");
-		if (texIdx == -1) return null;
-		String valKey = "Value:\"";
-		int valIdx = nbt.indexOf(valKey, texIdx);
-		if (valIdx == -1) return null;
-		int start = valIdx + valKey.length();
-		int end = nbt.indexOf("\"", start);
-		if (end == -1) return null;
-		return nbt.substring(start, end);
 	}
 
 	public static List<NamedTexture> getTextures() {
