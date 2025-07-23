@@ -386,7 +386,7 @@ public class RenderHelper {
 		matrices.push();
 		matrices.translate(-camera.x, -camera.y, -camera.z);
 
-		VertexConsumer buffer = context.consumers().getBuffer(SkyblockerRenderLayers.SPHERE);
+		VertexConsumer buffer = context.consumers().getBuffer(SkyblockerRenderLayers.CYLINDER);
 		Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
 
 		for (int lat = 0; lat < rings; lat++) {
@@ -400,21 +400,21 @@ public class RenderHelper {
 			float r1 = (float) Math.sin(lat1) * radius;
 
 			for (int lon = 0; lon <= segments; lon++) {
-				double angle = 2 * Math.PI * (double) lon / segments;
+				double angle = Math.TAU * (double) lon / segments;
 				float x0 = (float) Math.cos(angle);
 				float z0 = (float) Math.sin(angle);
 
 				// First triangle
 				buffer.vertex(positionMatrix,
-								(float) centre.getX() + x0 * r0,
+								Math.fma(x0 ,r0,(float) centre.getX()),
 								(float) centre.getY() + y0,
-								(float) centre.getZ() + z0 * r0)
+								Math.fma(z0,r0,(float) centre.getZ()))
 						.color(color);
 
 				buffer.vertex(positionMatrix,
-								(float) centre.getX() + x0 * r1,
+								Math.fma(x0 ,r1,(float) centre.getX()),
 								(float) centre.getY() + y1,
-								(float) centre.getZ() + z0 * r1)
+								Math.fma(z0,r1,(float) centre.getZ()))
 						.color(color);
 			}
 		}
@@ -441,10 +441,7 @@ public class RenderHelper {
 		VertexConsumer buffer = context.consumers().getBuffer(SkyblockerRenderLayers.CIRCLE_LINES);
 		Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
 
-		float r = (color >> 16 & 0xFF) / 255f;
-		float g = (color >> 8 & 0xFF) / 255f;
-		float b = (color & 0xFF) / 255f;
-		float a = (color >> 24 & 0xFF) / 255f;
+
 
 		float innerRadius = radius - thickness / 2f;
 		float outerRadius = radius + thickness / 2f;
@@ -470,10 +467,10 @@ public class RenderHelper {
 			float cz = (float) centre.getZ();
 
 			// Each quad is formed from two triangles
-			buffer.vertex(positionMatrix, cx + x1Inner, cy, cz + z1Inner).color(r, g, b, a);
-			buffer.vertex(positionMatrix, cx + x1Outer, cy, cz + z1Outer).color(r, g, b, a);
-			buffer.vertex(positionMatrix, cx + x2Outer, cy, cz + z2Outer).color(r, g, b, a);
-			buffer.vertex(positionMatrix, cx + x2Inner, cy, cz + z2Inner).color(r, g, b, a);
+			buffer.vertex(positionMatrix, cx + x1Inner, cy, cz + z1Inner).color(color);
+			buffer.vertex(positionMatrix, cx + x1Outer, cy, cz + z1Outer).color(color);
+			buffer.vertex(positionMatrix, cx + x2Outer, cy, cz + z2Outer).color(color);
+			buffer.vertex(positionMatrix, cx + x2Inner, cy, cz + z2Inner).color(color);
 		}
 
 		matrices.pop();

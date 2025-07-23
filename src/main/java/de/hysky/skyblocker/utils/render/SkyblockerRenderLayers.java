@@ -70,9 +70,7 @@ public class SkyblockerRenderLayers {
 			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
 			.build(false));
 
-	public static final MultiPhase SPHERE = RenderLayer.of("sphere", RenderLayer.DEFAULT_BUFFER_SIZE, false, true, SkyblockerRenderPipelines.SPHERE, MultiPhaseParameters.builder()
-			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
-			.build(false));
+
 
 
 

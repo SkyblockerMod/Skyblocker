@@ -17,7 +17,7 @@ import java.awt.*;
 
 public class GyroOverlay {
 
-	private static final MinecraftClient client = MinecraftClient.getInstance();
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	private static float[] colorComponents;
 
@@ -60,10 +60,10 @@ public class GyroOverlay {
 
 		if (client.player == null || client.world == null) return;
 		if (!Utils.isOnSkyblock()) {return;}
-		if (SkyblockerConfigManager.get().uiAndVisuals.gyroOverlay.gyroOverlayMode == Mode.OFF) {return;}
+		if (SkyblockerConfigManager.get().uiAndVisuals.gyroOverlay.gyroOverlayMode == Mode.OFF) return;
 
 		String heldItem = client.player.getMainHandStack().getSkyblockId();
-		if (!heldItem.equals("GYROKINETIC_WAND")) {return;}
+		if (!heldItem.equals("GYROKINETIC_WAND")) return;
 
 		HitResult hit = client.cameraEntity.raycast(MAX_REACH, 1.0f, false);
 
