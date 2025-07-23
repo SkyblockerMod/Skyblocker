@@ -1156,7 +1156,7 @@
   "skyblocker.wikiLookup.noArticleFound.official": "Unable to locate an Official wiki article for this item...",
   "skyblocker.wikiLookup.noArticleFound.fandom": "Unable to locate a Fandom wiki article for this item...",
 
-  "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armor stands to %s",
+  "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armor stands to %s.",
   "skyblocker.debug.toggledWebSocketDebug": "Toggled WebSocket debugging to %s",
 
   "skyblocker.config.uiAndVisuals.bars.openScreen": "Status Bars Config screen",
