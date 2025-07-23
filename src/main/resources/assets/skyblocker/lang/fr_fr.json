@@ -186,7 +186,7 @@
     "skyblocker.config.crimsonIsle.kuudra.supplyWaypoints": "Marqueurs d'équipement",
     "skyblocker.config.crimsonIsle.kuudra.fuelWaypoints": "Marqueurs du carburant",
     "skyblocker.config.crimsonIsle.kuudra.suppliesAndFuelWaypointType": "Type de marqueur pour l'équipement / carburant",
-    "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Vous préviens quand vous sortez un arc et que vous n'avez pas de flèche empoisonnée dans votre inventaire. Marche seulement durant la phase de DPS.",
+    "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Vous prévient quand vous sortez un arc et que vous n'avez pas de flèche empoisonnée dans votre inventaire. Marche seulement durant la phase de DPS.",
     "skyblocker.config.quickNav.button": "Bouton %d",
     "skyblocker.config.quickNav.button.render": "Afficher",
     "skyblocker.config.mining.crystalsHud.screen": "Configuration du placement de la carte...",
