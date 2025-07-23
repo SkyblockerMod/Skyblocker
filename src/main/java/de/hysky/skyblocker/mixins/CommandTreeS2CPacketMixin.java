@@ -5,6 +5,7 @@ import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import de.hysky.skyblocker.skyblock.JoinInstanceAutocomplete;
+import de.hysky.skyblocker.skyblock.RngMeterAutocomplete;
 import de.hysky.skyblocker.skyblock.SackItemAutocomplete;
 import de.hysky.skyblocker.skyblock.ViewstashAutocomplete;
 import de.hysky.skyblocker.skyblock.WarpAutocomplete;
@@ -28,6 +29,8 @@ public class CommandTreeS2CPacketMixin {
 				case String s when s.equals("joininstance") && JoinInstanceAutocomplete.joinInstanceCommand != null -> JoinInstanceAutocomplete.joinInstanceCommand;
 				case String s when s.equals("joindungeon") && JoinInstanceAutocomplete.dungeonCommand != null -> JoinInstanceAutocomplete.dungeonCommand;
 				case String s when s.equals("joinkuudra") && JoinInstanceAutocomplete.kuudraCommand != null -> JoinInstanceAutocomplete.kuudraCommand;
+				case String s when s.equals("rngmeter") && RngMeterAutocomplete.longCommand != null -> RngMeterAutocomplete.longCommand;
+				case String s when s.equals("rng") && RngMeterAutocomplete.shortCommand != null -> RngMeterAutocomplete.shortCommand;
 				default -> original;
 			};
 		}

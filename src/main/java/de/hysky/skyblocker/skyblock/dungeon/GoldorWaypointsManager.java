@@ -65,8 +65,7 @@ public class GoldorWaypointsManager {
 	public static void init() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(GoldorWaypointsManager::render);
         ClientLifecycleEvents.CLIENT_STARTED.register(GoldorWaypointsManager::load);
-        ClientReceiveMessageEvents.GAME.register(GoldorWaypointsManager::onChatMessage);
-        ClientReceiveMessageEvents.GAME_CANCELED.register(GoldorWaypointsManager::onChatMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(GoldorWaypointsManager::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
     }
 
@@ -153,8 +152,8 @@ public class GoldorWaypointsManager {
         return matcher.matches() ? matcher.group("name") : null;
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
-        if (overlay || !shouldProcessMsgs()) return;
+    private static boolean onChatMessage(Text text, boolean overlay) {
+        if (overlay || !shouldProcessMsgs()) return true;
         String message = text.getString();
 
         if (active) {
@@ -181,6 +180,8 @@ public class GoldorWaypointsManager {
                 active = true;
             }
         }
+
+        return true;
     }
 
     private static void renderWaypoints(WorldRenderContext context, ObjectArrayList<GoldorWaypoint> waypoints) {

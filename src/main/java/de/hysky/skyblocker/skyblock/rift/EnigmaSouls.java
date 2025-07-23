@@ -121,13 +121,15 @@ public class EnigmaSouls {
 		}
 	}
 
-	static void onMessage(Text text, boolean overlay) {
+	static boolean onMessage(Text text, boolean overlay) {
 		if (Utils.isInTheRift() && !overlay) {
 			String message = text.getString();
 
 			if (message.equals("You have already found that Enigma Soul!") || Formatting.strip(message).equals("SOUL! You unlocked an Enigma Soul!"))
 				markClosestSoulAsFound();
 		}
+
+		return true;
 	}
 
 	static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {

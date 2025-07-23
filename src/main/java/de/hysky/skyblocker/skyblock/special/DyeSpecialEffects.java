@@ -25,10 +25,10 @@ public class DyeSpecialEffects {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(DyeSpecialEffects::displayDyeDropEffect);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(DyeSpecialEffects::displayDyeDropEffect);
 	}
 
-	private static void displayDyeDropEffect(Text message, boolean overlay) {
+	private static boolean displayDyeDropEffect(Text message, boolean overlay) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.specialEffects.rareDyeDropEffects && !overlay) {
 			try {
 				String stringForm = message.getString();
@@ -46,6 +46,8 @@ public class DyeSpecialEffects {
 				LOGGER.error("[Skyblocker Special Effects] An unexpected exception was encountered!", e);
 			}
 		}
+
+		return true;
 	}
 
 	private static ItemStack findDyeStack(String dyeName) {
