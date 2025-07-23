@@ -41,12 +41,10 @@ public abstract class RadialMenu {
 	public Option<Boolean> getOption(SkyblockerConfig config) {
 		return Option.<Boolean>createBuilder()
 				.name(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu." + getConfigId()))
-				//.description(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu." + getId() + ".@Tooltip"))
 				.binding(true,
 						() -> config.uiAndVisuals.radialMenu.enabledMenus.getOrDefault(getConfigId(), false),
 						newValue -> config.uiAndVisuals.radialMenu.enabledMenus.put(getConfigId(), newValue.booleanValue()))
 				.controller(ConfigUtils.createBooleanController())
 				.build();
 	}
-
 }

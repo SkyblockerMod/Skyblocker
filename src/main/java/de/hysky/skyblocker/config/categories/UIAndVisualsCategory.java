@@ -232,6 +232,13 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.radialMenu.enabled = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu.tooltipsWithoutShift"))
+								.binding(defaults.uiAndVisuals.radialMenu.tooltipsWithoutShift,
+										() -> config.uiAndVisuals.radialMenu.tooltipsWithoutShift,
+										newValue -> config.uiAndVisuals.radialMenu.tooltipsWithoutShift = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.options(createRadialToggles(config))
 						.build()
 				)
