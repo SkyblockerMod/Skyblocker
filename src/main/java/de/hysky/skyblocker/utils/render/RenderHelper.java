@@ -342,7 +342,7 @@ public class RenderHelper {
 	 * @param segments The amount of triangles used to approximate the circle.
 	 * @param color    The color of the circle as a argb int.
 	 */
-	public static void renderCircleFilled(WorldRenderContext context, Vec3d centre, float radius,int segments, int color) {
+	public static void renderCircleFilled(WorldRenderContext context, Vec3d centre, float radius, int segments, int color) {
 		MatrixStack matrices = context.matrixStack();
 		Vec3d camera = context.camera().getPos();
 
@@ -360,7 +360,7 @@ public class RenderHelper {
 			float dz = (float) Math.sin(angle) * radius;
 
 
-			buffer.vertex(positionMatrix, (float) centre.getX() + dx, (float) centre.getY() , (float) centre.getZ() + dz).color(color);
+			buffer.vertex(positionMatrix, (float) centre.getX() + dx, (float) centre.getY(), (float) centre.getZ() + dz).color(color);
 
 		}
 

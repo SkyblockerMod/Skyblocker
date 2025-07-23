@@ -59,7 +59,7 @@ public class GyroOverlay {
 	public static void render(WorldRenderContext wrc) {
 
 		if (CLIENT.player == null || CLIENT.world == null) return;
-		if (!Utils.isOnSkyblock()) {return;}
+		if (!Utils.isOnSkyblock()) return;
 		if (SkyblockerConfigManager.get().uiAndVisuals.gyroOverlay.gyroOverlayMode == Mode.OFF) return;
 
 		String heldItem = CLIENT.player.getMainHandStack().getSkyblockId();
@@ -94,8 +94,7 @@ public class GyroOverlay {
 		OFF("Off"),
 		CIRCLE("Circle"),
 		CIRCLE_OUTLINE("CircleOutlined"),
-		SPHERE("Sphere"),
-		;
+		SPHERE("Sphere");
 
 		private final String key;
 
