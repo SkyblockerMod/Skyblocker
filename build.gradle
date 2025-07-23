@@ -298,7 +298,7 @@ publishMods {
 		projectId = modrinth_id
 		minecraftVersions.add(minecraft_version)
 		announcementTitle = "<:modrinth:1237114573354438696> Download from Modrinth"
-		requires("fabric-api")
+		requires("fabric-api", "fabric-language-kotlin")
 		optional("modmenu", "rei", "emi", "jei")
 		embeds("yacl")
 	}
@@ -309,7 +309,7 @@ publishMods {
 		minecraftVersions.add(minecraft_version)
 		announcementTitle = "<:curseforge:900697838453936149> Download from CurseForge"
 		projectSlug = "skyblocker"
-		requires("fabric-api")
+		requires("fabric-api", "fabric-language-kotlin")
 		optional("roughly-enough-items", "emi", "jei")
 		embeds("yacl")
 	}

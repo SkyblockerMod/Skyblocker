@@ -17,7 +17,7 @@ public class TheRift {
         ClientLifecycleEvents.CLIENT_STARTED.register(MirrorverseWaypoints::load);
         ClientLifecycleEvents.CLIENT_STARTED.register(EnigmaSouls::load);
         ClientLifecycleEvents.CLIENT_STOPPING.register(EnigmaSouls::save);
-        ClientReceiveMessageEvents.GAME.register(EnigmaSouls::onMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(EnigmaSouls::onMessage);
         ClientCommandRegistrationCallback.EVENT.register(EnigmaSouls::registerCommands);
         Scheduler.INSTANCE.scheduleCyclic(EffigyWaypoints::updateEffigies, SkyblockerConfigManager.get().slayers.vampireSlayer.effigyUpdateFrequency);
     }

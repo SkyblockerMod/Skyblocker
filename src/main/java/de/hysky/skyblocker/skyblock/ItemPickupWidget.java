@@ -44,7 +44,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		super(Text.literal("Items"), Formatting.AQUA.getColorValue(), "Item Pickup");
 		instance = this;
 
-		ClientReceiveMessageEvents.GAME.register(instance::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(instance::onChatMessage);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> changingLobby = true);
 		// Make changingLobby true for a short period while the player loads into a new lobby and their items are loading
 		SkyblockEvents.LOCATION_CHANGE.register(location -> Scheduler.INSTANCE.schedule(() -> changingLobby = false, LOBBY_CHANGE_DELAY));
@@ -59,23 +59,22 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	 */
 	private static ItemStack getItem(String itemName) {
 		if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return new ItemStack(Items.BARRIER);
-		return NEURepoManager.NEU_REPO.getItems().getItems()
-				.values().stream()
-				.filter(item -> Formatting.strip(item.getDisplayName()).equals(itemName))
+		return NEURepoManager.getItemByName(itemName)
+				.stream()
 				.findFirst()
 				.map(NEUItem::getSkyblockItemId)
 				.map(ItemRepository::getItemStack)
-				.orElse(new ItemStack(Items.BARRIER));
+				.orElseGet(() -> new ItemStack(Items.BARRIER));
 	}
 
 	/**
 	 * Checks chat messages for a stack update message, then finds the items linked to it
 	 */
-	private void onChatMessage(Text message, boolean overlay) {
-		if (!Formatting.strip(message.getString()).startsWith(SACKS_MESSAGE_START)) return;
-		if (!SkyblockerConfigManager.get().uiAndVisuals.itemPickup.sackNotifications) return;
+	private boolean onChatMessage(Text message, boolean overlay) {
+		if (!Formatting.strip(message.getString()).startsWith(SACKS_MESSAGE_START)) return true;
+		if (!SkyblockerConfigManager.get().uiAndVisuals.itemPickup.sackNotifications) return true;
 		HoverEvent hoverEvent = message.getSiblings().getFirst().getStyle().getHoverEvent();
-		if (hoverEvent == null || hoverEvent.getAction() != HoverEvent.Action.SHOW_TEXT) return;
+		if (hoverEvent == null || hoverEvent.getAction() != HoverEvent.Action.SHOW_TEXT) return true;
 		String hoverMessage = ((HoverEvent.ShowText) hoverEvent).value().getString();
 
 		Matcher matcher = CHANGE_REGEX.matcher(hoverMessage);
@@ -98,6 +97,8 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 				removedCount.put(item.getNeuName(), new ChangeData(item, existingCount - Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
 			}
 		}
+
+		return true;
 	}
 
 	@Override
