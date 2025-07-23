@@ -2,6 +2,6 @@ package de.hysky.skyblocker.skyblock.radialMenu.menus;
 
 public class SkyblockMenu extends BasicMenu {
 	public SkyblockMenu() {
-		super("skyblock menu","general");
+		super("skyblock menu", "general");
 	}
 }

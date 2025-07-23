@@ -20,7 +20,7 @@ public class Storage extends RadialMenu {
 	@Override
 	protected boolean itemMatches(int slotId, ItemStack stack) {
 		Item item = stack.getItem();
-		if (item.equals(Items.BLACK_STAINED_GLASS_PANE) || item.equals(Items.RED_STAINED_GLASS_PANE)|| item.equals(Items.BROWN_STAINED_GLASS_PANE)) {
+		if (item.equals(Items.BLACK_STAINED_GLASS_PANE) || item.equals(Items.RED_STAINED_GLASS_PANE) || item.equals(Items.BROWN_STAINED_GLASS_PANE)) {
 			return false;
 		}
 		return slotId != 4 && slotId != 22;

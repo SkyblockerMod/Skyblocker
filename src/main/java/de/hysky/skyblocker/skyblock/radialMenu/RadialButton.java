@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.radialMenu;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -48,42 +49,12 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 
 	public String getName() {
 		Text customName = icon.getCustomName();
-		if (customName == null) return "null"; //Skyhanni seams to sometimes give us a null value
+		if (customName == null) return "null";
 		return icon.getCustomName().getString();
 	}
 
 	protected int getLinkedSlot() {
 		return linkedSlot;
-	}
-
-
-	/**
-	 * Callback for when a mouse move event has been captured.
-	 *
-	 * @param mouseX the X coordinate of the mouse
-	 * @param mouseY the Y coordinate of the mouse
-	 */
-	@Override
-	public void mouseMoved(double mouseX, double mouseY) {
-		Element.super.mouseMoved(mouseX, mouseY);
-	}
-
-	/**
-	 * Callback for when a mouse button down event
-	 * has been captured.
-	 * <p>
-	 * The button number is identified by the constants in
-	 * {@link GLFW GLFW} class.
-	 *
-	 * @param mouseX the X coordinate of the mouse
-	 * @param mouseY the Y coordinate of the mouse
-	 * @param button the mouse button number
-	 * @return {@code true} to indicate that the event handling is successful/valid
-	 * @see GLFW#GLFW_MOUSE_BUTTON_1
-	 */
-	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		return Element.super.mouseClicked(mouseX, mouseY, button);
 	}
 
 	@Override
@@ -96,12 +67,10 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 		return false;
 	}
 
-
 	@Override
 	public ScreenRect getNavigationFocus() {
 		return Element.super.getNavigationFocus();
 	}
-
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
@@ -145,11 +114,18 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 		SlotTextManager.renderSlotText(context, CLIENT.textRenderer, null, icon, linkedSlot, (int) iconPos.x, (int) iconPos.y);
 
 		//render tooltip
-		if (hovered && Screen.hasShiftDown()) { //todo config for shift
+		if (hovered && (Screen.hasShiftDown() || SkyblockerConfigManager.get().uiAndVisuals.radialMenu.tooltipsWithoutShift)) {
 			context.drawItemTooltip(CLIENT.textRenderer, icon, mouseX, mouseY);
 		}
 	}
 
+	/**
+	 * Get Screen position for a given angle and radius around the center
+	 * @param center center of screen
+	 * @param angle angle around center clockwise from top
+	 * @param radius radius
+	 * @return the screen position
+	 */
 	private static Vector3f getPos(Vector2i center, float angle, float radius) {
 		return new Vector3f((float) (center.x + (radius * Math.cos(angle))), (float) (center.y + (radius * Math.sin(angle))), 0);
 	}
@@ -206,9 +182,4 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 
 	@Override
 	public void forEachChild(Consumer<ClickableWidget> consumer) {}
-
-	@Environment(EnvType.CLIENT)
-	public interface PressAction {
-		void onPress(int slotId, int button);
-	}
 }

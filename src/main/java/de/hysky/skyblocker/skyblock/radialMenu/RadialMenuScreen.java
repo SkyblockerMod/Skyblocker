@@ -28,7 +28,7 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final int INTERNAL_RADIUS = 55;
 	private static final int EXTERNAL_RADIUS = 110;
-	private static long NAVIGATION_DIRECTION_COOLDOWN_DELAY = 600;
+	private static long NAVIGATION_DIRECTION_COOLDOWN_DELAY = 500;
 
 	private final RadialMenu menuType;
 	private final Int2ObjectOpenHashMap<ItemStack> options = new Int2ObjectOpenHashMap<>();
@@ -45,15 +45,12 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 	public RadialMenuScreen(GenericContainerScreenHandler handler, RadialMenu type, Text title) {
 		super(type.getTitle(title));
 		menuType = type;
-
 		this.parentName = title;
-
-
 		options.clear();
+
 		//Listen for slot updates
 		this.handler = handler;
 		handler.addListener(this);
-
 	}
 
 	@Override
@@ -131,57 +128,47 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == 256 && this.shouldCloseOnEsc()) {
-			this.close();
-			return true;
-		} else {
-			switch (keyCode) {
-				case 262 -> this.getArrowNavigation(NavigationDirection.RIGHT);
-				case 263 -> this.getArrowNavigation(NavigationDirection.LEFT);
-				case 264 -> this.getArrowNavigation(NavigationDirection.DOWN);
-				case 265 -> this.getArrowNavigation(NavigationDirection.UP);
-				case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_SPACE -> this.clickSlot();
-				default -> {
-					if (CLIENT.options.forwardKey.matchesKey(keyCode,scanCode)) this.getArrowNavigation(NavigationDirection.UP);
-					else if (CLIENT.options.backKey.matchesKey(keyCode,scanCode)) this.getArrowNavigation(NavigationDirection.DOWN);
-					else if (CLIENT.options.leftKey.matchesKey(keyCode,scanCode)) this.getArrowNavigation(NavigationDirection.LEFT);
-					else if (CLIENT.options.rightKey.matchesKey(keyCode,scanCode)) this.getArrowNavigation(NavigationDirection.RIGHT);
-					else return super.keyPressed(keyCode, scanCode, modifiers);
-				}
+		switch (keyCode) {
+			case GLFW.GLFW_KEY_RIGHT -> this.navigateDirection(NavigationDirection.RIGHT);
+			case GLFW.GLFW_KEY_LEFT -> this.navigateDirection(NavigationDirection.LEFT);
+			case GLFW.GLFW_KEY_DOWN-> this.navigateDirection(NavigationDirection.DOWN);
+			case GLFW.GLFW_KEY_UP -> this.navigateDirection(NavigationDirection.UP);
+			case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_SPACE -> this.clickSlot();
+			default -> {
+				if (CLIENT.options.forwardKey.matchesKey(keyCode, scanCode)) this.navigateDirection(NavigationDirection.UP);
+				else if (CLIENT.options.backKey.matchesKey(keyCode, scanCode)) this.navigateDirection(NavigationDirection.DOWN);
+				else if (CLIENT.options.leftKey.matchesKey(keyCode, scanCode)) this.navigateDirection(NavigationDirection.LEFT);
+				else if (CLIENT.options.rightKey.matchesKey(keyCode, scanCode)) this.navigateDirection(NavigationDirection.RIGHT);
+				else return super.keyPressed(keyCode, scanCode, modifiers);
 			}
-			return false;
 		}
+		return false;
 	}
 
-
-
-	private void clickSlot() {
-		if (buttonsHoveredIndex != -1 && buttonsHoveredIndex < buttons.size()) {
-			clickSlot(buttons.get(buttonsHoveredIndex).getLinkedSlot(), 0);
-		}
-
-	}
-
-	private void getArrowNavigation(NavigationDirection direction) {
+	/**
+	 * Changes the {@link RadialMenuScreen#buttonsHoveredIndex} towards the given direction
+	 * @param direction navigated direction
+	 */
+	private void navigateDirection(NavigationDirection direction) {
 		//if there is no current hovered index start at slot in direction
 		boolean skipUpdate = buttonsHoveredIndex == -1;
-		if (buttonsHoveredIndex == -1){
-			buttonsHoveredIndex = switch (direction){
+		if (buttonsHoveredIndex == -1) {
+			buttonsHoveredIndex = switch (direction) {
 				case UP -> 0;
-				case DOWN -> buttons.size() /2 ;
-				case LEFT -> (int) (buttons.size() * 0.75) ;
-				case RIGHT -> (int) (buttons.size() * 0.25) ;
+				case DOWN -> buttons.size() / 2;
+				case LEFT -> (int) (buttons.size() * 0.75);
+				case RIGHT -> (int) (buttons.size() * 0.25);
 			};
 		}
 		//calculate new direction based on current angle. then we keep this direction while the button is pressed
-		if (lastNavigationDirectionInput != direction || System.currentTimeMillis() > navigationDirectionLastTime + 500) {
+		if (lastNavigationDirectionInput != direction || System.currentTimeMillis() > navigationDirectionLastTime + NAVIGATION_DIRECTION_COOLDOWN_DELAY) {
 			lastNavigationDirectionInput = direction;
 			float angle = buttonsHoveredIndex * buttonArcSize;
 			navigationDirection = switch (direction) {
-				case UP  -> (angle > Math.PI) ?  +1 :  -1;
-				case DOWN -> (angle > Math.PI) ?  -1 :  +1;
-				case LEFT ->(angle > Math.PI / 2 && angle < Math.PI * 1.5) ?  +1 :  -1;
-				case RIGHT -> (angle > Math.PI / 2 && angle < Math.PI * 1.5) ?  -1 :  +1;
+				case UP -> (angle > Math.PI) ? +1 : -1;
+				case DOWN -> (angle > Math.PI) ? -1 : +1;
+				case LEFT -> (angle > Math.PI / 2 && angle < Math.PI * 1.5) ? +1 : -1;
+				case RIGHT -> (angle > Math.PI / 2 && angle < Math.PI * 1.5) ? -1 : +1;
 			};
 		}
 		// update hovered index
@@ -198,9 +185,16 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 
 
 	private void hide(ButtonWidget button) {
+		if (CLIENT.player == null) return;
 		CLIENT.setScreen(new GenericContainerScreen(handler, CLIENT.player.getInventory(), parentName));
 	}
 
+	/**
+	 * Checks if an items custom name matches a string
+	 * @param stack item to check name of
+	 * @param validName string to compare
+	 * @return if they match. {@code false} if custom name not present.
+	 */
 	private static boolean validName(ItemStack stack, String validName) {
 		Text customName = stack.getCustomName();
 		if (customName == null) return false;
@@ -208,16 +202,25 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 
 	}
 
+	private void clickSlot() {
+		if (buttonsHoveredIndex != -1 && buttonsHoveredIndex < buttons.size()) {
+			clickSlot(buttons.get(buttonsHoveredIndex).getLinkedSlot(), 0);
+		}
+	}
+
 	private void clickSlot(int slotId, int button) {
 		if (CLIENT.interactionManager == null || !syncIds.containsKey(slotId)) return;
-		CLIENT.interactionManager.clickSlot(syncIds.get(slotId), slotId, button, SlotActionType.PICKUP, CLIENT.player);
+		//uses throw for left clicks as this should be better according to the harp
+		if (button == 0) {
+			CLIENT.interactionManager.clickSlot(syncIds.get(slotId), slotId, button, SlotActionType.THROW, CLIENT.player);
+		} else {
+			CLIENT.interactionManager.clickSlot(syncIds.get(slotId), slotId, button, SlotActionType.PICKUP, CLIENT.player);
+		}
 	}
 
 	@Override
 	public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
-
 		if (this.handler == null || slotId >= this.handler.getRows() * 9) return;
-
 
 		if (menuType.itemMatches(slotId, stack)) {
 			options.put(slotId, stack);
@@ -239,20 +242,16 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 		if (buttonsHoveredIndex != -1 && buttonsHoveredIndex < buttons.size()) {
 			context.drawCenteredTextWithShadow(textRenderer, buttons.get(buttonsHoveredIndex).getName(), width / 2, height / 2 + 2, 0xFFFFFFFF); // + 2 to move out of way of line.
 		}
-
 	}
-
 
 	@Override
-	public void onPropertyUpdate(ScreenHandler handler, int property, int value) {
-
-	}
+	public void onPropertyUpdate(ScreenHandler handler, int property, int value) {}
 
 	@Override
 	public void close() {
-		CLIENT.player.closeHandledScreen();
+		if (CLIENT.player != null) {
+			CLIENT.player.closeHandledScreen();
+		}
 		super.close();
 	}
-
-
 }

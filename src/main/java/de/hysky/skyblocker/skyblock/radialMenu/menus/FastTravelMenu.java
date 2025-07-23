@@ -12,10 +12,6 @@ public class FastTravelMenu extends RegexMenu {
 		super("(fast travel)|(.* warps)", "fastTravel");
 	}
 
-	public Text getTitle(Text title) {
-		return title;
-	}
-
 	public boolean itemMatches(int slotId, ItemStack stack) {
 		//hide advance mode and paper icons button
 		if (slotId == 50 || slotId == 53) return false;
