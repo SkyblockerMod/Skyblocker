@@ -44,6 +44,11 @@ public class SkyblockerRenderPipelines {
 			.withCull(false)
 			.build());
 
+	/**
+	 * Ensures that pipelines are pre-compiled instead of compiled on demand. Also used for excluding some pipelines from batching.
+	 */
 	@Init
-	public static void init() {} //Ensure that pipelines are pre-compiled instead of compiled on demand
+	public static void init() {
+		Renderer.excludePipelineFromBatching(CYLINDER);
+	}
 }

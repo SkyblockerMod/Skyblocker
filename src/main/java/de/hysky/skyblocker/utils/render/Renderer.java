@@ -47,7 +47,8 @@ import net.minecraft.client.util.BufferAllocator;
  */
 public class Renderer {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final BufferAllocator GENERAL_ALLOCATOR = new BufferAllocator(RenderLayer.DEFAULT_BUFFER_SIZE);
+	private static final List<RenderPipeline> EXCLUDED_FROM_BATCHING = new ArrayList<>();
+	private static final BufferAllocator GENERAL_ALLOCATOR = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
 	private static final float DEFAULT_LINE_WIDTH = 0f;
 	private static final Vector4f COLOR_MODULATOR = new Vector4f(1f, 1f, 1f, 1f);
 	private static final Int2ObjectMap<BufferAllocator> ALLOCATORS = new Int2ObjectArrayMap<>(5);
@@ -55,6 +56,7 @@ public class Renderer {
 	private static final Map<VertexFormat, MappableRingBuffer> VERTEX_BUFFERS = new Object2ObjectOpenHashMap<>();
 	private static final List<PreparedDraw> PREPARED_DRAWS = new ArrayList<>();
 	private static final List<Draw> DRAWS = new ArrayList<>();
+	private static BatchedDraw lastUnbatchedDraw = null;
 
 	protected static BufferBuilder getBuffer(RenderPipeline pipeline) {
 		return getBuffer(pipeline, null, DEFAULT_LINE_WIDTH);
@@ -72,6 +74,14 @@ public class Renderer {
 	 * Returns the appropriate {@code BufferBuilder} that should be used with the given pipeline, texture view, and line width.
 	 */
 	private static BufferBuilder getBuffer(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {
+		if (!EXCLUDED_FROM_BATCHING.contains(pipeline)) {
+			return setupBatched(pipeline, textureView, lineWidth);
+		} else {
+			return setupUnbatched(pipeline, textureView, lineWidth);
+		}
+	}
+
+	private static BufferBuilder setupBatched(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {
 		int hash = hash(pipeline, textureView, lineWidth);
 		BatchedDraw draw = BATCHED_DRAWS.get(hash);
 
@@ -84,6 +94,17 @@ public class Renderer {
 		} else {
 			return draw.bufferBuilder();
 		}
+	}
+
+	private static BufferBuilder setupUnbatched(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {
+		if (lastUnbatchedDraw != null) {
+			prepareBatchedDraw(lastUnbatchedDraw);
+		}
+
+		BufferBuilder bufferBuilder = new BufferBuilder(GENERAL_ALLOCATOR, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
+		lastUnbatchedDraw = new BatchedDraw(bufferBuilder, pipeline, textureView, lineWidth);
+
+		return bufferBuilder;
 	}
 
 	/**
@@ -100,11 +121,27 @@ public class Renderer {
 		return hash;
 	}
 
+	/**
+	 * Allows for excluding the {@code pipeline} from the batching system. This may be needed when working with triangle fans
+	 * or contiguous triangle strips.
+	 */
+	protected static void excludePipelineFromBatching(RenderPipeline pipeline) {
+		EXCLUDED_FROM_BATCHING.add(pipeline);
+	}
+
 	private static void endBatches() {
 		for (Int2ObjectMap.Entry<BatchedDraw> entry : Int2ObjectMaps.fastIterable(BATCHED_DRAWS)) {
-			BatchedDraw draw = entry.getValue();
-			PREPARED_DRAWS.add(new PreparedDraw(draw.bufferBuilder().end(), draw.pipeline(), draw.textureView(), draw.lineWidth()));
+			prepareBatchedDraw(entry.getValue());
 		}
+
+		if (lastUnbatchedDraw != null) {
+			prepareBatchedDraw(lastUnbatchedDraw);
+			lastUnbatchedDraw = null;
+		}
+	}
+
+	private static void prepareBatchedDraw(BatchedDraw draw) {
+		PREPARED_DRAWS.add(new PreparedDraw(draw.bufferBuilder().end(), draw.pipeline(), draw.textureView(), draw.lineWidth()));
 	}
 
 	protected static void executeDraws() {
