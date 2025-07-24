@@ -35,7 +35,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
     }
 
     @Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
-    public void skyblocker$dropSelectedItem(CallbackInfoReturnable<Boolean> cir) {
+    public void dropSelectedItem(CallbackInfoReturnable<Boolean> cir) {
         if (Utils.isOnSkyblock() && (ItemProtection.isItemProtected(this.getMainHandStack()) || HotbarSlotLock.isLocked(this.getInventory().getSelectedSlot()))
                 && (!SkyblockerConfigManager.get().dungeons.allowDroppingProtectedItems || !Utils.isInDungeons())) {
             cir.setReturnValue(false);
@@ -43,12 +43,12 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
     }
 
     @Inject(method = "updateHealth", at = @At("RETURN"))
-    public void skyblocker$updateHealth(CallbackInfo ci) {
+    public void updateHealth(CallbackInfo ci) {
         HealingMelonIndicator.updateHealth();
     }
 
     @Inject(method = "openEditSignScreen", at = @At("HEAD"), cancellable = true)
-    public void skyblocker$redirectEditSignScreen(SignBlockEntity sign, boolean front, CallbackInfo ci) {
+    public void redirectEditSignScreen(SignBlockEntity sign, boolean front, CallbackInfo ci) {
         // Fancy Party Finder
         if (!PartyFinderScreen.isInKuudraPartyFinder && client.currentScreen instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted() && sign.getText(front).getMessage(3, false).getString().toLowerCase().contains("level")) {
             partyFinderScreen.updateSign(sign, front);

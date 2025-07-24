@@ -13,7 +13,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 public class UrlConfigMixin {
 
 	@WrapOperation(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
-	private Object skyblocker$ignoreUrlRedirects(Map<String, String> map, Object key, Object value, Operation<Object> operation) {
+	private Object ignoreUrlRedirects(Map<String, String> map, Object key, Object value, Operation<Object> operation) {
 		return null;
 	}
 }

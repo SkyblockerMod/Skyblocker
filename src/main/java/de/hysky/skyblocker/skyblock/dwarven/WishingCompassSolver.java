@@ -120,7 +120,7 @@ public class WishingCompassSolver {
     }
 
     private static boolean isKeyInInventory() {
-        return CLIENT.player != null && CLIENT.player.getInventory().getMainStacks().stream().anyMatch(stack -> stack != null && stack.getSkyblockId().equals("JUNGLE_KEY"));
+        return CLIENT.player != null && CLIENT.player.getInventory().getMainStacks().stream().anyMatch(stack -> stack != null && stack.skyblocker$getSkyblockId().equals("JUNGLE_KEY"));
     }
 
     private static Zone getZoneOfLocation(Vec3d location) {
@@ -290,7 +290,7 @@ public class WishingCompassSolver {
         }
         ItemStack stack = CLIENT.player.getStackInHand(hand);
         //make sure the user is in the crystal hollows and holding the wishing compass
-        if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.wishingCompassSolver || !stack.getSkyblockId().equals("WISHING_COMPASS")) {
+        if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.wishingCompassSolver || !stack.skyblocker$getSkyblockId().equals("WISHING_COMPASS")) {
             return ActionResult.PASS;
         }
         if (useCompass()) {
@@ -306,7 +306,7 @@ public class WishingCompassSolver {
         }
         ItemStack stack = CLIENT.player.getStackInHand(hand);
         //make sure the user is in the crystal hollows and holding the wishing compass
-        if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.wishingCompassSolver || !stack.getSkyblockId().equals("WISHING_COMPASS")) {
+        if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalsWaypoints.wishingCompassSolver || !stack.skyblocker$getSkyblockId().equals("WISHING_COMPASS")) {
             return ActionResult.PASS;
         }
         if (useCompass()) {

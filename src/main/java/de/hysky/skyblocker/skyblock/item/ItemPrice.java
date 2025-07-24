@@ -56,13 +56,13 @@ public class ItemPrice {
 	}
 
 	public static void itemPriceLookup(ClientPlayerEntity player, ItemStack stack) {
-        String skyblockApiId = stack.getSkyblockApiId();
-        ItemStack neuStack = ItemRepository.getItemStack(stack.getNeuName());
+        String skyblockApiId = stack.skyblocker$getSkyblockApiId();
+        ItemStack neuStack = ItemRepository.getItemStack(stack.skyblocker$getNeuName());
         if (neuStack != null && !neuStack.isEmpty()) {
             String itemName = Formatting.strip(neuStack.getName().getString());
 
             // Handle Pets
-            if (stack.getSkyblockId().equals("PET")) {
+            if (stack.skyblocker$getSkyblockId().equals("PET")) {
                 itemName = itemName.replaceFirst("\\[Lvl \\d+ ➡ \\d+] ", "");
             }
 

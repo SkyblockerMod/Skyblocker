@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 public class HeldItemRendererMixin {
 
 	@ModifyReturnValue(method = "shouldSkipHandAnimationOnSwap", at = @At("RETURN"))
-	private boolean skyblocker$cancelComponentUpdateAnimation(boolean original, ItemStack from, ItemStack to) {
+	private boolean cancelComponentUpdateAnimation(boolean original, ItemStack from, ItemStack to) {
 		return Utils.isOnSkyblock() && from.getItem() == to.getItem() ? original || SkyblockerConfigManager.get().uiAndVisuals.cancelComponentUpdateAnimation : original;
 	}
 }

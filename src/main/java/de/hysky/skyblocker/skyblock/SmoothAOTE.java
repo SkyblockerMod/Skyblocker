@@ -171,7 +171,7 @@ public class SmoothAOTE {
 
 		//work out if the player is holding a teleporting item that is enabled and if so how far the item will take them
 		ItemStack heldItem = CLIENT.player.getMainHandStack();
-		String itemId = heldItem.getSkyblockId();
+		String itemId = heldItem.skyblocker$getSkyblockId();
 		NbtCompound customData = ItemUtils.getCustomData(heldItem);
 
 		int distance;

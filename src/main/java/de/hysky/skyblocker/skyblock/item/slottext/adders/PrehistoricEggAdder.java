@@ -25,7 +25,7 @@ public class PrehistoricEggAdder extends SimpleSlotTextAdder {
 
 	@Override
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		if (!stack.isOf(Items.PLAYER_HEAD) || !stack.getSkyblockId().equals("PREHISTORIC_EGG")) return List.of();
+		if (!stack.isOf(Items.PLAYER_HEAD) || !stack.skyblocker$getSkyblockId().equals("PREHISTORIC_EGG")) return List.of();
 		NbtCompound nbt = ItemUtils.getCustomData(stack);
 		if (!nbt.contains("blocks_walked")) return List.of();
 		int walked = nbt.getInt("blocks_walked", 0);

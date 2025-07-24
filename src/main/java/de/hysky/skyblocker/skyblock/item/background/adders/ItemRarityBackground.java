@@ -53,10 +53,10 @@ public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRari
 	protected SkyblockItemRarity getColorKey(ItemStack stack, Int2ReferenceOpenHashMap<SkyblockItemRarity> cache) {
 		if (stack == null || stack.isEmpty()) return null;
 
-		int hashCode = stack.getUuid().isEmpty() ? System.identityHashCode(stack) : stack.getUuid().hashCode();
+		int hashCode = stack.skyblocker$getUuid().isEmpty() ? System.identityHashCode(stack) : stack.skyblocker$getUuid().hashCode();
 		if (cache.containsKey(hashCode)) return cache.get(hashCode);
 
-		if (!stack.getSkyblockId().equals("PET")) {
+		if (!stack.skyblocker$getSkyblockId().equals("PET")) {
 			List<Text> lore = ItemUtils.getLore(stack);
 			List<String> tooltip = lore.stream().map(Text::getString).toList();
 			for (String key : LORE_RARITIES.keySet()) {
@@ -67,7 +67,7 @@ public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRari
 				}
 			}
 		} else {
-			PetInfo info = stack.getPetInfo();
+			PetInfo info = stack.skyblocker$getPetInfo();
 			if (!info.isEmpty()) {
 				SkyblockItemRarity rarity = info.item().isPresent() && info.item().get().equals("PET_ITEM_TIER_BOOST") ? info.rarity().next() : info.rarity();
 				cache.put(hashCode, rarity);

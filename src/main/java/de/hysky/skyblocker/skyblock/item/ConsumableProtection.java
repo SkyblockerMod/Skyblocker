@@ -26,7 +26,7 @@ public class ConsumableProtection {
 	private static ActionResult onInteract(PlayerEntity player, World world, Hand hand) {
 		if (world.isClient() && SkyblockerConfigManager.get().general.itemProtection.protectValuableConsumables && Utils.isOnSkyblock()) {
 			ItemStack stack = player.getStackInHand(hand);
-			String skyblockId = stack.getSkyblockId();
+			String skyblockId = stack.skyblocker$getSkyblockId();
 
 			if (!skyblockId.isEmpty() && PROTECTED_CONSUMABLES.contains(skyblockId)) {
 				return ActionResult.FAIL;

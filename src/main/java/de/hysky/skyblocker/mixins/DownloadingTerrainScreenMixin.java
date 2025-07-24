@@ -12,7 +12,7 @@ import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
 public class DownloadingTerrainScreenMixin {
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$hideWorldLoadingScreen(CallbackInfo ci) {
+	private void hideWorldLoadingScreen(CallbackInfo ci) {
 		if (Utils.isOnHypixel()) ci.cancel();
 	}
 }

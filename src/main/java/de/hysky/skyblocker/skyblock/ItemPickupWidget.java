@@ -84,17 +84,17 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 			//positive
 			int existingCount = 0;
 			if (matcher.group(1).equals("+")) {
-				if (addedCount.containsKey(item.getNeuName())) {
-					existingCount = addedCount.get(item.getNeuName()).amount;
+				if (addedCount.containsKey(item.skyblocker$getNeuName())) {
+					existingCount = addedCount.get(item.skyblocker$getNeuName()).amount;
 				}
-				addedCount.put(item.getNeuName(), new ChangeData(item, existingCount + Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
+				addedCount.put(item.skyblocker$getNeuName(), new ChangeData(item, existingCount + Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
 			}
 			//negative
 			else if (matcher.group(1).equals("-")) {
-				if (removedCount.containsKey(item.getNeuName())) {
-					existingCount = removedCount.get(item.getNeuName()).amount;
+				if (removedCount.containsKey(item.skyblocker$getNeuName())) {
+					existingCount = removedCount.get(item.skyblocker$getNeuName()).amount;
 				}
-				removedCount.put(item.getNeuName(), new ChangeData(item, existingCount - Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
+				removedCount.put(item.skyblocker$getNeuName(), new ChangeData(item, existingCount - Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
 			}
 		}
 
@@ -207,29 +207,29 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 				return;
 			}
 
-			if (removedCount.containsKey(oldStack.getNeuName())) {
-				existingCount = removedCount.get(oldStack.getNeuName()).amount;
+			if (removedCount.containsKey(oldStack.skyblocker$getNeuName())) {
+				existingCount = removedCount.get(oldStack.skyblocker$getNeuName()).amount;
 			}
-			removedCount.put(oldStack.getNeuName(), new ChangeData(oldStack, existingCount - oldStack.getCount(), System.currentTimeMillis()));
+			removedCount.put(oldStack.skyblocker$getNeuName(), new ChangeData(oldStack, existingCount - oldStack.getCount(), System.currentTimeMillis()));
 			return;
 		}
 
 		//if there are more items than before
 		if (countDiff > 0) {
 			//see if there is already a change for this type of item
-			if (addedCount.containsKey(newStack.getNeuName())) {
-				existingCount = addedCount.get(newStack.getNeuName()).amount;
+			if (addedCount.containsKey(newStack.skyblocker$getNeuName())) {
+				existingCount = addedCount.get(newStack.skyblocker$getNeuName()).amount;
 			}
-			addedCount.put(newStack.getNeuName(), new ChangeData(newStack, existingCount + countDiff, System.currentTimeMillis()));
+			addedCount.put(newStack.skyblocker$getNeuName(), new ChangeData(newStack, existingCount + countDiff, System.currentTimeMillis()));
 
 		}
 		//if there are fewer items than before
 		else if (countDiff < 0) {
 			//see if there is already a change for this type of item
-			if (removedCount.containsKey(newStack.getNeuName())) {
-				existingCount = removedCount.get(newStack.getNeuName()).amount;
+			if (removedCount.containsKey(newStack.skyblocker$getNeuName())) {
+				existingCount = removedCount.get(newStack.skyblocker$getNeuName()).amount;
 			}
-			removedCount.put(newStack.getNeuName(), new ChangeData(newStack, existingCount + countDiff, System.currentTimeMillis()));
+			removedCount.put(newStack.skyblocker$getNeuName(), new ChangeData(newStack, existingCount + countDiff, System.currentTimeMillis()));
 		}
 	}
 

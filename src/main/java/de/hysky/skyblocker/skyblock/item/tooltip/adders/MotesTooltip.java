@@ -20,7 +20,7 @@ public class MotesTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		final String internalID = stack.getSkyblockId();
+		final String internalID = stack.skyblocker$getSkyblockId();
 		if (TooltipInfoType.MOTES.hasOrNullWarning(internalID)) {
 			lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
 			              .formatted(Formatting.LIGHT_PURPLE)

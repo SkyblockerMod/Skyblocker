@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(DrawContext.class)
 public abstract class DrawContextMixin {
     @ModifyExpressionValue(method = "drawCooldownProgress", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/ItemCooldownManager;getCooldownProgress(Lnet/minecraft/item/ItemStack;F)F"))
-    private float skyblocker$modifyItemCooldown(float cooldownProgress, @Local(argsOnly = true) ItemStack stack) {
+    private float modifyItemCooldown(float cooldownProgress, @Local(argsOnly = true) ItemStack stack) {
         return Utils.isOnSkyblock() && ItemCooldowns.isOnCooldown(stack) ? ItemCooldowns.getItemCooldownEntry(stack).getRemainingCooldownPercent() : cooldownProgress;
     }
 }

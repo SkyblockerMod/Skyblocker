@@ -25,29 +25,29 @@ import net.minecraft.util.math.ColorHelper;
 @Mixin(PlayerSkinTextureDownloader.class)
 public class PlayerSkinTextureDownloaderMixin {
 	@Unique
-	private static final Set<String> STRIP_DE_FACTO_TRANSPARENT_PIXELS = Set.of(
+	private static final Set<String> skyblocker$STRIP_DE_FACTO_TRANSPARENT_PIXELS = Set.of(
 			"4f3b91b6aa7124f30ed4ad1b2bb012a82985a33640555e18e792f96af8f58ec6", /*Titanium Necklace*/
 			"49821410631186c6f3fbbae5f0ef5b947f475eb32027a8aad0a456512547c209", /*Titanium Cloak*/
 			"4162303bcdd770aebe7fd19fa26371390a7515140358548084361b5056cdc4e6" /*Titanium Belt*/);
 	@Unique
-	private static final float BRIGHTNESS_THRESHOLD = 0.1f;
+	private static final float skyblocker$BRIGHTNESS_THRESHOLD = 0.1f;
 
 	@Inject(method = "remapTexture", at = @At("HEAD"))
-	private static void skyblocker$determineSkinSource(NativeImage image, String uri, CallbackInfoReturnable<NativeImage> cir, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
+	private static void determineSkinSource(NativeImage image, String uri, CallbackInfoReturnable<NativeImage> cir, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.dontStripSkinAlphaValues && (Utils.isOnSkyblock() || MinecraftClient.getInstance().currentScreen instanceof ProfileViewerScreen)) {
 			String skinTextureHash = PlayerHeadHashCache.getSkinHash(uri);
 			int skinHash = skinTextureHash.hashCode();
 			isSkyblockSkinTexture.set(PlayerHeadHashCache.contains(skinHash));
 
 			//Hypixel had the grand idea of using black pixels in place of actual transparent pixels on the titanium equipment so here we go!
-			if (STRIP_DE_FACTO_TRANSPARENT_PIXELS.contains(skinTextureHash)) {
+			if (skyblocker$STRIP_DE_FACTO_TRANSPARENT_PIXELS.contains(skinTextureHash)) {
 				stripDeFactoTransparentPixels(image);
 			}
 		}
 	}
 
 	@WrapWithCondition(method = "remapTexture", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/PlayerSkinTextureDownloader;stripAlpha(Lnet/minecraft/client/texture/NativeImage;IIII)V"))
-	private static boolean skyblocker$dontStripAlphaValues(NativeImage image, int x1, int y1, int x2, int y2, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
+	private static boolean dontStripAlphaValues(NativeImage image, int x1, int y1, int x2, int y2, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
 		return !isSkyblockSkinTexture.get();
 	}
 
@@ -62,7 +62,7 @@ public class PlayerSkinTextureDownloaderMixin {
 				float[] hsb = Color.RGBtoHSB((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, null);
 
 				//Work around "fake" transparent pixels - Thanks Hypixel I totally appreciate this!
-				if (hsb[2] <= BRIGHTNESS_THRESHOLD) image.setColorArgb(x, y, ColorHelper.withAlpha(0x00, color & 0x00FFFFFF));
+				if (hsb[2] <= skyblocker$BRIGHTNESS_THRESHOLD) image.setColorArgb(x, y, ColorHelper.withAlpha(0x00, color & 0x00FFFFFF));
 			}
 		}
 	}

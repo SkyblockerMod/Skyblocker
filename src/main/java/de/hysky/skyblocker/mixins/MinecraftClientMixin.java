@@ -25,7 +25,7 @@ public abstract class MinecraftClientMixin {
     public ClientPlayerEntity player;
 
     @Inject(method = "handleInputEvents", at = @At("HEAD"))
-    public void skyblocker$handleInputEvents(CallbackInfo ci) {
+    public void handleInputEvents(CallbackInfo ci) {
         if (Utils.isOnSkyblock()) {
             HotbarSlotLock.handleInputEvents(player);
             ItemProtection.handleHotbarKeyPressed(player);
@@ -33,7 +33,7 @@ public abstract class MinecraftClientMixin {
     }
 
     @WrapOperation(method = "handleInputEvents", at = @At(value = "NEW", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;"))
-    private InventoryScreen skyblocker$skyblockInventoryScreen(PlayerEntity player, Operation<InventoryScreen> original) {
+    private InventoryScreen skyblockInventoryScreen(PlayerEntity player, Operation<InventoryScreen> original) {
         return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory ? new SkyblockInventoryScreen(player) : original.call(player);
     }
 }

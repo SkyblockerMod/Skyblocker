@@ -1,14 +1,12 @@
 package de.hysky.skyblocker.config;
 
+import com.mojang.logging.LogUtils;
+import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import org.slf4j.Logger;
+
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
-
-import org.slf4j.Logger;
-
-import com.mojang.logging.LogUtils;
-
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
 /**
  * While this sounds like a data fixer it isn't. - It's the only reasonable solution to deal with the mine field
@@ -32,7 +30,7 @@ public class ConfigNullFieldsFix {
 	}
 
 	/**
-	 * Traverse through every config field to ensure that is isn't null, if it is then reset the value.
+	 * Traverse through every config field to ensure that it isn't null, if it is then reset the value.
 	 */
 	private static void fixNullFields(Object target, Object source) throws Exception {
 		for (Field field : target.getClass().getDeclaredFields()) {

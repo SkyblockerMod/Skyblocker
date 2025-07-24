@@ -13,7 +13,7 @@ import java.io.IOException;
 @Mixin(value = {UnixConnection.class, WinConnection.class}, remap = false)
 public class ConnectionMixin {
     @Redirect(method = "write", at = @At(value = "INVOKE", target = "Ljava/io/IOException;printStackTrace()V"))
-    private void write(IOException e) {
+    private void disconnectOnError(IOException e) {
         DiscordIPC.stop();
         DiscordRPCManager.LOGGER.warn("[Skyblocker] Discord RPC failed to update activity, connection lost", e);
     }
