@@ -811,11 +811,11 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack"))
-								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack.@Tooltip")))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack.@Tooltip"))
 								.binding(defaults.uiAndVisuals.itemPickup.splitNotifications,
 										() -> config.uiAndVisuals.itemPickup.splitNotifications,
 										newValue -> config.uiAndVisuals.itemPickup.splitNotifications = newValue)
-								.controller(ConfigUtils::createBooleanController)
+								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build()
 				)
