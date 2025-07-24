@@ -251,7 +251,7 @@ public class ARGBTextInput extends ClickableWidget {
 			anInt = OptionalInt.of(parsedInt);
 		} catch (NumberFormatException e) {
 			anInt = OptionalInt.empty();
-			LOGGER.error("Failed to parse integer", e);
+			LOGGER.error("[Skyblocker] Failed to parse integer", e);
 		}
 		if (anInt.isPresent()) {
 			int prev = anInt.getAsInt();
