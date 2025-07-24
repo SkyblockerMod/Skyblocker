@@ -55,7 +55,7 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
     }
 
     @Override
-    public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
         if (stack.hasGlint() || !targetColor.equals(itemColor.get(stack.getItem()))) {
             return shouldBlockIncorrectClicks();
         }

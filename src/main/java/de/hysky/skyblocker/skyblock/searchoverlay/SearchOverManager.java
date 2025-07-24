@@ -7,6 +7,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.RomanNumerals;
@@ -117,8 +118,10 @@ public class SearchOverManager {
                 int sellVolume = product.sellVolume();
                 if (sellVolume == 0)
                     continue; //do not add items that do not sell e.g. they are not actual in the bazaar
+
+				// Format Enchantments
                 Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(name);
-                if (matcher.matches()) {//format enchantments
+                if (matcher.matches() && ItemRepository.getBazaarStocks().containsKey(id)) {
                     name = matcher.group(1);
                     if (!name.contains("Ultimate Wise") && !name.contains("Ultimate Jerry")) {
                         name = name.replace("Ultimate ", "");
@@ -132,16 +135,21 @@ public class SearchOverManager {
                     String level = matcher.group(2);
                     name += " " + RomanNumerals.decimalToRoman(Integer.parseInt(level));
                     bazaarItems.add(name);
-                    namesToNeuId.put(name, id.substring(0, id.lastIndexOf('_')).replace("ENCHANTMENT_", "") + ";" + level);
+                    namesToNeuId.put(name, ItemRepository.getBazaarStocks().get(id));
                     continue;
                 }
+
+                // Format Shards
+                if (id.startsWith("SHARD_") && ItemRepository.getBazaarStocks().containsKey(id)) {
+					id = ItemRepository.getBazaarStocks().get(id);
+                }
+
                 //look up id for name
-                NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
+                NEUItem neuItem = NEURepoManager.getItemByNeuId(id);
                 if (neuItem != null) {
                     name = Formatting.strip(neuItem.getDisplayName());
                     bazaarItems.add(name);
                     namesToNeuId.put(name, id);
-                    continue;
                 }
             }
         } catch (Exception e) {
@@ -150,7 +158,7 @@ public class SearchOverManager {
 
         //get auction items
         try {
-            Set<@NEUId String> essenceCosts = NEURepoManager.NEU_REPO.getConstants().getEssenceCost().getCosts().keySet();
+            Set<@NEUId String> essenceCosts = NEURepoManager.getConstants().getEssenceCost().getCosts().keySet();
             if (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
                 TooltipInfoType.THREE_DAY_AVERAGE.run();
             }
@@ -158,7 +166,7 @@ public class SearchOverManager {
                 String id = entry.getKey();
                 //look up in NEU repo.
                 id = id.split("[+-]")[0];
-                NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
+                NEUItem neuItem = NEURepoManager.getItemByNeuId(id);
                 if (neuItem != null) {
                     String name = Formatting.strip(neuItem.getDisplayName());
                     //add names that are pets to the list of pets to work with the lvl 100 button
@@ -341,6 +349,10 @@ public class SearchOverManager {
         if (isAuction) {
             addExtras();
         }
+		// Fix Bazaar bug - Search doesn't work if input from sign contains "null" (blocks null ovoid, etc.)
+		if (!isAuction && !isCommand && search.toLowerCase().contains("null")) {
+			search = "\"%s\"".formatted(search);
+		}
         //push
         if (isCommand) {
             pushCommand();
@@ -356,7 +368,7 @@ public class SearchOverManager {
         // pet level
         if (maxPetLevel) {
             if (auctionPets.contains(search.toLowerCase())) {
-                if (search.equalsIgnoreCase("golden dragon")) {
+                if (search.equalsIgnoreCase("golden dragon") || search.equalsIgnoreCase("jade dragon")) {
                     search = "[Lvl 200] " + search;
                 } else {
                     search = "[Lvl 100] " + search;

@@ -32,7 +32,7 @@ public class StackOverlays {
 	 */
 	protected static void applyOverlay(NEUItem neuItem, ItemStack stack) {
 		try {
-			NEURepoFile file = NEURepoManager.NEU_REPO.file(OVERLAY_DIRECTORY + "/" + neuItem.getSkyblockItemId() + ".snbt");
+			NEURepoFile file = NEURepoManager.file(OVERLAY_DIRECTORY + "/" + neuItem.getSkyblockItemId() + ".snbt");
 
 			//The returned file is null if it does not exist
 			if (file != null) {

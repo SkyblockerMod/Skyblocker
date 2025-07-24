@@ -9,65 +9,69 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelperConfig {
-    public boolean enableNewYearCakesHelper = true;
+	public boolean enableNewYearCakesHelper = true;
 
-    public boolean enableBitsTooltip = true;
+	public boolean enableBitsTooltip = true;
 
-    public boolean enableWardrobeHelper = true;
+	public boolean enableWardrobeHelper = true;
 
 	public boolean enableDateCalculator = true;
 
 	public boolean enableCopyUnderbidPrice = false;
 
-    public MythologicalRitual mythologicalRitual = new MythologicalRitual();
+	public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
-    public Jerry jerry = new Jerry();
+	public Jerry jerry = new Jerry();
 
-    public Experiments experiments = new Experiments();
+	public Experiments experiments = new Experiments();
 
-    public Fishing fishing = new Fishing();
+	public Fishing fishing = new Fishing();
 
-    public FairySouls fairySouls = new FairySouls();
+	public FairySouls fairySouls = new FairySouls();
 
-    public ChocolateFactory chocolateFactory = new ChocolateFactory();
+	public ChocolateFactory chocolateFactory = new ChocolateFactory();
 
-    public Carnival carnival = new Carnival();
+	public Carnival carnival = new Carnival();
 
-    public Bazaar bazaar = new Bazaar();
+	public Bazaar bazaar = new Bazaar();
 
-    public ItemPrice itemPrice = new ItemPrice();
+	public ItemPrice itemPrice = new ItemPrice();
 
-    public static class MythologicalRitual {
-        public boolean enableMythologicalRitualHelper = true;
-    }
+	public static class MythologicalRitual {
+		public boolean enableMythologicalRitualHelper = true;
+	}
 
-    public static class Jerry {
-        public boolean enableJerryTimer = false;
-    }
+	public static class Jerry {
+		public boolean enableJerryTimer = false;
+	}
 
-    public static class Experiments {
-        public boolean enableChronomatronSolver = true;
+	public static class Experiments {
+		public boolean enableChronomatronSolver = true;
 
-        public boolean enableSuperpairsSolver = true;
+		public boolean enableSuperpairsSolver = true;
 
-        public boolean enableUltrasequencerSolver = true;
-    }
+		public boolean enableUltrasequencerSolver = true;
 
-    public static class Fishing {
-        public boolean enableFishingHelper = true;
+		public boolean blockIncorrectClicks = false;
+	}
 
-		@Deprecated
-        public transient boolean enableFishingHookDisplay = true;
-
-        public boolean enableFishingTimer = false;
+	public static class Fishing {
+		public boolean enableFishingHelper = true;
 
 		@Deprecated
-        public transient boolean changeTimerColor = true;
+		public transient boolean enableFishingHookDisplay = true;
+
+		public boolean enableFishingTimer = false;
 
 		@Deprecated
-        public transient float fishingTimerScale = 1f;
+		public transient boolean changeTimerColor = true;
 
-        public boolean hideOtherPlayersRods = false;
+		@Deprecated
+		public transient float fishingTimerScale = 1f;
+
+		public boolean hideOtherPlayersRods = false;
+
+		public boolean enableFishingHud = false;
 
 		public List<Location> fishingHudEnabledLocations = new ArrayList<>(List.of(Location.values()));
 
@@ -91,48 +95,51 @@ public class HelperConfig {
 			OFF,
 			CROSSHAIR,
 			HUD;
+
 			@Override
 			public String toString() {
 				return I18n.translate("skyblocker.config.helpers.fishing.fishingHookDisplay." + name());
 			}
 		}
-    }
+	}
 
-    public static class FairySouls {
-        public boolean enableFairySoulsHelper = false;
+	public static class FairySouls {
+		public boolean enableFairySoulsHelper = false;
 
-        public boolean highlightFoundSouls = true;
+		public boolean highlightFoundSouls = true;
 
-        public boolean highlightOnlyNearbySouls = false;
-    }
+		public boolean highlightOnlyNearbySouls = false;
+	}
 
-    public static class ChocolateFactory {
-        public boolean enableChocolateFactoryHelper = true;
+	public static class ChocolateFactory {
+		public boolean enableChocolateFactoryHelper = true;
 
-        public boolean enableEggFinder = true;
+		public boolean enableEggFinder = true;
 
-        public boolean sendEggFoundMessages = true;
+		public boolean sendEggFoundMessages = true;
 
-        public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 
-        public boolean enableTimeTowerReminder = true;
+		public boolean enableTimeTowerReminder = true;
 
-        public boolean straySound = true;
-    }
+		public boolean straySound = true;
+	}
 
-    public static class Carnival {
-    	public boolean catchAFishHelper = true;
+	public static class Carnival {
+		public boolean catchAFishHelper = true;
 
-    	public boolean zombieShootoutHelper = true;
-    }
+		public boolean zombieShootoutHelper = true;
+	}
 
-    public static class Bazaar {
-        public boolean enableBazaarHelper = true;
-    }
+	public static class Bazaar {
+		public boolean enableBazaarHelper = true;
 
-    public static class ItemPrice {
-        public boolean enableItemPriceLookup = true;
+		public boolean enableReorderHelper = true;
+	}
 
-        public boolean enableItemPriceRefresh = true;
-    }
+	public static class ItemPrice {
+		public boolean enableItemPriceLookup = true;
+
+		public boolean enableItemPriceRefresh = true;
+	}
 }

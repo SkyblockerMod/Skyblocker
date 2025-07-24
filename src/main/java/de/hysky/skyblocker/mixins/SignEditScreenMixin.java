@@ -100,6 +100,9 @@ public abstract class SignEditScreenMixin extends Screen {
 	private static final String SPEED_INPUT_MARKER = "^^^^^^";
 	@Unique
 	private static final String INPUT_SIGN_MARKER = "^^^^^^^^^^^^^^^";
+	/** This is used for some things like the super craft amount input */
+	@Unique
+	private static final String ALT_INPUT_SIGN_MARKER = "^^^^^^";
 	@Unique
 	private static final String BAZAAR_FLIP_MARKER = "^^Flipping^^";
 
@@ -110,6 +113,6 @@ public abstract class SignEditScreenMixin extends Screen {
 
 	@Unique
 	private boolean isInputSign() {
-		return messages[1].equals(INPUT_SIGN_MARKER) || messages[1].equals(BAZAAR_FLIP_MARKER);
+		return messages[1].equals(INPUT_SIGN_MARKER) || messages[1].equals(ALT_INPUT_SIGN_MARKER) || messages[1].equals(BAZAAR_FLIP_MARKER);
 	}
 }

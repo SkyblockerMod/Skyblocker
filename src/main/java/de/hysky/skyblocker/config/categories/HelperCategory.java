@@ -1,4 +1,4 @@
- package de.hysky.skyblocker.config.categories;
+package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
@@ -73,18 +73,18 @@ public class HelperCategory {
 								newValue -> config.helpers.enableCopyUnderbidPrice = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
-                //Mythological Ritual
-                .group(OptionGroup.createBuilder()
-                        .name(Text.translatable("skyblocker.config.helpers.mythologicalRitual"))
-                        .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper"))
-                                .binding(defaults.helpers.mythologicalRitual.enableMythologicalRitualHelper,
-                                        () -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper,
-                                        newValue -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
-                        .build())
+				//Mythological Ritual
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.mythologicalRitual"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper"))
+								.binding(defaults.helpers.mythologicalRitual.enableMythologicalRitualHelper,
+										() -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper,
+										newValue -> config.helpers.mythologicalRitual.enableMythologicalRitualHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
 
 				//Jerry Timer
 				.group(OptionGroup.createBuilder()
@@ -123,6 +123,13 @@ public class HelperCategory {
 								.binding(defaults.helpers.experiments.enableUltrasequencerSolver,
 										() -> config.helpers.experiments.enableUltrasequencerSolver,
 										newValue -> config.helpers.experiments.enableUltrasequencerSolver = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.experiments.blockIncorrectClicks"))
+								.binding(defaults.helpers.experiments.blockIncorrectClicks,
+										() -> config.helpers.experiments.blockIncorrectClicks,
+										newValue -> config.helpers.experiments.blockIncorrectClicks = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
@@ -341,6 +348,14 @@ public class HelperCategory {
 								.binding(defaults.helpers.bazaar.enableBazaarHelper,
 										() -> config.helpers.bazaar.enableBazaarHelper,
 										newValue -> config.helpers.bazaar.enableBazaarHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.bazaar.enableReorderHelper"))
+								.description(Text.translatable("skyblocker.config.helpers.bazaar.enableReorderHelper.@Tooltip"))
+								.binding(defaults.helpers.bazaar.enableReorderHelper,
+										() -> config.helpers.bazaar.enableReorderHelper,
+										newValue -> config.helpers.bazaar.enableReorderHelper = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()

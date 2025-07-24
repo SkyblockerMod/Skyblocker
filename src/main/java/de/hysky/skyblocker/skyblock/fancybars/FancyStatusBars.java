@@ -49,7 +49,7 @@ public class FancyStatusBars {
 
 	public static boolean isBarEnabled(StatusBarType type) {
 		StatusBar statusBar = statusBars.get(type);
-		return Debug.isTestEnvironment() || statusBar.anchor != null || statusBar.inMouse;
+		return Debug.isTestEnvironment() || statusBar.enabled || statusBar.inMouse;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -183,11 +183,18 @@ public class FancyStatusBars {
 		// Put these in the corner for the config screen
 		int offset = 0;
 		for (StatusBar statusBar : statusBars.values()) {
-			if (statusBar.anchor == null) {
+			if (!statusBar.enabled) {
 				statusBar.setX(5);
 				statusBar.setY(50 + offset);
 				statusBar.setWidth(30);
 				offset += statusBar.getHeight();
+			} else if (statusBar.anchor == null) {
+				statusBar.width = Math.clamp(statusBar.width, 30f / width, 1);
+				statusBar.x = Math.clamp(statusBar.x, 0, 1 - statusBar.width);
+				statusBar.y = Math.clamp(statusBar.y, 0, 1 - (float) statusBar.getHeight() / height);
+				statusBar.setX((int) (statusBar.x * width));
+				statusBar.setY((int) (statusBar.y * height));
+				statusBar.setWidth((int) (statusBar.width * width));
 			}
 		}
 
@@ -307,8 +314,7 @@ public class FancyStatusBars {
 
 		Collection<StatusBar> barCollection = statusBars.values();
 		for (StatusBar statusBar : barCollection) {
-			if (statusBar.anchor == null || !statusBar.visible) continue;
-			if (statusBar == statusBars.get(StatusBarType.AIR) && !player.isSubmergedInWater()) continue;
+			if (!statusBar.enabled || !statusBar.visible) continue;
 			statusBar.render(context, -1, -1, client.getRenderTickCounter().getDynamicDeltaTicks());
 		}
 
