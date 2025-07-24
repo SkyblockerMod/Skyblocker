@@ -22,7 +22,7 @@ public class ColorPopup extends AbstractPopupScreen {
 	private final IntIntPair currentColor = new IntIntMutablePair(-1, -1);
 
 	private ColorPopup(Screen backgroundScreen, GradientConsumer gradientConsumer, boolean gradient) {
-		super(Text.literal("given a proper name."), backgroundScreen);
+		super(Text.literal("Color Popup"), backgroundScreen);
 		this.gradientConsumer = gradientConsumer;
 		this.gradient = gradient;
 		layout.getMainPositioner().alignHorizontalCenter();

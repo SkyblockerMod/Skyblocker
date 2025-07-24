@@ -24,6 +24,7 @@ public class GetClickedPositionVisitor implements StringVisitable.StyledVisitor<
 
 	protected void visit(Style style, String asString) {
 		if (position >= 0) return; // already found position
+		if (asString.isEmpty()) return;
 		MutableText text1 = Text.literal(asString).setStyle(style);
 		int originalWidth = textRenderer.getWidth(text);
 		if (originalWidth + textRenderer.getWidth(text1) < x) { // if the text is smaller than the x position, we skip it and append it
@@ -31,14 +32,16 @@ public class GetClickedPositionVisitor implements StringVisitable.StyledVisitor<
 			return;
 		}
 		// the x position is within the text, we need to find the position
+		int currentWidth = 0;
 		AtomicInteger atomicInteger = new AtomicInteger(0);
 		OrderedText orderedText = visitor -> {
-			for (int i = 0; i < atomicInteger.get(); i++) {
-				visitor.accept(i, style, asString.codePointAt(i));
-			}
+			visitor.accept(0, style, asString.codePointAt(atomicInteger.get()));
 			return true;
 		};
-		while (originalWidth + textRenderer.getWidth(orderedText) < x && atomicInteger.get() < asString.length()) atomicInteger.incrementAndGet();
+		while (atomicInteger.get() < asString.length() && originalWidth + currentWidth + textRenderer.getWidth(orderedText) / 2 <= x) {
+			currentWidth += textRenderer.getWidth(orderedText);
+			atomicInteger.incrementAndGet();
+		}
 		position = Math.max(text.getString().length() + atomicInteger.get(), 0);
 	}
 

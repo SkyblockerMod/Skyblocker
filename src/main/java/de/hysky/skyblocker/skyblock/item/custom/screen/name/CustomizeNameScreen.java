@@ -55,6 +55,7 @@ public class CustomizeNameScreen extends Screen {
 			close();
 			return;
 		}
+		// the gui is a grid of 20 columns, should be 16 px each
 		textField = grid.add(new TextField(), 1, 0, 1, 20);
 		addDrawableChild(textField);
 		formattingButtons = new FormattingButton[]{
@@ -88,7 +89,7 @@ public class CustomizeNameScreen extends Screen {
 			SkyblockerConfigManager.update(config -> config.general.customItemNames.put(uuid, text.getString().isBlank() ? null : text.copy().setStyle(Style.EMPTY.withItalic(false))));
 			close();
 		}).width(80).build(), 4, 10, 1, 10, Positioner.create().alignLeft()));
-		addDrawableChild(grid.add(new TextWidget(17 * 16, 16, Text.translatable("skyblocker.customItemNames.screen.howToRemove").formatted(Formatting.ITALIC, Formatting.GRAY), textRenderer).alignLeft(), 3, 0, 1, 17));
+		addDrawableChild(grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.translatable("skyblocker.customItemNames.screen.howToRemove").formatted(Formatting.ITALIC, Formatting.GRAY), textRenderer).alignLeft(), 5, 0, 1, 20, Positioner.create().marginTop(2)));
 		refreshWidgetPositions();
 	}
 
@@ -374,7 +375,7 @@ public class CustomizeNameScreen extends Screen {
 
 			context.fill(getX(), getY(), getRight(), getBottom(), Colors.BLACK);
 			context.drawBorder(getX(), getY(), getWidth(), getHeight(), isFocused() ? Colors.WHITE : Colors.GRAY);
-			int textX = getX() + 2;
+			int textX = getTextX();
 			int textY = getY() + (getHeight() - textRenderer.fontHeight) / 2;
 
 			if (renderStart != renderEnd) {
@@ -431,26 +432,24 @@ public class CustomizeNameScreen extends Screen {
 			}
 		}
 
-		private int dragStartX;
-
 		@Override
 		public void onClick(double mouseX, double mouseY) {
-			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) mouseX - getX() - 2);
+			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) mouseX - getTextX());
 			text.visit(getClickedPositionVisitor, Style.EMPTY);
 			selectionStart = selectionEnd = getClickedPositionVisitor.getPosition() < 0 ? textString.length() : getClickedPositionVisitor.getPosition();
 			updateStyleButtons();
-			dragStartX = (int) mouseX;
 		}
 
 		@Override
 		protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) mouseX - getX() - 2);
+			GetClickedPositionVisitor getClickedPositionVisitor = new GetClickedPositionVisitor((int) mouseX - getTextX());
 			text.visit(getClickedPositionVisitor, Style.EMPTY);
 			selectionStart = getClickedPositionVisitor.getPosition() < 0 ? textString.length() : getClickedPositionVisitor.getPosition();
-			if (mouseX < dragStartX && selectionStart != textString.length() && selectionStart > 0) {
-				selectionStart--;
-			}
 			updateStyleButtons();
+		}
+
+		private int getTextX() {
+			return getX() + 2;
 		}
 
 		@Override
