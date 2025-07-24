@@ -1358,5 +1358,9 @@
     "skyblocker.config.uiAndVisuals.inputCalculator.unbalancedParenthesisError": "左括號不平衡",
     "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "當你想要保持HOTF的Lottery能力開啟時，隱藏那些不斷提示你關閉能力的煩人訊息!",
     "skyblocker.config.otherLocations.rift": "裂隙",
-    "skyblocker.config.uiAndVisuals.slotText.bestiaryLevel": "圖鑑等級"
+    "skyblocker.config.uiAndVisuals.slotText.bestiaryLevel": "圖鑑等級",
+    "skyblocker.config.foraging.galatea": "伽拉蒂婭",
+    "skyblocker.config.eventNotifications.notificationSound.sound.PLING": "音符盒-電鋼琴",
+    "skyblocker.exotic.spook": "Spook",
+    "skyblocker.exotic.exotic": "現無法獲得的有價值的物品"
 }
