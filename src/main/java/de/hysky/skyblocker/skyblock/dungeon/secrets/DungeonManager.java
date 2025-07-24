@@ -250,8 +250,7 @@ public class DungeonManager {
 		ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonManager::saveCustomWaypoints);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 5);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonManager::render);
-		ClientReceiveMessageEvents.GAME.register(DungeonManager::onChatMessage);
-		ClientReceiveMessageEvents.GAME_CANCELED.register(DungeonManager::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonManager::onChatMessage);
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
 				.then(literal("markAsFound").then(markSecretsCommand(true)))
@@ -678,9 +677,9 @@ public class DungeonManager {
 	 * <p>Used to detect when all secrets in a room are found and detect when a wither or blood door is unlocked.
 	 * To process key obtained messages, this method checks if door highlight is enabled and if the message matches a key obtained message.
 	 */
-	private static void onChatMessage(Text text, boolean overlay) {
+	private static boolean onChatMessage(Text text, boolean overlay) {
 		if (!shouldProcess()) {
-			return;
+			return true;
 		}
 
 		String message = text.getString();
@@ -713,6 +712,8 @@ public class DungeonManager {
 			reset();
 			boss = newBoss;
 		}
+
+		return true;
 	}
 
 	/**
