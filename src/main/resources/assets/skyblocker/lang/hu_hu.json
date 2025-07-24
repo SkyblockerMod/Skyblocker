@@ -72,7 +72,7 @@
     "skyblocker.config.dungeons.devices": "Eszközmegoldók (F7/M7)",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip": "Megjelölés: Csak a megjelölést mutatja.\n\nKörvonalas Megjelölés: A körvonalat és a megjelölést is mutatja.\n\nKörvonal: Csak a körvonalat mutatja.",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage.@Tooltip": "Az üzenet, ami a chatre lesz küldve, amikor el lett érve a küszöbpontszám 5+ crypt előtt. \"[crypts]\" helyett a cryptek száma lesz kiírva. Az üzenetet érdemes angolul írni.",
-    "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nMegjegyzés: Ez csak akkor működik megfelelően, ha a halálüzenetek engedélyezve vannak a skyblock beállításokban. Ha el szeretnéd rejteni a halálüzeneteket, használd ennek a modnak a Halálüzenetek Elrejtése beállítását, így az üzeneteket ettől még fel lehet dolgozni.",
+    "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nMegjegyzés: Ez csak akkor működik megfelelően, ha a halálüzenetek engedélyezve vannak a Skyblock beállításokban. Ha el szeretnéd rejteni a halálüzeneteket, használd ennek a modnak a Halálüzenetek Elrejtése beállítását, így az üzeneteket ettől még fel lehet dolgozni.",
     "skyblocker.config.dungeons.devices.solveLightsOn": "Fények-feladat Megoldása",
     "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Megjelöli a helyes (meghúzandó) karokat pirossal",
     "skyblocker.config.dungeons.doorHighlight": "Ajtó Megjelölése",
