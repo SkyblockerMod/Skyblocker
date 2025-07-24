@@ -71,18 +71,16 @@ public class DungeonScore {
 		Scheduler.INSTANCE.scheduleCyclic(DungeonScore::tick, 20);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 		DungeonEvents.DUNGEON_STARTED.register(DungeonScore::onDungeonStart);
-		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-			if (overlay || !Utils.isInDungeons()) return;
+		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
+			if (overlay || !Utils.isInDungeons()) return true;
 			String str = message.getString();
 			if (dungeonStarted) {
 				checkMessageForDeaths(str);
 				checkMessageForWatcher(str);
 				if (floorHasMimics) checkMessageForMimic(str); //Only called when the message is not cancelled & isn't on the action bar, complementing MimicFilter
 			}
-		});
-		ClientReceiveMessageEvents.GAME_CANCELED.register((message, overlay) -> {
-			if (overlay || !Utils.isInDungeons() || !dungeonStarted) return;
-			checkMessageForDeaths(message.getString());
+
+			return true;
 		});
 	}
 

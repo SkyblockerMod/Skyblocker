@@ -95,7 +95,6 @@ public class Shortcuts {
         commands.put("/cp", "/chat party");
         commands.put("/cg", "/chat guild");
         commands.put("/co", "/chat officer");
-        commands.put("/cc", "/chat coop");
 
         // Message
         commandArgs.put("/m", "/msg");

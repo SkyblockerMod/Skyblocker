@@ -151,10 +151,11 @@ public class EditBarWidget extends ContainerWidget {
 			textColor.setCurrent(statusBar.getTextColor().getRGB());
 		}
 		textColor.setOnChange(statusBar::setTextColor);
-		hideOption.active = statusBar.anchor != null;
+		hideOption.active = statusBar.enabled;
 		hideOption.setRunnable(() -> {
 			if (statusBar.anchor != null)
 				FancyStatusBars.barPositioner.removeBar(statusBar.anchor, statusBar.gridY, statusBar);
+			statusBar.enabled = false;
 			FancyStatusBars.updatePositions(true);
 		});
 
