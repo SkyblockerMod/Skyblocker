@@ -52,6 +52,8 @@ public class GeneralConfig {
 
     public Object2ObjectOpenHashMap<String, CustomArmorAnimatedDyes.AnimatedDye> customAnimatedDyes = new Object2ObjectOpenHashMap<>();
 
+	public Object2ObjectOpenHashMap<String, String> customHelmetTextures = new Object2ObjectOpenHashMap<>();
+
 	public static class SpeedPresets {
 		public boolean enableSpeedPresets = true;
 	}

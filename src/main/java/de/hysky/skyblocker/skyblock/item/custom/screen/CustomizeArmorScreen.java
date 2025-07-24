@@ -51,6 +51,7 @@ public class CustomizeArmorScreen extends Screen {
 		public boolean isInvisibleTo(PlayerEntity player) {
 			return true;
 		}
+
 		@Override
 		public void onEquipStack(EquipmentSlot slot, ItemStack oldStack, ItemStack newStack) {}
 	};
@@ -59,6 +60,7 @@ public class CustomizeArmorScreen extends Screen {
 	private int selectedSlot = 0;
 	private TrimSelectionWidget trimSelectionWidget;
 	private ColorSelectionWidget colorSelectionWidget;
+	private HeadSelectionWidget headSelectionWidget;
 
 	private final Screen previousScreen;
 
@@ -84,12 +86,16 @@ public class CustomizeArmorScreen extends Screen {
 			}
 		});
 	}
+
 	static boolean canEdit(ItemStack stack) {
-		return stack.isIn(ItemTags.TRIMMABLE_ARMOR) && !ItemUtils.getItemUuid(stack).isEmpty();
+		boolean hasUuid = !ItemUtils.getItemUuid(stack).isEmpty();
+		if (stack.isOf(Items.PLAYER_HEAD)) return hasUuid;
+		return stack.isIn(ItemTags.TRIMMABLE_ARMOR) && hasUuid;
 	}
 
 
 	private final boolean nothingCustomizable;
+
 	protected CustomizeArmorScreen(Screen previousScreen) {
 		super(Math.random() < 0.01 ? Text.translatable("skyblocker.armorCustomization.titleSecret") : Text.translatable("skyblocker.armorCustomization.title"));
 		List<ItemStack> list = ItemUtils.getArmor(CLIENT.player);
@@ -109,7 +115,8 @@ public class CustomizeArmorScreen extends Screen {
 				builder.put(uuid, new PreviousConfig(
 						SkyblockerConfigManager.get().general.customArmorTrims.containsKey(uuid) ? Optional.of(SkyblockerConfigManager.get().general.customArmorTrims.get(uuid)) : Optional.empty(),
 						SkyblockerConfigManager.get().general.customDyeColors.containsKey(uuid) ? OptionalInt.of(SkyblockerConfigManager.get().general.customDyeColors.getInt(uuid)) : OptionalInt.empty(),
-						SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(uuid) ? Optional.of(SkyblockerConfigManager.get().general.customAnimatedDyes.get(uuid)) : Optional.empty()
+						SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(uuid) ? Optional.of(SkyblockerConfigManager.get().general.customAnimatedDyes.get(uuid)) : Optional.empty(),
+						SkyblockerConfigManager.get().general.customHelmetTextures.containsKey(uuid) ? Optional.of(SkyblockerConfigManager.get().general.customHelmetTextures.get(uuid)) : Optional.empty()
 				));
 			}
 		}
@@ -134,16 +141,18 @@ public class CustomizeArmorScreen extends Screen {
 		addDrawableChild(pieceSelectionWidget);
 
 
-
 		if (!nothingCustomizable) {
+			headSelectionWidget = new HeadSelectionWidget(x + 105, y, w - 105 - 5, 165);
+			addDrawableChild(headSelectionWidget);
+
 			trimSelectionWidget = new TrimSelectionWidget(x + 105, y, w - 105 - 5, 80);
 			addDrawableChild(trimSelectionWidget);
-			trimSelectionWidget.setCurrentItem(armor[selectedSlot]);
 
 			if (colorSelectionWidget != null) colorSelectionWidget.close();
 			colorSelectionWidget = new ColorSelectionWidget(trimSelectionWidget.getX(), trimSelectionWidget.getBottom() + 10, trimSelectionWidget.getWidth(), 100, textRenderer);
 			addDrawableChild(colorSelectionWidget);
-			colorSelectionWidget.setCurrentItem(armor[selectedSlot]);
+
+			updateWidgets();
 		}
 
 		addDrawableChild(ButtonWidget.builder(Text.translatable("gui.cancel"), b -> cancel()).position(width / 2 - 155, height - 25).build());
@@ -163,6 +172,10 @@ public class CustomizeArmorScreen extends Screen {
 			previousConfig.animatedDye().ifPresentOrElse(
 					animatedDye -> SkyblockerConfigManager.get().general.customAnimatedDyes.put(uuid, animatedDye),
 					() -> SkyblockerConfigManager.get().general.customAnimatedDyes.remove(uuid)
+			);
+			previousConfig.helmetTexture().ifPresentOrElse(
+					tex -> SkyblockerConfigManager.get().general.customHelmetTextures.put(uuid, tex),
+					() -> SkyblockerConfigManager.get().general.customHelmetTextures.remove(uuid)
 			);
 		});
 		close();
@@ -191,6 +204,18 @@ public class CustomizeArmorScreen extends Screen {
 	@Override
 	public void close() {
 		client.setScreen(previousScreen);
+	}
+
+	private void updateWidgets() {
+		if (nothingCustomizable) return;
+		ItemStack item = armor[selectedSlot];
+		boolean isPlayerHead = item.isOf(Items.PLAYER_HEAD);
+		headSelectionWidget.setCurrentItem(item);
+		trimSelectionWidget.setCurrentItem(item);
+		colorSelectionWidget.setCurrentItem(item);
+		headSelectionWidget.visible = isPlayerHead;
+		trimSelectionWidget.visible = !isPlayerHead;
+		colorSelectionWidget.visible = !isPlayerHead;
 	}
 
 	private class PieceSelectionWidget extends ClickableWidget {
@@ -242,8 +267,7 @@ public class CustomizeArmorScreen extends Screen {
 			if (i < 0 || i >= armor.length || !selectable[i]) return;
 			if (i != selectedSlot) {
 				selectedSlot = i;
-				trimSelectionWidget.setCurrentItem(armor[selectedSlot]);
-				colorSelectionWidget.setCurrentItem(armor[selectedSlot]);
+				updateWidgets();
 			}
 		}
 
@@ -256,7 +280,7 @@ public class CustomizeArmorScreen extends Screen {
 		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 	}
 
-	private record PreviousConfig(Optional<CustomArmorTrims.ArmorTrimId> armorTrimId, OptionalInt color, Optional<CustomArmorAnimatedDyes.AnimatedDye> animatedDye) {}
+	private record PreviousConfig(Optional<CustomArmorTrims.ArmorTrimId> armorTrimId, OptionalInt color, Optional<CustomArmorAnimatedDyes.AnimatedDye> animatedDye, Optional<String> helmetTexture) {}
 
 	private static class CustomizeButton extends ClickableWidget {
 		// thanks to @yuflow
