@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -15,7 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.apache.commons.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -68,18 +68,20 @@ public class ItemPrice {
 
             // Handle Enchanted Books
             if (itemName.equals("Enchanted Book")) {
-                itemName = WordUtils.capitalizeFully(skyblockApiId.replace("ENCHANTMENT_", "").replaceAll("_\\d+", ""));
+				itemName = ItemUtils.getLore(stack).stream().findFirst().orElse(Text.empty()).getString();
             }
 
             // Search up the item in the bazaar or auction house
             if (TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
                 MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName, true);
+				return;
             } else if (TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId)) {
                 MessageScheduler.INSTANCE.sendMessageAfterCooldown("/ahsearch " + itemName, true);
+				return;
             }
-        } else {
-            player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.itemPriceLookupFailed")), false);
         }
+
+		player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.itemPrice.itemPriceLookupFailed")), false);
     }
 
     public static void refreshItemPrices(ClientPlayerEntity player) {

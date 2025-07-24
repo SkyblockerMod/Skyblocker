@@ -23,6 +23,7 @@ public class QuickNavigationCategory {
                 //Toggle
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.quickNav.enableQuickNav"))
+						.description(Text.translatable("skyblocker.config.quickNav.enableQuickNav.@Tooltip"))
                         .binding(defaults.quickNav.enableQuickNav,
                                 () -> config.quickNav.enableQuickNav,
                                 newValue -> config.quickNav.enableQuickNav = newValue)

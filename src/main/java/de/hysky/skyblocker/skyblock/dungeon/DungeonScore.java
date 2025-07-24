@@ -46,7 +46,7 @@ public class DungeonScore {
 	private static final Pattern COMPLETED_ROOMS_PATTERN = Pattern.compile(" *Completed Rooms: (?<rooms>\\d+)");
 	//Chat patterns
 	private static final Pattern DEATHS_PATTERN = Pattern.compile(" \\u2620 (?<whodied>\\S+) .*");
-	private static final Supplier<Pattern> MIMIC_PATTERN = () -> Pattern.compile(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$|\\Q" + MIMIC_MESSAGE_CONFIG.get().mimicMessage + "\\E)$");
+	private static final Pattern MIMIC_PATTERN = Pattern.compile(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$|\\Q" + MIMIC_MESSAGE_CONFIG.get().mimicMessage + "\\E)$");
 	//Other patterns
 	private static final Pattern MIMIC_FLOORS_PATTERN = Pattern.compile("[FM][67]");
 
@@ -68,22 +68,20 @@ public class DungeonScore {
 	private static int score;
 
 	@Init
-	public static void init() {
+    public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(DungeonScore::tick, 20);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 		DungeonEvents.DUNGEON_STARTED.register(DungeonScore::onDungeonStart);
-		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-			if (overlay || !Utils.isInDungeons()) return;
+		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
+			if (overlay || !Utils.isInDungeons()) return true;
 			String str = message.getString();
 			if (dungeonStarted) {
 				checkMessageForDeaths(str);
 				checkMessageForWatcher(str);
 				if (floorHasMimics) checkMessageForMimic(str); //Only called when the message is not cancelled & isn't on the action bar, complementing MimicFilter
 			}
-		});
-		ClientReceiveMessageEvents.GAME_CANCELED.register((message, overlay) -> {
-			if (overlay || !Utils.isInDungeons() || !dungeonStarted) return;
-			checkMessageForDeaths(message.getString());
+
+			return true;
 		});
 	}
 
@@ -319,7 +317,7 @@ public class DungeonScore {
 	}
 
 	private static void checkMessageForMimic(String message) {
-		if (!MIMIC_PATTERN.get().matcher(message).matches()) return;
+		if (!MIMIC_PATTERN.matcher(message).matches()) return;
 		onMimicKill();
 	}
 

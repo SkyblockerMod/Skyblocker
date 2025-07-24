@@ -70,7 +70,7 @@ public class DojoManager {
 
     @Init
     public static void init() {
-        ClientReceiveMessageEvents.GAME.register(DojoManager::onMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(DojoManager::onMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(DojoManager::render);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
         ClientEntityEvents.ENTITY_LOAD.register(DojoManager::onEntitySpawn);
@@ -96,27 +96,27 @@ public class DojoManager {
      * @param text    message
      * @param overlay is overlay
      */
-    private static void onMessage(Text text, Boolean overlay) {
+    private static boolean onMessage(Text text, Boolean overlay) {
         if (!Utils.isInCrimson() || overlay) {
-            return;
+            return true;
         }
         if (Objects.equals(Formatting.strip(text.getString()), START_MESSAGE)) {
             inArena = true;
             //update the players ping
             getPing();
-            return;
+            return true;
         }
         if (!inArena) {
-            return;
+            return true;
         }
         if (text.getString().matches(CHALLENGE_FINISHED_REGEX)) {
             reset();
-            return;
+            return true;
         }
 
         //look for a message saying what challenge is starting if one has not already been found
         if (currentChallenge != DojoChallenges.NONE) {
-            return;
+            return true;
         }
         Matcher nextChallenge = TEST_OF_PATTERN.matcher(text.getString());
         if (nextChallenge.matches()) {
@@ -125,6 +125,8 @@ public class DojoManager {
                 currentChallenge = DojoChallenges.NONE;
             }
         }
+
+        return true;
     }
 
     private static void getPing() {
