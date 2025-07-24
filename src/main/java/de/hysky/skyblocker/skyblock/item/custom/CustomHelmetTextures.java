@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.NEURepoManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -34,17 +33,14 @@ public class CustomHelmetTextures {
 
 	@Init
 	public static void init() {
-		NEURepoManager.runAsyncAfterLoad(CustomHelmetTextures::loadTextures);
+		ItemRepository.runAsyncAfterImport(CustomHelmetTextures::loadTextures);
 	}
 
 	private static void loadTextures() {
 		try {
+			if (!ItemRepository.filesImported()) return;
 
-			if (!ItemRepository.filesImported()) {
-				NEURepoManager.runAsyncAfterLoad(CustomHelmetTextures::loadTextures);
-				return;
-			}
-
+			TEXTURES.clear();
 			ObjectSet<String> seen = new ObjectOpenHashSet<>();
 			ItemRepository.getItemsStream()
 					.filter(stack -> stack.isOf(Items.PLAYER_HEAD))

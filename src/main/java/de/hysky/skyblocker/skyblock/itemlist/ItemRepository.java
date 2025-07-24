@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
 public class ItemRepository {
@@ -27,6 +29,14 @@ public class ItemRepository {
 	private static final Map<String, ItemStack> itemsMap = new HashMap<>();
 	private static final List<SkyblockRecipe> recipes = new ArrayList<>();
 	private static final HashMap<String, @NEUId String> bazaarStocks = new HashMap<>();
+	/**
+	 * Store callbacks so we can execute them each time the item repository
+	 * finishes loading.
+	 */
+	private static final List<AfterImportTask> afterImportTasks = new CopyOnWriteArrayList<>();
+
+	private record AfterImportTask(Runnable runnable, boolean async) {}
+
 	/**
 	 * Consumers must check this field when accessing `items` and `itemsMap`, or else thread safety is not guaranteed.
 	 */
@@ -60,6 +70,21 @@ public class ItemRepository {
 
 		NEURepoManager.forEachItem(ItemRepository::loadRecipes);
 		filesImported = true;
+
+		afterImportTasks.forEach(task -> {
+			if (task.async) {
+				CompletableFuture.runAsync(task.runnable).exceptionally(e -> {
+					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
+					return null;
+				});
+			} else {
+				try {
+					task.runnable.run();
+				} catch (Exception e) {
+					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
+				}
+			}
+		});
 	}
 
 	private static void loadItem(NEUItem item) {
@@ -157,5 +182,40 @@ public class ItemRepository {
 			case NEUForgeRecipe forgeRecipe -> new SkyblockForgeRecipe(forgeRecipe);
 			case null, default -> null;
 		};
+	}
+
+	/**
+	 * Runs the given runnable after the item repository has finished loading.
+	 * If the repository is already loaded the runnable is executed immediately.
+	 *
+	 * @param runnable the runnable to run
+	 */
+	public static void runAsyncAfterImport(Runnable runnable) {
+		runAfterImport(runnable, true);
+	}
+
+	/**
+	 * Runs the given runnable after the item repository has finished loading.
+	 * If the repository is already loaded the runnable is executed immediately.
+	 *
+	 * @param runnable the runnable to run
+	 * @param async    whether to run the runnable asynchronously
+	 */
+	public static void runAfterImport(Runnable runnable, boolean async) {
+		if (filesImported) {
+			if (async) {
+				CompletableFuture.runAsync(runnable).exceptionally(e -> {
+					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import task", e);
+					return null;
+				});
+			} else {
+				try {
+					runnable.run();
+				} catch (Exception e) {
+					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import task", e);
+				}
+			}
+		}
+		afterImportTasks.add(new AfterImportTask(runnable, async));
 	}
 }
