@@ -105,5 +105,16 @@
     "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Показувати вартість покупки й продажу на Bazaar",
     "skyblocker.config.general.itemTooltip.enableMuseumInfo": "Увімкнути інформацію про Museum",
     "skyblocker.config.general.itemTooltip.enableEstimatedItemValue": "Показувати приблизну вартість предмета",
-    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "Показує приблизну вартість предмета. §lМоже не бути на 100% точним.§r\n\nКоли продаєте предмети, завжди перевіряйте вартість предмета вручну!"
+    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "Показує приблизну вартість предмета. §lМоже не бути на 100% точним.§r\n\nКоли продаєте предмети, завжди перевіряйте вартість предмета вручну!",
+    "skyblocker.config.general.quiverWarning.enableQuiverWarning": "Увімкнути попередження про нестачу стріл",
+    "skyblocker.config.general.updateChannel.channel.RELEASE": "Реліз",
+    "skyblocker.config.general.searchOverlay.maxPet": "Максимальний рівень улюбленця",
+    "skyblocker.config.general.searchOverlay.historyLabel": "Історія:",
+    "skyblocker.config.general.speedPresets.config.speed": "Швидкість",
+    "skyblocker.config.general.speedPresets.config.title": "Заголовок",
+    "skyblocker.config.general.updateChannel.channel.ALPHA": "Альфа",
+    "skyblocker.config.general.updateChannel.channel.BETA": "Бета",
+    "skyblocker.config.general.searchOverlay.maxPet.@Tooltip": "Показувати лише улюбленців максимального рівня",
+    "skyblocker.config.general.quiverWarning": "Попередження про нестачу стріл",
+    "skyblocker.config.general.updateNotifications": "Повідомлення про оновлення"
 }
