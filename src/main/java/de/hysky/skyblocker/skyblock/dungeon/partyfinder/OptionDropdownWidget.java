@@ -22,7 +22,7 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
     protected final PartyFinderScreen screen;
     private boolean isOpen = false;
 	private final int maxHeight;
-	private final static int CLOSED_HEIGHT = 35;
+	private static final int CLOSED_HEIGHT = 35;
 
     private float animationProgress = 0f;
 
