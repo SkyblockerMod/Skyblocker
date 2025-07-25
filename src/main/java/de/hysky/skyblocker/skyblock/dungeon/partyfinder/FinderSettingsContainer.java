@@ -125,11 +125,9 @@ public class FinderSettingsContainer extends ContainerWidget {
 
             if (nameLowerCase.contains("floor")) {
                 updateDropdownOptionWidget(handler, floorSelector);
-                currentlyOpenedOption = floorSelector;
                 return true;
             } else if (nameLowerCase.contains("select type")) {
                 updateDropdownOptionWidget(handler, dungeonTypeSelector);
-                currentlyOpenedOption = dungeonTypeSelector;
                 return true;
             } else if (nameLowerCase.contains("class level range")) {
                 updateRangedValue(handler, classLevelRange);
@@ -139,7 +137,6 @@ public class FinderSettingsContainer extends ContainerWidget {
                 return true;
             } else if (nameLowerCase.contains("sort")) {
                 updateDropdownOptionWidget(handler, sortGroupsSelector);
-                currentlyOpenedOption = sortGroupsSelector;
                 return true;
             }
         }
@@ -224,6 +221,7 @@ public class FinderSettingsContainer extends ContainerWidget {
     }
 
     private void updateDropdownOptionWidget(GenericContainerScreenHandler handler, OptionDropdownWidget dropdownWidget) {
+		currentlyOpenedOption = dropdownWidget;
         List<OptionDropdownWidget.Option> entries = new ArrayList<>();
         for (Slot slot : handler.slots) {
             if (slot.id > (handler.getRows() - 1) * 9 - 1) break;
