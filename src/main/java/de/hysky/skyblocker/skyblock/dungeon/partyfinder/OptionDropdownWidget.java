@@ -21,11 +21,14 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
     private @Nullable Option selectedOption;
     protected final PartyFinderScreen screen;
     private boolean isOpen = false;
+	private final int maxHeight;
+	private final static int CLOSED_HEIGHT = 35;
 
     private float animationProgress = 0f;
 
-    public OptionDropdownWidget(PartyFinderScreen screen, Text name, @Nullable Option selectedOption, int x, int y, int width, int height, int slotId) {
-        super(screen.getClient(), width, height, y, 15, 25);
+    public OptionDropdownWidget(PartyFinderScreen screen, Text name, @Nullable Option selectedOption, int x, int y, int width, int maxHeight, int slotId) {
+        super(screen.getClient(), width, CLOSED_HEIGHT, y, 15, 25);
+		this.maxHeight = maxHeight;
         this.screen = screen;
         this.slotId = slotId;
         setX(x);
@@ -134,6 +137,7 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
 
     public void open(List<Option> entries, int backButtonId) {
         isOpen = true;
+		height = maxHeight;
         this.replaceEntries(entries);
         animationProgress = 0f;
         this.backButtonId = backButtonId;
@@ -141,8 +145,8 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
 
     public void close() {
         isOpen = false;
+		height = CLOSED_HEIGHT;
         this.clearEntries();
-
     }
 
     public class Option extends ElementListWidget.Entry<Option> {
