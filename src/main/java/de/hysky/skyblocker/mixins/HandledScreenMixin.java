@@ -288,7 +288,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		ItemStack stack = skyblocker$experimentSolvers$getStack(slot, slot.getStack(), currentSolver);
 
 		boolean isTitleEmptyOrFiller = FILLER_ITEMS.contains(stack.getName().getString());
-		if (!isTitleEmptyOrFiller) {
+		if (isTitleEmptyOrFiller) {
 			var tooltip = stack.getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC).stream().map(Text::getString).toList();
 			String lore = String.join("\n", tooltip);
 			isTitleEmptyOrFiller = lore.isBlank() || FILLER_ITEMS.contains(tooltip.getFirst());
