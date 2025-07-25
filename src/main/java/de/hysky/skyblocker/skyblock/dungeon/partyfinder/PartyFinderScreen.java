@@ -459,7 +459,15 @@ public class PartyFinderScreen extends Screen {
         }
     }
 
-    public void clickAndWaitForServer(int slotID) {
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (settingsContainer != null && settingsContainer.hasOpenOption()) {
+			return settingsContainer.mouseClicked(mouseX, mouseY, button);
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	public void clickAndWaitForServer(int slotID) {
         //System.out.println("hey");
         assert client != null;
         assert client.interactionManager != null;

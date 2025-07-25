@@ -265,7 +265,19 @@ public class FinderSettingsContainer extends ContainerWidget {
         return currentlyOpenedOption == null || currentlyOpenedOption == widget;
     }
 
-    @Override
+	public boolean hasOpenOption() {
+		return currentlyOpenedOption != null;
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (hasOpenOption()) {
+			return currentlyOpenedOption.mouseClicked(mouseX, mouseY, button);
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         if (!visible) return;
         for (ContainerWidget initializedWidget : initializedWidgets) {
