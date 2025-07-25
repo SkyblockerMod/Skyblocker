@@ -1557,6 +1557,10 @@
   "skyblocker.armorPresets.save": "Save Preset",
   "skyblocker.armorPresets.rename": "Rename Preset",
   "skyblocker.armorPresets.renamePrompt": "Enter new name:",
+  "skyblocker.armorPresets.importSuccess": "Imported preset from clipboard!",
+  "skyblocker.armorPresets.importError": "Failed to import preset!",
+  "skyblocker.armorPresets.exportSuccess": "Copied preset to clipboard!",
+  "skyblocker.armorPresets.exportError": "Preset not found!",
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
