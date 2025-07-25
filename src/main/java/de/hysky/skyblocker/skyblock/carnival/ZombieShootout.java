@@ -20,7 +20,7 @@ import net.minecraft.util.math.Box;
 
 public class ZombieShootout {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final float[] RED = { 1, 0, 0 };
+	private static final float[] RED = {1, 0, 0};
 	private static final Box SHOOTING_BOX = Box.enclosing(new BlockPos(-100, 70, 15), new BlockPos(-102, 75, 13));
 	private static final BlockPos[] LAMPS = {
 			new BlockPos(-96, 76, 31),
@@ -35,7 +35,7 @@ public class ZombieShootout {
 			new BlockPos(-119, 75, 15),
 			new BlockPos(-119, 77, 12),
 			new BlockPos(-118, 76, 9)
-			};
+	};
 
 	@Init
 	public static void init() {

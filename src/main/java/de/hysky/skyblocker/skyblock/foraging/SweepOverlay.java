@@ -49,16 +49,16 @@ public class SweepOverlay {
 
 	private static final BlockPos[] NEIGHBOR_OFFSETS = {
 			new BlockPos(-1, -1, -1), new BlockPos(-1, -1, 0), new BlockPos(-1, -1, 1),
-			new BlockPos(-1, 0, -1),  new BlockPos(-1, 0, 0),  new BlockPos(-1, 0, 1),
-			new BlockPos(-1, 1, -1),  new BlockPos(-1, 1, 0),  new BlockPos(-1, 1, 1),
+			new BlockPos(-1, 0, -1), new BlockPos(-1, 0, 0), new BlockPos(-1, 0, 1),
+			new BlockPos(-1, 1, -1), new BlockPos(-1, 1, 0), new BlockPos(-1, 1, 1),
 
-			new BlockPos(0, -1, -1),  new BlockPos(0, -1, 0),  new BlockPos(0, -1, 1),
-			new BlockPos(0, 0, -1),   						   new BlockPos(0, 0, 1),
-			new BlockPos(0, 1, -1),   new BlockPos(0, 1, 0),   new BlockPos(0, 1, 1),
+			new BlockPos(0, -1, -1), new BlockPos(0, -1, 0), new BlockPos(0, -1, 1),
+			new BlockPos(0, 0, -1), new BlockPos(0, 0, 1),
+			new BlockPos(0, 1, -1), new BlockPos(0, 1, 0), new BlockPos(0, 1, 1),
 
-			new BlockPos(1, -1, -1),  new BlockPos(1, -1, 0),  new BlockPos(1, -1, 1),
-			new BlockPos(1, 0, -1),   new BlockPos(1, 0, 0),   new BlockPos(1, 0, 1),
-			new BlockPos(1, 1, -1),   new BlockPos(1, 1, 0),   new BlockPos(1, 1, 1)
+			new BlockPos(1, -1, -1), new BlockPos(1, -1, 0), new BlockPos(1, -1, 1),
+			new BlockPos(1, 0, -1), new BlockPos(1, 0, 0), new BlockPos(1, 0, 1),
+			new BlockPos(1, 1, -1), new BlockPos(1, 1, 0), new BlockPos(1, 1, 1)
 	};
 
 	private static final Map<Block, Float> TOUGHNESS_MAP = Map.of(
@@ -224,10 +224,10 @@ public class SweepOverlay {
 	 * When triggered via a thrown axe, the overlay is drawn with a dimmer
 	 * color and the blocks broken is halved.
 	 *
-	 * @param wrc           the world render context
+	 * @param wrc            the world render context
 	 * @param blockHitResult the block hit result from the crosshair or ray cast
-	 * @param state         the block state of the targeted block
-	 * @param isThrown      true if the hit comes from a ray cast (throwable axe)
+	 * @param state          the block state of the targeted block
+	 * @param isThrown       true if the hit comes from a ray cast (throwable axe)
 	 */
 	private static void renderConnectedLogs(WorldRenderContext wrc, BlockHitResult blockHitResult, BlockState state, boolean isThrown) {
 		BlockPos startPos = blockHitResult.getBlockPos();
@@ -238,7 +238,7 @@ public class SweepOverlay {
 		// Adjust color for ray-cast hits (dimmer: multiply RGB by 0.7, keep alpha)
 		float[] renderColor = colorComponents;
 		if (isThrown) {
-			renderColor = new float[] {
+			renderColor = new float[]{
 					colorComponents[0] * 0.7f,
 					colorComponents[1] * 0.7f,
 					colorComponents[2] * 0.7f,

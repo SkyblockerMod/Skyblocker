@@ -45,13 +45,13 @@ public class CustomArmorDyeColors {
 
 					if (color == Integer.MIN_VALUE) {
 						if (customDyeColors.containsKey(itemUuid)) {
-							SkyblockerConfigManager.update(config-> config.general.customDyeColors.removeInt(itemUuid));
+							SkyblockerConfigManager.update(config -> config.general.customDyeColors.removeInt(itemUuid));
 							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.removed")));
 						} else {
 							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.neverHad")));
 						}
 					} else {
-						SkyblockerConfigManager.update(config-> config.general.customDyeColors.put(itemUuid, color));
+						SkyblockerConfigManager.update(config -> config.general.customDyeColors.put(itemUuid, color));
 						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customDyeColors.added")));
 					}
 				} else {

@@ -38,139 +38,139 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class TheEnd {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(TheEnd.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(TheEnd.class);
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("end.json");
 
-    public static Set<UUID> hitZealots = new HashSet<>();
+	public static Set<UUID> hitZealots = new HashSet<>();
 	public static ProfiledData<EndStats> PROFILES_STATS = new ProfiledData<>(FILE, EndStats.CODEC);
 
-    public static List<ProtectorLocation> protectorLocations = List.of(
-            new ProtectorLocation(-649, -219, Text.translatable("skyblocker.end.hud.protectorLocations.left")),
-            new ProtectorLocation(-644, -269, Text.translatable("skyblocker.end.hud.protectorLocations.front")),
-            new ProtectorLocation(-689, -273, Text.translatable("skyblocker.end.hud.protectorLocations.center")),
-            new ProtectorLocation(-727, -284, Text.translatable("skyblocker.end.hud.protectorLocations.back")),
-            new ProtectorLocation(-639, -328, Text.translatable("skyblocker.end.hud.protectorLocations.rightFront")),
-            new ProtectorLocation(-678, -332, Text.translatable("skyblocker.end.hud.protectorLocations.rightBack"))
-    );
+	public static List<ProtectorLocation> protectorLocations = List.of(
+			new ProtectorLocation(-649, -219, Text.translatable("skyblocker.end.hud.protectorLocations.left")),
+			new ProtectorLocation(-644, -269, Text.translatable("skyblocker.end.hud.protectorLocations.front")),
+			new ProtectorLocation(-689, -273, Text.translatable("skyblocker.end.hud.protectorLocations.center")),
+			new ProtectorLocation(-727, -284, Text.translatable("skyblocker.end.hud.protectorLocations.back")),
+			new ProtectorLocation(-639, -328, Text.translatable("skyblocker.end.hud.protectorLocations.rightFront")),
+			new ProtectorLocation(-678, -332, Text.translatable("skyblocker.end.hud.protectorLocations.rightBack"))
+	);
 
-    public static ProtectorLocation currentProtectorLocation = null;
-    public static int stage = 0;
+	public static ProtectorLocation currentProtectorLocation = null;
+	public static int stage = 0;
 
-    @Init
-    public static void init() {
-        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            if (entity instanceof EndermanEntity enderman && isZealot(enderman)) {
-                hitZealots.add(enderman.getUuid());
-            }
-            return ActionResult.PASS;
-        });
+	@Init
+	public static void init() {
+		AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+			if (entity instanceof EndermanEntity enderman && isZealot(enderman)) {
+				hitZealots.add(enderman.getUuid());
+			}
+			return ActionResult.PASS;
+		});
 
-        ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
-            String lowerCase = Utils.getIslandArea().toLowerCase();
-            if (Utils.isInTheEnd() || lowerCase.contains("the end") || lowerCase.contains("dragon's nest")) {
-                ChunkPos pos = chunk.getPos();
-                //
-                Box box = new Box(pos.getStartX(), 0, pos.getStartZ(), pos.getEndX() + 1, 1, pos.getEndZ() + 1);
-                for (ProtectorLocation protectorLocation : protectorLocations) {
-                    if (box.contains(protectorLocation.x(), 0.5, protectorLocation.z())) {
-                        // MinecraftClient.getInstance().player.sendMessage(Text.literal("Checking: ").append(protectorLocation.name));//MinecraftClient.getInstance().player.sendMessage(Text.literal(pos.getStartX() + " " + pos.getStartZ() + " " + pos.getEndX() + " " + pos.getEndZ()));
-                        if (isProtectorHere(world, protectorLocation)) break;
-                    }
-                }
-            }
-        });
+		ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
+			String lowerCase = Utils.getIslandArea().toLowerCase();
+			if (Utils.isInTheEnd() || lowerCase.contains("the end") || lowerCase.contains("dragon's nest")) {
+				ChunkPos pos = chunk.getPos();
+				//
+				Box box = new Box(pos.getStartX(), 0, pos.getStartZ(), pos.getEndX() + 1, 1, pos.getEndZ() + 1);
+				for (ProtectorLocation protectorLocation : protectorLocations) {
+					if (box.contains(protectorLocation.x(), 0.5, protectorLocation.z())) {
+						// MinecraftClient.getInstance().player.sendMessage(Text.literal("Checking: ").append(protectorLocation.name));//MinecraftClient.getInstance().player.sendMessage(Text.literal(pos.getStartX() + " " + pos.getStartZ() + " " + pos.getEndX() + " " + pos.getEndZ()));
+						if (isProtectorHere(world, protectorLocation)) break;
+					}
+				}
+			}
+		});
 		// Fix for when you join skyblock, and you are directly in the end
 		SkyblockEvents.PROFILE_CHANGE.register((prev, profile) -> EndHudWidget.getInstance().update());
-        // Reset when changing island
-        SkyblockEvents.LOCATION_CHANGE.register(location -> resetLocation());
+		// Reset when changing island
+		SkyblockEvents.LOCATION_CHANGE.register(location -> resetLocation());
 
-        ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
-            if (!Utils.isInTheEnd() || overlay) return true;
-            String lowerCase = message.getString().toLowerCase();
-            if (lowerCase.contains("tremor")) {
-                if (stage == 0) checkAllProtectorLocations();
-                else stage += 1;
-            }
-            else if (lowerCase.contains("rises from below")) stage = 5;
-            else if (lowerCase.contains("protector down") || lowerCase.contains("has risen")) resetLocation();
-            else return true;
-            EndHudWidget.getInstance().update();
+		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
+			if (!Utils.isInTheEnd() || overlay) return true;
+			String lowerCase = message.getString().toLowerCase();
+			if (lowerCase.contains("tremor")) {
+				if (stage == 0) checkAllProtectorLocations();
+				else stage += 1;
+			} else if (lowerCase.contains("rises from below")) stage = 5;
+			else if (lowerCase.contains("protector down") || lowerCase.contains("has risen")) resetLocation();
+			else return true;
+			EndHudWidget.getInstance().update();
 
-            return true;
-        });
+			return true;
+		});
 
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(TheEnd::renderWaypoint);
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(TheEnd::renderWaypoint);
 		PROFILES_STATS.init();
-    }
+	}
 
-    private static void checkAllProtectorLocations() {
-        ClientWorld world = MinecraftClient.getInstance().world;
-        if (world == null) return;
-        for (ProtectorLocation protectorLocation : protectorLocations) {
-            if (!world.isChunkLoaded(protectorLocation.x() >> 4, protectorLocation.z() >> 4)) continue;
-            if (isProtectorHere(world, protectorLocation)) break;
-        }
-    }
+	private static void checkAllProtectorLocations() {
+		ClientWorld world = MinecraftClient.getInstance().world;
+		if (world == null) return;
+		for (ProtectorLocation protectorLocation : protectorLocations) {
+			if (!world.isChunkLoaded(protectorLocation.x() >> 4, protectorLocation.z() >> 4)) continue;
+			if (isProtectorHere(world, protectorLocation)) break;
+		}
+	}
 
-    /**
-     * Checks a bunch of Ys to see if a player head is there, if it's there it returns true and updates the hud accordingly
-     * @param world le world to check
-     * @param protectorLocation protectorLocation to check
-     * @return if found
-     */
-    private static boolean isProtectorHere(ClientWorld world, ProtectorLocation protectorLocation) {
-        for (int i = 0; i < 5; i++) {
-            if (world.getBlockState(new BlockPos(protectorLocation.x, i + 5, protectorLocation.z)).isOf(Blocks.PLAYER_HEAD)) {
-                stage = i + 1;
-                currentProtectorLocation = protectorLocation;
-                EndHudWidget.getInstance().update();
-                return true;
-            }
-        }
-        return false;
-    }
+	/**
+	 * Checks a bunch of Ys to see if a player head is there, if it's there it returns true and updates the hud accordingly
+	 *
+	 * @param world             le world to check
+	 * @param protectorLocation protectorLocation to check
+	 * @return if found
+	 */
+	private static boolean isProtectorHere(ClientWorld world, ProtectorLocation protectorLocation) {
+		for (int i = 0; i < 5; i++) {
+			if (world.getBlockState(new BlockPos(protectorLocation.x, i + 5, protectorLocation.z)).isOf(Blocks.PLAYER_HEAD)) {
+				stage = i + 1;
+				currentProtectorLocation = protectorLocation;
+				EndHudWidget.getInstance().update();
+				return true;
+			}
+		}
+		return false;
+	}
 
-    private static void resetLocation() {
-        stage = 0;
-        currentProtectorLocation = null;
-    }
+	private static void resetLocation() {
+		stage = 0;
+		currentProtectorLocation = null;
+	}
 
-    public static void onEntityDeath(Entity entity) {
-        if (!(entity instanceof EndermanEntity enderman) || !isZealot(enderman)) return;
-        if (hitZealots.contains(enderman.getUuid())) {
+	public static void onEntityDeath(Entity entity) {
+		if (!(entity instanceof EndermanEntity enderman) || !isZealot(enderman)) return;
+		if (hitZealots.contains(enderman.getUuid())) {
 			EndStats stats = PROFILES_STATS.computeIfAbsent(EndStats.EMPTY);
-            if (isSpecialZealot(enderman)) {
+			if (isSpecialZealot(enderman)) {
 				PROFILES_STATS.put(new EndStats(stats.totalZealotKills() + 1, 0, stats.eyes() + 1));
 			} else {
 				PROFILES_STATS.put(new EndStats(stats.totalZealotKills() + 1, stats.zealotsSinceLastEye() + 1, stats.eyes()));
 			}
 			hitZealots.remove(enderman.getUuid());
-            EndHudWidget.getInstance().update();
-        }
-    }
+			EndHudWidget.getInstance().update();
+		}
+	}
 
-    public static boolean isZealot(EndermanEntity enderman) {
-        if (enderman.getName().getString().toLowerCase().contains("zealot")) return true; // Future-proof. If they someday decide to actually rename the entities
-        assert MinecraftClient.getInstance().world != null;
-        List<ArmorStandEntity> entities = MinecraftClient.getInstance().world.getEntitiesByClass(
-                ArmorStandEntity.class,
-                enderman.getDimensions(null).getBoxAt(enderman.getPos()).expand(1),
-                armorStandEntity -> armorStandEntity.getName().getString().toLowerCase().contains("zealot"));
-        if (entities.isEmpty()) {
-            return false;
-        }
-        return entities.getFirst().getName().getString().toLowerCase().contains("zealot");
-    }
+	public static boolean isZealot(EndermanEntity enderman) {
+		if (enderman.getName().getString().toLowerCase().contains("zealot")) return true; // Future-proof. If they someday decide to actually rename the entities
+		assert MinecraftClient.getInstance().world != null;
+		List<ArmorStandEntity> entities = MinecraftClient.getInstance().world.getEntitiesByClass(
+				ArmorStandEntity.class,
+				enderman.getDimensions(null).getBoxAt(enderman.getPos()).expand(1),
+				armorStandEntity -> armorStandEntity.getName().getString().toLowerCase().contains("zealot"));
+		if (entities.isEmpty()) {
+			return false;
+		}
+		return entities.getFirst().getName().getString().toLowerCase().contains("zealot");
+	}
 
-    public static boolean isSpecialZealot(EndermanEntity enderman) {
-        return isZealot(enderman) && enderman.getCarriedBlock() != null && enderman.getCarriedBlock().isOf(Blocks.END_PORTAL_FRAME);
-    }
+	public static boolean isSpecialZealot(EndermanEntity enderman) {
+		return isZealot(enderman) && enderman.getCarriedBlock() != null && enderman.getCarriedBlock().isOf(Blocks.END_PORTAL_FRAME);
+	}
 
 	private static void renderWaypoint(WorldRenderContext context) {
-        if (!SkyblockerConfigManager.get().otherLocations.end.waypoint) return;
-        if (currentProtectorLocation == null || stage != 5) return;
-        currentProtectorLocation.waypoint().render(context);
-    }
+		if (!SkyblockerConfigManager.get().otherLocations.end.waypoint) return;
+		if (currentProtectorLocation == null || stage != 5) return;
+		currentProtectorLocation.waypoint().render(context);
+	}
 
 	public record EndStats(int totalZealotKills, int zealotsSinceLastEye, int eyes) {
 		private static final Codec<EndStats> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -181,9 +181,9 @@ public class TheEnd {
 		public static final Supplier<EndStats> EMPTY = () -> new EndStats(0, 0, 0);
 	}
 
-    public record ProtectorLocation(int x, int z, Text name, Waypoint waypoint) {
-        public ProtectorLocation(int x, int z, Text name) {
-            this(x, z, name, new Waypoint(new BlockPos(x, 0, z), Waypoint.Type.WAYPOINT, ColorUtils.getFloatComponents(DyeColor.MAGENTA)));
-        }
-    }
+	public record ProtectorLocation(int x, int z, Text name, Waypoint waypoint) {
+		public ProtectorLocation(int x, int z, Text name) {
+			this(x, z, name, new Waypoint(new BlockPos(x, 0, z), Waypoint.Type.WAYPOINT, ColorUtils.getFloatComponents(DyeColor.MAGENTA)));
+		}
+	}
 }

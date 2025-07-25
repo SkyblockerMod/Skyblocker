@@ -101,6 +101,7 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 
 	/**
 	 * Converts tile probability into a color for each of the remaining tiles
+	 *
 	 * @param chances the probability in order from 0-1
 	 * @return the colors formated for the {@link SimpleContainerSolver#getColors(Int2ObjectMap)}
 	 */

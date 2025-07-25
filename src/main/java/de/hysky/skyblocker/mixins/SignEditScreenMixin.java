@@ -26,9 +26,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AbstractSignEditScreen.class)
 public abstract class SignEditScreenMixin extends Screen {
 
-    @Shadow
-    @Final
-    private String[] messages;
+	@Shadow
+	@Final
+	private String[] messages;
 
 	@Shadow
 	public abstract void close();
@@ -49,7 +49,7 @@ public abstract class SignEditScreenMixin extends Screen {
 	}
 
 	@Inject(method = "render", at = @At("HEAD"))
-    private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
+	private void skyblocker$render(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
 		if (Utils.isOnSkyblock()) {
 			var config = SkyblockerConfigManager.get();
 			if (isSpeedInputSign() && config.general.speedPresets.enableSpeedPresets) {
@@ -64,7 +64,7 @@ public abstract class SignEditScreenMixin extends Screen {
 				SignCalculator.renderCalculator(context, messages[0], context.getScaledWindowWidth() / 2, 55);
 			}
 		}
-    }
+	}
 
 	@Inject(method = "keyPressed", at = @At("HEAD"))
 	private void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
@@ -73,10 +73,10 @@ public abstract class SignEditScreenMixin extends Screen {
 				&& (keyCode == InputUtil.GLFW_KEY_ENTER || keyCode == InputUtil.GLFW_KEY_KP_ENTER)) this.close();
 	}
 
-    @Inject(method = "finishEditing", at = @At("HEAD"))
-    private void skyblocker$finishEditing(CallbackInfo ci) {
+	@Inject(method = "finishEditing", at = @At("HEAD"))
+	private void skyblocker$finishEditing(CallbackInfo ci) {
 		var config = SkyblockerConfigManager.get();
-        if (Utils.isOnSkyblock()) {
+		if (Utils.isOnSkyblock()) {
 			//if the sign is being used to enter the speed cap, retrieve the value from speed presets.
 			if (isSpeedInputSign() && config.general.speedPresets.enableSpeedPresets) {
 				var presets = SpeedPresets.getInstance();
@@ -93,14 +93,16 @@ public abstract class SignEditScreenMixin extends Screen {
 				}
 				messages[0] = value;
 			}
-        }
-    }
+		}
+	}
 
 	@Unique
 	private static final String SPEED_INPUT_MARKER = "^^^^^^";
 	@Unique
 	private static final String INPUT_SIGN_MARKER = "^^^^^^^^^^^^^^^";
-	/** This is used for some things like the super craft amount input */
+	/**
+	 * This is used for some things like the super craft amount input
+	 */
 	@Unique
 	private static final String ALT_INPUT_SIGN_MARKER = "^^^^^^";
 	@Unique

@@ -25,7 +25,7 @@ public class LightsOn {
 	private static final BlockPos MIDDLE_BOTTOM = new BlockPos(60, 134, 142);
 	private static final BlockPos BOTTOM_LEFT = new BlockPos(62, 133, 142);
 	private static final BlockPos BOTTOM_RIGHT = new BlockPos(58, 133, 142);
-	private static final BlockPos[] LEVERS = { TOP_LEFT, TOP_RIGHT, MIDDLE_TOP, MIDDLE_BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT };
+	private static final BlockPos[] LEVERS = {TOP_LEFT, TOP_RIGHT, MIDDLE_TOP, MIDDLE_BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT};
 	private static final float[] RED = ColorUtils.getFloatComponents(DyeColor.RED);
 
 	@Init

@@ -10,13 +10,13 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(Camera.class)
 public class CameraMixin {
 
-    @ModifyReturnValue(method = "getPos", at = @At("RETURN"))
-    private Vec3d skyblocker$onCameraUpdate(Vec3d original) {
-        Vec3d pos = SmoothAOTE.getInterpolatedPos();
-        if (pos != null) {
-            return pos;
-        }
+	@ModifyReturnValue(method = "getPos", at = @At("RETURN"))
+	private Vec3d skyblocker$onCameraUpdate(Vec3d original) {
+		Vec3d pos = SmoothAOTE.getInterpolatedPos();
+		if (pos != null) {
+			return pos;
+		}
 
-        return original;
-    }
+		return original;
+	}
 }

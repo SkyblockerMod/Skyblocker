@@ -28,6 +28,7 @@ public class CatacombsLevelAdder {
 
 	public static class Dungeoneering extends SimpleSlotTextAdder {
 		private static final Pattern LEVEL_PATTERN = Pattern.compile(".*?(?:(?: (?<arabic>\\d+)| (?<roman>[IVXLC]+))(?: ✯)?)?");
+
 		public Dungeoneering() {
 			super("^Dungeoneering", CONFIG_INFORMATION);
 		}

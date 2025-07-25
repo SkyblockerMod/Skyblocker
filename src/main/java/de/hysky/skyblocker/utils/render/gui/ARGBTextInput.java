@@ -22,7 +22,7 @@ import java.util.function.IntConsumer;
 public class ARGBTextInput extends ClickableWidget {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	private static final Formatting[] FORMATTINGS = new Formatting[] {Formatting.WHITE, Formatting.RED, Formatting.GREEN, Formatting.BLUE};
+	private static final Formatting[] FORMATTINGS = new Formatting[]{Formatting.WHITE, Formatting.RED, Formatting.GREEN, Formatting.BLUE};
 	private static final String HEXADECIMAL_CHARS = "0123456789aAbBcCdDeEfF";
 
 	/**
@@ -49,12 +49,11 @@ public class ARGBTextInput extends ClickableWidget {
 	 * Height and width are automatically computed to be the size of the hex number + some padding if {@code drawBackground} is true.
 	 * If the size needs to be changed, use {@link ARGBTextInput#setWidth(int)} and {@link ARGBTextInput#setHeight(int)}.
 	 *
-	 * @param x x position
-	 * @param y y position
-	 * @param textRenderer text renderer to render the text (duh!)
+	 * @param x              x position
+	 * @param y              y position
+	 * @param textRenderer   text renderer to render the text (duh!)
 	 * @param drawBackground draws a black background and a white border if true
-	 * @param hasAlpha if the controller allows to change the alpha color. If false alpha is FF.
-	 *
+	 * @param hasAlpha       if the controller allows to change the alpha color. If false alpha is FF.
 	 * @see ARGBTextInput#setOnChange(IntConsumer)
 	 */
 	public ARGBTextInput(int x, int y, TextRenderer textRenderer, boolean drawBackground, boolean hasAlpha) {
@@ -73,11 +72,10 @@ public class ARGBTextInput extends ClickableWidget {
 	 * Height and width are automatically computed to be the size of the hex number + some padding if {@code drawBackground} is true.
 	 * If the size needs to be changed, use {@link ARGBTextInput#setWidth(int)} and {@link ARGBTextInput#setHeight(int)}.
 	 *
-	 * @param x x position
-	 * @param y y position
-	 * @param textRenderer text renderer to render the text (duh!)
+	 * @param x              x position
+	 * @param y              y position
+	 * @param textRenderer   text renderer to render the text (duh!)
 	 * @param drawBackground draws a black background and a white border if true
-	 *
 	 * @see ARGBTextInput#setOnChange(IntConsumer)
 	 */
 	public ARGBTextInput(int x, int y, TextRenderer textRenderer, boolean drawBackground) {
@@ -108,6 +106,7 @@ public class ARGBTextInput extends ClickableWidget {
 	/**
 	 * Sets a consumer that will be called whenever the color is changed by the user (and not when {@link ARGBTextInput#setARGBColor(int)} is called) with the new color.
 	 * The alpha channel will be at 255 (or FF)
+	 *
 	 * @param onChange the consumer
 	 */
 	public void setOnChange(@Nullable IntConsumer onChange) {
@@ -121,7 +120,7 @@ public class ARGBTextInput extends ClickableWidget {
 		int textX = getX() + (drawBackground ? 3 : 0);
 		int textY = getY() + (getHeight() - textRenderer.fontHeight) / 2;
 		if (drawBackground) {
-			context.fill(getX(), getY(), getRight(), getBottom(), isFocused() ? Colors.WHITE: Colors.GRAY);
+			context.fill(getX(), getY(), getRight(), getBottom(), isFocused() ? Colors.WHITE : Colors.GRAY);
 			context.fill(getX() + 1, getY() + 1, getRight() - 1, getBottom() - 1, Colors.BLACK);
 		}
 
@@ -213,7 +212,7 @@ public class ARGBTextInput extends ClickableWidget {
 	public boolean charTyped(char chr, int modifiers) {
 		if (!isFocused()) return false;
 		if (HEXADECIMAL_CHARS.indexOf(chr) >= 0) {
-			input = new	StringBuilder(input).replace(index, index+1, String.valueOf(chr).toUpperCase(Locale.ENGLISH)).toString();
+			input = new StringBuilder(input).replace(index, index + 1, String.valueOf(chr).toUpperCase(Locale.ENGLISH)).toString();
 			index = Math.min(length - 1, index + 1);
 			callOnChange();
 			return true;

@@ -35,45 +35,45 @@ import java.util.List;
 public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
-    public void registerCategories(CategoryRegistry categoryRegistry) {
-        if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
-        categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.IDENTIFIER), EntryStacks.of(Items.CRAFTING_TABLE));
-        categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.IDENTIFIER), EntryStacks.of(Items.ANVIL));
-        categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
-        categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_forge"), ItemUtils.getSkyblockerForgeStack(), 84));
+	public void registerCategories(CategoryRegistry categoryRegistry) {
+		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
+		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.IDENTIFIER), EntryStacks.of(Items.CRAFTING_TABLE));
+		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.IDENTIFIER), EntryStacks.of(Items.ANVIL));
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_forge"), ItemUtils.getSkyblockerForgeStack(), 84));
 
 		categoryRegistry.add(new SkyblockInfoCategory());
-    }
+	}
 
-    @Override
-    public void registerDisplays(DisplayRegistry displayRegistry) {
-        if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
+	@Override
+	public void registerDisplays(DisplayRegistry displayRegistry) {
+		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
 		if (displayRegistry.getGlobalDisplayGenerators().stream().noneMatch(generator -> generator instanceof SkyblockRecipeDisplayGenerator))
 			displayRegistry.registerGlobalDisplayGenerator(new SkyblockRecipeDisplayGenerator());
 		if (displayRegistry.getGlobalDisplayGenerators().stream().noneMatch(generator -> generator instanceof SkyblockInfoDisplayGenerator))
 			displayRegistry.registerGlobalDisplayGenerator(new SkyblockInfoDisplayGenerator());
-    }
+	}
 
-    @Override
-    public void registerEntries(EntryRegistry entryRegistry) {
-        if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
-        entryRegistry.removeEntryIf(entryStack -> true);
-        entryRegistry.addEntries(ItemRepository.getItemsStream().map(EntryStacks::of).toList());
-    }
+	@Override
+	public void registerEntries(EntryRegistry entryRegistry) {
+		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
+		entryRegistry.removeEntryIf(entryStack -> true);
+		entryRegistry.addEntries(ItemRepository.getItemsStream().map(EntryStacks::of).toList());
+	}
 
-    @Override
-    public void registerExclusionZones(ExclusionZones zones) {
-        zones.register(InventoryScreen.class, screen -> {
-            if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return List.of();
-            HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
-            return List.of(new Rectangle(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
-        });
+	@Override
+	public void registerExclusionZones(ExclusionZones zones) {
+		zones.register(InventoryScreen.class, screen -> {
+			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return List.of();
+			HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
+			return List.of(new Rectangle(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
+		});
 
-        zones.register(Screen.class, screen -> {
-            if (!VisitorHelper.shouldRender()) return List.of();
-            return VisitorHelper.getExclusionZones();
-        });
-    }
+		zones.register(Screen.class, screen -> {
+			if (!VisitorHelper.shouldRender()) return List.of();
+			return VisitorHelper.getExclusionZones();
+		});
+	}
 
 	@Override
 	public void registerTransferHandlers(TransferHandlerRegistry registry) {

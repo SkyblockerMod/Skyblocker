@@ -21,54 +21,54 @@ import java.util.List;
 import java.util.Map;
 
 public class DungeonClassWidget {
-    private final String className;
-    private LevelFinder.LevelInfo classLevel;
-    private static final int CLASS_CAP = 50;
-    private JsonObject classData;
-    private final ItemStack stack;
-    private boolean active = false;
+	private final String className;
+	private LevelFinder.LevelInfo classLevel;
+	private static final int CLASS_CAP = 50;
+	private JsonObject classData;
+	private final ItemStack stack;
+	private boolean active = false;
 
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
-    private static final Identifier ACTIVE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
-    private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
-    private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
+	private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
+	private static final Identifier ACTIVE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
+	private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
+	private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
 
-    private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-    private static final Map<String, ItemStack> CLASS_ICON = Map.ofEntries(
-            Map.entry("Healer", Ico.S_POTION),
-            Map.entry("Mage", Ico.B_ROD),
-            Map.entry("Berserk", Ico.IRON_SWORD),
-            Map.entry("Archer", Ico.BOW),
-            Map.entry("Tank", Ico.CHESTPLATE)
-    );
+	private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+	private static final Map<String, ItemStack> CLASS_ICON = Map.ofEntries(
+			Map.entry("Healer", Ico.S_POTION),
+			Map.entry("Mage", Ico.B_ROD),
+			Map.entry("Berserk", Ico.IRON_SWORD),
+			Map.entry("Archer", Ico.BOW),
+			Map.entry("Tank", Ico.CHESTPLATE)
+	);
 
-    public DungeonClassWidget(String className, JsonObject playerProfile) {
-        this.className = className;
-        stack = CLASS_ICON.getOrDefault(className, Ico.BARRIER);
-        try {
-            classData = playerProfile.getAsJsonObject("dungeons").getAsJsonObject("player_classes").getAsJsonObject(this.className.toLowerCase());
-            classLevel = LevelFinder.getLevelInfo("Catacombs", classData.get("experience").getAsLong());
-            active = playerProfile.getAsJsonObject("dungeons").get("selected_dungeon_class").getAsString().equals(className.toLowerCase());
-        } catch (Exception ignored) {
-            classLevel = LevelFinder.getLevelInfo("", 0);
-        }
-    }
+	public DungeonClassWidget(String className, JsonObject playerProfile) {
+		this.className = className;
+		stack = CLASS_ICON.getOrDefault(className, Ico.BARRIER);
+		try {
+			classData = playerProfile.getAsJsonObject("dungeons").getAsJsonObject("player_classes").getAsJsonObject(this.className.toLowerCase());
+			classLevel = LevelFinder.getLevelInfo("Catacombs", classData.get("experience").getAsLong());
+			active = playerProfile.getAsJsonObject("dungeons").get("selected_dungeon_class").getAsString().equals(className.toLowerCase());
+		} catch (Exception ignored) {
+			classLevel = LevelFinder.getLevelInfo("", 0);
+		}
+	}
 
-    public void render(DrawContext context, int mouseX, int mouseY, int x, int y) {
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-        context.drawItem(stack, x + 3, y + 5);
-        if (active) context.drawTexture(RenderLayer::getGuiTextured, ACTIVE_TEXTURE, x + 3, y + 5, 0, 0, 16, 16, 16, 16);
+	public void render(DrawContext context, int mouseX, int mouseY, int x, int y) {
+		context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+		context.drawItem(stack, x + 3, y + 5);
+		if (active) context.drawTexture(RenderLayer::getGuiTextured, ACTIVE_TEXTURE, x + 3, y + 5, 0, 0, 16, 16, 16, 16);
 
-        context.drawText(textRenderer, className + " " + classLevel.level, x + 31, y + 5, Color.WHITE.getRGB(), false);
-        Color fillColor = classLevel.level >= CLASS_CAP ? Color.MAGENTA : Color.GREEN;
-        context.drawGuiTexture(RenderLayer::getGuiTextured, BAR_BACK, x + 30, y + 15, 75, 6);
-        RenderHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 15, (int) (75 * classLevel.fill), 6, fillColor);
+		context.drawText(textRenderer, className + " " + classLevel.level, x + 31, y + 5, Color.WHITE.getRGB(), false);
+		Color fillColor = classLevel.level >= CLASS_CAP ? Color.MAGENTA : Color.GREEN;
+		context.drawGuiTexture(RenderLayer::getGuiTextured, BAR_BACK, x + 30, y + 15, 75, 6);
+		RenderHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 15, (int) (75 * classLevel.fill), 6, fillColor);
 
-        if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22){
-            List<Text> tooltipText = new ArrayList<>();
-            tooltipText.add(Text.literal(this.className).formatted(Formatting.GREEN));
-            tooltipText.add(Text.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.classLevel.xp)).formatted(Formatting.GOLD));
-            context.drawTooltip(textRenderer, tooltipText, mouseX, mouseY);
-        }
-    }
+		if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22) {
+			List<Text> tooltipText = new ArrayList<>();
+			tooltipText.add(Text.literal(this.className).formatted(Formatting.GREEN));
+			tooltipText.add(Text.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.classLevel.xp)).formatted(Formatting.GOLD));
+			context.drawTooltip(textRenderer, tooltipText, mouseX, mouseY);
+		}
+	}
 }

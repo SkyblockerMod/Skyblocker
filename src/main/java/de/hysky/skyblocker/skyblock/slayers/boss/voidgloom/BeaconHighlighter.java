@@ -15,45 +15,45 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
 public class BeaconHighlighter {
-    public static final ObjectOpenHashSet<BlockPos> beaconPositions = new ObjectOpenHashSet<>();
-    private static final float[] RED_COLOR_COMPONENTS = { 1.0f, 0.0f, 0.0f };
+	public static final ObjectOpenHashSet<BlockPos> beaconPositions = new ObjectOpenHashSet<>();
+	private static final float[] RED_COLOR_COMPONENTS = {1.0f, 0.0f, 0.0f};
 
-    /**
-     * Initializes the beacon highlighting system.
-     * {@link BeaconHighlighter#render(WorldRenderContext)} is called after translucent rendering.
-     */
-    @Init
-    public static void init() {
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(BeaconHighlighter::render);
-        ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-        ClientReceiveMessageEvents.ALLOW_GAME.register(BeaconHighlighter::onMessage);
-    }
+	/**
+	 * Initializes the beacon highlighting system.
+	 * {@link BeaconHighlighter#render(WorldRenderContext)} is called after translucent rendering.
+	 */
+	@Init
+	public static void init() {
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(BeaconHighlighter::render);
+		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientReceiveMessageEvents.ALLOW_GAME.register(BeaconHighlighter::onMessage);
+	}
 
-    private static void reset() {
-        beaconPositions.clear();
-    }
+	private static void reset() {
+		beaconPositions.clear();
+	}
 
-    private static boolean onMessage(Text text, boolean overlay) {
-        if (Utils.isInTheEnd() && !overlay) {
-            String message = text.getString();
+	private static boolean onMessage(Text text, boolean overlay) {
+		if (Utils.isInTheEnd() && !overlay) {
+			String message = text.getString();
 
-            if (message.contains("SLAYER QUEST COMPLETE!") || message.contains("NICE! SLAYER BOSS SLAIN!")) reset();
-        }
+			if (message.contains("SLAYER QUEST COMPLETE!") || message.contains("NICE! SLAYER BOSS SLAIN!")) reset();
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    /**
-     * Renders the beacon glow around it. It is rendered in a red color with 50% opacity, and
-     * is visible through walls.
-     *
-     * @param context An instance of WorldRenderContext for the RenderHelper to use
-     */
-    private static void render(WorldRenderContext context) {
-        if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons && SlayerManager.isInSlayerType(SlayerType.VOIDGLOOM)) {
-            for (BlockPos pos : beaconPositions) {
-                RenderHelper.renderFilled(context, pos, RED_COLOR_COMPONENTS, 0.5f, true);
-            }
-        }
-    }
+	/**
+	 * Renders the beacon glow around it. It is rendered in a red color with 50% opacity, and
+	 * is visible through walls.
+	 *
+	 * @param context An instance of WorldRenderContext for the RenderHelper to use
+	 */
+	private static void render(WorldRenderContext context) {
+		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons && SlayerManager.isInSlayerType(SlayerType.VOIDGLOOM)) {
+			for (BlockPos pos : beaconPositions) {
+				RenderHelper.renderFilled(context, pos, RED_COLOR_COMPONENTS, 0.5f, true);
+			}
+		}
+	}
 }

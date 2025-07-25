@@ -15,21 +15,21 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(FarmlandBlock.class)
 public abstract class FarmlandBlockMixin extends Block {
-    @Shadow
-    @Final
-    protected static VoxelShape SHAPE;
+	@Shadow
+	@Final
+	protected static VoxelShape SHAPE;
 
-    protected FarmlandBlockMixin(Settings settings) {
-        super(settings);
-    }
+	protected FarmlandBlockMixin(Settings settings) {
+		super(settings);
+	}
 
-    @ModifyReturnValue(method = "getOutlineShape", at = @At("RETURN"))
-    private VoxelShape skyblocker$replaceOutlineShape(VoxelShape original) {
-        return Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.hitbox.oldFarmlandHitbox ? VoxelShapes.fullCube() : original;
-    }
+	@ModifyReturnValue(method = "getOutlineShape", at = @At("RETURN"))
+	private VoxelShape skyblocker$replaceOutlineShape(VoxelShape original) {
+		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().general.hitbox.oldFarmlandHitbox ? VoxelShapes.fullCube() : original;
+	}
 
-    @Override
-    public VoxelShape getCullingShape(BlockState state) {
-        return SHAPE;
-    }
+	@Override
+	public VoxelShape getCullingShape(BlockState state) {
+		return SHAPE;
+	}
 }

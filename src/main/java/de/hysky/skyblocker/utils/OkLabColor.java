@@ -71,7 +71,6 @@ public class OkLabColor {
 	 * @param firstColor  the RGB color at the left end of the gradient
 	 * @param secondColor the RGB color at the right end of the gradient
 	 * @param progress    a float from [0, 1] representing the position in the gradient
-	 *
 	 * @return the interpolated color in the RGB format
 	 */
 	//Escape analysis should hopefully take care of the objects :')
@@ -101,5 +100,6 @@ public class OkLabColor {
 	}
 
 	private record Lab(float l, float a, float b) {}
+
 	private record RGB(float r, float g, float b) {}
 }

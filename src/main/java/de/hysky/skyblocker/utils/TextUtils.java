@@ -16,7 +16,7 @@ public final class TextUtils {
 	/**
 	 * Finds the first occurrence of the pattern in the list of texts, using {@link Matcher#matches()} ()}.
 	 *
-	 * @param list the list of texts to search in
+	 * @param list    the list of texts to search in
 	 * @param pattern the pattern to search for
 	 * @return the index of the first occurrence if found, -1 otherwise
 	 */
@@ -27,8 +27,8 @@ public final class TextUtils {
 	/**
 	 * Finds the first occurrence of the pattern in the list of texts starting from the specified index, using {@link Matcher#matches()}}.
 	 *
-	 * @param list the list of texts to search in
-	 * @param pattern the pattern to search for
+	 * @param list       the list of texts to search in
+	 * @param pattern    the pattern to search for
 	 * @param startIndex the index to start searching from (inclusive)
 	 * @return the index of the first occurrence if found, -1 otherwise
 	 */
@@ -47,7 +47,7 @@ public final class TextUtils {
 	/**
 	 * Finds the first occurrence of the pattern in the list of texts using {@link Matcher#find()}.
 	 *
-	 * @param list the list of texts to search in
+	 * @param list    the list of texts to search in
 	 * @param pattern the pattern to search for
 	 * @return the matcher if found, {@code null} otherwise
 	 */
@@ -59,8 +59,8 @@ public final class TextUtils {
 	/**
 	 * Finds the first occurrence of the pattern in the list of texts starting from the specified index using {@link Matcher#find()}.
 	 *
-	 * @param list the list of texts to search in
-	 * @param pattern the pattern to search for
+	 * @param list       the list of texts to search in
+	 * @param pattern    the pattern to search for
 	 * @param startIndex the index to start searching from (inclusive)
 	 * @return the matcher if found, {@code null} otherwise
 	 */
@@ -80,7 +80,7 @@ public final class TextUtils {
 	/**
 	 * Finds the first occurrence of the pattern in the list of texts using {@link Matcher#matches()}.
 	 *
-	 * @param list the list of texts to search in
+	 * @param list    the list of texts to search in
 	 * @param pattern the pattern to search for
 	 * @return the matcher if found, {@code null} otherwise
 	 */
@@ -92,8 +92,8 @@ public final class TextUtils {
 	/**
 	 * Finds the first occurrence of the pattern in the list of texts starting from the specified index using {@link Matcher#matches()}.
 	 *
-	 * @param list the list of texts to search in
-	 * @param pattern the pattern to search for
+	 * @param list       the list of texts to search in
+	 * @param pattern    the pattern to search for
 	 * @param startIndex the index to start searching from (inclusive)
 	 * @return the matcher if found, {@code null} otherwise
 	 */

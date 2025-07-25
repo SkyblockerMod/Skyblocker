@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 
 //TODO when in recipe view set search hint to talk about close or smth
+
 /**
  * Based off {@link net.minecraft.client.gui.screen.recipebook.RecipeBookResults}.
  */
@@ -116,7 +117,6 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 
 			if (resultButton.visible && resultButton.isSelected()) this.hoveredResultButton = resultButton;
 		}
-
 
 
 		//Render the page flip buttons
@@ -268,7 +268,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 					// Using this slot as a center cuz I said so
 					SkyblockRecipeResultButton button = this.resultButtons.get(11);
 					int startX = button.getX() + button.getWidth() / 2 - (gridSize.x * 25) / 2;
-					int startY = button.getY() + button.getHeight() / 2 - (gridSize.y * 25)/2;
+					int startY = button.getY() + button.getHeight() / 2 - (gridSize.y * 25) / 2;
 					for (int i = 0; i < forgeRecipe.getInputs().size(); i++) {
 						int x = startX + (i % gridSize.x) * 25;
 						int y = startY + (i / gridSize.x) * 25;

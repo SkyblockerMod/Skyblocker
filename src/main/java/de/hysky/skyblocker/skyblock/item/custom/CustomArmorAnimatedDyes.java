@@ -176,5 +176,6 @@ public class CustomArmorAnimatedDyes {
 	}
 
 	public record Keyframe(@SerialEntry int color, @SerialEntry float time) {}
+
 	public record AnimatedDye(@SerialEntry List<Keyframe> keyframes, @SerialEntry boolean cycleBack, @SerialEntry float delay, @SerialEntry float duration) {}
 }

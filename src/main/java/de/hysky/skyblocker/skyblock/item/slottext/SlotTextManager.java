@@ -107,7 +107,7 @@ public class SlotTextManager {
 	 * but 3 characters should be seen as the maximum to keep it readable and in place as it tends to move around when scaled.
 	 *
 	 * @implNote The order of the adders remains the same as they were added to the {@link SlotTextManager#adders} array.
-	 *           It is the implementors' duty to ensure they do not add slot text to the same location as other adders on the same slot.
+	 * It is the implementors' duty to ensure they do not add slot text to the same location as other adders on the same slot.
 	 */
 	@NotNull
 	public static List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {

@@ -244,7 +244,7 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 
 	/**
 	 * Sets the "Toggle Craftable" Button texture.
-	 *
+	 * <p>
 	 * No-op as we don't use the button.
 	 */
 	@Override

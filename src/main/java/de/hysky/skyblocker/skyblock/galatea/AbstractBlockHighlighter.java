@@ -42,7 +42,7 @@ public abstract class AbstractBlockHighlighter {
 
 	/**
 	 * @param statePredicate Predicate that the blockstate must match to be highlighted.
-	 * @param colour Color to use for highlighting.
+	 * @param colour         Color to use for highlighting.
 	 */
 	protected AbstractBlockHighlighter(Predicate<BlockState> statePredicate, DyeColor colour) {
 		this.statePredicate = statePredicate;

@@ -59,7 +59,7 @@ public class HuntingBoxHelper extends SimpleContainerSolver {
 			if (ownedCount >= syphonCount) {
 				boolean enoughButNotUnlocked = lore.getLast().getString().startsWith("Requires");
 				highlights.add(enoughButNotUnlocked ? ColorHighlight.yellow(entry.getIntKey())
-													: ColorHighlight.green(entry.getIntKey()));
+						: ColorHighlight.green(entry.getIntKey()));
 			}
 		}
 		return highlights;

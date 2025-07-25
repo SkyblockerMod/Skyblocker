@@ -36,6 +36,7 @@ public class StatusBarsConfigScreen extends Screen {
 	private static final NavigationDirection[] DIRECTION_CHECK_ORDER = new NavigationDirection[]{NavigationDirection.LEFT, NavigationDirection.RIGHT, NavigationDirection.UP, NavigationDirection.DOWN};
 
 	private static boolean resizeCursor = false;
+
 	private static void setResizeCursor(boolean bl) {
 		if (bl != resizeCursor) {
 			resizeCursor = bl;

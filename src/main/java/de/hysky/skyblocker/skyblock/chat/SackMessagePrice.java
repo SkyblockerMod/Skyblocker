@@ -94,22 +94,22 @@ public class SackMessagePrice {
 			textList.add(ScreenTexts.LINE_BREAK);
 
 			textList.add(Text.empty()
-							 .append(Text.literal("NPC Sell Price: ").formatted(Formatting.YELLOW))
-							 .append(npcPrice > 0
-									 ? ItemTooltip.getCoinsMessage(npcPrice, 1)
-									 : Text.literal("No data").formatted(Formatting.RED)));
+					.append(Text.literal("NPC Sell Price: ").formatted(Formatting.YELLOW))
+					.append(npcPrice > 0
+							? ItemTooltip.getCoinsMessage(npcPrice, 1)
+							: Text.literal("No data").formatted(Formatting.RED)));
 			textList.add(ScreenTexts.LINE_BREAK);
 			textList.add(Text.empty()
-							 .append(Text.literal("Bazaar Buy Price: ").formatted(Formatting.GOLD))
-							 .append(bazaarBuyPrice > 0
-									 ? ItemTooltip.getCoinsMessage(bazaarBuyPrice, 1)
-									 : Text.literal("No data").formatted(Formatting.RED)));
+					.append(Text.literal("Bazaar Buy Price: ").formatted(Formatting.GOLD))
+					.append(bazaarBuyPrice > 0
+							? ItemTooltip.getCoinsMessage(bazaarBuyPrice, 1)
+							: Text.literal("No data").formatted(Formatting.RED)));
 			textList.add(ScreenTexts.LINE_BREAK);
 			textList.add(Text.empty()
-							 .append(Text.literal("Bazaar Sell Price: ").formatted(Formatting.GOLD))
-							 .append(bazaarSellPrice > 0
-									 ? ItemTooltip.getCoinsMessage(bazaarSellPrice, 1)
-									 : Text.literal("No data").formatted(Formatting.RED)));
+					.append(Text.literal("Bazaar Sell Price: ").formatted(Formatting.GOLD))
+					.append(bazaarSellPrice > 0
+							? ItemTooltip.getCoinsMessage(bazaarSellPrice, 1)
+							: Text.literal("No data").formatted(Formatting.RED)));
 		}
 
 		return copy;
@@ -121,8 +121,8 @@ public class SackMessagePrice {
 	 * @param text The text to copy
 	 * @return A deep copy of the text, with the same content and style, but no references to the original text
 	 * @implNote Technically, this is not a deep <i>deep</i> copy, as it does not clone the underlying objects in the style.
-	 * 		However, there's a special case for hover events, which are cloned to ensure that the hover text is also a deep copy, and that's enough for our use case.
-	 * 		If you need a true deep copy, do not copy this directly and expect it to work.
+	 * However, there's a special case for hover events, which are cloned to ensure that the hover text is also a deep copy, and that's enough for our use case.
+	 * If you need a true deep copy, do not copy this directly and expect it to work.
 	 */
 	private static MutableText deepCopy(Text text) {
 		MutableText copy = text.copyContentOnly();

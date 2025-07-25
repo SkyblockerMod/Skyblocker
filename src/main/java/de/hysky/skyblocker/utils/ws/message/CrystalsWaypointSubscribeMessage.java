@@ -7,9 +7,11 @@ import net.minecraft.client.world.ClientWorld;
 
 public record CrystalsWaypointSubscribeMessage(long timestamp) implements Message<CrystalsWaypointSubscribeMessage> {
 	private static final Codec<CrystalsWaypointSubscribeMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.LONG.fieldOf("timestamp").forGetter(CrystalsWaypointSubscribeMessage::timestamp))
+					Codec.LONG.fieldOf("timestamp").forGetter(CrystalsWaypointSubscribeMessage::timestamp))
 			.apply(instance, CrystalsWaypointSubscribeMessage::new));
-	/** 26 Minecraft days in ticks */
+	/**
+	 * 26 Minecraft days in ticks
+	 */
 	private static final int TWENTY_SIX_DAYS = 24000 * 26;
 
 	public static CrystalsWaypointSubscribeMessage create(ClientWorld world) {

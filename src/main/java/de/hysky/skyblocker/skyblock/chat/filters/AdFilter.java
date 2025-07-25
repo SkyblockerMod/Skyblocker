@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AdFilter extends ChatPatternListener {
-	private static final Pattern[] AD_FILTERS = new Pattern[] {
+	private static final Pattern[] AD_FILTERS = new Pattern[]{
 			Pattern.compile("^(?:i(?:m|'m| am)? |(?:is )?any(?: ?one|1) )?(?:buy|sell|lowball|trade?)(?:ing)?(?:\\W|$)", Pattern.CASE_INSENSITIVE),
 			Pattern.compile("(.)\\1{7,}"),
 			Pattern.compile("\\W(?:on|in|check|at) my (?:ah|bin)(?:\\W|$)", Pattern.CASE_INSENSITIVE), };

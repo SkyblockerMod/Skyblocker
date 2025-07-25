@@ -35,7 +35,7 @@ public class TerracottaPuzzle {
 			Map.entry(Direction.EAST, Direction.SOUTH),
 			Map.entry(Direction.SOUTH, Direction.EAST),
 			Map.entry(Direction.WEST, Direction.NORTH)
-			);
+	);
 
 	@Init
 	public static void init() {

@@ -59,7 +59,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 
 	//////////////////////////
 	// STATIC SHENANIGANS
-	//////////////////////////
+	/// ///////////////////////
 
 	public static final Int2IntMap GARDEN_PLOT_TO_SLOT = Int2IntMaps.unmodifiable(new Int2IntOpenHashMap(Map.ofEntries(
 			Map.entry(1, 7),
@@ -97,14 +97,15 @@ public class GardenPlotsWidget extends ContainerWidget {
 				ScreenEvents.remove(screen).register(ignored -> {
 					GenericContainerScreenHandler screenHandler = containerScreen.getScreenHandler();
 					// Take plot icons and names
-					for (int row = 0; row < 5; row++) for (int i = row * 9 + 2; i < row * 9 + 7; i++) {
-						if (i == 22) continue; // Barn icon
-						Slot slot = screenHandler.slots.get(i);
-						ItemStack stack = slot.getStack();
-						if (stack.isEmpty() || stack.isOf(Items.RED_STAINED_GLASS_PANE) || stack.isOf(Items.OAK_BUTTON) || stack.isOf(Items.BLACK_STAINED_GLASS_PANE))
-							continue;
-						gardenPlots[(i / 9) * 5 + (i % 9 - 2)] = new GardenPlot(stack.getItem(), stack.getName().getString().split("-", 2)[1].trim());
-					}
+					for (int row = 0; row < 5; row++)
+						for (int i = row * 9 + 2; i < row * 9 + 7; i++) {
+							if (i == 22) continue; // Barn icon
+							Slot slot = screenHandler.slots.get(i);
+							ItemStack stack = slot.getStack();
+							if (stack.isEmpty() || stack.isOf(Items.RED_STAINED_GLASS_PANE) || stack.isOf(Items.OAK_BUTTON) || stack.isOf(Items.BLACK_STAINED_GLASS_PANE))
+								continue;
+							gardenPlots[(i / 9) * 5 + (i % 9 - 2)] = new GardenPlot(stack.getItem(), stack.getName().getString().split("-", 2)[1].trim());
+						}
 
 				});
 			} else if (screen instanceof InventoryScreen inventoryScreen && Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget) {
@@ -179,7 +180,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 
 	/////////////////////////////
 	// THE WIDGET ITSELF
-	/////////////////////////////
+	/// //////////////////////////
 
 	private static final Identifier BACKGROUND_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/garden_plots.png");
 	private static final MutableText GROSS_PEST_TEXT = Text.translatable("skyblocker.gardenPlots.pests").formatted(Formatting.RED, Formatting.BOLD);
@@ -293,7 +294,6 @@ public class GardenPlotsWidget extends ContainerWidget {
 		for (ItemButtonWidget widget : widgets) {
 			widget.render(context, mouseX, mouseY, delta);
 		}
-
 
 
 		if (timeMillis - updateFromTabTime > 3000) {

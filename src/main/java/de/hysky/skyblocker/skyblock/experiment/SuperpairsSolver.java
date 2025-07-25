@@ -37,6 +37,7 @@ public final class SuperpairsSolver extends ExperimentSolver {
 
 	/**
 	 * Sets the state to {@link State#SHOW} since Superpairs does not require a state machine.
+	 *
 	 * @param screen
 	 */
 	@Override

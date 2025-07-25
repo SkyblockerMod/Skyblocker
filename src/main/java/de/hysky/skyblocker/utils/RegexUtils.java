@@ -41,9 +41,10 @@ public class RegexUtils {
 
 	/**
 	 * Tries to {@link Matcher#find()} a match in the matcher, and parses the first group as a roman numeral.
+	 *
 	 * @return An OptionalInt of the first group in the matcher, or an empty OptionalInt if the matcher doesn't find anything.
 	 * @implNote Hypixel generally has optional roman numerals in the case of level 0, so this method will return a 0 if the matcher finds a match with an empty first group.
-	 * 		Example pattern: {@code Level ?([IVXLCDM]+)?}
+	 * Example pattern: {@code Level ?([IVXLCDM]+)?}
 	 */
 	public static OptionalInt findRomanNumeralFromMatcher(Matcher matcher) {
 		return findRomanNumeralFromMatcher(matcher, matcher.hasMatch() ? matcher.end() : 0);
@@ -51,9 +52,10 @@ public class RegexUtils {
 
 	/**
 	 * Tries to {@link Matcher#find()} a match in the matcher from a starting index, and parses the first group as a roman numeral.
+	 *
 	 * @return An OptionalInt of the first group in the matcher after parsing via {@link RomanNumerals#romanToDecimal(String)}, or an empty OptionalInt if the matcher doesn't find anything / finds invalid roman numerals.
 	 * @implNote Hypixel generally has optional roman numerals in the case of level 0, so this method will return a 0 if the matcher finds a match with an empty first group.
-	 * 		Example pattern: {@code Level ?([IVXLCDM]+)?}
+	 * Example pattern: {@code Level ?([IVXLCDM]+)?}
 	 */
 	public static OptionalInt findRomanNumeralFromMatcher(Matcher matcher, int startingIndex) {
 		if (!matcher.find(startingIndex)) return OptionalInt.empty();

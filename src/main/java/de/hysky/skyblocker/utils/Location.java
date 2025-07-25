@@ -61,7 +61,7 @@ public enum Location implements StringIdentifiable {
 	private final String friendlyName;
 
 	/**
-	 * @param id location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
+	 * @param id           location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
 	 * @param friendlyName friendly name from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
 	 */
 	Location(@NotNull String id, @NotNull String friendlyName) {
@@ -99,9 +99,9 @@ public enum Location implements StringIdentifiable {
 	@NotNull
 	public static Location from(String id) {
 		return Arrays.stream(Location.values())
-					 .filter(loc -> loc.id.equals(id))
-					 .findFirst()
-					 .orElse(UNKNOWN);
+				.filter(loc -> loc.id.equals(id))
+				.findFirst()
+				.orElse(UNKNOWN);
 	}
 
 	/**
@@ -111,9 +111,9 @@ public enum Location implements StringIdentifiable {
 	@NotNull
 	public static Location fromFriendlyName(String friendlyName) {
 		return Arrays.stream(Location.values())
-					 .filter(loc -> loc.friendlyName.equals(friendlyName))
-					 .findFirst()
-					 .orElse(UNKNOWN);
+				.filter(loc -> loc.friendlyName.equals(friendlyName))
+				.findFirst()
+				.orElse(UNKNOWN);
 	}
 
 	@Override

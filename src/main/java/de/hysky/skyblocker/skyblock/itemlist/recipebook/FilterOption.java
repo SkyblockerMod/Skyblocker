@@ -19,7 +19,7 @@ public enum FilterOption implements Supplier<Identifier>, Predicate<String> {
 	ITEMS(query -> !ENTITIES.test(query) && !NPCS.test(query) && !MAYORS.test(query),
 			Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/filter/items.png"));
 
-	private	final Predicate<String> matchingPredicate;
+	private final Predicate<String> matchingPredicate;
 	private final Identifier texture;
 
 	FilterOption(Predicate<String> matchingPredicate, Identifier texture) {

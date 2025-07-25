@@ -41,22 +41,22 @@ public class RewardList extends ElementListWidget<RewardList.AbstractEntry> {
 		}
 
 		List<Reward> rewards = lootList.stream()
-		                               .flatMap(loot -> loot.rewards().stream())
-		                               .collect(ObjectArrayList::new,
-				                               (list, entry) -> {
-					                               if (list.stream().anyMatch(reward -> reward.itemId().equals(entry.itemId()))) {
-						                               list.stream().filter(reward -> reward.itemId().equals(entry.itemId())).findFirst().ifPresent(reward -> reward.amount(reward.amount() + entry.amount()));
-					                               } else {
-						                               list.add(new Reward(entry.amount(), entry.itemId(), entry.pricePerUnit())); // Add a clone of the entry so we don't modify the original
-					                               }
-				                               }, ObjectArrayList::addAll);
+				.flatMap(loot -> loot.rewards().stream())
+				.collect(ObjectArrayList::new,
+						(list, entry) -> {
+							if (list.stream().anyMatch(reward -> reward.itemId().equals(entry.itemId()))) {
+								list.stream().filter(reward -> reward.itemId().equals(entry.itemId())).findFirst().ifPresent(reward -> reward.amount(reward.amount() + entry.amount()));
+							} else {
+								list.add(new Reward(entry.amount(), entry.itemId(), entry.pricePerUnit())); // Add a clone of the entry so we don't modify the original
+							}
+						}, ObjectArrayList::addAll);
 		// Sorts in-place
 		rewards.sort(Comparator.comparingInt(RewardList::comparePriority).thenComparing(Reward::itemId));
 
 		Reference2IntArrayMap<CorpseType> keyAmounts = lootList.stream()
-		                                                       .collect(Reference2IntArrayMap::new,
-				                                                       (map, loot) -> map.mergeInt(loot.corpseType(), 1, Integer::sum),
-				                                                       Reference2IntArrayMap::putAll);
+				.collect(Reference2IntArrayMap::new,
+						(map, loot) -> map.mergeInt(loot.corpseType(), 1, Integer::sum),
+						Reference2IntArrayMap::putAll);
 
 		double profit = lootList.stream().mapToDouble(CorpseLoot::profit).sum();
 

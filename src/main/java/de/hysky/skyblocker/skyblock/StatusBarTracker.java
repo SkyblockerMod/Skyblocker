@@ -71,7 +71,7 @@ public class StatusBarTracker {
 	}
 
 	private static Text onOverlayMessage(Text text, boolean overlay) {
-		if (!overlay || !Utils.isOnSkyblock() ||  Utils.isInTheRift()) {
+		if (!overlay || !Utils.isOnSkyblock() || Utils.isInTheRift()) {
 			return text;
 		}
 		if (!SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars) {

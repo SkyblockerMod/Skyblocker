@@ -67,7 +67,7 @@ public class DungeonScore {
 	private static int score;
 
 	@Init
-    public static void init() {
+	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(DungeonScore::tick, 20);
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 		DungeonEvents.DUNGEON_STARTED.register(DungeonScore::onDungeonStart);

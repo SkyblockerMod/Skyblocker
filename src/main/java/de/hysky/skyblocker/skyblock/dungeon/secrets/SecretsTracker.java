@@ -180,6 +180,6 @@ public class SecretsTracker {
 	}
 
 	private enum RunPhase {
-        START, END
+		START, END
 	}
 }

@@ -30,37 +30,37 @@ import java.util.List;
 
 @JeiPlugin
 public class SkyblockerJEIPlugin implements IModPlugin {
-    private SkyblockCraftingRecipeCategory skyblockCraftingRecipeCategory;
+	private SkyblockCraftingRecipeCategory skyblockCraftingRecipeCategory;
 
-    @Override
-    @NotNull
-    public Identifier getPluginUid() {
-        return Identifier.of(SkyblockerMod.NAMESPACE, "skyblock");
-    }
+	@Override
+	@NotNull
+	public Identifier getPluginUid() {
+		return Identifier.of(SkyblockerMod.NAMESPACE, "skyblock");
+	}
 
-    @Override
-    public void registerItemSubtypes(@NotNull ISubtypeRegistration registration) {
-        SubtypeInterpreters interpreters = ((SubtypeRegistration) registration).getInterpreters();
-        ItemRepository.getItemsStream().filter(stack -> !interpreters.contains(VanillaTypes.ITEM_STACK, stack)).map(ItemStack::getItem).distinct().forEach(item ->
-                registration.registerSubtypeInterpreter(item, (stack, context) -> ItemStackComponentizationFixer.componentsAsString(stack))
-        );
-    }
+	@Override
+	public void registerItemSubtypes(@NotNull ISubtypeRegistration registration) {
+		SubtypeInterpreters interpreters = ((SubtypeRegistration) registration).getInterpreters();
+		ItemRepository.getItemsStream().filter(stack -> !interpreters.contains(VanillaTypes.ITEM_STACK, stack)).map(ItemStack::getItem).distinct().forEach(item ->
+				registration.registerSubtypeInterpreter(item, (stack, context) -> ItemStackComponentizationFixer.componentsAsString(stack))
+		);
+	}
 
-    @Override
-    public void registerCategories(@NotNull IRecipeCategoryRegistration registration) {
-        skyblockCraftingRecipeCategory = new SkyblockCraftingRecipeCategory(registration.getJeiHelpers().getGuiHelper());
-        skyblockCraftingRecipeCategory.addExtension(CraftingRecipe.class, new CraftingCategoryExtension());
-        registration.addRecipeCategories(skyblockCraftingRecipeCategory);
-    }
+	@Override
+	public void registerCategories(@NotNull IRecipeCategoryRegistration registration) {
+		skyblockCraftingRecipeCategory = new SkyblockCraftingRecipeCategory(registration.getJeiHelpers().getGuiHelper());
+		skyblockCraftingRecipeCategory.addExtension(CraftingRecipe.class, new CraftingCategoryExtension());
+		registration.addRecipeCategories(skyblockCraftingRecipeCategory);
+	}
 
-    @Override
-    public void registerGuiHandlers(@NotNull IGuiHandlerRegistration registration) {
-        registration.addGuiContainerHandler(InventoryScreen.class, new InventoryContainerHandler());
-    }
+	@Override
+	public void registerGuiHandlers(@NotNull IGuiHandlerRegistration registration) {
+		registration.addGuiContainerHandler(InventoryScreen.class, new InventoryContainerHandler());
+	}
 
-    @Override
-    public void registerRecipes(@NotNull IRecipeRegistration registration) {
-    	//FIXME no clue what to replace any of this with, we can't use items as that does not work
+	@Override
+	public void registerRecipes(@NotNull IRecipeRegistration registration) {
+		//FIXME no clue what to replace any of this with, we can't use items as that does not work
         /*registration.getIngredientManager().addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ItemRepository.getItems());
         registration.addRecipes(skyblockCraftingRecipeCategory.getRecipeType(), ItemRepository.getRecipesStream().filter(skyblockRecipe -> skyblockRecipe instanceof SkyblockCraftingRecipe).map(SkyblockCraftingRecipe.class::cast).map(recipe ->
                 new RecipeEntry<CraftingRecipe>(recipe.getRecipeIdentifier(), new ShapedRecipe("", CraftingRecipeCategory.MISC, RawShapedRecipe.create(Map.of(
@@ -75,14 +75,14 @@ public class SkyblockerJEIPlugin implements IModPlugin {
                         'i', Ingredient.ofStacks(recipe.getGrid().get(8))
                 ), "abc", "def", "ghi"), recipe.getResult()))
         ).toList());*/
-    }
+	}
 
-    private static class InventoryContainerHandler implements IGuiContainerHandler<InventoryScreen> {
-        @Override
-        public @NotNull List<Rect2i> getGuiExtraAreas(@NotNull InventoryScreen containerScreen) {
-            if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return List.of();
-            HandledScreenAccessor accessor = (HandledScreenAccessor) containerScreen;
-            return Collections.singletonList(new Rect2i(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
-        }
-    }
+	private static class InventoryContainerHandler implements IGuiContainerHandler<InventoryScreen> {
+		@Override
+		public @NotNull List<Rect2i> getGuiExtraAreas(@NotNull InventoryScreen containerScreen) {
+			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return List.of();
+			HandledScreenAccessor accessor = (HandledScreenAccessor) containerScreen;
+			return Collections.singletonList(new Rect2i(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
+		}
+	}
 }

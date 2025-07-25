@@ -81,11 +81,11 @@ public class MayorUtils {
 					mayor = new Mayor(result.get("key").getAsString(),
 							result.get("name").getAsString(),
 							result.getAsJsonArray("perks")
-							      .asList()
-							      .stream()
-							      .map(JsonElement::getAsJsonObject)
-							      .map(object -> new Perk(object.get("name").getAsString(), object.get("description").getAsString()))
-							      .toList());
+									.asList()
+									.stream()
+									.map(JsonElement::getAsJsonObject)
+									.map(object -> new Perk(object.get("name").getAsString(), object.get("description").getAsString()))
+									.toList());
 				} catch (Exception e) {
 					LOGGER.warn("[Skyblocker] Failed to parse mayor status from the API response.", e);
 					mayor = Mayor.EMPTY;

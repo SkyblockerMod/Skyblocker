@@ -15,18 +15,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CollectionAdder extends SimpleSlotTextAdder {
-    private static final Pattern COLLECTION = Pattern.compile("^[\\w -]+ (?<level>[IVXLCDM]+)$");
+	private static final Pattern COLLECTION = Pattern.compile("^[\\w -]+ (?<level>[IVXLCDM]+)$");
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
 			"collection",
 			"skyblocker.config.uiAndVisuals.slotText.collectionLevel"
-			);
+	);
 
-    public CollectionAdder() {
-        super("^\\w+ Collections", CONFIG_INFORMATION);
-    }
+	public CollectionAdder() {
+		super("^\\w+ Collections", CONFIG_INFORMATION);
+	}
 
-    @Override
-    public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	@Override
+	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
 		if (slotId > 53) return List.of();
 		Matcher matcher = COLLECTION.matcher(stack.getName().getString());
 		if (matcher.matches()) {
@@ -39,5 +39,5 @@ public class CollectionAdder extends SimpleSlotTextAdder {
 		}
 
 		return List.of();
-    }
+	}
 }

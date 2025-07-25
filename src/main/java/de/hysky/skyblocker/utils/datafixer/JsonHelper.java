@@ -9,7 +9,7 @@ import net.minecraft.util.annotation.MethodsReturnNonnullByDefault;
 
 /**
  * Helper methods to assist in retrieving values nested in JSON objects.
- *
+ * <p>
  * All methods are fully null safe, whether it be from passing a {@code null} root object or from encountering a nonexistent or null object/value.
  *
  * @author AzureAaron

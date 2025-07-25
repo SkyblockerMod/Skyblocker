@@ -40,16 +40,16 @@ public final class MathTeacherHelper {
 			String result = "%.0f".formatted(Calculator.calculate(expression));
 
 			return message.copy()
-			              .append(" = ")
-			              .append(Text.literal(result)
-			                          .formatted(Formatting.AQUA))
-			              .append(ScreenTexts.SPACE)
-			              .append(Text.translatable("text.skyblocker.clickToSend")
-			                          .formatted(Formatting.GREEN)
-			                          .styled(style ->
-					                          style.withClickEvent(new ClickEvent.RunCommand("/ac " + result))
-					                               .withHoverEvent(new HoverEvent.ShowText(Constants.PREFIX.get().append(Text.translatable("text.skyblocker.clickToSend.@Tooltip"))))
-			                          ));
+					.append(" = ")
+					.append(Text.literal(result)
+							.formatted(Formatting.AQUA))
+					.append(ScreenTexts.SPACE)
+					.append(Text.translatable("text.skyblocker.clickToSend")
+							.formatted(Formatting.GREEN)
+							.styled(style ->
+									style.withClickEvent(new ClickEvent.RunCommand("/ac " + result))
+											.withHoverEvent(new HoverEvent.ShowText(Constants.PREFIX.get().append(Text.translatable("text.skyblocker.clickToSend.@Tooltip"))))
+							));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Math Teacher Helper] Failed to calculate math expression: {}", expression, e);
 			return message;

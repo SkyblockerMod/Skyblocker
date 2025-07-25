@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class LBinTooltip extends SimpleTooltipAdder {
-    public LBinTooltip(int priority) {
+	public LBinTooltip(int priority) {
 		super(priority);
 	}
 
@@ -23,13 +23,13 @@ public class LBinTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-        String skyblockApiId = stack.getSkyblockApiId();
+		String skyblockApiId = stack.getSkyblockApiId();
 
 		// Check for whether the item exist in bazaar price data, because Skytils keeps some bazaar item data in lbin api
 		if (TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId) && !TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
 			lines.add(Text.literal(String.format("%-19s", "Lowest BIN Price:"))
-			              .formatted(Formatting.GOLD)
-			              .append(ItemTooltip.getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().getDouble(skyblockApiId), stack.getCount())));
+					.formatted(Formatting.GOLD)
+					.append(ItemTooltip.getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().getDouble(skyblockApiId), stack.getCount())));
 		}
 	}
 }

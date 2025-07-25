@@ -16,6 +16,7 @@ public class SkyblockLevelAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
 			"skyblock_level",
 			"skyblocker.config.uiAndVisuals.slotText.skyblockLevel");
+
 	public SkyblockLevelAdder() {
 		super("^SkyBlock Menu", CONFIG_INFORMATION);
 	}

@@ -190,7 +190,7 @@ public class EditBarWidget extends ContainerWidget {
 				context.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
 			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1: Colors.GRAY, true);
+			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : Colors.GRAY, true);
 		}
 
 		@Override

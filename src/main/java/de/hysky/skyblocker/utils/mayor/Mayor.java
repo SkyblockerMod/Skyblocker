@@ -7,8 +7,9 @@ import java.util.List;
 
 /**
  * Represents a mayor as retrieved from the API.
- * @param key The key of the mayor.
- * @param name The name of the mayor.
+ *
+ * @param key   The key of the mayor.
+ * @param name  The name of the mayor.
  * @param perks The perks of the mayor.
  */
 public record Mayor(@NotNull String key, @NotNull String name, @NotNull List<Perk> perks) {
@@ -19,6 +20,7 @@ public record Mayor(@NotNull String key, @NotNull String name, @NotNull List<Per
 
 	/**
 	 * For formatting purposes when printing out the result of the API call.
+	 *
 	 * @see MayorUtils#tickMayorCache()
 	 */
 	@Override

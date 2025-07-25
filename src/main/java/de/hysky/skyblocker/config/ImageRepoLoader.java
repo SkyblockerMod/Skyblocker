@@ -122,6 +122,7 @@ public class ImageRepoLoader {
 
 	/**
 	 * Deletes all directories (not files) inside of the {@link #REPO_DIRECTORY}
+	 *
 	 * @throws IOException
 	 */
 	private static void deleteDirectories() throws IOException {
@@ -138,8 +139,8 @@ public class ImageRepoLoader {
 
 	record CommitData(String commit, long lastUpdated) {
 		static final Codec<CommitData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.STRING.fieldOf("commit").forGetter(CommitData::commit),
-				Codec.LONG.fieldOf("lastUpdated").forGetter(CommitData::lastUpdated))
+						Codec.STRING.fieldOf("commit").forGetter(CommitData::commit),
+						Codec.LONG.fieldOf("lastUpdated").forGetter(CommitData::lastUpdated))
 				.apply(instance, CommitData::new));
 	}
 }

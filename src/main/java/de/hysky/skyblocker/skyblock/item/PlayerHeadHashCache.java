@@ -20,17 +20,17 @@ public class PlayerHeadHashCache {
 	static void loadSkins(JsonArray items) {
 		try {
 			items.asList().stream()
-			.map(JsonElement::getAsJsonObject)
-			.filter(item -> item.get("material").getAsString().equals("SKULL_ITEM"))
-			.filter(item -> item.has("skin"))
-			.map(item -> Base64.getDecoder().decode(item.getAsJsonObject("skin").get("value").getAsString()))
-			.map(String::new)
-			.map(profile -> JsonParser.parseString(profile).getAsJsonObject())
-			.map(profile -> profile.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString())
-			.map(PlayerHeadHashCache::getSkinHash)
-			.filter(hash -> hash != null && !hash.isEmpty())
-			.mapToInt(String::hashCode)
-			.forEach(CACHE::add);
+					.map(JsonElement::getAsJsonObject)
+					.filter(item -> item.get("material").getAsString().equals("SKULL_ITEM"))
+					.filter(item -> item.has("skin"))
+					.map(item -> Base64.getDecoder().decode(item.getAsJsonObject("skin").get("value").getAsString()))
+					.map(String::new)
+					.map(profile -> JsonParser.parseString(profile).getAsJsonObject())
+					.map(profile -> profile.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString())
+					.map(PlayerHeadHashCache::getSkinHash)
+					.filter(hash -> hash != null && !hash.isEmpty())
+					.mapToInt(String::hashCode)
+					.forEach(CACHE::add);
 
 			LOGGER.info("[Skyblocker Player Head Hash Cache] Successfully cached the hashes of all player head items!");
 		} catch (Exception e) {

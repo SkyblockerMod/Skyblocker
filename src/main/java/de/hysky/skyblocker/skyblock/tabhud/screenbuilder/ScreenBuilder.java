@@ -73,6 +73,7 @@ public class ScreenBuilder {
 
 	/**
 	 * Updates the lists of widgets that should be rendered. This method runs every frame to check if any widgets have changed visibility (shouldRender).
+	 *
 	 * @param config whether this render in happening in the config screen
 	 * @return true if the lists have changed and positioners should run, false if they are the same as before and repositioning is not needed
 	 */

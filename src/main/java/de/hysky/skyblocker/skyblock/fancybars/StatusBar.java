@@ -187,7 +187,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 				context.getMatrices().peek().getPositionMatrix(),
 				consumers,
 				15728880
-				));
+		));
 	}
 
 	public void renderCursor(DrawContext context, int mouseX, int mouseY, float delta) {

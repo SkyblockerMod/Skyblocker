@@ -37,13 +37,13 @@ public class LegacyStringNbtReader {
 	public static final SimpleCommandExceptionType EXPECTED_KEY = new SimpleCommandExceptionType(Text.translatable("argument.nbt.expected.key"));
 	public static final SimpleCommandExceptionType EXPECTED_VALUE = new SimpleCommandExceptionType(Text.translatable("argument.nbt.expected.value"));
 	public static final Dynamic2CommandExceptionType LIST_MIXED = new Dynamic2CommandExceptionType(
-		(receivedType, expectedType) -> Text.stringifiedTranslatable("argument.nbt.list.mixed", receivedType, expectedType)
+			(receivedType, expectedType) -> Text.stringifiedTranslatable("argument.nbt.list.mixed", receivedType, expectedType)
 	);
 	public static final Dynamic2CommandExceptionType ARRAY_MIXED = new Dynamic2CommandExceptionType(
-		(receivedType, expectedType) -> Text.stringifiedTranslatable("argument.nbt.array.mixed", receivedType, expectedType)
+			(receivedType, expectedType) -> Text.stringifiedTranslatable("argument.nbt.array.mixed", receivedType, expectedType)
 	);
 	public static final DynamicCommandExceptionType ARRAY_INVALID = new DynamicCommandExceptionType(
-		type -> Text.stringifiedTranslatable("argument.nbt.array.invalid", type)
+			type -> Text.stringifiedTranslatable("argument.nbt.array.invalid", type)
 	);
 	private static final Pattern DOUBLE_PATTERN_IMPLICIT = Pattern.compile("[-+]?(?:[0-9]+[.]|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?", Pattern.CASE_INSENSITIVE);
 	private static final Pattern DOUBLE_PATTERN = Pattern.compile("[-+]?(?:[0-9]+[.]?|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?d", Pattern.CASE_INSENSITIVE);
@@ -62,7 +62,7 @@ public class LegacyStringNbtReader {
 	 * {@return the NBT compound parsed from the {@code string}}
 	 *
 	 * @throws CommandSyntaxException if the reader detects a syntax error (including
-	 * {@linkplain #TRAILING trailing strings})
+	 *                                {@linkplain #TRAILING trailing strings})
 	 */
 	public static NbtCompound parse(String string) throws CommandSyntaxException {
 		return new LegacyStringNbtReader(new StringReader(string)).readCompound();
@@ -168,8 +168,8 @@ public class LegacyStringNbtReader {
 
 	protected NbtElement parseArray() throws CommandSyntaxException {
 		return this.reader.canRead(3) && !StringReader.isQuotedStringStart(this.reader.peek(1)) && this.reader.peek(2) == ';'
-			? this.parseElementPrimitiveArray()
-			: this.parseList();
+				? this.parseElementPrimitiveArray()
+				: this.parseList();
 	}
 
 	/**

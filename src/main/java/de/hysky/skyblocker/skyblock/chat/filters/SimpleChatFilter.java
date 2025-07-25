@@ -7,12 +7,12 @@ import org.intellij.lang.annotations.Language;
 import java.util.regex.Matcher;
 
 public abstract class SimpleChatFilter extends ChatPatternListener {
-    protected SimpleChatFilter(@Language("RegExp") String pattern) {
-        super(pattern);
-    }
+	protected SimpleChatFilter(@Language("RegExp") String pattern) {
+		super(pattern);
+	}
 
-    @Override
-    protected final boolean onMatch(Text message, Matcher matcher) {
-        return true;
-    }
+	@Override
+	protected final boolean onMatch(Text message, Matcher matcher) {
+		return true;
+	}
 }

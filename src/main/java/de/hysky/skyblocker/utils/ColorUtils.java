@@ -12,7 +12,7 @@ public class ColorUtils {
 	 * @return An array of the color's components as floats.
 	 */
 	public static float[] getFloatComponents(int color) {
-		return new float[] {
+		return new float[]{
 				ColorHelper.getRedFloat(color),
 				ColorHelper.getGreenFloat(color),
 				ColorHelper.getBlueFloat(color),

@@ -19,6 +19,7 @@ public class MinionLevelAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
 			"minion_level",
 			"skyblocker.config.uiAndVisuals.slotText.minionLevel");
+
 	public MinionLevelAdder() {
 		super(CONFIG_INFORMATION);
 	}

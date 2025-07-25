@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 public class CompactDamage {
 	private static final Pattern DAMAGE_PATTERN = Pattern.compile("[✧✯]?[\\d,]+[✧✯]?❤?");
+
 	private CompactDamage() {
 	}
 
@@ -45,10 +46,10 @@ public class CompactDamage {
 			int entriesToRemove = wasDoubled ? 2 : 1;
 
 			String dmg = siblings.subList(1, siblings.size() - entriesToRemove) //First and last sibling are the crit symbols and maybe heart
-			                     .stream()
-			                     .map(Text::getString)
-			                     .reduce("", String::concat) //Concatenate all the siblings to get the dmg number
-			                     .replace(",", "");
+					.stream()
+					.map(Text::getString)
+					.reduce("", String::concat) //Concatenate all the siblings to get the dmg number
+					.replace(",", "");
 
 			if (!NumberUtils.isParsable(dmg)) return; //Sanity check
 			String dmgSymbol = customNameStringified.charAt(0) != '✯' ? "✧" : "✯"; //Mega Crit ability from the Overload enchantment

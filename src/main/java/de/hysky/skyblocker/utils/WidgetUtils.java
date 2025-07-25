@@ -9,8 +9,9 @@ public final class WidgetUtils {
 
 	/**
 	 * Convenience method for creating a text widget with only x and y positions. The widget's width and height are calculated from the {@link MinecraftClient#getInstance() static client instance}'s text renderer.
-	 * @param x The x position of the widget.
-	 * @param y The y position of the widget.
+	 *
+	 * @param x    The x position of the widget.
+	 * @param y    The y position of the widget.
 	 * @param text The text to display.
 	 * @return A new text widget.
 	 */

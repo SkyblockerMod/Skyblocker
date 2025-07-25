@@ -80,9 +80,9 @@ public class ResourcePackCompatibility {
 	}
 
 	public record ResourcePackOptions(
-		Optional<Boolean> renameAuctionBrowser,
-		Optional<Boolean> renameInventoryScreen,
-		Optional<Boolean> renameCraftingTable
+			Optional<Boolean> renameAuctionBrowser,
+			Optional<Boolean> renameInventoryScreen,
+			Optional<Boolean> renameCraftingTable
 	) {
 		public static final ResourcePackOptions EMPTY = new ResourcePackOptions(Optional.empty(), Optional.empty(), Optional.empty());
 

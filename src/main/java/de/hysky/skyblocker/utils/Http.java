@@ -111,9 +111,8 @@ public class Http {
 
 	/**
 	 * @param endpoint the endpoint - do not include any leading or trailing slashes
-	 * @param query the query string - use empty string if n/a
+	 * @param query    the query string - use empty string if n/a
 	 * @return the requested data with zero pre-processing applied
-	 *
 	 * @implNote the {@code v2} prefix is automatically added
 	 */
 	public static ApiResponse sendHypixelRequest(String endpoint, @NotNull String query) throws IOException, InterruptedException {
@@ -153,7 +152,7 @@ public class Http {
 	 * @see <a href="https://developers.cloudflare.com/cache/concepts/cache-responses/">Cloudflare Cache Docs</a>
 	 */
 	private static String[] getCacheStatuses(HttpHeaders headers) {
-		return new String[] { headers.firstValue("CF-Cache-Status").orElse("UNKNOWN"), headers.firstValue("Local-Cache-Status").orElse("UNKNOWN") };
+		return new String[]{headers.firstValue("CF-Cache-Status").orElse("UNKNOWN"), headers.firstValue("Local-Cache-Status").orElse("UNKNOWN")};
 	}
 
 	private static int getAge(HttpHeaders headers) {

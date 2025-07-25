@@ -18,6 +18,7 @@ import net.minecraft.util.Formatting;
 public final class JerryTimer {
 	private JerryTimer() {
 	}
+
 	@Init
 	public static void init() {
 		//Example message: "§b ☺ §eThere is a §aGreen Jerry§e!"
@@ -34,7 +35,7 @@ public final class JerryTimer {
 				if (player == null || !Utils.isOnSkyblock()) return;
 				player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.helpers.jerry.sendJerryTimerMessage")).formatted(Formatting.GREEN), false);
 				player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_TRADE, SoundCategory.NEUTRAL, 100f, 1.0f);
-			}, 20*60*6); // 6 minutes
+			}, 20 * 60 * 6); // 6 minutes
 
 			return true;
 		});

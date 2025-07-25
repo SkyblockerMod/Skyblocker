@@ -119,6 +119,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 	}
 
 	private int deletedIndex = -1;
+
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		boolean b = super.mouseClicked(mouseX, mouseY, button);
@@ -190,6 +191,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 		}
 
 		private boolean dragging = false;
+
 		@Override
 		protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
 			super.onDrag(mouseX, mouseY, deltaX, deltaY);
@@ -241,6 +243,7 @@ public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closea
 
 	@Override
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+
 	@Override
 	protected int getContentsHeightWithPadding() { return getHeight(); }
 	@Override

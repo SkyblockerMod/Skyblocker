@@ -37,8 +37,10 @@ public class TicTacToeUtils {
 		for (int row = 0; row < 3; row++) {
 			if (board[row][0] == board[row][1] && board[row][0] == board[row][2]) {
 				switch (board[row][0]) {
-					case 'X': return -10;
-					case 'O': return 10;
+					case 'X':
+						return -10;
+					case 'O':
+						return 10;
 				}
 			}
 		}
@@ -47,8 +49,10 @@ public class TicTacToeUtils {
 		for (int column = 0; column < 3; column++) {
 			if (board[0][column] == board[1][column] && board[0][column] == board[2][column]) {
 				switch (board[0][column]) {
-					case 'X': return -10;
-					case 'O': return 10;
+					case 'X':
+						return -10;
+					case 'O':
+						return 10;
 				}
 			}
 		}
@@ -57,16 +61,20 @@ public class TicTacToeUtils {
 		// Top left to bottom right
 		if (board[0][0] == board[1][1] && board[0][0] == board[2][2]) {
 			switch (board[0][0]) {
-				case 'X': return -10;
-				case 'O': return 10;
+				case 'X':
+					return -10;
+				case 'O':
+					return 10;
 			}
 		}
 
 		// Top right to bottom left
 		if (board[0][2] == board[1][1] && board[0][2] == board[2][0]) {
 			switch (board[0][2]) {
-				case 'X': return -10;
-				case 'O': return 10;
+				case 'X':
+					return -10;
+				case 'O':
+					return 10;
 			}
 		}
 

@@ -14,42 +14,42 @@ import net.minecraft.util.Identifier;
 
 public class EventNotificationsCategory {
 
-    private static boolean shouldPlaySound = false;
+	private static boolean shouldPlaySound = false;
 
-    public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
-    	//return null;
-        shouldPlaySound = false;
-        return ConfigCategory.createBuilder()
-        		.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/eventnotifications"))
-                .name(Text.translatable("skyblocker.config.eventNotifications"))
-                .option(Option.<EventNotificationsConfig.Criterion>createBuilder()
-                        .binding(defaults.eventNotifications.criterion,
-                                () -> config.eventNotifications.criterion,
-                                criterion -> config.eventNotifications.criterion = criterion)
-                        .controller(ConfigUtils.createEnumController())
-                        .name(Text.translatable("skyblocker.config.eventNotifications.criterion"))
-                        .build())
-                .option(Option.<EventNotificationsConfig.Sound>createBuilder()
-                        .binding(defaults.eventNotifications.reminderSound,
-                                () -> config.eventNotifications.reminderSound,
-                                sound -> config.eventNotifications.reminderSound = sound)
-                        .controller(ConfigUtils.createEnumController())
-                        .name(Text.translatable("skyblocker.config.eventNotifications.notificationSound"))
-                        .listener((soundOption, event) -> {
-                        	if (event == UpdateType.VALUE_CHANGE) {
-                                if (!shouldPlaySound) {
-                                    shouldPlaySound = true;
-                                    return;
-                                }
-                                if (soundOption.binding().get() != null)
-                                    MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(soundOption.binding().get().getSoundEvent(), 1f, 1f));
-                        	}
-                        })
-                        .build())
-                //.groups(createGroups(config))
-                .build();
+	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
+		//return null;
+		shouldPlaySound = false;
+		return ConfigCategory.createBuilder()
+				.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/eventnotifications"))
+				.name(Text.translatable("skyblocker.config.eventNotifications"))
+				.option(Option.<EventNotificationsConfig.Criterion>createBuilder()
+						.binding(defaults.eventNotifications.criterion,
+								() -> config.eventNotifications.criterion,
+								criterion -> config.eventNotifications.criterion = criterion)
+						.controller(ConfigUtils.createEnumController())
+						.name(Text.translatable("skyblocker.config.eventNotifications.criterion"))
+						.build())
+				.option(Option.<EventNotificationsConfig.Sound>createBuilder()
+						.binding(defaults.eventNotifications.reminderSound,
+								() -> config.eventNotifications.reminderSound,
+								sound -> config.eventNotifications.reminderSound = sound)
+						.controller(ConfigUtils.createEnumController())
+						.name(Text.translatable("skyblocker.config.eventNotifications.notificationSound"))
+						.listener((soundOption, event) -> {
+							if (event == UpdateType.VALUE_CHANGE) {
+								if (!shouldPlaySound) {
+									shouldPlaySound = true;
+									return;
+								}
+								if (soundOption.binding().get() != null)
+									MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(soundOption.binding().get().getSoundEvent(), 1f, 1f));
+							}
+						})
+						.build())
+				//.groups(createGroups(config))
+				.build();
 
-    }
+	}
 
     /*private static List<OptionGroup> createGroups(SkyblockerConfig config) {
         Map<String, IntList> eventsReminderTimes = config.eventNotifications.eventsReminderTimes;

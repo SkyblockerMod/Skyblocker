@@ -42,6 +42,7 @@ public record SlotText(@NotNull Text text, @NotNull TextPosition position) {
 
 	/**
 	 * Convenience method for creating a singleton list containing this SlotText. Useful for returning a single SlotText from a method that returns a list.
+	 *
 	 * @return A singleton list containing a SlotText with the {@link TextPosition#TOP_LEFT top left} position and the given text.
 	 */
 	public static List<SlotText> topLeftList(@NotNull Text text) {
@@ -49,7 +50,8 @@ public record SlotText(@NotNull Text text, @NotNull TextPosition position) {
 	}
 
 	/**
-	 *  Convenience method for creating a singleton list containing this SlotText. Useful for returning a single SlotText from a method that returns a list.
+	 * Convenience method for creating a singleton list containing this SlotText. Useful for returning a single SlotText from a method that returns a list.
+	 *
 	 * @return A singleton list containing a SlotText with the {@link TextPosition#TOP_RIGHT top right} position and the given text.
 	 */
 	public static List<SlotText> topRightList(@NotNull Text text) {
@@ -57,7 +59,8 @@ public record SlotText(@NotNull Text text, @NotNull TextPosition position) {
 	}
 
 	/**
-	 *  Convenience method for creating a singleton list containing this SlotText. Useful for returning a single SlotText from a method that returns a list.
+	 * Convenience method for creating a singleton list containing this SlotText. Useful for returning a single SlotText from a method that returns a list.
+	 *
 	 * @return A singleton list containing a SlotText with the {@link TextPosition#BOTTOM_LEFT bottom left} position and the given text.
 	 */
 	public static List<SlotText> bottomLeftList(@NotNull Text text) {
@@ -65,7 +68,8 @@ public record SlotText(@NotNull Text text, @NotNull TextPosition position) {
 	}
 
 	/**
-	 *  Convenience method for creating a singleton list containing this SlotText. Useful for returning a single SlotText from a method that returns a list.
+	 * Convenience method for creating a singleton list containing this SlotText. Useful for returning a single SlotText from a method that returns a list.
+	 *
 	 * @return A singleton list containing a SlotText with the {@link TextPosition#BOTTOM_RIGHT bottom right} position and the given text.
 	 */
 	public static List<SlotText> bottomRightList(@NotNull Text text) {

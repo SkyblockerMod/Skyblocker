@@ -17,47 +17,47 @@ import java.text.DecimalFormat;
 import java.util.Map;
 
 public class DungeonMiscStatsWidgets {
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
-    private static final Identifier RUN_ICON = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/run_icon.png");
-    private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-    private static final DecimalFormat DF = new DecimalFormat("#.##");
-    private static final String[] DUNGEONS = {"catacombs", "master_catacombs"};
+	private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
+	private static final Identifier RUN_ICON = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/run_icon.png");
+	private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+	private static final DecimalFormat DF = new DecimalFormat("#.##");
+	private static final String[] DUNGEONS = {"catacombs", "master_catacombs"};
 
-    private final Object2IntMap<String> dungeonRuns = new Object2IntOpenHashMap<>();
-    private int secrets = 0;
-    private int totalRuns = 0;
+	private final Object2IntMap<String> dungeonRuns = new Object2IntOpenHashMap<>();
+	private int secrets = 0;
+	private int totalRuns = 0;
 
-    public DungeonMiscStatsWidgets(JsonObject pProfile) {
-        JsonObject DUNGEONS_DATA = pProfile.getAsJsonObject("dungeons");
-        try {
-            secrets = DUNGEONS_DATA.get("secrets").getAsInt();
+	public DungeonMiscStatsWidgets(JsonObject pProfile) {
+		JsonObject DUNGEONS_DATA = pProfile.getAsJsonObject("dungeons");
+		try {
+			secrets = DUNGEONS_DATA.get("secrets").getAsInt();
 
-            for (String dungeon : DUNGEONS) {
-                JsonObject dungeonData = DUNGEONS_DATA.getAsJsonObject("dungeon_types").getAsJsonObject(dungeon).getAsJsonObject("tier_completions");
-                int runs = 0;
-                for (Map.Entry<String, JsonElement> entry : dungeonData.entrySet()) {
-                    String key = entry.getKey();
-                    if (key.equals("total")) continue;
-                    runs += entry.getValue().getAsInt();
-                }
-                dungeonRuns.put(dungeon, runs);
-                totalRuns += runs;
-            }
+			for (String dungeon : DUNGEONS) {
+				JsonObject dungeonData = DUNGEONS_DATA.getAsJsonObject("dungeon_types").getAsJsonObject(dungeon).getAsJsonObject("tier_completions");
+				int runs = 0;
+				for (Map.Entry<String, JsonElement> entry : dungeonData.entrySet()) {
+					String key = entry.getKey();
+					if (key.equals("total")) continue;
+					runs += entry.getValue().getAsInt();
+				}
+				dungeonRuns.put(dungeon, runs);
+				totalRuns += runs;
+			}
 
-        } catch (Exception ignored) {}
-    }
+		} catch (Exception ignored) {}
+	}
 
-    public void render(DrawContext context, int x, int y) {
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-        context.drawItem(Ico.FEATHER, x + 2, y + 4);
+	public void render(DrawContext context, int x, int y) {
+		context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+		context.drawItem(Ico.FEATHER, x + 2, y + 4);
 
-        context.drawText(textRenderer, "Secrets " + secrets, x + 30, y + 4, Color.WHITE.getRGB(), true);
-        context.drawText(textRenderer, "Avg " + (totalRuns > 0 ? DF.format(secrets / (float) totalRuns) : 0) + "/Run", x + 30, y + 14, Color.WHITE.getRGB(), true);
+		context.drawText(textRenderer, "Secrets " + secrets, x + 30, y + 4, Color.WHITE.getRGB(), true);
+		context.drawText(textRenderer, "Avg " + (totalRuns > 0 ? DF.format(secrets / (float) totalRuns) : 0) + "/Run", x + 30, y + 14, Color.WHITE.getRGB(), true);
 
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y + 28, 0, 0, 109, 26, 109, 26);
-        context.drawTexture(RenderLayer::getGuiTextured, RUN_ICON, x + 4, y + 33, 0, 0, 14, 16, 14, 16);
+		context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y + 28, 0, 0, 109, 26, 109, 26);
+		context.drawTexture(RenderLayer::getGuiTextured, RUN_ICON, x + 4, y + 33, 0, 0, 14, 16, 14, 16);
 
-        context.drawText(textRenderer, "§aNormal §r" + dungeonRuns.getOrDefault("catacombs", 0), x + 30, y + 32, Color.WHITE.getRGB(), true);
-        context.drawText(textRenderer, "§cMaster §r" + dungeonRuns.getOrDefault("master_catacombs", 0), x + 30, y + 42, Color.WHITE.getRGB(), true);
-    }
+		context.drawText(textRenderer, "§aNormal §r" + dungeonRuns.getOrDefault("catacombs", 0), x + 30, y + 32, Color.WHITE.getRGB(), true);
+		context.drawText(textRenderer, "§cMaster §r" + dungeonRuns.getOrDefault("master_catacombs", 0), x + 30, y + 42, Color.WHITE.getRGB(), true);
+	}
 }

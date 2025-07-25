@@ -23,8 +23,8 @@ public class MotesTooltip extends SimpleTooltipAdder {
 		final String internalID = stack.getSkyblockId();
 		if (TooltipInfoType.MOTES.hasOrNullWarning(internalID)) {
 			lines.add(Text.literal(String.format("%-20s", "Motes Price:"))
-			              .formatted(Formatting.LIGHT_PURPLE)
-			              .append(getMotesMessage(TooltipInfoType.MOTES.getData().getInt(internalID), stack.getCount())));
+					.formatted(Formatting.LIGHT_PURPLE)
+					.append(getMotesMessage(TooltipInfoType.MOTES.getData().getInt(internalID), stack.getCount())));
 		}
 	}
 

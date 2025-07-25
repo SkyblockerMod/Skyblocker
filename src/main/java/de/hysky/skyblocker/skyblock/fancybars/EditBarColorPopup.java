@@ -17,103 +17,103 @@ import java.util.function.Consumer;
 // TODO use the new color things after collapse buttons is merged
 public class EditBarColorPopup extends AbstractPopupScreen {
 
-    private final Consumer<Color> setColor;
+	private final Consumer<Color> setColor;
 
-    private DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
-    private BasicColorSelector colorSelector;
+	private DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
+	private BasicColorSelector colorSelector;
 
-    protected EditBarColorPopup(Text title, Screen backgroundScreen, Consumer<Color> setColor) {
-        super(title, backgroundScreen);
-        this.setColor = setColor;
-    }
+	protected EditBarColorPopup(Text title, Screen backgroundScreen, Consumer<Color> setColor) {
+		super(title, backgroundScreen);
+		this.setColor = setColor;
+	}
 
-    @Override
-    protected void init() {
-        super.init();
-        layout = DirectionalLayoutWidget.vertical();
-        layout.spacing(8).getMainPositioner().alignHorizontalCenter();
-        layout.add(new TextWidget(title.copy().fillStyle(Style.EMPTY.withBold(true)), MinecraftClient.getInstance().textRenderer));
-        colorSelector = new BasicColorSelector(0, 0, 150, () -> done(null));
-        layout.add(colorSelector);
+	@Override
+	protected void init() {
+		super.init();
+		layout = DirectionalLayoutWidget.vertical();
+		layout.spacing(8).getMainPositioner().alignHorizontalCenter();
+		layout.add(new TextWidget(title.copy().fillStyle(Style.EMPTY.withBold(true)), MinecraftClient.getInstance().textRenderer));
+		colorSelector = new BasicColorSelector(0, 0, 150, () -> done(null));
+		layout.add(colorSelector);
 
-        DirectionalLayoutWidget horizontal = DirectionalLayoutWidget.horizontal();
-        ButtonWidget buttonWidget = ButtonWidget.builder(Text.literal("Cancel"), button -> close()).width(80).build();
-        horizontal.add(buttonWidget);
-        horizontal.add(ButtonWidget.builder(Text.literal("Done"), this::done).width(80).build());
+		DirectionalLayoutWidget horizontal = DirectionalLayoutWidget.horizontal();
+		ButtonWidget buttonWidget = ButtonWidget.builder(Text.literal("Cancel"), button -> close()).width(80).build();
+		horizontal.add(buttonWidget);
+		horizontal.add(ButtonWidget.builder(Text.literal("Done"), this::done).width(80).build());
 
-        layout.add(horizontal);
-        layout.forEachChild(this::addDrawableChild);
-        this.layout.refreshPositions();
-        SimplePositioningWidget.setPos(layout, this.getNavigationFocus());
-    }
+		layout.add(horizontal);
+		layout.forEachChild(this::addDrawableChild);
+		this.layout.refreshPositions();
+		SimplePositioningWidget.setPos(layout, this.getNavigationFocus());
+	}
 
-    private void done(Object object) {
-        if (colorSelector.validColor) setColor.accept(new Color(colorSelector.getColor()));
-        close();
-    }
+	private void done(Object object) {
+		if (colorSelector.validColor) setColor.accept(new Color(colorSelector.getColor()));
+		close();
+	}
 
-    @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.renderBackground(context, mouseX, mouseY, delta);
-        drawPopupBackground(context, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
-    }
+	@Override
+	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+		super.renderBackground(context, mouseX, mouseY, delta);
+		drawPopupBackground(context, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
+	}
 
-    private static class BasicColorSelector extends ContainerWidget {
+	private static class BasicColorSelector extends ContainerWidget {
 
-        private final EnterConfirmTextFieldWidget textFieldWidget;
+		private final EnterConfirmTextFieldWidget textFieldWidget;
 
-        private BasicColorSelector(int x, int y, int width, Runnable onEnter) {
-            super(x, y, width, 15, Text.literal("edit color"));
-            textFieldWidget = new EnterConfirmTextFieldWidget(MinecraftClient.getInstance().textRenderer, getX() + 16, getY(), width - 16, 15, Text.empty(), onEnter);
-            textFieldWidget.setChangedListener(this::onTextChange);
-            textFieldWidget.setTextPredicate(s -> s.length() <= 6);
-        }
+		private BasicColorSelector(int x, int y, int width, Runnable onEnter) {
+			super(x, y, width, 15, Text.literal("edit color"));
+			textFieldWidget = new EnterConfirmTextFieldWidget(MinecraftClient.getInstance().textRenderer, getX() + 16, getY(), width - 16, 15, Text.empty(), onEnter);
+			textFieldWidget.setChangedListener(this::onTextChange);
+			textFieldWidget.setTextPredicate(s -> s.length() <= 6);
+		}
 
-        @Override
-        public List<? extends Element> children() {
-            return List.of(textFieldWidget);
-        }
+		@Override
+		public List<? extends Element> children() {
+			return List.of(textFieldWidget);
+		}
 
-        private int getColor() {
-            return color;
-        }
+		private int getColor() {
+			return color;
+		}
 
-        private int color = 0xFF000000;
-        private boolean validColor = false;
+		private int color = 0xFF000000;
+		private boolean validColor = false;
 
-        private void onTextChange(String text) {
-            try {
-                color = Integer.parseInt(text, 16) | 0xFF000000;
-                validColor = true;
-            } catch (NumberFormatException e) {
-                color = 0;
-                validColor = false;
-            }
-        }
+		private void onTextChange(String text) {
+			try {
+				color = Integer.parseInt(text, 16) | 0xFF000000;
+				validColor = true;
+			} catch (NumberFormatException e) {
+				color = 0;
+				validColor = false;
+			}
+		}
 
-        @Override
-        protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-            context.drawBorder(getX(), getY(), 15, 15, validColor ? -1 : 0xFFDD0000);
-            context.fill(getX() + 1, getY() + 1, getX() + 14, getY() + 14, color);
-            textFieldWidget.renderWidget(context, mouseX, mouseY, delta);
-        }
+		@Override
+		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+			context.drawBorder(getX(), getY(), 15, 15, validColor ? -1 : 0xFFDD0000);
+			context.fill(getX() + 1, getY() + 1, getX() + 14, getY() + 14, color);
+			textFieldWidget.renderWidget(context, mouseX, mouseY, delta);
+		}
 
-        @Override
-        protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+		@Override
+		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 
-        }
+		}
 
-        @Override
-        public void setX(int x) {
-            super.setX(x);
-            textFieldWidget.setX(getX() + 16);
-        }
+		@Override
+		public void setX(int x) {
+			super.setX(x);
+			textFieldWidget.setX(getX() + 16);
+		}
 
-        @Override
-        public void setY(int y) {
-            super.setY(y);
-            textFieldWidget.setY(getY());
-        }
+		@Override
+		public void setY(int y) {
+			super.setY(y);
+			textFieldWidget.setY(getY());
+		}
 
 		@Override
 		protected int getContentsHeightWithPadding() {
@@ -124,5 +124,5 @@ public class EditBarColorPopup extends AbstractPopupScreen {
 		protected double getDeltaYPerScroll() {
 			return 0;
 		}
-    }
+	}
 }

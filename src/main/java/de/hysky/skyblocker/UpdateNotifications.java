@@ -167,16 +167,16 @@ public class UpdateNotifications {
 		//and we work hard to polish all of our releases.
 		public static final Config DEFAULT = new Config(true, Channel.ALPHA);
 		private static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.BOOL.fieldOf("enabled").forGetter(Config::enabled),
-				Channel.CODEC.fieldOf("channel").forGetter(Config::channel))
+						Codec.BOOL.fieldOf("enabled").forGetter(Config::enabled),
+						Channel.CODEC.fieldOf("channel").forGetter(Config::channel))
 				.apply(instance, Config::new));
 
 		private Channel[] includedChannels() {
 			return switch (this.channel) {
-				case BETA -> new Channel[] { Channel.RELEASE, Channel.BETA };
+				case BETA -> new Channel[]{Channel.RELEASE, Channel.BETA};
 				case ALPHA -> Channel.values();
 
-				default -> new Channel[] { this.channel };
+				default -> new Channel[]{this.channel};
 			};
 		}
 
@@ -191,10 +191,10 @@ public class UpdateNotifications {
 
 	private record MrVersion(String id, String name, SemanticVersion version, Channel channel) {
 		private static final Codec<MrVersion> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.STRING.fieldOf("id").forGetter(MrVersion::id),
-				Codec.STRING.fieldOf("name").forGetter(MrVersion::name),
-				SEM_VER_CODEC.fieldOf("version_number").forGetter(MrVersion::version),
-				Channel.CODEC.fieldOf("version_type").forGetter(MrVersion::channel))
+						Codec.STRING.fieldOf("id").forGetter(MrVersion::id),
+						Codec.STRING.fieldOf("name").forGetter(MrVersion::name),
+						SEM_VER_CODEC.fieldOf("version_number").forGetter(MrVersion::version),
+						Channel.CODEC.fieldOf("version_type").forGetter(MrVersion::channel))
 				.apply(instance, MrVersion::new));
 		private static final Codec<List<MrVersion>> LIST_CODEC = CODEC.listOf();
 	}

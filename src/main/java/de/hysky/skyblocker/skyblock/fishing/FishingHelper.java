@@ -19,6 +19,7 @@ import net.minecraft.util.Formatting;
 public class FishingHelper {
 	private static final Title title = new Title("skyblocker.fishing.reelNow", Formatting.GREEN);
 	protected static long startTime;
+
 	@Init
 	public static void init() {
 		UseItemCallback.EVENT.register((player, world, hand) -> {
@@ -46,7 +47,6 @@ public class FishingHelper {
 		startTime = 0;
 		//once amour stand is gone reset rod real timer
 	}
-
 
 
 	// Sends a title notification if a fish is caught

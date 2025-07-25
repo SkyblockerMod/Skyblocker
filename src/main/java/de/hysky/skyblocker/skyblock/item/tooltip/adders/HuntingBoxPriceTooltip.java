@@ -35,10 +35,10 @@ public class HuntingBoxPriceTooltip extends SimpleTooltipAdder {
 			String shardText = count > 1 ? "Shards" : "Shard";
 
 			lines.add(Text.literal(shardText + " Sell Price: ")
-					  .formatted(Formatting.GOLD)
-					  .append(product.sellPrice().isEmpty()
-							  ? Text.literal("No data").formatted(Formatting.RED)
-							  : ItemTooltip.getCoinsMessage(product.sellPrice().getAsDouble() * count, holdingShift ? count : 1, true)));
+					.formatted(Formatting.GOLD)
+					.append(product.sellPrice().isEmpty()
+							? Text.literal("No data").formatted(Formatting.RED)
+							: ItemTooltip.getCoinsMessage(product.sellPrice().getAsDouble() * count, holdingShift ? count : 1, true)));
 		}
 	}
 

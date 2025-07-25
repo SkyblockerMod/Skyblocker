@@ -120,20 +120,20 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	private long waterStartMillis;
 	private CompletableFuture<Void> solve;
 
-    private WaterboardOneFlow() {
-        super("waterboard", "water-puzzle");
-    }
+	private WaterboardOneFlow() {
+		super("waterboard", "water-puzzle");
+	}
 
-    @Init
-    public static void init() {
+	@Init
+	public static void init() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(WaterboardOneFlow::loadSolutions);
-        UseBlockCallback.EVENT.register(INSTANCE::onUseBlock);
+		UseBlockCallback.EVENT.register(INSTANCE::onUseBlock);
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
-						.then(literal("reset").executes(context -> {
-							INSTANCE.softReset();
-							return Command.SINGLE_SUCCESS;
-						}))
+				.then(literal("reset").executes(context -> {
+					INSTANCE.softReset();
+					return Command.SINGLE_SUCCESS;
+				}))
 		)))));
 
 		if (Debug.debugEnabled()) {
@@ -215,7 +215,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 					}))
 			)))));
 		}
-    }
+	}
 
 	private static void loadSolutions(MinecraftClient client) {
 		try (BufferedReader reader = client.getResourceManager().openAsReader(WATER_TIMES)) {
@@ -225,15 +225,15 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		}
 	}
 
-    @Override
-    public void tick(MinecraftClient client) {
-        if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow ||
+	@Override
+	public void tick(MinecraftClient client) {
+		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow ||
 				!shouldSolve() ||
 				client.world == null ||
 				client.player == null ||
 				!DungeonManager.isCurrentRoomMatched()) {
-            return;
-        }
+			return;
+		}
 
 		world = client.world;
 		room = DungeonManager.getCurrentRoom();
@@ -268,7 +268,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				}
 			}
 		}
-    }
+	}
 
 	private void solvePuzzle() {
 		variant = findVariant();
@@ -424,8 +424,8 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		return true;
 	}
 
-    @Override
-    public void render(WorldRenderContext context) {
+	@Override
+	public void render(WorldRenderContext context) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow ||
 				world == null || room == null || player == null) return;
 
@@ -492,7 +492,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		}
 	}
 
-    private ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult blockHitResult) {
+	private ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult blockHitResult) {
 		try {
 			if (SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow &&
 					solution != null && blockHitResult.getType() == HitResult.Type.BLOCK) {
@@ -515,14 +515,14 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Waterboard] Exception in onUseBlock", e);
 		}
-        return ActionResult.PASS;
-    }
+		return ActionResult.PASS;
+	}
 
-    @Override
-    public void reset() {
-        super.reset();
+	@Override
+	public void reset() {
+		super.reset();
 		softReset();
-    }
+	}
 
 	private void softReset() {
 		// In most cases we want the solver to remain active after resetting, so don't call super.reset()

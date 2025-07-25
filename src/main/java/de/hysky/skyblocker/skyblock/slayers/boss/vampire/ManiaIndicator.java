@@ -14,29 +14,29 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
 public class ManiaIndicator {
-    private static final Title title = new Title("skyblocker.rift.mania", Formatting.RED);
+	private static final Title title = new Title("skyblocker.rift.mania", Formatting.RED);
 
 	public static void updateMania() {
 		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !SlayerManager.isInSlayerType(SlayerType.VAMPIRE)) {
-            TitleContainer.removeTitle(title);
-            return;
-        }
+			TitleContainer.removeTitle(title);
+			return;
+		}
 
 		Entity slayerEntity = SlayerManager.getSlayerBossArmorStand();
-        if (slayerEntity == null) return;
+		if (slayerEntity == null) return;
 
-        boolean anyMania = false;
+		boolean anyMania = false;
 		for (Entity entity : SlayerManager.getEntityArmorStands(slayerEntity, 2.5f)) {
-            if (entity.getDisplayName().toString().contains("MANIA")) {
-                anyMania = true;
-                BlockPos pos = MinecraftClient.getInstance().player.getBlockPos().down();
-                boolean isGreen = MinecraftClient.getInstance().world.getBlockState(pos).getBlock() == Blocks.GREEN_TERRACOTTA;
-                title.setText(Text.translatable("skyblocker.rift.mania").formatted(isGreen ? Formatting.GREEN : Formatting.RED));
-                RenderHelper.displayInTitleContainerAndPlaySound(title);
-            }
-        }
-        if (!anyMania) {
-            TitleContainer.removeTitle(title);
-        }
-    }
+			if (entity.getDisplayName().toString().contains("MANIA")) {
+				anyMania = true;
+				BlockPos pos = MinecraftClient.getInstance().player.getBlockPos().down();
+				boolean isGreen = MinecraftClient.getInstance().world.getBlockState(pos).getBlock() == Blocks.GREEN_TERRACOTTA;
+				title.setText(Text.translatable("skyblocker.rift.mania").formatted(isGreen ? Formatting.GREEN : Formatting.RED));
+				RenderHelper.displayInTitleContainerAndPlaySound(title);
+			}
+		}
+		if (!anyMania) {
+			TitleContainer.removeTitle(title);
+		}
+	}
 }

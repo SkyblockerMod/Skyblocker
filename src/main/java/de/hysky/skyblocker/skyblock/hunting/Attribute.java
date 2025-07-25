@@ -11,6 +11,6 @@ public record Attribute(String name, String shardName, String id, String apiId) 
 			Codec.STRING.fieldOf("shardName").forGetter(Attribute::shardName),
 			Codec.STRING.fieldOf("id").forGetter(Attribute::id),
 			Codec.STRING.fieldOf("apiId").forGetter(Attribute::apiId)
-			).apply(instance, Attribute::new));
+	).apply(instance, Attribute::new));
 	public static final Codec<List<Attribute>> LIST_CODEC = CODEC.listOf();
 }

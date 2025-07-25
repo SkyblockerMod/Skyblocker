@@ -70,7 +70,7 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 	 * @param blockPos The position to check for a carpet
 	 * @return Whether the block at the given position is a gray carpet with a sea lantern below it, which is how all unbreakable carpets are placed
 	 * @implNote <p>getBlockState is a heavy method, so this method will become a hot spot as the search radius increases || the tick interval decreases.</p>
-	 * 		<p>Consider profiling this method if either of those values are changed.</p>
+	 * <p>Consider profiling this method if either of those values are changed.</p>
 	 */
 	private boolean checkForCarpet(BlockPos blockPos) {
 		@SuppressWarnings("DataFlowIssue") // Null check is already done in the run method

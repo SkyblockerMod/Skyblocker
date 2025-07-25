@@ -66,7 +66,7 @@ public class SeaCreatureTracker {
 	private static void checkTimerNotification() {
 		if (!SkyblockerConfigManager.get().helpers.fishing.seaCreatureTimerNotification || !isCreaturesAlive()) return;
 		//if the timer is about to finish show notification
-		if (Math.abs(SkyblockerConfigManager.get().helpers.fishing.timerLength * 1000L - getOldestSeaCreatureAge()) < 100){
+		if (Math.abs(SkyblockerConfigManager.get().helpers.fishing.timerLength * 1000L - getOldestSeaCreatureAge()) < 100) {
 			TitleContainer.addTitle(new Title(Text.translatable("skyblocker.config.helpers.fishing.seaCreatureTimerNotification.notification").formatted(Formatting.RED)), 60);
 			if (CLIENT.player == null) return;
 			CLIENT.player.playSound(SoundEvents.ENTITY_ARROW_HIT_PLAYER, 100f, 0.1f);
@@ -136,6 +136,7 @@ public class SeaCreatureTracker {
 
 	/**
 	 * Checks if at least one creature is alive
+	 *
 	 * @return if atleast one creature is alive
 	 */
 	protected static Boolean isCreaturesAlive() {

@@ -26,56 +26,56 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
-    @Shadow
-    @Final
-    protected MinecraftClient client;
+	@Shadow
+	@Final
+	protected MinecraftClient client;
 
-    public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
-        super(world, profile);
-    }
+	public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
+		super(world, profile);
+	}
 
-    @Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
-    public void skyblocker$dropSelectedItem(CallbackInfoReturnable<Boolean> cir) {
-        if (Utils.isOnSkyblock() && (ItemProtection.isItemProtected(this.getMainHandStack()) || HotbarSlotLock.isLocked(this.getInventory().getSelectedSlot()))
-                && (!SkyblockerConfigManager.get().dungeons.allowDroppingProtectedItems || !Utils.isInDungeons())) {
-            cir.setReturnValue(false);
-        }
-    }
+	@Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
+	public void skyblocker$dropSelectedItem(CallbackInfoReturnable<Boolean> cir) {
+		if (Utils.isOnSkyblock() && (ItemProtection.isItemProtected(this.getMainHandStack()) || HotbarSlotLock.isLocked(this.getInventory().getSelectedSlot()))
+				&& (!SkyblockerConfigManager.get().dungeons.allowDroppingProtectedItems || !Utils.isInDungeons())) {
+			cir.setReturnValue(false);
+		}
+	}
 
-    @Inject(method = "updateHealth", at = @At("RETURN"))
-    public void skyblocker$updateHealth(CallbackInfo ci) {
-        HealingMelonIndicator.updateHealth();
-    }
+	@Inject(method = "updateHealth", at = @At("RETURN"))
+	public void skyblocker$updateHealth(CallbackInfo ci) {
+		HealingMelonIndicator.updateHealth();
+	}
 
-    @Inject(method = "openEditSignScreen", at = @At("HEAD"), cancellable = true)
-    public void skyblocker$redirectEditSignScreen(SignBlockEntity sign, boolean front, CallbackInfo ci) {
-        // Fancy Party Finder
-        if (!PartyFinderScreen.isInKuudraPartyFinder && client.currentScreen instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted() && sign.getText(front).getMessage(3, false).getString().toLowerCase().contains("level")) {
-            partyFinderScreen.updateSign(sign, front);
-            ci.cancel();
-            return;
-        }
+	@Inject(method = "openEditSignScreen", at = @At("HEAD"), cancellable = true)
+	public void skyblocker$redirectEditSignScreen(SignBlockEntity sign, boolean front, CallbackInfo ci) {
+		// Fancy Party Finder
+		if (!PartyFinderScreen.isInKuudraPartyFinder && client.currentScreen instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted() && sign.getText(front).getMessage(3, false).getString().toLowerCase().contains("level")) {
+			partyFinderScreen.updateSign(sign, front);
+			ci.cancel();
+			return;
+		}
 
-        if (client.currentScreen instanceof AuctionViewScreen auctionViewScreen) {
-            this.client.setScreen(new EditBidPopup(auctionViewScreen, sign, front, auctionViewScreen.minBid));
-            ci.cancel();
-        }
+		if (client.currentScreen instanceof AuctionViewScreen auctionViewScreen) {
+			this.client.setScreen(new EditBidPopup(auctionViewScreen, sign, front, auctionViewScreen.minBid));
+			ci.cancel();
+		}
 
-        // Search Overlay
-        if (client.currentScreen != null) {
-            if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableAuctionHouse && client.currentScreen.getTitle().getString().toLowerCase().contains("auction")) {
-                if (sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query")) {
-                    SearchOverManager.updateSign(sign, front, true);
-                    client.setScreen(new OverlayScreen());
-                    ci.cancel();
-                }
-            } else if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableBazaar && client.currentScreen.getTitle().getString().toLowerCase().contains("bazaar")) {
-                if (sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query")) {
-                    SearchOverManager.updateSign(sign, front, false);
-                    client.setScreen(new OverlayScreen());
-                    ci.cancel();
-                }
-            }
-        }
-    }
+		// Search Overlay
+		if (client.currentScreen != null) {
+			if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableAuctionHouse && client.currentScreen.getTitle().getString().toLowerCase().contains("auction")) {
+				if (sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query")) {
+					SearchOverManager.updateSign(sign, front, true);
+					client.setScreen(new OverlayScreen());
+					ci.cancel();
+				}
+			} else if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableBazaar && client.currentScreen.getTitle().getString().toLowerCase().contains("bazaar")) {
+				if (sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query")) {
+					SearchOverManager.updateSign(sign, front, false);
+					client.setScreen(new OverlayScreen());
+					ci.cancel();
+				}
+			}
+		}
+	}
 }

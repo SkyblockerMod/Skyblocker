@@ -18,40 +18,40 @@ import java.util.List;
 
 @Mixin(GenericContainerScreenHandler.class)
 public abstract class GenericContainerScreenHandlerMixin extends ScreenHandler {
-    protected GenericContainerScreenHandlerMixin(@Nullable ScreenHandlerType<?> type, int syncId) {
-        super(type, syncId);
-    }
+	protected GenericContainerScreenHandlerMixin(@Nullable ScreenHandlerType<?> type, int syncId) {
+		super(type, syncId);
+	}
 
-    @Override
-    public void setStackInSlot(int slot, int revision, ItemStack stack) {
-        super.setStackInSlot(slot, revision, stack);
-        ContainerSolverManager.markHighlightsDirty();
+	@Override
+	public void setStackInSlot(int slot, int revision, ItemStack stack) {
+		super.setStackInSlot(slot, revision, stack);
+		ContainerSolverManager.markHighlightsDirty();
 
-        Screen currentScreen = MinecraftClient.getInstance().currentScreen;
-        switch (currentScreen) {
-            case PartyFinderScreen screen -> screen.markDirty();
-            case GenericContainerScreen screen when screen.getTitle().getString().toLowerCase().contains("equipment") -> {
-                int line = slot / 9;
-                if (line > 0 && line < 5 && slot % 9 == 1) {
-                    boolean empty = stack.getName().getString().trim().toLowerCase().startsWith("empty");
-                    if (Utils.isInTheRift())
-                        SkyblockInventoryScreen.equipment_rift[line - 1] = empty ? ItemStack.EMPTY : stack;
-                    else
-                        SkyblockInventoryScreen.equipment[line - 1] = empty ? ItemStack.EMPTY : stack;
-                }
-            }
-            case null, default -> {}
-        }
-        sendContentUpdates();
-    }
-
-    @Override
-    public void updateSlotStacks(int revision, List<ItemStack> stacks, ItemStack cursorStack) {
-        super.updateSlotStacks(revision, stacks, cursorStack);
-        ContainerSolverManager.markHighlightsDirty();
+		Screen currentScreen = MinecraftClient.getInstance().currentScreen;
+		switch (currentScreen) {
+			case PartyFinderScreen screen -> screen.markDirty();
+			case GenericContainerScreen screen when screen.getTitle().getString().toLowerCase().contains("equipment") -> {
+				int line = slot / 9;
+				if (line > 0 && line < 5 && slot % 9 == 1) {
+					boolean empty = stack.getName().getString().trim().toLowerCase().startsWith("empty");
+					if (Utils.isInTheRift())
+						SkyblockInventoryScreen.equipment_rift[line - 1] = empty ? ItemStack.EMPTY : stack;
+					else
+						SkyblockInventoryScreen.equipment[line - 1] = empty ? ItemStack.EMPTY : stack;
+				}
+			}
+			case null, default -> {}
+		}
 		sendContentUpdates();
-        if (MinecraftClient.getInstance().currentScreen instanceof PartyFinderScreen screen) {
-            screen.markDirty();
-        }
-    }
+	}
+
+	@Override
+	public void updateSlotStacks(int revision, List<ItemStack> stacks, ItemStack cursorStack) {
+		super.updateSlotStacks(revision, stacks, cursorStack);
+		ContainerSolverManager.markHighlightsDirty();
+		sendContentUpdates();
+		if (MinecraftClient.getInstance().currentScreen instanceof PartyFinderScreen screen) {
+			screen.markDirty();
+		}
+	}
 }

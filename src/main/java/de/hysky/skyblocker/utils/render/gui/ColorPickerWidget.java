@@ -164,6 +164,7 @@ public class ColorPickerWidget extends ClickableWidget {
 
 	/**
 	 * Sets a callback that will be called whenever the color is changed by the user (not when {@link ColorPickerWidget#setRGBColor(int)} is called).
+	 *
 	 * @param onColorChange The consumer
 	 */
 	public void setOnColorChange(@Nullable Callback onColorChange) {
@@ -178,7 +179,7 @@ public class ColorPickerWidget extends ClickableWidget {
 	public interface Callback {
 
 		/**
-		 * @param color the new color
+		 * @param color        the new color
 		 * @param mouseRelease true if the change is "final" after the user has released the mouse or false when it's from the user dragging on of the thumbs around.
 		 */
 		void onColorChange(int color, boolean mouseRelease);

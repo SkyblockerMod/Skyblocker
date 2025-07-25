@@ -9,16 +9,16 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public class TheRift {
-    @Init
-    public static void init() {
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(MirrorverseWaypoints::render);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(EffigyWaypoints::render);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(EnigmaSouls::render);
-        ClientLifecycleEvents.CLIENT_STARTED.register(MirrorverseWaypoints::load);
-        ClientLifecycleEvents.CLIENT_STARTED.register(EnigmaSouls::load);
-        ClientLifecycleEvents.CLIENT_STOPPING.register(EnigmaSouls::save);
-        ClientReceiveMessageEvents.ALLOW_GAME.register(EnigmaSouls::onMessage);
-        ClientCommandRegistrationCallback.EVENT.register(EnigmaSouls::registerCommands);
-        Scheduler.INSTANCE.scheduleCyclic(EffigyWaypoints::updateEffigies, SkyblockerConfigManager.get().slayers.vampireSlayer.effigyUpdateFrequency);
-    }
+	@Init
+	public static void init() {
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(MirrorverseWaypoints::render);
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(EffigyWaypoints::render);
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(EnigmaSouls::render);
+		ClientLifecycleEvents.CLIENT_STARTED.register(MirrorverseWaypoints::load);
+		ClientLifecycleEvents.CLIENT_STARTED.register(EnigmaSouls::load);
+		ClientLifecycleEvents.CLIENT_STOPPING.register(EnigmaSouls::save);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(EnigmaSouls::onMessage);
+		ClientCommandRegistrationCallback.EVENT.register(EnigmaSouls::registerCommands);
+		Scheduler.INSTANCE.scheduleCyclic(EffigyWaypoints::updateEffigies, SkyblockerConfigManager.get().slayers.vampireSlayer.effigyUpdateFrequency);
+	}
 }

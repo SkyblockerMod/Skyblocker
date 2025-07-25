@@ -8,6 +8,6 @@ import net.minecraft.client.render.WorldRenderer;
 
 @Mixin(WorldRenderer.class)
 public interface WorldRendererAccessor {
-    @Accessor
-    Frustum getFrustum();
+	@Accessor
+	Frustum getFrustum();
 }

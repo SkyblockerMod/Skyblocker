@@ -257,8 +257,7 @@ public class FancyStatusBars {
 					}
 					widthPerSize = (float) sizeRule.totalWidth() / size;
 
-				}
-				else
+				} else
 					widthPerSize = sizeRule.widthPerSize();
 
 				if (visibleHealthMove) widthPerSize /= 2;

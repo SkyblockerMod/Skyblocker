@@ -112,7 +112,7 @@ public class CrystalsHudWidget extends HudWidget {
 		if (SkyblockerConfigManager.get().mining.crystalsHud.showLocations) {
 			for (MiningLocationLabel waypoint : CrystalsLocationsManager.activeWaypoints.values()) {
 
-			MiningLocationLabel.Category category = waypoint.category();
+				MiningLocationLabel.Category category = waypoint.category();
 				Vector2ic renderPos = transformLocation(waypoint.centerPos.getX(), waypoint.centerPos.getZ());
 				int locationSize = SkyblockerConfigManager.get().mining.crystalsHud.locationSize;
 

@@ -19,78 +19,79 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 
 public class EventToast implements Toast {
-    protected static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "notification");
+	protected static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "notification");
 
-    private long toastTime = 0;
-    private final long eventStartTime;
+	private long toastTime = 0;
+	private final long eventStartTime;
 
-    protected final List<OrderedText> message;
-    protected final List<OrderedText> messageNow;
-    protected int messageWidth;
-    protected int messageNowWidth;
-    protected final ItemStack icon;
+	protected final List<OrderedText> message;
+	protected final List<OrderedText> messageNow;
+	protected int messageWidth;
+	protected int messageNowWidth;
+	protected final ItemStack icon;
 
-    protected boolean started;
+	protected boolean started;
 
-    public EventToast(long eventStartTime, String name, ItemStack icon) {
-        this.eventStartTime = eventStartTime;
-        MutableText formatted = Text.translatable("skyblocker.events.startsSoon", Text.literal(name).formatted(Formatting.YELLOW)).formatted(Formatting.WHITE);
-        TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
-        message = renderer.wrapLines(formatted, 150);
-        messageWidth = message.stream().mapToInt(renderer::getWidth).max().orElse(150);
+	public EventToast(long eventStartTime, String name, ItemStack icon) {
+		this.eventStartTime = eventStartTime;
+		MutableText formatted = Text.translatable("skyblocker.events.startsSoon", Text.literal(name).formatted(Formatting.YELLOW)).formatted(Formatting.WHITE);
+		TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
+		message = renderer.wrapLines(formatted, 150);
+		messageWidth = message.stream().mapToInt(renderer::getWidth).max().orElse(150);
 
-        MutableText formattedNow = Text.translatable("skyblocker.events.startsNow", Text.literal(name).formatted(Formatting.YELLOW)).formatted(Formatting.WHITE);
-        messageNow = renderer.wrapLines(formattedNow, 150);
-        messageNowWidth = messageNow.stream().mapToInt(renderer::getWidth).max().orElse(150);
-        this.icon = icon;
-        this.started = eventStartTime - System.currentTimeMillis() / 1000 < 0;
+		MutableText formattedNow = Text.translatable("skyblocker.events.startsNow", Text.literal(name).formatted(Formatting.YELLOW)).formatted(Formatting.WHITE);
+		messageNow = renderer.wrapLines(formattedNow, 150);
+		messageNowWidth = messageNow.stream().mapToInt(renderer::getWidth).max().orElse(150);
+		this.icon = icon;
+		this.started = eventStartTime - System.currentTimeMillis() / 1000 < 0;
 
-    }
-    @Override
-    public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 0, 0, getWidth(), getHeight());
+	}
 
-        int y = (getHeight() - getInnerContentsHeight())/2;
-        y = 2 + drawMessage(context, 30, y, Colors.WHITE);
-        drawTimer(context, 30, y);
+	@Override
+	public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
+		context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 0, 0, getWidth(), getHeight());
 
-        context.drawItemWithoutEntity(icon, 8, getHeight()/2 - 8);
-    }
+		int y = (getHeight() - getInnerContentsHeight()) / 2;
+		y = 2 + drawMessage(context, 30, y, Colors.WHITE);
+		drawTimer(context, 30, y);
 
-    protected int drawMessage(DrawContext context, int x, int y, int color) {
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        for (OrderedText orderedText : started ? messageNow: message) {
-            context.drawText(textRenderer, orderedText, x, y, color, false);
-            y += textRenderer.fontHeight;
-        }
-        return y;
-    }
+		context.drawItemWithoutEntity(icon, 8, getHeight() / 2 - 8);
+	}
 
-    protected void drawTimer(DrawContext context, int x, int y) {
-        long currentTime = System.currentTimeMillis() / 1000;
-        int timeTillEvent = (int) (eventStartTime - currentTime);
-        started = timeTillEvent < 0;
-        if (started) return;
+	protected int drawMessage(DrawContext context, int x, int y, int color) {
+		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		for (OrderedText orderedText : started ? messageNow : message) {
+			context.drawText(textRenderer, orderedText, x, y, color, false);
+			y += textRenderer.fontHeight;
+		}
+		return y;
+	}
 
-        Text time = SkyblockTime.formatTime(timeTillEvent);
+	protected void drawTimer(DrawContext context, int x, int y) {
+		long currentTime = System.currentTimeMillis() / 1000;
+		int timeTillEvent = (int) (eventStartTime - currentTime);
+		started = timeTillEvent < 0;
+		if (started) return;
 
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        context.drawText(textRenderer, time, x, y, Colors.LIGHT_YELLOW, false);
-    }
+		Text time = SkyblockTime.formatTime(timeTillEvent);
 
-    @Override
-    public int getWidth() {
-        return (started ? messageNowWidth: messageWidth) + 30 + 6;
-    }
+		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		context.drawText(textRenderer, time, x, y, Colors.LIGHT_YELLOW, false);
+	}
 
-    protected int getInnerContentsHeight() {
-        return message.size() * 9 + (started ? 0 : 9);
-    }
+	@Override
+	public int getWidth() {
+		return (started ? messageNowWidth : messageWidth) + 30 + 6;
+	}
 
-    @Override
-    public int getHeight() {
-        return Math.max(getInnerContentsHeight() + 12 + 2, 32);
-    }
+	protected int getInnerContentsHeight() {
+		return message.size() * 9 + (started ? 0 : 9);
+	}
+
+	@Override
+	public int getHeight() {
+		return Math.max(getInnerContentsHeight() + 12 + 2, 32);
+	}
 
 	@Override
 	public Visibility getVisibility() {

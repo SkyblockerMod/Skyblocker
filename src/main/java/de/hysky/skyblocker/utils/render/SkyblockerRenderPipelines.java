@@ -11,24 +11,32 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
 
 public class SkyblockerRenderPipelines {
-	/** Similar to {@link RenderPipelines#DEBUG_FILLED_BOX} */
+	/**
+	 * Similar to {@link RenderPipelines#DEBUG_FILLED_BOX}
+	 */
 	static final RenderPipeline FILLED_THROUGH_WALLS = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
 			.withLocation(Identifier.of(SkyblockerMod.NAMESPACE, "pipeline/debug_filled_box_through_walls"))
 			.withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP)
 			.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
 			.build());
-	/** Similar to {@link RenderPipelines#LINES} */
+	/**
+	 * Similar to {@link RenderPipelines#LINES}
+	 */
 	static final RenderPipeline LINES_THROUGH_WALLS = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.RENDERTYPE_LINES_SNIPPET)
 			.withLocation(Identifier.of(SkyblockerMod.NAMESPACE, "pipeline/lines_through_walls"))
 			.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
 			.build());
-	/** Similar to {@link RenderPipelines#DEBUG_QUADS}  */
+	/**
+	 * Similar to {@link RenderPipelines#DEBUG_QUADS}
+	 */
 	static final RenderPipeline QUADS_THROUGH_WALLS = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
 			.withLocation(Identifier.of(SkyblockerMod.NAMESPACE, "pipeline/debug_quads_through_walls"))
 			.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
 			.withCull(false)
 			.build());
-	/** Similar to {@link RenderPipelines#GUI_TEXTURED} */
+	/**
+	 * Similar to {@link RenderPipelines#GUI_TEXTURED}
+	 */
 	static final RenderPipeline TEXTURE = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_TEX_COLOR_SNIPPET)
 			.withLocation(Identifier.of(SkyblockerMod.NAMESPACE, "pipeline/texture"))
 			.withCull(false)
