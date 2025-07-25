@@ -7,6 +7,7 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.ColorHelper;
@@ -91,10 +92,10 @@ public class GyroOverlay {
 
 
 	public enum Mode implements StringIdentifiable {
-		OFF("Off"),
-		CIRCLE("Circle"),
-		CIRCLE_OUTLINE("CircleOutlined"),
-		SPHERE("Sphere");
+		OFF("OFF"),
+		CIRCLE("CIRCLE"),
+		CIRCLE_OUTLINE("CIRCLEOUTLINED"),
+		SPHERE("SPHERE");
 
 		private final String key;
 
@@ -110,7 +111,7 @@ public class GyroOverlay {
 
 		@Override
 		public String toString() {
-			return name().toLowerCase();
+			return I18n.translate(this.key);
 		}
 	}
 

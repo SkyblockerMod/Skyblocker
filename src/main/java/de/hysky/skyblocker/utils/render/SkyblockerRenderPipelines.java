@@ -55,10 +55,6 @@ public class SkyblockerRenderPipelines {
 			.withCull(false)
 			.build());
 
-
-
-
-
 	@Init
 	public static void init() {} //Ensure that pipelines are pre-compiled instead of compiled on demand
 }

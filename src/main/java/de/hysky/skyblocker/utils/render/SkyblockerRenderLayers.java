@@ -70,11 +70,6 @@ public class SkyblockerRenderLayers {
 			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
 			.build(false));
 
-
-
-
-
-
 	public static MultiPhase getLines(double lineWidth) {
 		return LINES_LAYERS.computeIfAbsent(lineWidth, LINES);
 	}
