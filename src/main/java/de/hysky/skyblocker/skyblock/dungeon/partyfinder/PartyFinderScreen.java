@@ -27,6 +27,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -94,10 +95,9 @@ public class PartyFinderScreen extends Screen {
 
     private boolean dirty = false;
     private long dirtiedTime;
-    public boolean justOpenedSign = false;
 
     public void markDirty() {
-        if (justOpenedSign) return;
+        if (sign != null) return;
         dirtiedTime = System.currentTimeMillis();
         dirty = true;
     }
@@ -247,14 +247,18 @@ public class PartyFinderScreen extends Screen {
             context.drawGuiTexture(RenderLayer::getGuiTextured, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
         }
         if (DEBUG) {
-            context.drawText(textRenderer, "Truly a party finder", 20, 20, 0xFFFFFFFF, true);
-            context.drawText(textRenderer, currentPage.toString(), 0, 0, 0xFFFFFFFF, true);
-            context.drawText(textRenderer, String.valueOf(refreshSlotId), width - 25, 30, 0xFFFFFFFF, true);
-            context.drawText(textRenderer, String.valueOf(prevPageSlotId), width - 25, 40, 0xFFFFFFFF, true);
-            context.drawText(textRenderer, String.valueOf(nextPageSlotId), width - 25, 50, 0xFFFFFFFF, true);
-            for (int i = 0; i < handler.slots.size(); i++) {
-                context.drawItem(handler.slots.get(i).getStack(), (i % 9) * 16, (i / 9) * 16);
-            }
+			context.drawText(textRenderer, currentPage.toString(), 0, 0, 0xFFFFFFFF, true);
+			context.drawText(textRenderer, "Truly a party finder", 20, 20, 0xFFFFFFFF, true);
+			if (sign != null) {
+				context.drawText(textRenderer, "You are in a sign btw", 20, 30, Colors.WHITE, true);
+			} else {
+				context.drawText(textRenderer, String.valueOf(refreshSlotId), width - 25, 30, 0xFFFFFFFF, true);
+				context.drawText(textRenderer, String.valueOf(prevPageSlotId), width - 25, 40, 0xFFFFFFFF, true);
+				context.drawText(textRenderer, String.valueOf(nextPageSlotId), width - 25, 50, 0xFFFFFFFF, true);
+				for (int i = 0; i < handler.slots.size(); i++) {
+					context.drawItem(handler.slots.get(i).getStack(), (i % 9) * 16, (i / 9) * 16);
+				}
+			}
         }
         if (isWaitingForServer()) {
             String s = "Waiting for server...";
@@ -327,6 +331,7 @@ public class PartyFinderScreen extends Screen {
     public void updateHandler(GenericContainerScreenHandler handler, Text name) {
         this.handler = handler;
         this.name = name;
+		closedSign();
         markDirty();
     }
 
@@ -345,10 +350,13 @@ public class PartyFinderScreen extends Screen {
         setCurrentPage(Page.SIGN);
         signFront = front;
         this.sign = sign;
-        justOpenedSign = true;
         waitingForServer = false;
         if (!settingsContainer.handleSign(sign, front)) abort();
     }
+
+	public void closedSign() {
+		this.sign = null;
+	}
 
     public void update() {
         dirty = false;
