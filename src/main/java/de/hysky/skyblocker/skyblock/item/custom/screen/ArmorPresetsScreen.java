@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
@@ -40,11 +41,12 @@ public class ArmorPresetsScreen extends Screen {
 						list.setScrollY(list.getMaxScrollY());
 						future.thenRunAsync(() -> b.active = true, MinecraftClient.getInstance());
 					})
-					.width(100).position(width / 2 - 50, listY + listHeight + 4).build();
+					.tooltip(Tooltip.of(Text.translatable("skyblocker.armorPresets.save.tooltip")))
+					.width(100).position(width / 2 - 105, height - 25).build();
 			addDrawableChild(save);
 		}
 		ButtonWidget done = ButtonWidget.builder(ScreenTexts.DONE, b -> returnToParent())
-				.width(100).position(width / 2 - 50, height - 20).build();
+				.width(100).position(width / 2 + 5, height - 25).build();
 		addDrawableChild(done);
 	}
 

@@ -1555,6 +1555,7 @@
   "skyblocker.armorPresets.title": "Armor Presets",
   "skyblocker.armorPresets.button": "Presets",
   "skyblocker.armorPresets.save": "Save Preset",
+  "skyblocker.armorPresets.save.tooltip": "Save current armor as a preset",
   "skyblocker.armorPresets.rename": "Rename Preset",
   "skyblocker.armorPresets.renamePrompt": "Enter new name:",
   "skyblocker.armorPresets.importSuccess": "Imported preset from clipboard!",
