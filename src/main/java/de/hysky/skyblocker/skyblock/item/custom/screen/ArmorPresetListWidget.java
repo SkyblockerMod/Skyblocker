@@ -12,61 +12,75 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArmorPresetListWidget extends ElementListWidget<ArmorPresetListWidget.Row> {
-    private static final int ITEM_HEIGHT = ArmorPresetCardWidget.HEIGHT + 4;
-    private final Runnable closeAction;
+	private static final int ITEM_HEIGHT = ArmorPresetCardWidget.HEIGHT + 4;
+	private final Runnable closeAction;
 
-    public ArmorPresetListWidget(int width, int height, int y, Runnable closeAction) {
-        super(MinecraftClient.getInstance(), width, height, y, ITEM_HEIGHT);
-        this.closeAction = closeAction;
-        updateEntries();
-    }
+	public ArmorPresetListWidget(int width, int height, int y, Runnable closeAction) {
+		super(MinecraftClient.getInstance(), width, height, y, ITEM_HEIGHT);
+		this.closeAction = closeAction;
+		updateEntries();
+	}
 
-    @Override
-    public int getRowWidth() {
-        return width;
-    }
+	@Override
+	public int getRowWidth() {
+		return width;
+	}
 
-    private void updateEntries() {
-        clearEntries();
-        var presets = ArmorPresets.getInstance().getPresets();
-        int cardsPerRow = Math.max(1, this.width / (ArmorPresetCardWidget.WIDTH + 8));
-        for (int i = 0; i < presets.size(); i += cardsPerRow) {
-            List<ArmorPreset> row = presets.subList(i, Math.min(i + cardsPerRow, presets.size()));
-            addEntry(new Row(row));
-        }
-    }
+	private void updateEntries() {
+		clearEntries();
+		var presets = ArmorPresets.getInstance().getPresets();
+		int cardsPerRow = Math.max(1, this.width / (ArmorPresetCardWidget.WIDTH + 8));
+		for (int i = 0; i < presets.size(); i += cardsPerRow) {
+			List<ArmorPreset> row = presets.subList(i, Math.min(i + cardsPerRow, presets.size()));
+			addEntry(new Row(row));
+		}
+	}
 
-    public class Row extends Entry<Row> {
-        private final List<ArmorPresetCardWidget> cards = new ArrayList<>();
+	/**
+	 * Refresh the list with the current presets.
+	 */
+	public void refresh() {
+		updateEntries();
+	}
 
-        Row(List<ArmorPreset> presets) {
-            for (ArmorPreset p : presets) {
-                cards.add(new ArmorPresetCardWidget(p, () -> {
-                    ArmorPresets.getInstance().apply(p);
-                    closeAction.run();
-                }));
-            }
-        }
+	@Override
+	protected int getScrollbarX() {
+		return getX() + width - 6;
+	}
 
-        @Override
-        public List<? extends Element> children() {
-            return cards;
-        }
+	public class Row extends Entry<Row> {
+		private final List<ArmorPresetCardWidget> cards = new ArrayList<>();
 
-        @Override
-        public List<? extends Selectable> selectableChildren() {
-            return cards;
-        }
+		Row(List<ArmorPreset> presets) {
+			for (ArmorPreset p : presets) {
+				cards.add(new ArmorPresetCardWidget(p, () -> {
+					// drop preview data before applying so none of it gets persisted
+					ArmorPresetCardWidget.clearTempData();
+					ArmorPresets.getInstance().apply(p);
+					closeAction.run();
+				}));
+			}
+		}
 
-        @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            int totalWidth = cards.size() * (ArmorPresetCardWidget.WIDTH + 8) - 8;
-            int startX = x + (entryWidth - totalWidth) / 2;
-            for (int i = 0; i < cards.size(); i++) {
-                ArmorPresetCardWidget card = cards.get(i);
-                card.setPosition(startX + i * (ArmorPresetCardWidget.WIDTH + 8), y + 2);
-                card.render(context, mouseX, mouseY, tickDelta);
-            }
-        }
-    }
+		@Override
+		public List<? extends Element> children() {
+			return cards;
+		}
+
+		@Override
+		public List<? extends Selectable> selectableChildren() {
+			return cards;
+		}
+
+		@Override
+		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			int totalWidth = cards.size() * (ArmorPresetCardWidget.WIDTH + 8) - 8;
+			int startX = x + (entryWidth - totalWidth) / 2;
+			for (int i = 0; i < cards.size(); i++) {
+				ArmorPresetCardWidget card = cards.get(i);
+				card.setPosition(startX + i * (ArmorPresetCardWidget.WIDTH + 8), y + 2);
+				card.render(context, mouseX, mouseY, tickDelta);
+			}
+		}
+	}
 }
