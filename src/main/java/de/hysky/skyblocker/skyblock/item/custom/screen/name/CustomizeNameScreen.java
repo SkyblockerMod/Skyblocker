@@ -86,7 +86,10 @@ public class CustomizeNameScreen extends Screen {
 		).size(48, 16).build(), 3, 17, 1, 3));
 		addDrawableChild(grid.add(ButtonWidget.builder(Text.translatable("gui.cancel"), b -> close()).width(80).build(), 4, 0, 1, 10, Positioner.create().alignRight()));
 		addDrawableChild(grid.add(ButtonWidget.builder(Text.translatable("gui.done"), b -> {
-			SkyblockerConfigManager.update(config -> config.general.customItemNames.put(uuid, text.getString().isBlank() ? null : text.copy().setStyle(Style.EMPTY.withItalic(false))));
+			SkyblockerConfigManager.update(config -> {
+				if (textString.isBlank()) config.general.customItemNames.remove(uuid);
+				else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false)));
+			});
 			close();
 		}).width(80).build(), 4, 10, 1, 10, Positioner.create().alignLeft()));
 		addDrawableChild(grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.translatable("skyblocker.customItemNames.screen.howToRemove").formatted(Formatting.ITALIC, Formatting.GRAY), textRenderer).alignLeft(), 5, 0, 1, 20, Positioner.create().marginTop(2)));
