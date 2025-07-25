@@ -286,11 +286,17 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		String title = getTitle().getString();
 		ContainerSolver currentSolver = ContainerSolverManager.getCurrentSolver();
 		ItemStack stack = skyblocker$experimentSolvers$getStack(slot, slot.getStack(), currentSolver);
-		var tooltip = stack.getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC).stream().map(Text::getString).toList();
-		String lore = String.join("\n", tooltip);
+
+		boolean isTitleEmptyOrFiller = FILLER_ITEMS.contains(stack.getName().getString());
+		if (!isTitleEmptyOrFiller) {
+			var tooltip = stack.getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC).stream().map(Text::getString).toList();
+			String lore = String.join("\n", tooltip);
+			isTitleEmptyOrFiller = lore.isBlank() || FILLER_ITEMS.contains(tooltip.getFirst());
+		}
+
 
 		// Prevent clicks on filler items
-		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && (lore.isBlank() || FILLER_ITEMS.contains(tooltip.getFirst())) &&
+		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && isTitleEmptyOrFiller &&
 				// Allow clicks in Ultrasequencer and Superpairs
 				(!UltrasequencerSolver.INSTANCE.test(title) || SkyblockerConfigManager.get().helpers.experiments.enableUltrasequencerSolver)) {
 			ci.cancel();
