@@ -1555,6 +1555,8 @@
   "skyblocker.armorPresets.title": "Armor Presets",
   "skyblocker.armorPresets.button": "Presets",
   "skyblocker.armorPresets.save": "Save Preset",
+  "skyblocker.armorPresets.rename": "Rename Preset",
+  "skyblocker.armorPresets.renamePrompt": "Enter new name:",
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 

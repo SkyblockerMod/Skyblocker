@@ -47,6 +47,26 @@ public class ArmorPresets {
 	}
 
 	/**
+	 * Remove the given preset from the list and persist the change.
+	 */
+	public void removePreset(ArmorPreset preset) {
+		presets.remove(preset);
+		save();
+	}
+
+	/**
+	 * Rename the given preset and persist the change.
+	 */
+	public void renamePreset(ArmorPreset preset, String newName) {
+		int idx = presets.indexOf(preset);
+		if (idx >= 0) {
+			presets.set(idx, new ArmorPreset(newName,
+					preset.helmet(), preset.chestplate(), preset.leggings(), preset.boots()));
+			save();
+		}
+	}
+
+	/**
 	 * Persist the current preset list to disk.
 	 */
 	public void savePresets() {

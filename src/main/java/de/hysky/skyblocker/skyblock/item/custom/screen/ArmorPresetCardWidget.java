@@ -3,9 +3,12 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
 import de.hysky.skyblocker.skyblock.item.custom.preset.ArmorPreset;
 import de.hysky.skyblocker.skyblock.item.custom.preset.ArmorPreviewStorage;
+import de.hysky.skyblocker.skyblock.item.custom.preset.ArmorPresets;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.network.OtherClientPlayerEntity;
@@ -23,13 +26,17 @@ public class ArmorPresetCardWidget extends ClickableWidget {
 			.toArray(EquipmentSlot[]::new);
 
 	private final ArmorPreset preset;
+	private static final Identifier DELETE_ICON_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/pending_invite/reject.png");
+	private static final int DELETE_SIZE = 16;
 	private final PlayerWidget widget;
 	private final Runnable onApply;
+	private final Runnable refresh;
 
-	public ArmorPresetCardWidget(ArmorPreset preset, Runnable onApply) {
+	public ArmorPresetCardWidget(ArmorPreset preset, Runnable onApply, Runnable refresh) {
 		super(0, 0, WIDTH, HEIGHT, Text.empty());
 		this.preset = preset;
 		this.onApply = onApply;
+		this.refresh = refresh;
 		OtherClientPlayerEntity player = new OtherClientPlayerEntity(MinecraftClient.getInstance().world,
 				MinecraftClient.getInstance().getGameProfile()) {
 			@Override
@@ -65,10 +72,26 @@ public class ArmorPresetCardWidget extends ClickableWidget {
 		widget.render(context, mouseX, mouseY, delta);
 		context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(preset.name()),
 				getX() + getWidth() / 2, getY() + getHeight() - 10, 0xFFFFFF);
+		context.drawTexture(RenderLayer::getGuiTextured, DELETE_ICON_TEXTURE,
+				getX() + getWidth() - DELETE_SIZE - 3, getY() + 3,
+				0, 0, DELETE_SIZE, DELETE_SIZE, 16, 16);
 	}
 
 	@Override
 	public void onClick(double mouseX, double mouseY) {
+		if (mouseX >= getX() + getWidth() - DELETE_SIZE - 3 && mouseX <= getX() + getWidth() - 6 + DELETE_SIZE &&
+				mouseY >= getY() + 2 && mouseY <= getY() + 3 + DELETE_SIZE) {
+			ArmorPresets.getInstance().removePreset(preset);
+			refresh.run();
+			return;
+		}
+		if (mouseY >= getY() + getHeight() - 12) {
+			MinecraftClient client = MinecraftClient.getInstance();
+			Screen parent = client.currentScreen;
+			if (parent != null)
+				client.setScreen(new ArmorPresetRenamePopup(parent, preset, refresh));
+			return;
+		}
 		onApply.run();
 	}
 

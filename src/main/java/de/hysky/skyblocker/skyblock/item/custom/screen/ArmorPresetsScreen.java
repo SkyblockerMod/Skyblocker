@@ -10,6 +10,7 @@ import net.minecraft.text.Text;
 public class ArmorPresetsScreen extends Screen {
 	private final Screen parent;
 	private ArmorPresetListWidget list;
+	private double savedScroll;
 
 	public ArmorPresetsScreen(Screen parent) {
 		super(Text.translatable("skyblocker.armorPresets.title"));
@@ -22,9 +23,13 @@ public class ArmorPresetsScreen extends Screen {
 		int listHeight = (int) (height * 0.7f);
 		int listX = (width - listWidth) / 2;
 		int listY = (height - listHeight) / 2;
+		if (list != null) {
+			savedScroll = list.getScrollY();
+		}
 		list = new ArmorPresetListWidget(listWidth, listHeight, listY, this::returnToParent);
 		list.setX(listX);
 		addDrawableChild(list);
+		list.setScrollY(savedScroll);
 		if (parent instanceof CustomizeArmorScreen cas) {
 			ButtonWidget save = ButtonWidget.builder(Text.translatable("skyblocker.armorPresets.save"), b -> {
 						b.active = false;

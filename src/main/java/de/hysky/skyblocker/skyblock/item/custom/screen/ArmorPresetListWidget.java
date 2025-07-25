@@ -40,7 +40,9 @@ public class ArmorPresetListWidget extends ElementListWidget<ArmorPresetListWidg
 	 * Refresh the list with the current presets.
 	 */
 	public void refresh() {
+		double scroll = getScrollY();
 		updateEntries();
+		setScrollY(scroll);
 	}
 
 	@Override
@@ -58,7 +60,7 @@ public class ArmorPresetListWidget extends ElementListWidget<ArmorPresetListWidg
 					ArmorPresetCardWidget.clearTempData();
 					ArmorPresets.getInstance().apply(p);
 					closeAction.run();
-				}));
+				}, ArmorPresetListWidget.this::refresh));
 			}
 		}
 
