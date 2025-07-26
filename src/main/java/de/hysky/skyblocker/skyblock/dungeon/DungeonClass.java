@@ -23,11 +23,13 @@ public enum DungeonClass {
 
 	private final String name;
 	private final int color;
+	private final int glowColor;
 	private final ItemStack icon;
 
 	DungeonClass(String name, int color, ItemStack icon) {
 		this.name = name;
 		this.color = ColorHelper.fullAlpha(color);
+		this.glowColor = color;
 		this.icon = icon;
 	}
 
@@ -36,10 +38,17 @@ public enum DungeonClass {
 	}
 
 	/**
-	 * @return The color of the class in RGB format.
+	 * @return The color of the class in ARGB format.
 	 */
 	public int color() {
 		return this.color;
+	}
+
+	/**
+	 * @return The color of the class in RGB format.
+	 */
+	public int glowColor() {
+		return this.glowColor;
 	}
 
 	public ItemStack icon() {
