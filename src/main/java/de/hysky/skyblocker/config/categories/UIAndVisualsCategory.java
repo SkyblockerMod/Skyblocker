@@ -5,7 +5,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.ItemPickupWidget;
-import de.hysky.skyblocker.skyblock.TeleportOverlay;
+import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
@@ -405,6 +405,13 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.teleportOverlay.enableTeleportOverlays = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.showWhenInAir"))
+								.binding(defaults.uiAndVisuals.teleportOverlay.showWhenInAir,
+										() -> config.uiAndVisuals.teleportOverlay.showWhenInAir,
+										newValue -> config.uiAndVisuals.teleportOverlay.showWhenInAir = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(Option.<Color>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor"))
                                 .binding(defaults.uiAndVisuals.teleportOverlay.teleportOverlayColor,
@@ -457,6 +464,14 @@ public class UIAndVisualsCategory {
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE"))
                         .description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip"))
                         .collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.predictive"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip"))
+								.binding(defaults.uiAndVisuals.smoothAOTE.predictive,
+										() -> config.uiAndVisuals.smoothAOTE.predictive,
+										newValue -> config.uiAndVisuals.smoothAOTE.predictive = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission"))
                                 .description(Text.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip"))
