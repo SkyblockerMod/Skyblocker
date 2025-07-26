@@ -135,7 +135,6 @@
     "skyblocker.config.dungeons.professor.fireFreezeStaffTimer.@Tooltip": "Mutat egy időzítőt, hogy mikor kell használni a Fire Freeze Staff-ot az F3/M3 boss fight során.",
     "skyblocker.config.dungeons.secretWaypoints.enableDefaultWaypoints.@Tooltip": "Ebbe számít minden helyjelölő, ami nem tartozik más kategóriába.",
     "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Megjelöli a dungeon során felvett tárgyakat, amiket lehet salvage-elni.",
-    "skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip": "Egy egyedi átfedést mutat a Spirit Leap képernyőn, amivel a leap egyszerűbb, és egyenletesebb lesz.",
     "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Fénylés effektet ad a látható csillagozott mobokra.\n\nFontos, hogy ennek használatával a csapattársi fénylés nem fog látszódni falakon keresztül, amikor egy csillagozott mob jelen van.",
     "skyblocker.config.dungeons.livid.enableSolidColor": "Testreszabott Livid Szín Engedélyezése",
     "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "A Livid színe helyett a Testreszabott szín legyen mutatva a világításnak és határoló doboznak.",

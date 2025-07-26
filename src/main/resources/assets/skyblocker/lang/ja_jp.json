@@ -304,7 +304,6 @@
     "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Goldor進行中にターミナル/デバイス/レバーの位置を表示",
     "skyblocker.config.dungeons.goldorWaypoints.waypointType": "タスクの位置の表示タイプ",
     "skyblocker.config.dungeons.spiritLeapOverlay": "Spirit Leap オーバーレイ",
-    "skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip": "チームメイトへのリープを簡単かつ一貫性のあるものにする、Spirit Leap 画面用のカスタムオーバーレイを表示します。",
     "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "星付きのモブが見えている場合、発光エフェクトを適用する。\n\nこれを使うと、星付きのモブがいるときにチームメイトの光りが壁越しに見えなくなるので注意。",
     "skyblocker.config.dungeons.puzzle.creeperSolver": "クリーパービームの謎解き解決",
     "skyblocker.config.dungeons.secretWaypoints.enableDefaultWaypoints": "デフォルトのウェイポイントを有効にする",

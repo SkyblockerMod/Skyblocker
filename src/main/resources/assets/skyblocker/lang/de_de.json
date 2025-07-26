@@ -156,7 +156,6 @@
     "skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip": "Klicke zum richtigen Zeitpunkt auf die angegebenen Hebel, um das Rätsel zu lösen.",
     "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "Mit diesen Wegpunkten wirfst du eine Perle in Richtung des Blocks und nutzt gleichzeitig AOTV nach oben.",
     "skyblocker.config.dungeons.spiritLeapOverlay": "Spirit Leap Overlay",
-    "skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip": "Zeigt ein eigenes Overlay für Spirit Leaps an, die das Springen zu Mitspielern einfach und konsistent macht.",
     "skyblocker.config.dungeons.starredMobBoundingBoxes": "Mobs mit Sternen umranden",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.secretWaypointsNote": "\n\n\nHinweis: Dungeon Secret Wegpunkte muss hierfür aktiviert sein.",
     "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Hebt die Truhen mit dem meisten Profit beim NPC Croesus hervor.\n\n\nDie beste Truhe wird grün hervorgehoben.\nWenn es eine Truhe gibt, für die es sich lohnt, einen Dungeon Key zu verwenden, wird sie gelb hervorgehoben.",
