@@ -2,26 +2,25 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
 import de.hysky.skyblocker.skyblock.item.custom.preset.ArmorPreset;
-import de.hysky.skyblocker.skyblock.item.custom.preset.ArmorPreviewStorage;
 import de.hysky.skyblocker.skyblock.item.custom.preset.ArmorPresets;
+import de.hysky.skyblocker.skyblock.item.custom.preset.ArmorPreviewStorage;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ConfirmScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.network.OtherClientPlayerEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
 import net.minecraft.screen.ScreenTexts;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import java.util.List;
-
-import net.minecraft.util.Identifier;
 
 public class ArmorPresetCardWidget extends ClickableWidget {
 	public static final int WIDTH = 90;
@@ -29,7 +28,6 @@ public class ArmorPresetCardWidget extends ClickableWidget {
 	private static final EquipmentSlot[] ARMOR_SLOTS = EquipmentSlot.VALUES.stream()
 			.filter(slot -> slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR)
 			.toArray(EquipmentSlot[]::new);
-	private static List<ItemStack> BASE_ARMOR;
 
 	private final ArmorPreset preset;
 	private static final Identifier DELETE_ICON_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/pending_invite/reject.png");
@@ -54,10 +52,7 @@ public class ArmorPresetCardWidget extends ClickableWidget {
 			public void onEquipStack(EquipmentSlot slot, ItemStack oldStack, ItemStack newStack) {}
 		};
 		ArmorPreset.Piece[] pieces = new ArmorPreset.Piece[]{preset.helmet(), preset.chestplate(), preset.leggings(), preset.boots()};
-		if (BASE_ARMOR == null) {
-			BASE_ARMOR = ItemUtils.getArmor(MinecraftClient.getInstance().player);
-		}
-		var baseArmor = BASE_ARMOR;
+		List<ItemStack> baseArmor = ItemUtils.getArmor(MinecraftClient.getInstance().player);
 		for (int i = 0; i < pieces.length && i < baseArmor.size(); i++) {
 			ArmorPreset.Piece p = pieces[pieces.length - 1 - i];
 			ItemStack stack = baseArmor.get(i).copy();
@@ -124,6 +119,5 @@ public class ArmorPresetCardWidget extends ClickableWidget {
 	 */
 	public static void clearTempData() {
 		ArmorPreviewStorage.clear();
-		BASE_ARMOR = null;
 	}
 }

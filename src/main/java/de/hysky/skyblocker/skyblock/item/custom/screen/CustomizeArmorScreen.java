@@ -247,6 +247,12 @@ public class CustomizeArmorScreen extends Screen {
 		return CompletableFuture.runAsync(() -> {
 			// only write the preset file; config will be saved when the screen closes
 			ArmorPresets.getInstance().savePresets();
+		}).exceptionally(e -> {
+			LOGGER.error("Failed to save armor preset", e);
+			if (client != null) {
+				client.execute(() -> client.player.sendMessage(Text.translatable("skyblocker.armorPresets.saveError"), false));
+			}
+			return null;
 		});
 	}
 

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.custom.preset;
 
+import com.google.gson.JsonParseException;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -60,6 +61,8 @@ public class ArmorPresetCommand {
 			} else {
 				ctx.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.armorPresets.importError")));
 			}
+		} catch (JsonParseException e) {
+			ctx.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.armorPresets.importInvalidJson")));
 		} catch (Exception e) {
 			ctx.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.armorPresets.importError")));
 		}

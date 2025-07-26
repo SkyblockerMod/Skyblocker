@@ -4,11 +4,14 @@ import com.google.gson.reflect.TypeToken;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 
@@ -45,7 +48,10 @@ public class ArmorPresets {
 	}
 
 	public void addPreset(ArmorPreset preset) {
-		if (!isValid(preset)) return;
+		if (!isValid(preset)) {
+			LOGGER.warn("Invalid preset attempted: {}", preset);
+			return;
+		}
 
 		String uniqueName = makeUniqueName(preset.name(), null);
 
@@ -59,15 +65,25 @@ public class ArmorPresets {
 	public static boolean isValid(ArmorPreset preset) {
 		if (preset == null || preset.name() == null || preset.name().isBlank()) return false;
 		ArmorPreset.Piece[] pieces = new ArmorPreset.Piece[]{preset.helmet(), preset.chestplate(), preset.leggings(), preset.boots()};
+		var lookup = Utils.getRegistryWrapperLookup();
 		for (ArmorPreset.Piece p : pieces) {
 			if (p == null) return false;
 			if (p.trim() != null) {
+				Identifier materialId;
+				Identifier patternId;
 				try {
-					Identifier.of(p.trim().material());
-					Identifier.of(p.trim().pattern());
+					materialId = Identifier.of(p.trim().material());
+					patternId = Identifier.of(p.trim().pattern());
 				} catch (Exception e) {
 					return false;
 				}
+				boolean materialExists = lookup.getOptional(RegistryKeys.TRIM_MATERIAL)
+						.flatMap(reg -> reg.getOptional(RegistryKey.of(RegistryKeys.TRIM_MATERIAL, materialId)))
+						.isPresent();
+				boolean patternExists = lookup.getOptional(RegistryKeys.TRIM_PATTERN)
+						.flatMap(reg -> reg.getOptional(RegistryKey.of(RegistryKeys.TRIM_PATTERN, patternId)))
+						.isPresent();
+				if (!materialExists || !patternExists) return false;
 			}
 		}
 		return true;
