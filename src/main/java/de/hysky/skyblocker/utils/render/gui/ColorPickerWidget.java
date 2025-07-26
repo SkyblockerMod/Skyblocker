@@ -32,8 +32,8 @@ public class ColorPickerWidget extends ClickableWidget {
 	private boolean draggingSV = false;
 	private boolean draggingH = false;
 
-	private final ScreenRect svRect;
-	private final ScreenRect hRect;
+	private ScreenRect svRect;
+	private ScreenRect hRect;
 
 	private int rgbColor = -1;
 	private @Nullable Callback onColorChange = null;
@@ -49,9 +49,7 @@ public class ColorPickerWidget extends ClickableWidget {
 	public ColorPickerWidget(int x, int y, int width, int height) {
 		super(x, y, width, height, Text.literal("ColorPicker"));
 		rainbowColors = createRainbowColors(Math.min(width / 20, 8));
-		hRect = new ScreenRect(getX() + 1, getBottom() - 9, getWidth() - 2, 8);
-		int i = 15;
-		svRect = new ScreenRect(getX() + 1 + i, getY() + 1, getWidth() - 2 - i, height - hRect.height() - 6);
+		updateRects();
 	}
 
 	@Override
@@ -62,7 +60,42 @@ public class ColorPickerWidget extends ClickableWidget {
 		}
 		draggingH = false;
 		draggingSV = false;
+	}
 
+	private void updateRects() {
+		hRect = new ScreenRect(getX() + 1, getBottom() - 9, getWidth() - 2, 8);
+		int i = 15;
+		svRect = new ScreenRect(getX() + 1 + i, getY() + 1, getWidth() - 2 - i, height - hRect.height() - 6);
+	}
+
+	@Override
+	public void setX(int x) {
+		super.setX(x);
+		updateRects();
+	}
+
+	@Override
+	public void setY(int y) {
+		super.setY(y);
+		updateRects();
+	}
+
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
+		updateRects();
+	}
+
+	@Override
+	public void setHeight(int height) {
+		super.setHeight(height);
+		updateRects();
+	}
+
+	@Override
+	public void setDimensions(int width, int height) { // this doesn't call setWidth or setHeight
+		super.setDimensions(width, height);
+		updateRects();
 	}
 
 	@Override

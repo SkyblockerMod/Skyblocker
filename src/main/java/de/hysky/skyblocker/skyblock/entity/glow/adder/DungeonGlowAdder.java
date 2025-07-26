@@ -65,7 +65,7 @@ public class DungeonGlowAdder extends MobGlowAdder {
 
 			//Class-based glow
 			//This goes after regular mobs to ensure starred player entities like dreadlords have the glow applied
-			case PlayerEntity p when SkyblockerConfigManager.get().dungeons.classBasedPlayerGlow && DungeonScore.isDungeonStarted() -> DungeonPlayerManager.getClassFromPlayer(p).color();
+			case PlayerEntity p when SkyblockerConfigManager.get().dungeons.classBasedPlayerGlow && DungeonScore.isDungeonStarted() -> DungeonPlayerManager.getClassFromPlayer(p).glowColor();
 
 			default -> NO_GLOW;
 		};

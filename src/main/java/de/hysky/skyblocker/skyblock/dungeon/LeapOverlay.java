@@ -39,7 +39,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Identifier BUTTON = Identifier.of(SkyblockerMod.NAMESPACE, "button/button");
 	private static final Identifier BUTTON_HIGHLIGHTED = Identifier.of(SkyblockerMod.NAMESPACE, "button/button_highlighted");
-	private static final DungeonsConfig.SpiritLeapOverlay CONFIG = SkyblockerConfigManager.get().dungeons.leapOverlay;
+	private static final Supplier<DungeonsConfig.SpiritLeapOverlay> CONFIG = () -> SkyblockerConfigManager.get().dungeons.leapOverlay;
 	private static final int BUTTON_SPACING = 8;
 	private static final int BUTTON_WIDTH = 130;
 	private static final int BUTTON_HEIGHT = 50;
@@ -58,7 +58,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	}
 
 	public static boolean shouldShowMap() {
-		return DungeonManager.isClearingDungeon() && CONFIG.showMap;
+		return DungeonManager.isClearingDungeon() && CONFIG.get().showMap;
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		GridWidget gridWidget = new GridWidget().setSpacing(BUTTON_SPACING);
 		Adder adder = gridWidget.createAdder(2);
 		for (PlayerReference reference : references) {
-			adder.add(new PlayerButton(0, 0, (int) (BUTTON_WIDTH * CONFIG.scale), (int) (BUTTON_HEIGHT * CONFIG.scale), reference));
+			adder.add(new PlayerButton(0, 0, (int) (BUTTON_WIDTH * CONFIG.get().scale), (int) (BUTTON_HEIGHT * CONFIG.get().scale), reference));
 		}
 		layout.add(gridWidget);
 
@@ -149,13 +149,13 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 	public class MapWidget extends ClickableWidget {
 		public MapWidget(int x, int y) {
-			super(x, y, (int) (128 * CONFIG.scale), (int) (128 * CONFIG.scale), Text.translatable("skyblocker.config.dungeons.map.fancyMap"));
+			super(x, y, (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), Text.translatable("skyblocker.config.dungeons.map.fancyMap"));
 		}
 
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			LeapOverlay.this.hovered = DungeonMap.render(context, getX(), getY(), CONFIG.scale, true, mouseX - getX(), mouseY - getY(), hoveredElement(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
-			context.drawBorder(getX(), getY(), (int) (128 * CONFIG.scale), (int) (128 * CONFIG.scale), Colors.WHITE);
+			LeapOverlay.this.hovered = DungeonMap.render(context, getX(), getY(), CONFIG.get().scale, true, mouseX - getX(), mouseY - getY(), hoveredElement(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
+			context.drawBorder(getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), Colors.WHITE);
 		}
 
 		@Override
@@ -189,7 +189,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
 			Matrix3x2fStack matrices = context.getMatrices();
-			float scale = CONFIG.scale;
+			float scale = CONFIG.get().scale;
 			int baseX = this.getX() + BORDER_THICKNESS;
 			int centreX = this.getX() + (this.getWidth() >> 1);
 			int centreY = this.getY() + (this.getHeight() >> 1);
