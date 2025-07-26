@@ -171,6 +171,8 @@
 
   "skyblocker.config.dungeons.map": "Map",
   "skyblocker.config.dungeons.map.enableMap": "Enable Map",
+  "skyblocker.config.dungeons.map.fancyMap": "Fancy Dungeon Map",
+  "skyblocker.config.dungeons.map.showSelfHead": "Show Self Head",
   "skyblocker.config.dungeons.map.mapScaling": "Map Scaling",
   "skyblocker.config.dungeons.map.mapScreen": "Dungeon Map & Score Placement Config...",
 
@@ -234,7 +236,10 @@
   "skyblocker.config.dungeons.secretWaypoints.waypointType": "Waypoint Type",
 
   "skyblocker.config.dungeons.spiritLeapOverlay": "Spirit Leap Overlay",
-  "skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip": "Shows a custom overlay for the Spirit Leap screen that makes leaping to teammates easy and consistent.",
+  "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay": "Enable Spirit Leap Overlay",
+  "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay.@Tooltip": "Shows a custom overlay for the Spirit Leap screen that makes leaping to teammates easy and consistent.",
+  "skyblocker.config.dungeons.spiritLeapOverlay.showMap": "Show Dungeon Map in Spirit Leap Overlay",
+  "skyblocker.config.dungeons.spiritLeapOverlay.scale": "Spirit Leap Overlay Scale",
 
   "skyblocker.config.dungeons.starredMobBoundingBoxes": "Starred Mob Bounding Boxes",
   "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
