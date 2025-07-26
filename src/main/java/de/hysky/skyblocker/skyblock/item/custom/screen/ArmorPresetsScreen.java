@@ -7,6 +7,7 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
+import de.hysky.skyblocker.skyblock.item.custom.preset.ArmorPreviewStorage;
 
 public class ArmorPresetsScreen extends Screen {
 	private final Screen parent;
@@ -16,6 +17,7 @@ public class ArmorPresetsScreen extends Screen {
 	public ArmorPresetsScreen(Screen parent) {
 		super(Text.translatable("skyblocker.armorPresets.title"));
 		this.parent = parent;
+		ArmorPreviewStorage.clear();
 	}
 
 	@Override
@@ -52,6 +54,7 @@ public class ArmorPresetsScreen extends Screen {
 
 	private void returnToParent() {
 		ArmorPresetCardWidget.clearTempData();
+		ArmorPreviewStorage.clear();
 		client.setScreen(parent);
 		if (parent instanceof CustomizeArmorScreen cas) {
 			cas.updateWidgets();

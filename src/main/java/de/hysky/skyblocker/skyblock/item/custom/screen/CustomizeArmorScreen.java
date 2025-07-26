@@ -243,7 +243,7 @@ public class CustomizeArmorScreen extends Screen {
 
 	CompletableFuture<Void> savePresetAsync() {
 		ArmorPreset preset = buildPreset();
-		ArmorPresets.getInstance().getPresets().add(preset);
+		ArmorPresets.getInstance().addPreset(preset);
 		return CompletableFuture.runAsync(() -> {
 			// only write the preset file; config will be saved when the screen closes
 			ArmorPresets.getInstance().savePresets();

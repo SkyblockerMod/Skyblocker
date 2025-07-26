@@ -54,7 +54,7 @@ public class ArmorPresetCommand {
 		String json = MinecraftClient.getInstance().keyboard.getClipboard();
 		try {
 			ArmorPreset preset = SkyblockerMod.GSON.fromJson(json, ArmorPreset.class);
-			if (preset != null) {
+			if (ArmorPresets.isValid(preset)) {
 				ArmorPresets.getInstance().addPreset(preset);
 				ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.armorPresets.importSuccess")));
 			} else {

@@ -6,6 +6,8 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
+import net.minecraft.component.type.AttributeModifierSlot;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ArmorPresets {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -42,8 +45,46 @@ public class ArmorPresets {
 	}
 
 	public void addPreset(ArmorPreset preset) {
-		presets.add(preset);
+		if (!isValid(preset)) return;
+
+		String uniqueName = makeUniqueName(preset.name(), null);
+
+		ArmorPreset toAdd = uniqueName.equals(preset.name()) ? preset
+				: new ArmorPreset(uniqueName, preset.helmet(), preset.chestplate(), preset.leggings(), preset.boots());
+
+		presets.add(toAdd);
 		save();
+	}
+
+	public static boolean isValid(ArmorPreset preset) {
+		if (preset == null || preset.name() == null || preset.name().isBlank()) return false;
+		ArmorPreset.Piece[] pieces = new ArmorPreset.Piece[]{preset.helmet(), preset.chestplate(), preset.leggings(), preset.boots()};
+		for (ArmorPreset.Piece p : pieces) {
+			if (p == null) return false;
+			if (p.trim() != null) {
+				try {
+					Identifier.of(p.trim().material());
+					Identifier.of(p.trim().pattern());
+				} catch (Exception e) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private String makeUniqueName(String baseName, ArmorPreset ignore) {
+		String uniqueName = baseName;
+		int counter = 1;
+		while (true) {
+			final String check = uniqueName;
+			boolean exists = presets.stream()
+					.filter(p -> p != ignore)
+					.anyMatch(p -> p.name().equalsIgnoreCase(check));
+			if (!exists) break;
+			uniqueName = baseName + " (" + counter++ + ")";
+		}
+		return uniqueName;
 	}
 
 	/**
@@ -58,9 +99,12 @@ public class ArmorPresets {
 	 * Rename the given preset and persist the change.
 	 */
 	public void renamePreset(ArmorPreset preset, String newName) {
+		if (newName == null || newName.isBlank()) return;
 		int idx = presets.indexOf(preset);
 		if (idx >= 0) {
-			presets.set(idx, new ArmorPreset(newName,
+			String uniqueName = makeUniqueName(newName, preset);
+
+			presets.set(idx, new ArmorPreset(uniqueName,
 					preset.helmet(), preset.chestplate(), preset.leggings(), preset.boots()));
 			save();
 		}
@@ -76,32 +120,43 @@ public class ArmorPresets {
 	public void apply(ArmorPreset preset) {
 		var player = net.minecraft.client.MinecraftClient.getInstance().player;
 		if (player == null) return;
-		var armorStacks = ItemUtils.getArmor(player);
-		ArmorPreset.Piece[] pieces = new ArmorPreset.Piece[]{preset.helmet(), preset.chestplate(), preset.leggings(), preset.boots()};
-		for (int i = 0; i < Math.min(armorStacks.size(), pieces.length); i++) {
-			ItemStack playerStack = armorStacks.get(i);
+
+		Map<EquipmentSlot, ArmorPreset.Piece> pieceMap = Map.of(
+				EquipmentSlot.HEAD, preset.helmet(),
+				EquipmentSlot.CHEST, preset.chestplate(),
+				EquipmentSlot.LEGS, preset.leggings(),
+				EquipmentSlot.FEET, preset.boots());
+
+		for (EquipmentSlot slot : AttributeModifierSlot.ARMOR.getSlots()) {
+			if (slot.getType() != EquipmentSlot.Type.HUMANOID_ARMOR) continue;
+			ItemStack playerStack = player.getEquippedStack(slot);
 			String uuid = ItemUtils.getItemUuid(playerStack);
 			if (uuid.isEmpty()) continue;
-			ArmorPreset.Piece piece = pieces[pieces.length - 1 - i];
+			ArmorPreset.Piece piece = pieceMap.get(slot);
+			if (piece == null) continue;
 			var cfg = SkyblockerConfigManager.get().general;
 			if (piece.trim() != null) {
 				cfg.customArmorTrims.put(uuid, new CustomArmorTrims.ArmorTrimId(
 						Identifier.of(piece.trim().material()),
 						Identifier.of(piece.trim().pattern())));
-			} else
+			} else {
 				cfg.customArmorTrims.remove(uuid);
-			if (piece.dye() != null)
+			}
+			if (piece.dye() != null) {
 				cfg.customDyeColors.put(uuid, piece.dye());
-			else
+			} else {
 				cfg.customDyeColors.removeInt(uuid);
-			if (piece.animation() != null)
+			}
+			if (piece.animation() != null) {
 				cfg.customAnimatedDyes.put(uuid, piece.animation());
-			else
+			} else {
 				cfg.customAnimatedDyes.remove(uuid);
-			if (piece.texture() != null)
+			}
+			if (piece.texture() != null) {
 				cfg.customHelmetTextures.put(uuid, piece.texture());
-			else
+			} else {
 				cfg.customHelmetTextures.remove(uuid);
+			}
 		}
 		SkyblockerConfigManager.update(config -> {});
 	}
