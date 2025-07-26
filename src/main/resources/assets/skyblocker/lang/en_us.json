@@ -1350,11 +1350,17 @@
 
   "skyblocker.nightVision.success": "Changed the strength of night vision to %d.",
 
-  "skyblocker.customItemNames.removed": "§fRemoved this item's custom name.",
-  "skyblocker.customItemNames.neverHad": "§fThis item doesn't have a custom name set, but why not add one? ;)",
-  "skyblocker.customItemNames.added": "§fSet a custom name for your currently held item!",
-  "skyblocker.customItemNames.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom name!",
-  "skyblocker.customItemNames.unableToSetName": "§cUnable to set a custom item name. Please check if you are in Skyblock and holding an item.",
+  "skyblocker.customItemNames.added": "Set a custom name for your currently held item!",
+  "skyblocker.customItemNames.notOnSkyblock": "You can only set custom item names while in Skyblock!",
+  "skyblocker.customItemNames.noItem": "You aren't holding an item!",
+  "skyblocker.customItemNames.noItemUuid": "You must be holding an item that has a UUID to set a custom item name!",
+
+  "skyblocker.customItemNames.screen.customColor": "Custom",
+  "skyblocker.customItemNames.screen.customColorTitle": "Custom Color",
+  "skyblocker.customItemNames.screen.gradientColor": "Gradient",
+  "skyblocker.customItemNames.screen.gradientStart": "Gradient Start",
+  "skyblocker.customItemNames.screen.gradientEnd": "Gradient End",
+  "skyblocker.customItemNames.screen.howToRemove": "Leave the name field empty to remove the custom name.",
 
   "skyblocker.customDyeColors.invalidHex": "§cInvalid HEX color code!",
   "skyblocker.customDyeColors.notDyeable": "§cThis item isn't a dyeable armor piece!",
