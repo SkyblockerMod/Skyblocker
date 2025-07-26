@@ -103,10 +103,11 @@ public class TitleContainer {
 		UIAndVisualsConfig.Alignment alignment = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment;
 
 		// x/y refer to the starting position for the text
+		// If xPos or yPos is negative, use the default values
 		// If left or right aligned or middle aligned vertically, start at xPos, we will shift each text later
-		float x = xPos;
+		float x = xPos >= 0 ? xPos : MinecraftClient.getInstance().getWindow().getScaledWidth() / 2f;
 		// y always starts at yPos
-		float y = yPos;
+		float y = yPos >= 0 ? yPos : MinecraftClient.getInstance().getWindow().getScaledHeight() * 0.6f;
 
 		// Calculate the width of combined text
 		float totalWidth = getWidth(textRenderer, titles);
