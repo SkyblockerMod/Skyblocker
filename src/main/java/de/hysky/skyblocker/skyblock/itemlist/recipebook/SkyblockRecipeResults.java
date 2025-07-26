@@ -14,7 +14,7 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -184,7 +184,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	 * Returns true if the mouse is hovering over the text at this location.
 	 */
 	private boolean isMouseHoveringText(int textX, int textY, int mouseX, int mouseY) {
-		return HudHelper.pointIsInArea(mouseX, mouseY, textX, textY, textX + MAX_TEXT_WIDTH + 4, textY + this.client.textRenderer.fontHeight);
+		return RenderHelper.pointIsInArea(mouseX, mouseY, textX, textY, textX + MAX_TEXT_WIDTH + 4, textY + this.client.textRenderer.fontHeight);
 	}
 
 	protected void closeRecipeView() {

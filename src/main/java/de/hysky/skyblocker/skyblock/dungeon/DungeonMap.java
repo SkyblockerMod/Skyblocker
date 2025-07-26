@@ -9,7 +9,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -162,7 +162,7 @@ public class DungeonMap {
 				context.getMatrices().scale(2, 2, 1);
 				hovered = player.uuid();
 			}
-			HudHelper.drawPlayerHead(context, -4, -4, 8, player.uuid());
+			RenderHelper.drawPlayerHead(context, -4, -4, 8, player.uuid());
 			context.drawBorder(-5, -5, 10, 10, dungeonPlayer.dungeonClass().color());
 			context.fill(-1, -7, 1, -5, dungeonPlayer.dungeonClass().color());
 			context.getMatrices().pop();

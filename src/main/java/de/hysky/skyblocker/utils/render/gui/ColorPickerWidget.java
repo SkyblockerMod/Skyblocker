@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -112,7 +112,7 @@ public class ColorPickerWidget extends ClickableWidget {
 			float segmentLength = (float) hRect.width() / rainbowColors.length;
 			float startX = hRect.getLeft() + segmentLength * i;
 			float endX = hRect.getLeft() + segmentLength * (i + 1);
-			HudHelper.drawHorizontalGradient(context, startX, hRect.getTop(), endX, hRect.getBottom(), startColor, endColor);
+			RenderHelper.drawHorizontalGradient(context, startX, hRect.getTop(), endX, hRect.getBottom(), startColor, endColor);
 		}
 		context.fill(hRect.getLeft() + (int) hThumbX - 1, hRect.getTop(), hRect.getLeft() + (int) hThumbX + 2, hRect.getBottom(), Colors.BLACK);
 		context.fill(hRect.getLeft() + (int) hThumbX, hRect.getTop() - 1, hRect.getLeft() + (int) hThumbX + 1, hRect.getBottom() + 1, Colors.BLACK);
@@ -124,7 +124,7 @@ public class ColorPickerWidget extends ClickableWidget {
 		int pickerY = svRect.getTop();
 		int pickerEndX = svRect.getRight();
 		int pickerEndY = svRect.getBottom();
-		HudHelper.drawHorizontalGradient(context, pickerX, pickerY, pickerEndX, pickerEndY, -1, svColor);
+		RenderHelper.drawHorizontalGradient(context, pickerX, pickerY, pickerEndX, pickerEndY, -1, svColor);
 		context.fillGradient(pickerX, pickerY, pickerEndX, pickerEndY, 1, 0, 0xFF_00_00_00);
 
 		MatrixStack matrices = context.getMatrices();

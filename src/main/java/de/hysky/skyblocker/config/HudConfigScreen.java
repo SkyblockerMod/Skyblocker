@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.config;
 
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.DrawContext;
@@ -84,7 +84,7 @@ public abstract class HudConfigScreen extends Screen {
 	public final boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (button == 0) {
 			for (AbstractWidget widget : widgets) {
-				if (HudHelper.pointIsInArea(mouseX, mouseY, widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
+				if (RenderHelper.pointIsInArea(mouseX, mouseY, widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
 					draggingWidget = widget;
 					mouseClickRelativeX = mouseX - widget.getX() - getWidgetXOffset(widget);
 					mouseClickRelativeY = mouseY - widget.getY();
