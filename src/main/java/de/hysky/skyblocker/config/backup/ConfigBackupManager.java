@@ -7,10 +7,13 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -40,7 +43,8 @@ public class ConfigBackupManager {
 			if (!Files.exists(configPath)) return;
 			Files.createDirectories(BACKUP_DIR);
 
-			Path latest = listBackups().findFirst().orElse(null);
+			List<Path> backups = listBackups();
+			Path latest = backups.isEmpty() ? null : backups.getFirst();
 			if (latest != null && Files.mismatch(configPath, latest) == -1) {
 				return; // current config matches the newest backup
 			}
@@ -53,11 +57,14 @@ public class ConfigBackupManager {
 		}
 	}
 
-	public static Stream<Path> listBackups() throws IOException {
-		if (!Files.exists(BACKUP_DIR)) return Stream.empty();
-		return Files.list(BACKUP_DIR)
-				.filter(p -> p.getFileName().toString().endsWith(".json"))
-				.sorted(Comparator.reverseOrder());
+	public static List<Path> listBackups() throws IOException {
+		if (!Files.exists(BACKUP_DIR)) return List.of();
+		try (Stream<Path> stream = Files.list(BACKUP_DIR)) {
+			return stream
+					.filter(p -> p.getFileName().toString().endsWith(".json"))
+					.sorted(Comparator.reverseOrder())
+					.toList();
+		}
 	}
 
 	public static void restoreBackup(Path backup) throws IOException {
@@ -66,14 +73,13 @@ public class ConfigBackupManager {
 	}
 
 	private static void cleanOldBackups() throws IOException {
-		try (Stream<Path> stream = listBackups().skip(MAX_BACKUPS)) {
-			stream.forEach(path -> {
-				try {
-					Files.deleteIfExists(path);
-				} catch (IOException e) {
-					LOGGER.error("[Skyblocker] Failed to delete old backup {}", path, e);
-				}
-			});
+		List<Path> backups = listBackups();
+		for (int i = MAX_BACKUPS; i < backups.size(); i++) {
+			try {
+				Files.deleteIfExists(backups.get(i));
+			} catch (IOException e) {
+				LOGGER.error("[Skyblocker] Failed to delete old backup {}", backups.get(i), e);
+			}
 		}
 	}
 }

@@ -1,5 +1,9 @@
 package de.hysky.skyblocker.config.backup;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -8,24 +12,20 @@ import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
+import net.minecraft.client.toast.SystemToast;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class ConfigBackupScreen extends Screen {
+	private static final Logger LOGGER = LogUtils.getLogger();
 	private final Screen parent;
 	private BackupListWidget listWidget;
 	private SettingsListWidget detailsWidget;
@@ -68,7 +68,11 @@ public class ConfigBackupScreen extends Screen {
 						try {
 							ConfigBackupManager.restoreBackup(selected);
 						} catch (IOException e) {
-							// ignore
+							LOGGER.error("[Skyblocker] Failed to restore backup {}", selected.getFileName().toString(), e);
+							client.getToastManager().add(new SystemToast(SystemToast.Type.PERIODIC_NOTIFICATION,
+									Text.translatable("skyblocker.config.backup.restore.error"),
+									Text.literal("Failed to restore backup")));
+							return;
 						}
 						if (parent != null) {
 							client.setScreen(SkyblockerConfigManager.createGUI(parent));
@@ -98,9 +102,7 @@ public class ConfigBackupScreen extends Screen {
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		this.renderBackground(context, mouseX, mouseY, delta);
 		listWidget.render(context, mouseX, mouseY, delta);
-		if (detailsWidget != null) {
-			detailsWidget.render(context, mouseX, mouseY, delta);
-		}
+		detailsWidget.render(context, mouseX, mouseY, delta);
 		context.drawCenteredTextWithShadow(textRenderer, title, width / 2, 12, 0xFFFFFF);
 		super.render(context, mouseX, mouseY, delta);
 	}
@@ -125,7 +127,7 @@ public class ConfigBackupScreen extends Screen {
 		void updateEntries() {
 			clearEntries();
 			try {
-				List<Path> backups = ConfigBackupManager.listBackups().toList();
+				List<Path> backups = ConfigBackupManager.listBackups();
 				for (Path backup : backups) {
 					addEntry(new BackupEntry(backup));
 				}
