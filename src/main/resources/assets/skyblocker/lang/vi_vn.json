@@ -278,7 +278,6 @@
     "skyblocker.config.general.itemTooltip.enableObtainedDate": "Bật Ngày Nhận Được",
     "skyblocker.config.general.searchOverlay.maxPet.@Tooltip": "Chỉ hiển thị pet có level cao nhất",
     "skyblocker.config.dungeons.spiritLeapOverlay": "Lớp phủ HUD cho Spirit Leap",
-    "skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip": "Hiển thị lớp phủ được tùy chỉnh cho Spirit Leap để giúp việc leap tới đồng đội dễ dàng và ổn định hơn.",
     "skyblocker.config.helpers.fishing.hideOtherPlayers.@Tooltip": "Ẩn cần câu của những người chơi khác cho bạn",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase": "Trường hợp được bỏ qua:",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.name": "Tên:",

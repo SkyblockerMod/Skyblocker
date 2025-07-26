@@ -670,7 +670,6 @@
     "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "Dans le jardin, à droite de votre inventaire, vous trouverez un widget qui vous permettra de vous téléporter rapidement vers les parcelles. Il affichera également les parcelles qui ont des parasites (il faut pour cela que le Pests widget soit activé et visible dans Tab).",
     "skyblocker.config.dungeons.puzzle.previewWaterPath": "Waterboard: Aperçu du chemin de l'eau",
     "skyblocker.config.farming.garden.pestHighlighter": "Surbrillance des parasites",
-    "skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip": "Montre une superposition personnalisée pour l'écran Spirit Leap qui rend les sauts vers les coéquipiers faciles et cohérents.",
     "skyblocker.config.farming.garden.closeScreenOnPlotClick.@Tooltip": "Si votre inventaire doit se fermer automatiquement lorsque vous vous téléportez sur une parcelle à l'aide du Garden Plots Widget",
     "skyblocker.config.farming.garden.gardenPlotsWidget": "Activer le Garden Plots Widget",
     "skyblocker.config.general.itemTooltip.craft.OFF": "Off",
