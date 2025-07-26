@@ -388,5 +388,7 @@ public class UIAndVisualsConfig {
 		public boolean showItemName = true;
 
 		public int lifeTime = 3;
+
+		public boolean splitNotifications = false;
 	}
 }
