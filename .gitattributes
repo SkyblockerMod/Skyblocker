@@ -1,0 +1,10 @@
+* text=auto eol=lf
+
+# Not needed but just in case
+*.java text eol=lf
+
+# Requires crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.csv text eol=crlf
+*.ps1 text eol=crlf
