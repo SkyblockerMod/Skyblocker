@@ -20,16 +20,14 @@ import net.minecraft.util.math.Vec3d;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RegisterWidget
 public class TreeBreakProgressHud extends ComponentBasedWidget {
 
-	private final MinecraftClient client = MinecraftClient.getInstance();
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GALATEA);
 	private static TreeBreakProgressHud instance;
 	private static Int2ObjectMap<ArmorStandEntity> armorstands = new Int2ObjectOpenHashMap<ArmorStandEntity>();
-	private static ArmorStandEntity closest;
 
 	static {
             ClientEntityEvents.ENTITY_UNLOAD.register((entity, clientWorld) -> armorstands.remove(entity.getId()));
@@ -78,19 +76,19 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 	}
 
 	private ArmorStandEntity getClosestTree() {
-		if (client.player == null) return null;
+		if (CLIENT.player == null) return null;
 		return armorstands.values().stream()
         	.filter(entity -> {
 				Text name = entity.getCustomName();
 				if (name == null) return false;
 				return name.getString().contains("FIG TREE") || name.getString().contains("MANGROVE TREE");
 			})
-        	.min(Comparator.comparingDouble(e -> e.squaredDistanceTo(client.player)))
+			.min(Comparator.comparingDouble(e -> e.squaredDistanceTo(CLIENT.player)))
         	.orElse(null);
 	}
 
 	private boolean isOwnTree(ArmorStandEntity tree) {
-		if (client.player == null) return false;
+		if (CLIENT.player == null) return false;
 		if (tree == null) return false;
 		Vec3d treePos = tree.getPos();
 
@@ -101,9 +99,8 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
                    Math.abs(pos.y - treePos.y) < 2 &&
                    Math.abs(pos.z - treePos.z) < 0.1;
         })
-        .collect(Collectors.toList());
-
-		String playerName = client.player.getName().getString();
+		.toList();
+		String playerName = CLIENT.player.getName().getString();
 
 		return groupedArmorStands.stream().anyMatch(armorStand -> {
         	String name = armorStand.getName().getString();
@@ -113,19 +110,20 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 
 	@Override
 	public void updateContent() {
-		ClientWorld world = client.world;
+		ClientWorld world = CLIENT.world;
+		ArmorStandEntity closest;
 
-		if (client.currentScreen instanceof WidgetsConfigurationScreen) {
+		if (CLIENT.currentScreen instanceof WidgetsConfigurationScreen) {
 			addSimpleIcoText(Ico.STRIPPED_SPRUCE_WOOD, "Fig Tree ", Formatting.GREEN, "37%");
 			return;
 		}
 
-		if (client.player == null || world == null)
+		if (CLIENT.player == null || world == null)
 			return;
 		closest = getClosestTree();
 		if (closest == null || !isOwnTree(closest)) return;
 
-		String closestName = closest.getCustomName().getString();
+		String closestName = closest.getName().getString();
 		String treeName = closestName.contains("FIG") ? "Fig Tree" : "Mangrove Tree";
 		ItemStack woodIcon = closestName.contains("FIG") ? Ico.STRIPPED_SPRUCE_WOOD : Ico.MANGROVE_LOG;
 		addSimpleIcoText(woodIcon, treeName + " ", Formatting.GREEN, closestName.replaceAll("[^0-9%]", ""));
