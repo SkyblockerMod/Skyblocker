@@ -95,5 +95,6 @@
     "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing armour from the wardrobe by pressing hotbar keys 1-9 while the menu is open. The corresponding armour set in the wardrobe menu will be equipped.",
     "skyblocker.config.uiAndVisuals.chestValue.color": "Chest Value Colour",
     "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "Incomplete Colour",
-    "skyblocker.config.dungeons.livid.customColor": "Custom Livid Colour"
+    "skyblocker.config.dungeons.livid.customColor": "Custom Livid Colour",
+    "skyblocker.customItemNames.screen.customColorTitle": "Custom Colour"
 }
