@@ -122,7 +122,7 @@
     "skyblocker.config.general.shortcuts": "Сокращения",
     "skyblocker.config.general.shortcuts.enableShortcuts": "Включить сокращения",
     "skyblocker.config.general.shortcuts.enableShortcuts.@Tooltip": "Работает где угодно, даже на ваниле! Сокращения можно редактировать при помощи \"/skyblocker shortcuts\". Хотя бы одна из опций должна быть включена, чтобы это работало.",
-    "key.skyblocker.toggleA": "Переключение меню TAB на режим A",
+    "key.skyblocker.toggleA": "Переключение на второй таб-худ",
     "skyblocker.config.general.shortcuts.enableCommandShortcuts.@Tooltip": "Сокращения для команд, состоящих только из одного слова. Редактируйте сокращения с помощью команды \"/skyblocker shortcuts\". Сокращения должны быть включены, чтобы это вступило в силу.",
     "skyblocker.config.general.quiverWarning": "Предупреждение о нехватке стрел",
     "skyblocker.config.general.quiverWarning.enableQuiverWarning": "Включить предупреждение о нехватке стрел",
@@ -659,7 +659,7 @@
     "skyblocker.skyblockerScreen": "Главное меню Skyblocker",
     "key.skyblocker.slottext": "Текст слота",
     "skyblocker.config.shortcutToKeybindsSettings": "Назначить клавишу",
-    "skyblocker.config.shortcutToKeybindsSettings.@Text": "Нажми... (Открывает настройки привязки клавиш)",
+    "skyblocker.config.shortcutToKeybindsSettings.@Text": "Меню привязки клавиш",
     "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "Блокировать некорректные нажатия",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Подсветка Kuudr'ы",
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Обводит босса Kuudra в тёмно-оранжевый.",
@@ -851,7 +851,7 @@
     "skyblocker.dungeons.secrets.markSecretsMissingUnable": "§cНевозможно пометить секреты в этой комнате как отсутствующие.",
     "skyblocker.tips.contribute": "Мы приветствуем вклад в создание мода! Смотрите https://github.com/SkyblockerMod/Skyblocker/wiki/contribute для получения дополнительной информации.",
     "skyblocker.tips.gardenMouseLock": "Заблокируйте мышь во время фарма в конфигурации Skyblocker Garden.",
-    "key.itemPriceLookup": "Поиск по Bazaar",
+    "key.itemPriceLookup": "Цена предмета на базаре",
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "Включить поиск цены товара",
     "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "Включить обновление цены товара",
     "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "Обновите цены на Базаре и AH с помощью клавиши Z.",
@@ -919,5 +919,9 @@
     "text.skyblocker.dead": "Смерть",
     "text.skyblocker.offline": "Оффлайн",
     "key.wikiLookup.official": "Посмотреть на Hypixel Wiki",
-    "key.wikiLookup.fandom": "Посмотреть на Fandom Wiki"
+    "key.wikiLookup.fandom": "Посмотреть на Fandom Wiki",
+    "skyblocker.config.dungeons.classBasedPlayerGlow": "Подсветка игрока на основе класса",
+    "key.skyblocker.debug.dumpNearbyEntities": "Сбросить близлежащие объекты",
+    "key.skyblocker.debug.dumpHoveredItem": "Сбросить наведенный предмет",
+    "skyblocker.config.debug.corpseFinderDebug": "Откладка нахождения трупов"
 }
