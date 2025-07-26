@@ -132,7 +132,7 @@ public class Waypoints {
     }
 
     public static @Nullable List<WaypointGroup> fromSkyblocker(String waypointsString, Location defaultIsland) {
-        waypointsString.trim();
+        waypointsString = waypointsString.trim();
         if (waypointsString.startsWith(PREFIX)) {
             try (GZIPInputStream reader = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(waypointsString.replace(PREFIX, ""))))) {
                 return CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(new String(reader.readAllBytes()), JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
@@ -164,7 +164,7 @@ public class Waypoints {
     }
 
     public static @Nullable List<WaypointGroup> fromSkytils(String waypointsString, Location defaultIsland) {
-        waypointsString.trim();
+        waypointsString = waypointsString.trim();
         try {
             if (waypointsString.startsWith("<Skytils-Waypoint-Data>(V")) {
                 int version = Integer.parseInt(waypointsString.substring(25, waypointsString.indexOf(')')));
