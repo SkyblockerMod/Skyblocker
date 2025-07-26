@@ -44,7 +44,7 @@ public class CrystalsChestHighlighter {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(CrystalsChestHighlighter::extractLocationFromMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(CrystalsChestHighlighter::extractLocationFromMessage);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(CrystalsChestHighlighter::render);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 	}
@@ -56,14 +56,16 @@ public class CrystalsChestHighlighter {
 		currentLockCount = 0;
 	}
 
-	private static void extractLocationFromMessage(Text text, boolean b) {
+	private static boolean extractLocationFromMessage(Text text, boolean b) {
 		if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
-			return;
+			return true;
 		}
 		//if a chest is spawned add chest to look for
 		if (text.getString().matches(CHEST_SPAWN_MESSAGE)) {
 			waitingForChest += 1;
 		}
+
+		return true;
 	}
 
 	/**

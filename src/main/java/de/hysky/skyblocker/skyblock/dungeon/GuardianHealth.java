@@ -28,7 +28,7 @@ public class GuardianHealth {
 
     @Init
     public static void init() {
-        ClientReceiveMessageEvents.GAME.register(GuardianHealth::onChatMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(GuardianHealth::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> GuardianHealth.reset());
         WorldRenderEvents.AFTER_ENTITIES.register(GuardianHealth::onWorldRender);
     }
@@ -80,12 +80,14 @@ public class GuardianHealth {
         inBoss = false;
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
+    private static boolean onChatMessage(Text text, boolean overlay) {
         if (Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.theProfessor.floor3GuardianHealthDisplay && !inBoss) {
             String unformatted = Formatting.strip(text.getString());
 
             inBoss = unformatted.equals("[BOSS] The Professor: I was burdened with terrible news recently...");
         }
+
+        return true;
     }
 
     private static boolean isGuardianName(ArmorStandEntity entity) {

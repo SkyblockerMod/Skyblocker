@@ -13,6 +13,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
@@ -61,6 +62,17 @@ public abstract class ClientWorldMixin implements BlockView {
 	private void skyblocker$silencePhantoms(CallbackInfo ci, @Local(argsOnly = true) SoundEvent soundEvent) {
 		if (SkyblockerConfigManager.get().hunting.huntingMobs.silencePhantoms && soundEvent.id().getPath().startsWith("entity.phantom")) {
 			ci.cancel();
+		}
+
+		// Mute Enderman sounds in the End
+		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().otherLocations.end.muteEndermanSounds) {
+			if (soundEvent.id().equals(SoundEvents.ENTITY_ENDERMAN_AMBIENT.id()) ||
+					soundEvent.id().equals(SoundEvents.ENTITY_ENDERMAN_DEATH.id()) ||
+					soundEvent.id().equals(SoundEvents.ENTITY_ENDERMAN_HURT.id()) ||
+					soundEvent.id().equals(SoundEvents.ENTITY_ENDERMAN_SCREAM.id()) ||
+					soundEvent.id().equals(SoundEvents.ENTITY_ENDERMAN_STARE.id())) {
+				ci.cancel();
+			}
 		}
 	}
 }
