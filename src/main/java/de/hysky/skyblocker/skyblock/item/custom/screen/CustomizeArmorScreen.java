@@ -9,6 +9,8 @@ import de.hysky.skyblocker.injected.RecipeBookHolder;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
+import de.hysky.skyblocker.skyblock.item.custom.preset.ArmorPreset;
+import de.hysky.skyblocker.skyblock.item.custom.preset.ArmorPresets;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.concurrent.CompletableFuture;
 
 public class CustomizeArmorScreen extends Screen {
 	static final Logger LOGGER = LogUtils.getLogger();
@@ -155,6 +158,10 @@ public class CustomizeArmorScreen extends Screen {
 			updateWidgets();
 		}
 
+		addDrawableChild(ButtonWidget.builder(Text.translatable("skyblocker.armorPresets.button"),
+						b -> CLIENT.setScreen(new ArmorPresetsScreen(this)))
+				.position(width / 2 - 75, height - 50).size(150, 20).build());
+
 		addDrawableChild(ButtonWidget.builder(Text.translatable("gui.cancel"), b -> cancel()).position(width / 2 - 155, height - 25).build());
 		addDrawableChild(ButtonWidget.builder(Text.translatable("gui.done"), b -> close()).position(width / 2 + 5, height - 25).build());
 	}
@@ -206,7 +213,7 @@ public class CustomizeArmorScreen extends Screen {
 		client.setScreen(previousScreen);
 	}
 
-	private void updateWidgets() {
+	void updateWidgets() {
 		if (nothingCustomizable) return;
 		ItemStack item = armor[selectedSlot];
 		boolean isPlayerHead = item.isOf(Items.PLAYER_HEAD);
@@ -216,6 +223,51 @@ public class CustomizeArmorScreen extends Screen {
 		headSelectionWidget.visible = isPlayerHead;
 		trimSelectionWidget.visible = !isPlayerHead;
 		colorSelectionWidget.visible = !isPlayerHead;
+	}
+
+	void savePreset() {
+		savePresetAsync().join();
+	}
+
+	private ArmorPreset buildPreset() {
+		var presets = ArmorPresets.getInstance();
+		String name = "Preset " + (presets.getPresets().size() + 1);
+
+		ArmorPreset.Piece helmet = createPiece(armor[0]);
+		ArmorPreset.Piece chest = createPiece(armor[1]);
+		ArmorPreset.Piece legs = createPiece(armor[2]);
+		ArmorPreset.Piece boots = createPiece(armor[3]);
+
+		return new ArmorPreset(name, helmet, chest, legs, boots);
+	}
+
+	CompletableFuture<Void> savePresetAsync() {
+		ArmorPreset preset = buildPreset();
+		ArmorPresets.getInstance().addPreset(preset);
+		return CompletableFuture.runAsync(() -> {
+			// only write the preset file; config will be saved when the screen closes
+			ArmorPresets.getInstance().savePresets();
+		}).exceptionally(e -> {
+			LOGGER.error("Failed to save armor preset", e);
+			if (client != null) {
+				client.execute(() -> client.player.sendMessage(Text.translatable("skyblocker.armorPresets.saveError"), false));
+			}
+			return null;
+		});
+	}
+
+	private ArmorPreset.Piece createPiece(ItemStack item) {
+		String uuid = ItemUtils.getItemUuid(item);
+		var cfg = SkyblockerConfigManager.get().general;
+		Integer color = cfg.customDyeColors.containsKey(uuid) ? cfg.customDyeColors.getInt(uuid) : null;
+		var anim = cfg.customAnimatedDyes.get(uuid);
+		var trim = cfg.customArmorTrims.get(uuid);
+		String tex = cfg.customHelmetTextures.get(uuid);
+		ArmorPreset.Piece.Trim trimData = null;
+		if (trim != null) {
+			trimData = new ArmorPreset.Piece.Trim(trim.material().toString(), trim.pattern().toString());
+		}
+		return new ArmorPreset.Piece(color, anim, trimData, tex);
 	}
 
 	private class PieceSelectionWidget extends ClickableWidget {
