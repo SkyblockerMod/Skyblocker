@@ -4,14 +4,12 @@ import de.hysky.skyblocker.skyblock.item.custom.preset.ArmorPreset;
 import de.hysky.skyblocker.skyblock.item.custom.preset.ArmorPresets;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
-import java.util.List;
 
 /**
  * Popup for renaming an armor preset.

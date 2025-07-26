@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.custom.preset;
 
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
 
 /**
  * Stores the styling data for a saved armor preset.
