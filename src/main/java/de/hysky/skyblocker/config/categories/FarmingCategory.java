@@ -91,6 +91,14 @@ public class FarmingCategory {
 										newValue -> config.farming.garden.closeScreenOnPlotClick = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.farming.garden.enableStereoHarmonyHelperForContest"))
+								.description(Text.translatable("skyblocker.config.farming.garden.enableStereoHarmonyHelperForContest.@Tooltip"))
+								.binding(defaults.farming.garden.enableStereoHarmonyHelperForContest,
+										() -> config.farming.garden.enableStereoHarmonyHelperForContest,
+										newValue -> config.farming.garden.enableStereoHarmonyHelperForContest = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.farming.visitorHelper"))
