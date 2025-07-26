@@ -5,8 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.BeaconBlockEntityRendererInvoker;
-import de.hysky.skyblocker.utils.render.title.Title;
-import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.Event;
@@ -17,7 +15,6 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -353,40 +350,5 @@ public class RenderHelper {
     	VoxelShape shape = state.getOutlineShape(world, pos).asCuboid();
 
         return shape.isEmpty() ? null : shape.getBoundingBox().offset(pos);
-    }
-
-    /**
-     * Adds the title to {@link TitleContainer} and {@link #playNotificationSound() plays the notification sound} if the title is not in the {@link TitleContainer} already.
-     * No checking needs to be done on whether the title is in the {@link TitleContainer} already by the caller.
-     *
-     * @param title the title
-     */
-    public static void displayInTitleContainerAndPlaySound(Title title) {
-        if (TitleContainer.addTitle(title)) {
-            playNotificationSound();
-        }
-    }
-
-    /**
-     * Adds the title to {@link TitleContainer} for a set number of ticks and {@link #playNotificationSound() plays the notification sound} if the title is not in the {@link TitleContainer} already.
-     * No checking needs to be done on whether the title is in the {@link TitleContainer} already by the caller.
-     *
-     * @param title the title
-     * @param ticks the number of ticks the title will remain
-     */
-    public static void displayInTitleContainerAndPlaySound(Title title, int ticks) {
-        if (TitleContainer.addTitle(title, ticks)) {
-            playNotificationSound();
-        }
-    }
-
-    private static void playNotificationSound() {
-        if (CLIENT.player != null) {
-            CLIENT.player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
-        }
-    }
-
-    public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
-        return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
 }

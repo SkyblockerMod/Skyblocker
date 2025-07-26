@@ -7,7 +7,7 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -282,6 +282,6 @@ public class VisitorHelper {
 	 * Checks if the mouse is over a specific rectangular region.
 	 */
 	private static boolean isMouseOverText(TextRenderer textRenderer, Text text, int x, int y, double mouseX, double mouseY) {
-		return RenderHelper.pointIsInArea(mouseX, mouseY, x, y, x + textRenderer.getWidth(text), y + textRenderer.fontHeight);
+		return HudHelper.pointIsInArea(mouseX, mouseY, x, y, x + textRenderer.getWidth(text), y + textRenderer.fontHeight);
 	}
 }
