@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.client.resource.language.I18n;
@@ -168,7 +168,7 @@ public class UIAndVisualsConfig {
 
         public boolean effectsFromFooter = false;
 
-        public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
+        public PlayerListManager.FancyTabWidget.Positioner defaultPositioning = PlayerListManager.FancyTabWidget.Positioner.CENTERED;
 
         @Deprecated
         public transient boolean plainPlayerNames = false;

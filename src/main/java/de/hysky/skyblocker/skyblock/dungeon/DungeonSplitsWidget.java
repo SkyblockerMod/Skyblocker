@@ -2,11 +2,9 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TableWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -14,7 +12,6 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.profile.ProfiledData;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import com.mojang.serialization.Codec;
@@ -171,7 +168,7 @@ public class DungeonSplitsWidget extends TableWidget {
 	private static final ProfiledData<Object2ObjectMap<String, Object2LongMap<String>>> BEST_SPLITS =
 			new ProfiledData<>(BEST_FILE, BEST_CODEC, true, true);
 
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.DUNGEON);
+	private static final Set<Location> AVAILABLE_LOCATIONS = EnumSet.of(Location.DUNGEON);
 
 	private static DungeonSplitsWidget instance;
 
@@ -188,7 +185,7 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	public DungeonSplitsWidget() {
 		super(Text.literal("Splits").formatted(Formatting.GOLD, Formatting.BOLD),
-				Formatting.GOLD.getColorValue(), "Dungeon Splits", 3, 0, false);
+				Formatting.GOLD.getColorValue(), "Dungeon Splits", 3, 0, false, AVAILABLE_LOCATIONS);
 		instance = this;
 
 		BEST_SPLITS.init();
@@ -317,27 +314,9 @@ public class DungeonSplitsWidget extends TableWidget {
 	}
 
 	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (location != Location.DUNGEON) return;
-		SkyblockerConfigManager.get().dungeons.dungeonSplits = enabled;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return location == Location.DUNGEON && SkyblockerConfigManager.get().dungeons.dungeonSplits;
-	}
-
-	@Override
 	public void updateContent() {
-		if (!(MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen)) {
-			updateFloor();
-			loadFloorSplits();
-		}
+		updateFloor();
+		loadFloorSplits();
 
 		addComponent(new PlainTextComponent(Text.literal("Floor: " + floor)));
 
@@ -345,6 +324,16 @@ public class DungeonSplitsWidget extends TableWidget {
 
 		long now = running ? System.currentTimeMillis() - startTime : (startTime == 0L ? 0L : elapsedTime);
 		addComponent(new PlainTextComponent(Text.literal(formatTime(now)).formatted(timerColor)));
+	}
+
+	@Override
+	protected List<Component> getConfigComponents() {
+		List<Component> components = new ArrayList<>(3);
+		components.add(new PlainTextComponent(Text.literal("Floor: " + floor)));
+		components.addAll(super.getConfigComponents());
+		long now = running ? System.currentTimeMillis() - startTime : (startTime == 0L ? 0L : elapsedTime);
+		components.add(new PlainTextComponent(Text.literal(formatTime(now)).formatted(timerColor)));
+		return components;
 	}
 
 	@Override

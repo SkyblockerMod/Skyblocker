@@ -146,7 +146,7 @@ public class GeneralCategory {
                                 .build())
                         .build())
 
-                //Item List
+                //Item EntryList
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.general.itemList"))
                         .collapsed(true)
