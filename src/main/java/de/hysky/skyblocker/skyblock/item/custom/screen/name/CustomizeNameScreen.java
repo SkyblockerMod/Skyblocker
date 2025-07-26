@@ -88,7 +88,7 @@ public class CustomizeNameScreen extends Screen {
 		addDrawableChild(grid.add(ButtonWidget.builder(Text.translatable("gui.done"), b -> {
 			SkyblockerConfigManager.update(config -> {
 				if (textString.isBlank()) config.general.customItemNames.remove(uuid);
-				else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false)));
+				else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false).withColor(Formatting.WHITE)));
 			});
 			close();
 		}).width(80).build(), 4, 10, 1, 10, Positioner.create().alignLeft()));
@@ -117,7 +117,7 @@ public class CustomizeNameScreen extends Screen {
 	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 		super.render(context, mouseX, mouseY, deltaTicks);
 		// little preview
-		context.drawCenteredTextWithShadow(textRenderer, text, width / 2, grid.getX() + grid.getHeight() + BORDER_SIZE + 6, -1);
+		context.drawCenteredTextWithShadow(textRenderer, text, width / 2, grid.getY() + grid.getHeight() + BORDER_SIZE + 6, -1);
 		if (Debug.debugEnabled()) {
 			context.drawTextWithShadow(textRenderer, Text.literal("Selection Start: " + selectionStart + ", Selection End: " + selectionEnd), 10, 10, -1);
 			context.drawTextWithShadow(textRenderer, Text.literal("Insert Style: " + (insertAs == null ? "null" : insertAs.toString())), 10, 20, -1);
