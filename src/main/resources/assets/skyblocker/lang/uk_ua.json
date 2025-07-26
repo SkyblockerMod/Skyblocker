@@ -212,5 +212,14 @@
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Увага загроза",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Відображає попередження, коли вам загрожує небезпека від удару щупалець або ТНТ(дінаміту). Колір попередження адаптується до рівня небезпеки!",
     "skyblocker.config.crimsonIsle.kuudra.fuelWaypoints": "Пункти палива",
-    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra світіння"
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow": "Kuudra світіння",
+    "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Обводити Kuudra насичено помаранчевим кольором",
+    "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning": "Немає попередження про отруйні стріли",
+    "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Попереджає вас, коли ви дістаєте лук, але у вашому інвентарі немає Отруйної стріли. Працює лише під час фази ДПС",
+    "skyblocker.config.crimsonIsle.kuudra.safeSpotWaypoints": "Безпечні шляхи маршруту",
+    "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "Жемчужина точка шляху",
+    "skyblocker.config.crimsonIsle.kuudra.suppliesAndFuelWaypointType": "Тип точки маршруту для забезпечення/палива",
+    "skyblocker.config.crimsonIsle.kuudra.supplyWaypoints": "Пункти постачання",
+    "skyblocker.config.debug": "Налагодження",
+    "skyblocker.config.debug.dumpFormat": "Формат звалища"
 }
