@@ -14,6 +14,6 @@ public class SimpleTooltipInfo implements TooltipInfoType {
 
 	@Override
 	public boolean isTooltipEnabled() {
-		return tooltipEnabled.test(ItemTooltip.config);
+		return tooltipEnabled.test(ItemTooltip.config.get());
 	}
 }

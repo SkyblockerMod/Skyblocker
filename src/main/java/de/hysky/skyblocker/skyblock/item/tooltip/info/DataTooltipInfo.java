@@ -41,7 +41,7 @@ public final class DataTooltipInfo<T> extends SimpleTooltipInfo implements DataT
 
 	@Override
 	public boolean isDataEnabled() {
-		return dataEnabled.test(ItemTooltip.config);
+		return dataEnabled.test(ItemTooltip.config.get());
 	}
 
 	@Override
