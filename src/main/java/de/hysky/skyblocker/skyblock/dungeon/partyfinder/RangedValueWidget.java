@@ -145,13 +145,13 @@ public class RangedValueWidget extends ContainerWidget {
                 this.okButton.visible = false;
                 this.okButton.setFocused(false);
             }
-            case MODIFYING_MAX, MODIFYING_MIN -> {
-                this.input.setVisible(true);
-                this.input.setFocused(true);
-                this.input.setText("");
-                this.input.setCursor(0, false);
-                this.okButton.visible = true;
-            }
+			case MODIFYING_MIN, MODIFYING_MAX -> {
+				this.input.setVisible(true);
+				this.input.setCursor(0, false);
+				this.input.setText(String.valueOf(state == State.MODIFYING_MIN ? min : max));
+				this.input.setFocused(true);
+				this.okButton.visible = true;
+			}
         }
     }
 
@@ -184,7 +184,7 @@ public class RangedValueWidget extends ContainerWidget {
                     messages[3].getString()
             ));
         }
-        screen.justOpenedSign = false;
+		screen.closedSign();
     }
 
     @Override
@@ -193,8 +193,13 @@ public class RangedValueWidget extends ContainerWidget {
         if (!visible) return false;
         if (!isMouseOver(mouseX, mouseY)) {
             if (state == State.OPEN && backSlotId != -1) {
-                screen.clickAndWaitForServer(backSlotId);
-                return true;
+				screen.clickAndWaitForServer(backSlotId);
+				return true;
+			} else if (state == State.MODIFYING_MIN || state == State.MODIFYING_MAX) {
+				// revert back to previous value if this value is not valid
+				if (!input.isGood) input.setText(String.valueOf(state == State.MODIFYING_MIN ? min : max));
+				sendPacket();
+				return true;
             } else return false;
         }
         switch (state) {
