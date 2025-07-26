@@ -6,6 +6,7 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import de.hysky.skyblocker.skyblock.TeleportOverlay;
+import de.hysky.skyblocker.skyblock.entity.DeployablesOverlayWidget;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
@@ -816,6 +817,27 @@ public class UIAndVisualsCategory {
 										() -> config.uiAndVisuals.itemPickup.splitNotifications,
 										newValue -> config.uiAndVisuals.itemPickup.splitNotifications = newValue)
 								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build()
+				)
+
+
+				// deployables overlay config
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.deployablesOverlay"))
+						.collapsed(true)
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.deployablesOverlay.hud.screen"))
+								.text(Text.translatable("text.skyblocker.open"))
+								.action((screen, opt) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, DeployablesOverlayWidget.getInstance().getInternalID(), screen)))
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.deployablesOverlay.warnWhenExpiring"))
+								.description(OptionDescription.of(Text.translatable("skyblocker.config.uiAndVisuals.deployablesOverlay.warnWhenExpiring.@Tooltip")))
+								.binding(defaults.uiAndVisuals.deployablesOverlay.warnWhenExpiring,
+										() -> config.uiAndVisuals.deployablesOverlay.warnWhenExpiring,
+										newValue -> config.uiAndVisuals.deployablesOverlay.warnWhenExpiring = newValue)
+								.controller(ConfigUtils::createBooleanController)
 								.build())
 						.build()
 				)

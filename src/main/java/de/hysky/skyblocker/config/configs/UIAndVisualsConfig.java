@@ -73,6 +73,9 @@ public class UIAndVisualsConfig {
 
 	public ItemPickup itemPickup = new ItemPickup();
 
+	@SerialEntry
+	public DeployablesOverlay deployablesOverlay = new DeployablesOverlay();
+
     public static class ChestValue {
         public boolean enableChestValue = true;
 
@@ -390,5 +393,13 @@ public class UIAndVisualsConfig {
 		public int lifeTime = 3;
 
 		public boolean splitNotifications = false;
+	}
+
+	public static class DeployablesOverlay {
+		@SerialEntry
+		public boolean enabled = true;
+
+		@SerialEntry
+		public boolean warnWhenExpiring = false;
 	}
 }
