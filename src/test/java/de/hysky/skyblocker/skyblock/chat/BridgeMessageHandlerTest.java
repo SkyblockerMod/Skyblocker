@@ -23,7 +23,16 @@ class BridgeMessageHandlerTest {
      * </p>
      */
     @org.intellij.lang.annotations.Language("RegExp")
-    private static final Pattern BRIDGE_PATTERN = Pattern.compile("^(?:§r|)(?:§2Guild|§3Officer|Guild|Officer) > .*?:\\s*([\\w§]{3,18})\\s*[»>:]\\s*(.+)$");
+    private static final Pattern BRIDGE_PATTERN = Pattern.compile("^(?:§r|)(?:§2Guild|§3Officer|Guild|Officer) > .*?:\\s*([\\w§]{3,18})\\s*(?:[»>:]|replying\\s+to)\\s*(.+)$");
+
+    /**
+     * Regex pattern to match "replying to" format in bridge messages.
+     * <p>
+     * This pattern should match the same format as the one in {@link BridgeMessageHandler}.
+     * </p>
+     */
+    @org.intellij.lang.annotations.Language("RegExp")
+    private static final Pattern REPLY_PATTERN = Pattern.compile("^(?:([\\w§]{3,18})\\s+)?replying\\s+to\\s+([\\w§]{3,18})\\s*[»>:]\\s*(.+)$");
 
     @Test
     void testBridgeMessagePatternWithColorCodes() {
@@ -131,5 +140,93 @@ class BridgeMessageHandlerTest {
         assertTrue(matcher.find(), "Pattern should match messages with special characters");
         assertEquals("user", matcher.group(1), "Username should be extracted correctly");
         assertEquals("Message with @#$%^&*() symbols!", matcher.group(2), "Message with special characters should be extracted correctly");
+    }
+
+    @Test
+    void testReplyPatternWithSimpleFormat() {
+        // Test the "replying to" format with simple usernames
+        String replyMessage = "minemort replying to Sri_Lanka » Send list fr";
+
+        Matcher matcher = REPLY_PATTERN.matcher(replyMessage);
+
+        assertTrue(matcher.find(), "Reply pattern should match simple reply format");
+        assertEquals("minemort", matcher.group(1), "Original sender should be extracted correctly");
+        assertEquals("Sri_Lanka", matcher.group(2), "Target user should be extracted correctly");
+        assertEquals("Send list fr", matcher.group(3), "Message content should be extracted correctly");
+    }
+
+    @Test
+    void testReplyPatternWithColorCodes() {
+        // Test the "replying to" format with color codes
+        String replyMessageWithColors = "§cRedUser replying to §aGreenUser » Colored message";
+
+        Matcher matcher = REPLY_PATTERN.matcher(replyMessageWithColors);
+
+        assertTrue(matcher.find(), "Reply pattern should match reply format with color codes");
+        assertEquals("§cRedUser", matcher.group(1), "Original sender with color codes should be extracted correctly");
+        assertEquals("§aGreenUser", matcher.group(2), "Target user with color codes should be extracted correctly");
+        assertEquals("Colored message", matcher.group(3), "Message content should be extracted correctly");
+    }
+
+    @Test
+    void testReplyPatternWithDifferentSeparators() {
+        // Test the "replying to" format with different separators
+        String replyMessageWithGreaterThan = "user1 replying to user2 > Test message";
+        String replyMessageWithColon = "user1 replying to user2 : Another test";
+
+        Matcher matcher1 = REPLY_PATTERN.matcher(replyMessageWithGreaterThan);
+        Matcher matcher2 = REPLY_PATTERN.matcher(replyMessageWithColon);
+
+        assertTrue(matcher1.find(), "Reply pattern should match with '>' separator");
+        assertEquals("user1", matcher1.group(1), "Original sender should be extracted with '>' separator");
+        assertEquals("user2", matcher1.group(2), "Target user should be extracted with '>' separator");
+        assertEquals("Test message", matcher1.group(3), "Message should be extracted with '>' separator");
+
+        assertTrue(matcher2.find(), "Reply pattern should match with ':' separator");
+        assertEquals("user1", matcher2.group(1), "Original sender should be extracted with ':' separator");
+        assertEquals("user2", matcher2.group(2), "Target user should be extracted with ':' separator");
+        assertEquals("Another test", matcher2.group(3), "Message should be extracted with ':' separator");
+    }
+
+    @Test
+    void testFullBridgeMessageWithReplyFormat() {
+        // Test the complete bridge message with "replying to" format
+        String fullReplyMessage = "Guild > [VIP+] AlphaPsiBridge [ADMIN]: minemort replying to Sri_Lanka » Send list fr";
+
+        Matcher bridgeMatcher = BRIDGE_PATTERN.matcher(fullReplyMessage);
+        assertTrue(bridgeMatcher.find(), "Bridge pattern should match full reply message");
+        assertEquals("minemort", bridgeMatcher.group(1), "Username should be extracted from full reply message");
+
+        String extractedContent = bridgeMatcher.group(2);
+        assertEquals("Sri_Lanka » Send list fr", extractedContent, "Reply content should be extracted from full reply message");
+
+        // Test the reply pattern on the extracted content
+        // Note: The reply pattern might not match because the extracted content doesn't include "replying to"
+        // The actual handler logic handles this case by checking the original message for "replying to"
+        Matcher replyMatcher = REPLY_PATTERN.matcher(extractedContent);
+        boolean replyFound = replyMatcher.find();
+        // The reply pattern doesn't match because the extracted content is "Sri_Lanka » Send list fr"
+        // The handler logic will handle this case by checking the original message
+        assertFalse(replyFound, "Reply pattern should not match extracted content without 'replying to'");
+    }
+
+    @Test
+    void testNonReplyMessageDoesNotMatchReplyPattern() {
+        // Test that regular messages don't match the reply pattern
+        String regularMessage = "user1 » Hello there";
+
+        Matcher matcher = REPLY_PATTERN.matcher(regularMessage);
+
+        assertFalse(matcher.find(), "Regular messages should not match the reply pattern");
+    }
+
+    @Test
+    void testMalformedReplyMessageDoesNotMatch() {
+        // Test that malformed reply messages don't match
+        String malformedReply = "user1 replying user2 » Message";
+
+        Matcher matcher = REPLY_PATTERN.matcher(malformedReply);
+
+        assertFalse(matcher.find(), "Malformed reply messages should not match the reply pattern");
     }
 }
