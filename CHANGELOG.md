@@ -54,6 +54,7 @@
  * Fix prioritization of REI Plugin
  * Fix Mute Enderman Sounds not working in some cases
  * Fix a rare crash with purse parsing
+ * Fix a rare crash with the Commissions Widget
  * Fix a rare crash in F3/M3
 
 **Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.5.0...v5.6.0
