@@ -19,15 +19,16 @@ import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.util.Util;
 
 public class GlowRenderer implements AutoCloseable {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static GlowRenderer instance = null;
+	private final MinecraftClient client;
 	private final OutlineVertexConsumerProvider glowOutlineVertexConsumers;
 	private GpuTexture glowDepthTexture;
 	private GpuTextureView glowDepthTextureView;
 	private boolean isRenderingGlow = false;
 
 	private GlowRenderer() {
-		this.glowOutlineVertexConsumers = Util.make(new OutlineVertexConsumerProvider(CLIENT.getBufferBuilders().getEntityVertexConsumers()), outlineVertexConsumers -> {
+		this.client = MinecraftClient.getInstance();
+		this.glowOutlineVertexConsumers = Util.make(new OutlineVertexConsumerProvider(this.client.getBufferBuilders().getEntityVertexConsumers()), outlineVertexConsumers -> {
 			((OutlineVertexConsumerProviderAccessor) outlineVertexConsumers).setPlainDrawer(new GlowVertexConsumerProvider(new BufferAllocator(RenderLayer.DEFAULT_BUFFER_SIZE)));
 		});
 	}
@@ -46,7 +47,7 @@ public class GlowRenderer implements AutoCloseable {
 
 	public void updateGlowDepthTexDepth() {
 		tryUpdateDepthTexture();
-		RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(CLIENT.getFramebuffer().getDepthAttachment(), this.glowDepthTexture, 0, 0, 0, 0, 0, this.glowDepthTexture.getWidth(0), this.glowDepthTexture.getHeight(0));
+		RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(this.client.getFramebuffer().getDepthAttachment(), this.glowDepthTexture, 0, 0, 0, 0, 0, this.glowDepthTexture.getWidth(0), this.glowDepthTexture.getHeight(0));
 	}
 
 	private void startRenderingGlow() {
@@ -66,8 +67,8 @@ public class GlowRenderer implements AutoCloseable {
 	}
 
 	private void tryUpdateDepthTexture() {
-		int neededWidth = CLIENT.getWindow().getFramebufferWidth();
-		int neededHeight = CLIENT.getWindow().getFramebufferHeight();
+		int neededWidth = this.client.getWindow().getFramebufferWidth();
+		int neededHeight = this.client.getWindow().getFramebufferHeight();
 
 		//If the texture hasn't been created or needs resizing
 		if (this.glowDepthTexture == null || this.glowDepthTexture.getWidth(0) != neededWidth || this.glowDepthTexture.getHeight(0) != neededHeight) {
