@@ -1,3 +1,64 @@
+# Release 5.6.0
+
+## Highlight
+ * Config Changes
+    * Added Support for **MoulConfig** which has much better searching
+    * MoulConfig is now the default interface
+    * You can switch between MoulConfig and YACL in Misc tab
+    * **Fabric Language Kotlin is now required** since MoulConfig needs it
+  * Added Fancy Dungeon Map
+    * You can now see player heads on the map instead of markers
+    * The fancy map also shows in the Spirit Leap Overlay
+    * More to come!
+ * Secret Waypoint Fixes
+ * Added Player Head Customization
+    * You can customize the look of player heads with `/skyblocker custom` just like your armour!
+ * Added GUI for renaming items
+    * Accessed with `/skyblocker custom renameItem`
+ * Add ability to move the Fancy Bars anywhere on screen
+ * Add Blood Camp Helper
+ * Add Dungeon Splits Widget
+ * Add Door Key Highlighter
+ * Add Moonglade Beacon Tuner Helper
+ * Add Bazaar Quick Quantities
+ * Add Basic Networth Calculator for Profile Viewer
+ * Add Block Incorrect Clicks for Experimentation Table
+ * Add Sack Message Prices
+ * Add Toggle Lottery Chat Filter
+ * Add Disable All Command
+ * Add Reorder Helper config
+ * Add Autocomplete for /rngmeter, and /rng
+ * Add Autocomplete for /joininstance, /joindungeon, and /joinkuudra
+ * Add support for super craft input to sign calculator
+ * Add Wiki Lookup support for visitors
+ * Add Skyblock Info Display to REI
+ * Add Bestiary Slot Text
+ * Added log suppression for invalid fishing bobbers
+ * Added option to split sack and inventory notifications for the Item Pickup Widget 
+ * Waypoint import fixes and improvements
+ * Various improvements for the Search Overlay
+ * Various localization improvements and changes
+ * Improved compatibility with chat message detection
+ * Changed some titles to not have a prefix
+ * Fixed some messages not sending to party chat
+ * Fixed issues with legacy ordered waypoints
+ * Fixes for Smooth AOTE
+ * Fixes for some Slot Text and Tooltip features
+ * Fix Title Container position not defaulting to screen centre
+ * Fix bottom QuickNav buttons being slightly offset
+ * Fix Fetchur Solver not mentioning other door types
+ * Fix integer overflow with Farming HUD
+ * Fix Sea Lumies Highlighter not disabling properly
+ * Fix Starred Mob Glow not applying to player mobs
+ * Fix lag when opening the recipe book
+ * Fix prioritization of REI Plugin
+ * Fix Mute Enderman Sounds not working in some cases
+ * Fix a rare crash with purse parsing
+ * Fix a rare crash with the Commissions Widget
+ * Fix a rare crash in F3/M3
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.5.0...v5.6.0
+___
 # Release 5.5.0
 
 ## Highlight
