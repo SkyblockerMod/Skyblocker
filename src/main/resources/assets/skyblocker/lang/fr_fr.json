@@ -270,7 +270,7 @@
     "skyblocker.config.dungeons.dungeonChestProfit.neutralColor": "Couleur de l'équilibre",
     "key.skyblocker.slottext": "Emplacement du Texte",
     "skyblocker.config.shortcutToKeybindsSettings": "Modifier le raccourci clavier",
-    "skyblocker.config.shortcutToKeybindsSettings.@Text": "Menu des Raccourcis Clavier",
+    "skyblocker.config.shortcutToKeybindsSettings.@Text": "Options de raccourci",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.HIGHLIGHT": "Surlignage",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.OUTLINED_HIGHLIGHT": "Mise en évidence des contours",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.OUTLINE": "Contour",
