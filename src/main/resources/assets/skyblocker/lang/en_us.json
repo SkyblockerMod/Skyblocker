@@ -648,6 +648,11 @@
   "skyblocker.config.chat.skyblockXpMessages": "SkyBlock XP Messages",
   "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "Notifies you in the chat when you gain SkyBlock XP.",
 
+  "skyblocker.config.chat.enableBridgeSupport": "Bridge Support",
+  "skyblocker.config.chat.enableBridgeSupport.@Tooltip": "Reformats Discord bridge messages from guild chat to a cleaner format.",
+  "skyblocker.config.chat.bridgeBotName": "Bridge Bot Name",
+  "skyblocker.config.chat.bridgeBotName.@Tooltip": "The name of the bridge bot that sends messages from Discord to the guild chat.",
+
   "skyblocker.config.eventNotifications": "Event Notifications",
 
   "skyblocker.config.eventNotifications.criterion": "Notification Criterion",

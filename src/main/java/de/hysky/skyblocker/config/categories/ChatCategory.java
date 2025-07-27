@@ -10,6 +10,7 @@ import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
+import net.azureaaron.dandelion.systems.controllers.StringController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -35,6 +36,22 @@ public class ChatCategory {
                                 () -> config.chat.confirmationPromptHelper,
                                 newValue -> config.chat.confirmationPromptHelper = newValue)
                         .controller(ConfigUtils.createBooleanController())
+                        .build())
+                .option(Option.<Boolean>createBuilder()
+                        .name(Text.translatable("skyblocker.config.chat.enableBridgeSupport"))
+                        .description(Text.translatable("skyblocker.config.chat.enableBridgeSupport.@Tooltip"))
+                        .binding(defaults.chat.enableBridgeSupport,
+                                () -> config.chat.enableBridgeSupport,
+                                newValue -> config.chat.enableBridgeSupport = newValue)
+                        .controller(ConfigUtils.createBooleanController())
+                        .build())
+                .option(Option.<String>createBuilder()
+                        .name(Text.translatable("skyblocker.config.chat.bridgeBotName"))
+                        .description(Text.translatable("skyblocker.config.chat.bridgeBotName.@Tooltip"))
+                        .binding(defaults.chat.bridgeBotName,
+                                () -> config.chat.bridgeBotName,
+                                newValue -> config.chat.bridgeBotName = newValue)
+                        .controller(StringController.createBuilder().build())
                         .build())
 
                 //Uncategorized Options

@@ -39,6 +39,10 @@ public class ChatConfig {
 
 	public ChatFilterResult hideDicer = ChatFilterResult.PASS;
 
+	public boolean enableBridgeSupport = false;
+
+	public String bridgeBotName = "BridgeBotName";
+
 	public ChatRuleConfig chatRuleConfig = new ChatRuleConfig();
 
 	public static class ChatRuleConfig {

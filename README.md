@@ -294,6 +294,9 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 
 ### Chat Features:
 - **Custom Chat Rules**
+- **Bridge Support**
+    - *Reformat Discord bridge messages to cleaner format*
+    - *Configurable bridge bot name*
 - **Autocomplete**
     - *Warp command*
     - *Sack Item*
