@@ -1,6 +1,6 @@
 plugins {
 	// Building
-	id 'fabric-loom' version '1.10-SNAPSHOT'
+	id 'fabric-loom' version "${loom_version}"
 	id "de.hysky.skyblocker.annotation-processor"
 	id "com.diffplug.spotless" version "6.20.0"
 	id "checkstyle"

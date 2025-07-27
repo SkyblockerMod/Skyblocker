@@ -7,7 +7,7 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -27,6 +27,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
 import java.util.*;
@@ -156,9 +157,6 @@ public class VisitorHelper {
 	private static void renderVisitorHelper(DrawContext context, TextRenderer textRenderer) {
 		int index = 0;
 
-		context.getMatrices().push();
-		context.getMatrices().translate(0, 0, 500);
-
 		for (Object2IntMap.Entry<Text> entry : groupedItems.object2IntEntrySet()) {
 			Text itemName = entry.getKey();
 			int totalAmount = entry.getIntValue();
@@ -170,13 +168,13 @@ public class VisitorHelper {
 			for (Visitor visitor : visitors) {
 				int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
-				context.getMatrices().push();
-				context.getMatrices().translate(X_OFFSET, yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2, 0);
-				context.getMatrices().scale(0.95f, 0.95f, 1.0f);
+				context.getMatrices().pushMatrix();
+				context.getMatrices().translate(X_OFFSET, yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2);
+				context.getMatrices().scale(0.95f, 0.95f);
 				context.drawItem(visitor.head(), 0, 0);
-				context.getMatrices().pop();
+				context.getMatrices().popMatrix();
 
-				context.drawText(textRenderer, visitor.name(), X_OFFSET + (int) (ICON_SIZE * 0.95f) + 4, yPosition, -1, true);
+				context.drawText(textRenderer, visitor.name(), X_OFFSET + (int) (ICON_SIZE * 0.95f) + 4, yPosition, Colors.WHITE, true);
 
 				index++;
 			}
@@ -188,11 +186,11 @@ public class VisitorHelper {
 
 			ItemStack cachedStack = getCachedItem(itemName.getString());
 			if (cachedStack != null) {
-				context.getMatrices().push();
-				context.getMatrices().translate(iconX, yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2, 0);
-				context.getMatrices().scale(0.95f, 0.95f, 1.0f);
+				context.getMatrices().pushMatrix();
+				context.getMatrices().translate(iconX, yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2);
+				context.getMatrices().scale(0.95f, 0.95f);
 				context.drawItem(cachedStack, 0, 0);
-				context.getMatrices().pop();
+				context.getMatrices().popMatrix();
 			}
 
 			MutableText name = cachedStack != null ? cachedStack.getName().copy() : itemName.copy();
@@ -216,8 +214,6 @@ public class VisitorHelper {
 
 			index++;
 		}
-
-		context.getMatrices().pop();
 	}
 
 	/**
@@ -234,9 +230,7 @@ public class VisitorHelper {
 			List<Visitor> visitors = visitorsByItem.get(itemName);
 
 			if (visitors != null && !visitors.isEmpty()) {
-				for (Visitor ignored : visitors) {
-					index++;
-				}
+				index += visitors.size();
 
 				int iconX = X_OFFSET + 12;
 				int textX = iconX + (int) (ICON_SIZE * 0.95f) + 4;
@@ -277,21 +271,17 @@ public class VisitorHelper {
 	}
 
 	private static void drawTextWithHoverUnderline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, double mouseX, double mouseY) {
-		context.getMatrices().push();
-		context.getMatrices().translate(0, 0, 500);
-		context.drawText(textRenderer, text, x, y, -1, true);
+		context.drawText(textRenderer, text, x, y, Colors.WHITE, true);
 
 		if (isMouseOverText(textRenderer, text, x, y, mouseX, mouseY)) {
-			context.drawHorizontalLine(x, x + textRenderer.getWidth(text), y + textRenderer.fontHeight, -1);
+			context.drawHorizontalLine(x, x + textRenderer.getWidth(text), y + textRenderer.fontHeight, Colors.WHITE);
 		}
-
-		context.getMatrices().pop();
 	}
 
 	/**
 	 * Checks if the mouse is over a specific rectangular region.
 	 */
 	private static boolean isMouseOverText(TextRenderer textRenderer, Text text, int x, int y, double mouseX, double mouseY) {
-		return RenderHelper.pointIsInArea(mouseX, mouseY, x, y, x + textRenderer.getWidth(text), y + textRenderer.fontHeight);
+		return HudHelper.pointIsInArea(mouseX, mouseY, x, y, x + textRenderer.getWidth(text), y + textRenderer.fontHeight);
 	}
 }

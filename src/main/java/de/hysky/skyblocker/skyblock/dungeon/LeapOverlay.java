@@ -6,15 +6,14 @@ import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.gui.widget.GridWidget.Adder;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
@@ -29,6 +28,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
@@ -88,9 +88,9 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
 
 			//All heads in the leap menu have the id property set
-			if (profile.id().isEmpty()) return;
+			if (profile.uuid().isEmpty()) return;
 
-			UUID uuid = profile.id().get();
+			UUID uuid = profile.uuid().get();
 			//We take the name from the item because the name from the profile component can leave out _ characters for some reason?
 			String name = stack.getName().getString();
 			DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(name);
@@ -155,7 +155,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 			LeapOverlay.this.hovered = DungeonMap.render(context, getX(), getY(), CONFIG.get().scale, true, mouseX - getX(), mouseY - getY(), hoveredElement(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
-			context.drawBorder(getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), -1);
+			context.drawBorder(getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), Colors.WHITE);
 		}
 
 		@Override
@@ -186,9 +186,9 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 			Identifier texture = this.isSelected() || reference.uuid().equals(LeapOverlay.this.hovered) ? BUTTON_HIGHLIGHTED : BUTTON;
-			context.drawGuiTexture(RenderLayer::getGuiTextured, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
-			MatrixStack matrices = context.getMatrices();
+			Matrix3x2fStack matrices = context.getMatrices();
 			float scale = CONFIG.get().scale;
 			int baseX = this.getX() + BORDER_THICKNESS;
 			int centreX = this.getX() + (this.getWidth() >> 1);
@@ -196,29 +196,29 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			int halfFontHeight = (int) (CLIENT.textRenderer.fontHeight * scale) >> 1;
 
 			//Draw Player Head
-			RenderHelper.drawPlayerHead(context, baseX + 4, centreY - ((int) (HEAD_SIZE * scale) >> 1), (int) (HEAD_SIZE * scale), reference.uuid());
+			HudHelper.drawPlayerHead(context, baseX + 4, centreY - ((int) (HEAD_SIZE * scale) >> 1), (int) (HEAD_SIZE * scale), reference.uuid());
 
 			//Draw class as heading
-			matrices.push();
-			matrices.translate(centreX, this.getY() + halfFontHeight, 0f);
-			matrices.scale(scale, scale, 1f);
+			matrices.pushMatrix();
+			matrices.translate(centreX, this.getY() + halfFontHeight);
+			matrices.scale(scale, scale);
 			context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.dungeonClass().displayName(), 0, 0, reference.dungeonClass().color());
-			matrices.pop();
+			matrices.popMatrix();
 
 			//Draw name next to head
-			matrices.push();
-			matrices.translate(baseX + HEAD_SIZE * scale + 8, centreY - halfFontHeight, 0f);
-			matrices.scale(scale, scale, 1f);
+			matrices.pushMatrix();
+			matrices.translate(baseX + HEAD_SIZE * scale + 8, centreY - halfFontHeight);
+			matrices.scale(scale, scale);
 			context.drawTextWithShadow(CLIENT.textRenderer, Text.literal(reference.name()), 0, 0, Colors.WHITE);
-			matrices.pop();
+			matrices.popMatrix();
 
 			if (reference.status() != null) {
 				//Text
-				matrices.push();
-				matrices.translate(centreX, this.getY() + this.getHeight() - (halfFontHeight * 3), 0f);
-				matrices.scale(scale, scale, 1f);
+				matrices.pushMatrix();
+				matrices.translate(centreX, this.getY() + this.getHeight() - (halfFontHeight * 3));
+				matrices.scale(scale, scale);
 				context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.status().text.get(), 0, 0, Colors.WHITE);
-				matrices.pop();
+				matrices.popMatrix();
 
 				//Overlay
 				context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), reference.status().overlayColor);

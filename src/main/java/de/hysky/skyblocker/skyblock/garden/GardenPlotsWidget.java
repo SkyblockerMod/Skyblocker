@@ -20,14 +20,13 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,6 +37,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+
+import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -226,11 +227,11 @@ public class GardenPlotsWidget extends ContainerWidget {
 	@Override
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.translate(getX(), getY(), 0);
+		Matrix3x2fStack matrices = context.getMatrices();
+		matrices.pushMatrix();
+		matrices.translate(getX(), getY());
 
-		context.drawTexture(RenderLayer::getGuiTextured, BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
+		context.drawTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
 
 		context.drawText(textRenderer, getMessage(), 8, 6, 4210752, false);
 
@@ -247,21 +248,18 @@ public class GardenPlotsWidget extends ContainerWidget {
 
 			if (hovered) {
 				context.fill(slotX + 1, slotY + 1, slotX + 17, slotY + 17, 0xAA_FF_FF_FF);
-				matrices.push();
-				matrices.translate(slotX, slotY, 50.f);
-				matrices.scale(1.125f, 1.125f, 1.125f);
+				matrices.pushMatrix();
+				matrices.translate(slotX, slotY);
+				matrices.scale(1.125f, 1.125f);
 				context.drawItem(item, 0, 0);
-				matrices.pop();
+				matrices.popMatrix();
 				hoveredSlot = i;
 			} else
 				context.drawItem(item, slotX + 1, slotY + 1);
 
 			boolean infested = infectedPlots.contains(i);
 			if (infested && (timeMillis & 512) != 0) {
-				matrices.push();
-				matrices.translate(0, 0, 200.f);
 				context.drawBorder(slotX + 1, slotY + 1, 16, 16, 0xFF_FF0000);
-				matrices.pop();
 			}
 
 			// tooltip
@@ -288,7 +286,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 			}
 		}
 
-		matrices.pop();
+		matrices.popMatrix();
 
 		for (ItemButtonWidget widget : widgets) {
 			widget.render(context, mouseX, mouseY, delta);

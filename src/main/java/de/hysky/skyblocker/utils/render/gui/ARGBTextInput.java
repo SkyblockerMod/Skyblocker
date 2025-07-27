@@ -152,7 +152,7 @@ public class ARGBTextInput extends ClickableWidget {
 				},
 				textX,
 				textY,
-				-1,
+				Colors.WHITE,
 				true
 		);
 	}

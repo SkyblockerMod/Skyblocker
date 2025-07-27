@@ -24,9 +24,7 @@ public class CategoryTabWidget extends SideTabButtonWidget {
         super.renderWidget(context, mouseX, mouseY, delta);
 
         if (isMouseOver(mouseX, mouseY)) {
-            context.getMatrices().push();
             context.drawTooltip(MinecraftClient.getInstance().textRenderer, icon.getTooltip(TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC), mouseX, mouseY);
-            context.getMatrices().pop();
         }
 
     }

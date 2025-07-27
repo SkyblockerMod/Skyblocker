@@ -9,6 +9,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
@@ -112,6 +113,6 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
         // Render the duration of the recipe in hours by dividing by 3600
         ScreenPos arrowLocation = getArrowLocation(width, height);
         if (arrowLocation != null)
-            context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, durationString, arrowLocation.x() + 12, arrowLocation.y() - 10, 0xFFFFFF);
+            context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, durationString, arrowLocation.x() + 12, arrowLocation.y() - 10, Colors.WHITE);
     }
 }

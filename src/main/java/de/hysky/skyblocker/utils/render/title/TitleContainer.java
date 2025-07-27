@@ -7,12 +7,13 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.util.Colors;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -35,7 +36,7 @@ public class TitleContainer {
 
 	@Init
 	public static void init() {
-		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.TITLE_AND_SUBTITLE, TITLE_CONTAINER, TitleContainer::render));
+		HudElementRegistry.attachElementAfter(VanillaHudElements.TITLE_AND_SUBTITLE, TITLE_CONTAINER, TitleContainer::render);
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
 				.then(ClientCommandManager.literal("hud")
 						.then(ClientCommandManager.literal("titleContainer")
@@ -177,13 +178,13 @@ public class TitleContainer {
 			title.y = MathHelper.lerp(tickDelta * 0.5F, title.y, y);
 
 			//Translate the matrix to the texts position and scale
-			context.getMatrices().push();
-			context.getMatrices().translate(title.x, title.y, 0);
-			context.getMatrices().scale(scale, scale, scale);
+			context.getMatrices().pushMatrix();
+			context.getMatrices().translate(title.x, title.y);
+			context.getMatrices().scale(scale, scale);
 
 			//Draw text
-			context.drawTextWithShadow(textRenderer, title.getText(), 0, 0, 0xFFFFFF);
-			context.getMatrices().pop();
+			context.drawTextWithShadow(textRenderer, title.getText(), 0, 0, Colors.WHITE);
+			context.getMatrices().popMatrix();
 
 			//Calculate the x and y positions for the next title
 			if (direction == UIAndVisualsConfig.Direction.HORIZONTAL) {

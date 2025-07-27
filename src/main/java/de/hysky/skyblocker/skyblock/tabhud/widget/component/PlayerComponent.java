@@ -4,6 +4,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +33,7 @@ public class PlayerComponent extends Component {
 	@Override
 	public void render(DrawContext context, int x, int y) {
 		PlayerSkinDrawer.draw(context, tex, x, y, SKIN_ICO_DIM, true, false, -1);
-		context.drawText(txtRend, name, x + SKIN_ICO_DIM + PAD_S, y, 0xffffffff, false);
+		context.drawText(txtRend, name, x + SKIN_ICO_DIM + PAD_S, y, Colors.WHITE, false);
 	}
 
 }

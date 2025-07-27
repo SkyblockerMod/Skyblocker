@@ -4,6 +4,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
 /**
@@ -34,7 +35,7 @@ public class IcoTextComponent extends Component {
 	@Override
 	public void render(DrawContext context, int x, int y) {
 		context.drawItem(ico, x, y);
-		context.drawText(txtRend, text, x + ICO_DIM + PAD_L, y + 5, 0xffffffff, false);
+		context.drawText(txtRend, text, x + ICO_DIM + PAD_L, y + 5, Colors.WHITE, false);
 	}
 
 }

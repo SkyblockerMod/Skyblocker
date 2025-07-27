@@ -19,9 +19,9 @@ public class DungeonsConfig {
 
 	public boolean classBasedPlayerGlow = true;
 
-	public boolean starredMobGlow = false;
+	public boolean starredMobGlow = true;
 
-	public boolean starredMobBoundingBoxes = true;
+	public boolean starredMobBoundingBoxes = false;
 
 	public boolean highlightDoorKeys = true;
 

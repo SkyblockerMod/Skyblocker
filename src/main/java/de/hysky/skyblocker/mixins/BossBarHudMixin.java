@@ -7,6 +7,8 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.BossBarHud;
 import net.minecraft.client.gui.hud.ClientBossBar;
 import net.minecraft.entity.boss.BossBar;
+import net.minecraft.util.Colors;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,7 +33,7 @@ public abstract class BossBarHudMixin {
             ClientBossBar bar = SlayerBossBars.updateBossBar();
 
             int textWidth = this.client.textRenderer.getWidth(bar.getName());
-            context.drawTextWithShadow(this.client.textRenderer, bar.getName(), context.getScaledWindowWidth() / 2 - textWidth / 2, 3, 16777215);
+            context.drawTextWithShadow(this.client.textRenderer, bar.getName(), context.getScaledWindowWidth() / 2 - textWidth / 2, 3, Colors.WHITE);
 
             this.renderBossBar(context, (context.getScaledWindowWidth() / 2) - 91, 12, bar);
 

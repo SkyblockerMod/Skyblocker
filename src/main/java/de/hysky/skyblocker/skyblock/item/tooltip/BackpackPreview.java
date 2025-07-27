@@ -12,11 +12,10 @@ import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
@@ -26,6 +25,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.util.Identifier;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -139,17 +139,12 @@ public class BackpackPreview {
         int x = mouseX + 184 >= screen.width ? mouseX - 188 : mouseX + 8;
         int y = Math.max(0, mouseY - 16);
 
-        MatrixStack matrices = context.getMatrices();
-        matrices.push();
-        matrices.translate(0f, 0f, 400f);
-
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, 176, rows * 18 + 17, 256, 256);
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 176, rows * 18 + 17, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7, 256, 256);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        context.drawText(textRenderer, storages[index].name(), x + 8, y + 6, 0x404040, false);
+        context.drawText(textRenderer, storages[index].name(), x + 8, y + 6, 0xFF404040, false);
 
-        matrices.translate(0f, 0f, 200f);
         for (int i = 9; i < storages[index].size(); ++i) {
             ItemStack currentStack = storages[index].getStack(i);
             int itemX = x + (i - 9) % 9 * 18 + 8;
@@ -158,15 +153,13 @@ public class BackpackPreview {
 			ItemBackgroundManager.drawBackgrounds(currentStack, context, itemX, itemY);
 
             if (ItemProtection.isItemProtected(currentStack)) {
-                context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
+                context.drawTexture(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
             }
 
             context.drawItem(currentStack, itemX, itemY);
             context.drawStackOverlay(textRenderer, currentStack, itemX, itemY);
             SlotTextManager.renderSlotText(context, textRenderer, null, currentStack, i, itemX, itemY);
         }
-
-        matrices.pop();
 
         return true;
     }

@@ -13,7 +13,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -115,10 +114,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	@Override
 	public final void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		MatrixStack ms = context.getMatrices();
-
-		ms.push();
-
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			GameOptions options = MinecraftClient.getInstance().options;
 			int textBackgroundColor = options.getTextBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
@@ -126,8 +121,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 			context.fill(x, y + 1, x + 1, y + h - 1, textBackgroundColor);
 			context.fill(x + w - 1, y + 1, x + w, y + h - 1, textBackgroundColor);
 		}
-		// move above background (if exists)
-		ms.translate(0, 0, 100);
 
 		int strHeightHalf = txtRend.fontHeight / 2;
 		int strAreaWidth = txtRend.getWidth(title) + 4;
@@ -150,8 +143,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 			c.render(context, x + BORDER_SZE_W, yOffs);
 			yOffs += c.getHeight() + Component.PAD_L;
 		}
-		// pop manipulations above
-		ms.pop();
 	}
 
 	/**

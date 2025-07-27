@@ -14,7 +14,7 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -28,6 +28,7 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.Nullable;
@@ -105,7 +106,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			Text text = Text.translatable("gui.recipebook.page", this.currentPage + 1, this.pageCount);
 			int width = textRenderer.getWidth(text);
 
-			context.drawText(textRenderer, text, x - width / 2 + 73, y + 141, -1, false);
+			context.drawText(textRenderer, text, x - width / 2 + 73, y + 141, Colors.WHITE, false);
 		}
 
 		//Render the results
@@ -184,7 +185,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	 * Returns true if the mouse is hovering over the text at this location.
 	 */
 	private boolean isMouseHoveringText(int textX, int textY, int mouseX, int mouseY) {
-		return RenderHelper.pointIsInArea(mouseX, mouseY, textX, textY, textX + MAX_TEXT_WIDTH + 4, textY + this.client.textRenderer.fontHeight);
+		return HudHelper.pointIsInArea(mouseX, mouseY, textX, textY, textX + MAX_TEXT_WIDTH + 4, textY + this.client.textRenderer.fontHeight);
 	}
 
 	protected void closeRecipeView() {

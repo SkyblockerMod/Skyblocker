@@ -27,7 +27,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
 		return switch (mixinClassName) {
 			case String s when s.endsWith("WorldRendererMixin") -> !OPTIFABRIC_LOADED;
-			case String s when s.endsWith("GlResourceManagerMixin") -> SystemUtils.IS_OS_MAC && "aarch64".equalsIgnoreCase(SystemUtils.OS_ARCH);
+			case String s when s.endsWith("GlCommandEncoderMixin") -> SystemUtils.IS_OS_MAC && "aarch64".equalsIgnoreCase(SystemUtils.OS_ARCH);
 
 			default -> true;
 		};

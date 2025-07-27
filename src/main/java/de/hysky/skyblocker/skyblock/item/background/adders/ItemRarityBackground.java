@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.background.adders;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
@@ -9,35 +7,34 @@ import de.hysky.skyblocker.skyblock.item.background.ColoredItemBackground;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectReferencePair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.ColorHelper;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 
 public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRarity> {
-
-	public static final ImmutableMap<String, SkyblockItemRarity> LORE_RARITIES = ImmutableMap.ofEntries(
-			Map.entry("ADMIN", SkyblockItemRarity.ADMIN),
-			Map.entry("ULTIMATE", SkyblockItemRarity.ULTIMATE),
-			Map.entry("SPECIAL", SkyblockItemRarity.SPECIAL), //Very special is the same color so this will cover it
-			Map.entry("DIVINE", SkyblockItemRarity.DIVINE),
-			Map.entry("MYTHIC", SkyblockItemRarity.MYTHIC),
-			Map.entry("LEGENDARY", SkyblockItemRarity.LEGENDARY),
-			Map.entry("LEGENJERRY", SkyblockItemRarity.LEGENDARY),
-			Map.entry("EPIC", SkyblockItemRarity.EPIC),
-			Map.entry("RARE", SkyblockItemRarity.RARE),
-			Map.entry("UNCOMMON", SkyblockItemRarity.UNCOMMON),
-			Map.entry("COMMON", SkyblockItemRarity.COMMON)
+	public static final List<ObjectReferencePair<String, SkyblockItemRarity>> LORE_RARITIES = List.of(
+			ObjectReferencePair.of("ADMIN", SkyblockItemRarity.ADMIN),
+			ObjectReferencePair.of("ULTIMATE", SkyblockItemRarity.ULTIMATE),
+			ObjectReferencePair.of("SPECIAL", SkyblockItemRarity.SPECIAL), //Very special is the same color so this will cover it
+			ObjectReferencePair.of("DIVINE", SkyblockItemRarity.DIVINE),
+			ObjectReferencePair.of("MYTHIC", SkyblockItemRarity.MYTHIC),
+			ObjectReferencePair.of("LEGENDARY", SkyblockItemRarity.LEGENDARY),
+			ObjectReferencePair.of("LEGENJERRY", SkyblockItemRarity.LEGENDARY),
+			ObjectReferencePair.of("EPIC", SkyblockItemRarity.EPIC),
+			ObjectReferencePair.of("RARE", SkyblockItemRarity.RARE),
+			ObjectReferencePair.of("UNCOMMON", SkyblockItemRarity.UNCOMMON),
+			ObjectReferencePair.of("COMMON", SkyblockItemRarity.COMMON)
 	);
 
-	private static final ImmutableList<Predicate<String>> INVENTORY_TITLES = ImmutableList.of(
+	private static final List<Predicate<String>> INVENTORY_TITLES = List.of(
 			title -> title.contains("The Hex"),
 			title -> title.equals("Craft Item"),
 			title -> title.equals("Anvil"),
@@ -59,9 +56,9 @@ public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRari
 		if (!stack.getSkyblockId().equals("PET")) {
 			List<Text> lore = ItemUtils.getLore(stack);
 			List<String> tooltip = lore.stream().map(Text::getString).toList();
-			for (String key : LORE_RARITIES.keySet()) {
-				if (tooltip.stream().anyMatch(line -> line.contains(key))) {
-					SkyblockItemRarity rarity = LORE_RARITIES.get(key);
+			for (ObjectReferencePair<String, SkyblockItemRarity> key : LORE_RARITIES) {
+				if (tooltip.stream().anyMatch(line -> line.contains(key.left()))) {
+					SkyblockItemRarity rarity = key.right();
 					cache.put(hashCode, rarity);
 					return rarity;
 				}
@@ -81,7 +78,7 @@ public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRari
 
 	@Override
 	protected void draw(DrawContext context, int x, int y, SkyblockItemRarity rarity) {
-		context.drawSpriteStretched(RenderLayer::getGuiTextured, getSprite(), x, y, 16, 16,
+		context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, getSprite(), x, y, 16, 16,
 				ColorHelper.fromFloats(
 						SkyblockerConfigManager.get().general.itemInfoDisplay.itemBackgroundOpacity,
 						rarity.r, rarity.g, rarity.b

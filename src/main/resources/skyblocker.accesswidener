@@ -23,3 +23,9 @@ extendable method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget tr
 
 # Block Shapes
 accessible field net/minecraft/block/CarpetBlock SHAPE Lnet/minecraft/util/shape/VoxelShape;
+
+# Hud Rendering
+extendable class net/minecraft/client/gui/render/state/TextGuiElementRenderState
+accessible class net/minecraft/client/font/TextRenderer$Drawer
+accessible field net/minecraft/client/font/TextRenderer$Drawer x F
+accessible field net/minecraft/client/font/TextRenderer$Drawer y F

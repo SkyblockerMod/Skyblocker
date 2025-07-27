@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.util.Colors;
 
 import java.util.List;
 
@@ -43,6 +44,6 @@ public class WidgetEntry extends WidgetsListEntry {
 		int textY = y + (entryHeight - 9) / 2;
 		enableButton.setPosition(x + entryWidth - 110, y + (entryHeight - 12) / 2);
 		enableButton.render(context, mouseX, mouseY, tickDelta);
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, widget.getDisplayName(), x + 2, textY, -1);
+		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, widget.getDisplayName(), x + 2, textY, Colors.WHITE);
 	}
 }

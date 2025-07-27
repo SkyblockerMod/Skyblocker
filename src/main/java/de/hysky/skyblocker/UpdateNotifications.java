@@ -43,7 +43,7 @@ public class UpdateNotifications {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final String BASE_URL = "https://api.modrinth.com/v2/project/y6DuFGwJ/version?loaders=[%22fabric%22]&game_versions=";
 	private static final Version MOD_VERSION = SkyblockerMod.SKYBLOCKER_MOD.getMetadata().getVersion();
-	private static final String MC_VERSION = SharedConstants.getGameVersion().getId();
+	private static final String MC_VERSION = SharedConstants.getGameVersion().id();
 	private static final Path CONFIG_PATH = SkyblockerMod.CONFIG_DIR.resolve("update_notifications.json");
 	@VisibleForTesting
 	protected static final Comparator<Version> COMPARATOR = Version::compareTo;

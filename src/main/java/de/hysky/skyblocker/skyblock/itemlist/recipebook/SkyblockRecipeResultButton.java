@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.recipebook.AnimatedResultButton;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
@@ -51,7 +51,7 @@ public class SkyblockRecipeResultButton extends ClickableWidget {
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 		MinecraftClient client = MinecraftClient.getInstance();
 
-		context.drawGuiTexture(RenderLayer::getGuiTextured, AnimatedResultButton.SLOT_CRAFTABLE_TEXTURE, this.getX(), this.getY(), this.width, this.height);
+		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, AnimatedResultButton.SLOT_CRAFTABLE_TEXTURE, this.getX(), this.getY(), this.width, this.height);
 		context.drawItemWithoutEntity(itemStack, this.getX() + ITEM_OFFSET, this.getY() + ITEM_OFFSET);
 		context.drawStackOverlay(client.textRenderer, itemStack, this.getX() + ITEM_OFFSET, this.getY() + ITEM_OFFSET);
 	}
