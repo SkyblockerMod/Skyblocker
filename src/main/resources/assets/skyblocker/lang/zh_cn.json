@@ -1333,5 +1333,8 @@
     "skyblocker.customItemNames.screen.customColor": "自定义",
     "skyblocker.customItemNames.screen.howToRemove": "将名称字段留空即可移除自定义名称。",
     "skyblocker.customItemNames.notOnSkyblock": "你只能在Skyblock中设置自定义物品名称！",
-    "skyblocker.customItemNames.screen.customColorTitle": "自定义颜色"
+    "skyblocker.customItemNames.screen.customColorTitle": "自定义颜色",
+    "skyblocker.config.foraging.galatea": "Galatea",
+    "skyblocker.config.foraging.galatea.enableTunerSolver": "启用调谐助手",
+    "skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip": "显示频率调谐谜题所需点击数"
 }
