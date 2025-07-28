@@ -38,7 +38,7 @@ public abstract class AbstractBlockHighlighter {
 	 * @param colour Color to use for highlighting.
 	 * @param alpha Alpha for highlighting
 	 */
-	protected AbstractBlockHighlighter(Block target, DyeColor colour, Float alpha) {
+	protected AbstractBlockHighlighter(Block target, DyeColor colour, float alpha) {
 		this(state -> state.isOf(target), colour, alpha);
 	}
 
@@ -47,7 +47,7 @@ public abstract class AbstractBlockHighlighter {
 	 * @param colour Color to use for highlighting.
 	 * @param alpha Alpha for highlighting
 	 */
-	protected AbstractBlockHighlighter(Predicate<BlockState> statePredicate, DyeColor colour, Float alpha) {
+	protected AbstractBlockHighlighter(Predicate<BlockState> statePredicate, DyeColor colour, float alpha) {
 		this.statePredicate = statePredicate;
 		this.colour = ColorUtils.getFloatComponents(colour);
 		this.alpha = alpha;
