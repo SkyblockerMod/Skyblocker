@@ -11,10 +11,10 @@ import net.minecraft.util.math.ColorHelper;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class DropdownThing<T> extends DropdownWidget<T> {
+class CustomDropdownWidget<T> extends DropdownWidget<T> {
     private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_outer_space");
 
-    public DropdownThing(int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
+    CustomDropdownWidget(int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
         super(client, x, y, width, maxHeight, 12, entries, selectCallback, selected);
         headerHeight = 15;
     }

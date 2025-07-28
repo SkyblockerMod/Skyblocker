@@ -23,10 +23,7 @@ import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -66,32 +63,33 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 * @param title      title
 	 * @param color the color for the border
 	 */
-	public ComponentBasedWidget(Text title, int color, @NotNull Information information) {
+	public ComponentBasedWidget(Text title, Integer color, @NotNull Information information) { // use Integer object to not get that annoying warning on Formatting#getColor grrr
+		Objects.requireNonNull(color);
 		this.title = title;
 		this.color = 0xff000000 | color;
 		this.information = information;
 	}
 
-	public ComponentBasedWidget(Text title, int color, String id) {
+	public ComponentBasedWidget(Text title, Integer color, String id) {
 		this(title, color, new Information(id, title.copyContentOnly(), l -> true));
 	}
 
-	public ComponentBasedWidget(Text title, int color, String id, Predicate<Location> availableIn) {
+	public ComponentBasedWidget(Text title, Integer color, String id, Predicate<Location> availableIn) {
 		this(title, color, new Information(id, title.copyContentOnly(), availableIn));
 	}
 
 	/**
 	 * @param availableLocations {@link java.util.EnumSet} IS VERY ENCOURAGED.
 	 */
-	public ComponentBasedWidget(Text title, int color, String id, Set<Location> availableLocations) {
+	public ComponentBasedWidget(Text title, Integer color, String id, Set<Location> availableLocations) {
 		this(title, color, id, availableLocations::contains);
 	}
 
-	public ComponentBasedWidget(Text title, int color, String id, Location availableLocation) {
+	public ComponentBasedWidget(Text title, Integer color, String id, Location availableLocation) {
 		this(title, color, id, EnumSet.of(availableLocation));
 	}
 
-	public ComponentBasedWidget(Text title, int color, String id, Location availableLocation, Location... otherAvailableLocations) {
+	public ComponentBasedWidget(Text title, Integer color, String id, Location availableLocation, Location... otherAvailableLocations) {
 		this(title, color, id, EnumSet.of(availableLocation, otherAvailableLocations));
 	}
 

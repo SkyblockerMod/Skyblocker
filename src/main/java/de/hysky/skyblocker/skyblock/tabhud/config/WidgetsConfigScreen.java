@@ -96,7 +96,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		super.init();
 		sidePanelWidget = new SidePanelWidget(width / 4, height);
 		addWidgetWidget = new AddWidgetWidget(client, this::addWidget);
-		topBarWidget = new TopBarWidget(width, this::setCurrentLocation, this::setCurrentScreenLayer);
+		topBarWidget = new TopBarWidget(width, this::setCurrentLocation, this::setCurrentScreenLayer, b -> snapping = b, b -> autoAnchor = b);
 		addSelectableChild(addWidgetWidget);
 		addSelectableChild(topBarWidget);
 		addSelectableChild(sidePanelWidget);
@@ -194,27 +194,31 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 						ScreenRect otherSnapBox = getBorder(otherRect, direction);
 						ScreenRect selectedSnapBox = selectedSnapBoxes[direction.getOpposite().ordinal()];
 
-						int dist = direction.getAxis() == NavigationAxis.HORIZONTAL ? Math.abs((int) mouseX - otherSnapBox.getCenter(NavigationAxis.HORIZONTAL)) : Math.abs((int) mouseY - otherSnapBox.getCenter(NavigationAxis.VERTICAL));
+						int dist = direction.getAxis() == NavigationAxis.HORIZONTAL ? Math.abs((int) mouseX - otherSnapBox.getBorder(direction).getCenter(NavigationAxis.HORIZONTAL)) : Math.abs((int) mouseY - otherSnapBox.getBorder(direction).getCenter(NavigationAxis.VERTICAL));
 						if (!selectedSnapBox.overlaps(otherSnapBox) || dist > distanceToCursor) continue;
 						PositionRule.Point point = getPoint(widget);
 						switch (direction) {
 							case LEFT -> {
 								relativeX = OptionalInt.of(-2);
+								relativeY = OptionalInt.empty();
 								parentPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.LEFT);
 								thisPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.RIGHT);
 							}
 							case RIGHT -> {
 								relativeX = OptionalInt.of(1);
+								relativeY = OptionalInt.empty();
 								parentPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.RIGHT);
 								thisPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.LEFT);
 							}
 							case UP -> {
 								relativeY = OptionalInt.of(-2);
+								relativeX = OptionalInt.empty();
 								parentPoint = new PositionRule.Point(PositionRule.VerticalPoint.TOP, point.horizontalPoint());
 								thisPoint = new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, point.horizontalPoint());
 							}
 							case DOWN -> {
 								relativeY = OptionalInt.of(1);
+								relativeX = OptionalInt.empty();
 								parentPoint = new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, point.horizontalPoint());
 								thisPoint = new PositionRule.Point(PositionRule.VerticalPoint.TOP, point.horizontalPoint());
 							}
@@ -322,6 +326,10 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 				updatePositions();
 				return true;
 			}
+			if (keyCode == GLFW.GLFW_KEY_DELETE) {
+				removeWidget(selectedWidget);
+				return true;
+			}
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
@@ -347,14 +355,16 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	}
 
 	private static ScreenRect getBorder(ScreenRect rect, NavigationDirection side) {
-		final int thickness = 5;
+		int extraX = rect.width() / 2;
+		int extraY = rect.height() / 2;
+		final int thickness = 5 + (side.getAxis() == NavigationAxis.HORIZONTAL ? extraX : extraY);
 		int i = rect.getBoundingCoordinate(side);
 		NavigationAxis otherAxis = side.getAxis().getOther();
 		int j = rect.getBoundingCoordinate(otherAxis.getNegativeDirection());
 		int k = rect.getLength(otherAxis);
 		ScreenRect screenRect = ScreenRect.of(side.getAxis(), i, j, thickness, k);
-		int offsetX = side.getAxis() == NavigationAxis.HORIZONTAL ? (side.isPositive() ? -1 : -thickness + 2) : 0;
-		int offsetY = side.getAxis() == NavigationAxis.VERTICAL ? (side.isPositive() ? -1 : -thickness + 2) : 0;
+		int offsetX = side.getAxis() == NavigationAxis.HORIZONTAL ? (side.isPositive() ? -extraX : -5) : 0;
+		int offsetY = side.getAxis() == NavigationAxis.VERTICAL ? (side.isPositive() ? -extraY : -5) : 0;
 		return new ScreenRect(screenRect.getLeft() + offsetX, screenRect.getTop() + offsetY, screenRect.width(), screenRect.height());
 	}
 
@@ -372,8 +382,10 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	@Override
 	public void removeWidget(@NotNull HudWidget widget) {
 		builder.removeWidget(widget);
-		sidePanelWidget.close();
-		selectedWidget = null;
+		if (selectedWidget == widget) {
+			sidePanelWidget.close();
+			selectedWidget = null;
+		}
 		updatePositions();
 	}
 

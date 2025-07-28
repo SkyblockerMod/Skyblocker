@@ -5,10 +5,12 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ContainerWidget;
+import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -19,18 +21,46 @@ import java.util.function.Consumer;
 
 public class TopBarWidget extends ContainerWidget {
 	private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_outer_space");
-	private final DropdownThing<Location> locationDropdown;
-	private final DropdownThing<WidgetManager.ScreenLayer> screenLayerDropdown;
+	private static final int HEIGHT = 15;
+	private final CustomDropdownWidget<Location> locationDropdown;
+	private final CustomDropdownWidget<WidgetManager.ScreenLayer> screenLayerDropdown;
+	private final SimplePositioningWidget layout;
+	private final List<ClickableWidget> widgets;
 
-	public TopBarWidget(int width, Consumer<Location> onLocationSelected, Consumer<WidgetManager.ScreenLayer> onLayerSelected) {
-		super(0, 0, width, 15, Text.literal("hi"));
+	public TopBarWidget(int width, Consumer<Location> onLocationSelected, Consumer<WidgetManager.ScreenLayer> onLayerSelected, BooleanConsumer setSnapping, BooleanConsumer setAutoAnchor) {
+		super(0, 0, width, HEIGHT, Text.literal("hi"));
+
+		layout = new SimplePositioningWidget(getWidth(), HEIGHT);
+		layout.getMainPositioner().alignTop();
+
 		List<Location> locations = Lists.newArrayList(Location.values());
 		// move UNKNOWN to be first
 		locations.remove(Location.UNKNOWN);
 		locations.addFirst(Location.UNKNOWN);
-		locationDropdown = new DropdownThing<>(width / 2 - 100 - 5, 0, 100, 200, locations, onLocationSelected, Utils.getLocation());
+		locationDropdown = new CustomDropdownWidget<>(width / 2 - 100 - 5, 0, 100, 200, locations, onLocationSelected, Utils.getLocation());
 		locationDropdown.setFormatter(location -> location == Location.UNKNOWN ? Text.literal("Everywhere").formatted(Formatting.YELLOW) : Text.literal(location.toString()));
-		screenLayerDropdown = new DropdownThing<>(width / 2 + 5, 0, 100, 200, List.of(WidgetManager.ScreenLayer.values()), onLayerSelected, WidgetManager.ScreenLayer.HUD);
+		screenLayerDropdown = new CustomDropdownWidget<>(width / 2 + 5, 0, 100, 200, List.of(WidgetManager.ScreenLayer.values()), onLayerSelected, WidgetManager.ScreenLayer.HUD);
+
+		DirectionalLayoutWidget dropdownsLayout = DirectionalLayoutWidget.horizontal();
+		dropdownsLayout.getMainPositioner().marginX(5);
+		dropdownsLayout.add(locationDropdown);
+		dropdownsLayout.add(screenLayerDropdown);
+		layout.add(dropdownsLayout);
+
+		ToggleButtonWidget snappingToggle = new ToggleButtonWidget(80, HEIGHT, Text.literal("Snapping"), setSnapping);
+		snappingToggle.setState(true);
+		snappingToggle.setTooltip(Tooltip.of(Text.literal("Automatically snap widgets to other widgets")));
+		ToggleButtonWidget autoAnchorToggle = new ToggleButtonWidget(80, HEIGHT, Text.literal("Auto Screen Anchor"), setAutoAnchor);
+		autoAnchorToggle.setState(true);
+		autoAnchorToggle.setTooltip(Tooltip.of(Text.literal("Automatically change the anchor of the widget based on the position")));
+
+		DirectionalLayoutWidget togglesLayout = DirectionalLayoutWidget.horizontal();
+		togglesLayout.add(snappingToggle);
+		togglesLayout.add(autoAnchorToggle);
+		layout.add(togglesLayout, Positioner::alignRight);
+
+		widgets = List.of(locationDropdown, screenLayerDropdown, snappingToggle, autoAnchorToggle);
+		layout.refreshPositions();
 	}
 
 	@Override
@@ -40,21 +70,22 @@ public class TopBarWidget extends ContainerWidget {
 
 	@Override
 	public List<? extends Element> children() {
-		return List.of(locationDropdown, screenLayerDropdown);
+		return widgets;
 	}
 
 	@Override
 	public void setWidth(int width) {
 		super.setWidth(width);
-		locationDropdown.setX(width / 2 - 100 - 5);
-		screenLayerDropdown.setX(width / 2 + 5);
+		layout.setMinWidth(width);
+		layout.refreshPositions();
 	}
 
 	@Override
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-		context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, getX() - 2, getY() - 2, getWidth() + 4, 15 + 2);
-		locationDropdown.render(context, mouseX, mouseY, deltaTicks);
-		screenLayerDropdown.render(context, mouseX, mouseY, deltaTicks);
+		context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, getX() - 2, getY() - 2, getWidth() + 4, HEIGHT + 2);
+		for (ClickableWidget widget : widgets) {
+			widget.render(context, mouseX, mouseY, deltaTicks);
+		}
 	}
 
 	@Override
