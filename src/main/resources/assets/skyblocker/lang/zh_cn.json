@@ -1336,5 +1336,6 @@
     "skyblocker.customItemNames.screen.customColorTitle": "自定义颜色",
     "skyblocker.config.foraging.galatea": "Galatea",
     "skyblocker.config.foraging.galatea.enableTunerSolver": "启用调谐助手",
-    "skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip": "显示频率调谐谜题所需点击数"
+    "skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip": "显示频率调谐谜题所需点击数",
+    "skyblocker.config.helpers.carnival": "骑士嘉年华"
 }
