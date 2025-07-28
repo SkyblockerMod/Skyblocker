@@ -124,9 +124,9 @@ public class UIAndVisualsConfig {
     public static class TitleContainer {
         public float titleContainerScale = 100;
 
-        public int x = 540;
+        public int x = -1;
 
-        public int y = 10;
+        public int y = -1;
 
         public Direction direction = Direction.VERTICAL;
 
@@ -388,5 +388,7 @@ public class UIAndVisualsConfig {
 		public boolean showItemName = true;
 
 		public int lifeTime = 3;
+
+		public boolean splitNotifications = false;
 	}
 }

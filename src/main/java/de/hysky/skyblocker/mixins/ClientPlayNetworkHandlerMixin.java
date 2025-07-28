@@ -42,8 +42,6 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.*;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
@@ -159,18 +157,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
 		CrystalsChestHighlighter.onSound(packet);
 		TunerSolver.INSTANCE.onSound(packet);
-		SoundEvent sound = packet.getSound().value();
-
-		// Mute Enderman sounds in the End
-		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().otherLocations.end.muteEndermanSounds) {
-			if (sound.id().equals(SoundEvents.ENTITY_ENDERMAN_AMBIENT.id()) ||
-					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_DEATH.id()) ||
-					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_HURT.id()) ||
-					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_SCREAM.id()) ||
-					sound.id().equals(SoundEvents.ENTITY_ENDERMAN_STARE.id())) {
-				ci.cancel();
-			}
-		}
 	}
 
 	@WrapWithCondition(method = "warnOnUnknownPayload", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
