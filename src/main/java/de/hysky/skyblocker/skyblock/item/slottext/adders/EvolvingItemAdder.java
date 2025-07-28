@@ -19,9 +19,13 @@ import java.util.regex.Pattern;
 // Evolving items are those that get upgraded after holding them in your inventory for a certain amount of time.
 public class EvolvingItemAdder extends SimpleSlotTextAdder {
 	private static final Pattern BONUS_PATTERN = Pattern.compile("\\+?([\\d.]+)");
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"evolving_items",
+			"skyblocker.config.uiAndVisuals.slotText.evolvingItems",
+			"skyblocker.config.uiAndVisuals.slotText.evolvingItems.@Tooltip");
 
 	public EvolvingItemAdder() {
-		super();
+		super(CONFIG_INFORMATION);
 	}
 
 	@Override
