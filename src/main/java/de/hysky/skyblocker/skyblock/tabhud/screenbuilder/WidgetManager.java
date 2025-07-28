@@ -27,8 +27,10 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
 import org.jetbrains.annotations.NotNull;
@@ -153,6 +155,8 @@ public class WidgetManager {
 			}
 		} catch (Exception e) {
 			LOGGER.error("Failed to load config", e);
+			// TODO translatable
+			SystemToast.add(MinecraftClient.getInstance().getToastManager(), new SystemToast.Type(), Text.literal("Error reading Skyblocker HUD Config"), Text.literal("Check your logs!"));
 		}
 	}
 
