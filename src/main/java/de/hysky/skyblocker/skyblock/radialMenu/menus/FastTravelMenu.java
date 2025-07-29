@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.radialMenu.menus;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.Text;
 
 
 public class FastTravelMenu extends RegexMenu {

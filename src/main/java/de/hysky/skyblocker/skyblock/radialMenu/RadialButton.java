@@ -2,8 +2,7 @@ package de.hysky.skyblocker.skyblock.radialMenu;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.Screen;
@@ -17,7 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -115,7 +113,13 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 
 		//render tooltip
 		if (hovered && (Screen.hasShiftDown() || SkyblockerConfigManager.get().uiAndVisuals.radialMenu.tooltipsWithoutShift)) {
-			context.drawItemTooltip(CLIENT.textRenderer, icon, mouseX, mouseY);
+			// Backpack Preview
+			if (CLIENT.currentScreen.getTitle().getString().equals("Storage")) {
+				BackpackPreview.renderPreview(context, CLIENT.currentScreen, linkedSlot, mouseX, mouseY);
+			} else {
+				//normal tooltips
+				context.drawItemTooltip(CLIENT.textRenderer, icon, mouseX, mouseY);
+			}
 		}
 	}
 

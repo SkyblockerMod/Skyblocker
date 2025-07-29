@@ -210,12 +210,7 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 
 	private void clickSlot(int slotId, int button) {
 		if (CLIENT.interactionManager == null || !syncIds.containsKey(slotId)) return;
-		//uses throw for left clicks as this should be better according to the harp
-		if (button == 0) {
-			CLIENT.interactionManager.clickSlot(syncIds.get(slotId), slotId, button, SlotActionType.THROW, CLIENT.player);
-		} else {
-			CLIENT.interactionManager.clickSlot(syncIds.get(slotId), slotId, button, SlotActionType.PICKUP, CLIENT.player);
-		}
+		CLIENT.interactionManager.clickSlot(syncIds.get(slotId), slotId, button, SlotActionType.PICKUP, CLIENT.player);
 	}
 
 	@Override
