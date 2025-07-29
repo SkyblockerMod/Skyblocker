@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.mixins.accessors;
 
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -9,7 +8,6 @@ import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(HandledScreen.class)
 public interface HandledScreenAccessor {
@@ -41,7 +39,4 @@ public interface HandledScreenAccessor {
 	static Identifier getSLOT_HIGHLIGHT_FRONT_TEXTURE() {
 		throw new UnsupportedOperationException();
 	}
-
-	@Invoker("drawBackground")
-	void callDrawBackground(DrawContext context, float delta, int mouseX, int mouseY);
 }
