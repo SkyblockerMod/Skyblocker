@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -55,6 +56,8 @@ public class NamedWaypoint extends Waypoint {
 			BlockPos.CODEC.fieldOf("pos").forGetter(waypoint -> waypoint.pos),
 			Codec.floatRange(0, 1).listOf().xmap(Floats::toArray, FloatArrayList::new).optionalFieldOf("colorComponents", new float[0]).forGetter(waypoint -> waypoint.colorComponents)
 	).apply(instance, (pos, colorComponents) -> new OrderedNamedWaypoint(pos, "", new float[]{0, 1, 0})));
+
+	public static final Comparator<NamedWaypoint> NAME_COMPARATOR = new NameComparator();
 
     public final Text name;
     public final Vec3d centerPos;
@@ -169,4 +172,31 @@ public class NamedWaypoint extends Waypoint {
                 Codec.either(Codec.STRING, Codec.INT).xmap(either -> either.map(Function.identity(), Object::toString), Either::left).optionalFieldOf("name").forGetter(ColeweightOptions::name)
         ).apply(instance, ColeweightOptions::new));
     }
+
+	private static class NameComparator implements Comparator<NamedWaypoint> {
+
+		@Override
+		public int compare(NamedWaypoint o1, NamedWaypoint o2) {
+			String string1 = o1.getName().getString();
+			String string2 = o2.getName().getString();
+
+			String prefix1 = string1.replaceFirst("\\d+$", "");
+			String prefix2 = string2.replaceFirst("\\d+$", "");
+
+			int i = prefix1.compareTo(prefix2);
+			if (i != 0) return i;
+
+			String num1 = string1.substring(prefix1.length());
+			String num2 = string2.substring(prefix2.length());
+			if (num1.isEmpty() || num2.isEmpty()) return string1.compareTo(string2);
+
+			try {
+				int i1 = Integer.parseInt(num1);
+				int i2 = Integer.parseInt(num2);
+				return Integer.compare(i1, i2);
+			} catch (NumberFormatException e) {
+				return string1.compareTo(string2);
+			}
+		}
+	}
 }

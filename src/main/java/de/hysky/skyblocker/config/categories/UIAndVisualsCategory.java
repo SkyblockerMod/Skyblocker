@@ -817,6 +817,14 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.itemPickup.lifeTime = newValue)
 								.controller(IntegerController.createBuilder().range(1, 10).slider(1).build())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack.@Tooltip"))
+								.binding(defaults.uiAndVisuals.itemPickup.splitNotifications,
+										() -> config.uiAndVisuals.itemPickup.splitNotifications,
+										newValue -> config.uiAndVisuals.itemPickup.splitNotifications = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build()
 				)
                 .build();

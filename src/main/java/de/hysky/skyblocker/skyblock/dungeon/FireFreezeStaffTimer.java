@@ -21,7 +21,7 @@ public class FireFreezeStaffTimer {
     @Init
     public static void init() {
 		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.OVERLAY_MESSAGE, FIRE_FREEZE_STAFF_TIMER, FireFreezeStaffTimer::onDraw));
-        ClientReceiveMessageEvents.GAME.register(FireFreezeStaffTimer::onChatMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(FireFreezeStaffTimer::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> FireFreezeStaffTimer.reset());
     }
 
@@ -56,10 +56,12 @@ public class FireFreezeStaffTimer {
         fireFreezeTimer = 0;
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
+    private static boolean onChatMessage(Text text, boolean overlay) {
         if (!overlay && SkyblockerConfigManager.get().dungeons.theProfessor.fireFreezeStaffTimer && Formatting.strip(text.getString())
                 .equals("[BOSS] The Professor: Oh? You found my Guardians' one weakness?")) {
             fireFreezeTimer = System.currentTimeMillis() + 5000L;
         }
+
+        return true;
     }
 }

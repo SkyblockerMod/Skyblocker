@@ -13,7 +13,7 @@
   "key.wikiLookup.fandom": "Fandom Wiki Lookup",
   "key.itemProtection": "Protect Item",
   "key.skyblocker.slottext": "Slot Text",
-  "key.itemPriceLookup": "Bazaar Lookup",
+  "key.itemPriceLookup": "Item Price Lookup",
   "key.itemPriceRefresh": "Bazaar Refresh",
 
 
@@ -140,7 +140,7 @@
   "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreTitle.@Tooltip": "Display a title when reaching %d score in dungeons.",
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD": "Enable Score HUD",
   "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.@Tooltip": "Displays the dungeon score in the HUD.",
-  "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nNote: This only works correctly if death messages are enabled in your skyblock settings. If you want to hide death messages, use this mod's Hide Player Death Messages setting instead to allow further processing of death messages.",
+  "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nNote: This only works correctly if death messages are enabled in your Skyblock settings. If you want to hide death messages, use this mod's Hide Player Death Messages setting instead to allow further processing of death messages.",
   "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Score Scaling",
 
   "skyblocker.config.dungeons.dungeonSplits": "Dungeon Splits Widget",
@@ -150,6 +150,9 @@
 
   "skyblocker.config.dungeons.hideSoulweaverSkulls": "Hide Soulweaver Skulls",
   "skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip": "Hides the Haunted Skulls spawned that are spawned as a result of using Soulweaver Gloves.",
+
+  "skyblocker.config.dungeons.highlightDoorKeys": "Highlight Door Keys",
+  "skyblocker.config.dungeons.highlightDoorKeys.@Tooltip": "Highlights Wither Door and Blood Door keys on the ground in cyan.",
 
   "skyblocker.config.dungeons.livid": "Livid (F5/M5)",
   "skyblocker.config.dungeons.livid.enableSolidColor": "Enable Custom Livid Color",
@@ -168,6 +171,8 @@
 
   "skyblocker.config.dungeons.map": "Map",
   "skyblocker.config.dungeons.map.enableMap": "Enable Map",
+  "skyblocker.config.dungeons.map.fancyMap": "Fancy Dungeon Map",
+  "skyblocker.config.dungeons.map.showSelfHead": "Show Self Head",
   "skyblocker.config.dungeons.map.mapScaling": "Map Scaling",
   "skyblocker.config.dungeons.map.mapScreen": "Dungeon Map & Score Placement Config...",
 
@@ -231,7 +236,10 @@
   "skyblocker.config.dungeons.secretWaypoints.waypointType": "Waypoint Type",
 
   "skyblocker.config.dungeons.spiritLeapOverlay": "Spirit Leap Overlay",
-  "skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip": "Shows a custom overlay for the Spirit Leap screen that makes leaping to teammates easy and consistent.",
+  "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay": "Enable Spirit Leap Overlay",
+  "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay.@Tooltip": "Shows a custom overlay for the Spirit Leap screen that makes leaping to teammates easy and consistent.",
+  "skyblocker.config.dungeons.spiritLeapOverlay.showMap": "Show Dungeon Map in Spirit Leap Overlay",
+  "skyblocker.config.dungeons.spiritLeapOverlay.scale": "Spirit Leap Overlay Scale",
 
   "skyblocker.config.dungeons.starredMobBoundingBoxes": "Starred Mob Bounding Boxes",
   "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
@@ -440,6 +448,8 @@
   "skyblocker.config.helpers.bazaar": "Bazaar",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Draws icons on top of orders to explain the current state of the order.\n\n%s: Order is going to expire soon\n%s: Order has expired\n%s: Order is filled to some degree and there are items/coins to claim\n%s: Order is filled",
+  "skyblocker.config.helpers.bazaar.enableReorderHelper": "Enable Reorder Helper",
+  "skyblocker.config.helpers.bazaar.enableReorderHelper.@Tooltip": "Hold CTRL when cancelling an unfilled buy/sell order to copy the unfilled amount to the clipboard.",
 
   "skyblocker.config.helpers.carnival": "Chivalrous Carnival",
   "skyblocker.config.helpers.carnival.catchAFishHelper": "Catch a Fish Helper",
@@ -491,48 +501,48 @@
   "skyblocker.config.helpers.fishing.changeTimerColor": "Change Timer At 20s",
   "skyblocker.config.helpers.fishing.changeTimerColor.@Tooltip": "Changes timer to green after 20 seconds has passed",
   "skyblocker.config.helpers.fishing.enableFishingHelper": "Enable Fishing Helper",
-  "skyblocker.config.helpers.fishing.enableFishingHelper.@Tooltip": "Displays title message when a fish is on the hook. (needs the skyblock setting \"Fishing Status Holograms\" enabled to work)",
+  "skyblocker.config.helpers.fishing.enableFishingHelper.@Tooltip": "Displays title message when a fish is on the hook. This relies on Skyblock setting → Fishing Status Holograms being enabled.",
   "skyblocker.config.helpers.fishing.fishingTimerScale": "Fishing Timer Scale",
-  "skyblocker.config.helpers.fishing.fishingTimerScale.@Tooltip": "How big to display the fishing timer",
+  "skyblocker.config.helpers.fishing.fishingTimerScale.@Tooltip": "How big to display the fishing timer.",
   "skyblocker.config.helpers.fishing.hideOtherPlayers": "Hide Other Players Rods",
-  "skyblocker.config.helpers.fishing.hideOtherPlayers.@Tooltip": "Hide other players' fishing rods from showing for you",
+  "skyblocker.config.helpers.fishing.hideOtherPlayers.@Tooltip": "Hide other players' fishing rods from showing for you.",
   "skyblocker.config.helpers.fishing.enableFishingTimer": "Enable Bobber Timer",
-  "skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip": "Adds bobber lifetime to HUD",
+  "skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip": "Adds bobber lifetime to HUD.",
   "skyblocker.config.helpers.fishing.hud.screen": "Fishing HUD Config...",
   "skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter": "Enable sea creature tracker",
-  "skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter.@Tooltip": "Tracks how many sea creatures you have and how long until they will despawn (needs the skyblock setting:\"sea creature chat message\" to be enabled)  ",
+  "skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter.@Tooltip": "Tracks how many sea creatures you have and how long until they will despawn. This relies on Hypixel Settings → Fishing Settings → Sea Creature Chat being enabled.",
   "skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn": "Only Show When Barn Fishing",
   "skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn.@Tooltip": "For the Hub, only show the \"Sea Creature Tracker\" when barn fishing",
   "skyblocker.config.helpers.fishing.timerLength": "Fishing Timer Duration",
   "skyblocker.config.helpers.fishing.timerLength.@Tooltip": "Time in seconds for the despawn timer",
   "skyblocker.config.helpers.fishing.seaCreatureTimerNotification": "Fishing Timer Notification",
-  "skyblocker.config.helpers.fishing.seaCreatureTimerNotification.@Tooltip": "Show a notification when the timer runs out",
+  "skyblocker.config.helpers.fishing.seaCreatureTimerNotification.@Tooltip": "Show a notification when the timer runs out.",
   "skyblocker.config.helpers.fishing.seaCreatureTimerNotification.notification": "Time's Up",
   "skyblocker.config.helpers.fishing.seaCreatureCap": "Sea Creature Cap",
   "skyblocker.config.helpers.fishing.seaCreatureCap.@Tooltip": "Sea creature cap for barn fishing",
   "skyblocker.config.helpers.fishing.seaCreatureCapNotification": "Sea Creature Cap Notification",
-  "skyblocker.config.helpers.fishing.seaCreatureCapNotification.@Tooltip": "Show a notification when the sea creature cap is reached",
+  "skyblocker.config.helpers.fishing.seaCreatureCapNotification.@Tooltip": "Show a notification when the sea creature cap is reached.",
   "skyblocker.config.helpers.fishing.seaCreatureCapNotification.notification": "Sea Creature Cap Reached",
   "skyblocker.config.helpers.fishing.minimumNotificationRarity": "Sea Creature Rarity Notification",
   "skyblocker.config.helpers.fishing.minimumNotificationRarity.@Tooltip": "Minimum rarity for a notification about rare sea creatures. (UNKNOWN = disabled)",
   "skyblocker.config.helpers.fishing.fishingHookDisplay": "Fishing Hook Display",
   "skyblocker.config.helpers.fishing.fishingHookDisplay.OFF": "Off",
   "skyblocker.config.helpers.fishing.fishingHookDisplay.CROSSHAIR": "On Crosshair",
-  "skyblocker.config.helpers.fishing.fishingHookDisplay.HUD": "In Hud",
-  "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "Display the skyblock fishing hook timer on the screen \n On crosshair -> in the center of screen \n In Hud -> In the fishing Hud",
+  "skyblocker.config.helpers.fishing.fishingHookDisplay.HUD": "In HUD",
+  "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "Display the skyblock fishing hook timer on the screen.\n\nOn crosshair: in the center of screen\n\nIn HUD: in the fishing HUD",
 
   "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "Enable Item Price Lookup",
-  "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Searches the Bazaar and AH for the current hovered item with the F6 key.",
+  "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Searches the Bazaar and Auction House for the current hovered item with the F6 key.",
   "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "Failed to find item in the Bazaar and Auction House",
   "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "Enable Item Price Refresh",
-  "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "Refresh the Bazaar and AH prices with the Z key.",
+  "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "Refresh the Bazaar and Auction House prices with the Z key.",
   "skyblocker.config.helpers.itemPrice.refreshingItemPrices": "Refreshing Item Prices...",
   "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "Refreshed Item Prices",
   "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "Item Prices Refresh Failed.",
 
   "skyblocker.config.helpers.jerry": "Jerry",
   "skyblocker.config.helpers.jerry.enableJerryTimer": "Enable Jerry Timer",
-  "skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip": "Sends a message in chat and plays a sound when the hidden jerry spawn cooldown is over.",
+  "skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip": "Sends a message in chat and plays a sound when the hidden Jerry spawn cooldown is over.",
   "skyblocker.config.helpers.jerry.sendJerryTimerMessage": "Jerry cooldown is over!",
 
   "skyblocker.config.helpers.mythologicalRitual": "Mythological Ritual Helper",
@@ -825,6 +835,7 @@
   "skyblocker.config.quickNav.button.tooltip.@Tooltip": "Tooltip shown when hovering your mouse over the button.\n\nYou can use text json format.\nPutting nothing will make the tooltip not render.",
   "skyblocker.config.quickNav.button.uiTitle": "UI Title",
   "skyblocker.config.quickNav.enableQuickNav": "Enable Quick Navigation",
+  "skyblocker.config.quickNav.enableQuickNav.@Tooltip": "Adds 14 customizable inventory buttons that can be styled and run a command when clicked.",
 
   "skyblocker.config.slayer": "Slayers",
 
@@ -854,20 +865,20 @@
 
   "skyblocker.config.slayer.highlightMinis": "Highlight Minibosses",
   "skyblocker.config.slayer.highlightMinis.@Tooltip[0]": "\nOFF: Do not highlight Slayer Minibosses.",
-  "skyblocker.config.slayer.highlightMinis.@Tooltip[1]": "\nGLOW: Creates a glow effect on Slayer Minibosses. Due to technical limitations, there is a small chance of this option making mistakes in mob detection",
-  "skyblocker.config.slayer.highlightMinis.@Tooltip[2]": "\nHITBOX: Display a Hitbox around Slayer Minibosses",
+  "skyblocker.config.slayer.highlightMinis.@Tooltip[1]": "\nGLOW: Creates a glow effect on Slayer Minibosses. Due to technical limitations, there is a small chance of this option making mistakes in mob detection.",
+  "skyblocker.config.slayer.highlightMinis.@Tooltip[2]": "\nHITBOX: Display a Hitbox around Slayer Minibosses.",
 
   "skyblocker.config.slayer.highlightBosses": "Highlight Bosses",
   "skyblocker.config.slayer.highlightBosses.@Tooltip[0]": "\nOFF: Do not highlight Slayer Bosses.",
-  "skyblocker.config.slayer.highlightBosses.@Tooltip[1]": "\nGLOW: Creates a glow effect on Slayer Bosses. Due to technical limitations, there is a small chance of this option making mistakes in mob detection",
-  "skyblocker.config.slayer.highlightBosses.@Tooltip[2]": "\nHITBOX: Display a Hitbox around the Slayer Boss",
-  "skyblocker.config.slayer.highlightBosses.@Tooltip[3]": "\nThis option is required for Blazeslayer Attunement Highlighting",
+  "skyblocker.config.slayer.highlightBosses.@Tooltip[1]": "\nGLOW: Creates a glow effect on Slayer Bosses. Due to technical limitations, there is a small chance of this option making mistakes in mob detection.",
+  "skyblocker.config.slayer.highlightBosses.@Tooltip[2]": "\nHITBOX: Display a Hitbox around the Slayer Boss.",
+  "skyblocker.config.slayer.highlightBosses.@Tooltip[3]": "\nThis option is required for Blazeslayer Attunement Highlighting.",
   "skyblocker.config.slayer.highlightBosses.OFF": "Off",
   "skyblocker.config.slayer.highlightBosses.GLOW": "Glow",
   "skyblocker.config.slayer.highlightBosses.HITBOX": "Hitbox",
 
   "skyblocker.config.slayer.minibossSpawnAlert": "MiniBoss Spawn Alert",
-  "skyblocker.config.slayer.minibossSpawnAlert.@Tooltip": "\nDisplays a warning when a slayer miniboss spawns",
+  "skyblocker.config.slayer.minibossSpawnAlert.@Tooltip": "\nDisplays a warning when a slayer miniboss spawns.",
 
   "skyblocker.config.slayer.slainTime": "Slayer kill time",
   "skyblocker.config.slayer.slainTime.@Tooltip": "Sends the amount of time spent to kill the slayer.",
@@ -969,7 +980,7 @@
 
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled": "Enabled",
-  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled.@Tooltip": "Adds 3 buttons to quickly fill out Bazaar buy order amounts",
+  "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled.@Tooltip": "Adds 3 buttons to quickly fill out Bazaar buy order amounts.",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse": "Close Sign on Use",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.slotQuantity": "Slot #%s Quantity",
 
@@ -1010,14 +1021,14 @@
   "skyblocker.config.uiAndVisuals.itemPickup": "Item Pickup Widget",
   "skyblocker.config.uiAndVisuals.itemPickup.hud.screen": "Item Pickup Widget Config...",
   "skyblocker.config.uiAndVisuals.itemPickup.sackNotifications": "Sack Notification",
-  "skyblocker.config.uiAndVisuals.itemPickup.sackNotifications.@Tooltip": "Also show changes in sacks (this relies on Hypixel Settings -> Chat Feedback -> Sack Notifications being enabled)",
+  "skyblocker.config.uiAndVisuals.itemPickup.sackNotifications.@Tooltip": "Also show changes in sacks. This relies on Hypixel Settings → Chat Feedback → Sack Notifications being enabled.",
   "skyblocker.config.uiAndVisuals.itemPickup.showItemName": "Show Item Name",
-  "skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip": "Show the item names and icons in the widget",
+  "skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip": "Show the item names and icons in the widget.",
   "skyblocker.config.uiAndVisuals.itemPickup.lifeTime": "Item Lifetime (s)",
-  "skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip": "How long should items stay on the widget",
+  "skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip": "How long should items stay on the widget.",
 
   "skyblocker.config.uiAndVisuals.slotText": "Slot Text",
-  "skyblocker.config.uiAndVisuals.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level",
+  "skyblocker.config.uiAndVisuals.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level.",
   "skyblocker.config.uiAndVisuals.slotText.mode.ENABLED": "Enabled",
   "skyblocker.config.uiAndVisuals.slotText.mode.HOLD_TO_SHOW": "Hold to Show",
   "skyblocker.config.uiAndVisuals.slotText.mode.PRESS_TO_TOGGLE": "Press to Toggle",
@@ -1049,7 +1060,7 @@
   "skyblocker.config.uiAndVisuals.slotText.skyblockLevel": "Skyblock Level",
   "skyblocker.config.uiAndVisuals.slotText.skyblockGuide": "Skyblock Guide",
   "skyblocker.config.uiAndVisuals.slotText.statsTuning": "Stats Tuning",
-  "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "Displays your assigned and unassigned tuning points",
+  "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "Displays your assigned and unassigned tuning points.",
   "skyblocker.config.uiAndVisuals.slotText.yourEssence": "Your Essence",
   "skyblocker.config.uiAndVisuals.slotText.bestiaryLevel": "Bestiary Level",
 
@@ -1153,8 +1164,8 @@
   "skyblocker.wikiLookup.noArticleFound.official": "Unable to locate an Official wiki article for this item...",
   "skyblocker.wikiLookup.noArticleFound.fandom": "Unable to locate a Fandom wiki article for this item...",
 
-  "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armor stands to %s",
-  "skyblocker.debug.toggledWebSocketDebug": "Toggled WebSocket debugging to %s",
+  "skyblocker.debug.toggledShowingInvisibleArmorStands": "Toggled showing invisible armor stands to %s.",
+  "skyblocker.debug.toggledWebSocketDebug": "Toggled WebSocket debugging to %s.",
 
   "skyblocker.config.uiAndVisuals.bars.openScreen": "Status Bars Config screen",
   "skyblocker.bars.config.commonPosition.LEFT": "Left",
@@ -1162,7 +1173,7 @@
   "skyblocker.bars.config.commonPosition.RIGHT": "Right",
   "skyblocker.bars.config.defense": "Defense",
   "skyblocker.bars.config.experience": "Experience",
-  "skyblocker.bars.config.explanation": "Welcome to the status bars config screen!\n\nDrag and drop the bars to snap them to an anchor (white squares) or existing bars.\nYou can right click them to edit a bunch of properties.\nBy hovering your mouse between 2 bars (your cursor should change), you can resize them.\n\nEverything is saved when you leave",
+  "skyblocker.bars.config.explanation": "Welcome to the status bars config screen!\n\nDrag and drop the bars to snap them to an anchor (white squares), existing bars or you can put them anywhere.\nYou can right click them to edit a bunch of properties.\nBy hovering your mouse between 2 bars (your cursor should change), you can resize them.\n\nEverything is saved when you leave.",
   "skyblocker.bars.config.explanationTitle": "What is this?",
   "skyblocker.bars.config.health": "Health",
   "skyblocker.bars.config.hide": "Hide",
@@ -1273,7 +1284,7 @@
   "skyblocker.dwarvenMines.metalDetectorHelper.foundCenter": "Found the center of mines, now working faster",
   "skyblocker.dwarvenMines.metalDetectorHelper.foundTreasureMessage": "Found treasure",
   "skyblocker.dwarvenMines.metalDetectorHelper.possibleTreasureLocationsMessage": "Possible treasure locations: ",
-  "skyblocker.dwarvenMines.metalDetectorHelper.somethingWentWrongMessage": "Something went wrong with the metal detector. Trying again",
+  "skyblocker.dwarvenMines.metalDetectorHelper.somethingWentWrongMessage": "Something went wrong with the metal detector. Trying again.",
   "skyblocker.dwarvenMines.metalDetectorHelper.treasure": "Treasure",
   "skyblocker.dwarvenMines.metalDetectorHelper.possible": "Possible",
 
@@ -1334,7 +1345,7 @@
   "skyblocker.waypoints.config": "Waypoints Config",
   "skyblocker.waypoints.newGroup": "New Waypoint Group",
   "skyblocker.waypoints.new": "New Waypoint",
-  "skyblocker.waypoints.share": "Share",
+  "skyblocker.waypoints.share": "Import/Export",
   "skyblocker.waypoints.shareWaypoints": "Share Waypoints",
   "skyblocker.waypoints.importWaypointsSkyblocker": "Import Waypoints (Skyblocker)",
   "skyblocker.waypoints.importWaypointsSkyblocker.tooltip": "Import Waypoints from Clipboard (Skyblocker Format)",
@@ -1346,6 +1357,10 @@
   "skyblocker.waypoints.importWaypointsSnoopy.tooltip": "Import Waypoints from Clipboard (Snoopy Format)",
   "skyblocker.waypoints.exportWaypointsSkytils": "Export Waypoints (Skytils)",
   "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Export Waypoints to Clipboard (Skytils Format)",
+  "skyblocker.waypoints.importOptions.overrideLocation": "Override Location",
+  "skyblocker.waypoints.importOptions.overrideLocation.tooltip": "Import the waypoints in the currently selected location instead of the one saved.",
+  "skyblocker.waypoints.importOptions.sortWaypoints": "Sort Waypoints",
+  "skyblocker.waypoints.importOptions.sortWaypoints.tooltip": "Sorts the imported waypoints based on their names.",
   "skyblocker.waypoints.importSuccess": "Waypoints Imported",
   "skyblocker.waypoints.importSuccessText": "Successfully imported %d waypoint(s) from %d group(s).",
   "skyblocker.waypoints.importError": "Error Importing Waypoints",
@@ -1359,11 +1374,17 @@
 
   "skyblocker.nightVision.success": "Changed the strength of night vision to %d.",
 
-  "skyblocker.customItemNames.removed": "§fRemoved this item's custom name.",
-  "skyblocker.customItemNames.neverHad": "§fThis item doesn't have a custom name set, but why not add one? ;)",
-  "skyblocker.customItemNames.added": "§fSet a custom name for your currently held item!",
-  "skyblocker.customItemNames.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom name!",
-  "skyblocker.customItemNames.unableToSetName": "§cUnable to set a custom item name :( (Are you in skyblock?, are you holding an item?)",
+  "skyblocker.customItemNames.added": "Set a custom name for your currently held item!",
+  "skyblocker.customItemNames.notOnSkyblock": "You can only set custom item names while in Skyblock!",
+  "skyblocker.customItemNames.noItem": "You aren't holding an item!",
+  "skyblocker.customItemNames.noItemUuid": "You must be holding an item that has a UUID to set a custom item name!",
+
+  "skyblocker.customItemNames.screen.customColor": "Custom",
+  "skyblocker.customItemNames.screen.customColorTitle": "Custom Color",
+  "skyblocker.customItemNames.screen.gradientColor": "Gradient",
+  "skyblocker.customItemNames.screen.gradientStart": "Gradient Start",
+  "skyblocker.customItemNames.screen.gradientEnd": "Gradient End",
+  "skyblocker.customItemNames.screen.howToRemove": "Leave the name field empty to remove the custom name.",
 
   "skyblocker.customDyeColors.invalidHex": "§cInvalid HEX color code!",
   "skyblocker.customDyeColors.notDyeable": "§cThis item isn't a dyeable armor piece!",
@@ -1371,7 +1392,7 @@
   "skyblocker.customDyeColors.neverHad": "§fThis item doesn't have a custom dye color set, but why not add one? ;)",
   "skyblocker.customDyeColors.added": "§fSet a custom dye color for your currently held item!",
   "skyblocker.customDyeColors.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom dye color!",
-  "skyblocker.customDyeColors.unableToSetColor": "§cUnable to set a custom dye color :( (Are you in skyblock?, are you holding an item?)",
+  "skyblocker.customDyeColors.unableToSetColor": "§cUnable to set a custom dye color. Please check if you are in Skyblock and holding an item.",
 
   "skyblocker.customArmorTrims.invalidMaterialOrPattern": "§cYou supplied either an invalid material or an invalid trim pattern!",
   "skyblocker.customArmorTrims.notAnArmorPiece": "§cThis item isn't an armor piece!",
@@ -1379,7 +1400,7 @@
   "skyblocker.customArmorTrims.neverHad": "§fThis item doesn't have an armor trim set, but why not add one? ;)",
   "skyblocker.customArmorTrims.added": "§fSet a custom armor trim for your currently held item!",
   "skyblocker.customArmorTrims.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom armor trim!",
-  "skyblocker.customArmorTrims.unableToSetTrim": "§cUnable to set a custom armor trim :( (Are you in skyblock?, are you holding an item?)",
+  "skyblocker.customArmorTrims.unableToSetTrim": "§cUnable to set a custom armor trim. Please check if you are in Skyblock and holding an item.",
 
   "skyblocker.customAnimatedDyes.invalidHex": "§cAn invalid HEX color code was supplied!",
   "skyblocker.customAnimatedDyes.notDyeable": "§cThis item isn't a dyeable armor piece!",
@@ -1387,7 +1408,7 @@
   "skyblocker.customAnimatedDyes.neverHad": "This item doesn't have a custom animated dye set, but why not add one? ;)",
   "skyblocker.customAnimatedDyes.added": "Set a custom animated dye for your currently held item!",
   "skyblocker.customAnimatedDyes.noItemUuid": "§cYou must be holding an item that has a uuid to set a custom animated dye.",
-  "skyblocker.customAnimatedDyes.unableToSetDye": "§cUnable to set a custom animated dye :( (Are you in skyblock?, are you holding an item?)",
+  "skyblocker.customAnimatedDyes.unableToSetDye": "§cUnable to set a custom animated dye. Please check if you are in Skyblock and holding an item.",
 
   "skyblocker.quiverWarning.50Left": "You only have 50 Arrows left in your Quiver!",
   "skyblocker.quiverWarning.10Left": "You only have 10 Arrows left in your Quiver!",
@@ -1396,7 +1417,7 @@
   "skyblocker.itemProtection.added": "§fYour %s will now be protected! §o*your item now feels a little safer :')*",
   "skyblocker.itemProtection.removed": "§fYour %s will §nno longer be protected§f :( - §lBeware of the dangers in doing this!",
   "skyblocker.itemProtection.noItemUuid": "§cYou must be holding an item that has a uuid to protect it!",
-  "skyblocker.itemProtection.unableToProtect": "§cUnable to protect this item :( (Are you in skyblock?, are you holding an item?)",
+  "skyblocker.itemProtection.unableToProtect": "§cUnable to protect this item. Please check if you are in Skyblock and holding an item.",
 
   "skyblocker.inventorySearch.clickHereToSearch": "Click here to search.",
 
@@ -1468,7 +1489,7 @@
   "skyblocker.partyFinder.deList": "Click to de-list",
   "skyblocker.partyFinder.join": "Click to join",
 
-  "skyblocker.reorderHelper.tooltip": "[Skyblocker] You can copy the amount of items\nby holding CTRL while clicking on the item!",
+  "skyblocker.reorderHelper.tooltip": "Hold CTRL to copy the remaining amount.",
 
   "skyblocker.copyUnderbidPrice.copied": "Copied underbid price: %s",
 
@@ -1570,5 +1591,9 @@
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
   "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
-  "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)"
+  "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)",
+  "emi.category.skyblocker.skyblock_info": "Skyblock Info",
+  "skyblocker.rei.skyblockInfo.failedToFind": "Unable to find!",
+  "skyblocker.rei.transfer.noRecipe": "No Skyblock recipe found!",
+  "skyblocker.rei.transfer.failed": "Failed to open recipe!\nCheck chat for more info."
 }

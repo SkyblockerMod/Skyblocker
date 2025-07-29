@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.bazaar;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
@@ -29,7 +31,7 @@ public class ReorderHelper extends SimpleContainerSolver implements TooltipAdder
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return SkyblockerConfigManager.get().helpers.bazaar.enableReorderHelper;
 	}
 
 	@Override
@@ -59,7 +61,8 @@ public class ReorderHelper extends SimpleContainerSolver implements TooltipAdder
 		switch (focusedSlot.id) {
 			case 11, 13 -> {
 				lines.add(Text.empty());
-				lines.add(Text.empty().append(Text.translatable("skyblocker.reorderHelper.tooltip")).formatted(Formatting.DARK_GRAY, Formatting.ITALIC));
+				lines.add(Constants.PREFIX.get());
+				lines.add(Text.translatable("skyblocker.reorderHelper.tooltip").formatted(Formatting.DARK_GRAY));
 			}
 		}
 	}

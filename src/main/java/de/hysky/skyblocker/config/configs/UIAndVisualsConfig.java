@@ -126,9 +126,9 @@ public class UIAndVisualsConfig {
     public static class TitleContainer {
         public float titleContainerScale = 100;
 
-        public int x = 540;
+        public int x = -1;
 
-        public int y = 10;
+        public int y = -1;
 
         public Direction direction = Direction.VERTICAL;
 
@@ -223,7 +223,7 @@ public class UIAndVisualsConfig {
     }
 
     public static class FancyAuctionHouse {
-        public boolean enabled = true;
+        public boolean enabled = false;
 
         public boolean highlightCheapBIN = true;
     }
@@ -281,15 +281,15 @@ public class UIAndVisualsConfig {
 
         public Color teleportOverlayColor = new Color(0x7F761594, true);
 
-        public boolean enableWeirdTransmission = true;
+        public boolean enableWeirdTransmission = false;
 
-        public boolean enableInstantTransmission = true;
+        public boolean enableInstantTransmission = false;
 
         public boolean enableEtherTransmission = true;
 
-        public boolean enableSinrecallTransmission = true;
+        public boolean enableSinrecallTransmission = false;
 
-        public boolean enableWitherImpact = true;
+        public boolean enableWitherImpact = false;
     }
 
     public static class SmoothAOTE {
@@ -390,5 +390,7 @@ public class UIAndVisualsConfig {
 		public boolean showItemName = true;
 
 		public int lifeTime = 3;
+
+		public boolean splitNotifications = false;
 	}
 }
