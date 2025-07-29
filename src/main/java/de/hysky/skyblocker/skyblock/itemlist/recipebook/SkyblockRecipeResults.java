@@ -366,7 +366,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 		ItemStack hovered = getHoveredItemStack(mouseX, mouseY);
 		if (hovered == null) return false;
 
-		if (WikiLookup.handleWikiLookup(hovered, client.player, keyCode, scanCode)) {
+		if (WikiLookup.handleWikiLookup(hovered, client.player, false, keyCode, scanCode)) {
 			return true;
 		}
 

@@ -172,7 +172,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		if (this.client != null && this.client.player != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 			//wiki lookup
-			WikiLookup.handleWikiLookup(this.focusedSlot.getStack(), client.player, keyCode, scanCode);
+			WikiLookup.handleWikiLookup(this.focusedSlot.getStack(), client.player, VisitorWikiLookup.canSearch(title.getString(), this.focusedSlot), keyCode, scanCode);
 			//item protection
 			if (ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
 				ItemProtection.handleKeyPressed(this.focusedSlot.getStack());
