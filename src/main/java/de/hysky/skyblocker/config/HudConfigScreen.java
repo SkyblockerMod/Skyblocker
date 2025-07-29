@@ -49,6 +49,12 @@ public abstract class HudConfigScreen extends Screen {
 		super(title);
 		this.parent = parent;
 		this.widgets = widgets;
+	}
+
+	@Override
+	protected void init() {
+		super.init();
+		// Reset positions here, so width and height are available.
 		resetPos();
 	}
 
@@ -140,10 +146,11 @@ public abstract class HudConfigScreen extends Screen {
 	/**
 	 * Saves the passed positions to the config.
 	 * <p>
-	 * NOTE: The parent class will call {@link SkyblockerConfigManager#save()} right after this method
+	 * NOTE: The config manager will save the config right after this method is called.
 	 *
 	 * @param configManager the config so you don't have to get it
 	 * @param widgets       the widgets to save
+	 * @see SkyblockerConfigManager#update(java.util.function.Consumer)
 	 */
 	protected abstract void savePos(SkyblockerConfig configManager, List<AbstractWidget> widgets);
 }

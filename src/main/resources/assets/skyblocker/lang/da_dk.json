@@ -20,7 +20,7 @@
     "text.skyblocker.discord": "Discord",
     "text.skyblocker.clickToSend.@Tooltip": "Klik for at sende dette i chatten.",
     "skyblocker.skyblockerScreen": "Skyblocker hovedskærm",
-    "skyblocker.config.title": "Skyblocker Indstillinger",
+    "skyblocker.config.title": "Skyblocker %s",
     "skyblocker.config.shortcutToKeybindsSettings": "Rediger Tastatur Genvej",
     "skyblocker.config.crimsonIsle": "Crimson Isle",
     "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Advarselsgrænse for pileforgiftning",
