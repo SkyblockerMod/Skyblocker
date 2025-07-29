@@ -34,6 +34,17 @@ public abstract class RadialMenu {
 
 	public abstract String getConfigId();
 
+
+	/**
+	 * Lets a Menu remap button clicked to suit it. Most will not need to override this function
+	 * @param originalButton original button clicked by user
+	 * @param slotId the slot to be clicked
+	 * @return the remaped button
+	 */
+	public int remapClickSlotButton(int originalButton, int slotId) {
+		return originalButton;
+	}
+
 	protected boolean getEnabled() {
 		return SkyblockerConfigManager.get().uiAndVisuals.radialMenu.enabled && SkyblockerConfigManager.get().uiAndVisuals.radialMenu.enabledMenus.getOrDefault(getConfigId(), false);
 	}
