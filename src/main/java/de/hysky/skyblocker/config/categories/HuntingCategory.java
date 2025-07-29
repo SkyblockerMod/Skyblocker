@@ -24,13 +24,14 @@ public class HuntingCategory {
 						.description(Text.translatable("skyblocker.config.hunting.huntingBoxHelper.@Tooltip"))
 						.build())
 
-				//Hunting Mob Features
+				// Hunting Mob Features
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.hunting.huntingMobs"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.silencePhantoms"))
-								.description(Text.translatable("skyblocker.config.hunting.huntingMobs.silencePhantoms.@Tooltip"))
+								.description(Text
+										.translatable("skyblocker.config.hunting.huntingMobs.silencePhantoms.@Tooltip"))
 								.binding(defaults.hunting.huntingMobs.silencePhantoms,
 										() -> config.hunting.huntingMobs.silencePhantoms,
 										newValue -> config.hunting.huntingMobs.silencePhantoms = newValue)
@@ -38,10 +39,29 @@ public class HuntingCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightHideonleaf"))
-								.description(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip"))
+								.description(Text.translatable(
+										"skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip"))
 								.binding(defaults.hunting.huntingMobs.highlightHideonleaf,
 										() -> config.hunting.huntingMobs.highlightHideonleaf,
 										newValue -> config.hunting.huntingMobs.highlightHideonleaf = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightCoralot"))
+								.description(Text.translatable(
+										"skyblocker.config.hunting.huntingMobs.highlightCoralot.@Tooltip"))
+								.binding(defaults.hunting.huntingMobs.highlightCoralot,
+										() -> config.hunting.huntingMobs.highlightCoralot,
+										newValue -> config.hunting.huntingMobs.highlightCoralot = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightShellwise"))
+								.description(Text.translatable(
+										"skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip"))
+								.binding(defaults.hunting.huntingMobs.highlightShellwise,
+										() -> config.hunting.huntingMobs.highlightShellwise,
+										newValue -> config.hunting.huntingMobs.highlightShellwise = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())

@@ -25,7 +25,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.*;
-import net.minecraft.entity.passive.BatEntity;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.DyeColor;
@@ -153,6 +153,11 @@ public class MobGlow {
 		if (Utils.isInGalatea()) {
 			return switch (entity) {
 				case ShulkerEntity shulker when shulker.getColor() == DyeColor.GREEN && SkyblockerConfigManager.get().hunting.huntingMobs.highlightHideonleaf -> DyeColor.YELLOW.getSignColor();
+
+				// TODO: Try to add diff glows depending on the nametag (the state)
+				case AxolotlEntity axolotl when SkyblockerConfigManager.get().hunting.huntingMobs.highlightCoralot -> DyeColor.YELLOW.getSignColor();
+
+				case TurtleEntity turtle when SkyblockerConfigManager.get().hunting.huntingMobs.highlightShellwise -> DyeColor.PURPLE.getSignColor();
 
 				default -> NO_GLOW;
 			};
