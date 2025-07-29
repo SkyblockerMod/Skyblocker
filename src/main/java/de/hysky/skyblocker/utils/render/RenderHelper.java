@@ -308,7 +308,8 @@ public class RenderHelper {
     /**
      * Renders a cylinder without the top or bottom faces.
      *
-     * @param pos      The position that the cylinder will be centred around.
+	 * @param centre   The position that the circle will be centred around.
+	 * @param radius   The radius of the cylinder.
      * @param height   The total height of the cylinder with {@code pos} as the midpoint.
      * @param segments The amount of triangles used to approximate the circle.
      */
@@ -402,15 +403,15 @@ public class RenderHelper {
 
 				// First triangle
 				buffer.vertex(positionMatrix,
-								Math.fma(x0 ,r0,(float) centre.getX()),
+								Math.fma(x0, r0, (float) centre.getX()),
 								(float) centre.getY() + y0,
-								Math.fma(z0,r0,(float) centre.getZ()))
+								Math.fma(z0, r0, (float) centre.getZ()))
 						.color(color);
 
 				buffer.vertex(positionMatrix,
-								Math.fma(x0 ,r1,(float) centre.getX()),
+								Math.fma(x0, r1, (float) centre.getX()),
 								(float) centre.getY() + y1,
-								Math.fma(z0,r1,(float) centre.getZ()))
+								Math.fma(z0, r1, (float) centre.getZ()))
 						.color(color);
 			}
 		}

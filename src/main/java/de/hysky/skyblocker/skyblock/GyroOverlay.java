@@ -94,7 +94,7 @@ public class GyroOverlay {
 	public enum Mode implements StringIdentifiable {
 		OFF("OFF"),
 		CIRCLE("CIRCLE"),
-		CIRCLE_OUTLINE("CIRCLEOUTLINED"),
+		CIRCLE_OUTLINE("CIRCLE_OUTLINED"),
 		SPHERE("SPHERE");
 
 		private final String key;

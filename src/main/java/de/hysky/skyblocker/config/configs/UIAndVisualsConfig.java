@@ -72,7 +72,7 @@ public class UIAndVisualsConfig {
 
 	public HealthBars healthBars = new HealthBars();
 
-	public GyroKineticWandOverlay gyroOverlay = new GyroKineticWandOverlay();
+	public GyrokineticWandOverlay gyroOverlay = new GyrokineticWandOverlay();
 
 	public ItemPickup itemPickup = new ItemPickup();
 
@@ -383,7 +383,7 @@ public class UIAndVisualsConfig {
 		public Color emptyBarColor = new Color(0xFF0000);
 	}
 
-	public static class GyroKineticWandOverlay {
+	public static class GyrokineticWandOverlay {
 		public GyroOverlay.Mode gyroOverlayMode = GyroOverlay.Mode.OFF;
 
 		public Color gyroOverlayColor = new Color(0x7F761594, true);
