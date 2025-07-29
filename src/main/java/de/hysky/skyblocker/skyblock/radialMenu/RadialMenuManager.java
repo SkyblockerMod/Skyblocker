@@ -14,6 +14,7 @@ public class RadialMenuManager {
 			new FastTravelMenu(),
 			new HuntingMenu(),
 			new ProfileManagmentMenu(),
+			new SackOfSacksMenu(),
 			new SacksMenu(),
 			new SkillsMenu(),
 			new SkyblockMenu(),
