@@ -1,3 +1,124 @@
+# Release 5.6.0
+
+## Highlight
+ * Config Changes
+    * Added Support for **MoulConfig** which has much better searching
+    * MoulConfig is now the default interface
+    * You can switch between MoulConfig and YACL in Misc tab
+    * **Fabric Language Kotlin is now required** since MoulConfig needs it
+  * Add Fancy Dungeon Map
+    * You can now see player heads on the map instead of markers
+    * The fancy map also shows in the Spirit Leap Overlay
+    * More to come!
+ * Secret Waypoint Fixes
+ * Add Player Head Customization
+    * You can customize the look of player heads with `/skyblocker custom` just like your armour!
+ * Add GUI for renaming items
+    * Accessed with `/skyblocker custom renameItem`
+ * Add ability to move the Fancy Bars anywhere on screen
+ * Add Blood Camp Helper
+ * Add Dungeon Splits Widget
+ * Add Door Key Highlighter
+ * Add Moonglade Beacon Tuner Helper
+ * Add Bazaar Quick Quantities
+ * Add Basic Networth Calculator for Profile Viewer
+ * Add Block Incorrect Clicks for Experimentation Table
+ * Add Sack Message Prices
+ * Add Toggle Lottery Chat Filter
+ * Add Disable All Command
+ * Add Reorder Helper config
+ * Add Autocomplete for /rngmeter, and /rng
+ * Add Autocomplete for /joininstance, /joindungeon, and /joinkuudra
+ * Add support for super craft input to sign calculator
+ * Add Wiki Lookup support for visitors
+ * Add Skyblock Info Display to REI
+ * Add Bestiary Slot Text
+ * Add log suppression for invalid fishing bobbers
+ * Add option to split sack and inventory notifications for the Item Pickup Widget 
+ * Waypoint import fixes and improvements
+ * Various improvements for the Search Overlay
+ * Various localization improvements and changes
+ * Improved compatibility with chat message detection
+ * Changed some titles to not have a prefix
+ * Fix some messages not sending to party chat
+ * Fix issues with legacy ordered waypoints
+ * Fix for Smooth AOTE
+ * Fix some Slot Text and Tooltip features
+ * Fix Title Container position not defaulting to screen centre
+ * Fix bottom QuickNav buttons being slightly offset
+ * Fix Fetchur Solver not mentioning other door types
+ * Fix integer overflow with Farming HUD
+ * Fix Sea Lumies Highlighter not disabling properly
+ * Fix Starred Mob Glow not applying to player mobs
+ * Fix lag when opening the recipe book
+ * Fix prioritization of REI Plugin
+ * Fix Mute Enderman Sounds not working in some cases
+ * Fix a rare crash with purse parsing
+ * Fix a rare crash with the Commissions Widget
+ * Fix a rare crash in F3/M3
+
+## What's Changed
+* Fix Guardian Health Text Crash by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1460
+* Add other wooden doors to fetchur by @IllagerCaptain in https://github.com/SkyblockerMod/Skyblocker/pull/1450
+* Fix skyblocker's REI compat taking priority over Firmament's by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1474
+* Config Multi Backend + MoulConfig by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1467
+* Bestiary Level Slot Text & Slot Text Fixes by @MisterCheezeCake in https://github.com/SkyblockerMod/Skyblocker/pull/1452
+* Bazaar Quick Quantities by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1354
+* Basic Networth calculator for Profile Viewer by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1431
+* Don't apply Hunting Box tooltip adder for shards in the inventory by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1479
+* Fix Smooth AOTE working in Dojo by @DaysSky in https://github.com/SkyblockerMod/Skyblocker/pull/1477
+* Support Item Price Lookup for Items in the Recipe Book by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1476
+* Add support for new shards in Search Overlay by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1427
+* Block incorrect clicks in experiment table by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1447
+* Add Sack Message Prices by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1379
+* Disable All Command by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1454
+* Dungeon splits by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1464
+* Refactor NEURepoManager by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1480
+* Blood Camp Helper by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1446
+* Don't append [SKYBLOCKER] to 270 and 300 Titles by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1492
+* Only send Livid Color to party chat by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1494
+* fix quick nav offset by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1487
+* Livid Highlighter Localization Cleanup + Custom Color Option by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1486
+* Tuner solver by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1430
+* Fix Item Price Lookup for Enchanted Books by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1498
+* Do not log invalid owner for fishing bobber on Hypixel by @SteveKunG in https://github.com/SkyblockerMod/Skyblocker/pull/1513
+* Remove [SKYBLOCKER] Prefix from Livid Color Title by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1507
+* Fix powder mining codec initialization order by @ninjaguardian in https://github.com/SkyblockerMod/Skyblocker/pull/1502
+* Add a description to quick navigation toggle by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1515
+* Add a Config Option to Disable Bazaar Reorder Helper by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1508
+* Fix Max Pet Level for Jade Dragon and Searching for Null Ovoids in Search Overlay by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1509
+* Make quicknav grab backgroundScreen by @ninjaguardian in https://github.com/SkyblockerMod/Skyblocker/pull/1488
+* waypoint import options + fixes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1434
+* save warps to file in case api takes a nap by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1313
+* Strong and independent bars by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1432
+* [WIP] Standardized text style by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1380
+* use longs to prevent overflow in FarmingHud by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1527
+* Only Send "Mimic Dead" Message to Party Chat by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1523
+* Standardized text style by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/1522
+* smooth aote fix by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1520
+* Customize player heads by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1423
+* REI /viewrecipe Crafting, Skyblock Info Display  by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1496
+* Added Visitor Wiki Lookup by @SteveKunG in https://github.com/SkyblockerMod/Skyblocker/pull/1512
+* Fix Sea Lumies being highlighted when highlighter is disabled by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1493
+* Fix speed cap preset and sign calculator conflict by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1530
+* fix: some mixin injections preventing things in cases they shouldn't by @meowora in https://github.com/SkyblockerMod/Skyblocker/pull/1495
+* Fancy Dungeon Map by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1239
+* Make title container default to center by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1538
+* Waypoints import fix by @CapinolDev in https://github.com/SkyblockerMod/Skyblocker/pull/1484
+* add option to split sack and inventory notifications of pickup widget by @salbeira in https://github.com/SkyblockerMod/Skyblocker/pull/1387
+* Improve secrets detection by @GatienDoesStuff in https://github.com/SkyblockerMod/Skyblocker/pull/1483
+* Fix black glow on dungeon mobs when Class-Based Player Glow is enabled by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1540
+* Rename item GUI by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1490
+* fix bug and set text field focused by default by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1542
+
+## New Contributors
+* @MisterCheezeCake made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1452
+* @DaysSky made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1477
+* @SteveKunG made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1513
+* @CapinolDev made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1484
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v5.5.0...v.5.6.0
+___
 # Release 5.5.0
 
 ## Highlight

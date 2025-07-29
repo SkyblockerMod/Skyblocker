@@ -26,19 +26,21 @@ public class GlaciteColdOverlay {
     @Init
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(GlaciteColdOverlay::update, 20);
-        ClientReceiveMessageEvents.GAME.register(GlaciteColdOverlay::coldReset);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(GlaciteColdOverlay::coldReset);
 		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, POWDER_SNOW_OUTLINE, (context, tickCounter) -> render(context)));
     }
 
-    private static void coldReset(Text text, boolean b) {
+    private static boolean coldReset(Text text, boolean b) {
         if (!Utils.isInDwarvenMines() || b) {
-            return;
+            return true;
         }
         String message = text.getString();
         if (message.equals("The warmth of the campfire reduced your ❄ Cold to 0!")) {
             cold = 0;
             resetTime = System.currentTimeMillis();
         }
+
+        return true;
     }
 
     private static void update() {

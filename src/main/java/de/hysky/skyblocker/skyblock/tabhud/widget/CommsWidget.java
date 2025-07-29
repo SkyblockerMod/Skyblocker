@@ -15,11 +15,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+
+import com.mojang.logging.LogUtils;
+
 // this widget shows the status of the king's commissions.
 // (dwarven mines and crystal hollows)
 
 @RegisterWidget
 public class CommsWidget extends TabHudWidget {
+	private static final Logger LOGGER = LogUtils.getLogger();
 	public static final String ID = "commissions";
 	private static final MutableText TITLE = Text.literal("Commissions").formatted(Formatting.DARK_AQUA,
 			Formatting.BOLD);
@@ -60,7 +65,13 @@ public class CommsWidget extends TabHudWidget {
 					component = Components.progressComponent(Ico.BOOK, Text.of(name), Text.of(progress), 100f);
 					commissionDone = true;
 				} else {
-					float percent = Float.parseFloat(progress.substring(0, progress.length() - 1));
+					float percent;
+					try {
+						percent = Float.parseFloat(progress.substring(0, progress.length() - 1));
+					} catch (NumberFormatException e) {
+						LOGGER.error("[Skyblocker Comms Widget] Failed to parse number.", e);
+						percent = 0;
+					}
 					component = Components.progressComponent(Ico.BOOK, Text.of(name), percent);
 				}
 				this.addComponent(component);

@@ -13,6 +13,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
@@ -21,6 +22,7 @@ import java.util.Set;
 
 public class TitleContainer {
 	private static final Identifier TITLE_CONTAINER = Identifier.of(SkyblockerMod.NAMESPACE, "title_container");
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	/**
 	 * The set of titles which will be rendered.
 	 *
@@ -44,7 +46,7 @@ public class TitleContainer {
 	 * Returns {@code true} if the title is currently shown.
 	 *
 	 * @param title the title to check
-	 * @return whether the title in currently shown
+	 * @return whether the title is currently shown already
 	 */
 	public static boolean containsTitle(Title title) {
 		return titles.contains(title);
@@ -54,7 +56,7 @@ public class TitleContainer {
 	 * Adds a title to be shown
 	 *
 	 * @param title the title to be shown
-	 * @return whether the title is already currently being shown
+	 * @return whether the title is currently shown already
 	 */
 	public static boolean addTitle(Title title) {
 		if (titles.add(title)) {
@@ -69,7 +71,7 @@ public class TitleContainer {
 	 *
 	 * @param title the title to be shown
 	 * @param ticks the number of ticks to show the title
-	 * @return whether the title is already currently being shown
+	 * @return whether the title is currently shown already
 	 */
 	public static boolean addTitle(Title title, int ticks) {
 		if (addTitle(title)) {
@@ -77,6 +79,43 @@ public class TitleContainer {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Adds the title to {@link TitleContainer} and {@link #playNotificationSound() plays the notification sound} if the title is not in the {@link TitleContainer} already.
+	 * No checking needs to be done on whether the title is in the {@link TitleContainer} already by the caller.
+	 *
+	 * @param title the title
+	 * @return whether the title is currently shown already
+	 */
+	public static boolean addTitleAndPlaySound(Title title) {
+		if (addTitle(title)) {
+			playNotificationSound();
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Adds the title to {@link TitleContainer} for a set number of ticks and {@link #playNotificationSound() plays the notification sound} if the title is not in the {@link TitleContainer} already.
+	 * No checking needs to be done on whether the title is in the {@link TitleContainer} already by the caller.
+	 *
+	 * @param title the title
+	 * @param ticks the number of ticks the title will remain
+	 * @return whether the title is currently shown already
+	 */
+	public static boolean addTitleAndPlaySound(Title title, int ticks) {
+		if (addTitle(title, ticks)) {
+			playNotificationSound();
+			return true;
+		}
+		return false;
+	}
+
+	public static void playNotificationSound() {
+		if (CLIENT.player != null) {
+			CLIENT.player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
+		}
 	}
 
 	/**
@@ -103,10 +142,11 @@ public class TitleContainer {
 		UIAndVisualsConfig.Alignment alignment = SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment;
 
 		// x/y refer to the starting position for the text
+		// If xPos or yPos is negative, use the default values
 		// If left or right aligned or middle aligned vertically, start at xPos, we will shift each text later
-		float x = xPos;
+		float x = xPos >= 0 ? xPos : MinecraftClient.getInstance().getWindow().getScaledWidth() / 2f;
 		// y always starts at yPos
-		float y = yPos;
+		float y = yPos >= 0 ? yPos : MinecraftClient.getInstance().getWindow().getScaledHeight() * 0.6f;
 
 		// Calculate the width of combined text
 		float totalWidth = getWidth(textRenderer, titles);
