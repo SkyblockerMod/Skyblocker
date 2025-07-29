@@ -18,8 +18,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SidePanelWidget extends ContainerWidget {
+class SidePanelWidget extends ContainerWidget {
 	private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_outer_space");
+	private static final int TOP_MARGIN = 16; // this is kinda horribly used but this widget will only be used here so it is whatever.
+	private static final int SCROLLBAR_AREA = SCROLLBAR_WIDTH + 1; // 1 for padding
 
 	private final MinecraftClient client = MinecraftClient.getInstance();
 	private final List<ClickableWidget> optionWidgets = new ArrayList<>();
@@ -34,8 +36,8 @@ public class SidePanelWidget extends ContainerWidget {
 
 	private @Nullable HudWidget hudWidget;
 
-	public SidePanelWidget(int width, int height) {
-		super(0, 0, width, height, Text.literal("Side Panel"));
+	SidePanelWidget(int width, int height) {
+		super(0, TOP_MARGIN, width, height - TOP_MARGIN, Text.literal("Side Panel"));
 		visible = false;
 	}
 
@@ -69,7 +71,7 @@ public class SidePanelWidget extends ContainerWidget {
 				animation = -1f;
 			}
 		}
-		context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, getX() - 4, getY() - 4, getWidth() + 8, getHeight() + 8);
+		context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, getX() - 4, getY() - 4 - TOP_MARGIN, getWidth() + 8, getHeight() + 8 + TOP_MARGIN);
 		context.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
 
 		for (ClickableWidget clickableWidget : this.optionWidgets) {
@@ -97,8 +99,12 @@ public class SidePanelWidget extends ContainerWidget {
 		add(ButtonWidget.builder(Text.literal("Remove"), b -> config.removeWidget(hudWidget)).build()); // TODO translatable
 		layout.add(EmptyWidget.ofHeight(10));
 
+		// Per screen options
+		MultilineTextWidget textWidget = null;
 		if (hudWidget.isInherited()) {
-			add(new TextWidget(Text.literal("This widget is from a parent screen, edit it there or create a copy."), client.textRenderer));
+			// TODO add a goto location button
+			textWidget = new MultilineTextWidget(Text.literal("This widget is from a parent screen, edit it there or create a copy."), client.textRenderer);
+			add(textWidget);
 			add(ButtonWidget.builder(Text.literal("Create Copy"), b -> { // TODO translatable
 				hudWidget.setInherited(false);
 				open(hudWidget, config, rightSide, x);
@@ -110,15 +116,23 @@ public class SidePanelWidget extends ContainerWidget {
 				add(option.createNewWidget(config));
 			}
 		}
+
 		layout.add(EmptyWidget.ofHeight(10));
+
+		// Normal options
 		List<WidgetOption<?>> options = new ArrayList<>();
 		hudWidget.getOptions(options);
 		for (WidgetOption<?> option : options) {
 			add(option.createNewWidget(config));
 		}
+
+		// Position everything
 		for (ClickableWidget widget : optionWidgets) {
-			widget.setWidth(getWidth() - 6 - 1); // remove 6 for scrollbar and one for a liiiitle padding
+			widget.setWidth(getWidth() - SCROLLBAR_AREA);
 		}
+		if (textWidget != null) textWidget.setMaxWidth(getWidth() - SCROLLBAR_AREA);
+
+		layout.setPosition(getX(), getY() - (int) getScrollY());
 		layout.refreshPositions();
 		if (isOpen() && (x != targetX || rightSide != this.rightSide)) {
 			isOpen = false;
@@ -152,15 +166,21 @@ public class SidePanelWidget extends ContainerWidget {
 		if (rightSide) {
 			layout.setX(x);
 		} else {
-			layout.setX(x + 6 + 1);
+			layout.setX(x + SCROLLBAR_AREA);
 		}
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+		if (this.hoveredElement(mouseX, mouseY).filter(element -> element.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)).isPresent()) return true;
+		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
 	@Override
 	public void setWidth(int width) {
 		super.setWidth(width);
 		for (ClickableWidget widget : optionWidgets) {
-			widget.setWidth(getWidth() - 6 - 1); // remove 6 for scrollbar and one for a liiiitle padding
+			widget.setWidth(getWidth() - SCROLLBAR_AREA); // remove 6 for scrollbar and one for a liiiitle padding
 		}
 		layout.refreshPositions();
 	}

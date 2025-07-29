@@ -1,44 +1,31 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.mixins.accessors.PlayerListHudAccessor;
-import de.hysky.skyblocker.skyblock.tabhud.config.option.EnumOption;
-import de.hysky.skyblocker.skyblock.tabhud.config.option.FloatOption;
-import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.CenteredWidgetPositioner;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.TopAlignedWidgetPositioner;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.StringIdentifiable;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -70,9 +57,9 @@ public class PlayerListManager {
 	private static List<String> playerStringList = new ArrayList<>();
 	@Nullable
 	private static String footer;
-	private static final Map<String, TabListWidget> WIDGET_MAP = new Object2ObjectOpenHashMap<>();
+	static final Map<String, TabListWidget> WIDGET_MAP = new Object2ObjectLinkedOpenHashMap<>(); // linked so iterating gives the same order as the vanilla tab
 	private static final Set<Runnable> LISTENERS = new ObjectOpenHashSet<>(); // this might not actually be a set due to how lambdas work
-	private static final Map<String, HudWidget> HANDLED_TAB_WIDGETS = new Object2ObjectOpenHashMap<>();
+	static final Map<String, HudWidget> HANDLED_TAB_WIDGETS = new Object2ObjectOpenHashMap<>();
 
 	public static @Nullable TabListWidget getListWidget(String name) {
 		return WIDGET_MAP.get(name);
@@ -109,15 +96,15 @@ public class PlayerListManager {
 		// check is needed, else game crashes on server leave
 		if (networkHandler != null) {
 			playerList = networkHandler.getPlayerList()
-			                           .stream()
-			                           .sorted(PlayerListHudAccessor.getOrdering())
-			                           .toList();
+					.stream()
+					.sorted(PlayerListHudAccessor.getOrdering())
+					.toList();
 			playerStringList = playerList.stream()
-			                             .map(PlayerListEntry::getDisplayName)
-			                             .filter(Objects::nonNull)
-			                             .map(Text::getString)
-			                             .map(String::strip)
-			                             .toList();
+					.map(PlayerListEntry::getDisplayName)
+					.filter(Objects::nonNull)
+					.map(Text::getString)
+					.map(String::strip)
+					.toList();
 		}
 
 		final Predicate<String> playersColumnPredicate = PLAYERS_COLUMN_PATTERN.asMatchPredicate();
@@ -363,8 +350,8 @@ public class PlayerListManager {
 	}
 
 	/**
-	 * @param detail The text after the : on the widget's name. {@link Text#empty()} if there is none.
-	 * @param lines The different lines, trimmed.
+	 * @param detail            The text after the : on the widget's name. {@link Text#empty()} if there is none.
+	 * @param lines             The different lines, trimmed.
 	 * @param playerListEntries The player list entries, unprocessed. If detail is present, the whole line is included as the first line in the list.
 	 */
 	public record TabListWidget(Text detail, List<Text> lines, List<PlayerListEntry> playerListEntries) {
@@ -375,84 +362,4 @@ public class PlayerListManager {
 		}
 	}
 
-	@RegisterWidget
-	public static class FancyTabWidget extends HudWidget {
-		private static final Information INFORMATION = new Information("fancy_tab", Text.literal("Fancy Tab"));
-
-		private final List<HudWidget> widgets = new ObjectArrayList<>();
-		private Positioner positioner = Positioner.CENTERED;
-		private float maxHeight = 0.8f;
-
-		public FancyTabWidget() {
-			registerListener(this::update);
-		}
-
-		@Override
-		protected void renderWidget(DrawContext context, float delta) {
-			updatePositions();
-			for (HudWidget widget : widgets) {
-				widget.render(context, delta);
-			}
-			ScreenBuilder.markPositionsDirty(); // since make fucked with positioning
-		}
-
-		private void update() {
-			widgets.clear();
-			for (String s : WIDGET_MAP.keySet()) {
-				widgets.add(HANDLED_TAB_WIDGETS.get(s));
-			}
-		}
-
-		@Override
-		protected void renderWidgetConfig(DrawContext context, float delta) {
-			updatePositions();
-			for (HudWidget widget : widgets) {
-				widget.renderConfig(context, delta);
-			}
-			ScreenBuilder.markPositionsDirty();
-		}
-
-		private void updatePositions() {
-			// TODO global scale option
-			MinecraftClient client = MinecraftClient.getInstance();
-			WidgetPositioner widgetPositioner = positioner.getNewPositioner(maxHeight, client.getWindow().getScaledHeight());
-			widgets.forEach(widgetPositioner::positionWidget);
-			Vector2i widthAndHeight = widgetPositioner.finalizePositioning();
-			w = widthAndHeight.x;
-			h = widthAndHeight.y;
-		}
-
-		@Override
-		public @NotNull Information getInformation() {
-			return INFORMATION;
-		}
-
-		@Override
-		public void getOptions(List<WidgetOption<?>> options) {
-			super.getOptions(options);
-			// TODO translatable
-			options.add(new EnumOption<>(Positioner.class, "positioner", Text.literal("Positioner"), () -> positioner, v -> positioner = v));
-			options.add(new FloatOption("max_height", Text.literal("Max Height"), () -> maxHeight, v -> maxHeight = v));
-		}
-
-		public enum Positioner implements StringIdentifiable {
-			TOP(TopAlignedWidgetPositioner::new),
-			CENTERED(CenteredWidgetPositioner::new);
-
-			private final BiFunction<Float, Integer, WidgetPositioner> function;
-
-			Positioner(BiFunction<Float, Integer, WidgetPositioner> widgetPositionerSupplier) {
-				function = widgetPositionerSupplier;
-			}
-
-			public WidgetPositioner getNewPositioner(float maxHeight, int screenHeight) {
-				return function.apply(maxHeight, screenHeight);
-			}
-
-			@Override
-			public String asString() {
-				return name().toLowerCase(Locale.ENGLISH);
-			}
-		}
-	}
 }

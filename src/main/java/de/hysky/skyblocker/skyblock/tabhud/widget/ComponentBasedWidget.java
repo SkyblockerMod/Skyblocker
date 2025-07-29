@@ -37,6 +37,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	private static final TextRenderer txtRend = MinecraftClient.getInstance().textRenderer;
 
+	// TODO translatable
 	private static final List<Component> ERROR_COMPONENTS = List.of(new PlainTextComponent(Text.literal("An error occurred! Please check logs.").withColor(0xFFFF0000)));
 
 	public static final int BORDER_SZE_N = txtRend.fontHeight + 4;
@@ -248,9 +249,9 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	@Override
 	public void getOptions(List<WidgetOption<?>> options) {
 		super.getOptions(options);
-		options.add(new BooleanOption("draw_border", Text.literal("Draw Border"), () -> drawBorder, b -> drawBorder = b));
-		options.add(new BooleanOption("rounded_corners", Text.literal("Rounded Corners"), () -> roundedCorners, b -> roundedCorners = b));
-		options.add(new FloatOption("background_opacity", Text.literal("Background Opacity"), () -> backgroundOpacity, b -> backgroundOpacity = b));
+		options.add(new BooleanOption("draw_border", Text.literal("Draw Border"), () -> drawBorder, b -> drawBorder = b, true));
+		options.add(new BooleanOption("rounded_corners", Text.literal("Rounded Corners"), () -> roundedCorners, b -> roundedCorners = b, true));
+		options.add(new FloatOption("background_opacity", Text.literal("Background Opacity"), () -> backgroundOpacity, b -> backgroundOpacity = b, 0.8f));
 	}
 
 	private void drawHLine(DrawContext context, int xpos, int ypos, int width) {

@@ -238,7 +238,6 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 				// Get the x, y of the parent's point
 				float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
 				ScreenPos startPos = WidgetPositioner.getStartPosition(oldRule.parent(), (int) (widgetConfig.getScreenWidth() / scale), (int) (widgetConfig.getScreenHeight() / scale), parent ? hoveredPoint : oldRule.parentPoint());
-				if (startPos == null) startPos = new ScreenPos(0, 0);
 				// Same but for the affected widget
 				PositionRule.Point thisPoint = parent ? oldRule.thisPoint() : hoveredPoint;
 				ScreenPos endPos = new ScreenPos(
@@ -261,7 +260,6 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 							endPos.x() - startPos.x(),
 							endPos.y() - startPos.y()));
 				}
-				widgetConfig.updatePositions();
 			}
 		}
 

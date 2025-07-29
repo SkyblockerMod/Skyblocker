@@ -8,7 +8,7 @@ import de.hysky.skyblocker.skyblock.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.util.FancyTabWidget;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
@@ -299,7 +299,7 @@ public class UIAndVisualsCategory {
                                         () -> config.uiAndVisuals.tabHud.effectsFromFooter,
                                         newValue -> config.uiAndVisuals.tabHud.effectsFromFooter = newValue)
                                 .build())
-                        .option(Option.<PlayerListManager.FancyTabWidget.Positioner>createBuilder()
+                        .option(Option.<FancyTabWidget.Positioner>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.defaultPositioning"))
                                 .binding(defaults.uiAndVisuals.tabHud.defaultPositioning,
                                         () -> config.uiAndVisuals.tabHud.defaultPositioning,

@@ -4,13 +4,15 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetConfig;
-import de.hysky.skyblocker.utils.Formatters;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
+import java.text.NumberFormat;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -21,20 +23,35 @@ public class FloatOption implements WidgetOption<Float> {
 	private final Consumer<Float> valueSetter;
 	private final Text name;
 	private final String id;
+	private final float defaultValue;
+
+	private float scrollStep = 0.01f;
+	private NumberFormat formatter = Util.make(NumberFormat.getNumberInstance(), format -> format.setMaximumFractionDigits(2));
 
 	private float min = 0;
 	private float max = 1;
 
-	public FloatOption(String id, Text name, Supplier<Float> valueGetter, Consumer<Float> valueSetter) {
+	public FloatOption(String id, Text name, Supplier<Float> valueGetter, Consumer<Float> valueSetter, float defaultValue) {
 		this.id = id;
 		this.name = name;
 		this.valueGetter = valueGetter;
 		this.valueSetter = valueSetter;
+		this.defaultValue = defaultValue;
 	}
 
 	public FloatOption setMinAndMax(float min, float max) {
 		this.min = min;
 		this.max = max;
+		return this;
+	}
+
+	public FloatOption setScrollStep(float scrollStep) {
+		this.scrollStep = scrollStep;
+		return this;
+	}
+
+	public FloatOption setFractionDigits(int fractionDigits) {
+		formatter = Util.make(NumberFormat.getNumberInstance(), format -> format.setMaximumFractionDigits(fractionDigits));
 		return this;
 	}
 
@@ -81,13 +98,13 @@ public class FloatOption implements WidgetOption<Float> {
 
 		@Override
 		protected void updateMessage() {
-			setMessage(name.copy().append(": ").append(Formatters.FLOAT_NUMBERS.format(min + value * (max - min))));
+			setMessage(name.copy().append(": ").append(formatter.format(min + value * (max - min))));
 		}
 
 		@Override
 		protected void applyValue() {
 			valueSetter.accept(fromProgress(value));
-			config.updatePositions();
+			config.notifyWidget();
 		}
 
 		private double toProgress(float val) {
@@ -106,6 +123,26 @@ public class FloatOption implements WidgetOption<Float> {
 				updateMessage();
 			}
 			super.renderWidget(context, mouseX, mouseY, deltaTicks);
+		}
+
+		@Override
+		public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+			if (isMouseOver(mouseX, mouseY)) {
+				valueSetter.accept(Math.clamp((float) (valueGetter.get() + verticalAmount * scrollStep), min, max));
+				config.notifyWidget();
+			}
+			return false;
+		}
+
+		@Override
+		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+			if (active && visible && button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && isMouseOver(mouseX, mouseY)) {
+				value = toProgress(defaultValue);
+				applyValue();
+				updateMessage();
+				return true;
+			}
+			return super.mouseClicked(mouseX, mouseY, button);
 		}
 	}
 }

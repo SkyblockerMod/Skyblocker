@@ -45,23 +45,23 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	}
 
 	/**
-	 * @see ComponentBasedWidget#ComponentBasedWidget(Text, int, String, Set)
+	 * @see ComponentBasedWidget#ComponentBasedWidget(Text, Integer, String, Set)
 	 */
-	public TabHudWidget(String hypixelWidgetName, Text title, int color, Set<Location> availableLocations) {
+	public TabHudWidget(String hypixelWidgetName, Text title, Integer color, Set<Location> availableLocations) {
 		super(title, color, nameToId(hypixelWidgetName), availableLocations);
 		this.hypixelWidgetName = hypixelWidgetName;
 		init();
 	}
 
-	public TabHudWidget(String hypixelWidgetName, Text title, int color, Location availableLocation) {
+	public TabHudWidget(String hypixelWidgetName, Text title, Integer color, Location availableLocation) {
 		this(hypixelWidgetName, title, color, EnumSet.of(availableLocation));
 	}
 
-	public TabHudWidget(String hypixelWidgetName, Text title, int color, Location first, Location... availableLocations) {
+	public TabHudWidget(String hypixelWidgetName, Text title, Integer color, Location first, Location... availableLocations) {
 		this(hypixelWidgetName, title, color, EnumSet.of(first, availableLocations));
 	}
 
-	public TabHudWidget(String hypixelWidgetName, Text title, int color, Predicate<Location> availableIn) {
+	public TabHudWidget(String hypixelWidgetName, Text title, Integer color, Predicate<Location> availableIn) {
 		super(title, color, nameToId(hypixelWidgetName), availableIn);
 		this.hypixelWidgetName = hypixelWidgetName;
 		init();
@@ -81,6 +81,12 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 			list.addAll(widget.lines());
 			updateContent(list, widget.playerListEntries());
 		}
+	}
+
+	@Override
+	public void optionsChanged() {
+		super.optionsChanged();
+		update();
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 
@@ -189,6 +190,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 				int distanceToCursor = Integer.MAX_VALUE;
 				for (HudWidget widget : builder.getWidgets()) {
 					if (widget == selectedWidget) continue;
+					if (widget.getPositionRule().parent().equals(selectedWidget.getInformation().id())) continue;
 					ScreenRect otherRect = widget.getNavigationFocus();
 					for (NavigationDirection direction : directions) {
 						ScreenRect otherSnapBox = getBorder(otherRect, direction);
@@ -237,7 +239,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 					relativeY.orElse((int) mouseY - dragRelative.y() - startPosition.y() + (int) (selectedWidget.getScaledHeight() * thisPoint.verticalPoint().getPercentage()))
 			);
 			selectedWidget.setPositionRule(newRule);
-			updatePositions();
+			builder.updatePositions(width, height);
 			if (sidePanelWidget.isOpen() && new ScreenRect(sidePanelWidget.getX(), sidePanelWidget.getY(), sidePanelWidget.getWidth(), sidePanelWidget.getHeight()).overlaps(new ScreenRect(selectedWidget.getX(), selectedWidget.getY(), selectedWidget.getScaledWidth(), selectedWidget.getScaledHeight()))) {
 				sidePanelWidget.close();
 				openPanelAfterDragging = true;
@@ -287,6 +289,8 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		dragRelative = new ScreenPos((int) (mouseX - selectedWidget.getX()), (int) (mouseY - selectedWidget.getY()));
 		if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && (!sidePanelWidget.isOpen() || !selectedWidget.equals(sidePanelWidget.getHudWidget()))) {
 			openSidePanel();
+		} else if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && sidePanelWidget.isOpen() && !selectedWidget.equals(sidePanelWidget.getHudWidget())) {
+			openSidePanel();
 		}
 		return true;
 	}
@@ -323,7 +327,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 						oldRule.relativeY() + y
 				);
 				selectedWidget.setPositionRule(newRule);
-				updatePositions();
+				builder.updatePositions(width, height);
 				return true;
 			}
 			if (keyCode == GLFW.GLFW_KEY_DELETE) {
@@ -369,8 +373,8 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	}
 
 	@Override
-	public void updatePositions() {
-		builder.updatePositions(width, height);
+	public void notifyWidget() {
+		if (selectedWidget != null) selectedWidget.optionsChanged();
 	}
 
 	@Override
@@ -386,7 +390,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 			sidePanelWidget.close();
 			selectedWidget = null;
 		}
-		updatePositions();
+		builder.updatePositions(width, height);
 	}
 
 	@Override
@@ -402,6 +406,11 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	@Override
 	public int getScreenHeight() {
 		return height;
+	}
+
+	@Override
+	public void openPopup(Function<Screen, Screen> popupCreator) {
+		client.setScreen(popupCreator.apply(this));
 	}
 
 	private record SelectWidgetPrompt(@NotNull Consumer<@Nullable HudWidget> callback, boolean allowItself) {}
