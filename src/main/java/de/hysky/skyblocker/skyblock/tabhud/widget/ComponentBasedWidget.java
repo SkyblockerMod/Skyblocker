@@ -41,13 +41,13 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	private int prevW = 0, prevH = 0;
 
-	static final int BORDER_SZE_N = txtRend.fontHeight + 4;
-	static final int BORDER_SZE_S = 4;
-	static final int BORDER_SZE_W = 4;
-	static final int BORDER_SZE_E = 4;
-	static final int DEFAULT_COL_BG_BOX = 0xc00c0c0c;
+	public static final int BORDER_SZE_N = txtRend.fontHeight + 4;
+	public static final int BORDER_SZE_S = 4;
+	public static final int BORDER_SZE_W = 4;
+	public static final int BORDER_SZE_E = 4;
+	public static final int DEFAULT_COL_BG_BOX = 0xc00c0c0c;
 	// More transparent background for minimal style
-	static final int MINIMAL_COL_BG_BOX = 0x64000000;
+	public static final int MINIMAL_COL_BG_BOX = 0x64000000;
 
 	private final int color;
 	private final Text title;
@@ -66,6 +66,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	}
 
 	public void addComponent(Component c) {
+		c.setParent(this);
 		this.components.add(c);
 	}
 
