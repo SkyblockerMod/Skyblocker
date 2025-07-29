@@ -94,6 +94,8 @@ public class CustomizeNameScreen extends Screen {
 		}).width(80).build(), 4, 10, 1, 10, Positioner.create().alignLeft()));
 		addDrawableChild(grid.add(new TextWidget(20 * 16, textRenderer.fontHeight, Text.translatable("skyblocker.customItemNames.screen.howToRemove").formatted(Formatting.ITALIC, Formatting.GRAY), textRenderer).alignLeft(), 5, 0, 1, 20, Positioner.create().marginTop(2)));
 		refreshWidgetPositions();
+		setFocused(textField);
+		selectionStart = selectionEnd = textString.length();
 	}
 
 	@Override
@@ -198,7 +200,7 @@ public class CustomizeNameScreen extends Screen {
 	 */
 	public void insertText(String str) {
 		str = StringHelper.stripInvalidChars(str);
-		if (text.getContent() == PlainTextContent.EMPTY) {
+		if (textString.isEmpty()) {
 			setText(Text.literal(str).setStyle(insertAs != null ? insertAs : Style.EMPTY));
 		} else {
 			InsertTextVisitor visitor = new InsertTextVisitor(str, insertAs, selectionStart, selectionEnd);
