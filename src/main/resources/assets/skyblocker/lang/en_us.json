@@ -1026,6 +1026,8 @@
   "skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip": "Show the item names and icons in the widget.",
   "skyblocker.config.uiAndVisuals.itemPickup.lifeTime": "Item Lifetime (s)",
   "skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip": "How long should items stay on the widget.",
+  "skyblocker.config.uiAndVisuals.itemPickup.splitSack": "Split Sack and Inventory Items",
+  "skyblocker.config.uiAndVisuals.itemPickup.splitSack.@Tooltip": "Show changes in sack items separately from changes in inventory items.",
 
   "skyblocker.config.uiAndVisuals.slotText": "Slot Text",
   "skyblocker.config.uiAndVisuals.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level.",
