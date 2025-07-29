@@ -24,21 +24,21 @@ import java.util.stream.Collectors;
 
 public class CommissionLabels {
 
-    private static final Map<String, MiningLocationLabel.DwarvenCategory> DWARVEN_LOCATIONS = Arrays.stream(MiningLocationLabel.DwarvenCategory.values()).collect(Collectors.toMap(MiningLocationLabel.DwarvenCategory::toString, Function.identity()));
-    private static final List<MiningLocationLabel.DwarvenEmissaries> DWARVEN_EMISSARIES = Arrays.stream(MiningLocationLabel.DwarvenEmissaries.values()).toList();
-    private static final Map<String, MiningLocationLabel.GlaciteCategory> GLACITE_LOCATIONS = Arrays.stream(MiningLocationLabel.GlaciteCategory.values()).collect(Collectors.toMap(MiningLocationLabel.GlaciteCategory::toString, Function.identity()));
+	private static final Map<String, MiningLocationLabel.DwarvenCategory> DWARVEN_LOCATIONS = Arrays.stream(MiningLocationLabel.DwarvenCategory.values()).collect(Collectors.toMap(MiningLocationLabel.DwarvenCategory::toString, Function.identity()));
+	private static final List<MiningLocationLabel.DwarvenEmissaries> DWARVEN_EMISSARIES = Arrays.stream(MiningLocationLabel.DwarvenEmissaries.values()).toList();
+	private static final Map<String, MiningLocationLabel.GlaciteCategory> GLACITE_LOCATIONS = Arrays.stream(MiningLocationLabel.GlaciteCategory.values()).collect(Collectors.toMap(MiningLocationLabel.GlaciteCategory::toString, Function.identity()));
 
-    protected static List<MiningLocationLabel> activeWaypoints = new ArrayList<>();
+	protected static List<MiningLocationLabel> activeWaypoints = new ArrayList<>();
 	private static List<String> commissions = List.of();
 	private static boolean commissionDone = false;
 	private static final Pattern COMM_PATTERN = Pattern.compile("(?<name>.*): (?<progress>.*)%?");
 
 
-    @Init
-    public static void init() {
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(CommissionLabels::render);
+	@Init
+	public static void init() {
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(CommissionLabels::render);
 		Scheduler.INSTANCE.scheduleCyclic(CommissionLabels::tick, 20);
-    }
+	}
 
 	public static boolean enabled() {
 		return SkyblockerConfigManager.get().mining.commissionWaypoints.mode != MiningConfig.CommissionWaypointMode.OFF;
@@ -77,75 +77,75 @@ public class CommissionLabels {
 		}
 	}
 
-    /**
-     * update the activeWaypoints when there is a change in commissions
-     *
-     * @param newCommissions the new commissions to get the waypoints from
-     * @param completed      if there is a commission completed
-     */
-    public static void update(List<String> newCommissions, boolean completed) {
-        if (!enabled()) {
+	/**
+	 * update the activeWaypoints when there is a change in commissions
+	 *
+	 * @param newCommissions the new commissions to get the waypoints from
+	 * @param completed      if there is a commission completed
+	 */
+	public static void update(List<String> newCommissions, boolean completed) {
+		if (!enabled()) {
 			return;
 		}
 		MiningConfig.CommissionWaypointMode currentMode = SkyblockerConfigManager.get().mining.commissionWaypoints.mode;
 		activeWaypoints.clear();
-        String location = Utils.getIslandArea().substring(2);
-        //find commission locations in glacite
-        if (location.equals("Dwarven Base Camp") || location.equals("Glacite Tunnels") || location.equals("Glacite Mineshafts") || location.equals("Glacite Lake")) {
-            if (currentMode != MiningConfig.CommissionWaypointMode.BOTH && currentMode != MiningConfig.CommissionWaypointMode.GLACITE) {
-                return;
-            }
+		String location = Utils.getIslandArea().substring(2);
+		//find commission locations in glacite
+		if (location.equals("Dwarven Base Camp") || location.equals("Glacite Tunnels") || location.equals("Glacite Mineshafts") || location.equals("Glacite Lake")) {
+			if (currentMode != MiningConfig.CommissionWaypointMode.BOTH && currentMode != MiningConfig.CommissionWaypointMode.GLACITE) {
+				return;
+			}
 
-            for (String commission : newCommissions) {
-                for (Map.Entry<String, MiningLocationLabel.GlaciteCategory> glaciteLocation : GLACITE_LOCATIONS.entrySet()) {
-                    if (commission.contains(glaciteLocation.getKey())) {
-                        MiningLocationLabel.GlaciteCategory category = glaciteLocation.getValue();
-                        for (BlockPos gemstoneLocation : category.getLocations()) {
-                            activeWaypoints.add(new MiningLocationLabel(category, gemstoneLocation));
-                        }
-                    }
-                }
-            }
-            //add base waypoint if enabled
-            if (SkyblockerConfigManager.get().mining.commissionWaypoints.showBaseCamp) {
-                activeWaypoints.add(new MiningLocationLabel(MiningLocationLabel.GlaciteCategory.CAMPFIRE, MiningLocationLabel.GlaciteCategory.CAMPFIRE.getLocations()[0]));
-            }
-            return;
-        }
-        //find commission locations in dwarven mines
-        if (currentMode != MiningConfig.CommissionWaypointMode.BOTH && currentMode != MiningConfig.CommissionWaypointMode.DWARVEN) {
-            return;
-        }
+			for (String commission : newCommissions) {
+				for (Map.Entry<String, MiningLocationLabel.GlaciteCategory> glaciteLocation : GLACITE_LOCATIONS.entrySet()) {
+					if (commission.contains(glaciteLocation.getKey())) {
+						MiningLocationLabel.GlaciteCategory category = glaciteLocation.getValue();
+						for (BlockPos gemstoneLocation : category.getLocations()) {
+							activeWaypoints.add(new MiningLocationLabel(category, gemstoneLocation));
+						}
+					}
+				}
+			}
+			//add base waypoint if enabled
+			if (SkyblockerConfigManager.get().mining.commissionWaypoints.showBaseCamp) {
+				activeWaypoints.add(new MiningLocationLabel(MiningLocationLabel.GlaciteCategory.CAMPFIRE, MiningLocationLabel.GlaciteCategory.CAMPFIRE.getLocations()[0]));
+			}
+			return;
+		}
+		//find commission locations in dwarven mines
+		if (currentMode != MiningConfig.CommissionWaypointMode.BOTH && currentMode != MiningConfig.CommissionWaypointMode.DWARVEN) {
+			return;
+		}
 
-        for (String commission : newCommissions) {
-            for (Map.Entry<String, MiningLocationLabel.DwarvenCategory> dwarvenLocation : DWARVEN_LOCATIONS.entrySet()) {
-                if (commission.contains(dwarvenLocation.getKey())) {
-                    MiningLocationLabel.DwarvenCategory category = dwarvenLocation.getValue();
-                    category.isTitanium = commission.contains("Titanium");
-                    activeWaypoints.add(new MiningLocationLabel(category, category.getLocation()));
-                }
-            }
-        }
-        //if there is a commission completed and enabled show emissary
-        if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
-            for (MiningLocationLabel.DwarvenEmissaries emissaries : DWARVEN_EMISSARIES) {
-                activeWaypoints.add(new MiningLocationLabel(emissaries, emissaries.getLocation()));
-            }
-        }
-    }
+		for (String commission : newCommissions) {
+			for (Map.Entry<String, MiningLocationLabel.DwarvenCategory> dwarvenLocation : DWARVEN_LOCATIONS.entrySet()) {
+				if (commission.contains(dwarvenLocation.getKey())) {
+					MiningLocationLabel.DwarvenCategory category = dwarvenLocation.getValue();
+					category.isTitanium = commission.contains("Titanium");
+					activeWaypoints.add(new MiningLocationLabel(category, category.getLocation()));
+				}
+			}
+		}
+		//if there is a commission completed and enabled show emissary
+		if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
+			for (MiningLocationLabel.DwarvenEmissaries emissaries : DWARVEN_EMISSARIES) {
+				activeWaypoints.add(new MiningLocationLabel(emissaries, emissaries.getLocation()));
+			}
+		}
+	}
 
-    /**
-     * render all the active waypoints
-     *
-     * @param context render context
-     */
-    private static void render(WorldRenderContext context) {
-        // Only render in the dwarven mines and not the mineshaft.
-        if (Location.DWARVEN_MINES != Utils.getLocation() || !enabled()) {
-            return;
-        }
-        for (MiningLocationLabel MiningLocationLabel : activeWaypoints) {
-            MiningLocationLabel.render(context);
-        }
-    }
+	/**
+	 * render all the active waypoints
+	 *
+	 * @param context render context
+	 */
+	private static void render(WorldRenderContext context) {
+		// Only render in the dwarven mines and not the mineshaft.
+		if (Location.DWARVEN_MINES != Utils.getLocation() || !enabled()) {
+			return;
+		}
+		for (MiningLocationLabel MiningLocationLabel : activeWaypoints) {
+			MiningLocationLabel.render(context);
+		}
+	}
 }
