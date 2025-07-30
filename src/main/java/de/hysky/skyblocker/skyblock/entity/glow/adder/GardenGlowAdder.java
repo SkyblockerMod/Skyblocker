@@ -36,7 +36,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 	public int computeColour(Entity entity) {
 		return switch (entity) {
 			case ArmorStandEntity as when isPestHead(as) ->
-					isPestMatchCurrentContest(as) ?
+					doesPestMatchCurrentContest(as) ?
 							// Pests but during Jacob's Contest
 							Formatting.GREEN.getColorValue() :
 							// Default color
@@ -81,7 +81,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 	/**
 	 * Matches the armor stand head with current collected crop during Jacob's Contest.
 	 */
-	public static boolean isPestMatchCurrentContest(ArmorStandEntity entity) {
+	public static boolean doesPestMatchCurrentContest(ArmorStandEntity entity) {
 		if (StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST)) {
 			return false;
 		}
