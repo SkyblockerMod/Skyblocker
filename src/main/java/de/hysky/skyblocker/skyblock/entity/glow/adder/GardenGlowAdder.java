@@ -69,7 +69,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 			Matcher matcher = CURRENT_CROP_PATTERN.matcher(line);
 
 			if (matcher.matches()) {
-				String crop = matcher.group("crop");
+				String crop = matcher.group("crop").trim();
 
 				if (!Objects.equals(CurrentJacobCrop.CURRENT_CROP_CONTEST, crop)) {
 					CurrentJacobCrop.CURRENT_CROP_CONTEST = crop;
