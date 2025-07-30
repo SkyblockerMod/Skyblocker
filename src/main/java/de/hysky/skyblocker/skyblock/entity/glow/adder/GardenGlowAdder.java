@@ -35,7 +35,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 	@Override
 	public int computeColour(Entity entity) {
 		return switch (entity) {
-			case ArmorStandEntity as when SkyblockerConfigManager.get().farming.garden.pestHighlighter && isPestHead(as) ->
+			case ArmorStandEntity as when isPestHead(as) ->
 					isPestMatchCurrentContest(as) ?
 							// Pests but during Jacob's Contest
 							Formatting.GREEN.getColorValue() :
@@ -47,7 +47,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 
 	@Override
 	public boolean isEnabled() {
-		return Utils.isInGarden();
+		return SkyblockerConfigManager.get().farming.garden.pestHighlighter && Utils.isInGarden();
 	}
 
 	/**
