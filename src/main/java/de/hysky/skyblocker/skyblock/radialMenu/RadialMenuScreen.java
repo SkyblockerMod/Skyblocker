@@ -65,17 +65,20 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 		buttonArcSize = (float) ((2 * Math.PI) / options.size());
 		List<Int2ObjectMap.Entry<ItemStack>> optionOrdered = new ArrayList<>(options.int2ObjectEntrySet().stream().toList());
 
-		//check for back and close buttons to put in the middle of the list so they appear at the bottom
-		Int2ObjectMap.Entry<ItemStack> backSlot = optionOrdered.stream().filter(option -> validName(option.getValue(), "Go Back")).findAny().orElse(null);
-		Int2ObjectMap.Entry<ItemStack> closeSlot = optionOrdered.stream().filter(option -> validName(option.getValue(), "Close")).findAny().orElse(null);
-		int bottom = Math.ceilDiv((optionOrdered.size() - ((closeSlot == null) ? 0 : 1) - ((backSlot == null) ? 0 : 1)), 2);
-		optionOrdered.remove(backSlot);
-		optionOrdered.remove(closeSlot);
-		if (backSlot != null) {
-			optionOrdered.add(bottom, backSlot);
+		//find all navigation buttons for the menu
+		String[] navigationNames = menuType.getNavigationItemNames();
+		List<Int2ObjectMap.Entry<ItemStack>> navigationEntries = new ArrayList<>();
+		for (String navigationName : navigationNames) {
+			optionOrdered.stream().filter(option -> validName(option.getValue(), navigationName)).findAny().ifPresent(navigationEntries::add);
 		}
-		if (closeSlot != null) {
-			optionOrdered.add(bottom, closeSlot);
+
+		//remove then re add entries at bottom on menu
+		int bottom = Math.ceilDiv((optionOrdered.size() - navigationEntries.size()), 2);
+		for (Int2ObjectMap.Entry<ItemStack> entry : navigationEntries) {
+			optionOrdered.remove(entry);
+		}
+		for (Int2ObjectMap.Entry<ItemStack> entry : navigationEntries) {
+			optionOrdered.add(bottom, entry);
 		}
 
 		//create all needed radial buttons clockwise from top

@@ -32,4 +32,12 @@ public abstract class RegexMenu extends RadialMenu {
 		return id;
 	}
 
+	public int remapClickSlotButton(int originalButton, int slotId) {
+		return originalButton;
+	}
+
+	public String[] getNavigationItemNames() {
+		return new String[]{"Go Back","Close"};
+	}
+
 }
