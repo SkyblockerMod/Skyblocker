@@ -9,8 +9,14 @@ public class WardrobeMenu extends RegexMenu {
 		super("wardrobe .*", "wardrobe");
 	}
 
+	@Override
 	public boolean itemMatches(int slotId, ItemStack stack) {
 		Item item = stack.getItem();
 		return (item.equals(Items.ARROW) || item.equals(Items.LIME_DYE) || item.equals(Items.PINK_DYE) || item.equals(Items.BARRIER));
+	}
+
+	@Override
+	public String[] getNavigationItemNames() {
+		return new String[]{"Go Back", "Close", "Next Page", "Previous Page"};
 	}
 }

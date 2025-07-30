@@ -41,9 +41,13 @@ public abstract class RadialMenu {
 	 * @param slotId the slot to be clicked
 	 * @return the remaped button
 	 */
-	public int remapClickSlotButton(int originalButton, int slotId) {
-		return originalButton;
-	}
+	public abstract int remapClickSlotButton(int originalButton, int slotId);
+
+	/**
+	 *
+	 * @return an array of names of items that are used to navigate the menu. These will be placed at the bottom
+	 */
+	public abstract String[] getNavigationItemNames();
 
 	protected boolean getEnabled() {
 		return SkyblockerConfigManager.get().uiAndVisuals.radialMenu.enabled && SkyblockerConfigManager.get().uiAndVisuals.radialMenu.enabledMenus.getOrDefault(getConfigId(), false);
@@ -52,7 +56,7 @@ public abstract class RadialMenu {
 	public Option<Boolean> getOption(SkyblockerConfig config) {
 		return Option.<Boolean>createBuilder()
 				.name(Text.translatable("skyblocker.config.uiAndVisuals.radialMenu." + getConfigId()))
-				.binding(true,
+				.binding(false,
 						() -> config.uiAndVisuals.radialMenu.enabledMenus.getOrDefault(getConfigId(), false),
 						newValue -> config.uiAndVisuals.radialMenu.enabledMenus.put(getConfigId(), newValue.booleanValue()))
 				.controller(ConfigUtils.createBooleanController())

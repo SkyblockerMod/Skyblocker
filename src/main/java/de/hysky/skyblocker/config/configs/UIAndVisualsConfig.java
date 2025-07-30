@@ -108,7 +108,7 @@ public class UIAndVisualsConfig {
 
 	}
 	public static class RadialMenu {
-		public boolean enabled = true;
+		public boolean enabled = false;
 
 		public boolean tooltipsWithoutShift = false;
 

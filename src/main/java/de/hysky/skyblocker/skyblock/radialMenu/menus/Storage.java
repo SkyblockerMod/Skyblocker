@@ -6,19 +6,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 
-public class Storage extends RadialMenu {
-	@Override
-	protected Text getTitle(Text title) {
-		return title;
+public class Storage extends BasicMenu {
+	public Storage() {
+		super("Storage", "storage");
 	}
 
 	@Override
-	protected boolean titleMatches(String title) {
-		return title.equalsIgnoreCase("Storage");
-	}
-
-	@Override
-	protected boolean itemMatches(int slotId, ItemStack stack) {
+	public boolean itemMatches(int slotId, ItemStack stack) {
 		Item item = stack.getItem();
 		if (item.equals(Items.BLACK_STAINED_GLASS_PANE) || item.equals(Items.RED_STAINED_GLASS_PANE) || item.equals(Items.BROWN_STAINED_GLASS_PANE)) {
 			return false;
