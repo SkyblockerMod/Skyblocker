@@ -12,6 +12,7 @@ import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,11 +47,6 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
             }
         }
 
-        if (SkyblockerConfigManager.get().dungeons.terminals.solverAccessibility) {
-            // No highlights; items not matching the color will be hidden instead.
-            return Collections.emptyList();
-        }
-
         List<ColorHighlight> highlights = new ArrayList<>();
         for (Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
             ItemStack itemStack = slot.getValue();
@@ -70,14 +66,12 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
         return false;
     }
 
-    @Override
-    public boolean shouldDisplayStack(int slotIndex, ItemStack stack) {
-        if (!SkyblockerConfigManager.get().dungeons.terminals.solverAccessibility) {
-            return true;
-        }
-        if (slotIndex >= 54) return true; // rows * 9
-        return targetColor == null || targetColor.equals(itemColor.get(stack.getItem()));
-    }
+	@Override
+	public ItemStack modifyDisplayStack(int slotIndex, @NotNull ItemStack stack) {
+		// rows * 9 = 54
+		return slotIndex >= 54 || targetColor == null || targetColor.equals(itemColor.get(stack.getItem())) ? stack : ItemStack.EMPTY;
+	}
+
     static {
         colorFromName = new HashMap<>();
         for (DyeColor color : DyeColor.values())

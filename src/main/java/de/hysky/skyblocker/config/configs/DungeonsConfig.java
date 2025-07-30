@@ -121,10 +121,8 @@ public class DungeonsConfig {
 
 		public boolean solveStartsWith = true;
 
-    public boolean blockIncorrectClicks = false;
-
-    public boolean solverAccessibility = false;
-    }
+		public boolean blockIncorrectClicks = false;
+	}
 
 	public static class Devices {
 		public boolean solveSimonSays = true;

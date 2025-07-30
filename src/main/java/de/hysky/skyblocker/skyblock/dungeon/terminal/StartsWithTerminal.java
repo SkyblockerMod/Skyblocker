@@ -10,9 +10,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -34,31 +34,26 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 		ContainerSolver.trimEdges(slots, 6);
 		setupState(slots);
 
-        String prefix = groups[0];
-        if (SkyblockerConfigManager.get().dungeons.terminals.solverAccessibility) {
-            // No highlights; items not matching the prefix will be hidden instead.
-            return Collections.emptyList();
-        }
+		String prefix = groups[0];
+		List<ColorHighlight> highlights = new ArrayList<>();
 
-        List<ColorHighlight> highlights = new ArrayList<>();
+		for (Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
+			ItemStack stack = slot.getValue();
+			ItemState state = trackedItemStates.getOrDefault(slot.getIntKey(), ItemState.DEFAULT);
 
-        for (Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
-            ItemStack stack = slot.getValue();
-            ItemState state = trackedItemStates.getOrDefault(slot.getIntKey(), ItemState.DEFAULT);
-
-            //If the item hasn't been marked as clicked and it matches the starts with condition
-            //We keep track of the clicks ourselves instead of using the enchantment glint because some items like nether stars have the glint override component by default
-            //so even if Hypixel tries to change that to the same thing it was before (true) it won't work and the solver would permanently consider the item to be clicked
-            //even if it hasn't been yet
-            if (!state.clicked() && stack.getName().getString().startsWith(prefix)) {
-                highlights.add(ColorHighlight.green(slot.getIntKey()));
-            }
-        }
-        return highlights;
+			//If the item hasn't been marked as clicked and it matches the starts with condition
+			//We keep track of the clicks ourselves instead of using the enchantment glint because some items like nether stars have the glint override component by default
+			//so even if Hypixel tries to change that to the same thing it was before (true) it won't work and the solver would permanently consider the item to be clicked
+			//even if it hasn't been yet
+			if (!state.clicked() && stack.getName().getString().startsWith(prefix)) {
+				highlights.add(ColorHighlight.green(slot.getIntKey()));
+			}
+		}
+		return highlights;
 	}
 
 	@Override
-    public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
 		//Some random glass pane was clicked or something
 		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return false;
 
@@ -79,18 +74,14 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 			return shouldBlockIncorrectClicks();
 		}
 
-        return false;
-    }
+		return false;
+	}
 
-    @Override
-    public boolean shouldDisplayStack(int slotIndex, ItemStack stack) {
-        if (!SkyblockerConfigManager.get().dungeons.terminals.solverAccessibility) {
-            return true;
-        }
-        if (slotIndex >= 54) return true; // rows * 9
-        String prefix = groups[0];
-        return stack.getName().getString().startsWith(prefix);
-    }
+	@Override
+	public ItemStack modifyDisplayStack(int slotIndex, @NotNull ItemStack stack) {
+		// rows * 9 = 54
+		return slotIndex >= 54 || stack.getName().getString().startsWith(groups[0]) ? stack : ItemStack.EMPTY;
+	}
 
 	//We only set up the state when all items aren't null or empty. This prevents the state from being reset due to unsent items or server lag spikes/bad TPS (fix ur servers Hypixel)
 	private void setupState(Int2ObjectMap<ItemStack> usefulSlots) {
