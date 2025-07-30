@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.garden;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.item.ItemStack;
@@ -29,11 +30,11 @@ public class StereoHarmonyHelper extends SimpleContainerSolver {
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		List<ColorHighlight> highlights = new ArrayList<>();
 		for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
-			var matcher = ItemUtils.getLoreLineIfMatch(entry.getValue(), PEST_NAME_PATTERN);
+			Matcher matcher = ItemUtils.getLoreLineIfMatch(entry.getValue(), PEST_NAME_PATTERN);
 
 			if (matcher != null) {
-				var pestName = matcher.group("name");
-				var crop = GardenConstants.CROP_BY_PEST.get(pestName);
+				String pestName = matcher.group("name");
+				String crop = GardenConstants.CROP_BY_PEST.get(pestName);
 
 				if (Objects.equals(crop, CurrentJacobCrop.CURRENT_CROP_CONTEST)) {
 					highlights.add(ColorHighlight.green(entry.getIntKey()));
