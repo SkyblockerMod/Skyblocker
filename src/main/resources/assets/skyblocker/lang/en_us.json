@@ -957,12 +957,12 @@
   "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity.@Tooltip": "100%  default opacity\n0%     off",
 
   "skyblocker.config.uiAndVisuals.gyroOverlay": "Gyro Overlay",
-  "skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect":"Gyrokinetic Wand Mode",
-  "skyblocker.config.uiAndVisuals.gyroOverlay.Color":"Gyro Overlay Color",
-  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.OFF":"Off",
-  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.CIRCLE":"Circle",
-  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.CIRCLE_OUTLINED":"Circle Outlined",
-  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.SPHERE":"Sphere",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect": "Gyrokinetic Wand Mode",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.Color": "Gyro Overlay Color",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.OFF": "Off",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.CIRCLE": "Circle",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.CIRCLE_OUTLINE": "Circle Outline",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.SPHERE": "Sphere",
 
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips": "Hide empty item tooltips in menus",
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "Hides the tooltip of an item if it doesn't have any information to display. Also blocks clicks on filler items like glass panes.",

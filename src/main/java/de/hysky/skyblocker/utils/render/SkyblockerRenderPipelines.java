@@ -43,7 +43,6 @@ public class SkyblockerRenderPipelines {
 			.withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP)
 			.withCull(false)
 			.build());
-
 	static final RenderPipeline CIRCLE = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
 			.withLocation(Identifier.of(SkyblockerMod.NAMESPACE, "pipeline/circle"))
 			.withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_FAN)

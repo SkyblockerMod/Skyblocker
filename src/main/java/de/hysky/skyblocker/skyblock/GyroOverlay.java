@@ -17,7 +17,6 @@ import java.awt.*;
 
 
 public class GyroOverlay {
-
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	private static float[] colorComponents;
@@ -33,9 +32,8 @@ public class GyroOverlay {
 		configCallback(SkyblockerConfigManager.get().uiAndVisuals.gyroOverlay.gyroOverlayColor);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(GyroOverlay::render);
 	}
+
 	// render
-
-
 	/**
 	 * Renders a visual overlay in the world when the player is holding the Gyrokinetic Wand on Skyblock.
 	 * <p>
@@ -58,7 +56,6 @@ public class GyroOverlay {
 	 *            containing rendering matrices and utilities for rendering custom elements.
 	 */
 	public static void render(WorldRenderContext wrc) {
-
 		if (CLIENT.player == null || CLIENT.world == null) return;
 		if (!Utils.isOnSkyblock()) return;
 		if (SkyblockerConfigManager.get().uiAndVisuals.gyroOverlay.gyroOverlayMode == Mode.OFF) return;
@@ -67,8 +64,6 @@ public class GyroOverlay {
 		if (!heldItem.equals("GYROKINETIC_WAND")) return;
 
 		HitResult hit = CLIENT.cameraEntity.raycast(MAX_REACH, 1.0f, false);
-
-
 		if (hit.getType() == HitResult.Type.MISS) {
 			return;
 		}
@@ -76,25 +71,21 @@ public class GyroOverlay {
 		int color = ColorHelper.fromFloats(colorComponents[3], colorComponents[0], colorComponents[1], colorComponents[2]);
 
 		switch (SkyblockerConfigManager.get().uiAndVisuals.gyroOverlay.gyroOverlayMode) {
-
 			case OFF -> {}
 			case CIRCLE_OUTLINE -> RenderHelper.renderCircleOutlineWithQuads(wrc, hit.getPos().add(new Vec3d(0, 0.1, 0)), GYRO_RADIUS, 0.25f, SEGMENTS, color);
 			case CIRCLE -> RenderHelper.renderCircleFilled(wrc, hit.getPos().add(new Vec3d(0, 0.1, 0)), GYRO_RADIUS, SEGMENTS, color);
 			case SPHERE -> RenderHelper.renderSphere(wrc, hit.getPos(), GYRO_RADIUS, SEGMENTS, SEGMENTS, color);
-
 		}
 	}
-
 
 	public static void configCallback(Color color) {
 		colorComponents = color.getRGBComponents(null);
 	}
 
-
 	public enum Mode implements StringIdentifiable {
 		OFF("OFF"),
 		CIRCLE("CIRCLE"),
-		CIRCLE_OUTLINE("CIRCLE_OUTLINED"),
+		CIRCLE_OUTLINE("CIRCLE_OUTLINE"),
 		SPHERE("SPHERE");
 
 		private final String key;
@@ -102,7 +93,6 @@ public class GyroOverlay {
 		Mode(String key) {
 			this.key = "skyblocker.config.uiAndVisuals.gyroOverlay.mode." + key;
 		}
-
 
 		@Override
 		public String asString() {
@@ -114,6 +104,4 @@ public class GyroOverlay {
 			return I18n.translate(this.key);
 		}
 	}
-
-
 }

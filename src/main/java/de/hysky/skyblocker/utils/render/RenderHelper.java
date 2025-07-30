@@ -313,7 +313,7 @@ public class RenderHelper {
 	 * @param centre   The position that the circle will be centred around.
 	 * @param radius   The radius of the cylinder.
      * @param height   The total height of the cylinder with {@code pos} as the midpoint.
-     * @param segments The amount of triangles used to approximate the circle.
+     * @param segments The number of triangles used to approximate the circle.
      */
     public static void renderCylinder(WorldRenderContext context, Vec3d centre, float radius, float height, int segments, int color) {
     	MatrixStack matrices = context.matrixStack();
@@ -337,46 +337,43 @@ public class RenderHelper {
 
     	matrices.pop();
     }
+
 	/**
 	 * Renders a circle filled in using triangle_fan drawmode
 	 *
 	 * @param centre   The position that the circle will be centred around.
 	 * @param radius   The radius of the circle.
-	 * @param segments The amount of triangles used to approximate the circle.
-	 * @param color    The color of the circle as a argb int.
+	 * @param segments The number of triangles used to approximate the circle.
+	 * @param color    The color of the circle as an argb int.
 	 */
 	public static void renderCircleFilled(WorldRenderContext context, Vec3d centre, float radius, int segments, int color) {
 		MatrixStack matrices = context.matrixStack();
 		Vec3d camera = context.camera().getPos();
-
-
 
 		matrices.push();
 		matrices.translate(-camera.x, -camera.y, -camera.z);
 		VertexConsumer buffer = context.consumers().getBuffer(SkyblockerRenderLayers.CIRCLE);
 		Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
 
-
 		for (int i = 0; i <= segments; i++) {
 			double angle = Math.TAU * i / segments;
 			float dx = (float) Math.cos(angle) * radius;
 			float dz = (float) Math.sin(angle) * radius;
 
-
 			buffer.vertex(positionMatrix, (float) centre.getX() + dx, (float) centre.getY(), (float) centre.getZ() + dz).color(color);
-
 		}
 
 		matrices.pop();
 	}
+
 	/**
 	 * Renders a circle sphere in using triange_strip
 	 *
 	 * @param centre   The position that the circle will be centred around.
 	 * @param radius   The radius of the sphere.
-	 * @param rings    Amount of rings to subdivide the sphere.
-	 * @param segments The amount of triangles used to approximate the circle.
-	 * @param color    The color of the circle as a argb int.
+	 * @param rings    The number of rings to subdivide the sphere.
+	 * @param segments The number of triangles used to approximate the circle.
+	 * @param color    The color of the circle as an argb int.
 	 */
 	public static void renderSphere(WorldRenderContext context, Vec3d centre, float radius, int segments, int rings, int color) {
 		MatrixStack matrices = context.matrixStack();
@@ -420,16 +417,16 @@ public class RenderHelper {
 
 		matrices.pop();
 	}
+
 	/**
 	 * Renders a circle outline in using quads
 	 *
-	 * @param centre   The position that the circle will be centred around.
-	 * @param radius   The radius of the circle.
+	 * @param centre    The position that the circle will be centred around.
+	 * @param radius    The radius of the circle.
 	 * @param thickness The thickness of the outline in blocks.
-	 * @param segments The amount of triangles used to approximate the circle.
-	 * @param color    The color of the circle as an argb int.
+	 * @param segments  The number of triangles used to approximate the circle.
+	 * @param color     The color of the circle as an argb int.
 	 */
-
 	public static void renderCircleOutlineWithQuads(WorldRenderContext context, Vec3d centre, float radius, float thickness, int segments, int color) {
 		MatrixStack matrices = context.matrixStack();
 		Vec3d camera = context.camera().getPos();
@@ -439,7 +436,6 @@ public class RenderHelper {
 
 		VertexConsumer buffer = context.consumers().getBuffer(SkyblockerRenderLayers.CIRCLE_LINES);
 		Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
-
 
 
 		float innerRadius = radius - thickness / 2f;
@@ -474,7 +470,6 @@ public class RenderHelper {
 
 		matrices.pop();
 	}
-
 
 
 	/**

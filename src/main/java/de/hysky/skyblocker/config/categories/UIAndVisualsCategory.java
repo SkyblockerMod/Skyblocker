@@ -794,11 +794,9 @@ public class UIAndVisualsCategory {
 										newValue -> {
 											config.uiAndVisuals.gyroOverlay.gyroOverlayColor = newValue;
 											GyroOverlay.configCallback(newValue);
-
 										})
 								.controller(ColourController.createBuilder().hasAlpha(true).build())
 								.build())
-
 						.build()
 				)
 
