@@ -4,8 +4,10 @@ import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 
+import java.awt.Color;
+
 public class DungeonsConfig {
-	public boolean fancyPartyFinder = true;
+	public boolean fancyPartyFinder = false;
 
 	public boolean croesusHelper = true;
 
@@ -17,19 +19,21 @@ public class DungeonsConfig {
 
 	public boolean classBasedPlayerGlow = true;
 
-	public boolean spiritLeapOverlay = true;
-
 	public boolean starredMobGlow = false;
 
 	public boolean starredMobBoundingBoxes = true;
 
+	public boolean highlightDoorKeys = true;
+
 	public boolean allowDroppingProtectedItems = false;
 
-	public boolean dungeonSplits = true;
+	public boolean dungeonSplits = false;
 
 	public boolean hideSoulweaverSkulls = false;
 
 	public DungeonMap dungeonMap = new DungeonMap();
+
+	public SpiritLeapOverlay leapOverlay = new SpiritLeapOverlay();
 
 	public PuzzleSolvers puzzleSolvers = new PuzzleSolvers();
 
@@ -56,11 +60,23 @@ public class DungeonsConfig {
 	public static class DungeonMap {
 		public boolean enableMap = true;
 
+		public boolean fancyMap = true;
+
+		public boolean showSelfHead = true;
+
 		public float mapScaling = 1f;
 
 		public int mapX = 2;
 
 		public int mapY = 2;
+	}
+
+	public static class SpiritLeapOverlay {
+		public boolean enableLeapOverlay = true;
+
+		public boolean showMap = true;
+
+		public float scale = 1.2f;
 	}
 
 	public static class PuzzleSolvers {
@@ -100,6 +116,8 @@ public class DungeonsConfig {
 
 	public static class Livid {
 		public boolean enableSolidColor = false;
+
+		public Color customColor = Color.RED;
 
 		public boolean enableLividColorGlow = false;
 
@@ -215,7 +233,7 @@ public class DungeonsConfig {
 
 		public int dungeonCryptsMessageThreshold = 250;
 
-		public String dungeonCryptsMessage = "We only have [crypts] crypts out of 5, we need more!";
+		public String dungeonCryptsMessage = "Crypts: [crypts]/5";
 
 		public boolean enableScoreHUD = true;
 

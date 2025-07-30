@@ -4,13 +4,16 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.PopupBackgroundAccessor;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.PopupScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -89,11 +92,20 @@ public class QuickNavButton extends ClickableWidget {
 
     private void updateCoordinates() {
         Screen screen = MinecraftClient.getInstance().currentScreen;
+		while (screen instanceof PopupScreen) {
+			if (!(screen instanceof PopupBackgroundAccessor popup)) {
+				throw new IllegalStateException(
+						"Current PopupScreen does not support AccessorPopupBackground"
+				);
+			}
+			screen = popup.getUnderlyingScreen();
+		}
         if (screen instanceof HandledScreen<?> handledScreen) {
             var accessibleScreen = (HandledScreenAccessor) handledScreen;
             int x = accessibleScreen.getX();
             int y = accessibleScreen.getY();
             int h = accessibleScreen.getBackgroundHeight();
+			if (handledScreen instanceof GenericContainerScreen) h--; // they messed up the height on these.
             int w = accessibleScreen.getBackgroundWidth();
             this.setX(x + this.index % 7 * 25 + w / 2 - 176 / 2);
             this.setY(this.index < 7 ? y - 28 : y + h - 4);

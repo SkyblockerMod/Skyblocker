@@ -22,7 +22,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	public static final UltrasequencerSolver INSTANCE = new UltrasequencerSolver();
 	/**
 	 * The playable slots of Ultrasequencer in the Metaphysical level.
-	 *
+	 * <p>
 	 * Even though the Supreme/Transcendent levels have less playable slots we filter out black glass panes later on
 	 * since black isn't in the color sequence.
 	 */
@@ -107,7 +107,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	 */
 	@SuppressWarnings("JavadocReference")
 	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		if (getState() == State.SHOW) {
 			if (slot == ultrasequencerNextSlot) {
 				int count = getSlots().get(ultrasequencerNextSlot).getCount() + 1;
@@ -120,7 +120,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 				return shouldBlockIncorrectClicks();
 			}
 		}
-		return super.onClickSlot(slot, stack, screenId);
+		return super.onClickSlot(slot, stack, screenId, button);
 	}
 
 	/**

@@ -15,7 +15,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.registry.Registries;
-import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
@@ -100,11 +100,9 @@ public class LividColor {
         LividColor.color = WOOL_TO_FORMATTING.get(color);
         String colorString = Registries.BLOCK.getId(color).getPath();
         colorString = colorString.substring(0, colorString.length() - 5).toUpperCase();
-        MutableText message = Constants.PREFIX.get()
-                .append(CONFIG.lividColorText.replaceAll("\\[color]", colorString))
-                .formatted(LividColor.color);
+        Text message = Text.literal(CONFIG.lividColorText.replaceAll("\\[color]", colorString)).formatted(LividColor.color);
         if (CONFIG.enableLividColorText) {
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown(message.getString(), false);
+            MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().append(message).getString(), false);
         }
         if (CONFIG.enableLividColorTitle) {
             client.inGameHud.setDefaultTitleFade();
@@ -126,7 +124,7 @@ public class LividColor {
 
     @SuppressWarnings("DataFlowIssue")
     public static int getGlowColor(String name) {
-        if (SkyblockerConfigManager.get().dungeons.livid.enableSolidColor) return Formatting.RED.getColorValue();
+        if (SkyblockerConfigManager.get().dungeons.livid.enableSolidColor) return SkyblockerConfigManager.get().dungeons.livid.customColor.getRGB();
         if (LIVID_TO_FORMATTING.containsKey(name)) return LIVID_TO_FORMATTING.get(name).getColorValue();
         return Formatting.WHITE.getColorValue();
     }

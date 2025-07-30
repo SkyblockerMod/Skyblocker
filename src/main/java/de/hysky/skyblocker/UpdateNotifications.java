@@ -163,7 +163,9 @@ public class UpdateNotifications {
 	}
 
 	public record Config(boolean enabled, Channel channel) {
-		public static final Config DEFAULT = new Config(true, Channel.RELEASE);
+		//Set default channel to alpha since most people probably want whatever the latest version is
+		//and we work hard to polish all of our releases.
+		public static final Config DEFAULT = new Config(true, Channel.ALPHA);
 		private static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.BOOL.fieldOf("enabled").forGetter(Config::enabled),
 				Channel.CODEC.fieldOf("channel").forGetter(Config::channel))
