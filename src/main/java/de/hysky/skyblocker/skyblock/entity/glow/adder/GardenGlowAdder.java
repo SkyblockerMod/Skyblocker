@@ -54,7 +54,8 @@ public class GardenGlowAdder extends MobGlowAdder {
 	 * Compares the armor items of an armor stand to the Pest head texture to determine if it is a Pest head.
 	 */
 	private static boolean isPestHead(ArmorStandEntity entity) {
-		return entity.hasStackEquipped(EquipmentSlot.HEAD) && HeadTextures.PEST_HEADS.contains(ItemUtils.getHeadTexture(entity.getEquippedStack(EquipmentSlot.HEAD)));
+		return entity.hasStackEquipped(EquipmentSlot.HEAD) && HeadTextures.PEST_HEADS
+				.contains(ItemUtils.getHeadTexture(entity.getEquippedStack(EquipmentSlot.HEAD)));
 	}
 
 	private static void update() {
@@ -87,6 +88,8 @@ public class GardenGlowAdder extends MobGlowAdder {
 		}
 
 		// Filter only pest head that matches by crop
-		return entity.hasStackEquipped(EquipmentSlot.HEAD) && GardenConstants.PEST_HEAD_BY_CROP.get(CurrentJacobCrop.CURRENT_CROP_CONTEST).contains(ItemUtils.getHeadTexture(entity.getEquippedStack(EquipmentSlot.HEAD)));
+		return entity.hasStackEquipped(EquipmentSlot.HEAD) && GardenConstants.PEST_HEAD_BY_CROP
+				.get(CurrentJacobCrop.CURRENT_CROP_CONTEST)
+				.contains(ItemUtils.getHeadTexture(entity.getEquippedStack(EquipmentSlot.HEAD)));
 	}
 }
