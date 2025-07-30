@@ -58,7 +58,7 @@ public class MuseumItemCache {
 		loadMuseumItems();
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loaded = MUSEUM_ITEM_CACHE.load());
 		ClientCommandRegistrationCallback.EVENT.register(MuseumItemCache::registerCommands);
-		SkyblockEvents.PROFILE_CHANGE.register((prev, profile) -> tick());
+		SkyblockEvents.PROFILE_CHANGE.register((prev, profile) -> onProfileChange());
 	}
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
@@ -244,7 +244,7 @@ public class MuseumItemCache {
 						String itemId = ItemUtils.getItemId(stack);
 
 						if (!itemId.isEmpty()) {
-							ProfileMuseumData data = MUSEUM_ITEM_CACHE.putIfAbsent(ProfileMuseumData.EMPTY.get());
+							ProfileMuseumData data = MUSEUM_ITEM_CACHE.computeIfAbsent(ProfileMuseumData.EMPTY);
 
 							if (MAPPED_IDS.containsKey(itemId)) itemId = MAPPED_IDS.get(itemId);
 							String setId = MuseumUtils.getSetID(itemId);
@@ -359,13 +359,13 @@ public class MuseumItemCache {
 	}
 
 	/**
-	 * The cache is ticked upon switching Skyblock servers. Only loads from the API if the profile wasn't cached yet.
+	 * Called when the Skyblock profile changes. Only loads from the API if the profile wasn't cached yet.
 	 */
-	public static void tick() {
+	public static void onProfileChange() {
 		UUID uuid = Utils.getUuid();
 
 		if (loaded.isDone() && !MUSEUM_ITEM_CACHE.containsKey()) {
-			MUSEUM_ITEM_CACHE.putIfAbsent(ProfileMuseumData.EMPTY.get());
+			MUSEUM_ITEM_CACHE.computeIfAbsent(ProfileMuseumData.EMPTY);
 
 			updateData4ProfileMember(uuid, Utils.getProfileId());
 		}

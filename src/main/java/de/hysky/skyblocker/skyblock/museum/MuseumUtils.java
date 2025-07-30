@@ -1,25 +1,20 @@
 package de.hysky.skyblocker.skyblock.museum;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
-import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MuseumUtils {
-	private static final Set<String> EQUIPMENT_KEYWORDS = Set.of("BELT", "GLOVES", "CLOAK", "GAUNTLET", "NECKLACE", "BRACELET", "HAT");
-	private static final NumberFormat NUMBER_FORMATTER_S = NumberFormat.getCompactNumberInstance(Locale.CANADA, NumberFormat.Style.SHORT);
-
-	static {
-		NUMBER_FORMATTER_S.setMaximumFractionDigits(1);
-	}
+	private static final Set<String> EQUIPMENT_TYPES = Set.of("BELT", "GLOVES", "CLOAK", "GAUNTLET", "NECKLACE", "BRACELET", "HAT");
 
 	/**
 	 * Calculates the total crafting cost for a set associated with a given ID.
@@ -131,7 +126,7 @@ public class MuseumUtils {
 	 */
 	public static boolean isEquipment(String skyblockApiId) {
 		String upperId = skyblockApiId.toUpperCase(Locale.ENGLISH);
-		return EQUIPMENT_KEYWORDS.stream().anyMatch(upperId::contains);
+		return EQUIPMENT_TYPES.stream().anyMatch(upperId::contains);
 	}
 
 	/**
@@ -141,6 +136,6 @@ public class MuseumUtils {
 	 * @return A formatted string (e.g., "10M", "5K", "1.2B").
 	 */
 	public static String formatPrice(double value) {
-		return NUMBER_FORMATTER_S.format(value);
+		return Formatters.SHORT_FLOAT_NUMBERS.format(value);
 	}
 }

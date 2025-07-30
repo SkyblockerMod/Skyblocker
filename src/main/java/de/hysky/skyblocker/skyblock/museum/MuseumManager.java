@@ -187,22 +187,7 @@ public class MuseumManager extends ClickableWidget {
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 		// Render the background texture for the widget
 		context.drawTexture(RenderLayer::getGuiTextured, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
-
-		// Render page count if multiple pages exist
-		if (this.pageCount > 1) {
-			Text text = Text.translatable("gui.recipebook.page", currentPage + 1, this.pageCount);
-			int width = TEXT_RENDERER.getWidth(text);
-
-			context.drawText(TEXT_RENDERER, text, getX() - width / 2 + 73, getY() + 137, -1, false);
-		}
-
-		// Render donation buttons
-		this.hoveredDonationButton = null;
-		for (DonationButton resultButton : donationButtons) {
-			resultButton.render(context, mouseX, mouseY, delta);
-
-			if (resultButton.visible && resultButton.isHovered()) this.hoveredDonationButton = resultButton;
-		}
+		searchField.render(context, mouseX, mouseY, delta);
 
 		if (this.sortButton.active) {
 			int iconX = this.sortButton.getX() + (this.sortButton.getWidth() - 16) / 2;
@@ -220,12 +205,31 @@ public class MuseumManager extends ClickableWidget {
 			this.filterButton.render(context, mouseX, mouseY, delta);
 		}
 
-		// Render the page flip buttons
-		if (this.prevPageButton.active) this.prevPageButton.render(context, mouseX, mouseY, delta);
-		if (this.nextPageButton.active) this.nextPageButton.render(context, mouseX, mouseY, delta);
+		if (ItemRepository.filesImported()) {
+			// Render page count if multiple pages exist
+			if (this.pageCount > 1) {
+				Text text = Text.translatable("gui.recipebook.page", currentPage + 1, this.pageCount);
+				int width = TEXT_RENDERER.getWidth(text);
 
-		this.searchField.render(context, mouseX, mouseY, delta);
-		this.drawTooltip(context, mouseX, mouseY);
+				context.drawText(TEXT_RENDERER, text, getX() - width / 2 + 73, getY() + 137, -1, false);
+			}
+
+			// Render donation buttons
+			this.hoveredDonationButton = null;
+			for (DonationButton resultButton : donationButtons) {
+				resultButton.render(context, mouseX, mouseY, delta);
+
+				if (resultButton.visible && resultButton.isHovered()) this.hoveredDonationButton = resultButton;
+			}
+
+			// Render the page flip buttons
+			if (this.prevPageButton.active) this.prevPageButton.render(context, mouseX, mouseY, delta);
+			if (this.nextPageButton.active) this.nextPageButton.render(context, mouseX, mouseY, delta);
+
+			drawTooltip(context, mouseX, mouseY);
+		} else {
+			context.drawCenteredTextWithShadow(TEXT_RENDERER, "Loading...", getX() + (BACKGROUND_WIDTH / 2), getY() + (BACKGROUND_HEIGHT / 2), 0xFFFFFFFF);
+		}
 	}
 
 	public void drawTooltip(DrawContext context, int x, int y) {
@@ -257,11 +261,6 @@ public class MuseumManager extends ClickableWidget {
 		this.searchField.setFocused(false);
 
 		return false;
-	}
-
-	@Override
-	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-		return super.keyReleased(keyCode, scanCode, modifiers);
 	}
 
 	@Override

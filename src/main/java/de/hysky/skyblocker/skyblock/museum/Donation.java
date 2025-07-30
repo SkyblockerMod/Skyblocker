@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class Donation {
 		this.priceData = new PriceData(this);
 	}
 
+	@Nullable
 	public ObjectDoublePair<String> getDiscount() {
 		return discount;
 	}

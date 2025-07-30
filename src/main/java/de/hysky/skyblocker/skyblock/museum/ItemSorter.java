@@ -17,15 +17,15 @@ public class ItemSorter {
 	private SortMode currentSortMode = SortMode.LOWEST_BIN;
 
 	// Sorting logic
-	private static final Consumer<List<Donation>> sortByLowestBIN = donations -> {
+	private static final Consumer<List<Donation>> SORT_BY_LOWESTBIN = donations -> {
 		donations.forEach(donation -> updateDonationData(donation, false));
 		donations.sort(ItemSorter::compareEffectivePrices);
 	};
-	private static final Consumer<List<Donation>> sortByCraftCost = donations -> {
+	private static final Consumer<List<Donation>> SORT_BY_CRAFTCOST = donations -> {
 		donations.forEach(donation -> updateDonationData(donation, true));
 		donations.sort(ItemSorter::compareEffectivePrices);
 	};
-	private static final Consumer<List<Donation>> sortByXpPerCoin = donations -> {
+	private static final Consumer<List<Donation>> SORT_BY_XP_PER_COIN = donations -> {
 		donations.forEach(donation -> updateDonationData(donation, true));
 		donations.sort(ItemSorter::compareCoinsPerXP);
 	};
@@ -129,9 +129,9 @@ public class ItemSorter {
 	}
 
 	public enum SortMode {
-		LOWEST_BIN(new ItemStack(Items.GOLD_INGOT), sortByLowestBIN, Text.translatable("skyblocker.museum.hud.sorter.lBin")),
-		CRAFT_COST(new ItemStack(Items.CRAFTING_TABLE), sortByCraftCost, Text.translatable("skyblocker.museum.hud.sorter.craftCost")),
-		COINS_PER_XP(new ItemStack(Items.EXPERIENCE_BOTTLE), sortByXpPerCoin, Text.translatable("skyblocker.museum.hud.sorter.ratio"));
+		LOWEST_BIN(new ItemStack(Items.GOLD_INGOT), SORT_BY_LOWESTBIN, Text.translatable("skyblocker.museum.hud.sorter.lBin")),
+		CRAFT_COST(new ItemStack(Items.CRAFTING_TABLE), SORT_BY_CRAFTCOST, Text.translatable("skyblocker.museum.hud.sorter.craftCost")),
+		COINS_PER_XP(new ItemStack(Items.EXPERIENCE_BOTTLE), SORT_BY_XP_PER_COIN, Text.translatable("skyblocker.museum.hud.sorter.ratio"));
 
 		private final ItemStack associatedItem;
 		private final Consumer<List<Donation>> sortFunction;
