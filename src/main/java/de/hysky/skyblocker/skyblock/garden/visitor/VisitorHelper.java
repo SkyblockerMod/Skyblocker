@@ -81,10 +81,7 @@ public class VisitorHelper extends ClickableWidget {
 	public static List<Rectangle> getExclusionZones() {
 		if (activeVisitors.isEmpty()) return List.of();
 
-		int maxXPosition = xOffset + 215;
-		int maxYPosition = yOffset + getNeededHeight();
-
-		return List.of(new Rectangle(xOffset, yOffset, maxXPosition, maxYPosition));
+		return List.of(new Rectangle(xOffset, yOffset, 215, getNeededHeight()));
 	}
 
 	/**
