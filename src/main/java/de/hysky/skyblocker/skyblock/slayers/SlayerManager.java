@@ -199,7 +199,7 @@ public class SlayerManager {
 	 * Gets nearby armor stands with custom names. Used to find other armor stands showing a different line of text above a slayer boss.
 	 */
 	public static List<Entity> getEntityArmorStands(Entity entity, float expandY) {
-		return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.1F, expandY, 0.1F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
+		return entity.getWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.1F, expandY, 0.1F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
 	}
 
 	/**

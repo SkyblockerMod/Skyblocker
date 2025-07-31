@@ -10,6 +10,7 @@ import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.PopupScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -18,7 +19,6 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
@@ -161,7 +161,7 @@ public class QuickNavButton extends ClickableWidget {
         Identifier tabTexture = Identifier.ofVanilla("container/creative_inventory/tab_" + (isTopTab() ? "top" : "bottom") + "_" + (renderInFront ? "selected" : "unselected") + "_" + (index % 7 + 1));
 
         // Render the button texture, always with full alpha if it's not rendering in front
-        context.drawGuiTexture(RenderLayer::getGuiTextured, tabTexture, this.getX(), this.getY(), this.width, this.height, renderInFront ? ColorHelper.withAlpha(alpha, -1) : -1);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, tabTexture, this.getX(), this.getY(), this.width, this.height, renderInFront ? ColorHelper.withAlpha(alpha, -1) : -1);
         // Render the button icon
         int yOffset = this.index < 7 ? 1 : -1;
         context.drawItem(this.icon, this.getX() + 5, this.getY() + 8 + yOffset);
