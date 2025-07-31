@@ -100,11 +100,10 @@ public class ConfigBackupScreen extends Screen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackground(context, mouseX, mouseY, delta);
+		super.render(context, mouseX, mouseY, delta);
 		listWidget.render(context, mouseX, mouseY, delta);
 		detailsWidget.render(context, mouseX, mouseY, delta);
-		context.drawCenteredTextWithShadow(textRenderer, title, width / 2, 12, 0xFFFFFF);
-		super.render(context, mouseX, mouseY, delta);
+		context.drawCenteredTextWithShadow(textRenderer, title, width / 2, 12, 0xFFFFFFFF);
 	}
 
 	private class BackupListWidget extends ElementListWidget<BackupEntry> {
@@ -178,7 +177,7 @@ public class ConfigBackupScreen extends Screen {
 				context.fill(x, y, highlightRight, y + entryHeight, 0x80FFFFFF);
 			}
 
-			context.drawText(textRenderer, path.getFileName().toString(), x + 4, y + 7, 0xFFFFFF, false);
+			context.drawText(textRenderer, path.getFileName().toString(), x + 4, y + 7, 0xFFFFFFFF, false);
 		}
 	}
 
@@ -292,9 +291,9 @@ public class ConfigBackupScreen extends Screen {
 
 		@Override
 		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			int color = 0xFFFFFF;
+			int color = 0xFFFFFFFF;
 			if (path != null && changedPaths.contains(path)) {
-				color = 0xFFFF55;
+				color = 0xFFFFFF55;
 			}
 			context.drawText(textRenderer, text, x + 2, y + 2, color, false);
 		}
