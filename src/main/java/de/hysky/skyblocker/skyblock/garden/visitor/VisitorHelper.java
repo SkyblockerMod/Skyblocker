@@ -16,10 +16,13 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import me.shedaniel.math.Rectangle;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -32,14 +35,14 @@ import net.minecraft.util.Formatting;
 
 import java.util.*;
 
-public class VisitorHelper {
+public class VisitorHelper extends ClickableWidget {
 	private static final Set<Visitor> activeVisitors = new HashSet<>();
 	private static final Map<String, ItemStack> cachedItems = new HashMap<>();
 	// Map of grouped items with their total amount and associated visitors
 	private static final Object2IntMap<Text> groupedItems = new Object2IntOpenHashMap<>();
 	private static final Map<Text, List<Visitor>> visitorsByItem = new LinkedHashMap<>();
-	private static final int X_OFFSET = 4;
-	private static final int Y_OFFSET = 4;
+	private static int xOffset = 4;
+	private static int yOffset = 4;
 	private static final int ICON_SIZE = 16;
 	private static final int LINE_HEIGHT = 3;
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
@@ -48,14 +51,20 @@ public class VisitorHelper {
 	// Used to prevent adding the visitor again after the player clicks accept or refuse.
 	private static boolean processVisitor = false;
 
+	private int dragStartX, dragStartY;
+
+	public VisitorHelper(int x, int y) {
+		super(x, y, 215, getNeededHeight(), Text.literal("Visitor Helper"));
+	}
+
 	@Init
 	public static void initialize() {
-		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (!(screen instanceof HandledScreen<?> handledScreen) || !shouldRender()) return;
 
 			processVisitor = true;
 			ScreenEvents.afterTick(screen).register(_screen -> updateVisitors(handledScreen.getScreenHandler()));
-			ScreenEvents.afterRender(screen).register((_screen, context, _x, _y, _d) -> renderVisitorHelper(context, client.textRenderer));
+			Screens.getButtons(screen).add(new VisitorHelper(xOffset, yOffset));
 		});
 	}
 
@@ -65,15 +74,17 @@ public class VisitorHelper {
 		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getIslandArea().contains("Bazaar"));
 	}
 
+	private static int getNeededHeight() {
+		return (groupedItems.size() + activeVisitors.size()) * (LINE_HEIGHT + MinecraftClient.getInstance().textRenderer.fontHeight);
+	}
+
 	public static List<Rectangle> getExclusionZones() {
 		if (activeVisitors.isEmpty()) return List.of();
 
-		int maxXPosition = X_OFFSET + 215;
-		int textFontHeight = MinecraftClient.getInstance().textRenderer.fontHeight;
-		int count = groupedItems.size() + activeVisitors.size();
-		int maxYPosition = Y_OFFSET + count * (LINE_HEIGHT + textFontHeight);
+		int maxXPosition = xOffset + 215;
+		int maxYPosition = yOffset + getNeededHeight();
 
-		return List.of(new Rectangle(X_OFFSET, Y_OFFSET, maxXPosition, maxYPosition));
+		return List.of(new Rectangle(xOffset, yOffset, maxXPosition, maxYPosition));
 	}
 
 	/**
@@ -154,8 +165,10 @@ public class VisitorHelper {
 	/**
 	 * Draws the visitor items and their associated information.
 	 */
-	private static void renderVisitorHelper(DrawContext context, TextRenderer textRenderer) {
+	public void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		int index = 0;
+		int newWidth = 0;
 
 		for (Object2IntMap.Entry<Text> entry : groupedItems.object2IntEntrySet()) {
 			Text itemName = entry.getKey();
@@ -166,23 +179,23 @@ public class VisitorHelper {
 
 			// Render visitors' heads for the shared item
 			for (Visitor visitor : visitors) {
-				int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight);
+				int yPosition = getY() + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
 				context.getMatrices().pushMatrix();
-				context.getMatrices().translate(X_OFFSET, yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2);
+				context.getMatrices().translate(getX(), yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2);
 				context.getMatrices().scale(0.95f, 0.95f);
 				context.drawItem(visitor.head(), 0, 0);
 				context.getMatrices().popMatrix();
 
-				context.drawText(textRenderer, visitor.name(), X_OFFSET + (int) (ICON_SIZE * 0.95f) + 4, yPosition, Colors.WHITE, true);
+				context.drawText(textRenderer, visitor.name(), getX() + (int) (ICON_SIZE * 0.95f) + 4, yPosition, Colors.WHITE, true);
 
 				index++;
 			}
 
 			// Render the shared item with the total amount
-			int iconX = X_OFFSET + 12;
+			int iconX = getX() + 12;
 			int textX = iconX + (int) (ICON_SIZE * 0.95f) + 4;
-			int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight);
+			int yPosition = getY() + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
 			ItemStack cachedStack = getCachedItem(itemName.getString());
 			if (cachedStack != null) {
@@ -198,9 +211,6 @@ public class VisitorHelper {
 					? name.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
 					: name.append(" x" + totalAmount);
 
-			double mouseX = MinecraftClient.getInstance().mouse.getX() / MinecraftClient.getInstance().getWindow().getScaleFactor();
-			double mouseY = MinecraftClient.getInstance().mouse.getY() / MinecraftClient.getInstance().getWindow().getScaleFactor();
-
 			if (copiedTimestamps.containsKey(itemName)) {
 				long timeSinceCopy = System.currentTimeMillis() - copiedTimestamps.getLong(itemName);
 				if (timeSinceCopy < 1000) {
@@ -209,18 +219,28 @@ public class VisitorHelper {
 					copiedTimestamps.removeLong(itemName);
 				}
 			}
+			newWidth = Math.max(newWidth, textX + textRenderer.getWidth(itemText) - getX());
 
 			drawTextWithHoverUnderline(context, textRenderer, itemText, textX, yPosition, mouseX, mouseY);
 
 			index++;
 		}
+		setHeight(getNeededHeight());
+		setWidth(newWidth);
+	}
+
+	@Override
+	protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
+		setPosition(xOffset = (int) mouseX - dragStartX, yOffset = (int) mouseY - dragStartY);
 	}
 
 	/**
 	 * Handles mouse click events on the visitor UI.
 	 */
-	public static void handleMouseClick(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
-		if (mouseButton != 0) return;
+	public void onClick(double mouseX, double mouseY) {
+		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		dragStartX = (int) mouseX - getX();
+		dragStartY = (int) mouseY - getY();
 
 		int index = 0;
 
@@ -232,9 +252,9 @@ public class VisitorHelper {
 			if (visitors != null && !visitors.isEmpty()) {
 				index += visitors.size();
 
-				int iconX = X_OFFSET + 12;
+				int iconX = getX() + 12;
 				int textX = iconX + (int) (ICON_SIZE * 0.95f) + 4;
-				int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight);
+				int yPosition = getY() + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
 				MutableText name = itemName.copy();
 				Text itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
@@ -284,4 +304,7 @@ public class VisitorHelper {
 	private static boolean isMouseOverText(TextRenderer textRenderer, Text text, int x, int y, double mouseX, double mouseY) {
 		return HudHelper.pointIsInArea(mouseX, mouseY, x, y, x + textRenderer.getWidth(text), y + textRenderer.fontHeight);
 	}
+
+	@Override
+	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 }
