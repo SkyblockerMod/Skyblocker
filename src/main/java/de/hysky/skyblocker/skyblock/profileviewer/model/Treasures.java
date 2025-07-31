@@ -57,7 +57,7 @@ public class Treasures {
 		@SerializedName("completion_ts")
 		public long completionTimestamp;
 		/**
-		 * {@code "master_catacombs"} or {@link "catacombs"} TODO: CITATION REQUIRED
+		 * {@code "master_catacombs"} or {@code "catacombs"} TODO: CITATION REQUIRED
 		 */
 		@SerializedName("dungeon_type")
 		public String dungeonType;

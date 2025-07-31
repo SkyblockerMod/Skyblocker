@@ -21,7 +21,7 @@ public interface ProfileViewerWidget {
 		private final ProfileViewerWidget widget;
 
 		public Instance(int x, int y, ProfileViewerWidget widget) {
-			super(x, y, widget.getWidth(), widget.getHeight(), Text.empty());// TODO: figure out the messages
+			super(x, y, widget.getWidth(), widget.getHeight(), Text.empty()); // TODO: figure out the messages
 			originalX = x;
 			originalY = y;
 			this.widget = widget;

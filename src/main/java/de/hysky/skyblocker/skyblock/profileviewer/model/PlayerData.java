@@ -82,8 +82,8 @@ public class PlayerData {
 		SOCIAL("Social", Ico.EMERALD, "Social"),
 		CARPENTRY("Carpentry", Ico.CRAFTING_TABLE),
 		CATACOMBS("Catacombs", Ico.SKULL, "Catacombs"),
-		COMBAT("Combat", Ico.STONE_SWORD),
-		;
+		COMBAT("Combat", Ico.STONE_SWORD);
+
 		private final String name;
 		private final ItemStack itemStack;
 		private final String levelFinderOverride;
