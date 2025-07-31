@@ -72,22 +72,14 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		super(client, connection, connectionState);
 	}
 
-	@Inject(method ="onEntitySpawn", at = @At("TAIL"))
-	private void skyblocker$onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo ci) {
-
-		if (client == null || client.world == null) return;
-		Entity entity = client.world.getEntityById(packet.getEntityId());
-		if (entity == null) return;
-		if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
-		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) ImmunityHUD.addEgg(armorStandEntity);
-
-	}
 
 	@Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
 	private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
 		if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
 
 		SlayerManager.checkSlayerBoss(armorStandEntity);
+		System.out.println(armorStandEntity.getName().getString());
+		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) ImmunityHUD.addEgg(armorStandEntity);
 		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) ImmunityHUD.hitEgg(armorStandEntity);
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
