@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.profileviewer.rework.pages;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.profileviewer.model.PlayerData;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.*;
-import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.item.ItemStack;
 

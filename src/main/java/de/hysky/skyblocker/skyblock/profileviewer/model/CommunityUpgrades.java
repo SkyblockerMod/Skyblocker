@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.profileviewer.model;
 
 import com.google.gson.annotations.SerializedName;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;

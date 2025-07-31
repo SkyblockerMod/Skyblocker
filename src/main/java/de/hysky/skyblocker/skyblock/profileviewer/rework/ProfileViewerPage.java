@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.profileviewer.rework;
 
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.NotNullByDefault;

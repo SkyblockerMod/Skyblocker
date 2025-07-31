@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.profileviewer;
 import com.google.gson.*;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.util.UUIDTypeAdapter;
 import com.mojang.util.UndashedUuid;
 
 import de.hysky.skyblocker.SkyblockerMod;

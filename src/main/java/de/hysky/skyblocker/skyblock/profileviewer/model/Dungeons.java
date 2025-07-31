@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Map;
 
