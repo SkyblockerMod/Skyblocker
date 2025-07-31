@@ -10,6 +10,10 @@ public interface ProfileViewerWidget {
 
 	default void click(int x, int y, int mouseX, int mouseY) {}
 
+	default boolean isHovered(int x, int y, int width, int height, int mouseX, int mouseY) {
+		return x <= mouseX && mouseX < x + width && y <= mouseY && mouseY < y + height;
+	}
+
 	int getHeight();
 
 	int getWidth();

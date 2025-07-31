@@ -47,6 +47,7 @@ public class SkillsPage implements ProfileViewerPage {
 			));
 		}
 		widgets.add(widget(0, 0, new EntityViewerWidget(load.mainMemberId())));
+		widgets.add(widget(0, 112, new PlayerMetaWidget(load)));
 	}
 
 	@Init
