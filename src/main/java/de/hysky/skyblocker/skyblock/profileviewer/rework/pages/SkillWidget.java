@@ -48,7 +48,7 @@ final class SkillWidget implements ProfileViewerWidget {
 	public void render(DrawContext drawContext,
 					   int x, int y, int mouseX, int mouseY, float deltaTicks) {
 		drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, ICON_DATA_TEXTURE, x, y, 0, 0, WIDTH, HEIGHT, WIDTH, HEIGHT);
-		drawContext.drawItem(skill.getIcon(), x + 3, y + 4);
+		drawContext.drawItem(skill.getIcon(), x + 3, y + 5);
 		drawContext.drawText(textRenderer, skill.getName() + " " + levelInfo.level, x + 31, y + 4, -1, false);
 		Color fillColor = Color.GREEN;
 		var skillCap = NEURepoManager.getConstants().getLeveling().getMaximumLevels().get(skill.name().toLowerCase(Locale.ROOT));
@@ -61,12 +61,26 @@ final class SkillWidget implements ProfileViewerWidget {
 
 		// TODO: add helper for hover selection
 		if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 14 && mouseY < y + 21) {
-			List<Text> tooltipText = new ArrayList<>();
-			tooltipText.add(Text.literal(skill.getName()).formatted(Formatting.GREEN));
-			tooltipText.add(Text.literal("XP: " + Formatters.INTEGER_NUMBERS.format(levelInfo.xp)).formatted(Formatting.GOLD));
-			if (levelInfo.level < skillCap) {
-				tooltipText.add(Text.literal("XP till " + (levelInfo.level + 1) + ": " + Formatters.INTEGER_NUMBERS.format(levelInfo.nextLevelXP - levelInfo.levelXP)).formatted(Formatting.GRAY));
+			StringBuilder bar = new StringBuilder("§3§l§m");
+			int filledBar = (int) Math.round(levelInfo.fill * 14);
+			for (int j = 1; j <= 14; j++) {
+				if (j <= filledBar) {
+					bar.append("§2§l§m ");
+				} else {
+					bar.append("§f§l§m ");
+				}
 			}
+
+			List<Text> tooltipText = new ArrayList<>();
+			tooltipText.add(Text.literal(skill.getName() + " " + levelInfo.level).formatted(Formatting.GREEN));
+			if (levelInfo.level < skillCap) {
+				tooltipText.add(Text.literal("Progress to Level " + (levelInfo.level + 1) + ":").formatted(Formatting.GRAY));
+				tooltipText.add(Text.literal((bar) + "§r " + Formatters.INTEGER_NUMBERS.format(levelInfo.nextLevelXP - levelInfo.levelXP) + "/" + Formatters.SHORT_INTEGER_NUMBERS.format(levelInfo.nextLevelXP)).formatted(Formatting.YELLOW));
+				tooltipText.add(Text.literal("XP till " + (levelInfo.level + 1) + ": §e" + Formatters.INTEGER_NUMBERS.format(levelInfo.nextLevelXP - levelInfo.levelXP)).formatted(Formatting.GRAY));
+			} else {
+				tooltipText.add(Text.literal("Progress: §6MAXED").formatted(Formatting.GRAY));
+			}
+			tooltipText.add(Text.literal("§7Total XP: §r" + Formatters.INTEGER_NUMBERS.format(levelInfo.xp)).formatted(Formatting.YELLOW));
 			drawContext.drawTooltip(textRenderer, tooltipText, mouseX, mouseY);
 		}
 	}
