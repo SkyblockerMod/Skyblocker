@@ -157,8 +157,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && getTitle().getString().contains("Museum")) {
 			// Custom museum overlay background drawing
 			int rows = 6;
-			context.drawTexture(RenderLayer::getGuiTextured, GENERIC_CONTAINER_TEXTURE, this.x, this.y, 0.0F, 0.0F, this.backgroundWidth, rows * 18 + 17, 256, 256);
-			context.drawTexture(RenderLayer::getGuiTextured, GENERIC_CONTAINER_TEXTURE, this.x, this.y + rows * 18 + 17, 0.0F, 126.0F, this.backgroundWidth, 96, 256, 256);
+			context.drawTexture(RenderPipelines.GUI_TEXTURED, GENERIC_CONTAINER_TEXTURE, this.x, this.y, 0.0F, 0.0F, this.backgroundWidth, rows * 18 + 17, 256, 256);
+			context.drawTexture(RenderPipelines.GUI_TEXTURED, GENERIC_CONTAINER_TEXTURE, this.x, this.y + rows * 18 + 17, 0.0F, 126.0F, this.backgroundWidth, 96, 256, 256);
 		} else {
 			// Call vanilla
 			original.call(instance, context, delta, mouseX, mouseY);
