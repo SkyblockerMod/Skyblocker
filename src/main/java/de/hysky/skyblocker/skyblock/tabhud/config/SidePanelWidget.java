@@ -4,11 +4,11 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.*;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -71,7 +71,7 @@ class SidePanelWidget extends ContainerWidget {
 				animation = -1f;
 			}
 		}
-		context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, getX() - 4, getY() - 4 - TOP_MARGIN, getWidth() + 8, getHeight() + 8 + TOP_MARGIN);
+		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX() - 4, getY() - 4 - TOP_MARGIN, getWidth() + 8, getHeight() + 8 + TOP_MARGIN);
 		context.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
 
 		for (ClickableWidget clickableWidget : this.optionWidgets) {

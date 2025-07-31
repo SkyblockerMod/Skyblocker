@@ -2,8 +2,8 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Style;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
@@ -49,7 +49,7 @@ class CustomDropdownWidget<T> extends DropdownWidget<T> {
     @Override
     protected void drawMenuListBackground(DrawContext context, int listX, int listY, int listWidth, int listHeight) {
         context.enableScissor(listX, listY - 1, listX + listWidth, listY + listHeight + 2);
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, listX, listY - 3, listWidth, listHeight + 5);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, listX, listY - 3, listWidth, listHeight + 5);
         context.disableScissor();
     }
 

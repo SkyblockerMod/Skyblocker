@@ -6,12 +6,12 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -82,7 +82,7 @@ public class TopBarWidget extends ContainerWidget {
 
 	@Override
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-		context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, getX() - 2, getY() - 2, getWidth() + 4, HEIGHT + 2);
+		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX() - 2, getY() - 2, getWidth() + 4, HEIGHT + 2);
 		for (ClickableWidget widget : widgets) {
 			widget.render(context, mouseX, mouseY, deltaTicks);
 		}

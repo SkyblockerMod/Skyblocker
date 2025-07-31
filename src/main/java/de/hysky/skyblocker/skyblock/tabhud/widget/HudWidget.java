@@ -9,9 +9,9 @@ import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3x2fStack;
 
 import java.util.List;
 import java.util.Locale;
@@ -36,12 +36,12 @@ public abstract class HudWidget extends AbstractWidget {
 	}
 
 	public final void render(DrawContext context, float delta) {
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.translate(getX(), getY(), 0);
-		matrices.scale(scale, scale, 1);
+		Matrix3x2fStack matrices = context.getMatrices();
+		matrices.pushMatrix();
+		matrices.translate(getX(), getY());
+		matrices.scale(scale, scale);
 		renderWidget(context, delta);
-		matrices.pop();
+		matrices.popMatrix();
 	}
 
 	public final void render(DrawContext context) {
@@ -49,12 +49,12 @@ public abstract class HudWidget extends AbstractWidget {
 	}
 
 	public final void renderConfig(DrawContext context, float delta) {
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.translate(getX(), getY(), 0);
-		matrices.scale(scale, scale, 1);
+		Matrix3x2fStack matrices = context.getMatrices();
+		matrices.pushMatrix();
+		matrices.translate(getX(), getY());
+		matrices.scale(scale, scale);
 		renderWidgetConfig(context, delta);
-		matrices.pop();
+		matrices.popMatrix();
 	}
 
 	public final void renderConfig(DrawContext context) {

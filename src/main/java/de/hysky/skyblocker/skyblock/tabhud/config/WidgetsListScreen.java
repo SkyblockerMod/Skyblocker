@@ -231,9 +231,4 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 	public void onPropertyUpdate(ScreenHandler handler, int property, int value) {
 
 	}
-
-	@Override
-	public Text getNarratedHint() {
-		return Text.empty();
-	}
 }

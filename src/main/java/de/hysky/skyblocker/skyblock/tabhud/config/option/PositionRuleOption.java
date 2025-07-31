@@ -197,8 +197,8 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 			hoveredPoint = null;
 			context.drawText(MinecraftClient.getInstance().textRenderer, getMessage(), getX(), getY(), Colors.WHITE, true);
-			context.getMatrices().push();
-			context.getMatrices().translate(getX(), getY() + 10, 0.f);
+			context.getMatrices().pushMatrix();
+			context.getMatrices().translate(getX(), getY() + 10);
 			// Rectangle thing
 			int x = getWidth() / 6;
 			int w = (int) (4 * getWidth() / 6f);
@@ -227,7 +227,7 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 					context.fill(squareX - 1, squareY - 1, squareX + 2, squareY + 2, hoveredAnchor ? Colors.RED : selectedAnchor ? Colors.YELLOW : Colors.WHITE);
 				}
 			}
-			context.getMatrices().pop();
+			context.getMatrices().popMatrix();
 		}
 
 		@Override

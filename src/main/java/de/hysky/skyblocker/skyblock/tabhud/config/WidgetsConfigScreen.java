@@ -18,7 +18,6 @@ import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.navigation.NavigationAxis;
 import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.ColorHelper;
@@ -152,16 +151,10 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		}
 		topBarWidget.visible = selectedWidget == null || selectedWidget.getY() >= 16;
 
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.translate(0, 0, 100);
 		sidePanelWidget.render(context, mouseX, mouseY, deltaTicks);
 		// Render on top of everything
-		matrices.translate(0, 0, 25);
 		topBarWidget.render(context, mouseX, mouseY, deltaTicks);
-		matrices.translate(0, 0, 25);
 		addWidgetWidget.render(context, mouseX, mouseY, deltaTicks);
-		matrices.pop();
 	}
 
 	@Override

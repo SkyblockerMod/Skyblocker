@@ -5,16 +5,12 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.foraging.SweepOverlay;
 import de.hysky.skyblocker.skyblock.galatea.SeaLumiesHighlighter;
-import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.controllers.ColourController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -76,7 +72,7 @@ public class ForagingCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakHud"))
 								.prompt(Text.translatable("text.skyblocker.open"))
-								.action((screen) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, TreeBreakProgressHud.getInstance().getInternalID(), screen)))
+								.action((screen) -> {})
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount"))

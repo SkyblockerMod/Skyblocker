@@ -66,7 +66,6 @@ public class DropdownWidget<T> extends ContainerWidget {
 		dropdownList.visible = open;
 		dropdownList.render(context, mouseX, mouseY, delta);
 		renderHeader(context, mouseX, mouseY, delta);
-		matrices.pop();
 	}
 
 	protected void renderHeader(DrawContext context, int mouseX, int mouseY, float delta) {
