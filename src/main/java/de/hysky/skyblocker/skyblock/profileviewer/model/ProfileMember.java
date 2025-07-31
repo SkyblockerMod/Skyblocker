@@ -19,4 +19,11 @@ public class ProfileMember {
 	public Currencies currencies = new Currencies();
 	public Dungeons dungeons = new Dungeons();
 	public Experimentation experimentation = new Experimentation();
+	public Forge forge = new Forge();
+	@SerializedName("garden_player_data")
+	public GardenPlayerData gardenPlayerData = new GardenPlayerData();
+	@SerializedName("glacite_player_data")
+	public GlacitePlayerData glacitePlayerData = new GlacitePlayerData();
+	@SerializedName("jacobs_contest")
+	public JacobsContest jacobsContest = new JacobsContest();
 }
