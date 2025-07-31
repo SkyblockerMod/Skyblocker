@@ -194,16 +194,16 @@ public class MuseumManager extends ClickableWidget {
 			int iconX = this.sortButton.getX() + (this.sortButton.getWidth() - 16) / 2;
 			int iconY = this.sortButton.getY() + (this.sortButton.getHeight() - 16) / 2;
 			ItemStack stack = ITEM_SORTER.getCurrentSortingItem();
+			sortButton.render(context, mouseX, mouseY, delta);
 			context.drawItemWithoutEntity(stack, iconX, iconY);
-			this.sortButton.render(context, mouseX, mouseY, delta);
 		}
 
 		if (this.filterButton.active) {
 			int iconX = this.filterButton.getX() + (this.filterButton.getWidth() - 16) / 2;
 			int iconY = this.filterButton.getY() + (this.filterButton.getHeight() - 16) / 2;
 			ItemStack stack = ITEM_FILTER.getCurrentFilterItem();
+			filterButton.render(context, mouseX, mouseY, delta);
 			context.drawItemWithoutEntity(stack, iconX, iconY);
-			this.filterButton.render(context, mouseX, mouseY, delta);
 		}
 
 		if (ItemRepository.filesImported()) {
