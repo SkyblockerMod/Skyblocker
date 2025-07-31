@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -16,9 +17,9 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -58,7 +59,7 @@ public class MuseumManager extends ClickableWidget {
 		this.searchField = new TextFieldWidget(TEXT_RENDERER, getX() + 25, getY() + 11, 69, 20, Text.empty());
 		this.searchField.setMaxLength(60);
 		this.searchField.setVisible(true);
-		this.searchField.setEditableColor(0xFFFFFF);
+		this.searchField.setEditableColor(Colors.WHITE);
 		this.searchField.setText(searchQuery);
 		this.searchField.setPlaceholder(Text.translatable("gui.recipebook.search_hint").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
 
@@ -186,7 +187,7 @@ public class MuseumManager extends ClickableWidget {
 	@Override
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 		// Render the background texture for the widget
-		context.drawTexture(RenderLayer::getGuiTextured, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
+		context.drawTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
 		searchField.render(context, mouseX, mouseY, delta);
 
 		if (this.sortButton.active) {
@@ -228,7 +229,7 @@ public class MuseumManager extends ClickableWidget {
 
 			drawTooltip(context, mouseX, mouseY);
 		} else {
-			context.drawCenteredTextWithShadow(TEXT_RENDERER, "Loading...", getX() + (BACKGROUND_WIDTH / 2), getY() + (BACKGROUND_HEIGHT / 2), 0xFFFFFFFF);
+			context.drawCenteredTextWithShadow(TEXT_RENDERER, "Loading...", getX() + (BACKGROUND_WIDTH / 2), getY() + (BACKGROUND_HEIGHT / 2), Colors.WHITE);
 		}
 	}
 
