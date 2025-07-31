@@ -28,4 +28,14 @@ public final class TextWidget implements ProfileViewerWidget {
 	public void render(DrawContext drawContext, int x, int y, int mouseX, int mouseY, float deltaTicks) {
 		drawContext.drawText(textRenderer, text, x + offset, y, -1, true);
 	}
+
+	@Override
+	public int getHeight() {
+		return textRenderer.fontHeight;
+	}
+
+	@Override
+	public int getWidth() {
+		return 0;
+	}
 }

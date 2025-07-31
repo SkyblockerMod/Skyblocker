@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.profileviewer.rework;
 
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.NotNullByDefault;
@@ -8,20 +9,20 @@ import java.util.List;
 
 @NotNullByDefault
 public interface ProfileViewerPage extends Comparable<ProfileViewerPage> {
-    int getSortIndex();
+	int getSortIndex();
 
-    @Override
-    default int compareTo(@NotNull ProfileViewerPage o) {
-        return Integer.compare(this.getSortIndex(), o.getSortIndex());
-    }
+	@Override
+	default int compareTo(@NotNull ProfileViewerPage o) {
+		return Integer.compare(this.getSortIndex(), o.getSortIndex());
+	}
 
-    default ProfileViewerWidget.Instance widget(int x, int y, ProfileViewerWidget widget) {
-        return ProfileViewerWidget.widget(x, y, widget);
-    }
+	default ProfileViewerWidget.Instance widget(int x, int y, ProfileViewerWidget widget) {
+		return ProfileViewerWidget.widget(x, y, widget);
+	}
 
-    ItemStack getIcon();
+	ItemStack getIcon();
 
-    String getName();
+	String getName();
 
-    List<ProfileViewerWidget.Instance> getWidgets();
+	List<ProfileViewerWidget.Instance> getWidgets();
 }

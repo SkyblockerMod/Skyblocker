@@ -13,6 +13,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -84,6 +85,19 @@ public class ProfileViewerScreenRework extends Screen {
 			buttons.get(i).setToggled(i == selectedIndex);
 		}
 		widgets = pages.get(selectedIndex).getWidgets();
+		clearChildren();
+		init();
+	}
+
+	@Override
+	protected void init() {
+		super.init();
+		int rootX = width / 2 - GUI_WIDTH / 2;
+		int rootY = height / 2 - GUI_HEIGHT / 2 + 5;
+		for (var widget : pages.get(selectedIndex).getWidgets()) {
+			widget.setPositionFromRoot(rootX + 5, rootY + 7);
+			addDrawableChild(widget);
+		}
 	}
 
 	public CompletableFuture<ProfileLoadState> loadProfilesFromPlayer(String name) {
@@ -122,7 +136,6 @@ public class ProfileViewerScreenRework extends Screen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-		super.render(context, mouseX, mouseY, deltaTicks);
 		int rootX = width / 2 - GUI_WIDTH / 2;
 		int rootY = height / 2 - GUI_HEIGHT / 2 + 5;
 
@@ -132,9 +145,6 @@ public class ProfileViewerScreenRework extends Screen {
 			button.setY(rootY - 28);
 			button.render(context, mouseX, mouseY, deltaTicks);
 		}
-
-		for (var widget : widgets) {
-			widget.render(context, rootX + 5, rootY + 5, mouseX, mouseY, deltaTicks);
-		}
+		super.render(context, mouseX, mouseY, deltaTicks);
 	}
 }
