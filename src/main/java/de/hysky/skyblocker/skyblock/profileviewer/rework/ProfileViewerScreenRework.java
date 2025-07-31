@@ -16,16 +16,25 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.function.Function;
 
 public class ProfileViewerScreenRework extends Screen {
+	public static Logger LOGGER = LogManager.getLogger();
 	public static final Gson GSON = new GsonBuilder()
 			.registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
 			.create();
@@ -94,7 +103,7 @@ public class ProfileViewerScreenRework extends Screen {
 		super.init();
 		int rootX = width / 2 - GUI_WIDTH / 2;
 		int rootY = height / 2 - GUI_HEIGHT / 2 + 5;
-		for (var widget : pages.get(selectedIndex).getWidgets()) {
+		for (var widget : widgets) {
 			widget.setPositionFromRoot(rootX + 5, rootY + 7);
 			addDrawableChild(widget);
 		}
@@ -106,7 +115,18 @@ public class ProfileViewerScreenRework extends Screen {
 		}
 		this.displayLoadedProfile(new ProfileLoadState.Loading());
 		return reload = ProfileUtils.fetchFullProfile(name)
-				.thenApplyAsync(jsonObject -> GSON.fromJson(jsonObject, ApiProfileResponse.class))
+				.thenApplyAsync(jsonObject -> {
+					try {
+						return GSON.fromJson(jsonObject, ApiProfileResponse.class);
+					} catch (Exception ex) {
+						try (var buffer = Files.newBufferedWriter(Path.of("last_failed_profile_response.json"))) {
+							SkyblockerMod.GSON.toJson(jsonObject, buffer);
+						} catch (IOException e) {
+							ex.addSuppressed(e);
+						}
+						throw ex;
+					}
+				})
 				.thenApplyAsync(apiProfileResponse -> apiProfileResponse
 						.profiles
 						.stream()
@@ -120,7 +140,10 @@ public class ProfileViewerScreenRework extends Screen {
 							);
 						})
 						.orElseGet(() -> new ProfileLoadState.Error("No profile found")))
-				.exceptionally(ex -> new ProfileLoadState.Error(ex.getMessage()))
+				.exceptionally(ex -> {
+					LOGGER.error("Failed to load profile of {}", name, ex);
+					return new ProfileLoadState.Error(ex.getMessage());
+				})
 				.thenApplyAsync(load -> {
 					displayLoadedProfile(load);
 					return load;

@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.profileviewer.rework.pages;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.profileviewer.model.PlayerData;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.*;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.item.ItemStack;
 
@@ -25,9 +26,16 @@ public class SkillsPage implements ProfileViewerPage {
 		skills.add(new SkillWidget(PlayerData.Skill.ALCHEMY, playerData.getSkillLevel(PlayerData.Skill.ALCHEMY), OptionalInt.empty()));
 		skills.add(new SkillWidget(PlayerData.Skill.TAMING, playerData.getSkillLevel(PlayerData.Skill.TAMING), OptionalInt.of(50)));
 		skills.add(new SkillWidget(PlayerData.Skill.CARPENTRY, playerData.getSkillLevel(PlayerData.Skill.CARPENTRY), OptionalInt.empty()));
-//		skills.add(new SkillWidget(PlayerData.Skill., playerData.getSkillLevel(PlayerData.Skill.COMBAT), OptionalInt.empty()));
+
+		skills.add(new SkillWidget(PlayerData.Skill.CATACOMBS, PlayerData.Skill.CATACOMBS.getLevelInfo(load.member().dungeons.dungeonInfo.catacombs.experience), OptionalInt.empty()));
 		skills.add(new SkillWidget(PlayerData.Skill.RUNECRAFTING, playerData.getSkillLevel(PlayerData.Skill.RUNECRAFTING), OptionalInt.empty()));
-		skills.add(new SkillWidget(PlayerData.Skill.SOCIAL, playerData.getSkillLevel(PlayerData.Skill.SOCIAL), OptionalInt.empty())); // TODO: cross player member
+		skills.add(new SkillWidget(
+				PlayerData.Skill.SOCIAL,
+				PlayerData.Skill.SOCIAL.getLevelInfo(
+						load.profile().members.values()
+								.stream().mapToDouble(it -> it.playerData.getSkillExperience(PlayerData.Skill.SOCIAL))
+								.sum()),
+				OptionalInt.empty()));
 
 
 		int i = 0;

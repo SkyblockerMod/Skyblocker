@@ -27,7 +27,7 @@ public class NetherIslandPlayerData {
 	}
 
 	@SerializedName("last_minibosses_killed")
-	public List<Long> lastMinibossesKilled = new ArrayList<>();
+	public List<String> lastMinibossesKilled = new ArrayList<>();
 
 	public Dojo dojo = new Dojo();
 
