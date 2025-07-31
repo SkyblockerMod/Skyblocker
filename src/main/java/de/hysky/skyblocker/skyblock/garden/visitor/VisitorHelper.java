@@ -43,8 +43,11 @@ public class VisitorHelper extends ClickableWidget {
 	private static final Map<Text, List<Visitor>> visitorsByItem = new LinkedHashMap<>();
 	private static int xOffset = 4;
 	private static int yOffset = 4;
+	private static int exclusionZoneWidth = 215;
+	private static int exclusionZoneHeight = 215;
 	private static final int ICON_SIZE = 16;
 	private static final int LINE_HEIGHT = 3;
+	private static final int PADDING = 4;
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 	private static final Object2LongMap<Text> copiedTimestamps = new Object2LongOpenHashMap<>();
 
@@ -54,7 +57,7 @@ public class VisitorHelper extends ClickableWidget {
 	private int dragStartX, dragStartY;
 
 	public VisitorHelper(int x, int y) {
-		super(x, y, 215, getNeededHeight(), Text.literal("Visitor Helper"));
+		super(x, y, 0, 0, Text.literal("Visitor Helper"));
 	}
 
 	@Init
@@ -74,14 +77,10 @@ public class VisitorHelper extends ClickableWidget {
 		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getIslandArea().contains("Bazaar"));
 	}
 
-	private static int getNeededHeight() {
-		return (groupedItems.size() + activeVisitors.size()) * (LINE_HEIGHT + MinecraftClient.getInstance().textRenderer.fontHeight);
-	}
-
 	public static List<Rectangle> getExclusionZones() {
 		if (activeVisitors.isEmpty()) return List.of();
 
-		return List.of(new Rectangle(xOffset, yOffset, 215, getNeededHeight()));
+		return List.of(new Rectangle(xOffset, yOffset, exclusionZoneWidth, exclusionZoneHeight));
 	}
 
 	/**
@@ -166,6 +165,9 @@ public class VisitorHelper extends ClickableWidget {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		int index = 0;
 		int newWidth = 0;
+		int x = getX() + PADDING;
+		int y = getY() - (int) (textRenderer.fontHeight / 2f - ICON_SIZE * 0.95f / 2) + PADDING;
+		context.fill(getX(), getY(), getRight(), getBottom(), 0x28_00_00_00);
 
 		for (Object2IntMap.Entry<Text> entry : groupedItems.object2IntEntrySet()) {
 			Text itemName = entry.getKey();
@@ -176,23 +178,23 @@ public class VisitorHelper extends ClickableWidget {
 
 			// Render visitors' heads for the shared item
 			for (Visitor visitor : visitors) {
-				int yPosition = getY() + index * (LINE_HEIGHT + textRenderer.fontHeight);
+				int yPosition = y + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
 				context.getMatrices().pushMatrix();
-				context.getMatrices().translate(getX(), yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2);
+				context.getMatrices().translate(x, yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2);
 				context.getMatrices().scale(0.95f, 0.95f);
 				context.drawItem(visitor.head(), 0, 0);
 				context.getMatrices().popMatrix();
 
-				context.drawText(textRenderer, visitor.name(), getX() + (int) (ICON_SIZE * 0.95f) + 4, yPosition, Colors.WHITE, true);
+				context.drawText(textRenderer, visitor.name(), x + (int) (ICON_SIZE * 0.95f) + 4, yPosition, Colors.WHITE, true);
 
 				index++;
 			}
 
 			// Render the shared item with the total amount
-			int iconX = getX() + 12;
+			int iconX = x + 12;
 			int textX = iconX + (int) (ICON_SIZE * 0.95f) + 4;
-			int yPosition = getY() + index * (LINE_HEIGHT + textRenderer.fontHeight);
+			int yPosition = y + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
 			ItemStack cachedStack = getCachedItem(itemName.getString());
 			if (cachedStack != null) {
@@ -216,14 +218,16 @@ public class VisitorHelper extends ClickableWidget {
 					copiedTimestamps.removeLong(itemName);
 				}
 			}
-			newWidth = Math.max(newWidth, textX + textRenderer.getWidth(itemText) - getX());
+			newWidth = Math.max(newWidth, textX + textRenderer.getWidth(itemText) - x);
 
 			drawTextWithHoverUnderline(context, textRenderer, itemText, textX, yPosition, mouseX, mouseY);
 
 			index++;
 		}
-		setHeight(getNeededHeight());
-		setWidth(newWidth);
+		setHeight((groupedItems.size() + activeVisitors.size()) * (LINE_HEIGHT + MinecraftClient.getInstance().textRenderer.fontHeight) + PADDING * 2);
+		setWidth(newWidth + PADDING * 2);
+		exclusionZoneWidth = getWidth();
+		exclusionZoneHeight = getHeight();
 	}
 
 	@Override
