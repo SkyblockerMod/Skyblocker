@@ -3,7 +3,9 @@ package de.hysky.skyblocker.skyblock.radialMenu;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
+import de.hysky.skyblocker.utils.render.gui.state.HorizontalGradientGuiElementRenderState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -12,8 +14,11 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.texture.TextureSetup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import org.joml.Matrix3x2f;
+import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 
@@ -80,7 +85,7 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 
 		//get bounding box
 		Vector2i center = new Vector2i(context.getScaledWindowWidth() / 2, context.getScaledWindowHeight() / 2);
-		List<Vector3f> vertices = new ArrayList<>();
+		List<Vector2f> vertices = new ArrayList<>();
 		//first rectangle
 		vertices.add(getPos(center, startAngle, internal));
 		vertices.add(getPos(center, startAngle + arcLength / 2, internal));
@@ -92,22 +97,22 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 		vertices.add(getPos(center, startAngle + arcLength, external));
 		vertices.add(getPos(center, startAngle + arcLength / 2, external));
 
-
+		context.state.addSimpleElement(new CustomShapeGuiElementRenderState(RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()),vertices,  color, context.scissorStack.peekLast()));
 		//render background
-		context.draw(provider -> {
-			VertexConsumer vertexConsumer = provider.getBuffer(RenderLayer.getGui());
-			for (Vector3f vertex : vertices) {
-				vertexConsumer.vertex(vertex).color(color);
-			}
-		});
+		//context.draw(provider -> {
+		//	VertexConsumer vertexConsumer = provider.getBuffer(RenderLayer.getGui());
+		//	for (Vector3f vertex : vertices) {
+		//		vertexConsumer.vertex(vertex).color(color);
+		//	}
+		//});
 
 		//render icon
 		float iconAngle = startAngle + (arcLength / 2);
-		Vector3f iconPos = getPos(center, iconAngle, (internal + external) / 2);
-		iconPos.sub(8, 8, 0);
+		Vector2f iconPos = getPos(center, iconAngle, (internal + external) / 2);
+		iconPos.sub(8, 8);
 
 
-		context.drawItem(icon, (int) iconPos.x, (int) iconPos.y, (int) iconPos.z);
+		context.drawItem(icon, (int) iconPos.x, (int) iconPos.y);
 		context.drawStackOverlay(CLIENT.textRenderer, icon, (int) iconPos.x, (int) iconPos.y);
 		SlotTextManager.renderSlotText(context, CLIENT.textRenderer, null, icon, linkedSlot, (int) iconPos.x, (int) iconPos.y);
 
@@ -130,8 +135,8 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 	 * @param radius radius
 	 * @return the screen position
 	 */
-	private static Vector3f getPos(Vector2i center, float angle, float radius) {
-		return new Vector3f((float) (center.x + (radius * Math.cos(angle))), (float) (center.y + (radius * Math.sin(angle))), 0);
+	private static Vector2f getPos(Vector2i center, float angle, float radius) {
+		return new Vector2f((float) (center.x + (radius * Math.cos(angle))), (float) (center.y + (radius * Math.sin(angle))));
 	}
 
 	@Override

@@ -232,7 +232,7 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 		super.render(context, mouseX, mouseY, deltaTicks);
 
 		//render menu title
-		context.drawCenteredTextWithShadow(textRenderer, getTitle(), width / 2, height / 2 - textRenderer.fontHeight, 0xFFFFFF);
+		context.drawCenteredTextWithShadow(textRenderer, getTitle(), width / 2, height / 2 - textRenderer.fontHeight, 0xFFFFFFFF);
 		//draw separation line
 		int textWidth = textRenderer.getWidth(getTitle());
 		context.drawHorizontalLine(width / 2 - textWidth / 2, width / 2 + textWidth / 2, height / 2, 0xFFFFFFFF);
