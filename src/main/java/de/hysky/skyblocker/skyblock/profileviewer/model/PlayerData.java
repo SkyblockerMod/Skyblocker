@@ -51,32 +51,7 @@ public class PlayerData {
 	public Set<String> craftedMinions = Set.of();
 	@SerializedName("fishing_treasure_caught")
 	public int fishingTreasuresCaught;
-	// candy_collected
-	/**
-	 * Has a {@code total} field and does not distinguish between levels. Not sure if this is updated with new kills after the bestiary data.
-	 *
-	 * @see Bestiary#kills
-	 */
-	public Map<String, Float> kills = Map.of();
-	/**
-	 * Has a {@code total} field and does not distinguish between levels. Not sure if this is updated with new deaths after the bestiary data.
-	 *
-	 * @see Bestiary#deaths
-	 */
-	public Map<String, Float> deaths = Map.of();
-	@SerializedName("highest_critical_damage")
-	public double highestCriticalDamage;
-	@SerializedName("items_fished")
-	public ItemsFished itemsFished = new ItemsFished();
 	public Map<String, Double> experience = Map.of();
-
-	public static class ItemsFished {
-		public int total;
-		public int normal;
-		public int treasure;
-		@SerializedName("large_treasure")
-		public int largeTreasure;
-	}
 
 
 	/**

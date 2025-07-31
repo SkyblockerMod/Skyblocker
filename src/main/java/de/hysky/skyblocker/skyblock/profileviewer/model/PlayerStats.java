@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.profileviewer.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Map;
+
 public class PlayerStats {
 	@SerializedName("sea_creature_kills")
 	public int seaCreatureKills;
@@ -11,6 +13,20 @@ public class PlayerStats {
 	public long highestDamage;
 	@SerializedName("highest_critical_damage")
 	public long highestCriticalDamage;
+
+	// candy_collected
+	/**
+	 * Has a {@code total} field and does not distinguish between levels. Not sure if this is updated with new kills after the bestiary data.
+	 *
+	 * @see Bestiary#kills
+	 */
+	public Map<String, Float> kills = Map.of();
+	/**
+	 * Has a {@code total} field and does not distinguish between levels. Not sure if this is updated with new deaths after the bestiary data.
+	 *
+	 * @see Bestiary#deaths
+	 */
+	public Map<String, Float> deaths = Map.of();
 
 	public Pets pets = new Pets();
 	public static class Pets {
