@@ -15,14 +15,15 @@ import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -78,7 +79,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	@Init
 	public static void init() {
 		ChatEvents.RECEIVE_STRING.register(INSTANCE::onChatMessage);
-		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.STATUS_EFFECTS, POWDER_MINING_TRACKER, PowderMiningTracker::render));
+		HudElementRegistry.attachElementAfter(VanillaHudElements.STATUS_EFFECTS, POWDER_MINING_TRACKER, PowderMiningTracker::render);
 		ItemPriceUpdateEvent.ON_PRICE_UPDATE.register(INSTANCE::onPriceUpdate);
 
 		INSTANCE.allRewards.init();
@@ -324,10 +325,10 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 		int y = MinecraftClient.getInstance().getWindow().getScaledHeight() / 2 - 100;
 		var set = INSTANCE.shownRewards.object2IntEntrySet();
 		for (Entry<Text> entry : set) {
-			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, entry.getKey(), 5, y, 0xFFFFFF);
-			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(Formatters.INTEGER_NUMBERS.format(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, 0xFFFFFF);
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, entry.getKey(), 5, y, Colors.WHITE);
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(Formatters.INTEGER_NUMBERS.format(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, Colors.WHITE);
 			y += 10;
 		}
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.translatable("skyblocker.powderTracker.profit", Formatters.DOUBLE_NUMBERS.format(INSTANCE.profit)).formatted(Formatting.GOLD), 5, y + 10, 0xFFFFFF);
+		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.translatable("skyblocker.powderTracker.profit", Formatters.DOUBLE_NUMBERS.format(INSTANCE.profit)).formatted(Formatting.GOLD), 5, y + 10, Colors.WHITE);
 	}
 }
