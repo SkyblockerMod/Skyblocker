@@ -1,6 +1,9 @@
 package de.hysky.skyblocker.skyblock.profileviewer.model;
 
 import com.google.gson.annotations.SerializedName;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import net.minecraft.item.ItemStack;
 
 import java.util.List;
 import java.util.Map;
@@ -8,7 +11,7 @@ import java.util.Set;
 
 public class PlayerData {
 	@SerializedName("visited_zones")
-	public List<String> visitedZones = List.of();
+	public Set<String> visitedZones = Set.of();
 	/**
 	 * Seems to be a second timestamp with some sort of offset.
 	 */
@@ -65,6 +68,7 @@ public class PlayerData {
 	public double highestCriticalDamage;
 	@SerializedName("items_fished")
 	public ItemsFished itemsFished = new ItemsFished();
+	public Map<String, Double> experience = Map.of();
 
 	public static class ItemsFished {
 		public int total;
@@ -81,6 +85,53 @@ public class PlayerData {
 	public boolean hasCraftedMinionTier(String minionType, int tier) {
 		return craftedMinions.contains(String.format("%s_%d", minionType, tier));
 	}
+
+	public double getSkillExperience(Skill skill) {
+		return experience.getOrDefault("SKILL_" + skill.name(), 0.0);
+	}
+
+	public LevelFinder.LevelInfo getSkillLevel(Skill skill) {
+		return LevelFinder.getLevelInfo(skill.levelFinderOverride, (long) getSkillExperience(skill));
+	}
+
+	public enum Skill {
+		FISHING("Fishing", Ico.FISH_ROD),
+		ALCHEMY("Alchemy", Ico.BREWING_STAND),
+		//		DUNGEONEERING,
+		RUNECRAFTING("Runecrafting", Ico.MAGMA_CREAM, "Runecraft"),
+		MINING("Mining", Ico.STONE_PICKAXE),
+		FARMING("Farming", Ico.GOLDEN_HOE),
+		ENCHANTING("Enchanting", Ico.ENCHANTING_TABLE),
+		TAMING("Taming", Ico.BONE),
+		FORAGING("Foraging", Ico.JUNGLE_SAPLING),
+		SOCIAL("Social", Ico.EMERALD, "Social"),
+		CARPENTRY("Carpentry", Ico.CRAFTING_TABLE),
+		COMBAT("Combat", Ico.STONE_SWORD),
+		;
+		private final String name;
+		private final ItemStack itemStack;
+		private final String levelFinderOverride;
+
+
+		Skill(String name, ItemStack itemStack) {
+			this(name, itemStack, "GenericSkill");
+		}
+
+		Skill(String name, ItemStack itemStack, String override) {
+			this.name = name;
+			this.itemStack = itemStack;
+			this.levelFinderOverride = override;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public ItemStack getIcon() {
+			return itemStack;
+		}
+	}
+
 
 	/**
 	 * Gets the highest contiguously unlocked minion tier. It is still possible to craft a higher tier minion by trading with other players.

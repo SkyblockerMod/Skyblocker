@@ -30,6 +30,8 @@ public class ProfileMember {
 	public ItemData itemData = new ItemData();
 	@SerializedName("winter_player_data")
 	public WinterPlayerData winterPlayerData = new WinterPlayerData();
+	@SerializedName("player_data")
+	public PlayerData playerData = new PlayerData();
 	public Leveling leveling = new Leveling();
 	public AccessoryBagStorage accessoryBagStorage = new AccessoryBagStorage();
 }

@@ -25,115 +25,116 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 public class ProfileViewerScreenRework extends Screen {
-    public static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
-            .create();
-    public static final List<Function<ProfileLoadState.SuccessfulLoad, ProfileViewerPage>> PAGE_CONSTRUCTORS =
-            new ArrayList<>();
+	public static final Gson GSON = new GsonBuilder()
+			.registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
+			.create();
+	public static final List<Function<ProfileLoadState.SuccessfulLoad, ProfileViewerPage>> PAGE_CONSTRUCTORS =
+			new ArrayList<>();
 
-    public ProfileViewerScreenRework() {
-        super(Text.of("SkyBlocker Profile Viewer"));
-        displayLoadedProfile(new ProfileLoadState.Loading());
-    }
+	public ProfileViewerScreenRework() {
+		super(Text.of("SkyBlocker Profile Viewer"));
+		displayLoadedProfile(new ProfileLoadState.Loading());
+	}
 
-    public static Screen forPlayer(String username) {
-        var screen = new ProfileViewerScreenRework();
-        screen.loadProfilesFromPlayer(username);
-        return screen;
-    }
+	public static Screen forPlayer(String username) {
+		var screen = new ProfileViewerScreenRework();
+		screen.loadProfilesFromPlayer(username);
+		return screen;
+	}
 
-    //<editor-fold desc="Loading and state management">
-    private CompletableFuture<ProfileLoadState> reload;
-    private ProfileLoadState currentLoadState;
-    private List<ProfileViewerPage> pages;
-    private List<ProfileViewerNavButton> buttons;
-    private List<ProfileViewerWidget.Instance> widgets;
-    private int selectedIndex = 0;
+	//<editor-fold desc="Loading and state management">
+	private CompletableFuture<ProfileLoadState> reload;
+	private ProfileLoadState currentLoadState;
+	private List<ProfileViewerPage> pages;
+	private List<ProfileViewerNavButton> buttons;
+	private List<ProfileViewerWidget.Instance> widgets;
+	private int selectedIndex = 0;
 
 
-    public ProfileLoadState getCurrentLoadState() {
-        return currentLoadState;
-    }
+	public ProfileLoadState getCurrentLoadState() {
+		return currentLoadState;
+	}
 
-    public void displayLoadedProfile(ProfileLoadState profileLoadState) {
-        this.currentLoadState = profileLoadState;
-        this.pages = switch (profileLoadState) {
-            case ProfileLoadState.Error error -> List.of(new ErrorPage(error));
-            case ProfileLoadState.SuccessfulLoad successfulLoad ->
-                    PAGE_CONSTRUCTORS.stream().sorted().map(it -> it.apply(successfulLoad)).toList();
-            case ProfileLoadState.Loading ignored -> List.of(new LoadingPage());
-        };
-        this.buttons = new ArrayList<>();
-        for (int i = 0; i < pages.size(); i++) {
-            var page = pages.get(i);
-            buttons.add(new ProfileViewerNavButton(ignored -> setSelectedPage(selectedIndex), page.getName(), page.getIcon(), i, false));
-        }
-        setSelectedPage(0);
-    }
+	public void displayLoadedProfile(ProfileLoadState profileLoadState) {
+		this.currentLoadState = profileLoadState;
+		this.pages = switch (profileLoadState) {
+			case ProfileLoadState.Error error -> List.of(new ErrorPage(error));
+			case ProfileLoadState.SuccessfulLoad successfulLoad -> PAGE_CONSTRUCTORS.stream().sorted().map(it -> it.apply(successfulLoad)).toList();
+			case ProfileLoadState.Loading ignored -> List.of(new LoadingPage());
+		};
+		this.buttons = new ArrayList<>();
+		for (int i = 0; i < pages.size(); i++) {
+			var page = pages.get(i);
+			buttons.add(new ProfileViewerNavButton(ignored -> setSelectedPage(selectedIndex), page.getName(), page.getIcon(), i, false));
+		}
+		setSelectedPage(0);
+	}
 
-    public int getSelectedIndex() {
-        return selectedIndex;
-    }
+	public int getSelectedIndex() {
+		return selectedIndex;
+	}
 
-    public ProfileViewerPage getSelectedPage() {
-        return pages.get(selectedIndex);
-    }
+	public ProfileViewerPage getSelectedPage() {
+		return pages.get(selectedIndex);
+	}
 
-    public void setSelectedPage(int index) {
-        this.selectedIndex = index;
-        for (int i = 0; i < buttons.size(); i++) {
-            buttons.get(i).setToggled(i == selectedIndex);
-        }
-        widgets = pages.get(selectedIndex).getWidgets();
-    }
+	public void setSelectedPage(int index) {
+		this.selectedIndex = index;
+		for (int i = 0; i < buttons.size(); i++) {
+			buttons.get(i).setToggled(i == selectedIndex);
+		}
+		widgets = pages.get(selectedIndex).getWidgets();
+	}
 
-    public CompletableFuture<ProfileLoadState> loadProfilesFromPlayer(String name) {
-        if (reload != null) {
-            reload.cancel(true);
-        }
-        this.displayLoadedProfile(new ProfileLoadState.Loading());
-        return reload = ProfileUtils.fetchFullProfile(name)
-                .thenApplyAsync(jsonObject -> GSON.fromJson(jsonObject, ApiProfileResponse.class))
-                .thenApplyAsync(apiProfileResponse -> apiProfileResponse
-                        .profiles
-                        .stream()
-                        .max(Comparator.comparing(it -> it.selected))
-                        .<ProfileLoadState>map(selectedProfile -> {
-                            var uuid = UndashedUuid.fromStringLenient(ApiUtils.name2Uuid(name));
-                            return new ProfileLoadState.SuccessfulLoad(
-                                    selectedProfile,
-                                    uuid,
-                                    selectedProfile.members.get(uuid)
-                            );
-                        })
-                        .orElseGet(() -> new ProfileLoadState.Error("No profile found")))
-                .exceptionally(ex -> new ProfileLoadState.Error(ex.getMessage()))
-                .thenApplyAsync(load -> {
-                    displayLoadedProfile(load);
-                    return load;
-                }, MinecraftClient.getInstance());
-    }
-    //</editor-fold>
+	public CompletableFuture<ProfileLoadState> loadProfilesFromPlayer(String name) {
+		if (reload != null) {
+			reload.cancel(true);
+		}
+		this.displayLoadedProfile(new ProfileLoadState.Loading());
+		return reload = ProfileUtils.fetchFullProfile(name)
+				.thenApplyAsync(jsonObject -> GSON.fromJson(jsonObject, ApiProfileResponse.class))
+				.thenApplyAsync(apiProfileResponse -> apiProfileResponse
+						.profiles
+						.stream()
+						.max(Comparator.comparing(it -> it.selected))
+						.<ProfileLoadState>map(selectedProfile -> {
+							var uuid = UndashedUuid.fromStringLenient(ApiUtils.name2Uuid(name));
+							return new ProfileLoadState.SuccessfulLoad(
+									selectedProfile,
+									uuid,
+									selectedProfile.members.get(uuid)
+							);
+						})
+						.orElseGet(() -> new ProfileLoadState.Error("No profile found")))
+				.exceptionally(ex -> new ProfileLoadState.Error(ex.getMessage()))
+				.thenApplyAsync(load -> {
+					displayLoadedProfile(load);
+					return load;
+				}, MinecraftClient.getInstance());
+	}
+	//</editor-fold>
 
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/base_plate.png");
-    public static final int GUI_WIDTH = 322;
-    public static final int GUI_HEIGHT = 180;
+	private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/base_plate.png");
+	private static final int GUI_WIDTH = 322;
+	public static final int PAGE_WIDTH = GUI_WIDTH - 10;
+	private static final int GUI_HEIGHT = 180;
+	public static final int PAGE_HEIGHT = GUI_HEIGHT - 10;
 
-    @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-        super.render(context, mouseX, mouseY, deltaTicks);
-        int rootX = width / 2 - GUI_WIDTH / 2;
-        int rootY = height / 2 - GUI_HEIGHT / 2 + 5;
+	@Override
+	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		super.render(context, mouseX, mouseY, deltaTicks);
+		int rootX = width / 2 - GUI_WIDTH / 2;
+		int rootY = height / 2 - GUI_HEIGHT / 2 + 5;
 
-        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootY, 0, 0, GUI_WIDTH, GUI_HEIGHT, GUI_WIDTH, GUI_HEIGHT);
-        for (var button : buttons) {
-            button.setX(rootX + button.getIndex() * 28 + 4);
-            button.setY(rootY - 28);
-            button.render(context, mouseX, mouseY, deltaTicks);
-        }
+		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootY, 0, 0, GUI_WIDTH, GUI_HEIGHT, GUI_WIDTH, GUI_HEIGHT);
+		for (var button : buttons) {
+			button.setX(rootX + button.getIndex() * 28 + 4);
+			button.setY(rootY - 28);
+			button.render(context, mouseX, mouseY, deltaTicks);
+		}
 
-        for (var widget : widgets) {
-            widget.render(context, rootX, rootY, mouseX, mouseY, deltaTicks);
-        }
-    }
+		for (var widget : widgets) {
+			widget.render(context, rootX + 5, rootY + 5, mouseX, mouseY, deltaTicks);
+		}
+	}
 }

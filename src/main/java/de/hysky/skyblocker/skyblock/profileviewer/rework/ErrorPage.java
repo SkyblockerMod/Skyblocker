@@ -27,8 +27,8 @@ public record ErrorPage(ProfileLoadState.Error error) implements ProfileViewerPa
     @Override
     public @NotNull List<ProfileViewerWidget.Instance> getWidgets() {
         return List.of(
-                ProfileViewerWidget.widget(ProfileViewerScreenRework.GUI_WIDTH / 2, 8, TextWidget.centered(Text.of("Error!"))),
-                ProfileViewerWidget.widget(ProfileViewerScreenRework.GUI_WIDTH / 2, 19, TextWidget.centered(Text.of(error.message())))
+                ProfileViewerWidget.widget(ProfileViewerScreenRework.PAGE_WIDTH / 2, 8, TextWidget.centered(Text.of("Error!"))),
+                ProfileViewerWidget.widget(ProfileViewerScreenRework.PAGE_WIDTH / 2, 19, TextWidget.centered(Text.of(error.message())))
         );
     }
 }

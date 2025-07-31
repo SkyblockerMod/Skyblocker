@@ -15,7 +15,7 @@ public interface ProfileViewerPage extends Comparable<ProfileViewerPage> {
         return Integer.compare(this.getSortIndex(), o.getSortIndex());
     }
 
-    static ProfileViewerWidget.Instance widget(int x, int y, ProfileViewerWidget widget) {
+    default ProfileViewerWidget.Instance widget(int x, int y, ProfileViewerWidget widget) {
         return ProfileViewerWidget.widget(x, y, widget);
     }
 
