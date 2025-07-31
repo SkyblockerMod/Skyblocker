@@ -26,4 +26,10 @@ public class ProfileMember {
 	public GlacitePlayerData glacitePlayerData = new GlacitePlayerData();
 	@SerializedName("jacobs_contest")
 	public JacobsContest jacobsContest = new JacobsContest();
+	@SerializedName("item_data")
+	public ItemData itemData = new ItemData();
+	@SerializedName("winter_player_data")
+	public WinterPlayerData winterPlayerData = new WinterPlayerData();
+	public Leveling leveling = new Leveling();
+	public AccessoryBagStorage accessoryBagStorage = new AccessoryBagStorage();
 }
