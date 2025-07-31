@@ -72,7 +72,7 @@ final class SkillWidget implements ProfileViewerWidget {
 				tooltipText.add(Text.literal("")
 						.append(formatBar(levelInfo.fill, 15, Formatting.DARK_GREEN, Formatting.GRAY))
 						.append(" ")
-						.append(INTEGER_NUMBERS.format(levelInfo.nextLevelXP - levelInfo.levelXP))
+						.append(INTEGER_NUMBERS.format(levelInfo.levelXP))
 						.append("/")
 						.append(SHORT_INTEGER_NUMBERS.format(levelInfo.nextLevelXP))
 						.formatted(Formatting.YELLOW));
