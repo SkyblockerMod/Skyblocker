@@ -11,6 +11,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -20,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.OptionalInt;
+
+import static de.hysky.skyblocker.utils.Formatters.INTEGER_NUMBERS;
+import static de.hysky.skyblocker.utils.Formatters.SHORT_INTEGER_NUMBERS;
 
 final class SkillWidget implements ProfileViewerWidget {
 	private static final Identifier ICON_DATA_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
@@ -61,28 +65,38 @@ final class SkillWidget implements ProfileViewerWidget {
 
 		// TODO: add helper for hover selection
 		if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 14 && mouseY < y + 21) {
-			StringBuilder bar = new StringBuilder("§3§l§m");
-			int filledBar = (int) Math.round(levelInfo.fill * 14);
-			for (int j = 1; j <= 14; j++) {
-				if (j <= filledBar) {
-					bar.append("§2§l§m ");
-				} else {
-					bar.append("§f§l§m ");
-				}
-			}
-
 			List<Text> tooltipText = new ArrayList<>();
 			tooltipText.add(Text.literal(skill.getName() + " " + levelInfo.level).formatted(Formatting.GREEN));
 			if (levelInfo.level < skillCap) {
 				tooltipText.add(Text.literal("Progress to Level " + (levelInfo.level + 1) + ":").formatted(Formatting.GRAY));
-				tooltipText.add(Text.literal((bar) + "§r " + Formatters.INTEGER_NUMBERS.format(levelInfo.nextLevelXP - levelInfo.levelXP) + "/" + Formatters.SHORT_INTEGER_NUMBERS.format(levelInfo.nextLevelXP)).formatted(Formatting.YELLOW));
-				tooltipText.add(Text.literal("XP till " + (levelInfo.level + 1) + ": §e" + Formatters.INTEGER_NUMBERS.format(levelInfo.nextLevelXP - levelInfo.levelXP)).formatted(Formatting.GRAY));
+				tooltipText.add(Text.literal("")
+						.append(formatBar(levelInfo.fill, 15, Formatting.DARK_GREEN, Formatting.GRAY))
+						.append(" ")
+						.append(INTEGER_NUMBERS.format(levelInfo.nextLevelXP - levelInfo.levelXP))
+						.append("/")
+						.append(SHORT_INTEGER_NUMBERS.format(levelInfo.nextLevelXP))
+						.formatted(Formatting.YELLOW));
+				tooltipText.add(
+						Text.literal("XP till " + (levelInfo.level + 1) + ": ")
+								.append(Text.literal(INTEGER_NUMBERS.format(levelInfo.nextLevelXP - levelInfo.levelXP)).formatted(Formatting.YELLOW))
+								.formatted(Formatting.GRAY));
 			} else {
 				tooltipText.add(Text.literal("Progress: §6MAXED").formatted(Formatting.GRAY));
 			}
-			tooltipText.add(Text.literal("§7Total XP: §r" + Formatters.INTEGER_NUMBERS.format(levelInfo.xp)).formatted(Formatting.YELLOW));
+			tooltipText.add(Text.literal("§7Total XP: §r" + INTEGER_NUMBERS.format(levelInfo.xp)).formatted(Formatting.YELLOW));
 			drawContext.drawTooltip(textRenderer, tooltipText, mouseX, mouseY);
 		}
+	}
+
+	private static Text formatBar(double percentage, int total, Formatting filledStyle, Formatting emptyStyle) {
+		return formatBar((int) Math.round(percentage * total), total, filledStyle, emptyStyle);
+	}
+
+	private static Text formatBar(int filled, int total, Formatting filledStyle, Formatting emptyStyle) {
+		assert filled <= total;
+		return Text.literal("")
+				.append(Text.literal(" ".repeat(filled)).formatted(filledStyle, Formatting.STRIKETHROUGH, Formatting.BOLD))
+				.append(Text.literal(" ".repeat(total - filled)).formatted(emptyStyle, Formatting.STRIKETHROUGH, Formatting.BOLD));
 	}
 
 	@Override
