@@ -40,7 +40,7 @@ public class NetherIslandPlayerData {
 		public int testOfMastery;
 		@SerializedName("dojo_points_sword_swap")
 		public int testOfDiscipline;
-		@SerializedName("dojo_time_archer")
+		@SerializedName("dojo_points_snake")
 		public int testOfSwiftness;
 		@SerializedName("dojo_points_lock_head")
 		public int testOfControl;
@@ -55,7 +55,7 @@ public class NetherIslandPlayerData {
 		public int testOfMasteryTime;
 		@SerializedName("dojo_time_sword_swap")
 		public int testOfDisciplineTime;
-		@SerializedName("dojo_time_archer")
+		@SerializedName("dojo_time_snake")
 		public int testOfSwiftnessTime;
 		@SerializedName("dojo_time_lock_head")
 		public int testOfControlTime;
