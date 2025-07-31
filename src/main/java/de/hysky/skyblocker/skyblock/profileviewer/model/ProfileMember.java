@@ -18,4 +18,5 @@ public class ProfileMember {
 	public ProfileMemberProfile profile = new ProfileMemberProfile();
 	public Currencies currencies = new Currencies();
 	public Dungeons dungeons = new Dungeons();
+	public Experimentation experimentation = new Experimentation();
 }
