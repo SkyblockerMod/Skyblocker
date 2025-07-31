@@ -58,7 +58,16 @@ public class SkyblockerRenderLayers {
 			.texture(new RenderPhase.Texture(texture, TriState.FALSE, false))
 			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
 			.build(false));
+
 	public static final MultiPhase CYLINDER = RenderLayer.of("cylinder", RenderLayer.DEFAULT_BUFFER_SIZE, false, true, SkyblockerRenderPipelines.CYLINDER, MultiPhaseParameters.builder()
+			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
+			.build(false));
+
+	public static final MultiPhase CIRCLE = RenderLayer.of("circle", RenderLayer.DEFAULT_BUFFER_SIZE, false, true, SkyblockerRenderPipelines.CIRCLE, MultiPhaseParameters.builder()
+			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
+			.build(false));
+
+	public static final MultiPhase CIRCLE_LINES = RenderLayer.of("circle_lines", RenderLayer.DEFAULT_BUFFER_SIZE, false, true, SkyblockerRenderPipelines.CIRCLE_LINES, MultiPhaseParameters.builder()
 			.layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
 			.build(false));
 
