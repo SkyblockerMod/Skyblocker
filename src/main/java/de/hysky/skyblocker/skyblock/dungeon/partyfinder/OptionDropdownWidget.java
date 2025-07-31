@@ -5,12 +5,12 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 
 import java.util.List;
 
@@ -101,11 +101,6 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
 
     @Override
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        MatrixStack matrices = context.getMatrices();
-        if (isOpen) {
-            matrices.push();
-            matrices.translate(0, 0, 100);
-        }
         if (animationProgress < 1) animationProgress += delta * 0.5f;
         else if (animationProgress != 1) animationProgress = 1;
         if (PartyFinderScreen.DEBUG) {
@@ -119,9 +114,6 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
         context.fill(getX() + 1, getY() + headerHeight + 1, getX() + getWidth() - 2, getY() + idk + headerHeight - 1, 0xFF000000);
 
         super.renderWidget(context, mouseX, mouseY, delta);
-        if (isOpen) {
-            matrices.pop();
-        }
     }
 
     @Override
@@ -175,14 +167,14 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
                 context.fill(x, y, x + entryWidth, y + 13, 0xFFF0F0F0);
                 context.fill(x+1, y+1, x + entryWidth-1, y + 12, 0xFF000000);
             } else context.fill(x, y, x + entryWidth, y + 13, 0xFF000000);*/
-            MatrixStack matrices = context.getMatrices();
-            matrices.push();
+            Matrix3x2fStack matrices = context.getMatrices();
+            matrices.pushMatrix();
             int iconY = y + 1;
-            matrices.translate(x, iconY, 0);
-            matrices.scale(0.8f, 0.8f, 1f);
-            matrices.translate(-x, -iconY, 0);
+            matrices.translate(x, iconY);
+            matrices.scale(0.8f, 0.8f);
+            matrices.translate(-x, -iconY);
             context.drawItem(icon, x, iconY);
-            matrices.pop();
+            matrices.popMatrix();
             if (PartyFinderScreen.DEBUG) context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(optionSlotId), x + 8, y, 0xFFFF0000, true);
             context.drawText(MinecraftClient.getInstance().textRenderer, Text.literal(message).fillStyle(Style.EMPTY.withUnderline(hovered)), x + 14, y + 3, 0xFFFFFFFF, false);
         }

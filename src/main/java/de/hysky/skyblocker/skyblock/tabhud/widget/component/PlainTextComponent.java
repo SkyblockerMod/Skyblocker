@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
 /**
@@ -24,7 +25,7 @@ public class PlainTextComponent extends Component {
 
 	@Override
 	public void render(DrawContext context, int x, int y) {
-		context.drawText(txtRend, text, x + PAD_S, y, 0xffffffff, false);
+		context.drawText(txtRend, text, x + PAD_S, y, Colors.WHITE, false);
 	}
 
 }
