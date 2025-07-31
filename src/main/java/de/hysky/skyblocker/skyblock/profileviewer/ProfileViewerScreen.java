@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.skyblock.profileviewer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.util.UUIDTypeAdapter;
 import com.mojang.util.UndashedUuid;
 
 import de.hysky.skyblocker.SkyblockerMod;
@@ -12,6 +11,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.profileviewer.collections.CollectionsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.dungeons.DungeonsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.InventoryPage;
+import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileViewerScreenRework;
 import de.hysky.skyblocker.skyblock.profileviewer.skills.SkillsPage;
 import de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayersPage;
 import de.hysky.skyblocker.utils.ApiAuthentication;
@@ -226,9 +226,9 @@ public class ProfileViewerScreen extends Screen {
             LiteralArgumentBuilder<FabricClientCommandSource> literalArgumentBuilder = ClientCommandManager.literal("pv")
                     .then(ClientCommandManager.argument("username", StringArgumentType.string())
                             .suggests((source, builder) -> CommandSource.suggestMatching(getPlayerSuggestions(source.getSource()), builder))
-                            .executes(Scheduler.queueOpenScreenFactoryCommand(context -> new ProfileViewerScreen(StringArgumentType.getString(context, "username"))))
+                            .executes(Scheduler.queueOpenScreenFactoryCommand(context -> ProfileViewerScreenRework.forPlayer(StringArgumentType.getString(context, "username"))))
                     )
-                    .executes(Scheduler.queueOpenScreenCommand(() -> new ProfileViewerScreen(MinecraftClient.getInstance().getSession().getUsername())));
+                    .executes(Scheduler.queueOpenScreenCommand(() -> ProfileViewerScreenRework.forPlayer(MinecraftClient.getInstance().getSession().getUsername())));
             dispatcher.register(literalArgumentBuilder);
             dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(literalArgumentBuilder));
         });
