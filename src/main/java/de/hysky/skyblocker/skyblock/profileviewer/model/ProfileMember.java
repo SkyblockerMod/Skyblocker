@@ -34,4 +34,8 @@ public class ProfileMember {
 	public PlayerData playerData = new PlayerData();
 	public Leveling leveling = new Leveling();
 	public AccessoryBagStorage accessoryBagStorage = new AccessoryBagStorage();
+	@SerializedName("nether_island_player_data")
+	public NetherIslandPlayerData netherIslandPlayerData = new NetherIslandPlayerData();
+	@SerializedName("player_stats")
+	public PlayerStats playerStats = new PlayerStats();
 }
