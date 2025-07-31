@@ -15,7 +15,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -170,10 +170,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	}
 
 	private void renderInternal(DrawContext context, List<Component> components) {
-		MatrixStack ms = context.getMatrices();
-
-		ms.push();
-
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground && backgroundOpacity > 0) {
 			int textBackgroundColor = ColorHelper.fromFloats(backgroundOpacity, 0, 0, 0);
 			if (roundedCorners) {
@@ -184,8 +180,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 				context.fill(0, 0, w, h, textBackgroundColor);
 			}
 		}
-		// move above background (if exists)
-		ms.translate(0, 0, 10);
 
 		int strHeightHalf = txtRend.fontHeight / 2;
 		int strWidth = txtRend.getWidth(title);
@@ -215,8 +209,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 			c.render(context, BORDER_SZE_W + (drawBorder ? 0 : -3), yOffs);
 			yOffs += c.getHeight() + Component.PAD_L;
 		}
-		// pop manipulations above
-		ms.pop();
 	}
 
 	/**

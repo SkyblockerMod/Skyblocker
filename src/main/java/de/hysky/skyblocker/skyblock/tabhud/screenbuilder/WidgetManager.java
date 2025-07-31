@@ -23,17 +23,18 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.util.Window;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
 import org.jetbrains.annotations.NotNull;
+
+import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
@@ -87,13 +88,10 @@ public class WidgetManager {
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
 
-		HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer
-				// Renders the hud (always on screen) widgets.
-				// Since each layer has a z offset of 200 automatically added, attaching fancy tab hud before the demo timer is just enough for items to render below the debug hud
-				.attachLayerBefore(IdentifiedLayer.DEMO_TIMER, FANCY_TAB_HUD, (context, tickCounter) -> render(context, true))
-				// Renders the tab widgets
-				.attachLayerBefore(IdentifiedLayer.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false))
-		);
+		// Renders the hud (always on screen) widgets.
+		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, FANCY_TAB_HUD, (context, tickCounter) -> render(context, true));
+		// Renders the tab widgets
+		HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false));
 	}
 
 	private static void render(DrawContext context, boolean hud) {
@@ -103,11 +101,11 @@ public class WidgetManager {
 		if (client.currentScreen instanceof WidgetsConfigScreen) return;
 		Window window = client.getWindow();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.scale(scale, scale, 1.F);
+		Matrix3x2fStack matrices = context.getMatrices();
+		matrices.pushMatrix();
+		matrices.scale(scale, scale);
 		WidgetManager.render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale), hud);
-		matrices.pop();
+		matrices.popMatrix();
 	}
 
 	private static ScreenBuilder currentBuilder = getScreenBuilder(Location.UNKNOWN, ScreenLayer.HUD);

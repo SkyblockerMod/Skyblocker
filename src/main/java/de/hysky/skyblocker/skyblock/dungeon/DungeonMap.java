@@ -9,19 +9,17 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.MapRenderState;
 import net.minecraft.client.render.MapRenderer;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.MapIdComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,7 +30,6 @@ import net.minecraft.item.map.MapDecoration;
 import net.minecraft.item.map.MapDecorationTypes;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,7 +51,7 @@ public class DungeonMap {
 
 	@Init
 	public static void init() {
-		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.STATUS_EFFECTS, DUNGEON_MAP, (context, tickCounter) -> render(context)));
+		HudElementRegistry.attachElementAfter(VanillaHudElements.STATUS_EFFECTS, DUNGEON_MAP, (context, tickCounter) -> render(context));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("skyblocker")
 				.then(ClientCommandManager.literal("hud")
 						.then(ClientCommandManager.literal("dungeon")
@@ -92,19 +89,17 @@ public class DungeonMap {
 		MapState state = FilledMapItem.getMapState(mapId, client.world);
 		if (state == null) return null;
 
-		VertexConsumerProvider.Immediate vertices = client.getBufferBuilders().getEffectVertexConsumers();
 		MapRenderer mapRenderer = client.getMapRenderer();
-
-		context.getMatrices().push();
-		context.getMatrices().translate(x, y, 0);
-		context.getMatrices().scale(scale, scale, 0f);
 		mapRenderer.update(mapId, state, MAP_RENDER_STATE);
-		mapRenderer.draw(MAP_RENDER_STATE, context.getMatrices(), vertices, fancy, LightmapTextureManager.MAX_LIGHT_COORDINATE);
-		vertices.draw();
+
+		context.getMatrices().pushMatrix();
+		context.getMatrices().translate(x, y);
+		context.getMatrices().scale(scale, scale);
+		context.drawMap(MAP_RENDER_STATE);
 
 		UUID hoveredHead = null;
 		if (fancy) hoveredHead = renderPlayerHeads(context, client.world, state, mouseX / scale, mouseY / scale, enlarge);
-		context.getMatrices().pop();
+		context.getMatrices().popMatrix();
 		return hoveredHead;
 	}
 
@@ -150,22 +145,22 @@ public class DungeonMap {
 			PlayerRenderState player = PlayerRenderState.of(world, dungeonPlayer, mapDecoration.getValue());
 
 			// Actually render the player head
-			context.getMatrices().push();
-			context.getMatrices().translate(player.mapPos().x(), player.mapPos().y(), 0);
-			context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(player.deg() + 180));
+			context.getMatrices().pushMatrix();
+			context.getMatrices().translate((float) player.mapPos().x(), (float) player.mapPos().y());
+			context.getMatrices().rotate((float) Math.toRadians(player.deg() + 180f));
 
 			if (player.uuid().equals(enlarge)) {
 				// Enlarge the player head when the corresponding button is hovered
-				context.getMatrices().scale(2, 2, 1);
+				context.getMatrices().scale(2, 2);
 			} else if (hovered == null && isPlayerHovered(player, mouseX, mouseY)) {
 				// Enlarge the player head when hovered
-				context.getMatrices().scale(2, 2, 1);
+				context.getMatrices().scale(2, 2);
 				hovered = player.uuid();
 			}
-			RenderHelper.drawPlayerHead(context, -4, -4, 8, player.uuid());
+			HudHelper.drawPlayerHead(context, -4, -4, 8, player.uuid());
 			context.drawBorder(-5, -5, 10, 10, dungeonPlayer.dungeonClass().color());
 			context.fill(-1, -7, 1, -5, dungeonPlayer.dungeonClass().color());
-			context.getMatrices().pop();
+			context.getMatrices().popMatrix();
 		}
 		return hovered;
 	}

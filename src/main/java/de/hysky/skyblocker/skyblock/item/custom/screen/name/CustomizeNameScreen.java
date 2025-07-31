@@ -7,12 +7,12 @@ import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.*;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.OkLabColor;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.*;
@@ -107,7 +107,7 @@ public class CustomizeNameScreen extends Screen {
 	@Override
 	public void renderBackground(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 		context.drawGuiTexture(
-				RenderLayer::getGuiTextured,
+				RenderPipelines.GUI_TEXTURED,
 				BACKGROUND_TEXTURE,
 				grid.getX() - BORDER_SIZE,
 				grid.getY() - BORDER_SIZE,
