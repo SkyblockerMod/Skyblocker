@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -9,6 +11,7 @@ import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
+import de.hysky.skyblocker.skyblock.garden.VisitorWikiLookup;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
@@ -22,18 +25,24 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipData;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -118,10 +127,19 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 			//wiki lookup
 			if (config.general.wikiLookup.enableWikiLookup) {
+				var title = this.getTitle().getString();
 				if (WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode)) {
-					WikiLookup.openWiki(this.focusedSlot, client.player, true);
+					if (VisitorWikiLookup.canSearch(title, this.focusedSlot)) {
+						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getName().getString(), this.client.player, true);
+					} else {
+						WikiLookup.openWiki(this.focusedSlot, this.client.player, true);
+					}
 				} else if (WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
-					WikiLookup.openWiki(this.focusedSlot, client.player, false);
+					if (VisitorWikiLookup.canSearch(title, this.focusedSlot)) {
+						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getName().getString(), this.client.player, false);
+					} else {
+						WikiLookup.openWiki(this.focusedSlot, this.client.player, false);
+					}
 				}
 			}
 			//item protection
@@ -182,30 +200,53 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Inject(method = "drawMouseoverTooltip", at = @At("HEAD"))
+	private void skyblocker$beforeTooltipDrawn(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
+		ContainerSolverManager.onDraw(context, (HandledScreen<GenericContainerScreenHandler>) (Object) this, this.handler.slots);
+	}
+
 	@SuppressWarnings("DataFlowIssue")
 	// makes intellij be quiet about this.focusedSlot maybe being null. It's already null checked in mixined method.
-	@Inject(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/util/Identifier;)V"), cancellable = true)
-	public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci, @Local(ordinal = 0) ItemStack stack) {
-		if (!Utils.isOnSkyblock()) return;
+	@WrapOperation(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/util/Identifier;)V"))
+	public void skyblocker$drawMouseOverTooltip(
+			DrawContext instance,
+			TextRenderer textRenderer,
+			List<Text> text,
+			Optional<TooltipData> data,
+			int x,
+			int y,
+			Identifier texture,
+			Operation<Void> original,
+			@Local(ordinal = 0) ItemStack stack
+	) {
+		if (!Utils.isOnSkyblock() || text.isEmpty()) {
+			original.call(instance, textRenderer, text, data, x, y, texture);
+			return;
+		}
+
+		var name = text.getFirst().getString();
 
 		// Hide Empty Tooltips
-		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && stack.getName().getString().equals(" ")) {
-			ci.cancel();
+		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && name.isBlank()) {
+			return;
 		}
 
 		// Backpack Preview
 		boolean shiftDown = SkyblockerConfigManager.get().uiAndVisuals.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
-		if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(context, this, focusedSlot.getIndex(), x, y)) {
-			ci.cancel();
+		if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(instance, this, focusedSlot.getIndex(), x, y)) {
+			return;
 		}
 
 		// Compactor Preview
 		if (SkyblockerConfigManager.get().uiAndVisuals.compactorDeletorPreview) {
 			Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemUtils.getItemId(stack));
-			if (matcher.matches() && CompactorDeletorPreview.drawPreview(context, stack, getTooltipFromItem(stack), matcher.group("type"), matcher.group("size"), x, y)) {
-				ci.cancel();
+			if (matcher.matches() && CompactorDeletorPreview.drawPreview(instance, stack, getTooltipFromItem(stack), matcher.group("type"), matcher.group("size"), x, y)) {
+				return;
 			}
 		}
+
+		original.call(instance, textRenderer, text, data, x, y, texture);
 	}
 
 	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "STORE"))
@@ -262,8 +303,16 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		ContainerSolver currentSolver = ContainerSolverManager.getCurrentSolver();
 		ItemStack stack = skyblocker$experimentSolvers$getStack(slot, slot.getStack(), currentSolver);
 
+		boolean isTitleEmptyOrFiller = FILLER_ITEMS.contains(stack.getName().getString());
+		if (isTitleEmptyOrFiller) {
+			var tooltip = stack.getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC).stream().map(Text::getString).toList();
+			String lore = String.join("\n", tooltip);
+			isTitleEmptyOrFiller = lore.isBlank() || FILLER_ITEMS.contains(tooltip.getFirst());
+		}
+
+
 		// Prevent clicks on filler items
-		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && FILLER_ITEMS.contains(stack.getName().getString()) &&
+		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && isTitleEmptyOrFiller &&
 				// Allow clicks in Ultrasequencer and Superpairs
 				(!UltrasequencerSolver.INSTANCE.test(title) || SkyblockerConfigManager.get().helpers.experiments.enableUltrasequencerSolver)) {
 			ci.cancel();
@@ -305,10 +354,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				}
 			}
 
-			case GenericContainerScreenHandler genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> {
-				//Museum Item Cache donation tracking
-				MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
-			}
+			//Museum Item Cache donation tracking
+			case GenericContainerScreenHandler genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
 
 			case null, default -> {}
 		}
@@ -340,13 +387,13 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		// Item Protection
 		if (ItemProtection.isItemProtected(slot.getStack())) {
-			context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
+			context.drawTexture(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
 		}
 
 		// Search
 		// Darken the slots
 		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {
-			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 100, 0x88_000000);
+			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0x88_000000);
 		}
 	}
 

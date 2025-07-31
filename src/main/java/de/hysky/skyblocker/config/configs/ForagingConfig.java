@@ -17,6 +17,8 @@ public class ForagingConfig {
 
 		public boolean enableSeaLumiesHighlighter = true;
 
+		public boolean enableTreeBreakProgress = true;
+
 		public int seaLumiesMinimumCount = 3;
 
 		public boolean enableTunerSolver = true;

@@ -8,7 +8,7 @@
  \
 [![Discord](https://img.shields.io/discord/879732108745125969?logo=discord&labelColor=cecece&color=7289DA&label=)](https://discord.com/invite/aNNJHQykck)
 
-Hypixel Skyblock Mod for Minecraft 1.21.5
+Hypixel Skyblock Mod for Minecraft 1.21.8
 
 Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/installation) or use our [Modpack](https://modrinth.com/modpack/skyblocker-modpack)
 ## Features
@@ -19,7 +19,9 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 ### Dungeon Features:
 - **Fancy Party Finder GUI**
 - **Secrets Waypoint Highlight:** Fully customizable
-- **Minimap & Score**
+- **Fancy Minimap & Score**
+    - Support for showing player heads
+    - Integration with Spirit Leap Overlay
 - **Starred Mob Glow**
 - **Croesus Helper:**
     - Highlight not opened chests
@@ -59,6 +61,9 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Hide Soulweaver Skulls**
 - **Dungeon Class-based player glow**
 - **Spirit Leap Overlay**
+- **Blood Camp Helper**
+- **Dungeon Splits Widget**
+- **Door Key Highlighter**
 
 ### Foraging Features:
 - **Waypoints to forest nodes**
@@ -66,11 +71,12 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Forest temple puzzle solver**
 - **Hunting box helper**
 - **Hunting Mobs features**
-    - Silence Phantoms
-    - Highlight Hideonleaves
+  - Silence Phantoms
+  - Highlight Hideonleaves
 - **Hunting Box Shard Prices**
 - **Sweep Overlay**
-    - Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations. The sweep formula is currently unknown.
+  - Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations. The sweep formula is currently unknown.
+- **Moonglade Beacon Tuner Helper**
 
 ### Kuudra Features:
 - **Kuudra waypoints:**
@@ -89,11 +95,12 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Option to increase fog radius**
 
 ### Item and Armor Customization:
-- *Item Renaming*
+- *Item Renaming GUI*
 - **Fancy Armor Customization GUI**
     - *Custom Armor Dye Colors*
     - *Custom Armor Trims*
     - *Custom Animated Dyes*
+    - *Custom Head Textures*
 
 ### Health and Status Bars:
 - **Bars:**
@@ -104,6 +111,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Speed*
     - *Oxygen*
 - **Vanilla health/xp and fancy bar shown in parallel**
+- Place the bars on anchors or anywhere on screen
 
 ### Profile Viewer:
 - **Skills**
@@ -117,6 +125,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Pets
     - Accessory Bag
 - **Collections**
+- **Networth Calculation**
 
 ### Dwarven Mines / Crystal Hollows / Glacite Mining:
 - **Dwarven Mines:**
@@ -230,6 +239,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 ### User Interface Enhancements:
 - **Equipment in inventory**
 - **Search overlays for bz and ah**
+- **Bazaar Quick Quantities**
 - **Slot Text:**
     - *Attribute level*
     - *Catacombs level*
@@ -257,6 +267,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Skyblock Guide*
     - *HOTM*
     - *HOTF*
+    - *Bestiary*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
@@ -273,10 +284,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *True HEX display for dye items*
     - *Estimated Item Value*
     - *Skyblock ID*
+    - *Bazaar Reorder Helper*
 - **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
-    - Crafting
-    - Forge
+  - Crafting
+  - Forge
 - **Backpack Preview:** After clicking your backpack or enderchest once, you can hover over the backpack or enderchest and hold Shift to preview its contents.
 - **New Year Cakes Helper**
 - **Fancy Crafting Table**
@@ -286,6 +298,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Sign calculator**
 - **CTRL/CMD + F to search inventory**
 - **legacy attribute background**
+- **Sack Message Prices**
 
 ### Barn Features:
 - **Barn Solver:**
@@ -298,6 +311,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Warp command*
     - *Sack Item*
     - *Viewstash*
+    - *Join Instance, Join Dungeon, Join Kuudra*
+    - *RNG Meter*
 - **Hide Messages:**
     - *Ability Cooldown*
     - *Heal*
@@ -307,9 +322,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *`/show command`*
     - *Teleport Pad Messages*
     - *Sky Mall*
+    - *Lottery*
 
 ### Miscellaneous Helpers:
 - **Experiments Solvers**
+    - Incorrect Click Blocker
 - **Fishing:**
     - Helper (Includes sound notifications)
     - Fishing rod timer (change color after 20 seconds)
@@ -325,15 +342,17 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Salvage Helper**
 - **Math teacher helper**
 - **Raffle task highlighter**
+- **Disable All Command**
 
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
-    - Crafting
-    - Forge
+  - Crafting
+  - Forge
+  - Skyblock Info
 - **Item Protection**
-    - config option to toggle item protection chat notifications
+  - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
-- **Wiki Lookup:** Press F4 to open the wiki page about the held item.
+- **Wiki Lookup:** Press F4 to open the wiki page about the held item or garden visitors.
 - **OptiFabric Compatibility**
 - **Waypoints API**
 - **Config Button in Skyblock Menu**

@@ -43,7 +43,7 @@ public class UpdateNotifications {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final String BASE_URL = "https://api.modrinth.com/v2/project/y6DuFGwJ/version?loaders=[%22fabric%22]&game_versions=";
 	private static final Version MOD_VERSION = SkyblockerMod.SKYBLOCKER_MOD.getMetadata().getVersion();
-	private static final String MC_VERSION = SharedConstants.getGameVersion().getId();
+	private static final String MC_VERSION = SharedConstants.getGameVersion().id();
 	private static final Path CONFIG_PATH = SkyblockerMod.CONFIG_DIR.resolve("update_notifications.json");
 	@VisibleForTesting
 	protected static final Comparator<Version> COMPARATOR = Version::compareTo;
@@ -163,7 +163,9 @@ public class UpdateNotifications {
 	}
 
 	public record Config(boolean enabled, Channel channel) {
-		public static final Config DEFAULT = new Config(true, Channel.RELEASE);
+		//Set default channel to alpha since most people probably want whatever the latest version is
+		//and we work hard to polish all of our releases.
+		public static final Config DEFAULT = new Config(true, Channel.ALPHA);
 		private static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.BOOL.fieldOf("enabled").forGetter(Config::enabled),
 				Channel.CODEC.fieldOf("channel").forGetter(Config::channel))

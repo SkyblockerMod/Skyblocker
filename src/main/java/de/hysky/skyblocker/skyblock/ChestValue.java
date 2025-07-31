@@ -26,6 +26,7 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
@@ -352,10 +353,10 @@ public class ChestValue {
 				double f = Math.sin((Math.PI / 2) * Math.cos((Math.PI * 2) * d / e)) / 2.0 + 0.5;
 				double g = MathHelper.lerp(f, 0.0, l);
 				context.enableScissor(startX, getY(), endX, getY() + textRenderer.fontHeight);
-				context.drawText(textRenderer, text, startX - (int) g, getY(), -1, shadow);
+				context.drawText(textRenderer, text, startX - (int) g, getY(), Colors.WHITE, shadow);
 				context.disableScissor();
 			} else {
-				context.drawText(textRenderer, text, startX, getY(), -1, shadow);
+				context.drawText(textRenderer, text, startX, getY(), Colors.WHITE, shadow);
 			}
 		}
 	}

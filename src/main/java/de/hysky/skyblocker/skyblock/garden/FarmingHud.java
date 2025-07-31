@@ -9,13 +9,13 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.floats.FloatLongPair;
-import it.unimi.dsi.fastutil.ints.IntLongPair;
 import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
+import it.unimi.dsi.fastutil.longs.LongLongPair;
 import it.unimi.dsi.fastutil.longs.LongPriorityQueue;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -44,14 +44,14 @@ public class FarmingHud {
 	private static final Pattern FARMING_XP = Pattern.compile("\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?<percent>[\\d,]+(?:\\.\\d+)?%|[\\d,]+/[\\d,]+)\\)");
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 	private static CounterType counterType = CounterType.NONE;
-	private static final Deque<IntLongPair> counter = new ArrayDeque<>();
+	private static final Deque<LongLongPair> counter = new ArrayDeque<>();
 	private static final LongPriorityQueue blockBreaks = new LongArrayFIFOQueue();
 	private static final Queue<FloatLongPair> farmingXp = new ArrayDeque<>();
 	private static float farmingXpPercentProgress;
 
 	@Init
 	public static void init() {
-		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.STATUS_EFFECTS, FARMING_HUD, (context, tickCounter) -> {
+		HudElementRegistry.attachElementAfter(VanillaHudElements.STATUS_EFFECTS, FARMING_HUD, (context, tickCounter) -> {
 			if (shouldRender()) {
 				if (!counter.isEmpty() && counter.peek().rightLong() + 5000 < System.currentTimeMillis()) {
 					counter.poll();
@@ -69,13 +69,13 @@ public class FarmingHud {
 					counterType = CounterType.NONE;
 				}
 			}
-		}));
+		});
 		ClientPlayerBlockBreakEvents.AFTER.register((world, player, pos, state) -> {
 			if (shouldRender()) {
 				blockBreaks.enqueue(System.currentTimeMillis());
 			}
 		});
-		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
+		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 			if (shouldRender() && overlay) {
 				Matcher matcher = FARMING_XP.matcher(Formatting.strip(message.getString()));
 				if (matcher.find()) {
@@ -87,6 +87,8 @@ public class FarmingHud {
 					}
 				}
 			}
+
+			return true;
 		});
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("hud").then(literal("farming")
 				.executes(Scheduler.queueOpenScreenCommand(() -> new WidgetsConfigurationScreen(Location.GARDEN, "hud_garden", null)))))));
@@ -95,13 +97,13 @@ public class FarmingHud {
 	private static boolean tryGetCounter(ItemStack stack, CounterType counterType) {
 		NbtCompound customData = ItemUtils.getCustomData(stack);
 		if (customData.isEmpty() || !(customData.get(counterType.nbtKey) instanceof AbstractNbtNumber)) return true;
-		int count = customData.getInt(counterType.nbtKey, 0);
+		long count = customData.getLong(counterType.nbtKey, 0);
 		if (FarmingHud.counterType != counterType) {
 			counter.clear();
 			FarmingHud.counterType = counterType;
 		}
-		if (counter.isEmpty() || counter.peekLast().leftInt() != count) {
-			counter.offer(IntLongPair.of(count, System.currentTimeMillis()));
+		if (counter.isEmpty() || counter.peekLast().leftLong() != count) {
+			counter.offer(LongLongPair.of(count, System.currentTimeMillis()));
 		}
 		return false;
 	}
@@ -114,17 +116,17 @@ public class FarmingHud {
 		return counterType.text;
 	}
 
-	public static int counter() {
-		return counter.isEmpty() ? 0 : counter.peekLast().leftInt();
+	public static long counter() {
+		return counter.isEmpty() ? 0 : counter.peekLast().leftLong();
 	}
 
 	public static float cropsPerMinute() {
 		if (counter.isEmpty()) {
 			return 0;
 		}
-		IntLongPair first = counter.peek();
-		IntLongPair last = counter.peekLast();
-		return (float) (last.leftInt() - first.leftInt()) / (last.rightLong() - first.rightLong()) * 60_000f;
+		LongLongPair first = counter.peek();
+		LongLongPair last = counter.peekLast();
+		return (float) (last.leftLong() - first.leftLong()) / (last.rightLong() - first.rightLong()) * 60_000f;
 	}
 
 	public static double blockBreaks() {

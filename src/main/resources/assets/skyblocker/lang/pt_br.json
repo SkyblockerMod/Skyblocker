@@ -109,7 +109,6 @@
     "skyblocker.shortcuts.commandArg.target": "Argumento do comando alvo",
     "skyblocker.shortcuts.commandArg.replacement": "Argumento do comando de substituição",
     "skyblocker.customDyeColors.invalidHex": "§cCódigo de cor HEX invalido!",
-    "skyblocker.customItemNames.unableToSetName": "§cNão foi possível colocar um nome personalizado no item :( (Você está no skyblock?, Você está segurando um item?)",
     "skyblocker.customDyeColors.notDyeable": "§cEsse item não é uma peça de armadura pintável!",
     "skyblocker.customDyeColors.removed": "§fRemovido a cor personalizada desse item.",
     "skyblocker.quiverWarning.50Left": "Você tem apenas 50 flechas restantes no seu Aljava!",
@@ -121,7 +120,6 @@
     "skyblocker.config.general.quiverWarning.enableQuiverWarning": "Ativar Aviso de Aljava",
     "skyblocker.customArmorTrims.notAnArmorPiece": "§cEsse item não é uma peça de armadura!",
     "skyblocker.customArmorTrims.added": "§fColoque um acabamento personalizado de armadura para o item que você está segurando!",
-    "skyblocker.customItemNames.neverHad": "§fEsse item ainda não tem um nome personalizado colocado, por que não colocar um? ;)",
     "skyblocker.relics.markAllMissing": "§rTodas as relíquias foram marcadas como pendentes",
     "skyblocker.dungeons.secrets.markSecretFound": "§r#%d segredo marcado como encontrado.",
     "skyblocker.dungeons.secrets.markSecretMissing": "§r#%d segredo marcado como pendente.",
@@ -362,5 +360,16 @@
     "skyblocker.gardenPlots.tp": "Clique para se Teleportar!",
     "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Habilita marcadores para terminais/aparelhos/alavancas durante Goldor",
     "skyblocker.config.dungeons.devices.solveLightsOn": "Resolve Lights On",
-    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.HIGHLIGHT": "Destaque"
+    "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.HIGHLIGHT": "Destaque",
+    "emi.category.skyblocker.skyblock_forge": "Forja de Dwarven (Skyblock)",
+    "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip": "Cancela a animação de baixo-para-cima na sua mão que é reproduzida quando os componentes de um item são atualizados.",
+    "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip": "O numero de dígitos a serem exibidos após o ponto decimal.",
+    "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.ORIGINAL": "Original",
+    "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.ACCURATE": "Precisão",
+    "skyblocker.config.uiAndVisuals.compactDamage.precision": "Precisão",
+    "skyblocker.config.uiAndVisuals.compactDamage.enabled": "Habilitado",
+    "skyblocker.config.uiAndVisuals": "Interface & Visuais",
+    "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled": "Habilitado",
+    "skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip": "A cor que será exibida quando os dados do preço estão incompletos.",
+    "skyblocker.config.uiAndVisuals.compactDamage": "Dano Compacto"
 }

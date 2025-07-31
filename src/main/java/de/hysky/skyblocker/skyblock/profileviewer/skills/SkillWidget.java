@@ -5,14 +5,14 @@ import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -96,8 +96,8 @@ public class SkillWidget {
             fillColor = Color.YELLOW;
         }
 
-        context.drawGuiTexture(RenderLayer::getGuiTextured, BAR_BACK, x + 30, y + 12, 75, 6);
-        RenderHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 12, (int) (75 * SKILL_LEVEL.fill), 6, fillColor);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, x + 30, y + 12, 75, 6);
+        HudHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 12, (int) (75 * SKILL_LEVEL.fill), 6, fillColor);
 
         if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 10 && mouseY < y + 19){
             List<Text> tooltipText = new ArrayList<>();

@@ -15,14 +15,15 @@ import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -42,7 +43,6 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	public static final PowderMiningTracker INSTANCE = new PowderMiningTracker();
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Powder Mining Tracker");
 	private static final Identifier POWDER_MINING_TRACKER = Identifier.of(SkyblockerMod.NAMESPACE, "powder_mining_tracker");
-	private static final Codec<Object2IntMap<String>> REWARDS_CODEC = CodecUtils.object2IntMapCodec(Codec.STRING);
 	private static final Object2ObjectArrayMap<String, String> NAME2ID_MAP = new Object2ObjectArrayMap<>(50);
 
 	/**
@@ -65,7 +65,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	/**
 	 * Holds the total reward maps for all accounts and profiles. {@link #currentProfileRewards} is a subset of this map, updated on profile change.
 	 */
-	private final ProfiledData<Object2IntMap<String>> allRewards = new ProfiledData<>(getRewardFilePath("powder-mining.json"), REWARDS_CODEC);
+	private final ProfiledData<Object2IntMap<String>> allRewards = new ProfiledData<>(getRewardFilePath("powder-mining.json"), CodecUtils.object2IntMapCodec(Codec.STRING));
 	private boolean insideChestMessage = false;
 	private double profit = 0;
 
@@ -79,7 +79,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	@Init
 	public static void init() {
 		ChatEvents.RECEIVE_STRING.register(INSTANCE::onChatMessage);
-		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.STATUS_EFFECTS, POWDER_MINING_TRACKER, PowderMiningTracker::render));
+		HudElementRegistry.attachElementAfter(VanillaHudElements.STATUS_EFFECTS, POWDER_MINING_TRACKER, PowderMiningTracker::render);
 		ItemPriceUpdateEvent.ON_PRICE_UPDATE.register(INSTANCE::onPriceUpdate);
 
 		INSTANCE.allRewards.init();
@@ -325,10 +325,10 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 		int y = MinecraftClient.getInstance().getWindow().getScaledHeight() / 2 - 100;
 		var set = INSTANCE.shownRewards.object2IntEntrySet();
 		for (Entry<Text> entry : set) {
-			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, entry.getKey(), 5, y, 0xFFFFFF);
-			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(Formatters.INTEGER_NUMBERS.format(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, 0xFFFFFF);
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, entry.getKey(), 5, y, Colors.WHITE);
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(Formatters.INTEGER_NUMBERS.format(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, Colors.WHITE);
 			y += 10;
 		}
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.translatable("skyblocker.powderTracker.profit", Formatters.DOUBLE_NUMBERS.format(INSTANCE.profit)).formatted(Formatting.GOLD), 5, y + 10, 0xFFFFFF);
+		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.translatable("skyblocker.powderTracker.profit", Formatters.DOUBLE_NUMBERS.format(INSTANCE.profit)).formatted(Formatting.GOLD), 5, y + 10, Colors.WHITE);
 	}
 }

@@ -59,7 +59,7 @@ public class FishingHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public boolean isEnabledIn(Location location) {
-		return SkyblockerConfigManager.get().helpers.fishing.fishingHudEnabledLocations.contains(location);
+		return SkyblockerConfigManager.get().helpers.fishing.enableFishingHud && SkyblockerConfigManager.get().helpers.fishing.fishingHudEnabledLocations.contains(location);
 	}
 
 	@Override
