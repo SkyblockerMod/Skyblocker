@@ -234,7 +234,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 
 		context.drawTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
 
-		context.drawText(textRenderer, getMessage(), 8, 6, 0xFF404040, false);
+		context.drawText(textRenderer, getMessage(), 8, 6, Colors.DARK_GRAY, false);
 
 		hoveredSlot = -1;
 		long timeMillis = System.currentTimeMillis();
