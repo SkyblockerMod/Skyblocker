@@ -291,7 +291,7 @@
     "skyblocker.config.dungeons.terminals.solveStartsWith": "首字母謎題終端助手",
     "skyblocker.config.dungeons.dungeonChestProfit": "地下城寶箱利潤計算器",
     "skyblocker.config.dungeons.dungeonChestProfit.includeEssence.@Tooltip": "如果你健忘，**不建議**禁用。",
-    "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "為玩家可見的星標怪物添加發光效果。\n\n注意：使用此功能將導致當存在星標怪物時，隊友的發光效果不再透過牆壁可見。",
+    "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "為玩家可見的星標怪物添加發光效果。",
     "skyblocker.config.dungeons.puzzle.solveThreeWeirdos": "解決三個怪人的謎題",
     "skyblocker.config.slayer.vampireSlayer.holyIceUpdateFrequency.@Tooltip": "值越低，更新越頻繁，可能會導致卡頓。",
     "skyblocker.shortcuts.deleteWarning": "快捷指令「%s」將永遠消失！ （很久！）",
@@ -1370,5 +1370,17 @@
     "skyblocker.customItemNames.noItem": "你沒有拿著要自訂的物品！",
     "skyblocker.customItemNames.screen.customColor": "自訂",
     "skyblocker.customItemNames.screen.customColorTitle": "自訂顔色",
-    "skyblocker.customItemNames.screen.howToRemove": "將名稱字段留空即可移除自訂名稱。"
+    "skyblocker.customItemNames.screen.howToRemove": "將名稱字段留空即可移除自訂名稱。",
+    "skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip": "在HUD中渲染伐木的進度",
+    "skyblocker.config.uiAndVisuals.slotText.newYearCakeYear": "新年蛋糕年份",
+    "skyblocker.config.uiAndVisuals.slotText.newYearCakeYear.@Tooltip": "顯示蛋糕的年份。",
+    "skyblocker.config.uiAndVisuals.gyroOverlay": "Gyro覆蓋層",
+    "skyblocker.config.foraging.galatea.enableTreeBreakProgress": "啟用伐木進度HUD",
+    "skyblocker.config.foraging.galatea.enableTreeBreakHud": "伐木進度HUD",
+    "skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect": "Gyrokinetic Wand模式",
+    "skyblocker.config.uiAndVisuals.gyroOverlay.Color": "Gyro覆蓋層顏色",
+    "skyblocker.config.uiAndVisuals.gyroOverlay.mode.OFF": "關",
+    "skyblocker.config.uiAndVisuals.gyroOverlay.mode.CIRCLE": "圓形",
+    "skyblocker.config.uiAndVisuals.gyroOverlay.mode.CIRCLE_OUTLINE": "圓框",
+    "skyblocker.config.uiAndVisuals.gyroOverlay.mode.SPHERE": "球型"
 }
