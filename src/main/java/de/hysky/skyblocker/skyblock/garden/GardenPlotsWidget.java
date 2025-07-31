@@ -282,7 +282,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 										Text.empty(),
 										TP_TEXT
 								);
-				context.drawTooltip(textRenderer, tooltip, mouseX - getX(), mouseY - getY());
+				context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
 			}
 		}
 
