@@ -1337,7 +1337,7 @@
     "skyblocker.config.foraging.galatea": "Galatea",
     "skyblocker.config.foraging.galatea.enableTunerSolver": "启用调谐助手",
     "skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip": "显示频率调谐谜题所需点击数",
-    "skyblocker.config.helpers.carnival": "骑士嘉年华",
+    "skyblocker.config.helpers.carnival": "嘉年华",
     "skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip": "在HUD中渲染伐木的进度",
     "skyblocker.config.foraging.galatea.enableTreeBreakProgress": "启用伐木进度HUD",
     "skyblocker.config.foraging.galatea.enableTreeBreakHud": "伐木进度HUD",
