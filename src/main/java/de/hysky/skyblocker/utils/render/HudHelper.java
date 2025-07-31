@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.Optional;
 import java.util.UUID;
 
+import net.fabricmc.loader.api.FabricLoader;
 import org.joml.Matrix3x2f;
 
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
@@ -25,9 +26,11 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.OrderedText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
+import xyz.flirora.caxton.render.Voepfxo;
 
 public class HudHelper {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final boolean CAXTON_ENABLED = FabricLoader.getInstance().isModLoaded("caxton");
 
     public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, int argb) {
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, x, y, width, height, argb);
@@ -56,9 +59,13 @@ public class HudHelper {
 	}
 
 	public static void drawOutlinedText(DrawContext context, OrderedText text, int x, int y, int color, int outlineColor) {
-		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text, new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, context.scissorStack.peekLast());
+		if (CAXTON_ENABLED) {
+			Voepfxo.drawText4Way(context, CLIENT.textRenderer, text, x, y, color, outlineColor);
+		} else {
+			OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text, new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, context.scissorStack.peekLast());
 
-		context.state.addText(renderState);
+			context.state.addText(renderState);
+		}
 	}
 
     public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
