@@ -14,6 +14,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +22,7 @@ public class ImmunityHUD {
 	private static final Pattern EGG_REGEX = Pattern.compile("\\d+s \\d/\\d");
 	private static boolean isImmune = false;
 	private static final Text IMMUNITY_INDICATOR_TEXT = Text.literal("IMMUNE").formatted(Formatting.WHITE)
-				.formatted(Formatting.BOLD);;
+				.formatted(Formatting.BOLD);
 	private static Map<ArmorStandEntity, Integer> eggMap = new HashMap<>();
 	private static final int EGG_TO_BOSS_MAX_DISTANCE = 15;
 
@@ -31,6 +32,7 @@ public class ImmunityHUD {
 	}
 
 	public static void addEgg(ArmorStandEntity entity) {
+		if(eggMap.isEmpty()) isImmune = true;
 		if(eggMap.size() == 3) return;
 		if(entity.getPos().distanceTo(SlayerManager.getSlayerBoss().getPos()) > EGG_TO_BOSS_MAX_DISTANCE) return;
 		eggMap.put(entity, 3);
@@ -44,6 +46,7 @@ public class ImmunityHUD {
 		if(!eggMap.get(entity).equals(0)) {
 			eggMap.remove(entity);
 		}
+		if(eggMap.isEmpty()) isImmune = false;
 	}
 
 	private void setImmunity(boolean bool){
@@ -55,5 +58,15 @@ public class ImmunityHUD {
 		Entity boss = SlayerManager.getSlayerBoss();
 		if (boss == null) return;
 		RenderHelper.renderText(ctx, IMMUNITY_INDICATOR_TEXT, boss.getPos().add(0, 3, 0), 2f, true);
+		AtomicInteger i = new AtomicInteger();
+		eggMap.forEach((entity, integer) -> {
+			RenderHelper.renderText(ctx,
+					Text.literal("HITS : " + integer + " / " + 3)
+							.formatted(Formatting.DARK_RED)
+							.formatted(Formatting.BOLD)
+					, boss.getPos().add(0, 3.4 + (i.getAndIncrement() * 0.4), 0), 2f, true);
+
+		});
+
 	}
 }

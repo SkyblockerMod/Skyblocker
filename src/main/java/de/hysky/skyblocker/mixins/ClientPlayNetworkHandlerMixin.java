@@ -75,6 +75,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	@Inject(method ="onEntitySpawn", at = @At("TAIL"))
 	private void skyblocker$onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo ci) {
 
+		if (client == null || client.world == null) return;
 		Entity entity = client.world.getEntityById(packet.getEntityId());
 		if (entity == null) return;
 		if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
