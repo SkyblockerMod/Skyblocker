@@ -28,6 +28,8 @@ import de.hysky.skyblocker.skyblock.galatea.ForestNodes;
 import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
 import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
+import de.hysky.skyblocker.skyblock.slayers.boss.broodfather.ImmunityHUD;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
@@ -70,12 +72,22 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		super(client, connection, connectionState);
 	}
 
+	@Inject(method ="onEntitySpawn", at = @At("TAIL"))
+	private void skyblocker$onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo ci) {
+
+		Entity entity = client.world.getEntityById(packet.getEntityId());
+		if (entity == null) return;
+		if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
+		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) ImmunityHUD.addEgg(armorStandEntity);
+
+	}
+
 	@Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
 	private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
 		if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
 
 		SlayerManager.checkSlayerBoss(armorStandEntity);
-
+		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) ImmunityHUD.hitEgg(armorStandEntity);
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
 		EggFinder.checkIfEgg(armorStandEntity);
