@@ -13,5 +13,9 @@ public class ApiProfile {
 	public CoopBanking banking = new CoopBanking();
 	@SerializedName("cute_name")
 	public String cuteName;
+	public Events events = new Events();
+	public PlayerData playerData = new PlayerData();
+	public Bestiary bestiary = new Bestiary();
+	// TODO: mining_core (which is broken right now)
 	public boolean selected = false;
 }
