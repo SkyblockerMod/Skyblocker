@@ -94,8 +94,7 @@ public class TooltipManager {
 	@Deprecated
 	public static List<Text> addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		if (!Utils.isOnSkyblock()) return lines;
-		List<TooltipAdder> tooltipAdders = currentScreenAdders; // this might be unneeded? idk
-		for (TooltipAdder adder : tooltipAdders) {
+		for (TooltipAdder adder : currentScreenAdders) {
 			adder.addToTooltip(focusedSlot, stack, lines);
 		}
 		return lines;
