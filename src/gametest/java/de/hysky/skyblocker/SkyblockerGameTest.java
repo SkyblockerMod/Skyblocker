@@ -4,6 +4,7 @@ import de.hysky.skyblocker.debug.SnapshotDebug;
 import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import it.unimi.dsi.fastutil.Pair;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -46,7 +47,7 @@ public class SkyblockerGameTest implements FabricClientGameTest {
 			});
 
 			// Take a screenshot and compare it
-			singleplayer.getClientWorld().waitForChunksRender();
+			singleplayer.getClientWorld().waitForChunksRender((int) (TestClientWorldContext.DEFAULT_CHUNK_LOAD_TIMEOUT * 2.5f));
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("skyblocker_render").saveWithFileName("skyblocker_render"));
 
 			// Restore the fancy status bars config
