@@ -245,7 +245,7 @@
   "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
 
   "skyblocker.config.dungeons.starredMobGlow": "Starred Mob Glow",
-  "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.\n\nNote that using this will result in the teammate glow no longer being visible through walls when a starred mob is present.",
+  "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.",
   "skyblocker.config.dungeons.terminals": "Terminal Solvers (F7/M7)",
   "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "Block Incorrect Clicks",
   "skyblocker.config.dungeons.terminals.solveColor": "Solve Select Colored",
@@ -304,6 +304,9 @@
   "skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip": "Shows the required clicks in the Tune Frequency puzzle.",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Solve Forest Temple Puzzle",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Displays the amount of times you need to rotate the terracotta blocks. For positive rotations you right click while for negative rotations you left click.",
+  "skyblocker.config.foraging.galatea.enableTreeBreakProgress": "Enable Tree Break Progress HUD",
+  "skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip": "Renders tree break progress in HUD",
+  "skyblocker.config.foraging.galatea.enableTreeBreakHud": "Tree Break Progress HUD",
 
    "skyblocker.config.foraging.sweepOverlay": "Sweep Overlay",
   "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Enable Sweep Overlay",
@@ -956,6 +959,14 @@
   "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity": "Flame Opacity",
   "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity.@Tooltip": "100%  default opacity\n0%     off",
 
+  "skyblocker.config.uiAndVisuals.gyroOverlay": "Gyro Overlay",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect": "Gyrokinetic Wand Mode",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.Color": "Gyro Overlay Color",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.OFF": "Off",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.CIRCLE": "Circle",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.CIRCLE_OUTLINE": "Circle Outline",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.SPHERE": "Sphere",
+
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips": "Hide empty item tooltips in menus",
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "Hides the tooltip of an item if it doesn't have any information to display. Also blocks clicks on filler items like glass panes.",
 
@@ -1026,6 +1037,8 @@
   "skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip": "Show the item names and icons in the widget.",
   "skyblocker.config.uiAndVisuals.itemPickup.lifeTime": "Item Lifetime (s)",
   "skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip": "How long should items stay on the widget.",
+  "skyblocker.config.uiAndVisuals.itemPickup.splitSack": "Split Sack and Inventory Items",
+  "skyblocker.config.uiAndVisuals.itemPickup.splitSack.@Tooltip": "Show changes in sacks separately from changes in the inventory.",
 
   "skyblocker.config.uiAndVisuals.slotText": "Slot Text",
   "skyblocker.config.uiAndVisuals.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level.",
@@ -1046,9 +1059,13 @@
   "skyblocker.config.uiAndVisuals.slotText.enchantmentLevel": "Enchantment Book Level",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop": "Essence Shop",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip": "Displays the levels and your current amount of essence while in essence shops.",
+  "skyblocker.config.uiAndVisuals.slotText.evolvingItems": "Evolving Items",
+  "skyblocker.config.uiAndVisuals.slotText.evolvingItems.@Tooltip": "Displays the time held for Bottle of Jyrre, Moby Duck, Discrite, Dark Cacao Truffle, Training Weights.",
   "skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel": "HOTM Perk Level",
   "skyblocker.config.uiAndVisuals.slotText.hotfPerkLevel": "HOTF Perk Level",
   "skyblocker.config.uiAndVisuals.slotText.minionLevel": "Minion Level",
+  "skyblocker.config.uiAndVisuals.slotText.newYearCakeYear": "New Year Cake Year",
+  "skyblocker.config.uiAndVisuals.slotText.newYearCakeYear.@Tooltip": "Displays the year on the cake.",
   "skyblocker.config.uiAndVisuals.slotText.petLevel": "Pet Level",
   "skyblocker.config.uiAndVisuals.slotText.potionLevel": "Potion Level",
   "skyblocker.config.uiAndVisuals.slotText.powerStonesGuide": "Power Stones Guide",
