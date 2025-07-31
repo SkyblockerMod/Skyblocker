@@ -111,7 +111,7 @@
     "skyblocker.config.dungeons.puzzle.blazeSolver.@Tooltip": "以绿色边框标记正确的烈焰人，并将下一个烈焰人以白色线条与边框一同标记。",
     "skyblocker.config.chat.filter.hideShowOff.@Tooltip": "过滤来自 /show 命令的消息",
     "skyblocker.config.dungeons.starredMobGlow": "使星标怪物发光",
-    "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "为玩家可见的星标怪物添加发光效果。\n\n注意：使用此功能将导致当存在星标怪物时，队友的发光效果不再透过墙壁可见。",
+    "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "为玩家可见的星标怪物添加发光效果。",
     "skyblocker.config.dungeons.puzzle.solveTicTacToe": "井字棋谜题助手",
     "skyblocker.config.dungeons.secretWaypoints": "地牢秘密路径点",
     "skyblocker.config.dungeons.secretWaypoints.enableSecretWaypoints": "启用地牢秘密路径点",
@@ -1337,5 +1337,17 @@
     "skyblocker.config.foraging.galatea": "Galatea",
     "skyblocker.config.foraging.galatea.enableTunerSolver": "启用调谐助手",
     "skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip": "显示频率调谐谜题所需点击数",
-    "skyblocker.config.helpers.carnival": "骑士嘉年华"
+    "skyblocker.config.helpers.carnival": "骑士嘉年华",
+    "skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip": "在HUD中渲染伐木的进度",
+    "skyblocker.config.foraging.galatea.enableTreeBreakProgress": "启用伐木进度HUD",
+    "skyblocker.config.foraging.galatea.enableTreeBreakHud": "伐木进度HUD",
+    "skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect": "Gyrokinetic Wand模式",
+    "skyblocker.config.uiAndVisuals.gyroOverlay.Color": "Gyro覆盖层颜色",
+    "skyblocker.config.uiAndVisuals.gyroOverlay.mode.OFF": "关",
+    "skyblocker.config.uiAndVisuals.gyroOverlay": "Gyro覆盖层",
+    "skyblocker.config.uiAndVisuals.gyroOverlay.mode.CIRCLE": "圆形",
+    "skyblocker.config.uiAndVisuals.gyroOverlay.mode.CIRCLE_OUTLINE": "圆框",
+    "skyblocker.config.uiAndVisuals.gyroOverlay.mode.SPHERE": "球型",
+    "skyblocker.config.uiAndVisuals.slotText.newYearCakeYear": "新年蛋糕年份",
+    "skyblocker.config.uiAndVisuals.slotText.newYearCakeYear.@Tooltip": "显示蛋糕的年份。"
 }
