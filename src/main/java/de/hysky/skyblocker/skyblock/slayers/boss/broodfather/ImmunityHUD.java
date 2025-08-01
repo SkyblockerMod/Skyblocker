@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -39,6 +41,11 @@ public class ImmunityHUD {
 		if (!matcher.matches()) return;
 
 		updateEgg(entity);
+	}
+
+	public static void checkImmunityStage(Item item){
+		if(item != Items.STRING) return;
+		
 	}
 
 	public static void clearEggMap(ArmorStandEntity entity){
