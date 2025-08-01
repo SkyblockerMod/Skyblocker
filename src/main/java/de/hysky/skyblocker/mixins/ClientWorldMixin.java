@@ -7,11 +7,15 @@ import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
 import de.hysky.skyblocker.skyblock.galatea.LushlilacHighlighter;
 import de.hysky.skyblocker.skyblock.galatea.SeaLumiesHighlighter;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
+import de.hysky.skyblocker.skyblock.slayers.boss.broodfather.ImmunityHUD;
 import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.BeaconHighlighter;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -74,5 +78,11 @@ public abstract class ClientWorldMixin implements BlockView {
 				ci.cancel();
 			}
 		}
+	}
+
+	@Inject(method = "removeEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;onRemoved()V"))
+	private void skyblocker$removeEntity(int entityId, Entity.RemovalReason removalReason, CallbackInfo ci, @Local Entity entity) {
+		 if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
+		 if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) ImmunityHUD.clearEggMap(armorStandEntity);
 	}
 }
