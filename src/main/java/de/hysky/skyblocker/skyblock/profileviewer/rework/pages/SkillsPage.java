@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.profileviewer.model.PlayerData;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileLoadState;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileViewerPage;
+import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileViewerScreenRework;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileViewerWidget;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.widgets.BarWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;

@@ -54,12 +54,12 @@ public class DungeonsPage implements ProfileViewerPage {
 
 	@Override
 	public ItemStack getIcon() {
-		return Ico.AATROX_BATPHONE_SKULL;
+		return Ico.CATACOMBS_SKULL;
 	}
 
 	@Override
 	public String getName() {
-		return "Slayers";
+		return "Dungeons";
 	}
 
 	@Override

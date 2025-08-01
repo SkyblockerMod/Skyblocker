@@ -97,4 +97,5 @@ public class Ico {
 	public static final ItemStack VOIDGLOOM_SERAPH_SKULL = ItemUtils.createSkull(HeadTextures.VOIDGLOOM_SERAPH);
 	public static final ItemStack RIFTSTALKER_BLOODFIEND_SKULL = ItemUtils.createSkull(HeadTextures.RIFTSTALKER_BLOODFIEND);
 	public static final ItemStack INFERNO_DEMONLORD_SKULL = ItemUtils.createSkull(HeadTextures.INFERNO_DEMONLORD);
+	public static final ItemStack CATACOMBS_SKULL = ItemUtils.createSkull(HeadTextures.CATACOMBS);
 }
