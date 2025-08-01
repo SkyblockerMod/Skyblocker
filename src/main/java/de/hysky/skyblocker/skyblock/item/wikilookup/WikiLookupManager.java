@@ -22,7 +22,6 @@ public class WikiLookupManager {
 
 	private static final WikiLookup[] LOOKUPS = new WikiLookup[] {
 			VisitorLookup.INSTANCE,
-			PetsLookup.INSTANCE,
 			// Always in the last
 			RegularItemLookup.INSTANCE
 	};
