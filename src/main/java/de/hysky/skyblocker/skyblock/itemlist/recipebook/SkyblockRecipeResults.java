@@ -8,7 +8,7 @@ import com.google.common.collect.Lists;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
-import de.hysky.skyblocker.skyblock.item.WikiLookup;
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
@@ -364,12 +364,12 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	@Override
 	public boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
 		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
-			boolean officialWikiLookup = WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode);
-			if (officialWikiLookup || WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
+			boolean officialWikiLookup = WikiLookupManager.officialWikiLookup.matchesKey(keyCode, scanCode);
+			if (officialWikiLookup || WikiLookupManager.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
 				ItemStack hovered = getHoveredItemStack(mouseX, mouseY);
 				if (hovered == null) return false;
 
-				WikiLookup.openWiki(hovered, client.player, officialWikiLookup);
+				WikiLookupManager.openWiki(hovered, client.player, officialWikiLookup);
 				return true;
 			}
 		}

@@ -1,0 +1,38 @@
+package de.hysky.skyblocker.skyblock.item.wikilookup;
+
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import com.mojang.datafixers.util.Either;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.screen.slot.Slot;
+
+public class VisitorLookup implements WikiLookup {
+	public static final VisitorLookup INSTANCE = new VisitorLookup();
+
+	private VisitorLookup() {}
+
+	@Override
+	public void open(@NotNull Either<Slot, ItemStack> either, @NotNull PlayerEntity player, boolean useOfficial) {
+		either.ifLeft(slot -> {
+			String itemName = REPLACING_FUNCTION.apply(slot.getStack().getName().getString());
+			String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + itemName;
+			WikiLookup.openWikiLink(wikiLink, player);
+		});
+	}
+
+	@Override
+	public boolean canSearch(@Nullable String title, @NotNull Either<Slot, ItemStack> either) {
+		Optional<Slot> optional = either.left();
+		if (optional.isEmpty()) return false;
+		Slot slot = optional.get();
+		if (slot.id <= 9 || slot.id >= 44) return false;
+		if (slot.getStack().isOf(Items.BLACK_STAINED_GLASS_PANE)) return false;
+		return StringUtils.isNotEmpty(title) && title.matches("^Visitor's Logbook$");
+	}
+}
