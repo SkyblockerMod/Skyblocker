@@ -4,9 +4,12 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.utils.CollectionUtils;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
@@ -16,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Data class to contain all the settings for a chat rule
@@ -233,10 +237,21 @@ public class ChatRule {
 		//filter
 		if (testFilter.isBlank()) return false;
 		if (isRegex) {
+			Pattern pattern;
+			try {
+				pattern = Pattern.compile(testFilter);
+			} catch (PatternSyntaxException ex) {
+				this.enabled = false;
+				MinecraftClient client = MinecraftClient.getInstance();
+				if (client.player == null) return false;
+				client.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.chatRules.invalidRegex", this.name)), false);
+				return false;
+			}
+
 			if (isPartialMatch) {
-				if (!Pattern.compile(testFilter).matcher(testString).find()) return false;
+				if (!pattern.matcher(testString).find()) return false;
 			} else {
-				if (!testString.matches(testFilter)) return false;
+				if (!pattern.matcher(testString).matches()) return false;
 			}
 		} else {
 			if (isPartialMatch) {
