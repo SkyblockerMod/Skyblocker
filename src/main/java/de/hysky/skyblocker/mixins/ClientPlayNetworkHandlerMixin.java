@@ -24,6 +24,8 @@ import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
 import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
 import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
+import de.hysky.skyblocker.skyblock.slayers.boss.broodfather.ImmunityHUD;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -65,12 +67,14 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		super(client, connection, connectionState);
 	}
 
+
 	@Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
 	private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
 		if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
 
 		SlayerManager.checkSlayerBoss(armorStandEntity);
 
+		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) ImmunityHUD.handleEgg(armorStandEntity);
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
 		EggFinder.checkIfEgg(armorStandEntity);
