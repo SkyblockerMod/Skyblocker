@@ -65,13 +65,14 @@ public class ProfileViewerScreenRework extends Screen {
 		this.currentLoadState = profileLoadState;
 		this.pages = switch (profileLoadState) {
 			case ProfileLoadState.Error error -> List.of(new ErrorPage(error));
-			case ProfileLoadState.SuccessfulLoad successfulLoad -> PAGE_CONSTRUCTORS.stream().sorted().map(it -> it.apply(successfulLoad)).toList();
+			case ProfileLoadState.SuccessfulLoad successfulLoad -> PAGE_CONSTRUCTORS.stream().map(it -> it.apply(successfulLoad)).sorted().toList();
 			case ProfileLoadState.Loading ignored -> List.of(new LoadingPage());
 		};
 		this.buttons = new ArrayList<>();
 		for (int i = 0; i < pages.size(); i++) {
 			var page = pages.get(i);
-			buttons.add(new ProfileViewerNavButton(ignored -> setSelectedPage(selectedIndex), page.getName(), page.getIcon(), i, false));
+			var finalI = i;
+			buttons.add(new ProfileViewerNavButton(ignored -> setSelectedPage(finalI), page.getName(), page.getIcon(), i, false));
 		}
 		setSelectedPage(0);
 	}
@@ -102,6 +103,11 @@ public class ProfileViewerScreenRework extends Screen {
 		for (var widget : widgets) {
 			widget.setPositionFromRoot(rootX + 5, rootY + 7);
 			addDrawableChild(widget);
+		}
+		for (var button : buttons) {
+			addDrawableChild(button);
+			button.setX(rootX + button.getIndex() * 28 + 4);
+			button.setY(rootY - 28);
 		}
 	}
 
@@ -159,11 +165,6 @@ public class ProfileViewerScreenRework extends Screen {
 		int rootY = height / 2 - GUI_HEIGHT / 2 + 5;
 
 		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootY, 0, 0, GUI_WIDTH, GUI_HEIGHT, GUI_WIDTH, GUI_HEIGHT);
-		for (var button : buttons) {
-			button.setX(rootX + button.getIndex() * 28 + 4);
-			button.setY(rootY - 28);
-			button.render(context, mouseX, mouseY, deltaTicks);
-		}
 		super.render(context, mouseX, mouseY, deltaTicks);
 	}
 }
