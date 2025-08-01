@@ -45,7 +45,7 @@ public class SlayersPage implements ProfileViewerPage {
 
 	@Init
 	public static void init() {
-		ProfileViewerScreenRework.PAGE_CONSTRUCTORS.add(SlayersPage::new);
+//		ProfileViewerScreenRework.PAGE_CONSTRUCTORS.add(SlayersPage::new);
 	}
 
 	@Override
