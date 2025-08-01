@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.radialMenu;
+package de.hysky.skyblocker.utils.render.gui.state;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.gui.ScreenRect;

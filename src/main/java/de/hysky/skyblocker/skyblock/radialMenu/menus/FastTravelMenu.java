@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.radialMenu.menus;
 
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 

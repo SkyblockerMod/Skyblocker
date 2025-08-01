@@ -28,7 +28,7 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final int INTERNAL_RADIUS = 55;
 	private static final int EXTERNAL_RADIUS = 110;
-	private static long NAVIGATION_DIRECTION_COOLDOWN_DELAY = 500;
+	private static final long NAVIGATION_DIRECTION_COOLDOWN_DELAY = 500;
 
 	private final RadialMenu menuType;
 	private final Int2ObjectOpenHashMap<ItemStack> options = new Int2ObjectOpenHashMap<>();
@@ -134,7 +134,7 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 		switch (keyCode) {
 			case GLFW.GLFW_KEY_RIGHT -> this.navigateDirection(NavigationDirection.RIGHT);
 			case GLFW.GLFW_KEY_LEFT -> this.navigateDirection(NavigationDirection.LEFT);
-			case GLFW.GLFW_KEY_DOWN-> this.navigateDirection(NavigationDirection.DOWN);
+			case GLFW.GLFW_KEY_DOWN -> this.navigateDirection(NavigationDirection.DOWN);
 			case GLFW.GLFW_KEY_UP -> this.navigateDirection(NavigationDirection.UP);
 			case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_SPACE -> this.clickSlot();
 			default -> {
@@ -150,6 +150,7 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 
 	/**
 	 * Changes the {@link RadialMenuScreen#buttonsHoveredIndex} towards the given direction
+	 *
 	 * @param direction navigated direction
 	 */
 	private void navigateDirection(NavigationDirection direction) {
@@ -194,7 +195,8 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 
 	/**
 	 * Checks if an items custom name matches a string
-	 * @param stack item to check name of
+	 *
+	 * @param stack     item to check name of
 	 * @param validName string to compare
 	 * @return if they match. {@code false} if custom name not present.
 	 */

@@ -56,6 +56,16 @@ public class HudHelper {
 	}
 
 	/**
+	 * Draws shape with given vertices. Note the vertices must be in the right or for this to work properly this function does not sort them for you.
+	 * @param context draw context
+	 * @param vertices vertices of shape
+	 * @param color color of shape
+	 */
+	public static void drawCustomShape(DrawContext context, List<Vector2f> vertices, int color) {
+		context.state.addSimpleElement(new CustomShapeGuiElementRenderState(RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), vertices, color, context.scissorStack.peekLast()));
+	}
+
+	/**
 	 * Draws a player head without blocking or a default head if profile is not available immediately.
 	 * This fetches the profile so it will be available for future calls to this method.
 	 */

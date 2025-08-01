@@ -3,24 +3,18 @@ package de.hysky.skyblocker.skyblock.radialMenu;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
-import de.hysky.skyblocker.utils.render.gui.state.HorizontalGradientGuiElementRenderState;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.texture.TextureSetup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import org.joml.Matrix3x2f;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -97,14 +91,8 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 		vertices.add(getPos(center, startAngle + arcLength, external));
 		vertices.add(getPos(center, startAngle + arcLength / 2, external));
 
-		context.state.addSimpleElement(new CustomShapeGuiElementRenderState(RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()),vertices,  color, context.scissorStack.peekLast()));
-		//render background
-		//context.draw(provider -> {
-		//	VertexConsumer vertexConsumer = provider.getBuffer(RenderLayer.getGui());
-		//	for (Vector3f vertex : vertices) {
-		//		vertexConsumer.vertex(vertex).color(color);
-		//	}
-		//});
+
+		HudHelper.drawCustomShape(context, vertices, color);
 
 		//render icon
 		float iconAngle = startAngle + (arcLength / 2);
@@ -130,8 +118,9 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 
 	/**
 	 * Get Screen position for a given angle and radius around the center
+	 *
 	 * @param center center of screen
-	 * @param angle angle around center clockwise from top
+	 * @param angle  angle around center clockwise from top
 	 * @param radius radius
 	 * @return the screen position
 	 */

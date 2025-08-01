@@ -36,6 +36,6 @@ public abstract class BasicMenu extends RadialMenu {
 	}
 
 	public String[] getNavigationItemNames() {
-		return new String[]{"Go Back","Close"};
+		return new String[]{"Go Back", "Close"};
 	}
 }
