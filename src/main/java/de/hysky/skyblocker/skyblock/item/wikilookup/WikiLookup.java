@@ -19,7 +19,6 @@ import net.minecraft.util.Util;
  * An item wiki lookup for certain screen.
  * See {@link RegularItemLookup} for global item lookup.
  * @see VisitorLookup
- * @see PetsLookup
  */
 public interface WikiLookup {
 	Map<String, String> CHARACTER_ENCODER = Map.ofEntries(
