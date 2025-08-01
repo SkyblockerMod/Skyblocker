@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -79,6 +80,7 @@ public class DojoManager {
         AttackEntityCallback.EVENT.register(DojoManager::onEntityAttacked);
         Scheduler.INSTANCE.scheduleCyclic(DojoManager::update, 3);
         WorldEvents.BLOCK_STATE_UPDATE.register(DojoManager::onBlockUpdate);
+        ParticleEvents.FROM_SERVER.register(DojoManager::onParticle);
     }
 
     private static void reset() {
@@ -236,7 +238,7 @@ public class DojoManager {
         return ActionResult.PASS;
     }
 
-    public static void onParticle(ParticleS2CPacket packet) {
+    private static void onParticle(ParticleS2CPacket packet) {
         if (!Utils.isInCrimson() || !inArena) {
             return;
         }
