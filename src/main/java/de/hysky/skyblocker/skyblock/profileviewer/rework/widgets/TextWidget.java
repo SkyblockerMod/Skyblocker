@@ -1,5 +1,6 @@
-package de.hysky.skyblocker.skyblock.profileviewer.rework;
+package de.hysky.skyblocker.skyblock.profileviewer.rework.widgets;
 
+import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileViewerWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;

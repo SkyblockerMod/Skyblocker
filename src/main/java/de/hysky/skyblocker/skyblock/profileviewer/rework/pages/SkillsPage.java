@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.profileviewer.rework.pages;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.profileviewer.model.PlayerData;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.*;
+import de.hysky.skyblocker.skyblock.profileviewer.rework.widgets.BarWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.item.ItemStack;
 
@@ -15,25 +16,27 @@ public class SkillsPage implements ProfileViewerPage {
 
 	public SkillsPage(ProfileLoadState.SuccessfulLoad load) {
 		var playerData = load.member().playerData;
-		List<SkillWidget> skills = new ArrayList<>();
-		skills.add(new SkillWidget(PlayerData.Skill.COMBAT, playerData.getSkillLevel(PlayerData.Skill.COMBAT), OptionalInt.empty()));
-		skills.add(new SkillWidget(PlayerData.Skill.MINING, playerData.getSkillLevel(PlayerData.Skill.MINING), OptionalInt.empty()));
-		skills.add(new SkillWidget(PlayerData.Skill.FARMING, playerData.getSkillLevel(PlayerData.Skill.FARMING), OptionalInt.of(50)));
-		skills.add(new SkillWidget(PlayerData.Skill.FORAGING, playerData.getSkillLevel(PlayerData.Skill.FORAGING), OptionalInt.of(50)));
-		skills.add(new SkillWidget(PlayerData.Skill.FISHING, playerData.getSkillLevel(PlayerData.Skill.FISHING), OptionalInt.empty()));
-		skills.add(new SkillWidget(PlayerData.Skill.ENCHANTING, playerData.getSkillLevel(PlayerData.Skill.ENCHANTING), OptionalInt.empty()));
-		skills.add(new SkillWidget(PlayerData.Skill.ALCHEMY, playerData.getSkillLevel(PlayerData.Skill.ALCHEMY), OptionalInt.empty()));
-		skills.add(new SkillWidget(PlayerData.Skill.TAMING, playerData.getSkillLevel(PlayerData.Skill.TAMING), OptionalInt.of(50)));
-		skills.add(new SkillWidget(PlayerData.Skill.CARPENTRY, playerData.getSkillLevel(PlayerData.Skill.CARPENTRY), OptionalInt.empty()));
+		List<ProfileViewerWidget> skills = new ArrayList<>();
+		skills.add(new BarWidget(PlayerData.Skill.COMBAT.getName(), PlayerData.Skill.COMBAT.getIcon(), playerData.getSkillLevel(PlayerData.Skill.COMBAT), OptionalInt.empty(), OptionalInt.empty()));
+		skills.add(new BarWidget(PlayerData.Skill.MINING.getName(),PlayerData.Skill.MINING.getIcon(), playerData.getSkillLevel(PlayerData.Skill.MINING), OptionalInt.empty(), OptionalInt.empty()));
+		skills.add(new BarWidget(PlayerData.Skill.FARMING.getName(), PlayerData.Skill.FARMING.getIcon(), playerData.getSkillLevel(PlayerData.Skill.FARMING), OptionalInt.empty(), OptionalInt.of(50)));
+		skills.add(new BarWidget(PlayerData.Skill.FORAGING.getName(), PlayerData.Skill.FORAGING.getIcon(), playerData.getSkillLevel(PlayerData.Skill.FORAGING), OptionalInt.empty(), OptionalInt.of(50)));
+		skills.add(new BarWidget(PlayerData.Skill.FISHING.getName(),PlayerData.Skill.FISHING.getIcon(), playerData.getSkillLevel(PlayerData.Skill.FISHING), OptionalInt.empty(), OptionalInt.empty()));
+		skills.add(new BarWidget(PlayerData.Skill.ENCHANTING.getName(),PlayerData.Skill.ENCHANTING.getIcon(), playerData.getSkillLevel(PlayerData.Skill.ENCHANTING), OptionalInt.empty(), OptionalInt.empty()));
+		skills.add(new BarWidget(PlayerData.Skill.ALCHEMY.getName(),PlayerData.Skill.ALCHEMY.getIcon(), playerData.getSkillLevel(PlayerData.Skill.ALCHEMY), OptionalInt.empty(), OptionalInt.empty()));
+		skills.add(new BarWidget(PlayerData.Skill.TAMING.getName(), PlayerData.Skill.TAMING.getIcon(), playerData.getSkillLevel(PlayerData.Skill.TAMING), OptionalInt.empty(), OptionalInt.of(50)));
+		skills.add(new BarWidget(PlayerData.Skill.CARPENTRY.getName(),PlayerData.Skill.CARPENTRY.getIcon(), playerData.getSkillLevel(PlayerData.Skill.CARPENTRY), OptionalInt.empty(), OptionalInt.empty()));
 
-		skills.add(new SkillWidget(PlayerData.Skill.CATACOMBS, PlayerData.Skill.CATACOMBS.getLevelInfo(load.member().dungeons.dungeonInfo.catacombs.experience), OptionalInt.empty()));
-		skills.add(new SkillWidget(PlayerData.Skill.RUNECRAFTING, playerData.getSkillLevel(PlayerData.Skill.RUNECRAFTING), OptionalInt.empty()));
-		skills.add(new SkillWidget(
-				PlayerData.Skill.SOCIAL,
+		skills.add(new BarWidget(PlayerData.Skill.CATACOMBS.getName(), PlayerData.Skill.CATACOMBS.getIcon(), PlayerData.Skill.CATACOMBS.getLevelInfo(load.member().dungeons.dungeonInfo.catacombs.experience), OptionalInt.empty(), OptionalInt.empty()));
+		skills.add(new BarWidget(PlayerData.Skill.RUNECRAFTING.getName(), PlayerData.Skill.RUNECRAFTING.getIcon(), playerData.getSkillLevel(PlayerData.Skill.RUNECRAFTING), OptionalInt.empty(), OptionalInt.empty()));
+		skills.add(new BarWidget(
+				PlayerData.Skill.SOCIAL.getName(),
+				PlayerData.Skill.SOCIAL.getIcon(),
 				PlayerData.Skill.SOCIAL.getLevelInfo(
 						load.profile().members.values()
 								.stream().mapToDouble(it -> it.playerData.getSkillExperience(PlayerData.Skill.SOCIAL))
 								.sum()),
+				OptionalInt.empty(),
 				OptionalInt.empty()));
 
 

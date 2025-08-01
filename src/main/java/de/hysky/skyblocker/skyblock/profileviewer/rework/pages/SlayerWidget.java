@@ -9,23 +9,19 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.hysky.skyblocker.utils.Formatters.INTEGER_NUMBERS;
-import static de.hysky.skyblocker.utils.Formatters.SHORT_INTEGER_NUMBERS;
-
-final class SlayerKillsWidget implements ProfileViewerWidget {
+final class SlayerWidget implements ProfileViewerWidget {
 	private static final Identifier ICON_DATA_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
 
 	private final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 	private final SlayerData.Slayer slayer;
 	private final SlayerBoss slayerData;
 
-	SlayerKillsWidget(
+	SlayerWidget(
 			SlayerData.Slayer slayer,
 			SlayerBoss slayerData
 	) {

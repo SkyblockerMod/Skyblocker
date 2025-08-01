@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileLoadState;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileViewerScreenRework;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileViewerWidget;
+import de.hysky.skyblocker.skyblock.profileviewer.rework.widgets.BarWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.item.ItemStack;
 
@@ -22,12 +23,12 @@ public class DungeonsPage implements ProfileViewerPage {
 	public DungeonsPage(ProfileLoadState.SuccessfulLoad load) {
 		var dungeonsData = load.member().dungeons;
 		List<ProfileViewerWidget> dungeons = new ArrayList<>();
-		dungeons.add(new SkillWidget(PlayerData.Skill.CATACOMBS, PlayerData.Skill.CATACOMBS.getLevelInfo(dungeonsData.dungeonInfo.catacombs.experience), OptionalInt.empty()));
-		dungeons.add(new DungeonsLevelWidget(Dungeons.Class.HEALER, dungeonsData.getClassData(Dungeons.Class.HEALER).getLevelInfo()));
-		dungeons.add(new DungeonsLevelWidget(Dungeons.Class.MAGE, dungeonsData.getClassData(Dungeons.Class.MAGE).getLevelInfo()));
-		dungeons.add(new DungeonsLevelWidget(Dungeons.Class.BERSERK, dungeonsData.getClassData(Dungeons.Class.BERSERK).getLevelInfo()));
-		dungeons.add(new DungeonsLevelWidget(Dungeons.Class.ARCHER, dungeonsData.getClassData(Dungeons.Class.ARCHER).getLevelInfo()));
-		dungeons.add(new DungeonsLevelWidget(Dungeons.Class.TANK, dungeonsData.getClassData(Dungeons.Class.TANK).getLevelInfo()));
+		dungeons.add(new BarWidget(PlayerData.Skill.CATACOMBS.getName(), PlayerData.Skill.CATACOMBS.getIcon(), PlayerData.Skill.CATACOMBS.getLevelInfo(dungeonsData.dungeonInfo.catacombs.experience), OptionalInt.empty(), OptionalInt.empty()));
+		dungeons.add(new BarWidget(Dungeons.Class.HEALER.getName(), Dungeons.Class.HEALER.getIcon(), dungeonsData.getClassData(Dungeons.Class.HEALER).getLevelInfo(), OptionalInt.empty(), OptionalInt.empty()));
+		dungeons.add(new BarWidget(Dungeons.Class.MAGE.getName(), Dungeons.Class.MAGE.getIcon(), dungeonsData.getClassData(Dungeons.Class.MAGE).getLevelInfo(), OptionalInt.empty(), OptionalInt.empty()));
+		dungeons.add(new BarWidget(Dungeons.Class.BERSERK.getName(), Dungeons.Class.BERSERK.getIcon(), dungeonsData.getClassData(Dungeons.Class.BERSERK).getLevelInfo(), OptionalInt.empty(), OptionalInt.empty()));
+		dungeons.add(new BarWidget(Dungeons.Class.ARCHER.getName(), Dungeons.Class.ARCHER.getIcon(), dungeonsData.getClassData(Dungeons.Class.ARCHER).getLevelInfo(), OptionalInt.empty(), OptionalInt.empty()));
+		dungeons.add(new BarWidget(Dungeons.Class.TANK.getName(), Dungeons.Class.TANK.getIcon(), dungeonsData.getClassData(Dungeons.Class.TANK).getLevelInfo(), OptionalInt.empty(), OptionalInt.empty()));
 
 		int i = 0;
 		for (var dungeon : dungeons) {

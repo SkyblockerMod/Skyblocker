@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.profileviewer.rework;
 
+import de.hysky.skyblocker.skyblock.profileviewer.rework.widgets.TextWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;

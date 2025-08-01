@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.profileviewer.rework.pages;
+package de.hysky.skyblocker.skyblock.profileviewer.rework.widgets;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.model.PlayerData;
@@ -10,6 +10,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -23,23 +24,29 @@ import java.util.OptionalInt;
 import static de.hysky.skyblocker.utils.Formatters.INTEGER_NUMBERS;
 import static de.hysky.skyblocker.utils.Formatters.SHORT_INTEGER_NUMBERS;
 
-final class SkillWidget implements ProfileViewerWidget {
+public final class BarWidget implements ProfileViewerWidget {
 	private static final Identifier ICON_DATA_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
 	private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
 	private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
 
 	private final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-	private final PlayerData.Skill skill;
+	private final String name;
+	private final ItemStack icon;
 	private final LevelFinder.LevelInfo levelInfo;
+	private final OptionalInt levelCap;
 	private final OptionalInt softSkillCap;
 
-	SkillWidget(
-			PlayerData.Skill skill,
+	public BarWidget(
+			String name,
+			ItemStack icon,
 			LevelFinder.LevelInfo levelInfo,
+			OptionalInt levelCap,
 			OptionalInt softSkillCap
 	) {
-		this.skill = skill;
+		this.name = name;
+		this.icon = icon;
 		this.levelInfo = levelInfo;
+		this.levelCap = levelCap;
 		this.softSkillCap = softSkillCap;
 	}
 
@@ -50,10 +57,10 @@ final class SkillWidget implements ProfileViewerWidget {
 	public void render(DrawContext drawContext,
 					   int x, int y, int mouseX, int mouseY, float deltaTicks) {
 		drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, ICON_DATA_TEXTURE, x, y, 0, 0, WIDTH, HEIGHT, WIDTH, HEIGHT);
-		drawContext.drawItem(skill.getIcon(), x + 3, y + 5);
-		drawContext.drawText(textRenderer, skill.getName() + " " + levelInfo.level, x + 31, y + 4, -1, false);
+		drawContext.drawItem(icon, x + 3, y + 5);
+		drawContext.drawText(textRenderer, name + " " + levelInfo.level, x + 31, y + 4, -1, false);
 		Color fillColor = Color.GREEN;
-		var skillCap = NEURepoManager.getConstants().getLeveling().getMaximumLevels().get(skill.name().toLowerCase(Locale.ROOT));
+		var skillCap = levelCap.isPresent() ? levelCap.getAsInt() : NEURepoManager.getConstants().getLeveling().getMaximumLevels().getOrDefault(name.toLowerCase(Locale.ROOT), 50);
 		if (softSkillCap.isPresent() && levelInfo.level > softSkillCap.getAsInt())
 			fillColor = Color.YELLOW;
 		if (levelInfo.level >= skillCap)
@@ -64,7 +71,7 @@ final class SkillWidget implements ProfileViewerWidget {
 		// TODO: add helper for hover selection
 		if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 14 && mouseY < y + 21) {
 			List<Text> tooltipText = new ArrayList<>();
-			tooltipText.add(Text.literal(skill.getName() + " " + levelInfo.level).formatted(Formatting.GREEN));
+			tooltipText.add(Text.literal(name + " " + levelInfo.level).formatted(Formatting.GREEN));
 			if (levelInfo.level < skillCap) {
 				tooltipText.add(Text.literal("Progress to Level " + (levelInfo.level + 1) + ":").formatted(Formatting.GRAY));
 				tooltipText.add(Text.literal("")
