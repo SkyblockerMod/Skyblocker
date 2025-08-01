@@ -37,14 +37,14 @@ public abstract class RadialMenu {
 
 	/**
 	 * Lets a Menu remap button clicked to suit it. Most will not need to override this function
+	 *
 	 * @param originalButton original button clicked by user
-	 * @param slotId the slot to be clicked
+	 * @param slotId         the slot to be clicked
 	 * @return the remaped button
 	 */
 	public abstract int remapClickSlotButton(int originalButton, int slotId);
 
 	/**
-	 *
 	 * @return an array of names of items that are used to navigate the menu. These will be placed at the bottom
 	 */
 	public abstract String[] getNavigationItemNames();

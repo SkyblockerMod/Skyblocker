@@ -1,10 +1,8 @@
 package de.hysky.skyblocker.skyblock.radialMenu.menus;
 
-import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.Text;
 
 public class Storage extends BasicMenu {
 	public Storage() {

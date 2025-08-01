@@ -37,7 +37,7 @@ public abstract class RegexMenu extends RadialMenu {
 	}
 
 	public String[] getNavigationItemNames() {
-		return new String[]{"Go Back","Close"};
+		return new String[]{"Go Back", "Close"};
 	}
 
 }
