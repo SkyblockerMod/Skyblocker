@@ -81,7 +81,7 @@ public class PlayerData {
 		FORAGING("Foraging", Ico.JUNGLE_SAPLING),
 		SOCIAL("Social", Ico.EMERALD, "Social"),
 		CARPENTRY("Carpentry", Ico.CRAFTING_TABLE),
-		CATACOMBS("Catacombs", Ico.SKULL, "Catacombs"),
+		CATACOMBS("Catacombs", Ico.CATACOMBS_SKULL, "Catacombs"),
 		COMBAT("Combat", Ico.STONE_SWORD);
 
 		private final String name;
