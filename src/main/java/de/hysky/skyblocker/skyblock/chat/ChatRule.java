@@ -217,6 +217,8 @@ public class ChatRule {
 	}
 
 	private void compilePattern(String filterText) {
+		if (pattern != null) return;
+
 		try {
 			this.pattern = Pattern.compile(filterText);
 		} catch (PatternSyntaxException ex) {
