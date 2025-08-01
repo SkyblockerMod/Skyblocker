@@ -1542,6 +1542,7 @@
   "skyblocker.corpseTracker.emptyHistory": "Your corpse history list is empty :(",
   "skyblocker.corpseTracker.historyReset": "Corpse profit history has been reset for the current profile.",
 
+  "skyblocker.powderTracker": "Powder Mining Tracker",
   "skyblocker.powderTracker.historyReset": "Powder mining tracker has been reset for the current profile.",
   "skyblocker.powderTracker.profit": "Profit: %s Coins",
   "skyblocker.powderTracker.emptyHistory": "Your powder mining rewards list is empty :(",
