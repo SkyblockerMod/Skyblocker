@@ -12,7 +12,7 @@ public class ProfileMember {
 	 * Nota bene: this is for item collections, for boss collections you need to manually add up the boss kill counts.
 	 */
 	public Map<String, Integer> collection = Map.of();
-	public Slayer slayer = new Slayer();
+	public SlayerData slayer = new SlayerData();
 	@SerializedName("fairy_soul")
 	public FairySouls fairySouls = new FairySouls();
 	public ProfileMemberProfile profile = new ProfileMemberProfile();

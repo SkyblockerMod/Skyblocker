@@ -52,7 +52,7 @@ public class SkillsPage implements ProfileViewerPage {
 
 	@Init
 	public static void init() {
-		ProfileViewerScreenRework.PAGE_CONSTRUCTORS.add(SkillsPage::new);
+//		ProfileViewerScreenRework.PAGE_CONSTRUCTORS.add(SkillsPage::new);
 	}
 
 	@Override

@@ -29,4 +29,21 @@ public class SlayerBoss {
 			default -> 0;
 		};
 	}
+
+	public int getTotalBossKills() {
+		int total = 0;
+		for (int i = 0; i <= 4; i++) {
+			total += getBossKillsByZeroIndexedTier(i);
+		}
+		return total;
+	}
+
+	public int getTierWithMostKills() {
+		for (int i = 4; i >= 0; i--) {
+			if (getBossKillsByZeroIndexedTier(i) > 1) return i;
+		}
+		return -1;
+	}
+
+
 }
