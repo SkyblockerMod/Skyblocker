@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -51,6 +52,7 @@ public class CrystalsChestHighlighter {
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 		WorldEvents.BLOCK_STATE_UPDATE.register(CrystalsChestHighlighter::onBlockUpdate);
 		ParticleEvents.FROM_SERVER.register(CrystalsChestHighlighter::onParticle);
+		PlaySoundEvents.FROM_SERVER.register(CrystalsChestHighlighter::onSound);
 	}
 
 	private static void reset() {
@@ -118,7 +120,7 @@ public class CrystalsChestHighlighter {
 	 *
 	 * @param packet sound packet
 	 */
-	public static void onSound(PlaySoundS2CPacket packet) {
+	private static void onSound(PlaySoundS2CPacket packet) {
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
 		if (player == null || !Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
 			return;
