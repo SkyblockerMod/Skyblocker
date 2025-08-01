@@ -1,12 +1,11 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.events.WorldEvents;
-import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
@@ -36,21 +35,17 @@ public abstract class ClientWorldMixin implements BlockView {
 		WorldEvents.BLOCK_STATE_UPDATE.invoker().onBlockStateUpdate(pos, oldState.get(), state);
 	}
 
-	@Inject(method = "playSound(DDDLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FFZJ)V", at = @At("HEAD"), cancellable = true)
-	private void skyblocker$silencePhantoms(CallbackInfo ci, @Local(argsOnly = true) SoundEvent soundEvent) {
-		if (SkyblockerConfigManager.get().hunting.huntingMobs.silencePhantoms && soundEvent.id().getPath().startsWith("entity.phantom")) {
+	@Inject(method = "playSoundFromEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/Entity;Lnet/minecraft/registry/entry/RegistryEntry;Lnet/minecraft/sound/SoundCategory;FFJ)V", at = @At("HEAD"), cancellable = true)
+	private void skyblocker$allowSoundsFromEntity(CallbackInfo ci, @Local(argsOnly = true) RegistryEntry<SoundEvent> sound) {
+		if (!PlaySoundEvents.ALLOW_SOUND.invoker().allowSound(sound.value())) {
 			ci.cancel();
 		}
+	}
 
-		// Mute Enderman sounds in the End
-		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().otherLocations.end.muteEndermanSounds) {
-			if (soundEvent.id().equals(SoundEvents.ENTITY_ENDERMAN_AMBIENT.id()) ||
-					soundEvent.id().equals(SoundEvents.ENTITY_ENDERMAN_DEATH.id()) ||
-					soundEvent.id().equals(SoundEvents.ENTITY_ENDERMAN_HURT.id()) ||
-					soundEvent.id().equals(SoundEvents.ENTITY_ENDERMAN_SCREAM.id()) ||
-					soundEvent.id().equals(SoundEvents.ENTITY_ENDERMAN_STARE.id())) {
-				ci.cancel();
-			}
+	@Inject(method = "playSound(DDDLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FFZJ)V", at = @At("HEAD"), cancellable = true)
+	private void skyblocker$allowSounds(CallbackInfo ci, @Local(argsOnly = true) SoundEvent sound) {
+		if (!PlaySoundEvents.ALLOW_SOUND.invoker().allowSound(sound)) {
+			ci.cancel();
 		}
 	}
 }
