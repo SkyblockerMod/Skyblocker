@@ -53,6 +53,7 @@ public class ChatRule {
 	public static final Codec<List<ChatRule>> LIST_CODEC = CODEC.listOf();
 
 	private String name;
+	private Pattern pattern; // Only compile Regex patterns once
 
 	// Inputs
 	private boolean enabled;
@@ -138,6 +139,7 @@ public class ChatRule {
 
 	protected void setRegex(boolean regex) {
 		isRegex = regex;
+		this.pattern = null;
 	}
 
 	protected boolean getIgnoreCase() {
@@ -146,6 +148,7 @@ public class ChatRule {
 
 	protected void setIgnoreCase(boolean ignoreCase) {
 		isIgnoreCase = ignoreCase;
+		this.pattern = null;
 	}
 
 	protected String getFilter() {
@@ -154,6 +157,7 @@ public class ChatRule {
 
 	protected void setFilter(String filter) {
 		this.filter = filter;
+		this.pattern = null;
 	}
 
 	protected boolean getHideMessage() {
@@ -212,6 +216,17 @@ public class ChatRule {
 		this.validLocations = validLocations;
 	}
 
+	private void compilePattern(String filterText) {
+		try {
+			this.pattern = Pattern.compile(filterText);
+		} catch (PatternSyntaxException ex) {
+			this.enabled = false;
+			MinecraftClient client = MinecraftClient.getInstance();
+			if (client.player == null) return;
+			client.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.chatRules.invalidRegex", this.name)), false);
+		}
+	}
+
 	/**
 	 * checks every input option and if the games state and the inputted str matches them returns true.
 	 *
@@ -237,16 +252,8 @@ public class ChatRule {
 		//filter
 		if (testFilter.isBlank()) return false;
 		if (isRegex) {
-			Pattern pattern;
-			try {
-				pattern = Pattern.compile(testFilter);
-			} catch (PatternSyntaxException ex) {
-				this.enabled = false;
-				MinecraftClient client = MinecraftClient.getInstance();
-				if (client.player == null) return false;
-				client.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.chatRules.invalidRegex", this.name)), false);
-				return false;
-			}
+			compilePattern(testFilter);
+			if (pattern == null) return false;
 
 			if (isPartialMatch) {
 				if (!pattern.matcher(testString).find()) return false;
