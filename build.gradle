@@ -208,8 +208,6 @@ dependencies {
 
 	// Fabric Language Kotlin for using MoulConfig - we are still a Java-exclusive mod
 	modImplementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}")
-
-	modCompileOnly("maven.modrinth:caxton:${project.caxton_version}-FABRIC")
 }
 
 loom {
