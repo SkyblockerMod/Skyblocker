@@ -8,13 +8,12 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.PetCache;
+import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
+import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import de.hysky.skyblocker.skyblock.garden.VisitorWikiLookup;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
-import de.hysky.skyblocker.skyblock.item.ItemPrice;
-import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
-import de.hysky.skyblocker.skyblock.item.WikiLookup;
+import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
@@ -27,13 +26,13 @@ import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipData;
@@ -44,6 +43,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
@@ -198,6 +198,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				quickNavButton.render(context, mouseX, mouseY, delta);
 			}
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Inject(method = "drawMouseoverTooltip", at = @At("HEAD"))
+	private void skyblocker$beforeTooltipDrawn(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
+		ContainerSolverManager.onDraw(context, (HandledScreen<GenericContainerScreenHandler>) (Object) this, this.handler.slots);
 	}
 
 	@SuppressWarnings("DataFlowIssue")
@@ -367,12 +373,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		// Item Protection
 		if (ItemProtection.isItemProtected(slot.getStack())) {
-			context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
+			context.drawTexture(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
 		}
 
 		// Search - darken non-matching slots
 		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {
-			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 100, 0x88_000000);
+			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0x88_000000);
 		}
 	}
 
