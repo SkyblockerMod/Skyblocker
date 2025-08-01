@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.profileviewer.rework.pages;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.profileviewer.model.Dungeons;
 import de.hysky.skyblocker.skyblock.profileviewer.model.PlayerData;
-import de.hysky.skyblocker.skyblock.profileviewer.model.SlayerData;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileLoadState;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileViewerScreenRework;

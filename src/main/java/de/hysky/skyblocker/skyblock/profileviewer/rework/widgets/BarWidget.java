@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.profileviewer.rework.widgets;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.profileviewer.model.PlayerData;
 import de.hysky.skyblocker.skyblock.profileviewer.rework.ProfileViewerWidget;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.utils.NEURepoManager;

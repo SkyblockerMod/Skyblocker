@@ -16,7 +16,6 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class PlayerMetaWidget implements ProfileViewerWidget {
 	public static final Identifier BACKGROUND = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/basic_page_body_widget.png");
