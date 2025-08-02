@@ -1313,7 +1313,7 @@
     "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "顯示你已分配和未分配的能力值點數。",
     "skyblocker.tips.discordRichPresence": "使用Discord的豐富狀態功能，向你的朋友炫耀你有多富有吧！",
     "skyblocker.config.mining.crystalHollows.enablePowderTracker": "開啟粉末挖礦追蹤器",
-    "skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip": "如果啟用，當Hypixel效果小部件被禁用時，將從動態顯示區域獲取當前的效果。",
+    "skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip": "開啟後，如果Hypixel Effects小部件已停用則會從TAB頁腳取得藥水效果。",
     "emi.category.skyblocker.skyblock_forge": "矮人熔爐（Skyblock）",
     "skyblocker.config.eventNotifications.notificationSound.sound.GOAT": "山羊",
     "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "緊湊顯示雕像位置",
