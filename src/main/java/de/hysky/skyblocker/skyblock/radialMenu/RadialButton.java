@@ -35,7 +35,7 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 
 	public RadialButton(float startAngle, float arcLength, float internalRadius, float externalRadius, ItemStack icon, BooleanSupplier getHovered, int linkedSlot) {
 		super();
-		this.startAngle = (float) (startAngle - (Math.PI / 2));//start at the top
+		this.startAngle = (float) (startAngle - (Math.PI / 2)); //start at the top
 		this.arcLength = arcLength;
 		this.internalRadius = internalRadius;
 		this.externalRadius = externalRadius;
@@ -55,51 +55,39 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 	}
 
 	@Override
-	public void setFocused(boolean focused) {
-
-	}
-
-	@Override
-	public boolean isFocused() {
-		return false;
-	}
-
-	@Override
 	public ScreenRect getNavigationFocus() {
 		return Element.super.getNavigationFocus();
 	}
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-		//change color when hovered
+		//change color  and radius when hovered
 		boolean hovered = getHovered.getAsBoolean();
-		int color = hovered ? 0xFE000000 : 0x77000000;
+		int color = hovered ? 0xFE000000 : 0x77000000; //darker when hovered
 		float internal = internalRadius;
 		float external = hovered ? externalRadius + 5 : externalRadius;
 
 		//get bounding box
 		Vector2i center = new Vector2i(context.getScaledWindowWidth() / 2, context.getScaledWindowHeight() / 2);
 		List<Vector2f> vertices = new ArrayList<>();
-		//first rectangle
+		//first background rectangle
 		vertices.add(getPos(center, startAngle, internal));
 		vertices.add(getPos(center, startAngle + arcLength / 2, internal));
 		vertices.add(getPos(center, startAngle + arcLength / 2, external));
 		vertices.add(getPos(center, startAngle, external));
-		//second rectangle
+		//second background rectangle
 		vertices.add(getPos(center, startAngle + arcLength / 2, internal));
 		vertices.add(getPos(center, startAngle + arcLength, internal));
 		vertices.add(getPos(center, startAngle + arcLength, external));
 		vertices.add(getPos(center, startAngle + arcLength / 2, external));
 
-
+		//draw background
 		HudHelper.drawCustomShape(context, vertices, color);
 
 		//render icon
 		float iconAngle = startAngle + (arcLength / 2);
 		Vector2f iconPos = getPos(center, iconAngle, (internal + external) / 2);
 		iconPos.sub(8, 8);
-
-
 		context.drawItem(icon, (int) iconPos.x, (int) iconPos.y);
 		context.drawStackOverlay(CLIENT.textRenderer, icon, (int) iconPos.x, (int) iconPos.y);
 		SlotTextManager.renderSlotText(context, CLIENT.textRenderer, null, icon, linkedSlot, (int) iconPos.x, (int) iconPos.y);
@@ -107,7 +95,7 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 		//render tooltip
 		if (hovered && (Screen.hasShiftDown() || SkyblockerConfigManager.get().uiAndVisuals.radialMenu.tooltipsWithoutShift)) {
 			// Backpack Preview
-			if (CLIENT.currentScreen.getTitle().getString().equals("Storage")) {
+			if (CLIENT.currentScreen != null && CLIENT.currentScreen.getTitle().getString().equals("Storage")) {
 				BackpackPreview.renderPreview(context, CLIENT.currentScreen, linkedSlot, mouseX, mouseY);
 			} else {
 				//normal tooltips
@@ -180,4 +168,14 @@ public class RadialButton implements Drawable, Element, Widget, Selectable {
 
 	@Override
 	public void forEachChild(Consumer<ClickableWidget> consumer) {}
+
+	@Override
+	public void setFocused(boolean focused) {
+
+	}
+
+	@Override
+	public boolean isFocused() {
+		return false;
+	}
 }
