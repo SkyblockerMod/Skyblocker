@@ -167,7 +167,7 @@ public class VisitorHelper extends ClickableWidget {
 		int newWidth = 0;
 		int x = getX() + PADDING;
 		int y = getY() - (int) (textRenderer.fontHeight / 2f - ICON_SIZE * 0.95f / 2) + PADDING;
-		context.fill(getX(), getY(), getRight(), getBottom(), 0x28_00_00_00);
+		context.fill(getX(), getY(), getRight(), getBottom(), 0x18_80_80_80);
 
 		for (Object2IntMap.Entry<Text> entry : groupedItems.object2IntEntrySet()) {
 			Text itemName = entry.getKey();
