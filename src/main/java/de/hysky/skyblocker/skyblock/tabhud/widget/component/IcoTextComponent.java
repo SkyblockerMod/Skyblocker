@@ -34,8 +34,11 @@ public class IcoTextComponent extends Component {
 
 	@Override
 	public void render(DrawContext context, int x, int y) {
-		context.drawItem(ico, x, y);
-		context.drawText(txtRend, text, x + ICO_DIM + PAD_L, y + 5, Colors.WHITE, false);
+		context.getMatrices().pushMatrix();
+		context.getMatrices().translate(x, y);
+		context.getMatrices().scale((float) ICO_DIM / 16);
+		context.drawItem(ico, 0, 0);
+		context.getMatrices().popMatrix();
+		context.drawText(txtRend, text, x + ICO_DIM + PAD_L, y + 2, Colors.WHITE, false);
 	}
-
 }
