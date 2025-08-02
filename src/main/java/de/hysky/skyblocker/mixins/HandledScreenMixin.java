@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.InventorySearch;
@@ -11,13 +12,13 @@ import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
-import de.hysky.skyblocker.skyblock.garden.VisitorWikiLookup;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.*;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -125,23 +126,17 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
 		if (this.client != null && this.client.player != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
-			//wiki lookup
+
+			// Wiki lookup
 			if (config.general.wikiLookup.enableWikiLookup) {
-				var title = this.getTitle().getString();
-				if (WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode)) {
-					if (VisitorWikiLookup.canSearch(title, this.focusedSlot)) {
-						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getName().getString(), this.client.player, true);
-					} else {
-						WikiLookup.openWiki(this.focusedSlot, this.client.player, true);
-					}
-				} else if (WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
-					if (VisitorWikiLookup.canSearch(title, this.focusedSlot)) {
-						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getName().getString(), this.client.player, false);
-					} else {
-						WikiLookup.openWiki(this.focusedSlot, this.client.player, false);
-					}
+				String title = this.getTitle().getString();
+				if (WikiLookupManager.officialWikiLookup.matchesKey(keyCode, scanCode)) {
+					WikiLookupManager.openWiki(title, Either.left(this.focusedSlot), this.client.player, true);
+				} else if (WikiLookupManager.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
+					WikiLookupManager.openWiki(title, Either.left(this.focusedSlot), this.client.player, false);
 				}
 			}
+
 			//item protection
 			if (ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
 				ItemProtection.handleKeyPressed(this.focusedSlot.getStack());
