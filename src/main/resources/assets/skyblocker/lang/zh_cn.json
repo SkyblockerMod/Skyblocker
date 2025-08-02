@@ -903,7 +903,7 @@
     "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "在火柱爆炸的前五秒倒计时。配置“标题容器”以自定义本项目在HUD上的位置。（注意：本功能使用了尚未成熟的距离检测，所以火柱有可能是另一位玩家的slayer召唤的）",
     "skyblocker.tips.fancierBars": "使用/skyblocker bars 自定义血量、法术值、防御值、速度、经验条。你也可以关闭和调整大小！",
     "skyblocker.webSocket.receivedCrystalsWaypoint": "从Skyblocker WebSocket收到了%s的路径点。",
-    "skyblocker.rift.healNow": "现在使用治疗技能！",
+    "skyblocker.rift.healNow": "立刻治疗！",
     "skyblocker.dungeons.secrets.customWaypointNotFound": "§c未在 X: %d, Y: %d, Z: %d 找到为房间 %s 设置的自定义路径点。",
     "skyblocker.rift.mania": "狂热！",
     "skyblocker.rift.iceNow": "现在使用冰冻技能！",
