@@ -5,6 +5,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -19,7 +20,7 @@ public class ComposterWidget extends TabHudWidget {
 			Formatting.BOLD);
 
 	public ComposterWidget() {
-		super("Composter", TITLE, Formatting.GREEN.getColorValue());
+		super("Composter", TITLE, Formatting.GREEN.getColorValue(), Location.GARDEN);
 	}
 
 	@Override

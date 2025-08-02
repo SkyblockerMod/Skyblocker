@@ -419,7 +419,7 @@ public class PartyFinderScreen extends Screen {
             parties.add(new PartyEntry.YourParty(tooltips, this, deListSlotId));
         }
         this.partyEntryListWidget.setEntries(parties);
-        //List<ItemStack> temp = handler.slots.stream().map(Slot::getStack).toList();//for (int i = 0; i < temp.size(); i++) System.out.println(i + " " + temp.get(i).toString() + " " + temp.get(i).getName().getString());
+        //EntryList<ItemStack> temp = handler.slots.stream().map(Slot::getStack).toList();//for (int i = 0; i < temp.size(); i++) System.out.println(i + " " + temp.get(i).toString() + " " + temp.get(i).getName().getString());
 
     }
 
