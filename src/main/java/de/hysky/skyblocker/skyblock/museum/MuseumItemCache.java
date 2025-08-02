@@ -48,9 +48,9 @@ public class MuseumItemCache {
 	private static final ProfiledData<ProfileMuseumData> MUSEUM_ITEM_CACHE = new ProfiledData<>(CACHE_FILE, ProfileMuseumData.CODEC, true, true);
 	public static final String DONATION_CONFIRMATION_SCREEN_TITLE = "Confirm Donation";
 	public static final Map<String, String> ARMOR_NAMES = new Object2ObjectArrayMap<>();
-	public static final Map<String, String> MAPPED_IDS = new Object2ObjectArrayMap<>();
+	private static final Map<String, String> MAPPED_IDS = new Object2ObjectArrayMap<>();
 	public static final ObjectArrayList<Donation> MUSEUM_DONATIONS = new ObjectArrayList<>();
-	public static final ObjectArrayList<ObjectArrayList<String>> ORDERED_UPGRADES = new ObjectArrayList<>();
+	private static final ObjectArrayList<ObjectArrayList<String>> ORDERED_UPGRADES = new ObjectArrayList<>();
 	private static CompletableFuture<Void> loaded;
 
 	@Init
@@ -66,11 +66,9 @@ public class MuseumItemCache {
 				.then(literal("museum")
 						.then(literal("resync")
 								.executes(context -> {
-									if (tryResync(context.getSource())) {
-										context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.attemptingResync")));
-									} else {
-										context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.cannotResync")));
-									}
+									FabricClientCommandSource source = context.getSource();
+									Text text = Text.translatable(tryResync(source) ? "skyblocker.museum.attemptingResync" : "skyblocker.museum.cannotResync");
+									source.sendFeedback(Constants.PREFIX.get().append(text));
 
 									return Command.SINGLE_SUCCESS;
 								}))));
@@ -114,13 +112,11 @@ public class MuseumItemCache {
 								if (isEquipment) isEquipment = MuseumUtils.isEquipment(jsonElement.getAsString());
 								set.add(new ObjectObjectMutablePair<>(jsonElement.getAsString(), null));
 							}
-							String realId = itemID;
-							for (Map.Entry<String, JsonElement> exception : setExceptions.entrySet()) {
-								if (exception.getValue().getAsString().equals(itemID)) {
-									realId = exception.getKey();
-									break;
-								}
-							}
+							String realId = setExceptions.entrySet().stream()
+									.filter(e -> e.getValue().getAsString().equals(itemID))
+									.map(Map.Entry::getKey)
+									.findFirst()
+									.orElse(itemID);
 							ARMOR_NAMES.put(itemID, MuseumUtils.formatArmorName(realId, isEquipment));
 						}
 						int itemXP = itemToXp.get(itemID).getAsInt();
@@ -231,7 +227,7 @@ public class MuseumItemCache {
 		return uncontributedItems;
 	}
 
-	public static void handleClick(Slot slot, int slotId, DefaultedList<Slot> slots) {
+	public static void handleClick(Slot ignoredSlot, int slotId, DefaultedList<Slot> slots) {
 		if (slotId == CONFIRM_DONATION_BUTTON_SLOT) {
 			String profileId = Utils.getProfileId();
 
@@ -270,10 +266,6 @@ public class MuseumItemCache {
 		}
 	}
 
-	private static void updateData4ProfileMember(UUID uuid, String profileId) {
-		updateData4ProfileMember(uuid, profileId, null);
-	}
-
 	private static void updateData4ProfileMember(UUID uuid, String profileId, FabricClientCommandSource source) {
 		CompletableFuture.runAsync(() -> {
 			try (ApiResponse response = Http.sendHypixelRequest("skyblock/museum", "?profile=" + profileId)) {
@@ -309,30 +301,23 @@ public class MuseumItemCache {
 						MUSEUM_ITEM_CACHE.save();
 
 						if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncSuccess")));
-
 						LOGGER.info("[Skyblocker] Successfully updated museum item cache for profile {}", profileId);
 					} else {
 						//If the player's Museum API is disabled
 						putEmpty(uuid, profileId);
-
 						if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncFailure")));
-
 						LOGGER.warn(ERROR_LOG_TEMPLATE + " because the Museum API is disabled!", profileId);
 					}
 				} else {
 					//If the request returns a non 200 status code
 					putEmpty(uuid, profileId);
-
 					if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncFailure")));
-
 					LOGGER.error(ERROR_LOG_TEMPLATE + " because a non 200 status code was encountered! Status Code: {}", profileId, response.statusCode());
 				}
 			} catch (Exception e) {
 				//If an exception was somehow thrown
 				putEmpty(uuid, profileId);
-
 				if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncFailure")));
-
 				LOGGER.error(ERROR_LOG_TEMPLATE, profileId, e);
 			}
 		});
@@ -367,7 +352,7 @@ public class MuseumItemCache {
 		if (loaded.isDone() && !MUSEUM_ITEM_CACHE.containsKey()) {
 			MUSEUM_ITEM_CACHE.computeIfAbsent(ProfileMuseumData.EMPTY);
 
-			updateData4ProfileMember(uuid, Utils.getProfileId());
+			updateData4ProfileMember(uuid, Utils.getProfileId(), null);
 		}
 	}
 

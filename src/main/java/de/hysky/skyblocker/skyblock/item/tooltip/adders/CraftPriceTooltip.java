@@ -9,10 +9,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
-import io.github.moulberry.repo.data.NEUIngredient;
-import io.github.moulberry.repo.data.NEUItem;
-import io.github.moulberry.repo.data.NEUKatUpgradeRecipe;
-import io.github.moulberry.repo.data.NEURecipe;
+import io.github.moulberry.repo.data.*;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.minecraft.item.ItemStack;
@@ -47,25 +44,24 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 		if (neuItem == null) return;
 
 		List<NEURecipe> neuRecipes = neuItem.getRecipes();
-		if (neuRecipes.isEmpty() || neuRecipes.getFirst() instanceof NEUKatUpgradeRecipe) return;
+		if (neuRecipes.isEmpty()) return;
+		NEURecipe recipe = neuRecipes.getFirst();
 
 		try {
-			double totalCraftCost = getItemCost(neuRecipes.getFirst(), 0);
-
-			if (totalCraftCost == 0) return;
-
+			double totalCraftCost = getItemCost(recipe, 0);
+			if (totalCraftCost <= 0) return;
 			int count = Math.max(ItemUtils.getItemCountInSack(stack, lines).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
 
-			neuRecipes.getFirst().getAllOutputs().stream().findFirst().ifPresent(outputIngredient ->
+			recipe.getAllOutputs().stream().findFirst().ifPresent(outputIngredient ->
 					lines.add(Text.literal(String.format("%-20s", "Crafting Price:")).formatted(Formatting.GOLD)
 								  .append(ItemTooltip.getCoinsMessage(totalCraftCost / outputIngredient.getAmount(), count))));
 		} catch (Exception e) {
-			LOGGER.error("[Skyblocker Craft Price] Error calculating craftprice tooltip for: " + stack.getNeuName(), e);
+			LOGGER.error("[Skyblocker Craft Price] Error calculating craftprice tooltip for: {}", stack.getNeuName(), e);
 		}
 	}
 
 	public static double getItemCost(NEURecipe recipe, int depth) {
-		if (depth >= MAX_RECURSION_DEPTH) return -1;
+		if (depth >= MAX_RECURSION_DEPTH || recipe instanceof NEUKatUpgradeRecipe || recipe instanceof NEUTradeRecipe) return -1;
 
 		double totalCraftCost = 0;
 		for (NEUIngredient input : recipe.getAllInputs()) {
