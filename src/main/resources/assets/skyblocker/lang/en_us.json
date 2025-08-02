@@ -613,6 +613,7 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling": "Pling",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie": "Zombie",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.true": "True",
+  "skyblocker.config.chat.chatRules.invalidRegex": "Your chat rule '%s' has an invalid regex pattern and has been disabled!",
   "skyblocker.config.chat.waypoints.display": "Click to display waypoint at x: %d y: %d z: %d",
   "skyblocker.config.chat.waypoints.displayed": "Displayed temporary waypoint at x: %d y: %d z: %d %s",
 
@@ -643,10 +644,10 @@
   "skyblocker.config.chat.filter.hideShowOff": "Hide Show Off Messages",
   "skyblocker.config.chat.filter.hideShowOff.@Tooltip": "Filters messages from the /show command",
   "skyblocker.config.chat.filter.hideTeleportPad": "Hide Teleport Pad Messages",
-  "skyblocker.config.chat.filter.hideToggleLottery": "Hide Toggle Lottery Messages",
-  "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "Hides those pesky messages telling you to disable the Lottery HOTF perk when you want it enabled!",
-  "skyblocker.config.chat.filter.hideToggleSkyMall": "Hide Toggle Sky Mall Messages",
-  "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "Hides those pesky messages telling you to disable the Sky Mall HOTM perk when you want it enabled!",
+  "skyblocker.config.chat.filter.hideToggleLottery": "Hide Lottery Messages outside Galatea",
+  "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "Hides Lottery HOTF perk messages while you're outside of Galatea.",
+  "skyblocker.config.chat.filter.hideToggleSkyMall": "Hide Sky Mall Messages outside Mining Islands",
+  "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "Hides Sky Mall HOTM perk messages while you're outside of a mining island.",
 
   "skyblocker.config.chat.skyblockXpMessages": "SkyBlock XP Messages",
   "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "Notifies you in the chat when you gain SkyBlock XP.",

@@ -31,9 +31,9 @@ public class DungeonPlayerManager {
 	 * Group 2: class (or literal "EMPTY" pre dungeon start)
 	 * Group 3: level (or nothing, if pre dungeon start)
 	 * This regex filters out the ironman icon as well as rank prefixes and emblems
-	 * \[\d*\] (?:\[[A-Za-z]+\] )?(?&lt;name&gt;[A-Za-z0-9_]*) (?:.* )?\((?&lt;class&gt;\S*) ?(?&lt;level&gt;[LXVI]*)\)
+	 * \[\d+\] (?:\[[A-Za-z]+\] )?(?&lt;name&gt;[A-Za-z0-9_]+) (?:.+ )?\((?&lt;class&gt;\S+) ?(?&lt;level&gt;[LXVI0]+)\)
 	 */
-	public static final Pattern PLAYER_TAB_PATTERN = Pattern.compile("\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\\((?<class>\\S*) ?(?<level>[LXVI]*)\\)");
+	public static final Pattern PLAYER_TAB_PATTERN = Pattern.compile("\\[\\d+] (?:\\[[A-Za-z]+] )?(?<name>[A-Za-z0-9_]+) (?:.+ )?\\((?<class>\\S+) ?(?<level>[LXVI0]+)\\)");
 	public static final Pattern PLAYER_GHOST_PATTERN = Pattern.compile(" ☠ (?<name>[A-Za-z0-9_]+) .+ became a ghost\\.");
 	private static boolean dungeonLoaded;
 	/**
