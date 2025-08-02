@@ -32,7 +32,7 @@ public class MuseumManager extends ClickableWidget {
 	private static final TextRenderer TEXT_RENDERER = CLIENT.textRenderer;
 	private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/recipe_book.png");
 	public static final int BACKGROUND_WIDTH = 147;
-	private static final int BACKGROUND_HEIGHT = 160;
+	public static final int BACKGROUND_HEIGHT = 160;
 	public static final int SPACING = 2;
 	private static final int BUTTON_SIZE = 20;
 	private static final int BUTTONS_PER_PAGE = 12;
