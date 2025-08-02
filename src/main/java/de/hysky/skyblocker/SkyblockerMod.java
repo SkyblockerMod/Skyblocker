@@ -12,6 +12,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import de.hysky.skyblocker.config.backup.ConfigBackupManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -57,6 +58,7 @@ public class SkyblockerMod implements ClientModInitializer {
         ConfigDataFixer.apply();
         SkyblockerConfigManager.init();
         ConfigNullFieldsFix.init(); //DO NOT INIT ANY CLASS THAT USES CONFIG FIELDS BEFORE THIS!
+        ConfigBackupManager.init();
 
         init();
         Scheduler.INSTANCE.scheduleCyclic(Utils::update, 20);
