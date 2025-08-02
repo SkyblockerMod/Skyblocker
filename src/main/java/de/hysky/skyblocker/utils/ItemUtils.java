@@ -101,6 +101,12 @@ public final class ItemUtils {
         return stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
     }
 
+    public static void setItemUuid(@NotNull ItemStack stack, @NotNull String uuid) {
+        NbtCompound data = getCustomData(stack).copy();
+        data.putString(UUID, uuid);
+        stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(data));
+    }
+
     /**
      * Gets the Skyblock item id of the item stack.
      *
