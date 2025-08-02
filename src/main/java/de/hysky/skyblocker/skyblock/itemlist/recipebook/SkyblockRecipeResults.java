@@ -364,21 +364,14 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 
 	@Override
 	public boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
-		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
-			boolean officialWikiLookup = WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode);
-			if (officialWikiLookup || WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
-				ItemStack hovered = getHoveredItemStack(mouseX, mouseY);
-				if (hovered == null) return false;
+		ItemStack hovered = getHoveredItemStack(mouseX, mouseY);
+		if (hovered == null) return false;
 
-				WikiLookup.openWiki(hovered, client.player, officialWikiLookup);
-				return true;
-			}
+		if (WikiLookup.handleWikiLookup(hovered, client.player, false, keyCode, scanCode)) {
+			return true;
 		}
 
 		if (SkyblockerConfigManager.get().helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(keyCode, scanCode)) {
-			ItemStack hovered = getHoveredItemStack(mouseX, mouseY);
-			if (hovered == null) return false;
-
 			ItemPrice.itemPriceLookup(client.player, hovered);
 			return true;
 		}
