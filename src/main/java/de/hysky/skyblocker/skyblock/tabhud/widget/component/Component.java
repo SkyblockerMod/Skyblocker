@@ -9,10 +9,9 @@ import net.minecraft.client.gui.DrawContext;
  * Abstract base class for a component that may be added to a Widget.
  */
 public abstract class Component {
-
-	static final int ICO_DIM = 16;
+	static final int ICO_DIM = 12;
 	public static final int PAD_S = 2;
-	public static final int PAD_L = 4;
+	public static final int PAD_L = 1;
 
 	static final TextRenderer txtRend = MinecraftClient.getInstance().textRenderer;
 

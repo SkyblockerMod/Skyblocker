@@ -40,7 +40,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	private int prevW = 0, prevH = 0;
 
-	public static final int BORDER_SZE_N = txtRend.fontHeight + 4;
+	public static final int BORDER_SZE_N = txtRend.fontHeight + 2;
 	public static final int BORDER_SZE_S = 4;
 	public static final int BORDER_SZE_W = 4;
 	public static final int BORDER_SZE_E = 4;
