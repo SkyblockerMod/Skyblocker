@@ -34,6 +34,11 @@ public class ProfileViewerScreenRework extends Screen {
 	public static final Gson GSON = new GsonBuilder()
 			.registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
 			.create();
+
+	/**
+	 * Convention of whether to use text shadow in pv draw calls.
+	 */
+	public static final boolean TEXT_SHADOW = false;
 	public static final List<Function<ProfileLoadState.SuccessfulLoad, ProfileViewerPage>> PAGE_CONSTRUCTORS =
 			new ArrayList<>();
 
@@ -149,7 +154,11 @@ public class ProfileViewerScreenRework extends Screen {
 				.thenApplyAsync(load -> {
 					displayLoadedProfile(load);
 					return load;
-				}, MinecraftClient.getInstance());
+				}, MinecraftClient.getInstance())
+				.exceptionally(ex -> {
+					LOGGER.error("Failed to apply profile load", ex);
+					return new ProfileLoadState.Error(ex.getMessage());
+				});
 	}
 	//</editor-fold>
 

@@ -35,6 +35,10 @@ public final class BarWidget implements ProfileViewerWidget {
 	private final OptionalInt levelCap;
 	private final OptionalInt softSkillCap;
 
+	public LevelFinder.LevelInfo getLevelInfo() {
+		return levelInfo;
+	}
+
 	public BarWidget(
 			String name,
 			ItemStack icon,

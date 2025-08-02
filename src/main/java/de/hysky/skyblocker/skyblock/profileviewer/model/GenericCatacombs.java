@@ -104,9 +104,18 @@ public class GenericCatacombs {
 		public @Nullable Double seven;
 
 		/**
+		 * @see #getValue
+		 */
+		public double getValueOrZero(int oneIndexedFloor) {
+			var value = getValue(oneIndexedFloor);
+			if (value == null) return 0;
+			return value;
+		}
+
+		/**
 		 * @param oneIndexedFloor one indexed floor (F1 = 1), with Entrance = 0.
 		 */
-		public @Nullable Double getBest(int oneIndexedFloor) {
+		public @Nullable Double getValue(int oneIndexedFloor) {
 			return switch (oneIndexedFloor) {
 				case 0 -> entrance;
 				case 1 -> one;
@@ -127,6 +136,30 @@ public class GenericCatacombs {
 	}
 
 	public static class AggregateStat extends PerFloorDisambiguation {
-		public @Nullable Double total;
+		/**
+		 * @see #getManuallyCalculatedTotal()
+		 */
+		public double total;
+
+		private static double coerce0(@Nullable Double d) {
+			return d != null ? d : 0;
+		}
+
+		/**
+		 * {@link #total} seems to be off by quite a bit sometimes. This manually calculates the total.
+		 */
+		public double getManuallyCalculatedTotal() {
+			double result = 0;
+			result += coerce0(entrance);
+			result += coerce0(one);
+			result += coerce0(two);
+			result += coerce0(three);
+			result += coerce0(four);
+			result += coerce0(five);
+			result += coerce0(six);
+			result += coerce0(seven);
+			return result;
+		}
+
 	}
 }
