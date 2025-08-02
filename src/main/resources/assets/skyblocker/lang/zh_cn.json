@@ -1353,5 +1353,18 @@
     "skyblocker.config.hunting.huntingBoxHelper.@Tooltip": "在狩猎箱中在高亮那些足够吸收并达到下一属性等级的碎片。同时在物品列表显示碎片的售卖价格。",
     "skyblocker.config.uiAndVisuals.inputCalculator.emptyEquationError": "等式为空",
     "skyblocker.config.uiAndVisuals.inputCalculator.unbalancedParenthesisError": "左括号不匹配",
-    "skyblocker.config.uiAndVisuals.inputCalculator.missingValueError": "运算符缺失操作数"
+    "skyblocker.config.uiAndVisuals.inputCalculator.missingValueError": "运算符缺失操作数",
+    "skyblocker.config.uiAndVisuals.itemPickup.splitSack": "分割包裹与物品栏",
+    "skyblocker.config.uiAndVisuals.itemPickup.splitSack.@Tooltip": "分开显示包裹和物品栏中的变化。",
+    "skyblocker.config.hunting.huntingMobs": "狩猎怪物",
+    "skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip": "打开后如果Hypixel Effects Widget关闭则会从玩家列表捕获药水效果。",
+    "skyblocker.config.uiAndVisuals.slotText.statsTuning": "状态调整",
+    "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "显示已分配与未分配的调整点。",
+    "skyblocker.config.uiAndVisuals.slotText.yourEssence": "你的精粹",
+    "skyblocker.config.chat.chatRules.invalidRegex": "你的聊天规则 '%s' 含有无效的正则表达式并且已被禁用！",
+    "skyblocker.config.uiAndVisuals.tabHud.effectsFooter": "页脚药水效果",
+    "skyblocker.config.uiAndVisuals.slotText.evolvingItems": "可进化物品",
+    "skyblocker.config.uiAndVisuals.slotText.evolvingItems.@Tooltip": "显示 Bottle of Jyrre， Moby Duck， Discrite， Dark Cacao Truffle， Training Weights的持有时间。",
+    "skyblocker.config.uiAndVisuals.slotText.bestiaryLevel": "怪物图鉴等级",
+    "skyblocker.dungeons.splits.portalEntry": "传送门入口"
 }
