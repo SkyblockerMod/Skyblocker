@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.compatibility.rei;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.compatibility.rei.info.SkyblockInfoCategory;
 import de.hysky.skyblocker.compatibility.rei.info.SkyblockInfoDisplayGenerator;
 import de.hysky.skyblocker.compatibility.rei.recipe.SkyblockRecipeCategory;
 import de.hysky.skyblocker.compatibility.rei.recipe.SkyblockRecipeDisplayGenerator;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -12,22 +14,29 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
+import me.shedaniel.rei.api.client.registry.entry.CollapsibleEntryRegistry;
 import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * REI integration
@@ -59,6 +68,25 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
         if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
         entryRegistry.removeEntryIf(entryStack -> true);
         entryRegistry.addEntries(ItemRepository.getItemsStream().map(EntryStacks::of).toList());
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    @Override
+    public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
+		GeneralConfig.ItemList config = SkyblockerConfigManager.get().general.itemList;
+		if (!config.enableItemList || !config.enableCollapsibleEntries) return;
+        if (!ItemRepository.filesImported() || NEURepoManager.isLoading()) return;
+
+        NEURepoManager.getConstants().getParents().getParents().forEach((parentId, childrenList) -> {
+            Optional<ItemStack> parentItem = ItemRepository.getItemsStream().filter(itemStack -> itemStack.getNeuName().equals(parentId)).findFirst();
+            if (parentItem.isEmpty()) return;
+
+            List<ItemStack> childItems = ItemRepository.getItemsStream().filter(itemStack -> childrenList.contains(itemStack.getNeuName())).toList();
+            ArrayList<EntryStack<ItemStack>> allItems = new ArrayList<>(childItems.stream().map(EntryStacks::of).toList());
+            allItems.addFirst(EntryStacks.of(parentItem.get()));
+
+            registry.group(Identifier.of(SkyblockerMod.NAMESPACE, "rei_category/" + parentItem.get().getNeuName().toLowerCase().replace(";", ".")), parentItem.get().getName(), allItems);
+        });
     }
 
     @Override
