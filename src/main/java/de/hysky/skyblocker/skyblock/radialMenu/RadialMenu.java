@@ -16,7 +16,7 @@ public abstract class RadialMenu {
 	protected abstract Text getTitle(Text title);
 
 	/**
-	 * Works out if this radial menu should be shown
+	 * Works out if this radial menu should be shown for a given screen title
 	 *
 	 * @param title screen title to compare
 	 * @return the menu should be shown
@@ -34,13 +34,12 @@ public abstract class RadialMenu {
 
 	public abstract String getConfigId();
 
-
 	/**
-	 * Lets a Menu remap button clicked to suit it. Most will not need to override this function
+	 * Lets a Menu remap button clicked to suit it.
 	 *
 	 * @param originalButton original button clicked by user
 	 * @param slotId         the slot to be clicked
-	 * @return the remaped button
+	 * @return the remapped button
 	 */
 	public abstract int remapClickSlotButton(int originalButton, int slotId);
 

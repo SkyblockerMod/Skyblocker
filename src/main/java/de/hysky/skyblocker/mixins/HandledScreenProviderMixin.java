@@ -125,7 +125,6 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 			case GenericContainerScreenHandler containerScreenHandler when RadialMenuManager.isMenuExistsFromTitle(nameLowercase) -> {
 				client.player.currentScreenHandler = containerScreenHandler;
 				RadialMenu menuType = RadialMenuManager.getMenuFromTitle(nameLowercase);
-
 				client.setScreen(new RadialMenuScreen(containerScreenHandler, menuType, name));
 
 				ci.cancel();

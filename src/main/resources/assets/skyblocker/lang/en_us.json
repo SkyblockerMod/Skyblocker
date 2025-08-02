@@ -1139,7 +1139,6 @@
   "skyblocker.config.uiAndVisuals.radialMenu.storage": "Storage",
   "skyblocker.config.uiAndVisuals.radialMenu.wardrobe": "Wardrobe",
 
-
   "skyblocker.config.uiAndVisuals.slotText": "Slot Text",
   "skyblocker.config.uiAndVisuals.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level.",
   "skyblocker.config.uiAndVisuals.slotText.mode.ENABLED": "Enabled",

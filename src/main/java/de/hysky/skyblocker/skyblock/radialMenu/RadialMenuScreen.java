@@ -30,17 +30,17 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 	private static final int EXTERNAL_RADIUS = 110;
 	private static final long NAVIGATION_DIRECTION_COOLDOWN_DELAY = 500;
 
+	private final GenericContainerScreenHandler handler;
 	private final RadialMenu menuType;
 	private final Int2ObjectOpenHashMap<ItemStack> options = new Int2ObjectOpenHashMap<>();
 	private final Int2IntMap syncIds = new Int2IntOpenHashMap();
 	private final List<RadialButton> buttons = new ArrayList<>();
+	private final Text parentName;
 	private float buttonArcSize;
 	private int buttonsHoveredIndex = -1;
 	private NavigationDirection lastNavigationDirectionInput = null;
 	private long navigationDirectionLastTime;
 	private int navigationDirection = 1;
-	private final GenericContainerScreenHandler handler;
-	private final Text parentName;
 
 	public RadialMenuScreen(GenericContainerScreenHandler handler, RadialMenu type, Text title) {
 		super(type.getTitle(title));
@@ -186,7 +186,6 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 		}
 		navigationDirectionLastTime = System.currentTimeMillis();
 	}
-
 
 	private void hide(ButtonWidget button) {
 		if (CLIENT.player == null) return;
