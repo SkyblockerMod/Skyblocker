@@ -97,5 +97,6 @@
     "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "Incomplete Colour",
     "skyblocker.config.dungeons.livid.customColor": "Custom Livid Colour",
     "skyblocker.customItemNames.screen.customColorTitle": "Custom Colour",
-    "skyblocker.config.uiAndVisuals.gyroOverlay.Color": "Gyro Overlay Colour"
+    "skyblocker.config.uiAndVisuals.gyroOverlay.Color": "Gyro Overlay Colour",
+    "skyblocker.museum.hud.filter.armor": "Armour"
 }
