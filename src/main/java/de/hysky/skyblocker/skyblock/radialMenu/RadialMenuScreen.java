@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.radialMenu;
 
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
@@ -33,7 +31,6 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 	private final GenericContainerScreenHandler handler;
 	private final RadialMenu menuType;
 	private final Int2ObjectOpenHashMap<ItemStack> options = new Int2ObjectOpenHashMap<>();
-	private final Int2IntMap syncIds = new Int2IntOpenHashMap();
 	private final List<RadialButton> buttons = new ArrayList<>();
 	private final Text parentName;
 	private float buttonArcSize;
@@ -213,8 +210,8 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 	}
 
 	private void clickSlot(int slotId, int button) {
-		if (CLIENT.interactionManager == null || !syncIds.containsKey(slotId)) return;
-		CLIENT.interactionManager.clickSlot(syncIds.get(slotId), slotId, menuType.remapClickSlotButton(button, slotId), SlotActionType.PICKUP, CLIENT.player);
+		if (CLIENT.interactionManager == null) return;
+		CLIENT.interactionManager.clickSlot(handler.syncId, slotId + menuType.clickSlotOffset(slotId), menuType.remapClickSlotButton(button, slotId + menuType.clickSlotOffset(slotId)), SlotActionType.PICKUP, CLIENT.player);
 	}
 
 	@Override
@@ -223,7 +220,6 @@ public class RadialMenuScreen extends Screen implements ScreenHandlerListener {
 
 		if (menuType.itemMatches(slotId, stack)) {
 			options.put(slotId, stack);
-			syncIds.put(slotId, handler.syncId);
 			init();
 		}
 	}
