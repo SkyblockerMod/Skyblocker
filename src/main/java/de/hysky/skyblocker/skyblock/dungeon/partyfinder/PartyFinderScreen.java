@@ -242,7 +242,11 @@ public class PartyFinderScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		if (!settingsContainer.canInteract(null)) {
+			context.fill(0, 0, width, height, 0x40000000);
+		}
         super.render(context, mouseX, mouseY, delta);
+
         if (searchField.visible) {
             context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
         }
@@ -263,9 +267,6 @@ public class PartyFinderScreen extends Screen {
         if (isWaitingForServer()) {
             String s = "Waiting for server...";
             context.drawText(textRenderer, s, this.width - textRenderer.getWidth(s) - 5, this.height - textRenderer.fontHeight - 2, Colors.WHITE, true);
-        }
-        if (!settingsContainer.canInteract(null)) {
-            context.fill(0, 0, width, height, 0x40000000);
         }
     }
 
