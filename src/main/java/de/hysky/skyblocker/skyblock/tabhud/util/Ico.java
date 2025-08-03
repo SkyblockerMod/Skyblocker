@@ -88,4 +88,6 @@ public class Ico {
 	public static final ItemStack MYCELIUM = Items.MYCELIUM.getDefaultStack();
 	public static final ItemStack SALMON_BUCKET = Items.SALMON_BUCKET.getDefaultStack();
 	public static final ItemStack TROPICAL_FISH_BUCKET = Items.TROPICAL_FISH_BUCKET.getDefaultStack();
+	public static final ItemStack STRIPPED_SPRUCE_WOOD = Items.STRIPPED_SPRUCE_WOOD.getDefaultStack();
+	public static final ItemStack MANGROVE_LOG = Items.MANGROVE_LOG.getDefaultStack();
 }

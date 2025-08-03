@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -8,7 +9,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -222,7 +222,7 @@ public class OverlayScreen extends Screen {
         if (historyButtons.length > 0) { //add space for history label if it could exist
             maxHeight += (int) (rowHeight * 0.75);
         }
-        context.drawGuiTexture(RenderLayer::getGuiTextured, BACKGROUND_TEXTURE, searchField.getX() - 8, searchField.getY() - 8, (int) (this.width * 0.4) + 16, maxHeight + 16);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, searchField.getX() - 8, searchField.getY() - 8, (int) (this.width * 0.4) + 16, maxHeight + 16);
     }
 
     /**
@@ -232,7 +232,7 @@ public class OverlayScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         int renderOffset = (rowHeight - 16) / 2;
-        context.drawGuiTexture(RenderLayer::getGuiTextured, SEARCH_ICON_TEXTURE, finishedButton.getX() + renderOffset, finishedButton.getY() + renderOffset, 16, 16);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, finishedButton.getX() + renderOffset, finishedButton.getY() + renderOffset, 16, 16);
         if (historyButtons.length > 0 && historyButtons[0] != null) {
             context.drawText(textRenderer, Text.translatable("skyblocker.config.general.searchOverlay.historyLabel"), historyButtons[0].getX() + renderOffset, historyButtons[0].getY() - rowHeight / 2, 0xFFFFFFFF, true);
         }
@@ -244,9 +244,10 @@ public class OverlayScreen extends Screen {
         for (int i = 0; i < historyButtons.length; i++) {
             drawItemAndTooltip(context, mouseX, mouseY, SearchOverManager.getHistoryId(i), historyButtons[i], renderOffset);
         }
+
         for (ButtonWidget deleteButton : deleteButtons) {
             if (!deleteButton.visible) break;
-            context.drawTexture(RenderLayer::getGuiTextured, DELETE_ICON_TEXTURE, deleteButton.getX() + renderOffset, deleteButton.getY() + renderOffset, 0, 0, 16, 16, 16, 16);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, DELETE_ICON_TEXTURE, deleteButton.getX() + renderOffset, deleteButton.getY() + renderOffset, 0, 0, 16, 16, 16, 16);
         }
     }
 

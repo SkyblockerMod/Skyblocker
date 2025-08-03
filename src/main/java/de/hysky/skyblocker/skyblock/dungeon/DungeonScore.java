@@ -27,12 +27,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DungeonScore {
-	private static final DungeonsConfig.DungeonScore SCORE_CONFIG = SkyblockerConfigManager.get().dungeons.dungeonScore;
-	private static final DungeonsConfig.MimicMessage MIMIC_MESSAGE_CONFIG = SkyblockerConfigManager.get().dungeons.mimicMessage;
+	private static final Supplier<DungeonsConfig.DungeonScore> SCORE_CONFIG = () -> SkyblockerConfigManager.get().dungeons.dungeonScore;
+	private static final Supplier<DungeonsConfig.MimicMessage> MIMIC_MESSAGE_CONFIG = () -> SkyblockerConfigManager.get().dungeons.mimicMessage;
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Dungeon Score");
 	//Scoreboard patterns
 	private static final Pattern CLEARED_PATTERN = Pattern.compile("Cleared: (?<cleared>\\d+)%.*");
@@ -45,7 +46,7 @@ public class DungeonScore {
 	private static final Pattern COMPLETED_ROOMS_PATTERN = Pattern.compile(" *Completed Rooms: (?<rooms>\\d+)");
 	//Chat patterns
 	private static final Pattern DEATHS_PATTERN = Pattern.compile(" \\u2620 (?<whodied>\\S+) .*");
-	private static final Pattern MIMIC_PATTERN = Pattern.compile(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$|\\Q" + MIMIC_MESSAGE_CONFIG.mimicMessage + "\\E)$");
+	private static final Pattern MIMIC_PATTERN = Pattern.compile(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$|\\Q" + MIMIC_MESSAGE_CONFIG.get().mimicMessage + "\\E)$");
 	//Other patterns
 	private static final Pattern MIMIC_FLOORS_PATTERN = Pattern.compile("[FM][67]");
 
@@ -94,36 +95,36 @@ public class DungeonScore {
 
 		score = calculateScore();
 		if (!sent270 && !sent300 && score >= 270 && score < 300) {
-			if (SCORE_CONFIG.enableDungeonScore270Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270"), false);
+			if (SCORE_CONFIG.get().enableDungeonScore270Message) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270"), false);
 			}
-			if (SCORE_CONFIG.enableDungeonScore270Title) {
+			if (SCORE_CONFIG.get().enableDungeonScore270Title) {
 				client.inGameHud.setDefaultTitleFade();
-				client.inGameHud.setTitle(Text.of(SCORE_CONFIG.dungeonScore270Message.replaceAll("\\[score]", "270")));
+				client.inGameHud.setTitle(Text.of(SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270")));
 			}
-			if (SCORE_CONFIG.enableDungeonScore270Sound) {
+			if (SCORE_CONFIG.get().enableDungeonScore270Sound) {
 				client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
 			}
 			sent270 = true;
 		}
 
 		int crypts = getCrypts();
-		if (!sentCrypts && score >= SCORE_CONFIG.dungeonCryptsMessageThreshold && crypts < 5) {
-			if (SCORE_CONFIG.enableDungeonCryptsMessage) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(crypts)), false);
+		if (!sentCrypts && score >= SCORE_CONFIG.get().dungeonCryptsMessageThreshold && crypts < 5) {
+			if (SCORE_CONFIG.get().enableDungeonCryptsMessage) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonCryptsMessage.replaceAll("\\[crypts]", String.valueOf(crypts)), false);
 			}
 			sentCrypts = true;
 		}
 
 		if (!sent300 && score >= 300) {
-			if (SCORE_CONFIG.enableDungeonScore300Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300"), false);
+			if (SCORE_CONFIG.get().enableDungeonScore300Message) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300"), false);
 			}
-			if (SCORE_CONFIG.enableDungeonScore300Title) {
+			if (SCORE_CONFIG.get().enableDungeonScore300Title) {
 				client.inGameHud.setDefaultTitleFade();
-				client.inGameHud.setTitle(Text.of(SCORE_CONFIG.dungeonScore300Message.replaceAll("\\[score]", "300")));
+				client.inGameHud.setTitle(Text.of(SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300")));
 			}
-			if (SCORE_CONFIG.enableDungeonScore300Sound) {
+			if (SCORE_CONFIG.get().enableDungeonScore300Sound) {
 				client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 100f, 0.1f);
 			}
 			sent300 = true;
@@ -215,7 +216,7 @@ public class DungeonScore {
 	public static void handleEntityDeath(Entity entity) {
 		if (mimicKilled) return;
 		if (!isEntityMimic(entity)) return;
-		if (MIMIC_MESSAGE_CONFIG.sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + MIMIC_MESSAGE_CONFIG.mimicMessage, false);
+		if (MIMIC_MESSAGE_CONFIG.get().sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + MIMIC_MESSAGE_CONFIG.get().mimicMessage, false);
 		mimicKilled = true;
 	}
 
