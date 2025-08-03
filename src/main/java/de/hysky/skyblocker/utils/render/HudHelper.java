@@ -57,7 +57,7 @@ public class HudHelper {
 	}
 
 	public static void drawOutlinedText(DrawContext context, OrderedText text, int x, int y, int color, int outlineColor) {
-		if (CaxtonCompatibility.canDraw() && CaxtonCompatibility.drawOutlinedText(context, text, x, y, color, outlineColor)) return;
+		if (CaxtonCompatibility.drawOutlinedText(context, text, x, y, color, outlineColor)) return;
 
 		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text, new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, context.scissorStack.peekLast());
 		context.state.addText(renderState);
