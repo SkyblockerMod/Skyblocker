@@ -401,13 +401,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "mouseClicked")
-	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		if (VisitorHelper.shouldRender()) {
-			VisitorHelper.handleMouseClick(mouseX, mouseY, button, this.textRenderer);
-		}
-	}
-
 	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
 	private void skyblocker$drawOnItem(DrawContext context, Slot slot, CallbackInfo ci) {
 		if (Utils.isOnSkyblock()) {
