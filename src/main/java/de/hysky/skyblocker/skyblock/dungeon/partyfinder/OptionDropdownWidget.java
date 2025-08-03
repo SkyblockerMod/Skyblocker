@@ -8,6 +8,7 @@ import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
@@ -95,11 +96,11 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
         context.drawText(MinecraftClient.getInstance().textRenderer, name, x, y + 1, 0xFFD0D0D0, false);
         int offset = 10;
         context.fill(x - 2, y + offset, x - 3 + getWidth(), y + 15 + offset, 0xFFF0F0F0);
-        context.fill(x - 1, y + 1 + offset, x - 3 + getWidth() - 1, y + 14 + offset, 0xFF000000);
+        context.fill(x - 1, y + 1 + offset, x - 3 + getWidth() - 1, y + 14 + offset, Colors.BLACK);
         if (selectedOption != null) {
-            context.drawText(MinecraftClient.getInstance().textRenderer, selectedOption.message, x + 2, y + 3 + offset, 0xFFFFFFFF, true);
+            context.drawText(MinecraftClient.getInstance().textRenderer, selectedOption.message, x + 2, y + 3 + offset, Colors.WHITE, true);
         }
-        else context.drawText(MinecraftClient.getInstance().textRenderer, "???", x + 2, y + 3 + offset, 0xFFFFFFFF, true);
+        else context.drawText(MinecraftClient.getInstance().textRenderer, "???", x + 2, y + 3 + offset, Colors.WHITE, true);
     }
 
     @Override
@@ -107,14 +108,14 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
         if (animationProgress < 1) animationProgress += delta * 0.5f;
         else if (animationProgress != 1) animationProgress = 1;
         if (PartyFinderScreen.DEBUG) {
-            context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(slotId), getX(), getY() - 10, 0xFFFF0000, true);
-            context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(backButtonId), getX() + 50, getY() - 10, 0xFFFF0000, true);
+            context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(slotId), getX(), getY() - 10, Colors.RED, true);
+            context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(backButtonId), getX() + 50, getY() - 10, Colors.RED, true);
         }
 
         int height1 = Math.min(getHeight(), getEntryCount() * itemHeight + 4);
         int idk = isOpen ? (int) (height1 * animationProgress) : (int) (height1 * (1 - animationProgress));
         context.fill(getX(), getY() + headerHeight, getX() + getWidth() - 1, getY() + idk + headerHeight, 0xFFE0E0E0);
-        context.fill(getX() + 1, getY() + headerHeight + 1, getX() + getWidth() - 2, getY() + idk + headerHeight - 1, 0xFF000000);
+        context.fill(getX() + 1, getY() + headerHeight + 1, getX() + getWidth() - 2, getY() + idk + headerHeight - 1, Colors.BLACK);
 
         super.renderWidget(context, mouseX, mouseY, delta);
     }
@@ -179,8 +180,8 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
             matrices.translate(-x, -iconY);
             context.drawItem(icon, x, iconY);
             matrices.popMatrix();
-            if (PartyFinderScreen.DEBUG) context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(optionSlotId), x + 8, y, 0xFFFF0000, true);
-            context.drawText(MinecraftClient.getInstance().textRenderer, Text.literal(message).fillStyle(Style.EMPTY.withUnderline(hovered)), x + 14, y + 3, 0xFFFFFFFF, false);
+            if (PartyFinderScreen.DEBUG) context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(optionSlotId), x + 8, y, Colors.RED, true);
+            context.drawText(MinecraftClient.getInstance().textRenderer, Text.literal(message).fillStyle(Style.EMPTY.withUnderline(hovered)), x + 14, y + 3, Colors.WHITE, false);
         }
 
         @Override

@@ -247,14 +247,14 @@ public class PartyFinderScreen extends Screen {
             context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
         }
         if (DEBUG) {
-			context.drawText(textRenderer, currentPage.toString(), 0, 0, 0xFFFFFFFF, true);
-			context.drawText(textRenderer, "Truly a party finder", 20, 20, 0xFFFFFFFF, true);
+			context.drawText(textRenderer, currentPage.toString(), 0, 0, Colors.WHITE, true);
+			context.drawText(textRenderer, "Truly a party finder", 20, 20, Colors.WHITE, true);
 			if (sign != null) {
 				context.drawText(textRenderer, "You are in a sign btw", 20, 30, Colors.WHITE, true);
 			} else {
-				context.drawText(textRenderer, String.valueOf(refreshSlotId), width - 25, 30, 0xFFFFFFFF, true);
-				context.drawText(textRenderer, String.valueOf(prevPageSlotId), width - 25, 40, 0xFFFFFFFF, true);
-				context.drawText(textRenderer, String.valueOf(nextPageSlotId), width - 25, 50, 0xFFFFFFFF, true);
+				context.drawText(textRenderer, String.valueOf(refreshSlotId), width - 25, 30, Colors.WHITE, true);
+				context.drawText(textRenderer, String.valueOf(prevPageSlotId), width - 25, 40, Colors.WHITE, true);
+				context.drawText(textRenderer, String.valueOf(nextPageSlotId), width - 25, 50, Colors.WHITE, true);
 				for (int i = 0; i < handler.slots.size(); i++) {
 					context.drawItem(handler.slots.get(i).getStack(), (i % 9) * 16, (i / 9) * 16);
 				}
@@ -262,7 +262,7 @@ public class PartyFinderScreen extends Screen {
         }
         if (isWaitingForServer()) {
             String s = "Waiting for server...";
-            context.drawText(textRenderer, s, this.width - textRenderer.getWidth(s) - 5, this.height - textRenderer.fontHeight - 2, 0xFFFFFFFF, true);
+            context.drawText(textRenderer, s, this.width - textRenderer.getWidth(s) - 5, this.height - textRenderer.fontHeight - 2, Colors.WHITE, true);
         }
         if (!settingsContainer.canInteract(null)) {
             context.fill(0, 0, width, height, 0x40000000);
