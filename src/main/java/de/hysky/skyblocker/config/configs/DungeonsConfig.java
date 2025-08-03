@@ -19,11 +19,9 @@ public class DungeonsConfig {
 
 	public boolean classBasedPlayerGlow = true;
 
-	public boolean spiritLeapOverlay = true;
+	public boolean starredMobGlow = true;
 
-	public boolean starredMobGlow = false;
-
-	public boolean starredMobBoundingBoxes = true;
+	public boolean starredMobBoundingBoxes = false;
 
 	public boolean highlightDoorKeys = true;
 
@@ -34,6 +32,8 @@ public class DungeonsConfig {
 	public boolean hideSoulweaverSkulls = false;
 
 	public DungeonMap dungeonMap = new DungeonMap();
+
+	public SpiritLeapOverlay leapOverlay = new SpiritLeapOverlay();
 
 	public PuzzleSolvers puzzleSolvers = new PuzzleSolvers();
 
@@ -60,11 +60,23 @@ public class DungeonsConfig {
 	public static class DungeonMap {
 		public boolean enableMap = true;
 
+		public boolean fancyMap = true;
+
+		public boolean showSelfHead = true;
+
 		public float mapScaling = 1f;
 
 		public int mapX = 2;
 
 		public int mapY = 2;
+	}
+
+	public static class SpiritLeapOverlay {
+		public boolean enableLeapOverlay = true;
+
+		public boolean showMap = true;
+
+		public float scale = 1.2f;
 	}
 
 	public static class PuzzleSolvers {

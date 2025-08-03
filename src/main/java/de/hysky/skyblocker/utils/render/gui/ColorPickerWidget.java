@@ -1,13 +1,12 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.HudHelper;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
@@ -33,8 +32,8 @@ public class ColorPickerWidget extends ClickableWidget {
 	private boolean draggingSV = false;
 	private boolean draggingH = false;
 
-	private final ScreenRect svRect;
-	private final ScreenRect hRect;
+	private ScreenRect svRect;
+	private ScreenRect hRect;
 
 	private int rgbColor = -1;
 	private @Nullable Callback onColorChange = null;
@@ -50,9 +49,7 @@ public class ColorPickerWidget extends ClickableWidget {
 	public ColorPickerWidget(int x, int y, int width, int height) {
 		super(x, y, width, height, Text.literal("ColorPicker"));
 		rainbowColors = createRainbowColors(Math.min(width / 20, 8));
-		hRect = new ScreenRect(getX() + 1, getBottom() - 9, getWidth() - 2, 8);
-		int i = 15;
-		svRect = new ScreenRect(getX() + 1 + i, getY() + 1, getWidth() - 2 - i, height - hRect.height() - 6);
+		updateRects();
 	}
 
 	@Override
@@ -63,7 +60,42 @@ public class ColorPickerWidget extends ClickableWidget {
 		}
 		draggingH = false;
 		draggingSV = false;
+	}
 
+	private void updateRects() {
+		hRect = new ScreenRect(getX() + 1, getBottom() - 9, getWidth() - 2, 8);
+		int i = 15;
+		svRect = new ScreenRect(getX() + 1 + i, getY() + 1, getWidth() - 2 - i, height - hRect.height() - 6);
+	}
+
+	@Override
+	public void setX(int x) {
+		super.setX(x);
+		updateRects();
+	}
+
+	@Override
+	public void setY(int y) {
+		super.setY(y);
+		updateRects();
+	}
+
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
+		updateRects();
+	}
+
+	@Override
+	public void setHeight(int height) {
+		super.setHeight(height);
+		updateRects();
+	}
+
+	@Override
+	public void setDimensions(int width, int height) { // this doesn't call setWidth or setHeight
+		super.setDimensions(width, height);
+		updateRects();
 	}
 
 	@Override
@@ -112,7 +144,7 @@ public class ColorPickerWidget extends ClickableWidget {
 			float segmentLength = (float) hRect.width() / rainbowColors.length;
 			float startX = hRect.getLeft() + segmentLength * i;
 			float endX = hRect.getLeft() + segmentLength * (i + 1);
-			RenderHelper.drawHorizontalGradient(context, startX, hRect.getTop(), endX, hRect.getBottom(), startColor, endColor);
+			HudHelper.drawHorizontalGradient(context, startX, hRect.getTop(), endX, hRect.getBottom(), startColor, endColor);
 		}
 		context.fill(hRect.getLeft() + (int) hThumbX - 1, hRect.getTop(), hRect.getLeft() + (int) hThumbX + 2, hRect.getBottom(), Colors.BLACK);
 		context.fill(hRect.getLeft() + (int) hThumbX, hRect.getTop() - 1, hRect.getLeft() + (int) hThumbX + 1, hRect.getBottom() + 1, Colors.BLACK);
@@ -124,18 +156,14 @@ public class ColorPickerWidget extends ClickableWidget {
 		int pickerY = svRect.getTop();
 		int pickerEndX = svRect.getRight();
 		int pickerEndY = svRect.getBottom();
-		RenderHelper.drawHorizontalGradient(context, pickerX, pickerY, pickerEndX, pickerEndY, -1, svColor);
-		context.fillGradient(pickerX, pickerY, pickerEndX, pickerEndY, 1, 0, 0xFF_00_00_00);
+		HudHelper.drawHorizontalGradient(context, pickerX, pickerY, pickerEndX, pickerEndY, -1, svColor);
+		context.fillGradient(pickerX, pickerY, pickerEndX, pickerEndY, 1, 0xFF_00_00_00);
 
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.translate(0, 0, 5);
-		context.drawGuiTexture(RenderLayer::getGuiTextured, SV_THUMB_TEXTURE,
+		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SV_THUMB_TEXTURE,
 				svRect.getLeft() + (int) svThumbX - 2,
 				svRect.getTop() + (int) svThumbY - 2,
 				5, 5
 		);
-		matrices.pop();
 
 		// Preview
 		context.fill(getX(), getY(), svRect.getLeft() - 2, svRect.getBottom() + 1, color);

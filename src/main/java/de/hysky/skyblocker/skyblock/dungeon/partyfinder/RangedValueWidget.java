@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.text.Text;
 
@@ -78,12 +77,7 @@ public class RangedValueWidget extends ContainerWidget {
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         context.drawText(MinecraftClient.getInstance().textRenderer, name, getX(), getY(), 0xFFD0D0D0, false);
         int textOffset = 10;
-        MatrixStack matrices = context.getMatrices();
         if (!visible) return;
-        if (state != State.CLOSED) {
-            matrices.push();
-            matrices.translate(0, 0, 100);
-        }
         final TextRenderer textRenderer = screen.getClient().textRenderer;
         if (PartyFinderScreen.DEBUG) {
             context.drawText(textRenderer, String.valueOf(slotId), getX(), getY() - 10, 0xFFFF0000, true);
@@ -122,9 +116,6 @@ public class RangedValueWidget extends ContainerWidget {
             context.fill(maxStartX + 1, getY() + 2 + textOffset, maxEndX - 1, getY() + 13 + textOffset, 0xFF000000);
 
             context.drawCenteredTextWithShadow(textRenderer, String.valueOf(max), (maxStartX + maxEndX) >> 1, getY() + 3 + textOffset, 0xFFFFFFFF);
-        }
-        if (state != State.CLOSED) {
-            matrices.pop();
         }
     }
 

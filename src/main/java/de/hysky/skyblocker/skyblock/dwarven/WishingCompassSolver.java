@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
@@ -77,6 +78,7 @@ public class WishingCompassSolver {
         UseBlockCallback.EVENT.register(WishingCompassSolver::onBlockInteract);
         ClientReceiveMessageEvents.ALLOW_GAME.register(WishingCompassSolver::failMessageListener);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+        ParticleEvents.FROM_SERVER.register(WishingCompassSolver::onParticle);
     }
 
     /**
@@ -176,7 +178,7 @@ public class WishingCompassSolver {
     }
 
     @SuppressWarnings("incomplete-switch")
-	public static void onParticle(ParticleS2CPacket packet) {
+	private static void onParticle(ParticleS2CPacket packet) {
         if (!Utils.isInCrystalHollows() || !ParticleTypes.HAPPY_VILLAGER.equals(packet.getParameters().getType())) {
             return;
         }
