@@ -43,10 +43,10 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
         if (isOpen) {
             if (backButtonId != -1) screen.clickAndWaitForServer(backButtonId);
         } else {
+			animationProgress = 0f;
             screen.clickAndWaitForServer(slotId);
             screen.partyFinderButton.active = false;
         }
-        animationProgress = 0f;
         return true;
     }
 
@@ -105,17 +105,23 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
 
     @Override
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        if (animationProgress < 1) animationProgress += delta * 0.5f;
-        else if (animationProgress != 1) animationProgress = 1;
+		if (isOpen) {
+			if (animationProgress < 1) animationProgress += delta * 0.5f;
+			else if (animationProgress != 1) animationProgress = 1;
+		} else {
+			animationProgress = 0;
+		}
+
         if (PartyFinderScreen.DEBUG) {
             context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(slotId), getX(), getY() - 10, Colors.RED, true);
             context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(backButtonId), getX() + 50, getY() - 10, Colors.RED, true);
+			context.drawText(client.textRenderer, String.valueOf(animationProgress), getX() - 10, getY(), Colors.GREEN, true);
         }
 
-        int height1 = Math.min(getHeight(), getEntryCount() * itemHeight + 4);
-        int idk = isOpen ? (int) (height1 * animationProgress) : (int) (height1 * (1 - animationProgress));
-        context.fill(getX(), getY() + headerHeight, getX() + getWidth() - 1, getY() + idk + headerHeight, 0xFFE0E0E0);
-        context.fill(getX() + 1, getY() + headerHeight + 1, getX() + getWidth() - 2, getY() + idk + headerHeight - 1, Colors.BLACK);
+        int listHeight = Math.min(getHeight(), getEntryCount() * itemHeight + 4);
+        int openedListHeight = isOpen ? (int) (listHeight * animationProgress) : (int) (listHeight * (1 - animationProgress));
+        context.fill(getX(), getY() + headerHeight, getX() + getWidth() - 1, getY() + openedListHeight + headerHeight, 0xFFE0E0E0);
+        context.fill(getX() + 1, getY() + headerHeight + 1, getX() + getWidth() - 2, getY() + openedListHeight + headerHeight - 1, Colors.BLACK);
 
         super.renderWidget(context, mouseX, mouseY, delta);
     }
@@ -129,10 +135,10 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
     }
 
     public void open(List<Option> entries, int backButtonId) {
+		if (!isOpen) animationProgress = 0f;
         isOpen = true;
 		height = maxHeight;
         this.replaceEntries(entries);
-        animationProgress = 0f;
         this.backButtonId = backButtonId;
     }
 
