@@ -18,6 +18,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
+import java.awt.Color;
+
 public class DungeonsCategory {
 
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
@@ -66,14 +68,6 @@ public class DungeonsCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay"))
-						.description(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip"))
-						.binding(defaults.dungeons.spiritLeapOverlay,
-								() -> config.dungeons.spiritLeapOverlay,
-								newValue -> config.dungeons.spiritLeapOverlay = newValue)
-						.controller(ConfigUtils.createBooleanController())
-						.build())
-				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.dungeons.starredMobGlow"))
 						.description(Text.translatable("skyblocker.config.dungeons.starredMobGlow.@Tooltip"))
 						.binding(defaults.dungeons.starredMobGlow,
@@ -87,6 +81,14 @@ public class DungeonsCategory {
 						.binding(defaults.dungeons.starredMobBoundingBoxes,
 								() -> config.dungeons.starredMobBoundingBoxes,
 								newValue -> config.dungeons.starredMobBoundingBoxes = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.highlightDoorKeys"))
+						.description(Text.translatable("skyblocker.config.dungeons.highlightDoorKeys.@Tooltip"))
+						.binding(defaults.dungeons.highlightDoorKeys,
+								() -> config.dungeons.highlightDoorKeys,
+								newValue -> config.dungeons.highlightDoorKeys = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
@@ -133,6 +135,20 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.dungeonMap.enableMap = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.map.fancyMap"))
+								.binding(defaults.dungeons.dungeonMap.fancyMap,
+										() -> config.dungeons.dungeonMap.fancyMap,
+										newValue -> config.dungeons.dungeonMap.fancyMap = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.map.showSelfHead"))
+								.binding(defaults.dungeons.dungeonMap.showSelfHead,
+										() -> config.dungeons.dungeonMap.showSelfHead,
+										newValue -> config.dungeons.dungeonMap.showSelfHead = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(Option.<Float>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.map.mapScaling"))
 								.binding(defaults.dungeons.dungeonMap.mapScaling,
@@ -144,6 +160,34 @@ public class DungeonsCategory {
 								.name(Text.translatable("skyblocker.config.dungeons.map.mapScreen"))
 								.prompt(Text.translatable("text.skyblocker.open"))
 								.action(screen -> MinecraftClient.getInstance().setScreen(new DungeonMapConfigScreen(screen)))
+								.build())
+						.build())
+
+				// Spirit Leap Overlay
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay"))
+								.description(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay.@Tooltip"))
+								.binding(defaults.dungeons.leapOverlay.enableLeapOverlay,
+										() -> config.dungeons.leapOverlay.enableLeapOverlay,
+										newValue -> config.dungeons.leapOverlay.enableLeapOverlay = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.showMap"))
+								.binding(defaults.dungeons.leapOverlay.showMap,
+										() -> config.dungeons.leapOverlay.showMap,
+										newValue -> config.dungeons.leapOverlay.showMap = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.scale"))
+								.binding(defaults.dungeons.leapOverlay.scale,
+										() -> config.dungeons.leapOverlay.scale,
+										newValue -> config.dungeons.leapOverlay.scale = newValue)
+								.controller(FloatController.createBuilder().range(1f, 2f).slider(0.05f).build())
 								.build())
 						.build())
 
@@ -276,6 +320,13 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.livid.enableSolidColor = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.livid.customColor"))
+								.binding(defaults.dungeons.livid.customColor,
+										() -> config.dungeons.livid.customColor,
+										newValue -> config.dungeons.livid.customColor = newValue)
+								.controller(ConfigUtils.createColourController(false))
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorGlow"))
 								.description(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorGlow.@Tooltip"))
@@ -293,19 +344,19 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorText"))
-								.description(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorText.@Tooltip"))
-								.binding(defaults.dungeons.livid.enableLividColorText,
-										() -> config.dungeons.livid.enableLividColorText,
-										newValue -> config.dungeons.livid.enableLividColorText = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorTitle"))
 								.description(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorTitle.@Tooltip"))
 								.binding(defaults.dungeons.livid.enableLividColorTitle,
 										() -> config.dungeons.livid.enableLividColorTitle,
 										newValue -> config.dungeons.livid.enableLividColorTitle = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorText"))
+								.description(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorText.@Tooltip"))
+								.binding(defaults.dungeons.livid.enableLividColorText,
+										() -> config.dungeons.livid.enableLividColorText,
+										newValue -> config.dungeons.livid.enableLividColorText = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<String>createBuilder()

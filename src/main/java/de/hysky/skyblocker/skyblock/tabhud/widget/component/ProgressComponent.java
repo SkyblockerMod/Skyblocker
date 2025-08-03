@@ -5,6 +5,7 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
@@ -80,7 +81,7 @@ public class ProgressComponent extends Component {
 	@Override
 	public void render(DrawContext context, int x, int y) {
 		context.drawItem(ico, x, y + ICO_OFFS);
-		context.drawText(txtRend, desc, x + ICO_DIM + PAD_L, y, 0xffffffff, false);
+		context.drawText(txtRend, desc, x + ICO_DIM + PAD_L, y, Colors.WHITE, false);
 
 		int barX = x + ICO_DIM + PAD_L;
 		int barY = y + txtRend.fontHeight + PAD_S;
@@ -92,6 +93,6 @@ public class ProgressComponent extends Component {
 		// Only turn text dark when it is wider than the filled bar and the filled bar is bright.
 		// The + 4 is because the text is indented 3 pixels and 1 extra pixel to the right as buffer.
 		boolean textDark = endOffsX >= textWidth + 4 && this.colorIsBright;
-		context.drawText(txtRend, bar, barX + 3, barY + 2, textDark ? 0xff000000 : 0xffffffff, !textDark);
+		context.drawText(txtRend, bar, barX + 3, barY + 2, textDark ? Colors.BLACK : Colors.WHITE, !textDark);
 	}
 }

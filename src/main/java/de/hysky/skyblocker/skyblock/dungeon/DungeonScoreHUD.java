@@ -1,13 +1,14 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import org.joml.Matrix3x2fStack;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -20,7 +21,7 @@ public class DungeonScoreHUD {
 
 	@Init
 	public static void init() {
-		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.OVERLAY_MESSAGE, DUNGEON_SCORE, (context, tickCounter) -> render(context)));
+		HudElementRegistry.attachElementAfter(VanillaHudElements.OVERLAY_MESSAGE, DUNGEON_SCORE, (context, tickCounter) -> render(context));
 	}
 
 	//This is 4+5 wide, needed to offset the extra width from bold numbers (3×1 wide) in S+ and the "+" (6 wide) so that it doesn't go off the screen if the score is S+ and the hud element is at the right edge of the screen
@@ -36,11 +37,11 @@ public class DungeonScoreHUD {
 
 	public static void render(DrawContext context, int x, int y) {
 		float scale = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreScaling;
-		MatrixStack matrixStack = context.getMatrices();
-		matrixStack.push();
-		matrixStack.scale(scale, scale, 0);
+		Matrix3x2fStack matrixStack = context.getMatrices();
+		matrixStack.pushMatrix();
+		matrixStack.scale(scale, scale);
 		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, getFormattedScoreText(), (int) (x / scale), (int) (y / scale), 0xFFFFFFFF);
-		matrixStack.pop();
+		matrixStack.popMatrix();
 	}
 
 	public static Text getFormattedScoreText() {

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
+import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -54,12 +55,13 @@ public abstract class AbstractBlockHighlighter {
 		ClientChunkEvents.CHUNK_UNLOAD.register(this::onChunkUnload);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(this::render);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> this.reset());
+		WorldEvents.BLOCK_STATE_UPDATE.register(this::onBlockUpdate);
 	}
 
-	public void onBlockUpdate(BlockPos pos, BlockState state) {
+	protected void onBlockUpdate(BlockPos pos, BlockState oldState, BlockState newState) {
 		if (!shouldProcess()) return;
 
-		if (this.statePredicate.test(state)) {
+		if (this.statePredicate.test(newState)) {
 			this.highlightedBlocks.add(pos.toImmutable());
 		} else {
 			this.highlightedBlocks.remove(pos);
