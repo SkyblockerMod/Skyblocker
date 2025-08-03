@@ -46,7 +46,7 @@ public class MessageScheduler extends Scheduler {
 
         if (!hide) client.inGameHud.getChatHud().addToMessageHistory(message);
         if (message.startsWith("/")) {
-            client.player.networkHandler.sendCommand(message.substring(1));
+            client.player.networkHandler.sendChatCommand(message.substring(1));
         } else {
             client.player.networkHandler.sendChatMessage(message);
         }

@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -66,7 +67,7 @@ public class MythologicalRitual {
         AttackBlockCallback.EVENT.register(MythologicalRitual::onAttackBlock);
         UseBlockCallback.EVENT.register(MythologicalRitual::onUseBlock);
         UseItemCallback.EVENT.register(MythologicalRitual::onUseItem);
-        ClientReceiveMessageEvents.GAME.register(MythologicalRitual::onChatMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(MythologicalRitual::onChatMessage);
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("diana")
                 .then(literal("clearGriffinBurrows").executes(context -> {
@@ -80,13 +81,14 @@ public class MythologicalRitual {
                         }))
                 )
         )));
+        ParticleEvents.FROM_SERVER.register(MythologicalRitual::onParticle);
 
         // Put a root burrow so echo detection works without a previous burrow
         previousBurrow.confirmed = TriState.DEFAULT;
         griffinBurrows.put(BlockPos.ORIGIN, previousBurrow);
     }
 
-    public static void onParticle(ParticleS2CPacket packet) {
+    private static void onParticle(ParticleS2CPacket packet) {
         if (isActive()) {
             switch (packet.getParameters().getType()) {
                 case ParticleType<?> type when ParticleTypes.CRIT.equals(type) || ParticleTypes.ENCHANT.equals(type) -> handleBurrowParticle(packet);
@@ -250,12 +252,14 @@ public class MythologicalRitual {
         return ActionResult.PASS;
     }
 
-    public static void onChatMessage(Text message, boolean overlay) {
+    public static boolean onChatMessage(Text message, boolean overlay) {
         if (isActive() && GRIFFIN_BURROW_DUG.matcher(message.getString()).matches()) {
             previousBurrow.confirmed = TriState.FALSE;
             previousBurrow = griffinBurrows.get(lastDugBurrowPos);
             previousBurrow.confirmed = TriState.DEFAULT;
         }
+
+        return true;
     }
 
     private static boolean isActive() {

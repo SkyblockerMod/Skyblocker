@@ -66,7 +66,7 @@ public class FairySouls {
         ClientLifecycleEvents.CLIENT_STOPPING.register(FairySouls::saveFoundFairySouls);
         ClientCommandRegistrationCallback.EVENT.register(FairySouls::registerCommands);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(FairySouls::render);
-        ClientReceiveMessageEvents.GAME.register(FairySouls::onChatMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(FairySouls::onChatMessage);
     }
 
     private static void loadFairySouls() {
@@ -154,11 +154,13 @@ public class FairySouls {
         }
     }
 
-    private static void onChatMessage(Text text, boolean overlay) {
+    private static boolean onChatMessage(Text text, boolean overlay) {
         String message = text.getString();
         if (message.equals("You have already found that Fairy Soul!") || message.equals("§d§lSOUL! §fYou found a §dFairy Soul§f!")) {
             markClosestFairyFound();
         }
+
+        return true;
     }
 
     private static void markClosestFairyFound() {
