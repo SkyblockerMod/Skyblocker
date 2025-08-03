@@ -40,7 +40,7 @@ public class FancyStatusBars {
 	public static Map<StatusBarType, StatusBar> statusBars = new EnumMap<>(StatusBarType.class);
 
 	public static boolean isHealthFancyBarEnabled() {
-		return isBarEnabled(StatusBarType.HEALTH);
+		return !Utils.isInTheRift() && isBarEnabled(StatusBarType.HEALTH);
 	}
 
 	public static boolean isExperienceFancyBarEnabled() {
@@ -61,6 +61,7 @@ public class FancyStatusBars {
 		statusBars.put(StatusBarType.EXPERIENCE, StatusBarType.EXPERIENCE.newStatusBar());
 		statusBars.put(StatusBarType.SPEED, StatusBarType.SPEED.newStatusBar());
 		statusBars.put(StatusBarType.AIR, StatusBarType.AIR.newStatusBar());
+		statusBars.put(StatusBarType.RIFT_TIME, StatusBarType.RIFT_TIME.newStatusBar());
 
 		// Fetch from old status bar config
 		int[] counts = new int[3]; // counts for RIGHT, LAYER1, LAYER2
@@ -71,6 +72,7 @@ public class FancyStatusBars {
 		initBarPosition(statusBars.get(StatusBarType.EXPERIENCE), counts, barPositions.experienceBarPosition);
 		initBarPosition(statusBars.get(StatusBarType.SPEED), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
 		initBarPosition(statusBars.get(StatusBarType.AIR), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
+		initBarPosition(statusBars.get(StatusBarType.RIFT_TIME), counts, UIAndVisualsConfig.LegacyBarPosition.LAYER1);
 
 		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig).thenAccept(object -> {
 			if (object != null) {
@@ -304,7 +306,7 @@ public class FancyStatusBars {
 	}
 
 	public static boolean isEnabled() {
-		return SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars && !Utils.isInTheRift();
+		return SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars;
 	}
 
 	public boolean render(DrawContext context, int scaledWidth, int scaledHeight) {
@@ -318,18 +320,29 @@ public class FancyStatusBars {
 			statusBar.render(context, -1, -1, client.getRenderTickCounter().getDynamicDeltaTicks());
 		}
 
-		StatusBarTracker.Resource health = StatusBarTracker.getHealth();
-		statusBars.get(StatusBarType.HEALTH).updateWithResource(health);
+		boolean inTheRift = Utils.isInTheRift();
+		statusBars.get(StatusBarType.HEALTH).visible = !inTheRift;
+		statusBars.get(StatusBarType.DEFENSE).visible = !inTheRift;
+		statusBars.get(StatusBarType.EXPERIENCE).visible = !inTheRift;
+		statusBars.get(StatusBarType.RIFT_TIME).visible = inTheRift;
+		if (inTheRift) {
+			statusBars.get(StatusBarType.RIFT_TIME).updateValues(player.experienceProgress, 0, StatusBarTracker.getRiftTime(), null, null);
+		} else {
+			StatusBarTracker.Resource health = StatusBarTracker.getHealth();
+			statusBars.get(StatusBarType.HEALTH).updateWithResource(health);
+			int defense = StatusBarTracker.getDefense();
+			statusBars.get(StatusBarType.DEFENSE).updateValues(defense / (defense + 100.f), 0, defense, null, null);
+			statusBars.get(StatusBarType.EXPERIENCE).updateValues(player.experienceProgress, 0, player.experienceLevel, null, null);
+
+		}
+
 		StatusBarTracker.Resource intelligence = StatusBarTracker.getMana();
 		if (SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.ACCURATE) {
 			float totalIntelligence = (float) intelligence.max() + intelligence.overflow();
 			statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / totalIntelligence + intelligence.overflow() / totalIntelligence, intelligence.overflow() / totalIntelligence, intelligence.value(), intelligence.max(), intelligence.overflow());
 		} else statusBars.get(StatusBarType.INTELLIGENCE).updateWithResource(intelligence);
-		int defense = StatusBarTracker.getDefense();
-		statusBars.get(StatusBarType.DEFENSE).updateValues(defense / (defense + 100.f), 0, defense, null, null);
 		StatusBarTracker.Resource speed = StatusBarTracker.getSpeed();
 		statusBars.get(StatusBarType.SPEED).updateWithResource(speed);
-		statusBars.get(StatusBarType.EXPERIENCE).updateValues(player.experienceProgress, 0, player.experienceLevel, null, null);
 		StatusBarTracker.Resource air = StatusBarTracker.getAir();
 		StatusBar airBar = statusBars.get(StatusBarType.AIR);
 		airBar.updateWithResource(air);

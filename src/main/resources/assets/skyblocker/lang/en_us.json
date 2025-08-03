@@ -1197,6 +1197,7 @@
   "skyblocker.bars.config.overflowColor": "Overflow Color",
   "skyblocker.bars.config.speed": "Speed",
   "skyblocker.bars.config.air": "Air",
+  "skyblocker.bars.config.rift_time": "Rift Time",
   "skyblocker.bars.config.text": "Text",
   "skyblocker.bars.config.showMax": "Show Max",
   "skyblocker.bars.config.showOverflow": "Show Overflow",

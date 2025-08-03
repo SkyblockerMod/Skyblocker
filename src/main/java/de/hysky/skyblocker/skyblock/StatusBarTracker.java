@@ -23,6 +23,7 @@ public class StatusBarTracker {
 	private static final Pattern DEFENSE_STATUS = Pattern.compile("§a(?<defense>[\\d,]+)§a❈ Defense *");
 	private static final Pattern MANA_USE = Pattern.compile("§b-([\\d,]+) Mana \\(§.*?\\) *");
 	private static final Pattern MANA_STATUS = Pattern.compile("§b(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|§3(?<overflow>[\\d,]+)ʬ) *");
+	private static final Pattern RIFT_TIME_STATUS = Pattern.compile("§a(?<time>(?:[\\d,]+m)?[\\d,]+s)ф Left *"); // (§2\+[\d,]s!)? *
 
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 	private static Resource health = new Resource(100, 100, 0);
@@ -30,6 +31,7 @@ public class StatusBarTracker {
 	private static Resource speed = new Resource(100, 400, 0);
 	private static Resource air = new Resource(100, 300, 0);
 	private static int defense = 0;
+	private static String riftTime = "";
 
 	@Init
 	public static void init() {
@@ -58,6 +60,10 @@ public class StatusBarTracker {
 		return air;
 	}
 
+	public static String getRiftTime() {
+		return riftTime;
+	}
+
 	private static void tick() {
 		if (client == null || client.player == null) return;
 		updateHealth(health.value, health.max, health.overflow);
@@ -71,18 +77,42 @@ public class StatusBarTracker {
 	}
 
 	private static Text onOverlayMessage(Text text, boolean overlay) {
-		if (!overlay || !Utils.isOnSkyblock() ||  Utils.isInTheRift()) {
+		if (!overlay || !Utils.isOnSkyblock()) {
 			return text;
 		}
-		if (!SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars) {
-			//still update values for other parts of the mod to use
-			update(text.getString(), SkyblockerConfigManager.get().chat.hideMana);
-			return text;
-		}
-		return Text.of(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));
+
+		String string;
+		if (Utils.isInTheRift()) string = updateRift(text.getString(), SkyblockerConfigManager.get().chat.hideMana);
+		else string = updateNormal(text.getString(), SkyblockerConfigManager.get().chat.hideMana);
+
+		return !SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars ? text : Text.of(string);
 	}
 
-	public static String update(String actionBar, boolean filterManaUse) {
+	public static String updateRift(String actionBar, boolean filterManaUse) {
+		StringBuilder sb = new StringBuilder();
+
+		Matcher matcher = RIFT_TIME_STATUS.matcher(actionBar);
+		if (matcher.find()) {
+			riftTime = matcher.group("time");
+			if (FancyStatusBars.isBarEnabled(StatusBarType.RIFT_TIME)) matcher.appendReplacement(sb, "");
+			else matcher.appendReplacement(sb, "$0");
+		}
+
+		if (matcher.usePattern(MANA_STATUS).find()) {
+			updateMana(matcher);
+			if (FancyStatusBars.isBarEnabled(StatusBarType.INTELLIGENCE)) matcher.appendReplacement(sb, "");
+			else matcher.appendReplacement(sb, "$0");
+		}
+
+		if (filterManaUse && matcher.usePattern(MANA_USE).find()) {
+			matcher.appendReplacement(sb, "");
+		}
+		matcher.appendTail(sb);
+		String res = sb.toString().trim();
+		return res.isEmpty() ? null : res;
+	}
+
+	public static String updateNormal(String actionBar, boolean filterManaUse) {
 		var sb = new StringBuilder();
 
 		// Match health and don't add it to the string builder

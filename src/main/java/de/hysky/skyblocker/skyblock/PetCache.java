@@ -178,6 +178,7 @@ public class PetCache {
 
 	@Nullable
 	public static PetInfo getCurrentPet() {
+		if (Utils.isInTheRift()) return null;
 		return CACHED_PETS.get();
 	}
 }
