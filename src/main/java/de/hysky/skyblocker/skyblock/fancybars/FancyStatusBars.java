@@ -6,6 +6,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -40,7 +41,7 @@ public class FancyStatusBars {
 	public static Map<StatusBarType, StatusBar> statusBars = new EnumMap<>(StatusBarType.class);
 
 	public static boolean isHealthFancyBarEnabled() {
-		return !Utils.isInTheRift() && isBarEnabled(StatusBarType.HEALTH);
+		return (!Utils.isInTheRift() || MinecraftClient.getInstance().currentScreen instanceof StatusBarsConfigScreen) && isBarEnabled(StatusBarType.HEALTH);
 	}
 
 	public static boolean isExperienceFancyBarEnabled() {
@@ -55,13 +56,8 @@ public class FancyStatusBars {
 	@SuppressWarnings("deprecation")
 	@Init
 	public static void init() {
-		statusBars.put(StatusBarType.HEALTH, StatusBarType.HEALTH.newStatusBar());
-		statusBars.put(StatusBarType.INTELLIGENCE, StatusBarType.INTELLIGENCE.newStatusBar());
-		statusBars.put(StatusBarType.DEFENSE, StatusBarType.DEFENSE.newStatusBar());
-		statusBars.put(StatusBarType.EXPERIENCE, StatusBarType.EXPERIENCE.newStatusBar());
-		statusBars.put(StatusBarType.SPEED, StatusBarType.SPEED.newStatusBar());
-		statusBars.put(StatusBarType.AIR, StatusBarType.AIR.newStatusBar());
-		statusBars.put(StatusBarType.RIFT_TIME, StatusBarType.RIFT_TIME.newStatusBar());
+		SkyblockEvents.LOCATION_CHANGE.register(location -> updatePositions(false));
+		for (StatusBarType value : StatusBarType.values()) statusBars.put(value, value.newStatusBar());
 
 		// Fetch from old status bar config
 		int[] counts = new int[3]; // counts for RIGHT, LAYER1, LAYER2
@@ -72,7 +68,7 @@ public class FancyStatusBars {
 		initBarPosition(statusBars.get(StatusBarType.EXPERIENCE), counts, barPositions.experienceBarPosition);
 		initBarPosition(statusBars.get(StatusBarType.SPEED), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
 		initBarPosition(statusBars.get(StatusBarType.AIR), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
-		initBarPosition(statusBars.get(StatusBarType.RIFT_TIME), counts, UIAndVisualsConfig.LegacyBarPosition.LAYER1);
+		initBarPosition(statusBars.get(StatusBarType.RIFT_TIME), counts, UIAndVisualsConfig.LegacyBarPosition.LAYER2);
 
 		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig).thenAccept(object -> {
 			if (object != null) {
@@ -318,6 +314,7 @@ public class FancyStatusBars {
 		for (StatusBar statusBar : barCollection) {
 			if (!statusBar.enabled || !statusBar.visible) continue;
 			statusBar.render(context, -1, -1, client.getRenderTickCounter().getDynamicDeltaTicks());
+			statusBar.renderText(context);
 		}
 
 		boolean inTheRift = Utils.isInTheRift();

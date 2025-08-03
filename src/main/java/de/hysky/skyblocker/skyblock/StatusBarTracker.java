@@ -38,6 +38,7 @@ public class StatusBarTracker {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(StatusBarTracker::allowOverlayMessage);
 		ClientReceiveMessageEvents.MODIFY_GAME.register(StatusBarTracker::onOverlayMessage);
 		Scheduler.INSTANCE.scheduleCyclic(StatusBarTracker::tick, 1);
+
 	}
 
 	public static Resource getHealth() {

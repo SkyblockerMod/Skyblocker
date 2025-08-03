@@ -122,10 +122,6 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 1 : renderX;
 		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, renderY + 1, barWidth, 7, transparency);
 		drawBarFill(context, barX, barWidth);
-		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
-		if (showText() && enabled) {
-			renderText(context);
-		}
 	}
 
 	protected void drawBarFill(DrawContext context, int barX, int barWith) {
@@ -149,7 +145,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	}
 
 	public void renderText(DrawContext context) {
-		if (!showText()) return;
+		if (!showText() || !enabled) return;
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 2 : renderX;
