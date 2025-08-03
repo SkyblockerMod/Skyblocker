@@ -837,6 +837,8 @@
   "skyblocker.config.quickNav": "Quick Navigation",
   "skyblocker.config.quickNav.button": "Button %d",
   "skyblocker.config.quickNav.button.clickEvent": "Click Event",
+  "skyblocker.config.quickNav.button.chooseSkyblockItem": "Choose Skyblock Item",
+  "skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip": "Select a Skyblock icon or item to fill this button with.",
   "skyblocker.config.quickNav.button.item.components": "Item Components",
   "skyblocker.config.quickNav.button.item.components.@Tooltip": "A string of item components enclosed in square brackets, which is the same format as the /give command.\n\nExample: [minecraft:enchantment_glint_override=true]",
   "skyblocker.config.quickNav.button.item.count": "Item Count",
