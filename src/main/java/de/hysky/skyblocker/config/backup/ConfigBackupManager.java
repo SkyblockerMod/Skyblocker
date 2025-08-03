@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 /**
@@ -28,11 +29,13 @@ public class ConfigBackupManager {
 	private ConfigBackupManager() {}
 
 	public static void init() {
-		try {
-			Files.createDirectories(BACKUP_DIR);
-		} catch (IOException e) {
-			LOGGER.error("[Skyblocker] Failed to create backup directory!", e);
-		}
+		CompletableFuture.runAsync(() -> {
+			try {
+				Files.createDirectories(BACKUP_DIR);
+			} catch (IOException e) {
+				LOGGER.error("[Skyblocker] Failed to create backup directory!", e);
+			}
+		});
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> backupConfig());
 	}
