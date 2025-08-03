@@ -35,6 +35,10 @@ public abstract class BasicMenu extends RadialMenu {
 		return originalButton;
 	}
 
+	public int clickSlotOffset(int slotId) {
+		return 0;
+	}
+
 	public String[] getNavigationItemNames() {
 		return new String[]{"Go Back", "Close"};
 	}

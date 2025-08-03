@@ -39,9 +39,15 @@ public abstract class RadialMenu {
 	 *
 	 * @param originalButton original button clicked by user
 	 * @param slotId         the slot to be clicked
-	 * @return the remapped button
 	 */
 	public abstract int remapClickSlotButton(int originalButton, int slotId);
+
+	/**
+	 * Lets a menu offset the clicked slot compared to the one shown in the menu
+	 *
+	 * @return offset to add to menu
+	 */
+	public abstract int clickSlotOffset(int slotId);
 
 	/**
 	 * @return an array of names of items that are used to navigate the menu. These will be placed at the bottom

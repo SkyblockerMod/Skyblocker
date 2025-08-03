@@ -12,7 +12,13 @@ public class WardrobeMenu extends RegexMenu {
 	@Override
 	public boolean itemMatches(int slotId, ItemStack stack) {
 		Item item = stack.getItem();
-		return (item.equals(Items.ARROW) || item.equals(Items.LIME_DYE) || item.equals(Items.PINK_DYE) || item.equals(Items.BARRIER));
+		if (item.equals(Items.ARROW) || item.equals(Items.BARRIER)) return true;
+		return (!item.equals(Items.BLACK_STAINED_GLASS_PANE) && slotId < 9);
+	}
+
+	@Override
+	public int clickSlotOffset(int slotId) {
+		return (slotId < 9) ? 36 : 0;
 	}
 
 	@Override
