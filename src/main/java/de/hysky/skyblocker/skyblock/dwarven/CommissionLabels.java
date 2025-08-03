@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -19,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class CommissionLabels {
@@ -31,7 +31,6 @@ public class CommissionLabels {
 	protected static List<MiningLocationLabel> activeWaypoints = new ArrayList<>();
 	private static List<String> commissions = List.of();
 	private static boolean commissionDone = false;
-	private static final Pattern COMM_PATTERN = Pattern.compile("(?<name>.*): (?<progress>.*)%?");
 
 
 	@Init
@@ -59,11 +58,11 @@ public class CommissionLabels {
 			if (foundCommissions) {
 				if (!string.startsWith(" ")) break;
 				string = string.substring(1);
-				Matcher matcher = COMM_PATTERN.matcher(string);
+				Matcher matcher = CommsWidget.COMM_PATTERN.matcher(string);
 				if (matcher.matches()) {
 					String name = matcher.group("name");
 					String progress = matcher.group("progress");
-					newCommissionDone = newCommissionDone || "DONE".equals(progress);
+					newCommissionDone |= "DONE".equals(progress);
 					newCommissions.add(name);
 				}
 			} else if (string.startsWith("Commissions")) {
@@ -84,9 +83,8 @@ public class CommissionLabels {
 	 * @param completed      if there is a commission completed
 	 */
 	public static void update(List<String> newCommissions, boolean completed) {
-		if (!enabled()) {
-			return;
-		}
+		if (!enabled()) return;
+
 		MiningConfig.CommissionWaypointMode currentMode = SkyblockerConfigManager.get().mining.commissionWaypoints.mode;
 		activeWaypoints.clear();
 		String location = Utils.getIslandArea().substring(2);
@@ -141,9 +139,8 @@ public class CommissionLabels {
 	 */
 	private static void render(WorldRenderContext context) {
 		// Only render in the dwarven mines and not the mineshaft.
-		if (Location.DWARVEN_MINES != Utils.getLocation() || !enabled()) {
-			return;
-		}
+		if (Location.DWARVEN_MINES != Utils.getLocation() || !enabled()) return;
+
 		for (MiningLocationLabel MiningLocationLabel : activeWaypoints) {
 			MiningLocationLabel.render(context);
 		}

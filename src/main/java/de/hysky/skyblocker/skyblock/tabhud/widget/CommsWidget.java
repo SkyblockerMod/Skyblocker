@@ -30,7 +30,7 @@ public class CommsWidget extends TabHudWidget {
 	// match a comm
 	// group 1: comm name
 	// group 2: comm progress (without "%" for comms that show a percentage)
-	private static final Pattern COMM_PATTERN = Pattern.compile("(?<name>.*): (?<progress>.*)%?");
+	public static final Pattern COMM_PATTERN = Pattern.compile("(?<name>.*): (?<progress>.*)%?");
 
 	public CommsWidget() {
 		super("Commissions", TITLE, Formatting.DARK_AQUA.getColorValue());
