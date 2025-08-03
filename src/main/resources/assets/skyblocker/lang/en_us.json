@@ -38,6 +38,7 @@
   "skyblocker.skyblockerScreen": "Skyblocker Main Screen",
 
   "skyblocker.config.title": "Skyblocker %s",
+  "skyblocker.config.title.settings": "Settings",
 
   "skyblocker.config.shortcutToKeybindsSettings": "Edit Keybind",
   "skyblocker.config.shortcutToKeybindsSettings.@Text": "Keybinds Menu",
