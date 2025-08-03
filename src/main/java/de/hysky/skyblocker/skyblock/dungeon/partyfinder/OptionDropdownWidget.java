@@ -72,23 +72,19 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!screen.getSettingsContainer().canInteract(this)) return false;
-        if (isOpen && !isMouseOver(mouseX, mouseY) && backButtonId != -1) {
-            screen.clickAndWaitForServer(backButtonId);
-            return true;
+        if (isOpen) {
+			if (!isMouseOver(mouseX, mouseY) && backButtonId != -1) {
+				screen.clickAndWaitForServer(backButtonId);
+				return true;
+			}
+
+			if (super.mouseClicked(mouseX, mouseY, button)) return true;
         }
 
-        if (super.mouseClicked(mouseX, mouseY, button)) return true;
-
-        if (clickedHeader((int) (mouseX - (double) (this.getX() + this.width / 2 - this.getRowWidth() / 2)), (int) (mouseY - (double) this.getY()) + (int) this.getScrollY() - 4)) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (screen.getSettingsContainer().canInteract(this)) return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
-        return false;
+        return clickedHeader(
+				(int) (mouseX - (double) (this.getX() + this.width / 2 - this.getRowWidth() / 2)),
+				(int) (mouseY - (double) this.getY()) + (int) this.getScrollY() - 4
+		);
     }
 
     @Override
@@ -135,14 +131,16 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
     }
 
     public void open(List<Option> entries, int backButtonId) {
-		if (!isOpen) animationProgress = 0f;
+		if (isOpen) return;
         isOpen = true;
 		height = maxHeight;
+		animationProgress = 0f;
         this.replaceEntries(entries);
         this.backButtonId = backButtonId;
     }
 
     public void close() {
+		if (!isOpen) return;
         isOpen = false;
 		height = CLOSED_HEIGHT;
         this.clearEntries();
@@ -155,7 +153,6 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
         private final int optionSlotId;
 
         public Option(@NotNull String message, @Nullable ItemStack icon, int slotId) {
-
             this.message = message;
             this.icon = icon;
             this.optionSlotId = slotId;
@@ -174,10 +171,6 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            /*if (hovered) {
-                context.fill(x, y, x + entryWidth, y + 13, 0xFFF0F0F0);
-                context.fill(x+1, y+1, x + entryWidth-1, y + 12, 0xFF000000);
-            } else context.fill(x, y, x + entryWidth, y + 13, 0xFF000000);*/
             Matrix3x2fStack matrices = context.getMatrices();
             matrices.pushMatrix();
             int iconY = y + 1;
@@ -186,8 +179,9 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
             matrices.translate(-x, -iconY);
             context.drawItem(icon, x, iconY);
             matrices.popMatrix();
-            if (PartyFinderScreen.DEBUG) context.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(optionSlotId), x + 8, y, Colors.RED, true);
-            context.drawText(MinecraftClient.getInstance().textRenderer, Text.literal(message).fillStyle(Style.EMPTY.withUnderline(hovered)), x + 14, y + 3, Colors.WHITE, false);
+
+            if (PartyFinderScreen.DEBUG) context.drawText(client.textRenderer, String.valueOf(optionSlotId), x + 8, y, Colors.RED, true);
+            context.drawText(client.textRenderer, Text.literal(message).fillStyle(Style.EMPTY.withUnderline(hovered)), x + 14, y + 3, Colors.WHITE, false);
         }
 
         @Override
