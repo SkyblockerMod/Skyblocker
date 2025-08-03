@@ -8,29 +8,24 @@ import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.HealthBars;
 import de.hysky.skyblocker.skyblock.SmoothAOTE;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
-import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.TeleportMaze;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dwarven.CorpseFinder;
-import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
-import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
-import de.hysky.skyblocker.skyblock.end.EnderNodes;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
 import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
 import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
-import de.hysky.skyblocker.skyblock.galatea.ForestNodes;
 import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
-import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.waypoint.MythologicalRitual;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
@@ -152,8 +147,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 
 	@Inject(method = "onPlaySound", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
 	private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
-		CrystalsChestHighlighter.onSound(packet);
-		TunerSolver.INSTANCE.onSound(packet);
+		PlaySoundEvents.FROM_SERVER.invoker().onPlaySoundFromServer(packet);
 	}
 
 	@WrapWithCondition(method = "warnOnUnknownPayload", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V", remap = false))
@@ -173,12 +167,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 
 	@Inject(method = "onParticle", at = @At("RETURN"))
 	private void skyblocker$onParticle(ParticleS2CPacket packet, CallbackInfo ci) {
-		MythologicalRitual.onParticle(packet);
-		DojoManager.onParticle(packet);
-		CrystalsChestHighlighter.onParticle(packet);
-		EnderNodes.onParticle(packet);
-		ForestNodes.onParticle(packet);
-		WishingCompassSolver.onParticle(packet);
+		ParticleEvents.FROM_SERVER.invoker().onParticleFromServer(packet);
 	}
 
 	@ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;shouldShowPacketSizeAndPingCharts()Z"))
