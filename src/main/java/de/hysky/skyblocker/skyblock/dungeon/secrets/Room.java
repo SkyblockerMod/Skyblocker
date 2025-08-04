@@ -57,7 +57,6 @@ public class Room implements Tickable, Renderable {
     private final Type type;
     @NotNull
     final Set<Vector2ic> segments;
-    private boolean isCleared = false;
 
     /**
      * The shape of the room. See {@link #getShape(IntSortedSet, IntSortedSet)}.
@@ -521,7 +520,7 @@ public class Room implements Tickable, Renderable {
         }
 
         synchronized (this) {
-            if (SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints && isMatched() && !isCleared) {
+            if (SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints && isMatched()) {
                 for (SecretWaypoint secretWaypoint : secretWaypoints.values()) {
                     if (secretWaypoint.shouldRender()) {
                         secretWaypoint.render(context);
@@ -532,13 +531,10 @@ public class Room implements Tickable, Renderable {
     }
 
     /**
-     * Sets all secrets as found if {@link #isAllSecretsFound(String)} and sets {@link #lastChestSecret} as missing if message equals {@link #LOCKED_CHEST}.
+     * Sets {@link #lastChestSecret} as missing if message equals {@link #LOCKED_CHEST}.
      */
     protected void onChatMessage(String message) {
-        if (isAllSecretsFound(message)) {
-            isCleared = true;
-        } else if (LOCKED_CHEST.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
-            isCleared = false;
+        if (LOCKED_CHEST.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
             secretWaypoints.column(lastChestSecret).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
                     .ifPresent(secretWaypoint -> markSecretsAndLogInfo(secretWaypoint, false, "[Skyblocker Dungeon Secrets] Detected locked chest interaction, setting secret #{} as missing", secretWaypoint.secretIndex));
         }
@@ -640,6 +636,8 @@ public class Room implements Tickable, Renderable {
     }
 
     protected void markAllSecrets(boolean found) {
+    	//Prevent a crash if this runs before the room is matched or something
+    	if (secretWaypoints == null) return;
         secretWaypoints.values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
     }
 
