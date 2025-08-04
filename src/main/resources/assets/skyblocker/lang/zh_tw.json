@@ -1413,5 +1413,13 @@
     "skyblocker.config.general.backup": "設定檔案備份",
     "skyblocker.config.backup.title": "設定檔案備份",
     "skyblocker.config.backup.confirm.title": "恢复備份",
-    "skyblocker.config.backup.confirm.text": "是否要恢復備份檔案%s？這會覆蓋當前的設定。"
+    "skyblocker.config.backup.confirm.text": "是否要恢復備份檔案%s？這會覆蓋當前的設定。",
+    "skyblocker.config.dungeons.princeMessage": "Prince訊息",
+    "skyblocker.config.dungeons.princeMessage.princeMessage": "Prince訊息",
+    "skyblocker.config.dungeons.princeMessage.princeMessage.@Tooltip": "殺死Prince後在聊天中發送的訊息。建議保留預設值。",
+    "skyblocker.config.dungeons.princeMessage.sendPrinceMessage": "啟用Prince訊息",
+    "skyblocker.config.dungeons.princeMessage.sendPrinceMessage.@Tooltip": "殺死Prince後在聊天中發送一條訊息，以供其他玩家的分數計算模組使用。",
+    "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints": "啟用Prince路徑點",
+    "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints.@Tooltip": "這有助於獲得來自Reborn屬性的額外+1分數。",
+    "skyblocker.config.title.settings": "設定"
 }
