@@ -44,8 +44,7 @@ public class ImmunityHUD {
 	}
 
 	public static void checkImmunityStage(Item item){
-		if(item != Items.STRING) return;
-		
+		if (item != Items.STRING) return;
 	}
 
 	public static void clearEggMap(ArmorStandEntity entity){
@@ -76,10 +75,5 @@ public class ImmunityHUD {
 							.formatted(Formatting.BOLD),
 					boss.getPos().add(0, 3.4 + (i.getAndIncrement() * 0.4), 0), 2f, true);
 		});
-
-
 	}
-
-
-
 }
