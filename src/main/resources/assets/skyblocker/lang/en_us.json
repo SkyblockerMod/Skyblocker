@@ -179,12 +179,18 @@
 
   "skyblocker.config.dungeons.mimicMessage": "Mimic Message",
   "skyblocker.config.dungeons.mimicMessage.mimicMessage": "Mimic Message",
-  "skyblocker.config.dungeons.mimicMessage.mimicMessage.@Tooltip": "Message which will be sent in the chat upon killing a mimic. Recommended to retain the default value.",
+  "skyblocker.config.dungeons.mimicMessage.mimicMessage.@Tooltip": "Message which will be sent in the chat upon killing a Mimic. Recommended to retain the default value.",
   "skyblocker.config.dungeons.mimicMessage.sendMimicMessage": "Enable Mimic Message",
-  "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Sends a message in chat upon killing a mimic for other players' score calculation mods.",
+  "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Sends a message in the chat upon killing a Mimic for other players' score calculation mods.",
 
   "skyblocker.config.dungeons.playerSecretsTracker": "Player Secrets Tracker",
   "skyblocker.config.dungeons.playerSecretsTracker.@Tooltip": "Tracks the number of secrets people in your dungeon run are doing.",
+
+  "skyblocker.config.dungeons.princeMessage": "Prince Message",
+  "skyblocker.config.dungeons.princeMessage.princeMessage": "Prince Message",
+  "skyblocker.config.dungeons.princeMessage.princeMessage.@Tooltip": "Message which will be sent in the chat upon killing a Prince. Recommended to retain the default value.",
+  "skyblocker.config.dungeons.princeMessage.sendPrinceMessage": "Enable Prince Message",
+  "skyblocker.config.dungeons.princeMessage.sendPrinceMessage.@Tooltip": "Sends a message in the chat upon killing a Prince for other players' score calculation mods.",
 
   "skyblocker.config.dungeons.professor": "The Professor (F3/M3)",
   "skyblocker.config.dungeons.professor.fireFreezeStaffTimer": "Fire Freeze Staff Timer (F3/M3)",
@@ -229,6 +235,8 @@
   "skyblocker.config.dungeons.secretWaypoints.enableLeverWaypoints": "Enable Lever Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints": "Enable Pearl Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "With these waypoints, you throw a pearl towards the block and at the same time AOTV up.",
+  "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints": "Enable Prince Waypoints",
+  "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints.@Tooltip": "Helpful for obtaining +1 Bonus Score in your runs with the Reborn attribute.",
   "skyblocker.config.dungeons.secretWaypoints.enableSecretWaypoints": "Enable Dungeon Secret Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints": "Enable Stonk Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints": "Enable Superboom Waypoints",
