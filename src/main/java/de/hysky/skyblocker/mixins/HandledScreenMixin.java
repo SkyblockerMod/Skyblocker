@@ -18,6 +18,8 @@ import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
+import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
+import de.hysky.skyblocker.skyblock.museum.MuseumManager;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -63,6 +65,9 @@ import java.util.regex.Matcher;
 
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen {
+	@Unique
+	private static final Identifier GENERIC_CONTAINER_TEXTURE = Identifier.ofVanilla("textures/gui/container/generic_54.png");
+
 	/**
 	 * This is the slot id returned for when a click is outside the screen's bounds
 	 */
@@ -105,6 +110,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@Shadow
 	protected abstract List<Text> getTooltipFromItem(ItemStack stack);
 
+	@Shadow
+	protected int x;
+	@Shadow
+	protected int y;
+	@Shadow
+	protected int backgroundWidth;
 	@Unique
 	private List<QuickNavButton> quickNavButtons;
 
@@ -121,27 +132,45 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
+	@Inject(method = "init", at = @At("TAIL"))
+	private void skyblocker$initMuseumOverlay(CallbackInfo ci) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && getTitle().getString().contains("Museum")) {
+			int overlayWidth = MuseumManager.BACKGROUND_WIDTH; // width of the overlay
+			int spacing = MuseumManager.SPACING; // space between inventory and overlay
+
+			// Default: center inventory
+			int inventoryX = (this.width - this.backgroundWidth) / 2;
+
+			// If overlay would go off the right edge, shift inventory left
+			if (inventoryX + this.backgroundWidth + spacing + overlayWidth > this.width) {
+				inventoryX = this.width - (this.backgroundWidth + overlayWidth + spacing);
+				if (inventoryX < 0) inventoryX = 0;
+			}
+			this.x = inventoryX;
+
+			new MuseumManager(this, this.x, this.y, this.backgroundWidth);
+		}
+	}
+
+	@WrapOperation(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawBackground(Lnet/minecraft/client/gui/DrawContext;FII)V"))
+	private void skyblocker$DrawMuseumOverlayBackground(HandledScreen<?> instance, DrawContext context, float delta, int mouseX, int mouseY, Operation<Void> original) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && getTitle().getString().contains("Museum")) {
+			// Custom museum overlay background drawing
+			int rows = 6;
+			context.drawTexture(RenderPipelines.GUI_TEXTURED, GENERIC_CONTAINER_TEXTURE, this.x, this.y, 0.0F, 0.0F, this.backgroundWidth, rows * 18 + 17, 256, 256);
+			context.drawTexture(RenderPipelines.GUI_TEXTURED, GENERIC_CONTAINER_TEXTURE, this.x, this.y + rows * 18 + 17, 0.0F, 126.0F, this.backgroundWidth, 96, 256, 256);
+		} else {
+			// Call vanilla
+			original.call(instance, context, delta, mouseX, mouseY);
+		}
+	}
+
 	@Inject(at = @At("HEAD"), method = "keyPressed")
 	public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
 		if (this.client != null && this.client.player != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 			//wiki lookup
-			if (config.general.wikiLookup.enableWikiLookup) {
-				var title = this.getTitle().getString();
-				if (WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode)) {
-					if (VisitorWikiLookup.canSearch(title, this.focusedSlot)) {
-						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getName().getString(), this.client.player, true);
-					} else {
-						WikiLookup.openWiki(this.focusedSlot, this.client.player, true);
-					}
-				} else if (WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
-					if (VisitorWikiLookup.canSearch(title, this.focusedSlot)) {
-						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getName().getString(), this.client.player, false);
-					} else {
-						WikiLookup.openWiki(this.focusedSlot, this.client.player, false);
-					}
-				}
-			}
+			WikiLookup.handleWikiLookup(this.focusedSlot.getStack(), client.player, VisitorWikiLookup.canSearch(title.getString(), this.focusedSlot), keyCode, scanCode);
 			//item protection
 			if (ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
 				ItemProtection.handleKeyPressed(this.focusedSlot.getStack());
@@ -354,8 +383,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				}
 			}
 
-			//Museum Item Cache donation tracking
-			case GenericContainerScreenHandler genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
+			case GenericContainerScreenHandler genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> //Museum Item Cache donation tracking
+					MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
 
 			case null, default -> {}
 		}
@@ -369,13 +398,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack, button);
 
 			if (disallowed) ci.cancel();
-		}
-	}
-
-	@Inject(at = @At("HEAD"), method = "mouseClicked")
-	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		if (VisitorHelper.shouldRender()) {
-			VisitorHelper.handleMouseClick(mouseX, mouseY, button, this.textRenderer);
 		}
 	}
 

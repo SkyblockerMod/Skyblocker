@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.joml.Matrix3x2f;
 
+import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.HorizontalGradientGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.OutlinedTextGuiElementRenderState;
@@ -29,13 +30,13 @@ import net.minecraft.util.math.ColorHelper;
 public class HudHelper {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
-    public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, int argb) {
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, x, y, width, height, argb);
-    }
+	public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, int argb) {
+		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, x, y, width, height, argb);
+	}
 
-    public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, Color color) {
-        renderNineSliceColored(context, texture, x, y, width, height, ColorHelper.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
-    }
+	public static void renderNineSliceColored(DrawContext context, Identifier texture, int x, int y, int width, int height, Color color) {
+		renderNineSliceColored(context, texture, x, y, width, height, ColorHelper.getArgb(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue()));
+	}
 
 	public static void drawHorizontalGradient(DrawContext context, float startX, float startY, float endX, float endY, int colorStart, int colorEnd) {
 		context.state.addSimpleElement(new HorizontalGradientGuiElementRenderState(RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), (int) startX, (int) startY, (int) endX, (int) endY, colorStart, colorEnd, context.scissorStack.peekLast()));
@@ -56,12 +57,13 @@ public class HudHelper {
 	}
 
 	public static void drawOutlinedText(DrawContext context, OrderedText text, int x, int y, int color, int outlineColor) {
-		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text, new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, context.scissorStack.peekLast());
+		if (CaxtonCompatibility.drawOutlinedText(context, text, x, y, color, outlineColor)) return;
 
+		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text, new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, context.scissorStack.peekLast());
 		context.state.addText(renderState);
 	}
 
-    public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
-        return x >= x1 && x <= x2 && y >= y1 && y <= y2;
-    }
+	public static boolean pointIsInArea(double x, double y, double x1, double y1, double x2, double y2) {
+		return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+	}
 }
