@@ -314,6 +314,9 @@ public class FancyStatusBars {
 		for (StatusBar statusBar : barCollection) {
 			if (!statusBar.enabled || !statusBar.visible) continue;
 			statusBar.render(context, -1, -1, client.getRenderTickCounter().getDynamicDeltaTicks());
+		}
+		for (StatusBar statusBar : barCollection) {
+			if (!statusBar.enabled || !statusBar.visible) continue;
 			statusBar.renderText(context);
 		}
 
