@@ -3,20 +3,19 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
 import net.minecraft.client.render.entity.model.ArmorEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.component.type.NbtComponent;
@@ -34,7 +33,6 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,7 +71,7 @@ public abstract sealed class TrimElementButton extends PressableWidget permits T
 
 	public static final class Pattern extends TrimElementButton {
 
-		private static final int DEFAULT_ROTATION = 195;
+		private static final int DEFAULT_ROTATION = 15;
 
 		private static ArmorEntityModel<BipedEntityRenderState> OUTER_MODEL = null;
 		private static ArmorEntityModel<BipedEntityRenderState> INNER_MODEL = null;
@@ -129,27 +127,10 @@ public abstract sealed class TrimElementButton extends PressableWidget permits T
 
 			EquipmentSlot slot = equippableComponent.slot();
 			ArmorEntityModel<BipedEntityRenderState> model = slot == EquipmentSlot.LEGS ? INNER_MODEL : OUTER_MODEL;
+			EquipmentModel.LayerType layerType = slot == EquipmentSlot.LEGS ? EquipmentModel.LayerType.HUMANOID_LEGGINGS : EquipmentModel.LayerType.HUMANOID;
 			float offset = setVisibleAndGetOffset(model, slot);
 
-			MatrixStack matrices = context.getMatrices();
-			matrices.push();
-			matrices.translate(getX() + getWidth() / 2f, getY() + getHeight() / 2f, 200);
-			matrices.translate(0, offset, 0);
-			matrices.scale(14, 14, 14);
-			matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-5));
-			matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotation));
-			DiffuseLighting.enableGuiShaderLighting();
-			context.draw(vertexConsumerProvider -> EQUIPMENT_RENDERER.render(
-					slot == EquipmentSlot.LEGS ? EquipmentModel.LayerType.HUMANOID_LEGGINGS : EquipmentModel.LayerType.HUMANOID,
-					equippableComponent.assetId().orElse(EquipmentAssetKeys.IRON),
-					model,
-					stack,
-					matrices,
-					vertexConsumerProvider,
-					15
-			));
-			DiffuseLighting.enableGuiDepthLighting();
-			matrices.pop();
+			HudHelper.drawEquipment(context, EQUIPMENT_RENDERER, layerType, equippableComponent.assetId().orElse(EquipmentAssetKeys.IRON), model, stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), rotation, 14, offset);
 		}
 
 		private static float setVisibleAndGetOffset(ArmorEntityModel<?> bipedModel, EquipmentSlot slot) {

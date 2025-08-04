@@ -74,7 +74,7 @@ public class CrystalsLocationsManager {
         // Crystal Hollows Waypoints
         Scheduler.INSTANCE.scheduleCyclic(CrystalsLocationsManager::update, 40);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(CrystalsLocationsManager::render);
-        ClientReceiveMessageEvents.GAME.register(CrystalsLocationsManager::extractLocationFromMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(CrystalsLocationsManager::extractLocationFromMessage);
         ClientCommandRegistrationCallback.EVENT.register(CrystalsLocationsManager::registerWaypointLocationCommands);
         SkyblockEvents.LOCATION_CHANGE.register(CrystalsLocationsManager::onLocationChange);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
@@ -83,9 +83,9 @@ public class CrystalsLocationsManager {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(NucleusWaypoints::render);
     }
 
-    private static void extractLocationFromMessage(Text message, Boolean overlay) {
+    private static boolean extractLocationFromMessage(Text message, Boolean overlay) {
         if (!SkyblockerConfigManager.get().mining.crystalsWaypoints.findInChat || !Utils.isInCrystalHollows() || overlay) {
-            return;
+            return true;
         }
         String text = Formatting.strip(message.getString());
         try {
@@ -101,7 +101,7 @@ public class CrystalsLocationsManager {
                     String location = blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ();
                     //if position is not in the hollows do not add it
                     if (!checkInCrystals(blockPos)) {
-                        return;
+                        return true;
                     }
 
                     //see if there is a name of a location to add to this
@@ -112,13 +112,13 @@ public class CrystalsLocationsManager {
                             if (!activeWaypoints.containsKey(waypointLocation)) {
                                 addCustomWaypoint(waypointLocation, blockPos);
                             }
-                            return;
+                            return true;
                         }
                     }
 
                     //if the location is not found ask the user for the location (could have been in a previous chat message)
                     if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
-                        return;
+                        return true;
                     }
 
                     CLIENT.player.sendMessage(getLocationMenu(location, false), false);
@@ -141,6 +141,8 @@ public class CrystalsLocationsManager {
                 }
             }
         }
+
+        return true;
     }
 
     protected static boolean checkInCrystals(BlockPos pos) {

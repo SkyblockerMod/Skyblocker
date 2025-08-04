@@ -1,5 +1,36 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getColor;
+import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getMapPosForNWMostRoom;
+import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getPhysicalPosFromMap;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Pattern;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import java.util.zip.InflaterInputStream;
+
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonArray;
@@ -12,6 +43,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.JsonOps;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -38,7 +70,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
@@ -47,6 +78,7 @@ import net.minecraft.command.argument.TextArgumentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -66,30 +98,6 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.regex.Pattern;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-import java.util.zip.InflaterInputStream;
-
-import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.*;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class DungeonManager {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonManager.class);
@@ -218,6 +226,20 @@ public class DungeonManager {
 		return customWaypoints.remove(room, pos);
 	}
 
+	@Nullable
+	public static Vector2ic getMapEntrancePos() {
+		return mapEntrancePos;
+	}
+
+	public static int getMapRoomSize() {
+		return mapRoomSize;
+	}
+
+	@Nullable
+	public static Vector2ic getPhysicalEntrancePos() {
+		return physicalEntrancePos;
+	}
+
 	/**
 	 * not null if {@link #isCurrentRoomMatched()}
 	 */
@@ -250,8 +272,7 @@ public class DungeonManager {
 		ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonManager::saveCustomWaypoints);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 5);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonManager::render);
-		ClientReceiveMessageEvents.GAME.register(DungeonManager::onChatMessage);
-		ClientReceiveMessageEvents.GAME_CANCELED.register(DungeonManager::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonManager::onChatMessage);
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
 				.then(literal("markAsFound").then(markSecretsCommand(true)))
@@ -273,6 +294,23 @@ public class DungeonManager {
 							context.getSource().sendFeedback(Constants.PREFIX.get().append("§rCleared sub processes in the current room."));
 						} else {
 							context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null."));
+						}
+						return Command.SINGLE_SUCCESS;
+					}))
+					.then(literal("getCheckmarkColour").executes(context -> {
+						MapState state = getMapState(context.getSource().getClient());
+
+						if (currentRoom != null && state != null) {
+							int checkmarkColour = getRoomCheckmarkColour(context.getSource().getClient(), state, currentRoom);
+							String result = switch ((Integer) checkmarkColour) {
+								case Integer i when i == DungeonMapUtils.WHITE_COLOR -> "White";
+								case Integer i when i == DungeonMapUtils.GREEN_COLOR -> "Green";
+								default -> "Unknown";
+							};
+
+							context.getSource().sendFeedback(Constants.PREFIX.get().append("§rCheckmark colour: " + result));
+						} else {
+							context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room or map state is null."));
 						}
 						return Command.SINGLE_SUCCESS;
 					}))
@@ -477,7 +515,7 @@ public class DungeonManager {
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, String> matchAgainstCommand() {
 		return argument("room", StringArgumentType.string()).suggests((context, builder) -> CommandSource.suggestMatching(ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).map(Map::keySet).flatMap(Collection::stream), builder)).then(argument("direction", Room.Direction.DirectionArgumentType.direction()).executes(context -> {
-			if (physicalEntrancePos == null || mapEntrancePos == null || mapRoomSize == 0) {
+			if (!isClearingDungeon()) {
 				context.getSource().sendError(Constants.PREFIX.get().append("§cYou are not in a dungeon."));
 				return Command.SINGLE_SUCCESS;
 			}
@@ -573,7 +611,7 @@ public class DungeonManager {
 	 *     <li> Calls {@link Tickable#tick(MinecraftClient)} on {@link #currentRoom}. </li>
 	 * </ul>
 	 */
-	@SuppressWarnings("JavadocReference")
+	@SuppressWarnings({ "JavadocReference", "incomplete-switch" })
 	private static void update() {
 		if (!Utils.isInDungeons() || isInBoss()) {
 			return;
@@ -596,7 +634,7 @@ public class DungeonManager {
 			DungeonEvents.DUNGEON_LOADED.invoker().onDungeonLoaded();
 		}
 
-		MapState map = FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().getMainStacks().get(8)), client.world);
+		MapState map = getMapState(client);
 		if (map == null) {
 			return;
 		}
@@ -625,9 +663,16 @@ public class DungeonManager {
 				case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
 			}
 		}
+
 		if (room != null && currentRoom != room) {
 			currentRoom = room;
 		}
+
+		//Calculate the checkmark colour and mark all secrets as found if the checkmark is green
+		if (currentRoom.getType() != Room.Type.ENTRANCE && getRoomCheckmarkColour(client, map, currentRoom) == DungeonMapUtils.GREEN_COLOR) {
+			currentRoom.markAllSecrets(true);
+		}
+
 		currentRoom.tick(client);
 	}
 
@@ -678,9 +723,9 @@ public class DungeonManager {
 	 * <p>Used to detect when all secrets in a room are found and detect when a wither or blood door is unlocked.
 	 * To process key obtained messages, this method checks if door highlight is enabled and if the message matches a key obtained message.
 	 */
-	private static void onChatMessage(Text text, boolean overlay) {
+	private static boolean onChatMessage(Text text, boolean overlay) {
 		if (!shouldProcess()) {
-			return;
+			return true;
 		}
 
 		String message = text.getString();
@@ -713,6 +758,8 @@ public class DungeonManager {
 			reset();
 			boss = newBoss;
 		}
+
+		return true;
 	}
 
 	/**
@@ -785,6 +832,21 @@ public class DungeonManager {
 	@Nullable
 	private static Room getRoomAtPhysical(Vec3i pos) {
 		return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
+	}
+
+	/**
+	 * Get the state of the map in the user's 9th slot.
+	 */
+	@Nullable
+	private static MapState getMapState(MinecraftClient client) {
+		return FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().getMainStacks().get(8)), client.world);
+	}
+
+	/**
+	 * @return {@code true} if the player is in the main clearing phase of a dungeon.
+	 */
+	public static boolean isClearingDungeon() {
+		return physicalEntrancePos != null && mapEntrancePos != null && mapRoomSize != 0;
 	}
 
 	/**
@@ -870,5 +932,30 @@ public class DungeonManager {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Returns the colour of a room's checkmark on the map. To find a room's checkmark: For each segment, we start from the top left corner of the segment,
+	 * go to the middle, then iterate downwards and we should find the checkmark about a pixel or two down from there if the segment has the checkmark.
+	 */
+	private static int getRoomCheckmarkColour(MinecraftClient client, MapState mapState, Room room) {
+		int halfRoomSize = mapRoomSize / 2;
+
+		//Check each segment of the room for the checkmark as each "block" of a room on the map is a separate segment and we don't know which one has the checkmark
+		//or more specifically which one is first the western most and second the northern most (in the case of 2x2s).
+		for (Vector2ic segmentPhysicalPos : room.segments) {
+			Vector2ic topLeftCorner = DungeonMapUtils.getMapPosFromPhysical(physicalEntrancePos, mapEntrancePos, mapRoomSize, segmentPhysicalPos);
+			Vector2ic middle = topLeftCorner.add(halfRoomSize, halfRoomSize, new Vector2i());
+
+			//In this case, the offset is the number of units offset from the Y value of the middle of the segment
+			for (int offset = 0; offset < halfRoomSize; offset++) {
+				int colour = DungeonMapUtils.getColor(mapState, new Vector2i(middle.x(), middle.y() + offset));
+
+				//Return if we found the colour of the checkmark
+				if (colour == DungeonMapUtils.WHITE_COLOR || colour == DungeonMapUtils.GREEN_COLOR) return colour;
+			}
+		}
+
+		return -1;
 	}
 }

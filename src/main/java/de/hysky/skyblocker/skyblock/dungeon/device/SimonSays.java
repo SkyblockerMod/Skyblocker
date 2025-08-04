@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon.device;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ColorUtils;
@@ -48,6 +49,7 @@ public class SimonSays {
 		UseBlockCallback.EVENT.register(SimonSays::onBlockInteract);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(SimonSays::render);
+		WorldEvents.BLOCK_STATE_UPDATE.register(SimonSays::onBlockUpdate);
 	}
 
 	//When another player is pressing the buttons hypixel doesnt send block or block state updates
@@ -73,7 +75,7 @@ public class SimonSays {
 	//If the player goes out of the range required to receive block/chunk updates then their solver won't detect stuff but that
 	//doesn't matter because if they're doing pre-4 or something they won't be doing the ss, and if they end up needing to they can
 	//just reset it or have the other person finish the current sequence first then let them do it.
-	public static void onBlockUpdate(BlockPos pos, BlockState newState, @Nullable BlockState oldState) {
+	private static void onBlockUpdate(BlockPos pos, @Nullable BlockState oldState, BlockState newState) {
 		if (shouldProcess()) {
 			Vec3d posVec = Vec3d.of(pos);
 			Block newBlock = newState.getBlock();

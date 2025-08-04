@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.booleans.BooleanPredicate;
@@ -70,13 +72,15 @@ public class DojoManager {
 
     @Init
     public static void init() {
-        ClientReceiveMessageEvents.GAME.register(DojoManager::onMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(DojoManager::onMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(DojoManager::render);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
         ClientEntityEvents.ENTITY_LOAD.register(DojoManager::onEntitySpawn);
         ClientEntityEvents.ENTITY_UNLOAD.register(DojoManager::onEntityDespawn);
         AttackEntityCallback.EVENT.register(DojoManager::onEntityAttacked);
         Scheduler.INSTANCE.scheduleCyclic(DojoManager::update, 3);
+        WorldEvents.BLOCK_STATE_UPDATE.register(DojoManager::onBlockUpdate);
+        ParticleEvents.FROM_SERVER.register(DojoManager::onParticle);
     }
 
     private static void reset() {
@@ -96,27 +100,27 @@ public class DojoManager {
      * @param text    message
      * @param overlay is overlay
      */
-    private static void onMessage(Text text, Boolean overlay) {
+    private static boolean onMessage(Text text, Boolean overlay) {
         if (!Utils.isInCrimson() || overlay) {
-            return;
+            return true;
         }
         if (Objects.equals(Formatting.strip(text.getString()), START_MESSAGE)) {
             inArena = true;
             //update the players ping
             getPing();
-            return;
+            return true;
         }
         if (!inArena) {
-            return;
+            return true;
         }
         if (text.getString().matches(CHALLENGE_FINISHED_REGEX)) {
             reset();
-            return;
+            return true;
         }
 
         //look for a message saying what challenge is starting if one has not already been found
         if (currentChallenge != DojoChallenges.NONE) {
-            return;
+            return true;
         }
         Matcher nextChallenge = TEST_OF_PATTERN.matcher(text.getString());
         if (nextChallenge.matches()) {
@@ -125,6 +129,8 @@ public class DojoManager {
                 currentChallenge = DojoChallenges.NONE;
             }
         }
+
+        return true;
     }
 
     private static void getPing() {
@@ -185,15 +191,15 @@ public class DojoManager {
      * when a block is updated check the current challenge and send the packet to correct helper
      *
      * @param pos   the location of the updated block
-     * @param state the state of the new block
+     * @param newState the state of the new block
      */
-    public static void onBlockUpdate(BlockPos pos, BlockState state) {
+    private static void onBlockUpdate(BlockPos pos, BlockState oldStatem, BlockState newState) {
         if (!Utils.isInCrimson() || !inArena) {
             return;
         }
         switch (currentChallenge) {
-            case MASTERY -> MasteryTestHelper.onBlockUpdate(pos, state);
-            case SWIFTNESS -> SwiftnessTestHelper.onBlockUpdate(pos, state);
+            case MASTERY -> MasteryTestHelper.onBlockUpdate(pos.toImmutable(), newState);
+            case SWIFTNESS -> SwiftnessTestHelper.onBlockUpdate(pos.toImmutable(), newState);
         }
     }
 
@@ -232,7 +238,7 @@ public class DojoManager {
         return ActionResult.PASS;
     }
 
-    public static void onParticle(ParticleS2CPacket packet) {
+    private static void onParticle(ParticleS2CPacket packet) {
         if (!Utils.isInCrimson() || !inArena) {
             return;
         }

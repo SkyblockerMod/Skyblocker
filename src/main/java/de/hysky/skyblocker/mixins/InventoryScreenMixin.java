@@ -51,14 +51,16 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
         return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory ? x + 21 : x;
     }
 
-	@WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/StatusEffectsDisplay;drawStatusEffects(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
-	private boolean skyblocker$dontDrawStatusEffects(StatusEffectsDisplay statusEffectsDisplay, DrawContext context, int mouseX, int mouseY, float tickDelta) {
+	@WrapWithCondition(method = "render", at = {
+			@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/StatusEffectsDisplay;drawStatusEffects(Lnet/minecraft/client/gui/DrawContext;II)V"),
+			@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/StatusEffectsDisplay;drawStatusEffectTooltip(Lnet/minecraft/client/gui/DrawContext;II)V")
+			}, require = 2)
+	private boolean skyblocker$dontDrawStatusEffects(StatusEffectsDisplay statusEffectsDisplay, DrawContext context, int mouseX, int mouseY) {
 		return !(Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay || Utils.isInGarden() && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget);
 	}
 
 	// This makes it so that REI at least doesn't wrongly exclude the zone
-	// shouldHideStatusEffectHud should actually be showsStatusEffects
-	@ModifyReturnValue(method = "shouldHideStatusEffectHud", at = @At("RETURN"))
+	@ModifyReturnValue(method = "showsStatusEffects", at = @At("RETURN"))
 	private boolean skyblocker$markStatusEffectsHidden(boolean original) {
 		// In the garden, status effects are shown when both hideStatusEffectOverlay and gardenPlotsWidget are false
 		if (Utils.isInGarden()) return original && !SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay && !SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget;

@@ -4,8 +4,8 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
+import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -59,7 +59,7 @@ public class FishingHelper {
 				String name = armorStand.getCustomName().getString();
 				if (name.equals("!!!") && player.fishHook.getBoundingBox().expand(4D).contains(armorStand.getPos())) {
 					if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper) {
-						RenderHelper.displayInTitleContainerAndPlaySound(title, 10);
+						TitleContainer.addTitleAndPlaySound(title, 10);
 					}
 				}
 			}

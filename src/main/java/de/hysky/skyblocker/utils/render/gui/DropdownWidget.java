@@ -7,7 +7,6 @@ import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
@@ -50,9 +49,6 @@ public class DropdownWidget<T> extends ContainerWidget {
 
 	@Override
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.translate(0, 0, 100);
 		dropdownList.visible = open;
 		dropdownList.render(context, mouseX, mouseY, delta);
 		context.fill(getX(), getY(), getRight(), getY() + HEADER_HEIGHT + 1, 0xFF << 24);
@@ -64,7 +60,6 @@ public class DropdownWidget<T> extends ContainerWidget {
 				getRight() - 2,
 				getY() + HEADER_HEIGHT - 2,
 				-1);
-		matrices.pop();
 	}
 
 	@Override

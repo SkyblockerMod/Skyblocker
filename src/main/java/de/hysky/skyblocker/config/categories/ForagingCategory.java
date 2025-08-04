@@ -5,11 +5,16 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.foraging.SweepOverlay;
 import de.hysky.skyblocker.skyblock.galatea.SeaLumiesHighlighter;
+import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
+import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.controllers.ColourController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -60,6 +65,19 @@ public class ForagingCategory {
 										})
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress"))
+								.description(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip"))
+								.binding(defaults.foraging.galatea.enableTreeBreakProgress,
+										() -> config.foraging.galatea.enableTreeBreakProgress,
+										newValue -> config.foraging.galatea.enableTreeBreakProgress = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakHud"))
+								.prompt(Text.translatable("text.skyblocker.open"))
+								.action((screen) -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, TreeBreakProgressHud.getInstance().getInternalID(), screen)))
+								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount"))
 								.description(Text.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip"))
@@ -70,6 +88,14 @@ public class ForagingCategory {
 											SeaLumiesHighlighter.INSTANCE.configCallback();
 										})
 								.controller(IntegerController.createBuilder().range(1, 4).slider(1).build())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver"))
+								.description(Text.translatable("skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip"))
+								.binding(defaults.foraging.galatea.enableTunerSolver,
+										() -> config.foraging.galatea.enableTunerSolver,
+										newValue -> config.foraging.galatea.enableTunerSolver = newValue)
+								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
 				//Sweep Overlays
