@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 public class DungeonScore {
 	private static final Supplier<DungeonsConfig.DungeonScore> SCORE_CONFIG = () -> SkyblockerConfigManager.get().dungeons.dungeonScore;
 	private static final Supplier<DungeonsConfig.MimicMessage> MIMIC_MESSAGE_CONFIG = () -> SkyblockerConfigManager.get().dungeons.mimicMessage;
+	private static final Supplier<DungeonsConfig.PrinceMessage> PRINCE_MESSAGE_CONFIG = () -> SkyblockerConfigManager.get().dungeons.princeMessage;
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Dungeon Score");
 	//Scoreboard patterns
 	private static final Pattern CLEARED_PATTERN = Pattern.compile("Cleared: (?<cleared>\\d+)%.*");
@@ -46,7 +47,10 @@ public class DungeonScore {
 	private static final Pattern COMPLETED_ROOMS_PATTERN = Pattern.compile(" *Completed Rooms: (?<rooms>\\d+)");
 	//Chat patterns
 	private static final Pattern DEATHS_PATTERN = Pattern.compile(" \\u2620 (?<whodied>\\S+) .*");
+	//.*?(?:Mimic dead!?|Mimic Killed!|\$SKYTILS-DUNGEON-SCORE-MIMIC\$|\Q{MIMIC_MESSAGE}\E)$
 	private static final Pattern MIMIC_PATTERN = Pattern.compile(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$|\\Q" + MIMIC_MESSAGE_CONFIG.get().mimicMessage + "\\E)$");
+	//.*?(?:A Prince falls\. \+1 Bonus Score|Prince dead!?|Prince Killed!|\Q{PRINCE_MSG}\E)$
+	private static final Pattern PRINCE_PATTERN = Pattern.compile(".*?(?:A Prince falls\\. \\+1 Bonus Score|Prince dead!?|Prince Killed!|\\Q" + PRINCE_MESSAGE_CONFIG.get().princeMessage + "\\E)$");
 	//Other patterns
 	private static final Pattern MIMIC_FLOORS_PATTERN = Pattern.compile("[FM][67]");
 
@@ -58,6 +62,7 @@ public class DungeonScore {
 	private static boolean sent270;
 	private static boolean sent300;
 	private static boolean mimicKilled;
+	private static boolean princeKilled;
 	private static boolean dungeonStarted;
 	private static boolean isMayorPaul;
 	private static boolean firstDeathHasSpiritPet;
@@ -79,6 +84,7 @@ public class DungeonScore {
 				checkMessageForDeaths(str);
 				checkMessageForWatcher(str);
 				if (floorHasMimics) checkMessageForMimic(str); //Only called when the message is not cancelled & isn't on the action bar, complementing MimicFilter
+				checkMessageForPrince(str);
 			}
 
 			return true;
@@ -140,6 +146,7 @@ public class DungeonScore {
 		sent270 = false;
 		sent300 = false;
 		mimicKilled = false;
+		princeKilled = false;
 		dungeonStarted = false;
 		isMayorPaul = false;
 		firstDeathHasSpiritPet = false;
@@ -199,7 +206,8 @@ public class DungeonScore {
 		int cryptsScore = Math.clamp(getCrypts(), 0, 5);
 		int mimicScore = mimicKilled ? 2 : 0;
 		if (getSecretsPercentage() >= 100 && floorHasMimics) mimicScore = 2; //If mimic kill is not announced but all secrets are found, mimic must've been killed
-		return paulScore + cryptsScore + mimicScore;
+		int princeScore = princeKilled ? 1 : 0;
+		return paulScore + cryptsScore + mimicScore + princeScore;
 	}
 
 	public static boolean isEntityMimic(Entity entity) {
@@ -222,6 +230,16 @@ public class DungeonScore {
 
 	public static void onMimicKill() {
 		mimicKilled = true;
+	}
+
+	private static void onPrinceKill() {
+		if (princeKilled) return;
+		if (PRINCE_MESSAGE_CONFIG.get().sendPrinceMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + PRINCE_MESSAGE_CONFIG.get().princeMessage, false);
+		princeKilled = true;
+	}
+
+	public static boolean wasPrinceKilled() {
+		return princeKilled;
 	}
 
 	//This is not very accurate at the beginning of the dungeon since clear percentage is rounded to the closest integer, so at lower percentages its effect on the result is quite high.
@@ -319,6 +337,11 @@ public class DungeonScore {
 	private static void checkMessageForMimic(String message) {
 		if (!MIMIC_PATTERN.matcher(message).matches()) return;
 		onMimicKill();
+	}
+
+	private static void checkMessageForPrince(String message) {
+		if (!PRINCE_PATTERN.matcher(message).matches()) return;
+		onPrinceKill();
 	}
 
 	public static void setCurrentFloor() {

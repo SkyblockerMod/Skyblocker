@@ -558,6 +558,14 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints"))
+								.description(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints.@Tooltip"))
+								.binding(defaults.dungeons.secretWaypoints.enablePrinceWaypoints,
+										() -> config.dungeons.secretWaypoints.enablePrinceWaypoints,
+										newValue -> config.dungeons.secretWaypoints.enablePrinceWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableDefaultWaypoints"))
 								.description(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableDefaultWaypoints.@Tooltip"))
 								.binding(defaults.dungeons.secretWaypoints.enableDefaultWaypoints,
@@ -585,6 +593,28 @@ public class DungeonsCategory {
 								.binding(defaults.dungeons.mimicMessage.mimicMessage,
 										() -> config.dungeons.mimicMessage.mimicMessage,
 										newValue -> config.dungeons.mimicMessage.mimicMessage = newValue)
+								.controller(StringController.createBuilder().build())
+								.build())
+						.build())
+
+				// Prince Message
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.princeMessage"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.princeMessage.sendPrinceMessage"))
+								.description(Text.translatable("skyblocker.config.dungeons.princeMessage.sendPrinceMessage.@Tooltip"))
+								.binding(defaults.dungeons.princeMessage.sendPrinceMessage,
+										() -> config.dungeons.princeMessage.sendPrinceMessage,
+										newValue -> config.dungeons.princeMessage.sendPrinceMessage = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.princeMessage.princeMessage"))
+								.description(Text.translatable("skyblocker.config.dungeons.princeMessage.princeMessage.@Tooltip"))
+								.binding(defaults.dungeons.princeMessage.princeMessage,
+										() -> config.dungeons.princeMessage.princeMessage,
+										newValue -> config.dungeons.princeMessage.princeMessage = newValue)
 								.controller(StringController.createBuilder().build())
 								.build())
 						.build())

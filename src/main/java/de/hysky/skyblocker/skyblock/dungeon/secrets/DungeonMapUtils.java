@@ -24,6 +24,7 @@ import java.util.*;
 public class DungeonMapUtils {
 	public static final byte BLACK_COLOR = MapColor.BLACK.getRenderColorByte(MapColor.Brightness.LOWEST);
 	public static final byte WHITE_COLOR = MapColor.WHITE.getRenderColorByte(MapColor.Brightness.HIGH);
+	public static final byte GREEN_COLOR = 30;
 
 	public static byte getColor(MapState map, @Nullable Vector2ic pos) {
 		return pos == null ? -1 : getColor(map, pos.x(), pos.y());
@@ -266,7 +267,7 @@ public class DungeonMapUtils {
 
 	public static Room.Type getRoomType(MapState map, Vector2ic mapPos) {
 		return switch (getColor(map, mapPos)) {
-			case 30 -> Room.Type.ENTRANCE;
+			case GREEN_COLOR -> Room.Type.ENTRANCE;
 			case 63 -> Room.Type.ROOM;
 			case 66 -> Room.Type.PUZZLE;
 			case 62 -> Room.Type.TRAP;

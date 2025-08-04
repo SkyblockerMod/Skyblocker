@@ -51,6 +51,8 @@ public class DungeonsConfig {
 
 	public MimicMessage mimicMessage = new MimicMessage();
 
+	public PrinceMessage princeMessage = new PrinceMessage();
+
 	public DoorHighlight doorHighlight = new DoorHighlight();
 
 	public DungeonScore dungeonScore = new DungeonScore();
@@ -186,6 +188,8 @@ public class DungeonsConfig {
 
 		public boolean enablePearlWaypoints = true;
 
+		public boolean enablePrinceWaypoints = true;
+
 		public boolean enableDefaultWaypoints = true;
 	}
 
@@ -193,6 +197,12 @@ public class DungeonsConfig {
 		public boolean sendMimicMessage = true;
 
 		public String mimicMessage = "Mimic dead!";
+	}
+
+	public static class PrinceMessage {
+		public boolean sendPrinceMessage = true;
+
+		public String princeMessage = "Prince dead!";
 	}
 
 	public static class DoorHighlight {
