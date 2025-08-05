@@ -73,6 +73,7 @@ public class HelperConfig {
 
 		public boolean enableFishingHud = false;
 
+		@Deprecated
 		public List<Location> fishingHudEnabledLocations = new ArrayList<>(List.of(Location.values()));
 
 		public boolean enableSeaCreatureCounter = true;
