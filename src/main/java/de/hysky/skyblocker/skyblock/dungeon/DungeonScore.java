@@ -49,8 +49,9 @@ public class DungeonScore {
 	private static final Pattern DEATHS_PATTERN = Pattern.compile(" \\u2620 (?<whodied>\\S+) .*");
 	//.*?(?:Mimic dead!?|Mimic Killed!|\$SKYTILS-DUNGEON-SCORE-MIMIC\$|\Q{MIMIC_MESSAGE}\E)$
 	private static final Pattern MIMIC_PATTERN = Pattern.compile(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$|\\Q" + MIMIC_MESSAGE_CONFIG.get().mimicMessage + "\\E)$");
-	//.*?(?:A Prince falls\. \+1 Bonus Score|Prince dead!?|Prince Killed!|\Q{PRINCE_MSG}\E)$
-	private static final Pattern PRINCE_PATTERN = Pattern.compile(".*?(?:A Prince falls\\. \\+1 Bonus Score|Prince dead!?|Prince Killed!|\\Q" + PRINCE_MESSAGE_CONFIG.get().princeMessage + "\\E)$");
+	private static final String PRINCE_KILL_MESSAGE = "A Prince falls. +1 Bonus Score";
+	//.*?(?:Prince dead!?|Prince Killed!|\Q{PRINCE_MSG}\E)$
+	private static final Pattern PRINCE_PATTERN = Pattern.compile(".*?(?:Prince dead!?|Prince Killed!|\\Q" + PRINCE_MESSAGE_CONFIG.get().princeMessage + "\\E)$");
 	//Other patterns
 	private static final Pattern MIMIC_FLOORS_PATTERN = Pattern.compile("[FM][67]");
 
@@ -232,9 +233,10 @@ public class DungeonScore {
 		mimicKilled = true;
 	}
 
-	private static void onPrinceKill() {
+	private static void onPrinceKill(boolean fromHypixel) {
 		if (princeKilled) return;
-		if (PRINCE_MESSAGE_CONFIG.get().sendPrinceMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + PRINCE_MESSAGE_CONFIG.get().princeMessage, false);
+		//Ensure that we don't send a prince kill message if a teammate does
+		if (PRINCE_MESSAGE_CONFIG.get().sendPrinceMessage && fromHypixel) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + PRINCE_MESSAGE_CONFIG.get().princeMessage, false);
 		princeKilled = true;
 	}
 
@@ -340,8 +342,8 @@ public class DungeonScore {
 	}
 
 	private static void checkMessageForPrince(String message) {
-		if (!PRINCE_PATTERN.matcher(message).matches()) return;
-		onPrinceKill();
+		if (!PRINCE_PATTERN.matcher(message).matches() && !message.equals(PRINCE_KILL_MESSAGE)) return;
+		onPrinceKill(message.equals(PRINCE_KILL_MESSAGE));
 	}
 
 	public static void setCurrentFloor() {
