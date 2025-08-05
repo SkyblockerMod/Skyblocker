@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.ShulkerEntity;
+import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.util.DyeColor;
 
 public class GalateaGlowAdder extends MobGlowAdder {
@@ -19,7 +20,7 @@ public class GalateaGlowAdder extends MobGlowAdder {
 	public int computeColour(Entity entity) {
 		return switch (entity) {
 			case ShulkerEntity shulker when shulker.getColor() == DyeColor.GREEN && SkyblockerConfigManager.get().hunting.huntingMobs.highlightHideonleaf -> DyeColor.YELLOW.getSignColor();
-
+			case TurtleEntity turtle -> DyeColor.GREEN.getSignColor();
 			default -> NO_GLOW;
 		};
 	}

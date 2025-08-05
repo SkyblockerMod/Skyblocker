@@ -4,13 +4,13 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -21,9 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ImmunityHUD {
-
 	private static final Pattern EGG_REGEX = Pattern.compile("(\\d+)s (\\d)/3");
-
 	private static final Text IMMUNITY_INDICATOR_TEXT = Text.literal("IMMUNE").formatted(Formatting.WHITE)
 				.formatted(Formatting.BOLD);
 	private static Map<ArmorStandEntity, String> eggMap = new HashMap<>();
@@ -35,16 +33,11 @@ public class ImmunityHUD {
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(ImmunityHUD::render);
 	}
 
-
 	public static void handleEgg(ArmorStandEntity entity) {
 		Matcher matcher = EGG_REGEX.matcher(entity.getName().getString());
 		if (!matcher.matches()) return;
-
+		System.out.println("EGG TEXTURE : " + '"' + ItemUtils.getHeadTexture(entity.getEquippedStack(EquipmentSlot.HEAD)) + '"');
 		updateEgg(entity);
-	}
-
-	public static void checkImmunityStage(Item item){
-		if (item != Items.STRING) return;
 	}
 
 	public static void clearEggMap(ArmorStandEntity entity){
@@ -63,6 +56,7 @@ public class ImmunityHUD {
 		if (!SlayerManager.isInSlayerType(SlayerType.TARANTULA)) return;
 		Entity boss = SlayerManager.getSlayerBoss();
 		if (boss == null) return;
+		if (SlayerManager.getBossFight().slain) eggMap.clear();
 		if (SlayerManager.getSlayerTier() == null) return;
 		maxAmountOfEggs = SlayerManager.getSlayerTier().name.equals("V") ? 3 : 2;
 		if (eggMap.isEmpty()) return;
