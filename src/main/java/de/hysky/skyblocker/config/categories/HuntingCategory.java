@@ -44,6 +44,22 @@ public class HuntingCategory {
 										newValue -> config.hunting.huntingMobs.highlightHideonleaf = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightShellwise"))
+								.description(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip"))
+								.binding(defaults.hunting.huntingMobs.highlightShellwise,
+										() -> config.hunting.huntingMobs.highlightShellwise,
+										newValue -> config.hunting.huntingMobs.highlightShellwise = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightCoralot"))
+								.description(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightCoralot.@Tooltip"))
+								.binding(defaults.hunting.huntingMobs.highlightCoralot,
+										() -> config.hunting.huntingMobs.highlightCoralot,
+										newValue -> config.hunting.huntingMobs.highlightCoralot = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 				.build();
 	}

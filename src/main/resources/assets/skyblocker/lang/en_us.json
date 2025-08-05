@@ -576,6 +576,10 @@
   "skyblocker.config.hunting.huntingMobs.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while on Galatea.",
   "skyblocker.config.hunting.huntingMobs.highlightHideonleaf": "Highlight Hideonleaf",
   "skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip": "Highlights Hideonleaves in yellow to make them easier to see.",
+  "skyblocker.config.hunting.huntingMobs.highlightShellwise": "Highlight Shellwise",
+  "skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip": "Highlights Shellwise in green to make them easier to see.",
+  "skyblocker.config.hunting.huntingMobs.highlightCoralot": "Highlight Coralot",
+  "skyblocker.config.hunting.huntingMobs.highlightCoralot.@Tooltip": "Highlights Coralot in pink to make them easier to see.",
 
   "skyblocker.config.chat": "Chat",
 

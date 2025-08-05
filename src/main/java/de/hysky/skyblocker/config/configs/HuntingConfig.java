@@ -13,5 +13,7 @@ public class HuntingConfig {
 		public boolean silencePhantoms = true;
 
 		public boolean highlightHideonleaf = true;
+		public boolean highlightShellwise = true;
+		public boolean highlightCoralot = true;
 	}
 }
