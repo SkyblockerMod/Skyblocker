@@ -57,6 +57,12 @@ public class Room implements Tickable, Renderable {
     private final Type type;
     @NotNull
     final Set<Vector2ic> segments;
+    /**
+     * Used to allow rooms to have their secrets unmarked after the map detects the green checkmark.
+     *
+     * This should not be used for rendering as it would break the above case and having the prince waypoints show until a prince is killed.
+     */
+    protected boolean greenChecked = false;
 
     /**
      * The shape of the room. See {@link #getShape(IntSortedSet, IntSortedSet)}.
