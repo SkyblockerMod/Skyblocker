@@ -1,29 +1,19 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.render.HudHelper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.client.gui.widget.SimplePositioningWidget;
-import net.minecraft.client.realms.util.RealmsUtil;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.gui.widget.GridWidget.Adder;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
@@ -36,23 +26,27 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.*;
+import java.util.function.Supplier;
 
 public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	public static final String TITLE = "Spirit Leap";
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Identifier BUTTON = Identifier.of(SkyblockerMod.NAMESPACE, "button/button");
 	private static final Identifier BUTTON_HIGHLIGHTED = Identifier.of(SkyblockerMod.NAMESPACE, "button/button_highlighted");
+	private static final Supplier<DungeonsConfig.SpiritLeapOverlay> CONFIG = () -> SkyblockerConfigManager.get().dungeons.leapOverlay;
 	private static final int BUTTON_SPACING = 8;
-	private static final float SCALE = 1.5f;
-	private static final int BUTTON_WIDTH = (int) (130f * SCALE);
-	private static final int BUTTON_HEIGHT = (int) (50f * SCALE);
-	/**
-	 * Compares first by class name then by player name.
-	 */
-	private static final Comparator<PlayerReference> COMPARATOR = Comparator.<PlayerReference, String>comparing(ref -> ref.dungeonClass().displayName())
-			.thenComparing(PlayerReference::name);
+	private static final int BUTTON_WIDTH = 130;
+	private static final int BUTTON_HEIGHT = 50;
 	private final GenericContainerScreenHandler handler;
-	private final List<PlayerReference> references = new ArrayList<>();
+	private final SortedSet<PlayerReference> references = new TreeSet<>();
+	@Nullable
+	private UUID hovered;
 
 	public LeapOverlay(GenericContainerScreenHandler handler) {
 		super(Text.literal("Skyblocker Leap Overlay"));
@@ -63,20 +57,27 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		handler.addListener(this);
 	}
 
+	public static boolean shouldShowMap() {
+		return DungeonManager.isClearingDungeon() && CONFIG.get().showMap;
+	}
+
 	@Override
 	protected void init() {
-		GridWidget gridWidget = new GridWidget();
-		gridWidget.setSpacing(BUTTON_SPACING);
+		DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
+		layout.spacing(32).getMainPositioner().alignHorizontalCenter();
 
+		if (shouldShowMap()) layout.add(new MapWidget(0, 0));
+
+		GridWidget gridWidget = new GridWidget().setSpacing(BUTTON_SPACING);
 		Adder adder = gridWidget.createAdder(2);
-
 		for (PlayerReference reference : references) {
-			adder.add(new PlayerButton(0, 0, BUTTON_WIDTH, BUTTON_HEIGHT, reference));
+			adder.add(new PlayerButton(0, 0, (int) (BUTTON_WIDTH * CONFIG.get().scale), (int) (BUTTON_HEIGHT * CONFIG.get().scale), reference));
 		}
+		layout.add(gridWidget);
 
-		gridWidget.refreshPositions();
-		SimplePositioningWidget.setPos(gridWidget, 0, 0, this.width, this.height, 0.5f, 0.5f);
-		gridWidget.forEachChild(this::addDrawableChild);
+		layout.refreshPositions();
+		SimplePositioningWidget.setPos(layout, 0, 0, this.width, this.height);
+		layout.forEachChild(this::addDrawableChild);
 	}
 
 	@Override
@@ -87,9 +88,9 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			ProfileComponent profile = stack.get(DataComponentTypes.PROFILE);
 
 			//All heads in the leap menu have the id property set
-			if (profile.id().isEmpty()) return;
+			if (profile.uuid().isEmpty()) return;
 
-			UUID uuid = profile.id().get();
+			UUID uuid = profile.uuid().get();
 			//We take the name from the item because the name from the profile component can leave out _ characters for some reason?
 			String name = stack.getName().getString();
 			DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(name);
@@ -99,34 +100,28 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 				default -> null;
 			};
 
-			PlayerReference reference = new PlayerReference(uuid, name, dungeonClass, status, handler.syncId, slotId);
-			tryInsertReference(reference);
+			updateReference(new PlayerReference(uuid, name, dungeonClass, status, handler.syncId, slotId));
 		}
 	}
 
 	@Override
 	public void onPropertyUpdate(ScreenHandler handler, int property, int value) {}
 
-	/**
-	 * Inserts the {@code reference} into the list if it doesn't exist or updates current value then updates the screen.
-	 */
-	private void tryInsertReference(PlayerReference reference) {
-		Optional<PlayerReference> existing = references.stream()
-				.filter(ref -> ref.uuid().equals(reference.uuid()))
-				.findAny();
+	private void updateReference(PlayerReference reference) {
+		references.remove(reference);
+		references.add(reference);
+		clearAndInit();
+	}
 
-		if (existing.isEmpty()) {
-			references.add(reference);
-			references.sort(COMPARATOR);
-
-			this.clearAndInit();
-		} else if (!existing.get().equals(reference)) {
-			references.remove(existing.get());
-			references.add(reference);
-			references.sort(COMPARATOR);
-
-			this.clearAndInit();
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (super.keyPressed(keyCode, scanCode, modifiers)) {
+			return true;
+		} else if (this.client.options.inventoryKey.matchesKey(keyCode, scanCode)) {
+			this.close();
+			return true;
 		}
+		return false;
 	}
 
 	@Override
@@ -152,9 +147,35 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 	}
 
-	private static class PlayerButton extends ButtonWidget {
+	public class MapWidget extends ClickableWidget {
+		public MapWidget(int x, int y) {
+			super(x, y, (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), Text.translatable("skyblocker.config.dungeons.map.fancyMap"));
+		}
+
+		@Override
+		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+			LeapOverlay.this.hovered = DungeonMap.render(context, getX(), getY(), CONFIG.get().scale, true, mouseX - getX(), mouseY - getY(), hoveredElement(mouseX, mouseY).filter(PlayerButton.class::isInstance).map(PlayerButton.class::cast).map(p -> p.reference.uuid()).orElse(null));
+			context.drawBorder(getX(), getY(), (int) (128 * CONFIG.get().scale), (int) (128 * CONFIG.get().scale), Colors.WHITE);
+		}
+
+		@Override
+		public void onClick(double mouseX, double mouseY) {
+			if (LeapOverlay.this.hovered == null) return;
+
+			assert client != null && client.player != null && client.interactionManager != null;
+			references.stream()
+					.filter(ref -> ref.uuid().equals(LeapOverlay.this.hovered))
+					.findAny()
+					.ifPresent(ref -> client.interactionManager.clickSlot(ref.syncId(), ref.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, client.player));
+		}
+
+		@Override
+		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+	}
+
+	private class PlayerButton extends ButtonWidget {
 		private static final int BORDER_THICKNESS = 2;
-		private static final int HEAD_SIZE = 32;
+		private static final int HEAD_SIZE = 24;
 		private final PlayerReference reference;
 
 		private PlayerButton(int x, int y, int width, int height, PlayerReference reference) {
@@ -164,46 +185,43 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 		@Override
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			Identifier texture = this.isSelected() ? BUTTON_HIGHLIGHTED : BUTTON;
-			context.drawGuiTexture(RenderLayer::getGuiTextured, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+			Identifier texture = this.isSelected() || reference.uuid().equals(LeapOverlay.this.hovered) ? BUTTON_HIGHLIGHTED : BUTTON;
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
+			Matrix3x2fStack matrices = context.getMatrices();
+			float scale = CONFIG.get().scale;
 			int baseX = this.getX() + BORDER_THICKNESS;
 			int centreX = this.getX() + (this.getWidth() >> 1);
 			int centreY = this.getY() + (this.getHeight() >> 1);
+			int halfFontHeight = (int) (CLIENT.textRenderer.fontHeight * scale) >> 1;
 
 			//Draw Player Head
-			RealmsUtil.drawPlayerHead(context, baseX + 4, centreY - (HEAD_SIZE >> 1), HEAD_SIZE, reference.uuid());
-
-			MatrixStack matrices = context.getMatrices();
-			int halfFontHeight = (int) (CLIENT.textRenderer.fontHeight * SCALE) >> 1;
+			HudHelper.drawPlayerHead(context, baseX + 4, centreY - ((int) (HEAD_SIZE * scale) >> 1), (int) (HEAD_SIZE * scale), reference.uuid());
 
 			//Draw class as heading
-			matrices.push();
-			matrices.translate(centreX, this.getY() + halfFontHeight, 0f);
-			matrices.scale(SCALE, SCALE, 1f);
-			context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.dungeonClass().displayName(), 0, 0, ColorHelper.fullAlpha(reference.dungeonClass().color()));
-			matrices.pop();
+			matrices.pushMatrix();
+			matrices.translate(centreX, this.getY() + halfFontHeight);
+			matrices.scale(scale, scale);
+			context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.dungeonClass().displayName(), 0, 0, reference.dungeonClass().color());
+			matrices.popMatrix();
 
 			//Draw name next to head
-			matrices.push();
-			matrices.translate(baseX + HEAD_SIZE + 8, centreY - halfFontHeight, 0f);
-			matrices.scale(SCALE, SCALE, 1f);
+			matrices.pushMatrix();
+			matrices.translate(baseX + HEAD_SIZE * scale + 8, centreY - halfFontHeight);
+			matrices.scale(scale, scale);
 			context.drawTextWithShadow(CLIENT.textRenderer, Text.literal(reference.name()), 0, 0, Colors.WHITE);
-			matrices.pop();
+			matrices.popMatrix();
 
 			if (reference.status() != null) {
 				//Text
-				matrices.push();
-				matrices.translate(centreX, this.getY() + this.getHeight() - (halfFontHeight * 3), 0f);
-				matrices.scale(SCALE, SCALE, 1f);
+				matrices.pushMatrix();
+				matrices.translate(centreX, this.getY() + this.getHeight() - (halfFontHeight * 3));
+				matrices.scale(scale, scale);
 				context.drawCenteredTextWithShadow(CLIENT.textRenderer, reference.status().text.get(), 0, 0, Colors.WHITE);
-				matrices.pop();
+				matrices.popMatrix();
 
 				//Overlay
-				matrices.push();
-				matrices.scale(1f, 1f, 1f);
 				context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), reference.status().overlayColor);
-				matrices.pop();
 			}
 		}
 
@@ -213,7 +231,27 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 	}
 
-	private record PlayerReference(UUID uuid, String name, DungeonClass dungeonClass, @Nullable PlayerStatus status, int syncId, int slotId) {}
+	private record PlayerReference(UUID uuid, String name, DungeonClass dungeonClass, @Nullable PlayerStatus status, int syncId, int slotId) implements Comparable<PlayerReference> {
+		/**
+		 * Compares first by class name then by player name.
+		 */
+		private static final Comparator<PlayerReference> COMPARATOR = Comparator.<PlayerReference, String>comparing(ref -> ref.dungeonClass().displayName()).thenComparing(PlayerReference::name);
+
+		@Override
+		public boolean equals(Object obj) {
+			return obj instanceof PlayerReference playerRef && uuid.equals(playerRef.uuid);
+		}
+
+		@Override
+		public int hashCode() {
+			return uuid.hashCode();
+		}
+
+		@Override
+		public int compareTo(@NotNull LeapOverlay.PlayerReference o) {
+			return COMPARATOR.compare(this, o);
+		}
+	}
 
 	private enum PlayerStatus {
 		DEAD(() -> Text.translatable("text.skyblocker.dead").withColor(Colors.RED), ColorHelper.withAlpha(64, Colors.LIGHT_RED)),

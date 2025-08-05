@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.compatibility.rei;
+package de.hysky.skyblocker.compatibility.rei.recipe;
 
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import me.shedaniel.math.Point;
@@ -10,13 +10,14 @@ import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.gui.ScreenPos;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.joml.Matrix3x2fStack;
 
 /**
  * Skyblock recipe category class for REI
@@ -79,11 +80,11 @@ public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDis
                     .entry(EntryStacks.of(outputSlot.stack())));
         }
         out.add(Widgets.createDrawableWidget((context, mouseX, mouseY, delta) -> {
-            MatrixStack matrices = context.getMatrices();
-            matrices.push();
-            matrices.translate(bounds.getX(), bounds.getY(), 0.f);
+            Matrix3x2fStack matrices = context.getMatrices();
+            matrices.pushMatrix();
+            matrices.translate(bounds.getX(), bounds.getY());
             recipe.render(context, bounds.getWidth(), bounds.getHeight(), mouseX - bounds.getX(), mouseY - bounds.getY());
-            matrices.pop();
+            matrices.popMatrix();
         }));
         ScreenPos arrowLocation = recipe.getArrowLocation(bounds.getWidth(), bounds.getHeight());
         if (arrowLocation != null)

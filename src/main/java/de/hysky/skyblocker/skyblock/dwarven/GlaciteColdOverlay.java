@@ -5,11 +5,11 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
@@ -26,19 +26,21 @@ public class GlaciteColdOverlay {
     @Init
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(GlaciteColdOverlay::update, 20);
-        ClientReceiveMessageEvents.GAME.register(GlaciteColdOverlay::coldReset);
-		HudLayerRegistrationCallback.EVENT.register(d -> d.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, POWDER_SNOW_OUTLINE, (context, tickCounter) -> render(context)));
+        ClientReceiveMessageEvents.ALLOW_GAME.register(GlaciteColdOverlay::coldReset);
+		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, POWDER_SNOW_OUTLINE, (context, tickCounter) -> render(context));
     }
 
-    private static void coldReset(Text text, boolean b) {
+    private static boolean coldReset(Text text, boolean b) {
         if (!Utils.isInDwarvenMines() || b) {
-            return;
+            return true;
         }
         String message = text.getString();
         if (message.equals("The warmth of the campfire reduced your ❄ Cold to 0!")) {
             cold = 0;
             resetTime = System.currentTimeMillis();
         }
+
+        return true;
     }
 
     private static void update() {
@@ -63,7 +65,7 @@ public class GlaciteColdOverlay {
     private static void renderOverlay(DrawContext context, Identifier texture, float opacity) {
 		int white = ColorHelper.getWhite(opacity);
 		context.drawTexture(
-			RenderLayer::getGuiTexturedOverlay,
+			RenderPipelines.GUI_TEXTURED,
 			texture,
 			0,
 			0,

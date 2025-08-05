@@ -2,13 +2,13 @@ package de.hysky.skyblocker.skyblock.item;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookWidget;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -95,9 +95,9 @@ public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingT
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
         int i = this.x;
         int j = (this.height - this.backgroundHeight) / 2;
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
         //4 px of margin to allow some space for custom resource packs that have size differences on the crafting table/inventory textures
-        if (!handler.mirrorverse) context.drawTexture(RenderLayer::getGuiTextured, QUICK_CRAFT, i + 143, j - 3, 0, 0, 37, 90, 37, 90);
+        if (!handler.mirrorverse) context.drawTexture(RenderPipelines.GUI_TEXTURED, QUICK_CRAFT, i + 143, j - 3, 0, 0, 37, 90, 37, 90);
     }
 
     @Override

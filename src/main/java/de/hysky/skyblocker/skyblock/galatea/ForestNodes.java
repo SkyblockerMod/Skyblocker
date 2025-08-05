@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -50,9 +51,10 @@ public class ForestNodes {
 			return ActionResult.PASS;
 		});
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+		ParticleEvents.FROM_SERVER.register(ForestNodes::onParticle);
 	}
 
-	public static void onParticle(ParticleS2CPacket packet) {
+	private static void onParticle(ParticleS2CPacket packet) {
 		if (!shouldProcess()) {
 			return;
 		}

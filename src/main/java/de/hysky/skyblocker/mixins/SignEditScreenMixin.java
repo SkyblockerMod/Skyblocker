@@ -60,7 +60,7 @@ public abstract class SignEditScreenMixin extends Screen {
 				}
 			}
 			//if the sign is being used to enter number send it to the sign calculator
-			if (isInputSign() && config.uiAndVisuals.inputCalculator.enabled) {
+			else if (isInputSign() && config.uiAndVisuals.inputCalculator.enabled) {
 				SignCalculator.renderCalculator(context, messages[0], context.getScaledWindowWidth() / 2, 55);
 			}
 		}
@@ -85,7 +85,7 @@ public abstract class SignEditScreenMixin extends Screen {
 				}
 			}
 			//if the sign is being used to enter number get number from calculator for if maths has been done
-			if (isInputSign() && config.uiAndVisuals.inputCalculator.enabled) {
+			else if (isInputSign() && config.uiAndVisuals.inputCalculator.enabled) {
 				boolean isPrice = messages[2].contains("price");
 				String value = SignCalculator.getNewValue(isPrice);
 				if (value.length() >= 15) {
@@ -97,19 +97,22 @@ public abstract class SignEditScreenMixin extends Screen {
     }
 
 	@Unique
-	private static final String SPEED_INPUT_MARKER = "^^^^^^";
+	private static final String SPEED_INPUT_MARKER = "speed cap!";
 	@Unique
 	private static final String INPUT_SIGN_MARKER = "^^^^^^^^^^^^^^^";
+	/** This is used for some things like the super craft amount input */
+	@Unique
+	private static final String ALT_INPUT_SIGN_MARKER = "^^^^^^";
 	@Unique
 	private static final String BAZAAR_FLIP_MARKER = "^^Flipping^^";
 
 	@Unique
 	private boolean isSpeedInputSign() {
-		return messages[1].equals(SPEED_INPUT_MARKER);
+		return messages[3].equals(SPEED_INPUT_MARKER);
 	}
 
 	@Unique
 	private boolean isInputSign() {
-		return messages[1].equals(INPUT_SIGN_MARKER) || messages[1].equals(BAZAAR_FLIP_MARKER);
+		return messages[1].equals(INPUT_SIGN_MARKER) || messages[1].equals(ALT_INPUT_SIGN_MARKER) || messages[1].equals(BAZAAR_FLIP_MARKER);
 	}
 }

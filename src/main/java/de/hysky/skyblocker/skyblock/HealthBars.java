@@ -229,9 +229,8 @@ public class HealthBars {
 			int mixedColor = ColorUtils.interpolate(health, emptyColor.getRGB(), halfColor.getRGB(), fullColor.getRGB());
 			float[] components = ColorUtils.getFloatComponents(mixedColor);
 			// Render the health bar texture with scaling based on health percentage
-			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, 0.003f), HEALTH_BAR_TEXTURE, components, 1f, true);
 			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, components, 1f, true);
-
+			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, -0.003f), HEALTH_BAR_TEXTURE, components, 1f, true);
 		}
 	}
 }
