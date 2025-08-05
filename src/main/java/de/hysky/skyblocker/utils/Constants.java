@@ -95,7 +95,7 @@ public interface Constants {
 	List<String> GLITCHED = List.of("FFDC51", "F7DA33", "606060", "E7413C", "45413C", "4A14B7", "1793C4", "000000", "E75C3C", "65605A",
 			"5D2FB9", "17A8C4", "E76E3C", "88837E", "8969C8", "1CD4E4"); // Glitched through other means such as Shark Scale upgrade color
 
-	// List of exceptions
+	// EntryList of exceptions
 	List<String> RANCHERS = List.of("CC5500", "000000", "0");
 	List<String> REAPER = List.of("1B1B1B", "FF0000");
 	List<String> ADAPTIVE_CHEST = List.of("3ABE78", "82E3D8", "BFBCB2", "D579FF", "FF4242", "FFC234");

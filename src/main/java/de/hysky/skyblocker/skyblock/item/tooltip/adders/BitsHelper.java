@@ -37,7 +37,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 
 	//region Constants
 	/**
-	 * List of items that sell well. No, it is not automated, but that stuff is unlikely to change unless some update
+	 * EntryList of items that sell well. No, it is not automated, but that stuff is unlikely to change unless some update
 	 * Definition of "good selling item": 300+ daily sales, 12+ hourly sales
 	 * I would personally also demand good price per item as filling up all ah slots with catalyst would suck
 	 * But newer players would find a good use of it so ima keep my preferences away

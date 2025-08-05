@@ -4,14 +4,10 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.FarmingConfig;
-import de.hysky.skyblocker.skyblock.garden.FarmingHudWidget;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -36,7 +32,7 @@ public class FarmingCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.farming.garden.farmingHud"))
 								.prompt(Text.translatable("text.skyblocker.open"))
-								.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GARDEN, FarmingHudWidget.getInstance().getInternalID(), screen)))
+								.action(screen -> {})
 								.build())
 						.option(Option.<FarmingConfig.Type>createBuilder()
 								.name(Text.translatable("skyblocker.config.farming.garden.farmingHud.type"))
