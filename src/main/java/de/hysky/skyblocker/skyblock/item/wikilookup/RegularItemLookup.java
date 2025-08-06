@@ -1,21 +1,23 @@
 package de.hysky.skyblocker.skyblock.item.wikilookup;
 
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
 
 public class RegularItemLookup implements WikiLookup {
 	private static final Pattern PET_ITEM_NAME = Pattern.compile("^\\[Lvl \\d+] (?<name>.+)$");
+	private static final Function<String, Matcher> PET_MATCHER = itemName -> PET_ITEM_NAME.matcher(itemName + " Pet"); // // Add Pet to the end of string for precise lookup
 	public static final RegularItemLookup INSTANCE = new RegularItemLookup();
 
 	private RegularItemLookup() {}
@@ -27,24 +29,42 @@ public class RegularItemLookup implements WikiLookup {
 	}
 
 	private static void openWiki(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {
+		String itemName = itemStack.getName().getString();
 		PetInfo petInfo = ItemUtils.getPetInfo(itemStack);
 
+		// Regular item
 		if (petInfo.isEmpty()) {
 			ItemUtils.getItemIdOptional(itemStack)
 					.map(neuId -> ItemRepository.getWikiLink(neuId, useOfficial))
 					.ifPresentOrElse(wikiLink -> WikiLookup.openWikiLink(wikiLink, player),
-							() -> player.sendMessage(Constants.PREFIX.get().append(useOfficial ?
-									Text.translatable("skyblocker.wikiLookup.noArticleFound.official") :
-									Text.translatable("skyblocker.wikiLookup.noArticleFound.fandom")), false));
-		} else {
-			String itemName = petInfo.name().get() + " Pet"; // Add Pet to the end of string for precise lookup
-			Matcher matcher = PET_ITEM_NAME.matcher(itemName);
-
-			if (matcher.matches()) {
-				String petName = REPLACING_FUNCTION.apply(matcher.group("name").trim());
-				String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + petName;
-				WikiLookup.openWikiLink(wikiLink, player);
-			}
+							() -> {
+								// For an item name that start with [Lvl 100] PET_NAME but doesn't have PetInfo stored
+								if (itemName.matches(PET_ITEM_NAME.pattern())) {
+									lookupPetItem(PET_MATCHER.apply(itemName), player, useOfficial);
+								}
+								// Otherwise, no article found
+								else {
+									noArticleFound(player, useOfficial);
+								}
+							});
 		}
+		// Pet item
+		else {
+			lookupPetItem(PET_MATCHER.apply(petInfo.name().get()), player, useOfficial);
+		}
+	}
+
+	private static void lookupPetItem(Matcher matcher, @NotNull PlayerEntity player, boolean useOfficial) {
+		if (matcher.matches()) {
+			String petName = REPLACING_FUNCTION.apply(matcher.group("name").trim());
+			String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + petName;
+			WikiLookup.openWikiLink(wikiLink, player);
+		}
+	}
+
+	private static void noArticleFound(@NotNull PlayerEntity player, boolean useOfficial) {
+		player.sendMessage(Constants.PREFIX.get().append(useOfficial ?
+				Text.translatable("skyblocker.wikiLookup.noArticleFound.official") :
+				Text.translatable("skyblocker.wikiLookup.noArticleFound.fandom")), false);
 	}
 }
