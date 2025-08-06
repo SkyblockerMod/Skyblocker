@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.museum;
 
-import de.hysky.skyblocker.skyblock.item.WikiLookup;
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
@@ -150,7 +150,7 @@ public class DonationButton extends ClickableWidget {
 
 		tooltip.add(Text.empty());
 		if (soulbound) tooltip.add(Text.literal("* Soulbound *").formatted(Formatting.DARK_GRAY));
-		tooltip.add(Text.translatable("skyblocker.museum.hud.wikiLookup", WikiLookup.getKeysText()).formatted(Formatting.YELLOW));
+		tooltip.add(Text.translatable("skyblocker.museum.hud.wikiLookup", WikiLookupManager.getKeysText()).formatted(Formatting.YELLOW));
 
 		this.tooltip = tooltip;
 	}
