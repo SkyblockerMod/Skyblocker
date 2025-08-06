@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -9,6 +10,7 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -190,6 +192,24 @@ public class SkyblockInventoryScreen extends InventoryScreen {
             context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, EMPTY_SLOT, slot.x, slot.y, 16, 16);
         }
     }
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.isWindowFocused()) {
+			var mouse = client.mouse;
+			var window = client.getWindow();
+			var mouseX = (mouse.getX() * ((double) window.getScaledWidth() / (double) window.getWidth()));
+			var mouseY = (mouse.getY() * ((double) window.getScaledHeight() / (double) window.getHeight()));
+
+			for (Slot equipmentSlot : equipmentSlots) {
+				if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) {
+					return WikiLookupManager.handleWikiLookup(null, Either.left(equipmentSlot), client.player, keyCode, scanCode);
+				}
+			}
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
 
     private static class EquipmentSlot extends Slot {
 
