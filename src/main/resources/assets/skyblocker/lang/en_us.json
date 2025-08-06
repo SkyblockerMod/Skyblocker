@@ -525,6 +525,7 @@
   "skyblocker.config.helpers.fishing.fishingTimerScale.@Tooltip": "How big to display the fishing timer.",
   "skyblocker.config.helpers.fishing.hideOtherPlayers": "Hide Other Players Rods",
   "skyblocker.config.helpers.fishing.hideOtherPlayers.@Tooltip": "Hide other players' fishing rods from showing for you.",
+  "skyblocker.config.helpers.fishing.enableFishingHud": "Enable Fishing HUD",
   "skyblocker.config.helpers.fishing.enableFishingTimer": "Enable Bobber Timer",
   "skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip": "Adds bobber lifetime to HUD.",
   "skyblocker.config.helpers.fishing.hud.screen": "Fishing HUD Config...",
