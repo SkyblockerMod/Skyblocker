@@ -33,9 +33,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,10 +43,6 @@ public class SmoothAOTE {
 
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
 	private static final long MAX_TELEPORT_TIME = 2500; //2.5 seconds
-	/**
-	 * Stores blocks that are known to not have a collision
-	 */
-	private static final HashSet<Block> NON_COLLISION_BLOCKS = new HashSet<>(Set.of(Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM, Blocks.NETHER_WART, Blocks.REDSTONE_WIRE, Blocks.LADDER, Blocks.FIRE, Blocks.WATER, Blocks.LAVA, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.SEA_PICKLE, Blocks.KELP, Blocks.VINE));
 
 	private static long startTime;
 	private static Vec3d startPos;
@@ -425,12 +419,6 @@ public class SmoothAOTE {
 				return direction.multiply(offset - 1);
 			}
 
-			//stops on vine if found
-			int isVine = checkVine(checkPos, direction.getX() > 0, direction.getZ() > 0);
-			if (isVine != -1) {
-				return direction.multiply(offset - isVine);
-			}
-
 			//check if the block at head height is free
 			if (!canTeleportThrough(checkPos.up())) {
 				if (offset == 0) {
@@ -469,35 +457,8 @@ public class SmoothAOTE {
 	}
 
 	/**
-	 * check if there is a vine. The player can teleport into the same block only from 1 direction
-	 *
-	 * @param blockPos  location
-	 * @param positiveX is the player moving positive X
-	 * @param positiveZ is the player moving positive Z
-	 * @return the offset. -1 if no vine
-	 */
-	private static int checkVine(BlockPos blockPos, boolean positiveX, boolean positiveZ) {
-		if (CLIENT.world == null) return -1;
-		BlockState blockState = CLIENT.world.getBlockState(blockPos);
-		if (!blockState.getBlock().equals(Blocks.VINE)) return -1;
-		//work out if coming from open side of vine. If so let the player stay there else move 1 back
-
-		if (blockState.get(Properties.NORTH) && (!positiveZ)) {
-			return 0;
-		} else if (blockState.get(Properties.SOUTH) && (positiveZ)) {
-			return 0;
-		} else if (blockState.get(Properties.WEST) && (!positiveX)) {
-			return 0;
-		} else if (blockState.get(Properties.EAST) && (positiveX)) {
-			return 0;
-		} else {
-			return 1;
-		}
-	}
-
-	/**
 	 * Checks to see if a block is in the allowed list to teleport though
-	 * Air, Buttons, carpets, crops, pots, mushrooms, nether wart, redstone, ladder, water, fire, lava, 3 or less snow layers
+	 * Air, non-colision blocks, carpets, pots, 3 or less snow layers
 	 *
 	 * @param blockPos block location
 	 * @return if a block location can be teleported though
@@ -512,7 +473,9 @@ public class SmoothAOTE {
 			return true;
 		}
 		Block block = blockState.getBlock();
-		return block instanceof ButtonBlock || block instanceof CarpetBlock || block instanceof CropBlock || block instanceof FlowerPotBlock || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || NON_COLLISION_BLOCKS.contains(block);
+		VoxelShape shape = blockState.getCollisionShape(CLIENT.world, blockPos);
+
+		return shape.isEmpty() || block instanceof CarpetBlock || block instanceof FlowerPotBlock || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3);
 	}
 
 	/**
