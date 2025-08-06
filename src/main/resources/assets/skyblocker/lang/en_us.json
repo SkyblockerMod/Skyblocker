@@ -38,6 +38,7 @@
   "skyblocker.skyblockerScreen": "Skyblocker Main Screen",
 
   "skyblocker.config.title": "Skyblocker %s",
+  "skyblocker.config.title.settings": "Settings",
 
   "skyblocker.config.shortcutToKeybindsSettings": "Edit Keybind",
   "skyblocker.config.shortcutToKeybindsSettings.@Text": "Keybinds Menu",
@@ -178,12 +179,18 @@
 
   "skyblocker.config.dungeons.mimicMessage": "Mimic Message",
   "skyblocker.config.dungeons.mimicMessage.mimicMessage": "Mimic Message",
-  "skyblocker.config.dungeons.mimicMessage.mimicMessage.@Tooltip": "Message which will be sent in the chat upon killing a mimic. Recommended to retain the default value.",
+  "skyblocker.config.dungeons.mimicMessage.mimicMessage.@Tooltip": "Message which will be sent in the chat upon killing a Mimic. Recommended to retain the default value.",
   "skyblocker.config.dungeons.mimicMessage.sendMimicMessage": "Enable Mimic Message",
-  "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Sends a message in chat upon killing a mimic for other players' score calculation mods.",
+  "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Sends a message in the chat upon killing a Mimic for other players' score calculation mods.",
 
   "skyblocker.config.dungeons.playerSecretsTracker": "Player Secrets Tracker",
   "skyblocker.config.dungeons.playerSecretsTracker.@Tooltip": "Tracks the number of secrets people in your dungeon run are doing.",
+
+  "skyblocker.config.dungeons.princeMessage": "Prince Message",
+  "skyblocker.config.dungeons.princeMessage.princeMessage": "Prince Message",
+  "skyblocker.config.dungeons.princeMessage.princeMessage.@Tooltip": "Message which will be sent in the chat upon killing a Prince. Recommended to retain the default value.",
+  "skyblocker.config.dungeons.princeMessage.sendPrinceMessage": "Enable Prince Message",
+  "skyblocker.config.dungeons.princeMessage.sendPrinceMessage.@Tooltip": "Sends a message in the chat upon killing a Prince for other players' score calculation mods.",
 
   "skyblocker.config.dungeons.professor": "The Professor (F3/M3)",
   "skyblocker.config.dungeons.professor.fireFreezeStaffTimer": "Fire Freeze Staff Timer (F3/M3)",
@@ -228,6 +235,8 @@
   "skyblocker.config.dungeons.secretWaypoints.enableLeverWaypoints": "Enable Lever Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints": "Enable Pearl Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "With these waypoints, you throw a pearl towards the block and at the same time AOTV up.",
+  "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints": "Enable Prince Waypoints",
+  "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints.@Tooltip": "Helpful for obtaining +1 Bonus Score in your runs with the Reborn attribute.",
   "skyblocker.config.dungeons.secretWaypoints.enableSecretWaypoints": "Enable Dungeon Secret Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints": "Enable Stonk Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints": "Enable Superboom Waypoints",
@@ -245,7 +254,7 @@
   "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
 
   "skyblocker.config.dungeons.starredMobGlow": "Starred Mob Glow",
-  "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.\n\nNote that using this will result in the teammate glow no longer being visible through walls when a starred mob is present.",
+  "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.",
   "skyblocker.config.dungeons.terminals": "Terminal Solvers (F7/M7)",
   "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "Block Incorrect Clicks",
   "skyblocker.config.dungeons.terminals.solveColor": "Solve Select Colored",
@@ -304,6 +313,9 @@
   "skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip": "Shows the required clicks in the Tune Frequency puzzle.",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Solve Forest Temple Puzzle",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Displays the amount of times you need to rotate the terracotta blocks. For positive rotations you right click while for negative rotations you left click.",
+  "skyblocker.config.foraging.galatea.enableTreeBreakProgress": "Enable Tree Break Progress HUD",
+  "skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip": "Renders tree break progress in HUD",
+  "skyblocker.config.foraging.galatea.enableTreeBreakHud": "Tree Break Progress HUD",
 
    "skyblocker.config.foraging.sweepOverlay": "Sweep Overlay",
   "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Enable Sweep Overlay",
@@ -431,6 +443,13 @@
   "skyblocker.config.general.specialEffects.rareDungeonDropEffects.@Tooltip": "Adds a special visual effect triggered upon obtaining rare dungeon loot!",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects": "Rare Dye Drop Effects",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "Adds a special visual effect triggered upon dropping a rare dye!",
+
+  "skyblocker.config.general.backup": "Config Backups",
+  "skyblocker.config.general.backup.manage": "Manage Backups...",
+  "skyblocker.config.backup.title": "Config Backups",
+  "skyblocker.config.backup.restore": "Restore",
+  "skyblocker.config.backup.confirm.title": "Restore Backup",
+  "skyblocker.config.backup.confirm.text": "Restore backup %s? This will overwrite your current config.",
 
   "skyblocker.config.general.updateChannel": "Update Channel",
   "skyblocker.config.general.updateChannel.@Tooltip": "Choose between receiving notifications for releases, for both releases and betas, or for releases; betas; and alphas.",
@@ -610,6 +629,7 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling": "Pling",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie": "Zombie",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.true": "True",
+  "skyblocker.config.chat.chatRules.invalidRegex": "Your chat rule '%s' has an invalid regex pattern and has been disabled!",
   "skyblocker.config.chat.waypoints.display": "Click to display waypoint at x: %d y: %d z: %d",
   "skyblocker.config.chat.waypoints.displayed": "Displayed temporary waypoint at x: %d y: %d z: %d %s",
 
@@ -640,10 +660,10 @@
   "skyblocker.config.chat.filter.hideShowOff": "Hide Show Off Messages",
   "skyblocker.config.chat.filter.hideShowOff.@Tooltip": "Filters messages from the /show command",
   "skyblocker.config.chat.filter.hideTeleportPad": "Hide Teleport Pad Messages",
-  "skyblocker.config.chat.filter.hideToggleLottery": "Hide Toggle Lottery Messages",
-  "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "Hides those pesky messages telling you to disable the Lottery HOTF perk when you want it enabled!",
-  "skyblocker.config.chat.filter.hideToggleSkyMall": "Hide Toggle Sky Mall Messages",
-  "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "Hides those pesky messages telling you to disable the Sky Mall HOTM perk when you want it enabled!",
+  "skyblocker.config.chat.filter.hideToggleLottery": "Hide Lottery Messages outside Galatea",
+  "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "Hides Lottery HOTF perk messages while you're outside of Galatea.",
+  "skyblocker.config.chat.filter.hideToggleSkyMall": "Hide Sky Mall Messages outside Mining Islands",
+  "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "Hides Sky Mall HOTM perk messages while you're outside of a mining island.",
 
   "skyblocker.config.chat.skyblockXpMessages": "SkyBlock XP Messages",
   "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "Notifies you in the chat when you gain SkyBlock XP.",
@@ -956,6 +976,14 @@
   "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity": "Flame Opacity",
   "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity.@Tooltip": "100%  default opacity\n0%     off",
 
+  "skyblocker.config.uiAndVisuals.gyroOverlay": "Gyro Overlay",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect": "Gyrokinetic Wand Mode",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.Color": "Gyro Overlay Color",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.OFF": "Off",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.CIRCLE": "Circle",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.CIRCLE_OUTLINE": "Circle Outline",
+  "skyblocker.config.uiAndVisuals.gyroOverlay.mode.SPHERE": "Sphere",
+
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips": "Hide empty item tooltips in menus",
   "skyblocker.config.uiAndVisuals.hideEmptyTooltips.@Tooltip": "Hides the tooltip of an item if it doesn't have any information to display. Also blocks clicks on filler items like glass panes.",
 
@@ -1026,6 +1054,8 @@
   "skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip": "Show the item names and icons in the widget.",
   "skyblocker.config.uiAndVisuals.itemPickup.lifeTime": "Item Lifetime (s)",
   "skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip": "How long should items stay on the widget.",
+  "skyblocker.config.uiAndVisuals.itemPickup.splitSack": "Split Sack and Inventory Items",
+  "skyblocker.config.uiAndVisuals.itemPickup.splitSack.@Tooltip": "Show changes in sacks separately from changes in the inventory.",
 
   "skyblocker.config.uiAndVisuals.slotText": "Slot Text",
   "skyblocker.config.uiAndVisuals.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level.",
@@ -1046,9 +1076,13 @@
   "skyblocker.config.uiAndVisuals.slotText.enchantmentLevel": "Enchantment Book Level",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop": "Essence Shop",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip": "Displays the levels and your current amount of essence while in essence shops.",
+  "skyblocker.config.uiAndVisuals.slotText.evolvingItems": "Evolving Items",
+  "skyblocker.config.uiAndVisuals.slotText.evolvingItems.@Tooltip": "Displays the time held for Bottle of Jyrre, Moby Duck, Discrite, Dark Cacao Truffle, Training Weights.",
   "skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel": "HOTM Perk Level",
   "skyblocker.config.uiAndVisuals.slotText.hotfPerkLevel": "HOTF Perk Level",
   "skyblocker.config.uiAndVisuals.slotText.minionLevel": "Minion Level",
+  "skyblocker.config.uiAndVisuals.slotText.newYearCakeYear": "New Year Cake Year",
+  "skyblocker.config.uiAndVisuals.slotText.newYearCakeYear.@Tooltip": "Displays the year on the cake.",
   "skyblocker.config.uiAndVisuals.slotText.petLevel": "Pet Level",
   "skyblocker.config.uiAndVisuals.slotText.potionLevel": "Potion Level",
   "skyblocker.config.uiAndVisuals.slotText.powerStonesGuide": "Power Stones Guide",
@@ -1063,6 +1097,9 @@
   "skyblocker.config.uiAndVisuals.slotText.statsTuning.@Tooltip": "Displays your assigned and unassigned tuning points.",
   "skyblocker.config.uiAndVisuals.slotText.yourEssence": "Your Essence",
   "skyblocker.config.uiAndVisuals.slotText.bestiaryLevel": "Bestiary Level",
+
+  "skyblocker.config.uiAndVisuals.museumOverlay": "Museum Overlay",
+  "skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip": "Shows undonated items including their prices and more.\n\nMake sure to enable your Museum API for this to work!",
 
   "skyblocker.config.uiAndVisuals.searchOverlay": "AH/BZ Search Overlay",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",
@@ -1193,6 +1230,27 @@
   "skyblocker.updateRepository.success": "§aUpdated the local repository successfully.",
   "skyblocker.updateRepository.failed": "§cUpdating the local repository failed. See logs for details.",
   "skyblocker.updateRepository.error":  "§cEncountered an error while deleting and updating the local repository. Try again in a moment or remove the files manually and restart the game. See logs for details.",
+
+  "skyblocker.museum.hud.alreadyDonatedItem": "Donated Item",
+  "skyblocker.museum.hud.coin": "Coins",
+  "skyblocker.museum.hud.craftIngredient": "Crafted with",
+  "skyblocker.museum.hud.countsFor": "Will count for",
+  "skyblocker.museum.hud.filter": "Item Filter",
+  "skyblocker.museum.hud.filter.all": "All",
+  "skyblocker.museum.hud.filter.armor": "Armor",
+  "skyblocker.museum.hud.filter.rarities": "Rarities",
+  "skyblocker.museum.hud.filter.switch": "Click to switch filter!",
+  "skyblocker.museum.hud.filter.weapons": "Weapons",
+  "skyblocker.museum.hud.ratioText": "Coins per XP",
+  "skyblocker.museum.hud.skyblockXp": "SkyBlock XP",
+  "skyblocker.museum.hud.sorter": "Item Sort",
+  "skyblocker.museum.hud.sorter.craftCost": "Craft Cost",
+  "skyblocker.museum.hud.sorter.lBin": "Lowest BIN",
+  "skyblocker.museum.hud.sorter.ratio": "Coins/XP Ratio",
+  "skyblocker.museum.hud.sorter.switch": "Click to switch sort!",
+  "skyblocker.museum.hud.unknownPrice": "Unknown",
+  "skyblocker.museum.hud.wikiLookup": "Click on %s to open the wiki page!",
+  "skyblocker.museum.hud.xpReward": "Reward",
 
   "skyblocker.museum.attemptingResync": "Attempting to resync your museum item donations...",
   "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! Note that you can only do this once every two days.",
@@ -1525,6 +1583,7 @@
   "skyblocker.corpseTracker.emptyHistory": "Your corpse history list is empty :(",
   "skyblocker.corpseTracker.historyReset": "Corpse profit history has been reset for the current profile.",
 
+  "skyblocker.powderTracker": "Powder Mining Tracker",
   "skyblocker.powderTracker.historyReset": "Powder mining tracker has been reset for the current profile.",
   "skyblocker.powderTracker.profit": "Profit: %s Coins",
   "skyblocker.powderTracker.emptyHistory": "Your powder mining rewards list is empty :(",

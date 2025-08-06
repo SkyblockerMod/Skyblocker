@@ -1,11 +1,10 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -31,9 +30,10 @@ public class AbstractPopupScreen extends Screen {
 
     @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.backgroundScreen.render(context, -1, -1, delta);
-        context.draw();
-        RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(this.client.getFramebuffer().getDepthAttachment(), 1.0);
+		this.backgroundScreen.renderBackground(context, mouseX, mouseY, delta);
+		context.createNewRootLayer();
+		this.backgroundScreen.render(context, -1, -1, delta);
+		context.createNewRootLayer();
         this.renderInGameBackground(context);
     }
 
@@ -41,7 +41,7 @@ public class AbstractPopupScreen extends Screen {
      * These are the inner positions and size of the popup, not outer
      */
     public static void drawPopupBackground(DrawContext context, int x, int y, int width, int height) {
-        context.drawGuiTexture(RenderLayer::getGuiTextured, BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
     }
 
     @Override

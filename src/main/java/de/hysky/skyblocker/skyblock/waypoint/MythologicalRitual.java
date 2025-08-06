@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -80,13 +81,14 @@ public class MythologicalRitual {
                         }))
                 )
         )));
+        ParticleEvents.FROM_SERVER.register(MythologicalRitual::onParticle);
 
         // Put a root burrow so echo detection works without a previous burrow
         previousBurrow.confirmed = TriState.DEFAULT;
         griffinBurrows.put(BlockPos.ORIGIN, previousBurrow);
     }
 
-    public static void onParticle(ParticleS2CPacket packet) {
+    private static void onParticle(ParticleS2CPacket packet) {
         if (isActive()) {
             switch (packet.getParameters().getType()) {
                 case ParticleType<?> type when ParticleTypes.CRIT.equals(type) || ParticleTypes.ENCHANT.equals(type) -> handleBurrowParticle(packet);
