@@ -3,17 +3,14 @@ package de.hysky.skyblocker.skyblock.item.wikilookup;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import com.mojang.datafixers.util.Either;
-import de.hysky.skyblocker.utils.Constants;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.Util;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import com.mojang.datafixers.util.Either;
 
 /**
  * An item wiki lookup for certain screen.
@@ -48,15 +45,7 @@ public interface WikiLookup {
 		return true;
 	}
 
-	static void openWikiLink(String wikiLink, PlayerEntity player) {
-		CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink)).exceptionally(e -> {
-			WikiLookupManager.LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
-			player.sendMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
-			return null;
-		});
-	}
-
-	private static String encodeChar(String ch) {
-		return URLEncoder.encode(ch, StandardCharsets.UTF_8);
+	private static String encodeChar(String character) {
+		return URLEncoder.encode(character, StandardCharsets.UTF_8);
 	}
 }

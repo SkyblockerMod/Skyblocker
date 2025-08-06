@@ -284,7 +284,7 @@ public class MuseumManager extends ClickableWidget {
 
 		if (hoveredDonationButton != null) {
 			ItemStack hoveredStack = hoveredDonationButton.getDisplayStack();
-			return hoveredStack != null && WikiLookupManager.handleWikiLookup(null, Either.right(hoveredStack), CLIENT.player, keyCode, scanCode);
+			return hoveredStack != null && WikiLookupManager.handleWikiLookup(Either.right(hoveredStack), CLIENT.player, keyCode, scanCode);
 		}
 		return false;
 	}

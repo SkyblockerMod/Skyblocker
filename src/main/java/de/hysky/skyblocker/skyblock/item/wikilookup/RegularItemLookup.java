@@ -42,7 +42,7 @@ public class RegularItemLookup implements WikiLookup {
 
 			ItemUtils.getItemIdOptional(itemStack)
 					.map(neuId -> ItemRepository.getWikiLink(neuId, useOfficial))
-					.ifPresentOrElse(wikiLink -> WikiLookup.openWikiLink(wikiLink, player),
+					.ifPresentOrElse(wikiLink -> WikiLookupManager.openWikiLink(wikiLink, player),
 							() -> {
 								// For an item name that start with [Lvl 100] PET_NAME but doesn't have PetInfo stored
 								if (itemName.matches(PET_ITEM_NAME.pattern())) {
@@ -58,8 +58,7 @@ public class RegularItemLookup implements WikiLookup {
 												.replace("_", " ").trim();
 
 										String enchantment = REPLACING_FUNCTION.apply(WordUtils.capitalizeFully(firstEnchantment + " enchantment"));
-										String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + enchantment;
-										WikiLookup.openWikiLink(wikiLink, player);
+										WikiLookupManager.openWikiLinkName(enchantment, player, useOfficial);
 									}
 								}
 								// Otherwise, no article found
@@ -77,8 +76,7 @@ public class RegularItemLookup implements WikiLookup {
 	private static void lookupPetItem(Matcher matcher, @NotNull PlayerEntity player, boolean useOfficial) {
 		if (matcher.matches()) {
 			String petName = REPLACING_FUNCTION.apply(matcher.group("name").trim());
-			String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + petName;
-			WikiLookup.openWikiLink(wikiLink, player);
+			WikiLookupManager.openWikiLinkName(petName, player, useOfficial);
 		}
 	}
 

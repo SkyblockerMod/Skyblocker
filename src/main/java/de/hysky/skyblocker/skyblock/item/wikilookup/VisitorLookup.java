@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.mojang.datafixers.util.Either;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -21,8 +20,7 @@ public class VisitorLookup implements WikiLookup {
 	public void open(@NotNull Either<Slot, ItemStack> either, @NotNull PlayerEntity player, boolean useOfficial) {
 		either.ifLeft(slot -> {
 			String itemName = REPLACING_FUNCTION.apply(slot.getStack().getName().getString());
-			String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + itemName;
-			WikiLookup.openWikiLink(wikiLink, player);
+			WikiLookupManager.openWikiLinkName(itemName, player, useOfficial);
 		});
 	}
 

@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.wikilookup;
 
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,12 +11,15 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.Util;
 
 public class WikiLookupManager {
 	public static final Logger LOGGER = LogUtils.getLogger();
@@ -50,6 +54,10 @@ public class WikiLookupManager {
 		return (officialWikiLookup.getBoundKeyLocalizedText().getString() + "/" + fandomWikiLookup.getBoundKeyLocalizedText().getString()).toUpperCase(Locale.ENGLISH);
 	}
 
+	public static boolean handleWikiLookup(@NotNull Either<Slot, ItemStack> either, PlayerEntity player, int keyCode, int scanCode) {
+		return handleWikiLookup(null, either, player, keyCode, scanCode);
+	}
+
 	public static boolean handleWikiLookup(@Nullable String title, @NotNull Either<Slot, ItemStack> either, PlayerEntity player, int keyCode, int scanCode) {
 		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
 			boolean official = officialWikiLookup.matchesKey(keyCode, scanCode);
@@ -72,5 +80,18 @@ public class WikiLookupManager {
 				break;
 			}
 		}
+	}
+
+	public static void openWikiLinkName(String name, @NotNull PlayerEntity player, boolean useOfficial) {
+		String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + name;
+		openWikiLink(wikiLink, player);
+	}
+
+	public static void openWikiLink(String wikiLink, PlayerEntity player) {
+		CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink)).exceptionally(e -> {
+			WikiLookupManager.LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
+			player.sendMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
+			return null;
+		});
 	}
 }

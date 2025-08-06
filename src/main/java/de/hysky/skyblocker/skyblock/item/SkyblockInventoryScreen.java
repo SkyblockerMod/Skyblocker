@@ -204,7 +204,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 
 			for (Slot equipmentSlot : equipmentSlots) {
 				if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) {
-					return WikiLookupManager.handleWikiLookup(null, Either.left(equipmentSlot), client.player, keyCode, scanCode);
+					return WikiLookupManager.handleWikiLookup(Either.left(equipmentSlot), client.player, keyCode, scanCode);
 				}
 			}
 		}
