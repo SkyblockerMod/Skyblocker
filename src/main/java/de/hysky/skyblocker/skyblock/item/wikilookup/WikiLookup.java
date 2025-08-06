@@ -24,7 +24,7 @@ public interface WikiLookup {
 	Map<String, String> CHARACTER_ENCODER = Map.ofEntries(
 			Map.entry(" ", "_"),
 			// Special case for only a visitor that has '?'
-			Map.entry("?", URLEncoder.encode("?", StandardCharsets.UTF_8))
+			Map.entry("?", encodeChar("?"))
 	);
 	Function<String, String> REPLACING_FUNCTION = CHARACTER_ENCODER.entrySet().stream()
 			.map(entryToReplace -> (Function<String, String>) s -> s.replace(entryToReplace.getKey(), entryToReplace.getValue()))
@@ -54,5 +54,9 @@ public interface WikiLookup {
 			player.sendMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
 			return null;
 		});
+	}
+
+	private static String encodeChar(String ch) {
+		return URLEncoder.encode(ch, StandardCharsets.UTF_8);
 	}
 }
