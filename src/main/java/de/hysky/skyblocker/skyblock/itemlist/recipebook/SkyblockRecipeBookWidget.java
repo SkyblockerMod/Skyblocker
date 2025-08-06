@@ -5,6 +5,7 @@ import de.hysky.skyblocker.mixins.accessors.RecipeBookWidgetAccessor;
 import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.navigation.NavigationAxis;
@@ -13,12 +14,12 @@ import net.minecraft.client.gui.screen.recipebook.GhostRecipe;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.screen.recipebook.RecipeResultCollection;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.recipe.RecipeFinder;
 import net.minecraft.recipe.display.RecipeDisplay;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.context.ContextParameterMap;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,7 +69,7 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 		if (this.searchField == null) {
 			this.searchField = new TextFieldWidget(this.client.textRenderer, left + 25, top + 13, SEARCH_FIELD_WIDTH, 14, Text.translatable("itemGroup.search"));
 			this.searchField.setMaxLength(60); //Set at 60 due to the longest Skyblock item name being 55 characters long
-			this.searchField.setEditableColor(0xFFFFFF);
+			this.searchField.setEditableColor(Colors.WHITE);
 			this.searchField.setText(lastSearch);
 			this.searchField.setPlaceholder(SEARCH_HINT_TEXT);
 		}
@@ -122,18 +123,15 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		if (this.isOpen()) {
-			context.getMatrices().push();
-			context.getMatrices().translate(0.0f, 0.0f, 100.0f);
 			int left = accessor().invokeGetLeft();
 			int top = accessor().invokeGetTop();
-			context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, left, top, 1.0f, 1.0f, IMAGE_WIDTH, IMAGE_HEIGHT, 256, 256);
+			context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, left, top, 1.0f, 1.0f, IMAGE_WIDTH, IMAGE_HEIGHT, 256, 256);
 
 			for (Pair<RecipeTab, SkyblockRecipeTabButton> tabButton : this.tabButtons) {
 				tabButton.right().render(context, mouseX, mouseY, delta);
 			}
 
 			this.currentTab.left().draw(context, left, top, mouseX, mouseY, delta);
-			context.getMatrices().pop();
 		}
 	}
 
