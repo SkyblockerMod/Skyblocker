@@ -305,7 +305,12 @@ public class DungeonScore {
 		return matcher != null ? Integer.parseInt(matcher.group("crypts")) : 0;
 	}
 
-	public static boolean hasSpiritPet(JsonObject player, String name) {
+	private static boolean hasSpiritPet(JsonObject player, String name) {
+		if (player == null) {
+			LOGGER.error("[Skyblocker] Spirit pet lookup by name failed! (likely due to an earlier error!) Name: {}", name);
+			return false;
+		}
+
 		try {
 			for (JsonElement pet : player.getAsJsonObject("pets_data").getAsJsonArray("pets")) {
 				if (!pet.getAsJsonObject().get("type").getAsString().equals("SPIRIT")) continue;
@@ -329,7 +334,7 @@ public class DungeonScore {
 			if (s.equals("You")) return MinecraftClient.getInstance().getSession().getUsername(); //This will be wrong if the dead player is called 'You' but that's unlikely
 			else return s;
 		});
-		ProfileUtils.updateProfileByName(whoDied).thenAccept(player -> firstDeathHasSpiritPet = hasSpiritPet(player, whoDied));
+		ProfileUtils.fetchProfileMember(whoDied).thenAccept(player -> firstDeathHasSpiritPet = hasSpiritPet(player, whoDied));
 	}
 
 	private static void checkMessageForWatcher(String message) {
