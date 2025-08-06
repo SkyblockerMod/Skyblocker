@@ -6,9 +6,13 @@ import java.util.regex.Pattern;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
+import org.apache.commons.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
+import com.google.common.collect.Iterables;
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -34,6 +38,8 @@ public class RegularItemLookup implements WikiLookup {
 
 		// Regular item
 		if (petInfo.isEmpty()) {
+			NbtCompound nbt = ItemUtils.getCustomData(itemStack);
+
 			ItemUtils.getItemIdOptional(itemStack)
 					.map(neuId -> ItemRepository.getWikiLink(neuId, useOfficial))
 					.ifPresentOrElse(wikiLink -> WikiLookup.openWikiLink(wikiLink, player),
@@ -41,6 +47,20 @@ public class RegularItemLookup implements WikiLookup {
 								// For an item name that start with [Lvl 100] PET_NAME but doesn't have PetInfo stored
 								if (itemName.matches(PET_ITEM_NAME.pattern())) {
 									lookupPetItem(PET_MATCHER.apply(itemName), player, useOfficial);
+								}
+								// For enchanted book with a single enchantment
+								else if (itemStack.isOf(Items.ENCHANTED_BOOK) && nbt.contains("enchantments")) {
+									NbtCompound enchantments = nbt.getCompoundOrEmpty("enchantments");
+
+									if (enchantments.getKeys().size() == 1) {
+										String firstEnchantment = Iterables.getFirst(enchantments.getKeys(), null)
+												.replace("ultimate_", "") // Stripped out ultimate prefix
+												.replace("_", " ").trim();
+
+										String enchantment = REPLACING_FUNCTION.apply(WordUtils.capitalizeFully(firstEnchantment + " enchantment"));
+										String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + enchantment;
+										WikiLookup.openWikiLink(wikiLink, player);
+									}
 								}
 								// Otherwise, no article found
 								else {
