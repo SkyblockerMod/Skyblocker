@@ -126,9 +126,9 @@ public class DungeonsCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter"))
 						.description(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip"))
-						.binding(defaults.dungeons.sellableItemHighlighter,
-								() -> config.dungeons.sellableItemHighlighter,
-								newValue -> config.dungeons.sellableItemHighlighter = newValue)
+						.binding(defaults.dungeons.sellableItemsHighlighter,
+								() -> config.dungeons.sellableItemsHighlighter,
+								newValue -> config.dungeons.sellableItemsHighlighter = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 

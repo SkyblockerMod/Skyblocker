@@ -46,6 +46,6 @@ public class SellableItemsHighlighter extends SimpleContainerSolver implements C
 
 	@Override
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().dungeons.sellableItemHighlighter;
+		return SkyblockerConfigManager.get().dungeons.sellableItemsHighlighter;
 	}
 }

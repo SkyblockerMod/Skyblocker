@@ -31,7 +31,7 @@ public class DungeonsConfig {
 
 	public boolean hideSoulweaverSkulls = false;
 
-	public boolean sellableItemHighlighter = true;
+	public boolean sellableItemsHighlighter = true;
 
 	public DungeonMap dungeonMap = new DungeonMap();
 
