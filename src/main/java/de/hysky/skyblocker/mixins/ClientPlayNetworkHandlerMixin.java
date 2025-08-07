@@ -76,7 +76,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		SlayerManager.checkSlayerBoss(armorStandEntity);
 		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) ImmunityHUD.handleEgg(armorStandEntity);
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
-
+		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA) && armorStandEntity.getPos().distanceTo(client.player.getPos()) < 5 && SlayerManager.checkBroodfatherSecondPhase(armorStandEntity) && SlayerManager.getBossFight().secondPhase) SlayerManager.updateBossMidBossFight(armorStandEntity);
 		EggFinder.checkIfEgg(armorStandEntity);
 		CorpseFinder.checkIfCorpse(armorStandEntity);
 		HealthBars.healthBar(armorStandEntity);
