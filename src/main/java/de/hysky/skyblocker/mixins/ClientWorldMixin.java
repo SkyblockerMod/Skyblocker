@@ -1,16 +1,9 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
-import de.hysky.skyblocker.skyblock.dungeon.device.SimonSays;
-import de.hysky.skyblocker.skyblock.dwarven.CrystalsChestHighlighter;
-import de.hysky.skyblocker.skyblock.galatea.LushlilacHighlighter;
-import de.hysky.skyblocker.skyblock.galatea.SeaLumiesHighlighter;
+
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.skyblock.slayers.boss.broodfather.ImmunityHUD;
-import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.BeaconHighlighter;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.events.WorldEvents;
 import net.minecraft.block.BlockState;
