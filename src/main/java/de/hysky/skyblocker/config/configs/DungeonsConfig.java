@@ -31,6 +31,8 @@ public class DungeonsConfig {
 
 	public boolean hideSoulweaverSkulls = false;
 
+	public boolean sellableItemHighlighter = true;
+
 	public DungeonMap dungeonMap = new DungeonMap();
 
 	public SpiritLeapOverlay leapOverlay = new SpiritLeapOverlay();

@@ -123,6 +123,14 @@ public class DungeonsCategory {
 								newValue -> config.dungeons.bloodCampHelper = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter"))
+						.description(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip"))
+						.binding(defaults.dungeons.sellableItemHighlighter,
+								() -> config.dungeons.sellableItemHighlighter,
+								newValue -> config.dungeons.sellableItemHighlighter = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 
 				// Map
 				.group(OptionGroup.createBuilder()
