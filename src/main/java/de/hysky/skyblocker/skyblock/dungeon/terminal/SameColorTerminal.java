@@ -17,6 +17,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 
@@ -96,8 +97,20 @@ public final class SameColorTerminal extends SimpleContainerSolver implements Te
 
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
-		if (clickMap.containsKey(slot) && clickMap.get(slot) == 0) {
-			return shouldBlockIncorrectClicks();
+		if (clickMap.containsKey(slot)) {
+			int clicks = clickMap.get(slot);
+
+			if (clicks == 0) {
+				return shouldBlockIncorrectClicks();
+			} else {
+				boolean positive = Integer.signum(clicks) == 1;
+				//Require that positive moves use left click, and negative moves use right click
+				boolean usingCorrectButton = (positive && button == GLFW.GLFW_MOUSE_BUTTON_LEFT) || (!positive && button == GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+
+				if (!usingCorrectButton) {
+					return shouldBlockIncorrectClicks();
+				}
+			}
 		}
 		return false;
 	}
