@@ -256,7 +256,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
 			int textHeight = textRenderer.fontHeight;
 
 			// The locked text can sometimes overlap with player names, so a background is drawn to make keep it visible.
-			context.fill(-lockWidth / 2, -2, lockWidth / 2, textHeight, 0x7F000000); // Colors.DARK_GRAY with 1/2 alpha
+			context.fill(-lockWidth / 2, -2, lockWidth / 2, textHeight, 0x7F000000); // Colors.BLACK with 1/2 alpha
             context.drawCenteredTextWithShadow(textRenderer, lockReason, 0, 0, Colors.LIGHT_RED);
 
 			matrices.popMatrix();
