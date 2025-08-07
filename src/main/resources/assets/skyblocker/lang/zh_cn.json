@@ -1366,7 +1366,7 @@
     "skyblocker.config.uiAndVisuals.slotText.evolvingItems": "可进化物品",
     "skyblocker.config.uiAndVisuals.slotText.evolvingItems.@Tooltip": "显示Bottle of Jyrre、Moby Duck、Discrite、Dark Cacao Truffle、Training Weights的持有时间。",
     "skyblocker.config.uiAndVisuals.slotText.bestiaryLevel": "怪物图鉴等级",
-    "skyblocker.dungeons.splits.portalEntry": "传送门入口",
+    "skyblocker.dungeons.splits.portalEntry": "进入传送门",
     "skyblocker.config.uiAndVisuals.museumOverlay": "博物馆覆盖层",
     "skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip": "显示未捐赠的物品及它们的价格等。\n\n此功能需要开启博物馆API！",
     "skyblocker.museum.hud.alreadyDonatedItem": "已捐赠物品",
@@ -1400,5 +1400,8 @@
     "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints": "启用Prince路径点",
     "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints.@Tooltip": "这有助于获得来自Reborn属性的额外+1分数。",
     "skyblocker.config.dungeons.princeMessage": "Prince消息",
-    "skyblocker.config.title.settings": "设置"
+    "skyblocker.config.title.settings": "设置",
+    "skyblocker.config.helpers.fishing.enableFishingHud": "启用钓鱼HUD",
+    "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds": "传送按键绑定",
+    "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds.@Tooltip": "为Spirit Leap覆盖层的传送添加按键绑定。按1传送至第一个玩家，按2传送至第二个玩家，按3传送至第三个玩家，按4传送至第四个玩家。"
 }
