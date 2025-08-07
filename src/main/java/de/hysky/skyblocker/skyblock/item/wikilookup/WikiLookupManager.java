@@ -21,7 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Util;
 
-public class WikiLookupManager {
+public final class WikiLookupManager {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
 	public static KeyBinding officialWikiLookup;
@@ -29,6 +29,8 @@ public class WikiLookupManager {
 
 	private static final WikiLookup[] LOOKUPS = new WikiLookup[] {
 			VisitorLookup.INSTANCE,
+			PetItemLookup.INSTANCE,
+			EnchantmentBookItemLookup.INSTANCE,
 			// Always in the last
 			RegularItemLookup.INSTANCE
 	};
@@ -82,11 +84,11 @@ public class WikiLookupManager {
 
 	public static void openWiki(@Nullable String title, @NotNull Either<Slot, ItemStack> either, @NotNull PlayerEntity player, boolean useOfficial) {
 		for (WikiLookup lookup : LOOKUPS) {
-			if (!lookup.canSearch(title, either)) {
-				continue;
+			if (lookup.canSearch(title, either)) {
+				ItemStack itemStack = mapEitherToItemStack(either);
+				lookup.open(itemStack, player, useOfficial);
+				break;
 			}
-			ItemStack itemStack = either.right().orElseGet(() -> either.mapLeft(Slot::getStack).left().orElse(ItemStack.EMPTY));
-			lookup.open(itemStack, player, useOfficial);
 		}
 	}
 
@@ -101,5 +103,9 @@ public class WikiLookupManager {
 			player.sendMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
 			return null;
 		});
+	}
+
+	public static ItemStack mapEitherToItemStack(Either<Slot, ItemStack> either) {
+		return either.right().orElseGet(() -> either.mapLeft(Slot::getStack).left().orElse(ItemStack.EMPTY));
 	}
 }

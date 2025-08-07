@@ -42,7 +42,8 @@ public interface WikiLookup {
 	 * @return {@code true} if it can look up wiki on the screen, {@code false} otherwise. Default is {@code true}.
 	 */
 	default boolean canSearch(@Nullable String title, @NotNull Either<Slot, ItemStack> either) {
-		return true;
+		ItemStack itemStack = WikiLookupManager.mapEitherToItemStack(either);
+		return !itemStack.isEmpty();
 	}
 
 	private static String encodeChar(String character) {
