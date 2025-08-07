@@ -176,6 +176,14 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds"))
+								.description(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds.@Tooltip"))
+								.binding(defaults.dungeons.leapOverlay.leapKeybinds,
+										() -> config.dungeons.leapOverlay.leapKeybinds,
+										newValue -> config.dungeons.leapOverlay.leapKeybinds = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.showMap"))
 								.binding(defaults.dungeons.leapOverlay.showMap,
 										() -> config.dungeons.leapOverlay.showMap,

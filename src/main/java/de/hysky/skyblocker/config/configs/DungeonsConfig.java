@@ -76,6 +76,8 @@ public class DungeonsConfig {
 	public static class SpiritLeapOverlay {
 		public boolean enableLeapOverlay = true;
 
+		public boolean leapKeybinds = true;
+
 		public boolean showMap = true;
 
 		public float scale = 1.2f;
