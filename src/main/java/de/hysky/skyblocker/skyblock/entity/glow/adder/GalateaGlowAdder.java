@@ -14,15 +14,20 @@ public class GalateaGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")
 	private static final GalateaGlowAdder INSTANCE = new GalateaGlowAdder();
 
+
+
 	@Init
-	public static void init() {}
+	public static void init() {
+
+	}
 
 	@Override
 	public int computeColour(Entity entity) {
+
 		return switch (entity) {
-			case ShulkerEntity shulker when shulker.getColor() == DyeColor.GREEN && SkyblockerConfigManager.get().hunting.huntingMobs.highlightHideonleaf -> DyeColor.YELLOW.getSignColor();
-			case TurtleEntity turtle when SkyblockerConfigManager.get().hunting.huntingMobs.highlightShellwise -> DyeColor.GREEN.getSignColor();
-			case AxolotlEntity ax when SkyblockerConfigManager.get().hunting.huntingMobs.highlightCoralot -> DyeColor.PINK.getSignColor();
+			case ShulkerEntity shulker when shulker.getColor() == DyeColor.GREEN && SkyblockerConfigManager.get().hunting.huntingMobs.highlightHideonleaf -> SkyblockerConfigManager.get().hunting.huntingMobs.hideonleafGlowColor.getRGB();
+			case TurtleEntity turtle when SkyblockerConfigManager.get().hunting.huntingMobs.highlightShellwise -> SkyblockerConfigManager.get().hunting.huntingMobs.shellwiseGlowColor.getRGB();
+			case AxolotlEntity ax when SkyblockerConfigManager.get().hunting.huntingMobs.highlightCoralot -> SkyblockerConfigManager.get().hunting.huntingMobs.coralotGlowColor.getRGB();
 			default -> NO_GLOW;
 		};
 	}
