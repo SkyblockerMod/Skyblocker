@@ -20,6 +20,7 @@ import net.minecraft.item.Items;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -37,10 +38,13 @@ import org.joml.Matrix3x2fStack;
 public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     private static final Identifier PARTY_CARD_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/party_card.png");
     private static final Identifier PARTY_CARD_TEXTURE_HOVER = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/party_card_hover.png");
+	private static final Map<String, ProfileComponent> SKULL_CACHE = new Object2ObjectOpenHashMap<>();
+	private static final Pattern NUMBERS_PATTERN = Pattern.compile("\\d+$");
+
     public static final Text JOIN_TEXT = Text.translatable("skyblocker.partyFinder.join");
-    private static final Map<String, ProfileComponent> SKULL_CACHE = new Object2ObjectOpenHashMap<>();
     protected final PartyFinderScreen screen;
     protected final int slotID;
+
     Player partyLeader;
     String floor = "???";
     String dungeon = "???";
@@ -80,13 +84,14 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             String lowerCase = tooltipText.toLowerCase();
             //System.out.println("TOOLTIP"+i);
             //System.out.println(text.getSiblings());
+
             if (lowerCase.contains("members:") && membersIndex == -1) {
                 membersIndex = i + 1;
             } else if (lowerCase.contains("class level")) {
-                Matcher matcher = Pattern.compile("\\d+$").matcher(lowerCase);
+                Matcher matcher = NUMBERS_PATTERN.matcher(lowerCase);
                 if (matcher.find()) minClassLevel = Integer.parseInt(matcher.group());
             } else if (lowerCase.contains("dungeon level")) {
-                Matcher matcher = Pattern.compile("\\d+$").matcher(lowerCase);
+                Matcher matcher = NUMBERS_PATTERN.matcher(lowerCase);
                 if (matcher.find()) minCatacombsLevel = Integer.parseInt(matcher.group());
             } else if (lowerCase.contains("floor:")) {
                 floor = tooltipText.split(":")[1].trim();
@@ -128,6 +133,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 }
             }
         }
+
         if (membersIndex != -1) {
             for (int i = membersIndex, j = 0; i < membersIndex + 5; i++, j++) {
                 if (i >= tooltips.size()) continue;
