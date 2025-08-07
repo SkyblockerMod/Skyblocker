@@ -24,8 +24,8 @@ public class BestiaryLevelAdder extends SimpleSlotTextAdder {
 	);
 
 	public BestiaryLevelAdder() {
-		//(?:\(\d+\/\d+\) )?Bestiary ➜ .+
-		super("(?:\\(\\d+\\/\\d+\\) )?Bestiary ➜ .+", CONFIG_INFORMATION);
+		//(?:\(\d+\/\d+\) )?(?:Bestiary|Fishing) ➜ .+
+		super("(?:\\(\\d+\\/\\d+\\) )?(?:Bestiary|Fishing) ➜ .+", CONFIG_INFORMATION);
 	}
 
 	@Override
