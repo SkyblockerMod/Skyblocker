@@ -26,10 +26,8 @@ public class HuntingCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.description(Text.translatable("skyblocker.config.hunting.huntingBoxHelper.@Tooltip"))
 						.build())
-
-				//Hunting Mob Features
 				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("skyblocker.config.hunting.huntingMobs"))
+						.name(Text.of("Phantom"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.silencePhantoms"))
@@ -39,6 +37,10 @@ public class HuntingCategory {
 										newValue -> config.hunting.huntingMobs.silencePhantoms = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.build())
+				.group(OptionGroup.createBuilder()
+						.name(Text.of("Hideonleaf"))
+						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightHideonleaf"))
 								.description(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip"))
@@ -56,6 +58,10 @@ public class HuntingCategory {
 										})
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
+						.build())
+				.group(OptionGroup.createBuilder()
+						.name(Text.of("Shellwise"))
+						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightShellwise"))
 								.description(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip"))
@@ -73,6 +79,10 @@ public class HuntingCategory {
 										})
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
+						.build())
+				.group(OptionGroup.createBuilder()
+						.name(Text.of("Coralot"))
+						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightCoralot"))
 								.description(Text.translatable("skyblocker.config.hunting.huntingMobs.highlightCoralot.@Tooltip"))
@@ -91,7 +101,6 @@ public class HuntingCategory {
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
 						.build())
-
 				.build();
 	}
 }

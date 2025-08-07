@@ -17,9 +17,7 @@ public class GalateaGlowAdder extends MobGlowAdder {
 
 
 	@Init
-	public static void init() {
-
-	}
+	public static void init() {}
 
 	@Override
 	public int computeColour(Entity entity) {
