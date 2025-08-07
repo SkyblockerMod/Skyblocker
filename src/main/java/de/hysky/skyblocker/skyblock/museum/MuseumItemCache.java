@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +52,7 @@ public class MuseumItemCache {
 	private static final Map<String, String> MAPPED_IDS = new Object2ObjectArrayMap<>();
 	public static final ObjectArrayList<Donation> MUSEUM_DONATIONS = new ObjectArrayList<>();
 	private static final ObjectArrayList<ObjectArrayList<String>> ORDERED_UPGRADES = new ObjectArrayList<>();
+	private static final int CURRENT_DATA_VERSION = 1;
 	private static CompletableFuture<Void> loaded;
 
 	@Init
@@ -266,7 +268,7 @@ public class MuseumItemCache {
 		}
 	}
 
-	private static void updateData4ProfileMember(UUID uuid, String profileId, FabricClientCommandSource source) {
+	private static void updateData4ProfileMember(UUID uuid, String profileId, @Nullable FabricClientCommandSource source) {
 		CompletableFuture.runAsync(() -> {
 			try (ApiResponse response = Http.sendHypixelRequest("skyblock/museum", "?profile=" + profileId)) {
 				//The request was successful
@@ -297,7 +299,7 @@ public class MuseumItemCache {
 							}
 						});
 
-						MUSEUM_ITEM_CACHE.put(uuid, profileId, new ProfileMuseumData(System.currentTimeMillis(), itemIds));
+						MUSEUM_ITEM_CACHE.put(uuid, profileId, new ProfileMuseumData(System.currentTimeMillis(), itemIds, CURRENT_DATA_VERSION));
 						MUSEUM_ITEM_CACHE.save();
 
 						if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncSuccess")));
@@ -325,17 +327,15 @@ public class MuseumItemCache {
 
 	private static void putEmpty(UUID uuid, String profileId) {
 		//Only put new data if they didn't have any before
-		MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, profileId, () -> new ProfileMuseumData(System.currentTimeMillis(), ObjectOpenHashSet.of()));
+		MUSEUM_ITEM_CACHE.computeIfAbsent(uuid, profileId, () -> new ProfileMuseumData(System.currentTimeMillis(), ObjectOpenHashSet.of(), CURRENT_DATA_VERSION));
 		MUSEUM_ITEM_CACHE.save();
 	}
 
 	private static boolean tryResync(FabricClientCommandSource source) {
-		UUID uuid = Utils.getUuid();
-		String profileId = Utils.getProfileId();
-
-		//Only allow resyncing if the data is actually present yet, otherwise the player needs to swap servers for the tick method to be called
-		if (loaded.isDone() && !profileId.isEmpty() && MUSEUM_ITEM_CACHE.containsKey() && MUSEUM_ITEM_CACHE.get().canResync()) {
-			updateData4ProfileMember(uuid, profileId, source);
+		if (loaded.isDone()) {
+			String profileId = Utils.getProfileId();
+			if (profileId.isEmpty() || (MUSEUM_ITEM_CACHE.containsKey() && !MUSEUM_ITEM_CACHE.get().canResync())) return false;
+			updateData4ProfileMember(Utils.getUuid(), profileId, source);
 
 			return true;
 		}
@@ -344,14 +344,12 @@ public class MuseumItemCache {
 	}
 
 	/**
-	 * Called when the Skyblock profile changes. Only loads from the API if the profile wasn't cached yet.
+	 * Called when the SkyBlock profile changes. Only loads from the API if the profile wasn't cached yet.
 	 */
 	public static void onProfileChange() {
 		UUID uuid = Utils.getUuid();
 
-		if (loaded.isDone() && !MUSEUM_ITEM_CACHE.containsKey()) {
-			MUSEUM_ITEM_CACHE.computeIfAbsent(ProfileMuseumData.EMPTY);
-
+		if (loaded.isDone() && (!MUSEUM_ITEM_CACHE.containsKey() || MUSEUM_ITEM_CACHE.get().needsUpdate())) {
 			updateData4ProfileMember(uuid, Utils.getProfileId(), null);
 		}
 	}
@@ -360,19 +358,24 @@ public class MuseumItemCache {
 		return MUSEUM_ITEM_CACHE.containsKey() && MUSEUM_ITEM_CACHE.get().collectedItemIds().contains(id.replace("STARRED_", ""));
 	}
 
-	private record ProfileMuseumData(long lastResync, ObjectOpenHashSet<String> collectedItemIds) {
-		private static final Supplier<ProfileMuseumData> EMPTY = () -> new ProfileMuseumData(0L, new ObjectOpenHashSet<>());
+	private record ProfileMuseumData(long lastResync, ObjectOpenHashSet<String> collectedItemIds, int dataVersion) {
+		private static final Supplier<ProfileMuseumData> EMPTY = () -> new ProfileMuseumData(0L, new ObjectOpenHashSet<>(), CURRENT_DATA_VERSION);
 		private static final long TIME_BETWEEN_RESYNCING_ALLOWED = 600_000L;
 		private static final Codec<ProfileMuseumData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.LONG.fieldOf("lastResync").forGetter(ProfileMuseumData::lastResync),
 				Codec.STRING.listOf()
 						.xmap(ObjectOpenHashSet::new, ObjectArrayList::new)
 						.fieldOf("collectedItemIds")
-						.forGetter(ProfileMuseumData::collectedItemIds)
+						.forGetter(ProfileMuseumData::collectedItemIds),
+				Codec.INT.optionalFieldOf("dataVersion", 0).forGetter(ProfileMuseumData::dataVersion)
 		).apply(instance, ProfileMuseumData::new));
 
 		private boolean canResync() {
 			return this.lastResync + TIME_BETWEEN_RESYNCING_ALLOWED < System.currentTimeMillis();
+		}
+
+		private boolean needsUpdate() {
+			return this.dataVersion < CURRENT_DATA_VERSION;
 		}
 	}
 }
