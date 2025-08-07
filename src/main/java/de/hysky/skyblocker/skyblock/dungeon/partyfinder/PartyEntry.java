@@ -242,8 +242,18 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         context.drawText(textRenderer, note, 5, 52, Colors.WHITE, true);
 
         if (isLocked) {
-            context.fill(0, 0, entryWidth, entryHeight, 0x90000000);
-            context.drawText(textRenderer, lockReason, entryWidth / 2 - textRenderer.getWidth(lockReason) / 2, entryHeight / 2 - textRenderer.fontHeight / 2, 0xFFFFFF, true);
+            context.fill(0, 0, entryWidth, entryHeight, 0x90000000); // darken
+			matrices.pushMatrix();
+			matrices.translate((float) entryWidth / 2, (float) entryHeight / 2);
+
+			int lockWidth = textRenderer.getWidth(lockReason) + 6; // 3 px padding on both sides
+			int textHeight = textRenderer.fontHeight;
+
+			// The locked text can sometimes overlap with player names, so a background is drawn to make keep it visible.
+			context.fill(-lockWidth / 2, -2, lockWidth / 2, textHeight, 0x7F000000); // Colors.DARK_GRAY with 1/2 alpha
+            context.drawCenteredTextWithShadow(textRenderer, lockReason, 0, 0, Colors.LIGHT_RED);
+
+			matrices.popMatrix();
         }
 
         matrices.popMatrix();
