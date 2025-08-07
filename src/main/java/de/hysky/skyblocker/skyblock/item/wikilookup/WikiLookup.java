@@ -29,11 +29,11 @@ public interface WikiLookup {
 
 	/**
 	 * Called after {@link WikiLookup#canSearch(String, Either)} when pressing a wiki lookup key.
-	 * @param either Can be {@link Slot} or {@link ItemStack}.
+	 * @param itemStack An Item Stack.
 	 * @param player The player entity.
-	 * @param useOfficial Use official will open Hypixel Wiki, other than that will open Fandom.
+	 * @param useOfficial Use official will open Hypixel Wiki, other will open Fandom.
 	 */
-	void open(@NotNull Either<Slot, ItemStack> either, @NotNull PlayerEntity player, boolean useOfficial);
+	void open(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial);
 
 	/**
 	 * Called before open the wiki lookup.

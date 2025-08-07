@@ -17,11 +17,9 @@ public class VisitorLookup implements WikiLookup {
 	private VisitorLookup() {}
 
 	@Override
-	public void open(@NotNull Either<Slot, ItemStack> either, @NotNull PlayerEntity player, boolean useOfficial) {
-		either.ifLeft(slot -> {
-			String itemName = REPLACING_FUNCTION.apply(slot.getStack().getName().getString());
-			WikiLookupManager.openWikiLinkName(itemName, player, useOfficial);
-		});
+	public void open(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {
+		String itemName = REPLACING_FUNCTION.apply(itemStack.getName().getString());
+		WikiLookupManager.openWikiLinkName(itemName, player, useOfficial);
 	}
 
 	@Override

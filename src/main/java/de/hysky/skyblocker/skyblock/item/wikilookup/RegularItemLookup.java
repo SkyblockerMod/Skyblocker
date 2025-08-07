@@ -8,12 +8,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.apache.commons.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
 import com.google.common.collect.Iterables;
-import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
@@ -27,9 +25,8 @@ public class RegularItemLookup implements WikiLookup {
 	private RegularItemLookup() {}
 
 	@Override
-	public void open(@NotNull Either<Slot, ItemStack> either, @NotNull PlayerEntity player, boolean useOfficial) {
-		either.ifLeft(slot -> openWiki(slot.getStack(), player, useOfficial));
-		either.ifRight(itemStack -> openWiki(itemStack, player, useOfficial));
+	public void open(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {
+		openWiki(itemStack, player, useOfficial);
 	}
 
 	private static void openWiki(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {

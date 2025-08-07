@@ -82,10 +82,11 @@ public class WikiLookupManager {
 
 	public static void openWiki(@Nullable String title, @NotNull Either<Slot, ItemStack> either, @NotNull PlayerEntity player, boolean useOfficial) {
 		for (WikiLookup lookup : LOOKUPS) {
-			if (lookup.canSearch(title, either)) {
-				lookup.open(either, player, useOfficial);
-				break;
+			if (!lookup.canSearch(title, either)) {
+				continue;
 			}
+			ItemStack itemStack = either.right().orElseGet(() -> either.mapLeft(Slot::getStack).left().orElse(ItemStack.EMPTY));
+			lookup.open(itemStack, player, useOfficial);
 		}
 	}
 
