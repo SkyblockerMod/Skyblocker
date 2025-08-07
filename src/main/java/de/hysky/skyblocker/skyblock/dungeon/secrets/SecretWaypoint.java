@@ -7,6 +7,7 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -65,6 +66,10 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 
     @Override
     public boolean shouldRender() {
+    	if (category.isPrince()) {
+    		return !DungeonScore.wasPrinceKilled() && category.isEnabled();
+    	}
+
         return super.shouldRender() && category.isEnabled();
     }
 
@@ -125,6 +130,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
         STONK("stonk", secretWaypoints -> secretWaypoints.enableStonkWaypoints, 146, 52, 235),
         AOTV("aotv", secretWaypoints -> secretWaypoints.enableAotvWaypoints, 252, 98, 3),
         PEARL("pearl", secretWaypoints -> secretWaypoints.enablePearlWaypoints, 57, 117, 125),
+        PRINCE("prince", secretWaypoints -> secretWaypoints.enablePrinceWaypoints, 133, 21, 13),
         DEFAULT("default", secretWaypoints -> secretWaypoints.enableDefaultWaypoints, 190, 255, 252);
         private static final Codec<Category> CODEC = StringIdentifiable.createCodec(Category::values);
         private final String name;
@@ -158,6 +164,10 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 
         boolean isBat() {
             return this == BAT;
+        }
+
+        boolean isPrince() {
+            return this == PRINCE;
         }
 
         boolean isEnabled() {

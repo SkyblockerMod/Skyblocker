@@ -15,17 +15,10 @@ import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.ChatHud;
-import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
@@ -42,7 +35,6 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public final class PowderMiningTracker extends AbstractProfitTracker {
 	public static final PowderMiningTracker INSTANCE = new PowderMiningTracker();
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Powder Mining Tracker");
-	private static final Identifier POWDER_MINING_TRACKER = Identifier.of(SkyblockerMod.NAMESPACE, "powder_mining_tracker");
 	private static final Object2ObjectArrayMap<String, String> NAME2ID_MAP = new Object2ObjectArrayMap<>(50);
 
 	/**
@@ -79,7 +71,6 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	@Init
 	public static void init() {
 		ChatEvents.RECEIVE_STRING.register(INSTANCE::onChatMessage);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.STATUS_EFFECTS, POWDER_MINING_TRACKER, PowderMiningTracker::render);
 		ItemPriceUpdateEvent.ON_PRICE_UPDATE.register(INSTANCE::onPriceUpdate);
 
 		INSTANCE.allRewards.init();
@@ -319,16 +310,11 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 		return NAME2ID_MAP.getOrDefault(itemName, "");
 	}
 
-	// TODO: Make this a hud widget without the background (optional), needs to be moveable
-	private static void render(DrawContext context, RenderTickCounter tickCounter) {
-		if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !INSTANCE.isEnabled()) return;
-		int y = MinecraftClient.getInstance().getWindow().getScaledHeight() / 2 - 100;
-		var set = INSTANCE.shownRewards.object2IntEntrySet();
-		for (Entry<Text> entry : set) {
-			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, entry.getKey(), 5, y, Colors.WHITE);
-			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(Formatters.INTEGER_NUMBERS.format(entry.getIntValue())), 10 + MinecraftClient.getInstance().textRenderer.getWidth(entry.getKey()), y, Colors.WHITE);
-			y += 10;
-		}
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.translatable("skyblocker.powderTracker.profit", Formatters.DOUBLE_NUMBERS.format(INSTANCE.profit)).formatted(Formatting.GOLD), 5, y + 10, Colors.WHITE);
+	public static double getProfit() {
+		return INSTANCE.profit;
+	}
+
+	public static Object2IntMap<Text> getShownRewards() {
+		return INSTANCE.shownRewards;
 	}
 }

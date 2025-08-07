@@ -21,12 +21,12 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 	private final Set<BlockPos> allBlocks = new ObjectOpenHashSet<>();
 
 	@Override
-	public void onBlockUpdate(BlockPos pos, BlockState state) {
+	public void onBlockUpdate(BlockPos pos, BlockState oldState, BlockState newState) {
 		if (!shouldProcess()) return;
 
-		if (this.statePredicate.test(state)) {
+		if (this.statePredicate.test(newState)) {
 			this.allBlocks.add(pos.toImmutable());
-			if (isEnabled() && isEnoughPickles(state)) this.highlightedBlocks.add(pos.toImmutable());
+			if (isEnabled() && isEnoughPickles(newState)) this.highlightedBlocks.add(pos.toImmutable());
 		} else {
 			this.allBlocks.remove(pos);
 			this.highlightedBlocks.remove(pos);

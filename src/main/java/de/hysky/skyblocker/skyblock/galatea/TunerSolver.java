@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -35,6 +36,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 
 	private TunerSolver() {
 		super("^Tune Frequency$");
+		PlaySoundEvents.FROM_SERVER.register(this::onSound);
 	}
 
 	private static final Item[] COLOR_CYCLE = {
@@ -324,7 +326,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 		return clicks;
 	}
 
-	public void onSound(PlaySoundS2CPacket packet) {
+	private void onSound(PlaySoundS2CPacket packet) {
 		if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver
 				|| pitchSolved || !Utils.isInGalatea() || !isInMenu
 				|| !packet.getSound().value().id().equals(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value().id())) {

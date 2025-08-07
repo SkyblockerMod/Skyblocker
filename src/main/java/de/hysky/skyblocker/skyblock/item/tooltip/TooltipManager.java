@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.dwarven.fossil.FossilSolver;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.ContainerMatcher;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -19,6 +20,7 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -49,7 +51,7 @@ public class TooltipManager {
 			new DateCalculatorTooltip(14),
 			new HuntingBoxPriceTooltip(15)
 	};
-	private static final ArrayList<TooltipAdder> currentScreenAdders = new ArrayList<>();
+	private static List<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
 	private TooltipManager() {
 	}
@@ -65,18 +67,16 @@ public class TooltipManager {
 		});
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
 			onScreenChange(screen);
-			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
+			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders = List.of());
 		});
 	}
 
 	private static void onScreenChange(Screen screen) {
-		currentScreenAdders.clear();
-		for (TooltipAdder adder : adders) {
-			if (adder.isEnabled() && adder.test(screen)) {
-				currentScreenAdders.add(adder);
-			}
-		}
-		currentScreenAdders.sort(Comparator.comparingInt(TooltipAdder::getPriority));
+		currentScreenAdders = Arrays.stream(adders)
+				.filter(ContainerMatcher::isEnabled)
+				.filter(adder -> adder.test(screen))
+				.sorted(Comparator.comparingInt(TooltipAdder::getPriority))
+				.toList();
 	}
 
 	/**
