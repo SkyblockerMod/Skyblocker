@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -23,13 +24,10 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class ForestNodes {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ForestNodes.class);
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 	private static final Map<BlockPos, ForestNode> forestNodes = new HashMap<>();
 
@@ -53,9 +51,10 @@ public class ForestNodes {
 			return ActionResult.PASS;
 		});
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+		ParticleEvents.FROM_SERVER.register(ForestNodes::onParticle);
 	}
 
-	public static void onParticle(ParticleS2CPacket packet) {
+	private static void onParticle(ParticleS2CPacket packet) {
 		if (!shouldProcess()) {
 			return;
 		}

@@ -1,7 +1,9 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
 import de.hysky.skyblocker.injected.RecipeBookHolder;
+import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -49,15 +51,23 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
         return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory ? x + 21 : x;
     }
 
-	@WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/StatusEffectsDisplay;drawStatusEffects(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
-	private boolean skyblocker$dontDrawStatusEffects(StatusEffectsDisplay statusEffectsDisplay, DrawContext context, int mouseX, int mouseY, float tickDelta) {
-		return !(Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay);
+	@WrapWithCondition(method = "render", at = {
+			@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/StatusEffectsDisplay;drawStatusEffects(Lnet/minecraft/client/gui/DrawContext;II)V"),
+			@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/StatusEffectsDisplay;drawStatusEffectTooltip(Lnet/minecraft/client/gui/DrawContext;II)V")
+			}, require = 2)
+	private boolean skyblocker$dontDrawStatusEffects(StatusEffectsDisplay statusEffectsDisplay, DrawContext context, int mouseX, int mouseY) {
+		return !(Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay || Utils.isInGarden() && SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget);
 	}
 
-	//This makes it so that REI at least doesn't wrongly exclude the zone
-	@ModifyReturnValue(method = "shouldHideStatusEffectHud", at = @At("RETURN"))
+	// This makes it so that REI at least doesn't wrongly exclude the zone
+	@ModifyReturnValue(method = "showsStatusEffects", at = @At("RETURN"))
 	private boolean skyblocker$markStatusEffectsHidden(boolean original) {
-		return Utils.isOnSkyblock() ? !SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay : original;
+		// In the garden, status effects are shown when both hideStatusEffectOverlay and gardenPlotsWidget are false
+		if (Utils.isInGarden()) return original && !SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay && !SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget;
+		// In the rest of Skyblock, status effects are shown when hideStatusEffectOverlay is false
+		if (Utils.isOnSkyblock()) return original && !SkyblockerConfigManager.get().uiAndVisuals.hideStatusEffectOverlay;
+		// In vanilla, status effects are shown as normal
+		return original;
 	}
 
     @Inject(method = "onRecipeBookToggled", at = @At("TAIL"))
@@ -69,6 +79,13 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
     private void skyblocker$clearRecipeToggleCallbacks(CallbackInfo ci) {
 		recipeBookToggleCallbacks.clear();
     }
+
+	@Inject(method = "<init>", at = @At("TAIL"), order = 900) // run it a little earlier in case firmament do stuff
+	private void skyblocker$furfskyCompat(CallbackInfo ci) {
+		if (Utils.isOnSkyblock() && ResourcePackCompatibility.options.renameInventoryScreen().orElse(false)) {
+			((ScreenAccessor) this).setTitle(Text.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenQuickNavSkyblocker": "InventoryScreenSkyblocker"));
+		}
+	}
 
 	@Override
 	public void registerRecipeBookToggleCallback(Runnable runnable) {

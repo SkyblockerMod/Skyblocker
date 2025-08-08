@@ -29,7 +29,7 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 	 * Called when the slot is clicked.
 	 * @return {@code true} if the click should be canceled, {@code false} otherwise. Defaults to {@code false} if not overridden.
 	 */
-	default boolean onClickSlot(int slot, ItemStack stack, int screenId) {
+	default boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		return false;
 	}
 

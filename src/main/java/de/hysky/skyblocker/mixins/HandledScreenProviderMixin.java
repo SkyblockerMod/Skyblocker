@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
+import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.auction.AuctionBrowserScreen;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
@@ -90,7 +91,8 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyCraftingTable && name.getString().toLowerCase().contains("craft item") -> {
 				SkyblockCraftingTableScreenHandler skyblockCraftingTableScreenHandler = new SkyblockCraftingTableScreenHandler(containerScreenHandler, player.getInventory());
 				client.player.currentScreenHandler = skyblockCraftingTableScreenHandler;
-				client.setScreen(new SkyblockCraftingTableScreen(skyblockCraftingTableScreenHandler, player.getInventory(), Text.literal("Craft Item")));
+				client.setScreen(new SkyblockCraftingTableScreen(skyblockCraftingTableScreenHandler, player.getInventory(),
+						ResourcePackCompatibility.options.renameCraftingTable().orElse(false) ? Text.literal("CraftingTableSkyblocker") : Text.literal("Craft Item")));
 				ci.cancel();
 			}
 
@@ -105,7 +107,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 			}
 
 			// Leap Overlay
-			case GenericContainerScreenHandler containerScreenHandler when Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.spiritLeapOverlay && nameLowercase.contains(LeapOverlay.TITLE.toLowerCase()) -> {
+			case GenericContainerScreenHandler containerScreenHandler when Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.leapOverlay.enableLeapOverlay && nameLowercase.contains(LeapOverlay.TITLE.toLowerCase()) -> {
 				client.player.currentScreenHandler = containerScreenHandler;
 				client.setScreen(new LeapOverlay(containerScreenHandler));
 

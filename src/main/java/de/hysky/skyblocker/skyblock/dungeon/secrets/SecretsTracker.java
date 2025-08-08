@@ -5,8 +5,6 @@ import com.google.gson.JsonParser;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
@@ -41,7 +39,7 @@ public class SecretsTracker {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(SecretsTracker::onMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(SecretsTracker::onMessage);
 		DungeonEvents.DUNGEON_STARTED.register(() -> calculate(RunPhase.START));
 	}
 
@@ -118,7 +116,7 @@ public class SecretsTracker {
 				new HoverEvent.ShowText(cached ? Text.translatable("skyblocker.api.cache.HIT", cacheAge) : Text.translatable("skyblocker.api.cache.MISS"))));
 	}
 
-	private static void onMessage(Text text, boolean overlay) {
+	private static boolean onMessage(Text text, boolean overlay) {
 		if (Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.playerSecretsTracker && !overlay) {
 			String message = Formatting.strip(text.getString());
 
@@ -128,10 +126,12 @@ public class SecretsTracker {
 				LOGGER.error("[Skyblocker] Encountered an unknown error while trying to track player secrets!", e);
 			}
 		}
+
+		return true;
 	}
 
 	private static String getPlayerNameAt(int index) {
-		Matcher matcher = PlayerListManager.regexAt(1 + (index - 1) * 4, DungeonPlayerWidget.PLAYER_PATTERN);
+		Matcher matcher = DungeonPlayerManager.getPlayerFromTab(index);
 
 		return matcher != null ? matcher.group("name") : "";
 	}

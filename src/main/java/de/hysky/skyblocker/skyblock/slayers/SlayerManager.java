@@ -55,7 +55,7 @@ public class SlayerManager {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(SlayerManager::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(SlayerManager::onChatMessage);
 		SkyblockEvents.LOCATION_CHANGE.register(SlayerManager::onLocationChange);
 		SkyblockEvents.AREA_CHANGE.register(SlayerManager::onAreaChange);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
@@ -75,37 +75,37 @@ public class SlayerManager {
 		Scheduler.INSTANCE.schedule(() -> getSlayerBossInfo(false), 20 * 2);
 	}
 
-	private static void onChatMessage(Text text, boolean overlay) {
-		if (overlay || !Utils.isOnSkyblock()) return;
+	private static boolean onChatMessage(Text text, boolean overlay) {
+		if (overlay || !Utils.isOnSkyblock()) return true;
 		String message = text.getString();
 
 		switch (message.replaceFirst("^\\s+", "")) {
 			case "Your Slayer Quest has been cancelled!", "SLAYER QUEST FAILED!" -> {
 				slayerQuest = null;
 				bossFight = null;
-				return;
+				return true;
 			}
 			case "SLAYER QUEST STARTED!" -> {
 				if (slayerQuest == null) slayerQuest = new SlayerQuest();
 				bossFight = null;
-				return;
+				return true;
 			}
 			case "NICE! SLAYER BOSS SLAIN!" -> {
 				if (slayerQuest != null && bossFight != null) {
 					bossFight.slain = true;
 					SlayerTimer.onBossDeath(bossFight.bossSpawnTime);
 				}
-				return;
+				return true;
 			}
 			case "SLAYER QUEST COMPLETE!" -> {
 				if (slayerQuest != null && bossFight != null && !bossFight.slain)
 					SlayerTimer.onBossDeath(bossFight.bossSpawnTime);
 				bossFight = null;
-				return;
+				return true;
 			}
 		}
 
-		if (slayerQuest == null) return;
+		if (slayerQuest == null) return true;
 		Matcher matcherNextLvl = PATTERN_XP_NEEDED.matcher(message);
 		Matcher matcherLvlUp = PATTERN_LVL_UP.matcher(message);
 
@@ -125,6 +125,8 @@ public class SlayerManager {
 		} else if (matcherLvlUp.matches()) {
 			slayerQuest.level = Integer.parseInt(message.replaceAll("(\\d+).+", "$1"));
 		}
+
+		return true;
 	}
 
 	public static void calculateBossesNeeded() {
@@ -197,7 +199,7 @@ public class SlayerManager {
 	 * Gets nearby armor stands with custom names. Used to find other armor stands showing a different line of text above a slayer boss.
 	 */
 	public static List<Entity> getEntityArmorStands(Entity entity, float expandY) {
-		return entity.getEntityWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.1F, expandY, 0.1F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
+		return entity.getWorld().getOtherEntities(entity, entity.getBoundingBox().expand(0.1F, expandY, 0.1F), x -> x instanceof ArmorStandEntity && x.hasCustomName());
 	}
 
 	/**

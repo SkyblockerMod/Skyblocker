@@ -125,11 +125,9 @@ public class FinderSettingsContainer extends ContainerWidget {
 
             if (nameLowerCase.contains("floor")) {
                 updateDropdownOptionWidget(handler, floorSelector);
-                currentlyOpenedOption = floorSelector;
                 return true;
             } else if (nameLowerCase.contains("select type")) {
                 updateDropdownOptionWidget(handler, dungeonTypeSelector);
-                currentlyOpenedOption = dungeonTypeSelector;
                 return true;
             } else if (nameLowerCase.contains("class level range")) {
                 updateRangedValue(handler, classLevelRange);
@@ -139,7 +137,6 @@ public class FinderSettingsContainer extends ContainerWidget {
                 return true;
             } else if (nameLowerCase.contains("sort")) {
                 updateDropdownOptionWidget(handler, sortGroupsSelector);
-                currentlyOpenedOption = sortGroupsSelector;
                 return true;
             }
         }
@@ -173,8 +170,8 @@ public class FinderSettingsContainer extends ContainerWidget {
                 //System.out.println("Min and max: " + minAndMax[0] + " " + minAndMax[1]);
                 int leMin = -1;
                 int leMax = -1;
-                try {leMin = Integer.parseInt(minAndMax[0].trim());} catch (NumberFormatException ignored) {}
-                try {leMax = Integer.parseInt(minAndMax[1].trim());} catch (NumberFormatException ignored) {}
+                try {leMin = Integer.parseInt(minAndMax[0].trim()); } catch (NumberFormatException ignored) {}
+                try {leMax = Integer.parseInt(minAndMax[1].trim()); } catch (NumberFormatException ignored) {}
 
                 widget.setMinAndMax(leMin, leMax);
                 return true;
@@ -224,6 +221,7 @@ public class FinderSettingsContainer extends ContainerWidget {
     }
 
     private void updateDropdownOptionWidget(GenericContainerScreenHandler handler, OptionDropdownWidget dropdownWidget) {
+		currentlyOpenedOption = dropdownWidget;
         List<OptionDropdownWidget.Option> entries = new ArrayList<>();
         for (Slot slot : handler.slots) {
             if (slot.id > (handler.getRows() - 1) * 9 - 1) break;
@@ -265,12 +263,28 @@ public class FinderSettingsContainer extends ContainerWidget {
         return currentlyOpenedOption == null || currentlyOpenedOption == widget;
     }
 
-    @Override
+	public boolean hasOpenOption() {
+		return currentlyOpenedOption != null;
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (hasOpenOption()) {
+			return currentlyOpenedOption.mouseClicked(mouseX, mouseY, button);
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        if (!visible) return;
-        for (ContainerWidget initializedWidget : initializedWidgets) {
-            initializedWidget.render(context, mouseX, mouseY, delta);
-        }
+        if (!visible || !isInitialized) return;
+		this.classLevelRange.render(context, mouseX, mouseY, delta);
+		this.dungeonLevelRange.render(context, mouseX, mouseY, delta);
+
+		// Render the dropdowns last to fix overlap issue.
+		this.sortGroupsSelector.render(context, mouseX, mouseY, delta);
+		this.floorSelector.render(context, mouseX, mouseY, delta);
+		this.dungeonTypeSelector.render(context, mouseX, mouseY, delta);
     }
 
     @Override

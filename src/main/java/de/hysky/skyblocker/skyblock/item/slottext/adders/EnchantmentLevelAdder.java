@@ -32,10 +32,10 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 
 	static {
 		// Normal enchants (A - Z)
-        ENCHANTMENT_ABBREVIATIONS.put("absorb", "AB");
+		ENCHANTMENT_ABBREVIATIONS.put("absorb", "AB");
 		ENCHANTMENT_ABBREVIATIONS.put("angler", "AN");
 		ENCHANTMENT_ABBREVIATIONS.put("aqua_affinity", "AA");
-		ENCHANTMENT_ABBREVIATIONS.put("arcane", "AR");
+		ENCHANTMENT_ABBREVIATIONS.put("arcane", "WS"); // Woodsplitter
 		ENCHANTMENT_ABBREVIATIONS.put("aiming", "DT"); // Dragon tracer
 
 		ENCHANTMENT_ABBREVIATIONS.put("bane_of_arthropods", "BA");
@@ -61,7 +61,7 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 
 		ENCHANTMENT_ABBREVIATIONS.put("depth_strider", "DS");
 		ENCHANTMENT_ABBREVIATIONS.put("divine_gift", "DG");
-		ENCHANTMENT_ABBREVIATIONS.put("dragon_hunter", "DH");
+		ENCHANTMENT_ABBREVIATIONS.put("dragon_hunter", "GV"); // Gravity
 
 		ENCHANTMENT_ABBREVIATIONS.put("efficiency", "EF");
 		ENCHANTMENT_ABBREVIATIONS.put("ender_slayer", "ES");
@@ -182,12 +182,14 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_combo", "CO");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_reiterate", "D"); // Duplex
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_fatal_tempo", "FT");
+		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_first_impression", "FI");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_flash", "F");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_flowstate", "FL");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_habanero_tactics", "HT");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_inferno", "I");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_last_stand", "LS");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_legion", "L");
+		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_missile", "M");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_no_pain_no_gain", "NP");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_one_for_all", "O");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_refrigerate", "RF");

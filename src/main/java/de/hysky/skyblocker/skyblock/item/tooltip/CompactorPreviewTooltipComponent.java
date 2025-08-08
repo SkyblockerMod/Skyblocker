@@ -3,9 +3,9 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
@@ -44,13 +44,13 @@ public class CompactorPreviewTooltipComponent implements TooltipComponent {
     @Override
     public void drawItems(TextRenderer textRenderer, int x, int y, int width, int height, DrawContext context) {
         // Draw the background with `dimensions.leftInt()` rows and `columns` columns with some texture math
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y, 0, 0, columns * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x + columns * 18 + 7, y, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x, y + dimensions.leftInt() * 18 + 17, 0, 215, columns * 18 + 7, 7, 256, 256);
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, x + columns * 18 + 7, y + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, columns * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x + columns * 18 + 7, y, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + dimensions.leftInt() * 18 + 17, 0, 215, columns * 18 + 7, 7, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x + columns * 18 + 7, y + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
 
         //Draw name - I don't think it needs to be translatable
-        context.drawText(textRenderer, "Contents", x + 8, y + 6, 0x404040, false);
+        context.drawText(textRenderer, "Contents", x + 8, y + 6, 0xFF404040, false);
 
         for (IntObjectPair<ItemStack> entry : items) {
             int itemX = x + entry.leftInt() % dimensions.rightInt() * 18 + 8;

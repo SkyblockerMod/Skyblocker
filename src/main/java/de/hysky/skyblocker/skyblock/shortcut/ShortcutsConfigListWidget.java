@@ -11,6 +11,8 @@ import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -108,7 +110,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
         return children().stream().filter(ShortcutEntry.class::isInstance).map(ShortcutEntry.class::cast).filter(ShortcutEntry::isNotEmpty);
     }
 
-    public static abstract class AbstractShortcutEntry extends ElementListWidget.Entry<AbstractShortcutEntry> {
+    public abstract static class AbstractShortcutEntry extends ElementListWidget.Entry<AbstractShortcutEntry> {
         protected void updatePositions() {}
     }
 
@@ -158,10 +160,10 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            context.drawCenteredTextWithShadow(client.textRenderer, targetName, width / 2 - 85, y + 5, 0xFFFFFF);
-            context.drawCenteredTextWithShadow(client.textRenderer, replacementName, width / 2 + 85, y + 5, 0xFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, targetName, width / 2 - 85, y + 5, Colors.WHITE);
+            context.drawCenteredTextWithShadow(client.textRenderer, replacementName, width / 2 + 85, y + 5, Colors.WHITE);
             if (tooltip != null && isMouseOver(mouseX, mouseY)) {
-                screen.setTooltip(tooltip);
+                context.drawTooltip(tooltip, mouseX, mouseY);
             }
         }
 
@@ -203,7 +205,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            context.drawCenteredTextWithShadow(client.textRenderer, text, width / 2, y + 5, 0xFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, text, width / 2, y + 5, Colors.WHITE);
         }
     }
 
@@ -261,7 +263,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
             replacement.setY(y);
             target.render(context, mouseX, mouseY, tickDelta);
             replacement.render(context, mouseX, mouseY, tickDelta);
-            context.drawCenteredTextWithShadow(client.textRenderer, "→", width / 2, y + 5, 0xFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, "→", width / 2, y + 5, Colors.WHITE);
         }
 
         @Override

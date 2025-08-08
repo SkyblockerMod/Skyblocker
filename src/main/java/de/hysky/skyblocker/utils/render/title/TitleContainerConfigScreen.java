@@ -8,14 +8,10 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import de.hysky.skyblocker.utils.render.gui.EmptyWidget;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.OptionGroup;
-import dev.isxander.yacl3.gui.YACLScreen;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
@@ -30,7 +26,6 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 			new Title(Text.literal("Test23").formatted(Formatting.AQUA)),
 			new Title(Text.literal("Testing1234").formatted(Formatting.DARK_GREEN))
 	);
-	private boolean changedScale;
 
 	protected TitleContainerConfigScreen() {
 		this(null);
@@ -43,8 +38,11 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	@Override
 	protected void init() {
 		super.init();
-		// Load the config positions here since #getConfigPos is used for resetting. This loads the config pos after the supertype constructor calls HudConfigScreen#resetPos.
-		widgets.getFirst().setPosition(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y);
+		// Only load config positions if they are not default
+		if (SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x >= 0 && SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y >= 0) {
+			// Load the config positions here since #getConfigPos is used for resetting. This loads the config pos after HudConfigScreen#init calls HudConfigScreen#resetPos.
+			widgets.getFirst().setPosition(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y);
+		}
 		// Set the dimensions here or else Screen#textRenderer is null.
 		updateWidgetDimensions();
 	}
@@ -100,12 +98,10 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 			case GLFW.GLFW_KEY_EQUAL -> {
 				SkyblockerConfigManager.get().uiAndVisuals.titleContainer.titleContainerScale += 10;
 				updateWidgetDimensions();
-				changedScale = true;
 			}
 			case GLFW.GLFW_KEY_MINUS -> {
 				SkyblockerConfigManager.get().uiAndVisuals.titleContainer.titleContainerScale -= 10;
 				updateWidgetDimensions();
-				changedScale = true;
 			}
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
@@ -127,17 +123,10 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected void savePos(SkyblockerConfig configManager, List<AbstractWidget> widgets) {
-		SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x = widgets.getFirst().getX();
-		SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y = widgets.getFirst().getY();
-
-		//TODO Come up with a better, less hacky solution for this in the future (:
-		if (changedScale && parent instanceof YACLScreen yaclScreen) {
-			ConfigCategory category = yaclScreen.config.categories().stream().filter(cat -> cat.name().getContent() instanceof TranslatableTextContent translatable && translatable.getKey().equals("skyblocker.config.uiAndVisuals")).findFirst().orElseThrow();
-			OptionGroup group = category.groups().stream().filter(grp -> grp.name().getContent() instanceof TranslatableTextContent translatable && translatable.getKey().equals("skyblocker.config.uiAndVisuals.titleContainer")).findFirst().orElseThrow();
-
-			// Refresh the value in the config with the bound value
-			group.options().getFirst().forgetPendingValue();
-		}
+	protected void savePos(SkyblockerConfig config, List<AbstractWidget> widgets) {
+		// Save to -1 if the widget is at the default position
+		List<IntIntMutablePair> defaultPos = getConfigPos(config);
+		config.uiAndVisuals.titleContainer.x = widgets.getFirst().getX() != defaultPos.getFirst().leftInt() ? widgets.getFirst().getX() : -1;
+		config.uiAndVisuals.titleContainer.y = widgets.getFirst().getY() != defaultPos.getFirst().rightInt() ? widgets.getFirst().getY() : -1;
 	}
 }

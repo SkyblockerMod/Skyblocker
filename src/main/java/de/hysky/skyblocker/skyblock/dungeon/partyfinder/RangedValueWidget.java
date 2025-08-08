@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.text.Text;
 
@@ -78,12 +77,7 @@ public class RangedValueWidget extends ContainerWidget {
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         context.drawText(MinecraftClient.getInstance().textRenderer, name, getX(), getY(), 0xFFD0D0D0, false);
         int textOffset = 10;
-        MatrixStack matrices = context.getMatrices();
         if (!visible) return;
-        if (state != State.CLOSED) {
-            matrices.push();
-            matrices.translate(0, 0, 100);
-        }
         final TextRenderer textRenderer = screen.getClient().textRenderer;
         if (PartyFinderScreen.DEBUG) {
             context.drawText(textRenderer, String.valueOf(slotId), getX(), getY() - 10, 0xFFFF0000, true);
@@ -123,9 +117,6 @@ public class RangedValueWidget extends ContainerWidget {
 
             context.drawCenteredTextWithShadow(textRenderer, String.valueOf(max), (maxStartX + maxEndX) >> 1, getY() + 3 + textOffset, 0xFFFFFFFF);
         }
-        if (state != State.CLOSED) {
-            matrices.pop();
-        }
     }
 
     private boolean mouseOverMinButton(int mouseX, int mouseY) {
@@ -145,13 +136,13 @@ public class RangedValueWidget extends ContainerWidget {
                 this.okButton.visible = false;
                 this.okButton.setFocused(false);
             }
-            case MODIFYING_MAX, MODIFYING_MIN -> {
-                this.input.setVisible(true);
-                this.input.setFocused(true);
-                this.input.setText("");
-                this.input.setCursor(0, false);
-                this.okButton.visible = true;
-            }
+			case MODIFYING_MIN, MODIFYING_MAX -> {
+				this.input.setVisible(true);
+				this.input.setCursor(0, false);
+				this.input.setText(String.valueOf(state == State.MODIFYING_MIN ? min : max));
+				this.input.setFocused(true);
+				this.okButton.visible = true;
+			}
         }
     }
 
@@ -171,9 +162,9 @@ public class RangedValueWidget extends ContainerWidget {
         SignBlockEntity sign = screen.getSign();
         String inputTrimmed = input.getText().trim();
         if (state == State.MODIFYING_MIN) {
-            try {min = Integer.parseInt(inputTrimmed);} catch (NumberFormatException ignored) {}
+            try { min = Integer.parseInt(inputTrimmed); } catch (NumberFormatException ignored) {}
         } else if (state == State.MODIFYING_MAX) {
-            try {max = Integer.parseInt(inputTrimmed);} catch (NumberFormatException ignored) {}
+            try { max = Integer.parseInt(inputTrimmed); } catch (NumberFormatException ignored) {}
         }
         if (sign != null) {
             Text[] messages = sign.getText(screen.isSignFront()).getMessages(screen.getClient().shouldFilterText());
@@ -184,7 +175,7 @@ public class RangedValueWidget extends ContainerWidget {
                     messages[3].getString()
             ));
         }
-        screen.justOpenedSign = false;
+		screen.closedSign();
     }
 
     @Override
@@ -193,8 +184,13 @@ public class RangedValueWidget extends ContainerWidget {
         if (!visible) return false;
         if (!isMouseOver(mouseX, mouseY)) {
             if (state == State.OPEN && backSlotId != -1) {
-                screen.clickAndWaitForServer(backSlotId);
-                return true;
+				screen.clickAndWaitForServer(backSlotId);
+				return true;
+			} else if (state == State.MODIFYING_MIN || state == State.MODIFYING_MAX) {
+				// revert back to previous value if this value is not valid
+				if (!input.isGood) input.setText(String.valueOf(state == State.MODIFYING_MIN ? min : max));
+				sendPacket();
+				return true;
             } else return false;
         }
         switch (state) {
