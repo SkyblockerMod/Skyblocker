@@ -10,6 +10,11 @@ import java.util.Objects;
 import java.util.Set;
 
 public abstract class HudWidget extends AbstractWidget {
+	/**
+	 * Single constant set for representing all possible locations for a {@code HudWidget} to prevent unnecessarily
+	 * recreating this set many times over (not the best for efficiency).
+	 */
+	protected static final Set<Location> ALL_LOCATIONS = Set.of(Location.values());
 	private final String internalID;
 
 
@@ -64,19 +69,18 @@ public abstract class HudWidget extends AbstractWidget {
 	 *
 	 * @return true if it should update
 	 */
-	protected boolean shouldUpdateBeforeRendering() {
+	public boolean shouldUpdateBeforeRendering() {
 		return false;
 	}
 
 	protected abstract void renderWidget(DrawContext context, int mouseX, int mouseY, float delta);
 
-	public void render(DrawContext context) {
+	public final void render(DrawContext context) {
 		render(context, -1, -1, MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks());
 	}
 
 	@Override
 	public final void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		if (shouldUpdateBeforeRendering()) update();
 		renderWidget(context, mouseX, mouseY, delta);
 	}
 
@@ -91,6 +95,11 @@ public abstract class HudWidget extends AbstractWidget {
 
 		HudWidget widget = (HudWidget) object;
 		return Objects.equals(getInternalID(), widget.getInternalID());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(internalID);
 	}
 
 	public String getInternalID() {

@@ -34,7 +34,7 @@ public interface ChatMessageListener {
     /**
      * Registers {@link ChatMessageListener}s to {@link ChatMessageListener#EVENT} and registers {@link ChatMessageListener#EVENT} to {@link ClientReceiveMessageEvents#ALLOW_GAME}
      */
-    @SuppressWarnings("incomplete-switch")
+	@SuppressWarnings("incomplete-switch")
 	@Init
     static void init() {
         ChatMessageListener[] listeners = new ChatMessageListener[]{
@@ -56,7 +56,8 @@ public interface ChatMessageListener {
                 new TeleportPadFilter(),
                 new AutopetFilter(),
                 new ShowOffFilter(),
-                new ToggleSkyMallFilter(),
+                new SkyMallFilter(),
+                new LotteryFilter(),
                 new MimicFilter(),
                 new DeathFilter(),
                 new DicerFilter()

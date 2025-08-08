@@ -27,7 +27,7 @@ public class ProfileWidget extends TabHudWidget {
 		for (int i = 1; i < lines.size(); i++) {
 			Text text = lines.get(i);
 			switch (text.getString().toLowerCase()) {
-				case String s when s.contains("bank") -> this.addComponent(new IcoTextComponent(Ico.EMERALD, text));
+				case String s when s.contains("bank") -> this.addComponent(new IcoTextComponent(Ico.GOLD, text));
 				case String s when s.contains("interest") -> this.addComponent(new IcoTextComponent(Ico.CLOCK, text));
 				case String s when s.contains("pet") -> this.addComponent(new IcoTextComponent(Ico.BONE, text));
 				default -> this.addComponent(new PlainTextComponent(text));

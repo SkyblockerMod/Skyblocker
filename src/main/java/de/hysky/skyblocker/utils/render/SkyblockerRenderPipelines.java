@@ -38,7 +38,28 @@ public class SkyblockerRenderPipelines {
 			.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
 			.withCull(false)
 			.build());
+	static final RenderPipeline CYLINDER = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
+			.withLocation(Identifier.of(SkyblockerMod.NAMESPACE, "pipeline/cylinder"))
+			.withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_STRIP)
+			.withCull(false)
+			.build());
+	static final RenderPipeline CIRCLE = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
+			.withLocation(Identifier.of(SkyblockerMod.NAMESPACE, "pipeline/circle"))
+			.withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.TRIANGLE_FAN)
+			.withCull(false)
+			.build());
+	static final RenderPipeline CIRCLE_LINES = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
+			.withLocation(Identifier.of(SkyblockerMod.NAMESPACE, "pipeline/circle_lines"))
+			.withVertexFormat(VertexFormats.POSITION_COLOR, DrawMode.QUADS)
+			.withCull(false)
+			.build());
 
+	/**
+	 * Ensures that pipelines are pre-compiled instead of compiled on demand. Also used for excluding some pipelines from batching.
+	 */
 	@Init
-	public static void init() {} //Ensure that pipelines are pre-compiled instead of compiled on demand
+	public static void init() {
+		Renderer.excludePipelineFromBatching(CYLINDER);
+		Renderer.excludePipelineFromBatching(CIRCLE);
+	}
 }

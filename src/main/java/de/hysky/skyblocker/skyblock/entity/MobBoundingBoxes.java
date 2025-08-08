@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
+import de.hysky.skyblocker.skyblock.entity.glow.adder.DungeonGlowAdder;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
@@ -40,7 +41,7 @@ public class MobBoundingBoxes {
 				case ArmorStandEntity _armorStand -> false;
 
 				// Regular Mobs
-				default -> SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes && MobGlow.isStarred(entity);
+				default -> SkyblockerConfigManager.get().dungeons.starredMobBoundingBoxes && DungeonGlowAdder.isStarred(entity);
 			};
 		}
 

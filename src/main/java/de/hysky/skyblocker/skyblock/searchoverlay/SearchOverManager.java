@@ -2,10 +2,12 @@ package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.RomanNumerals;
@@ -32,6 +34,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class SearchOverManager {
@@ -71,17 +74,28 @@ public class SearchOverManager {
 
     private static void registerSearchCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableCommands) {
-            dispatcher.register(literal("ahs").executes(context -> startCommand(true)));
-            dispatcher.register(literal("bzs").executes(context -> startCommand(false)));
+            dispatcher.register(literal("ahs").executes(context -> startCommand(true, "")));
+            dispatcher.register(literal("bzs").executes(context -> startCommand(false, "")));
+
+			dispatcher.register(literal("ahs").then(argument("item", StringArgumentType.greedyString())
+				.executes(context -> startCommand(true, StringArgumentType.getString(context, "item"))
+			)));
+			dispatcher.register(literal("bzs").then(argument("item", StringArgumentType.greedyString())
+				.executes(context -> startCommand(false, StringArgumentType.getString(context, "item"))
+			)));
         }
     }
 
-    private static int startCommand(boolean isAuction) {
+    private static int startCommand(boolean isAuction, String itemName) {
         isCommand = true;
         SearchOverManager.isAuction = isAuction;
         search = "";
         suggestionsArray = new String[]{};
-        CLIENT.send(() -> CLIENT.setScreen(new OverlayScreen(Text.of(""))));
+		if (!itemName.isEmpty()) {
+			updateSearch(itemName);
+		}
+
+        CLIENT.send(() -> CLIENT.setScreen(new OverlayScreen()));
         return Command.SINGLE_SUCCESS;
     }
 
@@ -104,26 +118,38 @@ public class SearchOverManager {
                 int sellVolume = product.sellVolume();
                 if (sellVolume == 0)
                     continue; //do not add items that do not sell e.g. they are not actual in the bazaar
+
+				// Format Enchantments
                 Matcher matcher = BAZAAR_ENCHANTMENT_PATTERN.matcher(name);
-                if (matcher.matches()) {//format enchantments
+                if (matcher.matches() && ItemRepository.getBazaarStocks().containsKey(id)) {
                     name = matcher.group(1);
-                    if (!name.contains("Ultimate Wise")) {
+                    if (!name.contains("Ultimate Wise") && !name.contains("Ultimate Jerry")) {
                         name = name.replace("Ultimate ", "");
                     }
+
+					// Fix Turbo-Cane / other turbo books
+					if (name.startsWith("Turbo ")) {
+						name = name.replace("Turbo ", "Turbo-");
+					}
 
                     String level = matcher.group(2);
                     name += " " + RomanNumerals.decimalToRoman(Integer.parseInt(level));
                     bazaarItems.add(name);
-                    namesToNeuId.put(name, id.substring(0, id.lastIndexOf('_')).replace("ENCHANTMENT_", "") + ";" + level);
+                    namesToNeuId.put(name, ItemRepository.getBazaarStocks().get(id));
                     continue;
                 }
+
+                // Format Shards
+                if (id.startsWith("SHARD_") && ItemRepository.getBazaarStocks().containsKey(id)) {
+					id = ItemRepository.getBazaarStocks().get(id);
+                }
+
                 //look up id for name
-                NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
+                NEUItem neuItem = NEURepoManager.getItemByNeuId(id);
                 if (neuItem != null) {
                     name = Formatting.strip(neuItem.getDisplayName());
                     bazaarItems.add(name);
                     namesToNeuId.put(name, id);
-                    continue;
                 }
             }
         } catch (Exception e) {
@@ -132,7 +158,7 @@ public class SearchOverManager {
 
         //get auction items
         try {
-            Set<@NEUId String> essenceCosts = NEURepoManager.NEU_REPO.getConstants().getEssenceCost().getCosts().keySet();
+            Set<@NEUId String> essenceCosts = NEURepoManager.getConstants().getEssenceCost().getCosts().keySet();
             if (TooltipInfoType.THREE_DAY_AVERAGE.getData() == null) {
                 TooltipInfoType.THREE_DAY_AVERAGE.run();
             }
@@ -140,7 +166,7 @@ public class SearchOverManager {
                 String id = entry.getKey();
                 //look up in NEU repo.
                 id = id.split("[+-]")[0];
-                NEUItem neuItem = NEURepoManager.NEU_REPO.getItems().getItemBySkyblockId(id);
+                NEUItem neuItem = NEURepoManager.getItemByNeuId(id);
                 if (neuItem != null) {
                     String name = Formatting.strip(neuItem.getDisplayName());
                     //add names that are pets to the list of pets to work with the lvl 100 button
@@ -264,6 +290,19 @@ public class SearchOverManager {
         return namesToNeuId.get(getHistory(index));
     }
 
+	protected static void removeHistoryItem(int index) {
+		UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
+		if (isAuction) {
+			if (config.auctionHistory.size() > index) {
+				config.auctionHistory.remove(index);
+			}
+		} else {
+			if (config.bazaarHistory.size() > index) {
+				config.bazaarHistory.remove(index);
+			}
+		}
+	}
+
     /**
      * Add the current search value to the start of the history list and truncate to the max history value and save this to the config
      */
@@ -271,19 +310,29 @@ public class SearchOverManager {
         //save to history
         UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
         if (isAuction) {
-            if (config.auctionHistory.isEmpty() || !config.auctionHistory.getFirst().equals(search)) {
+            if (config.auctionHistory.isEmpty() || !config.auctionHistory.contains(search)) {
+				// Add new search to history
                 config.auctionHistory.addFirst(search);
-                if (config.auctionHistory.size() > config.historyLength) {
-                    config.auctionHistory = config.auctionHistory.subList(0, config.historyLength);
-                }
-            }
+				if (config.auctionHistory.size() > config.historyLength) {
+					config.auctionHistory = config.auctionHistory.subList(0, config.historyLength);
+				}
+            } else {
+				// Move existing search to the top of the history list
+				config.auctionHistory.remove(search);
+				config.auctionHistory.addFirst(search);
+			}
         } else {
-            if (config.bazaarHistory.isEmpty() || !config.bazaarHistory.getFirst().equals(search)) {
+            if (config.bazaarHistory.isEmpty() || !config.bazaarHistory.contains(search)) {
+				// Add new search to history
                 config.bazaarHistory.addFirst(search);
-                if (config.bazaarHistory.size() > config.historyLength) {
-                    config.bazaarHistory = config.bazaarHistory.subList(0, config.historyLength);
-                }
-            }
+				if (config.bazaarHistory.size() > config.historyLength) {
+					config.bazaarHistory = config.bazaarHistory.subList(0, config.historyLength);
+				}
+            } else {
+				// Move existing search to the top of the history list
+				config.bazaarHistory.remove(search);
+				config.bazaarHistory.addFirst(search);
+			}
         }
         SkyblockerConfigManager.save();
     }
@@ -300,6 +349,10 @@ public class SearchOverManager {
         if (isAuction) {
             addExtras();
         }
+		// Fix Bazaar bug - Search doesn't work if input from sign contains "null" (blocks null ovoid, etc.)
+		if (!isAuction && !isCommand && search.toLowerCase().contains("null")) {
+			search = "\"%s\"".formatted(search);
+		}
         //push
         if (isCommand) {
             pushCommand();
@@ -315,7 +368,7 @@ public class SearchOverManager {
         // pet level
         if (maxPetLevel) {
             if (auctionPets.contains(search.toLowerCase())) {
-                if (search.equalsIgnoreCase("golden dragon")) {
+                if (search.equalsIgnoreCase("golden dragon") || search.equalsIgnoreCase("jade dragon")) {
                     search = "[Lvl 200] " + search;
                 } else {
                     search = "[Lvl 100] " + search;

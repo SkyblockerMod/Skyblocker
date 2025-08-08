@@ -32,8 +32,10 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 
 	static {
 		// Normal enchants (A - Z)
+		ENCHANTMENT_ABBREVIATIONS.put("absorb", "AB");
 		ENCHANTMENT_ABBREVIATIONS.put("angler", "AN");
 		ENCHANTMENT_ABBREVIATIONS.put("aqua_affinity", "AA");
+		ENCHANTMENT_ABBREVIATIONS.put("arcane", "WS"); // Woodsplitter
 		ENCHANTMENT_ABBREVIATIONS.put("aiming", "DT"); // Dragon tracer
 
 		ENCHANTMENT_ABBREVIATIONS.put("bane_of_arthropods", "BA");
@@ -59,7 +61,7 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 
 		ENCHANTMENT_ABBREVIATIONS.put("depth_strider", "DS");
 		ENCHANTMENT_ABBREVIATIONS.put("divine_gift", "DG");
-		ENCHANTMENT_ABBREVIATIONS.put("dragon_hunter", "DH");
+		ENCHANTMENT_ABBREVIATIONS.put("dragon_hunter", "GV"); // Gravity
 
 		ENCHANTMENT_ABBREVIATIONS.put("efficiency", "EF");
 		ENCHANTMENT_ABBREVIATIONS.put("ender_slayer", "ES");
@@ -70,9 +72,10 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("feather_falling", "FF");
 		ENCHANTMENT_ABBREVIATIONS.put("ferocious_mana", "FM");
 		ENCHANTMENT_ABBREVIATIONS.put("fire_aspect", "FA");
-		ENCHANTMENT_ABBREVIATIONS.put("fire_protection", "FP");
+		ENCHANTMENT_ABBREVIATIONS.put("fire_protection", "FI");
 		ENCHANTMENT_ABBREVIATIONS.put("first_strike", "FS");
 		ENCHANTMENT_ABBREVIATIONS.put("flame", "FL");
+		ENCHANTMENT_ABBREVIATIONS.put("forest_pledge", "FP");
 		ENCHANTMENT_ABBREVIATIONS.put("fortune", "FO");
 		ENCHANTMENT_ABBREVIATIONS.put("frail", "FR");
 		ENCHANTMENT_ABBREVIATIONS.put("frost_walker", "FW");
@@ -119,6 +122,7 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("punch", "PU");
 
 		ENCHANTMENT_ABBREVIATIONS.put("quantum", "QU");
+		ENCHANTMENT_ABBREVIATIONS.put("quick_bite", "QB");
 
 		ENCHANTMENT_ABBREVIATIONS.put("rainbow", "RA");
 		ENCHANTMENT_ABBREVIATIONS.put("reflection", "RF");
@@ -127,25 +131,28 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("respiration", "RE");
 		ENCHANTMENT_ABBREVIATIONS.put("respite", "RS");
 
-		ENCHANTMENT_ABBREVIATIONS.put("scavenger", "SC");
+		ENCHANTMENT_ABBREVIATIONS.put("scavenger", "SV");
+		ENCHANTMENT_ABBREVIATIONS.put("scuba", "SC");
 		ENCHANTMENT_ABBREVIATIONS.put("sharpness", "SH");
 		ENCHANTMENT_ABBREVIATIONS.put("silk_touch", "ST");
 		ENCHANTMENT_ABBREVIATIONS.put("small_brain", "SB");
 		ENCHANTMENT_ABBREVIATIONS.put("smarty_pants", "SP");
 		ENCHANTMENT_ABBREVIATIONS.put("smelting_touch", "SE");
 		ENCHANTMENT_ABBREVIATIONS.put("smite", "SI");
-		ENCHANTMENT_ABBREVIATIONS.put("smoldering", "SL");
+		ENCHANTMENT_ABBREVIATIONS.put("smoldering", "SD");
 		ENCHANTMENT_ABBREVIATIONS.put("snipe", "SN");
 		ENCHANTMENT_ABBREVIATIONS.put("spiked_hook", "SK");
+		ENCHANTMENT_ABBREVIATIONS.put("stealth", "SL");
 		ENCHANTMENT_ABBREVIATIONS.put("strong_mana", "SM");
 		ENCHANTMENT_ABBREVIATIONS.put("sugar_rush", "SR");
 		ENCHANTMENT_ABBREVIATIONS.put("sunder", "SU");
-		ENCHANTMENT_ABBREVIATIONS.put("syphon", "SY");
+		ENCHANTMENT_ABBREVIATIONS.put("syphon", "DR"); // Drain
 
 		ENCHANTMENT_ABBREVIATIONS.put("tabasco", "TA");
 		ENCHANTMENT_ABBREVIATIONS.put("thorns", "TN");
 		ENCHANTMENT_ABBREVIATIONS.put("thunderbolt", "TB");
 		ENCHANTMENT_ABBREVIATIONS.put("thunderlord", "TL");
+		ENCHANTMENT_ABBREVIATIONS.put("tidal", "TD");
 		ENCHANTMENT_ABBREVIATIONS.put("titan_killer", "TK");
 		ENCHANTMENT_ABBREVIATIONS.put("toxophilite", "TX");
 		ENCHANTMENT_ABBREVIATIONS.put("transylvanian", "TY");
@@ -175,12 +182,14 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_combo", "CO");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_reiterate", "D"); // Duplex
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_fatal_tempo", "FT");
+		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_first_impression", "FI");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_flash", "F");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_flowstate", "FL");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_habanero_tactics", "HT");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_inferno", "I");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_last_stand", "LS");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_legion", "L");
+		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_missile", "M");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_no_pain_no_gain", "NP");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_one_for_all", "O");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_refrigerate", "RF");

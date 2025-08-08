@@ -8,6 +8,7 @@ import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,11 +31,11 @@ public class ChatRuleLocationConfigScreen extends Screen {
 	protected void init() {
 		assert client != null;
 		addDrawable((context, mouseX, mouseY, delta) -> {
-			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen").formatted(Formatting.BOLD), width / 2, (32 - client.textRenderer.fontHeight) / 2, 0xFFFFFF);
-			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen.note"), width / 2, (38 - client.textRenderer.fontHeight), 0xFFFFFF);
+			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen").formatted(Formatting.BOLD), width / 2, (32 - client.textRenderer.fontHeight) / 2, Colors.WHITE);
+			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen.note"), width / 2, (38 - client.textRenderer.fontHeight), Colors.WHITE);
 		});
 
-		ItemTickList<Location> itemTickList = addDrawableChild(new ItemTickList<>(client, width, height - 107, 43, 24, enabledLocations, EnumSet.complementOf(EnumSet.of(Location.UNKNOWN, Location.MODERN_FORAGING_ISLAND)), true).init());
+		ItemTickList<Location> itemTickList = addDrawableChild(new ItemTickList<>(client, width, height - 107, 43, 24, enabledLocations, EnumSet.complementOf(EnumSet.of(Location.UNKNOWN)), true).init());
 		//Grid code gratuitously stolen from WaypointsScreen. Same goes for the y and heights above.
 		GridWidget gridWidget = new GridWidget();
 		gridWidget.getMainPositioner().marginX(5).marginY(2);

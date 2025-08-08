@@ -85,7 +85,7 @@ public class Shortcuts {
         commands.put("/s", "/skyblock");
         commands.put("/i", "/is");
         commands.put("/h", "/hub");
-        commands.put("/g", "/warp garden");
+        commands.put("/ga", "/warp garden");
 
         // Dungeon
         commands.put("/d", "/warp dungeon_hub");
@@ -95,7 +95,6 @@ public class Shortcuts {
         commands.put("/cp", "/chat party");
         commands.put("/cg", "/chat guild");
         commands.put("/co", "/chat officer");
-        commands.put("/cc", "/chat coop");
 
         // Message
         commandArgs.put("/m", "/msg");

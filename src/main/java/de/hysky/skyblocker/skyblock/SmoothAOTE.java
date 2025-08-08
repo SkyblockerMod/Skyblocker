@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
@@ -233,7 +232,7 @@ public class SmoothAOTE {
 		Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem, MANA_LORE);
 		if (manaNeeded != null && manaNeeded.matches()) {
 			int manaCost = Integer.parseInt(manaNeeded.group(1));
-			int predictedMana = SkyblockerMod.getInstance().statusBarTracker.getMana().value() - teleportsAhead * manaCost;
+			int predictedMana = StatusBarTracker.getMana().value() - teleportsAhead * manaCost;
 			if (predictedMana < manaCost) { // todo the players mana can lag behind as it is updated server side. client side mana calculations would help with this
 				return;
 			}
@@ -301,6 +300,8 @@ public class SmoothAOTE {
 		} else if (Utils.getIslandArea().equals("⏣ Jungle Temple")) { //do not allow in jungle temple
 			return false;
 		} else if (Utils.getLocation() == Location.PRIVATE_ISLAND && !Utils.getIslandArea().equals("⏣ Your Island")) { //do not allow it when visiting
+			return false;
+		} else if (Utils.getIslandArea().equals("⏣ Dojo")) { //do not allow in dojo
 			return false;
 		} else if (Utils.isInDungeons()) { //check places in dungeons where you can't teleport
 			if (DungeonManager.isInBoss() && DungeonManager.getBoss() == DungeonBoss.MAXOR) {

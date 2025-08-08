@@ -1,85 +1,59 @@
 package de.hysky.skyblocker.config.configs;
 
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
-
 public class OtherLocationsConfig {
+    public Barn barn = new Barn();
 
-	@SerialEntry
-	public Barn barn = new Barn();
+    public Rift rift = new Rift();
 
-	@SerialEntry
-	public Rift rift = new Rift();
+    public TheEnd end = new TheEnd();
 
-	@SerialEntry
-	public TheEnd end = new TheEnd();
+    public SpidersDen spidersDen = new SpidersDen();
 
-	@SerialEntry
-	public SpidersDen spidersDen = new SpidersDen();
-
-	public static class Barn {
-		@SerialEntry
+    public static class Barn {
 		public boolean enableGlowingMushroomHelper = true;
 
-		@SerialEntry
-		public boolean solveHungryHiker = true;
+        public boolean solveHungryHiker = true;
 
-		@SerialEntry
-		public boolean solveTreasureHunter = true;
-	}
+        public boolean solveTreasureHunter = true;
+    }
 
-	public static class Rift {
-		@SerialEntry
-		public boolean mirrorverseWaypoints = true;
+    public static class Rift {
+        public boolean mirrorverseWaypoints = true;
 
-		@SerialEntry
-		public boolean blobbercystGlow = true;
+        public boolean blobbercystGlow = true;
 
-		@SerialEntry
-		public boolean enigmaSoulWaypoints = false;
+        public boolean enigmaSoulWaypoints = false;
 
-		@SerialEntry
-		public boolean highlightFoundEnigmaSouls = true;
+        public boolean highlightFoundEnigmaSouls = true;
 
-		@SerialEntry
-		public int mcGrubberStacks = 0;
-	}
+        public int mcGrubberStacks = 0;
+    }
 
-	public static class TheEnd {
-		@SerialEntry
-		public boolean enableEnderNodeHelper = true;
+    public static class TheEnd {
+        public boolean enableEnderNodeHelper = true;
 
-		@SerialEntry
-		public boolean hudEnabled = true;
+        public boolean hudEnabled = true;
 
-		@SerialEntry
-		public boolean zealotKillsEnabled = true;
+        public boolean zealotKillsEnabled = true;
 
-		@SerialEntry
-		public boolean protectorLocationEnabled = true;
+        public boolean protectorLocationEnabled = true;
 
-		@SerialEntry
-		public boolean waypoint = true;
+        public boolean waypoint = true;
 
-		@SerialEntry
 		public boolean muteEndermanSounds = false;
 
-		@SerialEntry
-		public int x = 10;
+        public int x = 10;
 
-		@SerialEntry
-		public int y = 10;
-	}
+        public int y = 10;
+    }
 
-	public static class SpidersDen {
-		@SerialEntry
-		public Relics relics = new Relics();
-	}
+    public static class SpidersDen {
+        public Relics relics = new Relics();
+    }
 
-	public static class Relics {
-		@SerialEntry
-		public boolean enableRelicsHelper = false;
+    public static class Relics {
+        public boolean enableRelicsHelper = false;
 
-		@SerialEntry
-		public boolean highlightFoundRelics = true;
-	}
+        public boolean highlightFoundRelics = true;
+    }
 }

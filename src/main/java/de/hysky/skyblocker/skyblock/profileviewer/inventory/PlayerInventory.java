@@ -2,17 +2,16 @@ package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
 import com.google.gson.JsonObject;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.ItemRarityBackgrounds;
+import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.InventoryItemLoader;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -50,15 +49,15 @@ public class PlayerInventory implements ProfileViewerPage {
 
     private void drawContainerTextures(DrawContext context, String containerName, int rootX, int rootY, IntIntPair dimensions) {
         if (containerName.equals("inventory")) {
-            context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, rootX, rootY + dimensions.leftInt() + 10, 0, 136, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
-            context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootY, 169, 0, 7, dimensions.leftInt() * 18 + 21, 256, 256);
-            context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, rootX, rootY, 0, 0, dimensions.rightInt() * 18 + 7, 14, 256, 256);
-            context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootY + dimensions.leftInt() * 18 + 21, 169, 215, 7, 7, 256, 256);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootY + dimensions.leftInt() + 10, 0, 136, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootY, 169, 0, 7, dimensions.leftInt() * 18 + 21, 256, 256);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootY, 0, 0, dimensions.rightInt() * 18 + 7, 14, 256, 256);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootY + dimensions.leftInt() * 18 + 21, 169, 215, 7, 7, 256, 256);
         } else {
-            context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, rootX, rootY, 0, 0, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
-            context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootY, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);
-            context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, rootX, rootY + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7, 256, 256);
-            context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootY + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootY, 0, 0, dimensions.rightInt() * 18 + 7, dimensions.leftInt() * 18 + 17, 256, 256);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootY, 169, 0, 7, dimensions.leftInt() * 18 + 17, 256, 256);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX, rootY + dimensions.leftInt() * 18 + 17, 0, 215, dimensions.rightInt() * 18 + 7, 7, 256, 256);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, rootX + dimensions.rightInt() * 18 + 7, rootY + dimensions.leftInt() * 18 + 17, 169, 215, 7, 7, 256, 256);
         }
         context.drawText(textRenderer,  I18n.translate("skyblocker.profileviewer.inventory." + containerName), rootX + 7, rootY + 7, Color.DARK_GRAY.getRGB(), false);
     }
@@ -74,12 +73,10 @@ public class PlayerInventory implements ProfileViewerPage {
             int x = rootX + 8 + column * 18;
             int y = (rootY + 18 + row * 18) + (dimensions.leftInt()  > 1 && row + 1 == dimensions.leftInt() ? 4 : 0);
 
-            if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgrounds) {
-                ItemRarityBackgrounds.tryDraw(stack, context, x, y);
-            }
+			ItemBackgroundManager.drawBackgrounds(stack, context, x, y);
 
             if (ItemProtection.isItemProtected(stack)) {
-                context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
+                context.drawTexture(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
             }
 
             context.drawItem(stack, x, y);

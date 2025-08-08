@@ -12,7 +12,6 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -39,7 +38,7 @@ public class ChatPositionShare {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 				ClientCommandManager.literal("skyblocker").then(ClientCommandManager.literal("sharePosition").executes(context -> sharePlayerPosition(context.getSource())))
 		));
-        ClientReceiveMessageEvents.GAME.register(ChatPositionShare::onMessage);
+        ClientReceiveMessageEvents.ALLOW_GAME.register(ChatPositionShare::onMessage);
     }
 
 	private static int sharePlayerPosition(FabricClientCommandSource source) {
@@ -48,9 +47,14 @@ public class ChatPositionShare {
 		return Command.SINGLE_SUCCESS;
 	}
 
-    private static void onMessage(Text text, boolean overlay) {
+    private static boolean onMessage(Text text, boolean overlay) {
         if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
             String message = text.getString();
+
+			// prevents parsing skyblocker's own messages. Also prevents TH solver from parsing as it already has own waypoint
+			if (message.startsWith("[Skyblocker]") || message.startsWith("§e[NPC] Treasure Hunter§f:")) {
+				return true;
+			}
 
             for (Pattern pattern : PATTERNS) {
                 Matcher matcher = pattern.matcher(message);
@@ -68,13 +72,14 @@ public class ChatPositionShare {
                 }
             }
         }
+
+        return true;
     }
 
     private static void requestWaypoint(String x, String y, String z, @NotNull String area) {
         String command = "/skyblocker waypoints individual " + x + " " + y + " " + z + " " + area;
         MutableText requestMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.waypoints.display", x, y, z).formatted(Formatting.AQUA)
                 .styled(style -> style
-						.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.config.chat.waypoints.display")))
 						.withClickEvent(new ClickEvent.RunCommand(command.trim()))
 				)
         );
