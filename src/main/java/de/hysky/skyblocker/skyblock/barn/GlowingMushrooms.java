@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.barn;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -18,12 +19,8 @@ import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,22 +31,22 @@ public class GlowingMushrooms {
 
 	@Init
 	public static void init() {
-		Scheduler.INSTANCE.scheduleCyclic(GlowingMushrooms::update, 20);
+		ParticleEvents.FROM_SERVER.register(GlowingMushrooms::onParticle);
+		Scheduler.INSTANCE.scheduleCyclic(GlowingMushrooms::update, 1);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(GlowingMushrooms::render);
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-			glowingMushrooms.remove(pos);
+			if (shouldProcess()) glowingMushrooms.remove(pos);
 			return ActionResult.PASS;
 		});
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
 	}
 
 	public static void onParticle(ParticleS2CPacket packet) {
-		if (!shouldProcess()) return;
+		if (!shouldProcess() || client.world == null) return;
 		if (!ParticleTypes.ENTITY_EFFECT.equals(packet.getParameters().getType())) return;
 
 		BlockPos pos = BlockPos.ofFloored(packet.getX(), packet.getY(), packet.getZ());
 
-		if (client.world == null) return;
 		Block block = client.world.getBlockState(pos).getBlock();
 		if (block != Blocks.RED_MUSHROOM && block != Blocks.BROWN_MUSHROOM) return;
 
@@ -58,25 +55,22 @@ public class GlowingMushrooms {
 	}
 
 	private static void update() {
-		if (shouldProcess()) {
-			for (GlowingMushroom glowingMushroom : glowingMushrooms.values()) {
-				glowingMushroom.updateWaypoint();
-			}
+		if (!shouldProcess()) return;
+		for (GlowingMushroom glowingMushroom : glowingMushrooms.values()) {
+			glowingMushroom.updateWaypoint();
 		}
 	}
 
 	private static void render(WorldRenderContext context) {
-		if (shouldProcess()) {
-			for (GlowingMushroom glowingMushroom : glowingMushrooms.values()) {
-				if (glowingMushroom.shouldRender()) {
-					if (client.world == null) return;
-					Block block = client.world.getBlockState(glowingMushroom.pos).getBlock();
-					boolean isRedOrBrown = block == Blocks.RED_MUSHROOM || block == Blocks.BROWN_MUSHROOM;
-					if (!isRedOrBrown) return;
-					Box boundingBox = RenderHelper.getBlockBoundingBox(client.world, glowingMushroom.pos);
-					RenderHelper.renderOutline(context, boundingBox, ColorUtils.getFloatComponents(DyeColor.YELLOW), 3, true);
-				}
-			}
+		if (!shouldProcess() || client.world == null) return;
+		for (GlowingMushroom glowingMushroom : glowingMushrooms.values()) {
+			if (!glowingMushroom.shouldRender()) continue;
+
+			Block block = client.world.getBlockState(glowingMushroom.pos).getBlock();
+			if (block != Blocks.RED_MUSHROOM && block != Blocks.BROWN_MUSHROOM) continue;
+
+			Box boundingBox = RenderHelper.getBlockBoundingBox(client.world, glowingMushroom.pos);
+			RenderHelper.renderOutline(context, boundingBox, ColorUtils.getFloatComponents(DyeColor.YELLOW), 3, glowingMushroom.shouldRenderThroughWalls());
 		}
 	}
 
@@ -97,17 +91,7 @@ public class GlowingMushrooms {
 		}
 
 		private void updateWaypoint() {
-			if (client.world == null || client.player == null) return;
-
-			Vec3d eyePos = client.player.getEyePos();
-			Vec3d target = Vec3d.ofCenter(pos);
-
-			RaycastContext context = new RaycastContext(eyePos, target, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, client.player);
-			BlockHitResult result = client.world.raycast(context);
-
-			if (result.getType() != HitResult.Type.MISS && !result.getBlockPos().equals(pos)) return;
-
-			tick(client);
+			super.tick(client);
 
 			if (particleCount < 1) return;
 

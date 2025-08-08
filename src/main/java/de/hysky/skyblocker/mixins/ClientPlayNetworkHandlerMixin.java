@@ -12,7 +12,6 @@ import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.HealthBars;
-import de.hysky.skyblocker.skyblock.barn.GlowingMushrooms;
 import de.hysky.skyblocker.skyblock.SmoothAOTE;
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
