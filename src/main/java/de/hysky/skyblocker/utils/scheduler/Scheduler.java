@@ -203,7 +203,13 @@ public class Scheduler {
         public void run() {
             task.run();
 
-            if (cyclic) INSTANCE.addTask(this, INSTANCE.currentTick + interval);
+            if (cyclic) {
+            	if (!RenderSystem.isOnRenderThread()) {
+            		MinecraftClient.getInstance().send(() -> INSTANCE.addTask(this, INSTANCE.currentTick + interval));
+            	} else {
+            		INSTANCE.addTask(this, INSTANCE.currentTick + interval);
+            	}
+            }
         }
     }
 }
