@@ -201,14 +201,24 @@ public class SlayerManager {
 	 * Checks whether entity is the Broodfather second phase boss
 	 */
 	public static boolean checkBroodfatherSecondPhase(ArmorStandEntity armorStand) {
-		Matcher matcher = BROODFATHER_SECOND_PHASE.matcher(armorStand.getName().getString());
-		return matcher.find();
+		return armorStand.getName().getString().contains(CLIENT.getSession().getUsername());
 	}
 
+	/**
+	 * method to used to update bossfight when broodfather merges into conjoined brood
+	 * @param armorStand armorstand containing username
+	 */
 	public static void updateBossMidBossFight(ArmorStandEntity armorStand) {
-		System.out.println(armorStand.getName().getString());
-		bossFight.findBoss(armorStand);
-		bossFight.secondPhase = true;
+		for (Entity entity : getEntityArmorStands(armorStand, 1f)) {
+			if (!(entity instanceof ArmorStandEntity armorStandEntity)) continue;
+			System.out.println(armorStandEntity.getName().getString());
+			Matcher matcher = BROODFATHER_SECOND_PHASE.matcher(armorStandEntity.getName().getString());
+			if (matcher.find()) {
+				SlayerBossBars.updateMaxHealth(armorStandEntity);
+				bossFight.findBoss(armorStandEntity);
+				bossFight.secondPhase = true;
+			}
+		}
 	}
 
 

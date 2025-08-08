@@ -74,7 +74,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
 
 		SlayerManager.checkSlayerBoss(armorStandEntity);
-		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) System.out.println(armorStandEntity.getName().getString());
 		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) ImmunityHUD.handleEgg(armorStandEntity);
 		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA) && SlayerManager.checkBroodfatherSecondPhase(armorStandEntity) && !SlayerManager.getBossFight().secondPhase) SlayerManager.updateBossMidBossFight(armorStandEntity);
 
