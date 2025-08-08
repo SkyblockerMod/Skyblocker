@@ -20,6 +20,7 @@ import net.minecraft.item.Items;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -37,10 +38,13 @@ import org.joml.Matrix3x2fStack;
 public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     private static final Identifier PARTY_CARD_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/party_card.png");
     private static final Identifier PARTY_CARD_TEXTURE_HOVER = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/party_card_hover.png");
+	private static final Map<String, ProfileComponent> SKULL_CACHE = new Object2ObjectOpenHashMap<>();
+	private static final Pattern NUMBERS_PATTERN = Pattern.compile("\\d+$");
+
     public static final Text JOIN_TEXT = Text.translatable("skyblocker.partyFinder.join");
-    private static final Map<String, ProfileComponent> SKULL_CACHE = new Object2ObjectOpenHashMap<>();
     protected final PartyFinderScreen screen;
     protected final int slotID;
+
     Player partyLeader;
     String floor = "???";
     String dungeon = "???";
@@ -80,13 +84,14 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             String lowerCase = tooltipText.toLowerCase();
             //System.out.println("TOOLTIP"+i);
             //System.out.println(text.getSiblings());
+
             if (lowerCase.contains("members:") && membersIndex == -1) {
                 membersIndex = i + 1;
             } else if (lowerCase.contains("class level")) {
-                Matcher matcher = Pattern.compile("\\d+$").matcher(lowerCase);
+                Matcher matcher = NUMBERS_PATTERN.matcher(lowerCase);
                 if (matcher.find()) minClassLevel = Integer.parseInt(matcher.group());
             } else if (lowerCase.contains("dungeon level")) {
-                Matcher matcher = Pattern.compile("\\d+$").matcher(lowerCase);
+                Matcher matcher = NUMBERS_PATTERN.matcher(lowerCase);
                 if (matcher.find()) minCatacombsLevel = Integer.parseInt(matcher.group());
             } else if (lowerCase.contains("floor:")) {
                 floor = tooltipText.split(":")[1].trim();
@@ -128,6 +133,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 }
             }
         }
+
         if (membersIndex != -1) {
             for (int i = membersIndex, j = 0; i < membersIndex + 5; i++, j++) {
                 if (i >= tooltips.size()) continue;
@@ -198,38 +204,38 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         if (hovered && !isLocked) {
             context.drawTexture(RenderPipelines.GUI_TEXTURED, PARTY_CARD_TEXTURE_HOVER, 0, 0, 0, 0, 336, 64, 336, 64);
-            if (!(this instanceof YourParty)) context.drawText(textRenderer, JOIN_TEXT, 148, 6, 0xFFFFFFFF, false);
+            if (!(this instanceof YourParty)) context.drawText(textRenderer, JOIN_TEXT, 148, 6, Colors.WHITE, false);
         } else context.drawTexture(RenderPipelines.GUI_TEXTURED, PARTY_CARD_TEXTURE, 0, 0, 0, 0, 336, 64, 336, 64);
         int mouseXLocal = mouseX - x;
         int mouseYLocal = mouseY - y;
 
-        context.drawText(textRenderer, this.partyLeader.toText(), 18, 6, 0xFFFFFFFF, true);
+        context.drawText(textRenderer, this.partyLeader.toText(), 18, 6, Colors.WHITE, true);
 
         if (PartyFinderScreen.DEBUG) {
-            context.drawText(textRenderer, String.valueOf(slotID), 166, 6, 0xFFFFFFFF, true);
+            context.drawText(textRenderer, String.valueOf(slotID), 166, 6, Colors.WHITE, true);
             if (hovered) {
-                context.drawText(textRenderer, "H", 160, 6, 0xFFFFFFFF, true);
+                context.drawText(textRenderer, "H", 160, 6, Colors.WHITE, true);
             }
         }
         PlayerSkinDrawer.draw(context, partyLeaderSkin, 6, 6, 8, true, false, -1);
         for (int i = 0; i < partyMembers.length; i++) {
             Player partyMember = partyMembers[i];
             if (partyMember == null) continue;
-            context.drawTextWithShadow(textRenderer, partyMember.toText(), 17 + 136 * (i % 2), 24 + 14 * (i / 2), 0xFFFFFFFF);
+            context.drawTextWithShadow(textRenderer, partyMember.toText(), 17 + 136 * (i % 2), 24 + 14 * (i / 2), Colors.WHITE);
             PlayerSkinDrawer.draw(context, partyMember.skinTexture, 6 + 136 * (i % 2), 24 + 14 * (i / 2), 8, true, false, -1);
         }
 
         if (minClassLevel > 0) {
-            context.drawTextWithShadow(textRenderer, Text.of("Class " + minClassLevel), 278, 25, 0xFFFFFFFF);
+            context.drawTextWithShadow(textRenderer, Text.of("Class " + minClassLevel), 278, 25, Colors.WHITE);
             if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 22 && mouseYLocal <= 35) {
-                context.drawTooltip(textRenderer, Text.translatable("skyblocker.partyFinder.partyCard.minClassLevel", minClassLevel), mouseXLocal, mouseYLocal);
+                context.drawTooltip(textRenderer, Text.translatable("skyblocker.partyFinder.partyCard.minClassLevel", minClassLevel), mouseX, mouseY);
             }
         }
 
         if (minCatacombsLevel > 0) {
-            context.drawTextWithShadow(textRenderer, Text.of("Cata " + minCatacombsLevel), 278, 43, 0xFFFFFFFF);
+            context.drawTextWithShadow(textRenderer, Text.of("Cata " + minCatacombsLevel), 278, 43, Colors.WHITE);
             if (!isLocked && hovered && mouseXLocal >= 276 && mouseXLocal <= 331 && mouseYLocal >= 40 && mouseYLocal <= 53) {
-                context.drawTooltip(textRenderer, Text.translatable("skyblocker.partyFinder.partyCard.minDungeonLevel", minCatacombsLevel), mouseXLocal, mouseYLocal);
+                context.drawTooltip(textRenderer, Text.translatable("skyblocker.partyFinder.partyCard.minDungeonLevel", minCatacombsLevel), mouseX, mouseY);
             }
         }
         ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
@@ -239,11 +245,21 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         int textWidth = textRenderer.getWidth(floor);
         context.drawText(textRenderer, floor, 314 - textWidth, 7, 0xA0000000, false);
 
-        context.drawText(textRenderer, note, 5, 52, 0xFFFFFFFF, true);
+        context.drawText(textRenderer, note, 5, 52, Colors.WHITE, true);
 
         if (isLocked) {
-            context.fill(0, 0, entryWidth, entryHeight, 0x90000000);
-            context.drawText(textRenderer, lockReason, entryWidth / 2 - textRenderer.getWidth(lockReason) / 2, entryHeight / 2 - textRenderer.fontHeight / 2, 0xFFFFFF, true);
+            context.fill(0, 0, entryWidth, entryHeight, 0x90000000); // darken
+			matrices.pushMatrix();
+			matrices.translate((float) entryWidth / 2, (float) entryHeight / 2);
+
+			int lockWidth = textRenderer.getWidth(lockReason) + 6; // 3 px padding on both sides
+			int textHeight = textRenderer.fontHeight;
+
+			// The locked text can sometimes overlap with player names, so a background is drawn to make keep it visible.
+			context.fill(-lockWidth / 2, -2, lockWidth / 2, textHeight, 0x7F000000); // Colors.BLACK with 1/2 alpha
+            context.drawCenteredTextWithShadow(textRenderer, lockReason, 0, 0, Colors.LIGHT_RED);
+
+			matrices.popMatrix();
         }
 
         matrices.popMatrix();
@@ -295,7 +311,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-            context.drawCenteredTextWithShadow(textRenderer, Text.translatable("skyblocker.partyFinder.noParties"), x + entryWidth / 2, y + entryHeight / 2 - textRenderer.fontHeight / 2, 0xFFFFFFFF);
+            context.drawCenteredTextWithShadow(textRenderer, Text.translatable("skyblocker.partyFinder.noParties"), x + entryWidth / 2, y + entryHeight / 2 - textRenderer.fontHeight / 2, Colors.WHITE);
         }
     }
 
@@ -318,7 +334,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             hovered = hovered & slotID != -1;
 
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-            context.drawText(textRenderer, hovered ? DE_LIST_TEXT : YOUR_PARTY_TEXT, 148, 6, 0xFFFFFFFF, false);
+            context.drawText(textRenderer, hovered ? DE_LIST_TEXT : YOUR_PARTY_TEXT, 148, 6, Colors.WHITE, false);
 
             matrices.popMatrix();
         }
