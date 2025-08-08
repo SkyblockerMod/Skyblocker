@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.chat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
+import de.hysky.skyblocker.SkyblockerMod;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -29,40 +30,37 @@ class ChatRulesHandlerTest {
 	}
 
 	@Test
-	void codecParseObject() {
-		List<ChatRule> rules = List.of(
-				new ChatRule(),
-				new ChatRule()
-		);
-		var oldObject = new JsonObject();
-		oldObject.add("rules", ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow());
+	void codecParseObjectOld() {
+		var object = SkyblockerMod.GSON.fromJson("{\"rules\":[{\"showAnnouncement\":false,\"replaceMessage\":\"\",\"validLocations\":\"hub\",\"hideMessage\":true,\"showActionBar\":false,\"isRegex\":true,\"isIgnoreCase\":true,\"filter\":\"(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)\",\"name\":\"Clean Hub Chat\",\"enabled\":false,\"isPartialMatch\":true},{\"showAnnouncement\":true,\"replaceMessage\":\"&1Ability\",\"customSound\":{\"sound_id\":\"minecraft:entity.arrow.hit_player\"},\"validLocations\":\"Crystal Hollows, Dwarven Mines\",\"hideMessage\":false,\"showActionBar\":false,\"isRegex\":false,\"isIgnoreCase\":true,\"filter\":\"is now available!\",\"name\":\"Mining Ability Alert\",\"enabled\":false,\"isPartialMatch\":true}]}", JsonObject.class);
+		var parsed = ChatRulesHandler.UNBOXING_CODEC.parse(JsonOps.INSTANCE, object).getOrThrow();
 
-		var parsed = ChatRulesHandler.UNBOXING_CODEC.parse(JsonOps.INSTANCE, oldObject).getOrThrow();
-		Assertions.assertEquals(rules, parsed);
+		Assertions.assertEquals(ChatRulesHandler.getDefaultChatRules(), parsed);
+	}
+
+	@Test
+	void codecParseObjectNew() {
+		var object = SkyblockerMod.GSON.fromJson("{\"rules\":[{\"showAnnouncement\":false,\"replaceMessage\":\"\",\"validLocations\":[\"hub\"],\"hideMessage\":true,\"showActionBar\":false,\"isRegex\":true,\"isIgnoreCase\":true,\"filter\":\"(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)\",\"name\":\"Clean Hub Chat\",\"enabled\":false,\"isPartialMatch\":true},{\"showAnnouncement\":true,\"replaceMessage\":\"&1Ability\",\"customSound\":{\"sound_id\":\"minecraft:entity.arrow.hit_player\"},\"validLocations\":[\"mining_3\",\"crystal_hollows\"],\"hideMessage\":false,\"showActionBar\":false,\"isRegex\":false,\"isIgnoreCase\":true,\"filter\":\"is now available!\",\"name\":\"Mining Ability Alert\",\"enabled\":false,\"isPartialMatch\":true}]}", JsonObject.class);
+		var parsed = ChatRulesHandler.UNBOXING_CODEC.parse(JsonOps.INSTANCE, object).getOrThrow();
+
+		Assertions.assertEquals(ChatRulesHandler.getDefaultChatRules(), parsed);
 	}
 
 	@Test
 	void codecParseList() {
-		List<ChatRule> rules = List.of(
-				new ChatRule(),
-				new ChatRule()
-		);
+		List<ChatRule> rules = ChatRulesHandler.getDefaultChatRules();
 		var unboxedList = ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow();
-
 		var parsed = ChatRulesHandler.UNBOXING_CODEC.parse(JsonOps.INSTANCE, unboxedList).getOrThrow();
+
 		Assertions.assertEquals(rules, parsed);
 	}
 
 	@Test
 	void codecEncode() {
-		List<ChatRule> rules = List.of(
-				new ChatRule(),
-				new ChatRule()
-		);
-
+		List<ChatRule> rules = ChatRulesHandler.getDefaultChatRules();
 		var object = new JsonObject();
 		object.add("rules", ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow());
 		var encodedObject = ChatRulesHandler.UNBOXING_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow();
+
 		Assertions.assertEquals(object, encodedObject);
 	}
 }
