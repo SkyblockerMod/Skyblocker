@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -110,12 +110,8 @@ public class JsonData<T> {
 		if (loadAsync) {
 			return CompletableFuture.runAsync(this::loadInternal);
 		} else {
-			try {
-				loadInternal();
-				return CompletableFuture.completedFuture(null);
-			} catch (Exception e) {
-				return CompletableFuture.failedFuture(e);
-			}
+			loadInternal();
+			return CompletableFuture.completedFuture(null);
 		}
 	}
 
@@ -124,8 +120,9 @@ public class JsonData<T> {
 		try (BufferedReader reader = Files.newBufferedReader(file)) {
 			// Atomic operation to prevent concurrent modification
 			data = codec.parse(compressed ? JsonOps.COMPRESSED : JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonObject.class)).getOrThrow();
-		} catch (IOException e) {
-			throw new RuntimeException("Failed to load data from file: `" + file + "`", e);
+		} catch (NoSuchFileException ignored) {
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Json Data] Failed to load data from file: `{}`", file, e);
 		}
 	}
 

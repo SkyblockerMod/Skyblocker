@@ -11,7 +11,6 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.JsonData;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
@@ -21,10 +20,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.EnumSet;
 import java.util.List;
@@ -34,43 +30,32 @@ import java.util.function.Function;
 
 public class ChatRulesHandler {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final Logger LOGGER = LoggerFactory.getLogger(ChatRulesHandler.class);
 	private static final Path CHAT_RULE_FILE = SkyblockerMod.CONFIG_DIR.resolve("chat_rules.json");
 	private static final Codec<Map<String, List<ChatRule>>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, ChatRule.LIST_CODEC);
-	// The old format had an object with a single "rules" key containing a list of rules.
-	// The new one is just the list of rules directly.
-	// This codec can decode both while encoding only the new format, allowing for backward compatibility.
+	/**
+	 * This codec can parse two JSON formats: a list of chat rules OR an object with a "rules" property containing a list of chat rules,
+	 * and encodes in one JSON format: an object with a "rules" property containing a list of chat rules.
+	 */
 	@VisibleForTesting
 	static final Codec<List<ChatRule>> UNBOXING_CODEC = Codec.either(ChatRule.LIST_CODEC, MAP_CODEC).xmap(
-			either -> either.map(Function.identity(), map -> map.getOrDefault("rules", new ObjectArrayList<>())),
-			Either::left
+			either -> either.map(Function.identity(), map -> map.getOrDefault("rules", getDefaultChatRules())),
+			value -> Either.right(Map.of("rules", value))
 	);
 
-	protected static final JsonData<List<ChatRule>> chatRuleList = new JsonData<>(CHAT_RULE_FILE, UNBOXING_CODEC, new ObjectArrayList<>());
+	protected static final JsonData<List<ChatRule>> chatRuleList = new JsonData<>(CHAT_RULE_FILE, UNBOXING_CODEC, getDefaultChatRules());
 	public static CompletableFuture<Void> loaded;
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loaded = chatRuleList.init().exceptionally(throwable -> {
-			if (throwable.getCause() instanceof NoSuchFileException) {
-				LOGGER.info("[Skyblocker Chat Rules] No chat rules file found, creating default rules.");
-				registerDefaultChatRules();
-				chatRuleList.save();
-			} else LOGGER.error("[Skyblocker Chat Rules] Failed to load chat rules", throwable);
-			return null;
-		}));
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loaded = chatRuleList.init());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
 	}
 
-	private static void registerDefaultChatRules() {
-		//clean hub chat
-		ChatRule cleanHubRule = new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, false, false, "", null);
-		//mining Ability
-		ChatRule miningAbilityRule = new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, false, true, "&1Ability", SoundEvents.ENTITY_ARROW_HIT_PLAYER);
-
-		assert chatRuleList.getData() != null; // It's initialized as an empty list, so this should never be null.
-		chatRuleList.getData().add(cleanHubRule);
-		chatRuleList.getData().add(miningAbilityRule);
+	private static List<ChatRule> getDefaultChatRules() {
+		return List.of(
+				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, false, false, "", null),
+				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, false, true, "&1Ability", SoundEvents.ENTITY_ARROW_HIT_PLAYER)
+		);
 	}
 
 	/**

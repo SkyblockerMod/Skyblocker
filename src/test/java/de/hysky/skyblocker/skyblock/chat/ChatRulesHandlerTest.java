@@ -29,7 +29,7 @@ class ChatRulesHandlerTest {
 	}
 
 	@Test
-	void codecParseLegacy() {
+	void codecParseObject() {
 		List<ChatRule> rules = List.of(
 				new ChatRule(),
 				new ChatRule()
@@ -42,7 +42,7 @@ class ChatRulesHandlerTest {
 	}
 
 	@Test
-	void codecParseNew() {
+	void codecParseList() {
 		List<ChatRule> rules = List.of(
 				new ChatRule(),
 				new ChatRule()
@@ -60,8 +60,9 @@ class ChatRulesHandlerTest {
 				new ChatRule()
 		);
 
-		var list = ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow();
-		var encodedList = ChatRulesHandler.UNBOXING_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow();
-		Assertions.assertEquals(list, encodedList);
+		var object = new JsonObject();
+		object.add("rules", ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow());
+		var encodedObject = ChatRulesHandler.UNBOXING_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow();
+		Assertions.assertEquals(object, encodedObject);
 	}
 }
