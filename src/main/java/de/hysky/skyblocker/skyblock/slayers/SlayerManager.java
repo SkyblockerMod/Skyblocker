@@ -198,7 +198,7 @@ public class SlayerManager {
 	}
 
 	/**
-	 * Checks whether entity is the Broodfather second phase boss
+	 * Checks whether given armor stand entity has clients username in its name.
 	 */
 	public static boolean checkBroodfatherSecondPhase(ArmorStandEntity armorStand) {
 		return armorStand.getName().getString().contains(CLIENT.getSession().getUsername());

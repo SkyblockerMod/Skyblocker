@@ -18,6 +18,7 @@ import net.minecraft.entity.mob.BlazeEntity;
 import net.minecraft.entity.mob.WitherSkeletonEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.entity.passive.BatEntity;
+import net.minecraft.util.DyeColor;
 
 public class SlayerGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")
@@ -39,8 +40,8 @@ public class SlayerGlowAdder extends MobGlowAdder {
 
 		return switch (entity) {
 			//Broodfather mobs
-			case BatEntity e when SlayerManager.isInSlayerType(SlayerType.TARANTULA) -> NUKEKUBI_COLOUR;
-			case ArmorStandEntity e when SlayerManager.isInSlayer() && isBroodfatherEgg(e) -> NUKEKUBI_COLOUR;
+			case BatEntity e when SkyblockerConfigManager.get().slayers.spiderSlayer.batHighlight && SlayerManager.isInSlayerType(SlayerType.TARANTULA)-> DyeColor.BLUE.getSignColor();
+			case ArmorStandEntity e when SkyblockerConfigManager.get().slayers.spiderSlayer.eggHighlight && SlayerManager.isInSlayer() && isBroodfatherEgg(e) -> DyeColor.BLUE.getSignColor();
 			//Nukekubi Fixation Skulls
 			case ArmorStandEntity as when SkyblockerConfigManager.get().slayers.endermanSlayer.highlightNukekubiHeads && Utils.isInTheEnd() && as.isMarker() && isNukekubiHead(as) -> NUKEKUBI_COLOUR;
 			//Blaze Slayer's Demonic Minions

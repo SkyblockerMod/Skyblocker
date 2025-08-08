@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.mixins;
 
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
-import de.hysky.skyblocker.skyblock.slayers.boss.broodfather.ImmunityHUD;
+import de.hysky.skyblocker.skyblock.slayers.boss.broodfather.eggInfoDisplay;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.events.WorldEvents;
 import net.minecraft.block.BlockState;
@@ -58,6 +59,6 @@ public abstract class ClientWorldMixin implements BlockView {
 	@Inject(method = "removeEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;onRemoved()V"))
 	private void skyblocker$removeEntity(int entityId, Entity.RemovalReason removalReason, CallbackInfo ci, @Local Entity entity) {
 		 if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
-		 if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) ImmunityHUD.clearEggMap(armorStandEntity);
+		 if (SkyblockerConfigManager.get().slayers.spiderSlayer.eggDisplay && SlayerManager.isInSlayerType(SlayerType.TARANTULA)) eggInfoDisplay.clearEggMap(armorStandEntity);
 	}
 }
