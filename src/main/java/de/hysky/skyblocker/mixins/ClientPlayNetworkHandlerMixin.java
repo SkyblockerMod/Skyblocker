@@ -72,11 +72,13 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	@Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
 	private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
 		if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
-		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) System.out.println(armorStandEntity.getName().getString());
+
 		SlayerManager.checkSlayerBoss(armorStandEntity);
+		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) System.out.println(armorStandEntity.getName().getString());
 		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA)) ImmunityHUD.handleEgg(armorStandEntity);
-		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA) && SlayerManager.checkBroodfatherSecondPhase(armorStandEntity) && !SlayerManager.getBossFight().secondPhase) SlayerManager.updateBossMidBossFight(armorStandEntity);
+
+		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 		EggFinder.checkIfEgg(armorStandEntity);
 		CorpseFinder.checkIfCorpse(armorStandEntity);
 		HealthBars.healthBar(armorStandEntity);

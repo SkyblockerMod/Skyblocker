@@ -45,7 +45,7 @@ public class SlayerManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SlayerManager.class);
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Atoned Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Bloodfiend");
-	private static final Pattern BROODFATHER_SECOND_PHASE = Pattern.compile("Conjured Brood");
+	private static final Pattern BROODFATHER_SECOND_PHASE = Pattern.compile("Conjoined Brood");
 	private static final Pattern SLAYER_TIER_PATTERN = Pattern.compile("^(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend)\\s+(I|II|III|IV|V)$");
 	private static final Pattern PATTERN_XP_NEEDED = Pattern.compile("\\s*(Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL ([0-9]) - (?:Next LVL in ([\\d,]+) XP!|LVL MAXED OUT!)\\s*");
 	private static final Pattern PATTERN_LVL_UP = Pattern.compile("\\s*LVL UP! ➜ (Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [1-9]\\s*");
@@ -206,7 +206,7 @@ public class SlayerManager {
 	}
 
 	public static void updateBossMidBossFight(ArmorStandEntity armorStand) {
-		System.out.println("poop : " + armorStand.getName().getString());
+		System.out.println(armorStand.getName().getString());
 		bossFight.findBoss(armorStand);
 		bossFight.secondPhase = true;
 	}
