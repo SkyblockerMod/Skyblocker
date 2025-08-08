@@ -204,7 +204,7 @@ public class Scheduler {
             task.run();
 
             if (cyclic) {
-            	if (!RenderSystem.isOnRenderThread()) {
+            	if (!RenderSystem.isOnRenderThread() && MinecraftClient.getInstance() != null) {
             		MinecraftClient.getInstance().send(() -> INSTANCE.addTask(this, INSTANCE.currentTick + interval));
             	} else {
             		INSTANCE.addTask(this, INSTANCE.currentTick + interval);
