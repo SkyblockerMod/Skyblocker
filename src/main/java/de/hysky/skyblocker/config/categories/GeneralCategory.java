@@ -57,7 +57,7 @@ public class GeneralCategory {
                         .binding(UpdateNotifications.Config.DEFAULT.channel(),
                                 () -> UpdateNotifications.config.getData().channel(),
                                 newValue -> UpdateNotifications.config.setData(UpdateNotifications.config.getData().withChannel(newValue)))
-                        .controller(ConfigUtils.createEnumCyclingListController())
+                        .controller(ConfigUtils.createEnumController())
                         .build())
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.general.acceptReparty"))

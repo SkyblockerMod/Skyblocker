@@ -299,7 +299,7 @@ public class ChatRule {
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof ChatRule chatRule)) return false;
-		return getEnabled() == chatRule.getEnabled() && getPartialMatch() == chatRule.getPartialMatch() && getRegex() == chatRule.getRegex() && getIgnoreCase() == chatRule.getIgnoreCase() && getHideMessage() == chatRule.getHideMessage() && getShowActionBar() == chatRule.getShowActionBar() && getShowAnnouncement() == chatRule.getShowAnnouncement() && Objects.equals(getName(), chatRule.getName()) && Objects.equals(getFilter(), chatRule.getFilter()) && Objects.equals(getValidLocations(), chatRule.getValidLocations()) && Objects.equals(getReplaceMessage(), chatRule.getReplaceMessage()) && Objects.equals(getCustomSound(), chatRule.getCustomSound());
+		return Objects.equals(getName(), chatRule.getName()) && getEnabled() == chatRule.getEnabled() && getPartialMatch() == chatRule.getPartialMatch() && getRegex() == chatRule.getRegex() && getIgnoreCase() == chatRule.getIgnoreCase() && Objects.equals(getFilter(), chatRule.getFilter()) && Objects.equals(getValidLocations(), chatRule.getValidLocations()) && getHideMessage() == chatRule.getHideMessage() && getShowActionBar() == chatRule.getShowActionBar() && getShowAnnouncement() == chatRule.getShowAnnouncement() && Objects.equals(getReplaceMessage(), chatRule.getReplaceMessage()) && Objects.equals(getCustomSound(), chatRule.getCustomSound());
 	}
 
 	@Override

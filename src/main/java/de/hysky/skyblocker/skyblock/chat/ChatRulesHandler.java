@@ -53,10 +53,10 @@ public class ChatRulesHandler {
 	public static void init() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loaded = chatRuleList.init().exceptionally(throwable -> {
 			if (throwable.getCause() instanceof NoSuchFileException) {
-				LOGGER.info("No chat rules file found, creating default rules.");
+				LOGGER.info("[Skyblocker Chat Rules] No chat rules file found, creating default rules.");
 				registerDefaultChatRules();
 				chatRuleList.save();
-			} else LOGGER.error("Failed to load chat rules", throwable);
+			} else LOGGER.error("[Skyblocker Chat Rules] Failed to load chat rules", throwable);
 			return null;
 		}));
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
@@ -79,7 +79,7 @@ public class ChatRulesHandler {
 	private static boolean checkMessage(Text message, boolean overlay) {
 		if (overlay || !Utils.isOnSkyblock()) return true;
 		List<ChatRule> rules = chatRuleList.getData();
-		if ( rules == null || rules.isEmpty() || !loaded.isDone()) return true;
+		if (rules == null || rules.isEmpty() || !loaded.isDone()) return true;
 		String plain = Formatting.strip(message.getString());
 
 		for (ChatRule rule : rules) {

@@ -31,21 +31,21 @@ public class TextTransformer {
 	/**
 	 * Converts strings with section symbol/legacy formatting to MutableText objects.
 	 *
+	 * @author AzureAaron
+	 *
 	 * @param legacy The string with legacy formatting to be transformed
 	 * @param legacyPrefix The character that prefixes the legacy formatting codes (e.g., '§' or '&')
 	 * @return A {@link MutableText} object matching the exact formatting of the input
-	 *
-	 * @author AzureAaron
 	 */
 	public static MutableText fromLegacy(@NotNull String legacy, char legacyPrefix) {
 		MutableText newText = Text.empty();
 		StringBuilder builder = new StringBuilder();
 		Formatting formatting = null;
-		boolean bold = false;
-		boolean italic = false;
-		boolean underline = false;
-		boolean strikethrough = false;
-		boolean obfuscated = false;
+		Boolean bold = null;
+		Boolean italic = null;
+		Boolean underline = null;
+		Boolean strikethrough = null;
+		Boolean obfuscated = null;
 
 		for (int i = 0; i < legacy.length(); i++) {
 			//If we've encountered a new formatting code then append the text from the previous "sequence" and reset state
@@ -59,13 +59,15 @@ public class TextTransformer {
 						.withObfuscated(obfuscated)));
 
 				//Erase all characters in the builder so we can reuse it, also clear formatting
+				//Note that this resets all formatting when encountering any new formatting code, not just when encountering a new color code,
+				//due to some weird formatting from hypixel such as the soulbound text
 				builder.delete(0, builder.length());
 				formatting = null;
-				bold = false;
-				italic = false;
-				underline = false;
-				strikethrough = false;
-				obfuscated = false;
+				bold = null;
+				italic = null;
+				underline = null;
+				strikethrough = null;
+				obfuscated = null;
 			}
 
 			if (i != 0 && legacy.charAt(i - 1) == legacyPrefix) {

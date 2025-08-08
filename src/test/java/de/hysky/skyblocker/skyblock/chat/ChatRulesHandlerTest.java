@@ -17,14 +17,10 @@ class ChatRulesHandlerTest {
 	void formatText() {
 		//generate test text
 		MutableText testText = Text.empty();
-		Style style = Style.EMPTY.withFormatting(Formatting.DARK_BLUE);
-		Text.of("test").getWithStyle(style).forEach(testText::append);
-		style = style.withFormatting(Formatting.UNDERLINE);
-		Text.of("line").getWithStyle(style).forEach(testText::append);
-		style = style.withFormatting(Formatting.DARK_GREEN);
-		Text.of("dark green").getWithStyle(style).forEach(testText::append);
-		style = style.withFormatting(Formatting.ITALIC);
-		Text.of("italic").getWithStyle(style).forEach(testText::append);
+		Text.of("test").getWithStyle(Style.EMPTY.withFormatting(Formatting.DARK_BLUE)).forEach(testText::append);
+		Text.of("line").getWithStyle(Style.EMPTY.withFormatting(Formatting.UNDERLINE)).forEach(testText::append);
+		Text.of("dark green").getWithStyle(Style.EMPTY.withFormatting(Formatting.DARK_GREEN)).forEach(testText::append);
+		Text.of("italic").getWithStyle(Style.EMPTY.withFormatting(Formatting.ITALIC)).forEach(testText::append);
 
 		//generated text
 		MutableText text = ChatRulesHandler.formatText("&1test&nline&2dark green&oitalic");

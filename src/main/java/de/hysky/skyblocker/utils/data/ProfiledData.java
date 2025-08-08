@@ -85,6 +85,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 
 	/**
 	 * Checks if the current player's UUID and profile ID are present in the data.
+	 *
 	 * @return true if the data contains the current player's UUID and profile ID, false otherwise.
 	 */
 	public boolean containsKey() {
@@ -93,7 +94,8 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 
 	/**
 	 * Checks if the given UUID and profile ID are present in the data.
-	 * @param uuid The UUID of the player.
+	 *
+	 * @param uuid      The UUID of the player.
 	 * @param profileId The profile ID of the player.
 	 * @return true if the data contains the given UUID and profile ID, false otherwise.
 	 */
@@ -103,6 +105,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 
 	/**
 	 * Gets the value for the current player's UUID and profile ID.
+	 *
 	 * @return The value, or null if not found.
 	 */
 	@Nullable
@@ -112,7 +115,8 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 
 	/**
 	 * Gets the value for the given UUID and profile ID.
-	 * @param uuid The UUID of the player.
+	 *
+	 * @param uuid      The UUID of the player.
 	 * @param profileId The profile ID of the player.
 	 * @return The value, or null if not found.
 	 */
@@ -123,6 +127,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 
 	/**
 	 * Puts the value for the current player's UUID and profile ID.
+	 *
 	 * @param value The value to put.
 	 * @return The previous value, or null if not found.
 	 */
@@ -133,9 +138,10 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 
 	/**
 	 * Puts the value for the given UUID and profile ID.
-	 * @param uuid The UUID of the player.
+	 *
+	 * @param uuid      The UUID of the player.
 	 * @param profileId The profile ID of the player.
-	 * @param value The value to put.
+	 * @param value     The value to put.
 	 * @return The previous value, or null if not found.
 	 */
 	@Nullable
@@ -145,6 +151,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 
 	/**
 	 * Puts the value for the current player's UUID and profile ID if it is absent.
+	 *
 	 * @param value The value to put.
 	 * @return The previous value, or null if not found.
 	 */
@@ -155,9 +162,10 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 
 	/**
 	 * Puts the value for the given UUID and profile ID if it is absent.
-	 * @param uuid The UUID of the player.
+	 *
+	 * @param uuid      The UUID of the player.
 	 * @param profileId The profile ID of the player.
-	 * @param value The value to put.
+	 * @param value     The value to put.
 	 * @return The previous value, or null if not found.
 	 */
 	@Nullable
@@ -167,6 +175,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 
 	/**
 	 * Computes the value for the current player's UUID and profile ID if it is absent.
+	 *
 	 * @param valueSupplier The supplier to compute the value.
 	 * @return The computed value, or null if not found.
 	 */
@@ -177,8 +186,9 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 
 	/**
 	 * Computes the value for the given UUID and profile ID if it is absent.
-	 * @param uuid The UUID of the player.
-	 * @param profileId The profile ID of the player.
+	 *
+	 * @param uuid          The UUID of the player.
+	 * @param profileId     The profile ID of the player.
 	 * @param valueSupplier The supplier to compute the value.
 	 * @return The computed value, or null if not found.
 	 */
@@ -187,8 +197,9 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 		return getPlayerData(uuid).computeIfAbsent(profileId, _profileId -> valueSupplier.get());
 	}
 
-/**
+	/**
 	 * Removes the value for the current player's UUID and profile ID.
+	 *
 	 * @return The removed value, or null if not found.
 	 */
 	@Nullable
@@ -198,7 +209,8 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 
 	/**
 	 * Removes the value for the given UUID and profile ID.
-	 * @param uuid The UUID of the player.
+	 *
+	 * @param uuid      The UUID of the player.
 	 * @param profileId The profile ID of the player.
 	 * @return The removed value, or null if not found.
 	 */
@@ -209,6 +221,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 
 	/**
 	 * Gets the player data map for the given UUID.
+	 *
 	 * @param uuid The UUID of the player.
 	 * @return The player data map.
 	 */
