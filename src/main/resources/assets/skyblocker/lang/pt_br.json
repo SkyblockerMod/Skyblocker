@@ -329,7 +329,6 @@
     "text.skyblocker.undo": "Anular",
     "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Avisa quando você saca um arco e não tem Toxic Arrow Poison no seu inventário. Só funciona durante a fase DPS.",
     "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "Construir pontos de Waypoints da Ballista",
-    "key.itemPriceRefresh": "Atualizar Bazar",
     "text.skyblocker.offline": "Desligado",
     "key.skyblocker.debug.dumpHoveredItem": "Despejar item pairado",
     "skyblocker.config.debug.dumpRange.@Tooltip": "O intervalo em blocos ao redor do jogador para despejar entidades dentro.",

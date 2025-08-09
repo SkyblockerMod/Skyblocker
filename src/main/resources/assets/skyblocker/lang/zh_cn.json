@@ -885,7 +885,6 @@
     "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "物品价格刷新失败。",
     "skyblocker.config.chat.waypoints.display": "点击显示路径点（x: %d y: %d z: %d）",
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "使用F6键在集市和拍卖行中搜索当前鼠标所指的物品。",
-    "key.itemPriceRefresh": "集市刷新",
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "启用物品价格查找",
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "在集市和拍卖行中找不到该物品",
     "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "启用物品价格刷新",

@@ -386,7 +386,6 @@
     "text.skyblocker.clickToSend": "[Cliquez pour envoyer dans le chat]",
     "text.skyblocker.clickToSend.@Tooltip": "Cliquez pour envoyer dans le chat.",
     "key.itemPriceLookup": "Recherche du Prix de L'item",
-    "key.itemPriceRefresh": "Actualiser le Baazar",
     "skyblocker.config.general.speedPresets.config.title": "Titre",
     "skyblocker.config.general.speedPresets": "Préréglages de vitesse",
     "skyblocker.config.general.speedPresets.config": "Configuration des préréglages de vitesse...",

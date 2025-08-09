@@ -877,7 +877,6 @@
     "skyblocker.bars.config.speed": "速度",
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "使用F6鍵在集市和拍賣行中搜尋目前滑鼠所指的物品。",
     "key.itemPriceLookup": "物品價格查找",
-    "key.itemPriceRefresh": "集市刷新",
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "啟用物品價格查找",
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "在集市和拍賣行中找不到該物品",
     "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "啟用物品價格刷新",
