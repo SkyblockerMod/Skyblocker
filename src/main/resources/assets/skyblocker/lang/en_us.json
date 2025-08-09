@@ -220,7 +220,7 @@
   "skyblocker.config.dungeons.salvageHelper": "Salvage Helper",
   "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Highlights items picked up in dungeons that can be salvaged.",
 
-  "skyblocker.config.dungeons.sellableItemsHighlighter": "Highlight Sellable Items",
+  "skyblocker.config.dungeons.sellableItemsHighlighter": "Sellable Items Highlighter",
   "skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip": "Highlights items picked up in Dungeons that can be sold to NPC.",
 
   "skyblocker.config.dungeons.bloodCampHelper": "Blood Camp Helper",
