@@ -167,6 +167,14 @@ public class GeneralCategory {
                                         newValue -> config.general.itemList.enableItemList = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemList.enableCollapsibleEntries"))
+								.description(Text.translatable("skyblocker.config.general.itemList.enableCollapsibleEntries.@Tooltip"))
+								.binding(defaults.general.itemList.enableCollapsibleEntries,
+										() -> config.general.itemList.enableCollapsibleEntries,
+										newValue -> config.general.itemList.enableCollapsibleEntries = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .build())
 
                 //Item Tooltip
