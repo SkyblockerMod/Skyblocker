@@ -13,6 +13,8 @@ public class DungeonsConfig {
 
 	public boolean salvageHelper = true;
 
+	public boolean sellableItemsHighlighter = true;
+
 	public boolean bloodCampHelper = false;
 
 	public boolean playerSecretsTracker = false;
@@ -30,8 +32,6 @@ public class DungeonsConfig {
 	public boolean dungeonSplits = false;
 
 	public boolean hideSoulweaverSkulls = false;
-
-	public boolean sellableItemsHighlighter = true;
 
 	public DungeonMap dungeonMap = new DungeonMap();
 

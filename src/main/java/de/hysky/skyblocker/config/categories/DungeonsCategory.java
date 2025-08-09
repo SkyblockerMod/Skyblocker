@@ -52,6 +52,14 @@ public class DungeonsCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter"))
+						.description(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip"))
+						.binding(defaults.dungeons.sellableItemsHighlighter,
+								() -> config.dungeons.sellableItemsHighlighter,
+								newValue -> config.dungeons.sellableItemsHighlighter = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.dungeons.playerSecretsTracker"))
 						.description(Text.translatable("skyblocker.config.dungeons.playerSecretsTracker.@Tooltip"))
 						.binding(defaults.dungeons.playerSecretsTracker,
@@ -121,14 +129,6 @@ public class DungeonsCategory {
 						.binding(defaults.dungeons.bloodCampHelper,
 								() -> config.dungeons.bloodCampHelper,
 								newValue -> config.dungeons.bloodCampHelper = newValue)
-						.controller(ConfigUtils.createBooleanController())
-						.build())
-				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter"))
-						.description(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip"))
-						.binding(defaults.dungeons.sellableItemsHighlighter,
-								() -> config.dungeons.sellableItemsHighlighter,
-								newValue -> config.dungeons.sellableItemsHighlighter = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 
