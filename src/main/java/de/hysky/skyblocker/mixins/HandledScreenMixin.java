@@ -132,6 +132,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Inject(method = "init", at = @At("TAIL"))
 	private void skyblocker$initMuseumOverlay(CallbackInfo ci) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && getTitle().getString().contains("Museum")) {
@@ -178,10 +179,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			//Item Price Lookup
 			if (config.helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(keyCode, scanCode)) {
 				ItemPrice.itemPriceLookup(client.player, this.focusedSlot);
-			}
-			//Refresh Item Prices
-			if (config.helpers.itemPrice.enableItemPriceRefresh && ItemPrice.ITEM_PRICE_REFRESH.matchesKey(keyCode, scanCode)) {
-				ItemPrice.refreshItemPrices(this.client.player);
 			}
 		}
 	}
