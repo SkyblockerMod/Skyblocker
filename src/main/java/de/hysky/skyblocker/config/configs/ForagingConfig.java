@@ -15,7 +15,11 @@ public class ForagingConfig {
 
 		public boolean enableLushlilacHighlighter = true;
 
+		public float lushlilacHighlighterOpacity = 0.5f;
+
 		public boolean enableSeaLumiesHighlighter = true;
+
+		public float seaLumiesHighlighterOpacity = 0.5f;
 
 		public boolean enableTreeBreakProgress = true;
 
