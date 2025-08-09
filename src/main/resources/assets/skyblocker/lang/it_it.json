@@ -330,7 +330,6 @@
     "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Evidenzia gli oggetti raccolti nei dungeon che possono essere smantellati.",
     "skyblocker.config.dungeons.terminals.solveStartsWith": "Risolvi inizia con",
     "key.itemPriceLookup": "Ricerca Bazaar",
-    "key.itemPriceRefresh": "Aggiorna Bazaar",
     "key.skyblocker.debug.dumpNearbyEntities": "Svuota le entità vicine",
     "key.skyblocker.debug.dumpHoveredItem": "Scarta l'oggetto selezionato",
     "skyblocker.config.debug.dumpRange": "Raggio dello scarto delle entità",

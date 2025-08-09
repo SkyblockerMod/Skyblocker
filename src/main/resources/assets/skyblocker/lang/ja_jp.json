@@ -241,7 +241,6 @@
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.OUTLINED_HIGHLIGHT": "ハイライト+アウトライン",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.type.OUTLINE": "アウトライン",
     "key.itemPriceLookup": "アイテム価格を探す",
-    "key.itemPriceRefresh": "バザーを更新",
     "skyblocker.config.debug": "デバッグ",
     "text.skyblocker.undo": "戻す",
     "text.skyblocker.reset": "リセット",

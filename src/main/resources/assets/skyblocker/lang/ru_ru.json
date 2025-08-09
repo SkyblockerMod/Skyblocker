@@ -860,7 +860,6 @@
     "skyblocker.config.uiAndVisuals.inputCalculator.requiresEquals.@Tooltip": "Показывать калькулятор только в том случае, если сообщение начинается с \"=\".",
     "skyblocker.config.mining.commissionWaypoints.showEmissary.@Tooltip": "Когда комиссия в dwarven mines выполнена, показывает местоположение эмиссаров (вступает в силу после обновления комиссий).",
     "skyblocker.config.quickNav.button.item.components": "Компоненты предмета",
-    "key.itemPriceRefresh": "Перезагрузить Базар",
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Ищет выбранный предмет на Базаре или Аукционе при нажатии F6.",
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "Не удалость найти предмент на Базаре и Аукционе",
     "skyblocker.config.slayer.highlightMinis.@Tooltip[0]": "\nВыключено: Не подсвечивать Slayer мини боссов.",
