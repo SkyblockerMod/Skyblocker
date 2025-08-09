@@ -292,7 +292,7 @@
     "skyblocker.config.crimsonIsle.kuudra.kuudraGlow.@Tooltip": "Contorna Kuudra em um laranja-escuro.",
     "key.skyblocker.slottext": "Texto do Slot",
     "skyblocker.config.dungeons.dungeonScore": "Pontuação da Dungeon",
-    "skyblocker.config.shortcutToKeybindsSettings.@Text": "Clique... (Abre Opções de Atalhos de Teclado)",
+    "skyblocker.config.shortcutToKeybindsSettings.@Text": "Menu de Atalhos",
     "skyblocker.config.shortcutToKeybindsSettings": "Editar Atalho de Teclado",
     "skyblocker.config.crimsonIsle.kuudra.fuelWaypoints": "Pontos de Referência de Combustível",
     "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "Destaca o botão correto para clicar em verde, e destaca o próximo em amarelo.",
@@ -370,5 +370,11 @@
     "skyblocker.config.uiAndVisuals": "Interface & Visuais",
     "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled": "Habilitado",
     "skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip": "A cor que será exibida quando os dados do preço estão incompletos.",
-    "skyblocker.config.uiAndVisuals.compactDamage": "Dano Compacto"
+    "skyblocker.config.uiAndVisuals.compactDamage": "Dano Compacto",
+    "skyblocker.config.dungeons.goldorWaypoints.waypointType": "Tipo de waypoint de tarefa",
+    "skyblocker.config.dungeons.classBasedPlayerGlow": "Brilho do Jogador Pela Classe",
+    "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "Muda a cor do brilho dos seus companheiros de equipe para ser baseada na classe deles, em vez do rank.",
+    "skyblocker.config.dungeons.goldorWaypoints": "Waypoints das tarefas do Goldor (F7/M7)",
+    "skyblocker.config.dungeons.devices": "Solucionadores de dispositivos (F7/M7)",
+    "skyblocker.config.title.settings": "Configurações"
 }
