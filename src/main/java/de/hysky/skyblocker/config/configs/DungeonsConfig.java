@@ -13,6 +13,8 @@ public class DungeonsConfig {
 
 	public boolean salvageHelper = true;
 
+	public boolean sellableItemsHighlighter = true;
+
 	public boolean bloodCampHelper = false;
 
 	public boolean playerSecretsTracker = false;

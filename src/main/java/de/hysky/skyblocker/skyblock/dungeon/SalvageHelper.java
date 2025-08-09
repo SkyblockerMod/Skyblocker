@@ -28,7 +28,7 @@ public class SalvageHelper extends SimpleContainerSolver implements ContainerAnd
 		return slots.int2ObjectEntrySet().stream()
 				.filter(entry -> ItemUtils.getLoreLineIfContainsMatch(entry.getValue(), DUNGEON_SALVAGABLE) != null)
 				.filter(entry -> isPriceWithinRange(entry.getValue()))
-				.map(entry -> ColorHighlight.green(entry.getIntKey()))
+				.map(entry -> ColorHighlight.yellow(entry.getIntKey()))
 				.toList();
 	}
 
