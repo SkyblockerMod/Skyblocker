@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.dungeon.Reparty;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.Trivia;
 import de.hysky.skyblocker.skyblock.dwarven.Fetchur;
 import de.hysky.skyblocker.skyblock.dwarven.Puzzler;
+import de.hysky.skyblocker.skyblock.galatea.SweepDetailsListener;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.Event;
@@ -45,6 +46,7 @@ public interface ChatMessageListener {
                 new Trivia(),
                 new TreasureHunter(),
                 new HungryHiker(),
+				new SweepDetailsListener(),
                 // Filters
                 new AbilityFilter(),
                 new AdFilter(),
