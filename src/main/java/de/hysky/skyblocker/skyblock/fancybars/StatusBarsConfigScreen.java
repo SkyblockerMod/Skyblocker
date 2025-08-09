@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanPair;
@@ -78,7 +79,7 @@ public class StatusBarsConfigScreen extends Screen {
 
 		assert client != null;
 		Window window = client.getWindow();
-		int scaleFactor = window.calculateScaleFactor(0, client.forcesUnicodeFont()) - (int) window.getScaleFactor() + 3;
+		int scaleFactor = window.calculateScaleFactor(0, client.forcesUnicodeFont()) - window.getScaleFactor() + 3;
 		if ((scaleFactor & 2) == 0) scaleFactor++;
 
 		ScreenRect mouseRect = new ScreenRect(new ScreenPos(mouseX - scaleFactor / 2, mouseY - scaleFactor / 2), scaleFactor, scaleFactor);
@@ -312,7 +313,7 @@ public class StatusBarsConfigScreen extends Screen {
 		super.removed();
 		FancyStatusBars.statusBars.values().forEach(statusBar -> statusBar.setOnClick(null));
 		if (cursorBar != null) cursorBar.inMouse = false;
-		FancyStatusBars.updatePositions(false);
+		Scheduler.INSTANCE.schedule(() -> FancyStatusBars.updatePositions(false), 1); // currentScreen isn't actually changed at this point so gotta run this a little later
 		assert client != null;
 		setResizeCursor(false);
 		FancyStatusBars.saveBarConfig();
