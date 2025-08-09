@@ -414,6 +414,13 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.teleportOverlay.enableTeleportOverlays = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.showWhenInAir"))
+								.binding(defaults.uiAndVisuals.teleportOverlay.showWhenInAir,
+										() -> config.uiAndVisuals.teleportOverlay.showWhenInAir,
+										newValue -> config.uiAndVisuals.teleportOverlay.showWhenInAir = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(Option.<Color>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor"))
                                 .binding(defaults.uiAndVisuals.teleportOverlay.teleportOverlayColor,

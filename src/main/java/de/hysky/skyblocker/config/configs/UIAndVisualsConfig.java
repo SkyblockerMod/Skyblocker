@@ -282,7 +282,9 @@ public class UIAndVisualsConfig {
 	public static class TeleportOverlay {
 		public boolean enableTeleportOverlays = true;
 
-		public Color teleportOverlayColor = new Color(0x7F761594, true);
+        public boolean showWhenInAir = false;
+
+        public Color teleportOverlayColor = new Color(0x7F761594, true);
 
 		public boolean enableWeirdTransmission = false;
 
