@@ -817,6 +817,7 @@
 
   "skyblocker.config.otherLocations": "Other Locations",
   "skyblocker.config.otherLocations.barn": "Barn",
+  "skyblocker.config.otherLocations.barn.enableGlowingMushroomHelper": "Enable Glowing Mushroom Helper",
   "skyblocker.config.otherLocations.barn.solveHungryHiker": "Solve Hungry Hiker",
   "skyblocker.config.otherLocations.barn.solveTreasureHunter": "Solve Treasure Hunter",
   "skyblocker.config.otherLocations.end": "The End",
