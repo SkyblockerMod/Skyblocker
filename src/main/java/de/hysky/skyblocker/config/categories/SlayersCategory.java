@@ -91,7 +91,35 @@ public class SlayersCategory {
 						.prompt(Text.translatable("text.skyblocker.open"))
 						.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
 						.build())
-
+				//Spider Slayer
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.spiderSlayer"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.slayer.spiderSlayer.batHighlight"))
+								.description(Text.translatable("skyblocker.config.slayer.spiderSlayer.batHighlight.@Tooltip"))
+								.binding(defaults.slayers.spiderSlayer.batHighlight,
+										() -> config.slayers.spiderSlayer.batHighlight,
+										newValue -> config.slayers.spiderSlayer.batHighlight = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.slayer.spiderSlayer.eggHighlight"))
+								.description(Text.translatable("skyblocker.config.slayer.spiderSlayer.eggHighlight.@Tooltip"))
+								.binding(defaults.slayers.spiderSlayer.eggHighlight,
+										() -> config.slayers.spiderSlayer.eggHighlight,
+										newValue -> config.slayers.spiderSlayer.eggHighlight = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.slayer.spiderSlayer.eggDisplay"))
+								.description(Text.translatable("skyblocker.config.slayer.spiderSlayer.eggDisplay.@Tooltip"))
+								.binding(defaults.slayers.spiderSlayer.eggDisplay,
+										() -> config.slayers.spiderSlayer.eggDisplay,
+										newValue -> config.slayers.spiderSlayer.eggDisplay = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
 				//Enderman Slayer
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.endermanSlayer"))
@@ -125,7 +153,6 @@ public class SlayersCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
-
 				//Vampire Slayer
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.vampireSlayer"))
@@ -219,7 +246,6 @@ public class SlayersCategory {
 								.controller(IntegerController.createBuilder().range(1, 10).slider(1).build())
 								.build())
 						.build())
-
 				//Blaze Slayer
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.blazeSlayer"))
