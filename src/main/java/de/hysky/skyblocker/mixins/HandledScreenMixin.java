@@ -13,7 +13,6 @@ import de.hysky.skyblocker.skyblock.garden.VisitorWikiLookup;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.MuseumItemCache;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
