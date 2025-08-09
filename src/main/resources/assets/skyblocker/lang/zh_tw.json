@@ -1411,5 +1411,6 @@
     "skyblocker.config.title.settings": "設定",
     "skyblocker.config.helpers.fishing.enableFishingHud": "啟用釣魚HUD",
     "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds": "傳送按鍵綁定",
-    "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds.@Tooltip": "為Spirit Leap覆蓋層的傳送添加按鍵綁定。按1傳送至第一個玩家，按2傳送至第二個玩家，按3傳送至第三個玩家，按4傳送至第四個玩家。"
+    "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds.@Tooltip": "為Spirit Leap覆蓋層的傳送添加按鍵綁定。按1傳送至第一個玩家，按2傳送至第二個玩家，按3傳送至第三個玩家，按4傳送至第四個玩家。",
+    "skyblocker.config.otherLocations.barn.enableGlowingMushroomHelper": "啟用發光蘑菇助手"
 }
