@@ -266,7 +266,7 @@ spotless {
 		//indentWithTabs() // TODO: turn on when more files are converted to tabs
 		trimTrailingWhitespace()
 		endWithNewline()
-		lineEndings com.diffplug.spotless.LineEnding.UNIX
+		lineEndings = com.diffplug.spotless.LineEnding.UNIX
 	}
 
 	json {
