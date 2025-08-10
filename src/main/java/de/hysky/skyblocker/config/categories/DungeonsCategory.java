@@ -197,6 +197,22 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.leapOverlay.scale = newValue)
 								.controller(FloatController.createBuilder().range(1f, 2f).slider(0.05f).build())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage"))
+								.description(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip"))
+								.binding(defaults.dungeons.leapOverlay.enableLeapMessage,
+										() -> config.dungeons.leapOverlay.enableLeapMessage,
+										newValue -> config.dungeons.leapOverlay.enableLeapMessage = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.leapMessage"))
+								.description(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip"))
+								.binding(defaults.dungeons.leapOverlay.leapMessage,
+										() -> config.dungeons.leapOverlay.leapMessage,
+										newValue -> config.dungeons.leapOverlay.leapMessage = newValue)
+								.controller(StringController.createBuilder().build())
+								.build())
 						.build())
 
 				// Puzzle Solver
