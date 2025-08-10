@@ -2,7 +2,7 @@ plugins {
 	// Building
 	id 'fabric-loom' version "${loom_version}"
 	id "de.hysky.skyblocker.annotation-processor"
-	id "com.diffplug.spotless" version "6.20.0"
+	id "com.diffplug.spotless" version "7.2.1"
 	id "checkstyle"
 	// Publishing
 	id 'maven-publish'
@@ -271,12 +271,34 @@ spotless {
 	json {
 		target 'src/**/lang/en_us.json'
 		targetExclude 'src/**/generated/**'
-		//gson().sortByKeys().indentWithSpaces(2) // TODO: turn on in the future
+
+		gson()/*.sortByKeys()*/.indentWithSpaces(2) // TODO: turn on `sortByKeys` in the future
+		replaceRegex \
+				"Separate different first stems",
+				/^(  "([^."]+)(?:\.[^"]+)?": "(?:[^"]|\\")*",)$\n^(?=  "(?!\2[."]))/,
+				'$1\n\n'
+		replaceRegex \
+				"Separate different second stems if the first stem is skyblocker",
+				/^(  "skyblocker(?:\.([^."]+)(?:\.[^"]+)?)?": "(?:[^"]|\\")*",)$\n^(?=  "skyblocker\.(?!\2[."]))/,
+				'$1\n\n'
+		replaceRegex \
+				"Separate different thrid stems if the first two stems are skyblocker.config",
+				/^(  "skyblocker\.config(?:\.([^."]+)(?:\.[^"]+)?)?": "(?:[^"]|\\")*",)$\n^(?=  "skyblocker\.config\.(?!\2[."]))/,
+				'$1\n\n'
+		final List<String> configCategories = ["chat", "crimsonIsle", "dungeons", "farming", "foraging", "general", "helpers", "hunting", "mining", "misc", "otherLocations", "slayer", "uiAndVisuals"]
+		replaceRegex \
+				"Separate different fouth stems if the first three stems are skyblocker.config.[configCategory]",
+				/^(  "skyblocker\.config\.(${configCategories.join('|')})(?:\.([^."]+)(?:\.[^"]+)?)?": "(?:[^"]|\\")*",)$\n^(?=  "skyblocker\.config\.\2\.(?!\3[."]))/,
+				'$1\n\n'
 	}
 
 	groovyGradle {
 		target 'src/**/*.gradle', '*.gradle', 'gradle/*.gradle'
-		greclipse()
+		greclipse().configProperties \
+				'groovy.formatter.multiline.indentation=2', // Default
+				'groovy.formatter.line.maxlength=999',
+				'groovy.formatter.longListLength=999',
+				'groovy.formatter.remove.unnecessary.semicolons=true'
 	}
 }
 
@@ -317,7 +339,7 @@ publishMods {
 	discord {
 		webhookUrl = System.getenv("DISCORD_WEBHOOK")
 		username = "Changelog"
-		content = changelog.map { "<@&1134565945482948638>\n## Skyblocker v${mod_version} for ${minecraft_version}\n" + it}
+		content = changelog.map { "<@&1134565945482948638>\n## Skyblocker v${mod_version} for ${minecraft_version}\n" + it }
 	}
 }
 
