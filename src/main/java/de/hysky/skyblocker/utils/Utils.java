@@ -159,6 +159,10 @@ public class Utils {
         return location == Location.CRIMSON_ISLE;
     }
 
+	public static boolean isInFarm() {
+		return location == Location.THE_FARMING_ISLAND;
+	}
+
     public static boolean isInGalatea() { return location == Location.GALATEA; }
 
 	public static boolean isInHub() { return location == Location.HUB; }
@@ -398,11 +402,15 @@ public class Utils {
 		STRING_SCOREBOARD.stream().filter(s -> s.contains("Piggy:") || s.contains("Purse:")).findFirst().ifPresent(purseString -> {
 			Matcher matcher = PURSE.matcher(purseString);
 			if (matcher.find()) {
-				double newPurse = Double.parseDouble(matcher.group("purse").replaceAll(",", ""));
-				double changeSinceLast = newPurse - Utils.purse;
-				if (changeSinceLast == 0) return;
-				SkyblockEvents.PURSE_CHANGE.invoker().onPurseChange(changeSinceLast, PurseChangeCause.getCause(changeSinceLast));
-				Utils.purse = newPurse;
+				try {
+					double newPurse = Double.parseDouble(matcher.group("purse").replaceAll(",", ""));
+					double changeSinceLast = newPurse - Utils.purse;
+					if (changeSinceLast == 0) return;
+					SkyblockEvents.PURSE_CHANGE.invoker().onPurseChange(changeSinceLast, PurseChangeCause.getCause(changeSinceLast));
+					Utils.purse = newPurse;
+				} catch (NumberFormatException e) {
+					LOGGER.error("[Skyblocker] Failed to parse purse string. Input: '{}'", purseString, e);
+				}
 			}
 		});
 	}

@@ -1,20 +1,5 @@
 package de.hysky.skyblocker;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-
-import org.jetbrains.annotations.VisibleForTesting;
-import org.slf4j.Logger;
-
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
@@ -25,6 +10,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.data.JsonData;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
@@ -37,13 +23,23 @@ import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+
+import java.net.URI;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class UpdateNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final String BASE_URL = "https://api.modrinth.com/v2/project/y6DuFGwJ/version?loaders=[%22fabric%22]&game_versions=";
 	private static final Version MOD_VERSION = SkyblockerMod.SKYBLOCKER_MOD.getMetadata().getVersion();
-	private static final String MC_VERSION = SharedConstants.getGameVersion().getId();
+	private static final String MC_VERSION = SharedConstants.getGameVersion().id();
 	private static final Path CONFIG_PATH = SkyblockerMod.CONFIG_DIR.resolve("update_notifications.json");
 	@VisibleForTesting
 	protected static final Comparator<Version> COMPARATOR = Version::compareTo;
@@ -51,37 +47,20 @@ public class UpdateNotifications {
 	protected static final Codec<SemanticVersion> SEM_VER_CODEC = Codec.STRING.comapFlatMap(UpdateNotifications::parseVersion, SemanticVersion::toString);
 	private static final SystemToast.Type TOAST_TYPE = new SystemToast.Type(10000L);
 
-	public static Config config = Config.DEFAULT;
+	public static final JsonData<Config> config = new JsonData<>(CONFIG_PATH, Config.CODEC, Config.DEFAULT);
 	private static boolean sentUpdateNotification;
+	private static CompletableFuture<Void> loaded;
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loadConfig());
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loaded = config.init());
 		SkyblockEvents.JOIN.register(() -> {
-			if (config.enabled() && !sentUpdateNotification) checkForNewVersion();
+			if (!loaded.isDone()) {
+				loaded.thenRun(() -> {
+					if (config.getData().enabled() && !sentUpdateNotification) checkForNewVersion();
+				});
+			} else if (config.getData().enabled() && !sentUpdateNotification) checkForNewVersion();
 		});
-	}
-
-	private static void loadConfig() {
-		CompletableFuture.supplyAsync(() -> {
-			try (BufferedReader reader = Files.newBufferedReader(CONFIG_PATH)) {
-				return Config.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow();
-			} catch (NoSuchFileException ignored) {
-			} catch (Exception e) {
-				LOGGER.error("[Skyblocker Update Notifications] Failed to load config!", e);
-			}
-
-			return Config.DEFAULT;
-		}).thenAccept(loadedConfig -> config = loadedConfig);
-	}
-
-	private static void saveConfig() {
-		try (BufferedWriter writer = Files.newBufferedWriter(CONFIG_PATH)) {
-			SkyblockerMod.GSON.toJson(Config.CODEC.encodeStart(JsonOps.INSTANCE, config).getOrThrow(), writer);
-		} catch (Exception e) {
-			LOGGER.error("[Skyblocker Update Notifications] Failed to save config :(", e);
-		}
 	}
 
 	private static void checkForNewVersion() {
@@ -95,7 +74,7 @@ public class UpdateNotifications {
 				sentUpdateNotification = true;
 
 				Optional<MrVersion> newestVersion = mrVersions.stream()
-						.filter(ver -> Arrays.stream(config.includedChannels()).anyMatch(channel -> channel == ver.channel()))
+						.filter(ver -> Arrays.stream(config.getData().includedChannels()).anyMatch(channel -> channel == ver.channel()))
 						.filter(mrv -> COMPARATOR.compare(mrv.version(), version) > 0)
 						.max(Comparator.comparing(MrVersion::version, COMPARATOR));
 

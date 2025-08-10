@@ -32,10 +32,10 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 
 	static {
 		// Normal enchants (A - Z)
-        ENCHANTMENT_ABBREVIATIONS.put("absorb", "AB");
+		ENCHANTMENT_ABBREVIATIONS.put("absorb", "AB");
 		ENCHANTMENT_ABBREVIATIONS.put("angler", "AN");
 		ENCHANTMENT_ABBREVIATIONS.put("aqua_affinity", "AA");
-		ENCHANTMENT_ABBREVIATIONS.put("arcane", "AR");
+		ENCHANTMENT_ABBREVIATIONS.put("arcane", "WS"); // Woodsplitter
 		ENCHANTMENT_ABBREVIATIONS.put("aiming", "DT"); // Dragon tracer
 
 		ENCHANTMENT_ABBREVIATIONS.put("bane_of_arthropods", "BA");
@@ -61,7 +61,7 @@ public class EnchantmentLevelAdder extends SimpleSlotTextAdder {
 
 		ENCHANTMENT_ABBREVIATIONS.put("depth_strider", "DS");
 		ENCHANTMENT_ABBREVIATIONS.put("divine_gift", "DG");
-		ENCHANTMENT_ABBREVIATIONS.put("dragon_hunter", "DH");
+		ENCHANTMENT_ABBREVIATIONS.put("dragon_hunter", "GV"); // Gravity
 
 		ENCHANTMENT_ABBREVIATIONS.put("efficiency", "EF");
 		ENCHANTMENT_ABBREVIATIONS.put("ender_slayer", "ES");

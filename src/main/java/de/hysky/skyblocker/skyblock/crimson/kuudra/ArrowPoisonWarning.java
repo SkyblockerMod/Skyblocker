@@ -7,8 +7,8 @@ import de.hysky.skyblocker.config.configs.CrimsonIsleConfig;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra.KuudraPhase;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
+import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BowItem;
@@ -44,9 +44,9 @@ public class ArrowPoisonWarning {
 				}
 
 				if (!hasToxicArrowPoison) {
-					RenderHelper.displayInTitleContainerAndPlaySound(NONE_TITLE, THREE_SECONDS);
+					TitleContainer.addTitleAndPlaySound(NONE_TITLE, THREE_SECONDS);
 				} else if (arrowPoisonAmount < CONFIG.get().arrowPoisonThreshold) {
-					RenderHelper.displayInTitleContainerAndPlaySound(LOW_TITLE, THREE_SECONDS);
+					TitleContainer.addTitleAndPlaySound(LOW_TITLE, THREE_SECONDS);
 				}
 			}
 		}

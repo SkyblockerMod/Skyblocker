@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.SeparatorComponent;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -39,6 +40,9 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 
 	private final Object2ObjectOpenHashMap<String, ChangeData> addedCount = new Object2ObjectOpenHashMap<>();
 	private final Object2ObjectOpenHashMap<String, ChangeData> removedCount = new Object2ObjectOpenHashMap<>();
+
+	private final Object2ObjectOpenHashMap<String, ChangeData> addedSackCount = new Object2ObjectOpenHashMap<>();
+	private final Object2ObjectOpenHashMap<String, ChangeData> removedSackCount = new Object2ObjectOpenHashMap<>();
 
 	public ItemPickupWidget() {
 		super(Text.literal("Items"), Formatting.AQUA.getColorValue(), "Item Pickup");
@@ -84,17 +88,17 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 			//positive
 			int existingCount = 0;
 			if (matcher.group(1).equals("+")) {
-				if (addedCount.containsKey(item.getNeuName())) {
-					existingCount = addedCount.get(item.getNeuName()).amount;
+				if (addedSackCount.containsKey(item.getNeuName())) {
+					existingCount = addedSackCount.get(item.getNeuName()).amount;
 				}
-				addedCount.put(item.getNeuName(), new ChangeData(item, existingCount + Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
+				addedSackCount.put(item.getNeuName(), new ChangeData(item, existingCount + Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
 			}
 			//negative
 			else if (matcher.group(1).equals("-")) {
-				if (removedCount.containsKey(item.getNeuName())) {
-					existingCount = removedCount.get(item.getNeuName()).amount;
+				if (removedSackCount.containsKey(item.getNeuName())) {
+					existingCount = removedSackCount.get(item.getNeuName()).amount;
 				}
-				removedCount.put(item.getNeuName(), new ChangeData(item, existingCount - Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
+				removedSackCount.put(item.getNeuName(), new ChangeData(item, existingCount - Formatters.parseNumber(matcher.group(2)).intValue(), System.currentTimeMillis()));
 			}
 		}
 
@@ -111,6 +115,30 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen) {
 			addSimpleIcoText(Ico.BONE, "Bone ", Formatting.GREEN, "+64");
 			return;
+		}
+		// If the notifications should not be split, merge the counts.
+		boolean split = SkyblockerConfigManager.get().uiAndVisuals.itemPickup.splitNotifications;
+		if (!split) {
+			for (String item : addedSackCount.keySet()) {
+				ChangeData sackEntry = addedSackCount.get(item);
+				if (addedCount.containsKey(item)) {
+					ChangeData generalEntry = addedCount.get(item);
+					addedCount.put(item, new ChangeData(generalEntry.item, generalEntry.amount + sackEntry.amount, System.currentTimeMillis()));
+				} else {
+					addedCount.put(item, new ChangeData(sackEntry.item, sackEntry.amount, System.currentTimeMillis()));
+				}
+			}
+			for (String item : removedSackCount.keySet()) {
+				ChangeData sackEntry = removedSackCount.get(item);
+				if (removedCount.containsKey(item)) {
+					ChangeData generalEntry = removedCount.get(item);
+					removedCount.put(item, new ChangeData(generalEntry.item, generalEntry.amount + sackEntry.amount, System.currentTimeMillis()));
+				} else {
+					removedCount.put(item, new ChangeData(sackEntry.item, sackEntry.amount, System.currentTimeMillis()));
+				}
+			}
+			addedSackCount.clear();
+			removedSackCount.clear();
 		}
 		//add each diff item to the widget
 		//add positive changes
@@ -132,6 +160,28 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 				continue;
 			}
 			addSimpleIcoText(entry.item, itemName, Formatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
+		}
+		if (split && !(this.addedSackCount.isEmpty() && this.removedSackCount.isEmpty())) {
+			// Remove the borders and some random 8 value I do not know where that comes from from the width of the widget to make it fit.
+			this.addComponent(new SeparatorComponent(Text.of("Sacks")));
+			for (String item : addedSackCount.keySet()) {
+				ChangeData entry = addedSackCount.get(item);
+				String itemName = checkNextItem(entry);
+				if (itemName == null) {
+					addedSackCount.remove(item);
+					continue;
+				}
+				addSimpleIcoText(entry.item, itemName, Formatting.GREEN, Formatters.DIFF_NUMBERS.format(entry.amount));
+			}
+			for (String item : removedSackCount.keySet()) {
+				ChangeData entry = removedSackCount.get(item);
+				String itemName = checkNextItem(entry);
+				if (itemName == null) {
+					removedSackCount.remove(item);
+					continue;
+				}
+				addSimpleIcoText(entry.item, itemName, Formatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
+			}
 		}
 	}
 
@@ -156,7 +206,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 			//render if enabled
 			if (SkyblockerConfigManager.get().uiAndVisuals.itemPickup.enabled) {
 				//render if there are items in history
-				return !addedCount.isEmpty() || !removedCount.isEmpty();
+				return !addedCount.isEmpty() || !removedCount.isEmpty() || !addedSackCount.isEmpty() || !removedSackCount.isEmpty();
 			}
 		}
 		return false;

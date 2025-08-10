@@ -152,7 +152,7 @@ public class ARGBTextInput extends ClickableWidget {
 				},
 				textX,
 				textY,
-				-1,
+				Colors.WHITE,
 				true
 		);
 	}
@@ -231,17 +231,43 @@ public class ARGBTextInput extends ClickableWidget {
 	@Override
 	public void onClick(double mouseX, double mouseY) {
 		super.onClick(mouseX, mouseY);
-		findClickedChar((int) mouseX);
+		index = findClickedChar((int) mouseX);
 	}
 
 	@Override
 	protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
 		super.onDrag(mouseX, mouseY, deltaX, deltaY);
-		findClickedChar((int) mouseX);
+		index = findClickedChar((int) mouseX);
 	}
 
-	private void findClickedChar(int mouseX) {
-		index = Math.clamp(textRenderer.trimToWidth(input, mouseX - getX() - (drawBackground ? 3 : 0)).length(), 0, length - 1);
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+		if (!isMouseOver(mouseX, mouseY)) return false;
+		int i = findClickedChar((int) mouseX) / 2;
+		int beginIndex = i * 2;
+		OptionalInt anInt;
+		try {
+			int parsedInt = Integer.parseUnsignedInt(input.substring(beginIndex, beginIndex + 2), 16);
+			anInt = OptionalInt.of(parsedInt);
+		} catch (NumberFormatException e) {
+			anInt = OptionalInt.empty();
+			LOGGER.error("[Skyblocker] Failed to parse integer", e);
+		}
+		if (anInt.isPresent()) {
+			int prev = anInt.getAsInt();
+			int newInt = prev + (int) ((int) Math.signum(verticalAmount) * Math.ceil(Math.abs(verticalAmount)));
+			newInt = Math.clamp(newInt, 0, 255);
+			if (newInt != prev) {
+				String format = String.format("%02X", newInt);
+				input = new StringBuilder(input).replace(beginIndex, beginIndex + 2, format).toString();
+				callOnChange();
+			}
+		}
+		return true;
+	}
+
+	private int findClickedChar(int mouseX) {
+		return Math.clamp(textRenderer.trimToWidth(input, mouseX - getX() - (drawBackground ? 3 : 0)).length(), 0, length - 1);
 	}
 
 

@@ -1,41 +1,50 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.PetCache;
-import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
-import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import de.hysky.skyblocker.skyblock.garden.VisitorWikiLookup;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
-import de.hysky.skyblocker.skyblock.item.*;
+import de.hysky.skyblocker.skyblock.item.ItemPrice;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
+import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
+import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
+import de.hysky.skyblocker.skyblock.museum.MuseumManager;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
+import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipData;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
@@ -55,6 +64,9 @@ import java.util.regex.Matcher;
 
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen {
+	@Unique
+	private static final Identifier GENERIC_CONTAINER_TEXTURE = Identifier.ofVanilla("textures/gui/container/generic_54.png");
+
 	/**
 	 * This is the slot id returned for when a click is outside the screen's bounds
 	 */
@@ -97,6 +109,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@Shadow
 	protected abstract List<Text> getTooltipFromItem(ItemStack stack);
 
+	@Shadow
+	protected int x;
+	@Shadow
+	protected int y;
+	@Shadow
+	protected int backgroundWidth;
 	@Unique
 	private List<QuickNavButton> quickNavButtons;
 
@@ -113,27 +131,46 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
+	@SuppressWarnings("unused")
+	@Inject(method = "init", at = @At("TAIL"))
+	private void skyblocker$initMuseumOverlay(CallbackInfo ci) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && getTitle().getString().contains("Museum")) {
+			int overlayWidth = MuseumManager.BACKGROUND_WIDTH; // width of the overlay
+			int spacing = MuseumManager.SPACING; // space between inventory and overlay
+
+			// Default: center inventory
+			int inventoryX = (this.width - this.backgroundWidth) / 2;
+
+			// If overlay would go off the right edge, shift inventory left
+			if (inventoryX + this.backgroundWidth + spacing + overlayWidth > this.width) {
+				inventoryX = this.width - (this.backgroundWidth + overlayWidth + spacing);
+				if (inventoryX < 0) inventoryX = 0;
+			}
+			this.x = inventoryX;
+
+			new MuseumManager(this, this.x, this.y, this.backgroundWidth);
+		}
+	}
+
+	@WrapOperation(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawBackground(Lnet/minecraft/client/gui/DrawContext;FII)V"))
+	private void skyblocker$DrawMuseumOverlayBackground(HandledScreen<?> instance, DrawContext context, float delta, int mouseX, int mouseY, Operation<Void> original) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && getTitle().getString().contains("Museum")) {
+			// Custom museum overlay background drawing
+			int rows = 6;
+			context.drawTexture(RenderPipelines.GUI_TEXTURED, GENERIC_CONTAINER_TEXTURE, this.x, this.y, 0.0F, 0.0F, this.backgroundWidth, rows * 18 + 17, 256, 256);
+			context.drawTexture(RenderPipelines.GUI_TEXTURED, GENERIC_CONTAINER_TEXTURE, this.x, this.y + rows * 18 + 17, 0.0F, 126.0F, this.backgroundWidth, 96, 256, 256);
+		} else {
+			// Call vanilla
+			original.call(instance, context, delta, mouseX, mouseY);
+		}
+	}
+
 	@Inject(at = @At("HEAD"), method = "keyPressed")
 	public void skyblocker$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
 		if (this.client != null && this.client.player != null && this.focusedSlot != null && keyCode != 256 && !this.client.options.inventoryKey.matchesKey(keyCode, scanCode) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 			//wiki lookup
-			if (config.general.wikiLookup.enableWikiLookup) {
-				var title = this.getTitle().getString();
-				if (WikiLookup.officialWikiLookup.matchesKey(keyCode, scanCode)) {
-					if (VisitorWikiLookup.canSearch(title, this.focusedSlot)) {
-						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getName().getString(), this.client.player, true);
-					} else {
-						WikiLookup.openWiki(this.focusedSlot, this.client.player, true);
-					}
-				} else if (WikiLookup.fandomWikiLookup.matchesKey(keyCode, scanCode)) {
-					if (VisitorWikiLookup.canSearch(title, this.focusedSlot)) {
-						WikiLookup.openWikiItemName(this.focusedSlot.getStack().getName().getString(), this.client.player, false);
-					} else {
-						WikiLookup.openWiki(this.focusedSlot, this.client.player, false);
-					}
-				}
-			}
+			WikiLookup.handleWikiLookup(this.focusedSlot.getStack(), client.player, VisitorWikiLookup.canSearch(title.getString(), this.focusedSlot), keyCode, scanCode);
 			//item protection
 			if (ItemProtection.itemProtection.matchesKey(keyCode, scanCode)) {
 				ItemProtection.handleKeyPressed(this.focusedSlot.getStack());
@@ -141,10 +178,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			//Item Price Lookup
 			if (config.helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(keyCode, scanCode)) {
 				ItemPrice.itemPriceLookup(client.player, this.focusedSlot);
-			}
-			//Refresh Item Prices
-			if (config.helpers.itemPrice.enableItemPriceRefresh && ItemPrice.ITEM_PRICE_REFRESH.matchesKey(keyCode, scanCode)) {
-				ItemPrice.refreshItemPrices(this.client.player);
 			}
 		}
 	}
@@ -192,60 +225,69 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Inject(method = "drawMouseoverTooltip", at = @At("HEAD"))
+	private void skyblocker$beforeTooltipDrawn(CallbackInfo ci, @Local(argsOnly = true) DrawContext context) {
+		ContainerSolverManager.onDraw(context, (HandledScreen<GenericContainerScreenHandler>) (Object) this, this.handler.slots);
+	}
+
 	@SuppressWarnings("DataFlowIssue")
 	// makes intellij be quiet about this.focusedSlot maybe being null. It's already null checked in mixined method.
-	@Inject(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/util/Identifier;)V"), cancellable = true)
-	public void skyblocker$drawMouseOverTooltip(DrawContext context, int x, int y, CallbackInfo ci, @Local(ordinal = 0) ItemStack stack) {
-		if (!Utils.isOnSkyblock()) return;
+	@WrapOperation(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/util/Identifier;)V"))
+	public void skyblocker$drawMouseOverTooltip(
+			DrawContext instance,
+			TextRenderer textRenderer,
+			List<Text> text,
+			Optional<TooltipData> data,
+			int x,
+			int y,
+			Identifier texture,
+			Operation<Void> original,
+			@Local(ordinal = 0) ItemStack stack
+	) {
+		if (!Utils.isOnSkyblock() || text.isEmpty()) {
+			original.call(instance, textRenderer, text, data, x, y, texture);
+			return;
+		}
+
+		var name = text.getFirst().getString();
 
 		// Hide Empty Tooltips
-		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && stack.getName().getString().equals(" ")) {
-			ci.cancel();
+		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && name.isBlank()) {
+			return;
 		}
 
 		// Backpack Preview
 		boolean shiftDown = SkyblockerConfigManager.get().uiAndVisuals.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
-		if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(context, this, focusedSlot.getIndex(), x, y)) {
-			ci.cancel();
+		if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(instance, this, focusedSlot.getIndex(), x, y)) {
+			return;
 		}
 
 		// Compactor Preview
 		if (SkyblockerConfigManager.get().uiAndVisuals.compactorDeletorPreview) {
 			Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemUtils.getItemId(stack));
-			if (matcher.matches() && CompactorDeletorPreview.drawPreview(context, stack, getTooltipFromItem(stack), matcher.group("type"), matcher.group("size"), x, y)) {
-				ci.cancel();
+			if (matcher.matches() && CompactorDeletorPreview.drawPreview(instance, stack, getTooltipFromItem(stack), matcher.group("type"), matcher.group("size"), x, y)) {
+				return;
 			}
 		}
+
+		original.call(instance, textRenderer, text, data, x, y, texture);
 	}
 
 	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "STORE"))
-	private ItemStack skyblocker$experimentSolvers$replaceTooltipDisplayStack(ItemStack stack) {
-		return skyblocker$experimentSolvers$getStack(focusedSlot, stack);
+	private ItemStack skyblocker$modifyTooltipDisplayStack(ItemStack stack) {
+		return skyblocker$modifyDisplayStack(focusedSlot, stack, ContainerSolverManager.getCurrentSolver());
 	}
 
 	@ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)
-	private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, @Local(argsOnly = true) Slot slot) {
-		return skyblocker$experimentSolvers$getStack(slot, stack);
+	private ItemStack skyblocker$modifyDisplayStack(ItemStack stack, @Local(argsOnly = true) Slot slot) {
+		return skyblocker$modifyDisplayStack(slot, stack, ContainerSolverManager.getCurrentSolver());
 	}
 
-	/**
-	 * Avoids getting currentSolver again when it's already in the scope for some usages of this method.
-	 *
-	 * @see #skyblocker$experimentSolvers$getStack(Slot, ItemStack, ContainerSolver)
-	 */
 	@Unique
-	private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack) {
-		return skyblocker$experimentSolvers$getStack(slot, stack, ContainerSolverManager.getCurrentSolver());
-	}
-
-	/**
-	 * Redirects getStack calls to account for different stacks in experiment solvers.
-	 */
-	@Unique
-	private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack, ContainerSolver currentSolver) {
-		if (currentSolver instanceof ExperimentSolver experimentSolver && (experimentSolver instanceof SuperpairsSolver || experimentSolver instanceof UltrasequencerSolver) && experimentSolver.getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
-			ItemStack itemStack = experimentSolver.getSlots().get(slot.getIndex());
-			return itemStack == null ? stack : itemStack;
+	private ItemStack skyblocker$modifyDisplayStack(Slot slot, ItemStack stack, ContainerSolver solver) {
+		if (solver instanceof StackDisplayModifier modifier && solver.isSolverSlot(slot, this)) {
+			return modifier.modifyDisplayStack(slot.getIndex(), stack);
 		}
 		return stack;
 	}
@@ -270,10 +312,18 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		if (slot == null) return;
 		String title = getTitle().getString();
 		ContainerSolver currentSolver = ContainerSolverManager.getCurrentSolver();
-		ItemStack stack = skyblocker$experimentSolvers$getStack(slot, slot.getStack(), currentSolver);
+		ItemStack stack = skyblocker$modifyDisplayStack(slot, slot.getStack(), currentSolver);
+
+		boolean isTitleEmptyOrFiller = FILLER_ITEMS.contains(stack.getName().getString());
+		if (isTitleEmptyOrFiller) {
+			var tooltip = stack.getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.BASIC).stream().map(Text::getString).toList();
+			String lore = String.join("\n", tooltip);
+			isTitleEmptyOrFiller = lore.isBlank() || FILLER_ITEMS.contains(tooltip.getFirst());
+		}
+
 
 		// Prevent clicks on filler items
-		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && FILLER_ITEMS.contains(stack.getName().getString()) &&
+		if (SkyblockerConfigManager.get().uiAndVisuals.hideEmptyTooltips && isTitleEmptyOrFiller &&
 				// Allow clicks in Ultrasequencer and Superpairs
 				(!UltrasequencerSolver.INSTANCE.test(title) || SkyblockerConfigManager.get().helpers.experiments.enableUltrasequencerSolver)) {
 			ci.cancel();
@@ -315,10 +365,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 				}
 			}
 
-			case GenericContainerScreenHandler genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> {
-				//Museum Item Cache donation tracking
-				MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
-			}
+			case GenericContainerScreenHandler genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> //Museum Item Cache donation tracking
+					MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
 
 			case null, default -> {}
 		}
@@ -335,13 +383,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "mouseClicked")
-	public void skyblocker$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		if (VisitorHelper.shouldRender()) {
-			VisitorHelper.handleMouseClick(mouseX, mouseY, button, this.textRenderer);
-		}
-	}
-
 	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
 	private void skyblocker$drawOnItem(DrawContext context, Slot slot, CallbackInfo ci) {
 		if (Utils.isOnSkyblock()) {
@@ -350,13 +391,12 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		// Item Protection
 		if (ItemProtection.isItemProtected(slot.getStack())) {
-			context.drawTexture(RenderLayer::getGuiTextured, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
+			context.drawTexture(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
 		}
 
-		// Search
-		// Darken the slots
+		// Search - darken non-matching slots
 		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {
-			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 100, 0x88_000000);
+			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0x88_000000);
 		}
 	}
 

@@ -4,11 +4,12 @@ import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
@@ -23,7 +24,7 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 
 		@Override
 		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of("- Skyblocker Widgets -"), x + entryWidth / 2, y + (entryHeight - 9) / 2, 0xFFFFFF);
+			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of("- Skyblocker Widgets -"), x + entryWidth / 2, y + (entryHeight - 9) / 2, Colors.WHITE);
 		}
 
 		@Override
@@ -88,11 +89,11 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 			rightDownArrowHovered = rightXGood && isOnDown;
 			leftUpArrowHovered = leftXGood && isOnUp;
 			leftDownArrowHovered = leftXGood && isOnDown;
-			context.drawGuiTexture(RenderLayer::getGuiTextured, rightUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, getRowRight() - 16, y, 32, 32);
-			context.drawGuiTexture(RenderLayer::getGuiTextured, rightDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, getRowRight() - 16, y, 32, 32);
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, rightUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, getRowRight() - 16, y, 32, 32);
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, rightDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, getRowRight() - 16, y, 32, 32);
 
-			context.drawGuiTexture(RenderLayer::getGuiTextured, leftUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, x - 33, y, 32, 32);
-			context.drawGuiTexture(RenderLayer::getGuiTextured, leftDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, x - 33, y, 32, 32);
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, leftUpArrowHovered ? MOVE_UP_HIGHLIGHTED_TEXTURE : MOVE_UP_TEXTURE, x - 33, y, 32, 32);
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, leftDownArrowHovered ? MOVE_DOWN_HIGHLIGHTED_TEXTURE : MOVE_DOWN_TEXTURE, x - 33, y, 32, 32);
 		}
 		if (Objects.equals(getHoveredEntry(), getEntry(index))) {
 			this.x = x;

@@ -38,8 +38,11 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	@Override
 	protected void init() {
 		super.init();
-		// Load the config positions here since #getConfigPos is used for resetting. This loads the config pos after the supertype constructor calls HudConfigScreen#resetPos.
-		widgets.getFirst().setPosition(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y);
+		// Only load config positions if they are not default
+		if (SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x >= 0 && SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y >= 0) {
+			// Load the config positions here since #getConfigPos is used for resetting. This loads the config pos after HudConfigScreen#init calls HudConfigScreen#resetPos.
+			widgets.getFirst().setPosition(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x, SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y);
+		}
 		// Set the dimensions here or else Screen#textRenderer is null.
 		updateWidgetDimensions();
 	}
@@ -120,8 +123,10 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected void savePos(SkyblockerConfig configManager, List<AbstractWidget> widgets) {
-		SkyblockerConfigManager.get().uiAndVisuals.titleContainer.x = widgets.getFirst().getX();
-		SkyblockerConfigManager.get().uiAndVisuals.titleContainer.y = widgets.getFirst().getY();
+	protected void savePos(SkyblockerConfig config, List<AbstractWidget> widgets) {
+		// Save to -1 if the widget is at the default position
+		List<IntIntMutablePair> defaultPos = getConfigPos(config);
+		config.uiAndVisuals.titleContainer.x = widgets.getFirst().getX() != defaultPos.getFirst().leftInt() ? widgets.getFirst().getX() : -1;
+		config.uiAndVisuals.titleContainer.y = widgets.getFirst().getY() != defaultPos.getFirst().rightInt() ? widgets.getFirst().getY() : -1;
 	}
 }

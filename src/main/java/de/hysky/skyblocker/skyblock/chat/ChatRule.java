@@ -4,18 +4,19 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.utils.CollectionUtils;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Data class to contain all the settings for a chat rule
@@ -46,9 +47,11 @@ public class ChatRule {
 			Codec.STRING.optionalFieldOf("replaceMessage").forGetter(ChatRule::getReplaceMessageOpt),
 			SoundEvent.CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOpt)
 	).apply(instance, ChatRule::new));
+
 	public static final Codec<List<ChatRule>> LIST_CODEC = CODEC.listOf();
 
 	private String name;
+	private Pattern pattern; // Only compile Regex patterns once
 
 	// Inputs
 	private boolean enabled;
@@ -134,6 +137,7 @@ public class ChatRule {
 
 	protected void setRegex(boolean regex) {
 		isRegex = regex;
+		this.pattern = null;
 	}
 
 	protected boolean getIgnoreCase() {
@@ -142,6 +146,7 @@ public class ChatRule {
 
 	protected void setIgnoreCase(boolean ignoreCase) {
 		isIgnoreCase = ignoreCase;
+		this.pattern = null;
 	}
 
 	protected String getFilter() {
@@ -150,6 +155,7 @@ public class ChatRule {
 
 	protected void setFilter(String filter) {
 		this.filter = filter;
+		this.pattern = null;
 	}
 
 	protected boolean getHideMessage() {
@@ -208,6 +214,19 @@ public class ChatRule {
 		this.validLocations = validLocations;
 	}
 
+	private void compilePattern(String filterText) {
+		if (pattern != null) return;
+
+		try {
+			this.pattern = Pattern.compile(filterText);
+		} catch (PatternSyntaxException ex) {
+			this.enabled = false;
+			MinecraftClient client = MinecraftClient.getInstance();
+			if (client.player == null) return;
+			client.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.config.chat.chatRules.invalidRegex", this.name)), false);
+		}
+	}
+
 	/**
 	 * checks every input option and if the games state and the inputted str matches them returns true.
 	 *
@@ -233,10 +252,13 @@ public class ChatRule {
 		//filter
 		if (testFilter.isBlank()) return false;
 		if (isRegex) {
+			compilePattern(testFilter);
+			if (pattern == null) return false;
+
 			if (isPartialMatch) {
-				if (!Pattern.compile(testFilter).matcher(testString).find()) return false;
+				if (!pattern.matcher(testString).find()) return false;
 			} else {
-				if (!testString.matches(testFilter)) return false;
+				if (!pattern.matcher(testString).matches()) return false;
 			}
 		} else {
 			if (isPartialMatch) {
@@ -271,5 +293,17 @@ public class ChatRule {
 		return Arrays.stream(string.split(", ?"))
 					 .map(Location::fromFriendlyName)
 					 .collect(CollectionUtils.enumSetCollector(Location.class));
+	}
+
+	// Allow value equality checks for ChatRule objects
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof ChatRule chatRule)) return false;
+		return Objects.equals(getName(), chatRule.getName()) && getEnabled() == chatRule.getEnabled() && getPartialMatch() == chatRule.getPartialMatch() && getRegex() == chatRule.getRegex() && getIgnoreCase() == chatRule.getIgnoreCase() && Objects.equals(getFilter(), chatRule.getFilter()) && Objects.equals(getValidLocations(), chatRule.getValidLocations()) && getHideMessage() == chatRule.getHideMessage() && getShowActionBar() == chatRule.getShowActionBar() && getShowAnnouncement() == chatRule.getShowAnnouncement() && Objects.equals(getReplaceMessage(), chatRule.getReplaceMessage()) && Objects.equals(getCustomSound(), chatRule.getCustomSound());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getName(), getEnabled(), getPartialMatch(), getRegex(), getIgnoreCase(), getFilter(), getValidLocations(), getHideMessage(), getShowActionBar(), getShowAnnouncement(), getReplaceMessage(), getCustomSound());
 	}
 }

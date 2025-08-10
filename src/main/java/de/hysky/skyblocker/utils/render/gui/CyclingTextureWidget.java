@@ -1,13 +1,13 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import de.hysky.skyblocker.utils.EnumUtils;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -60,9 +60,9 @@ public class CyclingTextureWidget<T extends Enum<T> & Supplier<Identifier>> exte
 	@Override
 	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
 		var button = BUTTON.get(this.active, this.isFocused());
-		context.drawGuiTexture(RenderLayer::getGuiTextured, button, this.getX(),
+		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, button, this.getX(),
 				this.getY(), width, height);
-		context.drawTexture(RenderLayer::getGuiTextured, getCurrent().get(),
+		context.drawTexture(RenderPipelines.GUI_TEXTURED, getCurrent().get(),
 				this.getX(), this.getY(), 0, 0, width, height, width, height);
 	}
 

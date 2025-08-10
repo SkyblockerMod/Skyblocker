@@ -154,6 +154,13 @@ public class HelperCategory {
 										newValue -> config.helpers.fishing.hideOtherPlayersRods = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.fishing.enableFishingHud"))
+								.binding(defaults.helpers.fishing.enableFishingHud,
+										() -> config.helpers.fishing.enableFishingHud,
+										newValue -> config.helpers.fishing.enableFishingHud = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.fishing.hud.screen"))
 								.prompt(Text.translatable("text.skyblocker.open"))
