@@ -55,7 +55,8 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		//Some random glass pane was clicked or something
-		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return false;
+		//Block clicks for this because these slots are replaced with air items
+		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return shouldBlockIncorrectClicks();
 
 		ItemState state = trackedItemStates.get(slot);
 		String prefix = groups[0];
