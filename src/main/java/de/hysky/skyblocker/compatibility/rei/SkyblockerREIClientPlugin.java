@@ -86,7 +86,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 			List<EntryStack<ItemStack>> allItems = Stream.concat(parentItem.stream(), ItemRepository.getItemsStream().filter(itemStack -> childrenList.contains(itemStack.getNeuName())))
 					.map(EntryStacks::of)
 					.toList();
-			registry.group(Identifier.of(SkyblockerMod.NAMESPACE, "rei_category/" + parentItem.get().getNeuName().toLowerCase().replace(";", ".")), parentItem.get().getName(), allItems);
+			registry.group(Identifier.of(SkyblockerMod.NAMESPACE, "rei_category/" + parentId.toLowerCase().replace(";", ".")), parentItem.get().getName(), allItems);
 		});
 	}
 
