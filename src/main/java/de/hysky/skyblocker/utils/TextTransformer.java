@@ -25,7 +25,7 @@ public class TextTransformer {
 	 * @return A {@link MutableText} object matching the exact formatting of the input
 	 */
 	public static MutableText fromLegacy(@NotNull String legacy) {
-		return fromLegacy(legacy, '§');
+		return fromLegacy(legacy, '§', true);
 	}
 
 	/**
@@ -35,17 +35,19 @@ public class TextTransformer {
 	 *
 	 * @param legacy The string with legacy formatting to be transformed
 	 * @param legacyPrefix The character that prefixes the legacy formatting codes (e.g., '§' or '&')
+	 * @param override Whether to override the parent style by defaulting to false instead of null for bold, italic, underline, strikethrough, and obfuscated properties.
+	 *                 This is required to be true for item name and lore texts, or else the parent style will make the name and lore texts italic.
 	 * @return A {@link MutableText} object matching the exact formatting of the input
 	 */
-	public static MutableText fromLegacy(@NotNull String legacy, char legacyPrefix) {
+	public static MutableText fromLegacy(@NotNull String legacy, char legacyPrefix, boolean override) {
 		MutableText newText = Text.empty();
 		StringBuilder builder = new StringBuilder();
 		Formatting formatting = null;
-		Boolean bold = null;
-		Boolean italic = null;
-		Boolean underline = null;
-		Boolean strikethrough = null;
-		Boolean obfuscated = null;
+		Boolean bold = override ? false : null;
+		Boolean italic = override ? false : null;
+		Boolean underline = override ? false : null;
+		Boolean strikethrough = override ? false : null;
+		Boolean obfuscated = override ? false : null;
 
 		for (int i = 0; i < legacy.length(); i++) {
 			//If we've encountered a new formatting code then append the text from the previous "sequence" and reset state
@@ -63,11 +65,11 @@ public class TextTransformer {
 				//due to some weird formatting from hypixel such as the soulbound text
 				builder.delete(0, builder.length());
 				formatting = null;
-				bold = null;
-				italic = null;
-				underline = null;
-				strikethrough = null;
-				obfuscated = null;
+				bold = override ? false : null;
+				italic = override ? false : null;
+				underline = override ? false : null;
+				strikethrough = override ? false : null;
+				obfuscated = override ? false : null;
 			}
 
 			if (i != 0 && legacy.charAt(i - 1) == legacyPrefix) {
@@ -87,11 +89,11 @@ public class TextTransformer {
 			}
 
 			//This character isn't the start of a formatting sequence or this character isn't part of a formatting sequence
-			if (legacy.charAt(i) != legacyPrefix && (i == 0 || (i != 0 && legacy.charAt(i - 1) != legacyPrefix))) {
+			if (legacy.charAt(i) != legacyPrefix && (i == 0 || legacy.charAt(i - 1) != legacyPrefix)) {
 				builder.append(legacy.charAt(i));
 			}
 
-			// We've read the last character so append the last text with all of the formatting
+			// We've read the last character so append the last text with all the formatting
 			if (i == legacy.length() - 1) {
 				newText.append(Text.literal(builder.toString()).setStyle(Style.EMPTY
 						.withColor(formatting)

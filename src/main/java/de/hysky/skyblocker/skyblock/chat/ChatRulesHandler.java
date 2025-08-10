@@ -115,8 +115,8 @@ public class ChatRulesHandler {
 	protected static MutableText formatText(@NotNull String codedString) {
 		// These are done in order of precedence, so § is checked first, then &.
 		// This is to ensure that there are no accidental formatting issues due to an actual use of '&' with a valid color code.
-		if (codedString.contains("§")) return TextTransformer.fromLegacy(codedString);
-		if (codedString.contains("&")) return TextTransformer.fromLegacy(codedString, '&');
+		if (codedString.contains("§")) return TextTransformer.fromLegacy(codedString, '§', false);
+		if (codedString.contains("&")) return TextTransformer.fromLegacy(codedString, '&', false);
 		return Text.literal(codedString);
 	}
 
