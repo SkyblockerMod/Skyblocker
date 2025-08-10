@@ -78,7 +78,7 @@ public class GeneralConfig {
     public static class ItemList {
         public boolean enableItemList = true;
 
-		public boolean enableCollapsibleEntries = false;
+		public boolean enableCollapsibleEntries = true;
     }
 
     public static class ItemTooltip {

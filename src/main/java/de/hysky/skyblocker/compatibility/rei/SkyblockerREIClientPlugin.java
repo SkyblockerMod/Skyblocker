@@ -34,9 +34,9 @@ import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * REI integration
@@ -44,64 +44,63 @@ import java.util.Optional;
 public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
-    public void registerCategories(CategoryRegistry categoryRegistry) {
-        if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
-        categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.IDENTIFIER), EntryStacks.of(Items.CRAFTING_TABLE));
-        categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.IDENTIFIER), EntryStacks.of(Items.ANVIL));
-        categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
-        categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_forge"), ItemUtils.getSkyblockerForgeStack(), 84));
+	public void registerCategories(CategoryRegistry categoryRegistry) {
+		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
+		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.IDENTIFIER), EntryStacks.of(Items.CRAFTING_TABLE));
+		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.IDENTIFIER), EntryStacks.of(Items.ANVIL));
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_forge"), ItemUtils.getSkyblockerForgeStack(), 84));
 
 		categoryRegistry.add(new SkyblockInfoCategory());
-    }
+	}
 
-    @Override
-    public void registerDisplays(DisplayRegistry displayRegistry) {
-        if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
+	@Override
+	public void registerDisplays(DisplayRegistry displayRegistry) {
+		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
 		if (displayRegistry.getGlobalDisplayGenerators().stream().noneMatch(generator -> generator instanceof SkyblockRecipeDisplayGenerator))
 			displayRegistry.registerGlobalDisplayGenerator(new SkyblockRecipeDisplayGenerator());
 		if (displayRegistry.getGlobalDisplayGenerators().stream().noneMatch(generator -> generator instanceof SkyblockInfoDisplayGenerator))
 			displayRegistry.registerGlobalDisplayGenerator(new SkyblockInfoDisplayGenerator());
-    }
+	}
 
-    @Override
-    public void registerEntries(EntryRegistry entryRegistry) {
-        if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
-        entryRegistry.removeEntryIf(entryStack -> true);
-        entryRegistry.addEntries(ItemRepository.getItemsStream().map(EntryStacks::of).toList());
-    }
+	@Override
+	public void registerEntries(EntryRegistry entryRegistry) {
+		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
+		entryRegistry.removeEntryIf(entryStack -> true);
+		entryRegistry.addEntries(ItemRepository.getItemsStream().map(EntryStacks::of).toList());
+	}
 
-    @SuppressWarnings("UnstableApiUsage")
-    @Override
-    public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
+	@SuppressWarnings("UnstableApiUsage")
+	@Override
+	public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
 		GeneralConfig.ItemList config = SkyblockerConfigManager.get().general.itemList;
 		if (!config.enableItemList || !config.enableCollapsibleEntries) return;
-        if (!ItemRepository.filesImported() || NEURepoManager.isLoading()) return;
+		if (!ItemRepository.filesImported() || NEURepoManager.isLoading()) return;
 
-        NEURepoManager.getConstants().getParents().getParents().forEach((parentId, childrenList) -> {
-            Optional<ItemStack> parentItem = ItemRepository.getItemsStream().filter(itemStack -> itemStack.getNeuName().equals(parentId)).findFirst();
-            if (parentItem.isEmpty()) return;
+		NEURepoManager.getConstants().getParents().getParents().forEach((parentId, childrenList) -> {
+			Optional<ItemStack> parentItem = ItemRepository.getItemsStream().filter(itemStack -> itemStack.getNeuName().equals(parentId)).findFirst();
+			if (parentItem.isEmpty()) return;
 
-            List<ItemStack> childItems = ItemRepository.getItemsStream().filter(itemStack -> childrenList.contains(itemStack.getNeuName())).toList();
-            ArrayList<EntryStack<ItemStack>> allItems = new ArrayList<>(childItems.stream().map(EntryStacks::of).toList());
-            allItems.addFirst(EntryStacks.of(parentItem.get()));
+			List<EntryStack<ItemStack>> allItems = Stream.concat(parentItem.stream(), ItemRepository.getItemsStream().filter(itemStack -> childrenList.contains(itemStack.getNeuName())))
+					.map(EntryStacks::of)
+					.toList();
+			registry.group(Identifier.of(SkyblockerMod.NAMESPACE, "rei_category/" + parentItem.get().getNeuName().toLowerCase().replace(";", ".")), parentItem.get().getName(), allItems);
+		});
+	}
 
-            registry.group(Identifier.of(SkyblockerMod.NAMESPACE, "rei_category/" + parentItem.get().getNeuName().toLowerCase().replace(";", ".")), parentItem.get().getName(), allItems);
-        });
-    }
+	@Override
+	public void registerExclusionZones(ExclusionZones zones) {
+		zones.register(InventoryScreen.class, screen -> {
+			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return List.of();
+			HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
+			return List.of(new Rectangle(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
+		});
 
-    @Override
-    public void registerExclusionZones(ExclusionZones zones) {
-        zones.register(InventoryScreen.class, screen -> {
-            if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return List.of();
-            HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
-            return List.of(new Rectangle(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
-        });
-
-        zones.register(Screen.class, screen -> {
-            if (!VisitorHelper.shouldRender()) return List.of();
-            return VisitorHelper.getExclusionZones();
-        });
-    }
+		zones.register(Screen.class, screen -> {
+			if (!VisitorHelper.shouldRender()) return List.of();
+			return VisitorHelper.getExclusionZones();
+		});
+	}
 
 	@Override
 	public void registerTransferHandlers(TransferHandlerRegistry registry) {
