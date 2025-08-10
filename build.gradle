@@ -273,21 +273,40 @@ spotless {
 		targetExclude 'src/**/generated/**'
 
 		gson()/*.sortByKeys()*/.indentWithSpaces(2) // TODO: turn on `sortByKeys` in the future
+		// Note: a stem is a part of a key between dots, e.g. "skyblocker.config.chat" has three stems: "skyblocker", "config", and "chat".
 		replaceRegex \
 				"Separate different first stems",
+				// Explanation of the regex:
+				// `^(  "`: matches the start of a line, begins capture group 1, and matches two spaces and a double quote
+				// `([^."]+)`: captures the first stem (everything before the first dot) in group 2
+				// `(?:\.[^"]+)?`: optionally matches a second stem (everything after the first stem before the next double quote)
+				// `": "`: matches the end of the key and the start of the value
+				// `(?:[^"]|\\")*`: matches the value, which can be anything except a double quote, special processing here for escaped double quotes
+				// `",)$`: matches the end of the line, capturing the whole line in group 1
+				// `\n`: matches a newline character
+				// `^(?=  "(?!\2[."]))`: positive lookahead to ensure the next line starts with two spaces and a key that does not start with the same first stem (group 2) followed by a dot or a double quote
+				// The last `[."]` is to ensure that the `\2` in the negative lookahead is being matched against an entire stem, not just the starting part of a stem.
 				/^(  "([^."]+)(?:\.[^"]+)?": "(?:[^"]|\\")*",)$\n^(?=  "(?!\2[."]))/,
 				'$1\n\n'
 		replaceRegex \
 				"Separate different second stems if the first stem is skyblocker",
+				// The main difference is that the second and remaining stems are optional, allowing matching lines with only one stem (in this case "skyblocker"), and separating it from other keys that start with "skyblocker.[whatever]".
+				// This treats keys with only one stem as if they have an empty second stem, which is considered different from any other second stem, therefore inserting a newline after them.
 				/^(  "skyblocker(?:\.([^."]+)(?:\.[^"]+)?)?": "(?:[^"]|\\")*",)$\n^(?=  "skyblocker\.(?!\2[."]))/,
 				'$1\n\n'
 		replaceRegex \
 				"Separate different thrid stems if the first two stems are skyblocker.config",
+				// The third and remaining stems are optional, allowing matching lines with only two stems (in this case "skyblocker.config"), and separating it from other keys that start with "skyblocker.config.[whatever]".
 				/^(  "skyblocker\.config(?:\.([^."]+)(?:\.[^"]+)?)?": "(?:[^"]|\\")*",)$\n^(?=  "skyblocker\.config\.(?!\2[."]))/,
 				'$1\n\n'
 		final List<String> configCategories = ["chat", "crimsonIsle", "dungeons", "farming", "foraging", "general", "helpers", "hunting", "mining", "misc", "otherLocations", "slayer", "uiAndVisuals"]
 		replaceRegex \
 				"Separate different fouth stems if the first three stems are skyblocker.config.[configCategory]",
+				// The third stem is matched against the above list of config categories, so this regex only applies to "skyblocker.config.[configCategory]".
+				// The fourth and remaining stems are optional, allowing matching lines with only three stems (such as "skyblocker.config.[configCategory]"), and separating them from other keys that start with "skyblocker.config.[configCategory].[whatever]".
+				// This treats keys with only three stems as if they have an empty fourth stem, which is considered different from any other fourth stem, therefore inserting a newline after them.
+				// Specifically, the `(?!\3[."])` part ensures that the next line does not start with the same fourth stem (group 3) followed by a dot or a double quote.
+				// If the previous line does not have a fourth stem, group 3 will be empty, and `(?!\3[."])` will attempt to match a dot or a double quote, effectively trying to apply a negative look ahead against an empty fourth stem, which will always succeed against "skyblocker.config.[configCategory].[whatever]".
 				/^(  "skyblocker\.config\.(${configCategories.join('|')})(?:\.([^."]+)(?:\.[^"]+)?)?": "(?:[^"]|\\")*",)$\n^(?=  "skyblocker\.config\.\2\.(?!\3[."]))/,
 				'$1\n\n'
 	}
