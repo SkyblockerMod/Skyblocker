@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
-import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
@@ -39,7 +38,6 @@ public class MuseumTooltip extends SimpleTooltipAdder {
 				lines.add(Text.literal(String.format(format, "Museum: (" + itemCategory + ")"))
 				              .formatted(Formatting.LIGHT_PURPLE));
 			} else {
-				NbtCompound customData = ItemUtils.getCustomData(stack);
 				boolean isInMuseum = MuseumItemCache.hasItemInMuseum(internalID);
 
 				Formatting donatedIndicatorFormatting = isInMuseum ? Formatting.GREEN : Formatting.RED;
