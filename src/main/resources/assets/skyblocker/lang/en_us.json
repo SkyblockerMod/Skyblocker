@@ -1177,7 +1177,7 @@
   "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
   "skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip": "Smooths out teleporting with right click teleport abilities.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.predictive": "Predictive Algorithm",
-  "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "Predict where the teleport will end. This will decrease mean there is no added lag however it is sometimes wrong and can glitch out",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "Predict where the teleport will end. This will mean there can be no added lag however it is sometimes wrong and can glitch out",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission": "Enable Ether Transmission",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip": "For: Etherwarp Conduit and Ether Merged.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission": "Enable Instant Transmission",
