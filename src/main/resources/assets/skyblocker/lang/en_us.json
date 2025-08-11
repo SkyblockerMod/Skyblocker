@@ -249,6 +249,10 @@
   "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds.@Tooltip": "Adds keybinds for leaping to players in the Spirit Leap Overlay. Press 1 for the first player, 2 for the second player, 3 for the third player, and 4 for the fourth player.",
   "skyblocker.config.dungeons.spiritLeapOverlay.showMap": "Show Dungeon Map in Spirit Leap Overlay",
   "skyblocker.config.dungeons.spiritLeapOverlay.scale": "Spirit Leap Overlay Scale",
+  "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage": "Enable Leap Message",
+  "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip": "Sends a party message in the chat upon leaping.\n§cRequires Spirit Leap Overlay to be enabled.",
+  "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage": "Leap Message",
+  "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip": "Text for the chat message upon leaping, the string \"[name]\" will be replaced with the name of the player you leap to.",
 
   "skyblocker.config.dungeons.starredMobBoundingBoxes": "Starred Mob Bounding Boxes",
   "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
