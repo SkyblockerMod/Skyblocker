@@ -40,7 +40,7 @@ public class MuseumTooltip extends SimpleTooltipAdder {
 				              .formatted(Formatting.LIGHT_PURPLE));
 			} else {
 				NbtCompound customData = ItemUtils.getCustomData(stack);
-				boolean isInMuseum = (customData.contains("donated_museum") && customData.getBoolean("donated_museum", false)) || MuseumItemCache.hasItemInMuseum(internalID);
+				boolean isInMuseum = MuseumItemCache.hasItemInMuseum(internalID);
 
 				Formatting donatedIndicatorFormatting = isInMuseum ? Formatting.GREEN : Formatting.RED;
 
