@@ -42,7 +42,7 @@ public class ConfirmationPromptHelper {
 	private static long commandFoundAt;
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.GAME.register(ConfirmationPromptHelper::onMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(ConfirmationPromptHelper::onMessage);
 		ScreenEvents.AFTER_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
 			//Don't check for the command being present in case the user opens the chat before the prompt is sent
 			if (Utils.isOnSkyblock() && screen instanceof ChatScreen && SkyblockerConfigManager.get().chat.confirmationPromptHelper) {
@@ -83,7 +83,7 @@ public class ConfirmationPromptHelper {
 		return false;
 	}
 
-	private static void onMessage(Text message, boolean overlay) {
+	private static boolean onMessage(Text message, boolean overlay) {
 		if (Utils.isOnSkyblock() && !overlay && SkyblockerConfigManager.get().chat.confirmationPromptHelper && containsConfirmationPhrase(message)) {
 			Optional<String> confirmationCommand = message.visit((style, asString) -> {
 				ClickEvent event = style.getClickEvent();
@@ -105,5 +105,7 @@ public class ConfirmationPromptHelper {
 				MinecraftClient.getInstance().player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.chat.confirmationPromptNotification")), false);
 			}
 		}
+
+		return true;
 	}
 }

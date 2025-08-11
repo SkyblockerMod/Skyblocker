@@ -8,7 +8,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.profile.ProfiledData;
+import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -84,8 +84,8 @@ public class TheEnd {
         // Reset when changing island
         SkyblockEvents.LOCATION_CHANGE.register(location -> resetLocation());
 
-        ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-            if (!Utils.isInTheEnd() || overlay) return;
+        ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
+            if (!Utils.isInTheEnd() || overlay) return true;
             String lowerCase = message.getString().toLowerCase();
             if (lowerCase.contains("tremor")) {
                 if (stage == 0) checkAllProtectorLocations();
@@ -93,8 +93,10 @@ public class TheEnd {
             }
             else if (lowerCase.contains("rises from below")) stage = 5;
             else if (lowerCase.contains("protector down") || lowerCase.contains("has risen")) resetLocation();
-            else return;
+            else return true;
             EndHudWidget.getInstance().update();
+
+            return true;
         });
 
         WorldRenderEvents.AFTER_TRANSLUCENT.register(TheEnd::renderWaypoint);

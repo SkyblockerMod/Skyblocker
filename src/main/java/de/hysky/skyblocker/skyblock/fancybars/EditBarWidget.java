@@ -12,7 +12,6 @@ import net.minecraft.client.gui.tooltip.TooltipBackgroundRenderer;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -21,6 +20,8 @@ import net.minecraft.util.Formatting;
 import java.awt.*;
 import java.util.List;
 import java.util.function.Consumer;
+
+import org.joml.Matrix3x2fStack;
 
 public class EditBarWidget extends ContainerWidget {
 
@@ -105,13 +106,13 @@ public class EditBarWidget extends ContainerWidget {
 			int j = mouseY - insideMouseY;
 			if (i * i + j * j > 30 * 30) visible = false;
 		}
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.translate(getX(), getY(), 200.f);
-		TooltipBackgroundRenderer.render(context, 0, 0, getWidth(), getHeight(), 0, null);
+		Matrix3x2fStack matrices = context.getMatrices();
+		matrices.pushMatrix();
+		matrices.translate(getX(), getY());
+		TooltipBackgroundRenderer.render(context, 0, 0, getWidth(), getHeight(), null);
 		nameWidget.render(context, mouseX, mouseY, delta);
 		for (ClickableWidget option : options) option.render(context, mouseX - getX(), mouseY - getY(), delta);
-		matrices.pop();
+		matrices.popMatrix();
 	}
 
 	@Override
@@ -151,10 +152,11 @@ public class EditBarWidget extends ContainerWidget {
 			textColor.setCurrent(statusBar.getTextColor().getRGB());
 		}
 		textColor.setOnChange(statusBar::setTextColor);
-		hideOption.active = statusBar.anchor != null;
+		hideOption.active = statusBar.enabled;
 		hideOption.setRunnable(() -> {
 			if (statusBar.anchor != null)
 				FancyStatusBars.barPositioner.removeBar(statusBar.anchor, statusBar.gridY, statusBar);
+			statusBar.enabled = false;
 			FancyStatusBars.updatePositions(true);
 		});
 
@@ -189,7 +191,7 @@ public class EditBarWidget extends ContainerWidget {
 				context.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
 			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1: Colors.GRAY, true);
+			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? Colors.WHITE : Colors.GRAY, true);
 		}
 
 		@Override
@@ -221,9 +223,9 @@ public class EditBarWidget extends ContainerWidget {
 				context.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
 			}
 			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, -1, true);
+			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, Colors.WHITE, true);
 			String string = current.toString();
-			context.drawText(textRenderer, string, getRight() - textRenderer.getWidth(string) - 1, getY() + 1, -1, true);
+			context.drawText(textRenderer, string, getRight() - textRenderer.getWidth(string) - 1, getY() + 1, Colors.WHITE, true);
 		}
 
 		public void setCurrent(T current) {
@@ -272,7 +274,7 @@ public class EditBarWidget extends ContainerWidget {
 			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : Colors.GRAY, true);
 			context.drawBorder(getRight() - 10, getY() + 1, 9, 9, active ? -1 : Colors.GRAY);
-			if (current && active) context.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, -1);
+			if (current && active) context.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, Colors.WHITE);
 		}
 
 		@Override

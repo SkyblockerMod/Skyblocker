@@ -14,10 +14,12 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
 import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
+import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
@@ -320,6 +322,14 @@ public final class ItemUtils {
         return DoubleBooleanPair.of(0, false);
     }
 
+	public static double getCraftCost(String skyblockApiId) {
+		NEUItem neuItem = NEURepoManager.getItemByNeuId(skyblockApiId);
+		if (neuItem != null && !neuItem.getRecipes().isEmpty()) {
+			return CraftPriceTooltip.getItemCost(neuItem.getRecipes().getFirst(), 0);
+		}
+		return 0;
+	}
+
     /**
      * This method converts the "timestamp" variable into the same date format as Hypixel represents it in the museum.
      * Currently, there are two types of string timestamps the legacy which is built like this
@@ -475,6 +485,10 @@ public final class ItemUtils {
         }
         return stringBuilder.toString();
     }
+
+	public static boolean isSoulbound(ItemStack stack) {
+		return getLore(stack).stream().anyMatch(lore -> lore.getString().toLowerCase(Locale.ENGLISH).contains("soulbound"));
+	}
 
     public static List<ItemStack> getArmor(LivingEntity entity) {
     	return AttributeModifierSlot.ARMOR.getSlots().stream()

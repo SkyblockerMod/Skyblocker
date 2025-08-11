@@ -13,6 +13,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class NewYearCakeAdder extends SimpleSlotTextAdder {
+	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
+			"new_year_cake_year",
+			"skyblocker.config.uiAndVisuals.slotText.newYearCakeYear",
+			"skyblocker.config.uiAndVisuals.slotText.newYearCakeYear.@Tooltip");
+
+	public NewYearCakeAdder() {
+		super(CONFIG_INFORMATION);
+	}
+
 	@Override
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
 		if (!stack.isOf(Items.CAKE)) return List.of();

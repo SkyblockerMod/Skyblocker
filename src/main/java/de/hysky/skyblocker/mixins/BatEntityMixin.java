@@ -16,6 +16,8 @@ public abstract class BatEntityMixin extends AmbientEntity {
     @Override
     public void onRemoved() {
         super.onRemoved();
-        DungeonManager.onBatRemoved(this);
+		if (this.getHealth() <= 0) {
+			DungeonManager.onBatRemoved(this);
+		}
     }
 }

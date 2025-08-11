@@ -54,7 +54,7 @@ public class CorpseFinder {
 			corpsesByType.clear();
 		});
 		SkyblockEvents.LOCATION_CHANGE.register(CorpseFinder::handleLocationChange);
-		ClientReceiveMessageEvents.GAME.register(CorpseFinder::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(CorpseFinder::onChatMessage);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(CorpseFinder::renderWaypoints);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (!SkyblockerConfigManager.get().mining.glacite.enableCorpseFinder || client.player == null) return;
@@ -133,14 +133,14 @@ public class CorpseFinder {
 		}
 	}
 
-	private static void onChatMessage(Text text, boolean overlay) {
-		if (overlay || !isLocationCorrect || !SkyblockerConfigManager.get().mining.glacite.enableCorpseFinder || MinecraftClient.getInstance().player == null) return;
+	private static boolean onChatMessage(Text text, boolean overlay) {
+		if (overlay || !isLocationCorrect || !SkyblockerConfigManager.get().mining.glacite.enableCorpseFinder || MinecraftClient.getInstance().player == null) return true;
 		String string = text.getString();
-		if (string.contains(MinecraftClient.getInstance().getSession().getUsername())) return; // Ignore your own messages
+		if (string.contains(MinecraftClient.getInstance().getSession().getUsername())) return true; // Ignore your own messages
 		if (SkyblockerConfigManager.get().mining.glacite.enableParsingChatCorpseFinder) parseCords(text);  // parsing cords from chat
 
 		Matcher matcherCorpse = CORPSE_FOUND_PATTERN.matcher(string);
-		if (!matcherCorpse.find()) return;
+		if (!matcherCorpse.find()) return true;
 
 		LOGGER.debug(PREFIX + "Triggered code for onChatMessage");
 		LOGGER.debug(PREFIX + "State of corpsesByType: {}", corpsesByType);
@@ -150,7 +150,7 @@ public class CorpseFinder {
 		List<Corpse> corpses = corpsesByType.get(corpseType);
 		if (corpses == null) {
 			LOGGER.warn(PREFIX + "Couldn't get corpses! corpse type string: {}, parsed corpse type: {}", corpseTypeString, corpseType);
-			return;
+			return true;
 		}
 		corpses.stream() // Since squared distance comparison will yield the same result as normal distance comparison, we can use squared distance to avoid square root calculation
 				.min(Comparator.comparingDouble(corpse -> corpse.entity.squaredDistanceTo(MinecraftClient.getInstance().player)))
@@ -161,6 +161,8 @@ public class CorpseFinder {
 						},
 						() -> LOGGER.warn(PREFIX + "Couldn't find the closest corpse despite triggering onChatMessage!")
 				);
+
+		return true;
 	}
 
 	@SuppressWarnings("DataFlowIssue")

@@ -202,7 +202,6 @@
     "skyblocker.config.dungeons.secretWaypoints.enableItemWaypoints": "Abilita Waypoint Oggetti",
     "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "Con questi waypoint, tiri una perla verso il blocco ed allo stesso tempo usi l'AOTV in su.",
     "skyblocker.config.dungeons.spiritLeapOverlay": "Sovrapposizione Spirit Leap",
-    "skyblocker.config.dungeons.spiritLeapOverlay.@Tooltip": "Mostra una sovrapposizione per lo schermo Spirit leap che rende il salto verso i compagni facile e consistente.",
     "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Disegna dei riquadri per i mob stellati.",
     "skyblocker.config.dungeons.starredMobGlow": "Illuminazione Mob Stellati",
     "skyblocker.config.dungeons.terminals.solveColor": "Risoluzione tramite selezione del colore",

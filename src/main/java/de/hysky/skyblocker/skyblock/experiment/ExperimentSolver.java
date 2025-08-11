@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.experiment;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The general class for all experiment solvers, implemented with a state machine.
  */
-public abstract sealed class ExperimentSolver extends SimpleContainerSolver permits ChronomatronSolver, SuperpairsSolver, UltrasequencerSolver {
+public abstract sealed class ExperimentSolver extends SimpleContainerSolver implements StackDisplayModifier permits ChronomatronSolver, SuperpairsSolver, UltrasequencerSolver {
     private State state = State.REMEMBER;
     private final Int2ObjectMap<ItemStack> slots = new Int2ObjectOpenHashMap<>();
 
@@ -59,6 +60,18 @@ public abstract sealed class ExperimentSolver extends SimpleContainerSolver perm
     }
 
     protected abstract void tick(GenericContainerScreen screen);
+
+	/**
+	 * Display the actual item stacks if the solver is in the {@link State#SHOW} state.
+	 */
+	@Override
+	public ItemStack modifyDisplayStack(int slotIndex, @NotNull ItemStack stack) {
+		if ((this instanceof SuperpairsSolver || this instanceof UltrasequencerSolver) && getState() == State.SHOW) {
+			ItemStack displayStack = getSlots().get(slotIndex);
+			return displayStack != null ? displayStack : stack;
+		}
+		return stack;
+	}
 
     public enum State {
         /**

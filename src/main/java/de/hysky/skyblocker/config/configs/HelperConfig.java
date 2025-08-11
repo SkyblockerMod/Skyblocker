@@ -71,6 +71,9 @@ public class HelperConfig {
 
 		public boolean hideOtherPlayersRods = false;
 
+		public boolean enableFishingHud = true;
+
+		@Deprecated
 		public List<Location> fishingHudEnabledLocations = new ArrayList<>(List.of(Location.values()));
 
 		public boolean enableSeaCreatureCounter = true;
@@ -131,6 +134,8 @@ public class HelperConfig {
 
 	public static class Bazaar {
 		public boolean enableBazaarHelper = true;
+
+		public boolean enableReorderHelper = true;
 	}
 
 	public static class ItemPrice {

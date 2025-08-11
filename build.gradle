@@ -1,6 +1,6 @@
 plugins {
 	// Building
-	id 'fabric-loom' version '1.10-SNAPSHOT'
+	id 'fabric-loom' version "${loom_version}"
 	id "de.hysky.skyblocker.annotation-processor"
 	id "com.diffplug.spotless" version "6.20.0"
 	id "checkstyle"
@@ -162,7 +162,7 @@ dependencies {
 	include modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
 
 	// MoulConfig - Dandelion shades it in already
-	modImplementation("org.notenoughupdates.moulconfig:${project.moulconfig_flavour}:${project.moulconfig_version}")
+	//modImplementation("org.notenoughupdates.moulconfig:${project.moulconfig_flavour}:${project.moulconfig_version}")
 
 	// HM API (Hypixel Mod API Library)
 	include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
