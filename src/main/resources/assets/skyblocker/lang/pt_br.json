@@ -406,5 +406,6 @@
     "skyblocker.config.dungeons.livid.enableSolidColor": "Ativar Cor Customizada Livid",
     "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Usa a cor personalizada em vez da cor Livid para o brilho e a caixa de destaque.",
     "skyblocker.config.dungeons.livid.customColor": "Cor Customizada Livid",
-    "skyblocker.config.dungeons.livid.enableLividColorGlow": "Ativar Cor do Brilho Livid"
+    "skyblocker.config.dungeons.livid.enableLividColorGlow": "Ativar Cor do Brilho Livid",
+    "skyblocker.config.dungeons.livid.enableLividColorBoundingBox": "Ativar caixa de destaque com cor Livid"
 }
