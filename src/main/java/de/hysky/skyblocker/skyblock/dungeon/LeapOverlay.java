@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -278,7 +279,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		private void clickSlot() {
 			CLIENT.interactionManager.clickSlot(this.syncId(), this.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, CLIENT.player);
 			if (CONFIG.get().enableLeapMessage) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + CONFIG.get().leapMessage.replaceAll("\\[name]", this.name), false);
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get() + CONFIG.get().leapMessage.replaceAll("\\[name]", this.name), false);
 			}
 		}
 	}
