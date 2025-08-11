@@ -255,6 +255,7 @@ public class Utils {
     @Init
     public static void init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
+        ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
 
         //Register Mod API stuff
@@ -398,15 +399,11 @@ public class Utils {
 		STRING_SCOREBOARD.stream().filter(s -> s.contains("Piggy:") || s.contains("Purse:")).findFirst().ifPresent(purseString -> {
 			Matcher matcher = PURSE.matcher(purseString);
 			if (matcher.find()) {
-				try {
-					double newPurse = Double.parseDouble(matcher.group("purse").replaceAll(",", ""));
-					double changeSinceLast = newPurse - Utils.purse;
-					if (changeSinceLast == 0) return;
-					SkyblockEvents.PURSE_CHANGE.invoker().onPurseChange(changeSinceLast, PurseChangeCause.getCause(changeSinceLast));
-					Utils.purse = newPurse;
-				} catch (NumberFormatException e) {
-					LOGGER.error("[Skyblocker] Failed to parse purse string. Input: '{}'", purseString, e);
-				}
+				double newPurse = Double.parseDouble(matcher.group("purse").replaceAll(",", ""));
+				double changeSinceLast = newPurse - Utils.purse;
+				if (changeSinceLast == 0) return;
+				SkyblockEvents.PURSE_CHANGE.invoker().onPurseChange(changeSinceLast, PurseChangeCause.getCause(changeSinceLast));
+				Utils.purse = newPurse;
 			}
 		});
 	}
@@ -572,7 +569,7 @@ public class Utils {
             	int suggestions = profileSuggestionMessages;
             	profileSuggestionMessages++;
 
-            	return suggestions >= 2;
+            	return suggestions > 2;
             }
         }
 

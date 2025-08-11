@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.end;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -39,10 +38,9 @@ public class EnderNodes {
             return ActionResult.PASS;
         });
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
-        ParticleEvents.FROM_SERVER.register(EnderNodes::onParticle);
     }
 
-    private static void onParticle(ParticleS2CPacket packet) {
+    public static void onParticle(ParticleS2CPacket packet) {
         if (!shouldProcess()) return;
         ParticleType<?> particleType = packet.getParameters().getType();
         if (!ParticleTypes.PORTAL.getType().equals(particleType) && !ParticleTypes.WITCH.getType().equals(particleType))

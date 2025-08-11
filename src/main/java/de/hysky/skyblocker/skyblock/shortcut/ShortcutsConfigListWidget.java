@@ -11,8 +11,6 @@ import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -160,10 +158,10 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            context.drawCenteredTextWithShadow(client.textRenderer, targetName, width / 2 - 85, y + 5, Colors.WHITE);
-            context.drawCenteredTextWithShadow(client.textRenderer, replacementName, width / 2 + 85, y + 5, Colors.WHITE);
+            context.drawCenteredTextWithShadow(client.textRenderer, targetName, width / 2 - 85, y + 5, 0xFFFFFF);
+            context.drawCenteredTextWithShadow(client.textRenderer, replacementName, width / 2 + 85, y + 5, 0xFFFFFF);
             if (tooltip != null && isMouseOver(mouseX, mouseY)) {
-                context.drawTooltip(tooltip, mouseX, mouseY);
+                screen.setTooltip(tooltip);
             }
         }
 
@@ -205,7 +203,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            context.drawCenteredTextWithShadow(client.textRenderer, text, width / 2, y + 5, Colors.WHITE);
+            context.drawCenteredTextWithShadow(client.textRenderer, text, width / 2, y + 5, 0xFFFFFF);
         }
     }
 
@@ -263,7 +261,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
             replacement.setY(y);
             target.render(context, mouseX, mouseY, tickDelta);
             replacement.render(context, mouseX, mouseY, tickDelta);
-            context.drawCenteredTextWithShadow(client.textRenderer, "→", width / 2, y + 5, Colors.WHITE);
+            context.drawCenteredTextWithShadow(client.textRenderer, "→", width / 2, y + 5, 0xFFFFFF);
         }
 
         @Override

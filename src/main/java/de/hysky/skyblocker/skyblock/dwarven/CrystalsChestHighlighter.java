@@ -2,9 +2,6 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ParticleEvents;
-import de.hysky.skyblocker.events.PlaySoundEvents;
-import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -47,12 +44,9 @@ public class CrystalsChestHighlighter {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.ALLOW_GAME.register(CrystalsChestHighlighter::extractLocationFromMessage);
+		ClientReceiveMessageEvents.GAME.register(CrystalsChestHighlighter::extractLocationFromMessage);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(CrystalsChestHighlighter::render);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-		WorldEvents.BLOCK_STATE_UPDATE.register(CrystalsChestHighlighter::onBlockUpdate);
-		ParticleEvents.FROM_SERVER.register(CrystalsChestHighlighter::onParticle);
-		PlaySoundEvents.FROM_SERVER.register(CrystalsChestHighlighter::onSound);
 	}
 
 	private static void reset() {
@@ -62,42 +56,37 @@ public class CrystalsChestHighlighter {
 		currentLockCount = 0;
 	}
 
-	private static boolean extractLocationFromMessage(Text text, boolean b) {
+	private static void extractLocationFromMessage(Text text, boolean b) {
 		if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
-			return true;
+			return;
 		}
 		//if a chest is spawned add chest to look for
 		if (text.getString().matches(CHEST_SPAWN_MESSAGE)) {
 			waitingForChest += 1;
 		}
-
-		return true;
 	}
 
 	/**
 	 * When a block is updated in the crystal hollows if looking for a chest see if it's a chest and if so add to active. or remove active chests from where air is placed
 	 *
 	 * @param pos   location of block update
-	 * @param newState the new state of the block
+	 * @param state the new state of the block
 	 */
-	private static void onBlockUpdate(BlockPos pos, BlockState oldState, BlockState newState) {
-		if (!SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter || CLIENT.player == null || !Utils.isInCrystalHollows()) {
+	public static void onBlockUpdate(BlockPos pos, BlockState state) {
+		if (!SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter || CLIENT.player == null) {
 			return;
 		}
-
-		BlockPos immutable = pos.toImmutable();
-
-		if (waitingForChest > 0 && newState.isOf(Blocks.CHEST)) {
+		if (waitingForChest > 0 && state.isOf(Blocks.CHEST)) {
 			//make sure it is not too far from the player (more than 10 blocks away)
-			if (immutable.getSquaredDistance(CLIENT.player.getPos()) > 100) {
+			if (pos.getSquaredDistance(CLIENT.player.getPos()) > 100) {
 				return;
 			}
-			activeChests.add(immutable);
+			activeChests.add(pos);
 			currentLockCount = 0;
 			waitingForChest -= 1;
-		} else if (newState.isAir() && activeChests.contains(immutable)) {
+		} else if (state.isAir() && activeChests.contains(pos)) {
 			currentLockCount = 0;
-			activeChests.remove(immutable);
+			activeChests.remove(pos);
 		}
 	}
 
@@ -106,7 +95,7 @@ public class CrystalsChestHighlighter {
 	 *
 	 * @param packet particle spawn packet
 	 */
-	private static void onParticle(ParticleS2CPacket packet) {
+	public static void onParticle(ParticleS2CPacket packet) {
 		if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
 			return;
 		}
@@ -120,7 +109,7 @@ public class CrystalsChestHighlighter {
 	 *
 	 * @param packet sound packet
 	 */
-	private static void onSound(PlaySoundS2CPacket packet) {
+	public static void onSound(PlaySoundS2CPacket packet) {
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
 		if (player == null || !Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
 			return;

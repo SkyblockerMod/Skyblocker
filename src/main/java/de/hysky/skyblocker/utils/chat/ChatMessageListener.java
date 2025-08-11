@@ -56,8 +56,8 @@ public interface ChatMessageListener {
                 new TeleportPadFilter(),
                 new AutopetFilter(),
                 new ShowOffFilter(),
-                new SkyMallFilter(),
-                new LotteryFilter(),
+                new ToggleSkyMallFilter(),
+                new ToggleLotteryFilter(),
                 new MimicFilter(),
                 new DeathFilter(),
                 new DicerFilter()

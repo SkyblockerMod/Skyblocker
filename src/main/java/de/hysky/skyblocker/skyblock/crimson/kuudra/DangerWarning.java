@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -36,7 +37,7 @@ public class DangerWarning {
 				Title title = getDangerTitle(under);
 
 				if (title != null) {
-					TitleContainer.addTitleAndPlaySound(title);
+					RenderHelper.displayInTitleContainerAndPlaySound(title);
 
 					return;
 				} else if (i == 5) { //Prevent removing the title prematurely

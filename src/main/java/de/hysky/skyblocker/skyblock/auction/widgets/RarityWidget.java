@@ -4,20 +4,19 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.item.background.adders.ItemRarityBackground;
-import it.unimi.dsi.fastutil.objects.ObjectReferencePair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
-
-import org.joml.Matrix3x2fStack;
+import java.util.Map;
 
 public class RarityWidget extends ClickableWidget {
 
@@ -33,30 +32,30 @@ public class RarityWidget extends ClickableWidget {
 
     @Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        Matrix3x2fStack matrices = context.getMatrices();
-        matrices.pushMatrix();
-        matrices.translate(getX(), getY());
+        MatrixStack matrices = context.getMatrices();
+        matrices.push();
+        matrices.translate(getX(), getY(), 0);
         boolean onLeftArrow = isOnLeftArrow(mouseX);
         boolean onRightArrow = isOnRightArrow(mouseX);
-        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, 0, 0, 48, 11, 48, 11);
-        if (onLeftArrow) context.drawTexture(RenderPipelines.GUI_TEXTURED, HOVER_TEXTURE, 0, 0, 0, 0, 6, 11, 6, 11);
-        if (onRightArrow) context.drawTexture(RenderPipelines.GUI_TEXTURED, HOVER_TEXTURE, 42, 0, 0, 0, 6, 11, 6, 11);
+        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, 0, 0, 0, 0, 48, 11, 48, 11);
+        if (onLeftArrow) context.drawTexture(RenderLayer::getGuiTextured, HOVER_TEXTURE, 0, 0, 0, 0, 6, 11, 6, 11);
+        if (onRightArrow) context.drawTexture(RenderLayer::getGuiTextured, HOVER_TEXTURE, 42, 0, 0, 0, 6, 11, 6, 11);
 
         // Text
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         int textWidth = textRenderer.getWidth(current);
         if (textWidth > 34) {
             float scale = 34f / textWidth;
-            matrices.pushMatrix();
-            matrices.translate(0f, 5.5f);
-            matrices.scale(scale, scale);
+            matrices.push();
+            matrices.translate(0, 5.5, 0);
+            matrices.scale(scale, scale, 1);
             context.drawCenteredTextWithShadow(textRenderer, current, (int) (24 / scale), -textRenderer.fontHeight / 2, color);
-            matrices.popMatrix();
+            matrices.pop();
         } else {
             context.drawCenteredTextWithShadow(textRenderer, current, 24, 2, color);
         }
 
-        matrices.popMatrix();
+        matrices.pop();
         if (!onLeftArrow && !onRightArrow && isHovered()) context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
 
     }
@@ -85,9 +84,9 @@ public class RarityWidget extends ClickableWidget {
     public void setText(List<Text> tooltip, String current) {
         this.tooltip = tooltip;
         this.current = current;
-        for (ObjectReferencePair<String, SkyblockItemRarity> rarity : ItemRarityBackground.LORE_RARITIES) {
-            if (current.toUpperCase().contains(rarity.left())) {
-                this.color = rarity.right().color | 0xFF000000;
+        for (Map.Entry<String, SkyblockItemRarity> rarity : ItemRarityBackground.LORE_RARITIES.entrySet()) {
+            if (current.toUpperCase().contains(rarity.getKey())) {
+                this.color = rarity.getValue().color | 0xFF000000;
                 return;
             }
         }

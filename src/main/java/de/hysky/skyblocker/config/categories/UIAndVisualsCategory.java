@@ -4,7 +4,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
@@ -114,14 +113,6 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
                         .controller(ConfigUtils.createBooleanController())
                         .build())
-				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("skyblocker.config.uiAndVisuals.museumOverlay"))
-						.description(Text.translatable("skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip"))
-						.binding(defaults.uiAndVisuals.museumOverlay,
-								() -> config.uiAndVisuals.museumOverlay,
-								newValue -> config.uiAndVisuals.museumOverlay = newValue)
-						.controller(ConfigUtils.createBooleanController())
-						.build())
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation"))
                         .description(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip"))
@@ -799,29 +790,6 @@ public class UIAndVisualsCategory {
 								.build())
 						.build()
 				)
-				//Gyro Overlay
-				.group(OptionGroup.createBuilder()
-						.name(Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay"))
-						.collapsed(true)
-						.option(Option.<GyroOverlay.Mode>createBuilder()
-								.name(Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect"))
-								.binding(defaults.uiAndVisuals.gyroOverlay.gyroOverlayMode,
-										() -> config.uiAndVisuals.gyroOverlay.gyroOverlayMode,
-										newValue -> config.uiAndVisuals.gyroOverlay.gyroOverlayMode = newValue)
-								.controller(ConfigUtils.createEnumController())
-								.build())
-						.option(Option.<Color>createBuilder()
-								.name(Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay.Color"))
-								.binding(defaults.uiAndVisuals.gyroOverlay.gyroOverlayColor,
-										() -> config.uiAndVisuals.gyroOverlay.gyroOverlayColor,
-										newValue -> {
-											config.uiAndVisuals.gyroOverlay.gyroOverlayColor = newValue;
-											GyroOverlay.configCallback(newValue);
-										})
-								.controller(ColourController.createBuilder().hasAlpha(true).build())
-								.build())
-						.build()
-				)
 
 				//item pickup widget
 				.group(OptionGroup.createBuilder()
@@ -855,14 +823,6 @@ public class UIAndVisualsCategory {
 										() -> config.uiAndVisuals.itemPickup.lifeTime,
 										newValue -> config.uiAndVisuals.itemPickup.lifeTime = newValue)
 								.controller(IntegerController.createBuilder().range(1, 10).slider(1).build())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack"))
-								.description(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack.@Tooltip"))
-								.binding(defaults.uiAndVisuals.itemPickup.splitNotifications,
-										() -> config.uiAndVisuals.itemPickup.splitNotifications,
-										newValue -> config.uiAndVisuals.itemPickup.splitNotifications = newValue)
-								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build()
 				)

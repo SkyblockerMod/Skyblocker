@@ -31,7 +31,7 @@ public final class LightsOnTerminal extends SimpleContainerSolver implements Ter
 	}
 
 	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
 		return stack.isOf(Items.LIME_STAINED_GLASS_PANE);
 	}
 }

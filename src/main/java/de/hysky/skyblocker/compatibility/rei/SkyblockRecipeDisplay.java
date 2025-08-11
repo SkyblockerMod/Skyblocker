@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.compatibility.rei.recipe;
+package de.hysky.skyblocker.compatibility.rei;
 
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;

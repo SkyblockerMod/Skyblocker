@@ -95,7 +95,7 @@ public final class SameColorTerminal extends SimpleContainerSolver implements Te
 	}
 
 	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
 		if (clickMap.containsKey(slot) && clickMap.get(slot) == 0) {
 			return shouldBlockIncorrectClicks();
 		}

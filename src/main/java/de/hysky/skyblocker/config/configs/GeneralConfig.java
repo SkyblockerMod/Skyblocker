@@ -52,8 +52,6 @@ public class GeneralConfig {
 
     public Object2ObjectOpenHashMap<String, CustomArmorAnimatedDyes.AnimatedDye> customAnimatedDyes = new Object2ObjectOpenHashMap<>();
 
-	public Object2ObjectOpenHashMap<String, String> customHelmetTextures = new Object2ObjectOpenHashMap<>();
-
 	public static class SpeedPresets {
 		public boolean enableSpeedPresets = true;
 	}
@@ -104,7 +102,7 @@ public class GeneralConfig {
 
         public boolean dungeonQuality = true;
 
-        public boolean showEssenceCost = true;
+        public boolean showEssenceCost = false;
 
         public boolean enableEstimatedItemValue = true;
 

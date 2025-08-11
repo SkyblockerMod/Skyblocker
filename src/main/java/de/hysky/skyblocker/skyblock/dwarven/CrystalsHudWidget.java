@@ -6,13 +6,12 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
-
-import org.joml.Matrix3x2fStack;
+import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
@@ -29,7 +28,6 @@ public class CrystalsHudWidget extends HudWidget {
 
 	private static CrystalsHudWidget instance = null;
 
-	@SuppressWarnings("unused")
 	public static CrystalsHudWidget getInstance() {
 		if (instance == null) new CrystalsHudWidget();
 		return instance;
@@ -101,14 +99,14 @@ public class CrystalsHudWidget extends HudWidget {
 
 		//make sure the map renders infront of some stuff - improve this in the future with better layering (1.20.5?)
 		//and set position and scale
-		Matrix3x2fStack matrices = context.getMatrices();
-		matrices.pushMatrix();
-		matrices.translate(x, y);
-		matrices.scale(scale, scale);
+		MatrixStack matrices = context.getMatrices();
+		matrices.push();
+		matrices.translate(x, y, 0f);
+		matrices.scale(scale, scale, 0f);
 		w = h = (int) (62 * scale);
 
 		//draw map texture
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, MAP_TEXTURE, 0, 0, 0, 0, 62, 62, 62, 62);
+		context.drawTexture(RenderLayer::getGuiTextured, MAP_TEXTURE, 0, 0, 0, 0, 62, 62, 62, 62);
 
 		//if enabled add waypoint locations to map
 		if (SkyblockerConfigManager.get().mining.crystalsHud.showLocations) {
@@ -129,7 +127,7 @@ public class CrystalsHudWidget extends HudWidget {
 
 		//draw player on map
 		if (CLIENT.player == null || CLIENT.getNetworkHandler() == null) {
-			matrices.popMatrix();
+			matrices.pop();
 			return;
 		}
 		//get player location
@@ -142,13 +140,13 @@ public class CrystalsHudWidget extends HudWidget {
 		int renderY = renderPos.y() - 3;
 
 		//position, scale and rotate the player marker
-		matrices.translate(renderX, renderY);
-		matrices.scale(0.75f, 0.75f);
-		matrices.rotateAbout(MathHelper.RADIANS_PER_DEGREE * yaw2Cardinal(playerRotation), 2.5f, 3.5f);
+		matrices.translate(renderX, renderY, 0f);
+		matrices.scale(0.75f, 0.75f, 0f);
+		matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(yaw2Cardinal(playerRotation)), 2.5f, 3.5f, 0);
 
 		//draw marker on map
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, MAP_ICON, 0, 0, 2, 0, 5, 7, 8, 8);
-		matrices.popMatrix();
+		context.drawTexture(RenderLayer::getGuiTextured, MAP_ICON, 0, 0, 2, 0, 5, 7, 8, 8);
+		matrices.pop();
 	}
 
 	@Override

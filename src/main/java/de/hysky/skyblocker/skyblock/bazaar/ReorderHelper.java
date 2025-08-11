@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.bazaar;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
@@ -31,11 +29,11 @@ public class ReorderHelper extends SimpleContainerSolver implements TooltipAdder
 
 	@Override
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().helpers.bazaar.enableReorderHelper;
+		return true;
 	}
 
 	@Override
-	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
+	public boolean onClickSlot(int slot, ItemStack stack, int screenId) {
 		//   V This part is so that it short-circuits if not necessary
 		if ((slot == 11 || slot == 13) && stack.isOf(Items.GREEN_TERRACOTTA) && InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL)) {
 			Matcher matcher;
@@ -61,8 +59,7 @@ public class ReorderHelper extends SimpleContainerSolver implements TooltipAdder
 		switch (focusedSlot.id) {
 			case 11, 13 -> {
 				lines.add(Text.empty());
-				lines.add(Constants.PREFIX.get());
-				lines.add(Text.translatable("skyblocker.reorderHelper.tooltip").formatted(Formatting.DARK_GRAY));
+				lines.add(Text.empty().append(Text.translatable("skyblocker.reorderHelper.tooltip")).formatted(Formatting.DARK_GRAY, Formatting.ITALIC));
 			}
 		}
 	}

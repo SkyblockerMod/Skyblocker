@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.config;
 
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.DrawContext;
@@ -49,12 +49,6 @@ public abstract class HudConfigScreen extends Screen {
 		super(title);
 		this.parent = parent;
 		this.widgets = widgets;
-	}
-
-	@Override
-	protected void init() {
-		super.init();
-		// Reset positions here, so width and height are available.
 		resetPos();
 	}
 
@@ -90,7 +84,7 @@ public abstract class HudConfigScreen extends Screen {
 	public final boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (button == 0) {
 			for (AbstractWidget widget : widgets) {
-				if (HudHelper.pointIsInArea(mouseX, mouseY, widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
+				if (RenderHelper.pointIsInArea(mouseX, mouseY, widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
 					draggingWidget = widget;
 					mouseClickRelativeX = mouseX - widget.getX() - getWidgetXOffset(widget);
 					mouseClickRelativeY = mouseY - widget.getY();
@@ -146,11 +140,10 @@ public abstract class HudConfigScreen extends Screen {
 	/**
 	 * Saves the passed positions to the config.
 	 * <p>
-	 * NOTE: The config manager will save the config right after this method is called.
+	 * NOTE: The parent class will call {@link SkyblockerConfigManager#save()} right after this method
 	 *
 	 * @param configManager the config so you don't have to get it
 	 * @param widgets       the widgets to save
-	 * @see SkyblockerConfigManager#update(java.util.function.Consumer)
 	 */
 	protected abstract void savePos(SkyblockerConfig configManager, List<AbstractWidget> widgets);
 }

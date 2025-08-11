@@ -11,11 +11,11 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -64,10 +64,10 @@ public class PreviewWidget extends ClickableWidget {
 		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
 		context.drawBorder(getX() - 1, getY() - 1, getWidth() + 2, getHeight() + 2, -1);
 		context.enableScissor(getX(), getY(), getRight(), getBottom());
-		Matrix3x2fStack matrices = context.getMatrices();
-		matrices.pushMatrix();
-		matrices.translate(getX(), getY());
-		matrices.scale(scaledRatio, scaledRatio);
+		MatrixStack matrices = context.getMatrices();
+		matrices.push();
+		matrices.translate(getX(), getY(), 0f);
+		matrices.scale(scaledRatio, scaledRatio, 1f);
 
 		screenBuilder.renderWidgets(context, tab.getCurrentScreenLayer());
 
@@ -82,6 +82,9 @@ public class PreviewWidget extends ClickableWidget {
 				break;
 			}
 		}
+
+		// Counter-attack the translation in the widgets
+		matrices.translate(0.f, 0.f, 350.f);
 
 		// HOVERED
 		if (hoveredWidget != null && !hoveredWidget.equals(selectedWidget)) {
@@ -129,12 +132,12 @@ public class PreviewWidget extends ClickableWidget {
 			}
 		}
 
-		matrices.popMatrix();
-		matrices.pushMatrix();
-		matrices.translate(getX(), getY());
-		matrices.scale(ratio, ratio);
+		matrices.pop();
+		matrices.push();
+		matrices.translate(getX(), getY(), 0.f);
+		matrices.scale(ratio, ratio, 1.f);
 		((InGameHudInvoker) MinecraftClient.getInstance().inGameHud).skyblocker$renderSidebar(context, tab.placeHolderObjective);
-		matrices.popMatrix();
+		matrices.pop();
 		context.disableScissor();
 	}
 

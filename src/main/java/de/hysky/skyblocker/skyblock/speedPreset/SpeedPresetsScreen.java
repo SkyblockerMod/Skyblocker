@@ -6,7 +6,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
 public class SpeedPresetsScreen extends Screen {
@@ -54,7 +53,7 @@ public class SpeedPresetsScreen extends Screen {
 		assert this.client != null;
 		var renderer = this.client.textRenderer;
 		context.drawCenteredTextWithShadow(renderer, this.title, this.width / 2,
-				8, Colors.WHITE);
+				8, 0xFFFFFF);
 	}
 
 	@Override

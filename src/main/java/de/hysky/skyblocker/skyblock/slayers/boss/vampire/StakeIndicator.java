@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.slayers.boss.vampire;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.minecraft.entity.Entity;
@@ -18,7 +19,7 @@ public class StakeIndicator {
         }
 		Entity slayerEntity = SlayerManager.getSlayerBossArmorStand();
         if (slayerEntity != null && slayerEntity.getDisplayName().toString().contains("҉")) {
-            TitleContainer.addTitleAndPlaySound(title);
+            RenderHelper.displayInTitleContainerAndPlaySound(title);
         } else {
             TitleContainer.removeTitle(title);
         }

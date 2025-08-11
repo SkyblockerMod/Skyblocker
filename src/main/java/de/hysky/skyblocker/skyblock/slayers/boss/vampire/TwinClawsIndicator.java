@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.slayers.boss.vampire;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -29,7 +30,7 @@ public class TwinClawsIndicator {
                 if (!TitleContainer.containsTitle(title) && !scheduled) {
                     scheduled = true;
                     Scheduler.INSTANCE.schedule(() -> {
-                        TitleContainer.addTitleAndPlaySound(title);
+                        RenderHelper.displayInTitleContainerAndPlaySound(title);
                         scheduled = false;
                     }, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceIndicatorTickDelay);
                 }

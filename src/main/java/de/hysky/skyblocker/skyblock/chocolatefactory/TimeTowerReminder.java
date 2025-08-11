@@ -34,11 +34,11 @@ public class TimeTowerReminder {
 	@Init
 	public static void init() {
 		SkyblockEvents.JOIN.register(TimeTowerReminder::checkTempFile);
-		ClientReceiveMessageEvents.ALLOW_GAME.register(TimeTowerReminder::checkIfTimeTower);
+		ClientReceiveMessageEvents.GAME.register(TimeTowerReminder::checkIfTimeTower);
 	}
 
-	public static boolean checkIfTimeTower(Message message, boolean overlay) {
-		if (!TIME_TOWER_PATTERN.matcher(message.getString()).matches() || scheduled) return true;
+	public static void checkIfTimeTower(Message message, boolean overlay) {
+		if (!TIME_TOWER_PATTERN.matcher(message.getString()).matches() || scheduled) return;
 		Scheduler.INSTANCE.schedule(TimeTowerReminder::sendMessage, 60 * 60 * 20); // 1 hour
 		scheduled = true;
 		File tempFile = SkyblockerMod.CONFIG_DIR.resolve(TIME_TOWER_FILE).toFile();
@@ -47,7 +47,7 @@ public class TimeTowerReminder {
 				tempFile.createNewFile();
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker Time Tower Reminder] Failed to create temp file for Time Tower Reminder!", e);
-				return true;
+				return;
 			}
 		}
 
@@ -56,8 +56,6 @@ public class TimeTowerReminder {
 		} catch (IOException e) {
 			LOGGER.error("[Skyblocker Time Tower Reminder] Failed to write to temp file for Time Tower Reminder!", e);
 		}
-
-		return true;
 	}
 
 	private static void sendMessage() {

@@ -7,19 +7,18 @@ import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -32,8 +31,6 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 	private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
 	private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
-
-	public static final int ICON_SIZE = 9;
 
 	private final Identifier icon;
 	private final StatusBarType type;
@@ -67,12 +64,10 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	private @Nullable OnClick onClick = null;
 	public int gridX = 0;
 	public int gridY = 0;
-	public float x = 0;
-	public float y = 0;
-	public float width = 0;
 	public @Nullable BarPositioner.BarAnchor anchor = null;
 
 	public int size = 1;
+	private int width = 0;
 
 	public float fill = 0;
 	public float overflowFill = 0;
@@ -81,15 +76,13 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	 * Used to hide the bar dynamically, like the oxygen bar
 	 */
 	public boolean visible = true;
-	public boolean enabled = true;
 
 	private Object value = "???";
 	private @Nullable Object max = "???";
 	private @Nullable Object overflow = "???";
 
-	private int renderX = 0;
-	private int renderY = 0;
-	private int renderWidth = 0;
+	private int x = 0;
+	private int y = 0;
 
 	private IconPosition iconPosition = IconPosition.LEFT;
 	private TextPosition textPosition = TextPosition.BAR_CENTER;
@@ -111,28 +104,32 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		if (renderWidth <= 0) return;
+		if (width <= 0) return;
 		int transparency = transparency(-1);
 		switch (iconPosition) {
-			case LEFT -> context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, icon, renderX, renderY, ICON_SIZE, ICON_SIZE, transparency);
-			case RIGHT -> context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, icon, renderX + renderWidth - ICON_SIZE, renderY, ICON_SIZE, ICON_SIZE, transparency);
+			case LEFT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x, y, 9, 9, transparency);
+			case RIGHT -> context.drawGuiTexture(RenderLayer::getGuiTextured, icon, x + width - 9, y, 9, 9, transparency);
 		}
 
-		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
-		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 1 : renderX;
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, renderY + 1, barWidth, 7, transparency);
-		drawBarFill(context, barX, barWidth);
+		int barWith = iconPosition.equals(IconPosition.OFF) ? width : width - 10;
+		int barX = iconPosition.equals(IconPosition.LEFT) ? x + 10 : x;
+		context.drawGuiTexture(RenderLayer::getGuiTextured, BAR_BACK, barX, y + 1, barWith, 7, transparency);
+		drawBarFill(context, barX, barWith);
 		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
-		if (showText() && enabled) {
+		if (showText()) {
+			context.getMatrices().push();
+			context.getMatrices().translate(0, 0, 100);
 			renderText(context);
+			context.getMatrices().pop();
 		}
 	}
 
 	protected void drawBarFill(DrawContext context, int barX, int barWith) {
-		HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
+		RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
+
 
 		if (hasOverflow() && overflowFill > 0) {
-			HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
+			RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, y + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
 		}
 	}
 
@@ -151,8 +148,8 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	public void renderText(DrawContext context) {
 		if (!showText()) return;
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
-		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 2 : renderX;
+		int barWith = iconPosition.equals(IconPosition.OFF) ? width : width - 10;
+		int barX = iconPosition.equals(IconPosition.LEFT) ? x + 11 : x;
 		String stringValue = this.value.toString();
 		MutableText text = Text.literal(stringValue).styled(style -> style.withColor((textColor == null ? colors[0] : textColor).getRGB()));
 
@@ -168,32 +165,41 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		int textWidth = textRenderer.getWidth(text);
 		int x;
 		switch (textPosition) {
-			case RIGHT -> x = barX + barWidth - textWidth;
-			case CENTER -> x = this.renderX + (renderWidth - textWidth) / 2;
-			case BAR_CENTER -> x = barX + (barWidth - textWidth) / 2;
+			case RIGHT -> x = barX + barWith - textWidth;
+			case CENTER -> x = this.x + (width - textWidth) / 2;
+			case BAR_CENTER -> x = barX + (barWith - textWidth) / 2;
 			case null, default -> x = barX; // Put on the left by default because I said so.
 		}
-		int y = this.renderY - 3;
+		int y = this.y - 3;
 
-		int color = transparency((textColor == null ? colors[0] : textColor).getRGB());
-		int outlineColor = transparency(Colors.BLACK);
-
-		HudHelper.drawOutlinedText(context, Text.of(text).asOrderedText(), x, y, color, outlineColor);
+		context.draw(consumers -> textRenderer.drawWithOutline(
+				text.asOrderedText(),
+				x,
+				y,
+				transparency(-1),
+				transparency(0),
+				context.getMatrices().peek().getPositionMatrix(),
+				consumers,
+				15728880
+				));
 	}
 
 	public void renderCursor(DrawContext context, int mouseX, int mouseY, float delta) {
-		int temp_x = renderX;
-		int temp_y = renderY;
+		int temp_x = x;
+		int temp_y = y;
+		int temp_width = width;
 		boolean temp_ghost = inMouse;
 
-		renderX = mouseX;
-		renderY = mouseY;
+		x = mouseX;
+		y = mouseY;
+		width = 100;
 		inMouse = false;
 
 		render(context, mouseX, mouseY, delta);
 
-		renderX = temp_x;
-		renderY = temp_y;
+		x = temp_x;
+		y = temp_y;
+		width = temp_width;
 		inMouse = temp_ghost;
 	}
 
@@ -201,31 +207,31 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 	@Override
 	public void setX(int x) {
-		this.renderX = x;
+		this.x = x;
 	}
 
 	@Override
 	public void setY(int y) {
-		this.renderY = y;
+		this.y = y;
 	}
 
 	@Override
 	public int getX() {
-		return renderX;
+		return x;
 	}
 
 	@Override
 	public int getY() {
-		return renderY;
+		return y;
 	}
 
 	@Override
 	public int getWidth() {
-		return renderWidth;
+		return width;
 	}
 
 	public void setWidth(int width) {
-		this.renderWidth = width;
+		this.width = width;
 	}
 
 	@Override
@@ -240,7 +246,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 	@Override
 	public boolean isMouseOver(double mouseX, double mouseY) {
-		return mouseX >= renderX && mouseX <= renderX + getWidth() && mouseY >= renderY && mouseY <= renderY + getHeight();
+		return mouseX >= x && mouseX <= x + getWidth() && mouseY >= y && mouseY <= y + getHeight();
 	}
 
 	@Override
@@ -285,9 +291,9 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 				.append("gridX", gridX)
 				.append("gridY", gridY)
 				.append("size", size)
-				.append("x", renderX)
-				.append("y", renderY)
-				.append("width", renderWidth)
+				.append("x", x)
+				.append("y", y)
+				.append("width", width)
 				.append("anchor", anchor)
 				.toString();
 	}
@@ -372,18 +378,9 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 		String maybeAnchor = object.get("anchor").getAsString().trim();
 		this.anchor = maybeAnchor.equals("null") ? null : BarPositioner.BarAnchor.valueOf(maybeAnchor);
-		if (!object.has("enabled")) {
-			enabled = anchor != null;
-		} else enabled = object.get("enabled").getAsBoolean();
-		if (anchor != null) {
-			this.size = object.get("size").getAsInt();
-			this.gridX = object.get("x").getAsInt();
-			this.gridY = object.get("y").getAsInt();
-		} else {
-			this.width = object.get("size").getAsFloat();
-			this.x = object.get("x").getAsFloat();
-			this.y = object.get("y").getAsFloat();
-		}
+		this.size = object.get("size").getAsInt();
+		this.gridX = object.get("x").getAsInt();
+		this.gridY = object.get("y").getAsInt();
 		// these are optional too, why not
 		if (object.has("icon_position")) this.iconPosition = IconPosition.valueOf(object.get("icon_position").getAsString().trim());
 		// backwards compat teehee
@@ -391,6 +388,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		if (object.has("text_position")) this.textPosition = TextPosition.valueOf(object.get("text_position").getAsString().trim());
 		if (object.has("show_max")) this.showMax = object.get("show_max").getAsBoolean();
 		if (object.has("show_overflow")) this.showOverflow = object.get("show_overflow").getAsBoolean();
+
 	}
 
 	public JsonObject toJson() {
@@ -403,23 +401,16 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		if (textColor != null) {
 			object.addProperty("text_color", Integer.toHexString(textColor.getRGB()).substring(2));
 		}
+		object.addProperty("size", size);
 		if (anchor != null) {
 			object.addProperty("anchor", anchor.toString());
 		} else object.addProperty("anchor", "null");
-		if (anchor != null) {
-			object.addProperty("x", gridX);
-			object.addProperty("y", gridY);
-			object.addProperty("size", size);
-		} else {
-			object.addProperty("size", width);
-			object.addProperty("x", x);
-			object.addProperty("y", y);
-		}
+		object.addProperty("x", gridX);
+		object.addProperty("y", gridY);
 		object.addProperty("icon_position", iconPosition.asString());
 		object.addProperty("text_position", textPosition.asString());
 		object.addProperty("show_max", showMax);
 		object.addProperty("show_overflow", showOverflow);
-		object.addProperty("enabled", enabled);
 		return object;
 	}
 
@@ -433,14 +424,14 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		protected void drawBarFill(DrawContext context, int barX, int barWith) {
 			if (hasOverflow() && overflowFill > 0) {
 				if (overflowFill > fill && SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.IN_FRONT) {
-					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
-					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+					RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+					RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
 				} else {
-					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
-					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+					RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+					RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
 				}
 			} else {
-				HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+				RenderHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
 			}
 		}
 	}

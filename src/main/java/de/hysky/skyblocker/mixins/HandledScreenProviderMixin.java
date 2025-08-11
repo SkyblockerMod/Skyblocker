@@ -107,7 +107,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 			}
 
 			// Leap Overlay
-			case GenericContainerScreenHandler containerScreenHandler when Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.leapOverlay.enableLeapOverlay && nameLowercase.contains(LeapOverlay.TITLE.toLowerCase()) -> {
+			case GenericContainerScreenHandler containerScreenHandler when Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.spiritLeapOverlay && nameLowercase.contains(LeapOverlay.TITLE.toLowerCase()) -> {
 				client.player.currentScreenHandler = containerScreenHandler;
 				client.setScreen(new LeapOverlay(containerScreenHandler));
 

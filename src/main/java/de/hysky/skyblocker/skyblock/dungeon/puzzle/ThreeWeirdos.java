@@ -32,21 +32,19 @@ public class ThreeWeirdos extends DungeonPuzzle {
 
     private ThreeWeirdos() {
         super("three-weirdos", "three-chests");
-        ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
+        ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
             ClientWorld world = MinecraftClient.getInstance().world;
-            if (overlay || !shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveThreeWeirdos || world == null || !DungeonManager.isCurrentRoomMatched()) return true;
+            if (overlay || !shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveThreeWeirdos || world == null || !DungeonManager.isCurrentRoomMatched()) return;
 
             @SuppressWarnings("DataFlowIssue")
             Matcher matcher = PATTERN.matcher(Formatting.strip(message.getString()));
-            if (!matcher.matches()) return true;
+            if (!matcher.matches()) return;
             String name = matcher.group(1);
             Room room = DungeonManager.getCurrentRoom();
 
             checkForNPC(world, room, new BlockPos(13, 69, 24), name);
             checkForNPC(world, room, new BlockPos(15, 69, 25), name);
             checkForNPC(world, room, new BlockPos(17, 69, 24), name);
-
-            return true;
         });
         UseBlockCallback.EVENT.register((player, world, hand, blockHitResult) -> {
             if (blockHitResult.getType() == HitResult.Type.BLOCK && blockHitResult.getBlockPos().equals(pos)) {

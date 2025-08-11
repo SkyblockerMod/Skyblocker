@@ -68,7 +68,7 @@ public class EggFinder {
 			}
 		});
 		SkyblockEvents.LOCATION_CHANGE.register(EggFinder::handleLocationChange);
-		ClientReceiveMessageEvents.ALLOW_GAME.register(EggFinder::onChatMessage);
+		ClientReceiveMessageEvents.GAME.register(EggFinder::onChatMessage);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(EggFinder::renderWaypoints);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder || client.player == null) return;
@@ -153,8 +153,8 @@ public class EggFinder {
 		}
 	}
 
-	private static boolean onChatMessage(Text text, boolean overlay) {
-		if (overlay || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return true;
+	private static void onChatMessage(Text text, boolean overlay) {
+		if (overlay || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		Matcher matcher = eggFoundPattern.matcher(text.getString());
 		if (matcher.find()) {
 			try {
@@ -175,8 +175,6 @@ public class EggFinder {
 				logger.error("[Skyblocker Egg Finder] Failed to find egg type for egg spawn message. Tried to match against: {}", matcher.group(0), e);
 			}
 		}
-
-		return true;
 	}
 
 	@SuppressWarnings("DataFlowIssue") //Removes that pesky "unboxing of Integer might cause NPE" warning when we already know it's not null

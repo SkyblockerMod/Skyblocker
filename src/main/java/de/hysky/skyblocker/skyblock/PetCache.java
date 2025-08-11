@@ -74,7 +74,8 @@ public class PetCache {
 				}
 			}
 		});
-		ClientReceiveMessageEvents.ALLOW_GAME.register(PetCache::onMessage);
+		ClientReceiveMessageEvents.GAME.register(PetCache::onMessage);
+		ClientReceiveMessageEvents.GAME_CANCELED.register(PetCache::onMessage);
 	}
 
 	public static void handlePetEquip(Slot slot, int slotId) {
@@ -112,8 +113,8 @@ public class PetCache {
 	/**
 	 * Parses the Auto Pet messages to try and detect the active pet
 	 */
-	private static boolean onMessage(Text text, boolean overlay) {
-		if (!Utils.isOnSkyblock() || overlay) return true;
+	private static void onMessage(Text text, boolean overlay) {
+		if (!Utils.isOnSkyblock() || overlay) return;
 
 		String stringified = Formatting.strip(text.getString());
 		Matcher matcher = AUTOPET_PATTERN.matcher(stringified);
@@ -172,8 +173,6 @@ public class PetCache {
 				}
 			}
 		}
-
-		return true;
 	}
 
 	@Nullable

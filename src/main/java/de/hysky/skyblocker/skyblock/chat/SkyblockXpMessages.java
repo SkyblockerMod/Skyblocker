@@ -20,10 +20,10 @@ public class SkyblockXpMessages {
 
 	@Init
 	public static void init() {
-		ClientReceiveMessageEvents.ALLOW_GAME.register(SkyblockXpMessages::onMessage);
+		ClientReceiveMessageEvents.GAME.register(SkyblockXpMessages::onMessage);
 	}
 
-	private static boolean onMessage(Text text, boolean overlay) {
+	private static void onMessage(Text text, boolean overlay) {
 		if (Utils.isOnSkyblock() && overlay && SkyblockerConfigManager.get().chat.skyblockXpMessages) {
 			String message = text.getString();
 			Matcher matcher = SKYBLOCK_XP_PATTERN.matcher(message);
@@ -39,7 +39,5 @@ public class SkyblockXpMessages {
 				}
 			}
 		}
-
-		return true;
 	}
 }

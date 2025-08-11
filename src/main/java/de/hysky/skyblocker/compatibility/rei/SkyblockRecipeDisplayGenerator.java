@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.compatibility.rei.recipe;
+package de.hysky.skyblocker.compatibility.rei;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;

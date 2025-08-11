@@ -4,8 +4,6 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanPair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.ScreenRect;
@@ -14,6 +12,7 @@ import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.PopupScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.Window;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -23,49 +22,33 @@ import de.hysky.skyblocker.skyblock.fancybars.BarPositioner.BarLocation;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 public class StatusBarsConfigScreen extends Screen {
 	private static final Identifier HOTBAR_TEXTURE = Identifier.ofVanilla("hud/hotbar");
-	private static final int HOTBAR_WIDTH = 182;
-	private static final float RESIZE_THRESHOLD = 0.75f;
-	private static final int BAR_MINIMUM_WIDTH = 30;
+
 	public static final long RESIZE_CURSOR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HRESIZE_CURSOR);
-	// prioritize left and right cuz they are much smaller than up and down
-	private static final NavigationDirection[] DIRECTION_CHECK_ORDER = new NavigationDirection[]{NavigationDirection.LEFT, NavigationDirection.RIGHT, NavigationDirection.UP, NavigationDirection.DOWN};
 
-	private static boolean resizeCursor = false;
-	private static void setResizeCursor(boolean bl) {
-		if (bl != resizeCursor) {
-			resizeCursor = bl;
-			Window window = MinecraftClient.getInstance().getWindow();
-			if (resizeCursor) {
-				GLFW.glfwSetCursor(window.getHandle(), RESIZE_CURSOR);
-			} else {
-				GLFW.glfwSetCursor(window.getHandle(), 0);
-			}
-		}
-	}
-
-	private final Map<ScreenRect, Pair<StatusBar, BarLocation>> rectToBar = new HashMap<>();
-	/**
-	 * Contains the hovered bar and a boolean that is true if hovering the right side or false otherwise.
-	 */
-	private final ObjectBooleanPair<@Nullable StatusBar> resizeHover = new ObjectBooleanMutablePair<>(null, false);
-	private final Pair<@Nullable StatusBar, @Nullable StatusBar> resizedBars = ObjectObjectMutablePair.of(null, null);
+	private final Map<ScreenRect, BarLocation> rectToBarLocation = new HashMap<>();
+	private static final int HOTBAR_WIDTH = 182;
 
 	private @Nullable StatusBar cursorBar = null;
-	private ScreenPos cursorOffset = new ScreenPos(0, 0);
-	private BarLocation currentInsertLocation = new BarLocation(null, 0, 0);
-
-	private boolean resizing = false;
-	private EditBarWidget editBarWidget;
 
 	public StatusBarsConfigScreen() {
 		super(Text.of("Status Bars Config"));
 	}
 
+	private BarLocation currentInsertLocation = new BarLocation(null, 0, 0);
+
+	private final ObjectBooleanPair<BarLocation> resizeHover = new ObjectBooleanMutablePair<>(BarLocation.NULL, false);
+
+	private final Pair<BarLocation, BarLocation> resizedBars = ObjectObjectMutablePair.of(BarLocation.NULL, BarLocation.NULL);
+	private boolean resizing = false;
+
+	private EditBarWidget editBarWidget;
+
+	// prioritize left and right cuz they are much smaller space than up and down
+	private static final NavigationDirection[] DIRECTION_CHECK_ORDER = new NavigationDirection[]{NavigationDirection.LEFT, NavigationDirection.RIGHT, NavigationDirection.UP, NavigationDirection.DOWN};
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
@@ -73,7 +56,7 @@ public class StatusBarsConfigScreen extends Screen {
             context.fillGradient(screenRect.position().x(), screenRect.position().y(), screenRect.position().x() + screenRect.width(), screenRect.position().y() + screenRect.height(), 0xFFFF0000, 0xFF0000FF);
         }*/
 		super.render(context, mouseX, mouseY, delta);
-		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HOTBAR_TEXTURE, width / 2 - HOTBAR_WIDTH / 2, height - 22, HOTBAR_WIDTH, 22);
+		context.drawGuiTexture(RenderLayer::getGuiTextured, HOTBAR_TEXTURE, width / 2 - HOTBAR_WIDTH / 2, height - 22, HOTBAR_WIDTH, 22);
 		editBarWidget.render(context, mouseX, mouseY, delta);
 
 		assert client != null;
@@ -84,64 +67,50 @@ public class StatusBarsConfigScreen extends Screen {
 		ScreenRect mouseRect = new ScreenRect(new ScreenPos(mouseX - scaleFactor / 2, mouseY - scaleFactor / 2), scaleFactor, scaleFactor);
 
 		if (cursorBar != null) {
-			cursorBar.renderCursor(context, mouseX + cursorOffset.x(), mouseY + cursorOffset.y(), delta);
+			cursorBar.renderCursor(context, mouseX, mouseY, delta);
 			boolean inserted = false;
-			boolean updatePositions = false;
 			rectLoop:
-			for (ScreenRect screenRect : rectToBar.keySet()) {
+			for (ScreenRect screenRect : rectToBarLocation.keySet()) {
 				for (NavigationDirection direction : DIRECTION_CHECK_ORDER) {
 					boolean overlaps = screenRect.getBorder(direction).add(direction).overlaps(mouseRect);
 
 					if (overlaps) {
-						Pair<StatusBar, BarLocation> barPair = rectToBar.get(screenRect);
-						BarLocation barSnap = barPair.right();
+						BarLocation barSnap = rectToBarLocation.get(screenRect);
 						if (barSnap.barAnchor() == null) break;
 						if (direction.getAxis().equals(NavigationAxis.VERTICAL)) {
 							int neighborInsertY = getNeighborInsertY(barSnap, !direction.isPositive());
-							inserted = true;
 							if (!currentInsertLocation.equals(barSnap.barAnchor(), barSnap.x(), neighborInsertY)) {
 								if (cursorBar.anchor != null)
 									FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
 								FancyStatusBars.barPositioner.addRow(barSnap.barAnchor(), neighborInsertY);
 								FancyStatusBars.barPositioner.addBar(barSnap.barAnchor(), neighborInsertY, cursorBar);
 								currentInsertLocation = BarLocation.of(cursorBar);
-								updatePositions = true;
+								inserted = true;
 							}
 						} else {
 							int neighborInsertX = getNeighborInsertX(barSnap, direction.isPositive());
-							inserted = true;
 							if (!currentInsertLocation.equals(barSnap.barAnchor(), neighborInsertX, barSnap.y())) {
 								if (cursorBar.anchor != null)
 									FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
 								FancyStatusBars.barPositioner.addBar(barSnap.barAnchor(), barSnap.y(), neighborInsertX, cursorBar);
 								currentInsertLocation = BarLocation.of(cursorBar);
-								updatePositions = true;
+								inserted = true;
 							}
 						}
 						break rectLoop;
 					}
 				}
 			}
-			if (updatePositions) {
+			if (inserted) {
 				FancyStatusBars.updatePositions(true);
 				return;
 			}
 			// check for hovering empty anchors
 			for (BarPositioner.BarAnchor barAnchor : BarPositioner.BarAnchor.allAnchors()) {
+				if (FancyStatusBars.barPositioner.getRowCount(barAnchor) != 0) continue;
 				ScreenRect anchorHitbox = barAnchor.getAnchorHitbox(barAnchor.getAnchorPosition(width, height));
-				if (FancyStatusBars.barPositioner.getRowCount(barAnchor) != 0) {
-					// this fixes flickering
-					if (FancyStatusBars.barPositioner.getRowCount(barAnchor) == 1) {
-						LinkedList<StatusBar> row = FancyStatusBars.barPositioner.getRow(barAnchor, 0);
-						if (row.size() == 1 && row.getFirst() == cursorBar && anchorHitbox.overlaps(mouseRect)) inserted = true;
-					}
-					continue;
-				}
-
 				context.fill(anchorHitbox.getLeft(), anchorHitbox.getTop(), anchorHitbox.getRight(), anchorHitbox.getBottom(), 0x99FFFFFF);
-				if (anchorHitbox.overlaps(mouseRect)) {
-					inserted = true;
-					if (currentInsertLocation.barAnchor() == barAnchor) continue;
+				if (anchorHitbox.overlaps(mouseRect) && currentInsertLocation.barAnchor() != barAnchor) {
 					if (cursorBar.anchor != null)
 						FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
 					FancyStatusBars.barPositioner.addRow(barAnchor);
@@ -150,107 +119,96 @@ public class StatusBarsConfigScreen extends Screen {
 					FancyStatusBars.updatePositions(true);
 				}
 			}
-			if (!inserted) {
-				if (cursorBar.anchor != null) FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
-				currentInsertLocation = BarLocation.NULL;
-				FancyStatusBars.updatePositions(true);
-				cursorBar.setX(width + 5);
-			}
-		} else { // Not dragging around a bar
+		} else {
 			if (resizing) { // actively resizing one or 2 bars
-				int middleX; // the point between the 2 bars
+				int middleX;
 
-				StatusBar rightBar = resizedBars.right();
-				StatusBar leftBar = resizedBars.left();
-				boolean hasRight = rightBar != null;
-				boolean hasLeft = leftBar != null;
+				BarLocation left = resizedBars.left();
+				BarLocation right = resizedBars.right();
+				boolean hasRight = right.barAnchor() != null;
+				boolean hasLeft = left.barAnchor() != null;
 				BarPositioner.BarAnchor barAnchor;
 				if (!hasRight) {
-					barAnchor = leftBar.anchor;
-					middleX = leftBar.getX() + leftBar.getWidth();
+					barAnchor = left.barAnchor();
+					StatusBar bar = FancyStatusBars.barPositioner.getBar(barAnchor, left.y(), left.x());
+					middleX = bar.getX() + bar.getWidth();
 				} else {
-					barAnchor = rightBar.anchor;
-					middleX = rightBar.getX();
+					barAnchor = right.barAnchor();
+					middleX = FancyStatusBars.barPositioner.getBar(barAnchor, right.y(), right.x()).getX();
 				}
 
-				if (barAnchor != null) { // If is on an anchor
-					BarPositioner.SizeRule sizeRule = barAnchor.getSizeRule();
-					boolean doResize = true;
+				boolean doResize = true;
+				StatusBar rightBar = null;
+				StatusBar leftBar = null;
 
-					float widthPerSize;
-					if (sizeRule.isTargetSize())
-						widthPerSize = (float) sizeRule.totalWidth() / sizeRule.targetSize();
-					else
-						widthPerSize = sizeRule.widthPerSize();
+				BarPositioner.SizeRule sizeRule = barAnchor.getSizeRule();
 
-					// resize towards the left
-					if (mouseX < middleX) {
-						if (middleX - mouseX > widthPerSize / RESIZE_THRESHOLD) {
-							if (hasRight) {
-								if (rightBar.size + 1 > sizeRule.maxSize()) doResize = false;
-							}
-							if (hasLeft) {
-								if (leftBar.size - 1 < sizeRule.minSize()) doResize = false;
-							}
+				float widthPerSize;
+				if (sizeRule.isTargetSize())
+					widthPerSize = (float) sizeRule.totalWidth() / sizeRule.targetSize();
+				else
+					widthPerSize = sizeRule.widthPerSize();
 
-							if (doResize) {
-								if (hasRight) rightBar.size++;
-								if (hasLeft) leftBar.size--;
-								FancyStatusBars.updatePositions(true);
-							}
+				// resize towards the left
+				if (mouseX < middleX) {
+					if (middleX - mouseX > widthPerSize / .75f) {
+						if (hasRight) {
+							rightBar = FancyStatusBars.barPositioner.getBar(barAnchor, right.y(), right.x());
+							if (rightBar.size + 1 > sizeRule.maxSize()) doResize = false;
 						}
-					} else { // towards the right
-						if (mouseX - middleX > widthPerSize / RESIZE_THRESHOLD) {
-							if (hasRight) {
-								if (rightBar.size - 1 < sizeRule.minSize()) doResize = false;
-							}
-							if (hasLeft) {
-								if (leftBar.size + 1 > sizeRule.maxSize()) doResize = false;
-							}
+						if (hasLeft) {
+							leftBar = FancyStatusBars.barPositioner.getBar(barAnchor, left.y(), left.x());
+							if (leftBar.size - 1 < sizeRule.minSize()) doResize = false;
+						}
 
-							if (doResize) {
-								if (hasRight) rightBar.size--;
-								if (hasLeft) leftBar.size++;
-								FancyStatusBars.updatePositions(true);
-							}
+						if (doResize) {
+							if (hasRight) rightBar.size++;
+							if (hasLeft) leftBar.size--;
+							FancyStatusBars.updatePositions(true);
 						}
 					}
-				} else { // Freely moving around
-					if (hasLeft) {
-						leftBar.setWidth(Math.max(BAR_MINIMUM_WIDTH, mouseX - leftBar.getX()));
-					} else if (hasRight) {
-						int endX = rightBar.getX() + rightBar.getWidth();
-						rightBar.setX(Math.min(endX - BAR_MINIMUM_WIDTH, mouseX));
-						rightBar.setWidth(endX - rightBar.getX());
+				} else { // towards the right
+					if (mouseX - middleX > widthPerSize / .75f) {
+						if (hasRight) {
+							rightBar = FancyStatusBars.barPositioner.getBar(barAnchor, right.y(), right.x());
+							if (rightBar.size - 1 < sizeRule.minSize()) doResize = false;
+						}
+						if (hasLeft) {
+							leftBar = FancyStatusBars.barPositioner.getBar(barAnchor, left.y(), left.x());
+							if (leftBar.size + 1 > sizeRule.maxSize()) doResize = false;
+						}
+
+						if (doResize) {
+							if (hasRight) rightBar.size--;
+							if (hasLeft) leftBar.size++;
+							FancyStatusBars.updatePositions(true);
+						}
 					}
 				}
 
 			} else { // hovering bars
 				rectLoop:
-				for (ScreenRect screenRect : rectToBar.keySet()) {
+				for (ScreenRect screenRect : rectToBarLocation.keySet()) {
 					for (NavigationDirection direction : new NavigationDirection[]{NavigationDirection.LEFT, NavigationDirection.RIGHT}) {
 						boolean overlaps = screenRect.getBorder(direction).add(direction).overlaps(mouseRect);
 
 						if (overlaps && !editBarWidget.isMouseOver(mouseX, mouseY)) {
-							Pair<StatusBar, BarLocation> barPair = rectToBar.get(screenRect);
-							BarLocation barLocation = barPair.right();
-							StatusBar bar = barPair.left();
-							if (!bar.enabled) break;
+							BarLocation barLocation = rectToBarLocation.get(screenRect);
+							if (barLocation.barAnchor() == null) break;
 							boolean right = direction.equals(NavigationDirection.RIGHT);
-							if (barLocation.barAnchor() != null) {
-								if (barLocation.barAnchor().getSizeRule().isTargetSize() && !FancyStatusBars.barPositioner.hasNeighbor(barLocation.barAnchor(), barLocation.y(), barLocation.x(), right)) {
-									break;
-								}
-								if (!barLocation.barAnchor().getSizeRule().isTargetSize() && barLocation.x() == 0 && barLocation.barAnchor().isRight() != right)
-									break;
+							// can't resize on the edge of a target size row!
+							if (barLocation.barAnchor().getSizeRule().isTargetSize() && !FancyStatusBars.barPositioner.hasNeighbor(barLocation.barAnchor(), barLocation.y(), barLocation.x(), right)) {
+								break;
 							}
-							resizeHover.first(bar);
+							if (!barLocation.barAnchor().getSizeRule().isTargetSize() && barLocation.x() == 0 && barLocation.barAnchor().isRight() != right)
+								break;
+							resizeHover.first(barLocation);
 							resizeHover.right(right);
-							setResizeCursor(true);
+							GLFW.glfwSetCursor(window.getHandle(), RESIZE_CURSOR);
 							break rectLoop;
 						} else {
-							resizeHover.first(null);
-							setResizeCursor(false);
+							resizeHover.first(BarLocation.NULL);
+							GLFW.glfwSetCursor(window.getHandle(), 0);
 						}
 					}
 				}
@@ -314,7 +272,7 @@ public class StatusBarsConfigScreen extends Screen {
 		if (cursorBar != null) cursorBar.inMouse = false;
 		FancyStatusBars.updatePositions(false);
 		assert client != null;
-		setResizeCursor(false);
+		GLFW.glfwSetCursor(client.getWindow().getHandle(), 0);
 		FancyStatusBars.saveBarConfig();
 	}
 
@@ -325,10 +283,8 @@ public class StatusBarsConfigScreen extends Screen {
 
 	private void onBarClick(StatusBar statusBar, int button, int mouseX, int mouseY) {
 		if (button == 0) {
-			cursorOffset = new ScreenPos(statusBar.getX() - mouseX, statusBar.getY() - mouseY);
 			cursorBar = statusBar;
 			cursorBar.inMouse = true;
-			cursorBar.enabled = true;
 			currentInsertLocation = BarLocation.of(cursorBar);
 			if (statusBar.anchor != null)
 				FancyStatusBars.barPositioner.removeBar(statusBar.anchor, statusBar.gridY, statusBar);
@@ -346,12 +302,12 @@ public class StatusBarsConfigScreen extends Screen {
 	}
 
 	private void updateScreenRects() {
-		rectToBar.clear();
+		rectToBarLocation.clear();
 		FancyStatusBars.statusBars.values().forEach(statusBar1 -> {
-			if (!statusBar1.enabled) return;
-			rectToBar.put(
+			if (statusBar1.anchor == null) return;
+			rectToBarLocation.put(
 					new ScreenRect(new ScreenPos(statusBar1.getX(), statusBar1.getY()), statusBar1.getWidth(), statusBar1.getHeight()),
-					Pair.of(statusBar1, BarLocation.of(statusBar1)));
+					BarLocation.of(statusBar1));
 		});
 	}
 
@@ -359,29 +315,15 @@ public class StatusBarsConfigScreen extends Screen {
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		if (cursorBar != null) {
 			cursorBar.inMouse = false;
-			if (currentInsertLocation == BarLocation.NULL) {
-				cursorBar.x = (float) ((mouseX + cursorOffset.x()) / width);
-				cursorBar.y = (float) ((mouseY + cursorOffset.y()) / height);
-				cursorBar.width = Math.clamp(cursorBar.width, (float) BAR_MINIMUM_WIDTH / width, 1);
-			}
-			currentInsertLocation = BarLocation.NULL;
+			currentInsertLocation = BarLocation.of(cursorBar);
 			cursorBar = null;
 			FancyStatusBars.updatePositions(true);
 			updateScreenRects();
 			return true;
 		} else if (resizing) {
 			resizing = false;
-
-			// update x and width if bar has no anchor
-			StatusBar bar = null;
-			if (resizedBars.left() != null) bar = resizedBars.left();
-			else if (resizedBars.right() != null) bar = resizedBars.right();
-			if (bar != null && bar.anchor == null) {
-				bar.x = (float) bar.getX() / width;
-				bar.width = (float) bar.getWidth() / width;
-			}
-			resizedBars.left(null);
-			resizedBars.right(null);
+			resizedBars.left(BarLocation.NULL);
+			resizedBars.right(BarLocation.NULL);
 			updateScreenRects();
 			return true;
 		}
@@ -390,32 +332,23 @@ public class StatusBarsConfigScreen extends Screen {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		StatusBar first = resizeHover.first();
+		BarLocation first = resizeHover.first();
 		// want the right click thing to have priority
-		if (!editBarWidget.isMouseOver(mouseX, mouseY) && button == 0 && first != null) {
-			BarPositioner.BarAnchor barAnchor = first.anchor;
-			if (barAnchor != null) {
-				if (resizeHover.rightBoolean()) {
-					resizedBars.left(first);
+		if (!editBarWidget.isMouseOver(mouseX, mouseY) && button == 0 && !first.equals(BarLocation.NULL)) {
+			BarPositioner.BarAnchor barAnchor = first.barAnchor();
+			assert barAnchor != null;
+			if (resizeHover.rightBoolean()) {
+				resizedBars.left(first);
 
-					if (FancyStatusBars.barPositioner.hasNeighbor(barAnchor, first.gridY, first.gridX, true)) {
-						resizedBars.right(FancyStatusBars.barPositioner.getBar(barAnchor, first.gridY, first.gridX + (barAnchor.isRight() ? 1 : -1)));
-					} else resizedBars.right(null);
-				} else {
-					resizedBars.right(first);
+				if (FancyStatusBars.barPositioner.hasNeighbor(barAnchor, first.y(), first.x(), true)) {
+					resizedBars.right(new BarLocation(barAnchor, first.x() + (barAnchor.isRight() ? 1 : -1), first.y()));
+				} else resizedBars.right(BarLocation.NULL);
+			} else {
+				resizedBars.right(first);
 
-					if (FancyStatusBars.barPositioner.hasNeighbor(barAnchor, first.gridY, first.gridX, false)) {
-						resizedBars.left(FancyStatusBars.barPositioner.getBar(barAnchor, first.gridY, first.gridX + (barAnchor.isRight() ? -1 : 1)));
-					} else resizedBars.left(null);
-				}
-			} else { // if they have no anchor no need to do any checking
-				if (resizeHover.rightBoolean()) {
-					resizedBars.left(first);
-					resizedBars.right(null);
-				} else {
-					resizedBars.right(first);
-					resizedBars.left(null);
-				}
+				if (FancyStatusBars.barPositioner.hasNeighbor(barAnchor, first.y(), first.x(), false)) {
+					resizedBars.left(new BarLocation(barAnchor, first.x() + (barAnchor.isRight() ? -1 : 1), first.y()));
+				} else resizedBars.left(BarLocation.NULL);
 			}
 			resizing = true;
 			return true;

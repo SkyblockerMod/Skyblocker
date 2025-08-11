@@ -7,7 +7,7 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -16,13 +16,10 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import me.shedaniel.math.Rectangle;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -30,44 +27,34 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
 import java.util.*;
 
-public class VisitorHelper extends ClickableWidget {
+public class VisitorHelper {
 	private static final Set<Visitor> activeVisitors = new HashSet<>();
 	private static final Map<String, ItemStack> cachedItems = new HashMap<>();
 	// Map of grouped items with their total amount and associated visitors
 	private static final Object2IntMap<Text> groupedItems = new Object2IntOpenHashMap<>();
 	private static final Map<Text, List<Visitor>> visitorsByItem = new LinkedHashMap<>();
-	private static int xOffset = 4;
-	private static int yOffset = 4;
-	private static int exclusionZoneWidth = 215;
-	private static int exclusionZoneHeight = 215;
+	private static final int X_OFFSET = 4;
+	private static final int Y_OFFSET = 4;
 	private static final int ICON_SIZE = 16;
 	private static final int LINE_HEIGHT = 3;
-	private static final int PADDING = 4;
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
 	private static final Object2LongMap<Text> copiedTimestamps = new Object2LongOpenHashMap<>();
 
 	// Used to prevent adding the visitor again after the player clicks accept or refuse.
 	private static boolean processVisitor = false;
 
-	private int dragStartX, dragStartY;
-
-	public VisitorHelper(int x, int y) {
-		super(x, y, 0, 0, Text.literal("Visitor Helper"));
-	}
-
 	@Init
 	public static void initialize() {
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (!(screen instanceof HandledScreen<?> handledScreen) || !shouldRender()) return;
 
 			processVisitor = true;
 			ScreenEvents.afterTick(screen).register(_screen -> updateVisitors(handledScreen.getScreenHandler()));
-			Screens.getButtons(screen).add(new VisitorHelper(xOffset, yOffset));
+			ScreenEvents.afterRender(screen).register((_screen, context, _x, _y, _d) -> renderVisitorHelper(context, client.textRenderer));
 		});
 	}
 
@@ -80,7 +67,12 @@ public class VisitorHelper extends ClickableWidget {
 	public static List<Rectangle> getExclusionZones() {
 		if (activeVisitors.isEmpty()) return List.of();
 
-		return List.of(new Rectangle(xOffset, yOffset, exclusionZoneWidth, exclusionZoneHeight));
+		int maxXPosition = X_OFFSET + 215;
+		int textFontHeight = MinecraftClient.getInstance().textRenderer.fontHeight;
+		int count = groupedItems.size() + activeVisitors.size();
+		int maxYPosition = Y_OFFSET + count * (LINE_HEIGHT + textFontHeight);
+
+		return List.of(new Rectangle(X_OFFSET, Y_OFFSET, maxXPosition, maxYPosition));
 	}
 
 	/**
@@ -161,13 +153,11 @@ public class VisitorHelper extends ClickableWidget {
 	/**
 	 * Draws the visitor items and their associated information.
 	 */
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+	private static void renderVisitorHelper(DrawContext context, TextRenderer textRenderer) {
 		int index = 0;
-		int newWidth = 0;
-		int x = getX() + PADDING;
-		int y = getY() - (int) (textRenderer.fontHeight / 2f - ICON_SIZE * 0.95f / 2) + PADDING;
-		context.fill(getX(), getY(), getRight(), getBottom(), 0x18_80_80_80);
+
+		context.getMatrices().push();
+		context.getMatrices().translate(0, 0, 500);
 
 		for (Object2IntMap.Entry<Text> entry : groupedItems.object2IntEntrySet()) {
 			Text itemName = entry.getKey();
@@ -178,37 +168,40 @@ public class VisitorHelper extends ClickableWidget {
 
 			// Render visitors' heads for the shared item
 			for (Visitor visitor : visitors) {
-				int yPosition = y + index * (LINE_HEIGHT + textRenderer.fontHeight);
+				int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
-				context.getMatrices().pushMatrix();
-				context.getMatrices().translate(x, yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2);
-				context.getMatrices().scale(0.95f, 0.95f);
+				context.getMatrices().push();
+				context.getMatrices().translate(X_OFFSET, yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2, 0);
+				context.getMatrices().scale(0.95f, 0.95f, 1.0f);
 				context.drawItem(visitor.head(), 0, 0);
-				context.getMatrices().popMatrix();
+				context.getMatrices().pop();
 
-				context.drawText(textRenderer, visitor.name(), x + (int) (ICON_SIZE * 0.95f) + 4, yPosition, Colors.WHITE, true);
+				context.drawText(textRenderer, visitor.name(), X_OFFSET + (int) (ICON_SIZE * 0.95f) + 4, yPosition, -1, true);
 
 				index++;
 			}
 
 			// Render the shared item with the total amount
-			int iconX = x + 12;
+			int iconX = X_OFFSET + 12;
 			int textX = iconX + (int) (ICON_SIZE * 0.95f) + 4;
-			int yPosition = y + index * (LINE_HEIGHT + textRenderer.fontHeight);
+			int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
 			ItemStack cachedStack = getCachedItem(itemName.getString());
 			if (cachedStack != null) {
-				context.getMatrices().pushMatrix();
-				context.getMatrices().translate(iconX, yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2);
-				context.getMatrices().scale(0.95f, 0.95f);
+				context.getMatrices().push();
+				context.getMatrices().translate(iconX, yPosition + (float) textRenderer.fontHeight / 2 - ICON_SIZE * 0.95f / 2, 0);
+				context.getMatrices().scale(0.95f, 0.95f, 1.0f);
 				context.drawItem(cachedStack, 0, 0);
-				context.getMatrices().popMatrix();
+				context.getMatrices().pop();
 			}
 
 			MutableText name = cachedStack != null ? cachedStack.getName().copy() : itemName.copy();
 			MutableText itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
 					? name.append(" x" + (totalAmount / 64) + " stacks + " + (totalAmount % 64))
 					: name.append(" x" + totalAmount);
+
+			double mouseX = MinecraftClient.getInstance().mouse.getX() / MinecraftClient.getInstance().getWindow().getScaleFactor();
+			double mouseY = MinecraftClient.getInstance().mouse.getY() / MinecraftClient.getInstance().getWindow().getScaleFactor();
 
 			if (copiedTimestamps.containsKey(itemName)) {
 				long timeSinceCopy = System.currentTimeMillis() - copiedTimestamps.getLong(itemName);
@@ -218,33 +211,22 @@ public class VisitorHelper extends ClickableWidget {
 					copiedTimestamps.removeLong(itemName);
 				}
 			}
-			newWidth = Math.max(newWidth, textX + textRenderer.getWidth(itemText) - x);
 
 			drawTextWithHoverUnderline(context, textRenderer, itemText, textX, yPosition, mouseX, mouseY);
 
 			index++;
 		}
-		setHeight((groupedItems.size() + activeVisitors.size()) * (LINE_HEIGHT + MinecraftClient.getInstance().textRenderer.fontHeight) + PADDING * 2);
-		setWidth(newWidth + PADDING * 2);
-		exclusionZoneWidth = getWidth();
-		exclusionZoneHeight = getHeight();
-	}
 
-	@Override
-	protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-		setPosition(xOffset = (int) mouseX - dragStartX, yOffset = (int) mouseY - dragStartY);
+		context.getMatrices().pop();
 	}
 
 	/**
 	 * Handles mouse click events on the visitor UI.
 	 */
-	public void onClick(double mouseX, double mouseY) {
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		dragStartX = (int) mouseX - getX();
-		dragStartY = (int) mouseY - getY();
+	public static void handleMouseClick(double mouseX, double mouseY, int mouseButton, TextRenderer textRenderer) {
+		if (mouseButton != 0) return;
 
 		int index = 0;
-		int y = getY() - (int) (textRenderer.fontHeight / 2f - ICON_SIZE * 0.95f / 2) + PADDING;
 
 		for (Object2IntMap.Entry<Text> entry : groupedItems.object2IntEntrySet()) {
 			Text itemName = entry.getKey();
@@ -252,11 +234,13 @@ public class VisitorHelper extends ClickableWidget {
 			List<Visitor> visitors = visitorsByItem.get(itemName);
 
 			if (visitors != null && !visitors.isEmpty()) {
-				index += visitors.size();
+				for (Visitor ignored : visitors) {
+					index++;
+				}
 
-				int iconX = getX() + 12;
+				int iconX = X_OFFSET + 12;
 				int textX = iconX + (int) (ICON_SIZE * 0.95f) + 4;
-				int yPosition = y + index * (LINE_HEIGHT + textRenderer.fontHeight);
+				int yPosition = Y_OFFSET + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
 				MutableText name = itemName.copy();
 				Text itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64
@@ -293,20 +277,21 @@ public class VisitorHelper extends ClickableWidget {
 	}
 
 	private static void drawTextWithHoverUnderline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, double mouseX, double mouseY) {
-		context.drawText(textRenderer, text, x, y, Colors.WHITE, true);
+		context.getMatrices().push();
+		context.getMatrices().translate(0, 0, 500);
+		context.drawText(textRenderer, text, x, y, -1, true);
 
 		if (isMouseOverText(textRenderer, text, x, y, mouseX, mouseY)) {
-			context.drawHorizontalLine(x, x + textRenderer.getWidth(text), y + textRenderer.fontHeight, Colors.WHITE);
+			context.drawHorizontalLine(x, x + textRenderer.getWidth(text), y + textRenderer.fontHeight, -1);
 		}
+
+		context.getMatrices().pop();
 	}
 
 	/**
 	 * Checks if the mouse is over a specific rectangular region.
 	 */
 	private static boolean isMouseOverText(TextRenderer textRenderer, Text text, int x, int y, double mouseX, double mouseY) {
-		return HudHelper.pointIsInArea(mouseX, mouseY, x, y, x + textRenderer.getWidth(text), y + textRenderer.fontHeight);
+		return RenderHelper.pointIsInArea(mouseX, mouseY, x, y, x + textRenderer.getWidth(text), y + textRenderer.fontHeight);
 	}
-
-	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 }

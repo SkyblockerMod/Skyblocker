@@ -1,36 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getColor;
-import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getMapPosForNWMostRoom;
-import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getPhysicalPosFromMap;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.regex.Pattern;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-import java.util.zip.InflaterInputStream;
-
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonArray;
@@ -43,7 +12,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.JsonOps;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -70,6 +38,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
@@ -78,7 +47,6 @@ import net.minecraft.command.argument.TextArgumentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -98,6 +66,30 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Pattern;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import java.util.zip.InflaterInputStream;
+
+import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.*;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class DungeonManager {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(DungeonManager.class);
@@ -226,20 +218,6 @@ public class DungeonManager {
 		return customWaypoints.remove(room, pos);
 	}
 
-	@Nullable
-	public static Vector2ic getMapEntrancePos() {
-		return mapEntrancePos;
-	}
-
-	public static int getMapRoomSize() {
-		return mapRoomSize;
-	}
-
-	@Nullable
-	public static Vector2ic getPhysicalEntrancePos() {
-		return physicalEntrancePos;
-	}
-
 	/**
 	 * not null if {@link #isCurrentRoomMatched()}
 	 */
@@ -272,7 +250,8 @@ public class DungeonManager {
 		ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonManager::saveCustomWaypoints);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 5);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(DungeonManager::render);
-		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonManager::onChatMessage);
+		ClientReceiveMessageEvents.GAME.register(DungeonManager::onChatMessage);
+		ClientReceiveMessageEvents.GAME_CANCELED.register(DungeonManager::onChatMessage);
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
 				.then(literal("markAsFound").then(markSecretsCommand(true)))
@@ -498,7 +477,7 @@ public class DungeonManager {
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, String> matchAgainstCommand() {
 		return argument("room", StringArgumentType.string()).suggests((context, builder) -> CommandSource.suggestMatching(ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).map(Map::keySet).flatMap(Collection::stream), builder)).then(argument("direction", Room.Direction.DirectionArgumentType.direction()).executes(context -> {
-			if (!isClearingDungeon()) {
+			if (physicalEntrancePos == null || mapEntrancePos == null || mapRoomSize == 0) {
 				context.getSource().sendError(Constants.PREFIX.get().append("§cYou are not in a dungeon."));
 				return Command.SINGLE_SUCCESS;
 			}
@@ -699,9 +678,9 @@ public class DungeonManager {
 	 * <p>Used to detect when all secrets in a room are found and detect when a wither or blood door is unlocked.
 	 * To process key obtained messages, this method checks if door highlight is enabled and if the message matches a key obtained message.
 	 */
-	private static boolean onChatMessage(Text text, boolean overlay) {
+	private static void onChatMessage(Text text, boolean overlay) {
 		if (!shouldProcess()) {
-			return true;
+			return;
 		}
 
 		String message = text.getString();
@@ -734,8 +713,6 @@ public class DungeonManager {
 			reset();
 			boss = newBoss;
 		}
-
-		return true;
 	}
 
 	/**
@@ -808,13 +785,6 @@ public class DungeonManager {
 	@Nullable
 	private static Room getRoomAtPhysical(Vec3i pos) {
 		return rooms.get(DungeonMapUtils.getPhysicalRoomPos(pos));
-	}
-
-	/**
-	 * @return {@code true} if the player is in the main clearing phase of a dungeon.
-	 */
-	public static boolean isClearingDungeon() {
-		return physicalEntrancePos != null && mapEntrancePos != null && mapRoomSize != 0;
 	}
 
 	/**

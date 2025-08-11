@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
+import de.hysky.skyblocker.mixins.accessors.DrawContextInvoker;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.SkyblockTime;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -54,7 +55,7 @@ public class UpcomingEventsTab implements RecipeTab {
 
 		//Draw the title area
 		context.drawItemWithoutEntity(CLOCK, x, y + 4);
-		context.drawTextWithShadow(CLIENT.textRenderer, "Upcoming Events", x + 17, y + 7, Colors.WHITE);
+		context.drawTextWithShadow(CLIENT.textRenderer, "Upcoming Events", x + 17, y + 7, -1);
 
 		int eventsY = y + 7 + 24;
 		this.hovered = null;
@@ -63,7 +64,7 @@ public class UpcomingEventsTab implements RecipeTab {
 			eventRenderer.render(context, x + 1, eventsY, mouseX, mouseY);
 
 			//If we're hovering over this event then set it as the hovered one to show a tooltip
-			if (HudHelper.pointIsInArea(mouseX, mouseY, x, y, x + 131, y + 150) && EventRenderer.isMouseOver(mouseX, mouseY, x + 1, eventsY)) this.hovered = eventRenderer;
+			if (RenderHelper.pointIsInArea(mouseX, mouseY, x, y, x + 131, y + 150) && EventRenderer.isMouseOver(mouseX, mouseY, x + 1, eventsY)) this.hovered = eventRenderer;
 
 			eventsY += EventRenderer.HEIGHT;
 		}
@@ -74,7 +75,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	@Override
 	public void drawTooltip(DrawContext context, int x, int y) {
 		if (this.hovered != null) {
-			context.drawTooltipImmediately(CLIENT.textRenderer, this.hovered.getTooltip(), x, y, HoveredTooltipPositioner.INSTANCE, null);
+			((DrawContextInvoker) context).invokeDrawTooltip(CLIENT.textRenderer, this.hovered.getTooltip(), x, y, HoveredTooltipPositioner.INSTANCE, null);
 		}
 	}
 
@@ -104,23 +105,23 @@ public class UpcomingEventsTab implements RecipeTab {
 			long time = System.currentTimeMillis() / 1000;
 			TextRenderer textRenderer = CLIENT.textRenderer;
 
-			context.drawTextWithShadow(textRenderer, Text.literal(eventName).fillStyle(Style.EMPTY.withUnderline(isMouseOver(mouseX, mouseY, x, y))), x, y, Colors.WHITE);
+			context.drawTextWithShadow(textRenderer, Text.literal(eventName).fillStyle(Style.EMPTY.withUnderline(isMouseOver(mouseX, mouseY, x, y))), x, y, -1);
 
 			if (events.isEmpty()) {
 				context.drawText(textRenderer, Text.literal(" ").append(Text.translatable("skyblocker.events.tab.noMore")), x, y + textRenderer.fontHeight, Colors.GRAY, false);
 			} else if (events.peekFirst().start() > time) {
 				Text formatted = Text.literal(" ").append(Text.translatable("skyblocker.events.tab.startsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() - time)))).formatted(Formatting.YELLOW);
 
-				context.drawTextWithShadow(textRenderer, formatted, x, y + textRenderer.fontHeight, Colors.WHITE);
+				context.drawTextWithShadow(textRenderer, formatted, x, y + textRenderer.fontHeight, -1);
 			} else {
 				Text formatted = Text.literal(" ").append(Text.translatable("skyblocker.events.tab.endsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() + events.peekFirst().duration() - time)))).formatted(Formatting.GREEN);
 
-				context.drawTextWithShadow(textRenderer, formatted, x, y + textRenderer.fontHeight, Colors.WHITE);
+				context.drawTextWithShadow(textRenderer, formatted, x, y + textRenderer.fontHeight, -1);
 			}
 		}
 
 		private static boolean isMouseOver(int mouseX, int mouseY, int x, int y) {
-			return HudHelper.pointIsInArea(mouseX, mouseY, x, y, x + 131, y + HEIGHT);
+			return RenderHelper.pointIsInArea(mouseX, mouseY, x, y, x + 131, y + HEIGHT);
 		}
 
 		private List<TooltipComponent> getTooltip() {

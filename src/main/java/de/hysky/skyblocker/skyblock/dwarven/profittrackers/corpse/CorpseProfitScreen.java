@@ -10,7 +10,6 @@ import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,7 +41,7 @@ public class CorpseProfitScreen extends Screen {
 	protected void init() {
 		assert client != null;
 		addDrawable((context, mouseX, mouseY, delta) -> {
-			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.corpseTracker.screenTitle").formatted(Formatting.BOLD), width / 2, (32 - client.textRenderer.fontHeight) / 2, Colors.WHITE);
+			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.corpseTracker.screenTitle").formatted(Formatting.BOLD), width / 2, (32 - client.textRenderer.fontHeight) / 2, 0xFFFFFF);
 		});
 
 		if (summaryView) addDrawableChild(getRewardList());

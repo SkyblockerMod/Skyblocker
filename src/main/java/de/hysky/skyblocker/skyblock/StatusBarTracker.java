@@ -71,12 +71,7 @@ public class StatusBarTracker {
 	}
 
 	private static Text onOverlayMessage(Text text, boolean overlay) {
-		if (!overlay || !Utils.isOnSkyblock() ||  Utils.isInTheRift()) {
-			return text;
-		}
-		if (!SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars) {
-			//still update values for other parts of the mod to use
-			update(text.getString(), SkyblockerConfigManager.get().chat.hideMana);
+		if (!overlay || !Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.bars.enableBars || Utils.isInTheRift()) {
 			return text;
 		}
 		return Text.of(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));

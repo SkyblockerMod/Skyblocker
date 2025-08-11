@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.minecraft.client.MinecraftClient;
@@ -51,7 +52,7 @@ public class FirePillarAnnouncer {
         Title title = new Title(Text.literal(entityName).formatted(Formatting.BOLD, Formatting.DARK_PURPLE));
 
         if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown == SlayersConfig.BlazeSlayer.FirePillar.SOUND_AND_VISUAL) {
-            TitleContainer.addTitleAndPlaySound(title, 15);
+            RenderHelper.displayInTitleContainerAndPlaySound(title, 15);
         } else {
             TitleContainer.addTitle(title, 15);
         }

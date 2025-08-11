@@ -349,10 +349,6 @@ public class SearchOverManager {
         if (isAuction) {
             addExtras();
         }
-		// Fix Bazaar bug - Search doesn't work if input from sign contains "null" (blocks null ovoid, etc.)
-		if (!isAuction && !isCommand && search.toLowerCase().contains("null")) {
-			search = "\"%s\"".formatted(search);
-		}
         //push
         if (isCommand) {
             pushCommand();
@@ -368,7 +364,7 @@ public class SearchOverManager {
         // pet level
         if (maxPetLevel) {
             if (auctionPets.contains(search.toLowerCase())) {
-                if (search.equalsIgnoreCase("golden dragon") || search.equalsIgnoreCase("jade dragon")) {
+                if (search.equalsIgnoreCase("golden dragon")) {
                     search = "[Lvl 200] " + search;
                 } else {
                     search = "[Lvl 100] " + search;
