@@ -402,5 +402,9 @@
     "skyblocker.config.dungeons.fancyPartyFinder": "Buscador de Grupo Mais Bonito",
     "skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip": "Esconde os Crânios Assombrados que aparecem ao usar as Luvas Soulweaver.",
     "skyblocker.config.dungeons.dungeonSplits.@Tooltip": "Ativa um componente que mostra seus melhores tempos em cada seção da Dungeon.",
-    "skyblocker.config.dungeons.hideSoulweaverSkulls": "Esconder Crânios do Soulweaver"
+    "skyblocker.config.dungeons.hideSoulweaverSkulls": "Esconder Crânios do Soulweaver",
+    "skyblocker.config.dungeons.livid.enableSolidColor": "Ativar Cor Customizada Livid",
+    "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Usa a cor personalizada em vez da cor Livid para o brilho e a caixa de destaque.",
+    "skyblocker.config.dungeons.livid.customColor": "Cor Customizada Livid",
+    "skyblocker.config.dungeons.livid.enableLividColorGlow": "Ativar Cor do Brilho Livid"
 }
