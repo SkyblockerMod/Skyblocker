@@ -322,10 +322,10 @@ public class ChestValue {
 	@NotNull
 	private static Text getButtonTooltipText(ScreenType screenType) {
 		return switch (screenType) {
-			case MINION -> Text.translatable("skyblocker.config.general.minionValue.@Tooltip");
-			case OTHER -> Text.translatable("skyblocker.config.general.chestValue.@Tooltip");
-			case STASH -> Text.translatable("skyblocker.config.general.stashValue.@Tooltip");
-			case SACK -> Text.translatable("skyblocker.config.general.sackValue.@Tooltip");
+			case MINION -> Text.translatable("skyblocker.containerValue.minionValue.@Tooltip");
+			case OTHER -> Text.translatable("skyblocker.containerValue.chestValue.@Tooltip");
+			case STASH -> Text.translatable("skyblocker.containerValue.stashValue.@Tooltip");
+			case SACK -> Text.translatable("skyblocker.containerValue.sackValue.@Tooltip");
 		};
 	}
 

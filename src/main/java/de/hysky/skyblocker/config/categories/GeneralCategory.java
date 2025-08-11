@@ -52,8 +52,8 @@ public class GeneralCategory {
                         .controller(ConfigUtils.createBooleanController())
                         .build())
                 .option(Option.<UpdateNotifications.Channel>createBuilder()
-                        .name(Text.translatable("skyblocker.config.general.updateChannel"))
-                        .description(Text.translatable("skyblocker.config.general.updateChannel.@Tooltip"))
+                        .name(Text.translatable("skyblocker.config.general.updateNotifications.updateChannel"))
+                        .description(Text.translatable("skyblocker.config.general.updateNotifications.updateChannel.@Tooltip"))
                         .binding(UpdateNotifications.Config.DEFAULT.channel(),
                                 () -> UpdateNotifications.config.getData().channel(),
                                 newValue -> UpdateNotifications.config.setData(UpdateNotifications.config.getData().withChannel(newValue)))

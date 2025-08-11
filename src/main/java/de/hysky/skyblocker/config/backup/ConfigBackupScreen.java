@@ -31,7 +31,7 @@ public class ConfigBackupScreen extends Screen {
 	private SettingsListWidget detailsWidget;
 
 	public ConfigBackupScreen(@Nullable Screen parent) {
-		super(Text.translatable("skyblocker.config.backup.title"));
+		super(Text.translatable("skyblocker.config.general.backup.title"));
 		this.parent = parent;
 	}
 
@@ -59,7 +59,7 @@ public class ConfigBackupScreen extends Screen {
 
 		addDrawableChild(listWidget);
 		addDrawableChild(detailsWidget);
-		ButtonWidget restoreBtn = ButtonWidget.builder(Text.translatable("skyblocker.config.backup.restore"), b -> {
+		ButtonWidget restoreBtn = ButtonWidget.builder(Text.translatable("skyblocker.config.general.backup.restore"), b -> {
 			Path selected = listWidget.getSelectedPath();
 			if (selected != null) {
 				assert client != null;
@@ -82,8 +82,8 @@ public class ConfigBackupScreen extends Screen {
 					} else {
 						client.setScreen(this);
 					}
-				}, Text.translatable("skyblocker.config.backup.confirm.title"),
-						Text.stringifiedTranslatable("skyblocker.config.backup.confirm.text", selected.getFileName().toString()),
+				}, Text.translatable("skyblocker.config.general.backup.confirm.title"),
+						Text.stringifiedTranslatable("skyblocker.config.general.backup.confirm.text", selected.getFileName().toString()),
 						ScreenTexts.YES, ScreenTexts.NO));
 			}
 		}).size(90, 20).position(width / 2 - 95, height - 28).build();

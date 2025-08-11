@@ -257,7 +257,7 @@
     "skyblocker.config.general.itemTooltip.enableExoticTooltip": "Ativar Tooltip Exótico",
     "skyblocker.config.general.itemTooltip.enableMuseumInfo": "Ativar Info do Museu",
     "skyblocker.config.uiAndVisuals.chestValue": "Valor do Baú",
-    "skyblocker.config.general.chestValue.@Tooltip": "Calcular o valor desse contêiner.",
+    "skyblocker.containerValue.chestValue.@Tooltip": "Calcular o valor desse contêiner.",
     "skyblocker.config.uiAndVisuals.chestValue.enableChestValue": "Ativar Valor do Baú",
     "skyblocker.config.general.itemTooltip.enableObtainedDate": "Ativar Data Obtida",
     "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor": "Cor Incompleta",
