@@ -398,5 +398,9 @@
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound": "Ativar Som de Pontuação %d na Dungeon",
     "skyblocker.config.dungeons.devices.solveSimonSays": "Resolvedor Simon Says",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "O padrão 270 é destinado para corridas S+ quando você entra com 300+ de pontuação – normalmente F5-F7 e M5-M7.\nSe você estiver fazendo corridas S (entrando com 270 de pontuação), considere reduzir isso para 250 ou menos, caso contrário será inútil.",
-    "skyblocker.config.dungeons.dungeonSplits": "Componente de Divisões de Dungeon"
+    "skyblocker.config.dungeons.dungeonSplits": "Componente de Divisões de Dungeon",
+    "skyblocker.config.dungeons.fancyPartyFinder": "Buscador de Grupo Mais Bonito",
+    "skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip": "Esconde os Crânios Assombrados que aparecem ao usar as Luvas Soulweaver.",
+    "skyblocker.config.dungeons.dungeonSplits.@Tooltip": "Ativa um componente que mostra seus melhores tempos em cada seção da Dungeon.",
+    "skyblocker.config.dungeons.hideSoulweaverSkulls": "Esconder Crânios do Soulweaver"
 }
