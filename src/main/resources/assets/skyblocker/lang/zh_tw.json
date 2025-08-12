@@ -1258,7 +1258,7 @@
     "skyblocker.config.dungeons.bloodCampHelper.@Tooltip": "預測Blood Room中怪物的移動以便快速擊殺。",
     "skyblocker.config.dungeons.livid.customColor": "自訂Livid顏色",
     "skyblocker.config.helpers.experiments.blockIncorrectClicks": "阻止錯誤點擊",
-    "skyblocker.config.dungeons.dungeonSplits": "地下城階段計時小工具",
+    "skyblocker.config.dungeons.dungeonSplits": "地下城階段計時小部件",
     "skyblocker.slayer.slainTime": "此次擊殺耗時%d！",
     "skyblocker.copyUnderbidPrice.copied": "複製了最低價格：%s",
     "skyblocker.config.helpers.bazaar.enableReorderHelper": "啟用重新下單助手",
