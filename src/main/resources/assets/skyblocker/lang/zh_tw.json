@@ -1412,5 +1412,11 @@
     "skyblocker.config.helpers.fishing.enableFishingHud": "啟用釣魚HUD",
     "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds": "傳送按鍵綁定",
     "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds.@Tooltip": "為Spirit Leap覆蓋層的傳送添加按鍵綁定。按1傳送至第一個玩家，按2傳送至第二個玩家，按3傳送至第三個玩家，按4傳送至第四個玩家。",
-    "skyblocker.config.otherLocations.barn.enableGlowingMushroomHelper": "啟用發光蘑菇助手"
+    "skyblocker.config.otherLocations.barn.enableGlowingMushroomHelper": "啟用發光蘑菇助手",
+    "skyblocker.config.dungeons.sellableItemsHighlighter": "突出顯示可售出物品",
+    "skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip": "突顯地下城中撿起的可出售給NPC的物品。",
+    "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip": "傳送時發送一條隊伍訊息。\n§c需要啟用Spirit Leap覆蓋層。",
+    "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage": "Leap訊息",
+    "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip": "傳送時發送的聊天訊息的文本，字串「[name]」將被替換為你傳送到的玩家的名字。",
+    "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage": "啟用Leap訊息"
 }
