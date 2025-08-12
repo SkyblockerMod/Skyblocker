@@ -436,5 +436,7 @@
     "skyblocker.config.dungeons.professor.floor3GuardianHealthDisplay": "Exibição de Vida do Guardião (F3/M3)",
     "skyblocker.config.dungeons.puzzle.solveIceFill": "Resolver Quebra-cabeça do Preenchimento de Gelo",
     "skyblocker.config.dungeons.puzzle.solveWaterboard": "Resolver Quebra-cabeça da Prancha de Água",
-    "skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip": "Clique nas alavancas indicadas nos momentos certos para resolver o quebra-cabeça."
+    "skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip": "Clique nas alavancas indicadas nos momentos certos para resolver o quebra-cabeça.",
+    "skyblocker.config.dungeons.highlightDoorKeys": "Destacar Chaves das Portas",
+    "skyblocker.config.dungeons.highlightDoorKeys.@Tooltip": "Destacar as chaves para as portas do Wither e do Blood no chão, em ciano."
 }
