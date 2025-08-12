@@ -13,7 +13,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.CodecUtils;
-import de.hysky.skyblocker.utils.profile.ProfiledData;
+import de.hysky.skyblocker.utils.data.ProfiledData;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;

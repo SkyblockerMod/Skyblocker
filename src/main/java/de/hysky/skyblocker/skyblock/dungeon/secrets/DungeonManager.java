@@ -669,8 +669,10 @@ public class DungeonManager {
 		}
 
 		//Calculate the checkmark colour and mark all secrets as found if the checkmark is green
-		if (currentRoom.getType() != Room.Type.ENTRANCE && getRoomCheckmarkColour(client, map, currentRoom) == DungeonMapUtils.GREEN_COLOR) {
+		//We also wait for it being matched to ensure that we don't try to mark the room as completed if secret waypoints haven't yet loaded (since the room is still matching)
+		if (currentRoom.getType() != Room.Type.ENTRANCE && currentRoom.isMatched() && !currentRoom.greenChecked && getRoomCheckmarkColour(client, map, currentRoom) == DungeonMapUtils.GREEN_COLOR) {
 			currentRoom.markAllSecrets(true);
+			currentRoom.greenChecked = true;
 		}
 
 		currentRoom.tick(client);

@@ -14,8 +14,6 @@
   "key.itemProtection": "Protect Item",
   "key.skyblocker.slottext": "Slot Text",
   "key.itemPriceLookup": "Item Price Lookup",
-  "key.itemPriceRefresh": "Bazaar Refresh",
-
 
   "text.skyblocker.open": "Open",
   "text.skyblocker.quit_config": "Changes Not Saved",
@@ -220,6 +218,9 @@
   "skyblocker.config.dungeons.salvageHelper": "Salvage Helper",
   "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Highlights items picked up in dungeons that can be salvaged.",
 
+  "skyblocker.config.dungeons.sellableItemsHighlighter": "Sellable Items Highlighter",
+  "skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip": "Highlights items picked up in Dungeons that can be sold to NPC.",
+
   "skyblocker.config.dungeons.bloodCampHelper": "Blood Camp Helper",
   "skyblocker.config.dungeons.bloodCampHelper.@Tooltip": "Predicts mob movement in the Blood Room to assist camping.",
 
@@ -247,8 +248,14 @@
   "skyblocker.config.dungeons.spiritLeapOverlay": "Spirit Leap Overlay",
   "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay": "Enable Spirit Leap Overlay",
   "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay.@Tooltip": "Shows a custom overlay for the Spirit Leap screen that makes leaping to teammates easy and consistent.",
+  "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds": "Leap Keybinds",
+  "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds.@Tooltip": "Adds keybinds for leaping to players in the Spirit Leap Overlay. Press 1 for the first player, 2 for the second player, 3 for the third player, and 4 for the fourth player.",
   "skyblocker.config.dungeons.spiritLeapOverlay.showMap": "Show Dungeon Map in Spirit Leap Overlay",
   "skyblocker.config.dungeons.spiritLeapOverlay.scale": "Spirit Leap Overlay Scale",
+  "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage": "Enable Leap Message",
+  "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip": "Sends a party message in the chat upon leaping.\n§cRequires Spirit Leap Overlay to be enabled.",
+  "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage": "Leap Message",
+  "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip": "Text for the chat message upon leaping, the string \"[name]\" will be replaced with the name of the player you leap to.",
 
   "skyblocker.config.dungeons.starredMobBoundingBoxes": "Starred Mob Bounding Boxes",
   "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
@@ -358,6 +365,8 @@
 
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
+  "skyblocker.config.general.itemList.enableCollapsibleEntries": "Enable Collapsible Entry Groups",
+  "skyblocker.config.general.itemList.enableCollapsibleEntries.@Tooltip": "Group together similar items into one entry which can be expanded by clicking on it.\n\nRequires rejoining or reloading REI plugins to apply!",
 
   "skyblocker.config.general.itemList.filter.all": "All",
   "skyblocker.config.general.itemList.filter.entities": "Entities",
@@ -525,6 +534,7 @@
   "skyblocker.config.helpers.fishing.fishingTimerScale.@Tooltip": "How big to display the fishing timer.",
   "skyblocker.config.helpers.fishing.hideOtherPlayers": "Hide Other Players Rods",
   "skyblocker.config.helpers.fishing.hideOtherPlayers.@Tooltip": "Hide other players' fishing rods from showing for you.",
+  "skyblocker.config.helpers.fishing.enableFishingHud": "Enable Fishing HUD",
   "skyblocker.config.helpers.fishing.enableFishingTimer": "Enable Bobber Timer",
   "skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip": "Adds bobber lifetime to HUD.",
   "skyblocker.config.helpers.fishing.hud.screen": "Fishing HUD Config...",
@@ -816,6 +826,7 @@
 
   "skyblocker.config.otherLocations": "Other Locations",
   "skyblocker.config.otherLocations.barn": "Barn",
+  "skyblocker.config.otherLocations.barn.enableGlowingMushroomHelper": "Enable Glowing Mushroom Helper",
   "skyblocker.config.otherLocations.barn.solveHungryHiker": "Solve Hungry Hiker",
   "skyblocker.config.otherLocations.barn.solveTreasureHunter": "Solve Treasure Hunter",
   "skyblocker.config.otherLocations.end": "The End",
@@ -1160,6 +1171,7 @@
 
   "skyblocker.config.uiAndVisuals.teleportOverlay": "Teleport Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableEtherTransmission": "Enable Ether Transmission Overlay",
+  "skyblocker.config.uiAndVisuals.teleportOverlay.showWhenInAir": "Show Overlay Mid Air",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableInstantTransmission": "Enable Instant Transmission Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission": "Enable Sinrecall Transmission Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableTeleportOverlays": "Enable Teleport Overlays",

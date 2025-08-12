@@ -148,9 +148,12 @@ public class DonationButton extends ClickableWidget {
 			tooltip.add(Text.literal(" - ").formatted(Formatting.GRAY).append(MuseumUtils.getDisplayName(discount.left(), donation.isSet())).append(Text.literal(" ✔").formatted(Formatting.GREEN)).append(Text.literal(" (").formatted(Formatting.DARK_GRAY).append(Text.literal(MuseumUtils.formatPrice(discount.rightDouble())).formatted(Formatting.GOLD)).append(")").formatted(Formatting.DARK_GRAY)));
 		}
 
-		tooltip.add(Text.empty());
+		String wikiLookupString = WikiLookup.getKeysText();
+		if (soulbound || !wikiLookupString.isEmpty()) tooltip.add(Text.empty());
 		if (soulbound) tooltip.add(Text.literal("* Soulbound *").formatted(Formatting.DARK_GRAY));
-		tooltip.add(Text.translatable("skyblocker.museum.hud.wikiLookup", WikiLookup.getKeysText()).formatted(Formatting.YELLOW));
+		if (!wikiLookupString.isEmpty()) {
+			tooltip.add(Text.translatable("skyblocker.museum.hud.wikiLookup", wikiLookupString).formatted(Formatting.YELLOW));
+		}
 
 		this.tooltip = tooltip;
 	}

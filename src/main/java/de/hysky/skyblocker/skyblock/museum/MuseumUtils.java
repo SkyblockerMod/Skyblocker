@@ -136,6 +136,6 @@ public class MuseumUtils {
 	 * @return A formatted string (e.g., "10M", "5K", "1.2B").
 	 */
 	public static String formatPrice(double value) {
-		return Formatters.SHORT_FLOAT_NUMBERS.format(value);
+		return Formatters.SHORT_FLOAT_NUMBERS.format(value).replace(".0", "");
 	}
 }
