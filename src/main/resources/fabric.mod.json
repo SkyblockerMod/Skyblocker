@@ -28,6 +28,9 @@
     "rei_client": [
       "de.hysky.skyblocker.compatibility.rei.SkyblockerREIClientPlugin"
     ],
+    "rei_common": [
+      "de.hysky.skyblocker.compatibility.rei.SkyblockerREICommonPlugin"
+    ],
     "emi": [
       "de.hysky.skyblocker.compatibility.emi.SkyblockerEMIPlugin"
     ],
