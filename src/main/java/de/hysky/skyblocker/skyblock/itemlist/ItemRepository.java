@@ -7,7 +7,6 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.Utils;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
 import io.github.moulberry.repo.data.NEUForgeRecipe;
 import io.github.moulberry.repo.data.NEUItem;
@@ -62,13 +61,11 @@ public class ItemRepository {
 
 	/**
 	 * Load the recipes manually because Hypixel doesn't send any vanilla recipes to the client.
-	 * This also reloads REI to include the Skyblock items.
+	 * This also reloads REI to include the Skyblock items when the items are done loading.
 	 */
 	private static void handleRecipeSynchronization() {
-		if (!itemsImported || !filesImported) return;
-
 		MinecraftClient client = MinecraftClient.getInstance();
-		if (client.world == null || client.getNetworkHandler() == null || !Utils.isOnSkyblock()) return;
+		if (client.world == null || client.getNetworkHandler() == null) return;
 
 		SynchronizeRecipesS2CPacket packet = new SynchronizeRecipesS2CPacket(Map.of(), CuttingRecipeDisplay.Grouping.empty());
 		try {
