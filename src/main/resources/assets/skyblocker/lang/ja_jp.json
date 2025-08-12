@@ -620,5 +620,8 @@
     "skyblocker.config.dungeons.map.showSelfHead": "自分のアイコンを表示する",
     "skyblocker.config.dungeons.princeMessage": "Princeメッセージ",
     "skyblocker.config.dungeons.princeMessage.princeMessage": "Princeメッセージ",
-    "skyblocker.config.title.settings": "設定"
+    "skyblocker.config.title.settings": "設定",
+    "skyblocker.config.farming.general.yaw": "ヨーイ：%s",
+    "skyblocker.config.farming.general.pitch": "ピッチ：%s",
+    "skyblocker.config.backup.restore": "復元"
 }
