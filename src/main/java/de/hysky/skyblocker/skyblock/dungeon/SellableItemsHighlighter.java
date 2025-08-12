@@ -29,7 +29,7 @@ public class SellableItemsHighlighter extends SimpleContainerSolver implements C
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		return slots.int2ObjectEntrySet().stream()
-				.filter(entry -> entry.getIntKey() > 54 && entry.getIntKey() < 81) // Only inventory slots
+				.filter(entry -> entry.getIntKey() > 53 && entry.getIntKey() < 81) // Only inventory slots
 				.filter(entry -> isValidItem(entry.getValue())) // Match Skyblock Id
 				.map(entry -> ColorHighlight.yellow(entry.getIntKey()))
 				.toList();
