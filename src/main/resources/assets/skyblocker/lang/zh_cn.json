@@ -1403,5 +1403,10 @@
     "skyblocker.config.helpers.fishing.enableFishingHud": "启用钓鱼HUD",
     "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds": "传送按键绑定",
     "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds.@Tooltip": "为Spirit Leap覆盖层的传送添加按键绑定。按1传送至第一个玩家，按2传送至第二个玩家，按3传送至第三个玩家，按4传送至第四个玩家。",
-    "skyblocker.config.otherLocations.barn.enableGlowingMushroomHelper": "启用发光蘑菇助手"
+    "skyblocker.config.otherLocations.barn.enableGlowingMushroomHelper": "启用发光蘑菇助手",
+    "skyblocker.museum.hud.craftIngredient": "合成需",
+    "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage": "启用Leap消息",
+    "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip": "在传送时发送一条队伍消息。\n§c需要启用Spirit Leap覆盖层。",
+    "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage": "Leap消息",
+    "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip": "传送时发送的聊天消息的文本，字符串“[name]”将被替换为你传送到的玩家的名字。"
 }
