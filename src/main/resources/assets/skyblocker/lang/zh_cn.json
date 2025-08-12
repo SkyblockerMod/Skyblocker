@@ -1408,5 +1408,7 @@
     "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage": "启用Leap消息",
     "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip": "在传送时发送一条队伍消息。\n§c需要启用Spirit Leap覆盖层。",
     "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage": "Leap消息",
-    "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip": "传送时发送的聊天消息的文本，字符串“[name]”将被替换为你传送到的玩家的名字。"
+    "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip": "传送时发送的聊天消息的文本，字符串“[name]”将被替换为你传送到的玩家的名字。",
+    "skyblocker.config.dungeons.sellableItemsHighlighter": "高亮显示可售出物品",
+    "skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip": "高亮地牢中捡起的可出售给NPC的物品。"
 }
