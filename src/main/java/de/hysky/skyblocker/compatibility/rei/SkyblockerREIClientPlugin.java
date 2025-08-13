@@ -38,6 +38,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -88,7 +89,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 					.map(EntryStacks::of)
 					.toList();
 
-			String categoryPath = parentId.toLowerCase().replace(";", "_");
+			String categoryPath = parentId.toLowerCase(Locale.ENGLISH).replace(";", "_");
 			// Drop the tier at the end of the id so the category identifier remains the same even if the parent is changed to a different tier
 			if (parentId.contains(";")) {
 				categoryPath = categoryPath.substring(0, categoryPath.lastIndexOf("_"));
