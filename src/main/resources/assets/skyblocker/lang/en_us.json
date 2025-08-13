@@ -1261,8 +1261,8 @@
   "skyblocker.museum.hud.sorter.ratio": "Coins/XP Ratio",
   "skyblocker.museum.hud.sorter.switch": "Click to switch sort!",
   "skyblocker.museum.hud.unknownPrice": "Unknown",
-  "skyblocker.museum.hud.wikiLookup": "Click on %s to open the wiki page!",
-  "skyblocker.museum.hud.itemPriceLookup": "Click on %s to search on the AH!",
+  "skyblocker.museum.hud.wikiLookup": "Press %s to open the wiki page!",
+  "skyblocker.museum.hud.itemPriceLookup": "Press %s to search on the AH!",
   "skyblocker.museum.hud.xpReward": "Reward",
 
   "skyblocker.museum.attemptingResync": "Attempting to resync your museum item donations...",
