@@ -149,15 +149,15 @@ public class DonationButton extends ClickableWidget {
 			tooltip.add(Text.literal(" - ").formatted(Formatting.GRAY).append(MuseumUtils.getDisplayName(discount.left(), donation.isSet())).append(Text.literal(" ✔").formatted(Formatting.GREEN)).append(Text.literal(" (").formatted(Formatting.DARK_GRAY).append(Text.literal(MuseumUtils.formatPrice(discount.rightDouble())).formatted(Formatting.GOLD)).append(")").formatted(Formatting.DARK_GRAY)));
 		}
 
-		String wikiLookupString = WikiLookup.getKeysText();
-		String itemPriceLookupString = ItemPrice.ITEM_PRICE_LOOKUP.getBoundKeyLocalizedText().getString();
-		if (soulbound || !wikiLookupString.isEmpty() || !itemPriceLookupString.isEmpty()) tooltip.add(Text.empty());
+		String wikiLookupKeyString = WikiLookup.getKeysText();
+		String itemPriceLookupKeyString = ItemPrice.ITEM_PRICE_LOOKUP.getBoundKeyLocalizedText().getString();
+		if (soulbound || !wikiLookupKeyString.isEmpty() || !itemPriceLookupKeyString.isEmpty()) tooltip.add(Text.empty());
 		if (soulbound) tooltip.add(Text.literal("* Soulbound *").formatted(Formatting.DARK_GRAY));
-		if (!wikiLookupString.isEmpty()) {
-			tooltip.add(Text.translatable("skyblocker.museum.hud.wikiLookup", wikiLookupString).formatted(Formatting.YELLOW));
+		if (!wikiLookupKeyString.isEmpty()) {
+			tooltip.add(Text.translatable("skyblocker.museum.hud.wikiLookup", wikiLookupKeyString).formatted(Formatting.YELLOW));
 		}
-		if (!soulbound && !itemPriceLookupString.isEmpty()) {
-			tooltip.add(Text.translatable("skyblocker.museum.hud.itemPriceLookup", itemPriceLookupString).formatted(Formatting.YELLOW));
+		if (!soulbound && !itemPriceLookupKeyString.isEmpty()) {
+			tooltip.add(Text.translatable("skyblocker.museum.hud.itemPriceLookup", itemPriceLookupKeyString).formatted(Formatting.YELLOW));
 		}
 
 		this.tooltip = tooltip;
