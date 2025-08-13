@@ -10,7 +10,7 @@ import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.*;
-import de.hysky.skyblocker.utils.profile.ProfiledData;
+import de.hysky.skyblocker.utils.data.ProfiledData;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;

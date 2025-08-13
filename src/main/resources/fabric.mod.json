@@ -28,6 +28,9 @@
     "rei_client": [
       "de.hysky.skyblocker.compatibility.rei.SkyblockerREIClientPlugin"
     ],
+    "rei_common": [
+      "de.hysky.skyblocker.compatibility.rei.SkyblockerREICommonPlugin"
+    ],
     "emi": [
       "de.hysky.skyblocker.compatibility.emi.SkyblockerEMIPlugin"
     ],
@@ -40,7 +43,7 @@
   ],
   "accessWidener": "skyblocker.accesswidener",
   "depends": {
-    "fabricloader": ">=0.17.0",
+    "fabricloader": ">=0.17.2",
     "fabric-api": ">=0.127.0+1.21.6",
 	"dandelion": ">=1.0.0-alpha.5+1.21.8",
     "yet_another_config_lib_v3": ">=3.7.1+1.21.6",

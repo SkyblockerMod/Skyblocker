@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.speedPreset;
+package de.hysky.skyblocker.skyblock.speedpreset;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.client.MinecraftClient;
@@ -21,17 +21,15 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 
 	private static final Pattern NUMBER = Pattern.compile("^-?\\d+(\\.\\d+)?$");
 	// Alphanumeric sequence that doesn't start with a number.
-	private static final Pattern TITLE = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*$");
+	private static final Pattern TITLE = Pattern.compile("^[a-zA-Z]\\w*$");
 
 	public SpeedPresetListWidget(int width, int height, int y) {
 		super(MinecraftClient.getInstance(), width, height, y, 25);
-		var presets = SpeedPresets.getInstance();
+		var instance = SpeedPresets.getInstance();
 		addEntry(new TitleEntry());
-		if (presets.getPresetCount() > 0)
-			presets.forEach((title, speed) ->
-					this.addEntry(new SpeedPresetEntry(title, String.valueOf(speed))));
-		else
-			this.addEntry(new SpeedPresetEntry("", ""));
+		if (!instance.getPresets().isEmpty())
+			instance.getPresets().forEach((title, speed) -> this.addEntry(new SpeedPresetEntry(title, String.valueOf(speed))));
+		else this.addEntry(new SpeedPresetEntry("", ""));
 	}
 
 	@Override
@@ -40,16 +38,16 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 	}
 
 	public boolean hasBeenChanged() {
-		var presets = SpeedPresets.getInstance();
+		var instance = SpeedPresets.getInstance();
 		// If there are fewer children than presets, some were removed, and all further checks are pointless
-		if (children().size() < presets.getPresetCount()) return true;
+		if (children().size() < instance.getPresets().size()) return true;
 		var childrenMap = this.children().stream()
 				.filter(SpeedPresetEntry.class::isInstance)
 				.map(SpeedPresetEntry.class::cast)
 				.map(SpeedPresetEntry::getMapping)
 				.filter(Objects::nonNull)
 				.collect(Collectors.toMap(ObjectIntPair::key, ObjectIntPair::valueInt));
-		return !presets.arePresetsEqual(childrenMap);
+		return !instance.arePresetsEqual(childrenMap);
 	}
 
 	public void updatePosition() {
@@ -65,10 +63,13 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 	}
 
 	public void save() {
-		var presets = SpeedPresets.getInstance();
-		presets.clear();
-		children().stream().filter(SpeedPresetEntry.class::isInstance).map(SpeedPresetEntry.class::cast).forEach(SpeedPresetEntry::save);
-		presets.savePresets(); // Write down the changes.
+		var instance = SpeedPresets.getInstance();
+		instance.getPresets().clear();
+		children().stream()
+				  .filter(SpeedPresetEntry.class::isInstance)
+				  .map(SpeedPresetEntry.class::cast)
+				  .forEach(SpeedPresetEntry::save);
+		instance.savePresets(); // Write down the changes.
 	}
 
 	public abstract static class AbstractEntry extends ElementListWidget.Entry<AbstractEntry> {
@@ -129,8 +130,7 @@ public class SpeedPresetListWidget extends ElementListWidget<SpeedPresetListWidg
 			this.speedInput.setMaxLength(3);
 			this.speedInput.setPlaceholder(Text.literal("0").formatted(Formatting.DARK_GRAY));
 
-			this.removeButton = ButtonWidget.builder(Text.literal("-"),
-							(btn) -> SpeedPresetListWidget.this.removeEntry(this))
+			this.removeButton = ButtonWidget.builder(Text.literal("-"), btn -> SpeedPresetListWidget.this.removeEntry(this))
 					.dimensions(0, 0, 20, 20)
 					.build();
 

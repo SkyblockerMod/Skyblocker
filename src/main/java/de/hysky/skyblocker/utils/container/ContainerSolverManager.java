@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
 import de.hysky.skyblocker.skyblock.auction.CopyUnderbidPrice;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
+import de.hysky.skyblocker.skyblock.dungeon.SellableItemsHighlighter;
 import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusHelper;
 import de.hysky.skyblocker.skyblock.dungeon.CroesusProfit;
@@ -67,7 +68,8 @@ public class ContainerSolverManager {
 			SameColorTerminal.INSTANCE,
 			new CopyUnderbidPrice(),
 			new HuntingBoxHelper(),
-			StereoHarmonyHelper.INSTANCE,
+			new SellableItemsHighlighter(),
+			StereoHarmonyHelper.INSTANCE
 	};
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;
