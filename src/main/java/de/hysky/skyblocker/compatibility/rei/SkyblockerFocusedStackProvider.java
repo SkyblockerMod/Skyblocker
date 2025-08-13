@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.compatibility.rei;
 
 import de.hysky.skyblocker.skyblock.FocusedItemProvider;
+import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import dev.architectury.event.CompoundEventResult;
 import me.shedaniel.math.Point;
 import me.shedaniel.rei.api.client.registry.screen.FocusedStackProvider;
@@ -13,7 +14,7 @@ import net.minecraft.item.ItemStack;
 public class SkyblockerFocusedStackProvider implements FocusedStackProvider {
 	@Override
 	public CompoundEventResult<EntryStack<?>> provide(Screen screen, Point point) {
-		if (!(screen instanceof GenericContainerScreen)) return CompoundEventResult.pass();
+		if (!(screen instanceof GenericContainerScreen) && !(screen instanceof SkyblockInventoryScreen)) return CompoundEventResult.pass();
 
 		ItemStack focusedItem = FocusedItemProvider.getFocusedItem();
 		if (focusedItem == null) return CompoundEventResult.pass();

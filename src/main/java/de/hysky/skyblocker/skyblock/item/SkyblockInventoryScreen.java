@@ -9,6 +9,7 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
+import de.hysky.skyblocker.skyblock.FocusedItemProvider;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -161,6 +162,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
             if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, x, y) && equipmentSlot.hasStack()) {
                 ItemStack itemStack = equipmentSlot.getStack();
                 context.drawTooltip(this.textRenderer, this.getTooltipFromItem(itemStack), itemStack.getTooltipData(), x, y);
+				FocusedItemProvider.setFocusedItem(itemStack);
             }
         }
     }
