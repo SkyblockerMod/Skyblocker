@@ -4,9 +4,9 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import de.hysky.skyblocker.compatibility.rei.SkyblockerFocusedStackProvider;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.FocusedItemProvider;
 import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.PetCache;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
@@ -416,6 +416,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	// close() method calls removed()
 	@Inject(method = "removed", at = @At("TAIL"))
 	private void skyblocker$clearFocusedSlot(CallbackInfo ci) {
-		SkyblockerFocusedStackProvider.setFocusedItem(null);
+		FocusedItemProvider.setFocusedItem(null);
 	}
 }

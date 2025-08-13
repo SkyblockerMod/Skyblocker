@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.museum;
 
 import com.google.common.collect.Lists;
-import de.hysky.skyblocker.compatibility.rei.SkyblockerFocusedStackProvider;
+import de.hysky.skyblocker.skyblock.FocusedItemProvider;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -218,13 +218,13 @@ public class MuseumManager extends ClickableWidget {
 
 			// Render donation buttons
 			this.hoveredDonationButton = null;
-			SkyblockerFocusedStackProvider.setFocusedItem(null);
+			FocusedItemProvider.setFocusedItem(null);
 			for (DonationButton resultButton : donationButtons) {
 				resultButton.render(context, mouseX, mouseY, delta);
 
 				if (resultButton.visible && resultButton.isHovered()) {
 					this.hoveredDonationButton = resultButton;
-					SkyblockerFocusedStackProvider.setFocusedItem(this.hoveredDonationButton.getDisplayStack());
+					FocusedItemProvider.setFocusedItem(this.hoveredDonationButton.getDisplayStack());
 				}
 			}
 
