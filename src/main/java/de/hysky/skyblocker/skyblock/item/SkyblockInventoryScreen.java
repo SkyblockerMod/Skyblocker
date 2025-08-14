@@ -157,7 +157,10 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     @Override
     protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
         super.drawMouseoverTooltip(context, x, y);
+
+		FocusedItemProvider.setFocusedItem(null);
         if (!handler.getCursorStack().isEmpty()) return;
+
         for (Slot equipmentSlot : equipmentSlots) {
             if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, x, y) && equipmentSlot.hasStack()) {
                 ItemStack itemStack = equipmentSlot.getStack();
