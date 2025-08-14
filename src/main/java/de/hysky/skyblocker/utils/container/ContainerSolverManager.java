@@ -23,6 +23,7 @@ import de.hysky.skyblocker.skyblock.dwarven.fossil.FossilSolver;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
+import de.hysky.skyblocker.skyblock.garden.StereoHarmonyHelper;
 import de.hysky.skyblocker.skyblock.hunting.HuntingBoxHelper;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.BitsHelper;
 import de.hysky.skyblocker.utils.Utils;
@@ -67,7 +68,8 @@ public class ContainerSolverManager {
 			SameColorTerminal.INSTANCE,
 			new CopyUnderbidPrice(),
 			new HuntingBoxHelper(),
-			new SellableItemsHighlighter()
+			new SellableItemsHighlighter(),
+			StereoHarmonyHelper.INSTANCE
 	};
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;

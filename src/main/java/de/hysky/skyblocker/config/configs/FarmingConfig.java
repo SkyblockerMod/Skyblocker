@@ -21,6 +21,8 @@ public class FarmingConfig {
 		public boolean gardenPlotsWidget = true;
 
 		public boolean closeScreenOnPlotClick = false;
+
+		public boolean enableStereoHarmonyHelperForContest = true;
 	}
 
 	public static class VisitorHelper {
