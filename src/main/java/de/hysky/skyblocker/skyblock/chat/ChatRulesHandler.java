@@ -22,11 +22,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 public class ChatRulesHandler {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -38,7 +38,7 @@ public class ChatRulesHandler {
 	 */
 	@VisibleForTesting
 	static final Codec<List<ChatRule>> UNBOXING_CODEC = Codec.either(ChatRule.LIST_CODEC, MAP_CODEC).xmap(
-			either -> either.map(Function.identity(), map -> map.getOrDefault("rules", getDefaultChatRules())),
+			either -> either.map(ArrayList::new, map -> new ArrayList<>(map.getOrDefault("rules", getDefaultChatRules()))),
 			value -> Either.right(Map.of("rules", value))
 	);
 

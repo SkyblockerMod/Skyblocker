@@ -3,16 +3,24 @@ package de.hysky.skyblocker.skyblock.chat;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
+import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 class ChatRulesHandlerTest {
+	@BeforeAll
+	public static void setup() {
+		SharedConstants.createGameVersion();
+		Bootstrap.initialize();
+	}
 
 	@Test
 	void formatText() {
@@ -43,6 +51,7 @@ class ChatRulesHandlerTest {
 		var parsed = ChatRulesHandler.UNBOXING_CODEC.parse(JsonOps.INSTANCE, object).getOrThrow();
 
 		Assertions.assertEquals(ChatRulesHandler.getDefaultChatRules(), parsed);
+		Assertions.assertDoesNotThrow(parsed::removeLast);
 	}
 
 	@Test
@@ -52,6 +61,7 @@ class ChatRulesHandlerTest {
 		var parsed = ChatRulesHandler.UNBOXING_CODEC.parse(JsonOps.INSTANCE, unboxedList).getOrThrow();
 
 		Assertions.assertEquals(rules, parsed);
+		Assertions.assertDoesNotThrow(parsed::removeLast);
 	}
 
 	@Test
