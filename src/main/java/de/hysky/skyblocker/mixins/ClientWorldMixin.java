@@ -1,9 +1,16 @@
 package de.hysky.skyblocker.mixins;
 
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
+import de.hysky.skyblocker.skyblock.slayers.boss.broodfather.eggInfoDisplay;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.events.WorldEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -47,5 +54,11 @@ public abstract class ClientWorldMixin implements BlockView {
 		if (!PlaySoundEvents.ALLOW_SOUND.invoker().allowSound(sound)) {
 			ci.cancel();
 		}
+	}
+
+	@Inject(method = "removeEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;onRemoved()V"))
+	private void skyblocker$removeEntity(int entityId, Entity.RemovalReason removalReason, CallbackInfo ci, @Local Entity entity) {
+		 if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
+		 if (SkyblockerConfigManager.get().slayers.spiderSlayer.eggDisplay && SlayerManager.isInSlayerType(SlayerType.TARANTULA)) eggInfoDisplay.clearEggMap(armorStandEntity);
 	}
 }
