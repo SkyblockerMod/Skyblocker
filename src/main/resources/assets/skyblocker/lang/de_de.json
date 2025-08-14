@@ -382,5 +382,6 @@
     "skyblocker.config.general.shortcuts.enableCommandArgShortcuts.@Tooltip": "Abkürzungen die ein oder mehrere Wörter/Argumente von einem Kommand ersetzen, die mehrere Wörter/Argumente haben. Editiere Abkürzungen mit \"/skyblocker shortcuts\". Abkürzungen müssen aktiviert sein damit es ein geändert wird.",
     "skyblocker.config.general.shortcuts.enableCommandShortcuts": "Aktiviere Kommand Abkürzungen",
     "skyblocker.config.general.shortcuts.enableShortcuts.@Tooltip": "Funktioniert überall, auch in vanilla! Bearbeite die Abkürzungen mit \"/skyblocker shortcuts\". Kurzbefehle müssen aktiviert sein, damit sie wirksam werden.",
-    "skyblocker.config.general.shortcuts.enableCommandShortcuts.@Tooltip": "Abkürzungen für Kommands, die nur aus einem Wort bestehen. Bearbeite die Abkürzungen mit \"/skyblocker shortcuts\". Abkürzungen muss dafür aktivert sein damit es geändert ist."
+    "skyblocker.config.general.shortcuts.enableCommandShortcuts.@Tooltip": "Abkürzungen für Kommands, die nur aus einem Wort bestehen. Bearbeite die Abkürzungen mit \"/skyblocker shortcuts\". Abkürzungen muss dafür aktivert sein damit es geändert ist.",
+    "skyblocker.config.title.settings": "Einstellungen"
 }
