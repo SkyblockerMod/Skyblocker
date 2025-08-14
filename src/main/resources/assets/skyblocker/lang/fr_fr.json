@@ -701,7 +701,7 @@
     "skyblocker.config.farming.visitorHelper": "Aide des visiteurs",
     "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper": "Afficher les stacks dans l'aide des visiteurs",
     "skyblocker.config.farming.visitorHelper.showStacksInVisitorHelper.@Tooltip": "Affiche les éléments requis sous forme de (5 stacks + 45) plutôt qu'un simple nombre total, ce qui est particulièrement utile pour les joueurs en Ironman.",
-    "skyblocker.config.farming.general.cropsPerMin": "Graines/min: %s",
+    "skyblocker.config.farming.general.cropsPerMin": "Pousse/min: %s",
     "skyblocker.config.farming.general.coinsPerHour": "Coins/h: %s",
     "skyblocker.config.farming.general.noCameraEntity": "Pas d'entité de caméra",
     "skyblocker.config.farming.general.pitch": "Hauteur: %s",
