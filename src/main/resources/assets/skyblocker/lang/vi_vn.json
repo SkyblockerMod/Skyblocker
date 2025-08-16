@@ -37,7 +37,6 @@
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Hiện cảnh báo khi bạn đang ở vùng nguy hiểm của xúc tu hoặc từ TNT. Màu của cảnh báo sẽ dựa trên màu của độ nguy hiểm!",
     "key.itemProtection": "Bảo vệ item",
     "key.itemPriceLookup": "Tìm kiếm trên Bazaar",
-    "key.itemPriceRefresh": "Làm mới Bazaar",
     "skyblocker.config.crimsonIsle.kuudra.noArrowPoisonWarning.@Tooltip": "Cảnh báo nếu bạn đang cầm cung mà không có Toxic Arrow Poison trong túi đồ. Chỉ hoạt động ở phase DPS.",
     "skyblocker.config.crimsonIsle.kuudra.supplyWaypoints": "Điểm Supply",
     "skyblocker.config.debug": "Gỡ lỗi",

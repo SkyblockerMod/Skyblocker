@@ -44,7 +44,6 @@
     "skyblocker.waypoints.type.WAYPOINT": "Titik Jalan",
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning": "Peringatan Bahaya",
     "key.itemPriceLookup": "Pencarian Bazar",
-    "key.itemPriceRefresh": "Segarkan Bazar",
     "text.skyblocker.clickToSend": "[Klik Untuk Mengirim Pesan]",
     "text.skyblocker.clickToSend.@Tooltip": "Klik untuk mengirim pesan ini ke percakapan.",
     "skyblocker.itemTooltip.noData": "Tidak Ada Data",

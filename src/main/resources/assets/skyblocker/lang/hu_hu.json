@@ -1,6 +1,5 @@
 {
     "key.skyblocker.debug.dumpHoveredItem": "Fedezett Tárgy Mentése",
-    "key.itemPriceRefresh": "Bazaar Újratöltés",
     "text.skyblocker.undo": "Visszavonás",
     "text.skyblocker.dead": "Halott",
     "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "A Crimson Isle-on megakadályozza a ködöt a játékoshoz közeli megjelenéstől, ahogyan a vanilla nether biomokban.",

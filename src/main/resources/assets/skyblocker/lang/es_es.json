@@ -126,7 +126,6 @@
     "text.skyblocker.reset": "Reiniciar",
     "text.skyblocker.undo": "Deshacer",
     "key.itemPriceLookup": "Buscar en el bazaar",
-    "key.itemPriceRefresh": "Refrescar el Bazaar",
     "key.skyblocker.debug.dumpNearbyEntities": "Eliminar las entidades cercanas",
     "text.skyblocker.clickToSend": "[Haz Click Para Enviarlo En El Chat]",
     "text.skyblocker.clickToSend.@Tooltip": "Haz Click para enviar esto en el chat.",
