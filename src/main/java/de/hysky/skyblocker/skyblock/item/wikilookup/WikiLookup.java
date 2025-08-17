@@ -20,6 +20,7 @@ import com.mojang.datafixers.util.Either;
 public interface WikiLookup {
 	Map<String, String> CHARACTER_ENCODER = Map.ofEntries(
 			Map.entry(" ", "_"),
+			Map.entry("'", encodeChar("'")),
 			// Special case for only a visitor that has '?'
 			Map.entry("?", encodeChar("?"))
 	);

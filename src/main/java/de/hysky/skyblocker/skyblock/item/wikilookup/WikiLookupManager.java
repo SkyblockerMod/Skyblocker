@@ -31,6 +31,7 @@ public final class WikiLookupManager {
 			VisitorLookup.INSTANCE,
 			PetItemLookup.INSTANCE,
 			EnchantmentBookItemLookup.INSTANCE,
+			EventCalendarLookup.INSTANCE,
 			// Always in the last
 			RegularItemLookup.INSTANCE
 	};
