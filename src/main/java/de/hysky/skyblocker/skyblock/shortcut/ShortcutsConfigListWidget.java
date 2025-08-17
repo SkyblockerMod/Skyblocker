@@ -8,18 +8,26 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
+import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
+import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfigListWidget.AbstractShortcutEntry> {
 	private final ShortcutsConfigScreen screen;
-	private final List<Map<String, String>> shortcutMaps = new ArrayList<>();
 
 	/**
 	 * @param width      the width of the widget
@@ -30,15 +38,22 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 	public ShortcutsConfigListWidget(MinecraftClient minecraftClient, ShortcutsConfigScreen screen, int width, int height, int y, int itemHeight) {
 		super(minecraftClient, width, height, y, itemHeight);
 		this.screen = screen;
-		ShortcutCategoryEntry commandCategory = new ShortcutCategoryEntry(Shortcuts.shortcuts.getData().commands(), "skyblocker.shortcuts.command.target", "skyblocker.shortcuts.command.replacement");
+
+		ShortcutCategoryEntry<String> commandCategory = new ShortcutCategoryEntry<>(Shortcuts.shortcuts.getData().commands(), CommandShortcutEntry::new, "skyblocker.shortcuts.command.target", "skyblocker.shortcuts.command.replacement");
 		if (Shortcuts.isShortcutsLoaded()) {
-			commandCategory.shortcutsMap.keySet().stream().sorted().forEach(commandTarget -> addEntry(new ShortcutEntry(commandCategory, commandTarget)));
+			commandCategory.shortcutsMap.keySet().stream().sorted().forEach(commandTarget -> addEntry(new CommandShortcutEntry(commandCategory, commandTarget)));
 		} else {
 			addEntry(new ShortcutLoadingEntry());
 		}
-		ShortcutCategoryEntry commandArgCategory = new ShortcutCategoryEntry(Shortcuts.shortcuts.getData().commandArgs(), "skyblocker.shortcuts.commandArg.target", "skyblocker.shortcuts.commandArg.replacement", "skyblocker.shortcuts.commandArg.tooltip");
+		ShortcutCategoryEntry<String> commandArgCategory = new ShortcutCategoryEntry<>(Shortcuts.shortcuts.getData().commandArgs(), CommandShortcutEntry::new, "skyblocker.shortcuts.commandArg.target", "skyblocker.shortcuts.commandArg.replacement", "skyblocker.shortcuts.commandArg.tooltip");
 		if (Shortcuts.isShortcutsLoaded()) {
-			commandArgCategory.shortcutsMap.keySet().stream().sorted().forEach(commandArgTarget -> addEntry(new ShortcutEntry(commandArgCategory, commandArgTarget)));
+			commandArgCategory.shortcutsMap.keySet().stream().sorted().forEach(commandArgTarget -> addEntry(new CommandShortcutEntry(commandArgCategory, commandArgTarget)));
+		} else {
+			addEntry(new ShortcutLoadingEntry());
+		}
+		ShortcutCategoryEntry<ShortcutKeyBinding> keybindCategory = new ShortcutCategoryEntry<>(Shortcuts.shortcuts.getData().keyBindings(), KeybindShortcutEntry::new, "skyblocker.shortcuts.keyBinding.target", "skyblocker.shortcuts.keyBinding.replacement", "skyblocker.shortcuts.keyBinding.tooltip");
+		if (Shortcuts.isShortcutsLoaded()) {
+			keybindCategory.shortcutsMap.keySet().stream().sorted().forEach(keyBinding -> addEntry(new KeybindShortcutEntry(keybindCategory, keyBinding)));
 		} else {
 			addEntry(new ShortcutLoadingEntry());
 		}
@@ -54,10 +69,10 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		return super.getScrollbarX();
 	}
 
-	protected Optional<ShortcutCategoryEntry> getCategory() {
+	protected Optional<ShortcutCategoryEntry<?>> getCategory() {
 		return switch (getSelectedOrNull()) {
-			case ShortcutCategoryEntry category -> Optional.of(category);
-			case ShortcutEntry shortcutEntry -> Optional.of(shortcutEntry.category);
+			case ShortcutCategoryEntry<?> category -> Optional.of(category);
+			case ShortcutEntry<?> shortcutEntry -> Optional.of(shortcutEntry.category);
 
 			case null, default -> Optional.empty();
 		};
@@ -70,13 +85,20 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 	}
 
 	protected void addShortcutAfterSelected() {
-		getCategory().ifPresent(category -> children().add(children().indexOf(getSelectedOrNull()) + 1, new ShortcutEntry(category)));
+		getCategory().ifPresent(category -> children().add(children().indexOf(getSelectedOrNull()) + 1, category.entrySupplier.get()));
 	}
 
 	protected void updatePositions() {
 		for (AbstractShortcutEntry child : children()) {
 			child.updatePositions();
 		}
+	}
+
+	/**
+	 * Modified from {@link net.minecraft.client.gui.screen.option.ControlsListWidget#update() ControlsListWidget#update()}.
+	 */
+	protected void updateKeybinds() {
+		children().stream().filter(KeybindShortcutEntry.class::isInstance).map(KeybindShortcutEntry.class::cast).forEach(KeybindShortcutEntry::update);
 	}
 
 	/**
@@ -95,45 +117,48 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 	}
 
 	protected boolean hasChanges() {
-		ShortcutEntry[] notEmptyShortcuts = getNotEmptyShortcuts().toArray(ShortcutEntry[]::new);
-		return notEmptyShortcuts.length != shortcutMaps.stream().mapToInt(Map::size).sum() || Arrays.stream(notEmptyShortcuts).anyMatch(ShortcutEntry::isChanged);
+		ShortcutEntry<?>[] notEmptyShortcuts = getNotEmptyShortcuts().toArray(ShortcutEntry[]::new);
+		return notEmptyShortcuts.length != Shortcuts.shortcuts.getData().size() || Arrays.stream(notEmptyShortcuts).anyMatch(ShortcutEntry::isChanged);
 	}
 
 	protected void saveShortcuts() {
-		shortcutMaps.forEach(Map::clear);
+		Shortcuts.shortcuts.getData().clear();
 		getNotEmptyShortcuts().forEach(ShortcutEntry::save);
 		Shortcuts.shortcuts.save(); // Save shortcuts to disk
 	}
 
-	private Stream<ShortcutEntry> getNotEmptyShortcuts() {
-		return children().stream().filter(ShortcutEntry.class::isInstance).map(ShortcutEntry.class::cast).filter(ShortcutEntry::isNotEmpty);
+	// What are these generics... 😭
+	private Stream<? extends ShortcutEntry<?>> getNotEmptyShortcuts() {
+		return children().stream().filter(ShortcutEntry.class::isInstance).map(e -> (ShortcutEntry<?>) e).filter(ShortcutEntry::isNotEmpty);
 	}
 
 	public abstract static class AbstractShortcutEntry extends ElementListWidget.Entry<AbstractShortcutEntry> {
 		protected void updatePositions() {}
 	}
 
-	protected class ShortcutCategoryEntry extends AbstractShortcutEntry {
-		private final Map<String, String> shortcutsMap;
+	protected class ShortcutCategoryEntry<T> extends AbstractShortcutEntry {
+		private final Map<T, String> shortcutsMap;
+		// Supplier for new shortcut entries. This is needed because otherwise we don't know which type of shortcut entry to create partly due to Java's annoying generics (type erasure).
+		private final Supplier<ShortcutEntry<T>> entrySupplier;
 		private final Text targetName;
 		private final Text replacementName;
 		@Nullable
 		private final Text tooltip;
 
-		private ShortcutCategoryEntry(Map<String, String> shortcutsMap, @Translatable String targetName, @Translatable String replacementName) {
-			this(shortcutsMap, targetName, replacementName, (Text) null);
+		private ShortcutCategoryEntry(Map<T, String> shortcutsMap, Function<ShortcutCategoryEntry<T>, ShortcutEntry<T>> entryFactory, @Translatable String targetName, @Translatable String replacementName) {
+			this(shortcutsMap, entryFactory, targetName, replacementName, (Text) null);
 		}
 
-		private ShortcutCategoryEntry(Map<String, String> shortcutsMap, @Translatable String targetName, @Translatable String replacementName, @Translatable String tooltip) {
-			this(shortcutsMap, targetName, replacementName, Text.translatable(tooltip));
+		private ShortcutCategoryEntry(Map<T, String> shortcutsMap, Function<ShortcutCategoryEntry<T>, ShortcutEntry<T>> entryFactory, @Translatable String targetName, @Translatable String replacementName, @Translatable String tooltip) {
+			this(shortcutsMap, entryFactory, targetName, replacementName, Text.translatable(tooltip));
 		}
 
-		private ShortcutCategoryEntry(Map<String, String> shortcutsMap, @Translatable String targetName, @Translatable String replacementName, @Nullable Text tooltip) {
+		private ShortcutCategoryEntry(Map<T, String> shortcutsMap, Function<ShortcutCategoryEntry<T>, ShortcutEntry<T>> entryFactory, @Translatable String targetName, @Translatable String replacementName, @Nullable Text tooltip) {
 			this.shortcutsMap = shortcutsMap;
+			this.entrySupplier = () -> entryFactory.apply(this);
 			this.targetName = Text.translatable(targetName);
 			this.replacementName = Text.translatable(replacementName);
 			this.tooltip = tooltip;
-			shortcutMaps.add(shortcutsMap);
 			addEntry(this);
 		}
 
@@ -208,24 +233,50 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		}
 	}
 
-	protected class ShortcutEntry extends AbstractShortcutEntry {
-		private final List<TextFieldWidget> children;
-		private final ShortcutCategoryEntry category;
-		private final TextFieldWidget target;
-		private final TextFieldWidget replacement;
+	protected abstract class ShortcutEntry<T> extends AbstractShortcutEntry {
+		protected final ShortcutCategoryEntry<T> category;
+		protected final TextFieldWidget replacement;
 
-		private ShortcutEntry(ShortcutCategoryEntry category) {
+		private ShortcutEntry(ShortcutCategoryEntry<T> category, T targetKey) {
+			this.category = category;
+			replacement = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, width / 2 + 10, 5, 150, 20, category.replacementName);
+			replacement.setMaxLength(48);
+			replacement.setText(category.shortcutsMap.getOrDefault(targetKey, ""));
+		}
+
+		protected abstract boolean isNotEmpty();
+
+		protected abstract boolean isChanged();
+
+		protected abstract void save();
+
+		@Override
+		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			replacement.setY(y);
+			replacement.render(context, mouseX, mouseY, tickDelta);
+			context.drawCenteredTextWithShadow(client.textRenderer, "→", width / 2, y + 5, Colors.WHITE);
+		}
+
+		@Override
+		protected void updatePositions() {
+			super.updatePositions();
+			replacement.setX(width / 2 + 10);
+		}
+	}
+
+	protected class CommandShortcutEntry extends ShortcutEntry<String> {
+		private final List<TextFieldWidget> children;
+		private final TextFieldWidget target;
+
+		private CommandShortcutEntry(ShortcutCategoryEntry<String> category) {
 			this(category, "");
 		}
 
-		private ShortcutEntry(ShortcutCategoryEntry category, String targetString) {
-			this.category = category;
+		private CommandShortcutEntry(ShortcutCategoryEntry<String> category, String targetString) {
+			super(category, targetString);
 			target = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, width / 2 - 160, 5, 150, 20, category.targetName);
-			replacement = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, width / 2 + 10, 5, 150, 20, category.replacementName);
 			target.setMaxLength(48);
-			replacement.setMaxLength(48);
 			target.setText(targetString);
-			replacement.setText(category.shortcutsMap.getOrDefault(targetString, ""));
 			children = List.of(target, replacement);
 		}
 
@@ -244,32 +295,151 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 			return children;
 		}
 
-		private boolean isNotEmpty() {
+		@Override
+		protected boolean isNotEmpty() {
 			return !target.getText().isEmpty() && !replacement.getText().isEmpty();
 		}
 
-		private boolean isChanged() {
+		@Override
+		protected boolean isChanged() {
 			return !category.shortcutsMap.containsKey(target.getText()) || !category.shortcutsMap.get(target.getText()).equals(replacement.getText());
 		}
 
-		private void save() {
+		@Override
+		protected void save() {
 			category.shortcutsMap.put(target.getText(), replacement.getText());
 		}
 
 		@Override
 		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			super.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
 			target.setY(y);
-			replacement.setY(y);
 			target.render(context, mouseX, mouseY, tickDelta);
-			replacement.render(context, mouseX, mouseY, tickDelta);
-			context.drawCenteredTextWithShadow(client.textRenderer, "→", width / 2, y + 5, Colors.WHITE);
 		}
 
 		@Override
 		protected void updatePositions() {
 			super.updatePositions();
 			target.setX(width / 2 - 160);
-			replacement.setX(width / 2 + 10);
+		}
+	}
+
+	protected class KeybindShortcutEntry extends ShortcutEntry<ShortcutKeyBinding> {
+		private final List<ClickableWidget> children;
+		private final ShortcutKeyBinding keyBinding;
+		private final ButtonWidget keybindButton;
+		private boolean duplicate = false;
+
+		private KeybindShortcutEntry(ShortcutCategoryEntry<ShortcutKeyBinding> category) {
+			this(category, new ShortcutKeyBinding(InputUtil.UNKNOWN_KEY));
+		}
+
+		/**
+		 * Modified from {@link net.minecraft.client.gui.screen.option.ControlsListWidget.KeyBindingEntry#KeyBindingEntry(KeyBinding, Text) ControlsListWidget.KeyBindingEntry#KeyBindingEntry(KeyBinding, Text)}
+		 */
+		@SuppressWarnings("JavadocReference")
+		private KeybindShortcutEntry(ShortcutCategoryEntry<ShortcutKeyBinding> category, ShortcutKeyBinding keyBinding) {
+			super(category, keyBinding);
+			this.keyBinding = keyBinding;
+			keybindButton = ButtonWidget.builder(keyBinding.getBoundKey().getLocalizedText(), button -> {
+						ShortcutsConfigListWidget.this.screen.selectedKeyBinding = keyBinding;
+						ShortcutsConfigListWidget.this.updateKeybinds();
+					})
+					.dimensions(width / 2 - 160, 5, 150, 20)
+					.narrationSupplier(textSupplier -> keyBinding.isUnbound()
+							? Text.translatable("narrator.controls.unbound", replacement.getText())
+							: Text.translatable("narrator.controls.bound", replacement.getText(), textSupplier.get()))
+					.build();
+			children = List.of(keybindButton, replacement);
+			update();
+		}
+
+		@Override
+		public String toString() {
+			return keyBinding.getBoundKey().getTranslationKey() + " → " + replacement.getText();
+		}
+
+		@Override
+		public List<? extends Element> children() {
+			return children;
+		}
+
+		@Override
+		public List<? extends Selectable> selectableChildren() {
+			return children;
+		}
+
+		@Override
+		protected boolean isNotEmpty() {
+			return !keyBinding.isUnbound() && !replacement.getText().isEmpty();
+		}
+
+		@Override
+		protected boolean isChanged() {
+			return !category.shortcutsMap.containsKey(keyBinding) || !category.shortcutsMap.get(keyBinding).equals(replacement.getText());
+		}
+
+		@Override
+		protected void save() {
+			category.shortcutsMap.put(keyBinding, replacement.getText());
+		}
+
+		/**
+		 * Modified from {@link net.minecraft.client.gui.screen.option.ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, int, int, int, int, int, boolean, float) ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, int, int, int, int, int, boolean, float)}.
+		 */
+		@Override
+		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			super.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta);
+			keybindButton.setY(y);
+			keybindButton.render(context, mouseX, mouseY, tickDelta);
+			if (duplicate) {
+				context.fill(keybindButton.getX() - 6, y - 1, keybindButton.getX() - 3, y + entryHeight, 0xFFFF0000);
+			}
+		}
+
+		@Override
+		protected void updatePositions() {
+			super.updatePositions();
+			keybindButton.setX(width / 2 - 160);
+		}
+
+		/**
+		 * Modified from {@link net.minecraft.client.gui.screen.option.ControlsListWidget.KeyBindingEntry#update() ControlsListWidget.KeyBindingEntry#update()}.
+		 */
+		@SuppressWarnings("JavadocReference")
+		protected void update() {
+			keybindButton.setMessage(keyBinding.getBoundKey().getLocalizedText());
+			duplicate = false;
+			MutableText text = Text.empty();
+			if (!keyBinding.isUnbound()) {
+				for (ShortcutKeyBinding keyBinding : category.shortcutsMap.keySet()) {
+					if (this.keyBinding != keyBinding && this.keyBinding.equals(keyBinding)) {
+						if (duplicate) {
+							text.append(", ");
+						}
+						duplicate = true;
+						text.append(Text.translatable(keyBinding.getBoundKey().getTranslationKey()));
+					}
+				}
+			}
+
+			if (duplicate) {
+				keybindButton.setMessage(Text.literal("[ ")
+						.append(keybindButton.getMessage().copy().formatted(Formatting.WHITE))
+						.append(" ]")
+						.formatted(Formatting.RED));
+				keybindButton.setTooltip(Tooltip.of(Text.translatable("controls.keybinds.duplicateKeybinds", text)));
+			} else {
+				keybindButton.setTooltip(null);
+			}
+
+			if (ShortcutsConfigListWidget.this.screen.selectedKeyBinding == keyBinding) {
+				keybindButton.setMessage(Text.literal("> ")
+						.append(keybindButton.getMessage().copy().formatted(Formatting.WHITE, Formatting.UNDERLINE))
+						.append(" <")
+						.formatted(Formatting.YELLOW)
+				);
+			}
 		}
 	}
 }

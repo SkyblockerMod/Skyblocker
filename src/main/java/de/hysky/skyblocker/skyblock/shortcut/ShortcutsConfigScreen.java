@@ -3,22 +3,27 @@ package de.hysky.skyblocker.skyblock.shortcut;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.option.KeybindsScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
+import org.jetbrains.annotations.Nullable;
 
 public class ShortcutsConfigScreen extends Screen {
+	private final Screen parent;
 	private ShortcutsConfigListWidget shortcutsConfigListWidget;
 	private ButtonWidget buttonDelete;
 	private ButtonWidget buttonNew;
 	private ButtonWidget buttonDone;
 	private boolean initialized;
 	private double scrollAmount;
-	private final Screen parent;
+	@Nullable
+	protected ShortcutKeyBinding selectedKeyBinding;
 
 	public ShortcutsConfigScreen() {
 		this(null);
@@ -44,7 +49,7 @@ public class ShortcutsConfigScreen extends Screen {
 		gridWidget.getMainPositioner().marginX(5).marginY(2);
 		GridWidget.Adder adder = gridWidget.createAdder(2);
 		buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.deleteButton"), button -> {
-			if (client != null && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry shortcutEntry) {
+			if (client != null && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry<?> shortcutEntry) {
 				scrollAmount = shortcutsConfigListWidget.getScrollY();
 				client.setScreen(new ConfirmScreen(this::deleteEntry, Text.translatable("skyblocker.shortcuts.deleteQuestion"), Text.stringifiedTranslatable("skyblocker.shortcuts.deleteWarning", shortcutEntry), Text.translatable("selectServer.deleteButton"), ScreenTexts.CANCEL));
 			}
@@ -66,7 +71,7 @@ public class ShortcutsConfigScreen extends Screen {
 
 	private void deleteEntry(boolean confirmedAction) {
 		if (client != null) {
-			if (confirmedAction && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry shortcutEntry) {
+			if (confirmedAction && shortcutsConfigListWidget.getSelectedOrNull() instanceof ShortcutsConfigListWidget.ShortcutEntry<?> shortcutEntry) {
 				shortcutsConfigListWidget.removeEntry(shortcutEntry);
 			}
 			client.setScreen(this); // Re-inits the screen and keeps the old instance of ShortcutsConfigListWidget
@@ -78,6 +83,38 @@ public class ShortcutsConfigScreen extends Screen {
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 		context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 16, Colors.WHITE);
+	}
+
+	/**
+	 * Modified from {@link KeybindsScreen#mouseClicked(double, double, int)}.
+	 */
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (selectedKeyBinding != null) {
+			selectedKeyBinding.setBoundKey(InputUtil.Type.MOUSE.createFromCode(button));
+			selectedKeyBinding = null;
+			shortcutsConfigListWidget.updateKeybinds();
+			return true;
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	/**
+	 * Modified from {@link KeybindsScreen#keyPressed(int, int, int)}.
+	 */
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (selectedKeyBinding != null) {
+			if (keyCode == InputUtil.GLFW_KEY_ESCAPE) {
+				selectedKeyBinding.setBoundKey(InputUtil.UNKNOWN_KEY);
+			} else {
+				selectedKeyBinding.setBoundKey(InputUtil.fromKeyCode(keyCode, scanCode));
+			}
+			selectedKeyBinding = null;
+			shortcutsConfigListWidget.updateKeybinds();
+			return true;
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override

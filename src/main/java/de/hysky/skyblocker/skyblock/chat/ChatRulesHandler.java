@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class ChatRulesHandler {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();

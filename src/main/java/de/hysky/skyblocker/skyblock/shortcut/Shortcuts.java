@@ -196,5 +196,15 @@ public class Shortcuts {
 				CodecUtils.object2ObjectMapCodec(Codec.STRING, Codec.STRING).fieldOf("commandArgs").forGetter(ShortcutsRecord::commandArgs),
 				CodecUtils.object2ObjectMapCodec(ShortcutKeyBinding.CODEC, Codec.STRING).optionalFieldOf("keyBindings", new Object2ObjectOpenHashMap<>()).forGetter(ShortcutsRecord::keyBindings)
 		).apply(instance, ShortcutsRecord::new));
+
+		public int size() {
+			return commands.size() + commandArgs.size() + keyBindings.size();
+		}
+
+		public void clear() {
+			commands.clear();
+			commandArgs.clear();
+			keyBindings.clear();
+		}
 	}
 }
