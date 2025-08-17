@@ -31,13 +31,13 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
     public ShortcutsConfigListWidget(MinecraftClient minecraftClient, ShortcutsConfigScreen screen, int width, int height, int y, int itemHeight) {
         super(minecraftClient, width, height, y, itemHeight);
         this.screen = screen;
-        ShortcutCategoryEntry commandCategory = new ShortcutCategoryEntry(Shortcuts.commands, "skyblocker.shortcuts.command.target", "skyblocker.shortcuts.command.replacement");
+        ShortcutCategoryEntry commandCategory = new ShortcutCategoryEntry(Shortcuts.shortcuts.getData().commands(), "skyblocker.shortcuts.command.target", "skyblocker.shortcuts.command.replacement");
         if (Shortcuts.isShortcutsLoaded()) {
             commandCategory.shortcutsMap.keySet().stream().sorted().forEach(commandTarget -> addEntry(new ShortcutEntry(commandCategory, commandTarget)));
         } else {
             addEntry(new ShortcutLoadingEntry());
         }
-        ShortcutCategoryEntry commandArgCategory = new ShortcutCategoryEntry(Shortcuts.commandArgs, "skyblocker.shortcuts.commandArg.target", "skyblocker.shortcuts.commandArg.replacement", "skyblocker.shortcuts.commandArg.tooltip");
+        ShortcutCategoryEntry commandArgCategory = new ShortcutCategoryEntry(Shortcuts.shortcuts.getData().commandArgs(), "skyblocker.shortcuts.commandArg.target", "skyblocker.shortcuts.commandArg.replacement", "skyblocker.shortcuts.commandArg.tooltip");
         if (Shortcuts.isShortcutsLoaded()) {
             commandArgCategory.shortcutsMap.keySet().stream().sorted().forEach(commandArgTarget -> addEntry(new ShortcutEntry(commandArgCategory, commandArgTarget)));
         } else {
@@ -103,7 +103,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
     protected void saveShortcuts() {
         shortcutMaps.forEach(Map::clear);
         getNotEmptyShortcuts().forEach(ShortcutEntry::save);
-        Shortcuts.saveShortcuts(MinecraftClient.getInstance()); // Save shortcuts to disk
+        Shortcuts.shortcuts.save(); // Save shortcuts to disk
     }
 
     private Stream<ShortcutEntry> getNotEmptyShortcuts() {

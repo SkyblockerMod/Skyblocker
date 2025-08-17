@@ -1,36 +1,30 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.data.JsonData;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -38,48 +32,22 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class Shortcuts {
     private static final Logger LOGGER = LoggerFactory.getLogger(Shortcuts.class);
     private static final Path SHORTCUTS_FILE = SkyblockerMod.CONFIG_DIR.resolve("shortcuts.json");
-    @Nullable
-    private static CompletableFuture<Void> shortcutsLoaded;
-    public static final Map<String, String> commands = new HashMap<>();
-    public static final Map<String, String> commandArgs = new HashMap<>();
+    public static final JsonData<ShortcutsRecord> shortcuts = new JsonData<>(SHORTCUTS_FILE, ShortcutsRecord.CODEC, getDefaultShortcuts());
 
     public static boolean isShortcutsLoaded() {
-        return shortcutsLoaded != null && shortcutsLoaded.isDone();
+        return shortcuts.isLoaded();
     }
 
     @Init
     public static void init() {
-        loadShortcuts();
-        ClientLifecycleEvents.CLIENT_STOPPING.register(Shortcuts::saveShortcuts);
+        shortcuts.init();
         ClientCommandRegistrationCallback.EVENT.register(Shortcuts::registerCommands);
         ClientSendMessageEvents.MODIFY_COMMAND.register(Shortcuts::modifyCommand);
     }
 
-    protected static void loadShortcuts() {
-        if (shortcutsLoaded != null && !isShortcutsLoaded()) {
-            return;
-        }
-        shortcutsLoaded = CompletableFuture.runAsync(() -> {
-            try (BufferedReader reader = Files.newBufferedReader(SHORTCUTS_FILE)) {
-                Type shortcutsType = new TypeToken<Map<String, Map<String, String>>>() {}.getType();
-                Map<String, Map<String, String>> shortcuts = SkyblockerMod.GSON.fromJson(reader, shortcutsType);
-                commands.clear();
-                commandArgs.clear();
-                commands.putAll(shortcuts.get("commands"));
-                commandArgs.putAll(shortcuts.get("commandArgs"));
-                LOGGER.info("[Skyblocker] Loaded {} command shortcuts and {} command argument shortcuts", commands.size(), commandArgs.size());
-            } catch (NoSuchFileException e) {
-                registerDefaultShortcuts();
-                LOGGER.warn("[Skyblocker] Shortcuts file not found, using default shortcuts. This is normal when using for the first time.");
-            } catch (IOException e) {
-                LOGGER.error("[Skyblocker] Failed to load shortcuts file", e);
-            }
-        });
-    }
-
-    private static void registerDefaultShortcuts() {
-        commands.clear();
-        commandArgs.clear();
+    private static ShortcutsRecord getDefaultShortcuts() {
+        Object2ObjectOpenHashMap<String, String> commands = new Object2ObjectOpenHashMap<>();
+        Object2ObjectOpenHashMap<String, String> commandArgs = new Object2ObjectOpenHashMap<>();
 
         // Skyblock
         commands.put("/s", "/skyblock");
@@ -106,10 +74,15 @@ public class Shortcuts {
         // Visit
         commandArgs.put("/v", "/visit");
         commands.put("/vp", "/visit portalhub");
+
+        return new ShortcutsRecord(commands, commandArgs, new Object2ObjectOpenHashMap<>());
     }
 
     @SuppressWarnings("unused")
-    private static void registerMoreDefaultShortcuts() {
+    private static ShortcutsRecord getMoreDefaultShortcuts() {
+        Object2ObjectOpenHashMap<String, String> commands = new Object2ObjectOpenHashMap<>();
+        Object2ObjectOpenHashMap<String, String> commandArgs = new Object2ObjectOpenHashMap<>();
+
         // Combat
         commands.put("/spider", "/warp spider");
         commands.put("/crimson", "/warp nether");
@@ -139,27 +112,21 @@ public class Shortcuts {
         commands.put("/drag", "/warp drag");
         commands.put("/jungle", "/warp jungle");
         commands.put("/howl", "/warp howl");
-    }
 
-    protected static void saveShortcuts(MinecraftClient client) {
-        JsonObject shortcutsJson = new JsonObject();
-        shortcutsJson.add("commands", SkyblockerMod.GSON.toJsonTree(commands));
-        shortcutsJson.add("commandArgs", SkyblockerMod.GSON.toJsonTree(commandArgs));
-        try (BufferedWriter writer = Files.newBufferedWriter(SHORTCUTS_FILE)) {
-            SkyblockerMod.GSON.toJson(shortcutsJson, writer);
-            LOGGER.info("[Skyblocker] Saved {} command shortcuts and {} command argument shortcuts", commands.size(), commandArgs.size());
-        } catch (IOException e) {
-            LOGGER.error("[Skyblocker] Failed to save shortcuts file", e);
-        }
+        return new ShortcutsRecord(commands, commandArgs, new Object2ObjectOpenHashMap<>());
     }
 
     private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
-        for (String key : commands.keySet()) {
+		if (!isShortcutsLoaded()) {
+			LOGGER.warn("[Skyblocker Shortcuts] Shortcuts not loaded yet, skipping command registration");
+			return;
+		}
+        for (String key : shortcuts.getData().commands.keySet()) {
             if (key.startsWith("/")) {
                 dispatcher.register(literal(key.substring(1)));
             }
         }
-        for (Map.Entry<String, String> set : commandArgs.entrySet()) {
+        for (Map.Entry<String, String> set : shortcuts.getData().commandArgs.entrySet()) {
             if (set.getKey().startsWith("/")) {
                 CommandNode<FabricClientCommandSource> redirectLocation = dispatcher.getRoot();
                 for (String word : set.getValue().substring(1).split(" ")) {
@@ -181,14 +148,14 @@ public class Shortcuts {
             source.sendFeedback(Text.of("§e§lSkyblocker §fCommand Shortcuts" + status));
             if (!isShortcutsLoaded()) {
                 source.sendFeedback(Text.translatable("skyblocker.shortcuts.notLoaded"));
-            } else for (Map.Entry<String, String> command : commands.entrySet()) {
+            } else for (Map.Entry<String, String> command : shortcuts.getData().commands.entrySet()) {
                 source.sendFeedback(Text.of("§7" + command.getKey() + " §f→ §7" + command.getValue()));
             }
             status = SkyblockerConfigManager.get().general.shortcuts.enableShortcuts && SkyblockerConfigManager.get().general.shortcuts.enableCommandArgShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
             source.sendFeedback(Text.of("§e§lSkyblocker §fCommand Argument Shortcuts" + status));
             if (!isShortcutsLoaded()) {
                 source.sendFeedback(Text.translatable("skyblocker.shortcuts.notLoaded"));
-            } else for (Map.Entry<String, String> commandArg : commandArgs.entrySet()) {
+            } else for (Map.Entry<String, String> commandArg : shortcuts.getData().commandArgs.entrySet()) {
                 source.sendFeedback(Text.of("§7" + commandArg.getKey() + " §f→ §7" + commandArg.getValue()));
             }
             source.sendFeedback(Text.of("§e§lSkyblocker §fCommands"));
@@ -203,22 +170,31 @@ public class Shortcuts {
     private static String modifyCommand(String command) {
         if (SkyblockerConfigManager.get().general.shortcuts.enableShortcuts) {
             if (!isShortcutsLoaded()) {
-                LOGGER.warn("[Skyblocker] Shortcuts not loaded yet, skipping shortcut for command: {}", command);
+                LOGGER.warn("[Skyblocker Shortcuts] Shortcuts not loaded yet, skipping shortcut for command: {}", command);
                 return command;
             }
             command = '/' + command;
             if (SkyblockerConfigManager.get().general.shortcuts.enableCommandShortcuts) {
-                command = commands.getOrDefault(command, command);
+                command = shortcuts.getData().commands.getOrDefault(command, command);
             }
             if (SkyblockerConfigManager.get().general.shortcuts.enableCommandArgShortcuts) {
                 String[] messageArgs = command.split(" ");
                 for (int i = 0; i < messageArgs.length; i++) {
-                    messageArgs[i] = commandArgs.getOrDefault(messageArgs[i], messageArgs[i]);
+                    messageArgs[i] = shortcuts.getData().commandArgs.getOrDefault(messageArgs[i], messageArgs[i]);
                 }
                 command = String.join(" ", messageArgs);
             }
             return command.substring(1);
         }
         return command;
+    }
+
+    public record ShortcutsRecord(Object2ObjectMap<String, String> commands, Object2ObjectMap<String, String> commandArgs, Object2ObjectMap<ShortcutKeyBinding, String> keyBindings) {
+        @VisibleForTesting
+		static final Codec<ShortcutsRecord> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                CodecUtils.object2ObjectMapCodec(Codec.STRING, Codec.STRING).fieldOf("commands").forGetter(ShortcutsRecord::commands),
+                CodecUtils.object2ObjectMapCodec(Codec.STRING, Codec.STRING).fieldOf("commandArgs").forGetter(ShortcutsRecord::commandArgs),
+                CodecUtils.object2ObjectMapCodec(ShortcutKeyBinding.CODEC, Codec.STRING).optionalFieldOf("keyBindings", new Object2ObjectOpenHashMap<>()).forGetter(ShortcutsRecord::keyBindings)
+        ).apply(instance, ShortcutsRecord::new));
     }
 }

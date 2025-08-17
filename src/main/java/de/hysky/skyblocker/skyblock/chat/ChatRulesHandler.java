@@ -43,11 +43,10 @@ public class ChatRulesHandler {
 	);
 
 	protected static final JsonData<List<ChatRule>> chatRuleList = new JsonData<>(CHAT_RULE_FILE, UNBOXING_CODEC, getDefaultChatRules());
-	public static CompletableFuture<Void> loaded;
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loaded = chatRuleList.init());
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> chatRuleList.init());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
 	}
 
@@ -65,7 +64,7 @@ public class ChatRulesHandler {
 	private static boolean checkMessage(Text message, boolean overlay) {
 		if (overlay || !Utils.isOnSkyblock()) return true;
 		List<ChatRule> rules = chatRuleList.getData();
-		if (rules == null || rules.isEmpty() || !loaded.isDone()) return true;
+		if (!chatRuleList.isLoaded() || rules.isEmpty()) return true;
 		String plain = Formatting.strip(message.getString());
 
 		for (ChatRule rule : rules) {
