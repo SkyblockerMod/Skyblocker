@@ -9,9 +9,6 @@ import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 
 import java.awt.*;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MiningLocationLabel extends DistancedNamedWaypoint {
     private final Category category;
