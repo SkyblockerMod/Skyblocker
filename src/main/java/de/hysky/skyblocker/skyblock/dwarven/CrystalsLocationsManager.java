@@ -124,7 +124,7 @@ public class CrystalsLocationsManager {
 
     // Check if new coords are distant enough from old coords (return false if too close)
     public static boolean isNotCoordsOverlaping(BlockPos newCoords, MiningLocationLabel oldwaypoint, int searchRadius) {
-        if (oldwaypoint == null || searchRadius ==  0 ) return true;
+        if (oldwaypoint == null || searchRadius ==  0) return true;
 
         int dx = Math.abs(newCoords.getX() - oldwaypoint.pos.getX());
         int dz = Math.abs(newCoords.getZ() - oldwaypoint.pos.getZ());
@@ -132,7 +132,7 @@ public class CrystalsLocationsManager {
 
         return dx > searchRadius || dz > searchRadius || dy > 3;
     }
-    
+
     public static void placeVerifiedWaypoint(CrystalHollowsLocationsCategory waypoint, BlockPos pos) {
         String waypointName = waypoint.getName();
 

@@ -169,8 +169,8 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
         CORLEONE("Corleone", Color.WHITE, "Boss Corleone", 20),
         KING_YOLKAR("King Yolkar", Color.RED, "King Yolkar", 8),
         ODAWA("Odawa", Color.MAGENTA, "Odawa", 8),
-        KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY,"Key Guardian", 10),
-        MINES_OF_DIVAN("Mines of Divan", Color.GREEN, null, 0), // no npcName because we are getting coords from MetalDetector 
+        KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY, "Key Guardian", 10),
+        MINES_OF_DIVAN("Mines of Divan", Color.GREEN, null, 0), // no npcName because we are getting coords from MetalDetector
         KHAZAD_DUM("Khazad-dûm", Color.YELLOW, null, 0),
         FAIRY_GROTTO("Fairy Grotto", Color.PINK, null, 0),
         DRAGONS_LAIR("Dragon's Lair", Color.BLACK, null, 0),
