@@ -60,7 +60,6 @@ public class ItemProtection {
 	}
 
 	private static int protectMyItem(FabricClientCommandSource source) {
-		boolean notifyConfiguration = SkyblockerConfigManager.get().general.itemProtection.displayChatNotification;
 		ItemStack heldItem = source.getPlayer().getMainHandStack();
 
 		if (Utils.isOnSkyblock()) {
@@ -72,15 +71,11 @@ public class ItemProtection {
 				if (!protectedItems.contains(itemUuid)) {
 					protectedItems.add(itemUuid);
 					SkyblockerConfigManager.save();
-					if (notifyConfiguration) {
-						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())));
-					}
+					source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())));
 				} else {
 					protectedItems.remove(itemUuid);
 					SkyblockerConfigManager.save();
-					if (notifyConfiguration) {
-						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())));
-					}
+					source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())));
 				}
 			} else {
 				source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.noItemUuid")));
@@ -116,13 +111,13 @@ public class ItemProtection {
 			if (!protectedItems.contains(itemUuid)) {
 				protectedItems.add(itemUuid);
 				SkyblockerConfigManager.save();
-					if (notifyConfiguration) {
+				if (notifyConfiguration) {
 					playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.added", heldItem.getName())), false);
 				}
 			} else {
 				protectedItems.remove(itemUuid);
 				SkyblockerConfigManager.save();
-					if (notifyConfiguration) {
+				if (notifyConfiguration) {
 					playerEntity.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.itemProtection.removed", heldItem.getName())), false);
 				}
 			}
