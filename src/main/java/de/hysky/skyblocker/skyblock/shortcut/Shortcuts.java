@@ -11,6 +11,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.data.JsonData;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
@@ -18,6 +19,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -34,6 +36,9 @@ public class Shortcuts {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Shortcuts.class);
 	private static final Path SHORTCUTS_FILE = SkyblockerMod.CONFIG_DIR.resolve("shortcuts.json");
 	public static final JsonData<ShortcutsRecord> shortcuts = new JsonData<>(SHORTCUTS_FILE, ShortcutsRecord.CODEC, getDefaultShortcuts());
+
+	private static final long KEY_BINDING_COOLDOWN = 200;
+	private static long lastKeyBindingCommandTime;
 
 	public static boolean isShortcutsLoaded() {
 		return shortcuts.isLoaded();
@@ -118,6 +123,41 @@ public class Shortcuts {
 	}
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+		dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("help").executes(context -> {
+			FabricClientCommandSource source = context.getSource();
+			String status = SkyblockerConfigManager.get().general.shortcuts.enableShortcuts && SkyblockerConfigManager.get().general.shortcuts.enableCommandShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
+			source.sendFeedback(Text.of("§e§lSkyblocker §fCommand Shortcuts" + status));
+			if (!isShortcutsLoaded()) {
+				source.sendFeedback(Text.translatable("skyblocker.shortcuts.notLoaded"));
+			} else for (Map.Entry<String, String> command : shortcuts.getData().commands.entrySet()) {
+				source.sendFeedback(Text.of("§7" + command.getKey() + " §f→ §7" + command.getValue()));
+			}
+
+			status = SkyblockerConfigManager.get().general.shortcuts.enableShortcuts && SkyblockerConfigManager.get().general.shortcuts.enableCommandArgShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
+			source.sendFeedback(Text.of("§e§lSkyblocker §fCommand Argument Shortcuts" + status));
+			if (!isShortcutsLoaded()) {
+				source.sendFeedback(Text.translatable("skyblocker.shortcuts.notLoaded"));
+			} else for (Map.Entry<String, String> commandArg : shortcuts.getData().commandArgs.entrySet()) {
+				source.sendFeedback(Text.of("§7" + commandArg.getKey() + " §f→ §7" + commandArg.getValue()));
+			}
+
+			status = SkyblockerConfigManager.get().general.shortcuts.enableShortcuts && SkyblockerConfigManager.get().general.shortcuts.enableKeyBindingShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
+			source.sendFeedback(Text.of("§e§lSkyblocker §fKey Binding Shortcuts" + status));
+			if (!isShortcutsLoaded()) {
+				source.sendFeedback(Text.translatable("skyblocker.shortcuts.notLoaded"));
+			} else for (Map.Entry<ShortcutKeyBinding, String> keyBinding : shortcuts.getData().keyBindings.entrySet()) {
+				source.sendFeedback(Text.of("§7" + keyBinding.getKey().getBoundKey().getLocalizedText().getString() + " §f→ §7" + keyBinding.getValue()));
+			}
+
+			source.sendFeedback(Text.of("§e§lSkyblocker §fCommands"));
+			for (String command : dispatcher.getSmartUsage(dispatcher.getRoot().getChild(SkyblockerMod.NAMESPACE), source).values()) {
+				source.sendFeedback(Text.of("§7/" + SkyblockerMod.NAMESPACE + " " + command));
+			}
+			return Command.SINGLE_SUCCESS;
+			// Queue the screen or else the screen will be immediately closed after executing this command
+		})).then(literal("shortcuts").executes(Scheduler.queueOpenScreenCommand(ShortcutsConfigScreen::new))));
+
+		if (!SkyblockerConfigManager.get().general.shortcuts.enableShortcuts) return;
 		if (!isShortcutsLoaded()) {
 			LOGGER.warn("[Skyblocker Shortcuts] Shortcuts not loaded yet, skipping command registration");
 			return;
@@ -143,51 +183,41 @@ public class Shortcuts {
 				}
 			}
 		}
-		dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("help").executes(context -> {
-			FabricClientCommandSource source = context.getSource();
-			String status = SkyblockerConfigManager.get().general.shortcuts.enableShortcuts && SkyblockerConfigManager.get().general.shortcuts.enableCommandShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
-			source.sendFeedback(Text.of("§e§lSkyblocker §fCommand Shortcuts" + status));
-			if (!isShortcutsLoaded()) {
-				source.sendFeedback(Text.translatable("skyblocker.shortcuts.notLoaded"));
-			} else for (Map.Entry<String, String> command : shortcuts.getData().commands.entrySet()) {
-				source.sendFeedback(Text.of("§7" + command.getKey() + " §f→ §7" + command.getValue()));
-			}
-			status = SkyblockerConfigManager.get().general.shortcuts.enableShortcuts && SkyblockerConfigManager.get().general.shortcuts.enableCommandArgShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
-			source.sendFeedback(Text.of("§e§lSkyblocker §fCommand Argument Shortcuts" + status));
-			if (!isShortcutsLoaded()) {
-				source.sendFeedback(Text.translatable("skyblocker.shortcuts.notLoaded"));
-			} else for (Map.Entry<String, String> commandArg : shortcuts.getData().commandArgs.entrySet()) {
-				source.sendFeedback(Text.of("§7" + commandArg.getKey() + " §f→ §7" + commandArg.getValue()));
-			}
-			source.sendFeedback(Text.of("§e§lSkyblocker §fCommands"));
-			for (String command : dispatcher.getSmartUsage(dispatcher.getRoot().getChild(SkyblockerMod.NAMESPACE), source).values()) {
-				source.sendFeedback(Text.of("§7/" + SkyblockerMod.NAMESPACE + " " + command));
-			}
-			return Command.SINGLE_SUCCESS;
-			// Queue the screen or else the screen will be immediately closed after executing this command
-		})).then(literal("shortcuts").executes(Scheduler.queueOpenScreenCommand(ShortcutsConfigScreen::new))));
 	}
 
 	private static String modifyCommand(String command) {
-		if (SkyblockerConfigManager.get().general.shortcuts.enableShortcuts) {
-			if (!isShortcutsLoaded()) {
-				LOGGER.warn("[Skyblocker Shortcuts] Shortcuts not loaded yet, skipping shortcut for command: {}", command);
-				return command;
-			}
-			command = '/' + command;
-			if (SkyblockerConfigManager.get().general.shortcuts.enableCommandShortcuts) {
-				command = shortcuts.getData().commands.getOrDefault(command, command);
-			}
-			if (SkyblockerConfigManager.get().general.shortcuts.enableCommandArgShortcuts) {
-				String[] messageArgs = command.split(" ");
-				for (int i = 0; i < messageArgs.length; i++) {
-					messageArgs[i] = shortcuts.getData().commandArgs.getOrDefault(messageArgs[i], messageArgs[i]);
-				}
-				command = String.join(" ", messageArgs);
-			}
-			return command.substring(1);
+		if (!SkyblockerConfigManager.get().general.shortcuts.enableShortcuts) return command;
+		if (!isShortcutsLoaded()) {
+			LOGGER.warn("[Skyblocker Shortcuts] Shortcuts not loaded yet, skipping shortcut for command: {}", command);
+			return command;
 		}
-		return command;
+
+		command = '/' + command;
+		if (SkyblockerConfigManager.get().general.shortcuts.enableCommandShortcuts) {
+			command = shortcuts.getData().commands.getOrDefault(command, command);
+		}
+		if (SkyblockerConfigManager.get().general.shortcuts.enableCommandArgShortcuts) {
+			String[] messageArgs = command.split(" ");
+			for (int i = 0; i < messageArgs.length; i++) {
+				messageArgs[i] = shortcuts.getData().commandArgs.getOrDefault(messageArgs[i], messageArgs[i]);
+			}
+			command = String.join(" ", messageArgs);
+		}
+		return command.substring(1);
+	}
+
+	public static void onKeyPressed(InputUtil.Key key) {
+		if (!SkyblockerConfigManager.get().general.shortcuts.enableShortcuts || !SkyblockerConfigManager.get().general.shortcuts.enableKeyBindingShortcuts) return;
+		if (!isShortcutsLoaded()) {
+			LOGGER.warn("[Skyblocker Shortcuts] Shortcuts not loaded yet, skipping key binding check for key: {}", key);
+			return;
+		}
+
+		String command = shortcuts.getData().keyBindings.get(new ShortcutKeyBinding(key));
+		if (command == null || lastKeyBindingCommandTime + KEY_BINDING_COOLDOWN > System.currentTimeMillis()) return;
+
+		MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
+		lastKeyBindingCommandTime = System.currentTimeMillis();
 	}
 
 	public record ShortcutsRecord(Object2ObjectMap<String, String> commands, Object2ObjectMap<String, String> commandArgs, Object2ObjectMap<ShortcutKeyBinding, String> keyBindings) {

@@ -444,6 +444,8 @@
   "skyblocker.config.general.shortcuts.enableCommandArgShortcuts.@Tooltip": "Shortcuts that replace one or more word(s)/argument(s) of a command which has multiple words/arguments. Edit shortcuts with \"/skyblocker shortcuts\". Shortcuts must be enabled for this to take effect.",
   "skyblocker.config.general.shortcuts.enableCommandShortcuts": "Enable Command Shortcuts",
   "skyblocker.config.general.shortcuts.enableCommandShortcuts.@Tooltip": "Shortcuts for commands consisting of only one word. Edit shortcuts with \"/skyblocker shortcuts\". Shortcuts must be enabled for this to take effect.",
+  "skyblocker.config.general.shortcuts.enableKeyBindingShortcuts": "Enable Key Binding Shortcuts",
+  "skyblocker.config.general.shortcuts.enableKeyBindingShortcuts.@Tooltip": "Shortcuts that run a command when a key is pressed. Edit shortcuts with \"/skyblocker shortcuts\". Shortcuts must be enabled for this to take effect.",
   "skyblocker.config.general.shortcuts.enableShortcuts": "Enable Shortcuts",
   "skyblocker.config.general.shortcuts.enableShortcuts.@Tooltip": "Works anywhere, even in vanilla! Edit shortcuts with \"/skyblocker shortcuts\". At least one of the following options must be enabled for this to take effect.",
 
