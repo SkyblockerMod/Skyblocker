@@ -18,8 +18,8 @@ public class SkyMallFilterTest extends ChatFilterTest<SkyMallFilter> {
 		assertMatches("New buff: Gain +100⸕ Mining Speed.");
 		assertMatches("New buff: Gain +50☘ Mining Fortune.");
 		assertMatches("New buff: Gain +15% more Powder while mining.");
-		assertMatches("New buff: Gain -20% Pickaxe Ability cooldowns.");
-		assertMatches("New buff: Gain 10x chance to find Golden and Diamond Goblins.");
+		assertMatches("New buff: -20% Pickaxe Ability cooldowns.");
+		assertMatches("New buff: 10x chance to find Golden and Diamond Goblins.");
 		assertMatches("New buff: Gain 5x Titanium drops.");
 	}
 

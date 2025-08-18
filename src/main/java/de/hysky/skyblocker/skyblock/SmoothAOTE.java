@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -12,7 +13,10 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.Perspective;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -20,11 +24,16 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -263,6 +272,14 @@ public class SmoothAOTE {
 		float yaw = CLIENT.player.getYaw();
 		Vec3d look = CLIENT.player.getRotationVector(pitch, yaw);
 
+		//make sure the player is not talking to an npc. And if they are cancel the teleport
+		if (startPos == null) return;
+		if (isTargetingNPC(CLIENT.player, 4, startPos, look)) {
+			startPos = null;
+			teleportVector = null;
+			return;
+		}
+
 		//find target location depending on how far the item they are using takes them
 		teleportVector = raycast(distance, look, startPos);
 		if (teleportVector == null) {
@@ -277,6 +294,46 @@ public class SmoothAOTE {
 		//add 1 to teleports ahead
 		teleportsAhead += 1;
 	}
+
+	/**
+	 * Checks if the player is targeting an entity and then checks if it has a CLICK tag suggesting it has an interaction that will block the teleport
+	 *
+	 * @param player      player
+	 * @param maxDistance max distance this is needed
+	 * @param startPos    player starting location
+	 * @param look        players looking direction
+	 * @return if an NPC is targeted
+	 */
+	private static Boolean isTargetingNPC(PlayerEntity player, double maxDistance, Vec3d startPos, Vec3d look) {
+		if (startPos == null) return false;
+		// Calculate end position for raycast
+		Vec3d endPos = startPos.add(look.multiply(maxDistance));
+
+		// First: Raycast for blocks (to check obstructions)
+		World world = player.getWorld();
+		RaycastContext context = new RaycastContext(startPos, endPos, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, player);
+		double blockHitDistance = world.raycast(context).getPos().distanceTo(startPos);
+
+		// Second: Raycast for entities (within valid range)
+		Box searchBox = player
+				.getBoundingBox()
+				.stretch(look.multiply(maxDistance)) // Extend box in look direction
+				.expand(1); // Margin for safety
+
+		EntityHitResult entityHit = ProjectileUtil.raycast(player, startPos, endPos, searchBox, entity ->
+						!entity.isSpectator() && entity != player,
+				MathHelper.square(blockHitDistance) // Max distance (squared)
+		);
+		//if not looking at any entity return false
+		if (entityHit == null) return false;
+
+		//look for armorstand saying click to see if it's A npc or not
+		Entity entity = entityHit.getEntity();
+		List<ArmorStandEntity> armorStands = MobGlow.getArmorStands(entity);
+
+		return armorStands.stream().anyMatch(armorStand -> armorStand.getName().getString().equals("CLICK"));
+	}
+
 
 	/**
 	 * Rounds a value to the nearest 0.5
@@ -334,31 +391,23 @@ public class SmoothAOTE {
 	 * @param distance maximum distance
 	 * @return teleport vector
 	 */
-	private static Vec3d raycast(int distance, Vec3d direction, Vec3d startPos) {
+	protected static Vec3d raycast(int distance, Vec3d direction, Vec3d startPos) {
 		if (CLIENT.world == null || direction == null || startPos == null) {
 			return null;
 		}
 
 		//based on which way the ray is going get the needed vector for checking diagonals
-		BlockPos xDiagonalOffset;
-		BlockPos zDiagonalOffset;
-		if (direction.getX() > 0) {
-			xDiagonalOffset = new BlockPos(-1, 0, 0);
-		} else {
-			xDiagonalOffset = new BlockPos(1, 0, 0);
-		}
-		if (direction.getZ() > 0) {
-			zDiagonalOffset = new BlockPos(0, 0, -1);
-		} else {
-			zDiagonalOffset = new BlockPos(0, 0, 1);
-		}
+		BlockPos xDiagonalOffset = direction.getX() > 0 ? new BlockPos(1, 0, 0) : new BlockPos(-1, 0, 0);
+		BlockPos zDiagonalOffset = direction.getZ() > 0 ? new BlockPos(0, 0, 1) : new BlockPos(0, 0, -1);
+
 
 		//initialise the closest floor value outside of possible values
-		int closeFloorY = 1000;
+		int closeFloorY = Integer.MAX_VALUE;
 
 		//loop though each block of a teleport checking each block if there are blocks in the way
 		for (double offset = 0; offset <= distance; offset++) {
 			Vec3d pos = startPos.add(direction.multiply(offset));
+
 			BlockPos checkPos = BlockPos.ofFloored(pos);
 
 			//check if there is a block at the check location
@@ -384,13 +433,16 @@ public class SmoothAOTE {
 				return direction.multiply(offset - 1);
 			}
 
-			//check the diagonals to make sure player is not going through diagonal wall (full height block in the way on both sides at either height)
-			if (offset != 0 && (isBlockFloor(checkPos.add(xDiagonalOffset)) || isBlockFloor(checkPos.up().add(xDiagonalOffset))) && (isBlockFloor(checkPos.add(zDiagonalOffset)) || isBlockFloor(checkPos.up().add(zDiagonalOffset)))) {
+			//check for diagonal walls for some reason this check is directional, and you can go through from some directions. This seems to emulate this as best as possible
+			if (offset != 0 && direction.getX() < 0 && (isBlockFloor(checkPos.east())) && (isBlockFloor(BlockPos.ofFloored(pos.subtract(direction)).add(zDiagonalOffset)))) {
+				return direction.multiply(offset - 1);
+			}
+			if (offset != 0 && direction.getZ() < 0 && direction.getX() < 0 && (isBlockFloor(checkPos.south())) && (isBlockFloor(BlockPos.ofFloored(pos.subtract(direction)).add(xDiagonalOffset)))) {
 				return direction.multiply(offset - 1);
 			}
 
 			//if the player is close to the floor (including diagonally) save Y and when player goes bellow this y finish teleport
-			if (offset != 0 && (isBlockFloor(checkPos.down()) || (isBlockFloor(checkPos.down().subtract(xDiagonalOffset)) && isBlockFloor(checkPos.down().subtract(zDiagonalOffset)))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
+			if ((isBlockFloor(checkPos.down()) || (isBlockFloor(checkPos.down().add(xDiagonalOffset)) && isBlockFloor(checkPos.down().add(zDiagonalOffset)))) && (pos.getY() - Math.floor(pos.getY())) < 0.31) {
 				closeFloorY = checkPos.getY() - 1;
 			}
 
@@ -406,7 +458,7 @@ public class SmoothAOTE {
 
 	/**
 	 * Checks to see if a block is in the allowed list to teleport though
-	 * Air, Buttons, carpets, crops, pots, mushrooms, nether wart, redstone, ladder, water, fire, lava, 3 or less snow layers
+	 * Air, non-colision blocks, carpets, pots, 3 or less snow layers
 	 *
 	 * @param blockPos block location
 	 * @return if a block location can be teleported though
@@ -421,7 +473,9 @@ public class SmoothAOTE {
 			return true;
 		}
 		Block block = blockState.getBlock();
-		return block instanceof ButtonBlock || block instanceof CarpetBlock || block instanceof CropBlock || block instanceof FlowerPotBlock || block.equals(Blocks.BROWN_MUSHROOM) || block.equals(Blocks.RED_MUSHROOM) || block.equals(Blocks.NETHER_WART) || block.equals(Blocks.REDSTONE_WIRE) || block.equals(Blocks.LADDER) || block.equals(Blocks.FIRE) || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3) || block.equals(Blocks.WATER) || block.equals(Blocks.LAVA);
+		VoxelShape shape = blockState.getCollisionShape(CLIENT.world, blockPos);
+
+		return shape.isEmpty() || block instanceof CarpetBlock || block instanceof FlowerPotBlock || (block.equals(Blocks.SNOW) && blockState.get(Properties.LAYERS) <= 3);
 	}
 
 	/**
@@ -440,7 +494,7 @@ public class SmoothAOTE {
 		if (shape.isEmpty()) {
 			return false;
 		}
-		return shape.getBoundingBox().maxY == 1;
+		return shape.getBoundingBox().maxY >= 1 || blockState.getBlock() == Blocks.MUD; //every thing 1 or above counts but there is some added extras like mud
 	}
 
 	/**
@@ -455,7 +509,7 @@ public class SmoothAOTE {
 		}
 		long gap = System.currentTimeMillis() - startTime;
 		//make sure the player is actually getting teleported if not disable teleporting until they are teleported again
-		if (System.currentTimeMillis() - lastTeleportTime > Math.min(Math.max(lastPing, currentTeleportPing) + SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.maximumAddedLag, MAX_TELEPORT_TIME)) {
+		if (System.currentTimeMillis() - lastTeleportTime > Math.min(Math.max(lastPing, currentTeleportPing) + ((long) SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.maximumAddedLag * teleportsAhead), MAX_TELEPORT_TIME)) {
 			teleportDisabled = true;
 			startPos = null;
 			teleportVector = null;

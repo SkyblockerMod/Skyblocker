@@ -9,11 +9,11 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.PetCache;
-import de.hysky.skyblocker.skyblock.experiment.ExperimentSolver;
-import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
-import de.hysky.skyblocker.skyblock.item.*;
+import de.hysky.skyblocker.skyblock.item.ItemPrice;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
+import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
@@ -27,15 +27,15 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
+import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipData;
@@ -46,7 +46,6 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
@@ -133,6 +132,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Inject(method = "init", at = @At("TAIL"))
 	private void skyblocker$initMuseumOverlay(CallbackInfo ci) {
 		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.museumOverlay && client != null && client.player != null && getTitle().getString().contains("Museum")) {
@@ -181,10 +181,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			//Item Price Lookup
 			if (config.helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(keyCode, scanCode)) {
 				ItemPrice.itemPriceLookup(client.player, this.focusedSlot);
-			}
-			//Refresh Item Prices
-			if (config.helpers.itemPrice.enableItemPriceRefresh && ItemPrice.ITEM_PRICE_REFRESH.matchesKey(keyCode, scanCode)) {
-				ItemPrice.refreshItemPrices(this.client.player);
 			}
 		}
 	}
@@ -241,8 +237,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@SuppressWarnings("DataFlowIssue")
 	// makes intellij be quiet about this.focusedSlot maybe being null. It's already null checked in mixined method.
 	@WrapOperation(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/util/Identifier;)V"))
-	public void skyblocker$drawMouseOverTooltip(
-			DrawContext instance,
+	private void skyblocker$drawMouseOverTooltip(
+			DrawContext context,
 			TextRenderer textRenderer,
 			List<Text> text,
 			Optional<TooltipData> data,
@@ -252,8 +248,13 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			Operation<Void> original,
 			@Local(ordinal = 0) ItemStack stack
 	) {
+		// Hide tooltips from items that have been visually replaced by a container solver with air (since the Slot#hasStack still passes)
+		if (ContainerSolverManager.getCurrentSolver() instanceof StackDisplayModifier && stack.isEmpty()) {
+			return;
+		}
+
 		if (!Utils.isOnSkyblock() || text.isEmpty()) {
-			original.call(instance, textRenderer, text, data, x, y, texture);
+			original.call(context, textRenderer, text, data, x, y, texture);
 			return;
 		}
 
@@ -266,49 +267,35 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		// Backpack Preview
 		boolean shiftDown = SkyblockerConfigManager.get().uiAndVisuals.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
-		if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(instance, this, focusedSlot.getIndex(), x, y)) {
+		if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(context, this, focusedSlot.getIndex(), x, y)) {
 			return;
 		}
 
 		// Compactor Preview
 		if (SkyblockerConfigManager.get().uiAndVisuals.compactorDeletorPreview) {
 			Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemUtils.getItemId(stack));
-			if (matcher.matches() && CompactorDeletorPreview.drawPreview(instance, stack, getTooltipFromItem(stack), matcher.group("type"), matcher.group("size"), x, y)) {
+			if (matcher.matches() && CompactorDeletorPreview.drawPreview(context, stack, getTooltipFromItem(stack), matcher.group("type"), matcher.group("size"), x, y)) {
 				return;
 			}
 		}
 
-		original.call(instance, textRenderer, text, data, x, y, texture);
+		original.call(context, textRenderer, text, data, x, y, texture);
 	}
 
 	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "STORE"))
-	private ItemStack skyblocker$experimentSolvers$replaceTooltipDisplayStack(ItemStack stack) {
-		return skyblocker$experimentSolvers$getStack(focusedSlot, stack);
+	private ItemStack skyblocker$modifyTooltipDisplayStack(ItemStack stack) {
+		return skyblocker$modifyDisplayStack(focusedSlot, stack, ContainerSolverManager.getCurrentSolver());
 	}
 
 	@ModifyVariable(method = "drawSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)
-	private ItemStack skyblocker$experimentSolvers$replaceDisplayStack(ItemStack stack, @Local(argsOnly = true) Slot slot) {
-		return skyblocker$experimentSolvers$getStack(slot, stack);
+	private ItemStack skyblocker$modifyDisplayStack(ItemStack stack, @Local(argsOnly = true) Slot slot) {
+		return skyblocker$modifyDisplayStack(slot, stack, ContainerSolverManager.getCurrentSolver());
 	}
 
-	/**
-	 * Avoids getting currentSolver again when it's already in the scope for some usages of this method.
-	 *
-	 * @see #skyblocker$experimentSolvers$getStack(Slot, ItemStack, ContainerSolver)
-	 */
 	@Unique
-	private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack) {
-		return skyblocker$experimentSolvers$getStack(slot, stack, ContainerSolverManager.getCurrentSolver());
-	}
-
-	/**
-	 * Redirects getStack calls to account for different stacks in experiment solvers.
-	 */
-	@Unique
-	private ItemStack skyblocker$experimentSolvers$getStack(Slot slot, @NotNull ItemStack stack, ContainerSolver currentSolver) {
-		if (currentSolver instanceof ExperimentSolver experimentSolver && (experimentSolver instanceof SuperpairsSolver || experimentSolver instanceof UltrasequencerSolver) && experimentSolver.getState() == ExperimentSolver.State.SHOW && slot.inventory instanceof SimpleInventory) {
-			ItemStack itemStack = experimentSolver.getSlots().get(slot.getIndex());
-			return itemStack == null ? stack : itemStack;
+	private ItemStack skyblocker$modifyDisplayStack(Slot slot, ItemStack stack, ContainerSolver solver) {
+		if (solver instanceof StackDisplayModifier modifier && solver.isSolverSlot(slot, this)) {
+			return modifier.modifyDisplayStack(slot.getIndex(), stack);
 		}
 		return stack;
 	}
@@ -333,7 +320,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		if (slot == null) return;
 		String title = getTitle().getString();
 		ContainerSolver currentSolver = ContainerSolverManager.getCurrentSolver();
-		ItemStack stack = skyblocker$experimentSolvers$getStack(slot, slot.getStack(), currentSolver);
+		ItemStack stack = skyblocker$modifyDisplayStack(slot, slot.getStack(), currentSolver);
 
 		boolean isTitleEmptyOrFiller = FILLER_ITEMS.contains(stack.getName().getString());
 		if (isTitleEmptyOrFiller) {
@@ -415,8 +402,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			context.drawTexture(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
 		}
 
-		// Search
-		// Darken the slots
+		// Search - darken non-matching slots
 		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {
 			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0x88_000000);
 		}

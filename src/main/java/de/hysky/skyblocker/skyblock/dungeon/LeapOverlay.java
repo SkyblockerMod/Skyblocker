@@ -5,8 +5,10 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -120,7 +122,29 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		} else if (this.client.options.inventoryKey.matchesKey(keyCode, scanCode)) {
 			this.close();
 			return true;
+		} else if (CONFIG.get().leapKeybinds) {
+			boolean result = switch (keyCode) {
+				case GLFW.GLFW_KEY_1 -> leapToPlayer(0);
+				case GLFW.GLFW_KEY_2 -> leapToPlayer(1);
+				case GLFW.GLFW_KEY_3 -> leapToPlayer(2);
+				case GLFW.GLFW_KEY_4 -> leapToPlayer(3);
+
+				default -> false;
+			};
+
+			if (result) return true;
 		}
+		return false;
+	}
+
+	private boolean leapToPlayer(int index) {
+		PlayerReference[] players = references.toArray(PlayerReference[]::new);
+
+		if (players.length > 0 && index < players.length) {
+			players[index].clickSlot();
+			return true;
+		}
+
 		return false;
 	}
 
@@ -166,7 +190,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 			references.stream()
 					.filter(ref -> ref.uuid().equals(LeapOverlay.this.hovered))
 					.findAny()
-					.ifPresent(ref -> client.interactionManager.clickSlot(ref.syncId(), ref.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, client.player));
+					.ifPresent(PlayerReference::clickSlot);
 		}
 
 		@Override
@@ -227,7 +251,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 
 		@Override
 		public void onClick(double mouseX, double mouseY) {
-			CLIENT.interactionManager.clickSlot(reference.syncId(), reference.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, CLIENT.player);
+			reference.clickSlot();
 		}
 	}
 
@@ -250,6 +274,13 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		@Override
 		public int compareTo(@NotNull LeapOverlay.PlayerReference o) {
 			return COMPARATOR.compare(this, o);
+		}
+
+		private void clickSlot() {
+			CLIENT.interactionManager.clickSlot(this.syncId(), this.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, SlotActionType.PICKUP, CLIENT.player);
+			if (CONFIG.get().enableLeapMessage) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + CONFIG.get().leapMessage.replaceAll("\\[name]", this.name), false);
+			}
 		}
 	}
 
