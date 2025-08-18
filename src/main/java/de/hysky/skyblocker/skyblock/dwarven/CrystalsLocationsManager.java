@@ -8,6 +8,8 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.dwarven.MiningLocationLabel.CrystalHollowsLocationsCategory;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -26,14 +28,25 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -46,6 +59,7 @@ import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.minecraft.command.CommandSource.suggestMatching;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Manager for Crystal Hollows waypoints that handles {@link #update() location detection},
@@ -81,7 +95,58 @@ public class CrystalsLocationsManager {
 
         // Nucleus Waypoints
         WorldRenderEvents.AFTER_TRANSLUCENT.register(NucleusWaypoints::render);
+
+        // Verify waypoints by left- or right-clicking on an NPC such as Odawa, Boss Corleone, or Kalhuiki Door Guardian, etc.
+        AttackEntityCallback.EVENT.register(CrystalsLocationsManager::OnEntryInteract);
+        UseEntityCallback.EVENT.register(CrystalsLocationsManager::OnEntryInteract);
     }
+
+    // Verify waypoints when interacting with an NPC
+    public static ActionResult OnEntryInteract(PlayerEntity playerEntity, World world, Hand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
+        if (!Utils.isInCrystalHollows()) {
+            return ActionResult.PASS;
+        }
+        // Searching for an invisible armor stand behind an entity (it has the entity’s name)
+        String npcName = MobGlow.getArmorStandName(entity);
+
+        CrystalHollowsLocationsCategory waypointLocation = CrystalHollowsLocationsCategory.findNpcNameBySubstring(npcName);
+        if (waypointLocation != null && !npcName.isBlank()) {
+            BlockPos pos = CLIENT.player.getBlockPos();
+            placeVerifiedWaypoint(waypointLocation, pos);
+        }
+
+        return ActionResult.PASS;
+    }
+
+    // For the Mines of Divan, it's better to add a waypoint using MetalDetector.findCenterOfMines() at the minesCenter coordinates
+    public static void VerifyMinesOfDivanWaypoint(BlockPos pos) {
+        CrystalHollowsLocationsCategory waypointLocation = CrystalHollowsLocationsCategory.MINES_OF_DIVAN;
+        placeVerifiedWaypoint(waypointLocation, pos);
+    }
+
+    // Check if new coords are distant enough from old coords (return false if too close)
+    public static boolean isNotCoordsOverlaping(BlockPos newCoords, MiningLocationLabel oldwaypoint, int searchRadius) {
+        if (oldwaypoint == null || searchRadius ==  0 ) return true;
+
+        int dx = Math.abs(newCoords.getX() - oldwaypoint.pos.getX());
+        int dz = Math.abs(newCoords.getZ() - oldwaypoint.pos.getZ());
+        int dy = Math.abs(newCoords.getY() - oldwaypoint.pos.getY());
+
+        return dx > searchRadius || dz > searchRadius || dy > 3;
+    }
+    
+    public static void placeVerifiedWaypoint(CrystalHollowsLocationsCategory waypoint, BlockPos pos) {
+        String waypointName = waypoint.getName();
+
+        if (!verifiedWaypoints.contains(waypointName)) {
+            if (isNotCoordsOverlaping(pos, activeWaypoints.get(waypointName), waypoint.getSearchRadius())) {
+                addCustomWaypoint(waypointName, pos);
+                trySendWaypoint2Socket(waypoint);
+            }
+            verifiedWaypoints.add(waypointName);
+        }
+    }
+
 
     private static boolean extractLocationFromMessage(Text message, Boolean overlay) {
         if (!SkyblockerConfigManager.get().mining.crystalsWaypoints.findInChat || !Utils.isInCrystalHollows() || overlay) {
@@ -127,19 +192,6 @@ public class CrystalsLocationsManager {
 
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Crystals Locations Manager] Encountered an exception while extracing a location from a chat message!", e);
-        }
-
-        //move waypoint to be more accurate based on locational chat messages if not already verifed
-        if (CLIENT.player != null && SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled) {
-            for (MiningLocationLabel.CrystalHollowsLocationsCategory waypointLocation : WAYPOINT_LOCATIONS.values()) {
-                String waypointLinkedMessage = waypointLocation.getLinkedMessage();
-                String waypointName = waypointLocation.getName();
-                if (waypointLinkedMessage != null && text.contains(waypointLinkedMessage) && !verifiedWaypoints.contains(waypointName)) {
-                    addCustomWaypoint(waypointLocation.getName(), CLIENT.player.getBlockPos());
-                    verifiedWaypoints.add(waypointName);
-                    trySendWaypoint2Socket(waypointLocation);
-                }
-            }
         }
 
         return true;
