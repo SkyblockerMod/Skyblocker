@@ -350,13 +350,16 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 							? Text.translatable("narrator.controls.unbound", replacement.getText())
 							: Text.translatable("narrator.controls.bound", replacement.getText(), textSupplier.get()))
 					.build();
+			// The duplicate warning tooltip displays replacement commands and needs to be updated.
+			replacement.setChangedListener(command -> ShortcutsConfigListWidget.this.updateKeybinds());
 			children = List.of(keybindButton, replacement);
 			update();
 		}
 
 		@Override
 		public String toString() {
-			return keyBinding.getBoundKey().getTranslationKey() + " → " + replacement.getText();
+			// This is used in the delete warning screen, so we use the localized text.
+			return keyBinding.getBoundKey().getLocalizedText().getString() + " → " + replacement.getText();
 		}
 
 		@Override
@@ -412,13 +415,14 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 			duplicate = false;
 			MutableText text = Text.empty();
 			if (!keyBinding.isUnbound()) {
-				for (ShortcutKeyBinding keyBinding : category.shortcutsMap.keySet()) {
-					if (this.keyBinding != keyBinding && this.keyBinding.equals(keyBinding)) {
+				for (AbstractShortcutEntry shortcut : ShortcutsConfigListWidget.this.children()) {
+					if (shortcut instanceof KeybindShortcutEntry keyBindingShortcut && keyBinding != keyBindingShortcut.keyBinding && keyBinding.equals(keyBindingShortcut.keyBinding)) {
 						if (duplicate) {
 							text.append(", ");
 						}
 						duplicate = true;
-						text.append(Text.translatable(keyBinding.getBoundKey().getTranslationKey()));
+						// We display the replacement command to help users identify which shortcuts have conflicting keybinds.
+						text.append(keyBindingShortcut.replacement.getText());
 					}
 				}
 			}

@@ -13,6 +13,7 @@ import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.data.JsonData;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -194,7 +195,7 @@ public class Shortcuts {
 		static final Codec<ShortcutsRecord> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				CodecUtils.object2ObjectMapCodec(Codec.STRING, Codec.STRING).fieldOf("commands").forGetter(ShortcutsRecord::commands),
 				CodecUtils.object2ObjectMapCodec(Codec.STRING, Codec.STRING).fieldOf("commandArgs").forGetter(ShortcutsRecord::commandArgs),
-				CodecUtils.object2ObjectMapCodec(ShortcutKeyBinding.CODEC, Codec.STRING).optionalFieldOf("keyBindings", new Object2ObjectOpenHashMap<>()).forGetter(ShortcutsRecord::keyBindings)
+				CodecUtils.mutableOptional(CodecUtils.object2ObjectMapCodec(ShortcutKeyBinding.CODEC, Codec.STRING).optionalFieldOf("keyBindings", Object2ObjectMaps.emptyMap()), Object2ObjectOpenHashMap::new).forGetter(ShortcutsRecord::keyBindings)
 		).apply(instance, ShortcutsRecord::new));
 
 		public int size() {
