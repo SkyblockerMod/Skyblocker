@@ -234,8 +234,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@SuppressWarnings("DataFlowIssue")
 	// makes intellij be quiet about this.focusedSlot maybe being null. It's already null checked in mixined method.
 	@WrapOperation(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/util/Identifier;)V"))
-	public void skyblocker$drawMouseOverTooltip(
-			DrawContext instance,
+	private void skyblocker$drawMouseOverTooltip(
+			DrawContext context,
 			TextRenderer textRenderer,
 			List<Text> text,
 			Optional<TooltipData> data,
@@ -245,8 +245,13 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			Operation<Void> original,
 			@Local(ordinal = 0) ItemStack stack
 	) {
+		// Hide tooltips from items that have been visually replaced by a container solver with air (since the Slot#hasStack still passes)
+		if (ContainerSolverManager.getCurrentSolver() instanceof StackDisplayModifier && stack.isEmpty()) {
+			return;
+		}
+
 		if (!Utils.isOnSkyblock() || text.isEmpty()) {
-			original.call(instance, textRenderer, text, data, x, y, texture);
+			original.call(context, textRenderer, text, data, x, y, texture);
 			return;
 		}
 
@@ -259,19 +264,19 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		// Backpack Preview
 		boolean shiftDown = SkyblockerConfigManager.get().uiAndVisuals.backpackPreviewWithoutShift ^ Screen.hasShiftDown();
-		if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(instance, this, focusedSlot.getIndex(), x, y)) {
+		if (shiftDown && getTitle().getString().equals("Storage") && focusedSlot.inventory != client.player.getInventory() && BackpackPreview.renderPreview(context, this, focusedSlot.getIndex(), x, y)) {
 			return;
 		}
 
 		// Compactor Preview
 		if (SkyblockerConfigManager.get().uiAndVisuals.compactorDeletorPreview) {
 			Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemUtils.getItemId(stack));
-			if (matcher.matches() && CompactorDeletorPreview.drawPreview(instance, stack, getTooltipFromItem(stack), matcher.group("type"), matcher.group("size"), x, y)) {
+			if (matcher.matches() && CompactorDeletorPreview.drawPreview(context, stack, getTooltipFromItem(stack), matcher.group("type"), matcher.group("size"), x, y)) {
 				return;
 			}
 		}
 
-		original.call(instance, textRenderer, text, data, x, y, texture);
+		original.call(context, textRenderer, text, data, x, y, texture);
 	}
 
 	@ModifyVariable(method = "drawMouseoverTooltip", at = @At(value = "STORE"))

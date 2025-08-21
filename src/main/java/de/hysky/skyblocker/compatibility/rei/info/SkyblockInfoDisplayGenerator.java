@@ -12,8 +12,9 @@ public class SkyblockInfoDisplayGenerator implements DynamicDisplayGenerator<Sky
 	public Optional<List<SkyblockInfoDisplay>> getRecipeFor(EntryStack<?> entry) {
 		if (!(entry.getValue() instanceof ItemStack entryStack)) return Optional.empty();
 		if (entryStack.getSkyblockId().isEmpty()) return Optional.empty();
-		entryStack.setCount(1);
-		return Optional.of(List.of(new SkyblockInfoDisplay(entryStack)));
+		ItemStack stack = entryStack.copy();
+		stack.setCount(1);
+		return Optional.of(List.of(new SkyblockInfoDisplay(stack)));
 	}
 
 	@Override

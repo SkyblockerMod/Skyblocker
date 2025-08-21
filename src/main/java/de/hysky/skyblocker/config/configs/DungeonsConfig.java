@@ -13,6 +13,8 @@ public class DungeonsConfig {
 
 	public boolean salvageHelper = true;
 
+	public boolean sellableItemsHighlighter = true;
+
 	public boolean bloodCampHelper = false;
 
 	public boolean playerSecretsTracker = false;
@@ -81,6 +83,10 @@ public class DungeonsConfig {
 		public boolean showMap = true;
 
 		public float scale = 1.2f;
+
+		public boolean enableLeapMessage = false;
+
+		public String leapMessage = "Leaped to [name]!";
 	}
 
 	public static class PuzzleSolvers {
