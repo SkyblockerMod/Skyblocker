@@ -415,6 +415,17 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 			duplicate = false;
 			MutableText text = Text.empty();
 			if (!keyBinding.isUnbound()) {
+				// Check for conflicts with regular keybinds
+				for (KeyBinding otherKeyBinding : client.options.allKeys) {
+					if (keyBinding.getBoundKey().getTranslationKey().equals(otherKeyBinding.getBoundKeyTranslationKey())) {
+						if (duplicate) {
+							text.append(", ");
+						}
+						duplicate = true;
+						text.append(Text.translatable(otherKeyBinding.getTranslationKey()));
+					}
+				}
+				// Check for conflicts with other keybind shortcuts
 				for (AbstractShortcutEntry shortcut : ShortcutsConfigListWidget.this.children()) {
 					if (shortcut instanceof KeybindShortcutEntry keyBindingShortcut && keyBinding != keyBindingShortcut.keyBinding && keyBinding.equals(keyBindingShortcut.keyBinding)) {
 						if (duplicate) {
