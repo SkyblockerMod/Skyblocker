@@ -178,9 +178,8 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
         GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor()), "    Amber Crystal", 20),
         MINES_OF_DIVAN("Mines of Divan", Color.GREEN, "    Jade Crystal", 20),
         // These cannot be found automatically yet.
-        FAIRY_GROTTO("Fairy Grotto", Color.PINK, null, 0),
+        FAIRY_GROTTO("Fairy Grotto", Color.PINK, null, 0),  
         DRAGONS_LAIR("Dragon's Lair", Color.BLACK, null, 0);
-        
 
         public static final Codec<CrystalHollowsLocationsCategory> CODEC = StringIdentifiable.createBasicCodec(CrystalHollowsLocationsCategory::values);
 

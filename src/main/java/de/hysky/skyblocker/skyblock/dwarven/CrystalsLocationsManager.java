@@ -457,7 +457,7 @@ public class CrystalsLocationsManager {
 
     private static void placeVerifiedWaypoint(CrystalHollowsLocationsCategory waypoint, BlockPos pos) {
         String waypointName = waypoint.getName();
-        
+
         if (!verifiedWaypoints.contains(waypointName)) {
             // Check that we dont already have same waypoint nearby (e.g from Socket), should (theoretically) save some trafic for the server
             if (!isWaypointsOverlaping(pos, activeWaypoints.get(waypointName), waypoint.getSearchRadius())) {
