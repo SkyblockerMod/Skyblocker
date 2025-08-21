@@ -225,8 +225,6 @@ public class MetalDetector {
                 Vec3i offset = keeperOffsets.get(nameMatcher.group(1));
                 minesCenter = armorStand.getBlockPos().add(offset);
                 CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.foundCenter").formatted(Formatting.GREEN)), false);
-
-                CrystalsLocationsManager.VerifyMinesOfDivanWaypoint(new BlockPos(minesCenter));
                 return;
             }
         }

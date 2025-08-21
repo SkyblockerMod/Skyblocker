@@ -10,6 +10,8 @@ import net.minecraft.util.math.BlockPos;
 
 import java.awt.*;
 
+import javax.annotation.Nullable;
+
 public class MiningLocationLabel extends DistancedNamedWaypoint {
     private final Category category;
 
@@ -164,29 +166,33 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
      */
     public enum CrystalHollowsLocationsCategory implements Category, StringIdentifiable {
         UNKNOWN("Unknown", Color.WHITE, null, 0), //used when a location is known but what's at the location is not known
+        // These waypoints are verified by interacting with the corresponding NPC (e.g., by clicking on Odawa)
         JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor()), "Kalhuiki Door Guardian", 10),
         LOST_PRECURSOR_CITY("Lost Precursor City", Color.CYAN, "Professor Robot", 8),
-        CORLEONE("Corleone", Color.WHITE, "Boss Corleone", 20),
         KING_YOLKAR("King Yolkar", Color.RED, "King Yolkar", 8),
         ODAWA("Odawa", Color.MAGENTA, "Odawa", 8),
+        CORLEONE("Corleone", Color.WHITE, "Boss Corleone", 20),
         KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY, "Key Guardian", 10),
-        MINES_OF_DIVAN("Mines of Divan", Color.GREEN, null, 0), // no npcName because we are getting coords from MetalDetector
-        KHAZAD_DUM("Khazad-dûm", Color.YELLOW, null, 0),
+        // Look for chat message containing npcName (crystal name)
+        KHAZAD_DUM("Khazad-dûm", Color.YELLOW, "    Topaz Crystal", 20),
+        GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor()), "    Amber Crystal", 20),
+        MINES_OF_DIVAN("Mines of Divan", Color.GREEN, "    Jade Crystal", 20),
+        // These cannot be found automatically yet.
         FAIRY_GROTTO("Fairy Grotto", Color.PINK, null, 0),
-        DRAGONS_LAIR("Dragon's Lair", Color.BLACK, null, 0),
-        GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor()), null, 0);
+        DRAGONS_LAIR("Dragon's Lair", Color.BLACK, null, 0);
+        
 
         public static final Codec<CrystalHollowsLocationsCategory> CODEC = StringIdentifiable.createBasicCodec(CrystalHollowsLocationsCategory::values);
 
         public final Color color;
-        private final String name;
+        private final @Nullable String name;
         private final String npcName;
         private final int searchRadius;
 
         CrystalHollowsLocationsCategory(String name, Color color, String npcName, int searchRadius) {
             this.name = name;
             this.color = color;
-            this.npcName = npcName == null ? "" : npcName.toLowerCase();
+            this.npcName = npcName;
             this.searchRadius = searchRadius;
         }
 
@@ -198,6 +204,10 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
         @Override
         public int getColor() {
             return this.color.getRGB();
+        }
+
+        public @Nullable String getNpcName() {
+            return this.npcName;
         }
 
         public int getSearchRadius() {
@@ -212,10 +222,9 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
         // npcName search
         public static CrystalHollowsLocationsCategory findNpcNameBySubstring(String query) {
             if (query == null || query.isBlank()) return null;
-            String q = query.toLowerCase();
 
             for (CrystalHollowsLocationsCategory c : values()) {
-                if (!c.npcName.isEmpty() && q.contains(c.npcName)) {
+                if (c.npcName != null && !c.npcName.isBlank() && query.contains(c.npcName)) {
                     return c;
                 }
             }

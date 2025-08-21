@@ -73,6 +73,14 @@ public class CrystalsLocationsManager {
      * A look-up table to convert between location names and waypoint in the {@link MiningLocationLabel.CrystalHollowsLocationsCategory} values.
      */
     private static final Map<String, MiningLocationLabel.CrystalHollowsLocationsCategory> WAYPOINT_LOCATIONS = Arrays.stream(MiningLocationLabel.CrystalHollowsLocationsCategory.values()).collect(Collectors.toMap(MiningLocationLabel.CrystalHollowsLocationsCategory::getName, Function.identity()));
+    // Locations to search for in chat messages
+    private static final EnumSet<MiningLocationLabel.CrystalHollowsLocationsCategory> CHAT_VERIFIABLE_WAYPOINTS =
+        EnumSet.of(
+            MiningLocationLabel.CrystalHollowsLocationsCategory.KHAZAD_DUM,
+            MiningLocationLabel.CrystalHollowsLocationsCategory.GOBLIN_QUEENS_DEN,
+            MiningLocationLabel.CrystalHollowsLocationsCategory.MINES_OF_DIVAN
+        );
+
     //Package-private for testing
     static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("\\Dx?(\\d{3})(?=[, ]),? ?y?(\\d{2,3})(?=[, ]),? ?z?(\\d{3})\\D?(?!\\d)");
     private static final int REMOVE_UNKNOWN_DISTANCE = 50;
@@ -100,7 +108,7 @@ public class CrystalsLocationsManager {
     }
 
     // Verify waypoints when interacting with an NPC
-    public static ActionResult OnEntryInteract(PlayerEntity playerEntity, World world, Hand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
+    private static ActionResult OnEntryInteract(PlayerEntity playerEntity, World world, Hand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
         if (!Utils.isInCrystalHollows()) {
             return ActionResult.PASS;
         }
@@ -115,36 +123,6 @@ public class CrystalsLocationsManager {
 
         return ActionResult.PASS;
     }
-
-    // For the Mines of Divan, it's better to add a waypoint using MetalDetector.findCenterOfMines() at the minesCenter coordinates
-    public static void VerifyMinesOfDivanWaypoint(BlockPos pos) {
-        CrystalHollowsLocationsCategory waypointLocation = CrystalHollowsLocationsCategory.MINES_OF_DIVAN;
-        placeVerifiedWaypoint(waypointLocation, pos);
-    }
-
-    // Check if new coords are distant enough from old coords (return false if too close)
-    public static boolean isNotCoordsOverlaping(BlockPos newCoords, MiningLocationLabel oldwaypoint, int searchRadius) {
-        if (oldwaypoint == null || searchRadius ==  0) return true;
-
-        int dx = Math.abs(newCoords.getX() - oldwaypoint.pos.getX());
-        int dz = Math.abs(newCoords.getZ() - oldwaypoint.pos.getZ());
-        int dy = Math.abs(newCoords.getY() - oldwaypoint.pos.getY());
-
-        return dx > searchRadius || dz > searchRadius || dy > 3;
-    }
-
-    public static void placeVerifiedWaypoint(CrystalHollowsLocationsCategory waypoint, BlockPos pos) {
-        String waypointName = waypoint.getName();
-
-        if (!verifiedWaypoints.contains(waypointName)) {
-            if (isNotCoordsOverlaping(pos, activeWaypoints.get(waypointName), waypoint.getSearchRadius())) {
-                addCustomWaypoint(waypointName, pos);
-                trySendWaypoint2Socket(waypoint);
-            }
-            verifiedWaypoints.add(waypointName);
-        }
-    }
-
 
     private static boolean extractLocationFromMessage(Text message, Boolean overlay) {
         if (!SkyblockerConfigManager.get().mining.crystalsWaypoints.findInChat || !Utils.isInCrystalHollows() || overlay) {
@@ -185,6 +163,17 @@ public class CrystalsLocationsManager {
                     }
 
                     CLIENT.player.sendMessage(getLocationMenu(location, false), false);
+                }
+            }
+            else { // if not user message, trying to find key words in the chat to place waypoint more accurate, if not already verifed
+                if (CLIENT.player != null && SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled) {
+                    // Iterate only through waypoints with crystal names
+                    for (MiningLocationLabel.CrystalHollowsLocationsCategory waypointLocation : CHAT_VERIFIABLE_WAYPOINTS) {
+                        @Nullable String waypointLinkedMessage = waypointLocation.getNpcName();
+                        if (waypointLinkedMessage != null && text.contains(waypointLinkedMessage)) {
+                            placeVerifiedWaypoint(waypointLocation, CLIENT.player.getBlockPos());
+                        }
+                    }
                 }
             }
 
@@ -453,5 +442,29 @@ public class CrystalsLocationsManager {
 
         WsMessageHandler.sendMessage(Service.CRYSTAL_WAYPOINTS, new CrystalsWaypointMessage(category, CLIENT.player.getBlockPos()));
         waypointsSent2Socket.add(category);
+    }
+
+    // Check if new coords are distant enough from old coords (return true if too close)
+    private static boolean isWaypointsOverlaping(BlockPos newCoords, MiningLocationLabel oldwaypoint, int searchRadius) {
+        if (oldwaypoint == null || searchRadius ==  0) return true;
+
+        int diffx = Math.abs(newCoords.getX() - oldwaypoint.pos.getX());
+        int diffz = Math.abs(newCoords.getZ() - oldwaypoint.pos.getZ());
+        int diffy = Math.abs(newCoords.getY() - oldwaypoint.pos.getY());
+
+        return diffx < searchRadius || diffz < searchRadius || diffy < searchRadius;
+    }
+
+    private static void placeVerifiedWaypoint(CrystalHollowsLocationsCategory waypoint, BlockPos pos) {
+        String waypointName = waypoint.getName();
+        
+        if (!verifiedWaypoints.contains(waypointName)) {
+            // Check that we dont already have same waypoint nearby (e.g from Socket), should (theoretically) save some trafic for the server
+            if (!isWaypointsOverlaping(pos, activeWaypoints.get(waypointName), waypoint.getSearchRadius())) {
+                trySendWaypoint2Socket(waypoint);
+            }
+            addCustomWaypoint(waypointName, pos);
+            verifiedWaypoints.add(waypointName);
+        }
     }
 }
