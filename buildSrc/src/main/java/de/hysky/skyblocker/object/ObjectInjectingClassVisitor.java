@@ -50,7 +50,6 @@ public class ObjectInjectingClassVisitor extends ClassVisitor {
 
 		//Remove native modifier
 		access &= ~Opcodes.ACC_NATIVE;
-		MethodVisitor methodVisitor = super.visitMethod(access, name, descriptor, signature, exceptions);
 		MethodNode methodNode = new MethodNode(Opcodes.ASM9, access, name, descriptor, signature, exceptions);
 
 		//Load the "this" variable since the resulting method handle takes it in as a parameter
@@ -82,9 +81,9 @@ public class ObjectInjectingClassVisitor extends ClassVisitor {
 		}
 
 		//Replace the target method with our new generated one
-		methodNode.accept(methodVisitor);
+		methodNode.accept(this.getDelegate());
 
-		return methodVisitor;
+		return null;
 	}
 
 	private void emitIndyInstruction(ObjectMethodGeneration objectMethod, MethodNode methodNode) {

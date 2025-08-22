@@ -19,8 +19,6 @@ public class InitInjectingClassVisitor extends ClassVisitor {
 
 	@Override
 	public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-		MethodVisitor methodVisitor = super.visitMethod(access, name, descriptor, signature, exceptions);
-
 		// Limit replacing to the init method which is private, static, named init, has no args, and has a void return type
 		if ((access & Opcodes.ACC_PRIVATE) != 0 && (access & Opcodes.ACC_STATIC) != 0 && name.equals("init") && descriptor.equals("()V")) {
 			// Method node that we will overwrite the init method with
@@ -35,9 +33,11 @@ public class InitInjectingClassVisitor extends ClassVisitor {
 			methodNode.visitInsn(Opcodes.RETURN);
 
 			// Apply our new method node to the visitor to replace the original one
-			methodNode.accept(methodVisitor);
+			methodNode.accept(this.getDelegate());
+
+			return null;
 		}
 
-		return methodVisitor;
+		return super.visitMethod(access, name, descriptor, signature, exceptions);
 	}
 }
