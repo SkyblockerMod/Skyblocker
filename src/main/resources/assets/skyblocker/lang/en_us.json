@@ -312,7 +312,7 @@
   "skyblocker.config.foraging.galatea.seaLumieMinCount": "Minimum Sea Lumie Count to Highlight",
   "skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip": "The minimum number of Sea Lumies that must be present within a block for it to be highlighted.",
   "skyblocker.config.foraging.galatea.enableTunerSolver": "Enable Tuner Solver",
-  "skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip": "Shows the required clicks in the Tune Frequency puzzle.",
+  "skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip": "Shows the required clicks for the Tune Frequency puzzle in the Moonglade Beacon.",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Solve Forest Temple Puzzle",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Displays the amount of times you need to rotate the terracotta blocks. For positive rotations you right click while for negative rotations you left click.",
   "skyblocker.config.foraging.galatea.enableTreeBreakProgress": "Enable Tree Break Progress HUD",
