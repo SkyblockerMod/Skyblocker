@@ -173,8 +173,6 @@
   "skyblocker.config.dungeons.map.mapScreen": "Dungeon Map & Score Placement Config...",
 
   "skyblocker.config.dungeons.mimicMessage": "Mimic Message",
-  "skyblocker.config.dungeons.mimicMessage.mimicMessage": "Mimic Message",
-  "skyblocker.config.dungeons.mimicMessage.mimicMessage.@Tooltip": "Message which will be sent in the chat upon killing a Mimic. Recommended to retain the default value.",
   "skyblocker.config.dungeons.mimicMessage.sendMimicMessage": "Enable Mimic Message",
   "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Sends a message in the chat upon killing a Mimic for other players' score calculation mods.",
 
@@ -182,8 +180,6 @@
   "skyblocker.config.dungeons.playerSecretsTracker.@Tooltip": "Tracks the number of secrets people in your dungeon run are doing.",
 
   "skyblocker.config.dungeons.princeMessage": "Prince Message",
-  "skyblocker.config.dungeons.princeMessage.princeMessage": "Prince Message",
-  "skyblocker.config.dungeons.princeMessage.princeMessage.@Tooltip": "Message which will be sent in the chat upon killing a Prince. Recommended to retain the default value.",
   "skyblocker.config.dungeons.princeMessage.sendPrinceMessage": "Enable Prince Message",
   "skyblocker.config.dungeons.princeMessage.sendPrinceMessage.@Tooltip": "Sends a message in the chat upon killing a Prince for other players' score calculation mods.",
 
