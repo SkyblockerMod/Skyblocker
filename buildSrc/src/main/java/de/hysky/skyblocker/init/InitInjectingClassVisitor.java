@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.init;
 
+import de.hysky.skyblocker.MethodReference;
+
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -8,9 +10,9 @@ import org.objectweb.asm.tree.MethodNode;
 import java.util.List;
 
 public class InitInjectingClassVisitor extends ClassVisitor {
-	private final List<InitProcessor.MethodReference> methodSignatures;
+	private final List<MethodReference> methodSignatures;
 
-	public InitInjectingClassVisitor(ClassVisitor classVisitor, List<InitProcessor.MethodReference> methodSignatures) {
+	public InitInjectingClassVisitor(ClassVisitor classVisitor, List<MethodReference> methodSignatures) {
 		super(Opcodes.ASM9, classVisitor);
 		this.methodSignatures = methodSignatures;
 	}
@@ -25,7 +27,7 @@ public class InitInjectingClassVisitor extends ClassVisitor {
 			MethodNode methodNode = new MethodNode(Opcodes.ASM9, access, name, descriptor, signature, exceptions);
 
 			// Inject calls to each found @Init annotated method
-			for (InitProcessor.MethodReference methodCall : methodSignatures) {
+			for (MethodReference methodCall : methodSignatures) {
 				methodNode.visitMethodInsn(Opcodes.INVOKESTATIC, methodCall.className(), methodCall.methodName(), methodCall.descriptor(), methodCall.itf());
 			}
 

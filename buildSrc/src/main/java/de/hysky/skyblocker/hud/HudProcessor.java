@@ -2,17 +2,12 @@ package de.hysky.skyblocker.hud;
 
 import de.hysky.skyblocker.Processor;
 import org.gradle.api.tasks.compile.JavaCompile;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -35,9 +30,8 @@ public class HudProcessor {
 
 	private void visitClass(InputStream inputStream) {
 		try {
-			ClassReader classReader = new ClassReader(inputStream);
 			ClassNode classNode = new ClassNode(Opcodes.ASM9);
-			classReader.accept(classNode, 0);
+			Processor.readClass(inputStream, classReader -> classNode);
 
 			// Look for the annotation
 			boolean annotationFound = false;
@@ -78,7 +72,7 @@ public class HudProcessor {
 
 
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -86,15 +80,6 @@ public class HudProcessor {
 	private void inject(List<ClassNode> constructors) {
 		Path mainClassFile = Objects.requireNonNull(Processor.findClass("WidgetManager.class"), "WidgetManager class wasn't found :(").toPath();
 
-		try (InputStream inputStream = Files.newInputStream(mainClassFile)) {
-			ClassReader classReader = new ClassReader(inputStream);
-			ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-			classReader.accept(new HudInjectClassVisitor(classWriter, constructors), 0);
-			try (OutputStream outputStream = Files.newOutputStream(mainClassFile)) {
-				outputStream.write(classWriter.toByteArray());
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		Processor.writeClass(mainClassFile, classWriter -> new HudInjectClassVisitor(classWriter, constructors));
 	}
 }
