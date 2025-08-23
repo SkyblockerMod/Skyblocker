@@ -22,6 +22,8 @@ public class ForagingConfig {
 		public int seaLumiesMinimumCount = 3;
 
 		public boolean enableTunerSolver = true;
+
+		public boolean enableSweepDetailsWidget = true;
 	}
 
 	public static class SweepOverlay {
