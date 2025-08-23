@@ -23,29 +23,23 @@ import java.util.function.Supplier;
 public class JsonData<T> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JsonData.class);
 	@NotNull
-	protected final Path file;
+	private final Path file;
 	@NotNull
-	protected final Codec<T> codec;
-	protected final boolean compressed; // Default: false
-	protected final boolean loadAsync;  // Default: true
-	protected final boolean saveAsync;  // Default: false
+	private final Codec<T> codec;
+	private final boolean compressed; // Default: false
+	private final boolean loadAsync;  // Default: true
+	private final boolean saveAsync;  // Default: false
+	@NotNull
+	private T data; // Default: defaultValue
 	@Nullable
-	protected T data; // Default: null
-
-	/**
-	 * @param file  The file to load/save the data from/to.
-	 * @param codec The codec to use for serializing/deserializing the data.
-	 */
-	public JsonData(@NotNull Path file, @NotNull Codec<T> codec) {
-		this(file, codec, null);
-	}
+	private CompletableFuture<Void> loaded;
 
 	/**
 	 * @param file         The file to load/save the data from/to.
 	 * @param codec        The codec to use for serializing/deserializing the data.
 	 * @param defaultValue The default value of {@link #data} to use in case the file does not exist yet.
 	 */
-	public JsonData(@NotNull Path file, @NotNull Codec<T> codec, @Nullable T defaultValue) {
+	public JsonData(@NotNull Path file, @NotNull Codec<T> codec, @NotNull T defaultValue) {
 		this(file, codec, defaultValue, false);
 	}
 
@@ -56,7 +50,7 @@ public class JsonData<T> {
 	 * @param loadAsync    Whether the data should be loaded asynchronously.
 	 * @param saveAsync    Whether the data should be saved asynchronously.
 	 */
-	public JsonData(@NotNull Path file, @NotNull Codec<T> codec, @Nullable T defaultValue, boolean loadAsync, boolean saveAsync) {
+	public JsonData(@NotNull Path file, @NotNull Codec<T> codec, @NotNull T defaultValue, boolean loadAsync, boolean saveAsync) {
 		this(file, codec, defaultValue, false, loadAsync, saveAsync);
 	}
 
@@ -69,7 +63,7 @@ public class JsonData<T> {
 	 *                     When compressed, codecs built with {@link RecordCodecBuilder} will be serialized as a list instead of a map.
 	 *                     {@link JsonOps#COMPRESSED} is required for maps with non-string keys.
 	 */
-	public JsonData(@NotNull Path file, @NotNull Codec<T> codec, @Nullable T defaultValue, boolean compressed) {
+	public JsonData(@NotNull Path file, @NotNull Codec<T> codec, @NotNull T defaultValue, boolean compressed) {
 		this(file, codec, defaultValue, compressed, true, false);
 	}
 
@@ -85,7 +79,7 @@ public class JsonData<T> {
 	 * @param saveAsync    Whether the data should be saved asynchronously.
 	 *                     Do not save async if saving is done with {@link ClientLifecycleEvents#CLIENT_STOPPING}.
 	 */
-	public JsonData(@NotNull Path file, @NotNull Codec<T> codec, @Nullable T defaultValue, boolean compressed, boolean loadAsync, boolean saveAsync) {
+	public JsonData(@NotNull Path file, @NotNull Codec<T> codec, @NotNull T defaultValue, boolean compressed, boolean loadAsync, boolean saveAsync) {
 		this.file = file;
 		this.codec = codec;
 		this.data = defaultValue;
@@ -98,21 +92,24 @@ public class JsonData<T> {
 	 * Initializes the data by registering a save listener for when the client stops.
 	 * This will also load the data from the file.
 	 *
-	 * @return A CompletableFuture that completes with the loaded data.
-	 * @implNote There's no need to set the data manually with the result of the completed future, as that is already done in the
+	 * @return A CompletableFuture that completes when the data has loaded.
+	 * @implNote The CompletableFuture does not provide the data. Use {@link #getData()}.
+	 * There's no need to set the data manually with the result of the completed future, as that is already done in {@link #loadInternal()}.
 	 */
 	public CompletableFuture<Void> init() {
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> save());
+		// Make sure saving always completes by waiting on the save CompletableFuture.
+		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> save().join());
 		return load();
 	}
 
 	public CompletableFuture<Void> load() {
 		if (loadAsync) {
-			return CompletableFuture.runAsync(this::loadInternal);
+			loaded = CompletableFuture.runAsync(this::loadInternal);
 		} else {
 			loadInternal();
-			return CompletableFuture.completedFuture(null);
+			loaded = CompletableFuture.completedFuture(null);
 		}
+		return loaded;
 	}
 
 	// Note: JsonOps.COMPRESSED must be used if you're using maps with non-string keys
@@ -136,6 +133,13 @@ public class JsonData<T> {
 	}
 
 	private void saveInternal() {
+		if (loaded == null) {
+			LOGGER.error("[Skyblocker Json Data] Save data called when loading has not started for file `{}`. This will override the contents of the file with the default value.", file);
+		} else if (!isLoaded()) {
+			LOGGER.warn("[Skyblocker Json Data] Save data called when loading has not finished for file `{}`. Blocking until data is loaded.", file);
+			loaded.join();
+		}
+
 		try {
 			Files.createDirectories(file.getParent());
 		} catch (Exception e) {
@@ -149,12 +153,26 @@ public class JsonData<T> {
 		}
 	}
 
+	/**
+	 * @deprecated Use {@link #isLoaded()} instead.
+	 */
+	@Deprecated(forRemoval = true)
 	public boolean isEmpty() {
-		return data == null;
+		return !isLoaded();
 	}
 
-	@Nullable
+	public boolean isLoaded() {
+		return loaded != null && loaded.isDone();
+	}
+
+	@NotNull
 	public T getData() {
+		if (loaded == null) {
+			LOGGER.error("[Skyblocker Json Data] Get data called when loading has not started for file `{}`. Returning default value.", file);
+		} else if (!isLoaded()) {
+			LOGGER.warn("[Skyblocker Json Data] Get data called when loading has not finished for file `{}`. Blocking until data is loaded.", file);
+			loaded.join();
+		}
 		return data;
 	}
 
@@ -164,8 +182,8 @@ public class JsonData<T> {
 	 * @param data The new data to set.
 	 * @return The old data before setting the new one.
 	 */
-	@Nullable
-	public T setData(@Nullable T data) {
+	@NotNull
+	public T setData(@NotNull T data) {
 		T oldData = this.data;
 		this.data = data;
 		return oldData;

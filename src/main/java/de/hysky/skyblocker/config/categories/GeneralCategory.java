@@ -122,6 +122,14 @@ public class GeneralCategory {
                                         newValue -> config.general.shortcuts.enableCommandArgShortcuts = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.shortcuts.enableKeyBindingShortcuts"))
+								.description(Text.translatable("skyblocker.config.general.shortcuts.enableKeyBindingShortcuts.@Tooltip"))
+								.binding(defaults.general.shortcuts.enableKeyBindingShortcuts,
+										() -> config.general.shortcuts.enableKeyBindingShortcuts,
+										newValue -> config.general.shortcuts.enableKeyBindingShortcuts = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.shortcuts.config"))
                                 .prompt(Text.translatable("text.skyblocker.open"))

@@ -64,6 +64,8 @@ public class GeneralConfig {
         public boolean enableCommandShortcuts = true;
 
         public boolean enableCommandArgShortcuts = true;
+
+		public boolean enableKeyBindingShortcuts = true;
     }
 
 

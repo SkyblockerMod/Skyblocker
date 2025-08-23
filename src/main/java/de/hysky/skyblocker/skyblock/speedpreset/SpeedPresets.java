@@ -32,7 +32,6 @@ public class SpeedPresets {
 	private static SpeedPresets instance;
 
 	private final JsonData<Object2IntMap<String>> presets = new JsonData<>(PRESETS_FILE, MAP_CODEC, createDefaultMap());
-	private CompletableFuture<Void> loaded;
 
 	private SpeedPresets() {} // Enforce singleton
 
@@ -45,7 +44,7 @@ public class SpeedPresets {
 				.requires(source -> Utils.isOnSkyblock())
 				.then(ClientCommandManager.argument("preset", StringArgumentType.string())
 						.suggests((ctx, builder) -> {
-							if (SkyblockerConfigManager.get().general.speedPresets.enableSpeedPresets && getInstance().loaded.isDone()) {
+							if (SkyblockerConfigManager.get().general.speedPresets.enableSpeedPresets && getInstance().presets.isLoaded()) {
 								return CommandSource.suggestMatching(instance.getPresets().keySet(), builder);
 							}
 							return builder.buildFuture();
@@ -55,7 +54,7 @@ public class SpeedPresets {
 	@Init
 	public static void init() {
 		SpeedPresets instance = getInstance();
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> instance.loaded = instance.presets.init());
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> instance.presets.init());
 		ClientSendMessageEvents.MODIFY_COMMAND.register(command -> {
 			Matcher matcher = COMMAND_PATTERN.matcher(command);
 			if (matcher.matches() && SkyblockerConfigManager.get().general.speedPresets.enableSpeedPresets) {
@@ -91,10 +90,9 @@ public class SpeedPresets {
 		return true;
 	}
 
-	// This method exists mainly to avoid nullability warnings
 	@NotNull
 	public Object2IntMap<String> getPresets() {
-		//noinspection DataFlowIssue // There's a non-null default value, so this is safe
+		// There's a non-null default value, so this is safe
 		return presets.getData();
 	}
 

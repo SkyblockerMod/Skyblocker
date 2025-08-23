@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.regex.Matcher;
@@ -40,12 +39,10 @@ public class AccessoriesHelper {
 	private static final ToIntFunction<Accessory> ACCESSORY_TIER = Accessory::tier;
 
 	private static Map<String, Accessory> ACCESSORY_DATA = new Object2ObjectOpenHashMap<>();
-	//remove??
-	private static CompletableFuture<Void> loaded;
 
 	@Init
 	public static void init() {
-		loaded = COLLECTED_ACCESSORIES.init();
+		COLLECTED_ACCESSORIES.init();
 		ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
 			if (Utils.isOnSkyblock() && TooltipInfoType.ACCESSORIES.isTooltipEnabled() && !Utils.getProfileId().isEmpty() && screen instanceof GenericContainerScreen genericContainerScreen) {
 				Matcher matcher = ACCESSORY_BAG_TITLE.matcher(genericContainerScreen.getTitle().getString());
@@ -64,7 +61,7 @@ public class AccessoriesHelper {
 
 	private static void collectAccessories(List<Slot> slots, int page) {
 		//Is this even needed?
-		if (!loaded.isDone()) return;
+		if (!COLLECTED_ACCESSORIES.isLoaded()) return;
 
 		List<String> accessoryIds = slots.stream()
 				.map(Slot::getStack)

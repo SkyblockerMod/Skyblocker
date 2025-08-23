@@ -76,13 +76,6 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 				saveAsync);
 	}
 
-	@SuppressWarnings("DataFlowIssue")
-	@Override
-	@NotNull // We have a default value for data, so it should never be null. This method mainly exists to avoid nullability warnings.
-	public Object2ObjectOpenHashMap<UUID, Object2ObjectOpenHashMap<String, T>> getData() {
-		return super.getData();
-	}
-
 	/**
 	 * Checks if the current player's UUID and profile ID are present in the data.
 	 *
@@ -225,9 +218,8 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param uuid The UUID of the player.
 	 * @return The player data map.
 	 */
-	@SuppressWarnings("DataFlowIssue") // We have a default value for data, so it should never be null. At worst, it'll be empty.
 	@NotNull
 	private Map<String, T> getPlayerData(@NotNull UUID uuid) {
-		return data.computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
+		return getData().computeIfAbsent(uuid, _uuid -> new Object2ObjectOpenHashMap<>());
 	}
 }
