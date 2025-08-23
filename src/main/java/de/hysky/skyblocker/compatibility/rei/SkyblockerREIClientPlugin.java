@@ -35,9 +35,11 @@ import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -92,7 +94,24 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 			List<EntryStack<ItemStack>> allItems = Stream.concat(parentItem.stream(), ItemRepository.getItemsStream().filter(itemStack -> childrenList.contains(itemStack.getNeuName())))
 					.map(EntryStacks::of)
 					.toList();
-			registry.group(Identifier.of(SkyblockerMod.NAMESPACE, "rei_category/" + parentId.toLowerCase().replace(";", "_")), parentItem.get().getName(), allItems);
+
+			String categoryPath = parentId.toLowerCase(Locale.ENGLISH).replace(";", "_");
+			// Drop the tier at the end of the id so the category identifier remains the same even if the parent is changed to a different tier
+			if (parentId.contains(";")) {
+				categoryPath = categoryPath.substring(0, categoryPath.lastIndexOf("_"));
+			}
+
+			// For Enchanted Books, change the name of the category to the enchant name
+			Text name;
+			if (parentItem.get().isOf(Items.ENCHANTED_BOOK)) {
+				String enchantName = ItemUtils.getLore(parentItem.get()).getFirst().getString();
+				enchantName = enchantName.substring(0, enchantName.lastIndexOf(' ')); // drop level
+				name = Text.literal(enchantName).formatted(parentId.startsWith("ULTIMATE") ? Formatting.LIGHT_PURPLE : Formatting.BLUE);
+			} else {
+				name = parentItem.get().getName();
+			}
+
+			registry.group(Identifier.of(SkyblockerMod.NAMESPACE, "rei_category/" + categoryPath), name, allItems);
 		});
 	}
 

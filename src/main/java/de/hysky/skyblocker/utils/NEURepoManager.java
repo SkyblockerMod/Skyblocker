@@ -6,7 +6,6 @@ import com.google.common.collect.Multimaps;
 import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import io.github.moulberry.repo.NEUConstants;
 import io.github.moulberry.repo.NEURecipeCache;
@@ -19,8 +18,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.SynchronizeRecipesS2CPacket;
-import net.minecraft.recipe.display.CuttingRecipeDisplay;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.function.Consumers;
@@ -89,26 +86,9 @@ public class NEURepoManager {
 						}))
 				)
 		);
-		SkyblockEvents.JOIN.register(NEURepoManager::handleRecipeSynchronization);
-		runAsyncAfterLoad(NEURepoManager::loadNameToNEUItemMap); // Loads the NEUItem name cache after the repository is laoded.
+		runAsyncAfterLoad(NEURepoManager::loadNameToNEUItemMap); // Loads the NEUItem name cache after the repository is loaded.
 	}
 
-	/**
-	 * load the recipe manually because Hypixel doesn't send any vanilla recipes to the client
-	 */
-	private static void handleRecipeSynchronization() {
-		MinecraftClient client = MinecraftClient.getInstance();
-		if (client.world != null && client.getNetworkHandler() != null) {
-			//FIXME not sure if we even need this - depends on how REI, EMI, and JEI adapt to the changes
-			SynchronizeRecipesS2CPacket packet = new SynchronizeRecipesS2CPacket(Map.of(), CuttingRecipeDisplay.Grouping.empty());
-
-			try {
-				client.getNetworkHandler().onSynchronizeRecipes(packet);
-			} catch (Exception e) {
-				LOGGER.info("[Skyblocker NEU Repo] recipe sync error", e);
-			}
-		}
-	}
 
 	public static boolean isLoading() {
 		return REPO_LOADING != null && !REPO_LOADING.isDone();

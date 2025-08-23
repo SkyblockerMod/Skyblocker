@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
@@ -11,8 +12,11 @@ import io.github.moulberry.repo.data.NEUForgeRecipe;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
 import io.github.moulberry.repo.util.NEUId;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.packet.s2c.play.SynchronizeRecipesS2CPacket;
+import net.minecraft.recipe.display.CuttingRecipeDisplay;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +55,24 @@ public class ItemRepository {
 		NEURepoManager.runAsyncAfterLoad(ItemStackBuilder::loadPetNums);
 		NEURepoManager.runAsyncAfterLoad(ItemRepository::importItemFiles);
 		NEURepoManager.runAsyncAfterLoad(ItemRepository::loadBazaarStocks);
+		runAsyncAfterImport(ItemRepository::handleRecipeSynchronization);
+		SkyblockEvents.JOIN.register(ItemRepository::handleRecipeSynchronization);
+	}
+
+	/**
+	 * Load the recipes manually because Hypixel doesn't send any vanilla recipes to the client.
+	 * This also reloads REI to include the Skyblock items when the items are done loading.
+	 */
+	private static void handleRecipeSynchronization() {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.world == null || client.getNetworkHandler() == null) return;
+
+		SynchronizeRecipesS2CPacket packet = new SynchronizeRecipesS2CPacket(Map.of(), CuttingRecipeDisplay.Grouping.empty());
+		try {
+			client.execute(() -> client.getNetworkHandler().onSynchronizeRecipes(packet));
+		} catch (Exception e) {
+			LOGGER.info("[Skyblocker Item Repo] recipe sync error", e);
+		}
 	}
 
 	private static void importItemFiles() {
@@ -140,11 +162,6 @@ public class ItemRepository {
 
 	public static boolean filesImported() {
 		return filesImported;
-	}
-
-	public static void setFilesImported() {
-		itemsImported = false;
-		filesImported = false;
 	}
 
 	public static List<ItemStack> getItems() {
