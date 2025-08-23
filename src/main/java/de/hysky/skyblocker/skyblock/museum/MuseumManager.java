@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.museum;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
+import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
@@ -284,7 +285,12 @@ public class MuseumManager extends ClickableWidget {
 
 		if (hoveredDonationButton != null) {
 			ItemStack hoveredStack = hoveredDonationButton.getDisplayStack();
-			return hoveredStack != null && WikiLookupManager.handleWikiLookup(Either.right(hoveredStack), CLIENT.player, keyCode, scanCode);
+			if (hoveredStack == null) return false;
+			if (WikiLookupManager.handleWikiLookup(Either.right(hoveredStack), CLIENT.player, keyCode, scanCode)) return true;
+			if (ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(keyCode, scanCode)) {
+				ItemPrice.itemPriceLookup(CLIENT.player, hoveredStack);
+				return true;
+			}
 		}
 		return false;
 	}

@@ -18,8 +18,10 @@ import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 
 /**
- * @implNote If implementing any of these onto a class, ensure that all subclasses have an implementation of the methods too.
+ * @deprecated Use the new {@code GenEquals}, {@code GenHashCode}, and {@code GenToString} annotations which also have proper
+ * superclass support.
  */
+@Deprecated(forRemoval = true)
 public class InstancedUtils {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Map<Class<?>, MethodHandle> EQUALS_CACHE = new ConcurrentHashMap<>();
