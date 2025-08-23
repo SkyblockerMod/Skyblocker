@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
 import com.mojang.serialization.Codec;
+import de.hysky.skyblocker.annotations.GenEquals;
+import de.hysky.skyblocker.annotations.GenHashCode;
 import net.minecraft.client.util.InputUtil;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 /**
  * Modified from {@link net.minecraft.client.option.KeyBinding}.
@@ -32,15 +32,12 @@ public class ShortcutKeyBinding implements Comparable<ShortcutKeyBinding> {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof ShortcutKeyBinding that)) return false;
-		return Objects.equals(boundKey, that.boundKey);
-	}
+	@GenEquals
+	public native boolean equals(Object o);
 
 	@Override
-	public int hashCode() {
-		return Objects.hashCode(boundKey);
-	}
+	@GenHashCode
+	public native int hashCode();
 
 	@Override
 	public int compareTo(@NotNull ShortcutKeyBinding shortcutKeyBinding) {
