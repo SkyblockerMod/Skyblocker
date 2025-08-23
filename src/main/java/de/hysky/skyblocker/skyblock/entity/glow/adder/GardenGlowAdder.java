@@ -58,13 +58,9 @@ public class GardenGlowAdder extends MobGlowAdder {
 	}
 
 	private static void update() {
-		if (!INSTANCE.isEnabled()) {
-			return;
-		}
-
 		// Check if scoreboard text contains no 'Jacob's Contest' should be enough
 		// Detecting chat to clear CURRENT_CROP_CONTEST is not a good solution because of a scoreboard has delayed update rate
-		if (Utils.STRING_SCOREBOARD.stream().noneMatch(s -> s.contains("Jacob's Contest"))) {
+		if (!INSTANCE.isEnabled() || Utils.STRING_SCOREBOARD.stream().noneMatch(s -> s.contains("Jacob's Contest"))) {
 			CurrentJacobCrop.CURRENT_CROP_CONTEST = null;
 			return;
 		}
