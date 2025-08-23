@@ -22,7 +22,6 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.util.Formatting;
 
 public class GardenGlowAdder extends MobGlowAdder {
-	@SuppressWarnings("unused")
 	private static final GardenGlowAdder INSTANCE = new GardenGlowAdder();
 	private static final int PEST_COLOUR = 0xb62f00;
 	private static final Pattern CURRENT_CROP_PATTERN = Pattern.compile("^ [○☘] (?<crop>.+) .+$");
@@ -59,6 +58,10 @@ public class GardenGlowAdder extends MobGlowAdder {
 	}
 
 	private static void update() {
+		if (!INSTANCE.isEnabled()) {
+			return;
+		}
+
 		// Check if scoreboard text contains no 'Jacob's Contest' should be enough
 		// Detecting chat to clear CURRENT_CROP_CONTEST is not a good solution because of a scoreboard has delayed update rate
 		if (Utils.STRING_SCOREBOARD.stream().noneMatch(s -> s.contains("Jacob's Contest"))) {
