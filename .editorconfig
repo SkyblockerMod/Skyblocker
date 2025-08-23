@@ -8,6 +8,7 @@ tab_width = 4
 
 [*.gradle]
 indent_style = tab
+ij_continuation_indent_size = 8
 
 [*.java]
 indent_style = tab

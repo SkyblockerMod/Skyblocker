@@ -204,13 +204,15 @@ public class DungeonsConfig {
 	public static class MimicMessage {
 		public boolean sendMimicMessage = true;
 
-		public String mimicMessage = "Mimic dead!";
+		@Deprecated
+		public transient String mimicMessage = "Mimic dead!";
 	}
 
 	public static class PrinceMessage {
 		public boolean sendPrinceMessage = true;
 
-		public String princeMessage = "Prince dead!";
+		@Deprecated
+		public transient String princeMessage = "Prince dead!";
 	}
 
 	public static class DoorHighlight {

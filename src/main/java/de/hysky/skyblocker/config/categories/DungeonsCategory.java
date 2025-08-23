@@ -619,14 +619,6 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.mimicMessage.sendMimicMessage = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<String>createBuilder()
-								.name(Text.translatable("skyblocker.config.dungeons.mimicMessage.mimicMessage"))
-								.description(Text.translatable("skyblocker.config.dungeons.mimicMessage.mimicMessage.@Tooltip"))
-								.binding(defaults.dungeons.mimicMessage.mimicMessage,
-										() -> config.dungeons.mimicMessage.mimicMessage,
-										newValue -> config.dungeons.mimicMessage.mimicMessage = newValue)
-								.controller(StringController.createBuilder().build())
-								.build())
 						.build())
 
 				// Prince Message
@@ -640,14 +632,6 @@ public class DungeonsCategory {
 										() -> config.dungeons.princeMessage.sendPrinceMessage,
 										newValue -> config.dungeons.princeMessage.sendPrinceMessage = newValue)
 								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<String>createBuilder()
-								.name(Text.translatable("skyblocker.config.dungeons.princeMessage.princeMessage"))
-								.description(Text.translatable("skyblocker.config.dungeons.princeMessage.princeMessage.@Tooltip"))
-								.binding(defaults.dungeons.princeMessage.princeMessage,
-										() -> config.dungeons.princeMessage.princeMessage,
-										newValue -> config.dungeons.princeMessage.princeMessage = newValue)
-								.controller(StringController.createBuilder().build())
 								.build())
 						.build())
 
