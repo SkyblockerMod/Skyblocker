@@ -109,7 +109,10 @@ public class Processor implements Plugin<Project> {
 	public static void writeClass(Path classFilePath, Function<ClassWriter, ClassVisitor> visitorFactory) {
 		try (InputStream inputStream = Files.newInputStream(classFilePath)) {
 			ClassReader classReader = new ClassReader(inputStream);
-			ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+			//ASM's frame calculation reads classes reflectively which will cause a TypeNotPresentException
+			//since the classes we are transforming aren't on the class path. So we need to manually calculate
+			//the stack frames.
+			ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 			classReader.accept(visitorFactory.apply(classWriter), 0);
 
 			try (OutputStream outputStream = Files.newOutputStream(classFilePath)) {

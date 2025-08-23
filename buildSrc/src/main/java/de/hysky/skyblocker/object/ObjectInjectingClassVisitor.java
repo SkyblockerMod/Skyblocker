@@ -147,6 +147,7 @@ public class ObjectInjectingClassVisitor extends ClassVisitor {
 		//False branch
 		//Return false since instanceEquals(o) was false
 		methodNode.visitLabel(notEquals);
+		methodNode.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 		methodNode.visitInsn(Opcodes.ICONST_0); //0 = false
 		methodNode.visitInsn(Opcodes.IRETURN);
 	}

@@ -25,6 +25,8 @@ public class HudInjectClassVisitor extends ClassVisitor {
 		if ((access & Opcodes.ACC_PRIVATE) != 0 && (access & Opcodes.ACC_STATIC) != 0 && name.equals("instantiateWidgets") && descriptor.equals("()V")) {
 			MethodNode methodNode = new MethodNode(Opcodes.ASM9, access, name, descriptor, signature, exceptions);
 
+			methodNode.visitFrame(Opcodes.F_FULL, 0, null, 0, null);
+
 			for (ClassNode widget : widgetClasses) {
 				methodNode.visitTypeInsn(Opcodes.NEW, widget.name);
 				methodNode.visitInsn(Opcodes.DUP);
@@ -32,9 +34,10 @@ public class HudInjectClassVisitor extends ClassVisitor {
 				methodNode.visitMethodInsn(Opcodes.INVOKESTATIC, "de/hysky/skyblocker/skyblock/tabhud/screenbuilder/WidgetManager", "addWidgetInstance", "(Lde/hysky/skyblocker/skyblock/tabhud/widget/HudWidget;)V", false);
 			}
 
-
 			// Return from the method
 			methodNode.visitInsn(Opcodes.RETURN);
+
+			methodNode.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 
 			// Apply our new method node to the visitor to replace the original one
 			methodNode.accept(methodVisitor);
