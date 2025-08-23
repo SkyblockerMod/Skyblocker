@@ -39,11 +39,19 @@ public class SlayerBossBars {
 		// Update boss max health
 		ArmorStandEntity bossArmorStand = SlayerManager.getSlayerBossArmorStand();
 		if (bossArmorStand != null && bossMaxHealth == -1) {
-			Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(bossArmorStand.getName().getString());
-			if (maxHealthMatcher.find()) bossMaxHealth = convertToInt(maxHealthMatcher.group(0));
+			updateMaxHealth(bossArmorStand);
 		}
 
 		return bossBar != null || bossArmorStand != null;
+	}
+
+	/**
+	 * Method to update the bosses max health using the armor stand custom name.
+	 * @param armorStand armor stand given to parse max health.
+	 */
+	public static void updateMaxHealth(ArmorStandEntity armorStand) {
+		Matcher maxHealthMatcher = HEALTH_PATTERN.matcher(armorStand.getName().getString());
+		if (maxHealthMatcher.find()) bossMaxHealth = convertToInt(maxHealthMatcher.group(0));
 	}
 
 	/**
