@@ -25,45 +25,35 @@ public final class CodecUtils {
 	}
 
 	/**
-	 * @apiNote Although the resulting map is mutable, it is not safe to modify the resulting map if this codec is used for an optional field with a default value.
-	 * The default value can be mutated, leading to unexpected behavior including failure to serialize.
-	 * If this is the case, make sure to copy the map after the instance is deserialized or wrap the optional codec with {@link #mutableOptional(MapCodec, Function)}.
+	 * @see #mutableOptional(MapCodec, Function) mutableOptional(MapCodec, Function) for important notes when using this codec for an optional field with a default value.
 	 */
 	public static <K> Codec<Object2BooleanMap<K>> object2BooleanMapCodec(Codec<K> keyCodec) {
 		return Codec.unboundedMap(keyCodec, Codec.BOOL).xmap(Object2BooleanOpenHashMap::new, Function.identity());
 	}
 
 	/**
-	 * @apiNote Although the resulting map is mutable, it is not safe to modify the resulting map if this codec is used for an optional field with a default value.
-	 * The default value can be mutated, leading to unexpected behavior including failure to serialize.
-	 * If this is the case, make sure to copy the map after the instance is deserialized or wrap the optional codec with {@link #mutableOptional(MapCodec, Function)}.
+	 * @see #mutableOptional(MapCodec, Function) mutableOptional(MapCodec, Function) for important notes when using this codec for an optional field with a default value.
 	 */
 	public static <K> Codec<Object2IntMap<K>> object2IntMapCodec(Codec<K> keyCodec) {
 		return Codec.unboundedMap(keyCodec, Codec.INT).xmap(Object2IntOpenHashMap::new, Function.identity());
 	}
 
 	/**
-	 * @apiNote Although the resulting map is mutable, it is not safe to modify the resulting map if this codec is used for an optional field with a default value.
-	 * The default value can be mutated, leading to unexpected behavior including failure to serialize.
-	 * If this is the case, make sure to copy the map after the instance is deserialized or wrap the optional codec with {@link #mutableOptional(MapCodec, Function)}.
+	 * @see #mutableOptional(MapCodec, Function) mutableOptional(MapCodec, Function) for important notes when using this codec for an optional field with a default value.
 	 */
 	public static <K> Codec<Object2LongMap<K>> object2LongMapCodec(Codec<K> keyCodec) {
 		return Codec.unboundedMap(keyCodec, Codec.LONG).xmap(Object2LongOpenHashMap::new, Function.identity());
 	}
 
 	/**
-	 * @apiNote Although the resulting map is mutable, it is not safe to modify the resulting map if this codec is used for an optional field with a default value.
-	 * The default value can be mutated, leading to unexpected behavior including failure to serialize.
-	 * If this is the case, make sure to copy the map after the instance is deserialized or wrap the optional codec with {@link #mutableOptional(MapCodec, Function)}.
+	 * @see #mutableOptional(MapCodec, Function) mutableOptional(MapCodec, Function) for important notes when using this codec for an optional field with a default value.
 	 */
 	public static <K> Codec<Object2DoubleMap<K>> object2DoubleMapCodec(Codec<K> keyCodec) {
 		return Codec.unboundedMap(keyCodec, Codec.DOUBLE).xmap(Object2DoubleOpenHashMap::new, Function.identity());
 	}
 
 	/**
-	 * @apiNote Although the resulting map is mutable, it is not safe to modify the resulting map if this codec is used for an optional field with a default value.
-	 * The default value can be mutated, leading to unexpected behavior including failure to serialize.
-	 * If this is the case, make sure to copy the map after the instance is deserialized or wrap the optional codec with {@link #mutableOptional(MapCodec, Function)}.
+	 * @see #mutableOptional(MapCodec, Function) mutableOptional(MapCodec, Function) for important notes when using this codec for an optional field with a default value.
 	 */
 	public static <K, V> Codec<Object2ObjectMap<K, V>> object2ObjectMapCodec(Codec<K> keyCodec, Codec<V> valueCodec) {
 		return Codec.unboundedMap(keyCodec, valueCodec).xmap(Object2ObjectOpenHashMap::new, Function.identity());
@@ -84,6 +74,10 @@ public final class CodecUtils {
 
 	/**
 	 * Maps a {@link MapCodec} to a mutable version using the given mutable factory, for use with optional fields to avoid mutating the default value.
+	 *
+	 * <p>For all mutable map codecs above, if the codec is used for an optional field with a default value,
+	 * it is required to wrap the codec with this method or copy the map manually after deserialization.
+	 * Otherwise, the default value can be mutated, leading to unexpected behavior including failure to serialize.
 	 */
 	public static <T> MapCodec<T> mutableOptional(MapCodec<T> codec, Function<? super T, ? extends T> mutableFactory) {
 		return codec.xmap(mutableFactory, Function.identity());
