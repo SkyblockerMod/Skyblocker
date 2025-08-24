@@ -1,6 +1,6 @@
 {
     "argument.color.rgb.incomplete": "غير مكتمل (متوقع 3 قيم).",
-    "argument.color.hex.invalidString": "يجب أن يحتوي عدد الHex على 6 أحرف بالضبط، لكن تم العثور على %d أحرف.",
+    "argument.color.hex.invalidString": "يجب أن يحتوي عدد الHex على 6 أحرف بالضبط، لكن تم العثور على %s أحرف.",
     "argument.color.hex.invalidChar": "حرف غير صالح في عدد الhex ال %s. , الأحرف الصالحة هي: [0-9a-fA-F]",
     "key.hotbarSlotLock": "قفل الخانة (شريط الأدوات)",
     "key.skyblocker.toggleA": "تغير الHUD الى العرض الثانوي",
