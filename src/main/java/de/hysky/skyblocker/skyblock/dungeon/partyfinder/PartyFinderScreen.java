@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
 import com.google.gson.JsonObject;
 import com.mojang.authlib.properties.PropertyMap;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.debug.Debug;
@@ -22,7 +21,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Style;
@@ -272,7 +270,7 @@ public class PartyFinderScreen extends Screen {
 
     @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.renderBackground(context, mouseX, mouseY, delta);
+		this.renderInGameBackground(context);
         int i = partyEntryListWidget.getRowWidth() + 16 + 6;
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
     }
@@ -454,7 +452,7 @@ public class PartyFinderScreen extends Screen {
         if (this.client.player == null || aborted || currentPage == Page.SIGN) {
             return;
         }
-        ((ScreenHandler) this.handler).onClosed(this.client.player);
+        this.handler.onClosed(this.client.player);
     }
 
     @Override
