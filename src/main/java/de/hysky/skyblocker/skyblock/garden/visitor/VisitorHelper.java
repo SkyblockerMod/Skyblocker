@@ -244,6 +244,7 @@ public class VisitorHelper extends ClickableWidget {
 		dragStartY = (int) mouseY - getY();
 
 		int index = 0;
+		int y = getY() - (int) (textRenderer.fontHeight / 2f - ICON_SIZE * 0.95f / 2) + PADDING;
 
 		for (Object2IntMap.Entry<Text> entry : groupedItems.object2IntEntrySet()) {
 			Text itemName = entry.getKey();
@@ -255,7 +256,7 @@ public class VisitorHelper extends ClickableWidget {
 
 				int iconX = getX() + 12;
 				int textX = iconX + (int) (ICON_SIZE * 0.95f) + 4;
-				int yPosition = getY() + index * (LINE_HEIGHT + textRenderer.fontHeight);
+				int yPosition = y + index * (LINE_HEIGHT + textRenderer.fontHeight);
 
 				MutableText name = itemName.copy();
 				Text itemText = SkyblockerConfigManager.get().farming.visitorHelper.showStacksInVisitorHelper && totalAmount >= 64

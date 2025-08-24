@@ -5,6 +5,7 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
@@ -15,20 +16,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BestiaryLevelAdder extends SimpleSlotTextAdder {
-	private static final Pattern BESTIARY = Pattern.compile("^[\\w -]+ (?<level>[IVXLCDM]+)$");
+	//^[\w -']+ (?<level>[IVXLCDM]+)$
+	private static final Pattern BESTIARY = Pattern.compile("^[\\w -']+ (?<level>[IVXLCDM]+)$");
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
 			"bestiary_level",
 			"skyblocker.config.uiAndVisuals.slotText.bestiaryLevel"
 	);
 
 	public BestiaryLevelAdder() {
-		super("Bestiary ➜ .+", CONFIG_INFORMATION);
+		//(?:\(\d+\/\d+\) )?(?:Bestiary|Fishing) ➜ .+
+		super("(?:\\(\\d+\\/\\d+\\) )?(?:Bestiary|Fishing) ➜ .+", CONFIG_INFORMATION);
 	}
-
 
 	@Override
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		if (slotId > 53) return List.of(); // Prevent accidentally adding text to slots which also match the pattern in the inventory (like minions)
+		//Ignore slots that cannot have bestiary texts
+		if (!((slotId >= 10 && slotId <= 16) || (slotId >= 19 && slotId <= 25) || (slotId >= 28 && slotId <= 34) || (slotId >= 37 && slotId <= 43))) return List.of();
+		//Ignore slots without an item or bestiaries that aren't unlocked
+		if (stack.isEmpty() || stack.isOf(Items.GRAY_DYE)) return List.of();
 		Matcher matcher = BESTIARY.matcher(stack.getName().getString());
 		if (matcher.matches()) {
 			int level = RomanNumerals.romanToDecimal(matcher.group("level"));

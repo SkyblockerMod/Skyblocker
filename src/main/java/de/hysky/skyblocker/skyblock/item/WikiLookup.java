@@ -44,7 +44,14 @@ public class WikiLookup {
 	}
 
 	public static String getKeysText() {
-		return (officialWikiLookup.getBoundKeyLocalizedText().getString() + "/" + fandomWikiLookup.getBoundKeyLocalizedText().getString()).toUpperCase(Locale.ENGLISH);
+		String official = officialWikiLookup.isUnbound() ? null : officialWikiLookup.getBoundKeyLocalizedText().getString();
+		String fandom = fandomWikiLookup.isUnbound() ? null : fandomWikiLookup.getBoundKeyLocalizedText().getString();
+
+		if (official == null && fandom == null) return "";
+		if (official == null) return fandom.toUpperCase(Locale.ENGLISH);
+		if (fandom == null) return official.toUpperCase(Locale.ENGLISH);
+
+		return (official + "/" + fandom).toUpperCase(Locale.ENGLISH);
 	}
 
 	public static boolean handleWikiLookup(ItemStack stack, PlayerEntity player, boolean itemName, int keyCode, int scanCode) {

@@ -14,8 +14,6 @@
   "key.itemProtection": "Protect Item",
   "key.skyblocker.slottext": "Slot Text",
   "key.itemPriceLookup": "Item Price Lookup",
-  "key.itemPriceRefresh": "Bazaar Refresh",
-
 
   "text.skyblocker.open": "Open",
   "text.skyblocker.quit_config": "Changes Not Saved",
@@ -38,6 +36,7 @@
   "skyblocker.skyblockerScreen": "Skyblocker Main Screen",
 
   "skyblocker.config.title": "Skyblocker %s",
+  "skyblocker.config.title.settings": "Settings",
 
   "skyblocker.config.shortcutToKeybindsSettings": "Edit Keybind",
   "skyblocker.config.shortcutToKeybindsSettings.@Text": "Keybinds Menu",
@@ -48,7 +47,6 @@
   "skyblocker.config.crimsonIsle.extendNetherFog.@Tooltip": "When in the Crimson Isle, prevents fog from appearing closer to the player as it does in vanilla nether biomes.",
 
   "skyblocker.config.crimsonIsle.kuudra": "Kuudra",
-
   "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold": "Arrow Poison Warning Threshold",
   "skyblocker.config.crimsonIsle.kuudra.arrowPoisonThreshold.@Tooltip": "If the amount of Toxic Arrow Poison you have in your inventory is below the set threshold, then you will receive a warning.\n\n16 is the absolute minimum.\nYou want 32 for smooth 'DPS' phase with prefire.",
   "skyblocker.config.crimsonIsle.kuudra.ballistaBuildWaypoints": "Ballista Build Spot Waypoints",
@@ -65,7 +63,6 @@
   "skyblocker.config.crimsonIsle.kuudra.supplyWaypoints": "Supply Waypoints",
 
   "skyblocker.config.debug": "Debug",
-
   "skyblocker.config.debug.dumpFormat": "Dump Format",
   "skyblocker.config.debug.dumpFormat.@Tooltip": "The format to use when dumping items. SNBT is colored and easier to read while JSON has escaped string characters (double quotes).",
   "skyblocker.config.debug.dumpRange": "Entity Dump Range",
@@ -123,7 +120,6 @@
   "skyblocker.config.dungeons.dungeonChestProfit.profitColor": "Profit Color",
 
   "skyblocker.config.dungeons.dungeonScore": "Dungeon Score",
-
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage": "Dungeon Crypts Message",
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage.@Tooltip": "Message which will be sent in the chat when reaching threshold score before getting 5+ crypts. The string \"[crypts]\" will be replaced with the amount of crypts.",
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold": "Dungeon Crypts Message Threshold",
@@ -177,13 +173,15 @@
   "skyblocker.config.dungeons.map.mapScreen": "Dungeon Map & Score Placement Config...",
 
   "skyblocker.config.dungeons.mimicMessage": "Mimic Message",
-  "skyblocker.config.dungeons.mimicMessage.mimicMessage": "Mimic Message",
-  "skyblocker.config.dungeons.mimicMessage.mimicMessage.@Tooltip": "Message which will be sent in the chat upon killing a mimic. Recommended to retain the default value.",
   "skyblocker.config.dungeons.mimicMessage.sendMimicMessage": "Enable Mimic Message",
-  "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Sends a message in chat upon killing a mimic for other players' score calculation mods.",
+  "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Sends a message in the chat upon killing a Mimic for other players' score calculation mods.",
 
   "skyblocker.config.dungeons.playerSecretsTracker": "Player Secrets Tracker",
   "skyblocker.config.dungeons.playerSecretsTracker.@Tooltip": "Tracks the number of secrets people in your dungeon run are doing.",
+
+  "skyblocker.config.dungeons.princeMessage": "Prince Message",
+  "skyblocker.config.dungeons.princeMessage.sendPrinceMessage": "Enable Prince Message",
+  "skyblocker.config.dungeons.princeMessage.sendPrinceMessage.@Tooltip": "Sends a message in the chat upon killing a Prince for other players' score calculation mods.",
 
   "skyblocker.config.dungeons.professor": "The Professor (F3/M3)",
   "skyblocker.config.dungeons.professor.fireFreezeStaffTimer": "Fire Freeze Staff Timer (F3/M3)",
@@ -213,6 +211,9 @@
   "skyblocker.config.dungeons.salvageHelper": "Salvage Helper",
   "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Highlights items picked up in dungeons that can be salvaged.",
 
+  "skyblocker.config.dungeons.sellableItemsHighlighter": "Sellable Items Highlighter",
+  "skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip": "Highlights items picked up in Dungeons that can be sold to NPC.",
+
   "skyblocker.config.dungeons.bloodCampHelper": "Blood Camp Helper",
   "skyblocker.config.dungeons.bloodCampHelper.@Tooltip": "Predicts mob movement in the Blood Room to assist camping.",
 
@@ -228,6 +229,8 @@
   "skyblocker.config.dungeons.secretWaypoints.enableLeverWaypoints": "Enable Lever Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints": "Enable Pearl Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "With these waypoints, you throw a pearl towards the block and at the same time AOTV up.",
+  "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints": "Enable Prince Waypoints",
+  "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints.@Tooltip": "Helpful for obtaining +1 Bonus Score in your runs with the Reborn attribute.",
   "skyblocker.config.dungeons.secretWaypoints.enableSecretWaypoints": "Enable Dungeon Secret Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints": "Enable Stonk Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints": "Enable Superboom Waypoints",
@@ -238,14 +241,21 @@
   "skyblocker.config.dungeons.spiritLeapOverlay": "Spirit Leap Overlay",
   "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay": "Enable Spirit Leap Overlay",
   "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay.@Tooltip": "Shows a custom overlay for the Spirit Leap screen that makes leaping to teammates easy and consistent.",
+  "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds": "Leap Keybinds",
+  "skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds.@Tooltip": "Adds keybinds for leaping to players in the Spirit Leap Overlay. Press 1 for the first player, 2 for the second player, 3 for the third player, and 4 for the fourth player.",
   "skyblocker.config.dungeons.spiritLeapOverlay.showMap": "Show Dungeon Map in Spirit Leap Overlay",
   "skyblocker.config.dungeons.spiritLeapOverlay.scale": "Spirit Leap Overlay Scale",
+  "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage": "Enable Leap Message",
+  "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip": "Sends a party message in the chat upon leaping.\n§cRequires Spirit Leap Overlay to be enabled.",
+  "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage": "Leap Message",
+  "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip": "Text for the chat message upon leaping, the string \"[name]\" will be replaced with the name of the player you leap to.",
 
   "skyblocker.config.dungeons.starredMobBoundingBoxes": "Starred Mob Bounding Boxes",
   "skyblocker.config.dungeons.starredMobBoundingBoxes.@Tooltip": "Draws the bounding boxes of starred mobs.",
 
   "skyblocker.config.dungeons.starredMobGlow": "Starred Mob Glow",
   "skyblocker.config.dungeons.starredMobGlow.@Tooltip": "Applies the glowing effect to starred mobs that are visible.",
+
   "skyblocker.config.dungeons.terminals": "Terminal Solvers (F7/M7)",
   "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "Block Incorrect Clicks",
   "skyblocker.config.dungeons.terminals.solveColor": "Solve Select Colored",
@@ -272,6 +282,8 @@
   "skyblocker.config.farming.garden.lockMouseTool": "Lock camera when holding a farming tool",
   "skyblocker.config.farming.garden.pestHighlighter": "Pest Highlighter",
   "skyblocker.config.farming.garden.pestHighlighter.@Tooltip": "Make's all pest's on your island glow so you can see them easier :D",
+  "skyblocker.config.farming.garden.enableStereoHarmonyHelperForContest": "Enable Stereo Harmony Helper for Jacob's Contest",
+  "skyblocker.config.farming.garden.enableStereoHarmonyHelperForContest.@Tooltip": "Highlighting a disc that matches with current Jacob's Contest",
 
   "skyblocker.config.farming.visitorHelper": "Visitor Helper",
   "skyblocker.config.farming.visitorHelper.visitorHelper": "Enable Visitor Helper",
@@ -292,6 +304,7 @@
   "skyblocker.config.farming.general.noData": "No Data",
 
   "skyblocker.config.foraging": "Foraging",
+
   "skyblocker.config.foraging.galatea": "Galatea",
   "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Enable Forest Node Helper",
   "skyblocker.config.foraging.galatea.enableLushlilacHighlighter": "Enable Lushlilac Highlighter",
@@ -301,14 +314,16 @@
   "skyblocker.config.foraging.galatea.seaLumieMinCount": "Minimum Sea Lumie Count to Highlight",
   "skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip": "The minimum number of Sea Lumies that must be present within a block for it to be highlighted.",
   "skyblocker.config.foraging.galatea.enableTunerSolver": "Enable Tuner Solver",
-  "skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip": "Shows the required clicks in the Tune Frequency puzzle.",
+  "skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip": "Shows the required clicks for the Tune Frequency puzzle in the Moonglade Beacon.",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Solve Forest Temple Puzzle",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Displays the amount of times you need to rotate the terracotta blocks. For positive rotations you right click while for negative rotations you left click.",
   "skyblocker.config.foraging.galatea.enableTreeBreakProgress": "Enable Tree Break Progress HUD",
   "skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip": "Renders tree break progress in HUD",
   "skyblocker.config.foraging.galatea.enableTreeBreakHud": "Tree Break Progress HUD",
+  "skyblocker.config.foraging.galatea.enableSweepDetailsWidget": "Enable Sweep Details Widget",
+  "skyblocker.config.foraging.galatea.enableSweepDetailsWidget.@Tooltip": "Displays Sweep Detail information on the HUD.\nSweep Details are removed from the chat but are still saved to the logs.\n\nRequires enabling Sweep Details at Swoop in Galatea!",
 
-   "skyblocker.config.foraging.sweepOverlay": "Sweep Overlay",
+  "skyblocker.config.foraging.sweepOverlay": "Sweep Overlay",
   "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Enable Sweep Overlay",
   "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay.@Tooltip": "Highlights logs that will be destroyed from sweep.",
   "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay": "Show Overlay for Thrown Ability",
@@ -320,10 +335,10 @@
 
   "skyblocker.config.general": "General",
 
-  "skyblocker.config.general.chestValue.@Tooltip": "Calculate the value of this container.",
-  "skyblocker.config.general.minionValue.@Tooltip": "Calculate the value of this minion's generated resources.",
-  "skyblocker.config.general.sackValue.@Tooltip": "Calculate the value of the items in this sack.",
-  "skyblocker.config.general.stashValue.@Tooltip": "Calculate the value of the items in this stash.",
+  "skyblocker.containerValue.chestValue.@Tooltip": "Calculate the value of this container.",
+  "skyblocker.containerValue.minionValue.@Tooltip": "Calculate the value of this minion's generated resources.",
+  "skyblocker.containerValue.sackValue.@Tooltip": "Calculate the value of the items in this sack.",
+  "skyblocker.containerValue.stashValue.@Tooltip": "Calculate the value of the items in this stash.",
 
   "skyblocker.config.general.enableTips": "Enable Tips",
 
@@ -349,7 +364,8 @@
 
   "skyblocker.config.general.itemList": "Item List",
   "skyblocker.config.general.itemList.enableItemList": "Enable Item List",
-
+  "skyblocker.config.general.itemList.enableCollapsibleEntries": "Enable Collapsible Entry Groups",
+  "skyblocker.config.general.itemList.enableCollapsibleEntries.@Tooltip": "Group together similar items into one entry which can be expanded by clicking on it.\n\nRequires rejoining or reloading REI plugins to apply!",
   "skyblocker.config.general.itemList.filter.all": "All",
   "skyblocker.config.general.itemList.filter.entities": "Entities",
   "skyblocker.config.general.itemList.filter.npcs": "NPCs",
@@ -437,16 +453,16 @@
 
   "skyblocker.config.general.backup": "Config Backups",
   "skyblocker.config.general.backup.manage": "Manage Backups...",
-  "skyblocker.config.backup.title": "Config Backups",
-  "skyblocker.config.backup.restore": "Restore",
-  "skyblocker.config.backup.confirm.title": "Restore Backup",
-  "skyblocker.config.backup.confirm.text": "Restore backup %s? This will overwrite your current config.",
+  "skyblocker.config.general.backup.title": "Config Backups",
+  "skyblocker.config.general.backup.restore": "Restore",
+  "skyblocker.config.general.backup.confirm.title": "Restore Backup",
+  "skyblocker.config.general.backup.confirm.text": "Restore backup %s? This will overwrite your current config.",
 
-  "skyblocker.config.general.updateChannel": "Update Channel",
-  "skyblocker.config.general.updateChannel.@Tooltip": "Choose between receiving notifications for releases, for both releases and betas, or for releases; betas; and alphas.",
-  "skyblocker.config.general.updateChannel.channel.ALPHA": "Alpha",
-  "skyblocker.config.general.updateChannel.channel.BETA": "Beta",
-  "skyblocker.config.general.updateChannel.channel.RELEASE": "Release",
+  "skyblocker.config.general.updateNotifications.updateChannel": "Update Channel",
+  "skyblocker.config.general.updateNotifications.updateChannel.@Tooltip": "Choose between receiving notifications for releases, for both releases and betas, or for releases; betas; and alphas.",
+  "skyblocker.config.general.updateNotifications.updateChannel.channel.ALPHA": "Alpha",
+  "skyblocker.config.general.updateNotifications.updateChannel.channel.BETA": "Beta",
+  "skyblocker.config.general.updateNotifications.updateChannel.channel.RELEASE": "Release",
   "skyblocker.config.general.updateNotifications": "Update Notifications",
 
   "skyblocker.config.general.wikiLookup": "Wiki Lookup",
@@ -483,6 +499,7 @@
 
   "skyblocker.config.helpers.enableNewYearCakesHelper": "Enable New Year Cakes Helper",
   "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "Highlights the missing new year cakes green and the cakes you have already red.\n\nRequires you to open your cake bag at least once to work.",
+
   "skyblocker.config.helpers.enableBitsHelper": "Highlight best Community Store (Bits Shop) offer",
   "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Highlights best offers in Community Store (Bits Shop). Also shows coins per bit. Green if best offer that is in list of items that quickly sell. Yellow for best offer overall - may include stuff that sells once in a year. \n\nBoth may include price manipulated items - please use common sense or at least 1day/3day avg tooltip.",
 
@@ -516,6 +533,7 @@
   "skyblocker.config.helpers.fishing.fishingTimerScale.@Tooltip": "How big to display the fishing timer.",
   "skyblocker.config.helpers.fishing.hideOtherPlayers": "Hide Other Players Rods",
   "skyblocker.config.helpers.fishing.hideOtherPlayers.@Tooltip": "Hide other players' fishing rods from showing for you.",
+  "skyblocker.config.helpers.fishing.enableFishingHud": "Enable Fishing HUD",
   "skyblocker.config.helpers.fishing.enableFishingTimer": "Enable Bobber Timer",
   "skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip": "Adds bobber lifetime to HUD.",
   "skyblocker.config.helpers.fishing.hud.screen": "Fishing HUD Config...",
@@ -559,6 +577,7 @@
   "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "Enable Mythological Ritual Helper",
 
   "skyblocker.config.hunting": "Hunting",
+
   "skyblocker.config.hunting.huntingBoxHelper": "Enable Hunting Box Helper",
   "skyblocker.config.hunting.huntingBoxHelper.@Tooltip": "Highlights shards that you have enough of to syphon and reach the next tier of the attribute in the Hunting Box. Also displays the sell price of shards in the tooltip.",
 
@@ -621,6 +640,7 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie": "Zombie",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.true": "True",
   "skyblocker.config.chat.chatRules.invalidRegex": "Your chat rule '%s' has an invalid regex pattern and has been disabled!",
+
   "skyblocker.config.chat.waypoints.display": "Click to display waypoint at x: %d y: %d z: %d",
   "skyblocker.config.chat.waypoints.displayed": "Displayed temporary waypoint at x: %d y: %d z: %d %s",
 
@@ -660,7 +680,6 @@
   "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "Notifies you in the chat when you gain SkyBlock XP.",
 
   "skyblocker.config.eventNotifications": "Event Notifications",
-
   "skyblocker.config.eventNotifications.criterion": "Notification Criterion",
   "skyblocker.config.eventNotifications.criterion.NONE": "None",
   "skyblocker.config.eventNotifications.criterion.SKYBLOCK": "SkyBlock",
@@ -765,7 +784,6 @@
   "skyblocker.config.mining.dwarvenMines.carpetHighlightColor": "Carpet Highlight Color",
   "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Sets the color of the highlight for the unbreakable carpets.",
 
-
   "skyblocker.config.mining.enableDrillFuel": "Enable Drill Fuel",
 
   "skyblocker.config.mining.commissionHighlight": "Highlights Completed Commissions",
@@ -781,7 +799,6 @@
   "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "Sends a message in party chat with the location of the found corpse when you find one.",
   "skyblocker.config.mining.glacite.enableCorpseProfitTracker": "Enable Corpse Profit Tracker",
   "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": "Tracks the profit and the loot you get from corpses. Shows the profit in chat when looting a corpse, and has a command to see your history of corpse loot in /skyblocker rewardTrackers corpse list.",
-
   "skyblocker.config.mining.glacite.fossilSolver": "Fossil Solver",
   "skyblocker.config.mining.glacite.fossilSolver.@Tooltip": "Helps find fossils in the Fossil Excavator",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound": "No fossil found",
@@ -806,9 +823,12 @@
   "skyblocker.config.misc.richPresence.info.PURSE": "PURSE",
 
   "skyblocker.config.otherLocations": "Other Locations",
+
   "skyblocker.config.otherLocations.barn": "Barn",
+  "skyblocker.config.otherLocations.barn.enableGlowingMushroomHelper": "Enable Glowing Mushroom Helper",
   "skyblocker.config.otherLocations.barn.solveHungryHiker": "Solve Hungry Hiker",
   "skyblocker.config.otherLocations.barn.solveTreasureHunter": "Solve Treasure Hunter",
+
   "skyblocker.config.otherLocations.end": "The End",
   "skyblocker.config.otherLocations.end.enableEnderNodeHelper": "Enable Ender Node Helper",
   "skyblocker.config.otherLocations.end.hudEnabled": "HUD Enabled",
@@ -856,12 +876,12 @@
   "skyblocker.config.slayer.enableHud.@Tooltip": "You may have to do 1 boss before all HUD elements show",
 
   "skyblocker.config.slayer.blazeSlayer": "Blaze Slayer",
-  "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer" : "Fire Pillar Countdown Notifications",
+  "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer": "Fire Pillar Countdown Notifications",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "Countdowns the last five seconds before the Fire Pillar explodes. Configure 'Title Container' to customise the location on the HUD (Note: This only uses a rudimentary distance check, so the Pillar may be spawned by another player's slayer)",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.OFF": "Off",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.VISUAL": "Visual Indicator",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.SOUND_AND_VISUAL": "Sound and Visual Indicator",
-  "skyblocker.config.slayer.blazeSlayer.attunementHighlights" : "Attunement Highlights",
+  "skyblocker.config.slayer.blazeSlayer.attunementHighlights": "Attunement Highlights",
   "skyblocker.config.slayer.blazeSlayer.attunementHighlights.@Tooltip": "If Boss Highlighting is on, applies a color matching the current attunement to the selected effect.",
 
   "skyblocker.config.slayer.bossbar": "Slayer Bossbar",
@@ -948,7 +968,7 @@
   "skyblocker.config.uiAndVisuals.compactDamage": "Compact Damage",
   "skyblocker.config.uiAndVisuals.compactDamage.enabled": "Enabled",
   "skyblocker.config.uiAndVisuals.compactDamage.precision": "Precision",
-  "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip" : "The number of digits to display after the decimal point.",
+  "skyblocker.config.uiAndVisuals.compactDamage.precision.@Tooltip": "The number of digits to display after the decimal point.",
   "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "Normal Damage Color",
   "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientStart": "Crit Damage Gradient Start Color",
   "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "Crit Damage Gradient End Color",
@@ -961,6 +981,7 @@
   "skyblocker.config.uiAndVisuals.fancyAuctionHouse": "Fancy Auction House",
   "skyblocker.config.uiAndVisuals.fancyAuctionHouse.enabled": "Enabled",
   "skyblocker.config.uiAndVisuals.fancyAuctionHouse.highlightUnderAvgPrice": "Highlight BIN under average price",
+
   "skyblocker.config.uiAndVisuals.fancyCraftingTable": "Fancy Crafting Table UI",
 
   "skyblocker.config.uiAndVisuals.flameOverlay": "Flame Overlay",
@@ -1013,7 +1034,6 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter": "Close signs with enter",
   "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter.@Tooltip": "Close the current open sign screen with the enter key",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
-
   "skyblocker.config.uiAndVisuals.inputCalculator.badNotationError": "Equation is not in RPN",
   "skyblocker.config.uiAndVisuals.inputCalculator.divisionByZeroError": "Cannot divide by 0",
   "skyblocker.config.uiAndVisuals.inputCalculator.duplicateOperatorError": "Unexpected duplicate operator",
@@ -1024,7 +1044,6 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.unbalancedParenthesisError": "Unbalanced left parenthesis",
   "skyblocker.config.uiAndVisuals.inputCalculator.emptyEquationError": "Equation is empty",
   "skyblocker.config.uiAndVisuals.inputCalculator.missingValueError": "Missing value around operator",
-
 
   "skyblocker.config.uiAndVisuals.inventorySearch": "Inventory Search",
   "skyblocker.config.uiAndVisuals.inventorySearch.ctrlK": "Use CTRL + K for inventory search instead of CTRL + F",
@@ -1058,7 +1077,6 @@
   "skyblocker.config.uiAndVisuals.slotText.mode.HOLD_TO_HIDE": "Hold to Hide",
   "skyblocker.config.uiAndVisuals.slotText.mode.DISABLED": "Disabled",
   "skyblocker.config.uiAndVisuals.slotText.separator": "Individual Toggles",
-
   "skyblocker.config.uiAndVisuals.slotText.attributeLevels": "Attribute Level",
   "skyblocker.config.uiAndVisuals.slotText.attributeLevels.@Tooltip": "Displays the level of the attribute in the Attribute Menu.",
   "skyblocker.config.uiAndVisuals.slotText.catacombsLevel": "Catacombs Class Level",
@@ -1110,7 +1128,9 @@
 
   "skyblocker.config.uiAndVisuals.showCustomizeButton": "Show Customize Armor Button",
   "skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip": "Adds a little paint brush icon in your inventory next to the player model to open the Armor Customization screen.",
+
   "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
+
   "skyblocker.config.uiAndVisuals.showConfigButton": "Show Config Button",
   "skyblocker.config.uiAndVisuals.showConfigButton.@Tooltip": "Adds a button in the skyblock menu to open the Skyblocker config.",
 
@@ -1153,6 +1173,7 @@
 
   "skyblocker.config.uiAndVisuals.teleportOverlay": "Teleport Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableEtherTransmission": "Enable Ether Transmission Overlay",
+  "skyblocker.config.uiAndVisuals.teleportOverlay.showWhenInAir": "Show Overlay Mid Air",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableInstantTransmission": "Enable Instant Transmission Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableSinrecallTransmission": "Enable Sinrecall Transmission Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableTeleportOverlays": "Enable Teleport Overlays",
@@ -1185,8 +1206,8 @@
   "skyblocker.reparty.notInPartyOrNotLeader": "You must be in a party and be the leader of it to reparty!",
   "skyblocker.reparty.error": "Failed to reparty, try again in a moment!",
 
-  "skyblocker.itemTooltip.noData": "\u00a7cNo Data",
-  "skyblocker.itemTooltip.nullMessage": "\u00a7cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
+  "skyblocker.itemTooltip.noData": "§cNo Data",
+  "skyblocker.itemTooltip.nullMessage": "§cItem price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
   "skyblocker.wikiLookup.noArticleFound.official": "Unable to locate an Official wiki article for this item...",
   "skyblocker.wikiLookup.noArticleFound.fandom": "Unable to locate a Fandom wiki article for this item...",
@@ -1195,6 +1216,7 @@
   "skyblocker.debug.toggledWebSocketDebug": "Toggled WebSocket debugging to %s.",
 
   "skyblocker.config.uiAndVisuals.bars.openScreen": "Status Bars Config screen",
+
   "skyblocker.bars.config.commonPosition.LEFT": "Left",
   "skyblocker.bars.config.commonPosition.OFF": "Off",
   "skyblocker.bars.config.commonPosition.RIGHT": "Right",
@@ -1222,7 +1244,7 @@
   "skyblocker.updateRepository.deleted": "§bDeleted the local repository successfully, downloading new files... This will take a minute!",
   "skyblocker.updateRepository.success": "§aUpdated the local repository successfully.",
   "skyblocker.updateRepository.failed": "§cUpdating the local repository failed. See logs for details.",
-  "skyblocker.updateRepository.error":  "§cEncountered an error while deleting and updating the local repository. Try again in a moment or remove the files manually and restart the game. See logs for details.",
+  "skyblocker.updateRepository.error": "§cEncountered an error while deleting and updating the local repository. Try again in a moment or remove the files manually and restart the game. See logs for details.",
 
   "skyblocker.museum.hud.alreadyDonatedItem": "Donated Item",
   "skyblocker.museum.hud.coin": "Coins",
@@ -1242,9 +1264,9 @@
   "skyblocker.museum.hud.sorter.ratio": "Coins/XP Ratio",
   "skyblocker.museum.hud.sorter.switch": "Click to switch sort!",
   "skyblocker.museum.hud.unknownPrice": "Unknown",
-  "skyblocker.museum.hud.wikiLookup": "Click on %s to open the wiki page!",
+  "skyblocker.museum.hud.wikiLookup": "Press %s to open the wiki page!",
+  "skyblocker.museum.hud.itemPriceLookup": "Press %s to search on the AH!",
   "skyblocker.museum.hud.xpReward": "Reward",
-
   "skyblocker.museum.attemptingResync": "Attempting to resync your museum item donations...",
   "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! Note that you can only do this once every two days.",
   "skyblocker.museum.resyncSuccess": "Successfully resynced your museum item donations!",
@@ -1267,10 +1289,8 @@
   "skyblocker.dungeons.puzzle.boulder.noSolution": "No solution found!",
   "skyblocker.dungeons.puzzle.waterboard.invalidDoors": "Doors are in an unrecognized state. Make sure exactly three doors are closed, then reset the solver.",
   "skyblocker.dungeons.puzzle.waterboard.waterFound": "Water must be toggled off or it will interfere with the solution. Turn the water off and let it drain, then reset the solver.",
-
   "skyblocker.dungeons.secretsTracker.feedback": "%s§f found %s§f secrets. %s",
   "skyblocker.dungeons.secretsTracker.failFeedback": "§cUnable to calculate the number of secrets everybody did this run!",
-
   "skyblocker.dungeons.splits.bloodOpen": "Blood Open",
   "skyblocker.dungeons.splits.bloodClear": "Blood Clear",
   "skyblocker.dungeons.splits.portalEntry": "Portal Entry",
@@ -1338,16 +1358,20 @@
   "skyblocker.garden.hud.mouseLocked": "Mouse locked.",
 
   "skyblocker.fishing.reelNow": "Reel in now!",
+
   "skyblocker.rift.healNow": "Heal now!",
   "skyblocker.rift.iceNow": "Ice now!",
   "skyblocker.rift.mania": "Mania!",
   "skyblocker.rift.stakeNow": "Stake now!",
   "skyblocker.rift.enigmaSouls.markAllFound": "§rMarked all enigma souls as found!",
   "skyblocker.rift.enigmaSouls.markAllMissing": "§rMarked all enigma souls as missing!",
+
   "skyblocker.fairySouls.markAllFound": "§rMarked all fairy souls in the current island as found",
   "skyblocker.fairySouls.markAllMissing": "§rMarked all fairy souls in the current island as missing",
+
   "skyblocker.relics.markAllFound": "§rMarked all relics as found",
   "skyblocker.relics.markAllMissing": "§rMarked all relics as missing",
+
   "skyblocker.shortcuts.config": "Shortcuts Config",
   "skyblocker.shortcuts.notLoaded": "§c§lShortcuts not loaded yet",
   "skyblocker.shortcuts.command.target": "Target Command",
@@ -1405,7 +1429,6 @@
   "skyblocker.customItemNames.notOnSkyblock": "You can only set custom item names while in Skyblock!",
   "skyblocker.customItemNames.noItem": "You aren't holding an item!",
   "skyblocker.customItemNames.noItemUuid": "You must be holding an item that has a UUID to set a custom item name!",
-
   "skyblocker.customItemNames.screen.customColor": "Custom",
   "skyblocker.customItemNames.screen.customColorTitle": "Custom Color",
   "skyblocker.customItemNames.screen.gradientColor": "Gradient",
@@ -1448,6 +1471,12 @@
 
   "skyblocker.inventorySearch.clickHereToSearch": "Click here to search.",
 
+  "skyblocker.disableAll.confirm": "Are you sure you want to disable all features? %s",
+  "skyblocker.disableAll.confirmYes": "§c[Disable All]",
+  "skyblocker.disableAll.success": "§cAll features disabled.",
+  "skyblocker.disableAll.failed": "§cFailed to disable all features.",
+  "skyblocker.disableAll.notPending": "§cRun /skyblocker disableAll first.",
+
   "skyblocker.tips.enabled": "§aEnabled Tips.",
   "skyblocker.tips.disabled": "§cDisabled Tips.",
   "skyblocker.tips.previous": "Previous Tip",
@@ -1456,11 +1485,6 @@
   "skyblocker.tips.clickDisable": "§c[Click to Disable Tips]",
   "skyblocker.tips.clickPreviousTip": "§b[Click for Previous Tip]",
   "skyblocker.tips.clickNextTip": "§a[Click for Next Tip]",
-  "skyblocker.disableAll.confirm": "Are you sure you want to disable all features? %s",
-  "skyblocker.disableAll.confirmYes": "§c[Disable All]",
-  "skyblocker.disableAll.success": "§cAll features disabled.",
-  "skyblocker.disableAll.failed": "§cFailed to disable all features.",
-  "skyblocker.disableAll.notPending": "§cRun /skyblocker disableAll first.",
   "skyblocker.tips.tip": "§aTip: %s\n",
   "skyblocker.tips.customItemNames": "Customize the names of your items with /skyblocker custom renameItem",
   "skyblocker.tips.customArmorDyeColors": "Apply a custom dye color to your leather armor with /skyblocker custom.",
@@ -1509,7 +1533,7 @@
   "skyblocker.partyFinder.partyCard.minClassLevel": "Min class level required: %d",
   "skyblocker.partyFinder.partyCard.minDungeonLevel": "Min dungeon level required: %d",
   "skyblocker.partyFinder.noParties": "No parties found. Big sad :(",
-  "skyblocker.partyFinder.error.name" : "Party Finder error!",
+  "skyblocker.partyFinder.error.name": "Party Finder error!",
   "skyblocker.partyFinder.error.message": "An error occurred so you've been sent to the vanilla party finder",
   "skyblocker.partyFinder.loadingError": "If you see this for more than 5 seconds, something probably went wrong...",
   "skyblocker.partyFinder.yourParty": "Your party",
@@ -1560,7 +1584,6 @@
   "skyblocker.crimson.dojo.controlHelper.@Tooltip": "Renders an outline around where to aim.",
   "skyblocker.crimson.dojo.tenacityHelper": "Enable Tenacity Helper",
   "skyblocker.crimson.dojo.tenacityHelper.@Tooltip": "Shows a path for each fireball and predicted block they are going to hit.",
-
   "skyblocker.crimson.kuudra.noArrowPoison": "No Arrow Poison!",
   "skyblocker.crimson.kuudra.lowArrowPoison": "Low on Arrow Poison!",
   "skyblocker.crimson.kuudra.danger": "DANGER!",
@@ -1582,11 +1605,9 @@
   "skyblocker.powderTracker.emptyHistory": "Your powder mining rewards list is empty :(",
   "skyblocker.powderTracker.rewardsFilteredOut": "Your powder mining rewards list is empty after filtering :(",
 
-
   "skyblocker.waypoints.ordered.import.skyblocker.success": "Successfully imported waypoints from the Skyblocker Ordered Waypoints format!",
   "skyblocker.waypoints.ordered.import.skyblocker.unknownFormatHeader": "§cThis import code doesn't look like its in the Skyblocker Ordered Waypoints format, double-check your clipboard to see if everything is correct.",
   "skyblocker.waypoints.ordered.import.skyblocker.fail": "§cFailed to import waypoints from the Skyblocker Ordered Waypoints format. Make sure to have the waypoint data copied to your clipboard!",
-
   "skyblocker.waypoints.type.WAYPOINT": "Waypoint",
   "skyblocker.waypoints.type.OUTLINED_WAYPOINT": "Outlined Waypoint",
   "skyblocker.waypoints.type.HIGHLIGHT": "Highlight",
@@ -1618,9 +1639,20 @@
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
+  "skyblocker.galatea.hud.sweepDetails": "Sweep Details",
+  "skyblocker.galatea.hud.sweepDetails.inactive": "Break a tree!",
+  "skyblocker.galatea.hud.sweepDetails.treeType": "%s Tree",
+  "skyblocker.galatea.hud.sweepDetails.toughness": "Toughness: %s",
+  "skyblocker.galatea.hud.sweepDetails.sweep": "Sweep: %s",
+  "skyblocker.galatea.hud.sweepDetails.logs": "Logs: %s",
+  "skyblocker.galatea.hud.sweepDetails.throwPenalty": "Axe Throw Penalty (%s)",
+  "skyblocker.galatea.hud.sweepDetails.stylePenalty": "Tree Style Penalty (%s)",
+  "skyblocker.galatea.hud.sweepDetails.correctStyle": "Style: %s",
+
   "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
   "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)",
   "emi.category.skyblocker.skyblock_info": "Skyblock Info",
+
   "skyblocker.rei.skyblockInfo.failedToFind": "Unable to find!",
   "skyblocker.rei.transfer.noRecipe": "No Skyblock recipe found!",
   "skyblocker.rei.transfer.failed": "Failed to open recipe!\nCheck chat for more info."

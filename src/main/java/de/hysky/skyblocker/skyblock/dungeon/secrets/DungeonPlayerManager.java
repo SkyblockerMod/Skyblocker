@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.utils.InstancedUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -31,9 +31,9 @@ public class DungeonPlayerManager {
 	 * Group 2: class (or literal "EMPTY" pre dungeon start)
 	 * Group 3: level (or nothing, if pre dungeon start)
 	 * This regex filters out the ironman icon as well as rank prefixes and emblems
-	 * \[\d+\] (?:\[[A-Za-z]+\] )?(?&lt;name&gt;[A-Za-z0-9_]+) (?:.+ )?\((?&lt;class&gt;\S+) ?(?&lt;level&gt;[LXVI0]+)\)
+	 * \[\d+\] (?:\[[A-Za-z]+\] )?(?&lt;name&gt;[A-Za-z0-9_]+) (?:.+ )?\((?&lt;class&gt;\S+) ?(?&lt;level&gt;[LXVI0]+)?\)
 	 */
-	public static final Pattern PLAYER_TAB_PATTERN = Pattern.compile("\\[\\d+] (?:\\[[A-Za-z]+] )?(?<name>[A-Za-z0-9_]+) (?:.+ )?\\((?<class>\\S+) ?(?<level>[LXVI0]+)\\)");
+	public static final Pattern PLAYER_TAB_PATTERN = Pattern.compile("\\[\\d+] (?:\\[[A-Za-z]+] )?(?<name>[A-Za-z0-9_]+) (?:.+ )?\\((?<class>\\S+) ?(?<level>[LXVI0]+)?\\)");
 	public static final Pattern PLAYER_GHOST_PATTERN = Pattern.compile(" ☠ (?<name>[A-Za-z0-9_]+) .+ became a ghost\\.");
 	private static boolean dungeonLoaded;
 	/**
@@ -172,12 +172,7 @@ public class DungeonPlayerManager {
 		}
 
 		@Override
-		public String toString() {
-			try {
-				return (String) InstancedUtils.toString(getClass()).invokeExact(this);
-			} catch (Throwable ignored) {
-				return super.toString();
-			}
-		}
+		@GenToString
+		public native String toString();
 	}
 }

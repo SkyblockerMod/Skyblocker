@@ -13,6 +13,8 @@ public class DungeonsConfig {
 
 	public boolean salvageHelper = true;
 
+	public boolean sellableItemsHighlighter = true;
+
 	public boolean bloodCampHelper = false;
 
 	public boolean playerSecretsTracker = false;
@@ -51,6 +53,8 @@ public class DungeonsConfig {
 
 	public MimicMessage mimicMessage = new MimicMessage();
 
+	public PrinceMessage princeMessage = new PrinceMessage();
+
 	public DoorHighlight doorHighlight = new DoorHighlight();
 
 	public DungeonScore dungeonScore = new DungeonScore();
@@ -74,9 +78,15 @@ public class DungeonsConfig {
 	public static class SpiritLeapOverlay {
 		public boolean enableLeapOverlay = true;
 
+		public boolean leapKeybinds = true;
+
 		public boolean showMap = true;
 
 		public float scale = 1.2f;
+
+		public boolean enableLeapMessage = false;
+
+		public String leapMessage = "Leaped to [name]!";
 	}
 
 	public static class PuzzleSolvers {
@@ -186,13 +196,23 @@ public class DungeonsConfig {
 
 		public boolean enablePearlWaypoints = true;
 
+		public boolean enablePrinceWaypoints = true;
+
 		public boolean enableDefaultWaypoints = true;
 	}
 
 	public static class MimicMessage {
 		public boolean sendMimicMessage = true;
 
-		public String mimicMessage = "Mimic dead!";
+		@Deprecated
+		public transient String mimicMessage = "Mimic dead!";
+	}
+
+	public static class PrinceMessage {
+		public boolean sendPrinceMessage = true;
+
+		@Deprecated
+		public transient String princeMessage = "Prince dead!";
 	}
 
 	public static class DoorHighlight {

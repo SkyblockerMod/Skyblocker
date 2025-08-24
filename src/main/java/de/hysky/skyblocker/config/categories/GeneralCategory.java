@@ -10,7 +10,7 @@ import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
-import de.hysky.skyblocker.skyblock.speedPreset.SpeedPresetsScreen;
+import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresetsScreen;
 import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
@@ -47,16 +47,16 @@ public class GeneralCategory {
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.general.updateNotifications"))
                         .binding(UpdateNotifications.Config.DEFAULT.enabled(),
-                                () -> UpdateNotifications.config.enabled(),
-                                newValue -> UpdateNotifications.config = UpdateNotifications.config.withEnabled(newValue))
+                                () -> UpdateNotifications.config.getData().enabled(),
+                                newValue -> UpdateNotifications.config.setData(UpdateNotifications.config.getData().withEnabled(newValue)))
                         .controller(ConfigUtils.createBooleanController())
                         .build())
                 .option(Option.<UpdateNotifications.Channel>createBuilder()
-                        .name(Text.translatable("skyblocker.config.general.updateChannel"))
-                        .description(Text.translatable("skyblocker.config.general.updateChannel.@Tooltip"))
+                        .name(Text.translatable("skyblocker.config.general.updateNotifications.updateChannel"))
+                        .description(Text.translatable("skyblocker.config.general.updateNotifications.updateChannel.@Tooltip"))
                         .binding(UpdateNotifications.Config.DEFAULT.channel(),
-                                () -> UpdateNotifications.config.channel(),
-                                newValue -> UpdateNotifications.config = UpdateNotifications.config.withChannel(newValue))
+                                () -> UpdateNotifications.config.getData().channel(),
+                                newValue -> UpdateNotifications.config.setData(UpdateNotifications.config.getData().withChannel(newValue)))
                         .controller(ConfigUtils.createEnumController())
                         .build())
                 .option(Option.<Boolean>createBuilder()
@@ -167,6 +167,14 @@ public class GeneralCategory {
                                         newValue -> config.general.itemList.enableItemList = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.itemList.enableCollapsibleEntries"))
+								.description(Text.translatable("skyblocker.config.general.itemList.enableCollapsibleEntries.@Tooltip"))
+								.binding(defaults.general.itemList.enableCollapsibleEntries,
+										() -> config.general.itemList.enableCollapsibleEntries,
+										newValue -> config.general.itemList.enableCollapsibleEntries = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .build())
 
                 //Item Tooltip
