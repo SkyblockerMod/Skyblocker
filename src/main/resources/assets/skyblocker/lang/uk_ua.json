@@ -8,7 +8,7 @@
     "skyblocker.config.title": "Skyblocker %s",
     "skyblocker.armorCustomization.delay": "Затримка: %s",
     "skyblocker.armorCustomization.delayTooltip": "Анімація затримається на таку кількість секунд.",
-    "argument.color.hex.invalidString": "Шістнадцяткове число повинне мати рівно 6 символів, знайдено %d символів.",
+    "argument.color.hex.invalidString": "Шістнадцяткове число повинне мати рівно 6 символів, знайдено %s символів.",
     "text.skyblocker.config": "Відкрити конфігурацію...",
     "skyblocker.skyblockerScreen": "Головне меню Skyblocker",
     "skyblocker.config.farming.garden.farmingHud.type": "Показувати вартість у",

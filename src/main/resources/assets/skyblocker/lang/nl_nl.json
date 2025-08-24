@@ -6,6 +6,6 @@
     "skyblocker.config.title": "Skyblocker-instellingen",
     "text.skyblocker.modrinth": "Modrinth",
     "argument.color.rgb.incomplete": "Onvolledig (3 kleurwaarden verwacht).",
-    "argument.color.hex.invalidString": "Hex nummer moet precies 6 karakters lang zij, %d gevonden .",
+    "argument.color.hex.invalidString": "Hex nummer moet precies 6 karakters lang zij, %s gevonden .",
     "argument.color.hex.invalidChar": "Ongeldig karakter voor hex nummer: %s. Geldige karakters: [0-9a-fA-F]"
 }
