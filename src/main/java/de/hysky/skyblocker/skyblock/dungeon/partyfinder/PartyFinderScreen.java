@@ -272,7 +272,7 @@ public class PartyFinderScreen extends Screen {
 
     @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.renderBackground(context, mouseX, mouseY, delta);
+		this.renderInGameBackground(context);
         int i = partyEntryListWidget.getRowWidth() + 16 + 6;
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
     }
@@ -454,7 +454,7 @@ public class PartyFinderScreen extends Screen {
         if (this.client.player == null || aborted || currentPage == Page.SIGN) {
             return;
         }
-        ((ScreenHandler) this.handler).onClosed(this.client.player);
+        this.handler.onClosed(this.client.player);
     }
 
     @Override
