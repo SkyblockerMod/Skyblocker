@@ -577,12 +577,12 @@
   "skyblocker.config.hunting.huntingMobs.highlightHideonleaf": "Highlight Hideonleaf",
   "skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip": "Highlights Hideonleaves in yellow to make them easier to see.",
   "skyblocker.config.hunting.huntingMobs.highlightShellwise": "Highlight Shellwise",
-  "skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip": "Highlights Shellwise in green to make them easier to see.",
+  "skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip": "Highlights Shellwise in orange by default, with the option to choose a different color.",
   "skyblocker.config.hunting.huntingMobs.highlightCoralot": "Highlight Coralot",
-  "skyblocker.config.hunting.huntingMobs.highlightCoralot.@Tooltip": "Highlights Coralot in pink to make them easier to see.",
-  "skyblocker.config.hunting.huntingMobs.colorPicker.Hideonleaf": "Hideonleaf highlight color",
-  "skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise": "Shellwise highlight color",
-  "skyblocker.config.hunting.huntingMobs.colorPicker.Coralot": "Coralot highlight color",
+  "skyblocker.config.hunting.huntingMobs.highlightCoralot.@Tooltip": "Highlights Coralot in blue by default, with the option to choose a different color.",
+  "skyblocker.config.hunting.huntingMobs.colorPicker.Hideonleaf": "Hideonleaf highlight color picker",
+  "skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise": "Shellwise highlight color picker",
+  "skyblocker.config.hunting.huntingMobs.colorPicker.Coralot": "Coralot highlight color picker",
 
   "skyblocker.config.chat": "Chat",
 
