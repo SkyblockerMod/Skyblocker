@@ -100,7 +100,7 @@ public final class WikiLookupManager {
 
 	public static void openWikiLink(String wikiLink, PlayerEntity player) {
 		CompletableFuture.runAsync(() -> Util.getOperatingSystem().open(wikiLink)).exceptionally(e -> {
-			WikiLookupManager.LOGGER.error("[Skyblocker] Error while retrieving wiki article...", e);
+			WikiLookupManager.LOGGER.error("[Skyblocker] Error while retrieving wiki article: {}", wikiLink, e);
 			player.sendMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."), false);
 			return null;
 		});

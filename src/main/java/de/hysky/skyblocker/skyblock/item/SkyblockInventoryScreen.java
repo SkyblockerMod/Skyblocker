@@ -16,6 +16,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Mouse;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -199,8 +200,8 @@ public class SkyblockInventoryScreen extends InventoryScreen {
 		if (client.isWindowFocused()) {
 			var mouse = client.mouse;
 			var window = client.getWindow();
-			var mouseX = (mouse.getX() * ((double) window.getScaledWidth() / (double) window.getWidth()));
-			var mouseY = (mouse.getY() * ((double) window.getScaledHeight() / (double) window.getHeight()));
+			var mouseX = Mouse.scaleX(window, mouse.getX());
+			var mouseY = Mouse.scaleY(window, mouse.getY());
 
 			for (Slot equipmentSlot : equipmentSlots) {
 				if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) {

@@ -268,13 +268,13 @@ public final class ItemUtils {
     	if (!getItemId(stack).equals("PET")) return PetInfo.EMPTY;
 
 		String petInfo = getCustomData(stack).getString("petInfo", "");
-		JsonElement jsonElement = JsonParser.parseString(petInfo);
-
-		// Add item name into PetInfo to be used for wiki lookup
-		jsonElement.getAsJsonObject().addProperty("name", stack.getName().getString());
 
 		if (!petInfo.isEmpty()) {
     		try {
+				JsonElement jsonElement = JsonParser.parseString(petInfo);
+
+				// Add item name into PetInfo to be used for wiki lookup
+				jsonElement.getAsJsonObject().addProperty("name", stack.getName().getString());
         		return PetInfo.CODEC.parse(JsonOps.INSTANCE, jsonElement)
         				.setPartial(PetInfo.EMPTY)
         				.getPartialOrThrow();
