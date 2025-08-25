@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.wikilookup;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 import org.apache.commons.text.WordUtils;
@@ -16,6 +15,15 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 
 public class EnchantmentBookItemLookup implements WikiLookup {
+	private static final Function<ItemStack, Boolean> ENCHANTMENT_BOOK_FILTER = itemStack -> {
+		NbtCompound nbt = ItemUtils.getCustomData(itemStack);
+		if (itemStack.isOf(Items.ENCHANTED_BOOK) && nbt.contains("enchantments")) {
+			NbtCompound enchantments = nbt.getCompoundOrEmpty("enchantments");
+			// Only an enchantment book that contains one enchantment
+			return enchantments.getKeys().size() == 1;
+		}
+		return false;
+	};
 	public static final EnchantmentBookItemLookup INSTANCE = new EnchantmentBookItemLookup();
 
 	private EnchantmentBookItemLookup() {}
@@ -33,18 +41,7 @@ public class EnchantmentBookItemLookup implements WikiLookup {
 
 	@Override
 	public boolean canSearch(@Nullable String title, @NotNull Either<Slot, ItemStack> either) {
-		AtomicBoolean canSearch = new AtomicBoolean();
-		Function<ItemStack, Boolean> function = itemStack -> {
-			NbtCompound nbt = ItemUtils.getCustomData(itemStack);
-			if (itemStack.isOf(Items.ENCHANTED_BOOK) && nbt.contains("enchantments")) {
-				NbtCompound enchantments = nbt.getCompoundOrEmpty("enchantments");
-				// Only an enchantment book that contains one enchantment
-				return enchantments.getKeys().size() == 1;
-			}
-			return false;
-		};
-		either.ifLeft(slot -> canSearch.set(function.apply(slot.getStack())));
-		either.ifRight(itemStack -> canSearch.set(function.apply(itemStack)));
-		return canSearch.get();
+		ItemStack itemStack = WikiLookupManager.mapEitherToItemStack(either);
+		return ENCHANTMENT_BOOK_FILTER.apply(itemStack);
 	}
 }

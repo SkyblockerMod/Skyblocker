@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.wikilookup;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +16,12 @@ import net.minecraft.screen.slot.Slot;
 public class PetItemLookup implements WikiLookup {
 	private static final Pattern PET_ITEM_NAME = Pattern.compile("^\\[Lvl \\d+] (?<name>.+)$");
 	private static final Function<String, Matcher> PET_MATCHER = itemName -> PET_ITEM_NAME.matcher(itemName + " Pet"); // Add Pet to the end of string for precise lookup
+	private static final Function<ItemStack, Boolean> PET_ITEM_FILTER = itemStack -> {
+		String itemName = itemStack.getName().getString();
+		PetInfo petInfo = ItemUtils.getPetInfo(itemStack);
+		// Filter only items that has PetInfo stored and item name matches with [Lvl xx] PetName
+		return !petInfo.isEmpty() || itemName.matches(PET_ITEM_NAME.pattern());
+	};
 	public static final PetItemLookup INSTANCE = new PetItemLookup();
 
 	private PetItemLookup() {}
@@ -38,16 +43,8 @@ public class PetItemLookup implements WikiLookup {
 
 	@Override
 	public boolean canSearch(@Nullable String title, @NotNull Either<Slot, ItemStack> either) {
-		AtomicBoolean canSearch = new AtomicBoolean();
-		Function<ItemStack, Boolean> function = itemStack -> {
-			String itemName = itemStack.getName().getString();
-			PetInfo petInfo = ItemUtils.getPetInfo(itemStack);
-			// Filter only items that has PetInfo stored and item name matches with [Lvl xx] PetName
-			return !petInfo.isEmpty() || itemName.matches(PET_ITEM_NAME.pattern());
-		};
-		either.ifLeft(slot -> canSearch.set(function.apply(slot.getStack())));
-		either.ifRight(itemStack -> canSearch.set(function.apply(itemStack)));
-		return canSearch.get();
+		ItemStack itemStack = WikiLookupManager.mapEitherToItemStack(either);
+		return PET_ITEM_FILTER.apply(itemStack);
 	}
 
 	private static void lookupPetItem(Matcher matcher, @NotNull PlayerEntity player, boolean useOfficial) {
