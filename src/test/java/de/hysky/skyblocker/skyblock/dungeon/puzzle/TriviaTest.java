@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 class TriviaTest {
 	private static final Pattern PATTERN = Trivia.PATTERN;
+
 	private static void assertGroup(String input, int group, String expected) {
 		ChatPatternListenerTest.assertGroup(PATTERN.matcher(input), group, expected);
 	}
@@ -37,8 +38,20 @@ class TriviaTest {
 	}
 
 	@Test
+	void answeredQuestion() {
+		String answeredCorrectlyMessage = "[STATUE] Oruo the Omniscient: Player answered Question #2 correctly!";
+		assertGroup(answeredCorrectlyMessage, 4, answeredCorrectlyMessage);
+	}
+
+	@Test
 	void endOfPuzzle() {
 		String completionMessage = "[STATUE] Oruo the Omniscient: I bestow upon you all the power of a hundred years!";
 		assertGroup(completionMessage, 4, completionMessage);
+	}
+
+	@Test
+	void puzzleFail() {
+		String yikesMessage = "[STATUE] Oruo the Omniscient: Yikes";
+		assertGroup(yikesMessage, 4, yikesMessage);
 	}
 }

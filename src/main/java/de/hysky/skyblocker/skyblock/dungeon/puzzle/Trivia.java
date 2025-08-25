@@ -32,7 +32,7 @@ public class Trivia extends DungeonPuzzle {
 	//FIXME I think its worth replacing this with something less fragile and is capable of handing multiple lines
 	//perhaps manual incremental reading based off the start of a question
 	@VisibleForTesting
-	public static final Pattern PATTERN = Pattern.compile("^ +(?:([A-Za-z,' ]*\\?)| ([ⓐⓑⓒ]) ([a-zA-Z0-9 ]+))|(\\[STATUE] Oruo the Omniscient: I bestow upon you all the power of a hundred years!)$");
+	public static final Pattern PATTERN = Pattern.compile("^ +(?:([A-Za-z,' ]*\\?)| ([ⓐⓑⓒ]) ([a-zA-Z0-9 ]+))|(\\[STATUE] Oruo the Omniscient: (\\w+ answered Question #\\d correctly!|I bestow upon you all the power of a hundred years!|Yikes))$");
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final BlockPos CHOICE_A = new BlockPos(20, 70, 6);
 	private static final BlockPos CHOICE_B = new BlockPos(15, 70, 9);
@@ -61,7 +61,7 @@ public class Trivia extends DungeonPuzzle {
 		Matcher matcher = PATTERN.matcher(Formatting.strip(message.getString()));
 		if (!matcher.matches()) return true;
 
-		// Reset state when the puzzle ends
+		// Reset state when a question is answered and when the puzzle is failed or completed.
 		if (matcher.group(4) != null) {
 			reset();
 			return true;
