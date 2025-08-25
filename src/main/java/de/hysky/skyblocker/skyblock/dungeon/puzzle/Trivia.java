@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.waypoint.FairySouls;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
@@ -39,7 +40,7 @@ public class Trivia extends DungeonPuzzle {
 	private static final BlockPos CHOICE_C = new BlockPos(10, 70, 6);
 	private static final float[] ANSWER_COLOR = new float[]{0, 1f, 0};
 
-	private static final Map<String, String[]> answers = Collections.synchronizedMap(new HashMap<>());
+	private static final Map<String, List<String>> answers = new Object2ObjectOpenHashMap<>();
 	private List<String> solutions = Collections.emptyList();
 	private static String currentSolution = "";
 	private static BlockPos correctBlockPos = null;
@@ -73,6 +74,7 @@ public class Trivia extends DungeonPuzzle {
 			updateSolutions(matcher.group(0));
 			reset();
 		} else {
+			if (solutions.isEmpty()) return true;
 			if (!solutions.contains(answerChoice)) {
 				// Incorrect answer choice
 				ClientPlayerEntity player = MinecraftClient.getInstance().player;
@@ -94,8 +96,7 @@ public class Trivia extends DungeonPuzzle {
 				int year = SkyblockTime.skyblockYear.get();
 				solutions = Collections.singletonList("Year " + year);
 			} else {
-				String[] questionAnswers = answers.get(trimmedQuestion);
-				if (questionAnswers != null) solutions = Arrays.asList(questionAnswers);
+				solutions = answers.getOrDefault(trimmedQuestion, Collections.emptyList());
 			}
 		} catch (Exception e) { //Hopefully the solver doesn't go south
 			LOGGER.error("[Skyblocker] Failed to update the Trivia puzzle answers!", e);
@@ -139,30 +140,30 @@ public class Trivia extends DungeonPuzzle {
 
 	@Init(priority=100) // Load after FairySouls
 	public static void init() {
-		answers.put("What is the status of The Watcher?", new String[]{"Stalker"});
-		answers.put("What is the status of Bonzo?", new String[]{"New Necromancer"});
-		answers.put("What is the status of Scarf?", new String[]{"Apprentice Necromancer"});
-		answers.put("What is the status of The Professor?", new String[]{"Professor"});
-		answers.put("What is the status of Thorn?", new String[]{"Shaman Necromancer"});
-		answers.put("What is the status of Livid?", new String[]{"Master Necromancer"});
-		answers.put("What is the status of Sadan?", new String[]{"Necromancer Lord"});
-		answers.put("What is the status of Maxor?", new String[]{"The Wither Lords"});
-		answers.put("What is the status of Goldor?", new String[]{"The Wither Lords"});
-		answers.put("What is the status of Storm?", new String[]{"The Wither Lords"});
-		answers.put("What is the status of Necron?", new String[]{"The Wither Lords"});
-		answers.put("What is the status of Maxor, Storm, Goldor, and Necron?", new String[]{"The Wither Lords"});
-		answers.put("Which brother is on the Spider's Den?", new String[]{"Rick"});
-		answers.put("What is the name of Rick's brother?", new String[]{"Pat"});
+		answers.put("What is the status of The Watcher?", List.of("Stalker"));
+		answers.put("What is the status of Bonzo?", List.of("New Necromancer"));
+		answers.put("What is the status of Scarf?", List.of("Apprentice Necromancer"));
+		answers.put("What is the status of The Professor?", List.of("Professor"));
+		answers.put("What is the status of Thorn?", List.of("Shaman Necromancer"));
+		answers.put("What is the status of Livid?", List.of("Master Necromancer"));
+		answers.put("What is the status of Sadan?", List.of("Necromancer Lord"));
+		answers.put("What is the status of Maxor?", List.of("The Wither Lords"));
+		answers.put("What is the status of Goldor?", List.of("The Wither Lords"));
+		answers.put("What is the status of Storm?", List.of("The Wither Lords"));
+		answers.put("What is the status of Necron?", List.of("The Wither Lords"));
+		answers.put("What is the status of Maxor, Storm, Goldor, and Necron?", List.of("The Wither Lords"));
+		answers.put("Which brother is on the Spider's Den?", List.of("Rick"));
+		answers.put("What is the name of Rick's brother?", List.of("Pat"));
 		//Full Question: "What is the name of the vendor in the Hub who sells stained glass?"
 		//The solver cannot handle multiple lines right now and just sees "glass?" as the question
-		answers.put("glass?", new String[]{"Wool Weaver"});
-		answers.put("What is the name of the person that upgrades pets?", new String[]{"Kat"});
-		answers.put("What is the name of the lady of the Nether?", new String[]{"Elle"});
-		answers.put("Which villager in the Village gives you a Rogue Sword?", new String[]{"Jamie"});
-		answers.put("How many unique minions are there?", new String[]{"59 Minions"});
-		answers.put("Which of these enemies does not spawn in the Spider's Den?", new String[]{"Zombie Spider", "Cave Spider", "Wither Skeleton", "Dashing Spooder", "Broodfather", "Night Spider"});
-		answers.put("Which of these monsters only spawns at night?", new String[]{"Zombie Villager", "Ghast"});
-		answers.put("Which of these is not a dragon in The End?", new String[]{"Zoomer Dragon", "Weak Dragon", "Stonk Dragon", "Holy Dragon", "Boomer Dragon", "Booger Dragon", "Older Dragon", "Elder Dragon", "Stable Dragon", "Professor Dragon"});
+		answers.put("glass?", List.of("Wool Weaver"));
+		answers.put("What is the name of the person that upgrades pets?", List.of("Kat"));
+		answers.put("What is the name of the lady of the Nether?", List.of("Elle"));
+		answers.put("Which villager in the Village gives you a Rogue Sword?", List.of("Jamie"));
+		answers.put("How many unique minions are there?", List.of("59 Minions"));
+		answers.put("Which of these enemies does not spawn in the Spider's Den?", List.of("Zombie Spider", "Cave Spider", "Wither Skeleton", "Dashing Spooder", "Broodfather", "Night Spider"));
+		answers.put("Which of these monsters only spawns at night?", List.of("Zombie Villager", "Ghast"));
+		answers.put("Which of these is not a dragon in The End?", List.of("Zoomer Dragon", "Weak Dragon", "Stonk Dragon", "Holy Dragon", "Boomer Dragon", "Booger Dragon", "Older Dragon", "Elder Dragon", "Stable Dragon", "Professor Dragon"));
 		FairySouls.runAsyncAfterFairySoulsLoad(() -> {
 			answers.put("How many total Fairy Souls are there?", getFairySoulsSizeString(null));
 			answers.put("How many Fairy Souls are there in Spider's Den?", getFairySoulsSizeString("combat_1"));
@@ -180,7 +181,7 @@ public class Trivia extends DungeonPuzzle {
 	}
 
 	@NotNull
-	private static String[] getFairySoulsSizeString(@Nullable String location) {
-		return new String[]{"%d Fairy Souls".formatted(FairySouls.getFairySoulsSize(location))};
+	private static List<String> getFairySoulsSizeString(@Nullable String location) {
+		return List.of("%d Fairy Souls".formatted(FairySouls.getFairySoulsSize(location)));
 	}
 }
