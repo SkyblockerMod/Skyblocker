@@ -36,7 +36,7 @@ public class Trivia extends DungeonPuzzle {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final BlockPos CHOICE_A = new BlockPos(20, 70, 6);
 	private static final BlockPos CHOICE_B = new BlockPos(15, 70, 9);
-	private static final BlockPos CHOICE_C = new BlockPos(10, 70, 9);
+	private static final BlockPos CHOICE_C = new BlockPos(10, 70, 6);
 	private static final float[] ANSWER_COLOR = new float[]{0, 1f, 0};
 
 	private static final Map<String, String[]> answers = Collections.synchronizedMap(new HashMap<>());
