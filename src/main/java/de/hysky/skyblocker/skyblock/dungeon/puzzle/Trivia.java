@@ -137,7 +137,7 @@ public class Trivia extends DungeonPuzzle {
 		correctBlockPos = null;
 	}
 
-	@Init
+	@Init(priority=100) // Load after FairySouls
 	public static void init() {
 		answers.put("What is the status of The Watcher?", new String[]{"Stalker"});
 		answers.put("What is the status of Bonzo?", new String[]{"New Necromancer"});
