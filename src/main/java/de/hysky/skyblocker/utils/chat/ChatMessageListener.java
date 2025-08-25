@@ -43,7 +43,6 @@ public interface ChatMessageListener {
                 new Fetchur(),
                 new Puzzler(),
                 new Reparty(),
-                new Trivia(),
                 new TreasureHunter(),
                 new HungryHiker(),
 				new SweepDetailsListener(),
