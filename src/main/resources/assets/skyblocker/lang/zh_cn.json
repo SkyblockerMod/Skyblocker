@@ -429,7 +429,7 @@
     "skyblocker.config.uiAndVisuals.hideStatusEffectOverlay": "隐藏状态效果动画",
     "skyblocker.tips.fancyTabExtraInfo": "你知道吗？在按着N或M时可以在精致菜单中看到额外的信息。",
     "skyblocker.config.dungeons.map.mapScreen": "地牢地图和分数的位置设置...",
-    "skyblocker.config.quickNav.button": "按钮 %s",
+    "skyblocker.config.quickNav.button": "按钮%s",
     "skyblocker.config.quickNav.button.uiTitle": "UI标题",
     "skyblocker.config.uiAndVisuals.flameOverlay.flameHeight.@Tooltip": "100%  默认高度\n0%      完全关闭",
     "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity.@Tooltip": "100%  默认透明度\n0%      完全关闭",
