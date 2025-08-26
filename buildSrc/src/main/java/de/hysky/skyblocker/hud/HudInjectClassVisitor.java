@@ -20,8 +20,6 @@ public class HudInjectClassVisitor extends ClassVisitor {
 
 	@Override
 	public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-		MethodVisitor methodVisitor = super.visitMethod(access, name, descriptor, signature, exceptions);
-
 		if ((access & Opcodes.ACC_PRIVATE) != 0 && (access & Opcodes.ACC_STATIC) != 0 && name.equals("instantiateWidgets") && descriptor.equals("()V")) {
 			MethodNode methodNode = new MethodNode(Opcodes.ASM9, access, name, descriptor, signature, exceptions);
 
@@ -40,9 +38,11 @@ public class HudInjectClassVisitor extends ClassVisitor {
 			methodNode.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 
 			// Apply our new method node to the visitor to replace the original one
-			methodNode.accept(methodVisitor);
+			methodNode.accept(this.getDelegate());
+
+			return null;
 		}
 
-		return methodVisitor;
+		return super.visitMethod(access, name, descriptor, signature, exceptions);
 	}
 }
