@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.dwarven.CommissionLabels;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.BooleanOption;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;

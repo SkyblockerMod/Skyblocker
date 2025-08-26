@@ -6,7 +6,6 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.util.FancyTabWidget;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
