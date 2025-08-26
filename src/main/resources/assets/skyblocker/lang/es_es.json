@@ -198,7 +198,7 @@
     "skyblocker.config.dungeons.livid.enableLividColorTitle": "Activa el Title de color de Livid",
     "skyblocker.config.dungeons.fancyPartyFinder": "Interfaz de Buscador de Party",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage": "Activar mensaje de Criptas en Dungeons",
-    "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound.@Tooltip": "Hace un sonido cuando llega a % de puntuación en mazmorras",
+    "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound.@Tooltip": "Hace un sonido cuando llega a %s de puntuación en mazmorras",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage.@Tooltip": "Enviar un mensaje por chat si hay menos de 5 criptas cuando se alcance la meta de puntuación.",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Por defecto 270 tiene como objetivo runs con S+ cuando entras con más de 300 puntos (Usualmente en F5-F7 y M5-M7).\nSi vas por runs con S (entrando con 270 puntos) deberías considerar bajarlo a 250 o menos, sino, esto será inútil.",
     "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Usa el color personalizado en lugar del color de Livid para el brillo y el contorno."
