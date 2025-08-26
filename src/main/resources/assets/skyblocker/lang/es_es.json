@@ -144,7 +144,7 @@
     "skyblocker.config.dungeons.goldorWaypoints.enableGoldorWaypoints": "Habilitar puntos de referencia para terminales/dispositivos/palancas durante Goldor",
     "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor": "Color Incompleto",
     "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Mostrar el beneficio de un cofre de Dungeon en el título del menú del cofre.\nVerde si hay beneficio.\nRojo si no hay beneficio.\nGris si no ganas o pierdes algo.\nAzul si la calculadora no tiene datos suficientes.",
-    "skyblocker.config.dungeons.dungeonChestProfit.includeEssence.@Tooltip": "Deshabilitar es **no recomendado** si eres una persona olvidadiza.",
+    "skyblocker.config.dungeons.dungeonChestProfit.includeEssence.@Tooltip": "Deshabilitar **no se recomienda** si eres una persona olvidadiza.",
     "skyblocker.config.dungeons.dungeonChestProfit.includeKismet": "Incluir Precio de las Kismet",
     "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor.@Tooltip": "El color a mostrar cuando los datos del precio sean incompletos.",
     "skyblocker.config.dungeons.dungeonChestProfit.neutralThreshold.@Tooltip": "El límite por debajo del cual beneficio es considerado neutral.",
@@ -200,5 +200,6 @@
     "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage": "Activar mensaje de Criptas en Dungeons",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound.@Tooltip": "Hace un sonido cuando llega a % de puntuación en mazmorras",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage.@Tooltip": "Enviar un mensaje por chat si hay menos de 5 criptas cuando se alcance la meta de puntuación.",
-    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Por defecto 270 tiene como objetivo runs con S+ cuando entras con más de 300 puntos (Usualmente en F5-F7 y M5-M7).\nSi vas por runs con S (entrando con 270 puntos) deberías considerar bajarlo a 250 o menos, sino, esto será inútil"
+    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Por defecto 270 tiene como objetivo runs con S+ cuando entras con más de 300 puntos (Usualmente en F5-F7 y M5-M7).\nSi vas por runs con S (entrando con 270 puntos) deberías considerar bajarlo a 250 o menos, sino, esto será inútil.",
+    "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Usa el color personalizado en lugar del color de Livid para el brillo y el contorno."
 }
