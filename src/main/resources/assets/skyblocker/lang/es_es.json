@@ -180,8 +180,6 @@
     "skyblocker.config.dungeons.livid.enableLividColorText": "Enviar mensaje por chat del color de Livid",
     "skyblocker.config.dungeons.livid.enableLividColorText.@Tooltip": "Activa si quieres enviar el color de Livid en un mensaje por chat durante la batalla del jefe.",
     "skyblocker.config.dungeons.mimicMessage": "Mensaje de Mimic",
-    "skyblocker.config.dungeons.mimicMessage.mimicMessage": "Mensaje de Mimic",
-    "skyblocker.config.dungeons.mimicMessage.mimicMessage.@Tooltip": "Mensaje que se enviara por chat al matar a un mimic. Se recomienda dejar el valor por defecto.",
     "skyblocker.config.dungeons.mimicMessage.sendMimicMessage": "Activar el mensaje de Mimic",
     "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Envía un mensaje por chat al matar un mimic para calcular la puntuación en los mods de otros jugadores.",
     "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage.@Tooltip": "Mensaje que se enviará en el chat cuando se alcance %s puntos en Dungeons. La frase \"[puntuación]\" será substituida con la puntuación de la Dungeon (%s).",
