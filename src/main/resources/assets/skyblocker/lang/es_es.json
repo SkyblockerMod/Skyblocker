@@ -163,7 +163,7 @@
     "skyblocker.config.dungeons.dungeonChestProfit.includeKismet.@Tooltip": "Cuando esté activado, si has usado una Kismet, el precio de esta será extraído del beneficio",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold": "Puntaje de envío del mensaje de criptas",
     "key.wikiLookup.official": "Búsqueda en la Wiki de Hypixel",
-    "key.wikiLookup.fandom": "Búsqueda en la Wiki de Fandom",
+    "key.wikiLookup.fandom": "Búsqueda en la Wiki del Fandom",
     "skyblocker.config.dungeons.dungeonChestProfit.lossColor": "Color de pérdida",
     "skyblocker.config.dungeons.hideSoulweaverSkulls": "Ocultar las calaveras del Soulweaver",
     "skyblocker.config.dungeons.livid.enableLividColorBoundingBox": "Activa el contorno de color para Livid",
@@ -198,7 +198,7 @@
     "skyblocker.config.dungeons.livid.enableLividColorTitle": "Activa el Title de color de Livid",
     "skyblocker.config.dungeons.fancyPartyFinder": "Interfaz de Buscador de Party",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage": "Activar mensaje de Criptas en Dungeons",
-    "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound.@Tooltip": "Reproduce un sonido cuando se alcanzan %s puntos en dungeons.",
+    "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound.@Tooltip": "Hace un sonido cuando llega a % de puntuación en mazmorras",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage.@Tooltip": "Enviar un mensaje por chat si hay menos de 5 criptas cuando se alcance la meta de puntuación.",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Por defecto 270 tiene como objetivo runs con S+ cuando entras con más de 300 puntos (Usualmente en F5-F7 y M5-M7).\nSi vas por runs con S (entrando con 270 puntos) deberías considerar bajarlo a 250 o menos, sino, esto será inútil"
 }
