@@ -25,14 +25,8 @@ class ToggleButtonWidget extends PressableWidget {
 		MinecraftClient minecraftClient = MinecraftClient.getInstance();
 		int y = getY() - 1;
 		int y2 = y + getHeight();
-		context.drawVerticalLine(getX() - 1, y, y2, ColorHelper.withAlpha(15, -1));
-		context.drawVerticalLine(getX(), y, y2, ColorHelper.withAlpha(100, 0));
-		context.drawVerticalLine(getX() + 1, y, y2, ColorHelper.withAlpha(15, -1));
-
-
-		context.drawVerticalLine(getRight() - 1, y, y2, ColorHelper.withAlpha(15, 0));
-		context.drawVerticalLine(getRight(), y, y2, ColorHelper.withAlpha(100, 0));
-		context.drawVerticalLine(getRight() + 1, y, y2, ColorHelper.withAlpha(15, 0));
+		TopBarWidget.drawButtonBorder(context, getX(), y, y2);
+		TopBarWidget.drawButtonBorder(context, getRight(), y, y2);
 
 		if (isHovered()) {
 			context.fill(getX(), y, getRight() + 1, y2, ColorHelper.withAlpha(100, 0));

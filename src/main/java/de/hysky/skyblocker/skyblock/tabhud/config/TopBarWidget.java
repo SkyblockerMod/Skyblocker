@@ -5,21 +5,23 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.PopupScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 
 import java.util.List;
-import java.util.function.Consumer;
 
-public class TopBarWidget extends ContainerWidget {
+class TopBarWidget extends ContainerWidget {
 	private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_outer_space");
 	private static final int HEIGHT = 15;
 	private final CustomDropdownWidget<Location> locationDropdown;
@@ -27,7 +29,7 @@ public class TopBarWidget extends ContainerWidget {
 	private final SimplePositioningWidget layout;
 	private final List<ClickableWidget> widgets;
 
-	public TopBarWidget(int width, Consumer<Location> onLocationSelected, Consumer<WidgetManager.ScreenLayer> onLayerSelected, BooleanConsumer setSnapping, BooleanConsumer setAutoAnchor) {
+	TopBarWidget(int width, WidgetsConfigScreen parent) {
 		super(0, 0, width, HEIGHT, Text.literal("hi"));
 
 		layout = new SimplePositioningWidget(getWidth(), HEIGHT);
@@ -37,9 +39,9 @@ public class TopBarWidget extends ContainerWidget {
 		// move UNKNOWN to be first
 		locations.remove(Location.UNKNOWN);
 		locations.addFirst(Location.UNKNOWN);
-		locationDropdown = new CustomDropdownWidget<>(width / 2 - 100 - 5, 0, 100, 200, locations, onLocationSelected, Utils.getLocation());
+		locationDropdown = new CustomDropdownWidget<>(width / 2 - 100 - 5, 0, 100, 200, locations, parent::setCurrentLocation, Utils.getLocation());
 		locationDropdown.setFormatter(location -> location == Location.UNKNOWN ? Text.literal("Everywhere").formatted(Formatting.YELLOW) : Text.literal(location.toString()));
-		screenLayerDropdown = new CustomDropdownWidget<>(width / 2 + 5, 0, 100, 200, List.of(WidgetManager.ScreenLayer.values()), onLayerSelected, WidgetManager.ScreenLayer.HUD);
+		screenLayerDropdown = new CustomDropdownWidget<>(width / 2 + 5, 0, 100, 200, List.of(WidgetManager.ScreenLayer.values()), parent::setCurrentScreenLayer, WidgetManager.ScreenLayer.HUD);
 
 		DirectionalLayoutWidget dropdownsLayout = DirectionalLayoutWidget.horizontal();
 		dropdownsLayout.getMainPositioner().marginX(5);
@@ -47,10 +49,10 @@ public class TopBarWidget extends ContainerWidget {
 		dropdownsLayout.add(screenLayerDropdown);
 		layout.add(dropdownsLayout);
 
-		ToggleButtonWidget snappingToggle = new ToggleButtonWidget(80, HEIGHT, Text.literal("Snapping"), setSnapping);
+		ToggleButtonWidget snappingToggle = new ToggleButtonWidget(80, HEIGHT, Text.literal("Snapping"), b -> parent.snapping = b);
 		snappingToggle.setState(true);
 		snappingToggle.setTooltip(Tooltip.of(Text.literal("Automatically snap widgets to other widgets")));
-		ToggleButtonWidget autoAnchorToggle = new ToggleButtonWidget(80, HEIGHT, Text.literal("Auto Screen Anchor"), setAutoAnchor);
+		ToggleButtonWidget autoAnchorToggle = new ToggleButtonWidget(80, HEIGHT, Text.literal("Auto Screen Anchor"), b -> parent.autoAnchor = b);
 		autoAnchorToggle.setState(true);
 		autoAnchorToggle.setTooltip(Tooltip.of(Text.literal("Automatically change the anchor of the widget based on the position")));
 
@@ -59,7 +61,13 @@ public class TopBarWidget extends ContainerWidget {
 		togglesLayout.add(autoAnchorToggle);
 		layout.add(togglesLayout, Positioner::alignRight);
 
-		widgets = List.of(locationDropdown, screenLayerDropdown, snappingToggle, autoAnchorToggle);
+		StyledButtonWidget helpButton = new StyledButtonWidget(60, HEIGHT, Text.literal("Help"), button -> parent.openPopup(screen -> new PopupScreen.Builder(screen, Text.literal("Help"))
+				.message(Text.literal("Use right click to add widgets and edit their options.\nYou can delete a widget by pressing the delete key.\n\nWidgets are per island. To have a widget show up everywhere select \"Everywhere\" in the island dropdown (there's only 2 dropdowns you should be able to find it). Widget options apply to every location with a few exceptions."))
+				.button(ScreenTexts.OK, PopupScreen::close)
+				.build()));
+		layout.add(helpButton, Positioner::alignLeft);
+
+		widgets = List.of(helpButton, locationDropdown, screenLayerDropdown, snappingToggle, autoAnchorToggle);
 		layout.refreshPositions();
 	}
 
@@ -106,5 +114,11 @@ public class TopBarWidget extends ContainerWidget {
 	@Override
 	protected double getDeltaYPerScroll() {
 		return 0;
+	}
+
+	static void drawButtonBorder(DrawContext context, int x, int y, int y2) {
+		context.drawVerticalLine(x - 1, y, y2, ColorHelper.withAlpha(15, -1));
+		context.drawVerticalLine(x, y, y2, ColorHelper.withAlpha(100, 0));
+		context.drawVerticalLine(x + 1, y, y2, ColorHelper.withAlpha(15, -1));
 	}
 }

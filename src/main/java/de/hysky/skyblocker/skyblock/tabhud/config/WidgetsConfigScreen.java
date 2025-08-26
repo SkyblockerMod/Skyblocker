@@ -60,13 +60,13 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	 */
 	private @Nullable ScreenPos dragRelative = null;
 	private boolean openPanelAfterDragging = false;
-	private boolean autoAnchor = true;
-	private boolean snapping = true;
+	boolean autoAnchor = true;
+	boolean snapping = true;
 
 	private @Nullable SelectWidgetPrompt selectWidgetPrompt = null;
 
 	protected WidgetsConfigScreen() {
-		super(Text.literal("amogus"));
+		super(Text.literal("Widgets Config Screen"));
 		currentLocation = Utils.getLocation();
 		currentScreenLayer = WidgetManager.ScreenLayer.HUD;
 		builder = WidgetManager.getScreenBuilder(currentLocation, currentScreenLayer);
@@ -96,7 +96,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		super.init();
 		sidePanelWidget = new SidePanelWidget(width / 4, height);
 		addWidgetWidget = new AddWidgetWidget(client, this::addWidget);
-		topBarWidget = new TopBarWidget(width, this::setCurrentLocation, this::setCurrentScreenLayer, b -> snapping = b, b -> autoAnchor = b);
+		topBarWidget = new TopBarWidget(width, this);
 		addSelectableChild(addWidgetWidget);
 		addSelectableChild(topBarWidget);
 		addSelectableChild(sidePanelWidget);
