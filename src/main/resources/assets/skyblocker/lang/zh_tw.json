@@ -320,7 +320,7 @@
     "skyblocker.config.dungeons.puzzle.solveTicTacToe": "井字棋謎題助手",
     "skyblocker.config.mining.dwarvenHud.screen": "矮人礦井HUD配置…",
     "skyblocker.tips.enabled": "§a啟用提示。",
-    "skyblocker.config.quickNav.button": "按鈕 %s",
+    "skyblocker.config.quickNav.button": "按鈕%s",
     "skyblocker.config.dungeons.fancyPartyFinder": "花俏的組隊查找器",
     "skyblocker.config.dungeons.secretWaypoints.enableDefaultWaypoints": "啟用預設路徑點",
     "skyblocker.fairySouls.markAllFound": "§r將目前島嶼上的全部仙女之魂標記為已發現",
