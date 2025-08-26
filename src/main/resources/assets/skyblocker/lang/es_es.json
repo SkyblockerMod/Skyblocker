@@ -3,7 +3,7 @@
     "key.hotbarSlotLock": "Bloquear Slot (Barra de objetos)",
     "skyblocker.config.title": "Ajustes de Skyblocker",
     "skyblocker.config.general": "General",
-    "skyblocker.config.uiAndVisuals.bars": "Salud, Mana, Defensa & Barra de XP",
+    "skyblocker.config.uiAndVisuals.bars": "Salud, Mana, Defensa, Velocidad & Barra de XP",
     "skyblocker.config.uiAndVisuals.bars.enableBars": "Habilitar Barras",
     "skyblocker.config.uiAndVisuals.backpackPreviewWithoutShift": "Ver la previsualización de la mochila sin sostener Shift",
     "skyblocker.config.general.itemTooltip.enableNPCPrice": "Habilitar Precios de NPC",
