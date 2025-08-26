@@ -663,6 +663,7 @@
   "skyblocker.config.chat.filter.hideDeath.@Tooltip": "Filters the player death messages from chat.",
   "skyblocker.config.chat.filter.hideDicer": "Hide Dicer Messages",
   "skyblocker.config.chat.filter.hideDicer.@Tooltip": "Filters the Dicer messages from chat.",
+  "skyblocker.config.chat.filter.hideDungeonBreaker": "Hide Dungeonbreaker Messages",
   "skyblocker.config.chat.filter.hideHeal": "Hide Heal Messages",
   "skyblocker.config.chat.filter.hideImplosion": "Hide Implosion Message",
   "skyblocker.config.chat.filter.hideMana": "Hide Mana Consumption Messages from Action Bar",

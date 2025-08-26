@@ -62,7 +62,8 @@ public interface ChatMessageListener {
                 new LotteryFilter(),
                 new MimicFilter(),
                 new DeathFilter(),
-                new DicerFilter()
+                new DicerFilter(),
+				new DungeonBreakerFilter(),
         };
 
         // Register all listeners to EVENT

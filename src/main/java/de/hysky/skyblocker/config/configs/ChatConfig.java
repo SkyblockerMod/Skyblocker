@@ -39,6 +39,8 @@ public class ChatConfig {
 
 	public ChatFilterResult hideDicer = ChatFilterResult.PASS;
 
+	public ChatFilterResult hideDungeonBreaker = ChatFilterResult.PASS;
+
 	public ChatRuleConfig chatRuleConfig = new ChatRuleConfig();
 
 	public static class ChatRuleConfig {
