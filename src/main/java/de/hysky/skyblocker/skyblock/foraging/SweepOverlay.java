@@ -179,7 +179,7 @@ public class SweepOverlay {
 				}
 			}
 		}
-		if (!sweepStatNoticeShown && Utils.isInPark() && CLIENT.player != null) {
+		if (!sweepStatNoticeShown && (Utils.isInPark() || Utils.isInGalatea()) && CLIENT.player != null) {
 			CLIENT.player.sendMessage(Constants.PREFIX.get().append(
 							Text.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
 									.formatted(Formatting.RED)),

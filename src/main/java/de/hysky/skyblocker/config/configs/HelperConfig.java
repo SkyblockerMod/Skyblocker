@@ -71,8 +71,9 @@ public class HelperConfig {
 
 		public boolean hideOtherPlayersRods = false;
 
-		public boolean enableFishingHud = false;
+		public boolean enableFishingHud = true;
 
+		@Deprecated
 		public List<Location> fishingHudEnabledLocations = new ArrayList<>(List.of(Location.values()));
 
 		public boolean enableSeaCreatureCounter = true;

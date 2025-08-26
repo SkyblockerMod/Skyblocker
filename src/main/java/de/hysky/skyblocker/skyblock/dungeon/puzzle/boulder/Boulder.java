@@ -195,7 +195,8 @@ public class Boulder extends DungeonPuzzle {
                 RenderHelper.renderLinesFromPoints(context, new Vec3d[]{startPoint, endPoint}, ORANGE_COLOR_COMPONENTS, alpha, lineWidth, true);
             }
             if (boundingBox != null) {
-                RenderHelper.renderOutline(context, boundingBox, RED_COLOR_COMPONENTS, 5, false);
+            	RenderHelper.renderFilled(context, boundingBox, RED_COLOR_COMPONENTS, 0.5f, false);
+                RenderHelper.renderOutline(context, boundingBox, RED_COLOR_COMPONENTS, 5f, false);
             }
         }
     }

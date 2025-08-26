@@ -52,6 +52,14 @@ public class DungeonsCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter"))
+						.description(Text.translatable("skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip"))
+						.binding(defaults.dungeons.sellableItemsHighlighter,
+								() -> config.dungeons.sellableItemsHighlighter,
+								newValue -> config.dungeons.sellableItemsHighlighter = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.dungeons.playerSecretsTracker"))
 						.description(Text.translatable("skyblocker.config.dungeons.playerSecretsTracker.@Tooltip"))
 						.binding(defaults.dungeons.playerSecretsTracker,
@@ -176,6 +184,14 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds"))
+								.description(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.leapKeybinds.@Tooltip"))
+								.binding(defaults.dungeons.leapOverlay.leapKeybinds,
+										() -> config.dungeons.leapOverlay.leapKeybinds,
+										newValue -> config.dungeons.leapOverlay.leapKeybinds = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.showMap"))
 								.binding(defaults.dungeons.leapOverlay.showMap,
 										() -> config.dungeons.leapOverlay.showMap,
@@ -188,6 +204,22 @@ public class DungeonsCategory {
 										() -> config.dungeons.leapOverlay.scale,
 										newValue -> config.dungeons.leapOverlay.scale = newValue)
 								.controller(FloatController.createBuilder().range(1f, 2f).slider(0.05f).build())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage"))
+								.description(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip"))
+								.binding(defaults.dungeons.leapOverlay.enableLeapMessage,
+										() -> config.dungeons.leapOverlay.enableLeapMessage,
+										newValue -> config.dungeons.leapOverlay.enableLeapMessage = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.leapMessage"))
+								.description(Text.translatable("skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip"))
+								.binding(defaults.dungeons.leapOverlay.leapMessage,
+										() -> config.dungeons.leapOverlay.leapMessage,
+										newValue -> config.dungeons.leapOverlay.leapMessage = newValue)
+								.controller(StringController.createBuilder().build())
 								.build())
 						.build())
 
@@ -558,6 +590,14 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints"))
+								.description(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints.@Tooltip"))
+								.binding(defaults.dungeons.secretWaypoints.enablePrinceWaypoints,
+										() -> config.dungeons.secretWaypoints.enablePrinceWaypoints,
+										newValue -> config.dungeons.secretWaypoints.enablePrinceWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableDefaultWaypoints"))
 								.description(Text.translatable("skyblocker.config.dungeons.secretWaypoints.enableDefaultWaypoints.@Tooltip"))
 								.binding(defaults.dungeons.secretWaypoints.enableDefaultWaypoints,
@@ -579,13 +619,19 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.mimicMessage.sendMimicMessage = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<String>createBuilder()
-								.name(Text.translatable("skyblocker.config.dungeons.mimicMessage.mimicMessage"))
-								.description(Text.translatable("skyblocker.config.dungeons.mimicMessage.mimicMessage.@Tooltip"))
-								.binding(defaults.dungeons.mimicMessage.mimicMessage,
-										() -> config.dungeons.mimicMessage.mimicMessage,
-										newValue -> config.dungeons.mimicMessage.mimicMessage = newValue)
-								.controller(StringController.createBuilder().build())
+						.build())
+
+				// Prince Message
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.princeMessage"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.princeMessage.sendPrinceMessage"))
+								.description(Text.translatable("skyblocker.config.dungeons.princeMessage.sendPrinceMessage.@Tooltip"))
+								.binding(defaults.dungeons.princeMessage.sendPrinceMessage,
+										() -> config.dungeons.princeMessage.sendPrinceMessage,
+										newValue -> config.dungeons.princeMessage.sendPrinceMessage = newValue)
+								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
 

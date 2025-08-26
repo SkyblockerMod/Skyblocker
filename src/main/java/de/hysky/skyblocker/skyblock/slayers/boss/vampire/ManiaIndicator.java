@@ -16,7 +16,9 @@ public class ManiaIndicator {
     private static final Title title = new Title("skyblocker.rift.mania", Formatting.RED);
 
 	public static void updateMania() {
-		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !SlayerManager.isInSlayerType(SlayerType.VAMPIRE)) {
+		MinecraftClient client = MinecraftClient.getInstance();
+
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !SlayerManager.isInSlayerType(SlayerType.VAMPIRE) || client.player == null || client.world == null) {
             TitleContainer.removeTitle(title);
             return;
         }
@@ -28,8 +30,8 @@ public class ManiaIndicator {
 		for (Entity entity : SlayerManager.getEntityArmorStands(slayerEntity, 2.5f)) {
             if (entity.getDisplayName().toString().contains("MANIA")) {
                 anyMania = true;
-                BlockPos pos = MinecraftClient.getInstance().player.getBlockPos().down();
-                boolean isGreen = MinecraftClient.getInstance().world.getBlockState(pos).getBlock() == Blocks.GREEN_TERRACOTTA;
+                BlockPos pos = client.player.getBlockPos().down();
+                boolean isGreen = client.world.getBlockState(pos).getBlock() == Blocks.GREEN_TERRACOTTA;
                 title.setText(Text.translatable("skyblocker.rift.mania").formatted(isGreen ? Formatting.GREEN : Formatting.RED));
                 TitleContainer.addTitleAndPlaySound(title);
             }

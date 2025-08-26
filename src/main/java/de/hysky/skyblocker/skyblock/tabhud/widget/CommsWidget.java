@@ -14,7 +14,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,10 +36,7 @@ public class CommsWidget extends TabHudWidget {
 	// match a comm
 	// group 1: comm name
 	// group 2: comm progress (without "%" for comms that show a percentage)
-	private static final Pattern COMM_PATTERN = Pattern.compile("(?<name>.*): (?<progress>.*)%?");
-
-	private final List<Commission> commissions = new ArrayList<>(4);
-	private boolean oldDone = false;
+	public static final Pattern COMM_PATTERN = Pattern.compile("(?<name>.*): (?<progress>.*)%?");
 
 	// options
 	private boolean progressBar = true;
@@ -55,10 +51,6 @@ public class CommsWidget extends TabHudWidget {
 			this.addComponent(new IcoTextComponent());
 			return;
 		}
-		List<String> oldCommissionNames = commissions.stream().map(Commission::name).toList();
-		List<String> newCommissionsNames = new ArrayList<>(commissions.size());
-		commissions.clear();
-		boolean commissionDone = false;
 		for (Text line : lines) {
 			Matcher m = COMM_PATTERN.matcher(line.getString());
 			if (m.matches()) {
@@ -66,12 +58,9 @@ public class CommsWidget extends TabHudWidget {
 
 				String name = m.group("name");
 				String progress = m.group("progress");
-				commissions.add(new Commission(name, progress));
-				newCommissionsNames.add(name);
 
 				if (progress.equals("DONE")) {
 					component = getComponent(name, progress, 100f);
-					commissionDone = true;
 				} else {
 					float percent;
 					try {
@@ -85,10 +74,6 @@ public class CommsWidget extends TabHudWidget {
 				this.addComponent(component);
 			}
 		}
-		if (!oldCommissionNames.equals(newCommissionsNames) || oldDone != commissionDone) {
-			CommissionLabels.update(newCommissionsNames, commissionDone);
-		}
-		oldDone = commissionDone;
 	}
 
 	private Component getComponent(String name, @Nullable String barText, float percent) {
@@ -108,7 +93,4 @@ public class CommsWidget extends TabHudWidget {
 		// TODO translatable
 		options.add(new BooleanOption("progress_bar", Text.literal("Progress Bar"), () -> progressBar, b -> progressBar = b, true));
 	}
-
-	record Commission(String name, String progress) {}
-
 }

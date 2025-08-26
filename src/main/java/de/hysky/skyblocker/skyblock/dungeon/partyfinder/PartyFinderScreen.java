@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
 import com.google.gson.JsonObject;
 import com.mojang.authlib.properties.PropertyMap;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.debug.Debug;
@@ -22,11 +21,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -94,10 +93,9 @@ public class PartyFinderScreen extends Screen {
 
     private boolean dirty = false;
     private long dirtiedTime;
-    public boolean justOpenedSign = false;
 
     public void markDirty() {
-        if (justOpenedSign) return;
+        if (sign != null) return;
         dirtiedTime = System.currentTimeMillis();
         dirty = true;
     }
@@ -242,32 +240,37 @@ public class PartyFinderScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		if (!settingsContainer.canInteract(null)) {
+			context.fill(0, 0, width, height, 0x40000000);
+		}
         super.render(context, mouseX, mouseY, delta);
+
         if (searchField.visible) {
             context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
         }
         if (DEBUG) {
-            context.drawText(textRenderer, "Truly a party finder", 20, 20, 0xFFFFFFFF, true);
-            context.drawText(textRenderer, currentPage.toString(), 0, 0, 0xFFFFFFFF, true);
-            context.drawText(textRenderer, String.valueOf(refreshSlotId), width - 25, 30, 0xFFFFFFFF, true);
-            context.drawText(textRenderer, String.valueOf(prevPageSlotId), width - 25, 40, 0xFFFFFFFF, true);
-            context.drawText(textRenderer, String.valueOf(nextPageSlotId), width - 25, 50, 0xFFFFFFFF, true);
-            for (int i = 0; i < handler.slots.size(); i++) {
-                context.drawItem(handler.slots.get(i).getStack(), (i % 9) * 16, (i / 9) * 16);
-            }
+			context.drawText(textRenderer, currentPage.toString(), 0, 0, Colors.WHITE, true);
+			context.drawText(textRenderer, "Truly a party finder", 20, 20, Colors.WHITE, true);
+			if (sign != null) {
+				context.drawText(textRenderer, "You are in a sign btw", 20, 30, Colors.WHITE, true);
+			} else {
+				context.drawText(textRenderer, String.valueOf(refreshSlotId), width - 25, 30, Colors.WHITE, true);
+				context.drawText(textRenderer, String.valueOf(prevPageSlotId), width - 25, 40, Colors.WHITE, true);
+				context.drawText(textRenderer, String.valueOf(nextPageSlotId), width - 25, 50, Colors.WHITE, true);
+				for (int i = 0; i < handler.slots.size(); i++) {
+					context.drawItem(handler.slots.get(i).getStack(), (i % 9) * 16, (i / 9) * 16);
+				}
+			}
         }
         if (isWaitingForServer()) {
             String s = "Waiting for server...";
-            context.drawText(textRenderer, s, this.width - textRenderer.getWidth(s) - 5, this.height - textRenderer.fontHeight - 2, 0xFFFFFFFF, true);
-        }
-        if (!settingsContainer.canInteract(null)) {
-            context.fill(0, 0, width, height, 0x40000000);
+            context.drawText(textRenderer, s, this.width - textRenderer.getWidth(s) - 5, this.height - textRenderer.fontHeight - 2, Colors.WHITE, true);
         }
     }
 
     @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.renderBackground(context, mouseX, mouseY, delta);
+		this.renderInGameBackground(context);
         int i = partyEntryListWidget.getRowWidth() + 16 + 6;
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
     }
@@ -327,6 +330,7 @@ public class PartyFinderScreen extends Screen {
     public void updateHandler(GenericContainerScreenHandler handler, Text name) {
         this.handler = handler;
         this.name = name;
+		closedSign();
         markDirty();
     }
 
@@ -345,10 +349,13 @@ public class PartyFinderScreen extends Screen {
         setCurrentPage(Page.SIGN);
         signFront = front;
         this.sign = sign;
-        justOpenedSign = true;
         waitingForServer = false;
         if (!settingsContainer.handleSign(sign, front)) abort();
     }
+
+	public void closedSign() {
+		this.sign = null;
+	}
 
     public void update() {
         dirty = false;
@@ -445,7 +452,7 @@ public class PartyFinderScreen extends Screen {
         if (this.client.player == null || aborted || currentPage == Page.SIGN) {
             return;
         }
-        ((ScreenHandler) this.handler).onClosed(this.client.player);
+        this.handler.onClosed(this.client.player);
     }
 
     @Override
@@ -459,7 +466,15 @@ public class PartyFinderScreen extends Screen {
         }
     }
 
-    public void clickAndWaitForServer(int slotID) {
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (settingsContainer != null && settingsContainer.hasOpenOption()) {
+			return settingsContainer.mouseClicked(mouseX, mouseY, button);
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	public void clickAndWaitForServer(int slotID) {
         //System.out.println("hey");
         assert client != null;
         assert client.interactionManager != null;

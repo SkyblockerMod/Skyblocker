@@ -35,6 +35,7 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -233,7 +234,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 
 		context.drawTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
 
-		context.drawText(textRenderer, getMessage(), 8, 6, 4210752, false);
+		context.drawText(textRenderer, getMessage(), 8, 6, Colors.DARK_GRAY, false);
 
 		hoveredSlot = -1;
 		long timeMillis = System.currentTimeMillis();
@@ -259,7 +260,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 
 			boolean infested = infectedPlots.contains(i);
 			if (infested && (timeMillis & 512) != 0) {
-				context.drawBorder(slotX + 1, slotY + 1, 16, 16, 0xFF_FF0000);
+				context.drawBorder(slotX + 1, slotY + 1, 16, 16, Colors.RED);
 			}
 
 			// tooltip
@@ -282,7 +283,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 										Text.empty(),
 										TP_TEXT
 								);
-				context.drawTooltip(textRenderer, tooltip, mouseX - getX(), mouseY - getY());
+				context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
 			}
 		}
 

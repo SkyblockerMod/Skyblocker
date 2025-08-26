@@ -108,6 +108,14 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
                         .controller(ConfigUtils.createBooleanController())
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.museumOverlay"))
+						.description(Text.translatable("skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip"))
+						.binding(defaults.uiAndVisuals.museumOverlay,
+								() -> config.uiAndVisuals.museumOverlay,
+								newValue -> config.uiAndVisuals.museumOverlay = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation"))
                         .description(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip"))
@@ -394,6 +402,13 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.teleportOverlay.enableTeleportOverlays = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.showWhenInAir"))
+								.binding(defaults.uiAndVisuals.teleportOverlay.showWhenInAir,
+										() -> config.uiAndVisuals.teleportOverlay.showWhenInAir,
+										newValue -> config.uiAndVisuals.teleportOverlay.showWhenInAir = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(Option.<Color>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor"))
                                 .binding(defaults.uiAndVisuals.teleportOverlay.teleportOverlayColor,

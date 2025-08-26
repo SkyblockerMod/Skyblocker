@@ -24,6 +24,13 @@ public class OtherLocationsCategory {
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.otherLocations.barn"))
                         .collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.otherLocations.barn.enableGlowingMushroomHelper"))
+								.binding(defaults.otherLocations.barn.enableGlowingMushroomHelper,
+										() -> config.otherLocations.barn.enableGlowingMushroomHelper,
+										newValue -> config.otherLocations.barn.enableGlowingMushroomHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.otherLocations.barn.solveHungryHiker"))
                                 .binding(defaults.otherLocations.barn.solveHungryHiker,
@@ -146,7 +153,7 @@ public class OtherLocationsCategory {
 										newValue -> config.otherLocations.end.muteEndermanSounds = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-                        .build())
+						.build())
 
                 //Spider's Den
                 .group(OptionGroup.createBuilder()
@@ -168,6 +175,6 @@ public class OtherLocationsCategory {
                                 .build())
                         .build())
 
-                .build();
-    }
+				.build();
+	}
 }

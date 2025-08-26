@@ -297,6 +297,23 @@ public class DungeonManager {
 						}
 						return Command.SINGLE_SUCCESS;
 					}))
+					.then(literal("getCheckmarkColour").executes(context -> {
+						MapState state = getMapState(context.getSource().getClient());
+
+						if (currentRoom != null && state != null) {
+							int checkmarkColour = getRoomCheckmarkColour(context.getSource().getClient(), state, currentRoom);
+							String result = switch ((Integer) checkmarkColour) {
+								case Integer i when i == DungeonMapUtils.WHITE_COLOR -> "White";
+								case Integer i when i == DungeonMapUtils.GREEN_COLOR -> "Green";
+								default -> "Unknown";
+							};
+
+							context.getSource().sendFeedback(Constants.PREFIX.get().append("§rCheckmark colour: " + result));
+						} else {
+							context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room or map state is null."));
+						}
+						return Command.SINGLE_SUCCESS;
+					}))
 			))));
 		}
 		ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
@@ -594,7 +611,7 @@ public class DungeonManager {
 	 *     <li> Calls {@link Tickable#tick(MinecraftClient)} on {@link #currentRoom}. </li>
 	 * </ul>
 	 */
-	@SuppressWarnings("JavadocReference")
+	@SuppressWarnings({ "JavadocReference", "incomplete-switch" })
 	private static void update() {
 		if (!Utils.isInDungeons() || isInBoss()) {
 			return;
@@ -617,7 +634,7 @@ public class DungeonManager {
 			DungeonEvents.DUNGEON_LOADED.invoker().onDungeonLoaded();
 		}
 
-		MapState map = FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().getMainStacks().get(8)), client.world);
+		MapState map = getMapState(client);
 		if (map == null) {
 			return;
 		}
@@ -646,9 +663,18 @@ public class DungeonManager {
 				case ROOM -> room = newRoom(type, DungeonMapUtils.getPhysicalPosFromMap(mapEntrancePos, mapRoomSize, physicalEntrancePos, DungeonMapUtils.getRoomSegments(map, mapPos, mapRoomSize, type.color)));
 			}
 		}
+
 		if (room != null && currentRoom != room) {
 			currentRoom = room;
 		}
+
+		//Calculate the checkmark colour and mark all secrets as found if the checkmark is green
+		//We also wait for it being matched to ensure that we don't try to mark the room as completed if secret waypoints haven't yet loaded (since the room is still matching)
+		if (currentRoom.getType() != Room.Type.ENTRANCE && currentRoom.isMatched() && !currentRoom.greenChecked && getRoomCheckmarkColour(client, map, currentRoom) == DungeonMapUtils.GREEN_COLOR) {
+			currentRoom.markAllSecrets(true);
+			currentRoom.greenChecked = true;
+		}
+
 		currentRoom.tick(client);
 	}
 
@@ -811,6 +837,14 @@ public class DungeonManager {
 	}
 
 	/**
+	 * Get the state of the map in the user's 9th slot.
+	 */
+	@Nullable
+	private static MapState getMapState(MinecraftClient client) {
+		return FilledMapItem.getMapState(DungeonMap.getMapIdComponent(client.player.getInventory().getMainStacks().get(8)), client.world);
+	}
+
+	/**
 	 * @return {@code true} if the player is in the main clearing phase of a dungeon.
 	 */
 	public static boolean isClearingDungeon() {
@@ -900,5 +934,30 @@ public class DungeonManager {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Returns the colour of a room's checkmark on the map. To find a room's checkmark: For each segment, we start from the top left corner of the segment,
+	 * go to the middle, then iterate downwards and we should find the checkmark about a pixel or two down from there if the segment has the checkmark.
+	 */
+	private static int getRoomCheckmarkColour(MinecraftClient client, MapState mapState, Room room) {
+		int halfRoomSize = mapRoomSize / 2;
+
+		//Check each segment of the room for the checkmark as each "block" of a room on the map is a separate segment and we don't know which one has the checkmark
+		//or more specifically which one is first the western most and second the northern most (in the case of 2x2s).
+		for (Vector2ic segmentPhysicalPos : room.segments) {
+			Vector2ic topLeftCorner = DungeonMapUtils.getMapPosFromPhysical(physicalEntrancePos, mapEntrancePos, mapRoomSize, segmentPhysicalPos);
+			Vector2ic middle = topLeftCorner.add(halfRoomSize, halfRoomSize, new Vector2i());
+
+			//In this case, the offset is the number of units offset from the Y value of the middle of the segment
+			for (int offset = 0; offset < halfRoomSize; offset++) {
+				int colour = DungeonMapUtils.getColor(mapState, new Vector2i(middle.x(), middle.y() + offset));
+
+				//Return if we found the colour of the checkmark
+				if (colour == DungeonMapUtils.WHITE_COLOR || colour == DungeonMapUtils.GREEN_COLOR) return colour;
+			}
+		}
+
+		return -1;
 	}
 }
