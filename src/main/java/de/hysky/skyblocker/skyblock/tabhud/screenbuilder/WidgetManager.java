@@ -167,7 +167,7 @@ public class WidgetManager {
 					for (WidgetOption<?> option : options) {
 						object.add(option.getId(), option.toJson());
 					}
-					return Pair.of(widget.getInformation().id(), object);
+					return Pair.of(widget.getId(), object);
 				}
 		).collect(Collectors.toMap(Pair::first, Pair::second));
 		// is it sign of bad code if intellij thinks I don't need to specify the generics when I actually do?
@@ -206,9 +206,9 @@ public class WidgetManager {
 	 * Do not change the signature unless you know what you're doing.
 	 */
 	public static void addWidgetInstance(HudWidget widget) {
-		HudWidget previous = WIDGET_INSTANCES.put(widget.getInformation().id(), widget);
+		HudWidget previous = WIDGET_INSTANCES.put(widget.getId(), widget);
 		if (previous != null && !(previous instanceof PlaceholderWidget)) LOGGER.warn("[Skyblocker] Duplicate hud widget found: {}", widget);
-		JsonObject object = config.widgetOptions().get(widget.getInformation().id());
+		JsonObject object = config.widgetOptions().get(widget.getId());
 		if (object != null) {
 			setWidgetOptions(widget, object);
 		}

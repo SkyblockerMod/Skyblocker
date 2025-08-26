@@ -25,11 +25,23 @@ public abstract class HudWidget extends AbstractWidget {
 	}
 
 	private PositionRule positionRule;
+
+	/**
+	 * Renders the widget (duh)
+	 * @apiNote The matrix stack is already translated. So the top left corner of the widget is (0,0)
+	 */
 	protected abstract void renderWidget(DrawContext context, float delta);
 
+	/**
+	 * @see HudWidget#renderWidget(DrawContext, float)
+	 */
 	protected abstract void renderWidgetConfig(DrawContext context, float delta);
 
 	public abstract @NotNull Information getInformation();
+
+	public String getId() {
+		return getInformation().id();
+	}
 
 	public boolean shouldRender() {
 		return true;

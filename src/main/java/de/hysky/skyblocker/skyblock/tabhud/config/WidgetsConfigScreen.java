@@ -183,7 +183,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 				int distanceToCursor = Integer.MAX_VALUE;
 				for (HudWidget widget : builder.getWidgets()) {
 					if (widget == selectedWidget) continue;
-					if (widget.getPositionRule().parent().equals(selectedWidget.getInformation().id())) continue;
+					if (widget.getPositionRule().parent().equals(selectedWidget.getId())) continue;
 					ScreenRect otherRect = widget.getNavigationFocus();
 					for (NavigationDirection direction : directions) {
 						ScreenRect otherSnapBox = getBorder(otherRect, direction);
@@ -218,7 +218,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 								thisPoint = new PositionRule.Point(PositionRule.VerticalPoint.TOP, point.horizontalPoint());
 							}
 						}
-						newParent = widget.getInformation().id();
+						newParent = widget.getId();
 						distanceToCursor = dist;
 					}
 				}

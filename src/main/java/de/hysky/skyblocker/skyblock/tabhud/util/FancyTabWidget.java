@@ -38,7 +38,8 @@ import java.util.function.Consumer;
 
 @RegisterWidget
 public class FancyTabWidget extends HudWidget {
-	private static final Information INFORMATION = new Information("fancy_tab", Text.literal("Fancy Tab"));
+	public static final String ID = "fancy_tab";
+	private static final Information INFORMATION = new Information(ID, Text.literal("Fancy Tab"));
 
 	private final List<HudWidget> widgets = new ObjectArrayList<>();
 	private Positioner positioner = Positioner.CENTERED;
@@ -63,7 +64,7 @@ public class FancyTabWidget extends HudWidget {
 		widgets.clear();
 		for (String s : PlayerListManager.WIDGET_MAP.keySet()) {
 			HudWidget hudWidget = PlayerListManager.HANDLED_TAB_WIDGETS.get(s);
-			if (ArrayUtils.contains(hiddenWidgets, hudWidget.getInformation().id())) continue;
+			if (ArrayUtils.contains(hiddenWidgets, hudWidget.getId())) continue;
 			widgets.add(hudWidget);
 		}
 	}
@@ -210,9 +211,9 @@ public class FancyTabWidget extends HudWidget {
 			int tempRowWidth = 0;
 			for (String s : PlayerListManager.WIDGET_MAP.keySet()) {
 				HudWidget widget = PlayerListManager.HANDLED_TAB_WIDGETS.get(s);
-				WidgetEntry entry = new WidgetEntry(widget.getInformation().displayName(), getWidth() - 15, hidden.contains(widget.getInformation().id()), (checkbox, checked) -> {
-					if (checked) hide.accept(widget.getInformation().id());
-					else unhide.accept(widget.getInformation().id());
+				WidgetEntry entry = new WidgetEntry(widget.getInformation().displayName(), getWidth() - 15, hidden.contains(widget.getId()), (checkbox, checked) -> {
+					if (checked) hide.accept(widget.getId());
+					else unhide.accept(widget.getId());
 				});
 				addEntry(entry);
 				tempRowWidth = Math.max(entry.checkbox.getWidth(), tempRowWidth);

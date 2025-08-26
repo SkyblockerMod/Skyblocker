@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
+import de.hysky.skyblocker.skyblock.tabhud.util.FancyTabWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -31,6 +33,7 @@ public class ScreenBuilder {
 	private int positionsHash = 0;
 
 	private final Set<HudWidget> widgets = new HashSet<>();
+	public boolean hasFancyTabWidget = false;
 
 
 	public ScreenBuilder(@NotNull JsonObject config, @Nullable ScreenBuilder parent) {
@@ -79,7 +82,7 @@ public class ScreenBuilder {
 	 */
 	public void updateConfig() {
 		JsonObject newConfig = new JsonObject();
-		Set<String> widgetIds = widgets.stream().map(w -> w.getInformation().id()).collect(Collectors.toCollection(ObjectOpenHashSet::new));
+		Set<String> widgetIds = widgets.stream().map(HudWidget::getId).collect(Collectors.toCollection(ObjectOpenHashSet::new));
 		for (HudWidget widget : widgets) {
 			if (widget.isInherited()) continue; // don't want to save inherited stuff
 			JsonObject widgetConfig = new JsonObject();
@@ -88,7 +91,7 @@ public class ScreenBuilder {
 			for (WidgetOption<?> option : options) {
 				widgetConfig.add(option.getId(), option.toJson());
 			}
-			newConfig.add(widget.getInformation().id(), widgetConfig);
+			newConfig.add(widget.getId(), widgetConfig);
 		}
 		if (parent != null) {
 			for (String s : parent.getFullConfig(false).keySet()) {
@@ -106,6 +109,7 @@ public class ScreenBuilder {
 	public void updateWidgetsList() {
 		Profilers.get().push("skyblocker:updateWidgetsList");
 		widgets.clear();
+		hasFancyTabWidget = false;
 		for (Map.Entry<String, JsonElement> entry : getFullConfig(true).entrySet()) {
 			if (!entry.getValue().isJsonObject()) {
 				if (entry.getValue().isJsonPrimitive() && !entry.getValue().getAsJsonPrimitive().getAsBoolean()) continue;
@@ -129,6 +133,7 @@ public class ScreenBuilder {
 				}
 			}
 			widgets.add(widget);
+			if (widget.getId().equals(FancyTabWidget.ID)) hasFancyTabWidget = true;
 		}
 		for (HudWidget widget : widgets) {
 			if (widget instanceof ComponentBasedWidget componentBasedWidget && !componentBasedWidget.shouldUpdateBeforeRendering()) componentBasedWidget.update();

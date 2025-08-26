@@ -109,7 +109,7 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 			int otherAnchorY = selectedWidget == null ? 0 : selectedWidget.getY();
 
 			PositionRule newRule = new PositionRule(
-					selectedWidget == null ? "screen" : selectedWidget.getInformation().id(),
+					selectedWidget == null ? "screen" : selectedWidget.getId(),
 					PositionRule.Point.DEFAULT,
 					oldRule.thisPoint(),
 					thisAnchorX - otherAnchorX,
