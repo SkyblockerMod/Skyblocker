@@ -3,7 +3,7 @@
     "key.hotbarSlotLock": "Bloquear Slot (Barra de objetos)",
     "skyblocker.config.title": "Ajustes de Skyblocker",
     "skyblocker.config.general": "General",
-    "skyblocker.config.uiAndVisuals.bars": "Salud, Mana, Defensa, Velocidad & Barra de XP",
+    "skyblocker.config.uiAndVisuals.bars": "Barras de Salud, Mana, Defensa, Velocidad & XP",
     "skyblocker.config.uiAndVisuals.bars.enableBars": "Habilitar Barras",
     "skyblocker.config.uiAndVisuals.backpackPreviewWithoutShift": "Ver la previsualización de la mochila sin sostener Shift",
     "skyblocker.config.general.itemTooltip.enableNPCPrice": "Habilitar Precios de NPC",
@@ -201,5 +201,13 @@
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound.@Tooltip": "Hace un sonido cuando llega a %s de puntuación en mazmorras",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage.@Tooltip": "Enviar un mensaje por chat si hay menos de 5 criptas cuando se alcance la meta de puntuación.",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Por defecto 270 tiene como objetivo runs con S+ cuando entras con más de 300 puntos (Usualmente en F5-F7 y M5-M7).\nSi vas por runs con S (entrando con 270 puntos) deberías considerar bajarlo a 250 o menos, sino, esto será inútil.",
-    "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Usa el color personalizado en lugar del color de Livid para el brillo y el contorno."
+    "skyblocker.config.dungeons.livid.enableSolidColor.@Tooltip": "Usa el color personalizado en lugar del color de Livid para el brillo y el contorno.",
+    "skyblocker.partyFinder.error.message": "Un error ocurrido y por eso has sido enviado al party finder de vanila",
+    "skyblocker.crimson.kuudra.lowArrowPoison": "Quedan baja cantidad de flechas venenosas!",
+    "skyblocker.crimson.kuudra.noArrowPoison": "No hay flechas venenosas!",
+    "skyblocker.partyFinder.yourParty": "Tu party",
+    "skyblocker.partyFinder.join": "Click para unirse",
+    "skyblocker.partyFinder.noParties": "No se encontró ninguna party, que triste :(",
+    "skyblocker.partyFinder.error.name": "Error en el buscador de partys!",
+    "skyblocker.partyFinder.loadingError": "Si ves esto por más de 5 segundos lo más probable es que algo haya ocurrido mal..."
 }
