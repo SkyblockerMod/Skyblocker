@@ -193,7 +193,7 @@
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreMessage": "Activar Mensaje de %s puntos en Dungeons",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreTitle": "Activar Title de %s puntos en Dungeons",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreTitle.@Tooltip": "Muestra un title cuando se alcanzan %s puntos en dungeons.",
-    "skyblocker.config.dungeons.dungeonScore.enableScoreHUD": "Activar Interfaz de puntuación",
+    "skyblocker.config.dungeons.dungeonScore.enableScoreHUD": "Activar HUD de puntuación",
     "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Escala de puntuación",
     "skyblocker.config.dungeons.livid.enableLividColorTitle": "Activa el Title de color de Livid",
     "skyblocker.config.dungeons.fancyPartyFinder": "Interfaz de Buscador de Party",
