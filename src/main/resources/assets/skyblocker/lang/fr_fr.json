@@ -809,5 +809,7 @@
     "skyblocker.config.foraging.galatea.enableSweepDetailsWidget.@Tooltip": "Affiche la force du Sweep sur l’HUD\nLes détails du sweep ne s’affichent plus dans le chat mais restent dans les logs.\n\nNécessite l'activation des détails du sweep chez Swoop !",
     "skyblocker.config.foraging.galatea.enableTreeBreakProgress": "Activer progression abattage d'arbre sur l'interface",
     "skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip": "Affiche la progression d'abattage sur l'interface du joueur",
-    "skyblocker.config.foraging.galatea.enableTreeBreakHud": "HUD de progression de l'abattage d'arbre"
+    "skyblocker.config.foraging.galatea.enableTreeBreakHud": "HUD de progression de l'abattage d'arbre",
+    "skyblocker.config.general.searchOverlay.maxPet": "Niveau Max Compagnon/Pet",
+    "skyblocker.config.general.shortcuts.enableKeyBindingShortcuts": "Activer raccourcis changement de touches"
 }
