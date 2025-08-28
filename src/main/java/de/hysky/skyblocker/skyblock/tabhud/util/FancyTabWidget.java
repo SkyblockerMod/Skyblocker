@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
 import com.google.gson.JsonElement;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.annotations.RegisterWidget;
@@ -28,6 +29,7 @@ import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
+import org.slf4j.Logger;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,6 +40,8 @@ import java.util.function.Consumer;
 
 @RegisterWidget
 public class FancyTabWidget extends HudWidget {
+	private static final Logger LOGGER = LogUtils.getLogger();
+
 	public static final String ID = "fancy_tab";
 	private static final Information INFORMATION = new Information(ID, Text.literal("Fancy Tab"));
 
@@ -64,6 +68,11 @@ public class FancyTabWidget extends HudWidget {
 		widgets.clear();
 		for (String s : PlayerListManager.WIDGET_MAP.keySet()) {
 			HudWidget hudWidget = PlayerListManager.HANDLED_TAB_WIDGETS.get(s);
+			// this really should not happen but it somehow did and I don't know why.
+			if (hudWidget == null) {
+				LOGGER.warn("Couldn't find HudWidget for {}", s);
+				continue;
+			}
 			if (ArrayUtils.contains(hiddenWidgets, hudWidget.getId())) continue;
 			widgets.add(hudWidget);
 		}

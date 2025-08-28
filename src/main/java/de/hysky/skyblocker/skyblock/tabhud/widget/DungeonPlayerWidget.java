@@ -26,7 +26,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 	// title needs to be changeable here
 	public DungeonPlayerWidget(int player) {
-		super("Dungeon Player " + player, TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
+		super("Dungeon Player " + player, TITLE, Formatting.DARK_PURPLE.getColorValue(), new Information("dungeon_player_" + player, TITLE.copyContentOnly().append(" " + player), l -> l == Location.DUNGEON));
 		this.player = player;
 	}
 

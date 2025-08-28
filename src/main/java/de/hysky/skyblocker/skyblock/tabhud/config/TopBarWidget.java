@@ -51,7 +51,7 @@ class TopBarWidget extends ContainerWidget {
 		ToggleButtonWidget snappingToggle = new ToggleButtonWidget(80, HEIGHT, Text.literal("Snapping"), b -> parent.snapping = b);
 		snappingToggle.setState(true);
 		snappingToggle.setTooltip(Tooltip.of(Text.literal("Automatically snap widgets to other widgets")));
-		ToggleButtonWidget autoAnchorToggle = new ToggleButtonWidget(80, HEIGHT, Text.literal("Auto Screen Anchor"), b -> parent.autoAnchor = b);
+		ToggleButtonWidget autoAnchorToggle = new ToggleButtonWidget(100, HEIGHT, Text.literal("Auto Screen Anchor"), b -> parent.autoAnchor = b);
 		autoAnchorToggle.setState(true);
 		autoAnchorToggle.setTooltip(Tooltip.of(Text.literal("Automatically change the anchor of the widget based on the position")));
 

@@ -45,7 +45,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 	private final Object2ObjectOpenHashMap<String, ChangeData> removedSackCount = new Object2ObjectOpenHashMap<>();
 
 	public ItemPickupWidget() {
-		super(Text.literal("Items"), Formatting.AQUA.getColorValue(), "Item Pickup");
+		super(Text.literal("Items"), Formatting.AQUA.getColorValue(), "item_pickup");
 		instance = this;
 
 		ClientReceiveMessageEvents.ALLOW_GAME.register(instance::onChatMessage);

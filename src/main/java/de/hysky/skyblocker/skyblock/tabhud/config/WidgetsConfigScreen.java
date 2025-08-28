@@ -126,7 +126,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	@Override
 	public void renderBackground(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 		super.renderBackground(context, mouseX, mouseY, deltaTicks);
-		Text text = Text.literal("Right click to edit and add widgets."); // TODO translatable
+		Text text = Text.literal("Right click to add and edit widgets."); // TODO translatable
 		int textWidth = textRenderer.getWidth(text);
 		context.drawText(textRenderer, text, (width - textWidth) / 2, (height - textRenderer.fontHeight) / 2, ColorHelper.getWhite(0.8f), false);
 	}

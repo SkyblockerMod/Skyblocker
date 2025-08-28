@@ -145,7 +145,7 @@ public class ScreenBuilder {
 		int hash = Integer.hashCode(screenWidth);
 		hash = hash * 31 + Integer.hashCode(screenHeight);
 		for (HudWidget widget : widgets) {
-			boolean shouldRender = widget.shouldRender();
+			boolean shouldRender = widget.shouldRender() || renderConfig;
 			widget.setVisible(shouldRender);
 			hash = hash * 31 + Boolean.hashCode(shouldRender);
 			hash = hash * 31 + Integer.hashCode(widget.getScaledWidth());
@@ -157,7 +157,7 @@ public class ScreenBuilder {
 			updatePositions(widgets, screenWidth, screenHeight);
 		}
 		for (HudWidget widget : widgets) {
-			if (!widget.shouldRender()) continue;
+			if (!widget.shouldRender() && !renderConfig) continue;
 			if (renderConfig) widget.renderConfig(context);
 			else widget.render(context);
 		}
