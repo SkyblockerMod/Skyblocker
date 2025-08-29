@@ -45,14 +45,14 @@ public class Http {
 		if (token != null) requestBuilder.header("Authorization", "Bearer " + token);
 
 		HttpRequest request = requestBuilder.build();
-
 		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
-		InputStream decodedInputStream = getDecodedInputStream(response);
 
-		String body = new String(decodedInputStream.readAllBytes());
-		HttpHeaders headers = response.headers();
+		try (InputStream decodedInputStream = getDecodedInputStream(response)) {
+			String body = new String(decodedInputStream.readAllBytes());
+			HttpHeaders headers = response.headers();
 
-		return new ApiResponse(body, response.statusCode(), getCacheStatuses(headers), getAge(headers));
+			return new ApiResponse(body, response.statusCode(), getCacheStatuses(headers), getAge(headers));
+		}
 	}
 
 	public static InputStream downloadContent(String url) throws IOException, InterruptedException {
@@ -98,11 +98,10 @@ public class Http {
 				.build();
 
 		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
-		InputStream decodedInputStream = getDecodedInputStream(response);
 
-		String responseBody = new String(decodedInputStream.readAllBytes());
-
-		return responseBody;
+		try (InputStream decodedInputStream = getDecodedInputStream(response)) {
+			return new String(decodedInputStream.readAllBytes());
+		}
 	}
 
 	public static ApiResponse sendName2UuidRequest(String name) throws IOException, InterruptedException {
