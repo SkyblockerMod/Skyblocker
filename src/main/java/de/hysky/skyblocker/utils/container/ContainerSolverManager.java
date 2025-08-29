@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.RaffleTaskHighlight;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
 import de.hysky.skyblocker.skyblock.auction.CopyUnderbidPrice;
+import de.hysky.skyblocker.skyblock.bazaar.FixBazaarGraphs;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
 import de.hysky.skyblocker.skyblock.dungeon.SellableItemsHighlighter;
@@ -69,7 +70,8 @@ public class ContainerSolverManager {
 			new CopyUnderbidPrice(),
 			new HuntingBoxHelper(),
 			new SellableItemsHighlighter(),
-			StereoHarmonyHelper.INSTANCE
+			StereoHarmonyHelper.INSTANCE,
+			new FixBazaarGraphs()
 	};
 	private static ContainerSolver currentSolver = null;
 	private static List<ColorHighlight> highlights;
