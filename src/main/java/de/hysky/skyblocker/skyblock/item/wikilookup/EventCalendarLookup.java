@@ -30,6 +30,10 @@ public class EventCalendarLookup implements WikiLookup {
 			if (eventName.equals("Election Over!") || eventName.equals("Election Booth Opens")) {
 				eventName = "Mayors";
 			}
+			// Strip bonus events
+			else if (eventName.startsWith("Bonus")) {
+				eventName = eventName.substring(6);
+			}
 
 			String formattedEvent = REPLACING_FUNCTION.apply(eventName);
 			WikiLookupManager.openWikiLinkName(formattedEvent, player, useOfficial);
