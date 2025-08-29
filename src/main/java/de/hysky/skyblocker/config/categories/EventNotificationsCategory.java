@@ -5,7 +5,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
-import it.unimi.dsi.fastutil.ints.IntImmutableList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.azureaaron.dandelion.systems.*;
 import net.azureaaron.dandelion.systems.OptionListener.UpdateType;
@@ -65,7 +65,7 @@ public class EventNotificationsCategory {
         for (Map.Entry<String, IntList> entry : eventsReminderTimes.entrySet()) {
             groups.add(ListOption.<Integer>createBuilder()
                     .name(Text.literal(entry.getKey()))
-                    .binding(EventNotifications.DEFAULT_REMINDERS, entry::getValue, integers -> entry.setValue(new IntImmutableList(integers)))
+                    .binding(EventNotifications.DEFAULT_REMINDERS, entry::getValue, integers -> entry.setValue(new IntArrayList(integers)))
                     .controller(IntegerController.createBuilder().min(0).build()) // TODO: Bring back DurationController
                             .description(Text.translatable("skyblocker.config.eventNotifications.@Tooltip[0]"),
                                     Text.empty(),
