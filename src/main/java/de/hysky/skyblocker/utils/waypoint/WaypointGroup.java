@@ -22,8 +22,8 @@ public class WaypointGroup {
             Codec.STRING.fieldOf("name").forGetter(WaypointGroup::name),
             Codec.STRING.fieldOf("island").xmap(Location::from, Location::id).forGetter(WaypointGroup::island),
             NamedWaypoint.CODEC.listOf().fieldOf("waypoints").forGetter(WaypointGroup::waypoints),
-            Codec.BOOL.lenientOptionalFieldOf("ordered", false).forGetter(WaypointGroup::ordered),
-            Codec.BOOL.lenientOptionalFieldOf("throughWalls", true).forGetter(WaypointGroup::throughWalls)
+            Codec.BOOL.lenientOptionalFieldOf("ordered", false).forGetter(WaypointGroup::ordered)
+//            Codec.BOOL.lenientOptionalFieldOf("throughWalls", true).forGetter(WaypointGroup::throughWalls)
     ).apply(instance, WaypointGroup::new));
     public static final Codec<WaypointGroup> SKYTILS_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("name").forGetter(WaypointGroup::name),
