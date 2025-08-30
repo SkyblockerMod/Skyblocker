@@ -111,6 +111,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
         private final CheckboxWidget enabled;
         private final TextFieldWidget nameField;
         private final CheckboxWidget ordered;
+        private final CheckboxWidget throughWalls;
         private final ButtonWidget buttonNewWaypoint;
         private final ButtonWidget buttonDelete;
 		private final ButtonWidget collapseWaypoint;
@@ -130,6 +131,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             nameField.setText(group.name());
             nameField.setChangedListener(this::updateName);
             ordered = CheckboxWidget.builder(Text.literal("Ordered"), client.textRenderer).checked(group.ordered()).callback((checkbox, checked) -> updateOrdered(checked)).build();
+            throughWalls = CheckboxWidget.builder(Text.literal("Through Walls"), client.textRenderer).checked(group.throughWalls()).callback((checkbox, checked) -> updateThroughWalls(checked)).build();
             buttonNewWaypoint = ButtonWidget.builder(Text.translatable("skyblocker.waypoints.new"), buttonNewWaypoint -> {
 				WaypointEntry waypointEntry = new WaypointEntry(this);
                 int entryIndex;
@@ -161,7 +163,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 				if (collapsed) collapsedGroups.remove(group); else collapsedGroups.add(group);
 				updateEntries();
 			}).size(11, 11).build();
-            children = List.of(enabled, nameField, ordered, buttonNewWaypoint, buttonDelete, collapseWaypoint);
+            children = List.of(enabled, nameField, ordered, throughWalls, buttonNewWaypoint, buttonDelete, collapseWaypoint);
         }
 
         @Override
@@ -194,14 +196,23 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
             }
         }
 
+        private void updateThroughWalls(boolean tw) {
+            int index = waypoints.indexOf(group);
+            group = group.withThroughWalls(tw);
+            if (index >= 0) {
+                waypoints.set(index, group);
+            }
+        }
+
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			collapseWaypoint.setPosition(x, y + (entryHeight - collapseWaypoint.getHeight()) / 2);
 			enabled.setPosition(x + 16, y + 1);
             nameField.setPosition(enabled.getRight() + 5, y);
-            ordered.setPosition(x + entryWidth - 190, y + 1);
-            buttonNewWaypoint.setPosition(x + entryWidth - 115, y);
-            buttonDelete.setPosition(x + entryWidth - 38, y);
+            ordered.setPosition(x + entryWidth - 210, y + 1);
+            throughWalls.setPosition(x + entryWidth - 140, y + 1);
+            buttonNewWaypoint.setPosition(x + entryWidth - 40, y);
+            buttonDelete.setPosition(x + entryWidth + 40, y);
             for (ClickableWidget child : children) {
                 child.render(context, mouseX, mouseY, tickDelta);
             }
