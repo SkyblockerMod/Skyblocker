@@ -1,9 +1,8 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Formatters;
@@ -15,6 +14,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,19 +34,12 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.THE_PARK);
 
 	public SweepDetailsHudWidget() {
-		super(Text.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweepDetails");
+		super(Text.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweepDetails", LOCATIONS);
 		update();
 	}
 
 	@Override
 	public void updateContent() {
-		if (CLIENT.player == null || CLIENT.currentScreen instanceof WidgetsConfigurationScreen) {
-			addComponent(new IcoTextComponent(new ItemStack(Items.STRIPPED_SPRUCE_LOG), Text.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
-			addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)));
-			addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));
-			return;
-		}
-
 		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
 			SweepDetailsListener.active = false;
 			addComponent(new IcoTextComponent(new ItemStack(Items.STONE_AXE), Text.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
@@ -80,25 +73,12 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	public Set<Location> availableLocations() {
-		return LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!availableLocations().contains(location)) return;
-		SkyblockerConfigManager.get().foraging.galatea.enableSweepDetailsWidget = enabled;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		if (!availableLocations().contains(location)) return false;
-		return SkyblockerConfigManager.get().foraging.galatea.enableSweepDetailsWidget;
-	}
-
-	@Override
-	public Text getDisplayName() {
-		return Text.translatable("skyblocker.galatea.hud.sweepDetails");
+	protected List<Component> getConfigComponents() {
+		return List.of(
+				new IcoTextComponent(new ItemStack(Items.STRIPPED_SPRUCE_LOG), Text.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")),
+				new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)),
+				new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15))
+		);
 	}
 
 	@Override

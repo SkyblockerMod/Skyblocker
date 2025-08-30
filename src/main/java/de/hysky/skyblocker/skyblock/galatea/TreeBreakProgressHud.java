@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -33,7 +33,7 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
             ClientEntityEvents.ENTITY_UNLOAD.register((entity, clientWorld) -> armorstands.remove(entity.getId()));
     }
 	public TreeBreakProgressHud() {
-		super(Text.literal("Tree Break Progress").formatted(Formatting.GREEN, Formatting.BOLD), Formatting.GREEN.getColorValue(), "hud_treeprogress");
+		super(Text.literal("Tree Break Progress").formatted(Formatting.GREEN, Formatting.BOLD), Formatting.GREEN.getColorValue(), new Information("hud_treeprogress", Text.literal("Tree Break Progress HUD"), location -> location == Location.GALATEA));
 		instance = this;
 		update();
 	}
@@ -51,28 +51,6 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 
 	public static TreeBreakProgressHud getInstance() {
 		return instance;
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!availableLocations().contains(location))
-			return;
-		SkyblockerConfigManager.get().foraging.galatea.enableTreeBreakProgress = enabled;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return availableLocations().contains(location) && SkyblockerConfigManager.get().foraging.galatea.enableTreeBreakProgress;
-	}
-
-	@Override
-	public boolean shouldRender(Location location) {
-		return super.shouldRender(location) && isOwnTree(getClosestTree());
 	}
 
 	private ArmorStandEntity getClosestTree() {
@@ -113,11 +91,6 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 		ClientWorld world = CLIENT.world;
 		ArmorStandEntity closest;
 
-		if (CLIENT.currentScreen instanceof WidgetsConfigurationScreen) {
-			addSimpleIcoText(Ico.STRIPPED_SPRUCE_WOOD, "Fig Tree ", Formatting.GREEN, "37%");
-			return;
-		}
-
 		if (CLIENT.player == null || world == null)
 			return;
 		closest = getClosestTree();
@@ -130,8 +103,9 @@ public class TreeBreakProgressHud extends ComponentBasedWidget {
 	}
 
 	@Override
-	public Text getDisplayName() {
-		return Text.literal("Tree Break Progress HUD");
+	protected List<Component> getConfigComponents() {
+		Text txt = simpleEntryText("37%", "Fig Tree ", Formatting.GREEN);
+		return List.of(Components.iconTextComponent(Ico.STRIPPED_SPRUCE_WOOD, txt));
 	}
 
 }
