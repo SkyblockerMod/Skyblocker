@@ -442,6 +442,12 @@ public final class ItemUtils {
         return Optional.of(texture);
     }
 
+	public static @NotNull String toTextureBase64(String textureUUID) {
+		//noinspection HttpUrlsUsage
+		String str = "{textures:{SKIN:{url:\"http://textures.minecraft.net/texture/"+textureUUID+"\"}}}";
+		return Base64.getEncoder().encodeToString(str.getBytes());
+	}
+
 	public static @NotNull ItemStack createSkull(String textureBase64) {
 		GameProfile profile = new GameProfile(java.util.UUID.randomUUID(), "a");
 		profile.getProperties().put("textures", new Property("textures", textureBase64));
