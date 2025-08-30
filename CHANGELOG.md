@@ -1,3 +1,131 @@
+# Release 5.7.0
+
+## Highlight
+ - Updated to 1.21.6-1.21.8
+ - Add Dungeon Prince Features
+    - Prince Score Calculation & Message
+    - Prince Waypoints
+ - Add Leap Overlay Features
+    - Spirit Leap Keybinds
+    - Leap messages
+ - Dungeon Score Fixes & More Secret Waypoint Fixes
+ - Simplified Teleport Maze Solver
+ - Hide Wrong Items in Terminal Solvers
+ - Add Museum HUD
+    - Shows you what items you need to complete the museum.
+    - Has customizable filtering.
+ - Add Keybind Shortcuts
+    - Visit `/skyblocker shortcuts` to create some!
+ - Add back Event Notifications Config
+    - Requires YACL to add/remove entries, editing existing entries is universally available.
+ - Add Gyrokinetic Wand Overlay
+ - Add Dungeonbreaker Filters
+ - Add Tree Break Progress HUD
+ - Add Sweep Details HUD
+ - Add Config Backups
+ - Add Glowing Mushroom Highlighter
+ - Add ability to move Powder Mining Tracker Widget
+ - Add ability to move Visitor Helper
+ - Add Sellable Dungeon Items Highlighter
+ - Add REI collapsible entries
+ - Add fallback for missing recipe ingredients
+ - Add support for Gardening Hoes to Mouse Lock
+ - Remove customizability for Mimic Messages
+    - Allowing them to be customized makes detecting them impossible.
+ - Remove background blur for Fancy Party Finder
+ - Ice Fill Solver Optimizations (3x faster)
+ - Backpack Preview Optimizations
+ - Change Price Refresh keybind to command
+ - Improve Teleport Overlay & Smooth AOTE
+ - Improve consistency of solver rendering
+ - Improve Tuner Solver searchability
+ - Fix Attribute Shard detection for price tooltips
+ - Fix Fishing HUD not working
+ - Fix Hide Soulweaver Skulls not working
+ - Fix terminal click blocking not respecting mouse buttons for Change All to Same Colour
+ - Fix dungeon teammate detection issues
+ - Fix museum donation tooltip false positives
+ - Fix Skyblock Info Display interfering with recipe quantities in REI
+ - Fix enchantment books in REI
+ - Fix tooltip compatibility with Firmament's REI
+ - Fix Caxton compatibility with Fancy Bars text
+ - Fix Chat Rules tolerating invalid regexes
+ - Fix Garden Plots Widget bugs
+ - Fix crash when pets have missing data
+ - Fix crash with Mania Indicator
+ - Fix rare scheduler crash
+ - Fix outdated enchantment abbreviations
+ - Fix some Slot Text adders working on unintended items
+ - Fix missing option for Attribute Level Helper
+ - Fix mission option for Evolving Items Slot Text
+ - Fix translation string placeholders with Lunar Client
+ - Fix missing translation strings
+
+## What's Changed
+* Add missing strings for Item Pickup Widget by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1550
+* feat: Option for Evolving Items and New Year Cake Slot Text by @jani270 in https://github.com/SkyblockerMod/Skyblocker/pull/1546
+* Gyro wand radius overlay by @617excelle in https://github.com/SkyblockerMod/Skyblocker/pull/1317
+* Add Tree Break Progress HUD by @DaysSky in https://github.com/SkyblockerMod/Skyblocker/pull/1403
+* 1.21.6-1.21.8 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/1518
+* Fix Garden Plots Widget tooltips being offset (on 1.21.6+) by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1557
+* Fix Garden Plots Widget text not showing (on 1.21.6+) by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1558
+* fix tooltip adders not working on firmament's REI by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1551
+* Disable Chat Rule if Regex Pattern is invalid by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1561
+* Backup Configs by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1439
+* Allow moving Powder Mining Tracker Widget by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1560
+* Museum HUD by @7azeemm in https://github.com/SkyblockerMod/Skyblocker/pull/1170
+* draggable visitor helper by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1556
+* Fix Visitor Helper Clicks Being Offset by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1565
+* caxton compat for outlined text by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1554
+* fixes skyblocker settings button tooltip by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1569
+* Better Party Finder Settings Page Bug Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1533
+* fix AttributeLevelHelper not showing in config and make CommissionLabels work when CommsWidget is disabled by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/1549
+* Update Enchantment Abbreviations for SB 0.23.3 by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/1577
+* Fix Attribute Shards by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1574
+* fix fishing hud by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1576
+* Museum overlay changes by @7azeemm in https://github.com/SkyblockerMod/Skyblocker/pull/1571
+* Optimize ice fill solver from around 270 ms to around 90 ms by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1580
+* Fix Better Party Finder Locked Text on 1.21.6+ by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1578
+* Glowing Mushroom by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1279
+* Add `JsonData` and make `ProfiledData` extend it by @Emirlol in https://github.com/SkyblockerMod/Skyblocker/pull/1345
+* Hide item slots in solvers by @PeytonBrown in https://github.com/SkyblockerMod/Skyblocker/pull/1441
+* Improvements to Teleport overlay and smooth AOTE by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/1435
+* Use Line Feed by @ninjaguardian in https://github.com/SkyblockerMod/Skyblocker/pull/1485
+* Spirit Leap Message by @layou233 in https://github.com/SkyblockerMod/Skyblocker/pull/1583
+* Add Collapsible Entries in REI Item List by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1475
+* Add Sellable Dungeon Items Highlighter by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1579
+* Fix museum donation status false positives by @lunaynx in https://github.com/SkyblockerMod/Skyblocker/pull/1586
+* Fix REI Skyblock Info Display Changing Recipe Quantities by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1589
+* Fix Sellable Items Highlighter Slots by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1588
+* Fix Enchanted Books in REI Item List by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1585
+* Fix Dungeon Player Regex Not Matching When Level is Missing by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1593
+* Rename Enchanted Book Collapsible Categories to the Enchantment Name by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1592
+* Reload Recipes After the Item Repository Has Finished Loading by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1591
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/1545
+* Update spotless and clean up en_us.json by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1584
+* Add Item Price Lookup to Museum Overlay by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1595
+* Add Fallback for Missing Items in Recipes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1599
+* Support Basic and Advanced Gardening Hoes for Mouse Lock by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1601
+* Fix: Change `/skyblocker protectItem` to always send output without respecting the config option by @Bloxigus in https://github.com/SkyblockerMod/Skyblocker/pull/1603
+* Improve searchability of Tuner Solver by @lunaynx in https://github.com/SkyblockerMod/Skyblocker/pull/1606
+* Sweep Details Hud Widget by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1413
+* [Feat] Pest Highlight and Stereo Harmony Helper during Jacob's Contest by @SteveKunG in https://github.com/SkyblockerMod/Skyblocker/pull/1537
+* Keybind Shortcuts by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1604
+* [Alpha] Add Dungeonbreaker Simple Chat Filter by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1607
+* Fix Puzzles Regex Not Matching if Username is Missing by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1608
+* Only show Teleport Maze Pads through walls if Debug is Enabled by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1609
+* Remove background blur on Fancy Party Finder Screen by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1610
+* Replace %d with %s by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1611
+* Fix Update Notification Channel Names Not Showing Correctly by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1617
+* Add back event notifications config by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/1618
+
+## New Contributors
+* @617excelle made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1317
+* @layou233 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1583
+* @Bloxigus made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1603
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v.5.6.0...v5.7.0
+___
 # Release 5.6.0
 
 ## Highlight
