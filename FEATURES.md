@@ -26,6 +26,8 @@
         - *Coloured Items*
         - *Item Name*
         - *Same Color*
+        - Incorrect click blocking
+        - Hides wrong items
 - **Rare Drop Special Effects**
 - **Chest Profit Calculator**
 - **F3/M3 Fire Freeze Staff Timer**
@@ -36,13 +38,18 @@
 - **AOTV & Pearl Secret Waypoints**
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
+- **Salvage Helper**
+- **Sellable Dungeon Item Highlighter**
 - **Resourcepack recoloring textures in dungeons**
-- **score title and sound**
+- **Score title and sound**
+- **Mimic & Prince Messages**
 - **Prevent teammates glow during Livid**
 - **Block Incorrect Terminal Clicks**
 - **Hide Soulweaver Skulls**
 - **Dungeon Class-based player glow**
 - **Spirit Leap Overlay**
+    - Leap Keybinds
+    - Leap Message
 - **Blood Camp Helper**
 - **Dungeon Splits Widget**
 - **Door Key Highlighter**
@@ -59,6 +66,8 @@
 - **Sweep Overlay**
   - Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations. The sweep formula is currently unknown.
 - **Moonglade Beacon Tuner Helper**
+- **Tree Break Progress HUD**
+- **Sweep Details HUD**
 
 ### Kuudra Features:
 - **Kuudra waypoints:**
@@ -217,6 +226,8 @@
 - **Special Effects for rare dye drops**
 - **Entity health bars**
 - **Fishing HUD**
+- **Museum HUD**
+- **Gyrokinetic Wand Overlay**
 
 ### User Interface Enhancements:
 - **Equipment in inventory**
@@ -286,6 +297,7 @@
 - **Barn Solver:**
     - *Treasure Hunter*
     - *Hungry Hiker*
+    - *Glowing Mushroom Highlighter*
 
 ### Chat Features:
 - **Custom Chat Rules**
@@ -305,6 +317,7 @@
     - *Teleport Pad Messages*
     - *Sky Mall*
     - *Lottery*
+    - *Dungeonbreaker*
 
 ### Miscellaneous Helpers:
 - **Experiments Solvers**
@@ -321,7 +334,6 @@
 - **Wardrobe helper based on hotbar keybinds**
 - **Carnival Helpers**
 - **Bits Helper**
-- **Salvage Helper**
 - **Math teacher helper**
 - **Raffle task highlighter**
 - **Disable All Command**
@@ -331,6 +343,7 @@
   - Crafting
   - Forge
   - Skyblock Info
+  - Collapsible Entries
 - **Item Protection**
   - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
@@ -347,3 +360,7 @@
 - **Share position and set waypoint**
 - **Copy Underbid Price to Clipboard**
 - **Resource pack compatibility**
+- **Shortcuts**
+    - Command Shortcuts
+    - Keybind Shortcuts
+- **Config Backups**
