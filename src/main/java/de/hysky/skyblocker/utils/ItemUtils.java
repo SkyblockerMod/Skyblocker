@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -263,14 +264,18 @@ public final class ItemUtils {
      * @return the parsed {@link PetInfo} if successful, or {@link PetInfo#EMPTY}
      */
     @NotNull
-    public static PetInfo getPetInfo(ComponentHolder stack) {
+    public static PetInfo getPetInfo(ItemStack stack) {
     	if (!getItemId(stack).equals("PET")) return PetInfo.EMPTY;
 
-    	String petInfo = getCustomData(stack).getString("petInfo", "");
+		String petInfo = getCustomData(stack).getString("petInfo", "");
 
-    	if (!petInfo.isEmpty()) {
+		if (!petInfo.isEmpty()) {
     		try {
-        		return PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(petInfo))
+				JsonElement jsonElement = JsonParser.parseString(petInfo);
+
+				// Add item name into PetInfo to be used for wiki lookup
+				jsonElement.getAsJsonObject().addProperty("name", stack.getName().getString());
+        		return PetInfo.CODEC.parse(JsonOps.INSTANCE, jsonElement)
         				.setPartial(PetInfo.EMPTY)
         				.getPartialOrThrow();
     		} catch (Exception ignored) {}
