@@ -313,7 +313,7 @@ public class MuseumItemCache {
 					//If the request returns a non 200 status code
 					putEmpty(uuid, profileId);
 					if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncFailure")));
-					LOGGER.error(ERROR_LOG_TEMPLATE + " because a non 200 status code was encountered! Status Code: {}", profileId, response.statusCode());
+					LOGGER.error(ERROR_LOG_TEMPLATE + " because a non 200 status code was encountered! Response: {}", profileId, response);
 				}
 			} catch (Exception e) {
 				//If an exception was somehow thrown
