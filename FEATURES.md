@@ -291,7 +291,7 @@
 - **Sign calculator**
 - **CTRL/CMD + F to search inventory**
 - **legacy attribute background**
-- **Sack Message Prices**/
+- **Sack Message Prices**
 
 ### Barn Features:
 - **Barn Solver:**
