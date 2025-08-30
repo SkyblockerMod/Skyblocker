@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -19,7 +20,7 @@ public class DungeonDownedWidget extends TabHudWidget {
 			Formatting.BOLD);
 
 	public DungeonDownedWidget() {
-		super("Dungeon Downed", TITLE, Formatting.DARK_PURPLE.getColorValue());
+		super("Downed", TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
 	}
 
 	@Override
