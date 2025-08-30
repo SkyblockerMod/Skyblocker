@@ -26,6 +26,8 @@ public class SlayersConfig {
 
 	public boolean enableHud = true;
 
+	public SpiderSlayer spiderSlayer = new SpiderSlayer();
+
 	public EndermanSlayer endermanSlayer = new EndermanSlayer();
 
 	public VampireSlayer vampireSlayer = new VampireSlayer();
@@ -82,5 +84,11 @@ public class SlayersConfig {
 				return I18n.translate("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode." + name());
 			}
 		}
+	}
+
+	public static class SpiderSlayer {
+		public boolean batHighlight = true;
+		public boolean eggHighlight = true;
+		public boolean eggDisplay = true;
 	}
 }
