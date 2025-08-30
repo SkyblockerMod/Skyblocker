@@ -152,8 +152,6 @@
     "skyblocker.config.dungeons.map.mapScaling": "Térkép Méretaránya",
     "skyblocker.config.dungeons.map.mapScreen": "Dungeon Térkép & Pontszám Elhelyezésének Beállítása...",
     "skyblocker.config.dungeons.mimicMessage": "Mimic Üzenet",
-    "skyblocker.config.dungeons.mimicMessage.mimicMessage": "Mimic Üzenet",
-    "skyblocker.config.dungeons.mimicMessage.mimicMessage.@Tooltip": "Az üzenet, ami a chatre lesz külve, ha a mimic meg lett ölve. Ajánlott az alapértelmezetten hagyni.",
     "skyblocker.config.dungeons.mimicMessage.sendMimicMessage": "Mimic Üzenet Engedélyezése",
     "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Küld egy üzenetet a chatre, amikor megölöd a mimic-et, így csapattársaid pontszámláló modjai is helyesek lesznek.",
     "skyblocker.config.dungeons.playerSecretsTracker": "Játékos Titkok Számláló",
