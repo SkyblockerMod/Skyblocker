@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock;
+package de.hysky.skyblocker.skyblock.teleport;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -76,7 +76,7 @@ public class TeleportOverlay {
     }
 
     /**
-     * Renders the teleport overlay with a given range. Uses {@link SmoothAOTE#raycast(int, Vec3d, Vec3d)} to predict the target
+     * Renders the teleport overlay with a given range. Uses {@link PredictiveSmoothAOTE#raycast(int, Vec3d, Vec3d)} to predict the target
      *
      * @implNote {@link MinecraftClient#player} and {@link MinecraftClient#world} must not be null when calling this method.
      */
@@ -87,7 +87,7 @@ public class TeleportOverlay {
 		float yaw = client.player.getYaw();
 		Vec3d look = client.player.getRotationVector(pitch, yaw);
 		Vec3d startPos = client.player.getPos().add(0, 1.62, 0);
-		Vec3d raycast = SmoothAOTE.raycast(range, look, startPos);
+		Vec3d raycast = PredictiveSmoothAOTE.raycast(range, look, startPos);
 
 		if (raycast != null) {
 			BlockPos target = BlockPos.ofFloored(startPos.add(raycast)).down();
