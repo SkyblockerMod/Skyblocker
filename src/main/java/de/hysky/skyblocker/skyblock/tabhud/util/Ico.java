@@ -90,4 +90,12 @@ public class Ico {
 	public static final ItemStack TROPICAL_FISH_BUCKET = Items.TROPICAL_FISH_BUCKET.getDefaultStack();
 	public static final ItemStack STRIPPED_SPRUCE_WOOD = Items.STRIPPED_SPRUCE_WOOD.getDefaultStack();
 	public static final ItemStack MANGROVE_LOG = Items.MANGROVE_LOG.getDefaultStack();
+	public static final ItemStack AATROX_BATPHONE_SKULL = ItemUtils.createSkull(HeadTextures.AATROX_BATPHONE);
+	public static final ItemStack REVENANT_HORROR_SKULL = ItemUtils.createSkull(HeadTextures.REVENANT_HORROR);
+	public static final ItemStack TARANTULA_BROODFATHER_SKULL = ItemUtils.createSkull(HeadTextures.TARANTULA_BROODFATHER);
+	public static final ItemStack SVEN_PACKMASTER_SKULL = ItemUtils.createSkull(HeadTextures.SVEN_PACKMASTER);
+	public static final ItemStack VOIDGLOOM_SERAPH_SKULL = ItemUtils.createSkull(HeadTextures.VOIDGLOOM_SERAPH);
+	public static final ItemStack RIFTSTALKER_BLOODFIEND_SKULL = ItemUtils.createSkull(HeadTextures.RIFTSTALKER_BLOODFIEND);
+	public static final ItemStack INFERNO_DEMONLORD_SKULL = ItemUtils.createSkull(HeadTextures.INFERNO_DEMONLORD);
+	public static final ItemStack CATACOMBS_SKULL = ItemUtils.createSkull(HeadTextures.CATACOMBS);
 }
