@@ -26,11 +26,19 @@ public class SlayersConfig {
 
 	public boolean enableHud = true;
 
+	public CallMaddox callMaddox = new CallMaddox();
+
 	public EndermanSlayer endermanSlayer = new EndermanSlayer();
 
 	public VampireSlayer vampireSlayer = new VampireSlayer();
 
 	public BlazeSlayer blazeSlayer = new BlazeSlayer();
+
+	public static class CallMaddox {
+		public boolean sendMessageOnFail = true;
+
+		public boolean sendMessageOnKill = false;
+	}
 
 	public static class EndermanSlayer {
 		public boolean enableYangGlyphsNotification = true;

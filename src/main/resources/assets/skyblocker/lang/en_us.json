@@ -873,6 +873,11 @@
 
   "skyblocker.config.slayer": "Slayers",
 
+  "skyblocker.config.slayer.callMaddox": "Call Maddox",
+  "skyblocker.config.slayer.callMaddox.sendMessageOnFail": "Send Message on Slayer Boss Failed",
+  "skyblocker.config.slayer.callMaddox.sendMessageOnFail.@Tooltip": "Sends a message that can be clicked to quickly call Maddox the Slayer.",
+  "skyblocker.config.slayer.callMaddox.sendMessageOnKill": "Send Message on Slayer Boss Kill",
+
   "skyblocker.config.slayer.enableHud": "Slayer HUD",
   "skyblocker.config.slayer.enableHud.@Tooltip": "You may have to do 1 boss before all HUD elements show",
 
@@ -1396,6 +1401,7 @@
   "skyblocker.slayer.personalBest": "PERSONAL BEST!",
   "skyblocker.slayer.previousPB": "Your previous Personal Best was %s.",
   "skyblocker.slayer.slainTime": "Slayer has been killed in %s!",
+  "skyblocker.slayer.callMaddox.message": "Click here to call Maddox the Slayer!",
 
   "skyblocker.waypoints.config": "Waypoints Config",
   "skyblocker.waypoints.newGroup": "New Waypoint Group",
