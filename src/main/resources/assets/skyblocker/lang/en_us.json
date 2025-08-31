@@ -875,7 +875,7 @@
 
   "skyblocker.config.slayer.callMaddox": "Call Maddox",
   "skyblocker.config.slayer.callMaddox.sendMessageOnFail": "Send Message on Slayer Boss Failed",
-  "skyblocker.config.slayer.callMaddox.sendMessageOnFail.@Tooltip": "Sends a message that can be clicked to quickly call Maddox the Slayer.",
+  "skyblocker.config.slayer.callMaddox.sendMessageOnFail.@Tooltip": "Sends a message that can be clicked to quickly call Maddox the Slayer.\nThis requires having him as an Abiphone contact, and an Abiphone in your inventory!",
   "skyblocker.config.slayer.callMaddox.sendMessageOnKill": "Send Message on Slayer Boss Kill",
 
   "skyblocker.config.slayer.enableHud": "Slayer HUD",
