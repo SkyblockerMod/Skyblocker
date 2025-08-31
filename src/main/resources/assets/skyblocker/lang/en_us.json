@@ -831,6 +831,9 @@
   "skyblocker.config.otherLocations.barn.enableGlowingMushroomHelper": "Enable Glowing Mushroom Helper",
   "skyblocker.config.otherLocations.barn.solveHungryHiker": "Solve Hungry Hiker",
   "skyblocker.config.otherLocations.barn.solveTreasureHunter": "Solve Treasure Hunter",
+  "skyblocker.config.otherLocations.barn.callTrevor": "Enable /call Trevor Message",
+  "skyblocker.config.otherLocations.barn.callTrevor.@Tooltip": "Adds a message in chat to quickly call Trevor after completing a trapping task.\nThis requires having him as an Abiphone contact, and an Abiphone in your inventory!",
+  "skyblocker.config.otherLocations.barn.callTrevor.message": "Click here to call Trevor the Trapper!",
 
   "skyblocker.config.otherLocations.end": "The End",
   "skyblocker.config.otherLocations.end.enableEnderNodeHelper": "Enable Ender Node Helper",
