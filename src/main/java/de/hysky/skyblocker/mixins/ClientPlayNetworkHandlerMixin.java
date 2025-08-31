@@ -46,7 +46,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
@@ -89,13 +88,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		FishingHookDisplayHelper.onArmorStandSpawn(armorStandEntity);
 	}
 
-	@Inject(method = "method_64896", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V"))
-	private void skyblocker$onItemDestroy(int entityId, CallbackInfo ci) {
-		if (world.getEntityById(entityId) instanceof ItemEntity itemEntity) {
-			DungeonManager.onItemPickup(itemEntity);
-		}
-	}
-
 	@Inject(method = "onPlayerPositionLook", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
 	private void skyblocker$beforeTeleport(PlayerPositionLookS2CPacket packet, CallbackInfo ci, @Share("playerBeforeTeleportBlockPos") LocalRef<BlockPos> beforeTeleport) {
 		beforeTeleport.set(client.player.getBlockPos().toImmutable());
@@ -109,10 +101,9 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		TeleportMaze.INSTANCE.onTeleport(client, beforeTeleport.get(), client.player.getBlockPos().toImmutable());
 	}
 
-	@ModifyVariable(method = "onItemPickupAnimation", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V", ordinal = 0))
-	private ItemEntity skyblocker$onItemPickup(ItemEntity itemEntity) {
+	@Inject(method = "onItemPickupAnimation", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ItemEntity;getStack()Lnet/minecraft/item/ItemStack;"))
+	private void skyblocker$onItemPickup(ItemPickupAnimationS2CPacket packet, CallbackInfo ci, @Local ItemEntity itemEntity) {
 		DungeonManager.onItemPickup(itemEntity);
-		return itemEntity;
 	}
 
 	@WrapWithCondition(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;)V", remap = false))
@@ -145,7 +136,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		return !Utils.isOnHypixel();
 	}
 
-	@Inject(method = "onPlaySound", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
+	@Inject(method = "onPlaySound", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
 	private void skyblocker$onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
 		PlaySoundEvents.FROM_SERVER.invoker().onPlaySoundFromServer(packet);
 	}
