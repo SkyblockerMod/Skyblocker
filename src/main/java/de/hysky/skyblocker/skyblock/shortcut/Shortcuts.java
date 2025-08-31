@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -146,7 +147,7 @@ public class Shortcuts {
 			if (!isShortcutsLoaded()) {
 				source.sendFeedback(Text.translatable("skyblocker.shortcuts.notLoaded"));
 			} else for (Map.Entry<ShortcutKeyBinding, String> keyBinding : shortcuts.getData().keyBindings.entrySet()) {
-				source.sendFeedback(Text.of("§7" + keyBinding.getKey().getBoundKey().getLocalizedText().getString() + " §f→ §7" + keyBinding.getValue()));
+				source.sendFeedback(Text.of("§7" + keyBinding.getKey().getBoundKeysText().getString() + " §f→ §7" + keyBinding.getValue()));
 			}
 
 			source.sendFeedback(Text.of("§e§lSkyblocker §fCommands"));
@@ -213,7 +214,7 @@ public class Shortcuts {
 			return;
 		}
 
-		String command = shortcuts.getData().keyBindings.get(new ShortcutKeyBinding(key));
+		String command = shortcuts.getData().keyBindings.get(new ShortcutKeyBinding(List.of(key)));
 		if (command == null || lastKeyBindingCommandTime + KEY_BINDING_COOLDOWN > System.currentTimeMillis()) return;
 
 		MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);

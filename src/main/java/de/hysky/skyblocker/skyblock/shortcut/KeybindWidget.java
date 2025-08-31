@@ -36,6 +36,7 @@ public class KeybindWidget extends ButtonWidget {
 	@Override
 	public void onPress() {
 		editing = true;
+		keyBinding.clearBoundKeys();
 		updateListener.run();
 		super.onPress();
 	}
@@ -46,7 +47,7 @@ public class KeybindWidget extends ButtonWidget {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (editing) {
-			keyBinding.setBoundKey(InputUtil.Type.MOUSE.createFromCode(button));
+			keyBinding.addBoundKey(InputUtil.Type.MOUSE.createFromCode(button));
 			updateListener.run();
 			return true;
 		}
@@ -60,9 +61,10 @@ public class KeybindWidget extends ButtonWidget {
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (editing) {
 			if (keyCode == InputUtil.GLFW_KEY_ESCAPE) {
-				keyBinding.setBoundKey(InputUtil.UNKNOWN_KEY);
+				// This should never happen because ESC is handled in ShortcutsConfigScreen#keyPressed
+				keyBinding.addBoundKey(InputUtil.UNKNOWN_KEY);
 			} else {
-				keyBinding.setBoundKey(InputUtil.fromKeyCode(keyCode, scanCode));
+				keyBinding.addBoundKey(InputUtil.fromKeyCode(keyCode, scanCode));
 			}
 			updateListener.run();
 			return true;
