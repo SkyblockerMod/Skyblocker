@@ -101,6 +101,10 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		children().stream().filter(KeybindShortcutEntry.class::isInstance).map(KeybindShortcutEntry.class::cast).forEach(KeybindShortcutEntry::update);
 	}
 
+	protected boolean stopEditing() {
+		return children().stream().filter(KeybindShortcutEntry.class::isInstance).map(KeybindShortcutEntry.class::cast).anyMatch(KeybindShortcutEntry::stopEditing);
+	}
+
 	/**
 	 * Returns true if the client is in debug mode and the entry at the given index is selected.
 	 * <p>
@@ -327,7 +331,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 	protected class KeybindShortcutEntry extends ShortcutEntry<ShortcutKeyBinding> {
 		private final List<ClickableWidget> children;
 		private final ShortcutKeyBinding keyBinding;
-		private final ButtonWidget keybindButton;
+		private final KeybindWidget keybindButton;
 		private boolean duplicate = false;
 
 		private KeybindShortcutEntry(ShortcutCategoryEntry<ShortcutKeyBinding> category) {
@@ -341,15 +345,11 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		private KeybindShortcutEntry(ShortcutCategoryEntry<ShortcutKeyBinding> category, ShortcutKeyBinding keyBinding) {
 			super(category, keyBinding);
 			this.keyBinding = keyBinding;
-			keybindButton = ButtonWidget.builder(keyBinding.getBoundKey().getLocalizedText(), button -> {
-						ShortcutsConfigListWidget.this.screen.selectedKeyBinding = keyBinding;
-						ShortcutsConfigListWidget.this.updateKeybinds();
-					})
-					.dimensions(width / 2 - 160, 5, 150, 20)
-					.narrationSupplier(textSupplier -> keyBinding.isUnbound()
+			keybindButton = new KeybindWidget(keyBinding, width / 2 - 160, 5, 150, 20, keyBinding.getBoundKey().getLocalizedText(),
+					textSupplier -> keyBinding.isUnbound()
 							? Text.translatable("narrator.controls.unbound", replacement.getText())
-							: Text.translatable("narrator.controls.bound", replacement.getText(), textSupplier.get()))
-					.build();
+							: Text.translatable("narrator.controls.bound", replacement.getText(), textSupplier.get()),
+					ShortcutsConfigListWidget.this::updateKeybinds);
 			// The duplicate warning tooltip displays replacement commands and needs to be updated.
 			replacement.setChangedListener(command -> ShortcutsConfigListWidget.this.updateKeybinds());
 			children = List.of(keybindButton, replacement);
@@ -396,7 +396,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 			keybindButton.setY(y);
 			keybindButton.render(context, mouseX, mouseY, tickDelta);
 			if (duplicate) {
-				context.fill(keybindButton.getX() - 6, y - 1, keybindButton.getX() - 3, y + entryHeight, 0xFFFF0000);
+				context.fill(keybindButton.getX() - 6, y, keybindButton.getX() - 3, y + entryHeight, 0xFFFF0000);
 			}
 		}
 
@@ -448,13 +448,17 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 				keybindButton.setTooltip(null);
 			}
 
-			if (ShortcutsConfigListWidget.this.screen.selectedKeyBinding == keyBinding) {
+			if (keybindButton.isEditing()) {
 				keybindButton.setMessage(Text.literal("> ")
 						.append(keybindButton.getMessage().copy().formatted(Formatting.WHITE, Formatting.UNDERLINE))
 						.append(" <")
 						.formatted(Formatting.YELLOW)
 				);
 			}
+		}
+
+		protected boolean stopEditing() {
+			return keybindButton.stopEditing();
 		}
 	}
 }
