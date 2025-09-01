@@ -1,6 +1,6 @@
 {
     "argument.color.rgb.incomplete": "غير مكتمل (متوقع 3 قيم).",
-    "argument.color.hex.invalidString": "يجب أن يحتوي عدد الHex على 6 أحرف بالضبط، لكن تم العثور على %d أحرف.",
+    "argument.color.hex.invalidString": "يجب أن يحتوي عدد الHex على 6 أحرف بالضبط، لكن تم العثور على %s أحرف.",
     "argument.color.hex.invalidChar": "حرف غير صالح في عدد الhex ال %s. , الأحرف الصالحة هي: [0-9a-fA-F]",
     "key.hotbarSlotLock": "قفل الخانة (شريط الأدوات)",
     "key.skyblocker.toggleA": "تغير الHUD الى العرض الثانوي",
@@ -13,7 +13,6 @@
     "key.skyblocker.debug.dumpHoveredItem": "حذف الغرض المحدد عليه",
     "key.skyblocker.slottext": "نص الخانة",
     "key.itemPriceLookup": "الإطلاع في البازار",
-    "key.itemPriceRefresh": "تحديث البازار",
     "text.skyblocker.open": "فتح",
     "text.skyblocker.quit_config": "لم يتم حفظ التغييرات",
     "text.skyblocker.quit_discard": "الخروج مع عدم حفظ التغييرات",

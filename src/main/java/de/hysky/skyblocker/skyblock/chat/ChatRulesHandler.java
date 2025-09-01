@@ -22,11 +22,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 public class ChatRulesHandler {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -38,16 +37,15 @@ public class ChatRulesHandler {
 	 */
 	@VisibleForTesting
 	static final Codec<List<ChatRule>> UNBOXING_CODEC = Codec.either(ChatRule.LIST_CODEC, MAP_CODEC).xmap(
-			either -> either.map(Function.identity(), map -> map.getOrDefault("rules", getDefaultChatRules())),
+			either -> either.map(ArrayList::new, map -> new ArrayList<>(map.getOrDefault("rules", getDefaultChatRules()))),
 			value -> Either.right(Map.of("rules", value))
 	);
 
 	protected static final JsonData<List<ChatRule>> chatRuleList = new JsonData<>(CHAT_RULE_FILE, UNBOXING_CODEC, getDefaultChatRules());
-	public static CompletableFuture<Void> loaded;
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loaded = chatRuleList.init());
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> chatRuleList.init());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
 	}
 
@@ -65,7 +63,7 @@ public class ChatRulesHandler {
 	private static boolean checkMessage(Text message, boolean overlay) {
 		if (overlay || !Utils.isOnSkyblock()) return true;
 		List<ChatRule> rules = chatRuleList.getData();
-		if (rules == null || rules.isEmpty() || !loaded.isDone()) return true;
+		if (!chatRuleList.isLoaded() || rules.isEmpty()) return true;
 		String plain = Formatting.strip(message.getString());
 
 		for (ChatRule rule : rules) {

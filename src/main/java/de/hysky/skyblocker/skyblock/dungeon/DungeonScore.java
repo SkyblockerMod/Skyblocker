@@ -41,19 +41,22 @@ public class DungeonScore {
 	private static final Pattern FLOOR_PATTERN = Pattern.compile(".*?(?=T)The Catacombs \\((?<floor>[EFM]\\D*\\d*)\\)");
 	//Playerlist patterns
 	private static final Pattern SECRETS_PATTERN = Pattern.compile("Secrets Found: (?<secper>\\d+\\.?\\d*)%");
-	private static final Pattern PUZZLES_PATTERN = Pattern.compile(".+?(?=:): \\[(?<state>.)](?: \\(\\w+\\))?");
+	private static final Pattern PUZZLES_PATTERN = Pattern.compile(".+?(?=:): \\[(?<state>.)](?: \\(\\w*\\))?");
 	private static final Pattern PUZZLE_COUNT_PATTERN = Pattern.compile("Puzzles: \\((?<count>\\d+)\\)");
 	private static final Pattern CRYPTS_PATTERN = Pattern.compile("Crypts: (?<crypts>\\d+)");
 	private static final Pattern COMPLETED_ROOMS_PATTERN = Pattern.compile(" *Completed Rooms: (?<rooms>\\d+)");
 	//Chat patterns
 	private static final Pattern DEATHS_PATTERN = Pattern.compile(" \\u2620 (?<whodied>\\S+) .*");
-	//.*?(?:Mimic dead!?|Mimic Killed!|\$SKYTILS-DUNGEON-SCORE-MIMIC\$|\Q{MIMIC_MESSAGE}\E)$
-	private static final Pattern MIMIC_PATTERN = Pattern.compile(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$|\\Q" + MIMIC_MESSAGE_CONFIG.get().mimicMessage + "\\E)$");
+	//.*?(?:Mimic dead!?|Mimic Killed!|\$SKYTILS-DUNGEON-SCORE-MIMIC\$)$
+	private static final Pattern MIMIC_PATTERN = Pattern.compile(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$)$");
 	private static final String PRINCE_KILL_MESSAGE = "A Prince falls. +1 Bonus Score";
-	//.*?(?:Prince dead!?|Prince Killed!|\Q{PRINCE_MSG}\E)$
-	private static final Pattern PRINCE_PATTERN = Pattern.compile(".*?(?:Prince dead!?|Prince Killed!|\\Q" + PRINCE_MESSAGE_CONFIG.get().princeMessage + "\\E)$");
+	//.*?(?:Prince dead!?|Prince Killed!)$
+	private static final Pattern PRINCE_PATTERN = Pattern.compile(".*?(?:Prince dead!?|Prince Killed!)$");
 	//Other patterns
 	private static final Pattern MIMIC_FLOORS_PATTERN = Pattern.compile("[FM][67]");
+	//Score messages sent in party chat
+	private static final String MIMIC_MESSAGE = "Mimic dead!";
+	private static final String PRINCE_MESSAGE = "Prince dead!";
 
 	private static FloorRequirement floorRequirement;
 	private static String currentFloor;
@@ -225,7 +228,7 @@ public class DungeonScore {
 	public static void handleEntityDeath(Entity entity) {
 		if (mimicKilled) return;
 		if (!isEntityMimic(entity)) return;
-		if (MIMIC_MESSAGE_CONFIG.get().sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + MIMIC_MESSAGE_CONFIG.get().mimicMessage, false);
+		if (MIMIC_MESSAGE_CONFIG.get().sendMimicMessage) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + MIMIC_MESSAGE, false);
 		mimicKilled = true;
 	}
 
@@ -236,7 +239,7 @@ public class DungeonScore {
 	private static void onPrinceKill(boolean fromHypixel) {
 		if (princeKilled) return;
 		//Ensure that we don't send a prince kill message if a teammate does
-		if (PRINCE_MESSAGE_CONFIG.get().sendPrinceMessage && fromHypixel) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + PRINCE_MESSAGE_CONFIG.get().princeMessage, false);
+		if (PRINCE_MESSAGE_CONFIG.get().sendPrinceMessage && fromHypixel) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + PRINCE_MESSAGE, false);
 		princeKilled = true;
 	}
 

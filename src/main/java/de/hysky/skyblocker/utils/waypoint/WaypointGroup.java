@@ -2,7 +2,10 @@ package de.hysky.skyblocker.utils.waypoint;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.utils.InstancedUtils;
+
+import de.hysky.skyblocker.annotations.GenEquals;
+import de.hysky.skyblocker.annotations.GenHashCode;
+import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.utils.Location;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
@@ -163,29 +166,14 @@ public class WaypointGroup {
     }
 
     @Override
-    public boolean equals(Object o) {
-        try {
-            return (boolean) InstancedUtils.equals(getClass()).invokeExact(this, o);
-        } catch (Throwable ignored) {
-            return super.equals(o);
-        }
-    }
+    @GenEquals
+    public native boolean equals(Object o);
 
     @Override
-    public int hashCode() {
-        try {
-            return (int) InstancedUtils.hashCode(getClass()).invokeExact(this);
-        } catch (Throwable ignored) {
-            return super.hashCode();
-        }
-    }
+    @GenHashCode
+    public native int hashCode();
 
     @Override
-    public String toString() {
-        try {
-            return (String) InstancedUtils.toString(getClass()).invokeExact(this);
-        } catch (Throwable ignored) {
-            return super.toString();
-        }
-    }
+    @GenToString
+    public native String toString();
 }

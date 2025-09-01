@@ -187,7 +187,7 @@ public class UpdateNotifications {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.general.updateChannel.channel." + name());
+			return I18n.translate("skyblocker.config.general.updateNotifications.updateChannel.channel." + name());
 		}
 
 		@Override

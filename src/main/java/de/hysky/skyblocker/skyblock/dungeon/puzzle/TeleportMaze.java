@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -18,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class TeleportMaze extends DungeonPuzzle {
+	private static final float[] LIME = ColorUtils.getFloatComponents(DyeColor.LIME);
+	private static final float[] RED = ColorUtils.getFloatComponents(DyeColor.RED);
 	private static final Set<BlockPos> ROOM_CENTERS = Set.of(
 			new BlockPos(7, 68, 9),
 			new BlockPos(23, 68, 9),
@@ -114,12 +117,16 @@ public class TeleportMaze extends DungeonPuzzle {
 	@Override
 	public void render(WorldRenderContext context) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveTeleportMaze || !shouldSolve()) return;
+		boolean debug = Debug.debugEnabled();
 		for (Map.Entry<BlockPos, RoomType> entry : pads.entrySet()) {
-			RenderHelper.renderFilled(context, entry.getKey(), entry.getValue().colorComponents, 0.5f, true);
+			// Only use the real room color in debug mode to present the solution to users in a simpler manner for now.
+			// Should be revisited eventually.
+			float[] color = debug ? entry.getValue().colorComponents : RED;
+			RenderHelper.renderFilled(context, entry.getKey(), color, 0.5f, debug);
 		}
 		if (finalPad != null) {
-			RenderHelper.renderFilled(context, finalPad, ColorUtils.getFloatComponents(DyeColor.LIME), 1f, true);
-			RenderHelper.renderLineFromCursor(context, Vec3d.ofCenter(finalPad), ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 2f);
+			RenderHelper.renderFilled(context, finalPad, LIME, 1f, true);
+			RenderHelper.renderLineFromCursor(context, Vec3d.ofCenter(finalPad), LIME, 1f, 2f);
 		}
 	}
 

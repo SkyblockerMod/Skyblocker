@@ -53,12 +53,11 @@ public class MuseumItemCache {
 	public static final ObjectArrayList<Donation> MUSEUM_DONATIONS = new ObjectArrayList<>();
 	private static final ObjectArrayList<ObjectArrayList<String>> ORDERED_UPGRADES = new ObjectArrayList<>();
 	private static final int CURRENT_DATA_VERSION = 1;
-	private static CompletableFuture<Void> loaded;
 
 	@Init
 	public static void init() {
 		loadMuseumItems();
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loaded = MUSEUM_ITEM_CACHE.load());
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> MUSEUM_ITEM_CACHE.load());
 		ClientCommandRegistrationCallback.EVENT.register(MuseumItemCache::registerCommands);
 		SkyblockEvents.PROFILE_CHANGE.register((prev, profile) -> onProfileChange());
 	}
@@ -314,7 +313,7 @@ public class MuseumItemCache {
 					//If the request returns a non 200 status code
 					putEmpty(uuid, profileId);
 					if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.museum.resyncFailure")));
-					LOGGER.error(ERROR_LOG_TEMPLATE + " because a non 200 status code was encountered! Status Code: {}", profileId, response.statusCode());
+					LOGGER.error(ERROR_LOG_TEMPLATE + " because a non 200 status code was encountered! Response: {}", profileId, response);
 				}
 			} catch (Exception e) {
 				//If an exception was somehow thrown
@@ -332,7 +331,7 @@ public class MuseumItemCache {
 	}
 
 	private static boolean tryResync(FabricClientCommandSource source) {
-		if (loaded.isDone()) {
+		if (MUSEUM_ITEM_CACHE.isLoaded()) {
 			String profileId = Utils.getProfileId();
 			if (profileId.isEmpty() || (MUSEUM_ITEM_CACHE.containsKey() && !MUSEUM_ITEM_CACHE.get().canResync())) return false;
 			updateData4ProfileMember(Utils.getUuid(), profileId, source);
@@ -349,7 +348,7 @@ public class MuseumItemCache {
 	public static void onProfileChange() {
 		UUID uuid = Utils.getUuid();
 
-		if (loaded.isDone() && (!MUSEUM_ITEM_CACHE.containsKey() || MUSEUM_ITEM_CACHE.get().needsUpdate())) {
+		if (MUSEUM_ITEM_CACHE.isLoaded() && (!MUSEUM_ITEM_CACHE.containsKey() || MUSEUM_ITEM_CACHE.get().needsUpdate())) {
 			updateData4ProfileMember(uuid, Utils.getProfileId(), null);
 		}
 	}

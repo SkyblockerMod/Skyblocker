@@ -20,7 +20,7 @@
     "skyblocker.config.shortcutToKeybindsSettings.@Text": "Klicka... (Öppnar alternativ för snabbtangenter)",
     "skyblocker.config.shortcutToKeybindsSettings": "Ändra snabbtangent",
     "text.skyblocker.modrinth": "Modrinth",
-    "argument.color.hex.invalidString": "Hexadecimalt heltal måste vara exakt 6 tecken långt, hittade %d tecken.",
+    "argument.color.hex.invalidString": "Hexadecimalt heltal måste vara exakt 6 tecken långt, hittade %s tecken.",
     "text.skyblocker.config": "Öppna konfiguration...",
     "text.skyblocker.clickToSend": "[Klicka för att skicka i chatten]",
     "text.skyblocker.reset": "Återställ",
