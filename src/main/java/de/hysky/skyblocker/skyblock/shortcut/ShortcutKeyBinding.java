@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.annotations.GenEquals;
 import de.hysky.skyblocker.annotations.GenHashCode;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,14 +53,12 @@ public class ShortcutKeyBinding implements Comparable<ShortcutKeyBinding> {
 	}
 
 	Text getBoundKeysText() {
-		return boundKeys.stream().map(InputUtil.Key::getLocalizedText).collect(
-				Text::empty,
-				(t, k) -> t.append(" + ").append(k),
-				(t1, t2) -> {
-					t1.append(" + ");
-					t2.getSiblings().forEach(t1::append);
-				}
-		);
+		MutableText boundKeysText = Text.empty();
+		for (InputUtil.Key boundKey : boundKeys) {
+			boundKeysText.append(boundKey.getLocalizedText()).append(" + ");
+		}
+		if (!boundKeysText.getSiblings().isEmpty()) boundKeysText.getSiblings().removeLast();
+		return boundKeysText;
 	}
 
 	List<String> getBoundKeysTranslationKey() {
