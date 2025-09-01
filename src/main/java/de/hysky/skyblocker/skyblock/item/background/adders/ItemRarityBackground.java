@@ -52,7 +52,7 @@ public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRari
 
 		String stackUuid = stack.getUuid();
 		String stackId = stack.getSkyblockId();
-		String stackIdentifier = stackUuid + (stackId.isEmpty() ? "" : "/" + stack.getSkyblockId());
+		String stackIdentifier = stackUuid + (stackId.isEmpty() ? "" : "/" + stackId);
 		int hashCode = stackUuid.isEmpty() ? System.identityHashCode(stack) : stackIdentifier.hashCode();
 		if (cache.containsKey(hashCode)) return cache.get(hashCode);
 
