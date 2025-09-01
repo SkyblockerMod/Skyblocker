@@ -7,12 +7,11 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 public class CompactorPreviewTooltipComponent implements TooltipComponent {
     private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/generic_54.png");
-    private static final ItemStack BLACK_STAINED_GLASS_PANE = new ItemStack(Items.BLACK_STAINED_GLASS_PANE);
+    private static final Identifier DISABLED_SLOT = Identifier.ofVanilla("container/crafter/disabled_slot");
     private final Iterable<IntObjectPair<ItemStack>> items;
     private final IntIntPair dimensions;
     private final int columns;
@@ -56,21 +55,19 @@ public class CompactorPreviewTooltipComponent implements TooltipComponent {
             int itemX = x + entry.leftInt() % dimensions.rightInt() * 18 + 8;
             int itemY = y + entry.leftInt() / dimensions.rightInt() * 18 + 18;
 
-            // Draw a black stained glass pane to fill the left slot if there is only one column
+            // Draw a disabled slot to fill the left slot if there is only one column
             if (dimensions.rightInt() == 1) {
-                context.drawItem(BLACK_STAINED_GLASS_PANE, itemX, itemY);
-                context.drawStackOverlay(textRenderer, BLACK_STAINED_GLASS_PANE, itemX, itemY);
+                context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, DISABLED_SLOT, itemX - 1, itemY - 1, 18, 18);
                 itemX += 18;
             }
             if (entry.right() != null) {
                 context.drawItem(entry.right(), itemX, itemY);
                 context.drawStackOverlay(textRenderer, entry.right(), itemX, itemY);
             }
-            // Draw a black stained glass pane to fill the right slot if there is only one column
+            // Draw a disabled slot to fill the right slot if there is only one column
             if (dimensions.rightInt() == 1) {
                 itemX += 18;
-                context.drawItem(BLACK_STAINED_GLASS_PANE, itemX, itemY);
-                context.drawStackOverlay(textRenderer, BLACK_STAINED_GLASS_PANE, itemX, itemY);
+                context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, DISABLED_SLOT, itemX - 1, itemY - 1, 18, 18);
             }
         }
     }
