@@ -19,6 +19,8 @@ public class GeneralConfig {
 
     public boolean acceptReparty = true;
 
+	public boolean guiMiddleClick = false;
+
 	public SpeedPresets speedPresets = new SpeedPresets();
 
     public Shortcuts shortcuts = new Shortcuts();

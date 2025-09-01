@@ -103,6 +103,7 @@
                             @text='Unique'
                             or @text='Inject'
                             or @text='ModifyArg'
+                            or @text='ModifyArgs'
                             or @text='ModifyExpressionValue'
                             or @text='ModifyReturnValue'
                             or @text='ModifyVariable'

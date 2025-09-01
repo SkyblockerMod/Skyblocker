@@ -66,6 +66,13 @@ public class GeneralCategory {
                                 newValue -> config.general.acceptReparty = newValue)
                         .controller(ConfigUtils.createBooleanController())
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.general.guiMiddleClick"))
+						.binding(defaults.general.guiMiddleClick,
+								() -> config.general.guiMiddleClick,
+								newValue -> config.general.guiMiddleClick = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 				//Config Backups
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.general.backup"))

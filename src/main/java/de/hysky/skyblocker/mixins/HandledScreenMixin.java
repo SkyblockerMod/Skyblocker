@@ -51,11 +51,10 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.List;
 import java.util.Optional;
@@ -385,6 +384,19 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack, button);
 
 			if (disallowed) ci.cancel();
+		}
+	}
+
+	@ModifyArgs(
+			method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickSlot(IIILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V")
+	)
+	private void skyblocker$guiMiddleClick(Args args) {
+		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.guiMiddleClick) return;
+		SlotActionType action = args.get(3);
+		if (action == SlotActionType.PICKUP) {
+			args.set(2, 0); // when pressing a key the button is 0, just for consistency.
+			args.set(3, SlotActionType.CLONE);
 		}
 	}
 
