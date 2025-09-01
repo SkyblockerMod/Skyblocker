@@ -50,7 +50,10 @@ public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRari
 	protected SkyblockItemRarity getColorKey(ItemStack stack, Int2ReferenceOpenHashMap<SkyblockItemRarity> cache) {
 		if (stack == null || stack.isEmpty()) return null;
 
-		int hashCode = stack.getUuid().isEmpty() ? System.identityHashCode(stack) : stack.getUuid().hashCode();
+		String stackUuid = stack.getUuid();
+		String stackId = stack.getSkyblockId();
+		String stackIdentifier = stackUuid + (stackId.isEmpty() ? "" : "/" + stack.getSkyblockId());
+		int hashCode = stackUuid.isEmpty() ? System.identityHashCode(stack) : stackIdentifier.hashCode();
 		if (cache.containsKey(hashCode)) return cache.get(hashCode);
 
 		if (!stack.getSkyblockId().equals("PET")) {
