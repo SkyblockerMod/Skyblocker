@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 
 public class CallMismyla extends ChatPatternListener {
 	public CallMismyla() {
-		super("^([\\w ]+) Commission Complete! Visit the King to claim your rewards!$");
+		super("^([\\w' ]+) Commission Complete! Visit the King to claim your rewards!$");
 	}
 
 	@Override
