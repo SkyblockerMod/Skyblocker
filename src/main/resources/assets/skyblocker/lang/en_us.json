@@ -835,6 +835,9 @@
   "skyblocker.config.otherLocations.barn.enableGlowingMushroomHelper": "Enable Glowing Mushroom Helper",
   "skyblocker.config.otherLocations.barn.solveHungryHiker": "Solve Hungry Hiker",
   "skyblocker.config.otherLocations.barn.solveTreasureHunter": "Solve Treasure Hunter",
+  "skyblocker.config.otherLocations.barn.callTrevor": "Enable Call Trevor Message",
+  "skyblocker.config.otherLocations.barn.callTrevor.@Tooltip": "Adds a message in chat to quickly call Trevor after completing a trapping task.\n\nThis requires having him as an Abiphone contact, and an Abiphone in your inventory!",
+  "skyblocker.config.otherLocations.barn.callTrevor.message": "Click here to call Trevor the Trapper!",
 
   "skyblocker.config.otherLocations.end": "The End",
   "skyblocker.config.otherLocations.end.enableEnderNodeHelper": "Enable Ender Node Helper",
@@ -876,6 +879,11 @@
   "skyblocker.config.quickNav.enableQuickNav.@Tooltip": "Adds 14 customizable inventory buttons that can be styled and run a command when clicked.",
 
   "skyblocker.config.slayer": "Slayers",
+
+  "skyblocker.config.slayer.callMaddox": "Call Maddox",
+  "skyblocker.config.slayer.callMaddox.sendMessageOnFail": "Send Message on Slayer Boss Failed",
+  "skyblocker.config.slayer.callMaddox.sendMessageOnFail.@Tooltip": "Sends a message that can be clicked to quickly call Maddox the Slayer.\n\nThis requires having him as an Abiphone contact, and an Abiphone in your inventory!",
+  "skyblocker.config.slayer.callMaddox.sendMessageOnKill": "Send Message on Slayer Boss Kill",
 
   "skyblocker.config.slayer.enableHud": "Slayer HUD",
   "skyblocker.config.slayer.enableHud.@Tooltip": "You may have to do 1 boss before all HUD elements show",
@@ -1400,6 +1408,7 @@
   "skyblocker.slayer.personalBest": "PERSONAL BEST!",
   "skyblocker.slayer.previousPB": "Your previous Personal Best was %s.",
   "skyblocker.slayer.slainTime": "Slayer has been killed in %s!",
+  "skyblocker.slayer.callMaddox.message": "Click here to call Maddox the Slayer!",
 
   "skyblocker.waypoints.config": "Waypoints Config",
   "skyblocker.waypoints.newGroup": "New Waypoint Group",

@@ -15,6 +15,8 @@ public class OtherLocationsConfig {
         public boolean solveHungryHiker = true;
 
         public boolean solveTreasureHunter = true;
+
+		public boolean enableCallTrevorMessage = true;
     }
 
     public static class Rift {

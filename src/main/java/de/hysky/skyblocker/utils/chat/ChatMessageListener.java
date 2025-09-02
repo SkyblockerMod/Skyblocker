@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.chat;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.barn.CallTrevor;
 import de.hysky.skyblocker.skyblock.barn.HungryHiker;
 import de.hysky.skyblocker.skyblock.barn.TreasureHunter;
 import de.hysky.skyblocker.skyblock.chat.filters.*;
@@ -48,6 +49,7 @@ public interface ChatMessageListener {
 				new TreasureHunter(),
 				new HungryHiker(),
 				new SweepDetailsListener(),
+				new CallTrevor(),
 				new CallMismyla(),
 				// Filters
 				new AbilityFilter(),
