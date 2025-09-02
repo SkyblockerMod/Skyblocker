@@ -92,6 +92,27 @@ public class SlayersCategory {
 						.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
 						.build())
 
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.slayer.callMaddox"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.slayer.callMaddox.sendMessageOnFail"))
+								.description(Text.translatable("skyblocker.config.slayer.callMaddox.sendMessageOnFail.@Tooltip"))
+								.binding(defaults.slayers.callMaddox.sendMessageOnFail,
+										() -> config.slayers.callMaddox.sendMessageOnFail,
+										newValue -> config.slayers.callMaddox.sendMessageOnFail = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.slayer.callMaddox.sendMessageOnKill"))
+								.description(Text.translatable("skyblocker.config.slayer.callMaddox.sendMessageOnFail.@Tooltip")) // Same tooltip as above
+								.binding(defaults.slayers.callMaddox.sendMessageOnKill,
+										() -> config.slayers.callMaddox.sendMessageOnKill,
+										newValue -> config.slayers.callMaddox.sendMessageOnKill = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
 				//Enderman Slayer
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.slayer.endermanSlayer"))

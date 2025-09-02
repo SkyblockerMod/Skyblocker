@@ -117,11 +117,12 @@ public class TeleportMaze extends DungeonPuzzle {
 	@Override
 	public void render(WorldRenderContext context) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveTeleportMaze || !shouldSolve()) return;
+		boolean debug = Debug.debugEnabled();
 		for (Map.Entry<BlockPos, RoomType> entry : pads.entrySet()) {
 			// Only use the real room color in debug mode to present the solution to users in a simpler manner for now.
 			// Should be revisited eventually.
-			float[] color = Debug.debugEnabled() ? entry.getValue().colorComponents : RED;
-			RenderHelper.renderFilled(context, entry.getKey(), color, 0.5f, true);
+			float[] color = debug ? entry.getValue().colorComponents : RED;
+			RenderHelper.renderFilled(context, entry.getKey(), color, 0.5f, debug);
 		}
 		if (finalPad != null) {
 			RenderHelper.renderFilled(context, finalPad, LIME, 1f, true);
