@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.barn.TreasureHunter;
 import de.hysky.skyblocker.skyblock.chat.filters.*;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.Trivia;
+import de.hysky.skyblocker.skyblock.dwarven.CallMismyla;
 import de.hysky.skyblocker.skyblock.dwarven.Fetchur;
 import de.hysky.skyblocker.skyblock.dwarven.Puzzler;
 import de.hysky.skyblocker.skyblock.galatea.SweepDetailsListener;
@@ -21,88 +22,89 @@ import net.minecraft.util.Formatting;
 
 @FunctionalInterface
 public interface ChatMessageListener {
-    /**
-     * An event called when a game message is received. Register your listeners in {@link ChatMessageListener#init()}.
-     */
-    Event<ChatMessageListener> EVENT = EventFactory.createArrayBacked(ChatMessageListener.class,
-            (listeners) -> (message, asString) -> {
-                for (ChatMessageListener listener : listeners) {
-                    ChatFilterResult result = listener.onMessage(message, asString);
-                    if (result != ChatFilterResult.PASS) return result;
-                }
-                return ChatFilterResult.PASS;
-            });
+	/**
+	 * An event called when a game message is received. Register your listeners in {@link ChatMessageListener#init()}.
+	 */
+	Event<ChatMessageListener> EVENT = EventFactory.createArrayBacked(ChatMessageListener.class,
+			(listeners) -> (message, asString) -> {
+				for (ChatMessageListener listener : listeners) {
+					ChatFilterResult result = listener.onMessage(message, asString);
+					if (result != ChatFilterResult.PASS) return result;
+				}
+				return ChatFilterResult.PASS;
+			});
 
-    /**
-     * Registers {@link ChatMessageListener}s to {@link ChatMessageListener#EVENT} and registers {@link ChatMessageListener#EVENT} to {@link ClientReceiveMessageEvents#ALLOW_GAME}
-     */
+	/**
+	 * Registers {@link ChatMessageListener}s to {@link ChatMessageListener#EVENT} and registers {@link ChatMessageListener#EVENT} to {@link ClientReceiveMessageEvents#ALLOW_GAME}
+	 */
 	@SuppressWarnings("incomplete-switch")
 	@Init
-    static void init() {
-        ChatMessageListener[] listeners = new ChatMessageListener[]{
-                // Features
-                new Fetchur(),
-                new Puzzler(),
-                new Reparty(),
-                new Trivia(),
-                new TreasureHunter(),
-                new HungryHiker(),
+	static void init() {
+		ChatMessageListener[] listeners = new ChatMessageListener[]{
+				// Features
+				new Fetchur(),
+				new Puzzler(),
+				new Reparty(),
+				new Trivia(),
+				new TreasureHunter(),
+				new HungryHiker(),
 				new SweepDetailsListener(),
 				new CallTrevor(),
-                // Filters
-                new AbilityFilter(),
-                new AdFilter(),
-                new AoteFilter(),
-                new ComboFilter(),
-                new HealFilter(),
-                new ImplosionFilter(),
-                new MoltenWaveFilter(),
-                new TeleportPadFilter(),
-                new AutopetFilter(),
-                new ShowOffFilter(),
-                new SkyMallFilter(),
-                new LotteryFilter(),
-                new MimicFilter(),
-                new DeathFilter(),
-                new DicerFilter(),
+				new CallMismyla(),
+				// Filters
+				new AbilityFilter(),
+				new AdFilter(),
+				new AoteFilter(),
+				new ComboFilter(),
+				new HealFilter(),
+				new ImplosionFilter(),
+				new MoltenWaveFilter(),
+				new TeleportPadFilter(),
+				new AutopetFilter(),
+				new ShowOffFilter(),
+				new SkyMallFilter(),
+				new LotteryFilter(),
+				new MimicFilter(),
+				new DeathFilter(),
+				new DicerFilter(),
 				new DungeonBreakerFilter(),
-        };
+		};
 
-        // Register all listeners to EVENT
-        for (ChatMessageListener listener : listeners) {
-            EVENT.register(listener);
-        }
+		// Register all listeners to EVENT
+		for (ChatMessageListener listener : listeners) {
+			EVENT.register(listener);
+		}
 
-        // Register EVENT to ClientReceiveMessageEvents.ALLOW_GAME from fabric api
-        ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
-            if (!Utils.isOnSkyblock()) {
-                return true;
-            }
+		// Register EVENT to ClientReceiveMessageEvents.ALLOW_GAME from fabric api
+		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
+			if (!Utils.isOnSkyblock()) {
+				return true;
+			}
 
-            ChatFilterResult result = EVENT.invoker().onMessage(message, Formatting.strip(message.getString()));
+			ChatFilterResult result = EVENT.invoker().onMessage(message, Formatting.strip(message.getString()));
 
-            switch (result) {
-                case ACTION_BAR -> {
-                    if (overlay) {
-                        return true;
-                    }
+			switch (result) {
+				case ACTION_BAR -> {
+					if (overlay) {
+						return true;
+					}
 
-                    ClientPlayerEntity player = MinecraftClient.getInstance().player;
+					ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
-                    if (player != null) {
-                        player.sendMessage(message, true);
+					if (player != null) {
+						player.sendMessage(message, true);
 
-                        return false;
-                    }
-                }
+						return false;
+					}
+				}
 
-                case FILTER -> {
-                    return false;
-                }
-            }
-            return true;
-        });
-    }
+				case FILTER -> {
+					return false;
+				}
+			}
+			return true;
+		});
+	}
 
-    ChatFilterResult onMessage(Text message, String asString);
+	ChatFilterResult onMessage(Text message, String asString);
 }
