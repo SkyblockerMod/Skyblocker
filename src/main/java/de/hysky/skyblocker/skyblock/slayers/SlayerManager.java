@@ -45,6 +45,7 @@ public class SlayerManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SlayerManager.class);
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final Pattern SLAYER_PATTERN = Pattern.compile("Revenant Horror|Atoned Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Bloodfiend");
+	private static final Pattern BROODFATHER_SECOND_PHASE = Pattern.compile("Conjoined Brood");
 	private static final Pattern SLAYER_TIER_PATTERN = Pattern.compile("^(Revenant Horror|Tarantula Broodfather|Sven Packmaster|Voidgloom Seraph|Inferno Demonlord|Riftstalker Bloodfiend)\\s+(I|II|III|IV|V)$");
 	private static final Pattern PATTERN_XP_NEEDED = Pattern.compile("\\s*(Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL ([0-9]) - (?:Next LVL in ([\\d,]+) XP!|LVL MAXED OUT!)\\s*");
 	private static final Pattern PATTERN_LVL_UP = Pattern.compile("\\s*LVL UP! ➜ (Wolf|Zombie|Spider|Enderman|Blaze|Vampire) Slayer LVL [1-9]\\s*");
@@ -93,6 +94,7 @@ public class SlayerManager {
 			case "NICE! SLAYER BOSS SLAIN!" -> {
 				if (slayerQuest != null && bossFight != null) {
 					bossFight.slain = true;
+					bossFight.secondPhase = false;
 					SlayerTimer.onBossDeath(bossFight.bossSpawnTime);
 				}
 				return true;
@@ -194,6 +196,31 @@ public class SlayerManager {
 			}
 		}));
 	}
+
+	/**
+	 * Checks whether given armor stand entity has clients username in its name.
+	 */
+	public static boolean checkBroodfatherSecondPhase(ArmorStandEntity armorStand) {
+		return armorStand.getName().getString().contains(CLIENT.getSession().getUsername());
+	}
+
+	/**
+	 * method to used to update bossfight when broodfather merges into conjoined brood
+	 * @param armorStand armorstand containing username
+	 */
+	public static void updateBossMidBossFight(ArmorStandEntity armorStand) {
+		for (Entity entity : getEntityArmorStands(armorStand, 1f)) {
+			if (!(entity instanceof ArmorStandEntity armorStandEntity)) continue;
+			System.out.println(armorStandEntity.getName().getString());
+			Matcher matcher = BROODFATHER_SECOND_PHASE.matcher(armorStandEntity.getName().getString());
+			if (matcher.find()) {
+				SlayerBossBars.updateMaxHealth(armorStandEntity);
+				bossFight.findBoss(armorStandEntity);
+				bossFight.secondPhase = true;
+			}
+		}
+	}
+
 
 	/**
 	 * Gets nearby armor stands with custom names. Used to find other armor stands showing a different line of text above a slayer boss.
@@ -356,6 +383,7 @@ public class SlayerManager {
 		public ArmorStandEntity bossArmorStand;
 		public Entity boss;
 		public Instant bossSpawnTime;
+		public boolean secondPhase = false;
 		public boolean slain = false;
 
 		private BossFight(ArmorStandEntity armorStand) {

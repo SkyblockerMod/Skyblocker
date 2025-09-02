@@ -24,9 +24,12 @@ import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
 import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
 import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
+import de.hysky.skyblocker.skyblock.slayers.boss.broodfather.eggInfoDisplay;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Utils;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.client.network.ClientConnectionState;
@@ -64,14 +67,16 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		super(client, connection, connectionState);
 	}
 
+
 	@Inject(method = "onEntityTrackerUpdate", at = @At("TAIL"))
 	private void skyblocker$onEntityTrackerUpdate(EntityTrackerUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
 		if (!(entity instanceof ArmorStandEntity armorStandEntity)) return;
 
 		SlayerManager.checkSlayerBoss(armorStandEntity);
+		if (SkyblockerConfigManager.get().slayers.spiderSlayer.eggDisplay && SlayerManager.isInSlayerType(SlayerType.TARANTULA)) eggInfoDisplay.handleEgg(armorStandEntity);
+		if (SlayerManager.isInSlayerType(SlayerType.TARANTULA) && SlayerManager.checkBroodfatherSecondPhase(armorStandEntity) && !SlayerManager.getBossFight().secondPhase) SlayerManager.updateBossMidBossFight(armorStandEntity);
 
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
-
 		EggFinder.checkIfEgg(armorStandEntity);
 		CorpseFinder.checkIfCorpse(armorStandEntity);
 		HealthBars.healthBar(armorStandEntity);
@@ -83,8 +88,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Compact Damage] Failed to compact damage number", e);
 		}
-
-
 		FishingHookDisplayHelper.onArmorStandSpawn(armorStandEntity);
 	}
 

@@ -879,6 +879,15 @@
   "skyblocker.config.slayer.enableHud": "Slayer HUD",
   "skyblocker.config.slayer.enableHud.@Tooltip": "You may have to do 1 boss before all HUD elements show",
 
+  "skyblocker.config.slayer.spiderSlayer": "Spider Slayer",
+  "skyblocker.config.slayer.spiderSlayer.batHighlight": "Highlight bats",
+  "skyblocker.config.slayer.spiderSlayer.batHighlight.@Tooltip": "Highlight the bats the T5 Slayer spawns",
+  "skyblocker.config.slayer.spiderSlayer.eggHighlight": "Highlight eggs",
+  "skyblocker.config.slayer.spiderSlayer.eggHighlight.@Tooltip": "Highlight the eggs the slayer spawns",
+  "skyblocker.config.slayer.spiderSlayer.eggDisplay": "Show egg info",
+  "skyblocker.config.slayer.spiderSlayer.eggDisplay.@Tooltip": "Show the info about the eggs",
+
+
   "skyblocker.config.slayer.blazeSlayer": "Blaze Slayer",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer": "Fire Pillar Countdown Notifications",
   "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.@Tooltip": "Countdowns the last five seconds before the Fire Pillar explodes. Configure 'Title Container' to customise the location on the HUD (Note: This only uses a rudimentary distance check, so the Pillar may be spawned by another player's slayer)",
