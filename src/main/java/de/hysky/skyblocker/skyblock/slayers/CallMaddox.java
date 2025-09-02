@@ -7,14 +7,17 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 public class CallMaddox {
 	private static void sendMessage() {
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
 		if (player == null) return;
 
-		Text text = Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.callMaddox.message"))
-				.styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/call slayer")));
+		Text text = Constants.PREFIX.get().append(Text.translatable("skyblocker.slayer.callMaddox.message")).styled(style ->
+				style.withClickEvent(new ClickEvent.RunCommand("/call slayer"))
+						.withColor(Formatting.AQUA)
+		);
 
 		player.sendMessage(text, false);
 	}
