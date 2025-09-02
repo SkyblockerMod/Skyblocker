@@ -297,12 +297,26 @@ public class UIAndVisualsCategory {
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]"),
 										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]"),
-										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]"),
-										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[3]"))
+										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]"))
 								.binding(defaults.uiAndVisuals.tabHud.style,
 										() -> config.uiAndVisuals.tabHud.style,
 										newValue -> config.uiAndVisuals.tabHud.style = newValue)
 								.controller(ConfigUtils.createEnumController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.displayIcons"))
+								.binding(defaults.uiAndVisuals.tabHud.displayIcons,
+										() -> config.uiAndVisuals.tabHud.displayIcons,
+										newValue -> config.uiAndVisuals.tabHud.displayIcons = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip"))
+								.binding(defaults.uiAndVisuals.tabHud.compactWidgets,
+										() -> config.uiAndVisuals.tabHud.compactWidgets,
+										newValue -> config.uiAndVisuals.tabHud.compactWidgets = newValue)
+								.controller(ConfigUtils.createBooleanController())
 								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground"))

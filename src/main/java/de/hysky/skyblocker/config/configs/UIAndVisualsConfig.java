@@ -169,6 +169,10 @@ public class UIAndVisualsConfig {
 
 		public TabHudStyle style = TabHudStyle.FANCY;
 
+		public boolean displayIcons = true;
+
+		public boolean compactWidgets = false;
+
 		public boolean enableHudBackground = true;
 
 		public boolean effectsFromFooter = false;
@@ -184,17 +188,13 @@ public class UIAndVisualsConfig {
 
 	public enum TabHudStyle {
 		/**
-		 * The minimal style, with no decorations, icons, or custom components,
+		 * The minimal style, with no decorations, no custom components,
 		 * rendered in a minimal rectangle background,
 		 * or no background at all if {@link TabHudConf#enableHudBackground} is false.
 		 */
 		MINIMAL,
 		/**
-		 * The simple style, with no decorations, icons, or custom components.
-		 */
-		SIMPLE,
-		/**
-		 * The classic style, with decorations such as icons but no custom components.
+		 * The classic style, with decorations but no custom components.
 		 */
 		CLASSIC,
 		/**
@@ -245,7 +245,7 @@ public class UIAndVisualsConfig {
 	public enum IntelligenceDisplay {
 		ORIGINAL,
 		ACCURATE,
-		IN_FRONT;
+		IN_FRONT
 	}
 
 	/**

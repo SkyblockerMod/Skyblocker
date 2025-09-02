@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.client.gui.DrawContext;
@@ -15,8 +16,7 @@ import org.jetbrains.annotations.Nullable;
  * The progress bar either shows the fill percentage or custom text.
  * NOTICE: pcnt is 0-100, not 0-1!
  */
-public class ProgressComponent extends Component {
-
+class ProgressComponent extends Component {
 	private static final int BAR_WIDTH = 100;
 	private static final int BAR_HEIGHT = txtRend.fontHeight + 3;
 	private static final int ICO_OFFS = 4;
@@ -32,23 +32,25 @@ public class ProgressComponent extends Component {
 	/**
 	 * @see Components#progressComponent(ItemStack, Text, Text, float)
 	 */
-	public ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, @Nullable Text bar, float percent, int color) {
+	ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, @Nullable Text bar, float percent, int color) {
+		boolean showIcons = SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons;
 		if (description == null || bar == null) {
-			this.ico = Ico.BARRIER;
+			this.ico = showIcons ? Ico.BARRIER : null;
 			this.desc = Text.literal("No data").formatted(Formatting.GRAY);
 			this.bar = Text.literal("---").formatted(Formatting.GRAY);
 			this.pcnt = 100f;
 			this.color = 0xff000000 | Formatting.DARK_GRAY.getColorValue();
 		} else {
-			this.ico = (ico == null) ? Ico.BARRIER : ico;
+			this.ico = showIcons ? (ico == null ? Ico.BARRIER : ico) : null;
 			this.desc = description;
 			this.bar = bar;
 			this.pcnt = Math.clamp(percent, 0f, 100f);
 			this.color = 0xff000000 | color;
 		}
 
+		int iconDim = ICO_DIM.get();
 		this.barW = BAR_WIDTH;
-		this.width = ICO_DIM + PAD_L + Math.max(this.barW, txtRend.getWidth(this.desc));
+		this.width = (showIcons ? iconDim : 0) + PAD_L + Math.max(this.barW, txtRend.getWidth(this.desc));
 		this.height = txtRend.fontHeight + PAD_S + 2 + txtRend.fontHeight + 2;
 		this.colorIsBright = ColorUtils.isBright(this.color);
 	}
@@ -56,43 +58,45 @@ public class ProgressComponent extends Component {
 	/**
 	 * @see Components#progressComponent(ItemStack, Text, Text, float)
 	 */
-	public ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, @Nullable Text bar, float percent) {
+	ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, @Nullable Text bar, float percent) {
 		this(ico, description, bar, percent, ColorUtils.percentToColor(percent));
 	}
 
 	/**
 	 * @see Components#progressComponent(ItemStack, Text, float)
 	 */
-	public ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, float percent, int color) {
+	ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, float percent, int color) {
 		this(ico, description, Text.of(percent + "%"), percent, color);
 	}
 
 	/**
 	 * @see Components#progressComponent(ItemStack, Text, float)
 	 */
-	public ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, float percent) {
+	ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, float percent) {
 		this(ico, description, percent, ColorUtils.percentToColor(percent));
 	}
 
-	public ProgressComponent() {
+	ProgressComponent() {
 		this(null, null, null, 100, 0);
 	}
 
 	@Override
 	public void render(DrawContext context, int x, int y) {
-		context.drawItem(ico, x, y + ICO_OFFS);
-		context.drawText(txtRend, desc, x + ICO_DIM + PAD_L, y, Colors.WHITE, false);
+		int iconDim = ICO_DIM.get();
+		boolean renderIcon = ico != null;
+		if (renderIcon) context.drawItem(ico, x, y + ICO_OFFS);
+		int componentX = x + (renderIcon ? iconDim + (16 - iconDim) : 0) + PAD_L;
+		context.drawText(txtRend, desc, componentX, y, Colors.WHITE, false);
 
-		int barX = x + ICO_DIM + PAD_L;
 		int barY = y + txtRend.fontHeight + PAD_S;
 		int endOffsX = ((int) (this.barW * (this.pcnt / 100f)));
-		context.fill(barX + endOffsX, barY, barX + this.barW, barY + BAR_HEIGHT, COL_BG_BAR);
-		context.fill(barX, barY, barX + endOffsX, barY + BAR_HEIGHT, this.color);
+		context.fill(componentX + endOffsX, barY, componentX + this.barW, barY + BAR_HEIGHT, COL_BG_BAR);
+		context.fill(componentX, barY, componentX + endOffsX, barY + BAR_HEIGHT, this.color);
 
 		int textWidth = txtRend.getWidth(bar);
 		// Only turn text dark when it is wider than the filled bar and the filled bar is bright.
 		// The + 4 is because the text is indented 3 pixels and 1 extra pixel to the right as buffer.
 		boolean textDark = endOffsX >= textWidth + 4 && this.colorIsBright;
-		context.drawText(txtRend, bar, barX + 3, barY + 2, textDark ? Colors.BLACK : Colors.WHITE, !textDark);
+		context.drawText(txtRend, bar, componentX + 3, barY + 2, textDark ? Colors.BLACK : Colors.WHITE, !textDark);
 	}
 }

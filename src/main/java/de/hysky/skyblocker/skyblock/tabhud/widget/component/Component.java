@@ -1,17 +1,19 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import java.util.function.Supplier;
 
 /**
  * Abstract base class for a component that may be added to a Widget.
  */
 public abstract class Component {
-	static final int ICO_DIM = 12;
+	public final Supplier<Integer> ICO_DIM = () -> SkyblockerConfigManager.get().uiAndVisuals.tabHud.compactWidgets ? 12 : 16;
 	public static final int PAD_S = 2;
-	public static final int PAD_L = 1;
+	public static final int PAD_L = 2;
 
 	static final TextRenderer txtRend = MinecraftClient.getInstance().textRenderer;
 
@@ -37,5 +39,4 @@ public abstract class Component {
 	public int getHeight() {
 		return this.height;
 	}
-
 }

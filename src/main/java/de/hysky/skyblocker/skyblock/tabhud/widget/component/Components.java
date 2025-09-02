@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.ColorUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
@@ -9,62 +10,67 @@ import org.jetbrains.annotations.Range;
 
 public class Components {
 	public static Component iconTextComponent(ItemStack icon, Text text) {
-		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
-			case MINIMAL, SIMPLE -> new PlainTextComponent(text);
-			case CLASSIC, FANCY -> new IcoTextComponent(icon, text);
-		};
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons) {
+			return new IcoTextComponent(icon, text);
+		} else {
+			return new PlainTextComponent(text);
+		}
 	}
 
-	/**
-	 * Returns a progress component based on the configured style.
-	 *
-	 * @param percent the percentage from 0 to 100
-	 */
-	public static Component progressComponent(ItemStack icon, Text description, @Range(from = 0, to = 100) float percent) {
-		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
-			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
-			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
-			case FANCY -> new ProgressComponent(icon, description, percent);
-		};
+	public static Component iconTextComponent() {
+		return iconTextComponent(null, null);
 	}
 
-	/**
-	 * Returns a progress component based on the configured style.
-	 *
-	 * @param percent the percentage from 0 to 100
-	 */
-	public static Component progressComponent(ItemStack icon, Text description, @Range(from = 0, to = 100) float percent, int color) {
-		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
-			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(Text.literal(percent + "%").withColor(color)));
-			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(color)));
-			case FANCY -> new ProgressComponent(icon, description, percent, color);
-		};
+	public static Component iconFatTextComponent(ItemStack icon, Text line1, Text line2) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons) {
+			return new IcoFatTextComponent(icon, line1, line2);
+		} else {
+			return new PlainTextComponent(line1, line2);
+		}
 	}
 
-	/**
-	 * Returns a progress component based on the configured style.
-	 *
-	 * @param percent the percentage from 0 to 100
-	 */
-	public static Component progressComponent(ItemStack icon, Text description, Text bar, @Range(from = 0, to = 100) float percent) {
-		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
-			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
-			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
-			case FANCY -> new ProgressComponent(icon, description, bar, percent);
-		};
+	public static Component iconFatTextComponent() {
+		return iconFatTextComponent(null, null, null);
 	}
 
-	/**
-	 * Returns a progress component based on the configured style.
-	 *
-	 * @param percent the percentage from 0 to 100
-	 */
 	public static Component progressComponent(ItemStack icon, Text description, Text bar, @Range(from = 0, to = 100) float percent, int color) {
-		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
-			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(bar.copy().withColor(color)));
-			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(bar.copy().withColor(color)));
-			case FANCY -> new ProgressComponent(icon, description, bar, percent, color);
-		};
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style == UIAndVisualsConfig.TabHudStyle.FANCY) {
+			return new ProgressComponent(icon, description, bar, percent, color);
+		} else {
+			return iconTextComponent(icon, appendColon(description).append(bar.copy().withColor(color)));
+		}
+	}
+
+	public static Component progressComponent(ItemStack icon, Text description, Text bar, @Range(from = 0, to = 100) float percent) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style == UIAndVisualsConfig.TabHudStyle.FANCY) {
+			return new ProgressComponent(icon, description, bar, percent);
+		} else {
+			return iconTextComponent(icon, appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
+		}
+	}
+
+	public static Component progressComponent(ItemStack icon, Text description, @Range(from = 0, to = 100) float percent, int color) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style == UIAndVisualsConfig.TabHudStyle.FANCY) {
+			return new ProgressComponent(icon, description, percent, color);
+		} else {
+			return iconTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(color)));
+		}
+	}
+
+	public static Component progressComponent(ItemStack icon, Text description, @Range(from = 0, to = 100) float percent) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style == UIAndVisualsConfig.TabHudStyle.FANCY) {
+			return new ProgressComponent(icon, description, percent);
+		} else {
+			return iconTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
+		}
+	}
+
+	public static Component progressComponent() {
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style == UIAndVisualsConfig.TabHudStyle.FANCY) {
+			return new ProgressComponent();
+		} else {
+			return iconTextComponent(null, null);
+		}
 	}
 
 	/**
