@@ -14,6 +14,7 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
 import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -25,6 +26,7 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.ObjectReferencePair;
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.component.ComponentChanges;
@@ -76,6 +78,20 @@ public final class ItemUtils {
     private static final Pattern HUNTING_BOX_COUNT_PATTERN = Pattern.compile("Owned: (?<shards>\\d+) Shards?");
     private static final short LOG_INTERVAL = 1000;
 	private static long lastLog = Util.getMeasuringTimeMs();
+
+	public static final List<ObjectReferencePair<String, SkyblockItemRarity>> LORE_RARITIES = List.of(
+			ObjectReferencePair.of("ADMIN", SkyblockItemRarity.ADMIN),
+			ObjectReferencePair.of("ULTIMATE", SkyblockItemRarity.ULTIMATE),
+			ObjectReferencePair.of("SPECIAL", SkyblockItemRarity.SPECIAL), //Very special is the same color so this will cover it
+			ObjectReferencePair.of("DIVINE", SkyblockItemRarity.DIVINE),
+			ObjectReferencePair.of("MYTHIC", SkyblockItemRarity.MYTHIC),
+			ObjectReferencePair.of("LEGENDARY", SkyblockItemRarity.LEGENDARY),
+			ObjectReferencePair.of("LEGENJERRY", SkyblockItemRarity.LEGENDARY),
+			ObjectReferencePair.of("EPIC", SkyblockItemRarity.EPIC),
+			ObjectReferencePair.of("RARE", SkyblockItemRarity.RARE),
+			ObjectReferencePair.of("UNCOMMON", SkyblockItemRarity.UNCOMMON),
+			ObjectReferencePair.of("COMMON", SkyblockItemRarity.COMMON)
+	);
 
     private ItemUtils() {}
 
@@ -563,4 +579,26 @@ public final class ItemUtils {
 
     	return matcher != null ? RegexUtils.parseOptionalIntFromMatcher(matcher, "shards") : OptionalInt.empty();
     }
+
+	@NotNull
+	public static SkyblockItemRarity getItemRarity(@NotNull ItemStack stack) {
+		if (stack.isEmpty()) return SkyblockItemRarity.UNKNOWN;
+
+		if (!stack.getSkyblockId().equals("PET")) {
+			List<Text> lore = ItemUtils.getLore(stack);
+			List<String> tooltip = lore.stream().map(Text::getString).toList();
+			for (ObjectReferencePair<String, SkyblockItemRarity> key : LORE_RARITIES) {
+				if (tooltip.stream().anyMatch(line -> line.contains(key.left()))) {
+					return key.right();
+				}
+			}
+		} else {
+			PetInfo info = stack.getPetInfo();
+			if (!info.isEmpty()) {
+				return info.item().isPresent() && info.item().get().equals("PET_ITEM_TIER_BOOST") ? info.rarity().next() : info.rarity();
+			}
+		}
+
+		return SkyblockItemRarity.UNKNOWN;
+	}
 }

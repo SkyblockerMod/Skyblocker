@@ -7,6 +7,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -49,6 +50,9 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 
 	@Unique
 	private PetInfo petInfo;
+
+	@Unique
+	private SkyblockItemRarity skyblockRarity;
 
 	@Shadow
 	public abstract int getDamage();
@@ -178,5 +182,12 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	public PetInfo getPetInfo() {
 		if (petInfo != null) return petInfo;
 		return petInfo = ItemUtils.getPetInfo(this);
+	}
+
+	@Override
+	@NotNull
+	public SkyblockItemRarity getSkyblockRarity() {
+		if (skyblockRarity != null && skyblockRarity != SkyblockItemRarity.UNKNOWN) return skyblockRarity;
+		return skyblockRarity = ItemUtils.getItemRarity((ItemStack) (Object) this);
 	}
 }
