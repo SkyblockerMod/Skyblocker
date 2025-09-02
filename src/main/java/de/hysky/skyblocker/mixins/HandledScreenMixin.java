@@ -54,7 +54,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.List;
 import java.util.Optional;
@@ -387,17 +386,19 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 	}
 
-	@ModifyArgs(
+	@ModifyArg(
 			method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickSlot(IIILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V")
-	)
-	private void skyblocker$guiMiddleClick(Args args) {
-		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.guiMiddleClick) return;
-		SlotActionType action = args.get(3);
-		if (action == SlotActionType.PICKUP) {
-			args.set(2, 0); // when pressing a key the button is 0, just for consistency.
-			args.set(3, SlotActionType.CLONE);
-		}
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickSlot(IIILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V"),
+			index = 3
+			)
+	private SlotActionType skyblocker$guiMiddleClick(SlotActionType actionType, @Local(argsOnly = true) Slot slot, @Local(argsOnly = true, ordinal = 1) int button) {
+		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.guiMiddleClick) return actionType;
+		if (button == 0 &&
+				actionType == SlotActionType.PICKUP &&
+				ItemUtils.getItemId(slot.getStack()).isEmpty() &&
+				handler.getCursorStack().isEmpty()
+		) return SlotActionType.CLONE;
+		return actionType;
 	}
 
 	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
