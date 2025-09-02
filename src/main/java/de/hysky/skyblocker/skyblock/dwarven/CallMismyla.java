@@ -9,6 +9,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.regex.Matcher;
 
@@ -28,7 +29,10 @@ public class CallMismyla extends ChatPatternListener {
 		if (player == null) return false;
 
 		MutableText callMessage = Constants.PREFIX.get().append(Text.translatable("skyblocker.config.mining.callMismyla.message"));
-		callMessage.styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/call mismyla")));
+		callMessage.styled(style ->
+				style.withClickEvent(new ClickEvent.RunCommand("/call mismyla"))
+						.withColor(Formatting.AQUA)
+		);
 		player.sendMessage(callMessage, false);
 
 		return false;
