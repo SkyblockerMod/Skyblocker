@@ -14,6 +14,7 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.skyblock.item.PlayerHeadHashCache;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.Utils;
@@ -26,16 +27,16 @@ import net.minecraft.util.math.ColorHelper;
 public class PlayerSkinTextureDownloaderMixin {
 	@Unique
 	private static final Set<String> STRIP_DE_FACTO_TRANSPARENT_PIXELS = Set.of(
-			"4f3b91b6aa7124f30ed4ad1b2bb012a82985a33640555e18e792f96af8f58ec6", /*Titanium Necklace*/
-			"49821410631186c6f3fbbae5f0ef5b947f475eb32027a8aad0a456512547c209", /*Titanium Cloak*/
-			"4162303bcdd770aebe7fd19fa26371390a7515140358548084361b5056cdc4e6" /*Titanium Belt*/);
+			PlayerHeadHashCache.getSkinHashFromBase64(HeadTextures.TITANIUM_NECKLACE),
+			PlayerHeadHashCache.getSkinHashFromBase64(HeadTextures.TITANIUM_CLOAK),
+			PlayerHeadHashCache.getSkinHashFromBase64(HeadTextures.TITANIUM_BELT));
 	@Unique
 	private static final float BRIGHTNESS_THRESHOLD = 0.1f;
 
 	@Inject(method = "remapTexture", at = @At("HEAD"))
 	private static void skyblocker$determineSkinSource(NativeImage image, String uri, CallbackInfoReturnable<NativeImage> cir, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.dontStripSkinAlphaValues && (Utils.isOnSkyblock() || MinecraftClient.getInstance().currentScreen instanceof ProfileViewerScreen)) {
-			String skinTextureHash = PlayerHeadHashCache.getSkinHash(uri);
+			String skinTextureHash = PlayerHeadHashCache.getSkinHashFromUrl(uri);
 			int skinHash = skinTextureHash.hashCode();
 			isSkyblockSkinTexture.set(PlayerHeadHashCache.contains(skinHash));
 
