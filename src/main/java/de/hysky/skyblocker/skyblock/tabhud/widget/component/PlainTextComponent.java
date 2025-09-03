@@ -22,9 +22,8 @@ public class PlainTextComponent extends Component {
 	}
 
 	public PlainTextComponent(Text line1, Text line2) {
-		boolean isNull = line1 == null || line2 == null;
-		lines.add(isNull ? Text.literal("No data").formatted(Formatting.GRAY) : line1);
-		lines.add(isNull ? Text.literal("No data").formatted(Formatting.GRAY) : line2);
+		lines.add(line1 == null ? Text.literal("No data").formatted(Formatting.GRAY) : line1);
+		lines.add(line2 == null ? Text.literal("No data").formatted(Formatting.GRAY) : line2);
 
 		this.width = PAD_L + Math.max(txtRend.getWidth(line1), txtRend.getWidth(line2));
 		this.height = (txtRend.fontHeight * 2) + PAD_S;

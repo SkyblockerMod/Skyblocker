@@ -297,7 +297,8 @@ public class UIAndVisualsCategory {
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]"),
 										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]"),
-										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]"))
+										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]"),
+										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[3]"))
 								.binding(defaults.uiAndVisuals.tabHud.style,
 										() -> config.uiAndVisuals.tabHud.style,
 										newValue -> config.uiAndVisuals.tabHud.style = newValue)
