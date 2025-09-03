@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class BestiaryLevelAdder extends SimpleSlotTextAdder {
 	//^[\w -']+ (?<level>[IVXLCDM]+)$
-	private static final Pattern BESTIARY = Pattern.compile("^[\\w -']+ (?<level>[IVXLCDM]+)$");
+	private static final Pattern BESTIARY = Pattern.compile("^[\\w '-]+ (?<level>[IVXLCDM]+)$");
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
 			"bestiary_level",
 			"skyblocker.config.uiAndVisuals.slotText.bestiaryLevel"
