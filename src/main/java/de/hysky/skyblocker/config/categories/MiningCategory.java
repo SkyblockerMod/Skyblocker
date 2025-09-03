@@ -57,6 +57,15 @@ public class MiningCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.mining.autoRedialOnBadSignal"))
+						.description(Text.translatable("skyblocker.config.mining.autoRedialOnBadSignal.@Tooltip"))
+						.binding(defaults.mining.autoRedialOnBadSignal,
+								() -> config.mining.autoRedialOnBadSignal,
+								newValue -> config.mining.autoRedialOnBadSignal = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+
 				.option(ButtonOption.createBuilder()
 						.name(Text.translatable("skyblocker.config.mining.dwarvenHud.screen"))
 						.prompt(Text.translatable("text.skyblocker.open"))
