@@ -104,7 +104,13 @@ public class NEURepoManager {
 						LOGGER.info("[Skyblocker NEU Repo] NEU Repository Updated");
 					}
 				} else {
-					Git.cloneRepository().setURI(REMOTE_REPO_URL).setDirectory(NEURepoManager.LOCAL_REPO_DIR.toFile()).setBranchesToClone(List.of("refs/heads/master")).setBranch("refs/heads/master").call().close();
+					Git.cloneRepository()
+							.setURI(REMOTE_REPO_URL)
+							.setDirectory(NEURepoManager.LOCAL_REPO_DIR.toFile())
+							.setBranchesToClone(List.of("refs/heads/master"))
+							.setBranch("refs/heads/master")
+							.setDepth(1) // do shallow clone
+							.call().close();
 					LOGGER.info("[Skyblocker NEU Repo] NEU Repository Downloaded");
 				}
 			} catch (TransportException e) {
