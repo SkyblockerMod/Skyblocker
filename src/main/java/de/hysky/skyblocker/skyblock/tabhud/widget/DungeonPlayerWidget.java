@@ -41,7 +41,6 @@ public class DungeonPlayerWidget extends TabHudWidget {
 		if (m == null) {
 			this.addComponent(Components.iconTextComponent());
 			this.addComponent(Components.iconTextComponent());
-			this.addComponent(Components.iconTextComponent());
 		} else {
 
 			Text name = Text.literal("Name: ").append(Text.literal(m.group("name")).formatted(Formatting.YELLOW));

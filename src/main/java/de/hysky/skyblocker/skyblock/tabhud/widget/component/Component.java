@@ -5,6 +5,8 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.item.ItemStack;
+
 import java.util.function.Supplier;
 
 /**
@@ -38,5 +40,13 @@ public abstract class Component {
 
 	public int getHeight() {
 		return this.height;
+	}
+
+	public void renderIcon(DrawContext context, ItemStack icon, int x, int y) {
+		context.getMatrices().pushMatrix();
+		context.getMatrices().translate(x, y);
+		context.getMatrices().scale((float) ICO_DIM.get() / 16);
+		context.drawItem(icon, 0, 0);
+		context.getMatrices().popMatrix();
 	}
 }

@@ -11,7 +11,7 @@ import net.minecraft.util.Formatting;
  * Component that consists of an icon and two lines of text
  */
 class IcoFatTextComponent extends Component {
-	private static final int ICO_OFFS = 1;
+	private static final int ICO_OFFS = 4;
 	private ItemStack ico;
 	private Text line1, line2;
 
@@ -32,9 +32,8 @@ class IcoFatTextComponent extends Component {
 
 	@Override
 	public void render(DrawContext context, int x, int y) {
-		int iconDim = ICO_DIM.get();
-		int textX = x + iconDim + PAD_L + (16 - iconDim);
-		context.drawItem(ico, x, y + ICO_OFFS);
+		int textX = x + ICO_DIM.get() + PAD_L;
+		renderIcon(context, ico, x, y + ICO_OFFS);
 		context.drawText(txtRend, line1, textX, y, Colors.WHITE, false);
 		context.drawText(txtRend, line2, textX, y + txtRend.fontHeight + PAD_S, Colors.WHITE, false);
 	}

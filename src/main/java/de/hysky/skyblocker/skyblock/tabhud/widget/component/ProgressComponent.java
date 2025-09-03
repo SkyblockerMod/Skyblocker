@@ -48,9 +48,8 @@ class ProgressComponent extends Component {
 			this.color = 0xff000000 | color;
 		}
 
-		int iconDim = ICO_DIM.get();
 		this.barW = BAR_WIDTH;
-		this.width = (showIcons ? iconDim : 0) + PAD_L + Math.max(this.barW, txtRend.getWidth(this.desc));
+		this.width = (showIcons ? ICO_DIM.get() : 0) + PAD_L + Math.max(this.barW, txtRend.getWidth(this.desc));
 		this.height = txtRend.fontHeight + PAD_S + 2 + txtRend.fontHeight + 2;
 		this.colorIsBright = ColorUtils.isBright(this.color);
 	}
@@ -82,10 +81,11 @@ class ProgressComponent extends Component {
 
 	@Override
 	public void render(DrawContext context, int x, int y) {
-		int iconDim = ICO_DIM.get();
-		boolean renderIcon = ico != null;
-		if (renderIcon) context.drawItem(ico, x, y + ICO_OFFS);
-		int componentX = x + (renderIcon ? iconDim + (16 - iconDim) : 0) + PAD_L;
+		int componentX = x + PAD_L;
+		if (ico != null) {
+			renderIcon(context, ico, x, y + ICO_OFFS);
+			componentX += ICO_DIM.get();
+		}
 		context.drawText(txtRend, desc, componentX, y, Colors.WHITE, false);
 
 		int barY = y + txtRend.fontHeight + PAD_S;

@@ -31,14 +31,8 @@ class IcoTextComponent extends Component {
 
 	@Override
 	public void render(DrawContext context, int x, int y) {
-		int iconDim = ICO_DIM.get();
-		context.getMatrices().pushMatrix();
-		context.getMatrices().translate(x, y);
-		context.getMatrices().scale((float) iconDim / 16);
-		context.drawItem(ico, 0, 0);
-		context.getMatrices().popMatrix();
-
 		int offset = SkyblockerConfigManager.get().uiAndVisuals.tabHud.compactWidgets ? 2 : 4;
-		context.drawText(txtRend, text, x + iconDim + PAD_L, y + offset, Colors.WHITE, false);
+		renderIcon(context, ico, x, y);
+		context.drawText(txtRend, text, x + ICO_DIM.get() + PAD_L, y + offset, Colors.WHITE, false);
 	}
 }
