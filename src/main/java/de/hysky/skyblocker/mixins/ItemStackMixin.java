@@ -187,7 +187,7 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	@Override
 	@NotNull
 	public SkyblockItemRarity getSkyblockRarity() {
-		if (skyblockRarity != null && skyblockRarity != SkyblockItemRarity.UNKNOWN) return skyblockRarity;
+		if (skyblockRarity != null) return skyblockRarity;
 		return skyblockRarity = ItemUtils.getItemRarity((ItemStack) (Object) this);
 	}
 }
