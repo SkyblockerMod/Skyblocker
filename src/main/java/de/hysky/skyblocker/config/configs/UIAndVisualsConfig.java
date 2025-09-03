@@ -14,6 +14,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 
 public class UIAndVisualsConfig {
@@ -217,8 +218,8 @@ public class UIAndVisualsConfig {
 
 	public enum NameSorting {
 		DEFAULT,
-		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getDisplayName().getString(), "name"), String.CASE_INSENSITIVE_ORDER)),
-		SKYBLOCK_LEVEL(Comparator.<PlayerListEntry>comparingInt(ple -> Integer.parseInt(matchPlayerName(ple.getDisplayName().getString(), "level"))).reversed());
+		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
+		SKYBLOCK_LEVEL(Comparator.<PlayerListEntry>comparingInt(ple -> matchPlayerName(ple.getDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
 
 		public final Comparator<PlayerListEntry> comparator;
 
@@ -230,9 +231,9 @@ public class UIAndVisualsConfig {
 			this.comparator = comparator;
 		}
 
-		private static String matchPlayerName(String name, String group) {
+		private static Optional<String> matchPlayerName(String name, String group) {
 			Matcher matcher = PlayerListManager.PLAYER_NAME_PATTERN.matcher(name);
-			return matcher.matches() ? matcher.group(group) : "";
+			return matcher.matches() ? Optional.of(matcher.group(group)) : Optional.empty();
 		}
 
 		@Override
