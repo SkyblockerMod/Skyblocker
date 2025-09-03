@@ -186,13 +186,20 @@ public class UIAndVisualsConfig {
 		public transient NameSorting nameSorting = NameSorting.DEFAULT;
 	}
 
+	/**
+	 * @implNote Currently, there are no "decorations", meaning that there is no difference between the SIMPLE and CLASSIC styles.
+	 */
 	public enum TabHudStyle {
 		/**
-		 * The minimal style, with no decorations, no custom components,
+		 * The minimal style, with no decorations nor custom components,
 		 * rendered in a minimal rectangle background,
 		 * or no background at all if {@link TabHudConf#enableHudBackground} is false.
 		 */
 		MINIMAL,
+		/**
+		 * The simple style, with no decorations nor custom components.
+		 */
+		SIMPLE,
 		/**
 		 * The classic style, with decorations but no custom components.
 		 */
