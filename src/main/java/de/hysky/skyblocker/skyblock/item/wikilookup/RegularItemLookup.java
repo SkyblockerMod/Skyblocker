@@ -15,10 +15,6 @@ public class RegularItemLookup implements WikiLookup {
 
 	@Override
 	public void open(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {
-		openWiki(itemStack, player, useOfficial);
-	}
-
-	private static void openWiki(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {
 		ItemUtils.getItemIdOptional(itemStack)
 				.map(neuId -> ItemRepository.getWikiLink(neuId, useOfficial))
 				.ifPresentOrElse(wikiLink -> WikiLookupManager.openWikiLink(wikiLink, player),

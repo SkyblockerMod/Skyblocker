@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.wikilookup;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.commons.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +15,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 
 public class EnchantmentBookItemLookup implements WikiLookup {
-	private static final Function<ItemStack, Boolean> ENCHANTMENT_BOOK_FILTER = itemStack -> {
+	private static final Predicate<ItemStack> ENCHANTMENT_BOOK_FILTER = itemStack -> {
 		NbtCompound nbt = ItemUtils.getCustomData(itemStack);
 		if (itemStack.isOf(Items.ENCHANTED_BOOK) && nbt.contains("enchantments")) {
 			NbtCompound enchantments = nbt.getCompoundOrEmpty("enchantments");
@@ -42,6 +42,6 @@ public class EnchantmentBookItemLookup implements WikiLookup {
 	@Override
 	public boolean canSearch(@Nullable String title, @NotNull Either<Slot, ItemStack> either) {
 		ItemStack itemStack = WikiLookupManager.mapEitherToItemStack(either);
-		return ENCHANTMENT_BOOK_FILTER.apply(itemStack);
+		return ENCHANTMENT_BOOK_FILTER.test(itemStack);
 	}
 }
