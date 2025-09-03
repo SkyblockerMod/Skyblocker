@@ -3,14 +3,18 @@ package de.hysky.skyblocker.config.configs;
 import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
 
 public class UIAndVisualsConfig {
 
@@ -178,8 +182,7 @@ public class UIAndVisualsConfig {
 		@Deprecated
 		public transient boolean plainPlayerNames = false;
 
-		@Deprecated
-		public transient NameSorting nameSorting = NameSorting.DEFAULT;
+		public NameSorting nameSorting = NameSorting.DEFAULT;
 	}
 
 	public enum TabHudStyle {
@@ -212,15 +215,32 @@ public class UIAndVisualsConfig {
 		}
 	}
 
-	@Deprecated
 	public enum NameSorting {
-		DEFAULT, ALPHABETICAL;
+		DEFAULT,
+		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getDisplayName().getString(), "name"), String.CASE_INSENSITIVE_ORDER)),
+		SKYBLOCK_LEVEL(Comparator.<PlayerListEntry>comparingInt(ple -> Integer.parseInt(matchPlayerName(ple.getDisplayName().getString(), "level"))).reversed());
+
+		public final Comparator<PlayerListEntry> comparator;
+
+		NameSorting() {
+			this(null);
+		}
+
+		NameSorting(Comparator<PlayerListEntry> comparator) {
+			this.comparator = comparator;
+		}
+
+		private static String matchPlayerName(String name, String group) {
+			Matcher matcher = PlayerListManager.PLAYER_NAME_PATTERN.matcher(name);
+			return matcher.matches() ? matcher.group(group) : "";
+		}
 
 		@Override
 		public String toString() {
 			return switch (this) {
 				case DEFAULT -> "Default";
 				case ALPHABETICAL -> "Alphabetical";
+				case SKYBLOCK_LEVEL -> "Skyblock Level";
 			};
 		}
 	}
@@ -282,9 +302,9 @@ public class UIAndVisualsConfig {
 	public static class TeleportOverlay {
 		public boolean enableTeleportOverlays = true;
 
-        public boolean showWhenInAir = false;
+		public boolean showWhenInAir = false;
 
-        public Color teleportOverlayColor = new Color(0x7F761594, true);
+		public Color teleportOverlayColor = new Color(0x7F761594, true);
 
 		public boolean enableWeirdTransmission = false;
 
