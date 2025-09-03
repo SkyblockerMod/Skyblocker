@@ -9,7 +9,6 @@ import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -53,7 +52,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		}
 		ShortcutCategoryEntry<ShortcutKeyBinding> keybindCategory = new ShortcutCategoryEntry<>(Shortcuts.shortcuts.getData().keyBindings(), KeybindShortcutEntry::new, "skyblocker.shortcuts.keyBinding.target", "skyblocker.shortcuts.keyBinding.replacement", "skyblocker.shortcuts.keyBinding.tooltip");
 		if (Shortcuts.isShortcutsLoaded()) {
-			keybindCategory.shortcutsMap.keySet().stream().sorted().forEach(keyBinding -> addEntry(new KeybindShortcutEntry(keybindCategory, keyBinding)));
+			keybindCategory.shortcutsMap.keySet().stream().sorted().forEach(keyBinding -> addEntry(new KeybindShortcutEntry(keybindCategory, keyBinding.copy())));
 		} else {
 			addEntry(new ShortcutLoadingEntry());
 		}
@@ -99,6 +98,10 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 	 */
 	protected void updateKeybinds() {
 		children().stream().filter(KeybindShortcutEntry.class::isInstance).map(KeybindShortcutEntry.class::cast).forEach(KeybindShortcutEntry::update);
+	}
+
+	protected boolean stopEditing() {
+		return children().stream().filter(KeybindShortcutEntry.class::isInstance).map(KeybindShortcutEntry.class::cast).anyMatch(KeybindShortcutEntry::stopEditing);
 	}
 
 	/**
@@ -327,11 +330,11 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 	protected class KeybindShortcutEntry extends ShortcutEntry<ShortcutKeyBinding> {
 		private final List<ClickableWidget> children;
 		private final ShortcutKeyBinding keyBinding;
-		private final ButtonWidget keybindButton;
+		private final KeybindWidget keybindButton;
 		private boolean duplicate = false;
 
 		private KeybindShortcutEntry(ShortcutCategoryEntry<ShortcutKeyBinding> category) {
-			this(category, new ShortcutKeyBinding(InputUtil.UNKNOWN_KEY));
+			this(category, new ShortcutKeyBinding(List.of(InputUtil.UNKNOWN_KEY)));
 		}
 
 		/**
@@ -341,15 +344,11 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		private KeybindShortcutEntry(ShortcutCategoryEntry<ShortcutKeyBinding> category, ShortcutKeyBinding keyBinding) {
 			super(category, keyBinding);
 			this.keyBinding = keyBinding;
-			keybindButton = ButtonWidget.builder(keyBinding.getBoundKey().getLocalizedText(), button -> {
-						ShortcutsConfigListWidget.this.screen.selectedKeyBinding = keyBinding;
-						ShortcutsConfigListWidget.this.updateKeybinds();
-					})
-					.dimensions(width / 2 - 160, 5, 150, 20)
-					.narrationSupplier(textSupplier -> keyBinding.isUnbound()
+			keybindButton = new KeybindWidget(keyBinding, width / 2 - 160, 5, 150, 20, keyBinding.getBoundKeysText(),
+					textSupplier -> keyBinding.isUnbound()
 							? Text.translatable("narrator.controls.unbound", replacement.getText())
-							: Text.translatable("narrator.controls.bound", replacement.getText(), textSupplier.get()))
-					.build();
+							: Text.translatable("narrator.controls.bound", replacement.getText(), textSupplier.get()),
+					ShortcutsConfigListWidget.this::updateKeybinds);
 			// The duplicate warning tooltip displays replacement commands and needs to be updated.
 			replacement.setChangedListener(command -> ShortcutsConfigListWidget.this.updateKeybinds());
 			children = List.of(keybindButton, replacement);
@@ -359,7 +358,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		@Override
 		public String toString() {
 			// This is used in the delete warning screen, so we use the localized text.
-			return keyBinding.getBoundKey().getLocalizedText().getString() + " → " + replacement.getText();
+			return keyBinding.getBoundKeysText().getString() + " → " + replacement.getText();
 		}
 
 		@Override
@@ -396,7 +395,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 			keybindButton.setY(y);
 			keybindButton.render(context, mouseX, mouseY, tickDelta);
 			if (duplicate) {
-				context.fill(keybindButton.getX() - 6, y - 1, keybindButton.getX() - 3, y + entryHeight, 0xFFFF0000);
+				context.fill(keybindButton.getX() - 6, y, keybindButton.getX() - 3, y + entryHeight, 0xFFFF0000);
 			}
 		}
 
@@ -411,13 +410,13 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		 */
 		@SuppressWarnings("JavadocReference")
 		protected void update() {
-			keybindButton.setMessage(keyBinding.getBoundKey().getLocalizedText());
+			keybindButton.setMessage(keyBinding.getBoundKeysText());
 			duplicate = false;
 			MutableText text = Text.empty();
 			if (!keyBinding.isUnbound()) {
 				// Check for conflicts with regular keybinds
 				for (KeyBinding otherKeyBinding : client.options.allKeys) {
-					if (keyBinding.getBoundKey().getTranslationKey().equals(otherKeyBinding.getBoundKeyTranslationKey())) {
+					if (keyBinding.getBoundKeysTranslationKey().contains(otherKeyBinding.getBoundKeyTranslationKey())) {
 						if (duplicate) {
 							text.append(", ");
 						}
@@ -448,13 +447,17 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 				keybindButton.setTooltip(null);
 			}
 
-			if (ShortcutsConfigListWidget.this.screen.selectedKeyBinding == keyBinding) {
+			if (keybindButton.isEditing()) {
 				keybindButton.setMessage(Text.literal("> ")
 						.append(keybindButton.getMessage().copy().formatted(Formatting.WHITE, Formatting.UNDERLINE))
 						.append(" <")
 						.formatted(Formatting.YELLOW)
 				);
 			}
+		}
+
+		protected boolean stopEditing() {
+			return keybindButton.stopEditing();
 		}
 	}
 }
