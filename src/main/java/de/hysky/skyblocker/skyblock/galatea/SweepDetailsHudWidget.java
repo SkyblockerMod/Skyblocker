@@ -2,12 +2,14 @@ package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -17,10 +19,14 @@ import net.minecraft.util.Colors;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 @RegisterWidget
 public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	// Doing this will allow these axes to be affected by SkyBlock resource packs.
+	private static final Supplier<ItemStack> TREECAPITATOR_AXE = ItemRepository.getItemStackSupplier("TREECAPITATOR_AXE");
+	private static final Supplier<ItemStack> FIGSTONE_AXE = ItemRepository.getItemStackSupplier("FIGSTONE_AXE");
 	private static final Map<String, ItemStack> LOG_TO_ITEM = Map.of(
 			"Fig", new ItemStack(Items.STRIPPED_SPRUCE_LOG),
 			"Mangrove", new ItemStack(Items.MANGROVE_LOG),
@@ -49,7 +55,12 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 
 		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
 			SweepDetailsListener.active = false;
-			addComponent(new IcoTextComponent(new ItemStack(Items.STONE_AXE), Text.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
+			ItemStack axeIcon = switch (Utils.getLocation()) {
+				case THE_PARK -> (TREECAPITATOR_AXE.get() != null) ? TREECAPITATOR_AXE.get() : new ItemStack(Items.GOLDEN_AXE);
+				case GALATEA -> (FIGSTONE_AXE.get() != null) ? FIGSTONE_AXE.get() : new ItemStack(Items.STONE_AXE);
+				default -> RED_CONCRETE;
+			};
+			addComponent(new IcoTextComponent(axeIcon, Text.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
 			return;
 		}
 
