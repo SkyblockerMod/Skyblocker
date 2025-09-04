@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.wikilookup;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
@@ -15,10 +16,13 @@ public class RegularItemLookup implements WikiLookup {
 
 	@Override
 	public void open(@NotNull ItemStack itemStack, @NotNull PlayerEntity player, boolean useOfficial) {
-		ItemUtils.getItemIdOptional(itemStack)
-				.map(neuId -> ItemRepository.getWikiLink(neuId, useOfficial))
-				.ifPresentOrElse(wikiLink -> WikiLookupManager.openWikiLink(wikiLink, player),
-						() -> noArticleFound(player, useOfficial));
+		String neuId = ItemUtils.getNeuId(itemStack);
+
+		if (StringUtils.isNotEmpty(neuId)) {
+			WikiLookupManager.openWikiLink(ItemRepository.getWikiLink(neuId, useOfficial), player);
+		} else {
+			noArticleFound(player, useOfficial);
+		}
 	}
 
 	private static void noArticleFound(@NotNull PlayerEntity player, boolean useOfficial) {
