@@ -21,7 +21,6 @@ import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class DonationButton extends ClickableWidget {
 	private static final int SIZE = 33;
