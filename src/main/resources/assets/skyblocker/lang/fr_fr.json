@@ -943,5 +943,14 @@
     "skyblocker.config.mining.crystalsWaypoints.shareFairyGrotto": "Partager la Grotte des Fées",
     "skyblocker.config.mining.crystalsWaypoints.removeSuccess": "Suppression du waypoint vers ",
     "skyblocker.config.mining.crystalsWaypoints.wishingCompassSolver.enableTabEffectsMessage": "Active les effets dans le /tab pour permettre à la boussole d'ientifier les coordonnées de la reine",
-    "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Définit la couleur de la surbrillance pour les tapis incassables."
+    "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Définit la couleur de la surbrillance pour les tapis incassables.",
+    "skyblocker.config.mining.glacite.autoShareCorpses": "Partage Automatiquement les Cadavres Trouvés dans le Chat",
+    "skyblocker.config.mining.glacite.autoShareCorpses.@Tooltip": "Envoie un message dans le chat de groupe avec les emplacements des cadavres quand vous en trouvez un.",
+    "skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode.SOUND_AND_VISUAL": "Indicateur Sonore et Visuel",
+    "skyblocker.config.mining.glacite.enableCorpseFinder": "Détecteur de Cadavres",
+    "skyblocker.config.mining.glacite.enableParsingChatCorpseFinder.@Tooltip": "Si activé, écoute le chat et analyse les cadavres partagés par les autres joueurs. Doit être compatible avec les autres mods.",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker": "Active le Suivi des Profits des Cadavres",
+    "skyblocker.config.mining.glacite.enableCorpseFinder.@Tooltip": "Créé un waypoint pour les cadavres. Permet de les partager.",
+    "skyblocker.config.mining.glacite.enableParsingChatCorpseFinder": "Parcours les cadavres dans le chat",
+    "skyblocker.config.mining.glacite.coldOverlay.@Tooltip": "Affiche un overlay glacial dans les Glacite mines qui s'intensifie avec le froid."
 }
