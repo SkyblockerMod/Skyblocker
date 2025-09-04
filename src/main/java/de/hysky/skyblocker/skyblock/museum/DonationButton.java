@@ -53,13 +53,7 @@ public class DonationButton extends ClickableWidget {
 		// Determine the item stack to display
 		this.itemStack = !donation.isSet()
 				? ItemRepository.getItemStack(donation.getId())
-				: ItemRepository.getItemStack(
-				donation.getSet().stream()
-						.filter(piece -> piece.left().toLowerCase(Locale.ENGLISH).contains("helmet") || piece.left().toLowerCase(Locale.ENGLISH).contains("hat"))
-						.findFirst()
-						.orElse(donation.getSet().get(1)) // gets chestplate
-						.left()
-		);
+				: ItemRepository.getItemStack(MuseumItemCache.ARMOR_TO_ID.get(donation.getId()));
 
 		buildTooltip();
 	}

@@ -543,6 +543,14 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.searchOverlay.enableAuctionHouse = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum.@Tooltip"))
+								.binding(defaults.uiAndVisuals.searchOverlay.enableMuseum,
+										() -> config.uiAndVisuals.searchOverlay.enableMuseum,
+										newValue -> config.uiAndVisuals.searchOverlay.enableMuseum = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.keepPreviousSearches"))
                                 .description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.keepPreviousSearches.@Tooltip"))
