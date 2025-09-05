@@ -18,6 +18,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -56,8 +57,8 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
 			SweepDetailsListener.active = false;
 			ItemStack axeIcon = switch (Utils.getLocation()) {
-				case THE_PARK -> (TREECAPITATOR_AXE.get() != null) ? TREECAPITATOR_AXE.get() : new ItemStack(Items.GOLDEN_AXE);
-				case GALATEA -> (FIGSTONE_AXE.get() != null) ? FIGSTONE_AXE.get() : new ItemStack(Items.STONE_AXE);
+				case THE_PARK -> Optional.ofNullable(TREECAPITATOR_AXE.get()).orElse(new ItemStack(Items.GOLDEN_AXE));
+				case GALATEA -> Optional.ofNullable(FIGSTONE_AXE.get()).orElse(new ItemStack(Items.STONE_AXE));
 				default -> RED_CONCRETE;
 			};
 			addComponent(new IcoTextComponent(axeIcon, Text.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
