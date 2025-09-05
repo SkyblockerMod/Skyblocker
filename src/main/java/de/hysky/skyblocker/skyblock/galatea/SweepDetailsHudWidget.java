@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -26,6 +27,7 @@ import java.util.function.Supplier;
 public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	// Doing this will allow these axes to be affected by SkyBlock resource packs.
+	private static final Supplier<ItemStack> SWEET_AXE = ItemRepository.getItemStackSupplier("SWEET_AXE");
 	private static final Supplier<ItemStack> TREECAPITATOR_AXE = ItemRepository.getItemStackSupplier("TREECAPITATOR_AXE");
 	private static final Supplier<ItemStack> FIGSTONE_AXE = ItemRepository.getItemStackSupplier("FIGSTONE_AXE");
 	private static final Map<String, ItemStack> LOG_TO_ITEM = Map.of(
@@ -35,14 +37,20 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 			"Acacia", new ItemStack(Items.ACACIA_LOG),
 			"Dark Oak", new ItemStack(Items.DARK_OAK_LOG),
 			"Spruce", new ItemStack(Items.SPRUCE_LOG),
-			"Birch", new ItemStack(Items.BIRCH_LOG)
+			"Birch", new ItemStack(Items.BIRCH_LOG),
+			"Oak", new ItemStack(Items.OAK_LOG)
 	);
 	private static final ItemStack RED_CONCRETE = new ItemStack(Items.RED_CONCRETE);
-	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.THE_PARK);
+	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.HUB, Location.THE_PARK);
 
 	public SweepDetailsHudWidget() {
 		super(Text.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweepDetails");
 		update();
+	}
+
+	@Override
+	public boolean shouldRender(Location location) {
+		return (!Utils.getLocation().equals(Location.HUB) || Utils.getArea().equals(Area.FOREST)) && super.shouldRender(location);
 	}
 
 	@Override
@@ -53,10 +61,10 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 			addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));
 			return;
 		}
-
 		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
 			SweepDetailsListener.active = false;
 			ItemStack axeIcon = switch (Utils.getLocation()) {
+				case HUB -> Optional.ofNullable(SWEET_AXE.get()).orElse(new ItemStack(Items.IRON_AXE));
 				case THE_PARK -> Optional.ofNullable(TREECAPITATOR_AXE.get()).orElse(new ItemStack(Items.GOLDEN_AXE));
 				case GALATEA -> Optional.ofNullable(FIGSTONE_AXE.get()).orElse(new ItemStack(Items.STONE_AXE));
 				default -> RED_CONCRETE;
