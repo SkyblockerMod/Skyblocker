@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
@@ -53,9 +54,9 @@ public class ShortcutsTest {
 	@Test
 	void testShortcutsEncodeKeyCombo() {
 		Shortcuts.ShortcutsRecord shortcuts = new Shortcuts.ShortcutsRecord(Object2ObjectMaps.singleton("/s", "/skyblock"), Object2ObjectMaps.singleton("/pa", "/p accept"), new Object2ObjectOpenHashMap<>(Map.of(new ShortcutKeyBinding(List.of(InputUtil.fromKeyCode(InputUtil.GLFW_KEY_S, -1), InputUtil.fromKeyCode(InputUtil.GLFW_KEY_K, -1))), "/skyblock", new ShortcutKeyBinding(List.of(InputUtil.fromKeyCode(InputUtil.GLFW_KEY_P, -1), InputUtil.fromKeyCode(InputUtil.GLFW_KEY_V, -1))), "/pv")));
-		String shortcutsJson = SkyblockerMod.GSON_COMPACT.toJson(Shortcuts.ShortcutsRecord.CODEC.encodeStart(JsonOps.INSTANCE, shortcuts).getOrThrow());
+		JsonElement shortcutsJson = Shortcuts.ShortcutsRecord.CODEC.encodeStart(JsonOps.INSTANCE, shortcuts).getOrThrow();
 
-		Assertions.assertEquals(SHORTCUTS_JSON_KEY_COMBO, shortcutsJson);
+		Assertions.assertEquals(SkyblockerMod.GSON.fromJson(SHORTCUTS_JSON_KEY_COMBO, JsonObject.class), shortcutsJson); // Convert to json to prevent issues with hash map iteration order
 	}
 
 	@Test
@@ -63,8 +64,8 @@ public class ShortcutsTest {
 		Shortcuts.ShortcutsRecord shortcuts = Shortcuts.ShortcutsRecord.CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(SHORTCUTS_JSON_OLD, JsonObject.class)).getOrThrow();
 		shortcuts.keyBindings().put(new ShortcutKeyBinding(List.of(InputUtil.fromKeyCode(InputUtil.GLFW_KEY_S, -1), InputUtil.fromKeyCode(InputUtil.GLFW_KEY_K, -1))), "/skyblock");
 		shortcuts.keyBindings().put(new ShortcutKeyBinding(List.of(InputUtil.fromKeyCode(InputUtil.GLFW_KEY_P, -1), InputUtil.fromKeyCode(InputUtil.GLFW_KEY_V, -1))), "/pv");
-		String shortcutsJson = SkyblockerMod.GSON_COMPACT.toJson(Shortcuts.ShortcutsRecord.CODEC.encodeStart(JsonOps.INSTANCE, shortcuts).getOrThrow());
+		JsonElement shortcutsJson = Shortcuts.ShortcutsRecord.CODEC.encodeStart(JsonOps.INSTANCE, shortcuts).getOrThrow();
 
-		Assertions.assertEquals(SHORTCUTS_JSON_KEY_COMBO, shortcutsJson);
+		Assertions.assertEquals(SkyblockerMod.GSON.fromJson(SHORTCUTS_JSON_KEY_COMBO, JsonObject.class), shortcutsJson); // Convert to json to prevent issues with hash map iteration order
 	}
 }
