@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoFatTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -12,6 +14,8 @@ import net.minecraft.util.Formatting;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static de.hysky.skyblocker.utils.Utils.getSupplierWithFallback;
 
 // this widgte shows, how many active effects you have.
 // it also shows one of those in detail.
@@ -48,7 +52,7 @@ public class EffectWidget extends TabHudWidget {
 		String footertext = PlayerListManager.getFooter();
 
 		if (footertext == null || !footertext.contains("Active Effects")) {
-			this.addComponent(Components.iconTextComponent());
+			this.addComponent(new IcoTextComponent());
 			return;
 
 		}
@@ -57,40 +61,43 @@ public class EffectWidget extends TabHudWidget {
 		if (m.find() && m.group("buff") != null) {
 			String buff = m.group("buff");
 			if (buff.startsWith("Not")) {
-				this.addComponent(Components.iconTextComponent(Ico.COOKIE, Text.of("Cookie: not active")));
+				this.addComponent(new IcoTextComponent(getSupplierWithFallback(ItemRepository.getItemStackSupplier("BOOSTER_COOKIE"), Ico.COOKIE), Text.of("Cookie: not active")));
 			} else {
 				Text cookie = Text.literal("Cookie: ").append(buff);
-				this.addComponent(Components.iconTextComponent(Ico.COOKIE, cookie));
+				this.addComponent(new IcoTextComponent(getSupplierWithFallback(ItemRepository.getItemStackSupplier("BOOSTER_COOKIE"), Ico.COOKIE), cookie));
 			}
 		}
 
 		String[] lines = footertext.split("Active Effects")[1].split("\n");
 		if (lines.length < 2) {
-			this.addComponent(Components.iconTextComponent());
+			this.addComponent(new IcoTextComponent());
 			return;
 		}
 
 		if (lines[1].startsWith("No")) {
 			Text txt = Text.literal("No effects active").formatted(Formatting.GRAY);
-			this.addComponent(Components.iconTextComponent(Ico.POTION, txt));
+			this.addComponent(new IcoTextComponent(Ico.POTION, txt));
 		} else if (lines[1].contains("God")) {
 			String timeleft = lines[1].split("! ")[1];
 			Text godpot = Text.literal("God potion!").formatted(Formatting.RED);
 			Text txttleft = Text.literal(timeleft).formatted(Formatting.LIGHT_PURPLE);
-			this.addComponent(Components.iconFatTextComponent(Ico.POTION, godpot, txttleft));
+			IcoFatTextComponent iftc = new IcoFatTextComponent(getSupplierWithFallback(ItemRepository.getItemStackSupplier("GOD_POTION_2"), Ico.GOD_POTION), godpot, txttleft);
+			this.addComponent(iftc);
 		} else {
 			String number = lines[1].substring("You have ".length());
 			int idx = number.indexOf(' ');
 			if (idx == -1 || lines.length < 4) {
-				this.addComponent(Components.iconFatTextComponent());
+				this.addComponent(new IcoFatTextComponent());
 				return;
 			}
 			number = number.substring(0, idx);
 			Text active = Text.literal("Active Effects: ")
 					.append(Text.literal(number).formatted(Formatting.YELLOW));
 
-			this.addComponent(Components.iconFatTextComponent(Ico.POTION, active,
-					Text.literal(lines[2]).formatted(Formatting.AQUA)));
+			IcoFatTextComponent iftc = new IcoFatTextComponent(Ico.POTION, active,
+					Text.literal(lines[2]).formatted(Formatting.AQUA));
+			this.addComponent(iftc);
 		}
 	}
+
 }

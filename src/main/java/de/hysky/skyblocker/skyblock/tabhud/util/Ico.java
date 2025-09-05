@@ -1,9 +1,12 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+
+import static de.hysky.skyblocker.utils.Utils.getSupplierWithFallback;
 
 /**
  * Stores convenient shorthands for common ItemStack definitions
@@ -13,7 +16,7 @@ public class Ico {
 	public static final ItemStack NTAG = Items.NAME_TAG.getDefaultStack();
 	public static final ItemStack EMERALD = Items.EMERALD.getDefaultStack();
 	public static final ItemStack MAGMA_CREAM = Items.MAGMA_CREAM.getDefaultStack();
-	public static final ItemStack AMETHYST_SHARD = Items.AMETHYST_SHARD.getDefaultStack();
+	public static final ItemStack GEMSTONE = ItemUtils.createSkull(HeadTextures.GEMSTONE);
 	public static final ItemStack CLOCK = Items.CLOCK.getDefaultStack();
 	public static final ItemStack DIA_SWORD = Items.DIAMOND_SWORD.getDefaultStack();
 	public static final ItemStack DBUSH = Items.DEAD_BUSH.getDefaultStack();
@@ -34,6 +37,7 @@ public class Ico {
 	public static final ItemStack LANTERN = Items.LANTERN.getDefaultStack();
 	public static final ItemStack COOKIE = Items.COOKIE.getDefaultStack();
 	public static final ItemStack POTION = Items.POTION.getDefaultStack();
+	public static final ItemStack GOD_POTION = ItemUtils.createSkull(HeadTextures.GOD_POTION);
 	public static final ItemStack S_POTION = Items.SPLASH_POTION.getDefaultStack();
 	public static final ItemStack BARRIER = Items.BARRIER.getDefaultStack();
 	public static final ItemStack PLAYER = Items.PLAYER_HEAD.getDefaultStack();
@@ -76,7 +80,7 @@ public class Ico {
 	public static final ItemStack GRAY_DYE = Items.GRAY_DYE.getDefaultStack();
 	public static final ItemStack ENCHANTED_BOOK = Items.ENCHANTED_BOOK.getDefaultStack();
 	public static final ItemStack SPIDER_EYE = Items.SPIDER_EYE.getDefaultStack();
-	public static final ItemStack BLUE_ICE = Items.BLUE_ICE.getDefaultStack();
+	public static final ItemStack PACKED_ICE = Items.PACKED_ICE.getDefaultStack();
 	public static final ItemStack JUNGLE_SAPLING = Items.JUNGLE_SAPLING.getDefaultStack();
 	public static final ItemStack ENCHANTING_TABLE = Items.ENCHANTING_TABLE.getDefaultStack();
 	public static final ItemStack BREWING_STAND = Items.BREWING_STAND.getDefaultStack();
