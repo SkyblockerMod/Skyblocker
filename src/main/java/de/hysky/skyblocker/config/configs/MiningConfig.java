@@ -13,7 +13,7 @@ public class MiningConfig {
 
 	public boolean callMismyla = true;
 
-	public boolean autoRedialOnBadSignal = true;
+	public boolean redialOnBadSignal = true;
 
 	public DwarvenMines dwarvenMines = new DwarvenMines();
 

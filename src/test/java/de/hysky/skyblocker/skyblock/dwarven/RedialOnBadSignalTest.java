@@ -3,9 +3,9 @@ package de.hysky.skyblocker.skyblock.dwarven;
 import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
 
-public class CallBadSignalTest extends ChatPatternListenerTest<CallBadSignal> {
-	CallBadSignalTest() {
-		super(new CallBadSignal());
+public class RedialOnBadSignalTest extends ChatPatternListenerTest<RedialOnBadSignal> {
+	RedialOnBadSignalTest() {
+		super(new RedialOnBadSignal());
 	}
 
 	@Test

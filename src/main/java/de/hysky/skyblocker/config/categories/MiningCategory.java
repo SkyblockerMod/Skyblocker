@@ -58,11 +58,11 @@ public class MiningCategory {
 						.build())
 
 				.option(Option.<Boolean>createBuilder()
-						.name(Text.translatable("skyblocker.config.mining.autoRedialOnBadSignal"))
-						.description(Text.translatable("skyblocker.config.mining.autoRedialOnBadSignal.@Tooltip"))
-						.binding(defaults.mining.autoRedialOnBadSignal,
-								() -> config.mining.autoRedialOnBadSignal,
-								newValue -> config.mining.autoRedialOnBadSignal = newValue)
+						.name(Text.translatable("skyblocker.config.mining.redialOnBadSignal"))
+						.description(Text.translatable("skyblocker.config.mining.redialOnBadSignal.@Tooltip"))
+						.binding(defaults.mining.redialOnBadSignal,
+								() -> config.mining.redialOnBadSignal,
+								newValue -> config.mining.redialOnBadSignal = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 
