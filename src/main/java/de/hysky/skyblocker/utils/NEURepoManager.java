@@ -28,6 +28,8 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.merge.ContentMergeStrategy;
+import org.eclipse.jgit.merge.MergeStrategy;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,6 +105,7 @@ public class NEURepoManager {
 			try {
 				if (Files.isDirectory(NEURepoManager.LOCAL_REPO_DIR)) {
 					try (Git localRepo = Git.open(NEURepoManager.LOCAL_REPO_DIR.toFile())) {
+						boolean stashed = localRepo.stashCreate().call() != null;
 						localRepo.fetch()
 								.setRefSpecs("+refs/heads/master:refs/remotes/origin/master")
 								.setThin(true)
@@ -113,6 +116,13 @@ public class NEURepoManager {
 								.setMode(ResetCommand.ResetType.HARD)
 								.disableRefLog(true)
 								.call();
+						if (stashed) {
+							localRepo.stashApply()
+									.setContentMergeStrategy(ContentMergeStrategy.OURS)
+									.call();
+							localRepo.stashDrop().call();
+							LOGGER.info("[Skyblocker NEU Repo] Auto stash has been applied to the NEU Repository");
+						}
 						LOGGER.info("[Skyblocker NEU Repo] NEU Repository was updated to {}", ref.getObjectId().getName());
 					}
 				} else {
