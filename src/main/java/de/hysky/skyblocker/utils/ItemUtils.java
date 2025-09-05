@@ -26,7 +26,6 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.ObjectReferencePair;
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.component.ComponentChanges;
@@ -79,21 +78,7 @@ public final class ItemUtils {
     private static final short LOG_INTERVAL = 1000;
 	private static long lastLog = Util.getMeasuringTimeMs();
 
-	public static final List<ObjectReferencePair<String, SkyblockItemRarity>> LORE_RARITIES = List.of(
-			ObjectReferencePair.of("ADMIN", SkyblockItemRarity.ADMIN),
-			ObjectReferencePair.of("ULTIMATE", SkyblockItemRarity.ULTIMATE),
-			ObjectReferencePair.of("SPECIAL", SkyblockItemRarity.SPECIAL), //Very special is the same color so this will cover it
-			ObjectReferencePair.of("DIVINE", SkyblockItemRarity.DIVINE),
-			ObjectReferencePair.of("MYTHIC", SkyblockItemRarity.MYTHIC),
-			ObjectReferencePair.of("LEGENDARY", SkyblockItemRarity.LEGENDARY),
-			ObjectReferencePair.of("LEGENJERRY", SkyblockItemRarity.LEGENDARY),
-			ObjectReferencePair.of("EPIC", SkyblockItemRarity.EPIC),
-			ObjectReferencePair.of("RARE", SkyblockItemRarity.RARE),
-			ObjectReferencePair.of("UNCOMMON", SkyblockItemRarity.UNCOMMON),
-			ObjectReferencePair.of("COMMON", SkyblockItemRarity.COMMON)
-	);
-
-    private ItemUtils() {}
+	private ItemUtils() {}
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
         return literal("dumpHeldItem").executes(context -> {
@@ -585,20 +570,16 @@ public final class ItemUtils {
 		if (stack.isEmpty()) return SkyblockItemRarity.UNKNOWN;
 
 		if (!stack.getSkyblockId().equals("PET")) {
-			List<Text> lore = ItemUtils.getLore(stack);
-			List<String> tooltip = lore.stream().map(Text::getString).toList();
-			for (ObjectReferencePair<String, SkyblockItemRarity> key : LORE_RARITIES) {
-				if (tooltip.stream().anyMatch(line -> line.contains(key.left()))) {
-					return key.right();
-				}
-			}
+			return ItemUtils.getLore(stack).stream()
+					.map(Text::getString)
+					.map(SkyblockItemRarity::containsName)
+					.flatMap(Optional::stream)
+					.findFirst()
+					.orElse(SkyblockItemRarity.UNKNOWN);
 		} else {
 			PetInfo info = stack.getPetInfo();
-			if (!info.isEmpty()) {
-				return info.item().isPresent() && info.item().get().equals("PET_ITEM_TIER_BOOST") ? info.rarity().next() : info.rarity();
-			}
+			if (info.isEmpty()) return SkyblockItemRarity.UNKNOWN;
+			return info.item().isPresent() && info.item().get().equals("PET_ITEM_TIER_BOOST") ? info.rarity().next() : info.rarity();
 		}
-
-		return SkyblockItemRarity.UNKNOWN;
 	}
 }

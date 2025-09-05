@@ -1,8 +1,7 @@
 package de.hysky.skyblocker.skyblock.item;
 
 import java.util.Arrays;
-
-import org.jetbrains.annotations.Nullable;
+import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.utils.EnumUtils;
@@ -50,11 +49,16 @@ public enum SkyblockItemRarity implements StringIdentifiable {
 		return EnumUtils.cycle(this);
 	}
 
-	@Nullable
+	public static Optional<SkyblockItemRarity> containsName(String name) {
+		return Arrays.stream(SkyblockItemRarity.values())
+				.filter(rarity -> name.contains(rarity.name()))
+				.findFirst();
+	}
+
 	public static SkyblockItemRarity fromColor(int color) {
 		return Arrays.stream(SkyblockItemRarity.values())
 				.filter(rarity -> ColorHelper.fromFloats(1f, rarity.r, rarity.g, rarity.b) == ColorHelper.fullAlpha(color))
 				.findFirst()
-				.orElse(null);
+				.orElse(UNKNOWN);
 	}
 }
