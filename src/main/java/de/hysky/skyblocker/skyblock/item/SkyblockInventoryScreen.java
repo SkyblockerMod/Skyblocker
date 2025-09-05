@@ -9,7 +9,7 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
-import de.hysky.skyblocker.skyblock.FocusedItemProvider;
+import de.hysky.skyblocker.skyblock.HoveredItemStackProvider;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -28,6 +28,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,7 @@ import java.util.function.Supplier;
  * <p>Opened here {@link de.hysky.skyblocker.mixins.MinecraftClientMixin#skyblocker$skyblockInventoryScreen MinecraftClientMixin#skyblocker$skyblockInventoryScreen}</p>
  * <p>Book button is moved here {@link de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker$moveButton InventoryScreenMixin#skyblocker$moveButton}</p>
  */
-public class SkyblockInventoryScreen extends InventoryScreen {
+public class SkyblockInventoryScreen extends InventoryScreen implements HoveredItemStackProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger("Equipment");
     private static final Supplier<ItemStack[]> EMPTY_EQUIPMENT = () -> new ItemStack[]{ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
     public static final ItemStack[] equipment = EMPTY_EQUIPMENT.get();
@@ -58,6 +59,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("equipment");
 
     private final Slot[] equipmentSlots = new Slot[4];
+	private ItemStack hoveredItem;
 
     private static void save(String profileId) {
         try {
@@ -158,14 +160,14 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
         super.drawMouseoverTooltip(context, x, y);
 
-		FocusedItemProvider.setFocusedItem(null);
+		hoveredItem = null;
         if (!handler.getCursorStack().isEmpty()) return;
 
         for (Slot equipmentSlot : equipmentSlots) {
             if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, x, y) && equipmentSlot.hasStack()) {
                 ItemStack itemStack = equipmentSlot.getStack();
                 context.drawTooltip(this.textRenderer, this.getTooltipFromItem(itemStack), itemStack.getTooltipData(), x, y);
-				FocusedItemProvider.setFocusedItem(itemStack);
+				hoveredItem = itemStack;
             }
         }
     }
@@ -196,7 +198,12 @@ public class SkyblockInventoryScreen extends InventoryScreen {
         }
     }
 
-    private static class EquipmentSlot extends Slot {
+	@Override
+	public @Nullable ItemStack getFocusedItem() {
+		return hoveredItem;
+	}
+
+	private static class EquipmentSlot extends Slot {
 
         private EquipmentSlot(Inventory inventory, int index, int x, int y) {
             super(inventory, index, x, y);
