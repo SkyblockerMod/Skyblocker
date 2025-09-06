@@ -7,7 +7,6 @@ import net.minecraft.client.gui.DrawContext;
  * Grid cols are separated by lines.
  */
 public class TableComponent extends Component {
-
 	private final Component[][] comps;
 	private final int color;
 	private final int cols, rows;
@@ -29,10 +28,6 @@ public class TableComponent extends Component {
 		rowBorders = new int[h];
 		rowBaseHeights = new int[h];
 		rowHeights = new int[h];
-	}
-
-	public TableComponent(int w, int h, int col) {
-		this(w, h, col, true);
 	}
 
 	public void addToCell(int x, int y, Component c) {
@@ -121,5 +116,4 @@ public class TableComponent extends Component {
 		for (int h : rowHeights) totalH += h;
 		this.height = totalH;
 	}
-
 }

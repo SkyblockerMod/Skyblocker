@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -125,9 +125,7 @@ public class MinionWidget extends TabHudWidget {
 			// makes "BLOCKED" also red. in reality, it's some kind of crimson
 			mt.append(Text.literal(stat).formatted(format));
 
-			IcoTextComponent itc = new IcoTextComponent(MIN_ICOS.get(min), mt);
-			this.addComponent(itc);
+			this.addComponent(Components.iconTextComponent(MIN_ICOS.get(min), mt));
 		}
 	}
-
 }

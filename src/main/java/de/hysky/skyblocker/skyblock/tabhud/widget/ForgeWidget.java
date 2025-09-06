@@ -3,8 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoFatTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -43,16 +42,16 @@ public class ForgeWidget extends TabHudWidget {
 						case 7 -> Text.literal("Needs HotM 7").formatted(Formatting.GRAY);
 						default -> Text.literal("This message should not appear").formatted(Formatting.RED, Formatting.BOLD);
 					};
-					c = new IcoFatTextComponent(Ico.BARRIER, l1, l2);
+					c = Components.iconFatTextComponent(Ico.BARRIER, l1, l2);
 				}
 				case "EMPTY" -> {
 					l1 = Text.literal("Empty").formatted(Formatting.GRAY);
-					c = new IcoTextComponent(Ico.FURNACE, l1);
+					c = Components.iconTextComponent(Ico.FURNACE, l1);
 				}
 				default -> {
 					String[] parts = trim.split(": ");
 					if (parts.length != 2) {
-						c = new IcoFatTextComponent();
+						c = Components.iconFatTextComponent();
 					} else {
 						l1 = Text.literal(parts[0].substring(3)).formatted(Formatting.YELLOW);
 						if (parts[1].equals("Ready!")) {
@@ -60,12 +59,11 @@ public class ForgeWidget extends TabHudWidget {
 						} else {
 							l2 = Text.literal("Done in: ").formatted(Formatting.GRAY).append(Text.literal(parts[1]).formatted(Formatting.WHITE));
 						}
-						c = new IcoFatTextComponent(Ico.CAMPFIRE, l1, l2);
+						c = Components.iconFatTextComponent(Ico.CAMPFIRE, l1, l2);
 					}
 				}
 			}
 			this.addComponent(c);
 		}
 	}
-
 }

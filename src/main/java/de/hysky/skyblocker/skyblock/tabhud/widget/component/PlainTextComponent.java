@@ -5,27 +5,36 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Component that consists of a line of text.
+ * Component that consists of 1 or 2 lines of text.
  */
 public class PlainTextComponent extends Component {
-
-	private Text text;
+	private final List<Text> lines = new ArrayList<>();
 
 	public PlainTextComponent(Text txt) {
-		this.text = txt;
+		lines.add(txt == null ? Text.literal("No data").formatted(Formatting.GRAY) : txt);
 
-		if (txt == null) {
-			this.text = Text.literal("No data").formatted(Formatting.GRAY);
-		}
-
-		this.width = PAD_S + txtRend.getWidth(this.text); // looks off without padding
+		this.width = PAD_L + txtRend.getWidth(txt); // looks off without padding
 		this.height = txtRend.fontHeight;
+	}
+
+	public PlainTextComponent(Text line1, Text line2) {
+		lines.add(line1 == null ? Text.literal("No data").formatted(Formatting.GRAY) : line1);
+		lines.add(line2 == null ? Text.literal("No data").formatted(Formatting.GRAY) : line2);
+
+		this.width = PAD_L + Math.max(txtRend.getWidth(line1), txtRend.getWidth(line2));
+		this.height = (txtRend.fontHeight * 2) + PAD_S;
 	}
 
 	@Override
 	public void render(DrawContext context, int x, int y) {
-		context.drawText(txtRend, text, x + PAD_S, y, Colors.WHITE, false);
+		int yOffset = 0;
+		for (Text line : lines) {
+			context.drawText(txtRend, line, x + PAD_L, y + yOffset, Colors.WHITE, false);
+			yOffset += txtRend.fontHeight + PAD_S;
+		}
 	}
-
 }
