@@ -177,6 +177,6 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 	@NotNull
 	public PetInfo getPetInfo() {
 		if (petInfo != null) return petInfo;
-		return petInfo = ItemUtils.getPetInfo(this);
+		return petInfo = ItemUtils.getPetInfo((ItemStack) (Object) this);
 	}
 }
