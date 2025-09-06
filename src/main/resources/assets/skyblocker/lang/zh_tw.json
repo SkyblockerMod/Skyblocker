@@ -1059,7 +1059,7 @@
     "skyblocker.config.uiAndVisuals.healthBars.halfBarColor": "半血生命值條顏色",
     "skyblocker.config.uiAndVisuals.healthBars.halfBarColor.@Tooltip": "當怪物的生命值為一半時的顏色",
     "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor": "空生命值條顏色",
-    "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip": "當怪物的生命值條為空時的顏色",
+    "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip": "當怪物的生命值為零時的顏色。",
     "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter": "回車鍵關閉告示牌",
     "skyblocker.config.uiAndVisuals.slotText.separator": "單獨設定",
     "skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel": "HOTM能力等級",
