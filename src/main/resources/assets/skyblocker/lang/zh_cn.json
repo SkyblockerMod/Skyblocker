@@ -827,7 +827,7 @@
     "skyblocker.config.slayer.highlightMinis": "高亮小型Boss",
     "skyblocker.config.slayer.highlightMinis.@Tooltip[0]": "\n关：不高亮显示小型Boss。",
     "skyblocker.config.slayer.highlightMinis.@Tooltip[2]": "\n判定箱：为小型Boss绘制判定箱。",
-    "skyblocker.config.slayer.highlightBosses.@Tooltip[2]": "\nHITBOX：为Boss绘制判定箱。",
+    "skyblocker.config.slayer.highlightBosses.@Tooltip[2]": "\n判定箱：为Boss绘制判定箱。",
     "skyblocker.config.slayer.highlightBosses.@Tooltip[1]": "\n发光：为Boss增加发光效果。由于技术限制，该选项在检测怪物时有较小概率出错。",
     "skyblocker.config.slayer.highlightMinis.@Tooltip[1]": "\n发光：为小型Boss增加发光效果。由于技术限制，该选项在检测怪物时有较小概率出错。",
     "skyblocker.config.slayer.highlightBosses": "高亮Boss",
