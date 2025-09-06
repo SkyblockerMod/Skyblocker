@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor;
+package de.hysky.skyblocker.skyblock.item.custom.screen.item.name.visitor;
 
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;

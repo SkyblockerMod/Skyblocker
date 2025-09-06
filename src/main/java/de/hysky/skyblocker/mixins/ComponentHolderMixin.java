@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.mixins;
 
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -38,9 +40,18 @@ public interface ComponentHolderMixin {
 					String tex = customTextures.get(itemUuid);
 					return (T) CustomHelmetTextures.getProfile(tex);
 				}
+			} else if (dataComponentType == DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE) {
+				Object2BooleanMap<String> customGlint = SkyblockerConfigManager.get().general.customGlint;
+				if (customGlint.containsKey(itemUuid)) {
+					return (T) Boolean.valueOf(customGlint.getBoolean(itemUuid));
+				}
+			} else if (dataComponentType == DataComponentTypes.ITEM_MODEL) {
+				Object2ObjectOpenHashMap<String, Identifier> customItemModel = SkyblockerConfigManager.get().general.customItemModel;
+				if (customItemModel.containsKey(itemUuid)) {
+					return (T) customItemModel.get(itemUuid);
+				}
 			}
 		}
-
 		return original;
 	}
 }

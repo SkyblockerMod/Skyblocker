@@ -4,9 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -42,6 +40,7 @@ public class GeneralConfig {
     public List<Integer> lockedSlots = new ArrayList<>();
 
     //maybe put this 5 somewhere else
+	//it's 7 now
     public ObjectOpenHashSet<String> protectedItems = new ObjectOpenHashSet<>();
 
     public Object2ObjectOpenHashMap<String, Text> customItemNames = new Object2ObjectOpenHashMap<>();
@@ -53,6 +52,10 @@ public class GeneralConfig {
     public Object2ObjectOpenHashMap<String, CustomArmorAnimatedDyes.AnimatedDye> customAnimatedDyes = new Object2ObjectOpenHashMap<>();
 
 	public Object2ObjectOpenHashMap<String, String> customHelmetTextures = new Object2ObjectOpenHashMap<>();
+
+	public Object2BooleanOpenHashMap<String> customGlint = new Object2BooleanOpenHashMap<>();
+
+	public Object2ObjectOpenHashMap<String, Identifier> customItemModel = new Object2ObjectOpenHashMap<>();
 
 	public static class SpeedPresets {
 		public boolean enableSpeedPresets = true;

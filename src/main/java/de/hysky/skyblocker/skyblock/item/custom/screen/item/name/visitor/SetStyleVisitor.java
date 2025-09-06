@@ -1,20 +1,21 @@
-package de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor;
+package de.hysky.skyblocker.skyblock.item.custom.screen.item.name.visitor;
 
 import net.minecraft.text.MutableText;
 import net.minecraft.text.PlainTextContent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
 
-public class InsertTextVisitor extends BaseVisitor {
+/**
+ * This visitor is used to set a new style for a selection range in a text.
+ * It replaces the style of the selected text with the new style.
+ */
+public class SetStyleVisitor extends BaseVisitor {
 	private final MutableText newText = MutableText.of(new PlainTextContent.Literal(""));
-	private final String text;
-	private final Style insertAs;
+	private final Style newStyle;
 
-	public InsertTextVisitor(String text, @Nullable Style insertAs, int selectionStart, int selectionEnd) {
+	public SetStyleVisitor(Style style, int selectionStart, int selectionEnd) {
 		super(selectionStart, selectionEnd);
-		this.text = text;
-		this.insertAs = insertAs;
+		this.newStyle = style;
 	}
 
 	private void addNewText(MutableText newText) {
@@ -22,7 +23,7 @@ public class InsertTextVisitor extends BaseVisitor {
 	}
 
 	@Override
-	public void visit(Style style, String asString) {
+	protected void visit(Style style, String asString) {
 		if (asString.length() < selStart) { // not yet where we want to insert
 			if (asString.isEmpty()) return;
 			addNewText(Text.literal(asString).setStyle(style));
@@ -30,25 +31,21 @@ public class InsertTextVisitor extends BaseVisitor {
 			return;
 		}
 
-		// we want to insert somewhere in this string
 		if (selStart >= 0) {
 			String substring = asString.substring(0, selStart);
-			if (insertAs != null && selSize == 0) {
-				addNewText(Text.literal(substring).setStyle(style));
-				if (!text.isEmpty()) addNewText(Text.literal(text).setStyle(insertAs.withParent(style)));
-			} else {
-				addNewText(Text.literal(substring + text).setStyle(style));
-			}
+			addNewText(Text.literal(substring).setStyle(style));
+
 			asString = asString.substring(selStart);
 			selStart = -1;
 		}
-		// if we have no size, we just append the rest of the string
 		if (selSize <= 0) {
 			if (!asString.isEmpty()) addNewText(Text.literal(asString).setStyle(style));
 			return;
 		}
-		// the string is larger than the selection size, we need to split it
-		if (asString.length() > selSize) {
+		if (asString.length() <= selSize) {
+			addNewText(Text.literal(asString).setStyle(newStyle.withParent(style)));
+		} else {
+			addNewText(Text.literal(asString.substring(0, selSize)).setStyle(newStyle.withParent(style)));
 			addNewText(Text.literal(asString.substring(selSize)).setStyle(style));
 		}
 		selSize -= asString.length();

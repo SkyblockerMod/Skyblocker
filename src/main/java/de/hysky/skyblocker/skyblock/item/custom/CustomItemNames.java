@@ -5,11 +5,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.CustomizeNameScreen;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -53,7 +51,7 @@ public class CustomItemNames {
 			source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customItemNames.noItemUuid")));
 			return 0;
 		}
-		Scheduler.queueOpenScreen(new CustomizeNameScreen(handStack));
+		//Scheduler.queueOpenScreen(new CustomizeNameWidget(handStack));
 		return Command.SINGLE_SUCCESS;
 	}
 
