@@ -8,6 +8,7 @@ import java.util.Arrays;
 public enum Area {
 	CARNIVAL("Carnival"),
 	CHATEAU("Stillgore Château"),
+	FOREST("Forest"),
 	FOREST_TEMPLE("Forest Temple"),
 	UNKNOWN("Unknown");
 

@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class ItemRepository {
@@ -183,6 +184,13 @@ public class ItemRepository {
 	@Nullable
 	public static ItemStack getItemStack(String neuId) {
 		return itemsImported ? itemsMap.get(neuId) : null;
+	}
+
+	/**
+	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link ItemUtils#getNeuId(ItemStack) ItemTooltip#getNeuName(String, String)}
+	 */
+	public static Supplier<ItemStack> getItemStackSupplier(String neuId) {
+		return () -> itemsMap.get(neuId);
 	}
 
 	public static Stream<SkyblockRecipe> getRecipesStream() {
