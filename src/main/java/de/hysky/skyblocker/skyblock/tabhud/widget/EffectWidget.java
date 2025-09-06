@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoFatTextComponent;
@@ -13,6 +14,8 @@ import net.minecraft.util.Formatting;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static de.hysky.skyblocker.utils.Utils.getSupplierWithFallback;
 
 // this widgte shows, how many active effects you have.
 // it also shows one of those in detail.
@@ -58,10 +61,10 @@ public class EffectWidget extends TabHudWidget {
 		if (m.find() && m.group("buff") != null) {
 			String buff = m.group("buff");
 			if (buff.startsWith("Not")) {
-				this.addComponent(new IcoTextComponent(Ico.COOKIE, Text.of("Cookie: not active")));
+				this.addComponent(new IcoTextComponent(getSupplierWithFallback(ItemRepository.getItemStackSupplier("BOOSTER_COOKIE"), Ico.COOKIE), Text.of("Cookie: not active")));
 			} else {
 				Text cookie = Text.literal("Cookie: ").append(buff);
-				this.addComponent(new IcoTextComponent(Ico.COOKIE, cookie));
+				this.addComponent(new IcoTextComponent(getSupplierWithFallback(ItemRepository.getItemStackSupplier("BOOSTER_COOKIE"), Ico.COOKIE), cookie));
 			}
 		}
 
@@ -78,7 +81,7 @@ public class EffectWidget extends TabHudWidget {
 			String timeleft = lines[1].split("! ")[1];
 			Text godpot = Text.literal("God potion!").formatted(Formatting.RED);
 			Text txttleft = Text.literal(timeleft).formatted(Formatting.LIGHT_PURPLE);
-			IcoFatTextComponent iftc = new IcoFatTextComponent(Ico.POTION, godpot, txttleft);
+			IcoFatTextComponent iftc = new IcoFatTextComponent(getSupplierWithFallback(ItemRepository.getItemStackSupplier("GOD_POTION_2"), Ico.GOD_POTION), godpot, txttleft);
 			this.addComponent(iftc);
 		} else {
 			String number = lines[1].substring("You have ".length());

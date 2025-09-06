@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
@@ -10,6 +11,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
+
+import static de.hysky.skyblocker.utils.Utils.getSupplierWithFallback;
 
 // this widget shows info about "generic" servers.
 // a server is "generic", when only name, server ID and gems are shown
@@ -36,7 +39,7 @@ public class ServerWidget extends TabHudWidget {
 				case String s when s.contains("crystals") -> this.addComponent(new IcoTextComponent(Ico.EMERALD, text));
 				case String s when s.contains("copper") -> this.addComponent(new IcoTextComponent(Ico.COPPER, text));
 				case String s when s.contains("garden") -> this.addComponent(new IcoTextComponent(Ico.EXPERIENCE_BOTTLE, text));
-				case String s when s.contains("fairy") -> this.addComponent(new IcoTextComponent(Ico.FAIRY_SOUL, text));
+				case String s when s.contains("fairy") -> this.addComponent(new IcoTextComponent(getSupplierWithFallback(ItemRepository.getItemStackSupplier("PLACEABLE_FAIRY_SOUL_RIFT"), Ico.FAIRY_SOUL), text));
 				case String s when s.contains("rain") -> this.addComponent(new IcoTextComponent(Ico.WATER, text));
 				case String s when s.contains("brood") -> this.addComponent(new IcoTextComponent(Ico.SPIDER_EYE, text));
 				default -> this.addComponent(new PlainTextComponent(text));
