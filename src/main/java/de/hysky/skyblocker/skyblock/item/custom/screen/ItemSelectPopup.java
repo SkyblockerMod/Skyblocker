@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.item.custom.screen.item;
+package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;

@@ -1,9 +1,8 @@
-package de.hysky.skyblocker.skyblock.item.custom.screen.item;
+package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.custom.screen.CustomizeScreen;
-import de.hysky.skyblocker.skyblock.item.custom.screen.item.name.CustomizeNameWidget;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.CustomizeNameWidget;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.client.MinecraftClient;

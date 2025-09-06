@@ -9,7 +9,6 @@ import de.hysky.skyblocker.injected.RecipeBookHolder;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
-import de.hysky.skyblocker.skyblock.item.custom.screen.item.ItemTab;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;

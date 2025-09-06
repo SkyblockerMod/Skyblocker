@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.item.custom.screen.item.name;
+package de.hysky.skyblocker.skyblock.item.custom.screen.name;
 
 
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;

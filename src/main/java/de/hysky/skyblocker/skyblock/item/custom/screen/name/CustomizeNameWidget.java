@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.item.custom.screen.item.name;
+package de.hysky.skyblocker.skyblock.item.custom.screen.name;
 
 import com.google.common.collect.ImmutableList;
 import de.hysky.skyblocker.SkyblockerMod;
@@ -6,7 +6,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.skyblock.item.custom.screen.item.name.visitor.*;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.*;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.OkLabColor;
 import net.minecraft.client.MinecraftClient;
