@@ -23,8 +23,13 @@ import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.function.Consumers;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.merge.ContentMergeStrategy;
+import org.eclipse.jgit.merge.MergeStrategy;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,19 +105,42 @@ public class NEURepoManager {
 			try {
 				if (Files.isDirectory(NEURepoManager.LOCAL_REPO_DIR)) {
 					try (Git localRepo = Git.open(NEURepoManager.LOCAL_REPO_DIR.toFile())) {
-						localRepo.pull().setRebase(true).call();
-						LOGGER.info("[Skyblocker NEU Repo] NEU Repository Updated");
+						boolean stashed = localRepo.stashCreate().call() != null;
+						localRepo.fetch()
+								.setRefSpecs("+refs/heads/master:refs/remotes/origin/master")
+								.setThin(true)
+								.setDepth(1)
+								.call();
+						Ref ref = localRepo.reset()
+								.setRef("refs/remotes/origin/master")
+								.setMode(ResetCommand.ResetType.HARD)
+								.disableRefLog(true)
+								.call();
+						if (stashed) {
+							localRepo.stashApply()
+									.setContentMergeStrategy(ContentMergeStrategy.OURS)
+									.call();
+							localRepo.stashDrop().call();
+							LOGGER.info("[Skyblocker NEU Repo] Auto stash has been applied to the NEU Repository");
+						}
+						LOGGER.info("[Skyblocker NEU Repo] NEU Repository was updated to {}", ref.getObjectId().getName());
 					}
 				} else {
-					Git.cloneRepository().setURI(REMOTE_REPO_URL).setDirectory(NEURepoManager.LOCAL_REPO_DIR.toFile()).setBranchesToClone(List.of("refs/heads/master")).setBranch("refs/heads/master").call().close();
+					Git.cloneRepository()
+							.setURI(REMOTE_REPO_URL)
+							.setDirectory(NEURepoManager.LOCAL_REPO_DIR.toFile())
+							.setBranchesToClone(List.of("refs/heads/master"))
+							.setBranch("refs/heads/master")
+							.setDepth(1)
+							.call().close();
 					LOGGER.info("[Skyblocker NEU Repo] NEU Repository Downloaded");
 				}
 			} catch (TransportException e) {
 				LOGGER.error("[Skyblocker NEU Repo] Transport operation failed. Most likely unable to connect to the remote NEU repo on github", e);
 				success = false;
-			} catch (RepositoryNotFoundException e) {
+			} catch (GitAPIException | RepositoryNotFoundException e) {
 				LOGGER.warn("[Skyblocker NEU Repo] Local NEU Repository not found or corrupted, downloading new one", e);
-				Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepository(MinecraftClient.getInstance().player), 1);
+				Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(MinecraftClient.getInstance().player), 1);
 				success = false;
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while downloading NEU Repository", e);
@@ -146,28 +174,37 @@ public class NEURepoManager {
 				.collect(Multimaps.toMultimap(item -> Formatting.strip(item.getDisplayName()), Function.identity(), HashMultimap::create));
 	}
 
+	/**
+	 * Differs from {@link #deleteAndDownloadRepositoryInternal(PlayerEntity)} in that this method checks if the repository is currently loading to prevent spamming the command.
+	 */
 	private static void deleteAndDownloadRepository(PlayerEntity player) {
 		if (isLoading()) {
-			sendMessage(player, Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.loading")));
+			sendMessage(player, Text.translatable("skyblocker.updateRepository.loading"));
 			return;
 		}
-		sendMessage(player, Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.start")));
+		deleteAndDownloadRepositoryInternal(player);
+	}
 
-		REPO_LOADING = CompletableFuture.runAsync(() -> {
+	private static void deleteAndDownloadRepositoryInternal(PlayerEntity player) {
+		Function<Runnable, CompletableFuture<Void>> runner = isLoading() ? REPO_LOADING::thenRunAsync : CompletableFuture::runAsync;
+		REPO_LOADING = runner.apply(() -> {
+			sendMessage(player, Text.translatable("skyblocker.updateRepository.start"));
 			try {
 				FileUtils.recursiveDelete(NEURepoManager.LOCAL_REPO_DIR);
-				sendMessage(player, Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.deleted")));
-				sendMessage(player, Constants.PREFIX.get().append(Text.translatable(loadRepository().join() ? "skyblocker.updateRepository.success" : "skyblocker.updateRepository.failed")));
+				sendMessage(player, Text.translatable("skyblocker.updateRepository.deleted"));
+				sendMessage(player, Text.translatable(loadRepository().join() ? "skyblocker.updateRepository.success" : "skyblocker.updateRepository.failed"));
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while deleting the NEU repo", e);
-				sendMessage(player, Constants.PREFIX.get().append(Text.translatable("skyblocker.updateRepository.error")));
+				sendMessage(player, Text.translatable("skyblocker.updateRepository.error"));
 			}
 		});
 	}
 
 	private static void sendMessage(PlayerEntity player, Text text) {
 		if (player != null) {
-			player.sendMessage(text, false);
+			player.sendMessage(Constants.PREFIX.get().append(text), false);
+		} else {
+			LOGGER.info("[Skyblocker NEU Repo] {}", text.getString());
 		}
 	}
 
