@@ -38,7 +38,7 @@
     "skyblocker.config.dungeons.terminals.solveColor": "Résoudre le puzzle des couleurs « Color »",
     "skyblocker.config.dungeons.terminals.solveOrder": "Résoudre le puzzle de l'ordre « Order »",
     "skyblocker.config.dungeons.terminals.solveStartsWith": "Résoudre le puzzle des noms d'objets « Name »",
-    "skyblocker.config.mining": "Mines des nains",
+    "skyblocker.config.mining": "Minage",
     "skyblocker.config.mining.enableDrillFuel": "Afficher le niveau de carburant des foreuses",
     "skyblocker.config.mining.dwarvenMines.solveFetchur": "Résoudre les requêtes de Fetchur",
     "skyblocker.config.mining.dwarvenMines.solvePuzzler": "Résoudre le puzzle de Puzzler",
@@ -662,7 +662,7 @@
     "skyblocker.wikiLookup.noArticleFound.official": "Impossible de trouver un article du wiki officiel pour cet article...",
     "skyblocker.config.general.itemTooltip.craft.BUY_ORDER": "Ordre d'achat",
     "skyblocker.config.farming.garden.gardenPlotsWidget.@Tooltip": "Dans le jardin, à droite de votre inventaire, vous trouverez un widget qui vous permettra de vous téléporter rapidement vers les parcelles. Il affichera également les parcelles qui ont des parasites (il faut pour cela que le Pests widget soit activé et visible dans Tab).",
-    "skyblocker.config.dungeons.puzzle.previewWaterPath": "Waterboard: Aperçu du chemin de l'eau",
+    "skyblocker.config.dungeons.puzzle.previewWaterPath": "Waterboard : Aperçu du chemin de l'eau",
     "skyblocker.config.farming.garden.pestHighlighter": "Surbrillance des parasites",
     "skyblocker.config.farming.garden.closeScreenOnPlotClick.@Tooltip": "Si votre inventaire doit ou non se fermer automatiquement lors de la téléportation à une parcelle à l'aide du Garden Plots Widget",
     "skyblocker.config.farming.garden.gardenPlotsWidget": "Activer le Widget des Parcelles de Jardins",
@@ -780,7 +780,7 @@
     "skyblocker.config.dungeons.highlightDoorKeys": "Surbrillance des clés de porte",
     "skyblocker.config.dungeons.starredMobGlow": "Surbrillance des Mobs Étoilés",
     "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints.@Tooltip": "Utile pour obtenir +1 Score Bonus dans vos runs avec l'Attribut Reborn.",
-    "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip": "Texte pour le message de chat lors de la téléportation: le texte \"[name]\" sera remplacée par le nom du joueur vers lequel vous vous téléportez.",
+    "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip": "Texte pour le message de chat lors de la téléportation : le texte \"[name]\" sera remplacée par le nom du joueur vers lequel vous vous téléportez.",
     "skyblocker.config.general.itemList.enableCollapsibleEntries": "Activer les groupes d'entrées rétractables",
     "skyblocker.config.general.itemList.enableCollapsibleEntries.@Tooltip": "Regroupe les éléments similaires en une seule entrée qui peut être développée en cliquant dessus.\n\nNécessite de rejoindre ou de recharger les plugins REI pour appliquer !",
     "skyblocker.config.foraging.galatea.enableTunerSolver": "Aide Accordeur de Balise",
@@ -1183,5 +1183,10 @@
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission": "Activer la Sinrecall Transmission",
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission": "Activer la Transmission Étrange",
     "skyblocker.config.uiAndVisuals.museumOverlay": "Overlay Musée",
-    "skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip": "Affiche les objets non données avec leur prix et plus.\n\nAssurez vous d'activer l'API du musée pour que cela fonctionne !"
+    "skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip": "Affiche les objets non données avec leur prix et plus.\n\nAssurez vous d'activer l'API du musée pour que cela fonctionne !",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "Pour : la Lame de Nécron, Hyperion, Astraea, Scylla et Valkyrie.",
+    "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Comportement de positionnement par défaut",
+    "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Ouvrir l'Écran de Configuration",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag": "Ajout Maximal de Lag (ms)",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "Combien de temps l'animation peut prendre du retard par rapport au jeu, en millisecondes. (Si cette valeur est définie sur 0, le lissage n'aura aucun retard, mais des saccades sont susceptibles de se produire. Augmentez cette valeur si vous constatez des clignotements.)"
 }
