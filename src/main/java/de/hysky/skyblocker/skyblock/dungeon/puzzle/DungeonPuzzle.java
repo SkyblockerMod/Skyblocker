@@ -31,7 +31,7 @@ public abstract class DungeonPuzzle implements Tickable, Renderable, Resettable 
         this.puzzleName = puzzleName;
         this.roomNames = roomNames;
         DungeonEvents.PUZZLE_MATCHED.register(room -> {
-            if (roomNames.contains(room.getName())) {
+            if (this.roomNames.contains(room.getName())) {
                 room.addSubProcess(this);
                 shouldSolve = true;
             }

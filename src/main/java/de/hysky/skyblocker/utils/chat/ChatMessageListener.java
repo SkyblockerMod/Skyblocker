@@ -6,7 +6,6 @@ import de.hysky.skyblocker.skyblock.barn.HungryHiker;
 import de.hysky.skyblocker.skyblock.barn.TreasureHunter;
 import de.hysky.skyblocker.skyblock.chat.filters.*;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
-import de.hysky.skyblocker.skyblock.dungeon.puzzle.Trivia;
 import de.hysky.skyblocker.skyblock.dwarven.CallMismyla;
 import de.hysky.skyblocker.skyblock.dwarven.Fetchur;
 import de.hysky.skyblocker.skyblock.dwarven.Puzzler;
@@ -45,7 +44,6 @@ public interface ChatMessageListener {
 				new Fetchur(),
 				new Puzzler(),
 				new Reparty(),
-				new Trivia(),
 				new TreasureHunter(),
 				new HungryHiker(),
 				new SweepDetailsListener(),
