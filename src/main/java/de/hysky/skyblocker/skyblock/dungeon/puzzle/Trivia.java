@@ -17,12 +17,16 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +43,7 @@ public class Trivia extends DungeonPuzzle {
 	private static final BlockPos CHOICE_B = new BlockPos(15, 70, 9);
 	private static final BlockPos CHOICE_C = new BlockPos(10, 70, 6);
 	private static final float[] ANSWER_COLOR = new float[]{0, 1f, 0};
+	private static final Direction[] DIRECTIONS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
 
 	private static final Map<String, List<String>> answers = new Object2ObjectOpenHashMap<>();
 	private List<String> solutions = Collections.emptyList();
@@ -129,7 +134,15 @@ public class Trivia extends DungeonPuzzle {
 		if (!shouldRun() || correctBlockPos == null) return;
 
 		Room room = DungeonManager.getCurrentRoom();
-		RenderHelper.renderFilled(context, room.relativeToActual(correctBlockPos), ANSWER_COLOR, 0.5f, false);
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client == null || client.world == null) return;
+
+		for (Direction direction : DIRECTIONS) {
+			@Nullable Box pos = RenderHelper.getBlockBoundingBox(client.world, room.relativeToActual(correctBlockPos).offset(direction));
+			if (pos == null) continue;
+			RenderHelper.renderFilled(context, pos, ANSWER_COLOR, 0.5f, false);
+			RenderHelper.renderOutline(context, pos, ANSWER_COLOR, 5f, false);
+		}
 	}
 
 	@Override
@@ -138,7 +151,7 @@ public class Trivia extends DungeonPuzzle {
 		correctBlockPos = null;
 	}
 
-	@Init(priority=100) // Load after FairySouls
+	@Init(priority = 100) // Load after FairySouls
 	public static void init() {
 		answers.put("What is the status of The Watcher?", List.of("Stalker"));
 		answers.put("What is the status of Bonzo?", List.of("New Necromancer"));
