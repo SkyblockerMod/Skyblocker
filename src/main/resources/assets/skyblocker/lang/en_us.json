@@ -1031,7 +1031,7 @@
   "skyblocker.config.uiAndVisuals.healthBars.halfBarColor": "Half Health Bar Color",
   "skyblocker.config.uiAndVisuals.healthBars.halfBarColor.@Tooltip": "Color of health bar when mob is at half hp",
   "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor": "Empty Health Bar Color",
-  "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip": "Color of health bar when mob is at full hp",
+  "skyblocker.config.uiAndVisuals.healthBars.emptyBarColor.@Tooltip": "Color of health bar when mob is at zero hp.",
 
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled": "Enabled",
