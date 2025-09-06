@@ -344,6 +344,8 @@
 
   "skyblocker.config.general.acceptReparty": "Auto accept Reparty",
 
+  "skyblocker.config.general.guiMiddleClick": "Replace left clicks with middle clicks",
+
   "skyblocker.config.general.hitbox": "Hitboxes",
   "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Enable 1.8 farmland hitbox",
   "skyblocker.config.general.hitbox.oldLeverHitbox": "Enable 1.8 lever hitbox",

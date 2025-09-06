@@ -51,9 +51,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -386,6 +384,21 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 			if (disallowed) ci.cancel();
 		}
+	}
+
+	@ModifyArg(
+			method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickSlot(IIILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V"),
+			index = 3
+			)
+	private SlotActionType skyblocker$guiMiddleClick(SlotActionType actionType, @Local(argsOnly = true) Slot slot, @Local(argsOnly = true, ordinal = 1) int button) {
+		if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().general.guiMiddleClick) return actionType;
+		if (button == 0 &&
+				actionType == SlotActionType.PICKUP &&
+				ItemUtils.getItemId(slot.getStack()).isEmpty() &&
+				handler.getCursorStack().isEmpty()
+		) return SlotActionType.CLONE;
+		return actionType;
 	}
 
 	@Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/item/ItemStack;III)V"))
