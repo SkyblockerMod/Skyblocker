@@ -434,6 +434,13 @@ public class GeneralCategory {
 						.name(Text.translatable("skyblocker.config.general.hitbox"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.hitbox.oldCactusHitbox"))
+								.binding(defaults.general.hitbox.oldCactusHitbox,
+										() -> config.general.hitbox.oldCactusHitbox,
+										newValue -> config.general.hitbox.oldCactusHitbox = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.general.hitbox.oldFarmlandHitbox"))
 								.binding(defaults.general.hitbox.oldFarmlandHitbox,
 										() -> config.general.hitbox.oldFarmlandHitbox,
