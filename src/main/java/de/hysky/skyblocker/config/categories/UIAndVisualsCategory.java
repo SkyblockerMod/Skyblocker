@@ -328,6 +328,14 @@ public class UIAndVisualsCategory {
                                 .controller(ConfigUtils.createEnumController())
                                 .build()
                         )
+						.option(Option.<UIAndVisualsConfig.NameSorting>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip"))
+								.binding(defaults.uiAndVisuals.tabHud.nameSorting,
+										() -> config.uiAndVisuals.tabHud.nameSorting,
+										newValue -> config.uiAndVisuals.tabHud.nameSorting = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
                         .build())
 
                 // Fancy Auction House
