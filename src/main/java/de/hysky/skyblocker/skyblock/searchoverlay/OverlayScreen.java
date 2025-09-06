@@ -96,7 +96,7 @@ public class OverlayScreen extends Screen {
         updateHistoryButtons();
 
         //auction only elements
-        if (SearchOverManager.isAuction) {
+        if (SearchOverManager.location == SearchOverManager.SearchLocation.AUCTION) {
             //max pet level button
             maxPetButton = ButtonWidget.builder(Text.literal(""), a -> {
                         SearchOverManager.maxPetLevel = !SearchOverManager.maxPetLevel;
@@ -125,7 +125,7 @@ public class OverlayScreen extends Screen {
         historyGridWidget.forEachChild(this::addDrawableChild);
         addDrawableChild(finishedButton);
 
-        if (SearchOverManager.isAuction) {
+		if (SearchOverManager.location == SearchOverManager.SearchLocation.AUCTION) {
             addDrawableChild(maxPetButton);
             addDrawableChild(dungeonStarButton);
         }
@@ -144,7 +144,7 @@ public class OverlayScreen extends Screen {
      */
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (SearchOverManager.isAuction && dungeonStarButton.isHovered() && client != null) {
+        if (dungeonStarButton != null && dungeonStarButton.isHovered() && client != null) {
             double actualTextWidth = client.textRenderer.getWidth(dungeonStarButton.getMessage());
             double textOffset = (dungeonStarButton.getWidth() - actualTextWidth) / 2;
             double offset = mouseX - (dungeonStarButton.getX() + textOffset);

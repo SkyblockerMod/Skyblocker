@@ -316,6 +316,8 @@ public class UIAndVisualsConfig {
 
 		public boolean enableAuctionHouse = true;
 
+		public boolean enableMuseum = true;
+
 		public boolean keepPreviousSearches = false;
 
 		public int maxSuggestions = 3;
@@ -327,6 +329,8 @@ public class UIAndVisualsConfig {
 		public List<String> bazaarHistory = new ArrayList<>();
 
 		public List<String> auctionHistory = new ArrayList<>();
+
+		public List<String> museumHistory = new ArrayList<>();
 	}
 
 	public static class BazaarQuickQuantities {
