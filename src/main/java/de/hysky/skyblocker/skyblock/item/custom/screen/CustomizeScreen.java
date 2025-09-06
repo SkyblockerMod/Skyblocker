@@ -49,6 +49,7 @@ public class CustomizeScreen extends Screen {
 	private final Map<String, PreviousConfig> previousConfigs = new Object2ObjectOpenHashMap<>();
 
 	private final TabManager tabManager = new TabManager(this::addDrawableChild, this::remove);
+	private final boolean item;
 	private TabNavigationWidget tabNavigation;
 
 	private final DirectionalLayoutWidget footerLayout = DirectionalLayoutWidget.horizontal().spacing(5);
@@ -58,7 +59,7 @@ public class CustomizeScreen extends Screen {
 	@Init
 	public static void initThings() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
-				ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("custom").executes(Scheduler.queueOpenScreenCommand(() -> new CustomizeScreen(null))))
+				ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("custom").executes(Scheduler.queueOpenScreenCommand(() -> new CustomizeScreen(null, false))))
 		));
 		ScreenEvents.AFTER_INIT.register((client1, screen, scaledWidth, scaledHeight) -> {
 			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showCustomizeButton && screen instanceof InventoryScreen inventoryScreen) {
@@ -75,9 +76,10 @@ public class CustomizeScreen extends Screen {
 		});
 	}
 
-	protected CustomizeScreen(Screen previousScreen) {
+	public CustomizeScreen(Screen previousScreen, boolean item) {
 		super((Math.random() < 0.01 ? Text.translatable("skyblocker.customization.titleSecret") : Text.translatable("skyblocker.customization.title")).formatted(Formatting.GRAY).styled(style -> style.withShadowColor(0)));
 		this.previousScreen = previousScreen;
+		this.item = item;
 	}
 
 	public void backupConfigs(ItemStack stack) {
@@ -109,7 +111,7 @@ public class CustomizeScreen extends Screen {
 		int i = tabNavigation.getNavigationFocus().getBottom();
 		tabNavigation.init();
 		tabManager.setTabArea(new ScreenRect(0, i, width, height - i - 30));
-		tabNavigation.selectTab(0, false);
+		tabNavigation.selectTab(item ? 1 : 0, false);
 		addDrawableChild(tabNavigation);
 
 		addDrawableChild(footerLayout.add(ButtonWidget.builder(Text.translatable("gui.cancel"), b -> cancel()).build()));
@@ -210,7 +212,7 @@ public class CustomizeScreen extends Screen {
 
 		@Override
 		public void onClick(double mouseX, double mouseY) {
-			CLIENT.setScreen(new CustomizeScreen(CLIENT.currentScreen));
+			CLIENT.setScreen(new CustomizeScreen(CLIENT.currentScreen, false));
 		}
 
 		@Override

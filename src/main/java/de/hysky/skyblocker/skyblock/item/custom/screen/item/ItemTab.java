@@ -13,6 +13,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tab.GridScreenTab;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
@@ -58,7 +59,13 @@ public class ItemTab extends GridScreenTab {
 		grid.add(modelField, 1, 1, p -> p.alignRight().marginRight(3).alignBottom().marginBottom(3));
 		grid.add(nameWidget, 2, 0, 1, 2);
 
-		for (ItemStack stack : MinecraftClient.getInstance().player.getInventory()) {
+		ClientPlayerEntity player = MinecraftClient.getInstance().player;
+		ItemStack handStack = player.getMainHandStack();
+		if (!ItemUtils.getItemUuid(handStack).isEmpty()) {
+			setCurrentItem(handStack);
+			return;
+		}
+		for (ItemStack stack : player.getInventory()) {
 			if (!ItemUtils.getItemUuid(stack).isEmpty()) {
 				setCurrentItem(stack);
 				break;
