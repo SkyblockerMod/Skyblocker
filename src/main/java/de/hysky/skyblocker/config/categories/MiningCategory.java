@@ -277,9 +277,9 @@ public class MiningCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.mining.commissionWaypoints.hideEmissaryOnPigeon"))
 								.description(Text.translatable("skyblocker.config.mining.commissionWaypoints.hideEmissaryOnPigeon.@Tooltip"))
-								.binding(defaults.mining.commissionWaypoints.showEmissary,
-										() -> config.mining.commissionWaypoints.showEmissary,
-										newValue -> config.mining.commissionWaypoints.showEmissary = newValue)
+								.binding(defaults.mining.commissionWaypoints.hideEmissaryOnPigeon,
+										() -> config.mining.commissionWaypoints.hideEmissaryOnPigeon,
+										newValue -> config.mining.commissionWaypoints.hideEmissaryOnPigeon = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
                         .build())
