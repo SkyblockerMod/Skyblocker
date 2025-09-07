@@ -39,7 +39,10 @@ public class CommissionLabels {
 	private static List<String> commissions = List.of();
 	private static boolean commissionDone = false;
 
+	private static Item pigeonItem;
+
 	private static Item getPigeonItem() {
+		if (pigeonItem != null && pigeonItem != Items.BARRIER) return pigeonItem;
 		if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return Items.BARRIER;
 		return NEURepoManager.getItemByName("Royal Pigeon")
 			.stream()
@@ -144,9 +147,8 @@ public class CommissionLabels {
 		//if there is a commission completed and enabled show emissary
 		if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
 			if (SkyblockerConfigManager.get().mining.commissionWaypoints.hideEmissaryOnPigeon) {
-				Item pigeonItem = getPigeonItem();
 				for (ItemStack stack : MinecraftClient.getInstance().player.getInventory().getMainStacks()) {
-					if (stack.getItem() == pigeonItem) {
+					if (stack.getItem() == getPigeonItem()) {
 						return;
 					}
 				}
