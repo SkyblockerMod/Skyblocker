@@ -144,8 +144,9 @@ public class CommissionLabels {
 		//if there is a commission completed and enabled show emissary
 		if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
 			if (SkyblockerConfigManager.get().mining.commissionWaypoints.hideEmissaryOnPigeon) {
+				Item pigeonItem = getPigeonItem();
 				for (ItemStack stack : MinecraftClient.getInstance().player.getInventory().getMainStacks()) {
-					if (stack.getItem() == getPigeonItem()) {
+					if (stack.getItem() == pigeonItem) {
 						return;
 					}
 				}
