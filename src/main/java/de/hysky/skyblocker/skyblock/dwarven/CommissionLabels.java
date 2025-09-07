@@ -37,7 +37,6 @@ public class CommissionLabels {
 	private static List<String> commissions = List.of();
 	private static boolean commissionDone = false;
 
-
 	@Init
 	public static void init() {
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(CommissionLabels::render);
@@ -132,12 +131,10 @@ public class CommissionLabels {
 		//if there is a commission completed and enabled show emissary
 		if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
 			if (SkyblockerConfigManager.get().mining.commissionWaypoints.hideEmissaryOnPigeon) {
-				Item pigeon = Registries.ITEM.get(Identifier.of("skyblock", "ROYAL_PIGEON"));
+				Item pigeon = Registries.ITEM.get(Identifier.of("skyblock", "royal_pigeon"));
 				if (MinecraftClient.getInstance().player.getInventory().contains(new ItemStack(pigeon))) {
-					System.out.println("Hell yeah");
 					return;
 				}
-				System.out.println("Hell nah");
 			}
 			for (MiningLocationLabel.DwarvenEmissaries emissaries : DWARVEN_EMISSARIES) {
 				activeWaypoints.add(new MiningLocationLabel(emissaries, emissaries.getLocation()));
