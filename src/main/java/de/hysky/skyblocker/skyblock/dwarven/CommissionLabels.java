@@ -10,7 +10,15 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
@@ -126,6 +134,14 @@ public class CommissionLabels {
 		}
 		//if there is a commission completed and enabled show emissary
 		if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
+			if (SkyblockerConfigManager.get().mining.commissionWaypoints.hideEmissaryOnPigeon) {
+				Item pigeon = Registries.ITEM.get(Identifier.of("skyblock", "ROYAL_PIGEON"));
+				if (MinecraftClient.getInstance().player.getInventory().contains(new ItemStack(pigeon))) {
+					System.out.println("Hell yeah");
+					return;
+				}
+				System.out.println("Hell nah");
+			}
 			for (MiningLocationLabel.DwarvenEmissaries emissaries : DWARVEN_EMISSARIES) {
 				activeWaypoints.add(new MiningLocationLabel(emissaries, emissaries.getLocation()));
 			}

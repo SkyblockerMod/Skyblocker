@@ -722,6 +722,8 @@
   "skyblocker.config.mining.commissionWaypoints.showBaseCamp.@Tooltip": "Show waypoint for basecamp when in glacite tunnels (takes effect when commissions updated).",
   "skyblocker.config.mining.commissionWaypoints.showEmissary": "Show Emissary",
   "skyblocker.config.mining.commissionWaypoints.showEmissary.@Tooltip": "When a commission in the dwarven mines is finished show emissary locations (takes effect when commissions updated).",
+  "skyblocker.config.mining.commissionWaypoints.hideEmissaryOnPigeon": "Hide on Pigeon",
+  "skyblocker.config.mining.commissionWaypoints.hideEmissaryOnPigeon.@Tooltip": "If you have Royal Pigeon in your inventory, emissary locations will not be shown.",
 
   "skyblocker.config.mining.crystalHollows": "Crystal Hollows",
   "skyblocker.config.mining.crystalHollows.metalDetectorHelper": "Metal Detector Helper",

@@ -116,6 +116,8 @@ public class MiningConfig {
 		public boolean showBaseCamp = false;
 
 		public boolean showEmissary = true;
+
+		public boolean hideEmissaryOnPigeon = true;
 	}
 
 	public enum CommissionWaypointMode {
