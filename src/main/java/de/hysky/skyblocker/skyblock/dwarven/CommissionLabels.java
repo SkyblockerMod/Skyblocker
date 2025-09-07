@@ -3,21 +3,17 @@ package de.hysky.skyblocker.skyblock.dwarven;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiningConfig;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import io.github.moulberry.repo.data.NEUItem;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
@@ -38,20 +34,6 @@ public class CommissionLabels {
 	protected static List<MiningLocationLabel> activeWaypoints = new ArrayList<>();
 	private static List<String> commissions = List.of();
 	private static boolean commissionDone = false;
-
-	private static Item pigeonItem;
-
-	private static Item getPigeonItem() {
-		if (pigeonItem != null && pigeonItem != Items.BARRIER) return pigeonItem;
-		if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return Items.BARRIER;
-		return NEURepoManager.getItemByName("Royal Pigeon")
-			.stream()
-			.findFirst()
-			.map(NEUItem::getSkyblockItemId)
-			.map(ItemRepository::getItemStack)
-			.orElseGet(() -> new ItemStack(Items.BARRIER))
-			.getItem();
-	};
 
 	@Init
 	public static void init() {
@@ -148,7 +130,7 @@ public class CommissionLabels {
 		if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
 			if (SkyblockerConfigManager.get().mining.commissionWaypoints.hideEmissaryOnPigeon) {
 				for (ItemStack stack : MinecraftClient.getInstance().player.getInventory().getMainStacks()) {
-					if (stack.getItem() == getPigeonItem()) {
+					if (ItemUtils.getItemId(stack).equals("ROYAL_PIGEON")) {
 						return;
 					}
 				}
