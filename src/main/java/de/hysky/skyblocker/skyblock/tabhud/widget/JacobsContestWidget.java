@@ -26,17 +26,18 @@ public class JacobsContestWidget extends TabHudWidget {
 
 	private static final Pattern CROP_PATTERN = Pattern.compile("(?<fortune>[☘○]) (?<crop>.+?)(?: ◆ )?(?<percentage>Top [\\d.]+%)?");
 
+	// Ordered the same as "Unique Brackets Reached" in Anita NPC shop
 	public static final Map<String, ItemStack> FARM_DATA = Map.ofEntries(
 			entry("Wheat", new ItemStack(Items.WHEAT)),
-			entry("Sugar Cane", new ItemStack(Items.SUGAR_CANE)),
 			entry("Carrot", new ItemStack(Items.CARROT)),
 			entry("Potato", new ItemStack(Items.POTATO)),
-			entry("Melon", new ItemStack(Items.MELON_SLICE)),
 			entry("Pumpkin", new ItemStack(Items.PUMPKIN)),
-			entry("Cocoa Beans", new ItemStack(Items.COCOA_BEANS)),
-			entry("Nether Wart", new ItemStack(Items.NETHER_WART)),
+			entry("Melon Slice", new ItemStack(Items.MELON_SLICE)),
+			entry("Mushroom", new ItemStack(Items.RED_MUSHROOM)),
 			entry("Cactus", new ItemStack(Items.CACTUS)),
-			entry("Mushroom", new ItemStack(Items.RED_MUSHROOM))
+			entry("Sugar Cane", new ItemStack(Items.SUGAR_CANE)),
+			entry("Nether Wart", new ItemStack(Items.NETHER_WART)),
+			entry("Cocoa Beans", new ItemStack(Items.COCOA_BEANS))
 	);
 
 	public JacobsContestWidget() {
