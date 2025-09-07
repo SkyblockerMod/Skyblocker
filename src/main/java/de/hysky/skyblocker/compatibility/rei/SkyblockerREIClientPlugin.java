@@ -70,6 +70,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerScreens(ScreenRegistry registry) {
+		if (!Utils.isOnSkyblock()) return;
 		registry.registerFocusedStack(new SkyblockerFocusedStackProvider());
 	}
 
