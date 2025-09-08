@@ -1427,5 +1427,12 @@
     "skyblocker.galatea.hud.sweepDetails.correctStyle": "方式：%s",
     "skyblocker.galatea.hud.sweepDetails.inactive": "砍一棵树！",
     "skyblocker.config.uiAndVisuals.teleportOverlay.showWhenInAir": "目的地为空中时显示覆盖层",
-    "skyblocker.museum.hud.countsFor": "可以获得："
+    "skyblocker.museum.hud.countsFor": "可以获得：",
+    "skyblocker.config.mining.redialOnBadSignal": "启用在信号不佳时重拨电话",
+    "skyblocker.config.mining.redialOnBadSignal.@Tooltip": "当由于“信号不佳”而无法拨打联系人电话时，会在聊天中发送一条消息，点击即可重拨。\n\n目前，当你拨打 Fred 时可能会发生这种情况。",
+    "skyblocker.config.mining.redialOnBadSignal.message": "点击这里来重拨给 %s！",
+    "skyblocker.config.otherLocations.barn.callTrevor.message": "点击这里来打电话给 Trevor the Trapper！",
+    "skyblocker.slayer.callMaddox.message": "点击这里来打电话给 Maddox the Slayer！",
+    "skyblocker.config.mining.callMismyla.message": "点击这里来打电话给 Queen Mismyla！",
+    "skyblocker.config.general.hitbox.oldCactusHitbox": "启用1.8版本的仙人掌判定箱"
 }
