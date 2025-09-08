@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.block.MapColor;
@@ -13,12 +12,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.RoundingMode;
-import org.joml.Vector2d;
-import org.joml.Vector2dc;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.*;
 
 public class DungeonMapUtils {
