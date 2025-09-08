@@ -283,6 +283,14 @@ public class MiningCategory {
                                         newValue -> config.mining.commissionWaypoints.showEmissary = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.mining.commissionWaypoints.hideEmissaryOnPigeon"))
+								.description(Text.translatable("skyblocker.config.mining.commissionWaypoints.hideEmissaryOnPigeon.@Tooltip"))
+								.binding(defaults.mining.commissionWaypoints.hideEmissaryOnPigeon,
+										() -> config.mining.commissionWaypoints.hideEmissaryOnPigeon,
+										newValue -> config.mining.commissionWaypoints.hideEmissaryOnPigeon = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .build())
 
                 //Glacite Tunnels
