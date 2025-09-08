@@ -7,7 +7,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.SeparatorComponent;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -183,7 +183,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 
 	@Override
 	protected List<Component> getConfigComponents() {
-		return List.of(new IcoTextComponent(Ico.BONE, Text.literal("Bone ").append(Text.literal("+64").formatted(Formatting.GREEN))));
+		return List.of(Components.iconTextComponent(Ico.BONE, Text.literal("Bone ").append(Text.literal("+64").formatted(Formatting.GREEN))));
 	}
 
 	/**

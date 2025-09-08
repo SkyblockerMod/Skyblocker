@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.network.PlayerListEntry;
@@ -36,7 +36,7 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 
 	private void init() {
 		PlayerListManager.addHandledTabWidget(hypixelWidgetName, this);
-		cache.add(new IcoTextComponent());
+		cache.add(Components.iconTextComponent());
 		registerAutoUpdate();
 	}
 

@@ -8,7 +8,6 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -115,7 +114,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 
 	@Override
 	protected List<Component> getConfigComponents() {
-		return List.of(new IcoTextComponent(Ico.BARRIER, Text.literal("TODO"))); // TODO
+		return List.of(Components.iconTextComponent(Ico.BARRIER, Text.literal("TODO"))); // TODO
 	}
 
 	/**

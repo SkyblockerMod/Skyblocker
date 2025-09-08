@@ -74,6 +74,6 @@ public class EndHudWidget extends ComponentBasedWidget {
 
 	@Override
 	protected List<Component> getConfigComponents() {
-		return List.of(new IcoTextComponent(Ico.BARRIER, Text.literal("TODO"))); // TODO
+		return List.of(Components.iconTextComponent(Ico.BARRIER, Text.literal("TODO"))); // TODO
 	}
 }

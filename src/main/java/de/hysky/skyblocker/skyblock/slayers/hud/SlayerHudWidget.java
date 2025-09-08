@@ -76,9 +76,9 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 		SlayerType type = SlayerType.REVENANT;
 		SlayerTier tier = SlayerTier.V;
 		return List.of(
-				new IcoTextComponent(type.icon, simpleEntryText(type.bossName + " " + tier, "", tier.color)),
-				new IcoTextComponent(Ico.EXPERIENCE_BOTTLE, simpleEntryText("100,000/400,000", "XP: ", Formatting.LIGHT_PURPLE)),
-				new IcoTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal("200").formatted(Formatting.LIGHT_PURPLE)))
+				Components.iconTextComponent(type.icon, simpleEntryText(type.bossName + " " + tier, "", tier.color)),
+				Components.iconTextComponent(Ico.EXPERIENCE_BOTTLE, simpleEntryText("100,000/400,000", "XP: ", Formatting.LIGHT_PURPLE)),
+				Components.iconTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal("200").formatted(Formatting.LIGHT_PURPLE)))
 		);
 	}
 }

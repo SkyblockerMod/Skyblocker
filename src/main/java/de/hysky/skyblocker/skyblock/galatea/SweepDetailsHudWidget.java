@@ -49,8 +49,8 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
-	public boolean shouldRender(Location location) {
-		return (!Utils.getLocation().equals(Location.HUB) || Utils.getArea().equals(Area.FOREST)) && super.shouldRender(location);
+	public boolean shouldRender() {
+		return (!Utils.getLocation().equals(Location.HUB) || Utils.getArea().equals(Area.FOREST)) && super.shouldRender();
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	@Override
 	protected List<Component> getConfigComponents() {
 		return List.of(
-				new IcoTextComponent(new ItemStack(Items.STRIPPED_SPRUCE_LOG), Text.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")),
+				Components.iconTextComponent(new ItemStack(Items.STRIPPED_SPRUCE_LOG), Text.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")),
 				new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)),
 				new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15))
 		);
