@@ -1,0 +1,11 @@
+{
+  "secrets": [
+    {
+      "secretName": "Fairy Soul behind Crypt",
+      "category": "fairysoul",
+      "x": 15,
+      "y": 95,
+      "z": 29
+    }
+  ]
+}

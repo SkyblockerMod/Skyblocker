@@ -1,0 +1,11 @@
+{
+  "secrets": [
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 26,
+      "y": 62,
+      "z": 23
+    }
+  ]
+}

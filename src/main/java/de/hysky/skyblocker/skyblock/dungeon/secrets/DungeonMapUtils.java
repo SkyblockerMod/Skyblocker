@@ -243,8 +243,8 @@ public class DungeonMapUtils {
 		};
 	}
 
-	public static BlockPos relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, JsonObject posJson) {
-		return relativeToActual(direction, physicalCornerPos, new BlockPos(posJson.get("x").getAsInt(), posJson.get("y").getAsInt(), posJson.get("z").getAsInt()));
+	public static BlockPos relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, DungeonManager.RoomWaypoint waypoint) {
+		return relativeToActual(direction, physicalCornerPos, new BlockPos(waypoint.x(), waypoint.y(), waypoint.z()));
 	}
 
 	public static BlockPos relativeToActual(Room.Direction direction, Vector2ic physicalCornerPos, BlockPos pos) {
