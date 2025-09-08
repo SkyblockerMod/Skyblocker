@@ -15,6 +15,7 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
 import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -78,7 +79,7 @@ public final class ItemUtils {
     private static final short LOG_INTERVAL = 1000;
 	private static long lastLog = Util.getMeasuringTimeMs();
 
-    private ItemUtils() {}
+	private ItemUtils() {}
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
         return literal("dumpHeldItem").executes(context -> {
@@ -574,4 +575,22 @@ public final class ItemUtils {
 
     	return matcher != null ? RegexUtils.parseOptionalIntFromMatcher(matcher, "shards") : OptionalInt.empty();
     }
+
+	@NotNull
+	public static SkyblockItemRarity getItemRarity(@NotNull ItemStack stack) {
+		if (stack.isEmpty()) return SkyblockItemRarity.UNKNOWN;
+
+		if (!stack.getSkyblockId().equals("PET")) {
+			return ItemUtils.getLore(stack).stream()
+					.map(Text::getString)
+					.map(SkyblockItemRarity::containsName)
+					.flatMap(Optional::stream)
+					.findFirst()
+					.orElse(SkyblockItemRarity.UNKNOWN);
+		} else {
+			PetInfo info = stack.getPetInfo();
+			if (info.isEmpty()) return SkyblockItemRarity.UNKNOWN;
+			return info.item().isPresent() && info.item().get().equals("PET_ITEM_TIER_BOOST") ? info.rarity().next() : info.rarity();
+		}
+	}
 }

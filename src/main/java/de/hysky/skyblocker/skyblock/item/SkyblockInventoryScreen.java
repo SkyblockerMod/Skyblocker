@@ -79,6 +79,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
     private static void load(String profileId) {
         Path resolve = FOLDER.resolve(profileId + ".nbt");
         CompletableFuture.supplyAsync(() -> {
+			if (!Files.exists(resolve)) return EMPTY_EQUIPMENT.get();
             try {
                 return CODEC.parse(NbtOps.INSTANCE, NbtIo.read(resolve)).getOrThrow();
             } catch (NoSuchFileException ignored) {
