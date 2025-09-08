@@ -1,12 +1,9 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-
-import static de.hysky.skyblocker.utils.Utils.getSupplierWithFallback;
 
 /**
  * Stores convenient shorthands for common ItemStack definitions
