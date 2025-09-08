@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -31,6 +32,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent() {
+		if (!Utils.isInDungeons()) return;
 		int start = 1 + (player - 1) * 4;
 
 		if (PlayerListManager.strAt(start) == null) {
