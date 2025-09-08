@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -27,7 +27,7 @@ public class DungeonDownedWidget extends TabHudWidget {
 	public void updateContent(List<Text> ignored) {
 		String down = PlayerListManager.strAt(21);
 		if (down == null) {
-			this.addComponent(new IcoTextComponent());
+			this.addComponent(Components.iconTextComponent());
 		} else {
 
 			Formatting format = Formatting.RED;
@@ -37,12 +37,10 @@ public class DungeonDownedWidget extends TabHudWidget {
 			int idx = down.indexOf(": ");
 			Text downed = (idx == -1) ? null
 					: simpleEntryText(down.substring(idx + 2), "Downed: ", format);
-			IcoTextComponent d = new IcoTextComponent(Ico.SKULL, downed);
-			this.addComponent(d);
+			this.addComponent(Components.iconTextComponent(Ico.SKULL, downed));
 		}
 
 		this.addSimpleIcoText(Ico.CLOCK, "Time:", Formatting.GRAY, 22);
 		this.addSimpleIcoText(Ico.POTION, "Revive:", Formatting.GRAY, 23);
 	}
-
 }

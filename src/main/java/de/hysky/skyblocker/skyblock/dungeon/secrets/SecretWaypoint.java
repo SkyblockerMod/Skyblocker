@@ -36,7 +36,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
             BlockPos.CODEC.fieldOf("pos").forGetter(secretWaypoint -> secretWaypoint.pos)
     ).apply(instance, SecretWaypoint::new));
     public static final Codec<List<SecretWaypoint>> LIST_CODEC = CODEC.listOf();
-    static final List<String> SECRET_ITEMS = List.of("Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
+    static final List<String> SECRET_ITEMS = List.of("Candycomb", "Decoy", "Defuse Kit", "Dungeon Chest Key", "Healing VIII", "Inflatable Jerry", "Spirit Leap", "Training Weights", "Trap", "Treasure Talisman");
     private static final Supplier<DungeonsConfig.SecretWaypoints> CONFIG = () -> SkyblockerConfigManager.get().dungeons.secretWaypoints;
     static final Supplier<Type> TYPE_SUPPLIER = () -> CONFIG.get().waypointType;
     final int secretIndex;
@@ -61,7 +61,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
     }
 
     static Predicate<SecretWaypoint> getRangePredicate(Entity entity) {
-        return secretWaypoint -> entity.getPos().isInRange(secretWaypoint.centerPos, 6);
+        return secretWaypoint -> entity.getPos().isInRange(secretWaypoint.centerPos, 16);
     }
 
     @Override

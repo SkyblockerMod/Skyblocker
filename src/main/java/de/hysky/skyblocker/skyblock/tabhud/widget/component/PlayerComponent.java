@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 public class PlayerComponent extends Component {
 
 	private static final int SKIN_ICO_DIM = 8;
-
 	private final Text name;
 	private final Identifier tex;
 
@@ -35,5 +34,4 @@ public class PlayerComponent extends Component {
 		PlayerSkinDrawer.draw(context, tex, x, y, SKIN_ICO_DIM, true, false, -1);
 		context.drawText(txtRend, name, x + SKIN_ICO_DIM + PAD_S, y, Colors.WHITE, false);
 	}
-
 }

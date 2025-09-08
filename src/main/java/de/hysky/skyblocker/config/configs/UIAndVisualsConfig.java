@@ -3,14 +3,19 @@ package de.hysky.skyblocker.config.configs;
 import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.util.FancyTabWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
 
 public class UIAndVisualsConfig {
 
@@ -169,6 +174,10 @@ public class UIAndVisualsConfig {
 
 		public TabHudStyle style = TabHudStyle.FANCY;
 
+		public boolean displayIcons = true;
+
+		public boolean compactWidgets = false;
+
 		public boolean enableHudBackground = true;
 
 		public boolean effectsFromFooter = false;
@@ -178,23 +187,25 @@ public class UIAndVisualsConfig {
 		@Deprecated
 		public transient boolean plainPlayerNames = false;
 
-		@Deprecated
-		public transient NameSorting nameSorting = NameSorting.DEFAULT;
+		public NameSorting nameSorting = NameSorting.DEFAULT;
 	}
 
+	/**
+	 * @implNote Currently, there are no "decorations", meaning that there is no difference between the SIMPLE and CLASSIC styles.
+	 */
 	public enum TabHudStyle {
 		/**
-		 * The minimal style, with no decorations, icons, or custom components,
+		 * The minimal style, with no decorations nor custom components,
 		 * rendered in a minimal rectangle background,
 		 * or no background at all if {@link TabHudConf#enableHudBackground} is false.
 		 */
 		MINIMAL,
 		/**
-		 * The simple style, with no decorations, icons, or custom components.
+		 * The simple style, with no decorations nor custom components.
 		 */
 		SIMPLE,
 		/**
-		 * The classic style, with decorations such as icons but no custom components.
+		 * The classic style, with decorations but no custom components.
 		 */
 		CLASSIC,
 		/**
@@ -212,15 +223,32 @@ public class UIAndVisualsConfig {
 		}
 	}
 
-	@Deprecated
 	public enum NameSorting {
-		DEFAULT, ALPHABETICAL;
+		DEFAULT,
+		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
+		SKYBLOCK_LEVEL(Comparator.<PlayerListEntry>comparingInt(ple -> matchPlayerName(ple.getDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
+
+		public final Comparator<PlayerListEntry> comparator;
+
+		NameSorting() {
+			this(null);
+		}
+
+		NameSorting(Comparator<PlayerListEntry> comparator) {
+			this.comparator = comparator;
+		}
+
+		private static Optional<String> matchPlayerName(String name, String group) {
+			Matcher matcher = PlayerListManager.PLAYER_NAME_PATTERN.matcher(name);
+			return matcher.matches() ? Optional.of(matcher.group(group)) : Optional.empty();
+		}
 
 		@Override
 		public String toString() {
 			return switch (this) {
 				case DEFAULT -> "Default";
 				case ALPHABETICAL -> "Alphabetical";
+				case SKYBLOCK_LEVEL -> "Skyblock Level";
 			};
 		}
 	}
@@ -245,7 +273,7 @@ public class UIAndVisualsConfig {
 	public enum IntelligenceDisplay {
 		ORIGINAL,
 		ACCURATE,
-		IN_FRONT;
+		IN_FRONT
 	}
 
 	/**
@@ -282,9 +310,9 @@ public class UIAndVisualsConfig {
 	public static class TeleportOverlay {
 		public boolean enableTeleportOverlays = true;
 
-        public boolean showWhenInAir = false;
+		public boolean showWhenInAir = false;
 
-        public Color teleportOverlayColor = new Color(0x7F761594, true);
+		public Color teleportOverlayColor = new Color(0x7F761594, true);
 
 		public boolean enableWeirdTransmission = false;
 
@@ -316,6 +344,8 @@ public class UIAndVisualsConfig {
 
 		public boolean enableAuctionHouse = true;
 
+		public boolean enableMuseum = true;
+
 		public boolean keepPreviousSearches = false;
 
 		public int maxSuggestions = 3;
@@ -327,6 +357,8 @@ public class UIAndVisualsConfig {
 		public List<String> bazaarHistory = new ArrayList<>();
 
 		public List<String> auctionHistory = new ArrayList<>();
+
+		public List<String> museumHistory = new ArrayList<>();
 	}
 
 	public static class BazaarQuickQuantities {
@@ -382,7 +414,7 @@ public class UIAndVisualsConfig {
 
 		public Color fullBarColor = new Color(0x00FF00);
 
-		public Color halfBarColor = new Color(0xFF4600);
+		public Color halfBarColor = new Color(0xFFFF00);
 
 		public Color emptyBarColor = new Color(0xFF0000);
 	}

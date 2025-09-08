@@ -7,10 +7,7 @@ import de.hysky.skyblocker.skyblock.tabhud.config.option.BooleanOption;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.FloatOption;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.*;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -39,7 +36,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	// TODO translatable
 	private static final List<Component> ERROR_COMPONENTS = List.of(new PlainTextComponent(Text.literal("An error occurred! Please check logs.").withColor(0xFFFF0000)));
 
-	public static final int BORDER_SZE_N = txtRend.fontHeight + 4;
+	public static final int BORDER_SZE_N = txtRend.fontHeight + 2;
 	public static final int BORDER_SZE_S = 4;
 	public static final int BORDER_SZE_W = 4;
 	public static final int BORDER_SZE_E = 4;
@@ -146,12 +143,12 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, Formatting formatting, String content) {
 		Text text = simpleEntryTranslatableText(translationKey, content, formatting);
-		this.addComponent(new IcoTextComponent(icon, text));
+		this.addComponent(Components.iconTextComponent(icon, text));
 	}
 
 	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, Formatting formatting, Text content) {
 		Text text = simpleEntryTranslatableText(translationKey, content, formatting);
-		this.addComponent(new IcoTextComponent(icon, text));
+		this.addComponent(Components.iconTextComponent(icon, text));
 	}
 
 	@Override
@@ -288,16 +285,5 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	public static Text simpleEntryTranslatableText(String translationKey, Text content, Formatting contentFormatting) {
 		return Text.translatable(translationKey, content.copy().formatted(contentFormatting));
-	}
-
-	/**
-	 * @return the entry at idx as unformatted Text
-	 */
-	public static Text plainEntryText(int idx) {
-		String str = PlayerListManager.strAt(idx);
-		if (str == null) {
-			return null;
-		}
-		return Text.of(str);
 	}
 }

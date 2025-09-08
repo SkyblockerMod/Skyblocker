@@ -292,6 +292,21 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.tabHud.style = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.displayIcons"))
+								.binding(defaults.uiAndVisuals.tabHud.displayIcons,
+										() -> config.uiAndVisuals.tabHud.displayIcons,
+										newValue -> config.uiAndVisuals.tabHud.displayIcons = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip"))
+								.binding(defaults.uiAndVisuals.tabHud.compactWidgets,
+										() -> config.uiAndVisuals.tabHud.compactWidgets,
+										newValue -> config.uiAndVisuals.tabHud.compactWidgets = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground"))
                                 .description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip"))
@@ -316,6 +331,14 @@ public class UIAndVisualsCategory {
                                 .controller(ConfigUtils.createEnumController())
                                 .build()
                         )
+						.option(Option.<UIAndVisualsConfig.NameSorting>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip"))
+								.binding(defaults.uiAndVisuals.tabHud.nameSorting,
+										() -> config.uiAndVisuals.tabHud.nameSorting,
+										newValue -> config.uiAndVisuals.tabHud.nameSorting = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
                         .build())
 
                 // Fancy Auction House
@@ -531,6 +554,14 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.searchOverlay.enableAuctionHouse = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum.@Tooltip"))
+								.binding(defaults.uiAndVisuals.searchOverlay.enableMuseum,
+										() -> config.uiAndVisuals.searchOverlay.enableMuseum,
+										newValue -> config.uiAndVisuals.searchOverlay.enableMuseum = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.keepPreviousSearches"))
                                 .description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.keepPreviousSearches.@Tooltip"))

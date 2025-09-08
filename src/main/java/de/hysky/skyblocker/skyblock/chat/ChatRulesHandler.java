@@ -67,12 +67,13 @@ public class ChatRulesHandler {
 		String plain = Formatting.strip(message.getString());
 
 		for (ChatRule rule : rules) {
-			if (!rule.isMatch(plain)) continue;
+			ChatRule.Match match = rule.isMatch(plain);
+			if (!match.matches()) continue;
 
 			// Get a replacement message
 			Text newMessage;
 			if (!rule.getReplaceMessage().isBlank()) {
-				newMessage = formatText(rule.getReplaceMessage());
+				newMessage = formatText(match.insertCaptureGroups(rule.getReplaceMessage()));
 			} else {
 				newMessage = message;
 			}

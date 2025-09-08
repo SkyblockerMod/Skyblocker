@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
 import net.minecraft.client.network.PlayerListEntry;
@@ -23,8 +24,9 @@ public class PlayerListWidget extends TabHudWidget {
 	protected void updateContent(List<Text> lines, @Nullable List<PlayerListEntry> playerListEntries) {
 		if (playerListEntries == null) {
 			lines.forEach(text -> addComponent(new PlainTextComponent(text)));
-		} else {
-			playerListEntries.forEach(playerListEntry -> addComponent(new PlayerComponent(playerListEntry)));
+		} else switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.nameSorting) {
+			case DEFAULT -> playerListEntries.forEach(playerListEntry -> addComponent(new PlayerComponent(playerListEntry)));
+			case null, default -> playerListEntries.stream().sorted(SkyblockerConfigManager.get().uiAndVisuals.tabHud.nameSorting.comparator).forEach(playerListEntry -> addComponent(new PlayerComponent(playerListEntry)));
 		}
 	}
 

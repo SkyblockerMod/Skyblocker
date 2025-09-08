@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
+import de.hysky.skyblocker.skyblock.CallAutocomplete;
 import de.hysky.skyblocker.skyblock.JoinInstanceAutocomplete;
 import de.hysky.skyblocker.skyblock.RngMeterAutocomplete;
 import de.hysky.skyblocker.skyblock.SackItemAutocomplete;
@@ -31,6 +32,7 @@ public class CommandTreeS2CPacketMixin {
 				case String s when s.equals("joinkuudra") && JoinInstanceAutocomplete.kuudraCommand != null -> JoinInstanceAutocomplete.kuudraCommand;
 				case String s when s.equals("rngmeter") && RngMeterAutocomplete.longCommand != null -> RngMeterAutocomplete.longCommand;
 				case String s when s.equals("rng") && RngMeterAutocomplete.shortCommand != null -> RngMeterAutocomplete.shortCommand;
+				case String s when s.equals("call") && CallAutocomplete.commandNode != null -> CallAutocomplete.commandNode;
 				default -> original;
 			};
 		}

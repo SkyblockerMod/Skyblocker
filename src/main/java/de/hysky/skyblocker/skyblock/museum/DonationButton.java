@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.museum;
 
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
-import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
@@ -21,7 +21,6 @@ import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class DonationButton extends ClickableWidget {
 	private static final int SIZE = 33;
@@ -53,13 +52,7 @@ public class DonationButton extends ClickableWidget {
 		// Determine the item stack to display
 		this.itemStack = !donation.isSet()
 				? ItemRepository.getItemStack(donation.getId())
-				: ItemRepository.getItemStack(
-				donation.getSet().stream()
-						.filter(piece -> piece.left().toLowerCase(Locale.ENGLISH).contains("helmet") || piece.left().toLowerCase(Locale.ENGLISH).contains("hat"))
-						.findFirst()
-						.orElse(donation.getSet().get(1)) // gets chestplate
-						.left()
-		);
+				: ItemRepository.getItemStack(MuseumItemCache.ARMOR_TO_ID.get(donation.getId()));
 
 		buildTooltip();
 	}
@@ -149,7 +142,7 @@ public class DonationButton extends ClickableWidget {
 			tooltip.add(Text.literal(" - ").formatted(Formatting.GRAY).append(MuseumUtils.getDisplayName(discount.left(), donation.isSet())).append(Text.literal(" ✔").formatted(Formatting.GREEN)).append(Text.literal(" (").formatted(Formatting.DARK_GRAY).append(Text.literal(MuseumUtils.formatPrice(discount.rightDouble())).formatted(Formatting.GOLD)).append(")").formatted(Formatting.DARK_GRAY)));
 		}
 
-		String wikiLookupKeyString = WikiLookup.getKeysText();
+		String wikiLookupKeyString = WikiLookupManager.getKeysText();
 		String itemPriceLookupKeyString = ItemPrice.ITEM_PRICE_LOOKUP.getBoundKeyLocalizedText().getString();
 		if (soulbound || !wikiLookupKeyString.isEmpty() || !itemPriceLookupKeyString.isEmpty()) tooltip.add(Text.empty());
 		if (soulbound) tooltip.add(Text.literal("* Soulbound *").formatted(Formatting.DARK_GRAY));

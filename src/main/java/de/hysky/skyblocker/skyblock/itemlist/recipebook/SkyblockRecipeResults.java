@@ -6,9 +6,10 @@ import java.util.Locale;
 
 import com.google.common.collect.Lists;
 
+import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
-import de.hysky.skyblocker.skyblock.item.WikiLookup;
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
@@ -367,7 +368,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 		ItemStack hovered = getHoveredItemStack(mouseX, mouseY);
 		if (hovered == null) return false;
 
-		if (WikiLookup.handleWikiLookup(hovered, client.player, false, keyCode, scanCode)) {
+		if (WikiLookupManager.handleWikiLookup(Either.right(hovered), client.player, keyCode, scanCode)) {
 			return true;
 		}
 

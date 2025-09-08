@@ -14,4 +14,9 @@ public abstract class KeyBindingMixin {
 	private static void onKeyPressed(InputUtil.Key key, CallbackInfo ci) {
 		Shortcuts.onKeyPressed(key);
 	}
+
+	@Inject(method = "setKeyPressed", at = @At("HEAD"))
+	private static void setKeyPressed(InputUtil.Key key, boolean pressed, CallbackInfo ci) {
+		Shortcuts.setKeyPressed(key, pressed);
+	}
 }
