@@ -69,7 +69,7 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 				case GALATEA -> Optional.ofNullable(FIGSTONE_AXE.get()).orElse(new ItemStack(Items.STONE_AXE));
 				default -> RED_CONCRETE;
 			};
-			addComponent(Components.iconTextComponent(new ItemStack(Items.STONE_AXE), Text.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
+			addComponent(Components.iconTextComponent(axeIcon, Text.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
 			return;
 		}
 
