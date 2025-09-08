@@ -19,9 +19,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+
+import static de.hysky.skyblocker.utils.Utils.getSupplierWithFallback;
 
 @RegisterWidget
 public class SweepDetailsHudWidget extends ComponentBasedWidget {
@@ -64,9 +65,9 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
 			SweepDetailsListener.active = false;
 			ItemStack axeIcon = switch (Utils.getLocation()) {
-				case HUB -> Optional.ofNullable(SWEET_AXE.get()).orElse(new ItemStack(Items.IRON_AXE));
-				case THE_PARK -> Optional.ofNullable(TREECAPITATOR_AXE.get()).orElse(new ItemStack(Items.GOLDEN_AXE));
-				case GALATEA -> Optional.ofNullable(FIGSTONE_AXE.get()).orElse(new ItemStack(Items.STONE_AXE));
+				case HUB -> getSupplierWithFallback(SWEET_AXE, new ItemStack(Items.IRON_AXE));
+				case THE_PARK -> getSupplierWithFallback(TREECAPITATOR_AXE, new ItemStack(Items.GOLDEN_AXE));
+				case GALATEA -> getSupplierWithFallback(FIGSTONE_AXE, new ItemStack(Items.STONE_AXE));
 				default -> RED_CONCRETE;
 			};
 			addComponent(Components.iconTextComponent(axeIcon, Text.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
