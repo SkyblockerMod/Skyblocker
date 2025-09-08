@@ -12,9 +12,12 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.*;
+import org.joml.RoundingMode;
+import org.joml.Vector2d;
+import org.joml.Vector2dc;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 
-import java.lang.Math;
 import java.util.*;
 
 public class DungeonMapUtils {
