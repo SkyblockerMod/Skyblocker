@@ -48,6 +48,15 @@ public class MiningCategory {
                         .controller(ConfigUtils.createBooleanController())
                         .build())
 
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.mining.callMismyla"))
+						.description(Text.translatable("skyblocker.config.mining.callMismyla.@Tooltip"))
+						.binding(defaults.mining.callMismyla,
+								() -> config.mining.callMismyla,
+								newValue -> config.mining.callMismyla = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+
 				.option(ButtonOption.createBuilder()
 						.name(Text.translatable("skyblocker.config.mining.dwarvenHud.screen"))
 						.prompt(Text.translatable("text.skyblocker.open"))

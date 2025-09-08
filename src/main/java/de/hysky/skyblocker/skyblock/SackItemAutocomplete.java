@@ -31,7 +31,7 @@ import net.minecraft.util.Formatting;
 
 public class SackItemAutocomplete {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Pattern BAD_CHARACTERS = Pattern.compile("[α☘☠✎✧❁❂❈❤⸕]");
+	private static final Pattern BAD_CHARACTERS = Pattern.compile("[☂☘☠✎✧❁❂❈❤⸕]");
 
 	@Nullable
 	public static LiteralCommandNode<FabricClientCommandSource> longCommandNode;

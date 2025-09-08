@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.utils.InstancedUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -172,12 +172,7 @@ public class DungeonPlayerManager {
 		}
 
 		@Override
-		public String toString() {
-			try {
-				return (String) InstancedUtils.toString(getClass()).invokeExact(this);
-			} catch (Throwable ignored) {
-				return super.toString();
-			}
-		}
+		@GenToString
+		public native String toString();
 	}
 }

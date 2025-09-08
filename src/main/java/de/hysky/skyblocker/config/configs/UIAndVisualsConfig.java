@@ -382,7 +382,7 @@ public class UIAndVisualsConfig {
 
 		public Color fullBarColor = new Color(0x00FF00);
 
-		public Color halfBarColor = new Color(0xFF4600);
+		public Color halfBarColor = new Color(0xFFFF00);
 
 		public Color emptyBarColor = new Color(0xFF0000);
 	}

@@ -160,6 +160,13 @@ public class ChatCategory {
                                         newValue -> config.chat.hideDicer = newValue)
                                 .controller(ConfigUtils.createEnumController())
                                 .build())
+						.option(Option.<ChatFilterResult>createBuilder()
+								.name(Text.translatable("skyblocker.config.chat.filter.hideDungeonBreaker"))
+								.binding(defaults.chat.hideDungeonBreaker,
+										() -> config.chat.hideDungeonBreaker,
+										newValue -> config.chat.hideDungeonBreaker = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
                         .build())
 
                 //chat rules options
