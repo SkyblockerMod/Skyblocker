@@ -4,7 +4,6 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.ProgressComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -37,7 +36,7 @@ public class DungeonServerWidget extends TabHudWidget {
 
 		Matcher m = PlayerListManager.regexAt(44, SECRET_PATTERN);
 		if (m == null) {
-			this.addComponent(new ProgressComponent());
+			this.addComponent(Components.progressComponent());
 		} else {
 			this.addComponent(Components.progressComponent(Ico.CHEST, Text.of("Secrets found:"),
 					Float.parseFloat(m.group("secnum")),
@@ -46,5 +45,4 @@ public class DungeonServerWidget extends TabHudWidget {
 
 		this.addSimpleIcoText(Ico.CLOCK, "Time:", Formatting.GOLD, 45);
 	}
-
 }

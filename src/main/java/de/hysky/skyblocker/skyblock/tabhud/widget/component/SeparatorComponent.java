@@ -9,7 +9,6 @@ import net.minecraft.text.Text;
  * Can be used to separate information visible in a widget into different categories.
  */
 public class SeparatorComponent extends Component {
-
 	private final Text text;
 	private final int textWidth;
 
@@ -30,7 +29,5 @@ public class SeparatorComponent extends Component {
 		} else {
 			context.fill(x - 2, y + this.height / 2, x + parentWidth - ComponentBasedWidget.BORDER_SZE_E - ComponentBasedWidget.BORDER_SZE_W + 2, y + this.height / 2 + 1, 0xff55ffff);
 		}
-
 	}
-
 }

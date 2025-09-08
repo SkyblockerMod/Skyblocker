@@ -15,6 +15,9 @@ import java.util.regex.Pattern;
  */
 public interface Constants {
 	String LEVEL_EMBLEMS = "\u2E15\u273F\u2741\u2E19\u03B1\u270E\u2615\u2616\u2663\u213B\u2694\u27B6\u26A1\u2604\u269A\u2693\u2620\u269B\u2666\u2660\u2764\u2727\u238A\u1360\u262C\u269D\u29C9\uA214\u32D6\u2E0E\u26A0\uA541\u3020\u30C4\u2948\u2622\u2623\u273E\u269C\u0BD0\u0A6D\u2742\u16C3\u3023\u10F6\u0444\u266A\u266B\u04C3\u26C1\u26C3\u16DD\u2618\uA598\uA03E\u1C6A\u03A3\u09EB\u2603\u2654\u26C2\u0FC7\uA925\uA56A\u2592\u2600\u12DE";
+	/**
+	 * Pattern for player names in the chat. For tab player names, use {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#PLAYER_NAME_PATTERN PlayerListManager#PLAYER_NAME_PATTERN}.
+	 */
 	Pattern PLAYER_NAME = Pattern.compile("(?:\\[[0-9]+\\] )?(?:[" + Constants.LEVEL_EMBLEMS + "] )?(?:\\[[A-Z+]+\\] )?([A-Za-z0-9_]+)");
 
 	Supplier<MutableText> PREFIX = () -> {

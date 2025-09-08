@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
@@ -56,17 +55,16 @@ public class ElectionWidget extends TabHudWidget {
 	public void updateContent(List<Text> lines) {
 		String status = lines.getFirst().getString();
 		if (status == null) {
-			this.addComponent(new IcoTextComponent());
-			this.addComponent(new IcoTextComponent());
-			this.addComponent(new IcoTextComponent());
-			this.addComponent(new IcoTextComponent());
+			this.addComponent(Components.iconTextComponent());
+			this.addComponent(Components.iconTextComponent());
+			this.addComponent(Components.iconTextComponent());
+			this.addComponent(Components.iconTextComponent());
 			return;
 		}
 
 		if (status.contains("Over!")) {
 			// election is over
-			IcoTextComponent over = new IcoTextComponent(Ico.BARRIER, EL_OVER);
-			this.addComponent(over);
+			this.addComponent(Components.iconTextComponent(Ico.BARRIER, EL_OVER));
 
 			for (int i = 1; i < lines.size(); i++) {
 				this.addComponent(new PlainTextComponent(lines.get(i)));
@@ -89,5 +87,4 @@ public class ElectionWidget extends TabHudWidget {
 			}
 		}
 	}
-
 }

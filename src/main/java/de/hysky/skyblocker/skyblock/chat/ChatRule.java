@@ -15,6 +15,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -233,48 +234,42 @@ public class ChatRule {
 	 * @param inputString the chat message to check if fits
 	 * @return if the inputs are all true and the outputs should be performed
 	 */
-	protected boolean isMatch(String inputString) {
+	protected Match isMatch(String inputString) {
 		//enabled
-		if (!enabled) return false;
+		if (!enabled) return Match.noMatch();
 
 		//ignore case
-		String testString;
-		String testFilter;
-
-		if (isIgnoreCase) {
-			testString = inputString.toLowerCase();
-			testFilter = filter.toLowerCase();
-		} else {
-			testString = inputString;
-			testFilter = filter;
-		}
+		String testString = isIgnoreCase ? inputString.toLowerCase() : inputString;
+		String testFilter = isIgnoreCase ? filter.toLowerCase() : filter;
+		if (testFilter.isBlank()) return Match.noMatch();
 
 		//filter
-		if (testFilter.isBlank()) return false;
+		Match match;
 		if (isRegex) {
 			compilePattern(testFilter);
-			if (pattern == null) return false;
+			if (pattern == null) return Match.noMatch();
 
+			Matcher matcher = pattern.matcher(testString);
 			if (isPartialMatch) {
-				if (!pattern.matcher(testString).find()) return false;
+				if (matcher.find()) match = Match.ofRegex(matcher); else return Match.noMatch();
 			} else {
-				if (!pattern.matcher(testString).matches()) return false;
+				if (matcher.matches()) match = Match.ofRegex(matcher); else return Match.noMatch();
 			}
 		} else {
 			if (isPartialMatch) {
-				if (!testString.contains(testFilter)) return false;
+				if (testString.contains(testFilter)) match = Match.ofString(); else return Match.noMatch();
 			} else {
-				if (!testFilter.equals(testString)) return false;
+				if (testFilter.equals(testString)) match = Match.ofString(); else return Match.noMatch();
 			}
 		}
 
-		// As a special case, if there are no valid locations all locations are valid.
+		// As a special case, if there are no valid locations, all locations are valid.
 		// This exists because it doesn't make sense to remove all valid locations, you should disable the chat rule if you want to do that.
 		// This way, we can also default to an empty set for validLocations.
-		if (validLocations.isEmpty()) return true;
+		if (validLocations.isEmpty()) return match;
 		// UNKNOWN isn't a valid location, so we act the same as the list being empty.
-		if (validLocations.size() == 1 && validLocations.contains(Location.UNKNOWN)) return true;
-		return validLocations.contains(Utils.getLocation());
+		if (validLocations.size() == 1 && validLocations.contains(Location.UNKNOWN)) return match;
+		return validLocations.contains(Utils.getLocation()) ? match : Match.noMatch();
 	}
 
 	// This maps invalid entries to `Location.UNKNOWN`, which is better than failing outright.
@@ -285,14 +280,14 @@ public class ChatRule {
 		// If a location's name contains a ! prefix, it's negated, meaning every location except that one is valid.
 		if (string.contains("!")) return EnumSet.complementOf(
 				Arrays.stream(string.split(", ?"))
-					  .filter(s1 -> s1.startsWith("!")) // Filter out the non-negated locations because the negation of any element in the list already implies those non-negated locations being valid.
-					  .map(s -> s.substring(1)) // Skip the `!`
-					  .map(Location::fromFriendlyName)
-					  .collect(CollectionUtils.enumSetCollector(Location.class))
+						.filter(s1 -> s1.startsWith("!")) // Filter out the non-negated locations because the negation of any element in the list already implies those non-negated locations being valid.
+						.map(s -> s.substring(1)) // Skip the `!`
+						.map(Location::fromFriendlyName)
+						.collect(CollectionUtils.enumSetCollector(Location.class))
 		);
 		return Arrays.stream(string.split(", ?"))
-					 .map(Location::fromFriendlyName)
-					 .collect(CollectionUtils.enumSetCollector(Location.class));
+				.map(Location::fromFriendlyName)
+				.collect(CollectionUtils.enumSetCollector(Location.class));
 	}
 
 	// Allow value equality checks for ChatRule objects
@@ -305,5 +300,26 @@ public class ChatRule {
 	@Override
 	public int hashCode() {
 		return Objects.hash(getName(), getEnabled(), getPartialMatch(), getRegex(), getIgnoreCase(), getFilter(), getValidLocations(), getHideMessage(), getShowActionBar(), getShowAnnouncement(), getReplaceMessage(), getCustomSound());
+	}
+
+	protected record Match(boolean matches, Optional<Matcher> matcher) {
+		protected static Match noMatch() {
+			return new Match(false, Optional.empty());
+		}
+
+		protected static Match ofString() {
+			return new Match(true, Optional.empty());
+		}
+
+		protected static Match ofRegex(Matcher matcher) {
+			return new Match(true, Optional.of(matcher));
+		}
+
+		protected String insertCaptureGroups(String replaceMessage) {
+			if (!matches || matcher.isEmpty()) return replaceMessage;
+			StringBuilder sb = new StringBuilder();
+			matcher.get().appendReplacement(sb, replaceMessage);
+			return sb.substring(matcher.get().start());
+		}
 	}
 }

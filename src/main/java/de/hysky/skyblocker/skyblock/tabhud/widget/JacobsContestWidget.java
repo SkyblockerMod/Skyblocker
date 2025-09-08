@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -26,17 +26,18 @@ public class JacobsContestWidget extends TabHudWidget {
 
 	private static final Pattern CROP_PATTERN = Pattern.compile("(?<fortune>[☘○]) (?<crop>.+?)(?: ◆ )?(?<percentage>Top [\\d.]+%)?");
 
+	// Ordered the same as "Unique Brackets Reached" in Anita NPC shop
 	public static final Map<String, ItemStack> FARM_DATA = Map.ofEntries(
 			entry("Wheat", new ItemStack(Items.WHEAT)),
-			entry("Sugar Cane", new ItemStack(Items.SUGAR_CANE)),
 			entry("Carrot", new ItemStack(Items.CARROT)),
 			entry("Potato", new ItemStack(Items.POTATO)),
-			entry("Melon", new ItemStack(Items.MELON_SLICE)),
 			entry("Pumpkin", new ItemStack(Items.PUMPKIN)),
-			entry("Cocoa Beans", new ItemStack(Items.COCOA_BEANS)),
-			entry("Nether Wart", new ItemStack(Items.NETHER_WART)),
+			entry("Melon Slice", new ItemStack(Items.MELON_SLICE)),
+			entry("Mushroom", new ItemStack(Items.RED_MUSHROOM)),
 			entry("Cactus", new ItemStack(Items.CACTUS)),
-			entry("Mushroom", new ItemStack(Items.RED_MUSHROOM))
+			entry("Sugar Cane", new ItemStack(Items.SUGAR_CANE)),
+			entry("Nether Wart", new ItemStack(Items.NETHER_WART)),
+			entry("Cocoa Beans", new ItemStack(Items.COCOA_BEANS))
 	);
 
 	public JacobsContestWidget() {
@@ -47,7 +48,7 @@ public class JacobsContestWidget extends TabHudWidget {
 	public void updateContent(List<Text> lines) {
 		for (Text line : lines) {
 			String string = line.getString();
-			if (string.endsWith("left") || string.contains("Starts")) this.addComponent(new IcoTextComponent(Ico.CLOCK, line));
+			if (string.endsWith("left") || string.contains("Starts")) this.addComponent(Components.iconTextComponent(Ico.CLOCK, line));
 			else {
 				Matcher matcher = CROP_PATTERN.matcher(string);
 				if (matcher.matches()) {
@@ -56,7 +57,7 @@ public class JacobsContestWidget extends TabHudWidget {
 					MutableText cropText = Text.empty().append(crop);
 					if (matcher.group("fortune").equals("☘")) cropText.append(Text.literal(" ☘").formatted(Formatting.GOLD));
 
-					this.addComponent(new IcoTextComponent(FARM_DATA.get(crop), cropText));
+					this.addComponent(Components.iconTextComponent(FARM_DATA.get(crop), cropText));
 					if (percentage != null) this.addComponent(new PlainTextComponent(Text.literal(percentage)));
 				} else this.addComponent(new PlainTextComponent(line));
 			}

@@ -4,7 +4,6 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -39,7 +38,7 @@ public class CommsWidget extends TabHudWidget {
 	@Override
 	public void updateContent(List<Text> lines) {
 		if (lines.isEmpty()) {
-			this.addComponent(new IcoTextComponent());
+			this.addComponent(Components.iconTextComponent());
 			return;
 		}
 		for (Text line : lines) {

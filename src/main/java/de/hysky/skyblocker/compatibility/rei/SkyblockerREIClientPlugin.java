@@ -49,6 +49,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerCategories(CategoryRegistry categoryRegistry) {
+		if (!Utils.isOnSkyblock()) return;
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
 		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.IDENTIFIER), EntryStacks.of(Items.CRAFTING_TABLE));
 		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.IDENTIFIER), EntryStacks.of(Items.ANVIL));
@@ -60,6 +61,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerDisplays(DisplayRegistry displayRegistry) {
+		if (!Utils.isOnSkyblock()) return;
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
 		if (displayRegistry.getGlobalDisplayGenerators().stream().noneMatch(generator -> generator instanceof SkyblockRecipeDisplayGenerator))
 			displayRegistry.registerGlobalDisplayGenerator(new SkyblockRecipeDisplayGenerator());
@@ -69,6 +71,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerEntries(EntryRegistry entryRegistry) {
+		if (!Utils.isOnSkyblock()) return;
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
 		entryRegistry.removeEntryIf(entryStack -> true);
 		entryRegistry.addEntries(ItemRepository.getItemsStream().map(EntryStacks::of).toList());
@@ -77,6 +80,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 	@SuppressWarnings("UnstableApiUsage")
 	@Override
 	public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
+		if (!Utils.isOnSkyblock()) return;
 		GeneralConfig.ItemList config = SkyblockerConfigManager.get().general.itemList;
 		if (!config.enableItemList || !config.enableCollapsibleEntries) return;
 		if (!ItemRepository.filesImported() || NEURepoManager.isLoading()) return;
@@ -111,6 +115,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerExclusionZones(ExclusionZones zones) {
+		if (!Utils.isOnSkyblock()) return;
 		zones.register(GenericContainerScreen.class, containerScreen -> {
 			if (!SkyblockerConfigManager.get().uiAndVisuals.museumOverlay || !containerScreen.getTitle().getString().contains("Museum")) return List.of();
 			HandledScreenAccessor accessor = (HandledScreenAccessor) containerScreen;
@@ -131,6 +136,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerTransferHandlers(TransferHandlerRegistry registry) {
+		if (!Utils.isOnSkyblock()) return;
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
 		registry.register(new SkyblockTransferHandler());
 	}

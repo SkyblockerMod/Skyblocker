@@ -219,6 +219,8 @@ public class GeneralConfig {
     }
 
     public static class Hitbox {
+        public boolean oldCactusHitbox = false;
+
         public boolean oldFarmlandHitbox = false;
 
         public boolean oldLeverHitbox = false;

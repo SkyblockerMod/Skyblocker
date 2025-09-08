@@ -6,6 +6,7 @@
   "client": [
     "BatEntityMixin",
     "BossBarHudMixin",
+    "CactusBlockMixin",
     "CameraMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",

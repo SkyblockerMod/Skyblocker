@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -21,8 +21,7 @@ public class EventWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent(List<Text> lines) {
-		if (!lines.isEmpty()) this.addComponent(new IcoTextComponent(Ico.NTAG, lines.getFirst()));
-		if (lines.size() > 1) this.addComponent(new IcoTextComponent(Ico.CLOCK, lines.get(1)));
+		if (!lines.isEmpty()) this.addComponent(Components.iconTextComponent(Ico.NTAG, lines.getFirst()));
+		if (lines.size() > 1) this.addComponent(Components.iconTextComponent(Ico.CLOCK, lines.get(1)));
 	}
-
 }
