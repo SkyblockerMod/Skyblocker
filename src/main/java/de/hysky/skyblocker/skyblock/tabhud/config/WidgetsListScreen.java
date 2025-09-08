@@ -61,6 +61,8 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 		if (waitingForServer) return;
 		if (client.interactionManager == null || this.client.player == null) return;
 		client.interactionManager.clickSlot(handler.syncId, slot, button, SlotActionType.PICKUP, this.client.player);
+		// wacky fix for "this action is on cooldown"
+		if (slot == 50) Scheduler.INSTANCE.schedule(() -> this.waitingForServer = false, 4);
 		waitingForServer = true;
 	}
 
@@ -74,6 +76,8 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 	}
 
 	public void updateHandler(@NotNull GenericContainerScreenHandler newHandler, String titleLowercase) {
+		this.handler.removeListener(this);
+		newHandler.addListener(this);
 		this.handler = newHandler;
 		this.titleLowercase = titleLowercase;
 		entries.clear();
@@ -155,7 +159,8 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 	protected void init() {
 		super.init();
 		widgetsElementList = new WidgetsElementList(this, client, 0, 0, 0);
-		back = ButtonWidget.builder(Text.literal("Back"), button -> clickAndWaitForServer(48, 0))
+		back = ButtonWidget.builder(Text.literal("Back"), button -> {clickAndWaitForServer(48, 0);
+					System.out.println("aaaaaaaa"); })
 				.size(64, 15)
 				.build();
 		thirdColumnButton = ButtonWidget.builder(Text.literal("3rd Column:"), button -> clickAndWaitForServer(50, 0))
@@ -168,8 +173,9 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 		nextPage = ButtonWidget.builder(Text.literal("Next Page"), button -> clickAndWaitForServer(53, 0))
 				.size(100, 15)
 				.build();
+		addSelectableChild(back); // element list was blocking the clicks for some reason
 		addDrawableChild(widgetsElementList);
-		addDrawableChild(back);
+		addDrawable(back);
 		addDrawableChild(thirdColumnButton);
 		addDrawableChild(thirdColumnButton);
 		addDrawableChild(previousPage);
