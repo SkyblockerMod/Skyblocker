@@ -304,6 +304,21 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.tabHud.style = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.displayIcons"))
+								.binding(defaults.uiAndVisuals.tabHud.displayIcons,
+										() -> config.uiAndVisuals.tabHud.displayIcons,
+										newValue -> config.uiAndVisuals.tabHud.displayIcons = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip"))
+								.binding(defaults.uiAndVisuals.tabHud.compactWidgets,
+										() -> config.uiAndVisuals.tabHud.compactWidgets,
+										newValue -> config.uiAndVisuals.tabHud.compactWidgets = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground"))
                                 .description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip"))

@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -51,14 +51,11 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 					.append(Text.literal("[").formatted(Formatting.GRAY))
 					.append(Text.literal(m.group("status")).formatted(statcol, Formatting.BOLD))
 					.append(Text.literal("]").formatted(Formatting.GRAY));
-			IcoTextComponent itc = new IcoTextComponent(Ico.SIGN, t);
-			this.addComponent(itc);
+			this.addComponent(Components.iconTextComponent(Ico.SIGN, t));
 			pos++;
 		}
 		if (pos == 48) {
-			this.addComponent(
-					new IcoTextComponent(Ico.BARRIER, Text.literal("No puzzles!").formatted(Formatting.GRAY)));
+			this.addComponent(Components.iconTextComponent(Ico.BARRIER, Text.literal("No puzzles!").formatted(Formatting.GRAY)));
 		}
 	}
-
 }
