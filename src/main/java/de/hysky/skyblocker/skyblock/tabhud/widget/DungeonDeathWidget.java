@@ -30,7 +30,7 @@ public class DungeonDeathWidget extends TabHudWidget {
 	}
 
 	@Override
-	public void updateContent(List<Text> ignored) {
+	public void updateContent() {
 		Matcher m = PlayerListManager.regexAt(25, DEATH_PATTERN);
 		if (m == null) {
 			this.addComponent(Components.iconTextComponent());
@@ -44,4 +44,7 @@ public class DungeonDeathWidget extends TabHudWidget {
 		this.addSimpleIcoText(Ico.POTION, "Healing Done:", Formatting.RED, 27);
 		this.addSimpleIcoText(Ico.NTAG, "Milestone:", Formatting.YELLOW, 28);
 	}
+
+	@Override
+	protected void updateContent(List<Text> lines) {}
 }

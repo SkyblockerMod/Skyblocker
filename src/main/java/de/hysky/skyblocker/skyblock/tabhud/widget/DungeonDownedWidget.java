@@ -24,7 +24,7 @@ public class DungeonDownedWidget extends TabHudWidget {
 	}
 
 	@Override
-	public void updateContent(List<Text> ignored) {
+	public void updateContent() {
 		String down = PlayerListManager.strAt(21);
 		if (down == null) {
 			this.addComponent(Components.iconTextComponent());
@@ -43,4 +43,7 @@ public class DungeonDownedWidget extends TabHudWidget {
 		this.addSimpleIcoText(Ico.CLOCK, "Time:", Formatting.GRAY, 22);
 		this.addSimpleIcoText(Ico.POTION, "Revive:", Formatting.GRAY, 23);
 	}
+
+	@Override
+	protected void updateContent(List<Text> lines) {}
 }

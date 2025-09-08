@@ -24,7 +24,7 @@ public class DungeonSecretWidget extends TabHudWidget {
 	}
 
 	@Override
-	public void updateContent(List<Text> ignored) {
+	public void updateContent() {
 		if (!DungeonScore.isDungeonStarted()) {
 			this.addSimpleIcoText(Ico.CHEST, "Secrets:", Formatting.YELLOW, 30);
 			this.addSimpleIcoText(Ico.SKULL, "Crypts:", Formatting.YELLOW, 31);
@@ -36,4 +36,7 @@ public class DungeonSecretWidget extends TabHudWidget {
 			this.addSimpleIcoText(Ico.SKULL, "Crypts:", Formatting.YELLOW, 32);
 		}
 	}
+
+	@Override
+	protected void updateContent(List<Text> lines) {}
 }

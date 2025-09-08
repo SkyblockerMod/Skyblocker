@@ -32,7 +32,7 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 	}
 
 	@Override
-	public void updateContent(List<Text> ignored) {
+	public void updateContent() {
 		int pos = 48;
 
 		while (pos < 60) {
@@ -59,4 +59,7 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 			this.addComponent(Components.iconTextComponent(Ico.BARRIER, Text.literal("No puzzles!").formatted(Formatting.GRAY)));
 		}
 	}
+
+	@Override
+	protected void updateContent(List<Text> lines) {}
 }

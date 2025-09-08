@@ -30,7 +30,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 	}
 
 	@Override
-	public void updateContent(List<Text> ignored) {
+	public void updateContent() {
 		int start = 1 + (player - 1) * 4;
 
 		if (PlayerListManager.strAt(start) == null) {
@@ -72,4 +72,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 		this.addSimpleIcoText(Ico.CLOCK, "Ult Cooldown:", Formatting.GOLD, start + 1);
 		this.addSimpleIcoText(Ico.POTION, "Revives:", Formatting.DARK_PURPLE, start + 2);
 	}
+
+	@Override
+	protected void updateContent(List<Text> lines) {}
 }

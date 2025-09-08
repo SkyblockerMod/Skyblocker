@@ -24,7 +24,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 	}
 
 	@Override
-	public void updateContent(List<Text> ignored) {
+	public void updateContent() {
 
 		String footertext = PlayerListManager.getFooter();
 
@@ -56,6 +56,9 @@ public class DungeonBuffWidget extends TabHudWidget {
 		}
 
 	}
+
+	@Override
+	protected void updateContent(List<Text> lines) {}
 
 	@SuppressWarnings("DataFlowIssue")
 	public int getBlessingColor(String blessing) {

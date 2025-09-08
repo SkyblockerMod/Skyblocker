@@ -30,7 +30,7 @@ public class DungeonServerWidget extends TabHudWidget {
 	}
 
 	@Override
-	public void updateContent(List<Text> ignored) {
+	public void updateContent() {
 		this.addSimpleIcoText(Ico.NTAG, "Name:", Formatting.AQUA, 41);
 		this.addSimpleIcoText(Ico.SIGN, "Rooms Visited:", Formatting.DARK_PURPLE, 42);
 		this.addSimpleIcoText(Ico.SIGN, "Rooms Completed:", Formatting.LIGHT_PURPLE, 43);
@@ -46,4 +46,7 @@ public class DungeonServerWidget extends TabHudWidget {
 
 		this.addSimpleIcoText(Ico.CLOCK, "Time:", Formatting.GOLD, 45);
 	}
+
+	@Override
+	protected void updateContent(List<Text> lines) {}
 }
