@@ -8,10 +8,34 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Range;
 
 public class Components {
+	public static Component iconTextComponent() {
+		return iconTextComponent(null, null);
+	}
+
 	public static Component iconTextComponent(ItemStack icon, Text text) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons) {
+			return new IcoTextComponent(icon, text);
+		} else {
+			return new PlainTextComponent(text);
+		}
+	}
+
+	public static Component iconFatTextComponent() {
+		return iconFatTextComponent(null, null, null);
+	}
+
+	public static Component iconFatTextComponent(ItemStack icon, Text line1, Text line2) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons) {
+			return new IcoFatTextComponent(icon, line1, line2);
+		} else {
+			return new PlainTextComponent(line1, line2);
+		}
+	}
+
+	public static Component progressComponent() {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
-			case MINIMAL, SIMPLE -> new PlainTextComponent(text);
-			case CLASSIC, FANCY -> new IcoTextComponent(icon, text);
+			case FANCY -> new ProgressComponent();
+			case null, default -> iconTextComponent();
 		};
 	}
 
@@ -22,9 +46,8 @@ public class Components {
 	 */
 	public static Component progressComponent(ItemStack icon, Text description, @Range(from = 0, to = 100) float percent) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
-			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
-			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
 			case FANCY -> new ProgressComponent(icon, description, percent);
+			case null, default -> iconTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
 		};
 	}
 
@@ -35,9 +58,8 @@ public class Components {
 	 */
 	public static Component progressComponent(ItemStack icon, Text description, @Range(from = 0, to = 100) float percent, int color) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
-			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(Text.literal(percent + "%").withColor(color)));
-			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(color)));
 			case FANCY -> new ProgressComponent(icon, description, percent, color);
+			case null, default -> iconTextComponent(icon, appendColon(description).append(Text.literal(percent + "%").withColor(color)));
 		};
 	}
 
@@ -48,9 +70,8 @@ public class Components {
 	 */
 	public static Component progressComponent(ItemStack icon, Text description, Text bar, @Range(from = 0, to = 100) float percent) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
-			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
-			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
 			case FANCY -> new ProgressComponent(icon, description, bar, percent);
+			case null, default -> iconTextComponent(icon, appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
 		};
 	}
 
@@ -61,9 +82,8 @@ public class Components {
 	 */
 	public static Component progressComponent(ItemStack icon, Text description, Text bar, @Range(from = 0, to = 100) float percent, int color) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
-			case MINIMAL, SIMPLE -> new PlainTextComponent(appendColon(description).append(bar.copy().withColor(color)));
-			case CLASSIC -> new IcoTextComponent(icon, appendColon(description).append(bar.copy().withColor(color)));
 			case FANCY -> new ProgressComponent(icon, description, bar, percent, color);
+			case null, default -> iconTextComponent(icon, appendColon(description).append(bar.copy().withColor(color)));
 		};
 	}
 

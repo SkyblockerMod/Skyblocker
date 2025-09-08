@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.component;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
@@ -10,12 +11,11 @@ import net.minecraft.util.Formatting;
 /**
  * Component that consists of an icon and a line of text.
  */
-public class IcoTextComponent extends Component {
-
+class IcoTextComponent extends Component {
 	private ItemStack ico;
 	private Text text;
 
-	public IcoTextComponent(ItemStack ico, Text txt) {
+	IcoTextComponent(ItemStack ico, Text txt) {
 		this.ico = (ico == null) ? Ico.BARRIER : ico;
 		this.text = txt;
 
@@ -24,18 +24,15 @@ public class IcoTextComponent extends Component {
 			this.text = Text.literal("No data").formatted(Formatting.GRAY);
 		}
 
-		this.width = ICO_DIM + PAD_L + txtRend.getWidth(this.text);
-		this.height = ICO_DIM;
-	}
-
-	public IcoTextComponent() {
-		this(null, null);
+		int iconDim = ICO_DIM.get();
+		this.width = iconDim + PAD_L + txtRend.getWidth(this.text);
+		this.height = iconDim;
 	}
 
 	@Override
 	public void render(DrawContext context, int x, int y) {
-		context.drawItem(ico, x, y);
-		context.drawText(txtRend, text, x + ICO_DIM + PAD_L, y + 5, Colors.WHITE, false);
+		int offset = SkyblockerConfigManager.get().uiAndVisuals.tabHud.compactWidgets ? 2 : 4;
+		renderIcon(context, ico, x, y);
+		context.drawText(txtRend, text, x + ICO_DIM.get() + PAD_L, y + offset, Colors.WHITE, false);
 	}
-
 }

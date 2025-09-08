@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -47,7 +47,7 @@ public class JacobsContestWidget extends TabHudWidget {
 	public void updateContent(List<Text> lines) {
 		for (Text line : lines) {
 			String string = line.getString();
-			if (string.endsWith("left") || string.contains("Starts")) this.addComponent(new IcoTextComponent(Ico.CLOCK, line));
+			if (string.endsWith("left") || string.contains("Starts")) this.addComponent(Components.iconTextComponent(Ico.CLOCK, line));
 			else {
 				Matcher matcher = CROP_PATTERN.matcher(string);
 				if (matcher.matches()) {
@@ -56,7 +56,7 @@ public class JacobsContestWidget extends TabHudWidget {
 					MutableText cropText = Text.empty().append(crop);
 					if (matcher.group("fortune").equals("☘")) cropText.append(Text.literal(" ☘").formatted(Formatting.GOLD));
 
-					this.addComponent(new IcoTextComponent(FARM_DATA.get(crop), cropText));
+					this.addComponent(Components.iconTextComponent(FARM_DATA.get(crop), cropText));
 					if (percentage != null) this.addComponent(new PlainTextComponent(Text.literal(percentage)));
 				} else this.addComponent(new PlainTextComponent(line));
 			}
