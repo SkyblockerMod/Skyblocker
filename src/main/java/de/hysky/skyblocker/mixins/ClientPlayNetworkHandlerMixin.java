@@ -175,7 +175,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		//make the f3+3 screen always send ping packets even when closed
 		//this is needed to make smooth AOTE work so check if its enabled
 		UIAndVisualsConfig.SmoothAOTE options = SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE;
-		if (Utils.isOnSkyblock() && !PredictiveSmoothAOTE.teleportDisabled && (options.enableWeirdTransmission || options.enableEtherTransmission || options.enableInstantTransmission || options.enableSinrecallTransmission || options.enableWitherImpact)) {
+		if (Utils.isOnSkyblock() && options.predictive && !PredictiveSmoothAOTE.teleportDisabled && (options.enableWeirdTransmission || options.enableEtherTransmission || options.enableInstantTransmission || options.enableSinrecallTransmission || options.enableWitherImpact)) {
 			return true;
 		}
 		return original;
