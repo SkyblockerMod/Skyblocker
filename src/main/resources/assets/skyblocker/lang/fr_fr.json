@@ -1419,7 +1419,6 @@
     "skyblocker.crimson.dojo.controlHelper.@Tooltip": "Affiche un contour autour de la zone à viser.",
     "skyblocker.corpseTracker.summaryView": "Passer à l'affichage du résumé",
     "skyblocker.config.uiAndVisuals.tabHud.style": "Style pour l'ATH et le TAB amélioré",
-    "skyblocker.config.uiAndVisuals.tabHud.style.SIMPLE": "Simple",
     "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]": "Minimal : Affiche le minimum d'informations dans des petits encadrés.\n",
     "skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect": "Mode Baguette Gyrocinétique",
     "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault": "Afficher le menu Tab Vanilla par Défaut",

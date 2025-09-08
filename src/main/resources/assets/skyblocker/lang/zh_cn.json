@@ -1032,7 +1032,6 @@
     "skyblocker.config.helpers.carnival.catchAFishHelper": "Catch a Fish助手",
     "skyblocker.config.helpers.carnival.zombieShootoutHelper": "Zombie Shootout助手",
     "skyblocker.slayer.hud.bossesNeeded": "距升级所需Boss数量",
-    "skyblocker.config.uiAndVisuals.tabHud.style.SIMPLE": "简约",
     "skyblocker.config.uiAndVisuals.tabHud.style.CLASSIC": "经典",
     "skyblocker.config.uiAndVisuals.tabHud.style.MINIMAL": "极简",
     "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]": "简约：在普通的框中显示基本信息。\n",
