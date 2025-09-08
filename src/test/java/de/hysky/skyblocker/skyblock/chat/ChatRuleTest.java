@@ -16,25 +16,36 @@ class ChatRuleTest {
 		//test enabled check
 		testRule.setFilter("test");
 		testRule.setEnabled(false);
-		Assertions.assertFalse(testRule.isMatch("test"));
+		Assertions.assertFalse(testRule.isMatch("test").matches());
 		//test simple filter works
 		testRule.setEnabled(true);
-		Assertions.assertTrue(testRule.isMatch("test"));
+		Assertions.assertTrue(testRule.isMatch("test").matches());
 		//test partial match works
-		Assertions.assertFalse(testRule.isMatch("test extra"));
+		Assertions.assertFalse(testRule.isMatch("test extra").matches());
 		testRule.setPartialMatch(true);
-		Assertions.assertTrue(testRule.isMatch("test extra"));
+		Assertions.assertTrue(testRule.isMatch("test extra").matches());
 		//test ignore case works
-		Assertions.assertTrue(testRule.isMatch("TEST"));
+		Assertions.assertTrue(testRule.isMatch("TEST").matches());
 		testRule.setIgnoreCase(false);
-		Assertions.assertFalse(testRule.isMatch("TEST"));
+		Assertions.assertFalse(testRule.isMatch("TEST").matches());
 
 		//test regex
 		testRule = new ChatRule();
 		testRule.setRegex(true);
 		testRule.setFilter("[0-9]+");
-		Assertions.assertTrue(testRule.isMatch("1234567"));
-		Assertions.assertFalse(testRule.isMatch("1234567 test"));
+		Assertions.assertTrue(testRule.isMatch("1234567").matches());
+		Assertions.assertFalse(testRule.isMatch("1234567 test").matches());
+	}
+
+	@Test
+	void replaceMessage() {
+		ChatRule testRule = new ChatRule();
+		testRule.setRegex(true);
+		testRule.setIgnoreCase(false);
+		testRule.setFilter("(\\d+)\\D+(\\d+)");
+		testRule.setPartialMatch(true);
+		testRule.setReplaceMessage("Number: $1; Another number: $2");
+		Assertions.assertEquals("Number: 1234567890; Another number: 123", testRule.isMatch("this is a number 1234567890 and some more text and 123 and even more text").insertCaptureGroups(testRule.getReplaceMessage()));
 	}
 
 	@Test
