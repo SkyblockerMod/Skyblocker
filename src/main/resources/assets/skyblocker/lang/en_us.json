@@ -1182,6 +1182,8 @@
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip": "Enables the background of the non-tab HUD.",
   "skyblocker.config.uiAndVisuals.tabHud.effectsFooter": "Effects from footer",
   "skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip": "If on, will fetch current effects from the tab footer if the Hypixel Effects Widget is disabled.",
+  "skyblocker.config.uiAndVisuals.tabHud.nameSorting": "Player Name Sorting Method",
+  "skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip": "Alphabetical sorting sorts names alphabetically while Default has no particular order.",
   "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault": "Show Vanilla Tab by Default",
   "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault.@Tooltip": "If on, will show the vanilla tab by default. Press the toggle key to show fancy tab HUD.",
   "skyblocker.config.uiAndVisuals.tabHud.style": "Style for fancy HUD and TAB",
