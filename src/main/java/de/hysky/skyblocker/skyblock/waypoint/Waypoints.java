@@ -104,6 +104,7 @@ public class Waypoints {
         try (BufferedReader reader = Files.newBufferedReader(WAYPOINTS_FILE)) {
             List<WaypointGroup> waypointGroups = CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
             waypointGroups.forEach(Waypoints::putWaypointGroup);
+		} catch (NoSuchFileException ignored) {
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading waypoints", e);
         }
