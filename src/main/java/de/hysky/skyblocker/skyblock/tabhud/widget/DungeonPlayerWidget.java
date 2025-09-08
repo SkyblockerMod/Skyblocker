@@ -7,6 +7,8 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -24,12 +26,13 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 	// title needs to be changeable here
 	public DungeonPlayerWidget(int player) {
-		super("Dungeon Player " + player, TITLE, Formatting.DARK_PURPLE.getColorValue());
+		super("Dungeon Player " + player, TITLE, Formatting.DARK_PURPLE.getColorValue(), new Information("dungeon_player_" + player, TITLE.copyContentOnly().append(" " + player), l -> l == Location.DUNGEON));
 		this.player = player;
 	}
 
 	@Override
-	public void updateContent(List<Text> ignored) {
+	public void updateContent() {
+		if (!Utils.isInDungeons()) return;
 		int start = 1 + (player - 1) * 4;
 
 		if (PlayerListManager.strAt(start) == null) {
@@ -71,4 +74,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 		this.addSimpleIcoText(Ico.CLOCK, "Ult Cooldown:", Formatting.GOLD, start + 1);
 		this.addSimpleIcoText(Ico.POTION, "Revives:", Formatting.DARK_PURPLE, start + 2);
 	}
+
+	@Override
+	protected void updateContent(List<Text> lines) {}
 }

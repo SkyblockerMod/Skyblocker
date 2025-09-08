@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
@@ -11,20 +10,15 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-
-import java.util.Set;
+import org.jetbrains.annotations.NotNull;
 
 @RegisterWidget
 public class PowderMiningWidget extends HudWidget {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final Set<Location> LOCATIONS = Set.of(Location.CRYSTAL_HOLLOWS);
-
-	public PowderMiningWidget() {
-		super("powder_mining_tracker");
-	}
+	private static final Information INFORMATION = new Information("powder_mining_tracker", Text.translatable("skyblocker.powderTracker"), l -> l == Location.CRYSTAL_HOLLOWS);
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void renderWidget(DrawContext context, float delta) {
 		var set = PowderMiningTracker.getShownRewards().object2IntEntrySet();
 		if (set.isEmpty()) {
 			setDimensions(0, 0);
@@ -49,29 +43,13 @@ public class PowderMiningWidget extends HudWidget {
 		setDimensions(maxWidth, tempY - y + 10);
 	}
 
-
 	@Override
-	public Set<Location> availableLocations() {
-		return LOCATIONS;
+	protected void renderWidgetConfig(DrawContext context, float delta) {
+		renderWidget(context, delta);
 	}
 
 	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!LOCATIONS.contains(location)) return;
-		SkyblockerConfigManager.get().mining.crystalHollows.enablePowderTracker = enabled;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		if (!LOCATIONS.contains(location)) return false;
-		return SkyblockerConfigManager.get().mining.crystalHollows.enablePowderTracker;
-	}
-
-	@Override
-	public void update() {}
-
-	@Override
-	public Text getDisplayName() {
-		return Text.translatable("skyblocker.powderTracker");
+	public @NotNull Information getInformation() {
+		return INFORMATION;
 	}
 }

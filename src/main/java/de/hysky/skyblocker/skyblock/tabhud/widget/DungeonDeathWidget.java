@@ -4,6 +4,8 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -25,11 +27,12 @@ public class DungeonDeathWidget extends TabHudWidget {
 	private static final Pattern DEATH_PATTERN = Pattern.compile("Team Deaths: (?<deathnum>\\d+).*");
 
 	public DungeonDeathWidget() {
-		super("Dungeon Deaths", TITLE, Formatting.DARK_PURPLE.getColorValue());
+		super("Team Deaths", TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
 	}
 
 	@Override
-	public void updateContent(List<Text> ignored) {
+	public void updateContent() {
+		if (!Utils.isInDungeons()) return;
 		Matcher m = PlayerListManager.regexAt(25, DEATH_PATTERN);
 		if (m == null) {
 			this.addComponent(Components.iconTextComponent());
@@ -43,4 +46,7 @@ public class DungeonDeathWidget extends TabHudWidget {
 		this.addSimpleIcoText(Ico.POTION, "Healing Done:", Formatting.RED, 27);
 		this.addSimpleIcoText(Ico.NTAG, "Milestone:", Formatting.YELLOW, 28);
 	}
+
+	@Override
+	protected void updateContent(List<Text> lines) {}
 }
