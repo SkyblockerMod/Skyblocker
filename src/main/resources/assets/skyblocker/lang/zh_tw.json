@@ -990,7 +990,6 @@
     "skyblocker.config.general.speedPresets.config.speed": "速度",
     "skyblocker.config.general.speedPresets.enableSpeedPresets": "啟用速度預設",
     "skyblocker.config.uiAndVisuals.tabHud.style.MINIMAL": "極簡",
-    "skyblocker.config.uiAndVisuals.tabHud.style.SIMPLE": "簡約",
     "skyblocker.config.uiAndVisuals.tabHud.style.CLASSIC": "經典",
     "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]": "極簡：在簡單的框中顯示最少的資訊。\n",
     "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]": "簡約：在普通的框中顯示基本資訊。\n",
