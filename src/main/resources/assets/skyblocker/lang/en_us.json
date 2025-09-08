@@ -713,6 +713,10 @@
   "skyblocker.config.mining.callMismyla.@Tooltip": "Sends a message in chat that can be clicked to call Queen Mismyla after completing a commission.\n\nThis requires having her as an Abiphone contact, and an Abiphone in your inventory!",
   "skyblocker.config.mining.callMismyla.message": "Click here to call Queen Mismyla!",
 
+  "skyblocker.config.mining.redialOnBadSignal": "Enable Redial on Bad Signal",
+  "skyblocker.config.mining.redialOnBadSignal.@Tooltip": "Sends a message in chat that can be clicked to redial when a call to the contact fails due to \"bad signal\".\n\nThis might happen when you call Fred for now.",
+  "skyblocker.config.mining.redialOnBadSignal.message": "Click here to redial %s!",
+
   "skyblocker.config.mining.commissionWaypoints": "Commission Waypoints",
   "skyblocker.config.mining.commissionWaypoints.mode": "Enable Commission Waypoints",
   "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[0]": "Off: Do not show Commission waypoint.",
