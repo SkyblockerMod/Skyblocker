@@ -3,10 +3,15 @@ package de.hysky.skyblocker.config.categories;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.hunting.LassoHud;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
+import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.ColourController;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -26,6 +31,8 @@ public class HuntingCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.description(Text.translatable("skyblocker.config.hunting.huntingBoxHelper.@Tooltip"))
 						.build())
+
+				//Hunting Mob Features
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.hunting.huntingMobs"))
 						.collapsed(false)
@@ -88,6 +95,26 @@ public class HuntingCategory {
 										})
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
+						.build())
+
+				//Lasso Hud
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.hunting.lassoHud"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.hunting.lassoHud.enabled"))
+								.description(Text.translatable("skyblocker.config.hunting.lassoHud.enabled.@Tooltip"))
+								.binding(defaults.hunting.lassoHud.enabled,
+										() -> config.hunting.lassoHud.enabled,
+										newValue -> config.hunting.lassoHud.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Text.translatable("skyblocker.config.hunting.lassoHud.hud.screen"))
+								.prompt(Text.translatable("text.skyblocker.open"))
+								.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, LassoHud.getInstance().getInternalID(), screen)))
+								.build())
+
 						.build())
 				.build();
 	}

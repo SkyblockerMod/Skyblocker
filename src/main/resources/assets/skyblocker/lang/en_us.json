@@ -597,6 +597,14 @@
   "skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise": "Shellwise highlight color picker",
   "skyblocker.config.hunting.huntingMobs.colorPicker.Coralot": "Coralot highlight color picker",
 
+  "skyblocker.config.hunting.lassoHud": "Lasso Hud",
+  "skyblocker.config.hunting.lassoHud.enabled": "Enabled",
+  "skyblocker.config.hunting.lassoHud.enabled.@Tooltip": "Shows lasso countdown in the hud.",
+  "skyblocker.config.hunting.lassoHud.hud.screen": "Lasso HUD config...",
+  "skyblocker.config.hunting.lassoHud.reel": "Reel",
+  "skyblocker.config.hunting.lassoHud.now": "NOW!!",
+  "skyblocker.config.hunting.lassoHud.wait": "Wait",
+
   "skyblocker.config.chat": "Chat",
 
   "skyblocker.config.chat.chatRules": "Custom Chat Rules",
