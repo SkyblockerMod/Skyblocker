@@ -1440,7 +1440,7 @@
     "skyblocker.config.mining.redialOnBadSignal.message": "點擊這裡重新給%s打電話！",
     "skyblocker.config.mining.redialOnBadSignal.@Tooltip": "當因「訊號不佳」而無法撥打聯絡人電話時，會在聊天中發送一則訊息，點擊即可重撥。\n\n目前，當打電話給Fred時可能會發生這種情況。",
     "skyblocker.config.mining.redialOnBadSignal": "啟用在訊號不佳時重撥電話",
-    "skyblocker.config.uiAndVisuals.tabHud.nameSorting": "玩家名稱分類方法",
+    "skyblocker.config.uiAndVisuals.tabHud.nameSorting": "玩家名稱排序方式",
     "skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip": "使小部件更加緊湊。",
     "skyblocker.config.uiAndVisuals.tabHud.compactWidgets": "緊湊的小部件",
     "skyblocker.config.uiAndVisuals.tabHud.displayIcons": "顯示圖標",
