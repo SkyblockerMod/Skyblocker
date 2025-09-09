@@ -348,7 +348,9 @@ public class DungeonManager {
 				try (BufferedReader roomJsonReader = CLIENT.getResourceManager().openAsReader(resourceEntry.getKey())) {
 					RoomData roomData = SkyblockerMod.GSON.fromJson(roomJsonReader, RoomData.class);
 					if (roomData == null) throw new RuntimeException("Invalid JSON!");
+					assert roomData.secrets != null;
 					roomWaypoints.put(room, roomData.secrets);
+					assert roomData.info != null;
 					roomInfo.put(room, roomData.info);
 				} catch (Exception ex) {
 					throw new RuntimeException(ex);
