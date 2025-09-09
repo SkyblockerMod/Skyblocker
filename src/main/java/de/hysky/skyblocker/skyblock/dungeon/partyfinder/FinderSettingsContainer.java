@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
 import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -268,11 +269,11 @@ public class FinderSettingsContainer extends ContainerWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		if (hasOpenOption()) {
-			return currentlyOpenedOption.mouseClicked(mouseX, mouseY, button);
+			return currentlyOpenedOption.mouseClicked(click, doubled);
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 
 	@Override

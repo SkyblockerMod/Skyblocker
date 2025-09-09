@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
@@ -33,8 +34,8 @@ public class SideTabButtonWidget extends ToggleButtonWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
+    public void onClick(Click click, boolean bl) {
+        super.onClick(click, bl);
         if (!isToggled()) this.setToggled(true);
     }
 }

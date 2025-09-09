@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -88,11 +89,11 @@ public class RarityWidget extends ClickableWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(Click click, boolean bl) {
         if (slotId == -1) return;
-        if (isOnLeftArrow(mouseX)) {
+        if (isOnLeftArrow(click.x())) {
             onClick.click(slotId, 1);
-        } else if (isOnRightArrow(mouseX)) {
+        } else if (isOnRightArrow(click.x())) {
             onClick.click(slotId, 0);
         }
     }

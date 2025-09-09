@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import com.mojang.authlib.minecraft.MinecraftSessionService;
 import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.DungeonEvents;
@@ -10,6 +11,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.GameProfileResolver;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -61,7 +63,7 @@ public class DungeonPlayerManager {
 	 * @implNote If a player is currently a ghost, this will return {@link DungeonClass#UNKNOWN}.
 	 */
 	public static DungeonClass getClassFromPlayer(PlayerEntity player) {
-		return getClassFromPlayer(player.getGameProfile().getName());
+		return getClassFromPlayer(player.getGameProfile().name());
 	}
 
 	/**
@@ -126,7 +128,7 @@ public class DungeonPlayerManager {
 			update(dungeonClass);
 
 			// Pre-fetches game profiles for rendering skins in the leap overlay and fancy dungeon map.
-			CompletableFuture.runAsync(() -> MinecraftClient.getInstance().getSessionService().fetchProfile(uuid, false));
+			CompletableFuture.runAsync(() -> MinecraftClient.getInstance().getApiServices().sessionService().fetchProfile(uuid, false));
 		}
 
 		private static @Nullable UUID findPlayerUuid(@NotNull String name) {
@@ -134,7 +136,7 @@ public class DungeonPlayerManager {
 			return StreamSupport.stream(MinecraftClient.getInstance().world.getEntities().spliterator(), false)
 					.filter(PlayerEntity.class::isInstance)
 					.map(PlayerEntity.class::cast)
-					.filter(player -> player.getGameProfile().getName().equals(name))
+					.filter(player -> player.getGameProfile().name().equals(name))
 					.findAny()
 					.map(PlayerEntity::getUuid)
 					.orElse(null);

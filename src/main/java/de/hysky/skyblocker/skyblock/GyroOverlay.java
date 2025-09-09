@@ -63,7 +63,7 @@ public class GyroOverlay {
 		String heldItem = CLIENT.player.getMainHandStack().getSkyblockId();
 		if (!heldItem.equals("GYROKINETIC_WAND")) return;
 
-		HitResult hit = CLIENT.cameraEntity.raycast(MAX_REACH, MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false), false);
+		HitResult hit = CLIENT.getCameraEntity().raycast(MAX_REACH, MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false), false);
 		if (hit.getType() == HitResult.Type.MISS) {
 			return;
 		}

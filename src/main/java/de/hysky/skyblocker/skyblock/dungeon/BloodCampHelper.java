@@ -140,7 +140,7 @@ public class BloodCampHelper {
 		WATCHERS.removeIf(watcher -> !watcher.isAlive());
 		for (ZombieEntity watcher : WATCHERS) {
 			if (!watcher.isAlive()) continue;
-			var stands = watcher.getWorld().getEntitiesByClass(
+			var stands = watcher.getEntityWorld().getEntitiesByClass(
 					ArmorStandEntity.class,
 					watcher.getBoundingBox().expand(2),
 					stand -> stand.hasStackEquipped(EquipmentSlot.HEAD) && !MOBS.containsKey(stand)

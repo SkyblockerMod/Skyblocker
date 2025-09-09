@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
@@ -70,20 +71,20 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
         if (!screen.getSettingsContainer().canInteract(this)) return false;
         if (isOpen) {
-			if (!isMouseOver(mouseX, mouseY) && backButtonId != -1) {
+			if (!isMouseOver(click.x(), click.y()) && backButtonId != -1) {
 				screen.clickAndWaitForServer(backButtonId);
 				return true;
 			}
 
-			if (super.mouseClicked(mouseX, mouseY, button)) return true;
+			if (super.mouseClicked(click, doubled)) return true;
         }
 
         return clickedHeader(
-				(int) (mouseX - (double) (this.getX() + this.width / 2 - this.getRowWidth() / 2)),
-				(int) (mouseY - (double) this.getY()) + (int) this.getScrollY() - 4
+				(int) (click.x() - (double) (this.getX() + this.width / 2 - this.getRowWidth() / 2)),
+				(int) (click.y() - (double) this.getY()) + (int) this.getScrollY() - 4
 		);
     }
 

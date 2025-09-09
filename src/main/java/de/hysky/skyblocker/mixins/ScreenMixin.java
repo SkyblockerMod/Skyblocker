@@ -21,11 +21,11 @@ public class ScreenMixin {
 
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
 	private void skyblocker$hideCursor(CallbackInfo ci) {
-		Object instance = (Object) this;
+		Object instance = this;
 
 		if ((instance instanceof DownloadingTerrainScreen || instance instanceof ReconfiguringScreen) && Utils.isOnHypixel()) {
 			//Prevents the mouse from being movable while we cancel the rendering of the screen
-			InputUtil.setCursorParameters(this.client.getWindow().getHandle(), GLFW.GLFW_CURSOR_DISABLED, this.client.mouse.getX(), this.client.mouse.getY());
+			InputUtil.setCursorParameters(this.client.getWindow(), GLFW.GLFW_CURSOR_DISABLED, this.client.mouse.getX(), this.client.mouse.getY());
 		}
 	}
 

@@ -2,9 +2,11 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -64,16 +66,16 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(Click click, boolean bl) {
         if (slotId == -1) return;
         clickSlot.click(slotId, button);
-        super.onClick(mouseX, mouseY);
+        super.onClick(click, bl);
     }
 
     @Override
-    protected boolean isValidClickButton(int button) {
-        this.button = button;
-        return super.isValidClickButton(button) || button == 1;
+    protected boolean isValidClickButton(MouseInput input) {
+        this.button = input.button();
+        return super.isValidClickButton(input) || button == 1;
     }
 
     public void setSlotId(int slotId) {
