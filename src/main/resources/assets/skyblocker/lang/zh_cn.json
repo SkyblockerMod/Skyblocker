@@ -1443,7 +1443,7 @@
     "skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum.@Tooltip": "在博物馆中搜索时显示自定义搜索界面。",
     "skyblocker.config.quickNav.button.chooseSkyblockItem": "选择Skyblock物品",
     "skyblocker.config.mining.commissionWaypoints.hideEmissaryOnPigeon": "有信鸽时隐藏",
-    "skyblocker.config.uiAndVisuals.tabHud.nameSorting": "玩家名称分类方法",
+    "skyblocker.config.uiAndVisuals.tabHud.nameSorting": "玩家名称排序方式",
     "skyblocker.config.otherLocations.barn.callTrevor": "启用给Trevor打电话消息",
     "skyblocker.config.mining.commissionWaypoints.hideEmissaryOnPigeon.@Tooltip": "如果你的背包中有皇家信鸽，则不显示使者的位置。",
     "skyblocker.config.otherLocations.barn.callTrevor.@Tooltip": "在聊天中发送一条可以点击的消息，使你可以在完成任务后单击以给Trevor打电话。\n\n这需要添加他为Abiphone联系人，同时你的背包中需要有一个Abiphone！",
