@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -10,11 +11,13 @@ import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 import de.hysky.skyblocker.skyblock.HoveredItemStackProvider;
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Mouse;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -79,6 +82,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
     private static void load(String profileId) {
         Path resolve = FOLDER.resolve(profileId + ".nbt");
         CompletableFuture.supplyAsync(() -> {
+			if (!Files.exists(resolve)) return EMPTY_EQUIPMENT.get();
             try {
                 return CODEC.parse(NbtOps.INSTANCE, NbtIo.read(resolve)).getOrThrow();
             } catch (NoSuchFileException ignored) {
@@ -203,7 +207,27 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 		return hoveredItem;
 	}
 
-	private static class EquipmentSlot extends Slot {
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.isWindowFocused()) {
+			var mouse = client.mouse;
+			var window = client.getWindow();
+			var mouseX = Mouse.scaleX(window, mouse.getX());
+			var mouseY = Mouse.scaleY(window, mouse.getY());
+
+			for (Slot equipmentSlot : equipmentSlots) {
+				if (isPointWithinBounds(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY)) {
+					if (WikiLookupManager.handleWikiLookup(Either.left(equipmentSlot), client.player, keyCode, scanCode)) {
+						return true;
+					}
+				}
+			}
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+    private static class EquipmentSlot extends Slot {
 
         private EquipmentSlot(Inventory inventory, int index, int x, int y) {
             super(inventory, index, x, y);

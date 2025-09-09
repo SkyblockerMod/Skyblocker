@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -32,18 +32,15 @@ public class DungeonDeathWidget extends TabHudWidget {
 	public void updateContent(List<Text> ignored) {
 		Matcher m = PlayerListManager.regexAt(25, DEATH_PATTERN);
 		if (m == null) {
-			this.addComponent(new IcoTextComponent());
+			this.addComponent(Components.iconTextComponent());
 		} else {
 			Formatting f = (m.group("deathnum").equals("0")) ? Formatting.GREEN : Formatting.RED;
 			Text d = simpleEntryText(m.group("deathnum"), "Deaths: ", f);
-			IcoTextComponent deaths = new IcoTextComponent(Ico.SKULL, d);
-			this.addComponent(deaths);
+			this.addComponent(Components.iconTextComponent(Ico.SKULL, d));
 		}
 
 		this.addSimpleIcoText(Ico.IRON_SWORD, "Damage Dealt:", Formatting.RED, 26);
 		this.addSimpleIcoText(Ico.POTION, "Healing Done:", Formatting.RED, 27);
 		this.addSimpleIcoText(Ico.NTAG, "Milestone:", Formatting.YELLOW, 28);
-
 	}
-
 }
