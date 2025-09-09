@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.barn.TreasureHunter;
 import de.hysky.skyblocker.skyblock.chat.filters.*;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
 import de.hysky.skyblocker.skyblock.dwarven.CallMismyla;
+import de.hysky.skyblocker.skyblock.dwarven.RedialOnBadSignal;
 import de.hysky.skyblocker.skyblock.dwarven.Fetchur;
 import de.hysky.skyblocker.skyblock.dwarven.Puzzler;
 import de.hysky.skyblocker.skyblock.galatea.SweepDetailsListener;
@@ -49,6 +50,7 @@ public interface ChatMessageListener {
 				new SweepDetailsListener(),
 				new CallTrevor(),
 				new CallMismyla(),
+				new RedialOnBadSignal(),
 				// Filters
 				new AbilityFilter(),
 				new AdFilter(),

@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
-import java.util.Map;
+import java.util.*;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -37,6 +37,12 @@ public class Shortcuts {
 	private static final Path SHORTCUTS_FILE = SkyblockerMod.CONFIG_DIR.resolve("shortcuts.json");
 	public static final JsonData<ShortcutsRecord> shortcuts = new JsonData<>(SHORTCUTS_FILE, ShortcutsRecord.CODEC, getDefaultShortcuts());
 
+	/**
+	 * Keys that are currently held down.
+	 *
+	 * @see net.minecraft.client.option.KeyBinding#isPressed() KeyBinding#isPressed()
+	 */
+	private static final List<InputUtil.Key> pressedKeys = new ArrayList<>();
 	private static final long KEY_BINDING_COOLDOWN = 200;
 	private static long lastKeyBindingCommandTime;
 
@@ -146,7 +152,7 @@ public class Shortcuts {
 			if (!isShortcutsLoaded()) {
 				source.sendFeedback(Text.translatable("skyblocker.shortcuts.notLoaded"));
 			} else for (Map.Entry<ShortcutKeyBinding, String> keyBinding : shortcuts.getData().keyBindings.entrySet()) {
-				source.sendFeedback(Text.of("§7" + keyBinding.getKey().getBoundKey().getLocalizedText().getString() + " §f→ §7" + keyBinding.getValue()));
+				source.sendFeedback(Text.of("§7" + keyBinding.getKey().getBoundKeysText().getString() + " §f→ §7" + keyBinding.getValue()));
 			}
 
 			source.sendFeedback(Text.of("§e§lSkyblocker §fCommands"));
@@ -213,11 +219,29 @@ public class Shortcuts {
 			return;
 		}
 
-		String command = shortcuts.getData().keyBindings.get(new ShortcutKeyBinding(key));
+		String command = shortcuts.getData().keyBindings.get(new ShortcutKeyBinding(List.of(key)));
+		// Check for combinations
+		if (command == null) {
+			// This should never happen, but the last pressed key was not added to the list!
+			if (pressedKeys.isEmpty() || !pressedKeys.getLast().equals(key)) {
+				setKeyPressed(key, true);
+				LOGGER.warn("[Skyblocker Shortcuts] Key {} was not in the pressed keys list when it should be. Check if `setKeyPressed` is always called before `onKeyPressed`.", key);
+			}
+			command = shortcuts.getData().keyBindings.get(new ShortcutKeyBinding(pressedKeys));
+		}
 		if (command == null || lastKeyBindingCommandTime + KEY_BINDING_COOLDOWN > System.currentTimeMillis()) return;
 
 		MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
 		lastKeyBindingCommandTime = System.currentTimeMillis();
+	}
+
+	public static void setKeyPressed(InputUtil.Key key, boolean pressed) {
+		if (!SkyblockerConfigManager.get().general.shortcuts.enableShortcuts || !SkyblockerConfigManager.get().general.shortcuts.enableKeyBindingShortcuts) return;
+		if (pressed) {
+			if (pressedKeys.isEmpty() || !pressedKeys.getLast().equals(key)) pressedKeys.add(key);
+		} else {
+			pressedKeys.remove(key);
+		}
 	}
 
 	public record ShortcutsRecord(Object2ObjectMap<String, String> commands, Object2ObjectMap<String, String> commandArgs, Object2ObjectMap<ShortcutKeyBinding, String> keyBindings) {

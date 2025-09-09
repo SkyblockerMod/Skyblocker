@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.item;
 
 import java.util.Arrays;
+import java.util.Optional;
 
-import org.jetbrains.annotations.Nullable;
-
+import com.google.common.collect.Streams;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.utils.EnumUtils;
 import net.minecraft.util.Formatting;
@@ -50,11 +50,17 @@ public enum SkyblockItemRarity implements StringIdentifiable {
 		return EnumUtils.cycle(this);
 	}
 
-	@Nullable
+	public static Optional<SkyblockItemRarity> containsName(String name) {
+		// Find last because "UNCOMMON" contains "COMMON" and "VERY_SPECIAL" contains "SPECIAL"
+		return Streams.findLast(Arrays.stream(SkyblockItemRarity.values())
+				.filter(rarity -> name.contains(rarity.name()))
+		);
+	}
+
 	public static SkyblockItemRarity fromColor(int color) {
 		return Arrays.stream(SkyblockItemRarity.values())
 				.filter(rarity -> ColorHelper.fromFloats(1f, rarity.r, rarity.g, rarity.b) == ColorHelper.fullAlpha(color))
 				.findFirst()
-				.orElse(null);
+				.orElse(UNKNOWN);
 	}
 }
