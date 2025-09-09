@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.dungeon.secrets;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -398,16 +397,6 @@ public class DungeonManager {
 		} catch (IOException | ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	/**
-	 * Loads the json from the given {@link BufferedReader} into the given {@link Map}.
-	 *
-	 * @param reader the reader to read the json from
-	 * @param map    the map to load into
-	 */
-	private static void loadJson(BufferedReader reader, Map<String, JsonElement> map) {
-		SkyblockerMod.GSON.fromJson(reader, JsonObject.class).asMap().forEach((room, jsonElement) -> map.put(room.toLowerCase().replaceAll(" ", "-"), jsonElement));
 	}
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, Integer> markSecretsCommand(boolean found) {
@@ -965,6 +954,11 @@ public class DungeonManager {
 		}
 
 		return -1;
+	}
+
+	@VisibleForTesting
+	public static int getLoadedRoomCount() {
+		return roomInfo.size();
 	}
 
 	public record RoomInfo(String name) {}

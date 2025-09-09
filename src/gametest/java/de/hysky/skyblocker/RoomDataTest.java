@@ -18,6 +18,7 @@ public class RoomDataTest implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext clientGameTestContext) {
+		clientGameTestContext.waitFor((client) -> DungeonManager.isRoomsLoaded());
 		clientGameTestContext.runOnClient(client -> {
 			int roomCount = checkRooms();
 			if (!isValid) throw new AssertionError(".skeleton and .room files do not match!");
@@ -50,7 +51,10 @@ public class RoomDataTest implements FabricClientGameTest {
 	}
 
 	public void checkIfLoadedCorrectly(int expected) {
-		if (DungeonManager.getRoomsStream().count() != expected) throw new AssertionError();
+		int count = DungeonManager.getLoadedRoomCount();
+		if (count != expected) {
+			throw new AssertionError(String.format("Expected %s rooms but only %s was loaded", expected, count));
+		}
 	}
 
 	List<String> getRoomFilesByType(MinecraftClient client, String fileType) {
