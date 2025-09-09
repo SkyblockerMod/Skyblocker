@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Dino Dig Site"
+  },
   "secrets": [
     {
       "secretName": "1 - Superboom",

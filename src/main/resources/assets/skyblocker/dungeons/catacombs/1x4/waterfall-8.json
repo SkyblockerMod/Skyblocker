@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Waterfall"
+  },
   "secrets": [
     {
       "secretName": "1 - Chest",

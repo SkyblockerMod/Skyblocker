@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Temple"
+  },
   "secrets": [
     {
       "secretName": "1 - Item",

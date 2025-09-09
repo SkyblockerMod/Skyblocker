@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Purple Flags"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance",

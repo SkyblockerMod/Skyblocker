@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Archway"
+  },
   "secrets": [
     {
       "secretName": "1 - Superboom",

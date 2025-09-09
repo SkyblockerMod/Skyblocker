@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Balcony"
+  },
   "secrets": [
     {
       "secretName": "1 - Superboom",

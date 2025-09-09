@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Leaves"
+  },
   "secrets": [
     {
       "secretName": "1 - Superboom",

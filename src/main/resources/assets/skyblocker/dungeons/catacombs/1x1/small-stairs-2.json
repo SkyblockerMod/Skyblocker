@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Small Stairs"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance",

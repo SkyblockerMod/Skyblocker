@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Redstone Key"
+  },
   "secrets": [
     {
       "secretName": "1 - Superboom",

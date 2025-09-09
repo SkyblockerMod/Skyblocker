@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Mini Rail Track"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance",

@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Admin"
+  },
   "secrets": [
     {
       "secretName": "Fairy Soul behind Crypt",

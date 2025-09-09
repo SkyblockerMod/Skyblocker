@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Zodd"
+  },
   "secrets": [
     {
       "secretName": "1 - Chest",

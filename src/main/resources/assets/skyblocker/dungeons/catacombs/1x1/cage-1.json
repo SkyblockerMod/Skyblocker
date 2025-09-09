@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Cage"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance",

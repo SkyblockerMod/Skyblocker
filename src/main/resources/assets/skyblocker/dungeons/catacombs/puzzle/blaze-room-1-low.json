@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Blaze (Lower)"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance",

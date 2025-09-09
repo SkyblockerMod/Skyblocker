@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Long Hall"
+  },
   "secrets": [
     {
       "secretName": "1 - Crypt",

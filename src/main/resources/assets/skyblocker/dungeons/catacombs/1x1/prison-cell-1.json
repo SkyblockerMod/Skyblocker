@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Prison Cell"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance Vines",

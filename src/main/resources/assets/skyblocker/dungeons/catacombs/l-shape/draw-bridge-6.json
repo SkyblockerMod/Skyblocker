@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Draw Bridge"
+  },
   "secrets": [
     {
       "secretName": "1 - Item",

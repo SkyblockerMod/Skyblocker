@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Mithril Cave"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance",

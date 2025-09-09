@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Red Green"
+  },
   "secrets": [
     {
       "secretName": "1/2 - Entrance",

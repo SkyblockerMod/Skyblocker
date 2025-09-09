@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Flags"
+  },
   "secrets": [
     {
       "secretName": "1/2/3 - Entrance Vines",

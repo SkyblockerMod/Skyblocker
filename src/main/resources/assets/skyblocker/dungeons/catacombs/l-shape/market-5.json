@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Market"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance Ladder",

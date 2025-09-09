@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Grand Library"
+  },
   "secrets": [
     {
       "secretName": "1/2 - Lever",

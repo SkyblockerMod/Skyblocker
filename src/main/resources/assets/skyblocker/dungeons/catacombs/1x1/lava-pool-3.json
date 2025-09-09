@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Lava Pool"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance",

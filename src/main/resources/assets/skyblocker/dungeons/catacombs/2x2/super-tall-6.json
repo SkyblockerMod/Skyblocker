@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Super Tall"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance",

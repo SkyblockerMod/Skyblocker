@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Water"
+  },
   "secrets": [
     {
       "secretName": "1 - Lever",

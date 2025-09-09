@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Cobble Wall Pillar"
+  },
   "secrets": [
     {
       "secretName": "1 - Lever",

@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Blue Skulls"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance",

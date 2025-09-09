@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Black Flag"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance",

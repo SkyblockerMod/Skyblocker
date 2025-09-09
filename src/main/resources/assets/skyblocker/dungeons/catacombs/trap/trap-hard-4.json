@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Trap (Hard)"
+  },
   "secrets": [
     {
       "secretName": "1 - Chest",

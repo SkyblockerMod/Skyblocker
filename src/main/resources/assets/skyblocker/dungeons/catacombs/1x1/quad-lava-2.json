@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Quad Lava"
+  },
   "secrets": [
     {
       "secretName": "1 - Chest",

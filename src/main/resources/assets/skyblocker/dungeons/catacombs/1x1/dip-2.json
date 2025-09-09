@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Dip"
+  },
   "secrets": [
     {
       "secretName": "1 - Lever behind Crypt",

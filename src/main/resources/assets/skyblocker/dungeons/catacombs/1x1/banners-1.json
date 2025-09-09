@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Banners"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance behind Painting",

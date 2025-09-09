@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Trinity"
+  },
   "secrets": [
     {
       "secretName": "1 - Entrance",

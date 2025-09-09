@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Golden Oasis"
+  },
   "secrets": [
     {
       "secretName": "1 - Redstone Skull (right click)",

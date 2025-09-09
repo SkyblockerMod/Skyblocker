@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Quartz Knight"
+  },
   "secrets": [
     {
       "secretName": "1 - Item",

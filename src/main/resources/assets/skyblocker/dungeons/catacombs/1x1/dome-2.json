@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Dome"
+  },
   "secrets": [
     {
       "secretName": "1 - Bat",

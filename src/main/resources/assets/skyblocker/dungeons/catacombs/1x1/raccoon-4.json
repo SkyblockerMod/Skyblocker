@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Raccoon"
+  },
   "secrets": [
     {
       "secretName": "1 - Chest",

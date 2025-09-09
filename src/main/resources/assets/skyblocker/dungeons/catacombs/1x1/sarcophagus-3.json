@@ -1,4 +1,7 @@
 {
+  "info": {
+    "name": "Sarcophagus"
+  },
   "secrets": [
     {
       "secretName": "1 - Superboom",
