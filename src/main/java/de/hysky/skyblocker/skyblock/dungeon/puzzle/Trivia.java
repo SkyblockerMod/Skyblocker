@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -44,11 +45,11 @@ public class Trivia extends DungeonPuzzle {
 	private static final BlockPos CHOICE_C = new BlockPos(10, 70, 6);
 	private static final float[] ANSWER_COLOR = new float[]{0, 1f, 0};
 	private static final Direction[] DIRECTIONS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
+	private static final ArrayList<Box> BOXES_TO_HIGHLIGHT = new ArrayList<>();
 
 	private static final Map<String, List<String>> answers = new Object2ObjectOpenHashMap<>();
 	private List<String> solutions = Collections.emptyList();
 	private static String currentSolution = "";
-	private static BlockPos correctBlockPos = null;
 
 	public Trivia() {
 		super("trivia", "trivia-room");
@@ -88,7 +89,6 @@ public class Trivia extends DungeonPuzzle {
 				return false;
 			}
 			currentSolution = matcher.group(2);
-			updateCorrectBlockPos();
 		}
 
 		return true;
@@ -110,45 +110,40 @@ public class Trivia extends DungeonPuzzle {
 
 	@Override
 	public void tick(MinecraftClient client) {
+		if (!shouldRun() || currentSolution.isEmpty() || !BOXES_TO_HIGHLIGHT.isEmpty() || client.world == null) return;
+		BlockPos correctBlockPos = updateCorrectBlockPos();
+		if (correctBlockPos == null) return;
+
+		Room room = DungeonManager.getCurrentRoom();
+		for (Direction direction : DIRECTIONS) {
+			Box buttonBox = RenderHelper.getBlockBoundingBox(client.world, room.relativeToActual(correctBlockPos).offset(direction));
+			if (buttonBox != null) BOXES_TO_HIGHLIGHT.add(buttonBox);
+		}
 	}
 
-	private static void updateCorrectBlockPos() {
-		switch (currentSolution) {
-			case "ⓐ":
-				correctBlockPos = CHOICE_A;
-				break;
-			case "ⓑ":
-				correctBlockPos = CHOICE_B;
-				break;
-			case "ⓒ":
-				correctBlockPos = CHOICE_C;
-				break;
-			case null, default:
-				correctBlockPos = null;
-				break;
-		}
+	@Nullable
+	private static BlockPos updateCorrectBlockPos() {
+		return switch (currentSolution) {
+			case "ⓐ" -> CHOICE_A;
+			case "ⓑ" -> CHOICE_B;
+			case "ⓒ" -> CHOICE_C;
+			case null, default -> null;
+		};
 	}
 
 	@Override
 	public void render(WorldRenderContext context) {
-		if (!shouldRun() || correctBlockPos == null) return;
-
-		Room room = DungeonManager.getCurrentRoom();
-		MinecraftClient client = MinecraftClient.getInstance();
-		if (client == null || client.world == null) return;
-
-		for (Direction direction : DIRECTIONS) {
-			@Nullable Box pos = RenderHelper.getBlockBoundingBox(client.world, room.relativeToActual(correctBlockPos).offset(direction));
-			if (pos == null) continue;
-			RenderHelper.renderFilled(context, pos, ANSWER_COLOR, 0.5f, false);
-			RenderHelper.renderOutline(context, pos, ANSWER_COLOR, 5f, false);
+		if (!shouldRun() || BOXES_TO_HIGHLIGHT.isEmpty()) return;
+		for (Box box : BOXES_TO_HIGHLIGHT) {
+			RenderHelper.renderFilled(context, box, ANSWER_COLOR, 0.5f, false);
+			RenderHelper.renderOutline(context, box, ANSWER_COLOR, 5f, false);
 		}
 	}
 
 	@Override
 	public void reset() {
 		currentSolution = "";
-		correctBlockPos = null;
+		BOXES_TO_HIGHLIGHT.clear();
 	}
 
 	@Init(priority = 100) // Load after FairySouls
