@@ -7,10 +7,7 @@ import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.PlayerSkinDrawer;
-import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.component.DataComponentTypes;
@@ -267,16 +264,16 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
         //System.out.println("To be clicked" + slotID);
         if (slotID == -1) {
             PartyFinderScreen.LOGGER.error("[Skyblocker] Slot ID is null for " + partyLeader.name.getString() + "'s party");
         }
-        if (button == 0 && !screen.isWaitingForServer() && slotID != -1) {
+        if (click.button() == 0 && !screen.isWaitingForServer() && slotID != -1) {
             screen.clickAndWaitForServer(slotID);
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     public static class Player {
@@ -304,7 +301,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        public boolean mouseClicked(Click click, boolean doubled) {
             return false;
         }
 

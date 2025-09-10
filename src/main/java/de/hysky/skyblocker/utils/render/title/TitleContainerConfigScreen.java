@@ -11,6 +11,7 @@ import de.hysky.skyblocker.utils.render.gui.EmptyWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
@@ -87,8 +88,8 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		switch (keyCode) {
+	public boolean keyPressed(KeyInput input) {
+		switch (input.key()) {
 			case GLFW.GLFW_KEY_Q -> SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment = EnumUtils.cycle(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment);
 			case GLFW.GLFW_KEY_E -> SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment = EnumUtils.cycleBackwards(SkyblockerConfigManager.get().uiAndVisuals.titleContainer.alignment);
 			case GLFW.GLFW_KEY_R -> {
@@ -104,7 +105,7 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 				updateWidgetDimensions();
 			}
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(input);
 	}
 
 	@Override

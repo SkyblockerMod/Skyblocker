@@ -19,9 +19,11 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.widget.ToggleButtonWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -41,7 +43,7 @@ import org.joml.Vector2i;
  */
 public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	/**
-	 * The width before text will go outside of the recipe book area.
+	 * The width before text will go outside the recipe book area.
 	 */
 	private static final int MAX_TEXT_WIDTH = 124;
 	private static final String ELLIPSIS_STRING = ScreenTexts.ELLIPSIS.getString();
@@ -309,24 +311,24 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (this.nextPageButton.mouseClicked(mouseX, mouseY, button)) {
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (this.nextPageButton.mouseClicked(click, doubled)) {
 			this.currentPage++;
 			this.updateResultButtons();
 
 			return true;
-		} else if (this.prevPageButton.mouseClicked(mouseX, mouseY, button)) {
+		} else if (this.prevPageButton.mouseClicked(click, doubled)) {
 			this.currentPage--;
 			this.updateResultButtons();
 
 			return true;
 		}
 
-		if (this.recipeView && button == 1) {
+		if (this.recipeView && click.button() == 1) {
 			// The crafting result button
 			var result = resultButtons.get(14);
 			var rawID = ItemUtils.getItemId(result.getDisplayStack());
-			if (result.isMouseOver(mouseX, mouseY)) {
+			if (result.isMouseOver(click.x(), click.y())) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown(String.format("/viewrecipe %s", rawID), true);
 				return true;
 			}
@@ -335,7 +337,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 		for (SkyblockRecipeResultButton resultButton : recipeView ? recipeSlotButtons : this.resultButtons) {
 			//If the result button was clicked then try and show a recipe if there is one
 			//for the item
-			if (resultButton.mouseClicked(mouseX, mouseY, button)) {
+			if (resultButton.mouseClicked(click, doubled)) {
 				String itemId = ItemUtils.getItemId(resultButton.getDisplayStack());
 
 				//Continue if this item doesn't have an item id
@@ -364,15 +366,15 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 	}
 
 	@Override
-	public boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(double mouseX, double mouseY, KeyInput input) {
 		ItemStack hovered = getHoveredItemStack(mouseX, mouseY);
 		if (hovered == null) return false;
 
-		if (WikiLookupManager.handleWikiLookup(Either.right(hovered), client.player, keyCode, scanCode)) {
+		if (WikiLookupManager.handleWikiLookup(Either.right(hovered), client.player, input)) {
 			return true;
 		}
 
-		if (SkyblockerConfigManager.get().helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(keyCode, scanCode)) {
+		if (SkyblockerConfigManager.get().helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matchesKey(input)) {
 			ItemPrice.itemPriceLookup(client.player, hovered);
 			return true;
 		}

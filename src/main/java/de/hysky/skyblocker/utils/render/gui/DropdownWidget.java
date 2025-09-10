@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
@@ -109,14 +110,14 @@ public class DropdownWidget<T> extends ContainerWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		if (!visible) return false;
-		if (getX() <= mouseX && mouseX < getX() + getWidth() && getY() <= mouseY && mouseY < getY() + HEADER_HEIGHT) {
+		if (getX() <= click.x() && click.x() < getX() + getWidth() && getY() <= click.y() && click.y() < getY() + HEADER_HEIGHT) {
 			setOpen(!open);
 			playDownSound(client.getSoundManager());
 			return true;
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 
 	@Override
@@ -181,21 +182,21 @@ public class DropdownWidget<T> extends ContainerWidget {
 		// Visible
 
 		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		public boolean mouseClicked(Click click, boolean doubled) {
 			if (!visible) return false;
-			return super.mouseClicked(mouseX, mouseY, button);
+			return super.mouseClicked(click, doubled);
 		}
 
 		@Override
-		public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		public boolean mouseReleased(Click click) {
 			if (!visible) return false;
-			return super.mouseReleased(mouseX, mouseY, button);
+			return super.mouseReleased(click);
 		}
 
 		@Override
-		public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+		public boolean mouseDragged(Click click, double offsetX, double offsetY) {
 			if (!visible) return false;
-			return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+			return super.mouseDragged(click, offsetX, offsetY);
 		}
 
 		@Override
@@ -249,7 +250,7 @@ public class DropdownWidget<T> extends ContainerWidget {
 		}
 
 		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		public boolean mouseClicked(Click click, boolean doubled) {
 			select(entry);
 			return true;
 		}

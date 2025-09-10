@@ -54,15 +54,15 @@ public class DungeonMapConfigScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (button == 1) {
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (click.button() == 1) {
 			mapX = 2;
 			mapY = 2;
 			scoreX = Math.max((int) ((mapX + (64 * SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling)) - textRenderer.getWidth(DungeonScoreHUD.getFormattedScoreText()) * SkyblockerConfigManager.get().dungeons.dungeonScore.scoreScaling / 2), 0);
 			scoreY = (int) (mapY + (128 * SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling) + 4);
 		}
 
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 
 	@Override

@@ -12,11 +12,13 @@ import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.ItemTags;
@@ -244,8 +246,8 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (!super.mouseClicked(mouseX, mouseY, button)) {
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (!super.mouseClicked(click, doubled)) {
 			setFocused(null);
 			return false;
 		}
@@ -328,14 +330,14 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			super.onClick(mouseX, mouseY);
+		public void onClick(Click click, boolean doubled) {
+			super.onClick(click, doubled);
 			clicked = true;
 		}
 
 		@Override
-		public void onRelease(double mouseX, double mouseY) {
-			super.onRelease(mouseX, mouseY);
+		public void onRelease(Click click) {
+			super.onRelease(click);
 			if (clicked) {
 				onValueChanged.accept(trueValue());
 				clicked = false;
@@ -343,8 +345,8 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		}
 
 		@Override
-		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-			if (super.keyPressed(keyCode, scanCode, modifiers)) {
+		public boolean keyPressed(KeyInput input) {
+			if (super.keyPressed(input)) {
 				onValueChanged.accept(trueValue());
 				return true;
 			}

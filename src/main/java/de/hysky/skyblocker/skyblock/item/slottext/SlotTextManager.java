@@ -82,14 +82,14 @@ public class SlotTextManager {
 				onScreenChange(screen);
 				ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
 			}
-			ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
-				if (keyBinding.matchesKey(key, scancode)) {
+			ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, input) -> {
+				if (keyBinding.matchesKey(input)) {
 					SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled = !SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled;
 					keyHeld = true;
 				}
 			});
-			ScreenKeyboardEvents.afterKeyRelease(screen).register((screen1, key, scancode, modifiers) -> {
-				if (keyBinding.matchesKey(key, scancode)) {
+			ScreenKeyboardEvents.afterKeyRelease(screen).register((screen1, input) -> {
+				if (keyBinding.matchesKey(input)) {
 					keyHeld = false;
 				}
 			});

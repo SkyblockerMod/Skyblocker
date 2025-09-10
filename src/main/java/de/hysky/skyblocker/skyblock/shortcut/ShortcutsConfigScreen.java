@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -7,6 +8,7 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
@@ -82,8 +84,8 @@ public class ShortcutsConfigScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (super.mouseClicked(mouseX, mouseY, button)) {
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (super.mouseClicked(click, doubled)) {
 			return true;
 		}
 		// Only stop editing if super didn't consume the click
@@ -95,13 +97,13 @@ public class ShortcutsConfigScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(KeyInput input) {
 		// Process ESC before super to prevent closing the screen if we were editing a keybind
-		if (keyCode == InputUtil.GLFW_KEY_ESCAPE && shortcutsConfigListWidget.stopEditing()) {
+		if (input.key() == InputUtil.GLFW_KEY_ESCAPE && shortcutsConfigListWidget.stopEditing()) {
 			shortcutsConfigListWidget.updateKeybinds();
 			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(input);
 	}
 
 	@Override

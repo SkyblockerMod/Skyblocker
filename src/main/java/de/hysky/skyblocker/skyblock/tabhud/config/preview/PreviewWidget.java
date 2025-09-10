@@ -7,10 +7,12 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
@@ -171,9 +173,9 @@ public class PreviewWidget extends ClickableWidget {
 	private double bufferedDeltaY = 0;
 
 	@Override
-	protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-		double localDeltaX = deltaX / scaledRatio + bufferedDeltaX;
-		double localDeltaY = deltaY / scaledRatio + bufferedDeltaY;
+	protected void onDrag(Click click, double offsetX, double offsetY) {
+		double localDeltaX = offsetX / scaledRatio + bufferedDeltaX;
+		double localDeltaY = offsetY / scaledRatio + bufferedDeltaY;
 
 		bufferedDeltaX = localDeltaX - (int) localDeltaX;
 		bufferedDeltaY = localDeltaY - (int) localDeltaY;
@@ -185,7 +187,7 @@ public class PreviewWidget extends ClickableWidget {
 	}
 
 	@Override
-	public void onRelease(double mouseX, double mouseY) {
+	public void onRelease(Click click) {
 		if (pickParent) {
 			pickParent = false;
 			return;
@@ -213,15 +215,15 @@ public class PreviewWidget extends ClickableWidget {
 
 		selectedWidget = hoveredWidget;
 		selectedOriginalPos = null;
-		super.onRelease(mouseX, mouseY);
+		super.onRelease(click);
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (!(this.active && this.visible && isMouseOver(mouseX, mouseY))) return false;
-		double localMouseX = (mouseX - getX()) / scaledRatio;
-		double localMouseY = (mouseY - getY()) / scaledRatio;
-		if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (!(this.active && this.visible && isMouseOver(click.x(), click.y()))) return false;
+		double localMouseX = (click.x() - getX()) / scaledRatio;
+		double localMouseY = (click.y() - getY()) / scaledRatio;
+		if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
 			List<HudWidget> hoveredThingies = new ArrayList<>();
 			for (HudWidget hudWidget : WidgetManager.getScreenBuilder(tab.getCurrentLocation()).getHudWidgets(tab.getCurrentScreenLayer())) {
 				if (hudWidget.isMouseOver(localMouseX, localMouseY)) hoveredThingies.add(hudWidget);
@@ -270,11 +272,11 @@ public class PreviewWidget extends ClickableWidget {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(KeyInput input) {
 		if (hoveredWidget != null && hoveredWidget.equals(selectedWidget)) {
-			int multiplier = (modifiers & GLFW.GLFW_MOD_CONTROL) != 0 ? 5 : 1;
+			int multiplier = (input.modifiers() & GLFW.GLFW_MOD_CONTROL) != 0 ? 5 : 1;
 			int x = 0, y = 0;
-			switch (keyCode) {
+			switch (input.key()) {
 				case GLFW.GLFW_KEY_UP -> y = -multiplier;
 				case GLFW.GLFW_KEY_DOWN -> y = multiplier;
 				case GLFW.GLFW_KEY_LEFT -> x = -multiplier;
@@ -293,6 +295,6 @@ public class PreviewWidget extends ClickableWidget {
 			tab.updateWidgets();
 			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(input);
 	}
 }

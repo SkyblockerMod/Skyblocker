@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -140,8 +141,8 @@ public class TrimSelectionWidget extends ContainerWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		return super.mouseClicked(mouseX, mouseY + this.getScrollY(), button);
+	public boolean mouseClicked(Click click, boolean doubled) {
+		return super.mouseClicked(new Click(click.x(), click.y() + this.getScrollY(), click.buttonInfo()), doubled);
 	}
 
 	@Override

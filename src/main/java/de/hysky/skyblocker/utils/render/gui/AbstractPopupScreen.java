@@ -5,6 +5,7 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -80,9 +81,9 @@ public class AbstractPopupScreen extends Screen {
 
 
         @Override
-        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-            if (!super.keyPressed(keyCode, scanCode, modifiers)) {
-                if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+        public boolean keyPressed(KeyInput input) {
+            if (!super.keyPressed(input)) {
+                if (input.key() == GLFW.GLFW_KEY_ENTER || input.key() == GLFW.GLFW_KEY_KP_ENTER) {
                     onEnter.run();
                     return true;
                 }

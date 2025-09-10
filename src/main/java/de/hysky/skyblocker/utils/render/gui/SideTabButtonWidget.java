@@ -34,8 +34,8 @@ public class SideTabButtonWidget extends ToggleButtonWidget {
     }
 
     @Override
-    public void onClick(Click click, boolean bl) {
-        super.onClick(click, bl);
+    public void onClick(Click click, boolean doubled) {
+        super.onClick(click, doubled);
         if (!isToggled()) this.setToggled(true);
     }
 }

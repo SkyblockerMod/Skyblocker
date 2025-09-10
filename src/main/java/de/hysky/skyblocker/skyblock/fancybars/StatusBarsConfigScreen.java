@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.ObjectBooleanPair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.ScreenRect;
@@ -356,12 +357,12 @@ public class StatusBarsConfigScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public boolean mouseReleased(Click click) {
 		if (cursorBar != null) {
 			cursorBar.inMouse = false;
 			if (currentInsertLocation == BarLocation.NULL) {
-				cursorBar.x = (float) ((mouseX + cursorOffset.x()) / width);
-				cursorBar.y = (float) ((mouseY + cursorOffset.y()) / height);
+				cursorBar.x = (float) ((click.x() + cursorOffset.x()) / width);
+				cursorBar.y = (float) ((click.y() + cursorOffset.y()) / height);
 				cursorBar.width = Math.clamp(cursorBar.width, (float) BAR_MINIMUM_WIDTH / width, 1);
 			}
 			currentInsertLocation = BarLocation.NULL;
@@ -385,14 +386,14 @@ public class StatusBarsConfigScreen extends Screen {
 			updateScreenRects();
 			return true;
 		}
-		return super.mouseReleased(mouseX, mouseY, button);
+		return super.mouseReleased(click);
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		StatusBar first = resizeHover.first();
 		// want the right click thing to have priority
-		if (!editBarWidget.isMouseOver(mouseX, mouseY) && button == 0 && first != null) {
+		if (!editBarWidget.isMouseOver(click.x(), click.y()) && click.button() == 0 && first != null) {
 			BarPositioner.BarAnchor barAnchor = first.anchor;
 			if (barAnchor != null) {
 				if (resizeHover.rightBoolean()) {
@@ -420,6 +421,6 @@ public class StatusBarsConfigScreen extends Screen {
 			resizing = true;
 			return true;
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 }

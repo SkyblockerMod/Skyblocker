@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.wikilookup;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.client.input.KeyInput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -64,14 +65,14 @@ public final class WikiLookupManager {
 		return (official + "/" + fandom).toUpperCase(Locale.ENGLISH);
 	}
 
-	public static boolean handleWikiLookup(@NotNull Either<Slot, ItemStack> either, PlayerEntity player, int keyCode, int scanCode) {
-		return handleWikiLookup(null, either, player, keyCode, scanCode);
+	public static boolean handleWikiLookup(@NotNull Either<Slot, ItemStack> either, PlayerEntity player, KeyInput input) {
+		return handleWikiLookup(null, either, player, input);
 	}
 
-	public static boolean handleWikiLookup(@Nullable String title, @NotNull Either<Slot, ItemStack> either, PlayerEntity player, int keyCode, int scanCode) {
+	public static boolean handleWikiLookup(@Nullable String title, @NotNull Either<Slot, ItemStack> either, PlayerEntity player, KeyInput input) {
 		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
-			boolean official = officialWikiLookup.matchesKey(keyCode, scanCode);
-			if (official || fandomWikiLookup.matchesKey(keyCode, scanCode)) {
+			boolean official = officialWikiLookup.matchesKey(input);
+			if (official || fandomWikiLookup.matchesKey(input)) {
 				openWiki(title, either, player, official);
 				return true;
 			}

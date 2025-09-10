@@ -5,6 +5,7 @@ import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEn
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ElementListWidget;
@@ -118,8 +119,8 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (editingPosition == -1) return super.mouseClicked(mouseX, mouseY, button);
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (editingPosition == -1) return super.mouseClicked(click, doubled);
 		if (rightUpArrowHovered) {
 			parent.shiftClickAndWaitForServer(13, 1);
 			return true;
@@ -134,6 +135,6 @@ public class WidgetsElementList extends ElementListWidget<WidgetsListEntry> {
 		if (leftDownArrowHovered) {
 			parent.clickAndWaitForServer(13, 0);
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 }

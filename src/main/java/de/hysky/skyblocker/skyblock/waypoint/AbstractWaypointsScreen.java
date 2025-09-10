@@ -7,6 +7,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
@@ -48,11 +49,11 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (islandWidget.mouseClicked(mouseX, mouseY, button)) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        if (islandWidget.mouseClicked(click, doubled)) {
             return true;
         }
-        boolean mouseClicked = super.mouseClicked(mouseX, mouseY, button);
+        boolean mouseClicked = super.mouseClicked(click, doubled);
         updateButtons();
         return mouseClicked;
     }

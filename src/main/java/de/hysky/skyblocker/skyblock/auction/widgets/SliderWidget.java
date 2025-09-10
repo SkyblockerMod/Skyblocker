@@ -66,10 +66,10 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends C
     }
 
     @Override
-    public void onClick(Click click, boolean bl) {
+    public void onClick(Click click, boolean doubled) {
         if (slotId == -1) return;
         clickSlot.click(slotId, button);
-        super.onClick(click, bl);
+        super.onClick(click, doubled);
     }
 
     @Override

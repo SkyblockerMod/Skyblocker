@@ -4,6 +4,7 @@ import de.hysky.skyblocker.utils.EnumUtils;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
@@ -120,10 +121,10 @@ public class EditBarWidget extends ContainerWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		if (!visible) return false;
 		if (!isHovered()) visible = false;
-		return super.mouseClicked(mouseX - getX(), mouseY - getY(), button);
+		return super.mouseClicked(new Click(click.x() - getX(), click.y() - getY(), click.buttonInfo()), doubled); // TODO (1.21.9): Double check this works as intended
 	}
 
 	public void setStatusBar(StatusBar statusBar) {
@@ -195,8 +196,8 @@ public class EditBarWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			super.onClick(mouseX, mouseY);
+		public void onClick(Click click, boolean doubled) {
+			super.onClick(click, doubled);
 			EditBarWidget.this.visible = false;
 			if (runnable != null) runnable.run();
 		}
@@ -233,10 +234,10 @@ public class EditBarWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			current = EnumUtils.cycle(current);
 			if (onChange != null) onChange.accept(current);
-			super.onClick(mouseX, mouseY);
+			super.onClick(click, doubled);
 		}
 
 		@Override
@@ -278,10 +279,10 @@ public class EditBarWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			current = !current;
 			if (onChange != null) onChange.accept(current);
-			super.onClick(mouseX, mouseY);
+			super.onClick(click, doubled);
 		}
 
 		@Override
@@ -324,8 +325,8 @@ public class EditBarWidget extends ContainerWidget {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			super.onClick(mouseX, mouseY);
+		public void onClick(Click click, boolean doubled) {
+			super.onClick(click, doubled);
 			MinecraftClient.getInstance().setScreen(new EditBarColorPopup(Text.literal("Edit ").append(getMessage()), parent, this::set));
 		}
 

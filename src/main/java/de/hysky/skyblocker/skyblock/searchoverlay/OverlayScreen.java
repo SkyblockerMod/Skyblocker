@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -9,6 +10,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -136,18 +138,14 @@ public class OverlayScreen extends Screen {
 
     /**
      * Finds if the mouse is clicked on the dungeon star button and if so works out what stars the user clicked on
-     *
-     * @param mouseX the X coordinate of the mouse
-     * @param mouseY the Y coordinate of the mouse
-     * @param button the mouse button number
      * @return super
      */
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
         if (dungeonStarButton != null && dungeonStarButton.isHovered() && client != null) {
             double actualTextWidth = client.textRenderer.getWidth(dungeonStarButton.getMessage());
             double textOffset = (dungeonStarButton.getWidth() - actualTextWidth) / 2;
-            double offset = mouseX - (dungeonStarButton.getX() + textOffset);
+            double offset = click.x() - (dungeonStarButton.getX() + textOffset);
             int starCount = (int) ((offset / actualTextWidth) * 10);
             starCount = Math.clamp(starCount + 1, 0, 10);
             //if same as old value set stars to 0 else set to selected amount
@@ -158,7 +156,7 @@ public class OverlayScreen extends Screen {
             }
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     /**
@@ -292,17 +290,17 @@ public class OverlayScreen extends Screen {
      * When a key is pressed. If enter key pressed and search box selected close
      */
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_ENTER && searchField.isActive()) {
+    public boolean keyPressed(KeyInput input) {
+        if (input.key() == GLFW.GLFW_KEY_ENTER && searchField.isActive()) {
             close();
             return true;
         }
-		if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+		if (input.key() == GLFW.GLFW_KEY_ESCAPE) {
 			SearchOverManager.search = "";
 			close();
 			return true;
 		}
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(input);
     }
 
     @Override

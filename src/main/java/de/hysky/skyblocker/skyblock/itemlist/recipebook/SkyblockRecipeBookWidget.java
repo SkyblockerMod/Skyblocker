@@ -6,6 +6,7 @@ import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.navigation.NavigationAxis;
@@ -14,6 +15,7 @@ import net.minecraft.client.gui.screen.recipebook.GhostRecipe;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.screen.recipebook.RecipeResultCollection;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.recipe.RecipeFinder;
 import net.minecraft.recipe.display.RecipeDisplay;
 import net.minecraft.screen.ScreenHandler;
@@ -143,13 +145,13 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		if (this.isOpen() && !this.client.player.isSpectator()) {
-			if (this.currentTab.left().mouseClicked(mouseX, mouseY, button)) {
+			if (this.currentTab.left().mouseClicked(click, doubled)) {
 				return true;
 			} else {
 				for (Pair<RecipeTab, SkyblockRecipeTabButton> tabButton : this.tabButtons) {
-					if (tabButton.right().mouseClicked(mouseX, mouseY, button)) {
+					if (tabButton.right().mouseClicked(click, doubled)) {
 						if (this.currentTab != tabButton) {
 							if (this.currentTab != null) this.currentTab.right().setToggled(false);
 
@@ -167,25 +169,25 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(KeyInput input) {
 		var client = MinecraftClient.getInstance();
 		if (client.isWindowFocused() && currentTab != null) {
 			var mouse = client.mouse;
 			var window = client.getWindow();
 			var mouseX = (mouse.getX() * ((double) window.getScaledWidth() / (double) window.getWidth()));
 			var mouseY = (mouse.getY() * ((double) window.getScaledHeight() / (double) window.getHeight()));
-			if (this.currentTab.left().keyPressed(mouseX, mouseY, keyCode, scanCode, modifiers)) {
+			if (this.currentTab.left().keyPressed(mouseX, mouseY, input)) {
 				return true;
 			}
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(input);
 	}
 
 	/**
 	 * Same as the super classes implementation just that it checks for our custom tabs.
 	 */
 	@Override
-	public boolean isClickOutsideBounds(double mouseX, double mouseY, int x, int y, int backgroundWidth, int backgroundHeight, int button) {
+	public boolean isClickOutsideBounds(double mouseX, double mouseY, int x, int y, int backgroundWidth, int backgroundHeight) {
 		if (!this.isOpen()) {
 			return true;
 		} else {

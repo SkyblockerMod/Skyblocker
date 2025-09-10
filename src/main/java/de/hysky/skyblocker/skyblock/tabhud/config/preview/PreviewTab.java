@@ -17,6 +17,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.ScreenRect;
@@ -424,12 +425,13 @@ public class PreviewTab implements Tab {
 		}
 
 		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		public boolean mouseClicked(Click click, boolean doubled) {
 			for (ClickableWidget widget : widgets) {
 				if (isNotVisible(widget.getY(), widget.getBottom())) continue;
-				if (widget.mouseClicked(mouseX, mouseY + getScrollY(), button)) return true;
+				// TODO (1.21.9): Double check this works
+				if (widget.mouseClicked(new Click(click.x(), click.y() + getScrollY(), click.buttonInfo()), doubled)) return true;
 			}
-			return super.mouseClicked(mouseX, mouseY, button);
+			return super.mouseClicked(click, doubled);
 		}
 
 		@Override
@@ -499,7 +501,7 @@ public class PreviewTab implements Tab {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			HudWidget affectedWidget = previewWidget.selectedWidget;
 			if (hoveredPoint != null && affectedWidget != null) {
 				ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());

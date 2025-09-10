@@ -11,11 +11,13 @@ import de.hysky.skyblocker.utils.render.HudHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.gui.widget.GridWidget.Adder;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
@@ -116,23 +118,20 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (super.keyPressed(keyCode, scanCode, modifiers)) {
+	public boolean keyPressed(KeyInput input) {
+		if (super.keyPressed(input)) {
 			return true;
-		} else if (this.client.options.inventoryKey.matchesKey(keyCode, scanCode)) {
+		} else if (this.client.options.inventoryKey.matchesKey(input)) {
 			this.close();
 			return true;
 		} else if (CONFIG.get().leapKeybinds) {
-			boolean result = switch (keyCode) {
+			return switch (input.key()) {
 				case GLFW.GLFW_KEY_1 -> leapToPlayer(0);
 				case GLFW.GLFW_KEY_2 -> leapToPlayer(1);
 				case GLFW.GLFW_KEY_3 -> leapToPlayer(2);
 				case GLFW.GLFW_KEY_4 -> leapToPlayer(3);
-
 				default -> false;
 			};
-
-			if (result) return true;
 		}
 		return false;
 	}
@@ -183,7 +182,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			if (LeapOverlay.this.hovered == null) return;
 
 			assert client != null && client.player != null && client.interactionManager != null;
@@ -250,7 +249,7 @@ public class LeapOverlay extends Screen implements ScreenHandlerListener {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			reference.clickSlot();
 		}
 	}

@@ -89,7 +89,7 @@ public class RarityWidget extends ClickableWidget {
     }
 
     @Override
-    public void onClick(Click click, boolean bl) {
+    public void onClick(Click click, boolean doubled) {
         if (slotId == -1) return;
         if (isOnLeftArrow(click.x())) {
             onClick.click(slotId, 1);

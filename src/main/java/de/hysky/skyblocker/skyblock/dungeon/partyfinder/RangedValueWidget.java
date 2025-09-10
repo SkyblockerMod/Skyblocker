@@ -3,14 +3,17 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 import java.util.Objects;
@@ -179,10 +182,10 @@ public class RangedValueWidget extends ContainerWidget {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
         if (screen.isWaitingForServer() || !screen.getSettingsContainer().canInteract(this)) return false;
         if (!visible) return false;
-        if (!isMouseOver(mouseX, mouseY)) {
+        if (!isMouseOver(click.x(), click.y())) {
             if (state == State.OPEN && backSlotId != -1) {
 				screen.clickAndWaitForServer(backSlotId);
 				return true;
@@ -195,23 +198,23 @@ public class RangedValueWidget extends ContainerWidget {
         }
         switch (state) {
             case CLOSED -> {
-                if (mouseY > getY() + 25) return false;
+                if (click.y() > getY() + 25) return false;
                 screen.clickAndWaitForServer(slotId);
                 return true;
             }
             case OPEN -> {
 
-                if (mouseOverMinButton((int) mouseX, (int) mouseY)) {
+                if (mouseOverMinButton((int) click.x(), (int) click.y())) {
                     if (minSlotId == -1) return false;
                     screen.clickAndWaitForServer(minSlotId);
-                } else if (mouseOverMaxButton((int) mouseX, (int) mouseY)) {
+                } else if (mouseOverMaxButton((int) click.x(), (int) click.y())) {
                     if (maxSlotId == -1) return false;
                     screen.clickAndWaitForServer(maxSlotId);
-                } else return !(mouseY > getY() + 25);
+                } else return !(click.y() > getY() + 25);
                 return true;
             }
             default -> {
-                return super.mouseClicked(mouseX, mouseY, button);
+                return super.mouseClicked(click, doubled);
             }
         }
     }
@@ -245,13 +248,13 @@ public class RangedValueWidget extends ContainerWidget {
         }
 
         @Override
-        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        public boolean keyPressed(KeyInput input) {
             if (!this.isNarratable() || !this.isFocused()) return false;
-            if (keyCode == 257 && isGood) {
+            if (input.key() == GLFW.GLFW_KEY_ENTER && isGood) {
                 sendPacket();
                 return true;
             }
-            return super.keyPressed(keyCode, scanCode, modifiers);
+            return super.keyPressed(input);
         }
 
         public void setGood(boolean good) {

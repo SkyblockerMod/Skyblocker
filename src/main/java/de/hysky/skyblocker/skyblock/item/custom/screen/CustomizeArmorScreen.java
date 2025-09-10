@@ -18,6 +18,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -260,9 +261,9 @@ public class CustomizeArmorScreen extends Screen {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			double localX = mouseX - getX() - 2;
-			double localY = mouseY - getY() - 2;
+		public void onClick(Click click, boolean doubled) {
+			double localX = click.x() - getX() - 2;
+			double localY = click.y() - getY() - 2;
 			if (localY < 0 || localY >= 20) return;
 			int i = (int) (localX / 20);
 			if (i < 0 || i >= armor.length || !selectable[i]) return;
@@ -297,7 +298,7 @@ public class CustomizeArmorScreen extends Screen {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			CLIENT.setScreen(new CustomizeArmorScreen(CLIENT.currentScreen));
 		}
 

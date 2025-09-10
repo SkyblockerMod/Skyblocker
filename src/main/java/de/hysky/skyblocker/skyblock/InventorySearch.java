@@ -9,11 +9,13 @@ import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -108,7 +110,7 @@ public class InventorySearch {
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(Click click, boolean doubled) {
 			InventorySearch.showSearchBar(screen);
 		}
 
@@ -130,21 +132,21 @@ public class InventorySearch {
 		}
 
 		@Override
-		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		public boolean keyPressed(KeyInput input) {
 			// Makes the widget catch all key presses (except escape) to fix closing the inventory when pressing E
 			// also check that the widget is focused and active
-			return super.keyPressed(keyCode, scanCode, modifiers) || (keyCode != GLFW.GLFW_KEY_ESCAPE && this.isNarratable() && this.isFocused());
+			return super.keyPressed(input) || (input.key() != GLFW.GLFW_KEY_ESCAPE && this.isNarratable() && this.isFocused());
 		}
 
 		// Unfocus when clicking outside
 		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
-			if (isFocused() && !isMouseOver(mouseX, mouseY)) {
+		public boolean mouseClicked(Click click, boolean doubled) {
+			if (isFocused() && !isMouseOver(click.x(), click.y())) {
 				setFocused(false);
 				return false;
 			}
 
-			return super.mouseClicked(mouseX, mouseY, button);
+			return super.mouseClicked(click, doubled);
 		}
 	}
 }

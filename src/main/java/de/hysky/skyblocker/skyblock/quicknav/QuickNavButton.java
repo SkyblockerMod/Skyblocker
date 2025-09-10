@@ -11,6 +11,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.PopupScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -115,12 +116,9 @@ public class QuickNavButton extends ClickableWidget {
     /**
      * Handles click events. If the button is not currently toggled,
      * it sets the toggled state to true and sends a message with the command after cooldown.
-     *
-     * @param mouseX the x-coordinate of the mouse click
-     * @param mouseY the y-coordinate of the mouse click
      */
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(Click click, boolean doubled) {
         if (!this.temporaryToggled) {
             this.temporaryToggled = true;
             this.toggleTime = System.currentTimeMillis();

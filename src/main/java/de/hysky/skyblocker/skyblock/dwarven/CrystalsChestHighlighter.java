@@ -132,7 +132,7 @@ public class CrystalsChestHighlighter {
 			Vec3d rotationVec = player.getRotationVec(0);
 			double range = player.getBlockInteractionRange();
 			Vec3d vec3d3 = eyePos.add(rotationVec.x * range, rotationVec.y * range, rotationVec.z * range);
-			BlockHitResult raycast = player.getWorld().raycast(new BlockStateRaycastContext(eyePos, vec3d3, blockState -> blockState.isOf(Blocks.CHEST)));
+			BlockHitResult raycast = player.getEntityWorld().raycast(new BlockStateRaycastContext(eyePos, vec3d3, blockState -> blockState.isOf(Blocks.CHEST)));
 			if (!raycast.getType().equals(HitResult.Type.MISS)) {
 				currentLockCount += 1;
 				activeParticles.clear();

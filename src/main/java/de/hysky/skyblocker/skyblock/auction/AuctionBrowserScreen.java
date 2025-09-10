@@ -14,9 +14,11 @@ import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -186,22 +188,22 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (isWaitingForServer) return super.mouseClicked(mouseX, mouseY, button);
-        if (onScrollbarTop((int) mouseX, (int) mouseY) && prevPageVisible) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        if (isWaitingForServer) return super.mouseClicked(click, doubled);
+        if (onScrollbarTop((int) click.x(), (int) click.y()) && prevPageVisible) {
             clickSlot(PREV_PAGE_BUTTON);
             return true;
         }
-        if (onScrollbarBottom((int) mouseX, (int) mouseY) && nextPageVisible) {
+        if (onScrollbarBottom((int) click.x(), (int) click.y()) && nextPageVisible) {
             clickSlot(NEXT_PAGE_BUTTON);
             return true;
         }
 
-        if (onSearchField((int) mouseX, (int) mouseY)) {
+        if (onSearchField((int) click.x(), (int) click.y())) {
             clickSlot(SEARCH_BUTTON_SLOT);
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     private boolean onScrollbarTop(int mouseX, int mouseY) {
@@ -310,16 +312,16 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_UP && prevPageVisible) {
+    public boolean keyPressed(KeyInput input) {
+        if (input.key() == GLFW.GLFW_KEY_UP && prevPageVisible) {
             clickSlot(PREV_PAGE_BUTTON);
             return true;
         }
-        if (keyCode == GLFW.GLFW_KEY_DOWN && nextPageVisible) {
+        if (input.key() == GLFW.GLFW_KEY_DOWN && nextPageVisible) {
             clickSlot(NEXT_PAGE_BUTTON);
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(input);
     }
 
     private static int getOrdinal(List<Text> tooltip) {
@@ -354,7 +356,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
     }
 
     @Override
-    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int button) {
+    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
         return mouseX < (double) left - 32 || mouseY < (double) top || mouseX >= (double) (left + this.backgroundWidth) || mouseY >= (double) (top + this.backgroundHeight);
     }
 

@@ -21,12 +21,14 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ContainerWidget;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -318,8 +320,8 @@ public class GardenPlotsWidget extends ContainerWidget {
 	}
 
 	@Override
-	public void onClick(double mouseX, double mouseY) {
-		super.onClick(mouseX, mouseY);
+	public void onClick(Click click, boolean doubled) {
+		super.onClick(click, doubled);
 		if (hoveredSlot == -1) return;
 
 		if (SkyblockerConfigManager.get().farming.garden.closeScreenOnPlotClick && MinecraftClient.getInstance().currentScreen != null)
@@ -330,8 +332,8 @@ public class GardenPlotsWidget extends ContainerWidget {
 	}
 
 	@Override
-	protected boolean isValidClickButton(int button) {
-		return super.isValidClickButton(button) && hoveredSlot != -1;
+	protected boolean isValidClickButton(MouseInput input) {
+		return super.isValidClickButton(input) && hoveredSlot != -1;
 	}
 
 	@Override
@@ -374,12 +376,12 @@ public class GardenPlotsWidget extends ContainerWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (isMouseOver(mouseX, mouseY) && isValidClickButton(button)) {
-			onClick(mouseX, mouseY);
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (isMouseOver(click.x(), click.y()) && isValidClickButton(click.buttonInfo())) {
+			onClick(click, doubled);
 			return true;
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 
 	private record GardenPlot(Item item, String name) {

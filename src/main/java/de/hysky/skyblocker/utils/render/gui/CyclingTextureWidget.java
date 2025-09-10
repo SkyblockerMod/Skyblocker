@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils.render.gui;
 
 import de.hysky.skyblocker.utils.EnumUtils;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -51,7 +52,7 @@ public class CyclingTextureWidget<T extends Enum<T> & Supplier<Identifier>> exte
 	}
 
 	@Override
-	public void onClick(double mouseX, double mouseY) {
+	public void onClick(Click click, boolean doubled) {
 		this.current = EnumUtils.cycle(current);
 		this.setTooltip(tooltipSupplier.apply(getCurrent()));
 		this.onCycle.accept(getCurrent());

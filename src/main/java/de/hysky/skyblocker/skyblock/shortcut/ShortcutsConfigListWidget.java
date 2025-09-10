@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.shortcut;
 import com.demonwav.mcdev.annotations.Translatable;
 import de.hysky.skyblocker.debug.Debug;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
@@ -198,7 +199,7 @@ public class ShortcutsConfigListWidget extends ElementListWidget<ShortcutsConfig
 		 * Returns true so that category entries can be focused and selected, so that we can add shortcut entries after them.
 		 */
 		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		public boolean mouseClicked(Click click, boolean doubled) {
 			return true;
 		}
 	}

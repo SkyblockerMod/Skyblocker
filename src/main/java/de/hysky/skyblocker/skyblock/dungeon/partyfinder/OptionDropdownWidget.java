@@ -196,9 +196,9 @@ public class OptionDropdownWidget extends ElementListWidget<OptionDropdownWidget
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        public boolean mouseClicked(Click click, boolean doubled) {
             if (screen.isWaitingForServer()) return false;
-            if (button == 0) {
+            if (click.button() == 0) {
                 screen.clickAndWaitForServer(this.optionSlotId);
                 setSelectedOption(this);
             }
