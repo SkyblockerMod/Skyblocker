@@ -1388,7 +1388,7 @@
     "skyblocker.museum.hud.alreadyDonatedItem": "已捐贈物品",
     "skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip": "顯示未捐贈的物品及它們的價格等。\n\n此功能需要開啟博物館API！",
     "skyblocker.museum.hud.filter.rarities": "稀有物品",
-    "skyblocker.museum.hud.sorter": "物品類別",
+    "skyblocker.museum.hud.sorter": "物品排序",
     "skyblocker.museum.hud.sorter.switch": "點擊切換類別！",
     "skyblocker.config.chat.chatRules.invalidRegex": "你的聊天規則「%s」含有無效的正規表示式，因此已被停用！",
     "skyblocker.config.uiAndVisuals.slotText.evolvingItems": "可進化物品",
