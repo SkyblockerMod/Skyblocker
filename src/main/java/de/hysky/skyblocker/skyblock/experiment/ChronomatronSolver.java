@@ -56,7 +56,6 @@ public final class ChronomatronSolver extends ExperimentSolver implements Screen
 		return experimentsConfig.enableChronomatronSolver;
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	@Override
 	protected void tick(GenericContainerScreen screen) {
 	}
@@ -67,6 +66,7 @@ public final class ChronomatronSolver extends ExperimentSolver implements Screen
 		switch (getState()) {
 			case REMEMBER -> {
 				if (slotId == 49) break;
+				// Only try to look for items with enchantment glint if there is no item being currently shown.
 				if (chronomatronCurrentSlot == 0) {
 					if (stack.hasGlint()) {
 						// If the list of items is smaller than the index of the current item shown, add the item to the list and set the state to wait.
@@ -80,6 +80,7 @@ public final class ChronomatronSolver extends ExperimentSolver implements Screen
 						// Remember the slot shown to detect when the experiment finishes showing the current item.
 						chronomatronCurrentSlot = slotId;
 					}
+					// If the current item shown no longer has enchantment glint, the experiment finished showing the current item.
 				} else if (chronomatronCurrentSlot == slotId && !stack.hasGlint()) {
 					chronomatronCurrentSlot = 0;
 				}
