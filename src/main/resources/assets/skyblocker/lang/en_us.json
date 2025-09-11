@@ -458,6 +458,7 @@
   "skyblocker.config.general.backup.manage": "Manage Backups...",
   "skyblocker.config.general.backup.title": "Config Backups",
   "skyblocker.config.general.backup.restore": "Restore",
+  "skyblocker.config.general.backup.restore.error": "Failed to restore backup",
   "skyblocker.config.general.backup.confirm.title": "Restore Backup",
   "skyblocker.config.general.backup.confirm.text": "Restore backup %s? This will overwrite your current config.",
 
