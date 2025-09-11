@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class HeadSelectionWidget extends ContainerWidget {
@@ -86,11 +87,11 @@ public class HeadSelectionWidget extends ContainerWidget {
 
 	private void filterButtons(String search) {
 		setScrollY(0);
-		String s = search.toLowerCase();
+		String s = search.toLowerCase(Locale.ENGLISH);
 		visibleButtons.clear();
 		visibleButtons.add(noneButton);
 		for (HeadButton b : allButtons) {
-			if (b.name.toLowerCase().contains(s)) {
+			if (b.name.toLowerCase(Locale.ENGLISH).contains(s)) {
 				visibleButtons.add(b);
 			}
 		}

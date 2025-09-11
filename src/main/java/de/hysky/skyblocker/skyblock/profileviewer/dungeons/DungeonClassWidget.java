@@ -18,6 +18,7 @@ import net.minecraft.util.Identifier;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class DungeonClassWidget {
@@ -46,9 +47,9 @@ public class DungeonClassWidget {
         this.className = className;
         stack = CLASS_ICON.getOrDefault(className, Ico.BARRIER);
         try {
-            classData = playerProfile.getAsJsonObject("dungeons").getAsJsonObject("player_classes").getAsJsonObject(this.className.toLowerCase());
+            classData = playerProfile.getAsJsonObject("dungeons").getAsJsonObject("player_classes").getAsJsonObject(this.className.toLowerCase(Locale.ENGLISH));
             classLevel = LevelFinder.getLevelInfo("Catacombs", classData.get("experience").getAsLong());
-            active = playerProfile.getAsJsonObject("dungeons").get("selected_dungeon_class").getAsString().equals(className.toLowerCase());
+            active = playerProfile.getAsJsonObject("dungeons").get("selected_dungeon_class").getAsString().equals(className.toLowerCase(Locale.ENGLISH));
         } catch (Exception ignored) {
             classLevel = LevelFinder.getLevelInfo("", 0);
         }

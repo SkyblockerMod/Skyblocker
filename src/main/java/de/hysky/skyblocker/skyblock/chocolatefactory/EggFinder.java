@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -158,7 +159,7 @@ public class EggFinder {
 		Matcher matcher = eggFoundPattern.matcher(text.getString());
 		if (matcher.find()) {
 			try {
-				EggType eggType = EggType.valueOf(matcher.group(1).toUpperCase());
+				EggType eggType = EggType.valueOf(matcher.group(1).toUpperCase(Locale.ENGLISH));
 				eggType.collected = true;
 				Egg egg = eggType.egg;
 				if (egg != null) egg.setFound();
@@ -170,7 +171,7 @@ public class EggFinder {
 		matcher.usePattern(newEggPattern);
 		if (matcher.find()) {
 			try {
-				EggType.valueOf(matcher.group(1).toUpperCase());
+				EggType.valueOf(matcher.group(1).toUpperCase(Locale.ENGLISH));
 			} catch (IllegalArgumentException e) {
 				logger.error("[Skyblocker Egg Finder] Failed to find egg type for egg spawn message. Tried to match against: {}", matcher.group(0), e);
 			}

@@ -28,6 +28,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -54,7 +55,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
     public AuctionViewScreen(AuctionHouseScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         backgroundHeight = 187;
-        isBinAuction = this.getTitle().getString().toLowerCase().contains("bin");
+        isBinAuction = this.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("bin");
         playerInventoryTitleY = 93;
         titleX = 5;
         titleY = 4;
@@ -231,7 +232,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
             changeProfile = true;
             buySlotID = slotId;
         }
-        String lowerCase = stack.getName().getString().toLowerCase();
+        String lowerCase = stack.getName().getString().toLowerCase(Locale.ENGLISH);
         if (priceParsed && lowerCase.contains("collect auction")) {
             changeState(BuyState.COLLECT_AUCTION);
         }
@@ -251,7 +252,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         for (Text text : tooltip) {
             String string = text.getString();
             String thingToLookFor = (isBinAuction) ? "price:" : "new bid:";
-            String lowerCase = string.toLowerCase();
+            String lowerCase = string.toLowerCase(Locale.ENGLISH);
             if (lowerCase.contains(thingToLookFor)) {
                 String[] split = string.split(":");
                 if (split.length < 2) continue;
