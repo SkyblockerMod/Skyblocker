@@ -300,8 +300,14 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         //noinspection DataFlowIssue
         return new PopupScreen.Builder(this, title)
                 .button(Text.translatable("text.skyblocker.confirm"), popupScreen -> this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 11, 0, SlotActionType.PICKUP, client.player))
-                .button(Text.translatable("gui.cancel"), popupScreen -> this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 15, 0, SlotActionType.PICKUP, client.player))
-                .message((isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid")).append(" ").append(priceText)).build();
+                .button(Text.translatable("gui.cancel"), PopupScreen::close)
+                .message((isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid")).append(" ").append(priceText))
+				.onClosed(() -> {
+					// This really shouldn't be possible to be null in its ACTUAL use case.
+					//noinspection DataFlowIssue
+					this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 15, 0, SlotActionType.PICKUP, client.player);
+				})
+				.build();
     }
 
     private enum BuyState {
