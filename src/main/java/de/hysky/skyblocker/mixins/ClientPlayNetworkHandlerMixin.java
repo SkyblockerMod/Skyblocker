@@ -95,13 +95,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		LassoHud.onEntityAttach(packet);
 	}
 
-	@Inject(method = "method_64896", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V"))
-	private void skyblocker$onItemDestroy(int entityId, CallbackInfo ci) {
-		if (world.getEntityById(entityId) instanceof ItemEntity itemEntity) {
-			DungeonManager.onItemPickup(itemEntity);
-		}
-	}
-
 	@Inject(method = "onPlayerPositionLook", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
 	private void skyblocker$beforeTeleport(PlayerPositionLookS2CPacket packet, CallbackInfo ci, @Share("playerBeforeTeleportBlockPos") LocalRef<BlockPos> beforeTeleport) {
 		beforeTeleport.set(client.player.getBlockPos().toImmutable());

@@ -21,6 +21,7 @@ import java.util.Set;
 public class LassoHud extends ComponentBasedWidget {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	private static final String LASSO_COUNT_DOWN_NAME = "                    ";
+	private static final Set<Location> AVAILABLE_LOCATION = Set.of(Location.GALATEA);
 
 	private static LassoHud instance;
 	private static int percentage = 0;
@@ -98,7 +99,6 @@ public class LassoHud extends ComponentBasedWidget {
 
 		//forget entity if it has died
 		if (lassoEntity != null && !lassoEntity.isAlive()) {
-			System.out.println(lassoEntity);
 			lassoEntity = null;
 		}
 
@@ -107,7 +107,7 @@ public class LassoHud extends ComponentBasedWidget {
 
 	@Override
 	public Set<Location> availableLocations() {
-		return Set.of(Location.GALATEA);
+		return AVAILABLE_LOCATION;
 	}
 
 	@Override
