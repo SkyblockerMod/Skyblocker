@@ -8,6 +8,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,8 +42,8 @@ public class FireSaleWidget extends TabHudWidget {
 				Text prgressTxt = Text.literal(String.format("%s/%.0f", avail, total));
 				float pcnt = (Float.parseFloat(avail) / (total)) * 100f;
 				this.addComponent(Components.progressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt));
-			} else if (text.getString().toLowerCase() instanceof String s && (s.contains("starts") || s.contains("starting"))) {
-				this.addComponent(new IcoTextComponent(Ico.CLOCK, text));
+			} else if (text.getString().toLowerCase(Locale.ENGLISH) instanceof String s && (s.contains("starts") || s.contains("starting"))) {
+				this.addComponent(Components.iconTextComponent(Ico.CLOCK, text));
 			} else {
 				this.addComponent(new PlainTextComponent(text));
 			}

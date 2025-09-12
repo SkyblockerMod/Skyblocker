@@ -116,6 +116,7 @@ public class TicTacToe extends DungeonPuzzle {
 		try {
 			if (SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveTicTacToe && nextBestMoveToMake != null) {
 				RenderHelper.renderFilled(context, nextBestMoveToMake, GREEN_COLOR_COMPONENTS, 0.5f, false);
+				RenderHelper.renderOutline(context, nextBestMoveToMake, GREEN_COLOR_COMPONENTS, 5f, false);
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Tic Tac Toe] Encountered an exception while rendering the tic tac toe solution!", e);

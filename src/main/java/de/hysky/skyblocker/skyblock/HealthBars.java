@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -92,8 +93,8 @@ public class HealthBars {
 		}
 
 		//work out health value and save to hashMap
-		float firstValue = Formatters.parseNumber(healthMatcher.group(1).toUpperCase()).floatValue();
-		float secondValue = Formatters.parseNumber(healthMatcher.group(4).toUpperCase()).floatValue();
+		float firstValue = Formatters.parseNumber(healthMatcher.group(1).toUpperCase(Locale.ENGLISH)).floatValue();
+		float secondValue = Formatters.parseNumber(healthMatcher.group(4).toUpperCase(Locale.ENGLISH)).floatValue();
 		float health = firstValue / secondValue;
 		healthValues.put(armorStand, health);
 
@@ -165,7 +166,7 @@ public class HealthBars {
 		}
 
 		//get the current health of the mob
-		long currentHealth = Formatters.parseNumber(healthOnlyMatcher.group(1).toUpperCase()).longValue();
+		long currentHealth = Formatters.parseNumber(healthOnlyMatcher.group(1).toUpperCase(Locale.ENGLISH)).longValue();
 
 		//if it's a new health only armor stand add to starting health lookup (not always full health if already damaged but best that can be done)
 		if (!mobStartingHealth.containsKey(armorStand)) {
@@ -229,9 +230,8 @@ public class HealthBars {
 			int mixedColor = ColorUtils.interpolate(health, emptyColor.getRGB(), halfColor.getRGB(), fullColor.getRGB());
 			float[] components = ColorUtils.getFloatComponents(mixedColor);
 			// Render the health bar texture with scaling based on health percentage
-			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, 0.003f), HEALTH_BAR_TEXTURE, components, 1f, true);
 			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, components, 1f, true);
-
+			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, -0.003f), HEALTH_BAR_TEXTURE, components, 1f, true);
 		}
 	}
 }

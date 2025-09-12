@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.auction;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.PopupScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -10,8 +11,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -23,10 +22,13 @@ import net.minecraft.text.TextColor;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+
+import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -53,7 +55,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
     public AuctionViewScreen(AuctionHouseScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         backgroundHeight = 187;
-        isBinAuction = this.getTitle().getString().toLowerCase().contains("bin");
+        isBinAuction = this.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("bin");
         playerInventoryTitleY = 93;
         titleX = 5;
         titleY = 4;
@@ -156,7 +158,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
-        context.drawTexture(RenderLayer::getGuiTextured, BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
     }
 
     @Override
@@ -165,16 +167,16 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 
         if (isWaitingForServer) context.drawText(textRenderer, "Waiting...", 0, 0, Colors.WHITE, true);
 
-        MatrixStack matrices = context.getMatrices();
+        Matrix3x2fStack matrices = context.getMatrices();
 
-        matrices.push();
-        matrices.translate(x + 77, y + 14, 0);
-        matrices.scale(1.375f, 1.375f, 1.375f);
+        matrices.pushMatrix();
+        matrices.translate(x + 77, y + 14);
+        matrices.scale(1.375f, 1.375f);
         //matrices.translate(0, 0, 100f);
         ItemStack stack = handler.getSlot(13).getStack();
         context.drawItem(stack, 0, 0);
         context.drawStackOverlay(textRenderer, stack, 0, 0);
-        matrices.pop();
+        matrices.popMatrix();
 
         if (!isBinAuction && buyState != BuyState.COLLECT_AUCTION) {
             if (priceWidget.isMouseOver(mouseX, mouseY) && buyState != BuyState.CANT_AFFORD) {
@@ -230,7 +232,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
             changeProfile = true;
             buySlotID = slotId;
         }
-        String lowerCase = stack.getName().getString().toLowerCase();
+        String lowerCase = stack.getName().getString().toLowerCase(Locale.ENGLISH);
         if (priceParsed && lowerCase.contains("collect auction")) {
             changeState(BuyState.COLLECT_AUCTION);
         }
@@ -250,7 +252,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         for (Text text : tooltip) {
             String string = text.getString();
             String thingToLookFor = (isBinAuction) ? "price:" : "new bid:";
-            String lowerCase = string.toLowerCase();
+            String lowerCase = string.toLowerCase(Locale.ENGLISH);
             if (lowerCase.contains(thingToLookFor)) {
                 String[] split = string.split(":");
                 if (split.length < 2) continue;
@@ -298,8 +300,14 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
         //noinspection DataFlowIssue
         return new PopupScreen.Builder(this, title)
                 .button(Text.translatable("text.skyblocker.confirm"), popupScreen -> this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 11, 0, SlotActionType.PICKUP, client.player))
-                .button(Text.translatable("gui.cancel"), popupScreen -> this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 15, 0, SlotActionType.PICKUP, client.player))
-                .message((isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid")).append(" ").append(priceText)).build();
+                .button(Text.translatable("gui.cancel"), PopupScreen::close)
+                .message((isBinAuction ? Text.translatable("skyblocker.fancyAuctionHouse.price") : Text.translatable("skyblocker.fancyAuctionHouse.newBid")).append(" ").append(priceText))
+				.onClosed(() -> {
+					// This really shouldn't be possible to be null in its ACTUAL use case.
+					//noinspection DataFlowIssue
+					this.client.interactionManager.clickSlot(this.client.player.currentScreenHandler.syncId, 15, 0, SlotActionType.PICKUP, client.player);
+				})
+				.build();
     }
 
     private enum BuyState {

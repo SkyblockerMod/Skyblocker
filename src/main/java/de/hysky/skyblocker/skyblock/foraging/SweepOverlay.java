@@ -179,7 +179,7 @@ public class SweepOverlay {
 				}
 			}
 		}
-		if (!sweepStatNoticeShown && Utils.isInPark() && CLIENT.player != null) {
+		if (!sweepStatNoticeShown && (Utils.isInPark() || Utils.isInGalatea()) && CLIENT.player != null) {
 			CLIENT.player.sendMessage(Constants.PREFIX.get().append(
 							Text.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
 									.formatted(Formatting.RED)),
@@ -199,11 +199,7 @@ public class SweepOverlay {
 	 * @return the maximum number of logs that can be broken
 	 */
 	private static int calculateMaxWood(float sweepStat, float toughness) {
-		if (toughness <= 0) {
-			return Math.min(MAX_WOOD_CAP, (int) Math.floor(sweepStat));
-		}
-
-		int logs = (int) Math.floor(sweepStat / toughness);
+		int logs = (int) (toughness <= 0 ? sweepStat : (3 * Math.log(sweepStat) - 1.75 * Math.log(toughness) + 2));;
 		return Math.min(MAX_WOOD_CAP, logs);
 	}
 

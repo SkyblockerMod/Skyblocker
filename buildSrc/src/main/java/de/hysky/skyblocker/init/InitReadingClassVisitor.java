@@ -5,11 +5,13 @@ import org.objectweb.asm.*;
 
 import java.util.Map;
 
+import de.hysky.skyblocker.MethodReference;
+
 public class InitReadingClassVisitor extends ClassVisitor {
-	private final Map<InitProcessor.MethodReference, Integer> methodSignatures;
+	private final Map<MethodReference, Integer> methodSignatures;
 	private final ClassReader classReader;
 
-	public InitReadingClassVisitor(ClassReader classReader, Map<InitProcessor.MethodReference, Integer> methodSignatures) {
+	public InitReadingClassVisitor(ClassReader classReader, Map<MethodReference, Integer> methodSignatures) {
 		super(Opcodes.ASM9);
 		this.classReader = classReader;
 		this.methodSignatures = methodSignatures;
@@ -28,7 +30,7 @@ public class InitReadingClassVisitor extends ClassVisitor {
 				return new InitAnnotationVisitor(methodSignatures, getMethodCall());
 			}
 
-			private @NotNull InitProcessor.MethodReference getMethodCall() {
+			private @NotNull MethodReference getMethodCall() {
 				String className = classReader.getClassName();
 				String methodCallString = className + "." + methodName;
 				if ((access & Opcodes.ACC_PUBLIC) == 0) throw new IllegalStateException(methodCallString + ": Initializer methods must be public");
@@ -38,16 +40,16 @@ public class InitReadingClassVisitor extends ClassVisitor {
 				//Interface static methods need special handling, so we add a special marker for that
 				boolean itf = (classReader.getAccess() & Opcodes.ACC_INTERFACE) != 0;
 
-				return new InitProcessor.MethodReference(className, methodName, descriptor, itf);
+				return new MethodReference(className, methodName, descriptor, itf);
 			}
 		};
 	}
 
 	static class InitAnnotationVisitor extends AnnotationVisitor {
-		private final Map<InitProcessor.MethodReference, Integer> methodSignatures;
-		private final InitProcessor.MethodReference methodCall;
+		private final Map<MethodReference, Integer> methodSignatures;
+		private final MethodReference methodCall;
 
-		protected InitAnnotationVisitor(Map<InitProcessor.MethodReference, Integer> methodSignatures, InitProcessor.MethodReference methodCall) {
+		protected InitAnnotationVisitor(Map<MethodReference, Integer> methodSignatures, MethodReference methodCall) {
 			super(Opcodes.ASM9);
 			this.methodSignatures = methodSignatures;
 			this.methodCall = methodCall;

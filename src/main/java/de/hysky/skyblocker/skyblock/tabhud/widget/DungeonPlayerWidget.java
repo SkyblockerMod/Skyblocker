@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
 import net.minecraft.item.ItemStack;
@@ -13,24 +14,10 @@ import net.minecraft.util.Formatting;
 
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 // this widget shows info about a player in the current dungeon group
-
 public class DungeonPlayerWidget extends TabHudWidget {
-
-	private static final MutableText TITLE = Text.literal("Player").formatted(Formatting.DARK_PURPLE,
-			Formatting.BOLD);
-
-	// match a player entry
-	// group 1: name
-	// group 2: class (or literal "EMPTY" pre dungeon start)
-	// group 3: level (or nothing, if pre dungeon start)
-	// this regex filters out the ironman icon as well as rank prefixes and emblems
-	// \[\d*\] (?:\[[A-Za-z]+\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\((?<class>\S*) ?(?<level>[LXVI]*)\)
-	public static final Pattern PLAYER_PATTERN = Pattern
-			.compile("\\[\\d*\\] (?:\\[[A-Za-z]+\\] )?(?<name>[A-Za-z0-9_]*) (?:.* )?\\((?<class>\\S*) ?(?<level>[LXVI]*)\\)");
-
+	private static final MutableText TITLE = Text.literal("Player").formatted(Formatting.DARK_PURPLE, Formatting.BOLD);
 	private static final List<String> MSGS = List.of("???", "PRESS A TO JOIN", "Invite a friend!", "But nobody came.", "More is better!");
 
 	private final int player;
@@ -47,15 +34,13 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 		if (PlayerListManager.strAt(start) == null) {
 			int idx = player - 1;
-			IcoTextComponent noplayer = new IcoTextComponent(Ico.SIGN,
-					Text.literal(MSGS.get(idx)).formatted(Formatting.GRAY));
-			this.addComponent(noplayer);
+			this.addComponent(Components.iconTextComponent(Ico.SIGN, Text.literal(MSGS.get(idx)).formatted(Formatting.GRAY)));
 			return;
 		}
-		Matcher m = PlayerListManager.regexAt(start, PLAYER_PATTERN);
+		Matcher m = PlayerListManager.regexAt(start, DungeonPlayerManager.PLAYER_TAB_PATTERN);
 		if (m == null) {
-			this.addComponent(new IcoTextComponent());
-			this.addComponent(new IcoTextComponent());
+			this.addComponent(Components.iconTextComponent());
+			this.addComponent(Components.iconTextComponent());
 		} else {
 
 			Text name = Text.literal("Name: ").append(Text.literal(m.group("name")).formatted(Formatting.YELLOW));
@@ -79,13 +64,11 @@ public class DungeonPlayerWidget extends TabHudWidget {
 				}
 
 				Text clazz = Text.literal("Class: ").append(Text.literal(cl).formatted(clf));
-				IcoTextComponent itclass = new IcoTextComponent(cli, clazz);
-				this.addComponent(itclass);
+				this.addComponent(Components.iconTextComponent(cli, clazz));
 			}
 		}
 
 		this.addSimpleIcoText(Ico.CLOCK, "Ult Cooldown:", Formatting.GOLD, start + 1);
 		this.addSimpleIcoText(Ico.POTION, "Revives:", Formatting.DARK_PURPLE, start + 2);
-
 	}
 }

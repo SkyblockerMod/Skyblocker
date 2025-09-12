@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -11,6 +11,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -100,7 +101,7 @@ public class MinionWidget extends TabHudWidget {
 		addComponent(new PlainTextComponent(lines.getFirst().copy().append(Text.literal(" minions"))));
 		for (int i = 1; i < lines.size(); i++) {
 			String string = lines.get(i).getString();
-			if (string.toLowerCase().startsWith("...")) this.addComponent(new PlainTextComponent(lines.get(i).copy().formatted(Formatting.GRAY)));
+			if (string.toLowerCase(Locale.ENGLISH).startsWith("...")) this.addComponent(new PlainTextComponent(lines.get(i).copy().formatted(Formatting.GRAY)));
 			else addMinionComponent(string);
 		}
 	}
@@ -125,9 +126,7 @@ public class MinionWidget extends TabHudWidget {
 			// makes "BLOCKED" also red. in reality, it's some kind of crimson
 			mt.append(Text.literal(stat).formatted(format));
 
-			IcoTextComponent itc = new IcoTextComponent(MIN_ICOS.get(min), mt);
-			this.addComponent(itc);
+			this.addComponent(Components.iconTextComponent(MIN_ICOS.get(min), mt));
 		}
 	}
-
 }

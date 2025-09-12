@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
@@ -11,12 +12,19 @@ import io.github.moulberry.repo.data.NEUForgeRecipe;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
 import io.github.moulberry.repo.util.NEUId;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.network.packet.s2c.play.SynchronizeRecipesS2CPacket;
+import net.minecraft.recipe.display.CuttingRecipeDisplay;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class ItemRepository {
@@ -26,6 +34,14 @@ public class ItemRepository {
 	private static final Map<String, ItemStack> itemsMap = new HashMap<>();
 	private static final List<SkyblockRecipe> recipes = new ArrayList<>();
 	private static final HashMap<String, @NEUId String> bazaarStocks = new HashMap<>();
+	/**
+	 * Store callbacks so we can execute them each time the item repository
+	 * finishes loading.
+	 */
+	private static final List<AfterImportTask> afterImportTasks = new CopyOnWriteArrayList<>();
+
+	private record AfterImportTask(Runnable runnable, boolean async) {}
+
 	/**
 	 * Consumers must check this field when accessing `items` and `itemsMap`, or else thread safety is not guaranteed.
 	 */
@@ -40,6 +56,24 @@ public class ItemRepository {
 		NEURepoManager.runAsyncAfterLoad(ItemStackBuilder::loadPetNums);
 		NEURepoManager.runAsyncAfterLoad(ItemRepository::importItemFiles);
 		NEURepoManager.runAsyncAfterLoad(ItemRepository::loadBazaarStocks);
+		runAsyncAfterImport(ItemRepository::handleRecipeSynchronization);
+		SkyblockEvents.JOIN.register(ItemRepository::handleRecipeSynchronization);
+	}
+
+	/**
+	 * Load the recipes manually because Hypixel doesn't send any vanilla recipes to the client.
+	 * This also reloads REI to include the Skyblock items when the items are done loading.
+	 */
+	private static void handleRecipeSynchronization() {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.world == null || client.getNetworkHandler() == null) return;
+
+		SynchronizeRecipesS2CPacket packet = new SynchronizeRecipesS2CPacket(Map.of(), CuttingRecipeDisplay.Grouping.empty());
+		try {
+			client.execute(() -> client.getNetworkHandler().onSynchronizeRecipes(packet));
+		} catch (Exception e) {
+			LOGGER.info("[Skyblocker Item Repo] recipe sync error", e);
+		}
 	}
 
 	private static void importItemFiles() {
@@ -59,12 +93,31 @@ public class ItemRepository {
 
 		NEURepoManager.forEachItem(ItemRepository::loadRecipes);
 		filesImported = true;
+
+		afterImportTasks.forEach(task -> {
+			if (task.async) {
+				CompletableFuture.runAsync(task.runnable).exceptionally(e -> {
+					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
+					return null;
+				});
+			} else {
+				try {
+					task.runnable.run();
+				} catch (Exception e) {
+					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
+				}
+			}
+		});
 	}
 
 	private static void loadItem(NEUItem item) {
 		try {
 			ItemStack stack = ItemStackBuilder.fromNEUItem(item);
 			StackOverlays.applyOverlay(item, stack);
+
+			if (stack.isOf(Items.ENCHANTED_BOOK) && ItemUtils.getItemId(stack).contains(";")) {
+				ItemUtils.getCustomData(stack).putString("id", "ENCHANTED_BOOK");
+			}
 
 			items.add(stack);
 			itemsMap.put(item.getSkyblockItemId(), stack);
@@ -91,7 +144,7 @@ public class ItemRepository {
 		List<String> info = item.getInfo();
 		String wikiLink0 = info.getFirst();
 		String wikiLink1 = info.size() > 1 ? info.get(1) : "";
-		String wikiDomain = useOfficial ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
+		String wikiDomain = getWikiLink(useOfficial);
 		if (wikiLink0.startsWith(wikiDomain)) {
 			return wikiLink0;
 		} else if (wikiLink1.startsWith(wikiDomain)) {
@@ -100,17 +153,16 @@ public class ItemRepository {
 		return null;
 	}
 
+	public static String getWikiLink(boolean useOfficial) {
+		return useOfficial ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
+	}
+
 	public static List<SkyblockRecipe> getRecipesAndUsages(ItemStack stack) {
 		return Stream.concat(getRecipes(stack), getUsages(stack)).toList();
 	}
 
 	public static boolean filesImported() {
 		return filesImported;
-	}
-
-	public static void setFilesImported() {
-		itemsImported = false;
-		filesImported = false;
 	}
 
 	public static List<ItemStack> getItems() {
@@ -134,6 +186,13 @@ public class ItemRepository {
 		return itemsImported ? itemsMap.get(neuId) : null;
 	}
 
+	/**
+	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link ItemUtils#getNeuId(ItemStack) ItemTooltip#getNeuName(String, String)}
+	 */
+	public static Supplier<ItemStack> getItemStackSupplier(String neuId) {
+		return () -> itemsMap.get(neuId);
+	}
+
 	public static Stream<SkyblockRecipe> getRecipesStream() {
 		return filesImported ? recipes.stream() : Stream.empty();
 	}
@@ -152,5 +211,40 @@ public class ItemRepository {
 			case NEUForgeRecipe forgeRecipe -> new SkyblockForgeRecipe(forgeRecipe);
 			case null, default -> null;
 		};
+	}
+
+	/**
+	 * Runs the given runnable after the item repository has finished loading.
+	 * If the repository is already loaded the runnable is executed immediately.
+	 *
+	 * @param runnable the runnable to run
+	 */
+	public static void runAsyncAfterImport(Runnable runnable) {
+		runAfterImport(runnable, true);
+	}
+
+	/**
+	 * Runs the given runnable after the item repository has finished loading.
+	 * If the repository is already loaded the runnable is executed immediately.
+	 *
+	 * @param runnable the runnable to run
+	 * @param async    whether to run the runnable asynchronously
+	 */
+	public static void runAfterImport(Runnable runnable, boolean async) {
+		if (filesImported) {
+			if (async) {
+				CompletableFuture.runAsync(runnable).exceptionally(e -> {
+					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import task", e);
+					return null;
+				});
+			} else {
+				try {
+					runnable.run();
+				} catch (Exception e) {
+					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import task", e);
+				}
+			}
+		}
+		afterImportTasks.add(new AfterImportTask(runnable, async));
 	}
 }

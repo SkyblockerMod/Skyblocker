@@ -2,6 +2,7 @@ package de.hysky.skyblocker.mixins;
 
 import com.mojang.authlib.GameProfile;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;
 import de.hysky.skyblocker.skyblock.auction.EditBidPopup;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
@@ -16,6 +17,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+
+import java.util.Locale;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -50,7 +54,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
     @Inject(method = "openEditSignScreen", at = @At("HEAD"), cancellable = true)
     public void skyblocker$redirectEditSignScreen(SignBlockEntity sign, boolean front, CallbackInfo ci) {
         // Fancy Party Finder
-        if (!PartyFinderScreen.isInKuudraPartyFinder && client.currentScreen instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted() && sign.getText(front).getMessage(3, false).getString().toLowerCase().contains("level")) {
+        if (!PartyFinderScreen.isInKuudraPartyFinder && client.currentScreen instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted() && sign.getText(front).getMessage(3, false).getString().toLowerCase(Locale.ENGLISH).contains("level")) {
             partyFinderScreen.updateSign(sign, front);
             ci.cancel();
             return;
@@ -63,19 +67,23 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
         // Search Overlay
         if (client.currentScreen != null) {
-            if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableAuctionHouse && client.currentScreen.getTitle().getString().toLowerCase().contains("auction")) {
-                if (sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query")) {
-                    SearchOverManager.updateSign(sign, front, true);
-                    client.setScreen(new OverlayScreen());
-                    ci.cancel();
-                }
-            } else if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableBazaar && client.currentScreen.getTitle().getString().toLowerCase().contains("bazaar")) {
-                if (sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query")) {
-                    SearchOverManager.updateSign(sign, front, false);
-                    client.setScreen(new OverlayScreen());
-                    ci.cancel();
-                }
-            }
+			UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
+			boolean isInputSign = sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query");
+			if (!isInputSign) return;
+
+            if (config.enableAuctionHouse && client.currentScreen.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("auction")) {
+				SearchOverManager.updateSign(sign, front, SearchOverManager.SearchLocation.AUCTION);
+				client.setScreen(new OverlayScreen());
+				ci.cancel();
+            } else if (config.enableBazaar && client.currentScreen.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("bazaar")) {
+				SearchOverManager.updateSign(sign, front, SearchOverManager.SearchLocation.BAZAAR);
+				client.setScreen(new OverlayScreen());
+				ci.cancel();
+            } else if (config.enableMuseum && client.currentScreen.getTitle().getString().contains("Museum")) {
+				SearchOverManager.updateSign(sign, front, SearchOverManager.SearchLocation.MUSEUM);
+				client.setScreen(new OverlayScreen());
+				ci.cancel();
+			}
         }
     }
 }

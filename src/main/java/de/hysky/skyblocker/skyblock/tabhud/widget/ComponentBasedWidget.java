@@ -5,15 +5,11 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -41,13 +37,13 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	private int prevW = 0, prevH = 0;
 
-	static final int BORDER_SZE_N = txtRend.fontHeight + 4;
-	static final int BORDER_SZE_S = 4;
-	static final int BORDER_SZE_W = 4;
-	static final int BORDER_SZE_E = 4;
-	static final int DEFAULT_COL_BG_BOX = 0xc00c0c0c;
+	public static final int BORDER_SZE_N = txtRend.fontHeight + 2;
+	public static final int BORDER_SZE_S = 4;
+	public static final int BORDER_SZE_W = 4;
+	public static final int BORDER_SZE_E = 4;
+	public static final int DEFAULT_COL_BG_BOX = 0xc00c0c0c;
 	// More transparent background for minimal style
-	static final int MINIMAL_COL_BG_BOX = 0x64000000;
+	public static final int MINIMAL_COL_BG_BOX = 0x64000000;
 
 	private final int color;
 	private final Text title;
@@ -66,6 +62,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	}
 
 	public void addComponent(Component c) {
+		c.setParent(this);
 		this.components.add(c);
 	}
 
@@ -104,20 +101,16 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, Formatting formatting, String content) {
 		Text text = simpleEntryTranslatableText(translationKey, content, formatting);
-		this.addComponent(new IcoTextComponent(icon, text));
+		this.addComponent(Components.iconTextComponent(icon, text));
 	}
 
 	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, Formatting formatting, Text content) {
 		Text text = simpleEntryTranslatableText(translationKey, content, formatting);
-		this.addComponent(new IcoTextComponent(icon, text));
+		this.addComponent(Components.iconTextComponent(icon, text));
 	}
 
 	@Override
 	public final void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-		MatrixStack ms = context.getMatrices();
-
-		ms.push();
-
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			GameOptions options = MinecraftClient.getInstance().options;
 			int textBackgroundColor = options.getTextBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
@@ -125,8 +118,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 			context.fill(x, y + 1, x + 1, y + h - 1, textBackgroundColor);
 			context.fill(x + w - 1, y + 1, x + w, y + h - 1, textBackgroundColor);
 		}
-		// move above background (if exists)
-		ms.translate(0, 0, 100);
 
 		int strHeightHalf = txtRend.fontHeight / 2;
 		int strAreaWidth = txtRend.getWidth(title) + 4;
@@ -149,8 +140,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 			c.render(context, x + BORDER_SZE_W, yOffs);
 			yOffs += c.getHeight() + Component.PAD_L;
 		}
-		// pop manipulations above
-		ms.pop();
 	}
 
 	/**
@@ -221,16 +210,5 @@ public abstract class ComponentBasedWidget extends HudWidget {
 
 	public static Text simpleEntryTranslatableText(String translationKey, Text content, Formatting contentFormatting) {
 		return Text.translatable(translationKey, content.copy().formatted(contentFormatting));
-	}
-
-	/**
-	 * @return the entry at idx as unformatted Text
-	 */
-	public static Text plainEntryText(int idx) {
-		String str = PlayerListManager.strAt(idx);
-		if (str == null) {
-			return null;
-		}
-		return Text.of(str);
 	}
 }

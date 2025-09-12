@@ -48,6 +48,24 @@ public class MiningCategory {
                         .controller(ConfigUtils.createBooleanController())
                         .build())
 
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.mining.callMismyla"))
+						.description(Text.translatable("skyblocker.config.mining.callMismyla.@Tooltip"))
+						.binding(defaults.mining.callMismyla,
+								() -> config.mining.callMismyla,
+								newValue -> config.mining.callMismyla = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.mining.redialOnBadSignal"))
+						.description(Text.translatable("skyblocker.config.mining.redialOnBadSignal.@Tooltip"))
+						.binding(defaults.mining.redialOnBadSignal,
+								() -> config.mining.redialOnBadSignal,
+								newValue -> config.mining.redialOnBadSignal = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+
 				.option(ButtonOption.createBuilder()
 						.name(Text.translatable("skyblocker.config.mining.dwarvenHud.screen"))
 						.prompt(Text.translatable("text.skyblocker.open"))
@@ -265,6 +283,14 @@ public class MiningCategory {
                                         newValue -> config.mining.commissionWaypoints.showEmissary = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.mining.commissionWaypoints.hideEmissaryOnPigeon"))
+								.description(Text.translatable("skyblocker.config.mining.commissionWaypoints.hideEmissaryOnPigeon.@Tooltip"))
+								.binding(defaults.mining.commissionWaypoints.hideEmissaryOnPigeon,
+										() -> config.mining.commissionWaypoints.hideEmissaryOnPigeon,
+										newValue -> config.mining.commissionWaypoints.hideEmissaryOnPigeon = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .build())
 
                 //Glacite Tunnels

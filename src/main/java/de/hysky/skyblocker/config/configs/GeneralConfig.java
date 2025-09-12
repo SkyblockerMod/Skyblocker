@@ -52,6 +52,8 @@ public class GeneralConfig {
 
     public Object2ObjectOpenHashMap<String, CustomArmorAnimatedDyes.AnimatedDye> customAnimatedDyes = new Object2ObjectOpenHashMap<>();
 
+	public Object2ObjectOpenHashMap<String, String> customHelmetTextures = new Object2ObjectOpenHashMap<>();
+
 	public static class SpeedPresets {
 		public boolean enableSpeedPresets = true;
 	}
@@ -62,6 +64,8 @@ public class GeneralConfig {
         public boolean enableCommandShortcuts = true;
 
         public boolean enableCommandArgShortcuts = true;
+
+		public boolean enableKeyBindingShortcuts = true;
     }
 
 
@@ -75,6 +79,8 @@ public class GeneralConfig {
 
     public static class ItemList {
         public boolean enableItemList = true;
+
+		public boolean enableCollapsibleEntries = true;
     }
 
     public static class ItemTooltip {
@@ -102,7 +108,7 @@ public class GeneralConfig {
 
         public boolean dungeonQuality = true;
 
-        public boolean showEssenceCost = false;
+        public boolean showEssenceCost = true;
 
         public boolean enableEstimatedItemValue = true;
 
@@ -213,6 +219,8 @@ public class GeneralConfig {
     }
 
     public static class Hitbox {
+        public boolean oldCactusHitbox = false;
+
         public boolean oldFarmlandHitbox = false;
 
         public boolean oldLeverHitbox = false;

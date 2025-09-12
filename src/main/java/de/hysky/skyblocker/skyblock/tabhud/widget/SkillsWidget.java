@@ -42,7 +42,8 @@ public class SkillsWidget extends TabHudWidget {
 					float pcnt = Float.parseFloat(pcntStr);
 					progress = Components.progressComponent(Ico.LANTERN, Text.of(skill), pcnt, Formatting.GOLD.getColorValue());
 				} else {
-					progress = new IcoFatTextComponent(Ico.LANTERN, Text.of(skill), Text.literal(pcntStr).formatted(Formatting.RED));
+					addSimpleIcoText(Ico.LANTERN, skill + ": ", Formatting.RED, pcntStr);
+					continue;
 				}
 			} else {
 				progress = new PlainTextComponent(line);
@@ -50,5 +51,4 @@ public class SkillsWidget extends TabHudWidget {
 			this.addComponent(progress);
 		}
 	}
-
 }

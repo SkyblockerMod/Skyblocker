@@ -13,12 +13,11 @@ import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -30,6 +29,8 @@ import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
+
+import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ import java.awt.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
@@ -125,7 +127,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
     }
 
     @Override
@@ -139,9 +141,9 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
             context.drawText(textRenderer, waiting, this.width - textRenderer.getWidth(waiting) - 5, this.height - textRenderer.fontHeight - 2, Colors.WHITE, true);
         }
 
-        MatrixStack matrices = context.getMatrices();
-        matrices.push();
-        matrices.translate(x, y, 0);
+        Matrix3x2fStack matrices = context.getMatrices();
+        matrices.pushMatrix();
+        matrices.translate(x, y);
         // Search
         context.enableScissor(x + 7, y + 4, x + 97, y + 16);
         context.drawText(textRenderer, Text.literal(search).fillStyle(Style.EMPTY.withUnderline(onSearchField(mouseX, mouseY))), 9, 6, Colors.WHITE, true);
@@ -150,22 +152,22 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
         // Scrollbar
         if (prevPageVisible) {
             if (onScrollbarTop(mouseX, mouseY))
-                context.drawSpriteStretched(RenderLayer::getGuiTextured, UP_ARROW.get(), 159, 13, 6, 3);
-            else context.drawSpriteStretched(RenderLayer::getGuiTextured, UP_ARROW.get(), 159, 13, 6, 3, ColorHelper.getArgb(137, 137, 137));
+                context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, UP_ARROW.get(), 159, 13, 6, 3);
+            else context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, UP_ARROW.get(), 159, 13, 6, 3, ColorHelper.getArgb(137, 137, 137));
         }
 
         if (nextPageVisible) {
             if (onScrollbarBottom(mouseX, mouseY))
-                context.drawSpriteStretched(RenderLayer::getGuiTextured, DOWN_ARROW.get(), 159, 72, 6, 3);
-            else context.drawSpriteStretched(RenderLayer::getGuiTextured, DOWN_ARROW.get(), 159, 72, 6, 3, ColorHelper.getArgb(137, 137, 137));
+                context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3);
+            else context.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, DOWN_ARROW.get(), 159, 72, 6, 3, ColorHelper.getArgb(137, 137, 137));
         }
         context.drawText(textRenderer, String.format("%d/%d", currentPage, totalPages), 111, 6, Colors.GRAY, false);
         if (totalPages <= 1)
-            context.drawGuiTexture(RenderLayer::getGuiTextured, SCROLLER_TEXTURE, 156, 18, 12, 15);
+            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, 156, 18, 12, 15);
         else
-            context.drawGuiTexture(RenderLayer::getGuiTextured, SCROLLER_TEXTURE, 156, (int) (18 + (float) (Math.min(currentPage, totalPages) - 1) / (totalPages - 1) * 37), 12, 15);
+            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, SCROLLER_TEXTURE, 156, (int) (18 + (float) (Math.min(currentPage, totalPages) - 1) / (totalPages - 1) * 37), 12, 15);
 
-        matrices.pop();
+        matrices.popMatrix();
 
         this.drawMouseoverTooltip(context, mouseX, mouseY);
     }
@@ -275,7 +277,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     categoryTabWidget.setIcon(handler.getSlot(slotId).getStack());
                     List<Text> tooltipDefault = ItemUtils.getLore(handler.getSlot(slotId).getStack());
                     for (int j = tooltipDefault.size() - 1; j >= 0; j--) {
-                        String lowerCase = tooltipDefault.get(j).getString().toLowerCase();
+                        String lowerCase = tooltipDefault.get(j).getString().toLowerCase(Locale.ENGLISH);
                         if (lowerCase.contains("currently")) {
                             categoryTabWidget.setToggled(true);
                             break;
@@ -290,7 +292,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     for (int k = tooltip.size() - 1; k >= 0; k--) {
                         Text text = tooltip.get(k);
                         String string = text.getString();
-                        if (string.toLowerCase().contains("buy it now:")) {
+                        if (string.toLowerCase(Locale.ENGLISH).contains("buy it now:")) {
                             String[] split = string.split(":");
                             if (split.length < 2) continue;
                             String coins = split[1].replace(",", "").replace("coins", "").trim();
@@ -365,16 +367,16 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
         // Code taken mostly from YACL by isxander. Love you <3
         @Override
-        public void drawMessage(DrawContext graphics, TextRenderer textRenderer, int color) {
+        public void drawMessage(DrawContext context, TextRenderer textRenderer, int color) {
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
-            MatrixStack pose = graphics.getMatrices();
+            Matrix3x2fStack matrices = context.getMatrices();
             float textScale = 2.f;
 
-            pose.push();
-            pose.translate(((this.getX() + this.width / 2f) - font.getWidth(getMessage()) * textScale / 2) + 1, (float) this.getY() + (this.height - font.fontHeight * textScale) / 2f - 1, 0);
-            pose.scale(textScale, textScale, 1);
-            graphics.drawText(font, getMessage(), 0, 0, color | MathHelper.ceil(this.alpha * 255.0F) << 24, true);
-            pose.pop();
+            matrices.pushMatrix();
+            matrices.translate(((this.getX() + this.width / 2f) - font.getWidth(getMessage()) * textScale / 2) + 1, (float) this.getY() + (this.height - font.fontHeight * textScale) / 2f - 1);
+            matrices.scale(textScale, textScale);
+            context.drawText(font, getMessage(), 0, 0, color | MathHelper.ceil(this.alpha * 255.0F) << 24, true);
+            matrices.popMatrix();
         }
     }
 }

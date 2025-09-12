@@ -1,13 +1,9 @@
 package de.hysky.skyblocker.init;
 
+import de.hysky.skyblocker.MethodReference;
 import de.hysky.skyblocker.Processor;
 import org.gradle.api.tasks.compile.JavaCompile;
-import org.objectweb.asm.*;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -37,36 +33,12 @@ public class InitProcessor {
 	}
 
 	public void findInitMethods(Map<MethodReference, Integer> methodSignatures) {
-		Processor.forEachClass(inputStream -> {
-			try {
-				ClassReader classReader = new ClassReader(inputStream);
-				classReader.accept(new InitReadingClassVisitor(classReader, methodSignatures), ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		});
+		Processor.forEachClass(inputStream -> Processor.readClass(inputStream, classReader -> new InitReadingClassVisitor(classReader, methodSignatures)));
 	}
 
 	public void injectInitCalls(List<MethodReference> methodSignatures) {
 		Path mainClassFile = Objects.requireNonNull(Processor.findClass("SkyblockerMod.class"), "SkyblockerMod class wasn't found :(").toPath();
 
-		try (InputStream inputStream = Files.newInputStream(mainClassFile)) {
-			ClassReader classReader = new ClassReader(inputStream);
-			ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-			classReader.accept(new InitInjectingClassVisitor(classWriter, methodSignatures), 0);
-			try (OutputStream outputStream = Files.newOutputStream(mainClassFile)) {
-				outputStream.write(classWriter.toByteArray());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Processor.writeClass(mainClassFile, classWriter -> new InitInjectingClassVisitor(classWriter, methodSignatures));
 	}
-
-	/**
-	 * @param className  the class name (e.g. de/hysky/skyblocker/skyblock/ChestValue)
-	 * @param methodName the method's name (e.g. init)
-	 * @param descriptor the method's descriptor (only ()V for now)
-	 * @param itf        whether the target class is an {@code interface} or not
-	 */
-	public record MethodReference(String className, String methodName, String descriptor, boolean itf) {}
 }

@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.OptionalInt;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -159,6 +160,10 @@ public class Utils {
         return location == Location.CRIMSON_ISLE;
     }
 
+	public static boolean isInFarm() {
+		return location == Location.THE_FARMING_ISLAND;
+	}
+
     public static boolean isInGalatea() { return location == Location.GALATEA; }
 
 	public static boolean isInHub() { return location == Location.HUB; }
@@ -255,7 +260,6 @@ public class Utils {
     @Init
     public static void init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
-        ClientReceiveMessageEvents.GAME_CANCELED.register(Utils::onChatMessage); // Somehow this works even though onChatMessage returns a boolean
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
 
         //Register Mod API stuff
@@ -296,7 +300,7 @@ public class Utils {
     }
 
     private static boolean isConnectedToHypixel(MinecraftClient client) {
-        String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase() : "";
+        String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase(Locale.ENGLISH) : "";
         String serverBrand = (client.player != null && client.player.networkHandler != null && client.player.networkHandler.getBrand() != null) ? client.player.networkHandler.getBrand() : "";
 
         return (!serverAddress.isEmpty() && serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS)) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
@@ -399,11 +403,15 @@ public class Utils {
 		STRING_SCOREBOARD.stream().filter(s -> s.contains("Piggy:") || s.contains("Purse:")).findFirst().ifPresent(purseString -> {
 			Matcher matcher = PURSE.matcher(purseString);
 			if (matcher.find()) {
-				double newPurse = Double.parseDouble(matcher.group("purse").replaceAll(",", ""));
-				double changeSinceLast = newPurse - Utils.purse;
-				if (changeSinceLast == 0) return;
-				SkyblockEvents.PURSE_CHANGE.invoker().onPurseChange(changeSinceLast, PurseChangeCause.getCause(changeSinceLast));
-				Utils.purse = newPurse;
+				try {
+					double newPurse = Double.parseDouble(matcher.group("purse").replaceAll(",", ""));
+					double changeSinceLast = newPurse - Utils.purse;
+					if (changeSinceLast == 0) return;
+					SkyblockEvents.PURSE_CHANGE.invoker().onPurseChange(changeSinceLast, PurseChangeCause.getCause(changeSinceLast));
+					Utils.purse = newPurse;
+				} catch (NumberFormatException e) {
+					LOGGER.error("[Skyblocker] Failed to parse purse string. Input: '{}'", purseString, e);
+				}
 			}
 		});
 	}
@@ -569,7 +577,7 @@ public class Utils {
             	int suggestions = profileSuggestionMessages;
             	profileSuggestionMessages++;
 
-            	return suggestions > 2;
+            	return suggestions >= 2;
             }
         }
 

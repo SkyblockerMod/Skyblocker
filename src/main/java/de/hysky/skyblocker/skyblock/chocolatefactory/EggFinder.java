@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,7 +69,7 @@ public class EggFinder {
 			}
 		});
 		SkyblockEvents.LOCATION_CHANGE.register(EggFinder::handleLocationChange);
-		ClientReceiveMessageEvents.GAME.register(EggFinder::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(EggFinder::onChatMessage);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(EggFinder::renderWaypoints);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder || client.player == null) return;
@@ -153,12 +154,12 @@ public class EggFinder {
 		}
 	}
 
-	private static void onChatMessage(Text text, boolean overlay) {
-		if (overlay || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
+	private static boolean onChatMessage(Text text, boolean overlay) {
+		if (overlay || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return true;
 		Matcher matcher = eggFoundPattern.matcher(text.getString());
 		if (matcher.find()) {
 			try {
-				EggType eggType = EggType.valueOf(matcher.group(1).toUpperCase());
+				EggType eggType = EggType.valueOf(matcher.group(1).toUpperCase(Locale.ENGLISH));
 				eggType.collected = true;
 				Egg egg = eggType.egg;
 				if (egg != null) egg.setFound();
@@ -170,11 +171,13 @@ public class EggFinder {
 		matcher.usePattern(newEggPattern);
 		if (matcher.find()) {
 			try {
-				EggType.valueOf(matcher.group(1).toUpperCase());
+				EggType.valueOf(matcher.group(1).toUpperCase(Locale.ENGLISH));
 			} catch (IllegalArgumentException e) {
 				logger.error("[Skyblocker Egg Finder] Failed to find egg type for egg spawn message. Tried to match against: {}", matcher.group(0), e);
 			}
 		}
+
+		return true;
 	}
 
 	@SuppressWarnings("DataFlowIssue") //Removes that pesky "unboxing of Integer might cause NPE" warning when we already know it's not null

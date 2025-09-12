@@ -11,8 +11,8 @@ import de.hysky.skyblocker.utils.RomanNumerals;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.NbtComponent;
@@ -28,6 +28,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class GenericCategory implements ProfileViewerPage {
@@ -110,7 +111,7 @@ public class GenericCategory implements ProfileViewerPage {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
-        Text categoryTitle = Text.literal(category.charAt(0) + category.substring(1).toLowerCase() + " Collections").formatted(Formatting.BOLD);
+        Text categoryTitle = Text.literal(category.charAt(0) + category.substring(1).toLowerCase(Locale.ENGLISH) + " Collections").formatted(Formatting.BOLD);
         context.drawText(textRenderer, categoryTitle, rootX + 88 - (textRenderer.getWidth(categoryTitle) / 2), rootY, Color.DARK_GRAY.getRGB(), false);
 
         for (int i = 0; i < collections.size(); i++) {
@@ -118,7 +119,7 @@ public class GenericCategory implements ProfileViewerPage {
             int y = rootY + 19 + (i / COLUMNS) * ROW_GAP;
 
             context.fill(x - 3, y - 3, x + 19, y + 19, Color.BLACK.getRGB());
-            context.drawTexture(RenderLayer::getGuiTextured, BUTTON_TEXTURE, x - 2, y - 2, 0, 0, 20, 20, 20, 20);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, BUTTON_TEXTURE, x - 2, y - 2, 0, 0, 20, 20, 20, 20);
             context.drawItem(collections.get(i), x, y);
 
             ItemStack itemStack = collections.get(i);

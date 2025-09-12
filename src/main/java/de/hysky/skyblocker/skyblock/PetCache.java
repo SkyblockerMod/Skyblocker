@@ -8,7 +8,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.profile.ProfiledData;
+import de.hysky.skyblocker.utils.data.ProfiledData;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.azureaaron.networth.utils.PetConstants;
@@ -74,8 +74,7 @@ public class PetCache {
 				}
 			}
 		});
-		ClientReceiveMessageEvents.GAME.register(PetCache::onMessage);
-		ClientReceiveMessageEvents.GAME_CANCELED.register(PetCache::onMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(PetCache::onMessage);
 	}
 
 	public static void handlePetEquip(Slot slot, int slotId) {
@@ -113,8 +112,8 @@ public class PetCache {
 	/**
 	 * Parses the Auto Pet messages to try and detect the active pet
 	 */
-	private static void onMessage(Text text, boolean overlay) {
-		if (!Utils.isOnSkyblock() || overlay) return;
+	private static boolean onMessage(Text text, boolean overlay) {
+		if (!Utils.isOnSkyblock() || overlay) return true;
 
 		String stringified = Formatting.strip(text.getString());
 		Matcher matcher = AUTOPET_PATTERN.matcher(stringified);
@@ -143,7 +142,7 @@ public class PetCache {
 
 			SkyblockItemRarity rarity = SkyblockItemRarity.fromColor(color.getValue());
 
-			if (rarity != null) {
+			if (rarity != null && rarity != SkyblockItemRarity.UNKNOWN) {
 				//This is technically an internal class but I don't feel like copying it out right now and I got no plans to change/remove it :shrug:
 				int petOffset = PetConstants.RARITY_OFFSETS.getOrDefault(rarity.name(), 0);
 				//The list is copied due to a FastUtil bug with sub list iterators
@@ -166,13 +165,15 @@ public class PetCache {
 
 					//If the pet from the NEU repo is missing the data then try to guess the type
 					String type = !copied.getPetInfo().isEmpty() ? copied.getPetInfo().type() : name.toUpperCase(Locale.ENGLISH).replace(" ", "_");
-					PetInfo petInfo = new PetInfo(type, exp, rarity, Optional.empty(), Optional.empty(), Optional.empty());
+					PetInfo petInfo = new PetInfo(Optional.of(name), type, exp, rarity, Optional.empty(), Optional.empty(), Optional.empty());
 
 					CACHED_PETS.put(petInfo);
 					CACHED_PETS.save();
 				}
 			}
 		}
+
+		return true;
 	}
 
 	@Nullable

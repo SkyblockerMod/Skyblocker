@@ -3,13 +3,17 @@ package de.hysky.skyblocker.utils.container;
 import de.hysky.skyblocker.utils.Resettable;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 
 import java.util.List;
 
 /**
  * A solver for a container without the inventory slots included.
+ *
  * @see ContainerAndInventorySolver
  */
 public interface ContainerSolver extends ContainerMatcher, Resettable {
@@ -25,11 +29,21 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 	 */
 	default void markDirty() {}
 
+	default boolean isSolverSlot(Slot slot, Screen screen) {
+		if (this instanceof ContainerAndInventorySolver) return true;
+		if (screen instanceof GenericContainerScreen generic) {
+			return slot.id < generic.getScreenHandler().getRows() * 9;
+		}
+		assert MinecraftClient.getInstance().player != null;
+		return slot.inventory != MinecraftClient.getInstance().player.getInventory();
+	}
+
 	/**
 	 * Called when the slot is clicked.
+	 *
 	 * @return {@code true} if the click should be canceled, {@code false} otherwise. Defaults to {@code false} if not overridden.
 	 */
-	default boolean onClickSlot(int slot, ItemStack stack, int screenId) {
+	default boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		return false;
 	}
 

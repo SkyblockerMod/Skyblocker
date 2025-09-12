@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import de.hysky.skyblocker.skyblock.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
@@ -113,6 +114,14 @@ public class UIAndVisualsCategory {
                                 newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
                         .controller(ConfigUtils.createBooleanController())
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.museumOverlay"))
+						.description(Text.translatable("skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip"))
+						.binding(defaults.uiAndVisuals.museumOverlay,
+								() -> config.uiAndVisuals.museumOverlay,
+								newValue -> config.uiAndVisuals.museumOverlay = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
                 .option(Option.<Boolean>createBuilder()
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation"))
                         .description(Text.translatable("skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip"))
@@ -303,6 +312,21 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.tabHud.style = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.displayIcons"))
+								.binding(defaults.uiAndVisuals.tabHud.displayIcons,
+										() -> config.uiAndVisuals.tabHud.displayIcons,
+										newValue -> config.uiAndVisuals.tabHud.displayIcons = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip"))
+								.binding(defaults.uiAndVisuals.tabHud.compactWidgets,
+										() -> config.uiAndVisuals.tabHud.compactWidgets,
+										newValue -> config.uiAndVisuals.tabHud.compactWidgets = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground"))
                                 .description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip"))
@@ -327,6 +351,14 @@ public class UIAndVisualsCategory {
                                 .controller(ConfigUtils.createEnumController())
                                 .build()
                         )
+						.option(Option.<UIAndVisualsConfig.NameSorting>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip"))
+								.binding(defaults.uiAndVisuals.tabHud.nameSorting,
+										() -> config.uiAndVisuals.tabHud.nameSorting,
+										newValue -> config.uiAndVisuals.tabHud.nameSorting = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
                         .build())
 
                 // Fancy Auction House
@@ -413,6 +445,13 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.teleportOverlay.enableTeleportOverlays = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.showWhenInAir"))
+								.binding(defaults.uiAndVisuals.teleportOverlay.showWhenInAir,
+										() -> config.uiAndVisuals.teleportOverlay.showWhenInAir,
+										newValue -> config.uiAndVisuals.teleportOverlay.showWhenInAir = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(Option.<Color>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor"))
                                 .binding(defaults.uiAndVisuals.teleportOverlay.teleportOverlayColor,
@@ -535,6 +574,14 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.searchOverlay.enableAuctionHouse = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum.@Tooltip"))
+								.binding(defaults.uiAndVisuals.searchOverlay.enableMuseum,
+										() -> config.uiAndVisuals.searchOverlay.enableMuseum,
+										newValue -> config.uiAndVisuals.searchOverlay.enableMuseum = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.keepPreviousSearches"))
                                 .description(Text.translatable("skyblocker.config.uiAndVisuals.searchOverlay.keepPreviousSearches.@Tooltip"))
@@ -783,6 +830,29 @@ public class UIAndVisualsCategory {
 								.build())
 						.build()
 				)
+				//Gyro Overlay
+				.group(OptionGroup.createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay"))
+						.collapsed(true)
+						.option(Option.<GyroOverlay.Mode>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay.modeSelect"))
+								.binding(defaults.uiAndVisuals.gyroOverlay.gyroOverlayMode,
+										() -> config.uiAndVisuals.gyroOverlay.gyroOverlayMode,
+										newValue -> config.uiAndVisuals.gyroOverlay.gyroOverlayMode = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.gyroOverlay.Color"))
+								.binding(defaults.uiAndVisuals.gyroOverlay.gyroOverlayColor,
+										() -> config.uiAndVisuals.gyroOverlay.gyroOverlayColor,
+										newValue -> {
+											config.uiAndVisuals.gyroOverlay.gyroOverlayColor = newValue;
+											GyroOverlay.configCallback(newValue);
+										})
+								.controller(ColourController.createBuilder().hasAlpha(true).build())
+								.build())
+						.build()
+				)
 
 				//item pickup widget
 				.group(OptionGroup.createBuilder()
@@ -816,6 +886,14 @@ public class UIAndVisualsCategory {
 										() -> config.uiAndVisuals.itemPickup.lifeTime,
 										newValue -> config.uiAndVisuals.itemPickup.lifeTime = newValue)
 								.controller(IntegerController.createBuilder().range(1, 10).slider(1).build())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack.@Tooltip"))
+								.binding(defaults.uiAndVisuals.itemPickup.splitNotifications,
+										() -> config.uiAndVisuals.itemPickup.splitNotifications,
+										newValue -> config.uiAndVisuals.itemPickup.splitNotifications = newValue)
+								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build()
 				)

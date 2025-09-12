@@ -10,9 +10,13 @@ public class OtherLocationsConfig {
     public SpidersDen spidersDen = new SpidersDen();
 
     public static class Barn {
+		public boolean enableGlowingMushroomHelper = true;
+
         public boolean solveHungryHiker = true;
 
         public boolean solveTreasureHunter = true;
+
+		public boolean enableCallTrevorMessage = true;
     }
 
     public static class Rift {

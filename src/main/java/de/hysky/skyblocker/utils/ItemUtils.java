@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -14,10 +15,13 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
 import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
+import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
@@ -75,7 +79,7 @@ public final class ItemUtils {
     private static final short LOG_INTERVAL = 1000;
 	private static long lastLog = Util.getMeasuringTimeMs();
 
-    private ItemUtils() {}
+	private ItemUtils() {}
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> dumpHeldItemCommand() {
         return literal("dumpHeldItem").executes(context -> {
@@ -261,14 +265,18 @@ public final class ItemUtils {
      * @return the parsed {@link PetInfo} if successful, or {@link PetInfo#EMPTY}
      */
     @NotNull
-    public static PetInfo getPetInfo(ComponentHolder stack) {
+    public static PetInfo getPetInfo(ItemStack stack) {
     	if (!getItemId(stack).equals("PET")) return PetInfo.EMPTY;
 
-    	String petInfo = getCustomData(stack).getString("petInfo", "");
+		String petInfo = getCustomData(stack).getString("petInfo", "");
 
-    	if (!petInfo.isEmpty()) {
+		if (!petInfo.isEmpty()) {
     		try {
-        		return PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(petInfo))
+				JsonElement jsonElement = JsonParser.parseString(petInfo);
+
+				// Add item name into PetInfo to be used for wiki lookup
+				jsonElement.getAsJsonObject().addProperty("name", stack.getName().getString());
+        		return PetInfo.CODEC.parse(JsonOps.INSTANCE, jsonElement)
         				.setPartial(PetInfo.EMPTY)
         				.getPartialOrThrow();
     		} catch (Exception ignored) {}
@@ -319,6 +327,14 @@ public final class ItemUtils {
 
         return DoubleBooleanPair.of(0, false);
     }
+
+	public static double getCraftCost(String skyblockApiId) {
+		NEUItem neuItem = NEURepoManager.getItemByNeuId(skyblockApiId);
+		if (neuItem != null && !neuItem.getRecipes().isEmpty()) {
+			return CraftPriceTooltip.getItemCost(neuItem.getRecipes().getFirst(), 0);
+		}
+		return 0;
+	}
 
     /**
      * This method converts the "timestamp" variable into the same date format as Hypixel represents it in the museum.
@@ -432,6 +448,12 @@ public final class ItemUtils {
         return Optional.of(texture);
     }
 
+	public static @NotNull String toTextureBase64(String textureUUID) {
+		//noinspection HttpUrlsUsage
+		String str = "{textures:{SKIN:{url:\"http://textures.minecraft.net/texture/"+textureUUID+"\"}}}";
+		return Base64.getEncoder().encodeToString(str.getBytes());
+	}
+
 	public static @NotNull ItemStack createSkull(String textureBase64) {
 		GameProfile profile = new GameProfile(java.util.UUID.randomUUID(), "a");
 		profile.getProperties().put("textures", new Property("textures", textureBase64));
@@ -475,6 +497,10 @@ public final class ItemUtils {
         }
         return stringBuilder.toString();
     }
+
+	public static boolean isSoulbound(ItemStack stack) {
+		return getLore(stack).stream().anyMatch(lore -> lore.getString().toLowerCase(Locale.ENGLISH).contains("soulbound"));
+	}
 
     public static List<ItemStack> getArmor(LivingEntity entity) {
     	return AttributeModifierSlot.ARMOR.getSlots().stream()
@@ -549,4 +575,22 @@ public final class ItemUtils {
 
     	return matcher != null ? RegexUtils.parseOptionalIntFromMatcher(matcher, "shards") : OptionalInt.empty();
     }
+
+	@NotNull
+	public static SkyblockItemRarity getItemRarity(@NotNull ItemStack stack) {
+		if (stack.isEmpty()) return SkyblockItemRarity.UNKNOWN;
+
+		if (!stack.getSkyblockId().equals("PET")) {
+			return ItemUtils.getLore(stack).stream()
+					.map(Text::getString)
+					.map(SkyblockItemRarity::containsName)
+					.flatMap(Optional::stream)
+					.findFirst()
+					.orElse(SkyblockItemRarity.UNKNOWN);
+		} else {
+			PetInfo info = stack.getPetInfo();
+			if (info.isEmpty()) return SkyblockItemRarity.UNKNOWN;
+			return info.item().isPresent() && info.item().get().equals("PET_ITEM_TIER_BOOST") ? info.rarity().next() : info.rarity();
+		}
+	}
 }

@@ -40,7 +40,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class ApiAuthentication {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final String MINECRAFT_VERSION = SharedConstants.getGameVersion().getName();
+	private static final String MINECRAFT_VERSION = SharedConstants.getGameVersion().name();
 	private static final String AUTH_URL = "https://hysky.de/api/aaron/authenticate";
 	private static final String CONTENT_TYPE = "application/json";
 	private static final String ALGORITHM = "SHA256withRSA";
@@ -95,6 +95,7 @@ public class ApiAuthentication {
 					tokenInfo = TokenInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(Http.sendPostRequest(AUTH_URL, request, CONTENT_TYPE))).getOrThrow();
 					int refreshAtTicks = (int) (((tokenInfo.expiresAt() - tokenInfo.issuedAt()) / 1000L) - 300L) * 20; //Refresh 5 minutes before expiry date
 
+					LOGGER.info("[Skyblocker Api Auth] Successfully refreshed api token.");
 					Scheduler.INSTANCE.schedule(ApiAuthentication::updateToken, refreshAtTicks, true);
 				} catch (Exception e) {
 					//Try again in 15 minutes

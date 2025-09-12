@@ -18,6 +18,9 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.text.Text;
+
+import java.util.Locale;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -32,7 +35,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 		if (player == null) return;
 		if (!Utils.isOnSkyblock()) return;
 		T screenHandler = type.create(id, player.getInventory());
-		String nameLowercase = name.getString().trim().toLowerCase();
+		String nameLowercase = name.getString().trim().toLowerCase(Locale.ENGLISH);
 
 		switch (screenHandler) {
 			// Better party finder
@@ -41,7 +44,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 
 			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && PartyFinderScreen.possibleInventoryNames.contains(nameLowercase) -> {
 				if (client.currentScreen != null) {
-					String lowerCase = client.currentScreen.getTitle().getString().toLowerCase();
+					String lowerCase = client.currentScreen.getTitle().getString().toLowerCase(Locale.ENGLISH);
 					if (lowerCase.contains("group builder")) return;
 				}
 
@@ -88,7 +91,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 			}
 
 			// Fancy crafting table
-			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyCraftingTable && name.getString().toLowerCase().contains("craft item") -> {
+			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyCraftingTable && name.getString().toLowerCase(Locale.ENGLISH).contains("craft item") -> {
 				SkyblockCraftingTableScreenHandler skyblockCraftingTableScreenHandler = new SkyblockCraftingTableScreenHandler(containerScreenHandler, player.getInventory());
 				client.player.currentScreenHandler = skyblockCraftingTableScreenHandler;
 				client.setScreen(new SkyblockCraftingTableScreen(skyblockCraftingTableScreenHandler, player.getInventory(),
@@ -107,7 +110,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 			}
 
 			// Leap Overlay
-			case GenericContainerScreenHandler containerScreenHandler when Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.spiritLeapOverlay && nameLowercase.contains(LeapOverlay.TITLE.toLowerCase()) -> {
+			case GenericContainerScreenHandler containerScreenHandler when Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.leapOverlay.enableLeapOverlay && nameLowercase.contains(LeapOverlay.TITLE.toLowerCase(Locale.ENGLISH)) -> {
 				client.player.currentScreenHandler = containerScreenHandler;
 				client.setScreen(new LeapOverlay(containerScreenHandler));
 

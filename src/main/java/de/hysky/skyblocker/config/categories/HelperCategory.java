@@ -154,6 +154,13 @@ public class HelperCategory {
 										newValue -> config.helpers.fishing.hideOtherPlayersRods = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.fishing.enableFishingHud"))
+								.binding(defaults.helpers.fishing.enableFishingHud,
+										() -> config.helpers.fishing.enableFishingHud,
+										newValue -> config.helpers.fishing.enableFishingHud = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.fishing.hud.screen"))
 								.prompt(Text.translatable("text.skyblocker.open"))
@@ -348,6 +355,14 @@ public class HelperCategory {
 								.binding(defaults.helpers.bazaar.enableBazaarHelper,
 										() -> config.helpers.bazaar.enableBazaarHelper,
 										newValue -> config.helpers.bazaar.enableBazaarHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.bazaar.enableReorderHelper"))
+								.description(Text.translatable("skyblocker.config.helpers.bazaar.enableReorderHelper.@Tooltip"))
+								.binding(defaults.helpers.bazaar.enableReorderHelper,
+										() -> config.helpers.bazaar.enableReorderHelper,
+										newValue -> config.helpers.bazaar.enableReorderHelper = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()

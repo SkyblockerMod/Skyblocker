@@ -2,12 +2,16 @@ package de.hysky.skyblocker.utils.waypoint;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.utils.InstancedUtils;
+
+import de.hysky.skyblocker.annotations.GenEquals;
+import de.hysky.skyblocker.annotations.GenHashCode;
+import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.utils.Location;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -100,6 +104,10 @@ public class WaypointGroup {
         return new WaypointGroup(name, island, waypoints.stream().filter(predicate).toList(), ordered);
     }
 
+	public WaypointGroup sortWaypoints(Comparator<NamedWaypoint> comparator) {
+		return new WaypointGroup(name, island, waypoints.stream().sorted(comparator).toList(), ordered);
+	}
+
     /**
      * Returns a deep copy of this {@link WaypointGroup} with a mutable waypoints list for editing.
      */
@@ -158,29 +166,14 @@ public class WaypointGroup {
     }
 
     @Override
-    public boolean equals(Object o) {
-        try {
-            return (boolean) InstancedUtils.equals(getClass()).invokeExact(this, o);
-        } catch (Throwable ignored) {
-            return super.equals(o);
-        }
-    }
+    @GenEquals
+    public native boolean equals(Object o);
 
     @Override
-    public int hashCode() {
-        try {
-            return (int) InstancedUtils.hashCode(getClass()).invokeExact(this);
-        } catch (Throwable ignored) {
-            return super.hashCode();
-        }
-    }
+    @GenHashCode
+    public native int hashCode();
 
     @Override
-    public String toString() {
-        try {
-            return (String) InstancedUtils.toString(getClass()).invokeExact(this);
-        } catch (Throwable ignored) {
-            return super.toString();
-        }
-    }
+    @GenToString
+    public native String toString();
 }

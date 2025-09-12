@@ -26,6 +26,7 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
@@ -39,6 +40,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -125,7 +127,7 @@ public class ChestValue {
 						String type = matcher.group("type");
 						int amount = Integer.parseInt(matcher.group("amount"));
 
-						DoubleBooleanPair priceData = ItemUtils.getItemPrice(("ESSENCE_" + type).toUpperCase());
+						DoubleBooleanPair priceData = ItemUtils.getItemPrice(("ESSENCE_" + type).toUpperCase(Locale.ENGLISH));
 
 						if (!priceData.rightBoolean()) hasIncompleteData = true;
 
@@ -321,10 +323,10 @@ public class ChestValue {
 	@NotNull
 	private static Text getButtonTooltipText(ScreenType screenType) {
 		return switch (screenType) {
-			case MINION -> Text.translatable("skyblocker.config.general.minionValue.@Tooltip");
-			case OTHER -> Text.translatable("skyblocker.config.general.chestValue.@Tooltip");
-			case STASH -> Text.translatable("skyblocker.config.general.stashValue.@Tooltip");
-			case SACK -> Text.translatable("skyblocker.config.general.sackValue.@Tooltip");
+			case MINION -> Text.translatable("skyblocker.containerValue.minionValue.@Tooltip");
+			case OTHER -> Text.translatable("skyblocker.containerValue.chestValue.@Tooltip");
+			case STASH -> Text.translatable("skyblocker.containerValue.stashValue.@Tooltip");
+			case SACK -> Text.translatable("skyblocker.containerValue.sackValue.@Tooltip");
 		};
 	}
 
@@ -352,10 +354,10 @@ public class ChestValue {
 				double f = Math.sin((Math.PI / 2) * Math.cos((Math.PI * 2) * d / e)) / 2.0 + 0.5;
 				double g = MathHelper.lerp(f, 0.0, l);
 				context.enableScissor(startX, getY(), endX, getY() + textRenderer.fontHeight);
-				context.drawText(textRenderer, text, startX - (int) g, getY(), -1, shadow);
+				context.drawText(textRenderer, text, startX - (int) g, getY(), Colors.WHITE, shadow);
 				context.disableScissor();
 			} else {
-				context.drawText(textRenderer, text, startX, getY(), -1, shadow);
+				context.drawText(textRenderer, text, startX, getY(), Colors.WHITE, shadow);
 			}
 		}
 	}

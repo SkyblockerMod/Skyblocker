@@ -1,7 +1,9 @@
 ### Dungeon Features:
 - **Fancy Party Finder GUI**
 - **Secrets Waypoint Highlight:** Fully customizable
-- **Minimap & Score**
+- **Fancy Minimap & Score**
+    - Support for showing player heads
+    - Integration with Spirit Leap Overlay
 - **Starred Mob Glow**
 - **Croesus Helper:**
     - Highlight not opened chests
@@ -24,6 +26,8 @@
         - *Coloured Items*
         - *Item Name*
         - *Same Color*
+        - Incorrect click blocking
+        - Hides wrong items
 - **Rare Drop Special Effects**
 - **Chest Profit Calculator**
 - **F3/M3 Fire Freeze Staff Timer**
@@ -34,13 +38,21 @@
 - **AOTV & Pearl Secret Waypoints**
 - **Player Secrets Tracker**
 - **Wither & Blood Door Highlight**
+- **Salvage Helper**
+- **Sellable Dungeon Item Highlighter**
 - **Resourcepack recoloring textures in dungeons**
-- **score title and sound**
+- **Score title and sound**
+- **Mimic & Prince Messages**
 - **Prevent teammates glow during Livid**
 - **Block Incorrect Terminal Clicks**
 - **Hide Soulweaver Skulls**
 - **Dungeon Class-based player glow**
 - **Spirit Leap Overlay**
+    - Leap Keybinds
+    - Leap Message
+- **Blood Camp Helper**
+- **Dungeon Splits Widget**
+- **Door Key Highlighter**
 
 ### Foraging Features:
 - **Waypoints to forest nodes**
@@ -53,6 +65,9 @@
 - **Hunting Box Shard Prices**
 - **Sweep Overlay**
   - Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations. The sweep formula is currently unknown.
+- **Moonglade Beacon Tuner Helper**
+- **Tree Break Progress HUD**
+- **Sweep Details HUD**
 
 ### Kuudra Features:
 - **Kuudra waypoints:**
@@ -71,11 +86,12 @@
 - **Option to increase fog radius**
 
 ### Item and Armor Customization:
-- *Item Renaming*
+- *Item Renaming GUI*
 - **Fancy Armor Customization GUI**
     - *Custom Armor Dye Colors*
     - *Custom Armor Trims*
     - *Custom Animated Dyes*
+    - *Custom Head Textures*
 
 ### Health and Status Bars:
 - **Bars:**
@@ -86,6 +102,7 @@
     - *Speed*
     - *Oxygen*
 - **Vanilla health/xp and fancy bar shown in parallel**
+- Place the bars on anchors or anywhere on screen
 
 ### Profile Viewer:
 - **Skills**
@@ -99,6 +116,7 @@
     - Pets
     - Accessory Bag
 - **Collections**
+- **Networth Calculation**
 
 ### Dwarven Mines / Crystal Hollows / Glacite Mining:
 - **Dwarven Mines:**
@@ -208,10 +226,13 @@
 - **Special Effects for rare dye drops**
 - **Entity health bars**
 - **Fishing HUD**
+- **Museum HUD**
+- **Gyrokinetic Wand Overlay**
 
 ### User Interface Enhancements:
 - **Equipment in inventory**
 - **Search overlays for bz and ah**
+- **Bazaar Quick Quantities**
 - **Slot Text:**
     - *Attribute level*
     - *Catacombs level*
@@ -239,6 +260,7 @@
     - *Skyblock Guide*
     - *HOTM*
     - *HOTF*
+    - *Bestiary*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
@@ -255,6 +277,7 @@
     - *True HEX display for dye items*
     - *Estimated Item Value*
     - *Skyblock ID*
+    - *Bazaar Reorder Helper*
 - **Quicknav:** (Fully customizeable) Fast navigation between pets, armor, enderchest, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
   - Crafting
@@ -268,11 +291,13 @@
 - **Sign calculator**
 - **CTRL/CMD + F to search inventory**
 - **legacy attribute background**
+- **Sack Message Prices**
 
 ### Barn Features:
 - **Barn Solver:**
     - *Treasure Hunter*
     - *Hungry Hiker*
+    - *Glowing Mushroom Highlighter*
 
 ### Chat Features:
 - **Custom Chat Rules**
@@ -280,6 +305,8 @@
     - *Warp command*
     - *Sack Item*
     - *Viewstash*
+    - *Join Instance, Join Dungeon, Join Kuudra*
+    - *RNG Meter*
 - **Hide Messages:**
     - *Ability Cooldown*
     - *Heal*
@@ -289,9 +316,12 @@
     - *`/show command`*
     - *Teleport Pad Messages*
     - *Sky Mall*
+    - *Lottery*
+    - *Dungeonbreaker*
 
 ### Miscellaneous Helpers:
 - **Experiments Solvers**
+    - Incorrect Click Blocker
 - **Fishing:**
     - Helper (Includes sound notifications)
     - Fishing rod timer (change color after 20 seconds)
@@ -304,18 +334,20 @@
 - **Wardrobe helper based on hotbar keybinds**
 - **Carnival Helpers**
 - **Bits Helper**
-- **Salvage Helper**
 - **Math teacher helper**
 - **Raffle task highlighter**
+- **Disable All Command**
 
 ### Miscellaneous Features:
 - **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
   - Crafting
   - Forge
+  - Skyblock Info
+  - Collapsible Entries
 - **Item Protection**
   - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
-- **Wiki Lookup:** Press F4 to open the wiki page about the held item.
+- **Wiki Lookup:** Press F4 to open the wiki page about the held item or garden visitors.
 - **OptiFabric Compatibility**
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
@@ -328,3 +360,7 @@
 - **Share position and set waypoint**
 - **Copy Underbid Price to Clipboard**
 - **Resource pack compatibility**
+- **Shortcuts**
+    - Command Shortcuts
+    - Keybind Shortcuts
+- **Config Backups**

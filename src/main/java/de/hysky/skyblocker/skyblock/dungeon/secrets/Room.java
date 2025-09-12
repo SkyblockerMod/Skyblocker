@@ -57,6 +57,12 @@ public class Room implements Tickable, Renderable {
     private final Type type;
     @NotNull
     final Set<Vector2ic> segments;
+    /**
+     * Used to allow rooms to have their secrets unmarked after the map detects the green checkmark.
+     *
+     * This should not be used for rendering as it would break the above case and having the prince waypoints show until a prince is killed.
+     */
+    protected boolean greenChecked = false;
 
     /**
      * The shape of the room. See {@link #getShape(IntSortedSet, IntSortedSet)}.
@@ -104,7 +110,7 @@ public class Room implements Tickable, Renderable {
         IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
         IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
         shape = getShape(segmentsX, segmentsY);
-        roomsData = DungeonManager.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(), Collections.emptyMap());
+        roomsData = DungeonManager.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(Locale.ENGLISH), Collections.emptyMap());
         possibleRooms = getPossibleRooms(segmentsX, segmentsY);
     }
 
@@ -531,12 +537,10 @@ public class Room implements Tickable, Renderable {
     }
 
     /**
-     * Sets all secrets as found if {@link #isAllSecretsFound(String)} and sets {@link #lastChestSecret} as missing if message equals {@link #LOCKED_CHEST}.
+     * Sets {@link #lastChestSecret} as missing if message equals {@link #LOCKED_CHEST}.
      */
     protected void onChatMessage(String message) {
-        if (isAllSecretsFound(message)) {
-            markAllSecrets(true);
-        } else if (LOCKED_CHEST.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
+        if (LOCKED_CHEST.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
             secretWaypoints.column(lastChestSecret).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
                     .ifPresent(secretWaypoint -> markSecretsAndLogInfo(secretWaypoint, false, "[Skyblocker Dungeon Secrets] Detected locked chest interaction, setting secret #{} as missing", secretWaypoint.secretIndex));
         }
@@ -599,7 +603,7 @@ public class Room implements Tickable, Renderable {
      * @see #markSecretsFoundAndLogInfo(SecretWaypoint, String, Object...)
      */
     protected void onBatRemoved(AmbientEntity bat) {
-        secretWaypoints.values().stream().filter(SecretWaypoint::isBat).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(bat)))
+        secretWaypoints.values().stream().filter(SecretWaypoint::isBat).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(bat))).filter(SecretWaypoint.getRangePredicate(bat))
                 .ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} killed for a {} secret, setting secret #{} as found", bat.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
     }
 
@@ -638,6 +642,8 @@ public class Room implements Tickable, Renderable {
     }
 
     protected void markAllSecrets(boolean found) {
+    	//Prevent a crash if this runs before the room is matched or something
+    	if (secretWaypoints == null) return;
         secretWaypoints.values().forEach(found ? SecretWaypoint::setFound : SecretWaypoint::setMissing);
     }
 

@@ -27,7 +27,7 @@ import java.util.zip.InflaterInputStream;
 public class Http {
 	private static final String NAME_2_UUID = "https://api.minecraftservices.com/minecraft/profile/lookup/name/";
 	private static final String HYPIXEL_PROXY = "https://hysky.de/api/hypixel/v2/";
-	public static final String USER_AGENT = "Skyblocker/" + SkyblockerMod.VERSION + " (" + SharedConstants.getGameVersion().getName() + ")";
+	public static final String USER_AGENT = "Skyblocker/" + SkyblockerMod.VERSION + " (" + SharedConstants.getGameVersion().name() + ")";
 	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofSeconds(10))
 			.followRedirects(Redirect.NORMAL)
@@ -45,14 +45,14 @@ public class Http {
 		if (token != null) requestBuilder.header("Authorization", "Bearer " + token);
 
 		HttpRequest request = requestBuilder.build();
-
 		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
-		InputStream decodedInputStream = getDecodedInputStream(response);
 
-		String body = new String(decodedInputStream.readAllBytes());
-		HttpHeaders headers = response.headers();
+		try (InputStream decodedInputStream = getDecodedInputStream(response)) {
+			String body = new String(decodedInputStream.readAllBytes());
+			HttpHeaders headers = response.headers();
 
-		return new ApiResponse(body, response.statusCode(), getCacheStatuses(headers), getAge(headers));
+			return new ApiResponse(body, response.statusCode(), getCacheStatuses(headers), getAge(headers));
+		}
 	}
 
 	public static InputStream downloadContent(String url) throws IOException, InterruptedException {
@@ -98,11 +98,10 @@ public class Http {
 				.build();
 
 		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
-		InputStream decodedInputStream = getDecodedInputStream(response);
 
-		String responseBody = new String(decodedInputStream.readAllBytes());
-
-		return responseBody;
+		try (InputStream decodedInputStream = getDecodedInputStream(response)) {
+			return new String(decodedInputStream.readAllBytes());
+		}
 	}
 
 	public static ApiResponse sendName2UuidRequest(String name) throws IOException, InterruptedException {

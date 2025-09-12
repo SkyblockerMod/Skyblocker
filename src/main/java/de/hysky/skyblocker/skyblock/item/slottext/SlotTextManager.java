@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.WardrobeKeybinds;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
+import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
 import de.hysky.skyblocker.skyblock.dungeon.terminal.SameColorTerminal;
 import de.hysky.skyblocker.skyblock.hunting.AttributeLevelHelper;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
@@ -20,11 +21,13 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.Colors;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -55,6 +58,7 @@ public class SlotTextManager {
 			new PowerStonesGuideAdder(),
 			new BazaarHelper(),
 			new StatsTuningAdder(),
+			TunerSolver.INSTANCE,
 			ChocolateFactorySolver.INSTANCE,
 			new EvolvingItemAdder(),
 			new NewYearCakeAdder(),
@@ -124,30 +128,29 @@ public class SlotTextManager {
 	public static void renderSlotText(DrawContext context, TextRenderer textRenderer, @Nullable Slot slot, ItemStack stack, int slotId, int x, int y) {
 		List<SlotText> textList = getText(slot, stack, slotId);
 		if (textList.isEmpty()) return;
-		MatrixStack matrices = context.getMatrices();
+		Matrix3x2fStack matrices = context.getMatrices();
 
 		for (SlotText slotText : textList) {
-			matrices.push();
-			matrices.translate(0.0f, 0.0f, 200.0f);
+			matrices.pushMatrix();
 			int length = textRenderer.getWidth(slotText.text());
 			if (length > 16) {
 				float scale = 16f / length;
-				matrices.scale(scale, scale, 1.0f);
+				matrices.scale(scale, scale);
 				// Both of these translations translate by (-x, -y, 0) and then by the correct scaling and translation.
 				switch (slotText.position()) {
-					case TOP_LEFT, TOP_RIGHT -> matrices.translate(x / scale - x, y / scale - y, 0.0f);
-					case BOTTOM_LEFT, BOTTOM_RIGHT -> matrices.translate(x / scale - x, (y + 16f) / scale - textRenderer.fontHeight + 2f - y, 0.0f);
+					case TOP_LEFT, TOP_RIGHT -> matrices.translate(x / scale - x, y / scale - y);
+					case BOTTOM_LEFT, BOTTOM_RIGHT -> matrices.translate(x / scale - x, (y + 16f) / scale - textRenderer.fontHeight + 2f - y);
 				}
 			} else {
 				switch (slotText.position()) {
 					case TOP_LEFT -> { /*Do Nothing*/ }
-					case TOP_RIGHT -> matrices.translate(16f - length, 0.0f, 0.0f);
-					case BOTTOM_LEFT -> matrices.translate(0.0f, 16f - textRenderer.fontHeight + 2f, 0.0f);
-					case BOTTOM_RIGHT -> matrices.translate(16f - length, 16f - textRenderer.fontHeight + 2f, 0.0f);
+					case TOP_RIGHT -> matrices.translate(16f - length, 0.0f);
+					case BOTTOM_LEFT -> matrices.translate(0.0f, 16f - textRenderer.fontHeight + 2f);
+					case BOTTOM_RIGHT -> matrices.translate(16f - length, 16f - textRenderer.fontHeight + 2f);
 				}
 			}
-			context.drawText(textRenderer, slotText.text(), x, y, 0xFFFFFF, true);
-			matrices.pop();
+			context.drawText(textRenderer, slotText.text(), x, y, Colors.WHITE, true);
+			matrices.popMatrix();
 		}
 	}
 
