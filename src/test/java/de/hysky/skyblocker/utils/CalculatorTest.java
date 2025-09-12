@@ -43,6 +43,13 @@ public class CalculatorTest {
 	@Test
 	void testFunctions() {
 		assertCalculation(2, "sqrt(4)");
+		assertCalculation(2, "log(100)");
+		assertCalculation(4, "lg(16)");
+		assertCalculation(3, "ln(20.0855369231876677409285296545817178969879078385541501443789342296988458780)");
+		assertCalculation(120, "factorial(5)");
+		assertCalculation(0, "sin(0)");
+		assertCalculation(1, "cos(0)");
+		assertCalculation(0, "tan(0)");
 		assertCalculation(1, "abs(1)");
 		assertCalculation(1, "floor(1.9)");
 		assertCalculation(2, "ceil(1.1)");
@@ -51,7 +58,7 @@ public class CalculatorTest {
 
 	@Test
 	void testCalculations() {
-
+		assertCalculation(30, "5(2*sqrt(36)+3log(1))/2");
 	}
 
 	@Test

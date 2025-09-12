@@ -1076,6 +1076,7 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.emptyEquationError": "Equation is empty",
   "skyblocker.config.uiAndVisuals.inputCalculator.missingValueError": "Missing value around operator",
   "skyblocker.config.uiAndVisuals.inputCalculator.sqrtOfNegativeError": "Cannot take square root of negative number %s",
+  "skyblocker.config.uiAndVisuals.inputCalculator.logOfNonPositiveError": "Cannot take log of non-positive number %s",
 
   "skyblocker.config.uiAndVisuals.inventorySearch": "Inventory Search",
   "skyblocker.config.uiAndVisuals.inventorySearch.ctrlK": "Use CTRL + K for inventory search instead of CTRL + F",
