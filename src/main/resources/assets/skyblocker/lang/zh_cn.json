@@ -342,7 +342,7 @@
     "skyblocker.config.dungeons.secretWaypoints.enableDefaultWaypoints": "启用默认路径点",
     "skyblocker.config.dungeons.secretWaypoints.enableDefaultWaypoints.@Tooltip": "包括所有未分类的路径点。",
     "skyblocker.relics.markAllFound": "§r将全部遗物标记为已发现",
-    "skyblocker.config.dungeons.allowDroppingProtectedItems": "启用物品掉落保护和锁定物品栏",
+    "skyblocker.config.dungeons.allowDroppingProtectedItems": "启用丢出受保护的和在锁定的物品栏上的物品",
     "skyblocker.config.chat.filter.hideDicer": "隐藏Dicer信息",
     "skyblocker.config.chat.chatRules.screen.new": "新聊天规则",
     "skyblocker.config.chat.chatRules.screen.ruleName": "规则名称",
