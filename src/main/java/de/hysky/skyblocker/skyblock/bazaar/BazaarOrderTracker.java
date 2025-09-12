@@ -38,12 +38,11 @@ public class BazaarOrderTracker extends SimpleTooltipAdder {
 	}
 
 	void processOrder(ItemStack stack, int slotId) {
-		Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, UNIT_PRICE_PATTERN);
-		Matcher amountMatcher = ItemUtils.getLoreLineIfMatch(stack, ORDER_AMOUNT_PATTERN);
-		if (matcher == null || amountMatcher == null) return;
+		List<Matcher> matchers = ItemUtils.getLoreLineIfMatch(stack, UNIT_PRICE_PATTERN, ORDER_AMOUNT_PATTERN);
+		if (matchers.size() < 2) return;
 		String skyblockId = stack.getSkyblockId();
-		double unitPrice = Double.parseDouble(matcher.group(1).replace(",", ""));
-		int amount = Integer.parseInt(amountMatcher.group(1).replace(",", ""));
+		double unitPrice = Double.parseDouble(matchers.get(0).group(1).replace(",", ""));
+		int amount = Integer.parseInt(matchers.get(1).group(1).replace(",", ""));
 		orders.put(slotId, new Order(skyblockId, unitPrice, amount, slotId < 18));
 	}
 
