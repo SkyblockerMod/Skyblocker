@@ -17,6 +17,7 @@ import org.joml.Vector2i;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class SkyblockForgeRecipe implements SkyblockRecipe {
 
@@ -96,7 +97,7 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
     }
 
     public Identifier getRecipeIdentifier() {
-        return Identifier.of("skyblock", ItemUtils.getItemId(output).toLowerCase().replace(';', '_') + "_" + output.getCount());
+        return Identifier.of("skyblock", ItemUtils.getItemId(output).toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
     }
 
     @Override

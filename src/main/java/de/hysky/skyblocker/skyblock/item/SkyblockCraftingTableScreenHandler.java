@@ -8,6 +8,7 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 public class SkyblockCraftingTableScreenHandler extends GenericContainerScreenHandler {
 
@@ -27,7 +28,7 @@ public class SkyblockCraftingTableScreenHandler extends GenericContainerScreenHa
 
     public SkyblockCraftingTableScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, Inventory inventory, int rows) {
         super(type, syncId, playerInventory, inventory, rows);
-        mirrorverse = Utils.getIslandArea().toLowerCase().contains("mirrorverse");
+        mirrorverse = Utils.getIslandArea().toLowerCase(Locale.ENGLISH).contains("mirrorverse");
         int[] activeSlots = mirrorverse ? riftNormalSlots: normalSlots;
 
         for (int i = 0; i < rows * 9; i++) {

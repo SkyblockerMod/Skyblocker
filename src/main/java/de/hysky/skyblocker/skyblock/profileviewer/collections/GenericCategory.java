@@ -28,6 +28,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class GenericCategory implements ProfileViewerPage {
@@ -110,7 +111,7 @@ public class GenericCategory implements ProfileViewerPage {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
-        Text categoryTitle = Text.literal(category.charAt(0) + category.substring(1).toLowerCase() + " Collections").formatted(Formatting.BOLD);
+        Text categoryTitle = Text.literal(category.charAt(0) + category.substring(1).toLowerCase(Locale.ENGLISH) + " Collections").formatted(Formatting.BOLD);
         context.drawText(textRenderer, categoryTitle, rootX + 88 - (textRenderer.getWidth(categoryTitle) / 2), rootY, Color.DARK_GRAY.getRGB(), false);
 
         for (int i = 0; i < collections.size(); i++) {

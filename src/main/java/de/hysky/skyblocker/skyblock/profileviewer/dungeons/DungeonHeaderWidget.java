@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.util.Locale;
 
 public class DungeonHeaderWidget {
     private LevelFinder.LevelInfo classLevel;
@@ -28,7 +29,7 @@ public class DungeonHeaderWidget {
             float avg = 0;
             JsonObject CLASS_DATA = playerProfile.getAsJsonObject("dungeons").getAsJsonObject("player_classes");
             for (String element : classes) {
-                avg += LevelFinder.getLevelInfo("Catacombs", CLASS_DATA.getAsJsonObject(element.toLowerCase()).get("experience").getAsLong()).level;
+                avg += LevelFinder.getLevelInfo("Catacombs", CLASS_DATA.getAsJsonObject(element.toLowerCase(Locale.ENGLISH)).get("experience").getAsLong()).level;
             }
             classAvg = avg/classes.length;
         }  catch (Exception ignored) {

@@ -31,7 +31,7 @@ public class Calculator {
 
     private static List<Token> lex(String input) {
         List<Token> tokens = new ArrayList<>();
-        input = input.replace(" ", "").toLowerCase().replace("x", "*");
+        input = input.replace(" ", "").toLowerCase(Locale.ENGLISH).replace("x", "*");
         int i = 0;
         while (i < input.length()) {
             Token token = new Token();
@@ -199,7 +199,7 @@ public class Calculator {
     }
 
     private static double calculateValue(String value) {
-        Matcher numberMatcher = NUMBER_PATTERN.matcher(value.toLowerCase());
+        Matcher numberMatcher = NUMBER_PATTERN.matcher(value.toLowerCase(Locale.ENGLISH));
         if (!numberMatcher.matches()) {
             throw new UnsupportedOperationException("skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError");
         }
@@ -218,7 +218,7 @@ public class Calculator {
 
     public static double calculate(String equation) {
         //custom bit for replacing purse with its value
-        equation = equation.toLowerCase().replaceAll("p(urse)?", String.valueOf((long) Utils.getPurse()));
+        equation = equation.toLowerCase(Locale.ENGLISH).replaceAll("p(urse)?", String.valueOf((long) Utils.getPurse()));
         return evaluate(shunt(lex(equation)));
     }
 }
