@@ -84,8 +84,8 @@ public class FarmingHud {
 			if (oldState == null) return; // oldState is null if it gets broken on the client.
 			if (!newState.isAir() || !oldState.isOf(Blocks.CACTUS)) return; // Cactus was replaced with air
 			if (!client.world.getBlockState(pos.down()).isOf(Blocks.CACTUS)) return; // Don't count any blocks above one that was broken.
-			if (!client.player.getMainHandStack().getNeuName().equals("CACTUS_KNIFE")) return;
 			if (client.player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) > 64) return; // check if within 8 blocks of the player
+			if (!client.player.getMainHandStack().getNeuName().equals("CACTUS_KNIFE")) return;
 			blockBreaks.enqueue(System.currentTimeMillis());
 		});
 
