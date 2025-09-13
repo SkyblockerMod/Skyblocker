@@ -10,6 +10,8 @@ import net.minecraft.util.math.BlockPos;
 
 import java.awt.*;
 
+import javax.annotation.Nullable;
+
 public class MiningLocationLabel extends DistancedNamedWaypoint {
     private final Category category;
 
@@ -163,29 +165,34 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
      * enum for the different waypoints used int the crystals hud each with a {@link CrystalHollowsLocationsCategory#name} and associated {@link CrystalHollowsLocationsCategory#color}
      */
     public enum CrystalHollowsLocationsCategory implements Category, StringIdentifiable {
-        UNKNOWN("Unknown", Color.WHITE, null), //used when a location is known but what's at the location is not known
-        JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor()), "[NPC] Kalhuiki Door Guardian:"),
-        MINES_OF_DIVAN("Mines of Divan", Color.GREEN, "    Jade Crystal"),
-        GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor()), "    Amber Crystal"),
-        LOST_PRECURSOR_CITY("Lost Precursor City", Color.CYAN, "    Sapphire Crystal"),
-        KHAZAD_DUM("Khazad-dûm", Color.YELLOW, "    Topaz Crystal"),
-        FAIRY_GROTTO("Fairy Grotto", Color.PINK, null),
-        DRAGONS_LAIR("Dragon's Lair", Color.BLACK, null),
-        CORLEONE("Corleone", Color.WHITE, null),
-        KING_YOLKAR("King Yolkar", Color.RED, "[NPC] King Yolkar:"),
-        ODAWA("Odawa", Color.MAGENTA, "[NPC] Odawa:"),
-        KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY, null);
+        UNKNOWN("Unknown", Color.WHITE, null, 0), //used when a location is known but what's at the location is not known
+        // These waypoints are verified by interacting with the corresponding NPC (e.g., by clicking on Odawa)
+        JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor()), "Kalhuiki Door Guardian", 10),
+        LOST_PRECURSOR_CITY("Lost Precursor City", Color.CYAN, "Professor Robot", 8),
+        KING_YOLKAR("King Yolkar", Color.RED, "King Yolkar", 8),
+        ODAWA("Odawa", Color.MAGENTA, "Odawa", 8),
+        CORLEONE("Corleone", Color.WHITE, "Boss Corleone", 20),
+        KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY, "Key Guardian", 10),
+        // Look for chat message containing npcName (crystal name)
+        KHAZAD_DUM("Khazad-dûm", Color.YELLOW, "    Topaz Crystal", 20),
+        GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor()), "    Amber Crystal", 20),
+        MINES_OF_DIVAN("Mines of Divan", Color.GREEN, "    Jade Crystal", 20),
+        // These cannot be found automatically yet.
+        FAIRY_GROTTO("Fairy Grotto", Color.PINK, null, 0),
+        DRAGONS_LAIR("Dragon's Lair", Color.BLACK, null, 0);
 
         public static final Codec<CrystalHollowsLocationsCategory> CODEC = StringIdentifiable.createBasicCodec(CrystalHollowsLocationsCategory::values);
 
         public final Color color;
-        private final String name;
-        private final String linkedMessage;
+        private final @Nullable String name;
+        private final String npcName;
+        private final int searchRadius;
 
-        CrystalHollowsLocationsCategory(String name, Color color, String linkedMessage) {
+        CrystalHollowsLocationsCategory(String name, Color color, String npcName, int searchRadius) {
             this.name = name;
             this.color = color;
-            this.linkedMessage = linkedMessage;
+            this.npcName = npcName;
+            this.searchRadius = searchRadius;
         }
 
         @Override
@@ -198,13 +205,29 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
             return this.color.getRGB();
         }
 
-        public String getLinkedMessage() {
-            return this.linkedMessage;
+        public @Nullable String getNpcName() {
+            return this.npcName;
+        }
+
+        public int getSearchRadius() {
+            return this.searchRadius;
         }
 
         @Override
         public String asString() {
             return name();
+        }
+
+        // npcName search
+        public static CrystalHollowsLocationsCategory findNpcNameBySubstring(String query) {
+            if (query == null || query.isBlank()) return null;
+
+            for (CrystalHollowsLocationsCategory c : values()) {
+                if (c.npcName != null && !c.npcName.isBlank() && query.contains(c.npcName)) {
+                    return c;
+                }
+            }
+            return null;
         }
     }
 
