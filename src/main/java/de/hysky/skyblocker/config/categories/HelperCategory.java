@@ -366,6 +366,14 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.bazaar.enableOrderTracker"))
+								.description(Text.translatable("skyblocker.config.helpers.bazaar.enableOrderTracker.@Tooltip"))
+								.binding(defaults.helpers.bazaar.enableOrderTracker,
+										() -> config.helpers.bazaar.enableOrderTracker,
+										newValue -> config.helpers.bazaar.enableOrderTracker = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup"))
 								.description(Text.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip"))
 								.binding(defaults.helpers.itemPrice.enableItemPriceLookup,

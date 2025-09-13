@@ -411,6 +411,14 @@ public final class ItemUtils {
         return TextUtils.matchInList(getLore(stack), pattern);
     }
 
+	/**
+	 * Gets the first lines of the lore that matches each pattern, using {@link Matcher#matches()}.
+	 * @see TextUtils#matchInList(List, Pattern...)
+	 */
+	public static List<Matcher> getLoreLineIfMatch(ItemStack stack, Pattern... patterns) {
+		return TextUtils.matchInList(getLore(stack), patterns);
+	}
+
     /**
      * Gets the first line of the lore that matches the specified pattern, using {@link Matcher#find()}.
      * @param pattern the pattern to search for
