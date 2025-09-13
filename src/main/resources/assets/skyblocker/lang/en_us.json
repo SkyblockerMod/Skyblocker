@@ -1666,6 +1666,14 @@
   "skyblocker.profileviewer.inventory.inactive.description.backpack": "The selected backpack",
   "skyblocker.profileviewer.inventory.inactive.description.general": "does not contain this slot",
 
+  "skyblocker.potato.title": "You have been playing for %s hours.",
+  "skyblocker.potato.description0": "Get up and go get a glass of water.",
+  "skyblocker.potato.description1": "You are reaching critical levels of potato.",
+  "skyblocker.potato.description2": "How are you still alive.",
+  "skyblocker.potato.description3": "Go take a break... Please.",
+  "skyblocker.potato.description4": "Might be time for a break don't ya think?",
+  "skyblocker.potato.description5": "Are you using a macro?",
+
   "skyblocker.armorCustomization.animated": "Animated",
   "skyblocker.armorCustomization.cannotCustomizeColor": "Cannot customize this piece's color :(",
   "skyblocker.armorCustomization.cycleBack": "Cycle Back",
