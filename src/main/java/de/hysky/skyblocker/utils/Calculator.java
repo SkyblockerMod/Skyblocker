@@ -4,6 +4,7 @@ import com.demonwav.mcdev.annotations.Translatable;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import net.minecraft.util.StringIdentifiable;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -36,16 +37,19 @@ public class Calculator {
 		}
 	}
 
-	public enum Operator {
-		ADD, SUB, MULT, DIV, MOD, POW;
-		private static final Map<String, Operator> OPERATOR_MAP = Map.of(
-				"+", ADD,
-				"-", SUB,
-				"*", MULT,
-				"/", DIV,
-				"%", MOD,
-				"^", POW
-		);
+	public enum Operator implements StringIdentifiable {
+		ADD("+"), SUB("-"), MULT("*"), DIV("/"), MOD("%"), POW("^");
+		private static final java.util.function.Function<String, Operator> OPERATOR_MAP = StringIdentifiable.createMapper(Operator.values(), java.util.function.Function.identity());
+		private final String op;
+
+		Operator(String op) {
+			this.op = op;
+		}
+
+		@Override
+		public String asString() {
+			return op;
+		}
 	}
 
 	public static class FunctionToken extends AbstractToken<Function> {
@@ -54,28 +58,83 @@ public class Calculator {
 		}
 	}
 
-	public enum Function {
-		SQRT, LOG, LG, LN, FACTORIAL, SIN, COS, TAN, ASIN, ACOS, ATAN, SINH, COSH, TANH, ABS, FLOOR, CEIL, ROUND;
-		private static final Map<String, Function> FUNCTION_MAP = Map.ofEntries(
-				Map.entry("sqrt", SQRT),
-				Map.entry("log", LOG),
-				Map.entry("lg", LG),
-				Map.entry("ln", LN),
-				Map.entry("factorial", FACTORIAL),
-				Map.entry("sin", SIN),
-				Map.entry("cos", COS),
-				Map.entry("tan", TAN),
-				Map.entry("asin", ASIN),
-				Map.entry("acos", ACOS),
-				Map.entry("atan", ATAN),
-				Map.entry("sinh", SINH),
-				Map.entry("cosh", COSH),
-				Map.entry("tanh", TANH),
-				Map.entry("abs", ABS),
-				Map.entry("floor", FLOOR),
-				Map.entry("ceil", CEIL),
-				Map.entry("round", ROUND)
-		);
+	public enum Function implements StringIdentifiable {
+		SQRT("sqrt", val -> {
+			if (val < 0) throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError", val, "sqrt");
+			return Math.sqrt(val);
+		}),
+		LOG("log", val -> {
+			if (val <= 0) throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError", val, "log");
+			return Math.log10(val);
+		}),
+		LG("lg", val -> {
+			if (val <= 0) throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError", val, "lg");
+			return Math.log(val) / Math.log(2);
+		}),
+		LN("ln", val -> {
+			if (val <= 0) throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError", val, "ln");
+			return Math.log(val);
+		}),
+		FACTORIAL("factorial", val -> {
+			if (val < 0 || val > 170) throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError", val, "factorial");
+			double result = 1;
+			for (int i = 2; i <= (int) val; i++) {
+				result *= i;
+			}
+			return result;
+		}),
+		SIN("sin", val -> Math.sin(Math.toRadians(val))),
+		COS("cos", val -> Math.cos(Math.toRadians(val))),
+		TAN("tan", val -> Math.tan(Math.toRadians(val))),
+		ASIN("asin", val -> {
+			if (val < -1 || val > 1) {
+				throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError", val, "asin");
+			}
+			return Math.toDegrees(Math.asin(val));
+		}),
+		ACOS("acos", val -> {
+			if (val < -1 || val > 1) {
+				throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError", val, "acos");
+			}
+			return Math.toDegrees(Math.acos(val));
+		}),
+		ATAN("atan", val -> Math.toDegrees(Math.atan(val))),
+		SINH("sinh", Math::sinh),
+		COSH("cosh", Math::cosh),
+		TANH("tanh", val -> {
+			if (val > 20) {
+				return 1.0;
+			} else if (val < -20) {
+				return -1.0;
+			}
+			return Math.tanh(val);
+		}),
+		ABS("abs", Math::abs),
+		FLOOR("floor", Math::floor),
+		CEIL("ceil", Math::ceil),
+		ROUND("round", Math::round);
+
+		private static final java.util.function.Function<String, Function> FUNCTION_MAP = StringIdentifiable.createMapper(Function.values(), java.util.function.Function.identity());
+		private final String name;
+		private final CalculatorFunction function;
+
+		Function(String name, CalculatorFunction function) {
+			this.name = name;
+			this.function = function;
+		}
+
+		@Override
+		public String asString() {
+			return name;
+		}
+
+		/**
+		 * We do not extend {@link java.util.function.Function} because we need to throw exceptions.
+		 */
+		@FunctionalInterface
+		private interface CalculatorFunction {
+			double apply(double val) throws CalculatorException;
+		}
 	}
 
 	private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+\\.?\\d*)([sekmbt]?)");
@@ -96,7 +155,8 @@ public class Calculator {
 			tokens.add(switch (input.charAt(i)) {
 				case '+', '-', '*', '/', '%', '^' -> {
 					String op = String.valueOf(input.charAt(i));
-					if (!Operator.OPERATOR_MAP.containsKey(op)) {
+					Operator operator = Operator.OPERATOR_MAP.apply(op);
+					if (operator == null) {
 						throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError", op);
 					}
 					// cant have double operators e.g. "5 ++ 2"
@@ -104,7 +164,7 @@ public class Calculator {
 						throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.duplicateOperatorError");
 					}
 
-					yield new OperatorToken(Operator.OPERATOR_MAP.get(op));
+					yield new OperatorToken(operator);
 				}
 
 				case '(' -> {
@@ -134,7 +194,8 @@ public class Calculator {
 
 				default -> {
 					String func = input.substring(i).split("[ (]", 2)[0];
-					if (!Function.FUNCTION_MAP.containsKey(func)) {
+					Function function = Function.FUNCTION_MAP.apply(func);
+					if (function == null) {
 						throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError", func);
 					}
 
@@ -147,7 +208,7 @@ public class Calculator {
 					}
 
 					i += func.length() - 1;
-					yield new FunctionToken(Function.FUNCTION_MAP.get(func));
+					yield new FunctionToken(function);
 				}
 			});
 
@@ -240,6 +301,7 @@ public class Calculator {
 						throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.missingValueError");
 					}
 					double right = values.pollFirst();
+					@SuppressWarnings("DataFlowIssue") // We literally just checked the size
 					double left = values.pollFirst();
 					values.push(switch ((Operator) token.value) {
 						case ADD -> left + right;
@@ -264,73 +326,7 @@ public class Calculator {
 					if (values.isEmpty()) {
 						throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.missingValueError");
 					}
-					double val = values.pollFirst();
-					values.push(switch ((Function) token.value) {
-						case SQRT -> {
-							if (val < 0) {
-								throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.sqrtOfNegativeError", val);
-							}
-							yield Math.sqrt(val);
-						}
-						case LOG -> {
-							if (val <= 0) {
-								throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.logOfNonPositiveError", val);
-							}
-							yield Math.log10(val);
-						}
-						case LG -> {
-							if (val <= 0) {
-								throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.logOfNonPositiveError", val);
-							}
-							yield Math.log(val) / Math.log(2);
-						}
-						case LN -> {
-							if (val <= 0) {
-								throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.logOfNonPositiveError", val);
-							}
-							yield Math.log(val);
-						}
-						case FACTORIAL -> {
-							if (val < 0 || val > 170) {
-								throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError", val);
-							}
-							double result = 1;
-							for (int i = 2; i <= (int) val; i++) {
-								result *= i;
-							}
-							yield result;
-						}
-						case SIN -> Math.sin(Math.toRadians(val));
-						case COS -> Math.cos(Math.toRadians(val));
-						case TAN -> Math.tan(Math.toRadians(val));
-						case ASIN -> {
-							if (val < -1 || val > 1) {
-								throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError", val);
-							}
-							yield Math.toDegrees(Math.asin(val));
-						}
-						case ACOS -> {
-							if (val < -1 || val > 1) {
-								throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError", val);
-							}
-							yield Math.toDegrees(Math.acos(val));
-						}
-						case ATAN -> Math.toDegrees(Math.atan(val));
-						case SINH -> Math.sinh(val);
-						case COSH -> Math.cosh(val);
-						case TANH -> {
-							if (val > 20) {
-								yield 1.0;
-							} else if (val < -20) {
-								yield -1.0;
-							}
-							yield Math.tanh(val);
-						}
-						case ABS -> Math.abs(val);
-						case FLOOR -> Math.floor(val);
-						case CEIL -> Math.ceil(val);
-						case ROUND -> (double) Math.round(val);
-					});
+					values.push(((Function) token.value).function.apply(values.pollFirst()));
 				}
 				case L_PARENTHESIS, R_PARENTHESIS -> throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.unbalancedParenthesisError");
 			}
@@ -350,7 +346,7 @@ public class Calculator {
 		String magnitude = numberMatcher.group(2);
 
 		if (!magnitude.isEmpty()) {
-			if (!MAGNITUDE_VALUES.containsKey(magnitude)) {//its invalid if its another letter
+			if (!MAGNITUDE_VALUES.containsKey(magnitude)) { //it's invalid if it's another letter
 				throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidMagnitudeError", magnitude);
 			}
 			number *= MAGNITUDE_VALUES.getLong(magnitude);
