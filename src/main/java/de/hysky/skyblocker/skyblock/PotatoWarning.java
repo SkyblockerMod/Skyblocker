@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.InactivityFpsLimiterAccessor;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
@@ -30,6 +31,7 @@ public class PotatoWarning {
 	}
 
 	private static void tick() {
+		if (!Utils.isOnSkyblock()) return;
 		long time = Util.getMeasuringTimeMs();
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (time - ((InactivityFpsLimiterAccessor) client.getInactivityFpsLimiter()).getLastInputTime() > AFK_REQUIRED_FOR_BREAK) {
