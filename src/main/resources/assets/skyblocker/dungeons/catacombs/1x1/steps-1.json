@@ -1,0 +1,21 @@
+{
+  "info": {
+    "name": "Steps"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 20,
+      "y": 70,
+      "z": 10
+    },
+    {
+      "secretName": "1 - Bat",
+      "category": "bat",
+      "x": 15,
+      "y": 73,
+      "z": 4
+    }
+  ]
+}

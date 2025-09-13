@@ -1,0 +1,70 @@
+{
+  "info": {
+    "name": "Mossy"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 63,
+      "y": 95,
+      "z": 15
+    },
+    {
+      "secretName": "2 - Lever behind Crypt",
+      "category": "lever",
+      "x": 63,
+      "y": 70,
+      "z": 29
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 47,
+      "y": 89,
+      "z": 4
+    },
+    {
+      "secretName": "2 - Stonk",
+      "category": "stonk",
+      "x": 45,
+      "y": 88,
+      "z": 4
+    },
+    {
+      "secretName": "3 - Superboom",
+      "category": "superboom",
+      "x": 5,
+      "y": 70,
+      "z": 8
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 2,
+      "y": 69,
+      "z": 4
+    },
+    {
+      "secretName": "3 - Stonk",
+      "category": "stonk",
+      "x": 5,
+      "y": 70,
+      "z": 7
+    },
+    {
+      "secretName": "4 - Bat",
+      "category": "bat",
+      "x": 78,
+      "y": 85,
+      "z": 7
+    },
+    {
+      "secretName": "Fairy Soul",
+      "category": "fairysoul",
+      "x": 70,
+      "y": 82,
+      "z": 15
+    }
+  ]
+}

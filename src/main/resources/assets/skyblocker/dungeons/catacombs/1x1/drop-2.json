@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "Drop"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 25,
+      "y": 77,
+      "z": 2
+    },
+    {
+      "secretName": "1 - Stonk",
+      "category": "stonk",
+      "x": 21,
+      "y": 78,
+      "z": 2
+    },
+    {
+      "secretName": "2 - Superboom",
+      "category": "superboom",
+      "x": 9,
+      "y": 60,
+      "z": 15
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 5,
+      "y": 59,
+      "z": 15
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "info": {
+    "name": "Grand Library"
+  },
+  "secrets": [
+    {
+      "secretName": "1/2 - Lever",
+      "category": "lever",
+      "x": 47,
+      "y": 77,
+      "z": 2
+    },
+    {
+      "secretName": "1/2 - Lever",
+      "category": "lever",
+      "x": 60,
+      "y": 77,
+      "z": 15
+    },
+    {
+      "secretName": "1/2 - Lever",
+      "category": "lever",
+      "x": 47,
+      "y": 77,
+      "z": 28
+    },
+    {
+      "secretName": "1/2 - Lever",
+      "category": "lever",
+      "x": 59,
+      "y": 94,
+      "z": 3
+    },
+    {
+      "secretName": "1/2 - Lever",
+      "category": "lever",
+      "x": 47,
+      "y": 88,
+      "z": 28
+    },
+    {
+      "secretName": "1/2 - Entrance",
+      "category": "entrance",
+      "x": 47,
+      "y": 63,
+      "z": 15
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 31,
+      "y": 58,
+      "z": 15
+    },
+    {
+      "secretName": "2 - Item",
+      "category": "item",
+      "x": 27,
+      "y": 56,
+      "z": 19
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 23,
+      "y": 93,
+      "z": 2
+    },
+    {
+      "secretName": "4 - Entrance",
+      "category": "entrance",
+      "x": 7,
+      "y": 82,
+      "z": 11
+    },
+    {
+      "secretName": "4 - Wither Essence",
+      "category": "wither",
+      "x": 6,
+      "y": 80,
+      "z": 3
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "Cobble Wall Pillar"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Lever",
+      "category": "lever",
+      "x": 20,
+      "y": 69,
+      "z": 23
+    },
+    {
+      "secretName": "1/2 - Entrance",
+      "category": "entrance",
+      "x": 19,
+      "y": 70,
+      "z": 9
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 28,
+      "y": 60,
+      "z": 12
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 12,
+      "y": 61,
+      "z": 17
+    }
+  ]
+}

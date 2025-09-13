@@ -1,0 +1,98 @@
+{
+  "info": {
+    "name": "Well"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 7,
+      "y": 88,
+      "z": 50
+    },
+    {
+      "secretName": "1 - Stonk",
+      "category": "stonk",
+      "x": 11,
+      "y": 89,
+      "z": 53
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 11,
+      "y": 88,
+      "z": 50
+    },
+    {
+      "secretName": "2/3 - Entrance",
+      "category": "entrance",
+      "x": 5,
+      "y": 90,
+      "z": 56
+    },
+    {
+      "secretName": "2 - Wither Essence",
+      "category": "wither",
+      "x": 2,
+      "y": 95,
+      "z": 59
+    },
+    {
+      "secretName": "3 - Wither Essence",
+      "category": "wither",
+      "x": 7,
+      "y": 95,
+      "z": 56
+    },
+    {
+      "secretName": "4 - Entrance",
+      "category": "entrance",
+      "x": 54,
+      "y": 92,
+      "z": 34
+    },
+    {
+      "secretName": "4 - Item",
+      "category": "item",
+      "x": 58,
+      "y": 91,
+      "z": 36
+    },
+    {
+      "secretName": "5 - Chest",
+      "category": "chest",
+      "x": 60,
+      "y": 89,
+      "z": 47
+    },
+    {
+      "secretName": "6 - Item",
+      "category": "item",
+      "x": 15,
+      "y": 57,
+      "z": 16
+    },
+    {
+      "secretName": "7 - Superboom",
+      "category": "superboom",
+      "x": 4,
+      "y": 88,
+      "z": 33
+    },
+    {
+      "secretName": "7 - Stonk",
+      "category": "stonk",
+      "x": 20,
+      "y": 88,
+      "z": 25
+    },
+    {
+      "secretName": "7 - Chest",
+      "category": "chest",
+      "x": 18,
+      "y": 91,
+      "z": 25
+    }
+  ]
+}
