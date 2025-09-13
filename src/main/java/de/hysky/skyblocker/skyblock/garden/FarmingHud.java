@@ -80,10 +80,12 @@ public class FarmingHud {
 		// Cactus blocks broken with the Cactus Knife do not register above
 		// The server replaces the blocks with air.
 		WorldEvents.BLOCK_STATE_UPDATE.register((pos, oldState, newState) -> {
-			if (!shouldRender()) return;
+			if (client.player == null || client.world == null || !shouldRender()) return;
 			if (oldState == null) return; // oldState is null if it gets broken on the client.
 			if (!newState.isAir() || !oldState.isOf(Blocks.CACTUS)) return; // Cactus was replaced with air
-			if (client.world == null || !client.world.getBlockState(pos.down()).isOf(Blocks.CACTUS)) return; // Don't count any blocks above one that was broken.
+			if (!client.world.getBlockState(pos.down()).isOf(Blocks.CACTUS)) return; // Don't count any blocks above one that was broken.
+			if (!client.player.getMainHandStack().getNeuName().equals("CACTUS_KNIFE")) return;
+			if (client.player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) > 64) return; // check if within 8 blocks of the player
 			blockBreaks.enqueue(System.currentTimeMillis());
 		});
 
