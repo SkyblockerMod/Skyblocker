@@ -7,8 +7,11 @@ import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
 import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;
 import de.hysky.skyblocker.skyblock.dungeon.LeapOverlay;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
-import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreen;
+import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuScreen;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
@@ -25,6 +28,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 
 @Mixin(HandledScreens.Provider.class)
 public interface HandledScreenProviderMixin<T extends ScreenHandler> {
@@ -113,6 +117,15 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 			case GenericContainerScreenHandler containerScreenHandler when Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.leapOverlay.enableLeapOverlay && nameLowercase.contains(LeapOverlay.TITLE.toLowerCase(Locale.ENGLISH)) -> {
 				client.player.currentScreenHandler = containerScreenHandler;
 				client.setScreen(new LeapOverlay(containerScreenHandler));
+
+				ci.cancel();
+			}
+
+			// radial menus
+			case GenericContainerScreenHandler containerScreenHandler when RadialMenuManager.isMenuExistsFromTitle(nameLowercase) -> {
+				client.player.currentScreenHandler = containerScreenHandler;
+				RadialMenu menuType = RadialMenuManager.getMenuFromTitle(nameLowercase);
+				client.setScreen(new RadialMenuScreen(containerScreenHandler, menuType, name));
 
 				ci.cancel();
 			}

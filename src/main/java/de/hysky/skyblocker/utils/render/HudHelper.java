@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.utils.render;
 
 import java.awt.Color;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import de.hysky.skyblocker.utils.render.gui.state.CustomShapeGuiElementRenderState;
 import org.joml.Matrix3x2f;
 
 import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
@@ -26,6 +28,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.OrderedText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
+import org.joml.Vector2f;
 
 public class HudHelper {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -40,6 +43,16 @@ public class HudHelper {
 
 	public static void drawHorizontalGradient(DrawContext context, float startX, float startY, float endX, float endY, int colorStart, int colorEnd) {
 		context.state.addSimpleElement(new HorizontalGradientGuiElementRenderState(RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), (int) startX, (int) startY, (int) endX, (int) endY, colorStart, colorEnd, context.scissorStack.peekLast()));
+	}
+
+	/**
+	 * Draws shape with given vertices. Note the vertices must be in the right or for this to work properly this function does not sort them for you.
+	 * @param context draw context
+	 * @param vertices vertices of shape
+	 * @param color color of shape
+	 */
+	public static void drawCustomShape(DrawContext context, List<Vector2f> vertices, int color) {
+		context.state.addSimpleElement(new CustomShapeGuiElementRenderState(RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), vertices, color, context.scissorStack.peekLast()));
 	}
 
 	/**
