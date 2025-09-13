@@ -118,7 +118,7 @@ public class NEURepoManager {
 								.call();
 						if (stashed) {
 							localRepo.stashApply()
-									.setContentMergeStrategy(ContentMergeStrategy.OURS)
+									.setContentMergeStrategy(ContentMergeStrategy.THEIRS)
 									.call();
 							localRepo.stashDrop().call();
 							LOGGER.info("[Skyblocker NEU Repo] Auto stash has been applied to the NEU Repository");
