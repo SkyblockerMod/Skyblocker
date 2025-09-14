@@ -843,6 +843,8 @@
   "skyblocker.config.misc.richPresence.info.BITS": "BITS",
   "skyblocker.config.misc.richPresence.info.LOCATION": "LOCATION",
   "skyblocker.config.misc.richPresence.info.PURSE": "PURSE",
+  "skyblocker.config.misc.disableBreakReminders": "Disable break reminders",
+  "skyblocker.config.misc.disableBreakReminders.@Tooltip": "This is meant for content creators. If you disable this, please remember to take breaks.",
 
   "skyblocker.config.otherLocations": "Other Locations",
 
@@ -1669,8 +1671,8 @@
   "skyblocker.potato.title": "You have been playing for %s hours.",
   "skyblocker.potato.description0": "Get up and go get a glass of water.",
   "skyblocker.potato.description1": "You are reaching critical levels of potato.",
-  "skyblocker.potato.description2": "How are you still alive.",
-  "skyblocker.potato.description3": "Go take a break... Please.",
+  "skyblocker.potato.description2": "Remember to take breaks!",
+  "skyblocker.potato.description3": "Don't forget to hydrate!",
   "skyblocker.potato.description4": "Might be time for a break don't ya think?",
   "skyblocker.potato.description5": "Are you using a macro?",
 
