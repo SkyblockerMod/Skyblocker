@@ -834,6 +834,9 @@
   "skyblocker.config.misc.configBackend": "Config Backend",
   "skyblocker.config.misc.configBackend.@Tooltip": "You can choose between having YetAnotherConfigLib (YACL) or MoulConfig as the Config Backend.",
 
+  "skyblocker.config.misc.disableBreakReminders": "Disable break reminders",
+  "skyblocker.config.misc.disableBreakReminders.@Tooltip": "This is meant for content creators. If you disable this, please remember to take breaks.",
+
   "skyblocker.config.misc.richPresence": "Discord RPC",
   "skyblocker.config.misc.richPresence.customMessage": "Custom Message",
   "skyblocker.config.misc.richPresence.cycleMode": "Cycle Skyblock Info",
@@ -843,8 +846,6 @@
   "skyblocker.config.misc.richPresence.info.BITS": "BITS",
   "skyblocker.config.misc.richPresence.info.LOCATION": "LOCATION",
   "skyblocker.config.misc.richPresence.info.PURSE": "PURSE",
-  "skyblocker.config.misc.disableBreakReminders": "Disable break reminders",
-  "skyblocker.config.misc.disableBreakReminders.@Tooltip": "This is meant for content creators. If you disable this, please remember to take breaks.",
 
   "skyblocker.config.otherLocations": "Other Locations",
 
