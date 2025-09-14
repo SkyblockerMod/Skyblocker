@@ -41,7 +41,7 @@ import net.minecraft.util.StringIdentifiable;
 public class UpdateNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final String BASE_URL = "https://api.modrinth.com/v2/project/y6DuFGwJ/version?loaders=[%22fabric%22]&game_versions=";
+	private static final String BASE_URL = "https://api.modrinth.com/v2/project/y6DuFGwJ/version?loaders=[%22fabric%22]";
 	private static final Version MOD_VERSION = SkyblockerMod.SKYBLOCKER_MOD.getMetadata().getVersion();
 	private static final String MC_VERSION = SharedConstants.getGameVersion().getId();
 	private static final Path CONFIG_PATH = SkyblockerMod.CONFIG_DIR.resolve("update_notifications.json");
@@ -88,7 +88,7 @@ public class UpdateNotifications {
 		CompletableFuture.runAsync(() -> {
 			try {
 				SemanticVersion version = (SemanticVersion) MOD_VERSION; //Would only fail because someone changed it themselves
-				String response = Http.sendGetRequest(BASE_URL + "[%22" + MC_VERSION + "%22]");
+				String response = Http.sendGetRequest(BASE_URL);
 				List<MrVersion> mrVersions = MrVersion.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getOrThrow();
 
 				//Set it to true now so that we don't keep re-checking if the data should be discarded
