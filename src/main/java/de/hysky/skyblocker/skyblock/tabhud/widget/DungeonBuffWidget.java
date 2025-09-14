@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -22,6 +23,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 
 	public DungeonBuffWidget() {
 		super("Dungeon Buffs", TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
+		cacheForConfig = false;
 	}
 
 	@Override
@@ -56,6 +58,11 @@ public class DungeonBuffWidget extends TabHudWidget {
 			this.addComponent(new PlainTextComponent(Text.literal(line).styled(style -> style.withColor(color))));
 		}
 
+	}
+
+	@Override
+	protected List<Component> getConfigComponents() {
+		return List.of(new PlainTextComponent(Text.literal("Life Blessing").formatted(Formatting.LIGHT_PURPLE)));
 	}
 
 	@Override

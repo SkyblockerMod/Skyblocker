@@ -3,7 +3,9 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.text.MutableText;
@@ -30,6 +32,7 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 
 	public DungeonPuzzleWidget() {
 		super("Puzzles", TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
+		cacheForConfig = false;
 	}
 
 	@Override
@@ -60,6 +63,11 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 		if (pos == 48) {
 			this.addComponent(Components.iconTextComponent(Ico.BARRIER, Text.literal("No puzzles!").formatted(Formatting.GRAY)));
 		}
+	}
+
+	@Override
+	protected List<Component> getConfigComponents() {
+		return List.of(new PlainTextComponent(Text.literal("Puzzles")));
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -28,6 +29,7 @@ public class DungeonServerWidget extends TabHudWidget {
 
 	public DungeonServerWidget() {
 		super("Dungeon", TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
+		cacheForConfig = false;
 	}
 
 	@Override
@@ -47,6 +49,17 @@ public class DungeonServerWidget extends TabHudWidget {
 		}
 
 		this.addSimpleIcoText(Ico.CLOCK, "Time:", Formatting.GOLD, 45);
+	}
+
+	@Override
+	protected List<Component> getConfigComponents() {
+		return List.of(
+				Components.iconTextComponent(Ico.NTAG, simpleEntryText("Catacombs", "Name:", Formatting.AQUA)),
+				Components.iconTextComponent(Ico.SIGN, simpleEntryText("N/A", "Rooms Visited:", Formatting.AQUA)),
+				Components.iconTextComponent(Ico.SIGN, simpleEntryText("N/A", "Rooms Completed:", Formatting.AQUA)),
+				Components.progressComponent(),
+				Components.iconTextComponent(Ico.CLOCK, simpleEntryText("N/A", "Time:", Formatting.GOLD))
+				);
 	}
 
 	@Override

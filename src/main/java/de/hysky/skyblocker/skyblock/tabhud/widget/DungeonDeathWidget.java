@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -28,6 +29,7 @@ public class DungeonDeathWidget extends TabHudWidget {
 
 	public DungeonDeathWidget() {
 		super("Team Deaths", TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
+		cacheForConfig = false;
 	}
 
 	@Override
@@ -45,6 +47,16 @@ public class DungeonDeathWidget extends TabHudWidget {
 		this.addSimpleIcoText(Ico.IRON_SWORD, "Damage Dealt:", Formatting.RED, 26);
 		this.addSimpleIcoText(Ico.POTION, "Healing Done:", Formatting.RED, 27);
 		this.addSimpleIcoText(Ico.NTAG, "Milestone:", Formatting.YELLOW, 28);
+	}
+
+	@Override
+	protected List<Component> getConfigComponents() {
+		return List.of(
+				Components.iconTextComponent(Ico.SKULL, simpleEntryText("0", "Deaths:", Formatting.GREEN)),
+				Components.iconTextComponent(Ico.IRON_SWORD, simpleEntryText("200", "Damage Dealt:", Formatting.RED)),
+				Components.iconTextComponent(Ico.POTION, simpleEntryText("200", "Healing Done:", Formatting.RED)),
+				Components.iconTextComponent(Ico.NTAG, simpleEntryText("???", "Milestone:", Formatting.YELLOW))
+		);
 	}
 
 	@Override

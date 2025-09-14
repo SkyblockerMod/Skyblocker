@@ -4,6 +4,7 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
@@ -28,6 +29,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 	public DungeonPlayerWidget(int player) {
 		super("Dungeon Player " + player, TITLE, Formatting.DARK_PURPLE.getColorValue(), new Information("dungeon_player_" + player, TITLE.copyContentOnly().append(" " + player), l -> l == Location.DUNGEON));
 		this.player = player;
+		cacheForConfig = false;
 	}
 
 	@Override
@@ -73,6 +75,16 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 		this.addSimpleIcoText(Ico.CLOCK, "Ult Cooldown:", Formatting.GOLD, start + 1);
 		this.addSimpleIcoText(Ico.POTION, "Revives:", Formatting.DARK_PURPLE, start + 2);
+	}
+
+	@Override
+	protected List<Component> getConfigComponents() {
+		return List.of(
+				new PlainTextComponent(Text.literal("Name: ").append(Text.literal("Player " + player).formatted(Formatting.YELLOW))),
+				Components.iconTextComponent(DungeonClass.UNKNOWN.icon(), Text.literal("Class: ").append(Text.literal("Unknown")).formatted(Formatting.GRAY)),
+				Components.iconTextComponent(Ico.CLOCK, simpleEntryText("N/A", "Ult Cooldown:", Formatting.GOLD)),
+				Components.iconTextComponent(Ico.POTION, simpleEntryText("N/A", "Revives:", Formatting.DARK_PURPLE))
+		);
 	}
 
 	@Override

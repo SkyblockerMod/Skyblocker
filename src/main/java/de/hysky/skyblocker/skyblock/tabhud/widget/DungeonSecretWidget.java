@@ -4,6 +4,8 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.text.MutableText;
@@ -22,6 +24,7 @@ public class DungeonSecretWidget extends TabHudWidget {
 
 	public DungeonSecretWidget() {
 		super("Discoveries", TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
+		cacheForConfig = false;
 	}
 
 	@Override
@@ -37,6 +40,14 @@ public class DungeonSecretWidget extends TabHudWidget {
 			this.addSimpleIcoText(Ico.CHEST, "Secrets:", Formatting.YELLOW, 31);
 			this.addSimpleIcoText(Ico.SKULL, "Crypts:", Formatting.YELLOW, 32);
 		}
+	}
+
+	@Override
+	protected List<Component> getConfigComponents() {
+		return List.of(
+				Components.iconTextComponent(Ico.CHEST, simpleEntryText("0", "Secrets:", Formatting.YELLOW)),
+				Components.iconTextComponent(Ico.SKULL, simpleEntryText("0", "Crypts:", Formatting.YELLOW))
+		);
 	}
 
 	@Override
