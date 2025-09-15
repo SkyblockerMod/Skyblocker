@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
@@ -11,7 +10,6 @@ import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
@@ -26,7 +24,6 @@ import java.util.function.Supplier;
 
 @RegisterWidget
 public class SweepDetailsHudWidget extends ComponentBasedWidget {
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 	// Doing this will allow these axes to be affected by SkyBlock resource packs.
 	private static final Supplier<ItemStack> SWEET_AXE = ItemRepository.getItemStackSupplier("SWEET_AXE");
 	private static final Supplier<ItemStack> TREECAPITATOR_AXE = ItemRepository.getItemStackSupplier("TREECAPITATOR_AXE");
