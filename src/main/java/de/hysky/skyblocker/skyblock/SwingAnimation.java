@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class SwingAnimation {
@@ -12,7 +13,7 @@ public class SwingAnimation {
 		if (stack.isEmpty()) return false;
 		var lore = ItemUtils.getLore(stack);
 		for (var line : lore) {
-			if (ABILITY.matcher(line.getString().trim().toLowerCase()).matches())
+			if (ABILITY.matcher(line.getString().trim().toLowerCase(Locale.ENGLISH)).matches())
 				return true;
 		}
 		return false;

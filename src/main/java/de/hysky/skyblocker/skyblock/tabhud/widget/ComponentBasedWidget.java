@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.tabhud.config.option.FloatOption;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.*;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.*;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;

@@ -10,6 +10,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
+import java.util.Locale;
 
 // this widget shows info about "generic" servers.
 // a server is "generic", when only name, server ID and gems are shown
@@ -30,7 +31,7 @@ public class ServerWidget extends TabHudWidget {
 		for (int i = 1; i < lines.size(); i++) {
 			Text text = lines.get(i);
 			String string = text.getString();
-			switch (string.toLowerCase()) {
+			switch (string.toLowerCase(Locale.ENGLISH)) {
 				case String s when s.contains("server") -> this.addSimpleIcoText(Ico.NTAG, "Server ID:", Formatting.GRAY, string.split(":", 2)[1]);
 				case String s when s.contains("gems") -> this.addComponent(Components.iconTextComponent(Ico.EMERALD, text));
 				case String s when s.contains("crystals") -> this.addComponent(Components.iconTextComponent(Ico.EMERALD, text));

@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.garden;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -14,6 +15,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.AbstractNbtNumber;
@@ -70,6 +72,18 @@ public class FarmingHud {
 				blockBreaks.enqueue(System.currentTimeMillis());
 			}
 		});
+		// Cactus blocks broken with the Cactus Knife do not register above
+		// The server replaces the blocks with air.
+		WorldEvents.BLOCK_STATE_UPDATE.register((pos, oldState, newState) -> {
+			if (client.player == null || client.world == null || !shouldRender()) return;
+			if (oldState == null) return; // oldState is null if it gets broken on the client.
+			if (!newState.isAir() || !oldState.isOf(Blocks.CACTUS)) return; // Cactus was replaced with air
+			if (!client.world.getBlockState(pos.down()).isOf(Blocks.CACTUS)) return; // Don't count any blocks above one that was broken.
+			if (client.player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) > 64) return; // check if within 8 blocks of the player
+			if (!client.player.getMainHandStack().getNeuName().equals("CACTUS_KNIFE")) return;
+			blockBreaks.enqueue(System.currentTimeMillis());
+		});
+
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 			if (shouldRender() && overlay) {
 				Matcher matcher = FARMING_XP.matcher(Formatting.strip(message.getString()));

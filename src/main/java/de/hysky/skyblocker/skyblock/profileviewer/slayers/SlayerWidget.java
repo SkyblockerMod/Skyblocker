@@ -18,6 +18,7 @@ import net.minecraft.util.Identifier;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class SlayerWidget {
@@ -55,7 +56,7 @@ public class SlayerWidget {
         this.item = HEAD_ICON.get(slayer);
         this.drop = DROP_ICON.getOrDefault(slayer, Ico.BARRIER);
         try {
-            this.slayerData = playerProfile.getAsJsonObject("slayer").getAsJsonObject("slayer_bosses").getAsJsonObject(this.slayerName.toLowerCase());
+            this.slayerData = playerProfile.getAsJsonObject("slayer").getAsJsonObject("slayer_bosses").getAsJsonObject(this.slayerName.toLowerCase(Locale.ENGLISH));
         } catch (Exception ignored) {}
     }
 

@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.text.NumberFormat;
 import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -154,7 +155,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			String corpse = matcher.group(1);
 			CorpseType type;
 			try {
-				type = CorpseType.valueOf(corpse.toUpperCase()); // toUpperCase is not strictly necessary here, but it's good practice
+				type = CorpseType.valueOf(corpse.toUpperCase(Locale.ENGLISH)); // toUpperCase is not strictly necessary here, but it's good practice
 				lastCorpseLoot = new CorpseLoot(
 						type,
 						new ObjectArrayList<>(),

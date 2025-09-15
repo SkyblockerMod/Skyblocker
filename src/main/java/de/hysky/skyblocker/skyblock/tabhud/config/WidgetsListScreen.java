@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 
 // TODO: recommend disabling spacing and enabling wrapping
 public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
@@ -137,9 +138,9 @@ public class WidgetsListScreen extends Screen implements ScreenHandlerListener {
 		}
 
 
-		String lowerCase = stack.getName().getString().trim().toLowerCase();
+		String lowerCase = stack.getName().getString().trim().toLowerCase(Locale.ENGLISH);
 		List<Text> lore = ItemUtils.getLore(stack);
-		String lastLowerCase = lore.getLast().getString().toLowerCase();
+		String lastLowerCase = lore.getLast().getString().toLowerCase(Locale.ENGLISH);
 
 		WidgetsListSlotEntry entry;
 		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.isOf(Items.RED_STAINED_GLASS_PANE)) {

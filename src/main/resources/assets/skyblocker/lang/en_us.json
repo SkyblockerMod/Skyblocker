@@ -458,6 +458,7 @@
   "skyblocker.config.general.backup.manage": "Manage Backups...",
   "skyblocker.config.general.backup.title": "Config Backups",
   "skyblocker.config.general.backup.restore": "Restore",
+  "skyblocker.config.general.backup.restore.error": "Failed to restore backup",
   "skyblocker.config.general.backup.confirm.title": "Restore Backup",
   "skyblocker.config.general.backup.confirm.text": "Restore backup %s? This will overwrite your current config.",
 
@@ -596,6 +597,14 @@
   "skyblocker.config.hunting.huntingMobs.colorPicker.Hideonleaf": "Hideonleaf highlight color picker",
   "skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise": "Shellwise highlight color picker",
   "skyblocker.config.hunting.huntingMobs.colorPicker.Coralot": "Coralot highlight color picker",
+
+  "skyblocker.config.hunting.lassoHud": "Lasso Hud",
+  "skyblocker.config.hunting.lassoHud.enabled": "Enabled",
+  "skyblocker.config.hunting.lassoHud.enabled.@Tooltip": "Shows lasso countdown in the hud.",
+  "skyblocker.config.hunting.lassoHud.hud.screen": "Lasso HUD config...",
+  "skyblocker.config.hunting.lassoHud.reel": "Reel",
+  "skyblocker.config.hunting.lassoHud.now": "NOW!!",
+  "skyblocker.config.hunting.lassoHud.wait": "Wait",
 
   "skyblocker.config.chat": "Chat",
 

@@ -222,6 +222,7 @@ public class ItemPickupWidget extends ComponentBasedWidget {
 		if (slot >= 36) {
 			slot = slot - 36;
 		}
+		if (slot == 8) return; // Ignore skyblock menu/quiver slot
 		//find what used to be in the slot
 		ItemStack oldStack = CLIENT.player.getInventory().getMainStacks().get(slot);
 

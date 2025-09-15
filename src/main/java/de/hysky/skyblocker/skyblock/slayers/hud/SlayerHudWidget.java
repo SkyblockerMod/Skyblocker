@@ -6,8 +6,8 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerTier;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.client.MinecraftClient;
@@ -46,6 +46,16 @@ public class SlayerHudWidget extends ComponentBasedWidget {
 
 	@Override
 	public void updateContent() {
+		if (MinecraftClient.getInstance().currentScreen instanceof WidgetsConfigurationScreen) {
+			SlayerType type = SlayerType.REVENANT;
+			SlayerTier tier = SlayerTier.V;
+
+			addSimpleIcoText(type.icon, "", tier.color, type.bossName + " " + tier);
+			addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", Formatting.LIGHT_PURPLE, "100,000/400,000");
+			addComponent(Components.iconTextComponent(Ico.NETHER_STAR, Text.translatable("skyblocker.slayer.hud.levelUpIn", Text.literal("200").formatted(Formatting.LIGHT_PURPLE))));
+			return;
+		}
+
 		if (client.player == null || SlayerManager.getSlayerQuest() == null) return;
 
 		SlayerType type = SlayerManager.getSlayerType();

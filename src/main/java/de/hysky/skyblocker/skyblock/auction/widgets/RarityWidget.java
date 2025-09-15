@@ -14,6 +14,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.joml.Matrix3x2fStack;
 
@@ -84,7 +85,7 @@ public class RarityWidget extends ClickableWidget {
         this.tooltip = tooltip;
         this.current = current;
 		//noinspection DataFlowIssue
-		this.color = SkyblockItemRarity.containsName(current.toUpperCase()).map(r -> r.color).orElse(Formatting.GRAY.getColorValue()) | 0xFF000000;
+		this.color = SkyblockItemRarity.containsName(current.toUpperCase(Locale.ENGLISH)).map(r -> r.color).orElse(Formatting.GRAY.getColorValue()) | 0xFF000000;
     }
 
     @Override
