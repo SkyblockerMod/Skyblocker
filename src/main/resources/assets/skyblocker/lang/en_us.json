@@ -889,6 +889,7 @@
   "skyblocker.config.quickNav.button.item.count": "Item Count",
   "skyblocker.config.quickNav.button.item.itemName": "Item",
   "skyblocker.config.quickNav.button.render": "Render",
+  "skyblocker.config.quickNav.button.doubleClick": "Require Double Click",
   "skyblocker.config.quickNav.button.tooltip": "Tooltip",
   "skyblocker.config.quickNav.button.tooltip.@Tooltip": "Tooltip shown when hovering your mouse over the button.\n\nYou can use text json format.\nPutting nothing will make the tooltip not render.",
   "skyblocker.config.quickNav.button.uiTitle": "UI Title",
