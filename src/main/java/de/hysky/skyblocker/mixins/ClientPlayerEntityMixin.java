@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;
 import de.hysky.skyblocker.skyblock.auction.EditBidPopup;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
@@ -41,7 +42,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
     @Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
     public void skyblocker$dropSelectedItem(CallbackInfoReturnable<Boolean> cir) {
         if (Utils.isOnSkyblock() && (ItemProtection.isItemProtected(this.getMainHandStack()) || HotbarSlotLock.isLocked(this.getInventory().getSelectedSlot()))
-                && (!SkyblockerConfigManager.get().dungeons.allowDroppingProtectedItems || !Utils.isInDungeons())) {
+                && (!SkyblockerConfigManager.get().dungeons.allowDroppingProtectedItems || !DungeonScore.isDungeonStarted())) {
             cir.setReturnValue(false);
         }
     }
