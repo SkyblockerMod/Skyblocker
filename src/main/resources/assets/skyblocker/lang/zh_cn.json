@@ -1459,5 +1459,6 @@
     "skyblocker.config.hunting.huntingMobs.colorPicker.Hideonleaf": "潜影贝高亮颜色选择器",
     "skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise": "海龟高亮颜色选择器",
     "skyblocker.config.hunting.huntingMobs.colorPicker.Coralot": "美西螈高亮颜色选择器",
-    "skyblocker.config.slayer.callMaddox.sendMessageOnFail.@Tooltip": "在聊天中发送一条可以点击的消息，使你可以更快地给Maddox打电话。\n\n这需要添加他为Abiphone联系人，同时你的背包中需要有一个Abiphone！"
+    "skyblocker.config.slayer.callMaddox.sendMessageOnFail.@Tooltip": "在聊天中发送一条可以点击的消息，使你可以更快地给Maddox打电话。\n\n这需要添加他为Abiphone联系人，同时你的背包中需要有一个Abiphone！",
+    "skyblocker.config.general.backup.restore.error": "加载备份失败"
 }
