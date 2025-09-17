@@ -58,11 +58,11 @@ public class Renderer {
 	private static final List<Draw> DRAWS = new ArrayList<>();
 	private static BatchedDraw lastUnbatchedDraw = null;
 
-	protected static BufferBuilder getBuffer(RenderPipeline pipeline) {
+	public static BufferBuilder getBuffer(RenderPipeline pipeline) {
 		return getBuffer(pipeline, null, DEFAULT_LINE_WIDTH);
 	}
 
-	protected static BufferBuilder getBuffer(RenderPipeline pipeline, GpuTextureView textureView) {
+	public static BufferBuilder getBuffer(RenderPipeline pipeline, GpuTextureView textureView) {
 		return getBuffer(pipeline, Objects.requireNonNull(textureView, "textureView must not be null"), DEFAULT_LINE_WIDTH);
 	}
 
