@@ -8,6 +8,9 @@ import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.SimplePositioningWidget;
+import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.client.gui.widget.ThreePartsLayoutWidget;
 import net.minecraft.text.Text;
 
 import java.util.Arrays;
@@ -18,6 +21,8 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
     protected Location island;
     protected WaypointsListWidget waypointsListWidget;
     protected DropdownWidget<Location> islandWidget;
+
+	protected final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
 
     public AbstractWaypointsScreen(Text title, T parent) {
         this(title, parent, MultimapBuilder.enumKeys(Location.class).arrayListValues().build());
@@ -32,11 +37,13 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
         this.parent = parent;
         this.waypoints = waypoints;
         this.island = island;
+		this.layout.setHeaderHeight(32);
     }
 
     @Override
     protected void init() {
         super.init();
+		layout.addHeader(new TextWidget(title, textRenderer));
         waypointsListWidget = addDrawableChild(new WaypointsListWidget(client, this, width, height - 120, 32, 24));
     }
 
@@ -44,10 +51,22 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
      * This should be called at the end of the implementation's init to ensure that these elements render last.
      */
     protected final void lateInit() {
+		layout.forEachChild(this::addDrawableChild);
     	islandWidget = addDrawableChild(new DropdownWidget<>(client, width - 160, 8, 150, height - 8, Arrays.asList(Location.values()), this::islandChanged, island));
+		refreshWidgetPositions();
     }
 
-    @Override
+	@Override
+	protected void refreshWidgetPositions() {
+		layout.refreshPositions();
+		waypointsListWidget.position(width, layout);
+		waypointsListWidget.updateEntries();
+		islandWidget.setX(width - islandWidget.getWidth() - 10);
+		SimplePositioningWidget.setPos(0, layout.getHeaderHeight(), islandWidget.getHeight(), islandWidget::setY, 0.5f);
+		islandWidget.setMaxHeight(height - 8);
+	}
+
+	@Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (islandWidget.mouseClicked(mouseX, mouseY, button)) {
             return true;
