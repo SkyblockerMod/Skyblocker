@@ -1467,5 +1467,7 @@
     "skyblocker.config.general.hitbox.oldCactusHitbox": "啟用1.8版本的仙人掌判定箱",
     "skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip": "突出顯示海龜。預設為橙色，可自訂其它顏色。",
     "skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise": "海龜突顯顏色選擇器",
-    "skyblocker.config.hunting.huntingMobs.colorPicker.Coralot": "墨西哥蠑螈突顯顏色選擇器"
+    "skyblocker.config.hunting.huntingMobs.colorPicker.Coralot": "墨西哥蠑螈突顯顏色選擇器",
+    "skyblocker.config.hunting.lassoHud.enabled": "已啟用",
+    "skyblocker.config.hunting.lassoHud.hud.screen": "Lasso HUD設定…"
 }
