@@ -43,7 +43,7 @@ import net.minecraft.client.util.BufferAllocator;
 /**
  * This class automatically handles batching, buffering, and drawing of objects within the world.
  *
- * Mostly modelled off the {@link net.minecraft.client.gui.render.GuiRenderer}.
+ * <p>Mostly modeled off {@link net.minecraft.client.gui.render.GuiRenderer}.
  */
 public class Renderer {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -51,6 +51,7 @@ public class Renderer {
 	private static final BufferAllocator GENERAL_ALLOCATOR = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
 	private static final float DEFAULT_LINE_WIDTH = 0f;
 	private static final Vector4f COLOR_MODULATOR = new Vector4f(1f, 1f, 1f, 1f);
+	private static final Vector4f COLOR_MODULATOR_TRANSLUCENT = new Vector4f(1f, 1f, 1f, 0.5f);
 	private static final Int2ObjectMap<BufferAllocator> ALLOCATORS = new Int2ObjectArrayMap<>(5);
 	private static final Int2ObjectMap<BatchedDraw> BATCHED_DRAWS = new Int2ObjectArrayMap<>(5);
 	private static final Map<VertexFormat, MappableRingBuffer> VERTEX_BUFFERS = new Object2ObjectOpenHashMap<>();
@@ -58,37 +59,41 @@ public class Renderer {
 	private static final List<Draw> DRAWS = new ArrayList<>();
 	private static BatchedDraw lastUnbatchedDraw = null;
 
-	public static BufferBuilder getBuffer(RenderPipeline pipeline) {
-		return getBuffer(pipeline, null, DEFAULT_LINE_WIDTH);
-	}
-
-	public static BufferBuilder getBuffer(RenderPipeline pipeline, GpuTextureView textureView) {
-		return getBuffer(pipeline, Objects.requireNonNull(textureView, "textureView must not be null"), DEFAULT_LINE_WIDTH);
+	protected static BufferBuilder getBuffer(RenderPipeline pipeline) {
+		return getBuffer(pipeline, DEFAULT_LINE_WIDTH);
 	}
 
 	protected static BufferBuilder getBuffer(RenderPipeline pipeline, float lineWidth) {
-		return getBuffer(pipeline, null, lineWidth);
+		return getBuffer(pipeline, null, lineWidth, false);
+	}
+
+	protected static BufferBuilder getBuffer(RenderPipeline pipeline, GpuTextureView textureView) {
+		return getBuffer(pipeline, Objects.requireNonNull(textureView, "textureView must not be null"), false);
+	}
+
+	public static BufferBuilder getBuffer(RenderPipeline pipeline, GpuTextureView textureView, boolean translucent) {
+		return getBuffer(pipeline, Objects.requireNonNull(textureView, "textureView must not be null"), DEFAULT_LINE_WIDTH, translucent);
 	}
 
 	/**
 	 * Returns the appropriate {@code BufferBuilder} that should be used with the given pipeline, texture view, and line width.
 	 */
-	private static BufferBuilder getBuffer(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {
+	private static BufferBuilder getBuffer(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {
 		if (!EXCLUDED_FROM_BATCHING.contains(pipeline)) {
-			return setupBatched(pipeline, textureView, lineWidth);
+			return setupBatched(pipeline, textureView, lineWidth, translucent);
 		} else {
-			return setupUnbatched(pipeline, textureView, lineWidth);
+			return setupUnbatched(pipeline, textureView, lineWidth, translucent);
 		}
 	}
 
-	private static BufferBuilder setupBatched(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {
+	private static BufferBuilder setupBatched(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {
 		int hash = hash(pipeline, textureView, lineWidth);
 		BatchedDraw draw = BATCHED_DRAWS.get(hash);
 
 		if (draw == null) {
 			BufferAllocator allocator = ALLOCATORS.computeIfAbsent(hash, _hash -> new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE));
 			BufferBuilder bufferBuilder = new BufferBuilder(allocator, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
-			BATCHED_DRAWS.put(hash, new BatchedDraw(bufferBuilder, pipeline, textureView, lineWidth));
+			BATCHED_DRAWS.put(hash, new BatchedDraw(bufferBuilder, pipeline, textureView, lineWidth, translucent));
 
 			return bufferBuilder;
 		} else {
@@ -96,13 +101,13 @@ public class Renderer {
 		}
 	}
 
-	private static BufferBuilder setupUnbatched(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {
+	private static BufferBuilder setupUnbatched(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {
 		if (lastUnbatchedDraw != null) {
 			prepareBatchedDraw(lastUnbatchedDraw);
 		}
 
 		BufferBuilder bufferBuilder = new BufferBuilder(GENERAL_ALLOCATOR, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
-		lastUnbatchedDraw = new BatchedDraw(bufferBuilder, pipeline, textureView, lineWidth);
+		lastUnbatchedDraw = new BatchedDraw(bufferBuilder, pipeline, textureView, lineWidth, translucent);
 
 		return bufferBuilder;
 	}
@@ -141,7 +146,7 @@ public class Renderer {
 	}
 
 	private static void prepareBatchedDraw(BatchedDraw draw) {
-		PREPARED_DRAWS.add(new PreparedDraw(draw.bufferBuilder().end(), draw.pipeline(), draw.textureView(), draw.lineWidth()));
+		PREPARED_DRAWS.add(new PreparedDraw(draw.bufferBuilder().end(), draw.pipeline(), draw.textureView(), draw.lineWidth(), draw.translucent()));
 	}
 
 	protected static void executeDraws() {
@@ -193,8 +198,9 @@ public class Renderer {
 					drawParameters.indexCount(),
 					prepared.pipeline(),
 					prepared.textureView(),
-					prepared.lineWidth())
-					);
+					prepared.lineWidth(),
+					prepared.translucent()
+			));
 		}
 	}
 
@@ -218,9 +224,8 @@ public class Renderer {
 		for (Object2IntMap.Entry<VertexFormat> entry : Object2IntMaps.fastIterable(vertexBufferSizes)) {
 			VertexFormat format = entry.getKey();
 			int vertexBufferSize = entry.getIntValue();
-			MappableRingBuffer vertexBuffer = VERTEX_BUFFERS.get(format);
 
-			VERTEX_BUFFERS.put(format, initOrResizeBuffer(vertexBuffer, "Skyblocker vertex buffer for: " + format, vertexBufferSize, GpuBuffer.USAGE_VERTEX));
+			VERTEX_BUFFERS.compute(format, (k, vertexBuffer) -> initOrResizeBuffer(vertexBuffer, "Skyblocker vertex buffer for: " + format, vertexBufferSize, GpuBuffer.USAGE_VERTEX));
 		}
 	}
 
@@ -275,7 +280,7 @@ public class Renderer {
 
 	private static void draw(Draw draw, GpuBuffer indices, IndexType indexType) {
 		applyViewOffsetZLayering();
-		GpuBufferSlice dynamicTransforms = setupDynamicTransforms(draw.lineWidth);
+		GpuBufferSlice dynamicTransforms = setupDynamicTransforms(draw.lineWidth, draw.translucent);
 
 		try (RenderPass renderPass = RenderSystem.getDevice()
 				.createCommandEncoder()
@@ -301,11 +306,9 @@ public class Renderer {
 		unapplyViewOffsetZLayering();
 	}
 
-	private static GpuBufferSlice setupDynamicTransforms(float lineWidth) {
-		GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms()
-				.write(RenderSystem.getModelViewMatrix(), COLOR_MODULATOR, RenderSystem.getModelOffset(), RenderSystem.getTextureMatrix(), lineWidth);
-
-		return dynamicTransforms;
+	private static GpuBufferSlice setupDynamicTransforms(float lineWidth, boolean translucent) {
+		return RenderSystem.getDynamicUniforms()
+				.write(RenderSystem.getModelViewMatrix(), translucent ? COLOR_MODULATOR_TRANSLUCENT : COLOR_MODULATOR, RenderSystem.getModelOffset(), RenderSystem.getTextureMatrix(), lineWidth);
 	}
 
 	private static GpuTextureView getMainColorTexture() {
@@ -338,9 +341,9 @@ public class Renderer {
 		}
 	}
 
-	private record Draw(BuiltBuffer builtBuffer, GpuBuffer vertices, int baseVertex, int indexCount, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {}
+	private record Draw(BuiltBuffer builtBuffer, GpuBuffer vertices, int baseVertex, int indexCount, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {}
 
-	private record PreparedDraw(BuiltBuffer builtBuffer, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {}
+	private record PreparedDraw(BuiltBuffer builtBuffer, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {}
 
-	private record BatchedDraw(BufferBuilder bufferBuilder, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {}
+	private record BatchedDraw(BufferBuilder bufferBuilder, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {}
 }
