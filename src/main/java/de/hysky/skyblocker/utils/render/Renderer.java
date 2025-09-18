@@ -87,7 +87,7 @@ public class Renderer {
 	}
 
 	private static BufferBuilder setupBatched(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {
-		int hash = hash(pipeline, textureView, lineWidth);
+		int hash = hash(pipeline, textureView, lineWidth, translucent);
 		BatchedDraw draw = BATCHED_DRAWS.get(hash);
 
 		if (draw == null) {
@@ -116,12 +116,13 @@ public class Renderer {
 	 * Calculates the hash of the given inputs which serves as the keys to our maps where we store stuff for the batched draws.
 	 * This is much faster than using an object-based key as we do not need to create any objects to find the instances we want.
 	 */
-	private static int hash(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth) {
+	private static int hash(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {
 		//This manually calculates the hash, avoiding Objects#hash to not incur the array allocation each time
 		int hash = 1;
 		hash = 31 * hash + pipeline.hashCode();
 		hash = 31 * hash + Objects.hashCode(textureView);
 		hash = 31 * hash + Float.hashCode(lineWidth);
+		hash = 31 * hash + Boolean.hashCode(translucent);
 
 		return hash;
 	}
@@ -224,8 +225,9 @@ public class Renderer {
 		for (Object2IntMap.Entry<VertexFormat> entry : Object2IntMaps.fastIterable(vertexBufferSizes)) {
 			VertexFormat format = entry.getKey();
 			int vertexBufferSize = entry.getIntValue();
+			MappableRingBuffer vertexBuffer = VERTEX_BUFFERS.get(format);
 
-			VERTEX_BUFFERS.compute(format, (k, vertexBuffer) -> initOrResizeBuffer(vertexBuffer, "Skyblocker vertex buffer for: " + format, vertexBufferSize, GpuBuffer.USAGE_VERTEX));
+			VERTEX_BUFFERS.put(format, initOrResizeBuffer(vertexBuffer, "Skyblocker vertex buffer for: " + format, vertexBufferSize, GpuBuffer.USAGE_VERTEX));
 		}
 	}
 

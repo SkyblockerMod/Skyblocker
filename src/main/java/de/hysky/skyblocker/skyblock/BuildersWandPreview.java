@@ -34,7 +34,10 @@ import java.util.Set;
 
 public class BuildersWandPreview {
 	private static final int MAX_BLOCKS = 241;
+	public static final int PLOT_SIZE = 96;
+	public static final int PLOT_OFFSET = 48;
 	private static final float[] RED = {1.0f, 0.0f, 0.0f};
+	public static final boolean SODIUM_LOADED = FabricLoader.getInstance().isModLoaded("sodium");
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 
 	@Init
@@ -119,7 +122,7 @@ public class BuildersWandPreview {
 	}
 
 	private static boolean isInPlot(BlockPos plotPos, BlockPos pos) {
-		return Math.floorDiv(plotPos.getX() + 48, 96) == Math.floorDiv(pos.getX() + 48, 96) && Math.floorDiv(plotPos.getZ() + 48, 96) == Math.floorDiv(pos.getZ() + 48, 96);
+		return Math.floorDiv(plotPos.getX() + PLOT_OFFSET, PLOT_SIZE) == Math.floorDiv(pos.getX() + PLOT_OFFSET, PLOT_SIZE) && Math.floorDiv(plotPos.getZ() + PLOT_OFFSET, PLOT_SIZE) == Math.floorDiv(pos.getZ() + PLOT_OFFSET, PLOT_SIZE);
 	}
 
 	private static void renderBlockPreview(WorldRenderContext context, BlockPos pos, BlockState state) {
@@ -131,7 +134,7 @@ public class BuildersWandPreview {
 		matrices.push();
 		matrices.translate(pos.getX() - camera.x, pos.getY() - camera.y, pos.getZ() - camera.z);
 
-		VertexConsumerProvider consumers = FabricLoader.getInstance().isModLoaded("sodium") ? context.consumers() : l -> Renderer.getBuffer(RenderPipelines.TRANSLUCENT, BlockRenderLayer.TRANSLUCENT.getTextureView(), true);
+		VertexConsumerProvider consumers = SODIUM_LOADED ? context.consumers() : l -> Renderer.getBuffer(RenderPipelines.TRANSLUCENT, BlockRenderLayer.TRANSLUCENT.getTextureView(), true);
 		client.getBlockRenderManager().getModelRenderer().render(client.world, model, state, pos, matrices, RenderLayerHelper.movingDelegate(consumers), true, state.getRenderingSeed(pos), 0);
 
 		matrices.pop();
