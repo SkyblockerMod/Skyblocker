@@ -6,6 +6,9 @@ import com.mojang.blaze3d.vertex.VertexFormat.DrawMode;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import net.fabricmc.loader.api.FabricLoader;
+import net.irisshaders.iris.api.v0.IrisApi;
+import net.irisshaders.iris.api.v0.IrisProgram;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
@@ -61,5 +64,17 @@ public class SkyblockerRenderPipelines {
 	public static void init() {
 		Renderer.excludePipelineFromBatching(CYLINDER);
 		Renderer.excludePipelineFromBatching(CIRCLE);
+
+		if (FabricLoader.getInstance().isModLoaded("iris")) {
+			IrisApi.getInstance().assignPipeline(RenderPipelines.DEBUG_FILLED_BOX, IrisProgram.BASIC); // Needed since Iris doesn't do this themselves
+			IrisApi.getInstance().assignPipeline(SkyblockerRenderPipelines.FILLED_THROUGH_WALLS, IrisProgram.BASIC);
+			IrisApi.getInstance().assignPipeline(SkyblockerRenderPipelines.LINES_THROUGH_WALLS, IrisProgram.LINES);
+			IrisApi.getInstance().assignPipeline(SkyblockerRenderPipelines.QUADS_THROUGH_WALLS, IrisProgram.BASIC);
+			IrisApi.getInstance().assignPipeline(SkyblockerRenderPipelines.TEXTURE, IrisProgram.TEXTURED);
+			IrisApi.getInstance().assignPipeline(SkyblockerRenderPipelines.TEXTURE_THROUGH_WALLS, IrisProgram.TEXTURED);
+			IrisApi.getInstance().assignPipeline(SkyblockerRenderPipelines.CYLINDER, IrisProgram.BASIC);
+			IrisApi.getInstance().assignPipeline(SkyblockerRenderPipelines.CIRCLE, IrisProgram.BASIC);
+			IrisApi.getInstance().assignPipeline(SkyblockerRenderPipelines.CIRCLE_LINES, IrisProgram.LINES);
+		}
 	}
 }

@@ -208,6 +208,9 @@ dependencies {
 
 	// Fabric Language Kotlin for using MoulConfig - we are still a Java-exclusive mod
 	modImplementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}")
+
+	// Iris
+	modCompileOnly("maven.modrinth:iris:${project.iris_version}")
 }
 
 loom {
