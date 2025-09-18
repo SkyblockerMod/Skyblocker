@@ -74,7 +74,7 @@ public class SkyblockerRenderPipelines {
 			IrisApi.getInstance().assignPipeline(SkyblockerRenderPipelines.TEXTURE_THROUGH_WALLS, IrisProgram.TEXTURED);
 			IrisApi.getInstance().assignPipeline(SkyblockerRenderPipelines.CYLINDER, IrisProgram.BASIC);
 			IrisApi.getInstance().assignPipeline(SkyblockerRenderPipelines.CIRCLE, IrisProgram.BASIC);
-			IrisApi.getInstance().assignPipeline(SkyblockerRenderPipelines.CIRCLE_LINES, IrisProgram.LINES);
+			IrisApi.getInstance().assignPipeline(SkyblockerRenderPipelines.CIRCLE_LINES, IrisProgram.BASIC);
 		}
 	}
 }
