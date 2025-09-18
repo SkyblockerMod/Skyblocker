@@ -6,9 +6,11 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
+import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
+import it.unimi.dsi.fastutil.ints.IntConsumer;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
@@ -16,8 +18,10 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.navigation.NavigationDirection;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -44,7 +48,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
 	@Override
 	public int getRowWidth() {
-		return 340;
+		return 350;
 	}
 
 	@Override
@@ -324,6 +328,12 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		}
 	}
 
+	// Allow to use the scroll wheel in the argb text input
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+		return this.hoveredElement(mouseX, mouseY).filter(element -> element.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)).isPresent() || super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+	}
+
 	protected class WaypointEntry extends AbstractWaypointEntry {
 		private final WaypointGroupEntry groupEntry;
 		private NamedWaypoint waypoint;
@@ -331,6 +341,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 		private final ButtonWidget buttonUp;
 		private final ButtonWidget buttonDown;
 		private final CheckboxWidget enabled;
+		private final ColorPickerButton colorPickerButton;
 
 		private final SimplePositioningWidget layout = new SimplePositioningWidget(getRowWidth(), itemHeight);
 
@@ -384,9 +395,10 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			zField.setChangedListener(this::updateZ);
 			leftLayout.add(zField);
 
-			leftLayout.add(new TextWidget(Text.literal("#"), client.textRenderer), p -> p.marginLeft(2));
 			ARGBTextInput colorField = new ARGBTextInput(0, 0, client.textRenderer, true, true);
+			colorPickerButton = leftLayout.add(new ColorPickerButton(colorField, this::updateColor), p -> p.marginLeft(2));
 			int color = ColorHelper.fromFloats(waypoint.alpha, waypoint.colorComponents[0], waypoint.colorComponents[1], waypoint.colorComponents[2]);
+			colorPickerButton.color = ColorHelper.fullAlpha(color);
 			colorField.setARGBColor(color);
 			colorField.setHeight(20);
 			colorField.setOnChange(this::updateColor);
@@ -475,6 +487,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			if (index >= 0) {
 				groupEntry.group.waypoints().set(index, waypoint);
 			}
+			colorPickerButton.color = ColorHelper.fullAlpha(colorInt);
 		}
 
 		private int parseEmptiableInt(String value) throws NumberFormatException {
@@ -490,6 +503,43 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			for (ClickableWidget child : children) {
 				child.render(context, mouseX, mouseY, tickDelta);
 			}
+		}
+	}
+
+	private class ColorPickerButton extends PressableWidget {
+		private final ARGBTextInput textInput;
+		private final IntConsumer colorConsumer;
+		private int color;
+
+		ColorPickerButton(ARGBTextInput textInput, IntConsumer colorConsumer) {
+			super(0, 0, 20, 20, Text.empty());
+			this.textInput = textInput;
+			this.colorConsumer = colorConsumer;
+		}
+
+		@Override
+		public void onPress() {
+			ColorPickerWidget widget = new ColorPickerWidget(0, 0, 200, 100);
+			widget.setOnColorChange((color, mouseRelease) -> {
+				int argb = ColorHelper.withAlpha(ColorHelper.getAlpha(textInput.getARGBColor()), color);
+				textInput.setARGBColor(argb);
+				this.color = color;
+				if (mouseRelease) colorConsumer.accept(argb);
+			});
+			widget.setRGBColor(textInput.getARGBColor());
+			screen.setPopup(widget, getX(), getBottom());
+		}
+
+		@Override
+		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+			int padding = 1;
+			context.fill(getX() + padding, getY() + padding, getRight() - padding, getBottom() - padding, isHovered() ? Colors.WHITE : Colors.BLACK);
+			context.fill(getX() + padding + 1, getY() + padding + 1, getRight() - padding - 1, getBottom() - padding - 1, this.color);
+		}
+
+		@Override
+		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+
 		}
 	}
 

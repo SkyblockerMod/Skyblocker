@@ -7,13 +7,20 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.SimplePositioningWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.gui.widget.ThreePartsLayoutWidget;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
     protected final T parent;
@@ -23,6 +30,7 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
     protected DropdownWidget<Location> islandWidget;
 
 	protected final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
+	private final PopupContainer popupContainer = new PopupContainer();
 
     public AbstractWaypointsScreen(Text title, T parent) {
         this(title, parent, MultimapBuilder.enumKeys(Location.class).arrayListValues().build());
@@ -44,7 +52,8 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
     protected void init() {
         super.init();
 		layout.addHeader(new TextWidget(title, textRenderer));
-        waypointsListWidget = addDrawableChild(new WaypointsListWidget(client, this, width, height - 120, 32, 24));
+		addSelectableChild(popupContainer);
+		waypointsListWidget = addDrawableChild(new WaypointsListWidget(client, this, width, height - 120, 32, 24));
     }
 
     /**
@@ -53,8 +62,21 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
     protected final void lateInit() {
 		layout.forEachChild(this::addDrawableChild);
     	islandWidget = addDrawableChild(new DropdownWidget<>(client, width - 160, 8, 150, height - 8, Arrays.asList(Location.values()), this::islandChanged, island));
+		addDrawable(popupContainer);
 		refreshWidgetPositions();
     }
+
+	protected void setPopup(Widget w, int x, int y) {
+		if (w == null) popupContainer.visible = false;
+		else {
+			popupContainer.visible = true;
+			popupContainer.setWidget(w);
+			popupContainer.setPosition(
+					Math.clamp(x, 0, width - popupContainer.getWidth()),
+					Math.clamp(y, 0, height - popupContainer.getHeight())
+			);
+		}
+	}
 
 	@Override
 	protected void refreshWidgetPositions() {
@@ -110,4 +132,84 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
     protected void updateButtons() {
         waypointsListWidget.updateButtons();
     }
+
+	private static class PopupContainer extends ContainerWidget {
+		private static final int BORDER_SIZE = 4;
+
+		private Widget widget = EmptyWidget.ofWidth(0);
+		private final List<ClickableWidget> children = new ArrayList<>(4);
+		private final PressableWidget closeButton;
+
+		PopupContainer() {
+			super(0, 0, 0, 0, Text.empty());
+			this.closeButton = new TexturedButtonWidget(14, 14, new ButtonTextures(
+					Identifier.ofVanilla("widget/cross_button"), Identifier.ofVanilla("widget/cross_button_highlighted")),
+					b -> visible = false,
+					Text.empty()
+					);
+		}
+
+		@Override
+		public int getWidth() {
+			return widget.getWidth() + BORDER_SIZE * 2;
+		}
+
+		@Override
+		public int getHeight() {
+			return widget.getHeight() + BORDER_SIZE * 2 + closeButton.getHeight() + 2;
+		}
+
+		@Override
+		public void setX(int x) {
+			super.setX(x);
+			closeButton.setX(getRight() - BORDER_SIZE - closeButton.getWidth());
+			widget.setX(getX() + BORDER_SIZE);
+		}
+
+		@Override
+		public void setY(int y) {
+			super.setY(y);
+			closeButton.setY(getY() + BORDER_SIZE);
+			widget.setY(closeButton.getBottom() + 2);
+		}
+
+		@Override
+		public List<? extends Element> children() {
+			return visible ? children: List.of();
+		}
+
+		public void setWidget(Widget widget) {
+			this.widget = widget;
+			children.clear();
+			children.add(closeButton);
+			widget.forEachChild(children::add);
+			closeButton.setX(getRight() - BORDER_SIZE - closeButton.getWidth());
+		}
+
+		@Override
+		protected int getContentsHeightWithPadding() {
+			return 0;
+		}
+
+		@Override
+		protected double getDeltaYPerScroll() {
+			return 0;
+		}
+
+		@Override
+		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+			context.fill(getX(), getY(), getRight(), getBottom(), ColorHelper.withAlpha(0.6f, 0));
+			context.drawBorder(getX(), getY(), getWidth(), getHeight(), Colors.WHITE);
+			for (ClickableWidget child : children) {
+				child.render(context, mouseX, mouseY, deltaTicks);
+			}
+			if (!isFocused() &&
+					(mouseX <= getX() - 50 || mouseX >= getRight() + 50 || mouseY <= getY() - 50 || mouseY >= getBottom() + 50)) visible = false;
+		}
+
+		@Override
+		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+
+		}
+	}
 }
