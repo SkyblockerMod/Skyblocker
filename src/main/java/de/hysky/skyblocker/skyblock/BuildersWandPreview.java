@@ -8,13 +8,14 @@ import de.hysky.skyblocker.utils.render.Renderer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -130,8 +131,8 @@ public class BuildersWandPreview {
 		matrices.push();
 		matrices.translate(pos.getX() - camera.x, pos.getY() - camera.y, pos.getZ() - camera.z);
 
-		BufferBuilder buffer = Renderer.getBuffer(RenderPipelines.TRANSLUCENT, BlockRenderLayer.TRANSLUCENT.getTextureView(), true);
-		client.getBlockRenderManager().getModelRenderer().render(client.world, model, state, pos, matrices, RenderLayerHelper.movingDelegate(l -> buffer), true, state.getRenderingSeed(pos), 0);
+		VertexConsumerProvider consumers = FabricLoader.getInstance().isModLoaded("sodium") ? context.consumers() : l -> Renderer.getBuffer(RenderPipelines.TRANSLUCENT, BlockRenderLayer.TRANSLUCENT.getTextureView(), true);
+		client.getBlockRenderManager().getModelRenderer().render(client.world, model, state, pos, matrices, RenderLayerHelper.movingDelegate(consumers), true, state.getRenderingSeed(pos), 0);
 
 		matrices.pop();
 	}
