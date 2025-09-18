@@ -1491,5 +1491,12 @@
     "skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip": "Le tri alphabétique trie les noms par ordre alphabétique, tandis que le tri par défaut n'a pas d'ordre particulier.",
     "skyblocker.config.general.hitbox.oldCactusHitbox": "Activer Hitbox Cactus 1.8",
     "skyblocker.config.hunting.huntingMobs.colorPicker.Coralot": "Choix couleur surbrillance Coralot",
-    "skyblocker.config.general.backup.restore.error": "La récupération de la backup a échoué"
+    "skyblocker.config.general.backup.restore.error": "La récupération de la backup a échoué",
+    "skyblocker.config.hunting.lassoHud.now": "MAINTENANT!!",
+    "skyblocker.config.hunting.lassoHud": "ATH du Lasso",
+    "skyblocker.config.hunting.lassoHud.enabled": "Activé",
+    "skyblocker.config.hunting.lassoHud.enabled.@Tooltip": "Montrer la barre de progression du Lasso dans l'ATH.",
+    "skyblocker.config.hunting.lassoHud.hud.screen": "Configuration de l'ATH du Lasso...",
+    "skyblocker.config.hunting.lassoHud.reel": "Rammenez",
+    "skyblocker.config.hunting.lassoHud.wait": "Attendez"
 }
