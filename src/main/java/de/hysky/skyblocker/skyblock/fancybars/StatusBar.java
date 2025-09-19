@@ -138,8 +138,8 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 	public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
 		this.value = text;
-		this.fill = fill;
-		this.overflowFill = overflowFill;
+		this.fill = Math.clamp(fill, 0, 1);
+		this.overflowFill = Math.clamp(overflowFill, 0, 1);
 		this.max = max;
 		this.overflow = overflow;
 	}
