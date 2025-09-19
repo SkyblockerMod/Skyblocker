@@ -864,6 +864,7 @@
 
   "skyblocker.config.otherLocations.end": "The End",
   "skyblocker.config.otherLocations.end.enableEnderNodeHelper": "Enable Ender Node Helper",
+  "skyblocker.config.otherLocations.end.enderNodeWaypointType": "Ender Node Waypoint Type",
   "skyblocker.config.otherLocations.end.hudEnabled": "HUD Enabled",
   "skyblocker.config.otherLocations.end.muteEndermanSounds": "Mute Enderman Sounds",
   "skyblocker.config.otherLocations.end.protectorLocationEnable": "Show Protector Location",
