@@ -1319,6 +1319,7 @@
   "skyblocker.museum.resyncSuccess": "Successfully resynced your museum item donations!",
   "skyblocker.museum.resyncFailure": "Failed to resync your museum item donations!",
 
+  "skyblocker.dungeons.croesusHelper.chestValue": "Chest Value: %s",
   "skyblocker.dungeons.secrets.physicalEntranceNotFound": "§cDungeon Entrance Room coordinates not found. Please go back to the green Entrance Room.",
   "skyblocker.dungeons.secrets.markSecretFound": "§rMarked secret #%s as found.",
   "skyblocker.dungeons.secrets.markSecretMissing": "§rMarked secret #%s as missing.",
