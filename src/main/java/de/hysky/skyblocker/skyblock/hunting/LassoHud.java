@@ -101,7 +101,9 @@ public class LassoHud extends ComponentBasedWidget {
 
 	@Override
 	protected List<Component> getConfigComponents() {
-		return List.of();
+		return List.of(
+				Components.progressComponent(Items.LEAD.getDefaultStack(), Text.translatable("skyblocker.config.hunting.lassoHud.reel"), Text.translatable("skyblocker.config.hunting.lassoHud.wait"), 50)
+		);
 	}
 
 	@Override
