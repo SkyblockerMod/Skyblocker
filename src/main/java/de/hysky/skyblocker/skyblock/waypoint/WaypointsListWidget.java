@@ -398,7 +398,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			ARGBTextInput colorField = new ARGBTextInput(0, 0, client.textRenderer, true, true);
 			colorPickerButton = leftLayout.add(new ColorPickerButton(colorField, this::updateColor), p -> p.marginLeft(2));
 			int color = ColorHelper.fromFloats(waypoint.alpha, waypoint.colorComponents[0], waypoint.colorComponents[1], waypoint.colorComponents[2]);
-			colorPickerButton.color = ColorHelper.fullAlpha(color);
+			colorPickerButton.color = color;
 			colorField.setARGBColor(color);
 			colorField.setHeight(20);
 			colorField.setOnChange(this::updateColor);
@@ -487,7 +487,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			if (index >= 0) {
 				groupEntry.group.waypoints().set(index, waypoint);
 			}
-			colorPickerButton.color = ColorHelper.fullAlpha(colorInt);
+			colorPickerButton.color = colorInt;
 		}
 
 		private int parseEmptiableInt(String value) throws NumberFormatException {
@@ -519,14 +519,13 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
 		@Override
 		public void onPress() {
-			ColorPickerWidget widget = new ColorPickerWidget(0, 0, 200, 100);
+			ColorPickerWidget widget = new ColorPickerWidget(0, 0, 200, 110, true);
 			widget.setOnColorChange((color, mouseRelease) -> {
-				int argb = ColorHelper.withAlpha(ColorHelper.getAlpha(textInput.getARGBColor()), color);
-				textInput.setARGBColor(argb);
+				textInput.setARGBColor(color);
 				this.color = color;
-				if (mouseRelease) colorConsumer.accept(argb);
+				if (mouseRelease) colorConsumer.accept(color);
 			});
-			widget.setRGBColor(textInput.getARGBColor());
+			widget.setARGBColor(textInput.getARGBColor());
 			screen.setPopup(widget, getX(), getBottom());
 		}
 

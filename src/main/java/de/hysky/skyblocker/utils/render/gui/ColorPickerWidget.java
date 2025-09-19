@@ -22,20 +22,43 @@ public class ColorPickerWidget extends ClickableWidget {
 	private static final Identifier SV_THUMB_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "color_picker/sv_thumb");
 
 	private final int[] rainbowColors;
+	/**
+	 * Whether the alpha channel can be changed
+	 */
+	private final boolean hasAlpha;
+	/**
+	 * Mask to have full alpha if {@link ColorPickerWidget#hasAlpha} is {@code false}
+	 */
+	private final int alphaMask;
 
+	/**
+	 * Alpha thumb X
+	 */
+	private double aThumbX = 0;
+	/**
+	 * Hue thumb X
+	 */
 	private double hThumbX = 0;
+	/**
+	 * Saturation/Value thumb X
+	 */
 	private double svThumbX = 0;
+	/**
+	 * Saturation/Value thumb Y
+	 */
 	private double svThumbY = 0;
 
 	private int svColor = 0xFF_FF_00_00;
 
 	private boolean draggingSV = false;
 	private boolean draggingH = false;
+	private boolean draggingA = false;
 
 	private ScreenRect svRect;
 	private ScreenRect hRect;
+	private ScreenRect aRect = ScreenRect.empty();
 
-	private int rgbColor = -1;
+	private int argbColor = -1;
 	private @Nullable Callback onColorChange = null;
 
 	private static int[] createRainbowColors(int samples) {
@@ -45,27 +68,39 @@ public class ColorPickerWidget extends ClickableWidget {
 		}
 		return rainbowColors;
 	}
-
 	public ColorPickerWidget(int x, int y, int width, int height) {
+		this(x, y, width, height, false);
+	}
+
+	public ColorPickerWidget(int x, int y, int width, int height, boolean hasAlpha) {
 		super(x, y, width, height, Text.literal("ColorPicker"));
 		rainbowColors = createRainbowColors(Math.min(width / 20, 8));
+		this.hasAlpha = hasAlpha;
+		this.alphaMask = hasAlpha ? 0 : 0xFF000000;
 		updateRects();
 	}
 
 	@Override
 	public void onRelease(double mouseX, double mouseY) {
 		super.onRelease(mouseX, mouseY);
-		if ((draggingH || draggingSV) && onColorChange != null) {
-			onColorChange.onColorChange(rgbColor, true);
+		if ((draggingH || draggingSV || draggingA) && onColorChange != null) {
+			onColorChange.onColorChange(argbColor | alphaMask, true);
 		}
 		draggingH = false;
 		draggingSV = false;
+		draggingA = false;
 	}
 
 	private void updateRects() {
-		hRect = new ScreenRect(getX() + 1, getBottom() - 9, getWidth() - 2, 8);
-		int i = 15;
-		svRect = new ScreenRect(getX() + 1 + i, getY() + 1, getWidth() - 2 - i, height - hRect.height() - 6);
+		int y = getBottom();
+		if (hasAlpha) {
+			aRect = new ScreenRect(getX() + 1, getBottom() - 9, getWidth() - 2, 8);
+			y = aRect.getTop();
+		}
+		hRect = new ScreenRect(getX() + 1, y - 9 - 4, getWidth() - 2, 8);
+		int previewOffset = 15;
+		int svY = getY() + 1;
+		svRect = new ScreenRect(getX() + 1 + previewOffset, svY, getWidth() - 2 - previewOffset, hRect.getTop() - svY - 4);
 	}
 
 	@Override
@@ -111,6 +146,10 @@ public class ColorPickerWidget extends ClickableWidget {
 			draggingSV = true;
 			onDrag(mouseX, mouseY, 0, 0);
 		}
+		if (hasAlpha && aRect.contains(i, j)) {
+			draggingA = true;
+			onDrag(mouseX, mouseY, 0, 0);
+		}
 	}
 
 	@Override
@@ -124,12 +163,16 @@ public class ColorPickerWidget extends ClickableWidget {
 			svThumbX = Math.clamp(mouseX - svRect.getLeft(), 0, svRect.width() - 1);
 			svThumbY = Math.clamp(mouseY - svRect.getTop(), 0, svRect.height() - 1);
 		}
-		if (draggingH || draggingSV) {
-			rgbColor = Color.HSBtoRGB(
+		if (draggingA) {
+			aThumbX = Math.clamp(mouseX - aRect.getLeft(), 0, aRect.width() - 1);
+		}
+		if (draggingH || draggingSV || draggingA) {
+			float alpha = hasAlpha ? (float) aThumbX / (aRect.width() - 1) : 1f;
+			argbColor = ColorHelper.withAlpha(alpha, Color.HSBtoRGB(
 					(float) (hThumbX / (hRect.width() - 1)),
 					(float) (svThumbX / (svRect.width() - 1)),
-					(float) (1 - (svThumbY / (svRect.height() - 1))));
-			if (onColorChange != null) onColorChange.onColorChange(rgbColor, false);
+					(float) (1 - (svThumbY / (svRect.height() - 1)))));
+			if (onColorChange != null) onColorChange.onColorChange(argbColor, false);
 		}
 	}
 
@@ -146,9 +189,7 @@ public class ColorPickerWidget extends ClickableWidget {
 			float endX = hRect.getLeft() + segmentLength * (i + 1);
 			HudHelper.drawHorizontalGradient(context, startX, hRect.getTop(), endX, hRect.getBottom(), startColor, endColor);
 		}
-		context.fill(hRect.getLeft() + (int) hThumbX - 1, hRect.getTop(), hRect.getLeft() + (int) hThumbX + 2, hRect.getBottom(), Colors.BLACK);
-		context.fill(hRect.getLeft() + (int) hThumbX, hRect.getTop() - 1, hRect.getLeft() + (int) hThumbX + 1, hRect.getBottom() + 1, Colors.BLACK);
-		context.fill(hRect.getLeft() + (int) hThumbX, hRect.getTop(), hRect.getLeft() + (int) hThumbX + 1, hRect.getBottom(), Colors.WHITE);
+		drawThumb(context, hRect, (int) hThumbX);
 
 		// Light and saturation or whatever
 		context.fill(svRect.getLeft() - 1, svRect.getTop() - 1, svRect.getRight() + 1, svRect.getBottom() + 1, color);
@@ -165,19 +206,35 @@ public class ColorPickerWidget extends ClickableWidget {
 				5, 5
 		);
 
+		// Alpha
+		if (hasAlpha) {
+			context.fill(aRect.getLeft() - 1, aRect.getTop() - 1, aRect.getRight() + 1, aRect.getBottom() + 1, color);
+			HudHelper.drawHorizontalGradient(context, aRect.getLeft(), aRect.getTop(), aRect.getRight(), aRect.getBottom(), Colors.BLACK, Colors.WHITE);
+
+			drawThumb(context, aRect, (int) aThumbX);
+
+		}
+
 		// Preview
 		context.fill(getX(), getY(), svRect.getLeft() - 2, svRect.getBottom() + 1, color);
-		context.fill(getX() + 1, getY() + 1, svRect.getLeft() - 3, svRect.getBottom(), rgbColor);
+		context.fill(getX() + 1, getY() + 1, svRect.getLeft() - 3, svRect.getBottom(), argbColor);
 	}
 
-	public int getRGBColor() {
-		return rgbColor;
+	private void drawThumb(DrawContext context, ScreenRect rect, int thumbX) {
+		context.fill(rect.getLeft() + thumbX - 1, rect.getTop(), rect.getLeft() + thumbX + 2, rect.getBottom(), Colors.BLACK);
+		context.fill(rect.getLeft() + thumbX, rect.getTop() - 1, rect.getLeft() + thumbX + 1, rect.getBottom() + 1, Colors.BLACK);
+		context.fill(rect.getLeft() + thumbX, rect.getTop(), rect.getLeft() + thumbX + 1, rect.getBottom(), Colors.WHITE);
 	}
 
-	public void setRGBColor(int rgb) {
-		this.rgbColor = ColorHelper.fullAlpha(rgb);
-		float[] floats = Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, null);
+	public int getARGBColor() {
+		return argbColor;
+	}
+
+	public void setARGBColor(int argb) {
+		this.argbColor = argb | alphaMask;
+		float[] floats = Color.RGBtoHSB((argbColor >> 16) & 0xFF, (argbColor >> 8) & 0xFF, argbColor & 0xFF, null);
 		setHSV(floats[0], floats[1], floats[2]);
+		setAlpha(ColorHelper.getAlphaFloat(argbColor));
 	}
 
 	/**
@@ -191,7 +248,15 @@ public class ColorPickerWidget extends ClickableWidget {
 	}
 
 	/**
-	 * Sets a callback that will be called whenever the color is changed by the user (not when {@link ColorPickerWidget#setRGBColor(int)} is called).
+	 * @param alpha between 0 and 1
+	 */
+	public void setAlpha(float alpha) {
+		if (!hasAlpha) return;
+		aThumbX = alpha * (aRect.width() - 1);
+	}
+
+	/**
+	 * Sets a callback that will be called whenever the color is changed by the user (not when {@link ColorPickerWidget#setARGBColor(int)} is called).
 	 * @param onColorChange The consumer
 	 */
 	public void setOnColorChange(@Nullable Callback onColorChange) {
