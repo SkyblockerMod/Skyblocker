@@ -42,9 +42,9 @@ public class CalculatorCommand {
         MutableText text = Constants.PREFIX.get();
         try {
             text.append(Text.literal(Formatters.DOUBLE_NUMBERS.format(Calculator.calculate(calculation))).formatted(Formatting.GREEN));
-        } catch (UnsupportedOperationException e) {
+        } catch (Calculator.CalculatorException e) {
             text.append(Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").formatted(Formatting.RED));
-			text.append(Text.literal(": ").append(Text.translatable(e.getMessage())).formatted(Formatting.RED));
+			text.append(Text.literal(": ").append(Text.translatable(e.getMessage(), e.args)).formatted(Formatting.RED));
         }
 
         if (CLIENT == null || CLIENT.player == null) {

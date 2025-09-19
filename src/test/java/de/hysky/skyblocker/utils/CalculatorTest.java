@@ -1,10 +1,19 @@
 package de.hysky.skyblocker.utils;
 
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
+import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class CalculatorTest {
+	@BeforeAll
+	public static void setup() {
+		SharedConstants.createGameVersion();
+		Bootstrap.initialize();
+	}
+
 	@Test
 	void testShorthands() {
 		assertCalculation(1000, "1k");
@@ -32,6 +41,27 @@ public class CalculatorTest {
 	}
 
 	@Test
+	void testFunctions() {
+		assertCalculation(2, "sqrt(4)");
+		assertCalculation(2, "log(100)");
+		assertCalculation(4, "lg(16)");
+		assertCalculation(3, "ln(20.0855369231876677409285296545817178969879078385541501443789342296988458780)");
+		assertCalculation(120, "factorial(5)");
+		assertCalculation(0, "sin(0)");
+		assertCalculation(1, "cos(0)");
+		assertCalculation(0, "tan(0)");
+		assertCalculation(1, "abs(1)");
+		assertCalculation(1, "floor(1.9)");
+		assertCalculation(2, "ceil(1.1)");
+		assertCalculation(3, "round(2.5)");
+	}
+
+	@Test
+	void testCalculations() {
+		assertCalculation(30, "5(2*sqrt(36)+3log(1))/2");
+	}
+
+	@Test
 	void testImplicitMultiplication() {
 		assertCalculation(20, "5(2 + 2)");
 	}
@@ -48,10 +78,10 @@ public class CalculatorTest {
 	}
 
 	private void assertCalculation(double expected, String input) {
-		Assertions.assertEquals(expected, Calculator.calculate(input));
+		Assertions.assertDoesNotThrow(() -> Assertions.assertEquals(expected, Calculator.calculate(input)));
 	}
 
 	private void assertThrows(String input) {
-		Assertions.assertThrows(UnsupportedOperationException.class, () -> Calculator.calculate(input));
+		Assertions.assertThrows(Calculator.CalculatorException.class, () -> Calculator.calculate(input));
 	}
 }

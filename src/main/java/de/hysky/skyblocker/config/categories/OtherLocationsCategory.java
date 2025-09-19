@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.end.EndHudWidget;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
@@ -109,6 +110,14 @@ public class OtherLocationsCategory {
 										() -> config.otherLocations.end.enableEnderNodeHelper,
 										newValue -> config.otherLocations.end.enableEnderNodeHelper = newValue)
 								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Waypoint.Type>createBuilder()
+								.name(Text.translatable("skyblocker.config.otherLocations.end.enderNodeWaypointType"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"))
+								.binding(defaults.otherLocations.end.enderNodeWaypointType,
+										() -> config.otherLocations.end.enderNodeWaypointType,
+										newValue -> config.otherLocations.end.enderNodeWaypointType = newValue)
+								.controller(ConfigUtils.createEnumController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.otherLocations.end.hudEnabled"))
