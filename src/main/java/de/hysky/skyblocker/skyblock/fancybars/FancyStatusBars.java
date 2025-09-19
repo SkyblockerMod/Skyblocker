@@ -315,7 +315,11 @@ public class FancyStatusBars {
 		Collection<StatusBar> barCollection = statusBars.values();
 		for (StatusBar statusBar : barCollection) {
 			if (!statusBar.enabled || !statusBar.visible) continue;
-			statusBar.render(context, -1, -1, client.getRenderTickCounter().getDynamicDeltaTicks());
+			statusBar.renderBar(context);
+		}
+		for (StatusBar statusBar : barCollection) {
+			if (!statusBar.enabled || !statusBar.visible) continue;
+			statusBar.renderText(context);
 		}
 
 		StatusBarTracker.Resource health = StatusBarTracker.getHealth();
