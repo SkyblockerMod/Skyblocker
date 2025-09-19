@@ -103,7 +103,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 			}
 
 			if (processingContents) {
-				if (lineString.contains("Essence")) {
+				if (lineString.contains("Essence") && SkyblockerConfigManager.get().dungeons.dungeonChestProfit.includeEssence) {
 					Matcher matcher = ESSENCE_PATTERN.matcher(lineString);
 					if (matcher.matches()) {    // add to chest value result of multiplying price of essence on it's amount
 						chestValue += getItemPrice(("ESSENCE_" + matcher.group("type")).toUpperCase(Locale.ENGLISH)) * Integer.parseInt(matcher.group("amount"));
