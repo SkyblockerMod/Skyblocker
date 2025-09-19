@@ -9,6 +9,7 @@ import de.hysky.skyblocker.utils.container.TooltipAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -75,6 +76,8 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
 		if (focusedSlot == null || !focusedSlot.hasStack()) return;
+		if (!focusedSlot.getStack().isOf(Items.PLAYER_HEAD)) return;
+
 		double value = getChestValue(focusedSlot.getStack());
 		lines.add(Constants.PREFIX.get().append(
 				Text.translatable("skyblocker.dungeons.croesusHelper.chestValue", Formatters.INTEGER_NUMBERS.format(value))
