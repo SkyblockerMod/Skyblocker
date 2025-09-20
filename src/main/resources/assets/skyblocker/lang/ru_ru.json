@@ -895,7 +895,7 @@
     "skyblocker.armorCustomization.delay": "Задержка: %s",
     "skyblocker.armorCustomization.duration": "Длительность: %s",
     "skyblocker.armorCustomization.durationTooltip": "Длительность анимации в секундах.",
-    "skyblocker.armorCustomization.title": "Персонализировать Свою Броню",
+    "skyblocker.customization.title": "Персонализировать Свою Броню",
     "skyblocker.tips.waypoints": "Вы можете импортировать (включая с skytils), добавить, удалить и переключать метки на любом острове используя /skyblocker waypoints.",
     "skyblocker.corpseTracker.totalProfit": "Общий Профит: %s%s",
     "skyblocker.powderTracker.profit": "Профит: %s Монет",
