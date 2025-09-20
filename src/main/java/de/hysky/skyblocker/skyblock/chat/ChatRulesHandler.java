@@ -51,10 +51,10 @@ public class ChatRulesHandler {
 
 	@VisibleForTesting
 	static List<ChatRule> getDefaultChatRules() {
-		return List.of(
+		return new ArrayList<>(List.of(
 				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, false, false, "", null),
 				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, false, true, "&1Ability", SoundEvents.ENTITY_ARROW_HIT_PLAYER)
-		);
+		));
 	}
 
 	/**
