@@ -51,7 +51,7 @@ public class ContainerSolverManager {
 			new StartsWithTerminal(),
 			new LightsOnTerminal(),
 			new CroesusHelper(),
-			new CroesusProfit(),
+			CroesusProfit.INSTANCE,
 			new SalvageHelper(),
 			new ChronomatronSolver(),
 			new CommissionHighlight(),
