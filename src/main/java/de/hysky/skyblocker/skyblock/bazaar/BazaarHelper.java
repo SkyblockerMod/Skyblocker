@@ -33,6 +33,15 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 	}
 
 	@Override
+	public boolean test(@NotNull String title) {
+		if (super.test(title)) {
+			BazaarOrderTracker.INSTANCE.clearOrders();
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
 		if (slot == null) return List.of();
 		// Skip the first row as it's always glass panes.
@@ -45,6 +54,8 @@ public class BazaarHelper extends SimpleSlotTextAdder {
 
 		ItemStack item = slot.getStack();
 		if (item.isEmpty()) return List.of(); //We've skipped all invalid slots, so we can just check if it's not air here.
+
+		BazaarOrderTracker.INSTANCE.processOrder(item, slotId);
 
 		Matcher matcher = ItemUtils.getLoreLineIfMatch(item, FILLED_PATTERN);
 		if (matcher != null) {
