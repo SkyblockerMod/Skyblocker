@@ -103,21 +103,21 @@ public class CrystalsLocationsManager {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(NucleusWaypoints::render);
 
         // Verify waypoints by left- or right-clicking on an NPC such as Odawa, Boss Corleone, or Kalhuiki Door Guardian, etc.
-        AttackEntityCallback.EVENT.register(CrystalsLocationsManager::OnEntryInteract);
-        UseEntityCallback.EVENT.register(CrystalsLocationsManager::OnEntryInteract);
+        AttackEntityCallback.EVENT.register(CrystalsLocationsManager::onEntryInteract);
+        UseEntityCallback.EVENT.register(CrystalsLocationsManager::onEntryInteract);
     }
 
     // Verify waypoints when interacting with an NPC
-    private static ActionResult OnEntryInteract(PlayerEntity playerEntity, World world, Hand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
+    private static ActionResult onEntryInteract(PlayerEntity playerEntity, World world, Hand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
         if (!Utils.isInCrystalHollows()) {
             return ActionResult.PASS;
         }
         // Searching for an invisible armor stand behind an entity (it has the entity’s name)
         String npcName = MobGlow.getArmorStandName(entity);
 
-        CrystalHollowsLocationsCategory waypointLocation = CrystalHollowsLocationsCategory.findNpcNameBySubstring(npcName);
+        CrystalHollowsLocationsCategory waypointLocation = CrystalHollowsLocationsCategory.fromContainsIdentifyingText(npcName);
         if (waypointLocation != null && !npcName.isBlank()) {
-            BlockPos pos = CLIENT.player.getBlockPos();
+            BlockPos pos = entity.getBlockPos();
             placeVerifiedWaypoint(waypointLocation, pos);
         }
 
@@ -164,12 +164,11 @@ public class CrystalsLocationsManager {
 
                     CLIENT.player.sendMessage(getLocationMenu(location, false), false);
                 }
-            }
-            else { // if not user message, trying to find key words in the chat to place waypoint more accurate, if not already verifed
+            } else { // if not a user message, try to find keywords in the chat to place waypoint more accurate, if not already verifed
                 if (CLIENT.player != null && SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled) {
                     // Iterate only through waypoints with crystal names
                     for (MiningLocationLabel.CrystalHollowsLocationsCategory waypointLocation : CHAT_VERIFIABLE_WAYPOINTS) {
-                        @Nullable String waypointLinkedMessage = waypointLocation.getNpcName();
+                        String waypointLinkedMessage = waypointLocation.getIdentifyingText();
                         if (waypointLinkedMessage != null && text.contains(waypointLinkedMessage)) {
                             placeVerifiedWaypoint(waypointLocation, CLIENT.player.getBlockPos());
                         }
@@ -445,22 +444,18 @@ public class CrystalsLocationsManager {
     }
 
     // Check if new coords are distant enough from old coords (return true if too close)
-    private static boolean isWaypointsOverlaping(BlockPos newCoords, MiningLocationLabel oldwaypoint, int searchRadius) {
-        if (oldwaypoint == null || searchRadius ==  0) return true;
+    private static boolean areWaypointsOverlapping(BlockPos newPos, MiningLocationLabel oldWaypoint, int searchRadius) {
+        if (oldWaypoint == null || searchRadius ==  0) return false;
 
-        int diffx = Math.abs(newCoords.getX() - oldwaypoint.pos.getX());
-        int diffz = Math.abs(newCoords.getZ() - oldwaypoint.pos.getZ());
-        int diffy = Math.abs(newCoords.getY() - oldwaypoint.pos.getY());
-
-        return diffx < searchRadius || diffz < searchRadius || diffy < searchRadius;
+		return newPos.getSquaredDistance(oldWaypoint.pos) < searchRadius * searchRadius;
     }
 
     private static void placeVerifiedWaypoint(CrystalHollowsLocationsCategory waypoint, BlockPos pos) {
         String waypointName = waypoint.getName();
 
         if (!verifiedWaypoints.contains(waypointName)) {
-            // Check that we dont already have same waypoint nearby (e.g from Socket), should (theoretically) save some trafic for the server
-            if (!isWaypointsOverlaping(pos, activeWaypoints.get(waypointName), waypoint.getSearchRadius())) {
+            // Check that we don't already have the same waypoint nearby (e.g., from Socket), should (theoretically) save some traffic for the server
+            if (!areWaypointsOverlapping(pos, activeWaypoints.get(waypointName), waypoint.getSearchRadius())) {
                 trySendWaypoint2Socket(waypoint);
             }
             addCustomWaypoint(waypointName, pos);
