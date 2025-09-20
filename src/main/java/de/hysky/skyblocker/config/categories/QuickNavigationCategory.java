@@ -62,6 +62,13 @@ public class QuickNavigationCategory {
                                 newValue -> button.render = newValue)
                         .controller(ConfigUtils.createBooleanController())
                         .build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.quickNav.button.doubleClick"))
+						.binding(defaultButton.doubleClick,
+								() -> button.doubleClick,
+								newValue -> button.doubleClick = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 				.option(ButtonOption.createBuilder()
 						.name(Text.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem"))
 						.description(Text.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip"))
