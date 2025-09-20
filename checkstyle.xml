@@ -137,5 +137,12 @@
             "/>
             <message key="matchxpath.match" value="Inject local capture is not allowed, use @Local instead"/>
         </module>
+
+        <!-- Prevent String#toLowerCase/toUpperCase without a given Locale to prevent localization issues -->
+        <!-- Not specifying a locale is error prone as it can easily lead to silent breakages with some locales! -->
+        <module name = "MatchXpath">
+            <property name="query" value="//METHOD_CALL[./DOT/IDENT[@text='toLowerCase' or @text='toUpperCase']]/ELIST[count(./*) = 0]"/>
+            <message key="matchxpath.match" value="String#toLowerCase/toUpperCase calls must specify a locale, English recommended"/>
+        </module>
     </module>
 </module>

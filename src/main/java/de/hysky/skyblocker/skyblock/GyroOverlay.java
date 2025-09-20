@@ -14,6 +14,7 @@ import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
+import java.util.Locale;
 
 
 public class GyroOverlay {
@@ -96,7 +97,7 @@ public class GyroOverlay {
 
 		@Override
 		public String asString() {
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ENGLISH);
 		}
 
 		@Override

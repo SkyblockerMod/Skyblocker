@@ -9,6 +9,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
+import java.util.Locale;
 
 // this widget shows your dungeon essences (dungeon hub only)
 @RegisterWidget
@@ -24,7 +25,7 @@ public class EssenceWidget extends TabHudWidget {
 	@Override
 	public void updateContent(List<Text> lines) {
 		for (Text line : lines) {
-			switch (line.getString().toLowerCase()) {
+			switch (line.getString().toLowerCase(Locale.ENGLISH)) {
 				case String s when s.contains("wither") -> this.addComponent(Components.iconTextComponent(Ico.WITHER, line));
 				case String s when s.contains("spider") -> this.addComponent(Components.iconTextComponent(Ico.STRING, line));
 				case String s when s.contains("undead") -> this.addComponent(Components.iconTextComponent(Ico.FLESH, line));

@@ -179,11 +179,11 @@ public class SearchOverManager {
 					//add names that are pets to the list of pets to work with the lvl 100 button
 					if (name != null && name.startsWith(PET_NAME_START)) {
 						name = name.replace(PET_NAME_START, "");
-						auctionPets.add(name.toLowerCase());
+						auctionPets.add(name.toLowerCase(Locale.ENGLISH));
 					}
 					//if it has essence cost add to starable items
 					if (name != null && essenceCosts.contains(neuItem.getSkyblockItemId())) {
-						starableItems.add(name.toLowerCase());
+						starableItems.add(name.toLowerCase(Locale.ENGLISH));
 					}
 					auctionItems.add(name);
 					namesToNeuId.put(name, id);
@@ -267,7 +267,7 @@ public class SearchOverManager {
 	}
 
 	protected static String[] updateSuggestions(Set<String> items, int totalSuggestions) {
-		return items.stream().sorted(Comparator.comparing(SearchOverManager::shouldFrontLoad, Comparator.reverseOrder())).filter(item -> item.toLowerCase().contains(search.toLowerCase())).limit(totalSuggestions).toArray(String[]::new);
+		return items.stream().sorted(Comparator.comparing(SearchOverManager::shouldFrontLoad, Comparator.reverseOrder())).filter(item -> item.toLowerCase(Locale.ENGLISH).contains(search.toLowerCase(Locale.ENGLISH))).limit(totalSuggestions).toArray(String[]::new);
 	}
 
 	/**
@@ -280,7 +280,7 @@ public class SearchOverManager {
 		if (location != SearchLocation.AUCTION) return false;
 
 		//do nothing to non pets
-		if (!auctionPets.contains(name.toLowerCase())) {
+		if (!auctionPets.contains(name.toLowerCase(Locale.ENGLISH))) {
 			return false;
 		}
 		//only front load pets when there is enough of the pet typed, so it does not spoil searching for other items
@@ -406,7 +406,7 @@ public class SearchOverManager {
 			addExtras();
 		}
 		// Fix Bazaar bug - Search doesn't work if input from sign contains "null" (blocks null ovoid, etc.)
-		if (location == SearchLocation.BAZAAR && !isCommand && search.toLowerCase().contains("null")) {
+		if (location == SearchLocation.BAZAAR && !isCommand && search.toLowerCase(Locale.ENGLISH).contains("null")) {
 			search = "\"%s\"".formatted(search);
 		}
 		//push
@@ -423,7 +423,7 @@ public class SearchOverManager {
 	private static void addExtras() {
 		// pet level
 		if (maxPetLevel) {
-			if (auctionPets.contains(search.toLowerCase())) {
+			if (auctionPets.contains(search.toLowerCase(Locale.ENGLISH))) {
 				if (search.equalsIgnoreCase("golden dragon") || search.equalsIgnoreCase("jade dragon")) {
 					search = "[Lvl 200] " + search;
 				} else {
@@ -432,7 +432,7 @@ public class SearchOverManager {
 			}
 		} else {
 			// still filter for only pets
-			if (auctionPets.contains(search.toLowerCase())) {
+			if (auctionPets.contains(search.toLowerCase(Locale.ENGLISH))) {
 				// add bracket so only get pets
 				search = "] " + search;
 			}
@@ -440,7 +440,7 @@ public class SearchOverManager {
 
 		// dungeon stars
 		// check if it's a dungeon item and if so add correct stars
-		if (dungeonStars > 0 && starableItems.contains(search.toLowerCase())) {
+		if (dungeonStars > 0 && starableItems.contains(search.toLowerCase(Locale.ENGLISH))) {
 			StringBuilder starString = new StringBuilder(" ");
 			//add stars up to 5
 			starString.append("✪".repeat(Math.max(0, Math.min(dungeonStars, 5))));

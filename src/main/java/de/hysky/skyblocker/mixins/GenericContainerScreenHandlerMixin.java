@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.List;
+import java.util.Locale;
 
 @Mixin(GenericContainerScreenHandler.class)
 public abstract class GenericContainerScreenHandlerMixin extends ScreenHandler {
@@ -30,10 +31,10 @@ public abstract class GenericContainerScreenHandlerMixin extends ScreenHandler {
         Screen currentScreen = MinecraftClient.getInstance().currentScreen;
         switch (currentScreen) {
             case PartyFinderScreen screen -> screen.markDirty();
-            case GenericContainerScreen screen when screen.getTitle().getString().toLowerCase().contains("equipment") -> {
+            case GenericContainerScreen screen when screen.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("equipment") -> {
                 int line = slot / 9;
                 if (line > 0 && line < 5 && slot % 9 == 1) {
-                    boolean empty = stack.getName().getString().trim().toLowerCase().startsWith("empty");
+                    boolean empty = stack.getName().getString().trim().toLowerCase(Locale.ENGLISH).startsWith("empty");
                     if (Utils.isInTheRift())
                         SkyblockInventoryScreen.equipment_rift[line - 1] = empty ? ItemStack.EMPTY : stack;
                     else

@@ -12,6 +12,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
 import java.util.List;
+import java.util.Locale;
 
 public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	private final ButtonWidget editButton;
@@ -34,7 +35,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 		enableButton = ButtonWidget.builder(state.equals(State.ENABLED) ? ENABLED_TEXT : DISABLED_TEXT, button -> this.parent.clickAndWaitForServer(this.slotId, 0))
 				.size(64, 12)
 				.build();
-		alwaysEnabled = ItemUtils.getLoreLineIf(icon, s -> s.toLowerCase().contains("always enable")) != null;
+		alwaysEnabled = ItemUtils.getLoreLineIf(icon, s -> s.toLowerCase(Locale.ENGLISH).contains("always enable")) != null;
 
 	}
 

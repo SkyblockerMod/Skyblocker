@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,7 +87,7 @@ public class CroesusProfit extends SimpleContainerSolver {
                 if (lineString.contains("Essence")) {
                     Matcher matcher = ESSENCE_PATTERN.matcher(lineString);
                     if (matcher.matches()) {    // add to chest value result of multiplying price of essence on it's amount
-                        chestValue += getItemPrice(("ESSENCE_" + matcher.group("type")).toUpperCase()) * Integer.parseInt(matcher.group("amount"));
+                        chestValue += getItemPrice(("ESSENCE_" + matcher.group("type")).toUpperCase(Locale.ENGLISH)) * Integer.parseInt(matcher.group("amount"));
                     }
                 } else {
                     if (lineString.contains("Spirit")) {    // TODO: make code like this to detect recombed gear (it can drop with 1% chance, according to wiki, tho I never saw any?)

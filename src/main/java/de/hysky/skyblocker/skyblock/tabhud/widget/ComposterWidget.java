@@ -10,6 +10,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
+import java.util.Locale;
 
 // this widget shows info about the garden's composter
 @RegisterWidget
@@ -26,7 +27,7 @@ public class ComposterWidget extends TabHudWidget {
 	public void updateContent(List<Text> lines) {
 
 		for (Text line : lines) {
-			switch (line.getString().toLowerCase()) {
+			switch (line.getString().toLowerCase(Locale.ENGLISH)) {
 				case String s when s.contains("organic") -> this.addComponent(Components.iconTextComponent(Ico.SAPLING, line));
 				case String s when s.contains("fuel") -> this.addComponent(Components.iconTextComponent(Ico.FURNACE, line));
 				case String s when s.contains("time") -> this.addComponent(Components.iconTextComponent(Ico.CLOCK, line));

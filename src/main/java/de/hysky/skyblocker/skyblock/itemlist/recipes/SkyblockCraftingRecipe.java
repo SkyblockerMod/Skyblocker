@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SkyblockCraftingRecipe implements SkyblockRecipe {
 
@@ -77,7 +78,7 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
 
     @Override
     public Identifier getRecipeIdentifier() {
-        return Identifier.of("skyblock", ItemUtils.getItemId(getResult()).toLowerCase().replace(';', '_') + "_" + getResult().getCount());
+        return Identifier.of("skyblock", ItemUtils.getItemId(getResult()).toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + getResult().getCount());
 
     }
 

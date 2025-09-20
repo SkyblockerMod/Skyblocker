@@ -39,6 +39,7 @@ import java.awt.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
@@ -276,7 +277,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     categoryTabWidget.setIcon(handler.getSlot(slotId).getStack());
                     List<Text> tooltipDefault = ItemUtils.getLore(handler.getSlot(slotId).getStack());
                     for (int j = tooltipDefault.size() - 1; j >= 0; j--) {
-                        String lowerCase = tooltipDefault.get(j).getString().toLowerCase();
+                        String lowerCase = tooltipDefault.get(j).getString().toLowerCase(Locale.ENGLISH);
                         if (lowerCase.contains("currently")) {
                             categoryTabWidget.setToggled(true);
                             break;
@@ -291,7 +292,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     for (int k = tooltip.size() - 1; k >= 0; k--) {
                         Text text = tooltip.get(k);
                         String string = text.getString();
-                        if (string.toLowerCase().contains("buy it now:")) {
+                        if (string.toLowerCase(Locale.ENGLISH).contains("buy it now:")) {
                             String[] split = string.split(":");
                             if (split.length < 2) continue;
                             String coins = split[1].replace(",", "").replace("coins", "").trim();

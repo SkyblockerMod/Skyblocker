@@ -52,9 +52,9 @@ public class DungeonRoomsDFU {
                     List<CompletableFuture<Void>> roomShapeFutures = new ArrayList<>();
                     HashMap<String, HashMap<String, long[]>> roomShapesMap = new HashMap<>();
                     for (Path roomShape : roomShapes) {
-                        roomShapeFutures.add(CompletableFuture.supplyAsync(() -> readRooms(roomShape, resourcePathIndex)).thenAccept(rooms -> roomShapesMap.put(roomShape.getFileName().toString().toLowerCase(), rooms)));
+                        roomShapeFutures.add(CompletableFuture.supplyAsync(() -> readRooms(roomShape, resourcePathIndex)).thenAccept(rooms -> roomShapesMap.put(roomShape.getFileName().toString().toLowerCase(Locale.ENGLISH), rooms)));
                     }
-                    OLD_ROOMS.put(dungeon.getFileName().toString().toLowerCase(), roomShapesMap);
+                    OLD_ROOMS.put(dungeon.getFileName().toString().toLowerCase(Locale.ENGLISH), roomShapesMap);
                     dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getFileName(), roomShapesMap.size(), roomShapesMap.values().stream().mapToInt(HashMap::size).sum())));
                 } catch (IOException e) {
                     LOGGER.error("Failed to load dungeon secrets for dungeon " + dungeon.getFileName(), e);
@@ -73,7 +73,7 @@ public class DungeonRoomsDFU {
                 String name = room.getFileName().toString();
                 //noinspection DataFlowIssue
                 try (ObjectInputStream in = new ObjectInputStream(new InflaterInputStream(DungeonRoomsDFU.class.getResourceAsStream(room.toString().substring(resourcePathIndex))))) {
-                    roomsData.put(name.substring(0, name.length() - 9).toLowerCase(), (long[]) in.readObject());
+                    roomsData.put(name.substring(0, name.length() - 9).toLowerCase(Locale.ENGLISH), (long[]) in.readObject());
                     LOGGER.info("Loaded dungeon secrets room {}", name);
                 } catch (NullPointerException | IOException | ClassNotFoundException e) {
                     LOGGER.error("Failed to load dungeon secrets room " + name, e);

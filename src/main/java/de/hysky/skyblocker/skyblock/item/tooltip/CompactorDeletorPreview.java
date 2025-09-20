@@ -15,6 +15,7 @@ import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ public class CompactorDeletorPreview {
         // Get the slots and their items from the nbt, which is in the format personal_compact_<slot_number> or personal_deletor_<slot_number>
         List<IntObjectPair<ItemStack>> slots = customData.getKeys()
                                                          .stream()
-                                                         .filter(slot -> slot.contains(type.toLowerCase().substring(0, 7)))
+                                                         .filter(slot -> slot.contains(type.toLowerCase(Locale.ENGLISH).substring(0, 7)))
                                                          .map(slot -> IntObjectPair.of(Integer.parseInt(StringUtils.substringAfterLast(slot, "_")), ItemRepository.getItemStack(customData.getString(slot, "")))).toList();
 
         List<TooltipComponent> components = tooltips.stream().map(Text::asOrderedText).map(TooltipComponent::of).collect(Collectors.toList());

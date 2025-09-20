@@ -239,8 +239,8 @@ public class ChatRule {
 		if (!enabled) return Match.noMatch();
 
 		//ignore case
-		String testString = isIgnoreCase ? inputString.toLowerCase() : inputString;
-		String testFilter = isIgnoreCase ? filter.toLowerCase() : filter;
+		String testString = isIgnoreCase ? inputString.toLowerCase(Locale.ENGLISH) : inputString;
+		String testFilter = isIgnoreCase ? filter.toLowerCase(Locale.ENGLISH) : filter;
 		if (testFilter.isBlank()) return Match.noMatch();
 
 		//filter

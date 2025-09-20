@@ -106,7 +106,7 @@ public class CrystalsLocationsManager {
 
                     //see if there is a name of a location to add to this
                     for (String waypointLocation : WAYPOINT_LOCATIONS.keySet()) {
-                        if (Arrays.stream(waypointLocation.toLowerCase().split(" ")).anyMatch(word -> userMessage.toLowerCase().contains(word))) { //check if contains a word of location
+                        if (Arrays.stream(waypointLocation.toLowerCase(Locale.ENGLISH).split(" ")).anyMatch(word -> userMessage.toLowerCase(Locale.ENGLISH).contains(word))) { //check if contains a word of location
                             //all data found to create waypoint
                             //make sure the waypoint does not already exist in active waypoints, so waypoints can not get randomly moved
                             if (!activeWaypoints.containsKey(waypointLocation)) {

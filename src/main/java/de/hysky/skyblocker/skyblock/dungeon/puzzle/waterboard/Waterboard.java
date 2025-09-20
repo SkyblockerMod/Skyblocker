@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard;
 
+import java.util.Locale;
+
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
@@ -90,7 +92,7 @@ public class Waterboard {
 
 		@Override
 		public String asString() {
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ENGLISH);
 		}
 
 		public static class LeverTypeArgumentType extends EnumArgumentType<LeverType> {

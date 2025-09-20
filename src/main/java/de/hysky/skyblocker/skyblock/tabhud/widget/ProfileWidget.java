@@ -9,6 +9,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
+import java.util.Locale;
 
 // this widget shows info about your profile and bank
 @RegisterWidget
@@ -25,7 +26,7 @@ public class ProfileWidget extends TabHudWidget {
 		this.addComponent(Components.iconTextComponent(Ico.SIGN, Text.literal("Profile: ").append(lines.getFirst())));
 		for (int i = 1; i < lines.size(); i++) {
 			Text text = lines.get(i);
-			switch (text.getString().toLowerCase()) {
+			switch (text.getString().toLowerCase(Locale.ENGLISH)) {
 				case String s when s.contains("bank") -> this.addComponent(Components.iconTextComponent(Ico.GOLD, text));
 				case String s when s.contains("interest") -> this.addComponent(Components.iconTextComponent(Ico.CLOCK, text));
 				case String s when s.contains("pet") -> this.addComponent(Components.iconTextComponent(Ico.BONE, text));

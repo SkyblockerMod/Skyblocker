@@ -17,6 +17,9 @@ import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
+import java.util.Locale;
+
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -71,12 +74,12 @@ public class InventorySearch {
 
 	public static boolean slotMatches(Slot slot) {
 		return slotToMatch.computeIfAbsent(slot.id, i -> slot.hasStack() &&
-				(slot.getStack().getName().getString().toLowerCase().contains(search) || ItemUtils.getLoreLineIf(slot.getStack(), s -> s.toLowerCase().contains(search)) != null));
+				(slot.getStack().getName().getString().toLowerCase(Locale.ENGLISH).contains(search) || ItemUtils.getLoreLineIf(slot.getStack(), s -> s.toLowerCase(Locale.ENGLISH).contains(search)) != null));
 	}
 
 	private static void onSearchTyped(String text) {
 		slotToMatch.clear();
-		search = text.toLowerCase();
+		search = text.toLowerCase(Locale.ENGLISH);
 	}
 
 	private static void onScreenClosed(Screen screen) {

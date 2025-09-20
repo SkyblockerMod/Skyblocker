@@ -576,12 +576,18 @@ public final class ItemUtils {
     	return matcher != null ? RegexUtils.parseOptionalIntFromMatcher(matcher, "shards") : OptionalInt.empty();
     }
 
+    /**
+     * @deprecated Use {@link de.hysky.skyblocker.injected.SkyblockerStack#getSkyblockRarity()} instead which yields greater performance.
+     */
 	@NotNull
+	@Deprecated
 	public static SkyblockItemRarity getItemRarity(@NotNull ItemStack stack) {
 		if (stack.isEmpty()) return SkyblockItemRarity.UNKNOWN;
 
 		if (!stack.getSkyblockId().equals("PET")) {
-			return ItemUtils.getLore(stack).stream()
+			return ItemUtils.getLore(stack)
+					.reversed()
+					.stream()
 					.map(Text::getString)
 					.map(SkyblockItemRarity::containsName)
 					.flatMap(Optional::stream)

@@ -385,10 +385,10 @@ public class PartyFinderScreen extends Screen {
                 if (slot.getStack().isOf(Items.PLAYER_HEAD)) {
                     assert this.client != null;
                     parties.add(new PartyEntry(ItemUtils.getLore(slot.getStack()), this, slot.id));
-                } else if (slot.getStack().isOf(Items.ARROW) && slot.getStack().getName().getString().toLowerCase().contains("previous")) {
+                } else if (slot.getStack().isOf(Items.ARROW) && slot.getStack().getName().getString().toLowerCase(Locale.ENGLISH).contains("previous")) {
                     prevPageSlotId = slot.id;
                     previousPageButton.active = true;
-                } else if (slot.getStack().isOf(Items.ARROW) && slot.getStack().getName().getString().toLowerCase().contains("next")) {
+                } else if (slot.getStack().isOf(Items.ARROW) && slot.getStack().getName().getString().toLowerCase(Locale.ENGLISH).contains("next")) {
                     nextPageSlotId = slot.id;
                     nextPageButton.active = true;
                 }

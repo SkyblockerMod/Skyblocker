@@ -13,6 +13,7 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import de.hysky.skyblocker.utils.ItemUtils;
 
@@ -52,7 +53,7 @@ public class FinderSettingsContainer extends ContainerWidget {
      * @return returns false if it doesn't know what's happening
      */
     public boolean handle(PartyFinderScreen screen, String inventoryName) {
-        String nameLowerCase = inventoryName.toLowerCase();
+        String nameLowerCase = inventoryName.toLowerCase(Locale.ENGLISH);
         GenericContainerScreenHandler handler = screen.getHandler();
         if (!isInitialized) {
             if (!nameLowerCase.contains("search settings")) return false;
@@ -63,7 +64,7 @@ public class FinderSettingsContainer extends ContainerWidget {
                 if (!slot.hasStack()) continue;
                 ItemStack stack = slot.getStack();
                 //System.out.println(stack.toString());
-                String name = stack.getName().getString().toLowerCase();
+                String name = stack.getName().getString().toLowerCase(Locale.ENGLISH);
                 if (name.contains("floor")) {
 
                     //System.out.println("Floor selector created");
@@ -160,7 +161,7 @@ public class FinderSettingsContainer extends ContainerWidget {
      */
     private boolean setRangeFromTooltip(ItemStack stack, RangedValueWidget widget) {
         for (Text text : ItemUtils.getLore(stack)) {
-            String textLowerCase = text.getString().toLowerCase();
+            String textLowerCase = text.getString().toLowerCase(Locale.ENGLISH);
             if (textLowerCase.contains("selected:")) {
                 String[] split = text.getString().split(":");
                 if (split.length < 2) return false;
@@ -185,7 +186,7 @@ public class FinderSettingsContainer extends ContainerWidget {
      */
     private boolean setSelectedElementFromTooltip(Slot slot, ItemStack stack, OptionDropdownWidget dropdownWidget) {
         for (Text text : ItemUtils.getLore(stack)) {
-            String textLowerCase = text.getString().toLowerCase();
+            String textLowerCase = text.getString().toLowerCase(Locale.ENGLISH);
             if (textLowerCase.contains("selected:")) {
                 String[] split = text.getString().split(":");
                 if (split.length < 2) return false;
@@ -209,7 +210,7 @@ public class FinderSettingsContainer extends ContainerWidget {
 
     private boolean updateValues(SignBlockEntity sign, boolean front, RangedValueWidget valueWidget) {
         RangedValueWidget.State state;
-        String lowerCase = sign.getText(front).getMessage(3, false).getString().toLowerCase();
+        String lowerCase = sign.getText(front).getMessage(3, false).getString().toLowerCase(Locale.ENGLISH);
         if (lowerCase.contains("max")) {
             state = RangedValueWidget.State.MODIFYING_MAX;
         } else if (lowerCase.contains("min")) {
@@ -239,9 +240,9 @@ public class FinderSettingsContainer extends ContainerWidget {
         int max = -1;
         for (Slot slot : handler.slots) {
             if (slot.id > (handler.getRows() - 1) * 9 - 1) break;
-            if (slot.hasStack() && slot.getStack().getName().getString().toLowerCase().contains("min")) {
+            if (slot.hasStack() && slot.getStack().getName().getString().toLowerCase(Locale.ENGLISH).contains("min")) {
                 min = slot.id;
-            } else if (slot.hasStack() && slot.getStack().getName().getString().toLowerCase().contains("max")) {
+            } else if (slot.hasStack() && slot.getStack().getName().getString().toLowerCase(Locale.ENGLISH).contains("max")) {
                 max = slot.id;
             }
         }

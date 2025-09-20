@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -236,7 +237,7 @@ public class GoldorWaypointsManager {
 
             @Override
             public String asString() {
-                return name().toLowerCase();
+                return name().toLowerCase(Locale.ENGLISH);
             }
         }
     }

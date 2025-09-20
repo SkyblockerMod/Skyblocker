@@ -9,6 +9,8 @@ public class HuntingConfig {
 
 	public HuntingMobs huntingMobs = new HuntingMobs();
 
+	public LassoHud lassoHud = new LassoHud();
+
 	public static class HuntingBox {
 		public boolean enabled = true;
 	}
@@ -22,5 +24,9 @@ public class HuntingConfig {
 		public Color shellwiseGlowColor = new Color(DyeColor.ORANGE.getSignColor(), false);
 		public boolean highlightCoralot = true;
 		public Color coralotGlowColor = new Color(DyeColor.BLUE.getSignColor(), false);
+	}
+
+	public static class LassoHud {
+		public boolean enabled = true;
 	}
 }

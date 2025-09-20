@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 
 // TODO: recommend disabling spacing and enabling wrapping
@@ -177,9 +178,9 @@ public class WidgetsListTab implements Tab {
 		}
 
 
-		String lowerCase = stack.getName().getString().trim().toLowerCase();
+		String lowerCase = stack.getName().getString().trim().toLowerCase(Locale.ENGLISH);
 		List<Text> lore = ItemUtils.getLore(stack);
-		String lastLowerCase = lore.getLast().getString().toLowerCase();
+		String lastLowerCase = lore.getLast().getString().toLowerCase(Locale.ENGLISH);
 
 		WidgetsListSlotEntry entry;
 		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.isOf(Items.RED_STAINED_GLASS_PANE)) {

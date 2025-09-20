@@ -52,11 +52,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 			Map.entry("PUMPKIN_DICER_3", "PUMPKIN"),
 			Map.entry("COCO_CHOPPER", "INK_SACK:3"),
 			Map.entry("BASIC_GARDENING_HOE", ""),
-			Map.entry("ADVANCED_GARDENING_HOE", ""),
-
-			//Tools popularly used for farming that weren't intended to be
-			Map.entry("DAEDALUS_AXE", "RED_MUSHROOM"),
-			Map.entry("STARRED_DAEDALUS_AXE", "RED_MUSHROOM")
+			Map.entry("ADVANCED_GARDENING_HOE", "")
 	);
 	private static FarmingHudWidget instance = null;
 

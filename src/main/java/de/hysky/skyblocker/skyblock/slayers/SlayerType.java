@@ -50,7 +50,7 @@ public enum SlayerType implements StringIdentifiable {
 	}
 
 	public static SlayerType fromBossName(String bossName) {
-		return BOSS_NAME_TO_TYPE.getOrDefault(bossName.toLowerCase(), UNKNOWN);
+		return BOSS_NAME_TO_TYPE.getOrDefault(bossName.toLowerCase(Locale.ENGLISH), UNKNOWN);
 	}
 
 	public boolean isUnknown() {

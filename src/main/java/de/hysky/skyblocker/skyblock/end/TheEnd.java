@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -66,7 +67,7 @@ public class TheEnd {
         });
 
         ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
-            String lowerCase = Utils.getIslandArea().toLowerCase();
+            String lowerCase = Utils.getIslandArea().toLowerCase(Locale.ENGLISH);
             if (Utils.isInTheEnd() || lowerCase.contains("the end") || lowerCase.contains("dragon's nest")) {
                 ChunkPos pos = chunk.getPos();
                 //
@@ -86,7 +87,7 @@ public class TheEnd {
 
         ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
             if (!Utils.isInTheEnd() || overlay) return true;
-            String lowerCase = message.getString().toLowerCase();
+            String lowerCase = message.getString().toLowerCase(Locale.ENGLISH);
             if (lowerCase.contains("tremor")) {
                 if (stage == 0) checkAllProtectorLocations();
                 else stage += 1;
@@ -150,16 +151,16 @@ public class TheEnd {
     }
 
     public static boolean isZealot(EndermanEntity enderman) {
-        if (enderman.getName().getString().toLowerCase().contains("zealot")) return true; // Future-proof. If they someday decide to actually rename the entities
+        if (enderman.getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot")) return true; // Future-proof. If they someday decide to actually rename the entities
         assert MinecraftClient.getInstance().world != null;
         List<ArmorStandEntity> entities = MinecraftClient.getInstance().world.getEntitiesByClass(
                 ArmorStandEntity.class,
                 enderman.getDimensions(null).getBoxAt(enderman.getPos()).expand(1),
-                armorStandEntity -> armorStandEntity.getName().getString().toLowerCase().contains("zealot"));
+                armorStandEntity -> armorStandEntity.getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot"));
         if (entities.isEmpty()) {
             return false;
         }
-        return entities.getFirst().getName().getString().toLowerCase().contains("zealot");
+        return entities.getFirst().getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot");
     }
 
     public static boolean isSpecialZealot(EndermanEntity enderman) {

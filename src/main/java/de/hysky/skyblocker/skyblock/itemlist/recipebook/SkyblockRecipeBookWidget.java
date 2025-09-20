@@ -201,8 +201,8 @@ public class SkyblockRecipeBookWidget extends RecipeBookWidget<NoopRecipeScreenH
 	 */
 	@Override
 	protected void refreshTabButtons(boolean filteringCraftable) {
-		int i = (this.parentWidth - 147) / 2 - this.leftOffset - 30;
-		int j = (this.parentHeight - 166) / 2 + 3;
+		int i = accessor().invokeGetLeft() - 30;
+		int j = accessor().invokeGetTop() + 3;
 		int l = 0;
 
 		for (Pair<RecipeTab, SkyblockRecipeTabButton> tabButton : this.tabButtons) {

@@ -42,7 +42,7 @@ public class ConfigBackupScreen extends Screen {
 		int listHeight = height - 64; // reserve space for title and buttons
 
 		if (listWidget == null) {
-			listWidget = new BackupListWidget(client, listWidth, listHeight, 32, 24);
+			listWidget = new BackupListWidget(client, listWidth, listHeight, 32, 25);
 		} else {
 			listWidget.setDimensions(listWidth, listHeight);
 			listWidget.updateEntries();
@@ -70,8 +70,9 @@ public class ConfigBackupScreen extends Screen {
 						} catch (IOException e) {
 							LOGGER.error("[Skyblocker] Failed to restore backup {}", selected.getFileName().toString(), e);
 							client.getToastManager().add(new SystemToast(SystemToast.Type.PERIODIC_NOTIFICATION,
-									Text.translatable("skyblocker.config.backup.restore.error"),
-									Text.literal("Failed to restore backup")));
+									Text.translatable("skyblocker.config.general.backup.restore.error"),
+									null
+							));
 							return;
 						}
 						if (parent != null) {
@@ -161,12 +162,12 @@ public class ConfigBackupScreen extends Screen {
 
 		@Override
 		public List<Element> children() {
-			return List.of();
+			return Collections.emptyList(); // Using List.of() will throw NPE on key navigation because it doesn't allow nulls
 		}
 
 		@Override
 		public List<Selectable> selectableChildren() {
-			return List.of();
+			return Collections.emptyList(); // Using List.of() will throw NPE on key navigation because it doesn't allow nulls
 		}
 
 		@Override
@@ -204,7 +205,7 @@ public class ConfigBackupScreen extends Screen {
 					addEntry(new StringEntry(l.text, l.path));
 				}
 			} catch (IOException e) {
-				// ignore
+				LOGGER.error("[Skyblocker] Error reading backup file for diff display", e);
 			}
 		}
 
@@ -238,8 +239,7 @@ public class ConfigBackupScreen extends Screen {
 			}
 		}
 
-		private record JsonLine(String text, @Nullable String path) {
-		}
+		private record JsonLine(String text, @Nullable String path) {}
 
 		private void formatJson(String key, JsonElement element, String path, int indent, boolean last, List<JsonLine> out) {
 			String ind = "  ".repeat(indent);
@@ -266,6 +266,28 @@ public class ConfigBackupScreen extends Screen {
 				String value = element.toString();
 				String line = key == null ? ind + value : ind + "\"" + key + "\": " + value;
 				out.add(new JsonLine(line + (last ? "" : ","), newPath));
+			}
+		}
+
+		@Override
+		protected void drawScrollbar(DrawContext context) {
+			super.drawScrollbar(context);
+			if (overflows()) {
+				int scrollBarX = getScrollbarX();
+				int listWidgetY = getY();
+				int totalHeight = height + getMaxScrollY();
+				int scrollbarThumbHeight = getScrollbarThumbHeight();
+				for (int i = 0; i < children().size(); i++) {
+					StringEntry entry = children().get(i);
+					if (entry.path != null && changedPaths.contains(entry.path)) {
+						// similar calculation to getRowTop
+						int entryY = 4 + i * itemHeight + headerHeight;
+						// height - scrollbarThumbHeight - 2 because we draw a two pixel high indicator.
+						// scrollbarThumbHeight thumb height calculations so the changed line is in view when the indicator is in the middle of the scrollbar thumb.
+						int barY = entryY * (height - scrollbarThumbHeight - 2) / (totalHeight - itemHeight) + listWidgetY + scrollbarThumbHeight / 2;
+						context.fill(scrollBarX, barY, scrollBarX + 6, barY + 2, 0xFFFFFF55);
+					}
+				}
 			}
 		}
 	}

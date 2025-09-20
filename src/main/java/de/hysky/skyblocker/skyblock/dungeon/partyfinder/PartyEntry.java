@@ -26,6 +26,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -81,7 +82,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
             Text text = tooltips.get(i);
             String tooltipText = Formatting.strip(text.getString());
             assert tooltipText != null;
-            String lowerCase = tooltipText.toLowerCase();
+            String lowerCase = tooltipText.toLowerCase(Locale.ENGLISH);
             //System.out.println("TOOLTIP"+i);
             //System.out.println(text.getSiblings());
 
@@ -99,13 +100,13 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
                 if (PartyFinderScreen.floorIconsMaster == null || PartyFinderScreen.floorIconsNormal == null) continue;
                 if (dungeon.contains("Master Mode")) {
                     try {
-                        floorSkullProperties = PartyFinderScreen.floorIconsMaster.getOrDefault(floor.toLowerCase(), new PropertyMap());
+                        floorSkullProperties = PartyFinderScreen.floorIconsMaster.getOrDefault(floor.toLowerCase(Locale.ENGLISH), new PropertyMap());
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 } else {
                     try {
-                    	floorSkullProperties = PartyFinderScreen.floorIconsNormal.getOrDefault(floor.toLowerCase(), new PropertyMap());
+                    	floorSkullProperties = PartyFinderScreen.floorIconsNormal.getOrDefault(floor.toLowerCase(Locale.ENGLISH), new PropertyMap());
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }

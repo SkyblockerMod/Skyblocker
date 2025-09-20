@@ -8,6 +8,7 @@ import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -232,7 +233,7 @@ public class Waypoint implements Renderable {
 
         @Override
         public String asString() {
-            return name().toLowerCase();
+            return name().toLowerCase(Locale.ENGLISH);
         }
 
         @Override
