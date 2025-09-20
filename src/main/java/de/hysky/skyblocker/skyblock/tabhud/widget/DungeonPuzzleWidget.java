@@ -4,6 +4,10 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -27,11 +31,13 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 	private static final Pattern PUZZLE_PATTERN = Pattern.compile("(?<name>.*): \\[(?<status>.*)\\] ?.*");
 
 	public DungeonPuzzleWidget() {
-		super("Dungeon Puzzles", TITLE, Formatting.DARK_PURPLE.getColorValue());
+		super("Puzzles", TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
+		cacheForConfig = false;
 	}
 
 	@Override
-	public void updateContent(List<Text> ignored) {
+	public void updateContent() {
+		if (!Utils.isInDungeons()) return;
 		int pos = 48;
 
 		while (pos < 60) {
@@ -58,4 +64,12 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 			this.addComponent(Components.iconTextComponent(Ico.BARRIER, Text.literal("No puzzles!").formatted(Formatting.GRAY)));
 		}
 	}
+
+	@Override
+	protected List<Component> getConfigComponents() {
+		return List.of(new PlainTextComponent(Text.literal("Puzzles")));
+	}
+
+	@Override
+	protected void updateContent(List<Text> lines) {}
 }

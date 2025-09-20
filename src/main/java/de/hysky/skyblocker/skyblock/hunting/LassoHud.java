@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.hunting;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -15,6 +15,7 @@ import net.minecraft.network.packet.s2c.play.EntityAttachS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.List;
 import java.util.Set;
 
 @RegisterWidget
@@ -36,7 +37,11 @@ public class LassoHud extends ComponentBasedWidget {
 	}
 
 	public LassoHud() {
-		super(Text.literal("Lasso").formatted(Formatting.DARK_AQUA, Formatting.BOLD), Formatting.DARK_AQUA.getColorValue(), "Lasso HUD");
+		super(
+				Text.literal("Lasso").formatted(Formatting.DARK_AQUA, Formatting.BOLD),
+				Formatting.DARK_AQUA.getColorValue(),
+				new Information("lasso_hud", Text.translatable("skyblocker.config.hunting.lassoHud"), AVAILABLE_LOCATION::contains)
+		);
 		instance = this;
 	}
 
@@ -95,28 +100,19 @@ public class LassoHud extends ComponentBasedWidget {
 	}
 
 	@Override
-	public boolean shouldRender(Location location) {
+	protected List<Component> getConfigComponents() {
+		return List.of(
+				Components.progressComponent(Items.LEAD.getDefaultStack(), Text.translatable("skyblocker.config.hunting.lassoHud.reel"), Text.translatable("skyblocker.config.hunting.lassoHud.wait"), 50)
+		);
+	}
 
+	@Override
+	public boolean shouldRender() {
 		//forget entity if it has died
 		if (lassoEntity != null && !lassoEntity.isAlive()) {
 			lassoEntity = null;
 		}
 
-		return percentage != -1 && lassoEntity != null && super.shouldRender(location);
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATION;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		SkyblockerConfigManager.get().hunting.lassoHud.enabled = enabled;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return SkyblockerConfigManager.get().hunting.lassoHud.enabled;
+		return percentage != -1 && lassoEntity != null;
 	}
 }

@@ -5,8 +5,11 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlayerComponent;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -24,12 +27,14 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 	// title needs to be changeable here
 	public DungeonPlayerWidget(int player) {
-		super("Dungeon Player " + player, TITLE, Formatting.DARK_PURPLE.getColorValue());
+		super("Dungeon Player " + player, TITLE, Formatting.DARK_PURPLE.getColorValue(), new Information("dungeon_player_" + player, TITLE.copyContentOnly().append(" " + player), l -> l == Location.DUNGEON));
 		this.player = player;
+		cacheForConfig = false;
 	}
 
 	@Override
-	public void updateContent(List<Text> ignored) {
+	public void updateContent() {
+		if (!Utils.isInDungeons()) return;
 		int start = 1 + (player - 1) * 4;
 
 		if (PlayerListManager.strAt(start) == null) {
@@ -71,4 +76,17 @@ public class DungeonPlayerWidget extends TabHudWidget {
 		this.addSimpleIcoText(Ico.CLOCK, "Ult Cooldown:", Formatting.GOLD, start + 1);
 		this.addSimpleIcoText(Ico.POTION, "Revives:", Formatting.DARK_PURPLE, start + 2);
 	}
+
+	@Override
+	protected List<Component> getConfigComponents() {
+		return List.of(
+				new PlainTextComponent(Text.literal("Name: ").append(Text.literal("Player " + player).formatted(Formatting.YELLOW))),
+				Components.iconTextComponent(DungeonClass.UNKNOWN.icon(), Text.literal("Class: ").append(Text.literal("Unknown")).formatted(Formatting.GRAY)),
+				Components.iconTextComponent(Ico.CLOCK, simpleEntryText("N/A", "Ult Cooldown:", Formatting.GOLD)),
+				Components.iconTextComponent(Ico.POTION, simpleEntryText("N/A", "Revives:", Formatting.DARK_PURPLE))
+		);
+	}
+
+	@Override
+	protected void updateContent(List<Text> lines) {}
 }
