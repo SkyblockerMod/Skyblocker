@@ -326,6 +326,8 @@ public class UIAndVisualsConfig {
 	}
 
 	public static class SmoothAOTE {
+		public boolean predictive = false;
+
 		public boolean enableWeirdTransmission = false;
 
 		public boolean enableInstantTransmission = false;
