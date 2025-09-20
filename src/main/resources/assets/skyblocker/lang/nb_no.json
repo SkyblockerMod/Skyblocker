@@ -51,5 +51,6 @@
     "skyblocker.config.mining.enableDrillFuel": "Aktiver Drill Fuel",
     "skyblocker.config.mining.dwarvenMines.solveFetchur": "Løse Fetchur",
     "skyblocker.config.mining.dwarvenMines.solvePuzzler": "Løs Puzzler Puzzle",
-    "skyblocker.config.mining.dwarvenHud": "Dverg-HUD"
+    "skyblocker.config.mining.dwarvenHud": "Dverg-HUD",
+    "argument.color.hex.invalidChar": "feilaktig karakter av heksadesimal heltall: %s. Gyldige tegn: [0-9a-fA-F]"
 }
