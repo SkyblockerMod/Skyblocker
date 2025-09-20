@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
@@ -51,7 +52,7 @@ public class ChatRulesHandler {
 
 	@VisibleForTesting
 	static List<ChatRule> getDefaultChatRules() {
-		return List.of(
+		return Lists.newArrayList(
 				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, false, false, "", null),
 				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, false, true, "&1Ability", SoundEvents.ENTITY_ARROW_HIT_PLAYER)
 		);
