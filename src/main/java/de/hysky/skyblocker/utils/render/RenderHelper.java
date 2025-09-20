@@ -71,7 +71,7 @@ public class RenderHelper {
         matrices.push();
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
-        BufferBuilder buffer = Renderer.getBuffer(throughWalls ? SkyblockerRenderPipelines.FILLED_THROUGH_WALLS : SkyblockerRenderPipelines.FILLED);
+        BufferBuilder buffer = Renderer.getBuffer(throughWalls ? SkyblockerRenderPipelines.FILLED_THROUGH_WALLS : RenderPipelines.DEBUG_FILLED_BOX);
 
         VertexRendering.drawFilledBox(matrices, buffer, minX, minY, minZ, maxX, maxY, maxZ, colorComponents[0], colorComponents[1], colorComponents[2], alpha);
 
