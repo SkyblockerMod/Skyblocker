@@ -28,21 +28,15 @@ public class IrisCompatibility {
 	 */
 	public static void assignPipelines() {
 		if (IRIS_ENABLED) {
-			try {
-				assignPipeline(RenderPipelines.DEBUG_FILLED_BOX, "BASIC");
-				assignPipeline(SkyblockerRenderPipelines.FILLED_THROUGH_WALLS, "BASIC");
-				assignPipeline(SkyblockerRenderPipelines.LINES_THROUGH_WALLS, "LINES");
-				assignPipeline(SkyblockerRenderPipelines.QUADS_THROUGH_WALLS, "BASIC");
-				assignPipeline(SkyblockerRenderPipelines.TEXTURE, "TEXTURED");
-				assignPipeline(SkyblockerRenderPipelines.TEXTURE_THROUGH_WALLS, "TEXTURED");
-				assignPipeline(SkyblockerRenderPipelines.CYLINDER, "BASIC");
-				assignPipeline(SkyblockerRenderPipelines.CIRCLE, "BASIC");
-				assignPipeline(SkyblockerRenderPipelines.CIRCLE_LINES, "BASIC");
-			} catch (IllegalStateException ignored) {
-				//The pipeline was probably already registered
-			} catch (Throwable e) {
-				LOGGER.error("[Skyblocker Iris Compatibility] Failed to assign pipelines.", e);
-			}
+			assignPipeline(RenderPipelines.DEBUG_FILLED_BOX, "BASIC");
+			assignPipeline(SkyblockerRenderPipelines.FILLED_THROUGH_WALLS, "BASIC");
+			assignPipeline(SkyblockerRenderPipelines.LINES_THROUGH_WALLS, "LINES");
+			assignPipeline(SkyblockerRenderPipelines.QUADS_THROUGH_WALLS, "BASIC");
+			assignPipeline(SkyblockerRenderPipelines.TEXTURE, "TEXTURED");
+			assignPipeline(SkyblockerRenderPipelines.TEXTURE_THROUGH_WALLS, "TEXTURED");
+			assignPipeline(SkyblockerRenderPipelines.CYLINDER, "BASIC");
+			assignPipeline(SkyblockerRenderPipelines.CIRCLE, "BASIC");
+			assignPipeline(SkyblockerRenderPipelines.CIRCLE_LINES, "BASIC");
 		}
 	}
 
@@ -52,12 +46,18 @@ public class IrisCompatibility {
 	 * @param pipeline The pipeline to be assigned.
 	 * @param irisProgramName The exact name of the {@code IrisProgram} enum entry.
 	 */
-	private static void assignPipeline(RenderPipeline pipeline, String irisProgramName) throws Throwable {
-		Objects.requireNonNull(GET_IRIS_API, "Iris API handle must be present to assign a pipeline.");
-		Objects.requireNonNull(REGISTER_PIPELINE, "Iris register pipeline handle must be present to assign a pipeline.");
-		Objects.requireNonNull(GET_IRIS_PROGRAM, "Iris Program handle must be present to assign a pipeline.");
+	private static void assignPipeline(RenderPipeline pipeline, String irisProgramName) {
+		try {
+			Objects.requireNonNull(GET_IRIS_API, "Iris API handle must be present to assign a pipeline.");
+			Objects.requireNonNull(REGISTER_PIPELINE, "Iris register pipeline handle must be present to assign a pipeline.");
+			Objects.requireNonNull(GET_IRIS_PROGRAM, "Iris Program handle must be present to assign a pipeline.");
 
-		REGISTER_PIPELINE.invoke(GET_IRIS_API.invoke(), pipeline, GET_IRIS_PROGRAM.invoke(irisProgramName));
+			REGISTER_PIPELINE.invoke(GET_IRIS_API.invoke(), pipeline, GET_IRIS_PROGRAM.invoke(irisProgramName));
+		} catch (IllegalStateException ignored) {
+			//The pipeline was probably already registered
+		} catch (Throwable e) {
+			LOGGER.error("[Skyblocker Iris Compatibility] Failed to assign pipeline {} to {}.", pipeline.getLocation(), irisProgramName, e);
+		}
 	}
 
 	private static MethodHandle getIrisApiHandle() {
@@ -88,7 +88,7 @@ public class IrisCompatibility {
 	private static MethodHandle getIrisProgramHandle() {
 		try {
 			Class<?> irisProgramClass = Class.forName(IRIS_PROGRAM_CLASS);
-			MethodHandles.Lookup lookup = MethodHandles.lookup();
+			MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 			MethodType type = MethodType.methodType(Enum.class, Class.class, String.class);
 			MethodHandle enumValueOf = lookup.findStatic(Enum.class, "valueOf", type);
 
