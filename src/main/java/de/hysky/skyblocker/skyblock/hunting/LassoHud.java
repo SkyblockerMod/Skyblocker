@@ -6,7 +6,6 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -43,7 +42,7 @@ public class LassoHud extends ComponentBasedWidget {
 
 	public static void onEntityUpdate(ArmorStandEntity entity) {
 		//check to see if close to end of players lasso
-		if (!getInstance().isEnabledIn(Utils.getLocation()) || lassoEntity == null || entity.squaredDistanceTo(lassoEntity) > 10) return;
+		if (lassoEntity == null || entity.squaredDistanceTo(lassoEntity) > 10) return;
 
 		//see if it's the name we are looking for
 		Text name = entity.getCustomName();
@@ -57,7 +56,7 @@ public class LassoHud extends ComponentBasedWidget {
 	}
 
 	public static void onEntityAttach(EntityAttachS2CPacket packet) {
-		if (!getInstance().isEnabledIn(Utils.getLocation()) || CLIENT.world == null) return;
+		if (CLIENT.world == null) return;
 		//see if lasso is coming from this player
 		if (CLIENT.world.getEntityById(packet.getHoldingEntityId()) instanceof PlayerEntity player) {
 			if (player.equals(CLIENT.player)) {
@@ -71,8 +70,7 @@ public class LassoHud extends ComponentBasedWidget {
 					case "ABYSMAL_LASSO" -> 2;
 					case "VINERIP_LASSO", "ENTANGLER_LASSO" -> 3;
 					case "EVERSTRETCH_LASSO" -> 4;
-					//Moody Grappleshot is a thing and we don't want to throw (crash) when it is used.
-					default -> 0;
+					default -> throw new IllegalStateException("Unexpected value: " + usedItemId);
 				};
 
 				//reset percentage
@@ -98,6 +96,7 @@ public class LassoHud extends ComponentBasedWidget {
 
 	@Override
 	public boolean shouldRender(Location location) {
+
 		//forget entity if it has died
 		if (lassoEntity != null && !lassoEntity.isAlive()) {
 			lassoEntity = null;
@@ -113,13 +112,11 @@ public class LassoHud extends ComponentBasedWidget {
 
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
-		if (!AVAILABLE_LOCATION.contains(location)) return;
 		SkyblockerConfigManager.get().hunting.lassoHud.enabled = enabled;
 	}
 
 	@Override
 	public boolean isEnabledIn(Location location) {
-		if (!AVAILABLE_LOCATION.contains(location)) return false;
 		return SkyblockerConfigManager.get().hunting.lassoHud.enabled;
 	}
 }

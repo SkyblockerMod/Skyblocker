@@ -39,10 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -266,7 +263,8 @@ public class Utils {
 		return Optional.ofNullable(supplier.get()).orElse(fallback);
 	}
 
-    @Init
+
+	@Init
     public static void init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
@@ -309,7 +307,7 @@ public class Utils {
     }
 
     private static boolean isConnectedToHypixel(MinecraftClient client) {
-        String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase() : "";
+        String serverAddress = (client.getCurrentServerEntry() != null) ? client.getCurrentServerEntry().address.toLowerCase(Locale.ENGLISH) : "";
         String serverBrand = (client.player != null && client.player.networkHandler != null && client.player.networkHandler.getBrand() != null) ? client.player.networkHandler.getBrand() : "";
 
         return (!serverAddress.isEmpty() && serverAddress.equalsIgnoreCase(ALTERNATE_HYPIXEL_ADDRESS)) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
