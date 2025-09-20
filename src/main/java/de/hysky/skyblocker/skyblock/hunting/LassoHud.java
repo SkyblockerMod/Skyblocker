@@ -112,11 +112,13 @@ public class LassoHud extends ComponentBasedWidget {
 
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
+		if (!AVAILABLE_LOCATION.contains(location)) return;
 		SkyblockerConfigManager.get().hunting.lassoHud.enabled = enabled;
 	}
 
 	@Override
 	public boolean isEnabledIn(Location location) {
+		if (!AVAILABLE_LOCATION.contains(location)) return false;
 		return SkyblockerConfigManager.get().hunting.lassoHud.enabled;
 	}
 }
