@@ -30,7 +30,7 @@ public class TicTacToe extends DungeonPuzzle {
 	private static Box nextBestMoveToMake = null;
 
 	private TicTacToe() {
-		super("tic-tac-toe", "tic-tac-toe-1");
+		super("tic-tac-toe", "tic-tac-toe-1", "tic-tac-toe-1-alpha");
 	}
 
 	@Init
