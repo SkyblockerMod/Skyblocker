@@ -72,7 +72,7 @@ public class BazaarOrderTracker extends SimpleTooltipAdder {
 			if (!matcher.matches()) continue;
 			double unitPrice = Double.parseDouble(matcher.group(1).replace(",", ""));
 
-			while (yourOrdersIndex < yourOrders.size() && sell ? yourOrders.get(yourOrdersIndex).unitPrice() < unitPrice : yourOrders.get(yourOrdersIndex).unitPrice() > unitPrice) {
+			while (yourOrdersIndex < yourOrders.size() && (sell ? yourOrders.get(yourOrdersIndex).unitPrice() < unitPrice : yourOrders.get(yourOrdersIndex).unitPrice() > unitPrice)) {
 				yourOrdersIndex++;
 			}
 
