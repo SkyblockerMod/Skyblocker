@@ -305,6 +305,12 @@ public class UIAndVisualsConfig {
 		public boolean enableWaypoints = true;
 
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+
+		public boolean renderLine = true;
+
+		public Color lineColor = new Color(0, 255, 0, 255);
+
+		public float lineWidth = 5f;
 	}
 
 	public static class TeleportOverlay {
