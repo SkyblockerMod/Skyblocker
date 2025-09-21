@@ -146,6 +146,14 @@ public class UIAndVisualsCategory {
 								newValue -> config.uiAndVisuals.showConfigButton = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.trueQuiverCount"))
+						.description(Text.translatable("skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip"))
+						.binding(defaults.uiAndVisuals.cancelComponentUpdateAnimation,
+								() -> config.uiAndVisuals.cancelComponentUpdateAnimation,
+								newValue -> config.uiAndVisuals.cancelComponentUpdateAnimation = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 
                 //Chest Value FIXME change dropdown to color controller
                 .group(OptionGroup.createBuilder()
