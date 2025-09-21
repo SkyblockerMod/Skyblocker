@@ -9,6 +9,7 @@ import net.minecraft.util.Util;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.time.Duration;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -73,6 +74,39 @@ public class Formatters {
 		} catch (ParseException e) {
 			throw new NumberFormatException("For input string: \"" + number + "\"");
 		}
+	}
+
+	public static String formatTimespan(Duration duration) {
+		return formatTimespanMs(duration.toMillis());
+	}
+
+	public static String formatTimespanMs(long millis) {
+		var isNegative = false;
+		if (millis < 0) {
+			isNegative = true;
+			millis = -millis;
+		}
+		long seconds = millis / 1000;
+		millis = millis % 1000;
+		long minutes = seconds / 60;
+		seconds = seconds % 60;
+		long hours = minutes / 60;
+		minutes = minutes % 60;
+		var builder = new StringBuilder();
+		if (hours != 0)
+			builder.append(hours).append(':');
+		if (!builder.isEmpty() || minutes != 0) {
+			builder.append("%02d:".formatted(minutes));
+		}
+		if (!builder.isEmpty()) {
+			builder.append("%02d.".formatted(seconds));
+		} else {
+			builder.append(seconds).append('.');
+		}
+		builder.append(millis / 100);
+		if (isNegative)
+			builder.insert(0, '-');
+		return builder.toString();
 	}
 
 	/**
