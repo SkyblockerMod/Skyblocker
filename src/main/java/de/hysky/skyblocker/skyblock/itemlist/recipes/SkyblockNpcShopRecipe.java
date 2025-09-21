@@ -26,41 +26,66 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 
 	public SkyblockNpcShopRecipe(NEUNpcShopRecipe shopRecipe) {
 		npcShop = ItemRepository.getItemStack(shopRecipe.getIsSoldBy().getSkyblockItemId());
-		inputs = new ArrayList<>();
-		shopRecipe.getCost().stream().map(SkyblockRecipe::getItemStack).forEach(inputs::add);
+		inputs = shopRecipe.getCost().stream().map(SkyblockRecipe::getItemStack).toList();
 		output = SkyblockRecipe.getItemStack(shopRecipe.getResult());
 	}
 
+	/**
+	 * For larger recipes, we shift the center slightly so all the items fit on the screen.
+	 * <p>
+	 * Recipes greater than 3 items are split into 2 rows.
+	 * For recipes with 7 or 8 items, it is offset further so those items do not overlap with the arrow.
+	 * There are currently no recipes with > 7 items.
+	 */
+	public int getCenterX(int width) {
+		int centerX = width / 2;
+		int size = inputs.size();
+		centerX += Math.min(size, 3) * SLOT_SIZE / 2 - SLOT_SIZE / 2;
+		if (size == 7 || size == 8) centerX -= SLOT_SIZE / 2;
+		return centerX;
+	}
+
+	/**
+	 * Input items are displayed in 1 or 2 rows depending on the recipe size.
+	 */
 	@Override
 	public List<RecipeSlot> getInputSlots(int width, int height) {
 		List<RecipeSlot> slots = new ArrayList<>();
-		int centerX = width / 2;
+		slots.add(new RecipeSlot((width - SLOT_SIZE) / 2, SLOT_SIZE / 2, npcShop));
+
+		int centerX = getCenterX(width);
 		int centerY = height / 2;
 
-		slots.add(new RecipeSlot(centerX - SLOT_SIZE / 2, SLOT_SIZE / 2, npcShop));
-		if (inputs.size() > 3) centerX += (inputs.size() - 3) * SLOT_SIZE + SLOT_SIZE / 2; // 3+ items
+		int x = centerX - (SLOT_SIZE * Math.min(inputs.size(), 3)) - ARROW_LENGTH / 2 - ARROW_PADDING;
+		int y = inputs.size() > 3 ? centerY - SLOT_SIZE / 2 + 3 : centerY;
+		boolean onSecondRow = false; // Max of 2 rows (largest input currently is 7 items)
 
-		int x = centerX - (SLOT_SIZE * inputs.size()) - ARROW_LENGTH / 2 - ARROW_PADDING;
-		for (ItemStack input : inputs) {
-			slots.add(new RecipeSlot(x, centerY, input));
+		for (int i = 0; i < inputs.size(); i++) {
+			slots.add(new RecipeSlot(x, y, inputs.get(i)));
 			x += SLOT_SIZE;
+			if ((i + 1) % 3 == 0 && !onSecondRow) {
+				onSecondRow = true;
+				x = centerX - (SLOT_SIZE * Math.min(inputs.size() - i, 3)) - ARROW_LENGTH / 2 - ARROW_PADDING;
+				y += SLOT_SIZE;
+			}
 		}
-
-		slots.add(new RecipeSlot(centerX + ARROW_LENGTH / 2 + ARROW_PADDING, centerY, output));
 
 		return slots;
 	}
 
 	@Override
 	public List<RecipeSlot> getOutputSlots(int width, int height) {
-		return List.of();
+		int centerX = getCenterX(width);
+		int centerY = height / 2;
+		if (inputs.size() == 7 || inputs.size() == 8) centerX += SLOT_SIZE;
+		return List.of(new RecipeSlot(centerX + ARROW_LENGTH / 2 + ARROW_PADDING, centerY, output));
 	}
 
 	@Override
 	public @Nullable ScreenPos getArrowLocation(int width, int height) {
-		int centerX = width / 2;
-		if (inputs.size() > 3) centerX += (inputs.size() - 3) * SLOT_SIZE + SLOT_SIZE / 2; // 3+ items
+		int centerX = getCenterX(width);
 		int centerY = height / 2;
+		if (inputs.size() == 7 || inputs.size() == 8) centerX += SLOT_SIZE;
 		return new ScreenPos(centerX - ARROW_LENGTH / 2 - 1, centerY);
 	}
 
