@@ -1702,6 +1702,7 @@
 
   "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
   "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)",
+  "emi.category.skyblocker.skyblock_npc_shop": "NPC Shops (Skyblock)",
   "emi.category.skyblocker.skyblock_info": "Skyblock Info",
 
   "skyblocker.rei.skyblockInfo.failedToFind": "Unable to find!",

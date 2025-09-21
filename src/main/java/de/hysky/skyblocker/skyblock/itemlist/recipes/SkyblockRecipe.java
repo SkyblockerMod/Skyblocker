@@ -34,7 +34,7 @@ public interface SkyblockRecipe {
 			itemStack.set(DataComponentTypes.ITEM_NAME, Text.literal("Skyblock Coins").formatted(Formatting.GOLD));
 			itemStack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
 			String format = NUMBER_FORMAT.format(input.getAmount());
-			itemStack.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.literal(format).formatted(Formatting.GOLD).append(Text.literal(" coins.")))));
+			itemStack.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.literal(format).formatted(Formatting.GOLD).styled(style -> style.withItalic(false)).append(Text.literal(" coins")))));
 			return itemStack;
 		}
 
