@@ -376,6 +376,14 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorLineIndicator"))
+								.description(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorLineIndicator.@Tooltip"))
+								.binding(defaults.dungeons.livid.enableLividColorLineIndicator,
+										() -> config.dungeons.livid.enableLividColorLineIndicator,
+										newValue -> config.dungeons.livid.enableLividColorLineIndicator = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorTitle"))
 								.description(Text.translatable("skyblocker.config.dungeons.livid.enableLividColorTitle.@Tooltip"))
 								.binding(defaults.dungeons.livid.enableLividColorTitle,

@@ -158,6 +158,8 @@
   "skyblocker.config.dungeons.livid.enableLividColorGlow.@Tooltip": "Applies the glowing effect to the correct Livid in F5/M5.",
   "skyblocker.config.dungeons.livid.enableLividColorBoundingBox": "Enable Livid Color Bounding Box",
   "skyblocker.config.dungeons.livid.enableLividColorBoundingBox.@Tooltip": "Shows a bounding box on the correct Livid in F5/M5.",
+  "skyblocker.config.dungeons.livid.enableLividColorLineIndicator": "Enable Livid Color Line Indicator",
+  "skyblocker.config.dungeons.livid.enableLividColorLineIndicator.@Tooltip": "Renders a line connecting the crosshair to the correct Livid in F5/M5.",
   "skyblocker.config.dungeons.livid.enableLividColorTitle": "Enable Livid Color Title",
   "skyblocker.config.dungeons.livid.enableLividColorTitle.@Tooltip": "Display the Livid color as a title during the boss fight.",
   "skyblocker.config.dungeons.livid.enableLividColorText": "Send Livid Color in Chat",

@@ -4,8 +4,10 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -13,11 +15,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.Locale;
 import java.util.Map;
@@ -67,50 +71,59 @@ public class LividColor {
 
 	private static void update(WorldRenderContext context) {
 		DungeonsConfig.Livid config = SkyblockerConfigManager.get().dungeons.livid;
-		if (!(config.enableLividColorText || config.enableLividColorTitle || config.enableLividColorGlow || config.enableLividColorBoundingBox)) return;
+		if (!(config.enableLividColorText || config.enableLividColorTitle || config.enableLividColorGlow || config.enableLividColorBoundingBox || config.enableLividColorLineIndicator)) return;
 
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		if (!(Utils.isInDungeons() && DungeonManager.isInBoss() && client.player != null && client.world != null)) return;
 
 		Block currentColor = client.world.getBlockState(new BlockPos(5, 110, 42)).getBlock();
-		if (!(WOOL_TO_FORMATTING.containsKey(currentColor) && !currentColor.equals(lastColor))) return;
+		if (!WOOL_TO_FORMATTING.containsKey(currentColor)) return;
 
-		if (!isInitialized && client.player.hasStatusEffect(StatusEffects.BLINDNESS)) {
-			toggleTime = System.currentTimeMillis();
-			isInitialized = true;
-		} else if (isInitialized && System.currentTimeMillis() - toggleTime >= OFFSET_DURATION) {
-			onLividColorFound(client, currentColor);
-			if (!correctLividIdFound) {
-				String lividName = LIVID_TO_FORMATTING.entrySet().stream()
-						.filter(entry -> entry.getValue() == color)
-						.map(Map.Entry::getKey)
-						.findFirst()
-						.orElse("unknown");
-				client.world.getPlayers().stream()
-						.filter(entity -> entity.getName().getString().equals(lividName))
-						.findFirst()
-						.ifPresent(entity -> correctLividId = entity.getId());
-				correctLividIdFound = true;
+		if (!currentColor.equals(lastColor)) {
+			if (!isInitialized && client.player.hasStatusEffect(StatusEffects.BLINDNESS)) {
+				toggleTime = System.currentTimeMillis();
+				isInitialized = true;
+			} else if (isInitialized && System.currentTimeMillis() - toggleTime >= OFFSET_DURATION) {
+				onLividColorFound(client, currentColor);
+				if (!correctLividIdFound) {
+					String lividName = LIVID_TO_FORMATTING.entrySet().stream()
+							.filter(entry -> entry.getValue() == color)
+							.map(Map.Entry::getKey)
+							.findFirst()
+							.orElse("unknown");
+					client.world.getPlayers().stream()
+							.filter(entity -> entity.getName().getString().equals(lividName))
+							.findFirst()
+							.ifPresent(entity -> correctLividId = entity.getId());
+					correctLividIdFound = true;
+				}
+				lastColor = currentColor;
 			}
-			lastColor = currentColor;
 		}
 
+		if (isInitialized && correctLividIdFound && config.enableLividColorLineIndicator) {
+			Entity lividEntity = client.world.getEntityById(correctLividId);
+			if (lividEntity != null) {
+				String lividName = lividEntity.getName().getString();
+				RenderHelper.renderLineFromCursor(context, Vec3d.ofCenter(lividEntity.getBlockPos(), 1f), ColorUtils.getFloatComponents(getGlowColor(lividName)), 1f, 2f);
+			}
+		}
 	}
 
-    private static void onLividColorFound(MinecraftClient client, Block color) {
-        LividColor.color = WOOL_TO_FORMATTING.get(color);
-        String colorString = Registries.BLOCK.getId(color).getPath();
-        colorString = colorString.substring(0, colorString.length() - 5).toUpperCase(Locale.ENGLISH);
-        Text message = Text.literal(CONFIG.get().lividColorText.replaceAll("\\[color]", colorString)).formatted(LividColor.color);
-        if (CONFIG.get().enableLividColorText) {
-            MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().append(message).getString(), false);
-        }
-		if (CONFIG.get().enableLividColorTitle){
-            client.inGameHud.setDefaultTitleFade();
-            client.inGameHud.setTitle(message);
-        }
-    }
+	private static void onLividColorFound(MinecraftClient client, Block color) {
+		LividColor.color = WOOL_TO_FORMATTING.get(color);
+		String colorString = Registries.BLOCK.getId(color).getPath();
+		colorString = colorString.substring(0, colorString.length() - 5).toUpperCase(Locale.ENGLISH);
+		Text message = Text.literal(CONFIG.get().lividColorText.replaceAll("\\[color]", colorString)).formatted(LividColor.color);
+		if (CONFIG.get().enableLividColorText) {
+			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().append(message).getString(), false);
+		}
+		if (CONFIG.get().enableLividColorTitle) {
+			client.inGameHud.setDefaultTitleFade();
+			client.inGameHud.setTitle(message);
+		}
+	}
 
 	public static boolean allowGlow() {
 		return !SkyblockerConfigManager.get().dungeons.livid.enableLividColorGlow || !DungeonManager.getBoss().isFloor(5);
@@ -124,23 +137,23 @@ public class LividColor {
 		return SkyblockerConfigManager.get().dungeons.livid.enableLividColorBoundingBox && color == LIVID_TO_FORMATTING.get(name);
 	}
 
-    @SuppressWarnings("DataFlowIssue")
-    public static int getGlowColor(String name) {
-        if (SkyblockerConfigManager.get().dungeons.livid.enableSolidColor) return SkyblockerConfigManager.get().dungeons.livid.customColor.getRGB();
-        if (LIVID_TO_FORMATTING.containsKey(name)) return LIVID_TO_FORMATTING.get(name).getColorValue();
-        return Formatting.WHITE.getColorValue();
-    }
+	@SuppressWarnings("DataFlowIssue")
+	public static int getGlowColor(String name) {
+		if (SkyblockerConfigManager.get().dungeons.livid.enableSolidColor) return SkyblockerConfigManager.get().dungeons.livid.customColor.getRGB();
+		if (LIVID_TO_FORMATTING.containsKey(name)) return LIVID_TO_FORMATTING.get(name).getColorValue();
+		return Formatting.WHITE.getColorValue();
+	}
 
-    public static int getCorrectLividId() {
-        return correctLividId;
-    }
+	public static int getCorrectLividId() {
+		return correctLividId;
+	}
 
-    private static void reset() {
-        lastColor = Blocks.AIR;
-        toggleTime = 0;
-        isInitialized = false;
-        correctLividIdFound = false;
-        correctLividId = 0;
-        color = Formatting.AQUA;
-    }
+	private static void reset() {
+		lastColor = Blocks.AIR;
+		toggleTime = 0;
+		isInitialized = false;
+		correctLividIdFound = false;
+		correctLividId = 0;
+		color = Formatting.AQUA;
+	}
 }
