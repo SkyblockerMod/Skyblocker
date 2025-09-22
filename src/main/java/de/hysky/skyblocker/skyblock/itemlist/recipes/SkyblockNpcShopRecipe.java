@@ -56,16 +56,19 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 		int centerX = getCenterX(width);
 		int centerY = height / 2;
 
+		final boolean shouldSplit = inputs.size() > 3;
+		boolean onSecondRow = false; // Max of 2 rows
+		int rowSize = Math.floorDiv(inputs.size(), 2); // put larger rows on the bottom if odd.
+
 		int x = centerX - (SLOT_SIZE * Math.min(inputs.size(), 3)) - ARROW_LENGTH / 2 - ARROW_PADDING;
-		int y = inputs.size() > 3 ? centerY - SLOT_SIZE / 2 + 3 : centerY;
-		boolean onSecondRow = false; // Max of 2 rows (largest input currently is 7 items)
+		int y = shouldSplit ? centerY - SLOT_SIZE / 2 + 3 : centerY;
 
 		for (int i = 0; i < inputs.size(); i++) {
 			slots.add(new RecipeSlot(x, y, inputs.get(i)));
 			x += SLOT_SIZE;
-			if ((i + 1) % 3 == 0 && !onSecondRow) {
+			if (shouldSplit && ((i + 1) % rowSize == 0) && !onSecondRow) {
 				onSecondRow = true;
-				x = centerX - (SLOT_SIZE * Math.min(inputs.size() - i, 3)) - ARROW_LENGTH / 2 - ARROW_PADDING;
+				x -= rowSize * SLOT_SIZE;
 				y += SLOT_SIZE;
 			}
 		}
