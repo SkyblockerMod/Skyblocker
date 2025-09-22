@@ -116,7 +116,6 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-		}
+		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 	}
 }

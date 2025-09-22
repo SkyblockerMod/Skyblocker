@@ -112,10 +112,9 @@ public class ItemTab extends GridScreenTab {
 		private ItemSelector() {
 			super(0, 20, 0, 0, Text.literal("Item Selector"));
 			layout.add(EmptyWidget.ofHeight(32)); // ITEM
-			selectItemButton = layout.add(ButtonWidget.builder(Text.literal("Select Item"), b -> {
-				MinecraftClient mc = MinecraftClient.getInstance();
-				mc.setScreen(new ItemSelectPopup(parentScreen, ItemTab.this::setCurrentItem));
-			}).width(ButtonWidget.DEFAULT_WIDTH_SMALL).build());
+			selectItemButton = layout.add(ButtonWidget.builder(Text.literal("Select Item"), b ->
+					MinecraftClient.getInstance().setScreen(new ItemSelectPopup(parentScreen, ItemTab.this::setCurrentItem))
+			).width(ButtonWidget.DEFAULT_WIDTH_SMALL).build());
 			layout.refreshPositions();
 			layout.setPosition(PADDING, PADDING);
 			setDimensions(layout.getWidth() + PADDING * 2, layout.getHeight() + PADDING * 2);
@@ -182,16 +181,16 @@ public class ItemTab extends GridScreenTab {
 		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 			int x = glintButton.getX() - 3;
 			int y = glintButton.getY() - 3;
-			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED,  INNER_SPACE_TEXTURE,
+			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
+					INNER_SPACE_TEXTURE,
 					x,
 					y,
 					modelField.getRight() + 3 - x,
-					modelField.getBottom() + 3 - y);
+					modelField.getBottom() + 3 - y
+			);
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-
-		}
+		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 	}
 }
