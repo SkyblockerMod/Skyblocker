@@ -106,7 +106,7 @@ public class LividColor {
 			Entity lividEntity = client.world.getEntityById(correctLividId);
 			if (lividEntity != null) {
 				String lividName = lividEntity.getName().getString();
-				RenderHelper.renderLineFromCursor(context, Vec3d.ofCenter(lividEntity.getBlockPos(), 1f), ColorUtils.getFloatComponents(getGlowColor(lividName)), 1f, 2f);
+				RenderHelper.renderLineFromCursor(context, Vec3d.ofCenter(lividEntity.getBlockPos(), 1f), ColorUtils.getFloatComponents(getGlowColor(lividName)), 1f, 5f);
 			}
 		}
 	}
