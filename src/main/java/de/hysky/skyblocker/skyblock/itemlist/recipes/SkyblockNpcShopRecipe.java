@@ -30,18 +30,26 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 		output = SkyblockRecipe.getItemStack(shopRecipe.getResult());
 	}
 
+	private boolean shouldSplit() {
+		return inputs.size() > 3;
+	}
+
+	private int getRowSize() {
+		return shouldSplit() ? Math.floorDiv(inputs.size(), 2) : inputs.size();
+	}
+
 	/**
 	 * For larger recipes, we shift the center slightly so all the items fit on the screen.
 	 * <p>
-	 * Recipes greater than 3 items are split into 2 rows.
-	 * For recipes with 7 or 8 items, it is offset further so those items do not overlap with the arrow.
+	 * Recipes greater than 3 items are split into 2 rows evenly.
+	 * If the input size is odd, it is offset further so those items do not overlap with the arrow.
 	 * There are currently no recipes with > 7 items.
 	 */
-	public int getCenterX(int width) {
+	private int getCenterX(int width) {
 		int centerX = width / 2;
 		int size = inputs.size();
-		centerX += Math.min(size, 3) * SLOT_SIZE / 2 - SLOT_SIZE / 2;
-		if (size == 7 || size == 8) centerX -= SLOT_SIZE / 2;
+		centerX += Math.min(getRowSize(), 3) * SLOT_SIZE / 2 - SLOT_SIZE / 2;
+		if (size > 1 && size % 2 == 1) centerX -= SLOT_SIZE / 2;
 		return centerX;
 	}
 
@@ -56,17 +64,16 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 		int centerX = getCenterX(width);
 		int centerY = height / 2;
 
-		final boolean shouldSplit = inputs.size() > 3;
 		boolean onSecondRow = false; // Max of 2 rows
-		int rowSize = Math.floorDiv(inputs.size(), 2); // put larger rows on the bottom if odd.
+		int rowSize = getRowSize();
 
-		int x = centerX - (SLOT_SIZE * Math.min(inputs.size(), 3)) - ARROW_LENGTH / 2 - ARROW_PADDING;
-		int y = shouldSplit ? centerY - SLOT_SIZE / 2 + 3 : centerY;
+		int x = centerX - (SLOT_SIZE * Math.min(rowSize, 3)) - ARROW_LENGTH / 2 - ARROW_PADDING;
+		int y = shouldSplit() ? centerY - SLOT_SIZE / 2 + 3 : centerY;
 
 		for (int i = 0; i < inputs.size(); i++) {
 			slots.add(new RecipeSlot(x, y, inputs.get(i)));
 			x += SLOT_SIZE;
-			if (shouldSplit && ((i + 1) % rowSize == 0) && !onSecondRow) {
+			if (((i + 1) % rowSize == 0) && !onSecondRow) {
 				onSecondRow = true;
 				x -= rowSize * SLOT_SIZE;
 				y += SLOT_SIZE;
