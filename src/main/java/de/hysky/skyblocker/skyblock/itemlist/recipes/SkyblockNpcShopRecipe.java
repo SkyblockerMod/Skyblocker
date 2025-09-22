@@ -89,6 +89,10 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 		return new ScreenPos(centerX - ARROW_LENGTH / 2 - 1, centerY);
 	}
 
+	public ItemStack getNpcItem() {
+		return npcShop;
+	}
+
 	@Override
 	public List<ItemStack> getInputs() {
 		return inputs;
