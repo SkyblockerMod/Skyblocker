@@ -33,12 +33,12 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	private static final int PADDING = 3;
 
 	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
-	private static final Text RESET_COLOR_TEXT = Text.translatable("skyblocker.armorCustomization.resetColor");
-	private static final Text CANNOT_CUSTOMIZE_COLOR_TEXT = Text.translatable("skyblocker.armorCustomization.cannotCustomizeColor");
-	private static final Text ANIMATED_TEXT = Text.translatable("skyblocker.armorCustomization.animated");
-	private static final Text CYCLE_BACK_TEXT = Text.translatable("skyblocker.armorCustomization.cycleBack");
-	private static final Text DURATION_TOOLTIP_TEXT = Text.translatable("skyblocker.armorCustomization.durationTooltip");
-	private static final Text DELAY_TOOLTIP_TEXT = Text.translatable("skyblocker.armorCustomization.delayTooltip");
+	private static final Text RESET_COLOR_TEXT = Text.translatable("skyblocker.customization.armor.resetColor");
+	private static final Text CANNOT_CUSTOMIZE_COLOR_TEXT = Text.translatable("skyblocker.customization.armor.cannotCustomizeColor");
+	private static final Text ANIMATED_TEXT = Text.translatable("skyblocker.customization.armor.animated");
+	private static final Text CYCLE_BACK_TEXT = Text.translatable("skyblocker.customization.armor.cycleBack");
+	private static final Text DURATION_TOOLTIP_TEXT = Text.translatable("skyblocker.customization.armor.durationTooltip");
+	private static final Text DELAY_TOOLTIP_TEXT = Text.translatable("skyblocker.customization.armor.delayTooltip");
 	private static final String DURATION_TEXT = "skyblocker.armorCustomization.duration";
 	private static final String DELAY_TEXT = "skyblocker.armorCustomization.delay";
 

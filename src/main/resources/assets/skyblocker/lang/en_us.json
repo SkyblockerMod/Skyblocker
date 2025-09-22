@@ -1645,19 +1645,17 @@
 
   "skyblocker.customization.title": "Customize Your Gear",
   "skyblocker.customization.titleSecret": "Pimp Your Gear",
-
-  "skyblocker.armorCustomization.animated": "Animated",
-  "skyblocker.armorCustomization.cannotCustomizeColor": "Cannot customize this piece's color :(",
-  "skyblocker.armorCustomization.cycleBack": "Cycle Back",
-  "skyblocker.armorCustomization.resetColor": "Reset color",
-  "skyblocker.armorCustomization.delay": "Delay: %s",
-  "skyblocker.armorCustomization.delayTooltip": "The animation will be delayed by this amount in seconds.",
-  "skyblocker.armorCustomization.duration": "Duration: %s",
-  "skyblocker.armorCustomization.durationTooltip": "The duration of the animation in seconds.",
-
-  "skyblocker.itemCustomization.glint": "Glint: %s",
-  "skyblocker.itemCustomization.glint.default": "Default",
-  "skyblocker.itemCustomization.modelOverride": "Item Model Override",
+  "skyblocker.customization.armor.animated": "Animated",
+  "skyblocker.customization.armor.cannotCustomizeColor": "Cannot customize this piece's color :(",
+  "skyblocker.customization.armor.cycleBack": "Cycle Back",
+  "skyblocker.customization.armor.resetColor": "Reset color",
+  "skyblocker.customization.armor.delay": "Delay: %s",
+  "skyblocker.customization.armor.delayTooltip": "The animation will be delayed by this amount in seconds.",
+  "skyblocker.customization.armor.duration": "Duration: %s",
+  "skyblocker.customization.armor.durationTooltip": "The duration of the animation in seconds.",
+  "skyblocker.customization.item.glint": "Glint: %s",
+  "skyblocker.customization.item.glint.default": "Default",
+  "skyblocker.customization.item.modelOverride": "Item Model Override",
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 

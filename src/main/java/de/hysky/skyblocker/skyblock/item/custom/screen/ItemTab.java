@@ -96,8 +96,8 @@ public class ItemTab extends GridScreenTab {
 	}
 
 	private Text getGlintText() {
-		return Text.translatable("skyblocker.itemCustomization.glint", switch (glintState) {
-			case DEFAULT -> Text.translatable("skyblocker.itemCustomization.glint.default");
+		return Text.translatable("skyblocker.customization.item.glint", switch (glintState) {
+			case DEFAULT -> Text.translatable("skyblocker.customization.item.glint.default");
 			case TRUE -> ScreenTexts.ON;
 			case FALSE -> ScreenTexts.OFF;
 		});

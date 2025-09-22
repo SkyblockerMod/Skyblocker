@@ -23,7 +23,7 @@ class IdentifierTextField extends TextFieldWidget {
 		super(MinecraftClient.getInstance().textRenderer, width, height, Text.empty());
 		super.setChangedListener(this::onChanged);
 		setRenderTextProvider((s, integer) -> OrderedText.styledForwardsVisitedString(s, valid ? Style.EMPTY : Style.EMPTY.withFormatting(Formatting.RED)));
-		setPlaceholder(Text.translatable("skyblocker.itemCustomization.modelOverride").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
+		setPlaceholder(Text.translatable("skyblocker.customization.item.modelOverride").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
 	}
 
 	public void setItem(ItemStack stack) {
