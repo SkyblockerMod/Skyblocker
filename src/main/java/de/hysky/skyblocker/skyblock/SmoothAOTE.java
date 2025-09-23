@@ -310,7 +310,7 @@ public class SmoothAOTE {
 		Vec3d endPos = startPos.add(look.multiply(maxDistance));
 
 		// First: Raycast for blocks (to check obstructions)
-		World world = player.getWorld();
+		World world = player.getEntityWorld();
 		RaycastContext context = new RaycastContext(startPos, endPos, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, player);
 		double blockHitDistance = world.raycast(context).getPos().distanceTo(startPos);
 

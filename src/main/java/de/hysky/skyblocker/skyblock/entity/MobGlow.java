@@ -90,7 +90,7 @@ public class MobGlow {
 	}
 
 	public static List<ArmorStandEntity> getArmorStands(Entity entity) {
-		return getArmorStands(entity.getWorld(), entity.getBoundingBox());
+		return getArmorStands(entity.getEntityWorld(), entity.getBoundingBox());
 	}
 
 	public static List<ArmorStandEntity> getArmorStands(World world, Box box) {
