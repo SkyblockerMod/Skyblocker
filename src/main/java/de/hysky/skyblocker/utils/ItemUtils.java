@@ -74,7 +74,8 @@ public final class ItemUtils {
     ).apply(instance, ItemStack::new)));
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemUtils.class);
     private static final Pattern STORED_PATTERN = Pattern.compile("Stored: ([\\d,]+)/\\S+");
-    private static final Pattern STASH_COUNT_PATTERN = Pattern.compile("x([\\d,]+)$"); // This is used with Matcher#find, not #matches
+	private static final Pattern AMOUNT_PATTERN = Pattern.compile("Amount: ([\\d,]+)");
+	private static final Pattern STASH_COUNT_PATTERN = Pattern.compile("x([\\d,]+)$"); // This is used with Matcher#find, not #matches
     private static final Pattern HUNTING_BOX_COUNT_PATTERN = Pattern.compile("Owned: (?<shards>\\d+) Shards?");
     private static final short LOG_INTERVAL = 1000;
 	private static long lastLog = Util.getMeasuringTimeMs();
@@ -531,9 +532,16 @@ public final class ItemUtils {
     public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines, boolean isLore) {
         // Gemstone sack is a special case, it has a different 2nd line.
 		if (lines.size() >= 2 && StringUtils.endsWithAny(lines.get(isLore ? 0 : 1).getString(), "Sack", "Gemstones")) {
+			boolean isGemstoneSack = lines.size() >= 2 && StringUtils.endsWithAny(lines.get(isLore ? 0 : 1).getString(), "Gemstones");
+
+			Matcher matcher;
+			if (isGemstoneSack) {	// Gemstone sack is special and needs to be handled separately
+				matcher = TextUtils.matchInList(lines, AMOUNT_PATTERN);
+			} else {
+				matcher = TextUtils.matchInList(lines, STORED_PATTERN);
+			}
 			// Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
             // Which equals: `Stored: 0/20k`
-			Matcher matcher = TextUtils.matchInList(lines, STORED_PATTERN);
 			if (matcher == null) {
 				// Log a warning every second if the amount couldn't be found, to prevent spamming the logs every frame (which can be hundreds of times per second)
 				if (Util.getMeasuringTimeMs() - lastLog > LOG_INTERVAL) {

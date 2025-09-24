@@ -38,7 +38,7 @@ public class CommissionLabels {
 	@Init
 	public static void init() {
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(CommissionLabels::render);
-		Scheduler.INSTANCE.scheduleCyclic(CommissionLabels::tick, 20);
+		Scheduler.INSTANCE.scheduleCyclic(CommissionLabels::tick, 22);
 	}
 
 	public static boolean enabled() {
