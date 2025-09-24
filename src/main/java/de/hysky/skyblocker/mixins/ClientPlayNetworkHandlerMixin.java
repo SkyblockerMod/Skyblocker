@@ -99,7 +99,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	@Inject(method = "onPlayerPositionLook", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
 	private void skyblocker$beforeTeleport(PlayerPositionLookS2CPacket packet, CallbackInfo ci, @Share("playerBeforeTeleportBlockPos") LocalRef<BlockPos> beforeTeleport) {
 		beforeTeleport.set(client.player.getBlockPos().toImmutable());
-		ResponsiveSmoothAOTE.PlayerGoingToTeleport();
+		ResponsiveSmoothAOTE.playerGoingToTeleport();
 	}
 
 	@Inject(method = "onPlayerPositionLook", at = @At(value = "RETURN"))
