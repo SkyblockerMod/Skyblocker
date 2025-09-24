@@ -74,6 +74,7 @@ public final class ItemUtils {
     ).apply(instance, ItemStack::new)));
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemUtils.class);
     private static final Pattern STORED_PATTERN = Pattern.compile("Stored: ([\\d,]+)/\\S+");
+	private static final Pattern GEMSTONES_SACK_AMOUNT_PATTERN = Pattern.compile(" Amount: ([\\d,]+)");
     private static final Pattern STASH_COUNT_PATTERN = Pattern.compile("x([\\d,]+)$"); // This is used with Matcher#find, not #matches
     private static final Pattern HUNTING_BOX_COUNT_PATTERN = Pattern.compile("Owned: (?<shards>\\d+) Shards?");
     private static final short LOG_INTERVAL = 1000;
@@ -520,31 +521,44 @@ public final class ItemUtils {
         return getItemCountInSack(itemStack, lines, false);
     }
 
-    /**
-     * Finds the number of items stored in a sack from a list of texts.
-     * @param itemStack The item stack this list of texts belong to. This is used for logging purposes.
-     * @param lines A list of text lines that represent the tooltip of the item stack.
-     * @param isLore Whether the lines are from the item's lore or not. This is useful to figure out which line to look at, as lore and tooltip lines are different due to the first line being the item's name.
-     * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
-     */
-    @NotNull
-    public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines, boolean isLore) {
-        // Gemstone sack is a special case, it has a different 2nd line.
-		if (lines.size() >= 2 && StringUtils.endsWithAny(lines.get(isLore ? 0 : 1).getString(), "Sack", "Gemstones")) {
-			// Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
-            // Which equals: `Stored: 0/20k`
-			Matcher matcher = TextUtils.matchInList(lines, STORED_PATTERN);
-			if (matcher == null) {
-				// Log a warning every second if the amount couldn't be found, to prevent spamming the logs every frame (which can be hundreds of times per second)
-				if (Util.getMeasuringTimeMs() - lastLog > LOG_INTERVAL) {
-					LOGGER.warn("Failed to find stored amount in sack tooltip for item `{}`", Debug.DumpFormat.JSON.format(itemStack).getString()); // This is a very unintended way of serializing the item stack, but it's so much cleaner than actually using the codec
-					lastLog = Util.getMeasuringTimeMs();
-				}
-				return OptionalInt.empty();
-			} else return RegexUtils.parseOptionalIntFromMatcher(matcher, 1);
+	/**
+	 * Finds the number of items stored in a sack from a list of texts.
+	 *
+	 * @param itemStack The item stack this list of texts belong to. This is used for logging purposes.
+	 * @param lines     A list of text lines that represent the tooltip of the item stack.
+	 * @param isLore    Whether the lines are from the item's lore or not. This is useful to figure out which line to look at, as lore and tooltip lines are different due to the first line being the item's name.
+	 * @return An {@link OptionalInt} containing the number of items stored in the sack, or an empty {@link OptionalInt} if the item is not a sack or the amount could not be found.
+	 */
+	@NotNull
+	public static OptionalInt getItemCountInSack(@NotNull ItemStack itemStack, @NotNull List<Text> lines, boolean isLore) {
+		// Gemstones sack is a special case, it has a different 2nd line.
+		if (lines.size() < 2 || !StringUtils.endsWithAny(lines.get(isLore ? 0 : 1).getString(), "Sack", "Gemstones")) {
+			return OptionalInt.empty();
 		}
+
+		// Use the proper item amount in the Gemstones Sack when sorting by Rough/Flawed/Fine
+		if (itemStack.getName().getString().endsWith("Gemstone")) {
+			Matcher matcher = TextUtils.matchInList(lines, GEMSTONES_SACK_AMOUNT_PATTERN);
+			if (matcher != null) {
+				return RegexUtils.parseOptionalIntFromMatcher(matcher, 1);
+			}
+		}
+
+		// Example line: empty[style={color=dark_purple,!italic}, siblings=[literal{Stored: }[style={color=gray}], literal{0}[style={color=dark_gray}], literal{/20k}[style={color=gray}]]
+		// Which equals: `Stored: 0/20k`
+		Matcher matcher = TextUtils.matchInList(lines, STORED_PATTERN);
+		if (matcher != null) {
+			return RegexUtils.parseOptionalIntFromMatcher(matcher, 1);
+		}
+
+		// Log a warning every second if the amount couldn't be found, to prevent spamming the logs every frame (which can be hundreds of times per second)
+		if (Util.getMeasuringTimeMs() - lastLog > LOG_INTERVAL) {
+			LOGGER.warn("Failed to find stored amount in sack tooltip for item `{}`", Debug.DumpFormat.JSON.format(itemStack).getString()); // This is a very unintended way of serializing the item stack, but it's so much cleaner than actually using the codec
+			lastLog = Util.getMeasuringTimeMs();
+		}
+
 		return OptionalInt.empty();
-    }
+	}
 
     /**
      * Finds the number of items stored in a stash based on item's name.
