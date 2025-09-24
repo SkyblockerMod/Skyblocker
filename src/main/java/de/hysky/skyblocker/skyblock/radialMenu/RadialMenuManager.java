@@ -13,7 +13,7 @@ public class RadialMenuManager {
 			new CollectionsMenu(),
 			new FastTravelMenu(),
 			new HuntingMenu(),
-			new ProfileManagmentMenu(),
+			new ProfileManagementMenu(),
 			new SackOfSacksMenu(),
 			new SacksMenu(),
 			new SkillsMenu(),

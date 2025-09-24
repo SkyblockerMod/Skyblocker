@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.radialMenu.menus;
 
-public class ProfileManagmentMenu extends BasicMenu {
-	public ProfileManagmentMenu() {
+public class ProfileManagementMenu extends BasicMenu {
+	public ProfileManagementMenu() {
 		super("profile management", "general");
 	}
 }
