@@ -26,7 +26,9 @@ public class ResponsiveSmoothAOTE {
 		if (distance == -1) {
 			return;
 		}
-		lastPosition = CLIENT.player.getEyePos();
+		
+		Vec3d currentIntermediatePosition = getInterpolatedPos();
+		lastPosition = currentIntermediatePosition == null ? CLIENT.player.getEyePos() : currentIntermediatePosition;
 		lastProgress = 0;
 		startTime = System.currentTimeMillis();
 	}
