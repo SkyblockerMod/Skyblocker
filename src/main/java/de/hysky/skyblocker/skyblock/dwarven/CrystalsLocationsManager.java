@@ -343,7 +343,7 @@ public class CrystalsLocationsManager {
     }
 
 	public static void receiveInitialWaypointsFromSocket(List<CrystalsWaypointMessage> waypoints) {
-		MutableText allWaypointsReceived = Text.empty();
+		MutableText allWaypointsReceived = Text.translatable("skyblocker.webSocket.receivedCrystalsWaypoint.bulkTooltipTitle").append("\n");
 		for (CrystalsWaypointMessage waypoint : waypoints) {
 			CrystalsLocationsManager.addCustomWaypointFromSocket(waypoint.location(), waypoint.coordinates(), false);
 
