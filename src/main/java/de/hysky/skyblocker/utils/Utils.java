@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -254,15 +253,6 @@ public class Utils {
     public static RankType getRank() {
         return rank;
     }
-
-	/**
-	 * @return the supplier if it exists, otherwise the fallback
-	 */
-	@NotNull
-	public static <T> T getSupplierWithFallback(Supplier<T> supplier, T fallback) {
-		return Optional.ofNullable(supplier.get()).orElse(fallback);
-	}
-
 
 	@Init
     public static void init() {
