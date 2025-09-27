@@ -121,6 +121,8 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	protected void refreshWidgetPositions() {
 		sidePanelWidget.setWidth(width / 4);
 		sidePanelWidget.setHeight(height);
+		if (sidePanelWidget.isOpen()) sidePanelWidget.setX(sidePanelWidget.rightSide ? width - sidePanelWidget.getWidth() : 0);
+		topBarWidget.setWidth(width);
 	}
 
 	@Override

@@ -27,7 +27,7 @@ class SidePanelWidget extends ContainerWidget {
 	private final List<ClickableWidget> optionWidgets = new ArrayList<>();
 
 	private DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
-	private boolean rightSide = false;
+	boolean rightSide = false;
 	private int targetX = 0;
 	private float animation = 0.0f;
 	private int animationStart = 0;
