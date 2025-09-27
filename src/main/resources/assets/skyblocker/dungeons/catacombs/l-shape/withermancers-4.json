@@ -1,0 +1,77 @@
+{
+  "info": {
+    "name": "Withermancers"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 26,
+      "y": 70,
+      "z": 5
+    },
+    {
+      "secretName": "1 - Lever",
+      "category": "lever",
+      "x": 24,
+      "y": 61,
+      "z": 3
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 29,
+      "y": 111,
+      "z": 15
+    },
+    {
+      "secretName": "1 - Stonk",
+      "category": "stonk",
+      "x": 26,
+      "y": 112,
+      "z": 15
+    },
+    {
+      "secretName": "2 - Wither Essence",
+      "category": "wither",
+      "x": 1,
+      "y": 111,
+      "z": 15
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 15,
+      "y": 104,
+      "z": 20
+    },
+    {
+      "secretName": "3 - Stonk",
+      "category": "stonk",
+      "x": 15,
+      "y": 107,
+      "z": 20
+    },
+    {
+      "secretName": "4 - Under Crypt",
+      "category": "superboom",
+      "x": 28,
+      "y": 72,
+      "z": 33
+    },
+    {
+      "secretName": "4 - Chest",
+      "category": "chest",
+      "x": 59,
+      "y": 55,
+      "z": 45
+    },
+    {
+      "secretName": "Prince",
+      "category": "prince",
+      "x": 28,
+      "y": 73,
+      "z": 33
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "Tombstone"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 26,
+      "y": 78,
+      "z": 13
+    },
+    {
+      "secretName": "1 - Wither Essence",
+      "category": "wither",
+      "x": 27,
+      "y": 76,
+      "z": 16
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 15,
+      "y": 74,
+      "z": 21
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 15,
+      "y": 70,
+      "z": 26
+    }
+  ]
+}
