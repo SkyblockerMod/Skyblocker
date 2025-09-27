@@ -39,7 +39,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.OptionalInt;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -254,7 +257,7 @@ public class Utils {
         return rank;
     }
 
-	@Init
+    @Init
     public static void init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
