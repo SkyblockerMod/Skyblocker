@@ -519,6 +519,8 @@
   "skyblocker.config.helpers.enableCopyUnderbidPrice": "Enable Copy Underbid Price",
   "skyblocker.config.helpers.enableCopyUnderbidPrice.@Tooltip": "Copies the lowest BIN price minus one coin to your clipboard when opening the Create BIN Auction screen.",
 
+  "skyblocker.config.helpers.enableBuildersWandPreview": "Enable Builder's Wand and Builder's Ruler Preview",
+
   "skyblocker.config.helpers.experiments": "Experiments Solver",
   "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Enable Chronomatron Solver",
   "skyblocker.config.helpers.experiments.enableSuperpairsSolver": "Enable Superpairs Solver",

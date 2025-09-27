@@ -19,6 +19,8 @@ public class HelperConfig {
 
 	public boolean enableCopyUnderbidPrice = false;
 
+	public boolean enableBuildersWandPreview = true;
+
 	public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
 	public Jerry jerry = new Jerry();
