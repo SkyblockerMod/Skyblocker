@@ -37,6 +37,14 @@ public class MiscCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build()
 				)
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.misc.disableBreakReminders"))
+						.description(Text.translatable("skyblocker.config.misc.disableBreakReminders.@Tooltip"))
+						.binding(defaults.misc.disableBreakReminders,
+								() -> config.misc.disableBreakReminders,
+								newValue -> config.misc.disableBreakReminders = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 
                 //Discord RPC
                 .group(OptionGroup.createBuilder()
