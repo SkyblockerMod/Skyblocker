@@ -36,7 +36,7 @@ public class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 	public static final SeaLumiesHighlighter INSTANCE = new SeaLumiesHighlighter();
 
 	private SeaLumiesHighlighter() {
-		super(Blocks.SEA_PICKLE, DyeColor.CYAN);
+		super(Blocks.SEA_PICKLE, DyeColor.CYAN, SkyblockerConfigManager.get().foraging.galatea.seaLumiesHighlighterOpacity);
 	}
 
 	@Init
