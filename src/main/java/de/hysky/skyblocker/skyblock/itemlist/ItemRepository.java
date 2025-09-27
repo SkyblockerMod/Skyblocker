@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.s2c.play.SynchronizeRecipesS2CPacket;
 import net.minecraft.recipe.display.CuttingRecipeDisplay;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,6 +185,12 @@ public class ItemRepository {
 	@Nullable
 	public static ItemStack getItemStack(String neuId) {
 		return itemsImported ? itemsMap.get(neuId) : null;
+	}
+
+	@Contract("_, !null -> !null")
+	public static ItemStack getItemStack(String neuId, ItemStack defaultStack) {
+		ItemStack stack = getItemStack(neuId);
+		return stack != null ? stack : defaultStack;
 	}
 
 	/**
