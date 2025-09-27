@@ -4,13 +4,11 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
-import io.github.moulberry.repo.data.NEUCraftingRecipe;
-import io.github.moulberry.repo.data.NEUForgeRecipe;
-import io.github.moulberry.repo.data.NEUItem;
-import io.github.moulberry.repo.data.NEURecipe;
+import io.github.moulberry.repo.data.*;
 import io.github.moulberry.repo.util.NEUId;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -216,6 +214,7 @@ public class ItemRepository {
 		return switch (neuRecipe) {
 			case NEUCraftingRecipe craftingRecipe -> new SkyblockCraftingRecipe(craftingRecipe);
 			case NEUForgeRecipe forgeRecipe -> new SkyblockForgeRecipe(forgeRecipe);
+			case NEUNpcShopRecipe shopRecipe -> new SkyblockNpcShopRecipe(shopRecipe);
 			case null, default -> null;
 		};
 	}
