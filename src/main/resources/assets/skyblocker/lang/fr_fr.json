@@ -801,8 +801,8 @@
     "skyblocker.config.farming.garden.dicerTitlePrevent": "Activer l’option pour empêcher le titre Dicer",
     "skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip": "Nombre minimun de cornichons de mer sur le même bloc pour activer la surbrillance.",
     "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Activer overlay du Sweep",
-    "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Activer l'assistant des Forest Node",
-    "skyblocker.config.farming.garden.enableStereoHarmonyHelperForContest": "Activer l'Assitant pour l'Harmonie Stéréo pour le concours de Jacob",
+    "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Activer l'Assistant des Forest Nodes",
+    "skyblocker.config.farming.garden.enableStereoHarmonyHelperForContest": "Activer l'Assitant pour le Stereo Harmony pour le Jacob's Contest",
     "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter": "Activer la Surbrillance des Cornichon de mer",
     "skyblocker.config.farming.garden.enableStereoHarmonyHelperForContest.@Tooltip": "Marque le disque qui correspond au concours de Jacob actuel",
     "skyblocker.config.foraging.galatea.enableSweepDetailsWidget": "Activer le Widget détaillé sur le Sweep",
@@ -1500,5 +1500,12 @@
     "skyblocker.config.hunting.lassoHud.reel": "Ramenez",
     "skyblocker.config.hunting.lassoHud.wait": "Attendez",
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError": "Entrée invalide %s pour la fonction '%s'",
-    "skyblocker.config.uiAndVisuals.inputCalculator.moduloByZeroError": "Impossible de modulo %s par 0"
+    "skyblocker.config.uiAndVisuals.inputCalculator.moduloByZeroError": "Impossible de modulo %s par 0",
+    "skyblocker.config.helpers.bazaar.enableOrderTracker": "Activer le Traqueur des Commandes du Bazaar",
+    "skyblocker.config.helpers.bazaar.enableOrderTracker.@Tooltip": "Traque vos commandes dans la liste des commandes pour un item.",
+    "skyblocker.config.helpers.bazaar.orderTrackerTooltip": "Vous avez %sx parmi %s commande(s)",
+    "skyblocker.config.otherLocations.end.enderNodeWaypointType": "Type de Marqueur pour les Ender Nodes",
+    "skyblocker.config.helpers.enableBuildersWandPreview": "Activer la Prévisualisation de la Builder's Wand et du Builder's Ruler",
+    "skyblocker.dungeons.croesusHelper.chestValue": "Valeur du Coffre : %s",
+    "emi.category.skyblocker.skyblock_npc_shop": "Boutiques PNJ (Skyblock)"
 }
