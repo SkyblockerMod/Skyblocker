@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListScreen;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
@@ -10,10 +10,10 @@ import net.minecraft.item.ItemStack;
  */
 public abstract class WidgetsListSlotEntry extends WidgetsListEntry {
 	protected final int slotId;
-	protected final WidgetsListTab parent;
+	protected final WidgetsListScreen parent;
 	protected final ItemStack icon;
 
-	public WidgetsListSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
+	public WidgetsListSlotEntry(WidgetsListScreen parent, int slotId, ItemStack icon) {
 		this.parent = parent;
 		this.slotId = slotId;
 		this.icon = icon;
