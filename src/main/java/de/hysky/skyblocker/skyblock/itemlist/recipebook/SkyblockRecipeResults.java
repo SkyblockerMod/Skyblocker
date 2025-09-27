@@ -13,6 +13,7 @@ import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.HudHelper;
@@ -270,7 +271,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 					// Using this slot as a center cuz I said so
 					SkyblockRecipeResultButton button = this.resultButtons.get(11);
 					int startX = button.getX() + button.getWidth() / 2 - (gridSize.x * 25) / 2;
-					int startY = button.getY() + button.getHeight() / 2 - (gridSize.y * 25)/2;
+					int startY = button.getY() + button.getHeight() / 2 - (gridSize.y * 25) / 2;
 					for (int i = 0; i < forgeRecipe.getInputs().size(); i++) {
 						int x = startX + (i % gridSize.x) * 25;
 						int y = startY + (i / gridSize.x) * 25;
@@ -278,6 +279,26 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 					}
 					//Result
 					recipeSlotButtons.add(this.resultButtons.get(14).setDisplayStack(forgeRecipe.getResult()));
+				}
+				case SkyblockNpcShopRecipe npcShopRecipe -> {
+					recipeIcon = new ItemStack(Items.GOLD_NUGGET);
+
+					recipeSlotButtons.add(this.resultButtons.get(8).setDisplayStack(npcShopRecipe.getNpcItem()));
+
+					int slotsPerRow = 3;
+					int rows = npcShopRecipe.getInputs().size() / slotsPerRow + 1;
+					// Using this slot as a center cuz I said so again
+					SkyblockRecipeResultButton button = this.resultButtons.get(11);
+					int startX = this.resultButtons.getFirst().getX();
+					int startY = button.getY() + button.getHeight() / 2 - (rows * 25) / 2;
+					for (int i = 0; i < npcShopRecipe.getInputs().size(); i++) {
+						int x = startX + (i % slotsPerRow) * 25;
+						int y = startY + (i / slotsPerRow) * 25;
+						recipeSlotButtons.add(new SkyblockRecipeResultButton(x, y).setDisplayStack(npcShopRecipe.getInputs().get(i)));
+					}
+
+					recipeSlotButtons.add(this.resultButtons.get(14).setDisplayStack(npcShopRecipe.getOutputs().getFirst()));
+
 				}
 				case null, default -> {}
 			}

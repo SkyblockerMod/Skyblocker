@@ -39,8 +39,8 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 
 		switch (screenHandler) {
 			// Better party finder
-			case GenericContainerScreenHandler ignored when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && nameLowercase.contains("select tier") -> PartyFinderScreen.isInKuudraPartyFinder = true;
-			case GenericContainerScreenHandler ignored when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && nameLowercase.contains("catacombs") -> PartyFinderScreen.isInKuudraPartyFinder = false;
+			case GenericContainerScreenHandler ignored when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && nameLowercase.startsWith("select tier") -> PartyFinderScreen.isInKuudraPartyFinder = true;
+			case GenericContainerScreenHandler ignored when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && nameLowercase.startsWith("catacombs") -> PartyFinderScreen.isInKuudraPartyFinder = false;
 
 			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && PartyFinderScreen.possibleInventoryNames.contains(nameLowercase) -> {
 				if (client.currentScreen != null) {
@@ -60,7 +60,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 			}
 
 			// Fancy AH
-			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.enabled && (nameLowercase.contains("auctions browser") || nameLowercase.contains("auctions: ")) -> {
+			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.enabled && (nameLowercase.equals("auctions browser") || nameLowercase.startsWith("auctions: ")) -> {
 				AuctionHouseScreenHandler auctionHouseScreenHandler = AuctionHouseScreenHandler.of(containerScreenHandler, false);
 				client.player.currentScreenHandler = auctionHouseScreenHandler;
 
@@ -72,7 +72,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 				ci.cancel();
 			}
 
-			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.enabled && nameLowercase.contains("auction view") -> {
+			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.enabled && nameLowercase.endsWith("auction view") -> {
 				AuctionHouseScreenHandler auctionHouseScreenHandler = AuctionHouseScreenHandler.of(containerScreenHandler, true);
 				client.player.currentScreenHandler = auctionHouseScreenHandler;
 
@@ -84,7 +84,7 @@ public interface HandledScreenProviderMixin<T extends ScreenHandler> {
 				ci.cancel();
 			}
 
-			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.enabled && (nameLowercase.contains("confirm purchase") || nameLowercase.contains("confirm bid")) && client.currentScreen instanceof AuctionViewScreen auctionViewScreen -> {
+			case GenericContainerScreenHandler containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.enabled && (nameLowercase.equals("confirm purchase") || nameLowercase.equals("confirm bid")) && client.currentScreen instanceof AuctionViewScreen auctionViewScreen -> {
 				client.setScreen(auctionViewScreen.getConfirmPurchasePopup(name));
 				client.player.currentScreenHandler = containerScreenHandler;
 				ci.cancel();

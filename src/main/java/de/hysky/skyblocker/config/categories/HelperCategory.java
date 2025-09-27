@@ -69,6 +69,14 @@ public class HelperCategory {
 								newValue -> config.helpers.enableCopyUnderbidPrice = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+				// Builder's Wand and Ruler Preview
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.helpers.enableBuildersWandPreview"))
+						.binding(defaults.helpers.enableBuildersWandPreview,
+								() -> config.helpers.enableBuildersWandPreview,
+								newValue -> config.helpers.enableBuildersWandPreview = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 				//Mythological Ritual
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.helpers.mythologicalRitual"))
@@ -359,6 +367,14 @@ public class HelperCategory {
 								.binding(defaults.helpers.bazaar.enableReorderHelper,
 										() -> config.helpers.bazaar.enableReorderHelper,
 										newValue -> config.helpers.bazaar.enableReorderHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.helpers.bazaar.enableOrderTracker"))
+								.description(Text.translatable("skyblocker.config.helpers.bazaar.enableOrderTracker.@Tooltip"))
+								.binding(defaults.helpers.bazaar.enableOrderTracker,
+										() -> config.helpers.bazaar.enableOrderTracker,
+										newValue -> config.helpers.bazaar.enableOrderTracker = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
