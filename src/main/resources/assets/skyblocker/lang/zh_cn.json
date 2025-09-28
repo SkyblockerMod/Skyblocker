@@ -1476,6 +1476,5 @@
     "skyblocker.config.hunting.lassoHud.wait": "等",
     "skyblocker.config.otherLocations.end.enderNodeWaypointType": "末地节点路径点类型",
     "skyblocker.config.helpers.enableBuildersWandPreview": "启用Builder's Wand和Builder's Ruler预览",
-    "skyblocker.dungeons.splits.terminals": "",
     "skyblocker.powderTracker": "Powder Mining追踪器"
 }
