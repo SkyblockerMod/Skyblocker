@@ -1464,5 +1464,7 @@
     "skyblocker.config.hunting.lassoHud": "Lasso HUD",
     "skyblocker.config.hunting.lassoHud.enabled": "已启用",
     "skyblocker.config.hunting.lassoHud.hud.screen": "Lasso HUD设置…",
-    "skyblocker.config.hunting.lassoHud.enabled.@Tooltip": "在HUD中显示套索倒计时。"
+    "skyblocker.config.hunting.lassoHud.enabled.@Tooltip": "在HUD中显示套索倒计时。",
+    "skyblocker.config.general.itemList.enableCollapsibleEntries": "开启可折叠分组",
+    "skyblocker.config.general.itemList.enableCollapsibleEntries.@Tooltip": "将相似的项目分组为一个条目，可以通过点击展开查看。\n\n需要重新加入或重新加载 REI 插件才能生效！"
 }
