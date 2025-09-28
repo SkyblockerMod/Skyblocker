@@ -442,7 +442,7 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.replace.@Tooltip": "输入要输出的新消息（可以使用Minecraft颜色代码进行格式化）。",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie": "僵尸",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.crit": "暴击",
-    "skyblocker.config.slayer.endermanSlayer.highlightNukekubiHeads": "Nukekubi头颅高亮",
+    "skyblocker.config.slayer.endermanSlayer.highlightNukekubiHeads": "头颅高亮",
     "skyblocker.config.dungeons.dungeonChestProfit.includeEssence": "包括精粹价格",
     "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground": "启用HUD背景",
     "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip": "为非TAB的HUD启用背景。",
