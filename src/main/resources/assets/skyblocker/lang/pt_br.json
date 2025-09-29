@@ -434,5 +434,19 @@
     "skyblocker.config.dungeons.puzzle.solveWaterboard": "Resolver Quebra-cabeça da Prancha de Água",
     "skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip": "Clique nas alavancas indicadas nos momentos certos para resolver o quebra-cabeça.",
     "skyblocker.config.dungeons.highlightDoorKeys": "Destacar Chaves das Portas",
-    "skyblocker.config.dungeons.highlightDoorKeys.@Tooltip": "Destacar as chaves para as portas do Wither e do Blood no chão, em ciano."
+    "skyblocker.config.dungeons.highlightDoorKeys.@Tooltip": "Destacar as chaves para as portas do Wither e do Blood no chão, em ciano.",
+    "skyblocker.config.dungeons.livid.enableLividColorTitle": "Ativar título com a cor do Livid",
+    "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "Bloquear Cliques Incorretos",
+    "skyblocker.config.farming.garden.closeScreenOnPlotClick": "Fechar inventário no tp para o plot",
+    "skyblocker.config.farming.garden.farmingHud.type.BOTH": "Ambos",
+    "skyblocker.config.farming.garden.lockMouseGround": "Somente trava a câmera quando no chão",
+    "skyblocker.config.farming.garden.farmingHud.type.NPC": "NPC",
+    "skyblocker.config.farming.garden.farmingHud.type.BAZAAR": "Bazar",
+    "skyblocker.config.dungeons.sellableItemsHighlighter": "Destaque nos items vendíveis",
+    "skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip": "Destaca items pegos nas Dungeons que podem ser vendidos para o NPC.",
+    "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints": "Ativa Waypoints para pérolas",
+    "skyblocker.config.dungeons.livid.enableLividColorGlow.@Tooltip": "Aplica o efeito de brilho para o Livid correto no F5/M5.",
+    "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Destaca items pegos em dungeons que podem ser sucateados.",
+    "skyblocker.config.dungeons.secretWaypoints.enableAotvWaypoints": "Ativa Waypoints para a AOTV",
+    "skyblocker.config.farming.garden": "Jardim"
 }
