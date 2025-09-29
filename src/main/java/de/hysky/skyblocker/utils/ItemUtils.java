@@ -74,7 +74,7 @@ public final class ItemUtils {
     ).apply(instance, ItemStack::new)));
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemUtils.class);
     private static final Pattern STORED_PATTERN = Pattern.compile("Stored: ([\\d,]+)/\\S+");
-	private static final Pattern AMOUNT_PATTERN = Pattern.compile("Amount: ([\\d,]+)");
+	private static final Pattern AMOUNT_PATTERN = Pattern.compile(" Amount: ([\\d,]+)");
 	private static final Pattern STASH_COUNT_PATTERN = Pattern.compile("x([\\d,]+)$"); // This is used with Matcher#find, not #matches
     private static final Pattern HUNTING_BOX_COUNT_PATTERN = Pattern.compile("Owned: (?<shards>\\d+) Shards?");
     private static final short LOG_INTERVAL = 1000;
@@ -411,6 +411,14 @@ public final class ItemUtils {
     public static Matcher getLoreLineIfMatch(ItemStack stack, Pattern pattern) {
         return TextUtils.matchInList(getLore(stack), pattern);
     }
+
+	/**
+	 * Gets the first lines of the lore that matches each pattern, using {@link Matcher#matches()}.
+	 * @see TextUtils#matchInList(List, Pattern...)
+	 */
+	public static List<Matcher> getLoreLineIfMatch(ItemStack stack, Pattern... patterns) {
+		return TextUtils.matchInList(getLore(stack), patterns);
+	}
 
     /**
      * Gets the first line of the lore that matches the specified pattern, using {@link Matcher#find()}.
