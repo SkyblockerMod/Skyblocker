@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
  */
 public class QuickNavConfirmationButton extends QuickNavButton {
 	private long lastClicked = 0;
-	private static final Identifier DOUBLE_CLICK_ICON = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/slot_lock.png");
+	private static final Identifier DOUBLE_CLICK_ICON = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/quick_nav_double_click.png");
 
 	protected final int index;
 
