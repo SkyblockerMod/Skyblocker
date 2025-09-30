@@ -385,7 +385,7 @@ public class PartyFinderScreen extends Screen {
 				if (slot.id > (handler.getRows() - 1) * 9 - 1 || !slot.hasStack()) continue;
 				ItemStack stack = slot.getStack();
 				if (stack.isOf(Items.PLAYER_HEAD)) {
-					assert this.client != null && this.client.player != null;
+					assert this.client != null;
 					parties.add(new PartyEntry(stack.getName(), ItemUtils.getLore(stack), this, slot.id));
 				} else if (stack.isOf(Items.ARROW) && stack.getName().getString().toLowerCase(Locale.ENGLISH).contains("previous")) {
 					prevPageSlotId = slot.id;
