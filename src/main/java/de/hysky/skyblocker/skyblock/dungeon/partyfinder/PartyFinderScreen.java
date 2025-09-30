@@ -376,7 +376,6 @@ public class PartyFinderScreen extends Screen {
 		previousPageButton.active = false;
 		nextPageButton.active = false;
 		List<PartyEntry> parties = new ArrayList<>();
-		ItemStack yourPartyStack = null;
 
 		if (currentPage != Page.FINDER) setCurrentPage(Page.FINDER);
 		if (handler.slots.stream().anyMatch(slot -> slot.hasStack() && slot.getStack().isOf(Items.BEDROCK))) {
@@ -387,11 +386,6 @@ public class PartyFinderScreen extends Screen {
 				ItemStack stack = slot.getStack();
 				if (stack.isOf(Items.PLAYER_HEAD)) {
 					assert this.client != null && this.client.player != null;
-					// sometimes, it shows your party in the search before it does in the bottom right, but it'll show the delist button??
-					if (stack.getName().getString().startsWith(client.player.getName().getString())) {
-						yourPartyStack = stack;
-						continue;
-					}
 					parties.add(new PartyEntry(stack.getName(), ItemUtils.getLore(stack), this, slot.id));
 				} else if (stack.isOf(Items.ARROW) && stack.getName().getString().toLowerCase(Locale.ENGLISH).contains("previous")) {
 					prevPageSlotId = slot.id;
@@ -403,6 +397,7 @@ public class PartyFinderScreen extends Screen {
 			}
 		}
 
+		ItemStack yourPartyStack = null;
 		int deListSlotId = -1;
 		for (int i = (handler.getRows() - 1) * 9; i < handler.getRows() * 9; i++) {
 			Slot slot = handler.slots.get(i);
@@ -425,14 +420,31 @@ public class PartyFinderScreen extends Screen {
 			}
 		}
 
+		assert client != null;
+		String playerName = client.getSession().getUsername();
+
+		// It's possible for the party to show up in the search results before it does next to the delist button.
+		// This means that it will have the "You are in this party" error text, but it'll still be possible to click and delist.
+		if (yourPartyStack == null && deListSlotId != -1) {
+			yourPartyStack = parties.stream()
+					.filter(party -> party.partyLeader != null
+							&& party.partyLeader.name.getString().equals(playerName)).findFirst()
+					.map(party -> party.slotID)
+					.map(slotId -> handler.slots.get(slotId))
+					.map(Slot::getStack).orElse(null);
+		}
+
 		if (yourPartyStack != null) {
 			//LOGGER.info("Your Party tooltips");
 			//tooltips.forEach(text -> LOGGER.info(text.toString()));
 			Text title = yourPartyStack.getName();
 			if (deListSlotId != -1) {
 				// Such a wacky thing lol
-				title = Text.literal(MinecraftClient.getInstance().getSession().getUsername() + "'s party");
+				title = Text.literal(playerName + "'s party");
 			}
+			// Remove the party if it's already in the list from the search results
+			parties.removeIf(party -> party.partyLeader != null
+					&& party.partyLeader.name.getString().equals((playerName)));
 			parties.add(new PartyEntry.YourParty(title, ItemUtils.getLore(yourPartyStack), this, deListSlotId));
 		}
 		this.partyEntryListWidget.setEntries(parties);
