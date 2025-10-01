@@ -14,7 +14,7 @@ public interface GardenConstants {
 			entry("Mosquito", "Sugar Cane"),
 			entry("Cricket", "Carrot"),
 			entry("Locust", "Potato"),
-			entry("Earthworm", "Melon"),
+			entry("Earthworm", "Melon Slice"),
 			entry("Rat", "Pumpkin"),
 			entry("Moth", "Cocoa Beans"),
 			entry("Beetle", "Nether Wart"),
@@ -26,8 +26,8 @@ public interface GardenConstants {
 			map.put("Sugar Cane", HeadTextures.MOSQUITO_PEST);
 			map.put("Carrot", HeadTextures.CRICKET_PEST);
 			map.put("Potato", HeadTextures.LOCUST_PEST);
-			map.put("Melon", HeadTextures.EARTHWORM_PEST);
-			map.put("Melon", HeadTextures.EARTHWORM_PEST_TAIL);
+			map.put("Melon Slice", HeadTextures.EARTHWORM_PEST);
+			map.put("Melon Slice", HeadTextures.EARTHWORM_PEST_TAIL);
 			map.put("Pumpkin", HeadTextures.RAT_PEST);
 			map.put("Cocoa Beans", HeadTextures.MOTH_PEST);
 			map.put("Nether Wart", HeadTextures.BEETLE_PEST);
