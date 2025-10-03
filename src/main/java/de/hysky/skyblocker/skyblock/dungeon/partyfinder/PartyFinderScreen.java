@@ -435,8 +435,6 @@ public class PartyFinderScreen extends Screen {
 		}
 
 		if (yourPartyStack != null) {
-			//LOGGER.info("Your Party tooltips");
-			//tooltips.forEach(text -> LOGGER.info(text.toString()));
 			Text title = yourPartyStack.getName();
 			if (deListSlotId != -1) {
 				// Such a wacky thing lol
@@ -448,7 +446,6 @@ public class PartyFinderScreen extends Screen {
 			parties.add(new PartyEntry.YourParty(title, ItemUtils.getLore(yourPartyStack), this, deListSlotId));
 		}
 		this.partyEntryListWidget.setEntries(parties);
-		//List<ItemStack> temp = handler.slots.stream().map(Slot::getStack).toList();//for (int i = 0; i < temp.size(); i++) System.out.println(i + " " + temp.get(i).toString() + " " + temp.get(i).getName().getString());
 	}
 
 	private boolean aborted = false;
