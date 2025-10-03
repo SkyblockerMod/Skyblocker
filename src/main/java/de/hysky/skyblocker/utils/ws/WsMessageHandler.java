@@ -1,9 +1,5 @@
 package de.hysky.skyblocker.utils.ws;
 
-import java.util.Optional;
-
-import org.slf4j.Logger;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -11,32 +7,41 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.ws.message.CrystalsWaypointMessage;
+import de.hysky.skyblocker.utils.ws.message.EggWaypointMessage;
 import de.hysky.skyblocker.utils.ws.message.Message;
+import org.slf4j.Logger;
+
+import java.util.Optional;
 
 public class WsMessageHandler {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
+	public static void sendLocationMessage(Service service, Message<? extends Message<?>> message) {
+		send(Type.PUBLISH, service, null, Utils.getLocation().toString(), Optional.of(encodeMessage(message)));
+	}
+
 	/**
 	 * Used for sending messages to the current channel/server
 	 */
-	public static void sendMessage(Service service, Message<? extends Message<?>> message) {
-		send(Type.PUBLISH, service, Utils.getServer(), Optional.of(encodeMessage(message)));
+	public static void sendServerMessage(Service service, Message<? extends Message<?>> message) {
+		send(Type.PUBLISH, service, Utils.getServer(), null, Optional.of(encodeMessage(message)));
 	}
 
 	/**
 	 * Useful for sending simple state updates with an optional message
 	 */
-	static void sendSimple(Type type, Service service, String serverId, Optional<Message<? extends Message<?>>> message) {
-		send(type, service, serverId, message.map(WsMessageHandler::encodeMessage));
+	static void sendSimple(Type type, Service service, String serverId, String serviceId, Optional<Message<? extends Message<?>>> message) {
+		send(type, service, serverId, serviceId, message.map(WsMessageHandler::encodeMessage));
 	}
 
-	private static void send(Type type, Service service, String serverId, Optional<Dynamic<?>> message) {
+	private static void send(Type type, Service service, String serverId, String serviceId, Optional<Dynamic<?>> message) {
 		try {
-			Payload payload = new Payload(type, service, serverId, message);
+			Payload payload = new Payload(type, service,
+					serverId != null ? Optional.of(serverId) : Optional.empty(),
+					serviceId != null ? Optional.of(serviceId) : Optional.empty(), message);
 			JsonObject encoded = Payload.CODEC.encodeStart(JsonOps.INSTANCE, payload).getOrThrow().getAsJsonObject();
 
 			SkyblockerWebSocket.send(SkyblockerMod.GSON_COMPACT.toJson(encoded));
@@ -63,12 +68,13 @@ public class WsMessageHandler {
 		try {
 			JsonObject payloadEncoded = JsonParser.parseString(message).getAsJsonObject();
 
-			//When status is present its usually a response to a packet being sent or some error, we don't need to pay attention to those
+			//When status is present it's usually a response to a packet being sent or some error, we don't need to pay attention to those
 			if (payloadEncoded.has("type")) {
 				Payload payload = Payload.CODEC.parse(JsonOps.INSTANCE, payloadEncoded).getOrThrow();
 
 				switch (payload.service()) {
 					case Service.CRYSTAL_WAYPOINTS -> CrystalsWaypointMessage.handle(payload.type(), payload.message());
+					case Service.EGG_WAYPOINTS -> EggWaypointMessage.handle(payload.type(), payload.message());
 				}
 			}
 		} catch (Exception e) {
