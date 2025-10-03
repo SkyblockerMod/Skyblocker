@@ -26,7 +26,7 @@ public class WsStateManager {
 	private static void reset() {
 		if (!lastServerId.isEmpty()) {
 			for (Service service : SUBSCRIBED_SERVER_SERVICES) {
-				WsMessageHandler.sendSimple(Type.UNSUBSCRIBE, service, lastServerId, null, Optional.empty());
+				WsMessageHandler.sendSimple(Type.UNSUBSCRIBE, service, lastServerId, Optional.empty());
 			}
 
 			lastServerId = "";
@@ -34,7 +34,7 @@ public class WsStateManager {
 
 		if (!lastLocation.isEmpty()) {
 			for (Service service : SUBSCRIBED_ISLAND_SERVICES) {
-				WsMessageHandler.sendSimple(Type.UNSUBSCRIBE, service, null, lastLocation, Optional.empty());
+				WsMessageHandler.sendSimple(Type.UNSUBSCRIBE, service, lastLocation, Optional.empty());
 			}
 			lastLocation = "";
 		}
@@ -48,7 +48,7 @@ public class WsStateManager {
 		if (Utils.getEnvironment() != Environment.PRODUCTION) return;
 
 		SUBSCRIBED_SERVER_SERVICES.add(service);
-		WsMessageHandler.sendSimple(Type.SUBSCRIBE, service, Utils.getServer(), null, message);
+		WsMessageHandler.sendSimple(Type.SUBSCRIBE, service, Utils.getServer(), message);
 
 		//Update tracked server id
 		lastServerId = Utils.getServer();
@@ -61,7 +61,7 @@ public class WsStateManager {
 	public static void subscribeIsland(Service service, Optional<Message<? extends Message<?>>> message) {
 		if (Utils.getEnvironment() != Environment.PRODUCTION) return;
 		SUBSCRIBED_ISLAND_SERVICES.add(service);
-		WsMessageHandler.sendSimple(Type.SUBSCRIBE, service, null, Utils.getLocation().toString(), message);
+		WsMessageHandler.sendSimple(Type.SUBSCRIBE, service, Utils.getLocation().toString(), message);
 
 		// Update subscription location
 		lastLocation = Utils.getLocation().toString();

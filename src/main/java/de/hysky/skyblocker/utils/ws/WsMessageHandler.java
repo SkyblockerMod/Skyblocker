@@ -19,29 +19,30 @@ import java.util.Optional;
 public class WsMessageHandler {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
+	/**
+	 * Used for sending messages for the current location
+	 */
 	public static void sendLocationMessage(Service service, Message<? extends Message<?>> message) {
-		send(Type.PUBLISH, service, null, Utils.getLocation().toString(), Optional.of(encodeMessage(message)));
+		send(Type.PUBLISH, service, Utils.getLocation().toString(), Optional.of(encodeMessage(message)));
 	}
 
 	/**
-	 * Used for sending messages to the current channel/server
+	 * Used for sending messages for the current server
 	 */
 	public static void sendServerMessage(Service service, Message<? extends Message<?>> message) {
-		send(Type.PUBLISH, service, Utils.getServer(), null, Optional.of(encodeMessage(message)));
+		send(Type.PUBLISH, service, Utils.getServer(), Optional.of(encodeMessage(message)));
 	}
 
 	/**
 	 * Useful for sending simple state updates with an optional message
 	 */
-	static void sendSimple(Type type, Service service, String serverId, String serviceId, Optional<Message<? extends Message<?>>> message) {
-		send(type, service, serverId, serviceId, message.map(WsMessageHandler::encodeMessage));
+	static void sendSimple(Type type, Service service, String serverId, Optional<Message<? extends Message<?>>> message) {
+		send(type, service, serverId, message.map(WsMessageHandler::encodeMessage));
 	}
 
-	private static void send(Type type, Service service, String serverId, String serviceId, Optional<Dynamic<?>> message) {
+	private static void send(Type type, Service service, String serverId, Optional<Dynamic<?>> message) {
 		try {
-			Payload payload = new Payload(type, service,
-					serverId != null ? Optional.of(serverId) : Optional.empty(),
-					serviceId != null ? Optional.of(serviceId) : Optional.empty(), message);
+			Payload payload = new Payload(type, service, serverId, message);
 			JsonObject encoded = Payload.CODEC.encodeStart(JsonOps.INSTANCE, payload).getOrThrow().getAsJsonObject();
 
 			SkyblockerWebSocket.send(SkyblockerMod.GSON_COMPACT.toJson(encoded));
