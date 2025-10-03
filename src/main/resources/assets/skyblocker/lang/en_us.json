@@ -1706,6 +1706,11 @@
   "skyblocker.galatea.hud.sweepDetails.stylePenalty": "Tree Style Penalty (%s)",
   "skyblocker.galatea.hud.sweepDetails.correctStyle": "Style: %s",
 
+  "skyblocker.helpers.chocolateFactory.eggFinder.unableToShare": "Unable to share this egg.",
+  "skyblocker.helpers.chocolateFactory.eggFinder.eggName": "Chocolate %s Egg",
+  "skyblocker.helpers.chocolateFactory.eggFinder.eggDiscovered": "Found a %s at %s!",
+  "skyblocker.helpers.chocolateFactory.eggFinder.sharePrompt": "Click to share this egg's location in chat!",
+
   "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
   "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)",
   "emi.category.skyblocker.skyblock_npc_shop": "NPC Shops (Skyblock)",
