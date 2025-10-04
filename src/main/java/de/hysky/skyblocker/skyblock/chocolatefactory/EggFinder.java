@@ -252,5 +252,10 @@ public class EggFinder {
 		Egg(BlockPos pos, EggType eggType) {
 			super(pos, SkyblockerConfigManager.get().helpers.chocolateFactory.waypointType, ColorUtils.getFloatComponents(eggType.color));
 		}
+
+		@Override
+		public Type getRenderType() {
+			return SkyblockerConfigManager.get().helpers.chocolateFactory.waypointType;
+		}
 	}
 }
