@@ -451,12 +451,12 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				if (nextLever != null) {
 					RenderHelper.renderLineFromCursor(context,
 							room.relativeToActual(nextLever.leverPos).toCenterPos(),
-							ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 2f);
+							ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 4f);
 					if (nextNextLever != null) {
 						RenderHelper.renderLinesFromPoints(context, new Vec3d[]{
 								room.relativeToActual(nextLever.leverPos).toCenterPos(),
 								room.relativeToActual(nextNextLever.leverPos).toCenterPos()
-						}, ColorUtils.getFloatComponents(DyeColor.WHITE), 0.5f, 1f, true);
+						}, ColorUtils.getFloatComponents(DyeColor.WHITE), 1f, 2f, true);
 					}
 				}
 
