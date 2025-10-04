@@ -9,7 +9,7 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.command.argumenttypes.EggTypeArgumentType;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import de.hysky.skyblocker.utils.waypoint.SeenWaypoint;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import de.hysky.skyblocker.utils.ws.Service;
 import de.hysky.skyblocker.utils.ws.WsMessageHandler;
 import de.hysky.skyblocker.utils.ws.WsStateManager;
@@ -248,14 +248,9 @@ public class EggFinder {
 		}
 	}
 
-	static class Egg extends SeenWaypoint {
+	static class Egg extends Waypoint {
 		Egg(BlockPos pos, EggType eggType) {
-			super(pos, SkyblockerConfigManager.get().helpers.chocolateFactory.waypointType, ColorUtils.getFloatComponents(eggType.color));
-		}
-
-		@Override
-		public Type getRenderType() {
-			return SkyblockerConfigManager.get().helpers.chocolateFactory.waypointType;
+			super(pos, SkyblockerConfigManager.get().helpers.chocolateFactory.waypointType, ColorUtils.getFloatComponents(eggType.color), SkyblockerConfigManager.get().helpers.chocolateFactory.showThroughWalls);
 		}
 	}
 }
