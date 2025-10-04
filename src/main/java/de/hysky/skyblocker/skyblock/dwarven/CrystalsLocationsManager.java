@@ -324,11 +324,7 @@ public class CrystalsLocationsManager {
         return Command.SINGLE_SUCCESS;
     }
 
-	private static Text getTextForCategory(MiningLocationLabel.CrystalHollowsLocationsCategory category) {
-		return Text.literal(category.getName()).withColor(category.getColor());
-	}
-
-    public static void addCustomWaypointFromSocket(CrystalsWaypointMessage... messages) {
+	public static void addCustomWaypointFromSocket(CrystalsWaypointMessage... messages) {
 		MutableText receivedWaypointNames = Text.empty();
 		for (CrystalsWaypointMessage message : messages) {
 			var category = message.location();
@@ -341,7 +337,7 @@ public class CrystalsLocationsManager {
 			waypointsSent2Socket.add(category);
 			activeWaypoints.put(category.getName(), waypoint);
 
-			receivedWaypointNames.append(getTextForCategory(category));
+			receivedWaypointNames.append(Text.literal(category.getName()).withColor(category.getColor()));
 			if (message != messages[messages.length - 1]) {
 				receivedWaypointNames.append(", ");
 			}
@@ -349,7 +345,7 @@ public class CrystalsLocationsManager {
 
 		assert CLIENT.player != null;
 		CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.webSocket.receivedCrystalsWaypoint", receivedWaypointNames)), false);
-    }
+	}
 
     protected static void addCustomWaypoint(String waypointName, BlockPos pos) {
         removeUnknownNear(pos);
