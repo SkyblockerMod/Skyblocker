@@ -746,7 +746,7 @@
     "skyblocker.tips.signCalculator": "在告示牌中輸入數學表達式，模組會替你計算。",
     "skyblocker.tips.calculateCommand": "在 /skyblocker calculate 後輸入一個數學表達式，模組會替你計算。",
     "skyblocker.config.shortcutToKeybindsSettings": "編輯按鍵綁定",
-    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "預設的270適用於S+（300分）通關的情況，這通常用於F5-F7以及M5-M7。\n如果你打算以S（270分）通關，你應將這個值設為250或更低，否則就會毫無意義。",
+    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "預設的250適用於S/S+通關的情況（即總分達到270/300時進入Boss戰）。\n在打算以S+通關的情況下，當250分時發送訊息可能略早。\n如果你不考慮以S+（300分）通關以外的情況，則可以考慮適當調高該值。",
     "skyblocker.tips.newYearCakesHelper": "打開新年蛋糕袋，Skyblocker會記住它們，並將現有的蛋糕突出顯示為紅色，缺少的蛋糕突出顯示為綠色。",
     "skyblocker.tips.accessoryHelper": "打開飾品包，Skyblocker會記住它們。飾品助手會告訴你有哪些飾品以及缺少哪些飾品。",
     "skyblocker.crimson.dojo.forceHelper": "啟用Force助手",
@@ -1484,5 +1484,8 @@
     "skyblocker.config.hunting.lassoHud": "套索HUD",
     "skyblocker.config.hunting.lassoHud.enabled.@Tooltip": "在HUD中顯示套索倒計時。",
     "skyblocker.config.hunting.lassoHud.reel": "收",
-    "skyblocker.config.hunting.lassoHud.now": "現在！"
+    "skyblocker.config.hunting.lassoHud.now": "現在！",
+    "skyblocker.slayer.callMaddox.message": "點擊這裡給Maddox the Slayer打電話！",
+    "skyblocker.dungeons.croesusHelper.chestValue": "箱子價值：%s",
+    "emi.category.skyblocker.skyblock_npc_shop": "NPC商店（Skyblock）"
 }
