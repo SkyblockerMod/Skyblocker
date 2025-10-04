@@ -393,7 +393,7 @@
     "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.@Tooltip": "Mostra na HUD a pontuação da dungeon.",
     "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.deathMessagesNote": "\n\n\nObservação: Isso funciona corretamente apenas se as mensagens de morte estiverem ativadas nas suas configurações do Skyblock. Se você quiser esconder as mensagens de morte, use a configuração Ocultar mensagens de morte de jogadores deste mod para permitir o processamento correto das mensagens de morte.",
     "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Escala de Pontuação",
-    "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "Cor do dano Normal",
+    "skyblocker.config.uiAndVisuals.compactDamage.normalDamageColor": "Cor do Dano Normal",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreMessage.@Tooltip": "Envia uma mensagem no chat quando for atingido %s de pontuação na Dungeon.",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound": "Ativar Som de Pontuação %s na Dungeon",
     "skyblocker.config.dungeons.devices.solveSimonSays": "Resolvedor Simon Says",
