@@ -296,7 +296,6 @@ public class HelperCategory {
 										() -> config.helpers.chocolateFactory.enableEggFinder,
 										newValue -> config.helpers.chocolateFactory.enableEggFinder = newValue)
 								.controller(ConfigUtils.createBooleanController())
-								.modifiable(false)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.helpers.chocolateFactory.sendEggFoundMessages"))
