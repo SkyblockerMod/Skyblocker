@@ -65,7 +65,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     Text lockReason = Text.empty();
 
 
-    public PartyEntry(List<Text> tooltips, PartyFinderScreen screen, int slotID) {
+    public PartyEntry(Text title, List<Text> tooltips, PartyFinderScreen screen, int slotID) {
         this.screen = screen;
         this.slotID = slotID;
 
@@ -74,7 +74,6 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         //System.out.println(tooltips);
 
         MinecraftClient client = MinecraftClient.getInstance();
-        Text title = tooltips.getFirst();
         String partyHost = title.getString().split("'s")[0];
 
         int membersIndex = -1;
@@ -301,7 +300,7 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
     public static class NoParties extends PartyEntry {
 
         public NoParties() {
-            super(List.of(), null, -1);
+            super(Text.empty(), List.of(), null, -1);
         }
 
         @Override
@@ -320,8 +319,8 @@ public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
         public static final Text DE_LIST_TEXT = Text.translatable("skyblocker.partyFinder.deList");
         public static final Text YOUR_PARTY_TEXT = Text.translatable("skyblocker.partyFinder.yourParty");
 
-        public YourParty(List<Text> tooltips, PartyFinderScreen screen, int deListSlotId) {
-            super(tooltips, screen, deListSlotId);
+        public YourParty(Text title, List<Text> tooltips, PartyFinderScreen screen, int deListSlotId) {
+            super(title, tooltips, screen, deListSlotId);
         }
 
         @Override
