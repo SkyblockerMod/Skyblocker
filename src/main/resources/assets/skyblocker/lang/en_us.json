@@ -1366,8 +1366,6 @@
   "skyblocker.api.token.noProfileKeys": "Failed to get your profile keys! Some features of the mod may not work temporarily :( (Has your game been open for more than 24 hours?). To reactivate these features, restart the game.",
 
   "skyblocker.webSocket.receivedCrystalsWaypoint": "Received a waypoint to %s from the Skyblocker WebSocket.",
-  "skyblocker.webSocket.receivedCrystalsWaypoint.bulkTooltipTitle": "Waypoints Received:",
-  "skyblocker.webSocket.receivedCrystalsWaypoint.bulk": "Received %s waypoint(s) from the Skyblocker WebSocket!",
 
   "skyblocker.exotic.crystal": "CRYSTAL",
   "skyblocker.exotic.fairy": "FAIRY",

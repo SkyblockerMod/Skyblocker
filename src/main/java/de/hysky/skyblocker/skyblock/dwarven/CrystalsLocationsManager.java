@@ -328,37 +328,28 @@ public class CrystalsLocationsManager {
 		return Text.literal(category.getName()).withColor(category.getColor());
 	}
 
-    public static void addCustomWaypointFromSocket(MiningLocationLabel.CrystalHollowsLocationsCategory category, BlockPos pos, boolean sendMessage) {
-        if (activeWaypoints.containsKey(category.getName())) return;
-        if (category == MiningLocationLabel.CrystalHollowsLocationsCategory.FAIRY_GROTTO && !SkyblockerConfigManager.get().mining.crystalsWaypoints.shareFairyGrotto) return;
+    public static void addCustomWaypointFromSocket(CrystalsWaypointMessage... messages) {
+		MutableText receivedWaypointNames = Text.empty();
+		for (CrystalsWaypointMessage message : messages) {
+			var category = message.location();
+			BlockPos pos = message.coordinates();
+			if (activeWaypoints.containsKey(category.getName())) return;
+			if (category == MiningLocationLabel.CrystalHollowsLocationsCategory.FAIRY_GROTTO && !SkyblockerConfigManager.get().mining.crystalsWaypoints.shareFairyGrotto) return;
 
-        removeUnknownNear(pos);
-        MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
-        waypointsSent2Socket.add(category);
-        activeWaypoints.put(category.getName(), waypoint);
+			removeUnknownNear(pos);
+			MiningLocationLabel waypoint = new MiningLocationLabel(category, pos);
+			waypointsSent2Socket.add(category);
+			activeWaypoints.put(category.getName(), waypoint);
 
-        if (!sendMessage) return;
-		assert CLIENT.player != null;
-		CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.webSocket.receivedCrystalsWaypoint", getTextForCategory(category))), false);
-    }
-
-	public static void receiveInitialWaypointsFromSocket(List<CrystalsWaypointMessage> waypoints) {
-		MutableText allWaypointsReceived = Text.translatable("skyblocker.webSocket.receivedCrystalsWaypoint.bulkTooltipTitle").append("\n");
-		for (CrystalsWaypointMessage waypoint : waypoints) {
-			CrystalsLocationsManager.addCustomWaypointFromSocket(waypoint.location(), waypoint.coordinates(), false);
-
-			allWaypointsReceived.append(getTextForCategory(waypoint.location()));
-			if (waypoint != waypoints.getLast()) {
-				allWaypointsReceived.append("\n");
+			receivedWaypointNames.append(getTextForCategory(category));
+			if (message != messages[messages.length - 1]) {
+				receivedWaypointNames.append(", ");
 			}
 		}
 
 		assert CLIENT.player != null;
-		CLIENT.player.sendMessage(Constants.PREFIX.get().append(
-				Text.translatable("skyblocker.webSocket.receivedCrystalsWaypoint.bulk", waypoints.size())).styled(
-				style -> style.withHoverEvent(new HoverEvent.ShowText(allWaypointsReceived))
-		), false);
-	}
+		CLIENT.player.sendMessage(Constants.PREFIX.get().append(Text.translatable("skyblocker.webSocket.receivedCrystalsWaypoint", receivedWaypointNames)), false);
+    }
 
     protected static void addCustomWaypoint(String waypointName, BlockPos pos) {
         removeUnknownNear(pos);

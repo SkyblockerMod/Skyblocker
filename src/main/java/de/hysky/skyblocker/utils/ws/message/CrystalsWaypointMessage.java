@@ -25,14 +25,16 @@ public record CrystalsWaypointMessage(CrystalHollowsLocationsCategory location, 
 			case Type.RESPONSE -> {
 				CrystalsWaypointMessage waypoint = CODEC.parse(message.get()).getOrThrow();
 
-				RenderHelper.runOnRenderThread(() -> CrystalsLocationsManager.addCustomWaypointFromSocket(waypoint.location(), waypoint.coordinates(), true));
+				RenderHelper.runOnRenderThread(() -> CrystalsLocationsManager.addCustomWaypointFromSocket(waypoint));
 			}
 
 			case Type.INITIAL_MESSAGE -> {
 				List<CrystalsWaypointMessage> waypoints = LIST_CODEC.parse(message.get()).getOrThrow();
 
 				if (waypoints.isEmpty()) return;
-				RenderHelper.runOnRenderThread(() -> CrystalsLocationsManager.receiveInitialWaypointsFromSocket(waypoints));
+				RenderHelper.runOnRenderThread(() -> CrystalsLocationsManager.addCustomWaypointFromSocket(waypoints.toArray(
+						new CrystalsWaypointMessage[0]
+				)));
 			}
 
 			default -> {}
