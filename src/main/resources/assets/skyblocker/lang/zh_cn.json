@@ -753,7 +753,7 @@
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage": "地牢坟墓信息",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold": "地牢地穴消息阈值",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage.@Tooltip": "破坏墓穴数超过5时所发送的信息。 破坏数将取代字符串\"[crypts]\"。",
-    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "默认的270适用于S+（300分）通关的情况，这通常用于F5-F7以及M5-M7。\n如果你打算以S（270分）通关，你应当将这个值设置为250或更低，否则就会毫无意义。",
+    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "默认的250适用于S/S+通关的情况（即总分达到270/300时进入Boss战）。\n在打算以S+通关的情况下，当250分时发送信息可能略早。\n如果你不考虑以S+（300分）通关以外的情况，则可以考虑适当调高该值。",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage": "启用地牢坟墓消息",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage.@Tooltip": "如果达到分数阈值时发现的地穴少于5个，则在聊天栏中发送消息。",
     "skyblocker.crimson.dojo.forceHelper": "启用Force助手",
@@ -1432,7 +1432,7 @@
     "skyblocker.config.mining.redialOnBadSignal.@Tooltip": "当由于“信号不佳”而无法拨打联系人电话时，会在聊天中发送一条消息，点击即可重拨。\n\n目前，当给Fred打电话时可能会发生这种情况。",
     "skyblocker.config.mining.redialOnBadSignal.message": "点击这里重新给%s打电话！",
     "skyblocker.config.otherLocations.barn.callTrevor.message": "点击这里来给Trevor the Trapper打电话！",
-    "skyblocker.slayer.callMaddox.message": "点击这里来打电话给 Maddox the Slayer！",
+    "skyblocker.slayer.callMaddox.message": "点击这里给Maddox the Slayer打电话！",
     "skyblocker.config.mining.callMismyla.message": "点击这里来给Queen Mismyla打电话！",
     "skyblocker.config.general.hitbox.oldCactusHitbox": "启用1.8版本的仙人掌判定箱",
     "skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip": "按字母排序会按字母的顺序排列，而默认排序方法没有特定顺序。",
@@ -1476,5 +1476,7 @@
     "skyblocker.config.hunting.lassoHud.wait": "等",
     "skyblocker.config.otherLocations.end.enderNodeWaypointType": "末地节点路径点类型",
     "skyblocker.config.helpers.enableBuildersWandPreview": "启用Builder's Wand和Builder's Ruler预览",
-    "skyblocker.powderTracker": "Powder Mining追踪器"
+    "skyblocker.powderTracker": "Powder Mining追踪器",
+    "skyblocker.dungeons.croesusHelper.chestValue": "箱子价值：%s",
+    "emi.category.skyblocker.skyblock_npc_shop": "NPC商店（Skyblock）"
 }
