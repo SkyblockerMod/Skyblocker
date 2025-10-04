@@ -85,7 +85,7 @@ public class EggFinder {
 						.executes(context -> {
 							EggType eggType = context.getArgument("eggType", EggType.class);
 							if (eggType == null || eggType.egg == null) {
-								context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.helpers.chocolateFactory.eggFinder.unableToShare").styled(style -> style.withColor(Formatting.RED))));
+								context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.helpers.hoppitysHunt.unableToShareEgg").styled(style -> style.withColor(Formatting.RED))));
 								return Command.SINGLE_SUCCESS;
 							}
 							MessageScheduler.INSTANCE.sendMessageAfterCooldown("[Skyblocker] Chocolate %s Egg found at %s".formatted(eggType.name, eggType.egg.pos.toShortString()), false);
@@ -215,11 +215,11 @@ public class EggFinder {
 				return;
 			}
 
-			MutableText eggName = Text.translatable("skyblocker.helpers.chocolateFactory.eggFinder.eggName", this.name).withColor(color);
+			MutableText eggName = Text.translatable("skyblocker.helpers.hoppitysHunt.chocolateEgg", this.name).withColor(color);
 			MinecraftClient.getInstance().player.sendMessage(
-					Constants.PREFIX.get().append(Text.translatable("skyblocker.helpers.chocolateFactory.eggFinder.eggDiscovered", eggName, egg.pos.toShortString())
+					Constants.PREFIX.get().append(Text.translatable("skyblocker.helpers.hoppitysHunt.newEggDiscovered", eggName, egg.pos.toShortString())
 					).styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker eggFinder shareLocation " + this))
-							.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.helpers.chocolateFactory.eggFinder.sharePrompt").formatted(Formatting.GREEN)))
+							.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.helpers.hoppitysHunt.shareEggPrompt").formatted(Formatting.GREEN)))
 					),
 					false
 			);
