@@ -234,7 +234,7 @@
     "skyblocker.config.chat.filter.hideDeath": "隐藏玩家死亡信息",
     "skyblocker.config.chat.filter.hideMimicKill.@Tooltip": "过滤聊天中“Mimic dead!”和“Mimic killed!”的消息。",
     "skyblocker.config.chat.filter.hideMimicKill": "隐藏击杀Mimic的消息",
-    "skyblocker.config.otherLocations.end.waypoint": "末地保护者路径点",
+    "skyblocker.config.otherLocations.end.waypoint": "末地石护卫路径点",
     "skyblocker.config.otherLocations.end.resetName": "重置已存储的末地统计信息",
     "skyblocker.config.otherLocations.end.resetText": "重置",
     "skyblocker.config.chat.filter.hideShowOff": "隐藏炫耀信息",
@@ -562,7 +562,7 @@
     "skyblocker.config.farming": "农业",
     "skyblocker.config.helpers": "助手",
     "skyblocker.config.mining.crystalHollows": "水晶洞窟",
-    "skyblocker.config.otherLocations.end.protectorLocationEnable": "启用保护者位置",
+    "skyblocker.config.otherLocations.end.protectorLocationEnable": "显示末地石护卫位置",
     "skyblocker.config.uiAndVisuals.waypoints.waypointType": "路径点类型",
     "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "存在物品价格信息缺失时的颜色",
     "skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip": "当价格数据不完整时显示的颜色。",
@@ -1478,5 +1478,7 @@
     "skyblocker.config.helpers.enableBuildersWandPreview": "启用Builder's Wand和Builder's Ruler预览",
     "skyblocker.powderTracker": "Powder Mining追踪器",
     "skyblocker.dungeons.croesusHelper.chestValue": "箱子价值：%s",
-    "emi.category.skyblocker.skyblock_npc_shop": "NPC商店（Skyblock）"
+    "emi.category.skyblocker.skyblock_npc_shop": "NPC商店（Skyblock）",
+    "skyblocker.dungeons.splits.guardians": "守卫者",
+    "skyblocker.dungeons.splits.terminals": "终端"
 }
