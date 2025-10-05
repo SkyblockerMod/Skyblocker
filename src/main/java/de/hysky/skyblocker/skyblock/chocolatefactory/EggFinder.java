@@ -96,7 +96,7 @@ public class EggFinder {
 	public static void onWebsocketMessage(EggWaypointMessage message) {
 		EggType eggType = message.eggType();
 		eggType.egg = new Egg(message.coordinates(), eggType);
-		eggType.setSeen();
+		eggType.onEggReceived();
 	}
 
 	private static void clearEggs() {
@@ -111,21 +111,18 @@ public class EggFinder {
 		WsStateManager.subscribeIsland(Service.EGG_WAYPOINTS, Optional.empty());
 	}
 
-	public static boolean checkIfEgg(ArmorStandEntity armorStand) {
-		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return false;
-		if (SkyblockTime.skyblockSeason.get() != SkyblockTime.Season.SPRING) return false;
+	public static boolean checkIfEgg(ArmorStandEntity armorStand, EggType eggType) {
+		if (!isSpring || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return false;
 		if (armorStand.hasCustomName() || !armorStand.isInvisible() || armorStand.shouldShowBasePlate()) return false;
-		return handleArmorStand(armorStand);
+		return handleArmorStand(armorStand, eggType);
 	}
 
-	private static boolean handleArmorStand(ArmorStandEntity armorStand) {
+	private static boolean handleArmorStand(ArmorStandEntity armorStand, EggType eggType) {
 		for (ItemStack itemStack : ItemUtils.getArmor(armorStand)) {
 			Optional<String> texture = ItemUtils.getHeadTextureOptional(itemStack);
 			if (texture.isEmpty()) continue;
-			for (EggType type : EggType.entries) {
-				if (type.egg == null && texture.get().equals(type.texture)) {
-					return true;
-				}
+			if (texture.get().equals(eggType.texture)) {
+				return true;
 			}
 		}
 		return false;
@@ -160,7 +157,7 @@ public class EggFinder {
 			if (client.player == null || client.world == null) return true;
 			List<ArmorStandEntity> entities = client.world.getEntitiesByClass(ArmorStandEntity.class,
 					Box.of(client.player.getPos(), 4f, 4f, 4f),
-					EggFinder::checkIfEgg
+					(entity) -> EggFinder.checkIfEgg(entity, eggType)
 			);
 
 			if (entities.size() != 1) return true;
@@ -208,7 +205,7 @@ public class EggFinder {
 			this.oddDay = oddDay;
 		}
 
-		public void setSeen() {
+		public void onEggReceived() {
 			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.sendEggFoundMessages) return;
 			if (collected) {
 				egg.setFound();
