@@ -165,8 +165,8 @@ public class EggFinder {
 
 			if (entities.size() != 1) return true;
 			eggType.egg = new Egg(entities.getFirst().getBlockPos().up(2), eggType);
-			WsMessageHandler.sendLocationMessage(Service.EGG_WAYPOINTS, new EggWaypointMessage(eggType, 0, eggType.egg.pos));
-			eggType.setSeen();
+			WsMessageHandler.sendLocationMessage(Service.EGG_WAYPOINTS, new EggWaypointMessage(eggType, eggType.egg.pos));
+			eggType.egg.setFound();
 		} catch (IllegalArgumentException e) {
 			LOGGER.error("[Skyblocker Egg Finder] Failed to process an egg!", e);
 		}

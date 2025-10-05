@@ -11,10 +11,9 @@ import net.minecraft.util.math.BlockPos;
 import java.util.List;
 import java.util.Optional;
 
-public record EggWaypointMessage(EggFinder.EggType eggType, long expirationEpoch, BlockPos coordinates) implements Message<EggWaypointMessage> {
+public record EggWaypointMessage(EggFinder.EggType eggType, BlockPos coordinates) implements Message<EggWaypointMessage> {
 	private static final Codec<EggWaypointMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			EggFinder.EggType.CODEC.fieldOf("eggType").forGetter(EggWaypointMessage::eggType),
-			Codec.LONG.fieldOf("expirationEpoch").forGetter(EggWaypointMessage::expirationEpoch), // Timestamp for when it will expirationEpoch.
 			BlockPos.CODEC.fieldOf("coordinates").forGetter(EggWaypointMessage::coordinates)
 	).apply(instance, EggWaypointMessage::new));
 
