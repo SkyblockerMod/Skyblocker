@@ -65,7 +65,8 @@ class ProgressComponent extends Component {
 	 * @see Components#progressComponent(ItemStack, Text, float)
 	 */
 	ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, float percent, int color) {
-		this(ico, description, Text.of(percent + "%"), percent, color);
+		// make sure percentages always have two decimals
+		this(ico, description, Text.of(String.format("%.2f%%", percent)), percent, color);
 	}
 
 	/**
