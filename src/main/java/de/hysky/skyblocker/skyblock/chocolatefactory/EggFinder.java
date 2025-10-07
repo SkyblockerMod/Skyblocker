@@ -54,7 +54,7 @@ public class EggFinder {
 			Location.BACKWATER_BAYOU, Location.GALATEA // These two are not mentioned on the Official wiki, but are on the Fandom wiki.
 	);
 
-	private static boolean isSpring = false;
+	private static boolean isSpring = SkyblockTime.skyblockSeason.get() == SkyblockTime.Season.SPRING;
 
 	@Init
 	public static void init() {
