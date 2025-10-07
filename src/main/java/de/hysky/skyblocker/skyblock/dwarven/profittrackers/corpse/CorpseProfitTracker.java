@@ -52,6 +52,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	public static final String CITRINE_CRYSTAL = "CITRINE_CRYSTAL";
 	public static final String RUBY_CRYSTAL = "RUBY_CRYSTAL";
 	public static final String JASPER_CRYSTAL = "JASPER_CRYSTAL";
+	public static final String ENCHANTMENT_ICE_COLD_1 = "ENCHANTMENT_ICE_COLD_1";	// fix for item repo
 	public static final @Unmodifiable List<String> PRICELESS_ITEMS = List.of(GLACITE_POWDER, OPAL_CRYSTAL, ONYX_CRYSTAL, AQUAMARINE_CRYSTAL, PERIDOT_CRYSTAL, CITRINE_CRYSTAL, RUBY_CRYSTAL, JASPER_CRYSTAL);
 
 	public static final CorpseProfitTracker INSTANCE = new CorpseProfitTracker();
