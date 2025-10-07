@@ -54,6 +54,8 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	public static final String JASPER_CRYSTAL = "JASPER_CRYSTAL";
 	public static final String ENCHANTMENT_ICE_COLD_1 = "ENCHANTMENT_ICE_COLD_1";	// fix for item repo
 	public static final @Unmodifiable List<String> PRICELESS_ITEMS = List.of(GLACITE_POWDER, OPAL_CRYSTAL, ONYX_CRYSTAL, AQUAMARINE_CRYSTAL, PERIDOT_CRYSTAL, CITRINE_CRYSTAL, RUBY_CRYSTAL, JASPER_CRYSTAL);
+	// English translation for that forceEnglishCorpseProfitTracker option
+	public static final String CORPSE_PROFIT_MESSAGE = "Corpse Profit: %s";
 
 	public static final CorpseProfitTracker INSTANCE = new CorpseProfitTracker();
 
@@ -137,15 +139,27 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 				MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
 						Constants.PREFIX.get().append(Text.translatable("skyblocker.corpseTracker.somethingWentWrong").formatted(Formatting.GOLD))
 				);
-			} else {
-				MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
-						Constants.PREFIX.get()
-										.append(Text.translatable("skyblocker.corpseTracker.corpseProfit", Text.literal(NumberFormat.getInstance().format(Math.round(lastCorpseLoot.profit()))).formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED)))
-										.styled(style ->
-														style.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
-															 .withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
-										)
-				);
+			} else {	// if forceEnglishCorpseProfitTracker is FALSE - use normal translation
+				if (!SkyblockerConfigManager.get().mining.glacite.forceEnglishCorpseProfitTracker) {
+					MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
+							Constants.PREFIX.get()
+									.append(Text.translatable("skyblocker.corpseTracker.corpseProfit", Text.literal(NumberFormat.getInstance().format(Math.round(lastCorpseLoot.profit()))).formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED)))
+									.styled(style ->
+											style.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
+													.withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
+									)
+					);
+				} else {	// else, if forceEnglishCorpseProfitTracker is TRUE - force English translation
+					MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
+							Constants.PREFIX.get()
+									.append(Text.literal(String.format("Corpse Profit: %s", NumberFormat.getInstance().format(Math.round(lastCorpseLoot.profit()))))
+											.formatted(lastCorpseLoot.profit() > 0 ? Formatting.GREEN : Formatting.RED))
+									.styled(style ->
+											style.withHoverEvent(new HoverEvent.ShowText(Text.translatable("skyblocker.corpseTracker.hoverText").formatted(Formatting.GREEN)))
+													.withClickEvent(new ClickEvent.RunCommand("/skyblocker rewardTrackers corpse list false"))
+									)
+					);
+				}
 			}
 			lastCorpseLoot = null;
 			insideRewardMessage = false;

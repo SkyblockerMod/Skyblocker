@@ -1024,5 +1024,7 @@
     "skyblocker.config.mining.dwarvenMines.enableCarpetHighlight": "Включить подсветку неразрушаемых ковров",
     "skyblocker.dungeons.splits.terminals": "Терминалы",
     "skyblocker.config.mining.dwarvenMines.carpetHighlightColor.@Tooltip": "Устанавливает цвет подсветки для неразрушаемых ковров.",
-    "skyblocker.config.mining.dwarvenMines.enableCarpetHighlight.@Tooltip": "Подсвечивает неразрушаемые ковры внутри рудных жил в Dwarven Mines."
+    "skyblocker.config.mining.dwarvenMines.enableCarpetHighlight.@Tooltip": "Подсвечивает неразрушаемые ковры внутри рудных жил в Dwarven Mines.",
+    "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker": "Показывать прибыль с Corpses на английском",
+    "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker.@Tooltip": "Игнорировать перевод и всегда показывать сообщение на английском для удобства копирования."
 }
