@@ -1480,5 +1480,8 @@
     "skyblocker.dungeons.croesusHelper.chestValue": "箱子价值：%s",
     "emi.category.skyblocker.skyblock_npc_shop": "NPC商店（Skyblock）",
     "skyblocker.dungeons.splits.guardians": "守卫者",
-    "skyblocker.dungeons.splits.terminals": "终端"
+    "skyblocker.dungeons.splits.terminals": "终端",
+    "skyblocker.customItemNames.screen.gradientEnd": "渐变终止点",
+    "skyblocker.customItemNames.screen.gradientStart": "渐变起始点",
+    "skyblocker.customItemNames.screen.gradientColor": "渐变"
 }
