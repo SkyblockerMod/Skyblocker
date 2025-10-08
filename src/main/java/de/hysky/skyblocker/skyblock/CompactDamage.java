@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class CompactDamage {
 	// Capture Group 1: Crit, Overload Crit
-	// Capture Group 2: Ring of Love, Tara Armor, Endstone Sword
+	// Capture Group 2: Ring of Love, Tara Armor, End Stone Sword
 	private static final Pattern DAMAGE_PATTERN = Pattern.compile("([✧✯]?)[\\d,]+[✧✯]?([❤+⚔]?)");
 
 	private CompactDamage() {
@@ -76,7 +76,7 @@ public class CompactDamage {
 				));
 			}
 
-			// Readd any additional symbols to the text
+			// Readd the additional symbol, if present
 			if (!matcher.group(2).isEmpty()) prettierCustomName.append(Text.literal(matcher.group(2)).setStyle(siblings.getLast().getStyle()));
 			prettierCustomName.setStyle(customName.getStyle());
 		}
