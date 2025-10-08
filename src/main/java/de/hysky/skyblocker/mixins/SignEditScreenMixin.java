@@ -122,6 +122,6 @@ public abstract class SignEditScreenMixin extends Screen {
 
 	@Unique
 	private boolean isInputSign() {
-		return (messages[1].equals(INPUT_SIGN_MARKER) && !isInputSearchSign()) || messages[1].equals(ALT_INPUT_SIGN_MARKER) || messages[1].equals(BAZAAR_FLIP_MARKER);
+		return messages[1].equals(INPUT_SIGN_MARKER) && !isInputSearchSign() || messages[1].equals(ALT_INPUT_SIGN_MARKER) || messages[1].equals(BAZAAR_FLIP_MARKER);
 	}
 }
