@@ -34,7 +34,7 @@ public class CompactDamage {
 		List<Text> siblings = customName.getSiblings();
 		if (siblings.isEmpty()) return;
 
-		MutableText prettierCustomName;
+		MutableText prettierCustomName = Text.empty();
 		if (siblings.size() == 1) { // Plain non-crit, no modifier damage
 			Text text = siblings.getFirst();
 			String dmg = text.getString().replace(",", "");
@@ -64,7 +64,6 @@ public class CompactDamage {
 			if (!NumberUtils.isParsable(dmg)) return; //Sanity check
 			String dmgSymbol = matcher.group(1);
 			String prettifiedDmg = dmgSymbol + prettifyDamageNumber(Long.parseLong(dmg)) + dmgSymbol;
-			prettierCustomName = Text.empty();
 			int length = prettifiedDmg.length();
 			for (int i = 0; i < length; i++) {
 				prettierCustomName.append(Text.literal(prettifiedDmg.substring(i, i + 1)).withColor(
