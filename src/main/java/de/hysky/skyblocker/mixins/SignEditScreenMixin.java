@@ -111,8 +111,17 @@ public abstract class SignEditScreenMixin extends Screen {
 		return messages[3].equals(SPEED_INPUT_MARKER);
 	}
 
+	/**
+	 * Used to exclude search signs with {@link SignEditScreenMixin#INPUT_SIGN_MARKER}.
+	 * <br> Works for /recipes & /shards signs
+	 */
+	@Unique
+	private boolean isInputSearchSign() {
+		return messages[2].endsWith("your") || messages[2].endsWith("query");
+	}
+
 	@Unique
 	private boolean isInputSign() {
-		return messages[1].equals(INPUT_SIGN_MARKER) || messages[1].equals(ALT_INPUT_SIGN_MARKER) || messages[1].equals(BAZAAR_FLIP_MARKER);
+		return (messages[1].equals(INPUT_SIGN_MARKER) && !isInputSearchSign()) || messages[1].equals(ALT_INPUT_SIGN_MARKER) || messages[1].equals(BAZAAR_FLIP_MARKER);
 	}
 }
