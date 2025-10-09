@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
@@ -23,6 +24,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -56,7 +58,9 @@ public class SmoothAOTE {
 
 	@Init
 	public static void init() {
-		UseItemCallback.EVENT.register(SmoothAOTE::onItemInteract);
+		Identifier id = Identifier.of(SkyblockerMod.NAMESPACE, "smooth_aote");
+		UseItemCallback.EVENT.register(id, SmoothAOTE::onItemInteract);
+		UseItemCallback.EVENT.addPhaseOrdering(id, StatusBarTracker.ITEM_CALLBACK_ID); // run this event first to check mana before it gets changed by the tracker
 		UseBlockCallback.EVENT.register(SmoothAOTE::onBlockInteract);
 	}
 
@@ -241,8 +245,8 @@ public class SmoothAOTE {
 		Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem, MANA_LORE);
 		if (manaNeeded != null && manaNeeded.matches()) {
 			int manaCost = Integer.parseInt(manaNeeded.group(1));
-			int predictedMana = StatusBarTracker.getMana().value() - teleportsAhead * manaCost;
-			if (predictedMana < manaCost) { // todo the players mana can lag behind as it is updated server side. client side mana calculations would help with this
+			int predictedMana = StatusBarTracker.getMana().value();
+			if (predictedMana < manaCost) {
 				return;
 			}
 		}
