@@ -57,9 +57,9 @@ public class SkeletonToStructure {
 		List<SkeletonBlock> blockData = new ArrayList<>(blocks.length);
 		for (int blockNum : blocks) {
 			blockData.add(new SkeletonBlock(
-					(blockNum & (255 << 24)) >> 24,
-					(blockNum & (255 << 16)) >> 16,
-					(blockNum & (255 << 8)) >> 8,
+					(blockNum >> 24) & 255,
+					(blockNum >> 16) & 255,
+					(blockNum >> 8) & 255,
 					(byte) (blockNum & 255)
 			));
 		}
