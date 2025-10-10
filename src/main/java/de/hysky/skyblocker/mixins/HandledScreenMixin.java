@@ -355,7 +355,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		}
 		// Prevent Auctioning
 		boolean isInAuctionGUI = title.endsWith("Auction House") // "Co-op Auction House" in Co-op profile
-				|| title.matches("Create (BIN )?Auction");
+				|| title.equals("Create Auction")
+				|| title.equals("Create BIN Auction");
 		if (isInAuctionGUI && ItemProtection.isItemProtected(stack)) {
 			ci.cancel();
 			return;
