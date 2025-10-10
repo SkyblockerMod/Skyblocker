@@ -149,9 +149,9 @@ public class UIAndVisualsCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.uiAndVisuals.trueQuiverCount"))
 						.description(Text.translatable("skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip"))
-						.binding(defaults.uiAndVisuals.cancelComponentUpdateAnimation,
-								() -> config.uiAndVisuals.cancelComponentUpdateAnimation,
-								newValue -> config.uiAndVisuals.cancelComponentUpdateAnimation = newValue)
+						.binding(defaults.uiAndVisuals.trueQuiverCount,
+								() -> config.uiAndVisuals.trueQuiverCount,
+								newValue -> config.uiAndVisuals.trueQuiverCount = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 
