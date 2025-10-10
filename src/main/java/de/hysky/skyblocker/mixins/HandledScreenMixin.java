@@ -354,7 +354,9 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			return;
 		}
 		// Prevent Auctioning
-		if ((title.equals("Auction House") || title.equals("Create BIN Auction") || title.equals("Create Auction")) && ItemProtection.isItemProtected(stack)) {
+		boolean isInAuctionGUI = title.endsWith("Auction House") // "Co-op Auction House" in Co-op profile
+				|| title.matches("Create (BIN )?Auction");
+		if (isInAuctionGUI && ItemProtection.isItemProtected(stack)) {
 			ci.cancel();
 			return;
 		}
