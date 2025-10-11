@@ -61,6 +61,27 @@ public class HeadSelectionWidget extends ContainerWidget {
 		}
 	}
 
+	@Override
+	public void setX(int x) {
+		super.setX(x);
+		searchField.setX(x + 3);
+		layoutButtons();
+	}
+
+	@Override
+	public void setY(int y) {
+		super.setY(y);
+		searchField.setY(y + 3);
+		layoutButtons();
+	}
+
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
+		searchField.setWidth(width - 6);
+		layoutButtons();
+	}
+
 	private void onClick(String texture) {
 		selectedTexture = texture;
 		updateConfig();
