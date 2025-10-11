@@ -1485,5 +1485,5 @@
     "skyblocker.customItemNames.screen.gradientStart": "渐变起始点",
     "skyblocker.customItemNames.screen.gradientColor": "渐变",
     "skyblocker.config.uiAndVisuals.trueQuiverCount": "显示实际箭袋计数",
-    "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "显示箭袋中箭的实际数量，而不是被限制到数字 64。"
+    "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "显示箭袋中箭的实际数量，而不是使用原本的物品数量上限64。"
 }
