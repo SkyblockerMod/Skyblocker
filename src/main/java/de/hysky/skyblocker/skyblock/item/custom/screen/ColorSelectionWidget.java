@@ -138,7 +138,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	}
 
 	private void onTextInputColorChanged(int argb) {
-		colorPicker.setRGBColor(argb);
+		colorPicker.setARGBColor(argb);
 		if (animated) timelineWidget.setColor(argb);
 		else SkyblockerConfigManager.get().general.customDyeColors.put(currentItem.getUuid(), ColorHelper.fullAlpha(argb));
 	}
@@ -150,7 +150,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 	private void onTimelineFrameSelected(int color, float time) {
 		argbTextInput.setARGBColor(color);
-		colorPicker.setRGBColor(color);
+		colorPicker.setARGBColor(color);
 	}
 
 	private void onRemoveCustomColor(ButtonWidget button) {
@@ -164,7 +164,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 		int color = DyedColorComponent.getColor(currentItem, -1);
 		argbTextInput.setARGBColor(color);
-		colorPicker.setRGBColor(color);
+		colorPicker.setARGBColor(color);
 	}
 
 	private void onAnimatedCheckbox(CheckboxWidget checkbox, boolean checked) {
@@ -184,7 +184,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 			((CheckboxWidgetAccessor) cycleBackCheckbox).setChecked(true);
 		} else {
 			int color = SkyblockerConfigManager.get().general.customDyeColors.getOrDefault(itemUuid, DyedColorComponent.getColor(currentItem, -1));
-			colorPicker.setRGBColor(color);
+			colorPicker.setARGBColor(color);
 			argbTextInput.setARGBColor(color);
 			SkyblockerConfigManager.get().general.customAnimatedDyes.remove(itemUuid);
 		}
@@ -277,12 +277,12 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 			animated = false;
 			int color = SkyblockerConfigManager.get().general.customDyeColors.getInt(itemUuid);
 			argbTextInput.setARGBColor(color);
-			colorPicker.setRGBColor(color);
+			colorPicker.setARGBColor(color);
 		} else {
 			animated = false;
 			int color = DyedColorComponent.getColor(currentItem, -1);
 			argbTextInput.setARGBColor(color);
-			colorPicker.setRGBColor(color);
+			colorPicker.setARGBColor(color);
 		}
 		changeVisibilities();
 		((CheckboxWidgetAccessor) animatedCheckbox).setChecked(animated);
