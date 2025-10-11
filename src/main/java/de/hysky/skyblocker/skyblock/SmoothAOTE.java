@@ -41,7 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SmoothAOTE {
-	public static final Identifier ITEM_USE_CALLBACK_ID = Identifier.of(SkyblockerMod.NAMESPACE, "smooth_aote");
+	public static final Identifier SMOOTH_AOTE_BEFORE_PHASE = Identifier.of(SkyblockerMod.NAMESPACE, "smooth_aote");
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
@@ -59,8 +59,8 @@ public class SmoothAOTE {
 
 	@Init
 	public static void init() {
-		UseItemCallback.EVENT.register(ITEM_USE_CALLBACK_ID, SmoothAOTE::onItemInteract);
-		UseItemCallback.EVENT.addPhaseOrdering(ITEM_USE_CALLBACK_ID, Event.DEFAULT_PHASE); // run this event first to check mana before it gets changed by the tracker
+		UseItemCallback.EVENT.register(SMOOTH_AOTE_BEFORE_PHASE, SmoothAOTE::onItemInteract);
+		UseItemCallback.EVENT.addPhaseOrdering(SMOOTH_AOTE_BEFORE_PHASE, Event.DEFAULT_PHASE); // run this event first to check mana before it gets changed by the tracker
 		UseBlockCallback.EVENT.register(SmoothAOTE::onBlockInteract);
 	}
 
