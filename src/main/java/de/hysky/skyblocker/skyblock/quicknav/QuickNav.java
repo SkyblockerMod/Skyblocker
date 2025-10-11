@@ -59,6 +59,10 @@ public class QuickNav {
                 player.sendMessage(Constants.PREFIX.get().append(Text.literal("Invalid regex in Quick Nav Button " + (id + 1) + "!").formatted(Formatting.RED)), false);
             }
         }
+
+		if (buttonInfo.doubleClick) {
+			return new QuickNavConfirmationButton(id, uiTitleMatches, buttonInfo.clickEvent, stack, buttonInfo.tooltip);
+		}
         return new QuickNavButton(id, uiTitleMatches, buttonInfo.clickEvent, stack, buttonInfo.tooltip);
     }
 }
