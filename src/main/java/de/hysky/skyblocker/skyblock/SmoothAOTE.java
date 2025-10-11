@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.*;
@@ -40,7 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SmoothAOTE {
-
+	public static final Identifier ITEM_USE_CALLBACK_ID = Identifier.of(SkyblockerMod.NAMESPACE, "smooth_aote");
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
@@ -58,9 +59,8 @@ public class SmoothAOTE {
 
 	@Init
 	public static void init() {
-		Identifier id = Identifier.of(SkyblockerMod.NAMESPACE, "smooth_aote");
-		UseItemCallback.EVENT.register(id, SmoothAOTE::onItemInteract);
-		UseItemCallback.EVENT.addPhaseOrdering(id, StatusBarTracker.ITEM_CALLBACK_ID); // run this event first to check mana before it gets changed by the tracker
+		UseItemCallback.EVENT.register(ITEM_USE_CALLBACK_ID, SmoothAOTE::onItemInteract);
+		UseItemCallback.EVENT.addPhaseOrdering(ITEM_USE_CALLBACK_ID, Event.DEFAULT_PHASE); // run this event first to check mana before it gets changed by the tracker
 		UseBlockCallback.EVENT.register(SmoothAOTE::onBlockInteract);
 	}
 

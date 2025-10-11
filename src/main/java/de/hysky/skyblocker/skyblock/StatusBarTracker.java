@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
@@ -19,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import java.util.Locale;
@@ -27,7 +25,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StatusBarTracker {
-	public static final Identifier ITEM_CALLBACK_ID = Identifier.of(SkyblockerMod.NAMESPACE, "status_bar_tracker");
 	private static final Pattern STATUS_HEALTH = Pattern.compile("§[6c](?<health>[\\d,]+)/(?<max>[\\d,]+)❤ *(?<healing>\\+§c([\\d,]+). *)?");
 	private static final Pattern DEFENSE_STATUS = Pattern.compile("§a(?<defense>[\\d,]+)§a❈ Defense *");
 	private static final Pattern MANA_USE = Pattern.compile("§b-([\\d,]+) Mana \\(§.*?\\) *");
@@ -50,7 +47,7 @@ public class StatusBarTracker {
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(StatusBarTracker::allowOverlayMessage);
 		ClientReceiveMessageEvents.MODIFY_GAME.register(StatusBarTracker::onOverlayMessage);
-		UseItemCallback.EVENT.register(ITEM_CALLBACK_ID, StatusBarTracker::interactItem);
+		UseItemCallback.EVENT.register(StatusBarTracker::interactItem);
 		Scheduler.INSTANCE.scheduleCyclic(StatusBarTracker::tick, 1);
 	}
 
