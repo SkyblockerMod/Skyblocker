@@ -199,7 +199,7 @@ public class SweepOverlay {
 	 * @return the maximum number of logs that can be broken
 	 */
 	private static int calculateMaxWood(float sweepStat, float toughness) {
-		int logs = (int) (toughness <= 0 ? sweepStat : (3 * Math.log(sweepStat) - 1.75 * Math.log(toughness) + 2));;
+		int logs = (int) (toughness <= 0 ? sweepStat : (3 * Math.log(sweepStat) - 1.75 * Math.log(toughness) + 2));
 		return Math.min(MAX_WOOD_CAP, logs);
 	}
 
@@ -248,7 +248,7 @@ public class SweepOverlay {
 		float toughness = getToughness(state);
 		int maxWood = calculateMaxWood(sweepStat, toughness);
 		if (isThrown) {
-			maxWood *= 0.5f;
+			maxWood /= 2;
 		}
 
 		queue.add(startPos);

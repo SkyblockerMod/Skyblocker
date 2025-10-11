@@ -69,7 +69,7 @@ public class ItemCooldowns {
 	}
 
     public static boolean isOnCooldown(ItemStack itemStack) {
-        return isOnCooldown(ItemUtils.getItemId(itemStack));
+        return isOnCooldown(itemStack.getSkyblockId());
     }
 
     private static boolean isOnCooldown(String itemId) {
@@ -87,12 +87,12 @@ public class ItemCooldowns {
     }
 
     public static CooldownEntry getItemCooldownEntry(ItemStack itemStack) {
-        return ITEM_COOLDOWNS.get(ItemUtils.getItemId(itemStack));
+        return ITEM_COOLDOWNS.get(itemStack.getSkyblockId());
     }
 
     private static boolean isWearingBatArmor(PlayerEntity player) {
         for (ItemStack stack : ItemUtils.getArmor(player)) {
-            String itemId = ItemUtils.getItemId(stack);
+            String itemId = stack.getSkyblockId();
             if (!BAT_ARMOR_IDS.contains(itemId)) {
                 return false;
             }

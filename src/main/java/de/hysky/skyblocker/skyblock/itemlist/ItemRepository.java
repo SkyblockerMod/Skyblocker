@@ -114,7 +114,7 @@ public class ItemRepository {
 			ItemStack stack = ItemStackBuilder.fromNEUItem(item);
 			StackOverlays.applyOverlay(item, stack);
 
-			if (stack.isOf(Items.ENCHANTED_BOOK) && ItemUtils.getItemId(stack).contains(";")) {
+			if (stack.isOf(Items.ENCHANTED_BOOK) && stack.getSkyblockId().contains(";")) {
 				ItemUtils.getCustomData(stack).putString("id", "ENCHANTED_BOOK");
 			}
 

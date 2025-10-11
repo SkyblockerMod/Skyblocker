@@ -356,7 +356,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			//If the result button was clicked then try and show a recipe if there is one
 			//for the item
 			if (resultButton.mouseClicked(mouseX, mouseY, button)) {
-				String itemId = ItemUtils.getItemId(resultButton.getDisplayStack());
+				String itemId = resultButton.getDisplayStack().getSkyblockId();
 
 				//Continue if this item doesn't have an item id
 				if (itemId.isEmpty()) continue;
