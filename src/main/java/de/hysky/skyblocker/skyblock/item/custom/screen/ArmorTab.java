@@ -29,7 +29,7 @@ import java.util.List;
 import static de.hysky.skyblocker.skyblock.item.custom.screen.CustomizeScreen.CLIENT;
 
 public class ArmorTab extends GridScreenTab implements Closeable {
-	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
+	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 	private static final int PLAYER_WIDGET_WIDTH = 84;
 	private static final int PADDING = 10;
 
@@ -151,8 +151,8 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 
 	private class PieceSelectionWidget extends ClickableWidget {
 
-		private static final Identifier HOTBAR_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "armor_customization_screen/mini_hotbar");
-		private static final Identifier HOTBAR_SELECTION_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "hotbar_selection_full");
+		private static final Identifier HOTBAR_TEXTURE = SkyblockerMod.id("armor_customization_screen/mini_hotbar");
+		private static final Identifier HOTBAR_SELECTION_TEXTURE = SkyblockerMod.id("hotbar_selection_full");
 
 		private final boolean[] selectable;
 

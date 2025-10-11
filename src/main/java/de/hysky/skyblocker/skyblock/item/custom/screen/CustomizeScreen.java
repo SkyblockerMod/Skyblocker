@@ -220,7 +220,7 @@ public class CustomizeScreen extends Screen {
 
 	private static class CustomizeButton extends ClickableWidget {
 		// thanks to @yuflow
-		private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "armor_customization_screen/button");
+		private static final Identifier TEXTURE = SkyblockerMod.id("armor_customization_screen/button");
 
 		private CustomizeButton(int x, int y) {
 			super(x, y, 10, 10, Text.empty());

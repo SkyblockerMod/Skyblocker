@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 
 public class ItemSelectPopup extends AbstractPopupScreen {
 
-	private static final Identifier BACKGROUND_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/inventory_item_selection.png");
+	private static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/inventory_item_selection.png");
 	private static final int TEXTURE_WIDTH = 176;
 	private static final int TEXTURE_HEIGHT = 132;
 	private final Consumer<ItemStack> callback;
