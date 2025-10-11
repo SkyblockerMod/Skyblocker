@@ -1243,6 +1243,9 @@
   "skyblocker.config.uiAndVisuals.titleContainer.direction.VERTICAL": "Vertical",
   "skyblocker.config.uiAndVisuals.titleContainer.titleContainerScale": "Title Container Scale",
 
+  "skyblocker.config.uiAndVisuals.trueQuiverCount": "Show True Quiver Count",
+  "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "Shows the actual amount of arrows in your quiver instead of being capped at 64.",
+
   "skyblocker.config.uiAndVisuals.waypoints": "Waypoints",
   "skyblocker.config.uiAndVisuals.waypoints.enableWaypoints": "Enable Waypoints",
   "skyblocker.config.uiAndVisuals.waypoints.waypointType": "Waypoint Type",
