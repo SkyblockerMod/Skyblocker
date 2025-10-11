@@ -105,7 +105,14 @@ public class GardenPlotsWidget extends ContainerWidget {
 						ItemStack stack = slot.getStack();
 						if (stack.isEmpty() || stack.isOf(Items.RED_STAINED_GLASS_PANE) || stack.isOf(Items.OAK_BUTTON) || stack.isOf(Items.BLACK_STAINED_GLASS_PANE))
 							continue;
-						gardenPlots[(i / 9) * 5 + (i % 9 - 2)] = new GardenPlot(stack.getItem(), stack.getName().getString().split("-", 2)[1].trim());
+						// SkyHanni adds formatting codes to the plot names when using their custom plot icons.
+						String name = Formatting.strip(stack.getName().getString());
+						String[] parts = name.split("-", 2);
+						if (parts.length < 2) {
+							LOGGER.warn("Invalid plot name: {}", name);
+							continue;
+						}
+						gardenPlots[(i / 9) * 5 + (i % 9 - 2)] = new GardenPlot(stack.getItem(), parts[1].trim());
 					}
 
 				});

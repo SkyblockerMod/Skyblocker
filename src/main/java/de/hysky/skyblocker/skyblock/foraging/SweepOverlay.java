@@ -5,9 +5,10 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -22,13 +23,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,7 +96,7 @@ public class SweepOverlay {
 		}
 
 		ItemStack heldItem = CLIENT.player.getMainHandStack();
-		String itemId = ItemUtils.getItemId(heldItem);
+		String itemId = heldItem.getSkyblockId();
 		boolean isValidAxe = VALID_AXES.contains(itemId);
 		boolean isThrowableAxe = THROWABLE_AXES.contains(itemId);
 		if (!isValidAxe && !isThrowableAxe) {
@@ -199,7 +199,7 @@ public class SweepOverlay {
 	 * @return the maximum number of logs that can be broken
 	 */
 	private static int calculateMaxWood(float sweepStat, float toughness) {
-		int logs = (int) (toughness <= 0 ? sweepStat : (3 * Math.log(sweepStat) - 1.75 * Math.log(toughness) + 2));;
+		int logs = (int) (toughness <= 0 ? sweepStat : (3 * Math.log(sweepStat) - 1.75 * Math.log(toughness) + 2));
 		return Math.min(MAX_WOOD_CAP, logs);
 	}
 
@@ -248,7 +248,7 @@ public class SweepOverlay {
 		float toughness = getToughness(state);
 		int maxWood = calculateMaxWood(sweepStat, toughness);
 		if (isThrown) {
-			maxWood *= 0.5f;
+			maxWood /= 2;
 		}
 
 		queue.add(startPos);

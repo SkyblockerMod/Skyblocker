@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.ItemUtils;
 import io.github.moulberry.repo.data.NEUNpcShopRecipe;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.item.ItemStack;
@@ -125,6 +124,6 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 
 	@Override
 	public Identifier getRecipeIdentifier() {
-		return Identifier.of("skyblock", ItemUtils.getItemId(output));
+		return Identifier.of("skyblock", output.getSkyblockId());
 	}
 }

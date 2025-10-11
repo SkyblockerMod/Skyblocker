@@ -5,7 +5,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -130,7 +129,7 @@ public class CommissionLabels {
 		if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
 			if (SkyblockerConfigManager.get().mining.commissionWaypoints.hideEmissaryOnPigeon) {
 				for (ItemStack stack : MinecraftClient.getInstance().player.getInventory().getMainStacks()) {
-					if (ItemUtils.getItemId(stack).equals("ROYAL_PIGEON")) {
+					if (stack.getSkyblockId().equals("ROYAL_PIGEON")) {
 						return;
 					}
 				}
