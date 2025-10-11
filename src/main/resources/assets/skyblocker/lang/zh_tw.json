@@ -1286,7 +1286,7 @@
     "skyblocker.config.uiAndVisuals.slotText.prehistoricEgg": "史前的蛋",
     "skyblocker.config.uiAndVisuals.slotText.yourEssence": "你的精粹",
     "skyblocker.dungeons.secrets.customWaypointNotFound": "§c未在 X: %s, Y: %s, Z: %s 找到为房間%s設定的自訂路徑點。",
-    "skyblocker.dungeons.splits.sadan": "撒旦",
+    "skyblocker.dungeons.splits.sadan": "",
     "skyblocker.dungeons.splits.terminals": "終端",
     "skyblocker.dungeons.splits.witherKing": "凋零王",
     "skyblocker.exotic.glitched": "故障的",
