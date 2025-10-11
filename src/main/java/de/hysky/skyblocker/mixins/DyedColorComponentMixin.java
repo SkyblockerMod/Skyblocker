@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.skyblock.item.custom.preset.ArmorPreviewStorage;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.component.type.DyedColorComponent;
@@ -21,6 +22,14 @@ public class DyedColorComponentMixin {
 	private static int skyblocker$customDyeColor(int originalColor, @Local(argsOnly = true) ItemStack stack) {
 		if (Utils.isOnSkyblock()) {
 			String itemUuid = ItemUtils.getItemUuid(stack);
+
+			if (ArmorPreviewStorage.TEMP_ANIMATED_DYES.containsKey(itemUuid)) {
+				return ColorHelper.fullAlpha(CustomArmorAnimatedDyes.animateColorTransition(ArmorPreviewStorage.TEMP_ANIMATED_DYES.get(itemUuid)));
+			}
+
+			if (ArmorPreviewStorage.TEMP_DYE_COLORS.containsKey(itemUuid)) {
+				return ColorHelper.fullAlpha(ArmorPreviewStorage.TEMP_DYE_COLORS.get(itemUuid));
+			}
 
 			if (SkyblockerConfigManager.get().general.customAnimatedDyes.containsKey(itemUuid)) {
 				return ColorHelper.fullAlpha(CustomArmorAnimatedDyes.animateColorTransition(SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid)));
