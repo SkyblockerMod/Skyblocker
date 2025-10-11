@@ -15,7 +15,7 @@ import java.util.Locale;
 
 public class SkyblockCraftingRecipe implements SkyblockRecipe {
 
-    public static final Identifier IDENTIFIER = Identifier.of(SkyblockerMod.NAMESPACE, "skyblock_crafting");
+    public static final Identifier IDENTIFIER = SkyblockerMod.id("skyblock_crafting");
 
     private final Text craftText;
     private final List<ItemStack> grid = new ArrayList<>(9);

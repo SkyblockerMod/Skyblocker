@@ -221,8 +221,8 @@ public class CustomizeArmorScreen extends Screen {
 
 	private class PieceSelectionWidget extends ClickableWidget {
 
-		private static final Identifier HOTBAR_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "armor_customization_screen/mini_hotbar");
-		private static final Identifier HOTBAR_SELECTION_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "hotbar_selection_full");
+		private static final Identifier HOTBAR_TEXTURE = SkyblockerMod.id("armor_customization_screen/mini_hotbar");
+		private static final Identifier HOTBAR_SELECTION_TEXTURE = SkyblockerMod.id("hotbar_selection_full");
 
 		private final boolean[] selectable;
 
@@ -285,7 +285,7 @@ public class CustomizeArmorScreen extends Screen {
 
 	private static class CustomizeButton extends ClickableWidget {
 		// thanks to @yuflow
-		private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "armor_customization_screen/button");
+		private static final Identifier TEXTURE = SkyblockerMod.id("armor_customization_screen/button");
 
 		private CustomizeButton(int x, int y) {
 			super(x, y, 10, 10, Text.empty());
