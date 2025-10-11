@@ -627,7 +627,7 @@
     "skyblocker.config.dungeons.goldorWaypoints.waypointType": "Type de marqueurs pour les tâches",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage.@Tooltip": "Message qui sera envoyé dans le chat lorsque le seuil de score sera atteint avant d'obtenir 5+ cryptes. La chaîne « [cryptes] » sera remplacée par le nombre de cryptes.",
     "skyblocker.config.dungeons.dungeonScore.enableDungeonScoreSound.@Tooltip": "Jouer un son lorsque vous atteignez %s score dans les donjons.",
-    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "La valeur par défaut de 270 est destinée aux tentatives S+ lorsque vous entrez avec un score de 300+ - ce qui correspond généralement aux courses F5-F7 et M5-M7. \nSi vous effectuez des tentatives S (avec un score de 270), vous devriez envisager de réduire ce paramètre à 250 ou moins, sinon ça ne servira à rien.",
+    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "La valeur par défaut de 250 est destinée aux parties S/S+ lorsque vous entrez avec un score de 270+/300+.\nPour les parties S+, envoyer un message à 250 peut être un peu tôt.\nSi vous ne jouez que des parties S+ (en entrant avec un score de 300+), vous devriez envisager d'augmenter cette valeur.",
     "skyblocker.armorCustomization.delayTooltip": "L'animation va être retardée par ce montant en secondes.",
     "skyblocker.armorCustomization.cannotCustomizeColor": "Impossible de personnaliser la couleur de cette pièce :(",
     "skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints": "Activer les Marqueurs avec la pioche 'Stonk'",
@@ -1507,5 +1507,7 @@
     "skyblocker.config.otherLocations.end.enderNodeWaypointType": "Type de Marqueur pour les Ender Nodes",
     "skyblocker.config.helpers.enableBuildersWandPreview": "Activer la Prévisualisation de la Builder's Wand et du Builder's Ruler",
     "skyblocker.dungeons.croesusHelper.chestValue": "Valeur du Coffre : %s",
-    "emi.category.skyblocker.skyblock_npc_shop": "Boutiques PNJ (Skyblock)"
+    "emi.category.skyblocker.skyblock_npc_shop": "Boutiques PNJ (Skyblock)",
+    "skyblocker.config.uiAndVisuals.trueQuiverCount": "Afficher la Quantité Réelle du Carquois",
+    "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "Affiche la quantité réelle de flèches dans votre carquois au lieu d'être limité à 64."
 }
