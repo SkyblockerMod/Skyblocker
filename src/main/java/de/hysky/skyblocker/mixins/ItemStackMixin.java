@@ -156,6 +156,7 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	@NotNull
 	public String getSkyblockId() {
@@ -163,6 +164,7 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 		return skyblockId = ItemUtils.getItemId(this);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	@NotNull
 	public String getSkyblockApiId() {
@@ -170,6 +172,7 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 		return skyblockApiId = ItemUtils.getSkyblockApiId(this);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	@NotNull
 	public String getNeuName() {
@@ -177,7 +180,7 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 		return neuName = ItemUtils.getNeuId((ItemStack) (Object) this);
 	}
 
-	@SuppressWarnings("UsagesOfObsoleteApi")
+	@SuppressWarnings("deprecation")
 	@Override
 	@NotNull
 	public String getUuid() {
@@ -185,6 +188,7 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 		return uuid = ItemUtils.getItemUuid(this);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	@NotNull
 	public PetInfo getPetInfo() {
@@ -192,9 +196,9 @@ public abstract class ItemStackMixin implements ComponentHolder, SkyblockerStack
 		return petInfo = ItemUtils.getPetInfo((ItemStack) (Object) this);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	@NotNull
-	@SuppressWarnings("deprecation")
 	public SkyblockItemRarity getSkyblockRarity() {
 		if (skyblockRarity != null) return skyblockRarity;
 		return skyblockRarity = ItemUtils.getItemRarity((ItemStack) (Object) this);

@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
@@ -26,7 +25,7 @@ public class PetLevelAdder extends SimpleSlotTextAdder {
 
 	@Override
 	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
-		if (!stack.isOf(Items.PLAYER_HEAD) || !ItemUtils.getItemId(stack).equals("PET")) return List.of();
+		if (!stack.isOf(Items.PLAYER_HEAD) || !stack.getSkyblockId().equals("PET")) return List.of();
 		Matcher matcher = LEVEL_PATTERN.matcher(stack.getName().getString());
 		if (!matcher.matches()) return List.of();
 		String level = matcher.group(1);

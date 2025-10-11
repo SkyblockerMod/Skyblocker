@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.ItemUtils;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
 import io.github.moulberry.repo.data.NEUIngredient;
 import net.minecraft.client.gui.ScreenPos;
@@ -78,7 +77,7 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
 
     @Override
     public Identifier getRecipeIdentifier() {
-        return Identifier.of("skyblock", ItemUtils.getItemId(getResult()).toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + getResult().getCount());
+        return Identifier.of("skyblock", getResult().getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + getResult().getCount());
 
     }
 

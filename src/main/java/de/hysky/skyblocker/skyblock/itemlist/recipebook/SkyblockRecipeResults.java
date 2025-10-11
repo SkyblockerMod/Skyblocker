@@ -1,11 +1,6 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import com.google.common.collect.Lists;
-
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
@@ -35,6 +30,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 //TODO when in recipe view set search hint to talk about close or smth
 /**
@@ -346,7 +345,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 		if (this.recipeView && button == 1) {
 			// The crafting result button
 			var result = resultButtons.get(14);
-			var rawID = ItemUtils.getItemId(result.getDisplayStack());
+			var rawID = result.getDisplayStack().getSkyblockId();
 			if (result.isMouseOver(mouseX, mouseY)) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown(String.format("/viewrecipe %s", rawID), true);
 				return true;

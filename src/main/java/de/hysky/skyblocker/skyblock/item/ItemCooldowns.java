@@ -41,7 +41,7 @@ public class ItemCooldowns {
     private static ActionResult onItemInteract(PlayerEntity player, World world, Hand hand) {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.itemCooldown.enableItemCooldowns)
 			return ActionResult.PASS;
-		String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
+		String usedItemId = player.getMainHandStack().getSkyblockId();
 		switch (usedItemId) {
 			case FIG_AXE_ID, FIGSTONE_ID, JUNGLE_AXE_ID, TREECAPITATOR_ID -> handleItemCooldown(usedItemId, 1000);
 			case SILK_EDGE_SWORD_ID, LEAPING_SWORD_ID -> handleItemCooldown(usedItemId, 1000);
