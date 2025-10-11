@@ -8,6 +8,8 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.dwarven.MiningLocationLabel.CrystalHollowsLocationsCategory;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -26,14 +28,23 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -46,6 +57,7 @@ import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.minecraft.command.CommandSource.suggestMatching;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Manager for Crystal Hollows waypoints that handles {@link #update() location detection},
@@ -61,6 +73,14 @@ public class CrystalsLocationsManager {
      * A look-up table to convert between location names and waypoint in the {@link MiningLocationLabel.CrystalHollowsLocationsCategory} values.
      */
     private static final Map<String, MiningLocationLabel.CrystalHollowsLocationsCategory> WAYPOINT_LOCATIONS = Arrays.stream(MiningLocationLabel.CrystalHollowsLocationsCategory.values()).collect(Collectors.toMap(MiningLocationLabel.CrystalHollowsLocationsCategory::getName, Function.identity()));
+    // Locations to search for in chat messages
+    private static final EnumSet<MiningLocationLabel.CrystalHollowsLocationsCategory> CHAT_VERIFIABLE_WAYPOINTS =
+        EnumSet.of(
+            MiningLocationLabel.CrystalHollowsLocationsCategory.KHAZAD_DUM,
+            MiningLocationLabel.CrystalHollowsLocationsCategory.GOBLIN_QUEENS_DEN,
+            MiningLocationLabel.CrystalHollowsLocationsCategory.MINES_OF_DIVAN
+        );
+
     //Package-private for testing
     static final Pattern TEXT_CWORDS_PATTERN = Pattern.compile("\\Dx?(\\d{3})(?=[, ]),? ?y?(\\d{2,3})(?=[, ]),? ?z?(\\d{3})\\D?(?!\\d)");
     private static final int REMOVE_UNKNOWN_DISTANCE = 50;
@@ -81,6 +101,27 @@ public class CrystalsLocationsManager {
 
         // Nucleus Waypoints
         WorldRenderEvents.AFTER_TRANSLUCENT.register(NucleusWaypoints::render);
+
+        // Verify waypoints by left- or right-clicking on an NPC such as Odawa, Boss Corleone, or Kalhuiki Door Guardian, etc.
+        AttackEntityCallback.EVENT.register(CrystalsLocationsManager::onEntryInteract);
+        UseEntityCallback.EVENT.register(CrystalsLocationsManager::onEntryInteract);
+    }
+
+    // Verify waypoints when interacting with an NPC
+    private static ActionResult onEntryInteract(PlayerEntity playerEntity, World world, Hand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
+        if (!Utils.isInCrystalHollows()) {
+            return ActionResult.PASS;
+        }
+        // Searching for an invisible armor stand behind an entity (it has the entity’s name)
+        String npcName = MobGlow.getArmorStandName(entity);
+
+        CrystalHollowsLocationsCategory waypointLocation = CrystalHollowsLocationsCategory.fromContainsIdentifyingText(npcName);
+        if (waypointLocation != null && !npcName.isBlank()) {
+            BlockPos pos = entity.getBlockPos();
+            placeVerifiedWaypoint(waypointLocation, pos);
+        }
+
+        return ActionResult.PASS;
     }
 
     private static boolean extractLocationFromMessage(Text message, Boolean overlay) {
@@ -123,23 +164,20 @@ public class CrystalsLocationsManager {
 
                     CLIENT.player.sendMessage(getLocationMenu(location, false), false);
                 }
+            } else { // if not a user message, try to find keywords in the chat to place waypoint more accurate, if not already verifed
+                if (CLIENT.player != null && SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled) {
+                    // Iterate only through waypoints with crystal names
+                    for (MiningLocationLabel.CrystalHollowsLocationsCategory waypointLocation : CHAT_VERIFIABLE_WAYPOINTS) {
+                        String waypointLinkedMessage = waypointLocation.getIdentifyingText();
+                        if (waypointLinkedMessage != null && text.contains(waypointLinkedMessage)) {
+                            placeVerifiedWaypoint(waypointLocation, CLIENT.player.getBlockPos());
+                        }
+                    }
+                }
             }
 
         } catch (Exception e) {
             LOGGER.error("[Skyblocker Crystals Locations Manager] Encountered an exception while extracing a location from a chat message!", e);
-        }
-
-        //move waypoint to be more accurate based on locational chat messages if not already verifed
-        if (CLIENT.player != null && SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled) {
-            for (MiningLocationLabel.CrystalHollowsLocationsCategory waypointLocation : WAYPOINT_LOCATIONS.values()) {
-                String waypointLinkedMessage = waypointLocation.getLinkedMessage();
-                String waypointName = waypointLocation.getName();
-                if (waypointLinkedMessage != null && text.contains(waypointLinkedMessage) && !verifiedWaypoints.contains(waypointName)) {
-                    addCustomWaypoint(waypointLocation.getName(), CLIENT.player.getBlockPos());
-                    verifiedWaypoints.add(waypointName);
-                    trySendWaypoint2Socket(waypointLocation);
-                }
-            }
         }
 
         return true;
@@ -418,5 +456,25 @@ public class CrystalsLocationsManager {
 
         WsMessageHandler.sendMessage(Service.CRYSTAL_WAYPOINTS, new CrystalsWaypointMessage(category, CLIENT.player.getBlockPos()));
         waypointsSent2Socket.add(category);
+    }
+
+    // Check if new coords are distant enough from old coords (return true if too close)
+    private static boolean areWaypointsOverlapping(BlockPos newPos, MiningLocationLabel oldWaypoint, int searchRadius) {
+        if (oldWaypoint == null || searchRadius ==  0) return false;
+
+		return newPos.getSquaredDistance(oldWaypoint.pos) < searchRadius * searchRadius;
+    }
+
+    private static void placeVerifiedWaypoint(CrystalHollowsLocationsCategory waypoint, BlockPos pos) {
+        String waypointName = waypoint.getName();
+
+        if (!verifiedWaypoints.contains(waypointName)) {
+            // Check that we don't already have the same waypoint nearby (e.g., from Socket), should (theoretically) save some traffic for the server
+            if (!areWaypointsOverlapping(pos, activeWaypoints.get(waypointName), waypoint.getSearchRadius())) {
+                trySendWaypoint2Socket(waypoint);
+            }
+            addCustomWaypoint(waypointName, pos);
+            verifiedWaypoints.add(waypointName);
+        }
     }
 }
