@@ -84,9 +84,9 @@ public class ItemRepository {
 		recipes.clear();
 
 		NEURepoManager.forEachItem(ItemRepository::loadItem);
-		items.sort(Comparator.<ItemStack, String>comparing(stack -> ItemUtils.getItemId(stack).replaceAll(".\\d+$", ""))
-				.thenComparingInt(stack -> ItemUtils.getItemId(stack).length())
-				.thenComparing(ItemUtils::getItemId)
+		items.sort(Comparator.<ItemStack, String>comparing(stack -> stack.getSkyblockId().replaceAll(".\\d+$", ""))
+				.thenComparingInt(stack -> stack.getSkyblockId().length())
+				.thenComparing(ItemStack::getSkyblockId)
 		);
 		itemsImported = true;
 
@@ -114,7 +114,7 @@ public class ItemRepository {
 			ItemStack stack = ItemStackBuilder.fromNEUItem(item);
 			StackOverlays.applyOverlay(item, stack);
 
-			if (stack.isOf(Items.ENCHANTED_BOOK) && ItemUtils.getItemId(stack).contains(";")) {
+			if (stack.isOf(Items.ENCHANTED_BOOK) && stack.getSkyblockId().contains(";")) {
 				ItemUtils.getCustomData(stack).putString("id", "ENCHANTED_BOOK");
 			}
 
@@ -178,7 +178,7 @@ public class ItemRepository {
 	}
 
 	/**
-	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link ItemUtils#getNeuId(ItemStack) ItemTooltip#getNeuName(String, String)}
+	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName()}.
 	 */
 	@Nullable
 	public static ItemStack getItemStack(String neuId) {
@@ -192,7 +192,7 @@ public class ItemRepository {
 	}
 
 	/**
-	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()}, {@link ItemStack#getNeuName()}, or {@link ItemUtils#getNeuId(ItemStack) ItemTooltip#getNeuName(String, String)}
+	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName()}.
 	 */
 	public static Supplier<ItemStack> getItemStackSupplier(String neuId) {
 		return () -> itemsMap.get(neuId);

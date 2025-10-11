@@ -272,7 +272,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		// Compactor Preview
 		if (SkyblockerConfigManager.get().uiAndVisuals.compactorDeletorPreview) {
-			Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemUtils.getItemId(stack));
+			Matcher matcher = CompactorDeletorPreview.NAME.matcher(stack.getSkyblockId());
 			if (matcher.matches() && CompactorDeletorPreview.drawPreview(context, stack, getTooltipFromItem(stack), matcher.group("type"), matcher.group("size"), x, y)) {
 				return;
 			}

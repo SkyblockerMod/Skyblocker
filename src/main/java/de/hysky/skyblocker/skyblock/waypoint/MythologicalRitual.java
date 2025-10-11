@@ -6,7 +6,6 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
@@ -246,7 +245,7 @@ public class MythologicalRitual {
 
     public static ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
-        if (isActive() && ItemUtils.getItemId(stack).equals("ANCESTRAL_SPADE")) {
+        if (isActive() && stack.getSkyblockId().equals("ANCESTRAL_SPADE")) {
             lastEchoTime = System.currentTimeMillis();
         }
         return ActionResult.PASS;
