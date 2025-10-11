@@ -56,9 +56,6 @@ public abstract class InGameHudMixin {
     @Unique
     private static final Pattern DICER_TITLE_BLACKLIST = Pattern.compile(".+? DROP!");
 
-    @Unique
-    private final FancyStatusBars statusBars = new FancyStatusBars();
-
     @Shadow
     @Final
     private MinecraftClient client;
@@ -151,7 +148,7 @@ public abstract class InGameHudMixin {
 
     @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V", shift = At.Shift.AFTER), cancellable = true)
     private void skyblocker$renderStatusBars(DrawContext context, CallbackInfo ci) {
-        if (Utils.isOnSkyblock() && statusBars.render(context, context.getScaledWindowWidth(), context.getScaledWindowHeight())) ci.cancel();
+        if (Utils.isOnSkyblock() && FancyStatusBars.render(context, client)) ci.cancel();
     }
 
     @Inject(method = "renderHealthBar", at = @At(value = "HEAD"), cancellable = true)
