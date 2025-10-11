@@ -13,7 +13,6 @@ import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.CompactDamage;
 import de.hysky.skyblocker.skyblock.HealthBars;
 import de.hysky.skyblocker.skyblock.SmoothAOTE;
-import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.TeleportMaze;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -73,7 +72,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 
 		if (SkyblockerConfigManager.get().slayers.blazeSlayer.firePillarCountdown != SlayersConfig.BlazeSlayer.FirePillar.OFF) FirePillarAnnouncer.checkFirePillar(entity);
 
-		EggFinder.checkIfEgg(armorStandEntity);
 		CorpseFinder.checkIfCorpse(armorStandEntity);
 		HealthBars.healthBar(armorStandEntity);
 		SeaCreatureTracker.onEntitySpawn(armorStandEntity);
@@ -129,7 +127,6 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 
 	@Inject(method = "onEntityEquipmentUpdate", at = @At(value = "TAIL"))
 	private void skyblocker$onEntityEquip(EntityEquipmentUpdateS2CPacket packet, CallbackInfo ci, @Local Entity entity) {
-		EggFinder.checkIfEgg(entity);
 		CorpseFinder.checkIfCorpse(entity);
 	}
 
