@@ -96,7 +96,7 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 	}
 
 	private static boolean canEdit(ItemStack stack) {
-		boolean hasUuid = !ItemUtils.getItemUuid(stack).isEmpty();
+		boolean hasUuid = !stack.getUuid().isEmpty();
 		if (stack.isOf(Items.PLAYER_HEAD)) return hasUuid;
 		return stack.isIn(ItemTags.TRIMMABLE_ARMOR) && hasUuid;
 	}
@@ -210,7 +210,7 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 			super(0, 0, width, height, Text.empty());
 			containerLayout = new SimplePositioningWidget();
 			field = containerLayout.add(new IdentifierTextField(width - 10, 20, identifier -> {
-				String uuid = ItemUtils.getItemUuid(armor[selectedSlot]);
+				String uuid = armor[selectedSlot].getUuid();
 				if (uuid.isEmpty()) return;
 				if (identifier == null) SkyblockerConfigManager.get().general.customArmorModel.remove(uuid);
 				else SkyblockerConfigManager.get().general.customArmorModel.put(uuid, identifier);

@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.CustomizeNameWidget;
-import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
@@ -42,7 +41,7 @@ public class ItemTab extends GridScreenTab {
 			TriState[] states = TriState.values();
 			glintState = states[(glintState.ordinal() + 1) % states.length];
 			b.setMessage(getGlintText());
-			String uuid = ItemUtils.getItemUuid(currentItem);
+			String uuid = currentItem.getUuid();
 			Object2BooleanMap<String> customGlint = SkyblockerConfigManager.get().general.customGlint;
 			switch (glintState) {
 				case DEFAULT -> customGlint.removeBoolean(uuid);
@@ -51,7 +50,7 @@ public class ItemTab extends GridScreenTab {
 			}
 		}).width(ButtonWidget.DEFAULT_WIDTH_SMALL).build();
 		modelField = new IdentifierTextField(120, 20, identifier -> {
-			String uuid = ItemUtils.getItemUuid(currentItem);
+			String uuid = currentItem.getUuid();
 			if (uuid.isEmpty()) return;
 			if (identifier == null) SkyblockerConfigManager.get().general.customItemModel.remove(uuid);
 			else SkyblockerConfigManager.get().general.customItemModel.put(uuid, identifier);
@@ -67,24 +66,24 @@ public class ItemTab extends GridScreenTab {
 
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
 		ItemStack handStack = player.getMainHandStack();
-		if (!ItemUtils.getItemUuid(handStack).isEmpty()) {
+		if (!handStack.getUuid().isEmpty()) {
 			setCurrentItem(handStack);
 			return;
 		}
 		for (ItemStack stack : player.getInventory()) {
-			if (!ItemUtils.getItemUuid(stack).isEmpty()) {
+			if (!stack.getUuid().isEmpty()) {
 				setCurrentItem(stack);
 				break;
 			}
 		}
-		if (ItemUtils.getItemUuid(currentItem).isEmpty()) {
+		if (currentItem.getUuid().isEmpty()) {
 			forEachChild(clickableWidget -> clickableWidget.visible = false);
 		}
 	}
 
 	private void setCurrentItem(ItemStack itemStack) {
 		this.currentItem = itemStack;
-		String uuid = ItemUtils.getItemUuid(currentItem);
+		String uuid = currentItem.getUuid();
 		boolean empty = uuid.isEmpty();
 		forEachChild(clickableWidget -> clickableWidget.visible = !empty);
 		if (empty) return;
@@ -100,7 +99,7 @@ public class ItemTab extends GridScreenTab {
 
 		// glint
 		Object2BooleanMap<String> customGlint = SkyblockerConfigManager.get().general.customGlint;
-		String itemUuid = ItemUtils.getItemUuid(itemStack);
+		String itemUuid = itemStack.getUuid();
 		if (customGlint.containsKey(itemUuid)) {
 			glintState = customGlint.getBoolean(itemUuid) ? TriState.TRUE : TriState.FALSE;
 		} else {

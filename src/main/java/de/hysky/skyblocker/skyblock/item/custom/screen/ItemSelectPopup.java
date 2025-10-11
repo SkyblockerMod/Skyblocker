@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import net.minecraft.client.gl.RenderPipelines;
@@ -93,7 +92,7 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 			super(0, 0, 18, 18, item.getName());
 			setTooltip(Tooltip.of(getMessage()));
 			this.item = item;
-			selectable = !ItemUtils.getItemUuid(item).isEmpty();
+			selectable = !item.getUuid().isEmpty();
 		}
 
 		@Override

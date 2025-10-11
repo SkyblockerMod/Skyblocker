@@ -7,7 +7,6 @@ import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
 import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
@@ -98,7 +97,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 		int sliderWidth = (int) (width * 0.35f);
 		delaySlider = new Slider(0, 0, sliderWidth, 0.0f, 2.0f, 0.02f, true, DELAY_TEXT, f -> {
-			String itemUuid = ItemUtils.getItemUuid(currentItem);
+			String itemUuid = currentItem.getUuid();
 			CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 			CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
 					dye.keyframes(),
@@ -111,7 +110,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		delaySlider.setTooltip(Tooltip.of(DELAY_TOOLTIP_TEXT));
 
 		durationSlider = new Slider(0, 0, sliderWidth, 0.1f, 10.0f, 0.1f, true, DURATION_TEXT, f -> {
-			String itemUuid = ItemUtils.getItemUuid(currentItem);
+			String itemUuid = currentItem.getUuid();
 			CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 			CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
 					dye.keyframes(),
@@ -181,7 +180,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	private void onPickerColorChanged(int argb, boolean release) {
 		argbTextInput.setARGBColor(argb);
 		if (!animated) {
-			SkyblockerConfigManager.get().general.customDyeColors.put(ItemUtils.getItemUuid(currentItem), ColorHelper.fullAlpha(argb));
+			SkyblockerConfigManager.get().general.customDyeColors.put(currentItem.getUuid(), ColorHelper.fullAlpha(argb));
 		} else if (release) {
 			timelineWidget.setColor(argb);
 		}
@@ -190,7 +189,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	private void onTextInputColorChanged(int argb) {
 		colorPicker.setRGBColor(argb);
 		if (animated) timelineWidget.setColor(argb);
-		else SkyblockerConfigManager.get().general.customDyeColors.put(ItemUtils.getItemUuid(currentItem), ColorHelper.fullAlpha(argb));
+		else SkyblockerConfigManager.get().general.customDyeColors.put(currentItem.getUuid(), ColorHelper.fullAlpha(argb));
 	}
 
 	@Override
@@ -208,7 +207,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 		((CheckboxWidgetAccessor) animatedCheckbox).setChecked(false);
 		changeVisibilities();
 
-		String itemUuid = ItemUtils.getItemUuid(currentItem);
+		String itemUuid = currentItem.getUuid();
 		SkyblockerConfigManager.get().general.customDyeColors.removeInt(itemUuid);
 		SkyblockerConfigManager.get().general.customAnimatedDyes.remove(itemUuid);
 
@@ -220,7 +219,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	private void onAnimatedCheckbox(CheckboxWidget checkbox, boolean checked) {
 		animated = checked;
 		changeVisibilities();
-		String itemUuid = ItemUtils.getItemUuid(currentItem);
+		String itemUuid = currentItem.getUuid();
 		if (animated) {
 			SkyblockerConfigManager.get().general.customAnimatedDyes.put(itemUuid, new CustomArmorAnimatedDyes.AnimatedDye(
 					List.of(new CustomArmorAnimatedDyes.Keyframe(Colors.RED, 0), new CustomArmorAnimatedDyes.Keyframe(Colors.BLUE, 1)),
@@ -241,7 +240,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	}
 
 	private void onCycleBackCheckbox(CheckboxWidget checkbox, boolean checked) {
-		String itemUuid = ItemUtils.getItemUuid(currentItem);
+		String itemUuid = currentItem.getUuid();
 		CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);
 		CustomArmorAnimatedDyes.AnimatedDye newDye = new CustomArmorAnimatedDyes.AnimatedDye(
 				dye.keyframes(),
@@ -312,7 +311,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	}
 
 	public void refresh() {
-		String itemUuid = ItemUtils.getItemUuid(currentItem);
+		String itemUuid = currentItem.getUuid();
 		RegistryKey<EquipmentAsset> key = null;
 		if (SkyblockerConfigManager.get().general.customArmorModel.containsKey(itemUuid)) {
 			key = RegistryKey.of(EquipmentAssetKeys.REGISTRY_KEY, SkyblockerConfigManager.get().general.customArmorModel.get(itemUuid));

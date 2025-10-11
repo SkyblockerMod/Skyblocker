@@ -7,7 +7,6 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.*;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.OkLabColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -105,7 +104,7 @@ public class CustomizeNameWidget extends ContainerWidget {
 	}
 
 	public void setItem(ItemStack stack) {
-		uuid = ItemUtils.getItemUuid(stack);
+		uuid = stack.getUuid();
 		setText(stack.getName().copy());
 	}
 

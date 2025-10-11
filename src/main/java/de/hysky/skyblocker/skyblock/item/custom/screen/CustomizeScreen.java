@@ -9,7 +9,6 @@ import de.hysky.skyblocker.injected.RecipeBookHolder;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -81,7 +80,7 @@ public class CustomizeScreen extends Screen {
 	}
 
 	public void backupConfigs(ItemStack stack) {
-		String uuid = ItemUtils.getItemUuid(stack);
+		String uuid = stack.getUuid();
 		if (uuid.isEmpty() || previousConfigs.containsKey(uuid)) return;
 		GeneralConfig general = SkyblockerConfigManager.get().general;
 		PreviousConfig previousConfig = new PreviousConfig(
