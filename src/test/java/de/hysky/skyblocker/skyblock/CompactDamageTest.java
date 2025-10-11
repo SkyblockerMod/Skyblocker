@@ -22,7 +22,7 @@ import java.util.Map;
 public class CompactDamageTest {
 	Map<String, Formatting> MODIFIERS = Util.make(new HashMap<>(), map -> {
 		map.put("❤", Formatting.LIGHT_PURPLE);
-		map.put("+", Formatting.GOLD);
+		map.put("+", Formatting.YELLOW);
 		map.put("⚔", Formatting.GOLD);
 	});
 
@@ -102,8 +102,8 @@ public class CompactDamageTest {
 	@Test
 	public void testModifiersNoCrit() {
 		for (var pair : MODIFIERS.entrySet()) {
-			testCompact(makeInputText("133,972", true, pair.getKey(), pair.getValue()),
-					Text.literal("134k").withColor(Colors.WHITE).append(Text.literal(pair.getKey()).formatted(pair.getValue())));
+			testCompact(makeInputText("133,972", false, pair.getKey(), pair.getValue()),
+					Text.literal("134.0k").withColor(Colors.WHITE).append(Text.literal(pair.getKey()).formatted(pair.getValue())));
 		}
 	}
 
