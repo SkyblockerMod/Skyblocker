@@ -28,40 +28,45 @@ public class CompactDamage {
 		Text customName = entity.getCustomName();
 		if (customName == null) return;
 
-		String customNameStringified = customName.getString();
-		Matcher matcher = DAMAGE_PATTERN.matcher(customNameStringified);
+		Matcher matcher = DAMAGE_PATTERN.matcher(customName.getString());
 		if (!matcher.matches()) return;
 		List<Text> siblings = customName.getSiblings();
 		if (siblings.isEmpty()) return;
 
-		MutableText prettierCustomName = Text.empty();
+		boolean isCrit = !matcher.group(1).isEmpty();
+		String dmg;
+		TextColor textColor;
+
 		if (siblings.size() == 1) { // Plain non-crit, no modifier damage
 			Text text = siblings.getFirst();
-			String dmg = text.getString().replace(",", "");
-			if (!NumberUtils.isParsable(dmg)) return; //Sanity check
+			dmg = text.getString().replace(",", "");
+			textColor = text.getStyle().getColor();
+		} else { // Multi-styled damage
+			int symbolsToRemoveFront = isCrit ? 1 : 0;
+			int symbolsToRemoveEnd = matcher.group(2).isEmpty() ? symbolsToRemoveFront : symbolsToRemoveFront + 1;
+			textColor = siblings.get(symbolsToRemoveFront).getStyle().getColor();
+
+			// If there are crit symbols: they are the first sibling before/after the damage.
+			// There can be other additional siblings added after the second crit sibling.
+			dmg = siblings.subList(symbolsToRemoveFront, siblings.size() - symbolsToRemoveEnd)
+					.stream()
+					.map(Text::getString)
+					.reduce("", String::concat) //Concatenate all the siblings to get the dmg number
+					.replace(",", "");
+		}
+		if (!NumberUtils.isParsable(dmg)) return; //Sanity check
+
+		MutableText prettierCustomName = Text.empty();
+		if (!isCrit) {
 			String prettifiedDmg = prettifyDamageNumber(Long.parseLong(dmg));
 			int color;
-			if (text.getStyle().getColor() != null) {
-				if (text.getStyle().getColor() == TextColor.fromFormatting(Formatting.GRAY)) {
+			if (textColor != null) {
+				if (textColor == TextColor.fromFormatting(Formatting.GRAY)) {
 					color = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF;
-				} else color = text.getStyle().getColor().getRgb();
+				} else color = textColor.getRgb();
 			} else color = SkyblockerConfigManager.get().uiAndVisuals.compactDamage.normalDamageColor.getRGB() & 0x00FFFFFF;
 			prettierCustomName = Text.literal(prettifiedDmg).setStyle(customName.getStyle()).withColor(color);
-		} else { // Multi-styled damage
-			boolean isCrit = !matcher.group(1).isEmpty();
-			int symbolsToRemoveFront = isCrit ? 1 : 0;
-			int symbolsToRemoveEnd = symbolsToRemoveFront;
-			if (!matcher.group(2).isEmpty()) symbolsToRemoveEnd += 1;
-
-			// If there are crit symbols: they are the first and last* sibling.
-			// * There can be other additional siblings added after the second crit sibling.
-			String dmg = siblings.subList(symbolsToRemoveFront, siblings.size() - symbolsToRemoveEnd)
-			                     .stream()
-			                     .map(Text::getString)
-			                     .reduce("", String::concat) //Concatenate all the siblings to get the dmg number
-			                     .replace(",", "");
-
-			if (!NumberUtils.isParsable(dmg)) return; //Sanity check
+		} else {
 			String dmgSymbol = matcher.group(1);
 			String prettifiedDmg = dmgSymbol + prettifyDamageNumber(Long.parseLong(dmg)) + dmgSymbol;
 			int length = prettifiedDmg.length();
@@ -74,12 +79,10 @@ public class CompactDamage {
 						)
 				));
 			}
-
-			// Readd the additional symbol, if present
-			if (!matcher.group(2).isEmpty()) prettierCustomName.append(Text.literal(matcher.group(2)).setStyle(siblings.getLast().getStyle()));
 			prettierCustomName.setStyle(customName.getStyle());
 		}
-
+		// Readd the additional symbol, if present
+		if (!matcher.group(2).isEmpty()) prettierCustomName.append(Text.literal(matcher.group(2)).setStyle(siblings.getLast().getStyle()));
 		entity.setCustomName(prettierCustomName);
 	}
 
