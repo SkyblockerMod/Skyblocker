@@ -10,6 +10,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tab.GridScreenTab;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.entity.EquipmentSlot;
@@ -22,6 +23,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.io.Closeable;
+import java.time.Duration;
 import java.util.List;
 
 import static de.hysky.skyblocker.skyblock.item.custom.screen.CustomizeScreen.CLIENT;
@@ -113,6 +115,14 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 		trimSelectionWidget.visible = !isPlayerHead;
 		colorSelectionWidget.visible = !isPlayerHead;
 		modelFieldContainer.visible = !isPlayerHead;
+		String uuid = item.getUuid();
+		if (SkyblockerConfigManager.get().general.customArmorModel.containsKey(uuid)) {
+			Identifier identifier = SkyblockerConfigManager.get().general.customArmorModel.get(uuid);
+			String string = identifier.toString();
+			modelFieldContainer.field.setText(string);
+		} else {
+			modelFieldContainer.field.setText("");
+		}
 	}
 
 	void tick() {
@@ -217,6 +227,8 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 				colorSelectionWidget.refresh();
 			}));
 			containerLayout.refreshPositions();
+			field.setTooltip(Tooltip.of(Text.translatable("skyblocker.customization.armor.modelOverride.tooltip")));
+			field.setTooltipDelay(Duration.ofMillis(400));
 		}
 
 		@Override
@@ -268,7 +280,7 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 			int padding = 5;
 			int startY = getY() + padding;
 			drawScrollableText(context, CLIENT.textRenderer, TEXT, getX() + padding, startY, getRight() - padding, startY + 9, -1);
-			field.renderWidget(context, mouseX, mouseY, deltaTicks);
+			field.render(context, mouseX, mouseY, deltaTicks);
 		}
 
 		@Override
