@@ -2,7 +2,10 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -19,12 +22,13 @@ public class DungeonBuffWidget extends TabHudWidget {
 			Formatting.BOLD);
 
 	public DungeonBuffWidget() {
-		super("Dungeon Buffs", TITLE, Formatting.DARK_PURPLE.getColorValue());
+		super("Dungeon Buffs", TITLE, Formatting.DARK_PURPLE.getColorValue(), Location.DUNGEON);
+		cacheForConfig = false;
 	}
 
 	@Override
-	public void updateContent(List<Text> ignored) {
-
+	public void updateContent() {
+		if (!Utils.isInDungeons()) return;
 		String footertext = PlayerListManager.getFooter();
 
 		if (footertext == null || !footertext.contains("Dungeon Buffs")) {
@@ -55,6 +59,14 @@ public class DungeonBuffWidget extends TabHudWidget {
 		}
 
 	}
+
+	@Override
+	protected List<Component> getConfigComponents() {
+		return List.of(new PlainTextComponent(Text.literal("Life Blessing").formatted(Formatting.LIGHT_PURPLE)));
+	}
+
+	@Override
+	protected void updateContent(List<Text> lines) {}
 
 	@SuppressWarnings("DataFlowIssue")
 	public int getBlessingColor(String blessing) {
