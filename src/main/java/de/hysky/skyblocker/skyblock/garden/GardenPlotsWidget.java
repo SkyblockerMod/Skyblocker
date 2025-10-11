@@ -190,7 +190,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 	// THE WIDGET ITSELF
 	/////////////////////////////
 
-	private static final Identifier BACKGROUND_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/garden_plots.png");
+	private static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/garden_plots.png");
 	private static final MutableText GROSS_PEST_TEXT = Text.translatable("skyblocker.gardenPlots.pests").formatted(Formatting.RED, Formatting.BOLD);
 	private static final MutableText TP_TEXT = Text.translatable("skyblocker.gardenPlots.tp").formatted(Formatting.YELLOW, Formatting.BOLD);
 

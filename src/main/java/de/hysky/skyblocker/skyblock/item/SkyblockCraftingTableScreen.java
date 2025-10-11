@@ -22,12 +22,12 @@ import java.time.Duration;
 public class SkyblockCraftingTableScreen extends HandledScreen<SkyblockCraftingTableScreenHandler> {
     private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/crafting_table.png");
     protected static final ButtonTextures MORE_CRAFTS_TEXTURES = new ButtonTextures(
-            Identifier.of(SkyblockerMod.NAMESPACE, "quick_craft/more_button"),
-            Identifier.of(SkyblockerMod.NAMESPACE, "quick_craft/more_button_disabled"),
-            Identifier.of(SkyblockerMod.NAMESPACE, "quick_craft/more_button_highlighted")
+            SkyblockerMod.id("quick_craft/more_button"),
+            SkyblockerMod.id("quick_craft/more_button_disabled"),
+            SkyblockerMod.id("quick_craft/more_button_highlighted")
     );
 
-    protected static final Identifier QUICK_CRAFT = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/sprites/quick_craft/quick_craft_overlay.png");
+    protected static final Identifier QUICK_CRAFT = SkyblockerMod.id("textures/gui/sprites/quick_craft/quick_craft_overlay.png");
     private final SkyblockRecipeBookWidget recipeBook = new SkyblockRecipeBookWidget(handler);
     private boolean narrow;
     private TexturedButtonWidget moreCraftsButton;

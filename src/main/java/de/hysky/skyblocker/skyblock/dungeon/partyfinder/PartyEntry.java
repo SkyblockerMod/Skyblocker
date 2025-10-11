@@ -37,8 +37,8 @@ import java.util.regex.Pattern;
 import org.joml.Matrix3x2fStack;
 
 public class PartyEntry extends ElementListWidget.Entry<PartyEntry> {
-    private static final Identifier PARTY_CARD_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/party_card.png");
-    private static final Identifier PARTY_CARD_TEXTURE_HOVER = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/party_card_hover.png");
+    private static final Identifier PARTY_CARD_TEXTURE = SkyblockerMod.id("textures/gui/party_card.png");
+    private static final Identifier PARTY_CARD_TEXTURE_HOVER = SkyblockerMod.id("textures/gui/party_card_hover.png");
 	private static final Map<String, ProfileComponent> SKULL_CACHE = new Object2ObjectOpenHashMap<>();
 	private static final Pattern NUMBERS_PATTERN = Pattern.compile("\\d+$");
 

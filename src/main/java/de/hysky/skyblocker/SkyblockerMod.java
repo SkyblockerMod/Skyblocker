@@ -18,6 +18,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.Identifier;
 
 import java.nio.file.Path;
 
@@ -46,6 +47,10 @@ public class SkyblockerMod implements ClientModInitializer {
     public static SkyblockerMod getInstance() {
         return INSTANCE;
     }
+
+	public static Identifier id(String path) {
+		return Identifier.of(NAMESPACE, path);
+	}
 
     /**
      * Register {@link #tick(MinecraftClient)} to

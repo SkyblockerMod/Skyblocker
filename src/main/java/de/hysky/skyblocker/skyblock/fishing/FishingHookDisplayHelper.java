@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 public class FishingHookDisplayHelper {
 	protected static ArmorStandEntity fishingHookArmorStand;
-	private static final Identifier FISHING_HOOK_DISPLAY = Identifier.of(SkyblockerMod.NAMESPACE, "fishing_hook_display");
+	private static final Identifier FISHING_HOOK_DISPLAY = SkyblockerMod.id("fishing_hook_display");
 	static Pattern pattern = Pattern.compile("\\d.\\d");
 
 	@Init
