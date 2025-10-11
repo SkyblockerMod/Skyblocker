@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
@@ -8,6 +9,7 @@ import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.*;
@@ -23,6 +25,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -38,7 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SmoothAOTE {
-
+	public static final Identifier ITEM_USE_CALLBACK_ID = Identifier.of(SkyblockerMod.NAMESPACE, "smooth_aote");
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
@@ -56,7 +59,8 @@ public class SmoothAOTE {
 
 	@Init
 	public static void init() {
-		UseItemCallback.EVENT.register(SmoothAOTE::onItemInteract);
+		UseItemCallback.EVENT.register(ITEM_USE_CALLBACK_ID, SmoothAOTE::onItemInteract);
+		UseItemCallback.EVENT.addPhaseOrdering(ITEM_USE_CALLBACK_ID, Event.DEFAULT_PHASE); // run this event first to check mana before it gets changed by the tracker
 		UseBlockCallback.EVENT.register(SmoothAOTE::onBlockInteract);
 	}
 
@@ -241,8 +245,8 @@ public class SmoothAOTE {
 		Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem, MANA_LORE);
 		if (manaNeeded != null && manaNeeded.matches()) {
 			int manaCost = Integer.parseInt(manaNeeded.group(1));
-			int predictedMana = StatusBarTracker.getMana().value() - teleportsAhead * manaCost;
-			if (predictedMana < manaCost) { // todo the players mana can lag behind as it is updated server side. client side mana calculations would help with this
+			int predictedMana = StatusBarTracker.getMana().value();
+			if (predictedMana < manaCost) {
 				return;
 			}
 		}

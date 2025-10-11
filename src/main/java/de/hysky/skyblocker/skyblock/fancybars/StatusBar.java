@@ -445,5 +445,10 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 				HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
 			}
 		}
+
+		@Override
+		public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
+			super.updateValues(fill, overflowFill, StatusBarTracker.isManaEstimated() ? "~" + text : text, max, overflow);
+		}
 	}
 }
