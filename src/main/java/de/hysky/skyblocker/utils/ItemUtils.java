@@ -49,6 +49,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.Codecs;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -143,7 +144,9 @@ public final class ItemUtils {
      *
      * @param stack the item stack to get the UUID from
      * @return the UUID of the item stack, or an empty string if the item stack does not have a UUID
-     */
+	 * @apiNote Use {@link ItemStack#getUuid()}
+	 */
+	@ApiStatus.Obsolete
     public static @NotNull String getItemUuid(@NotNull ComponentHolder stack) {
         return getCustomData(stack).getString(UUID, "");
     }

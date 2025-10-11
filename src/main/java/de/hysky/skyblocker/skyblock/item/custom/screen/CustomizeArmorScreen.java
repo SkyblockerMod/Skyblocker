@@ -89,7 +89,7 @@ public class CustomizeArmorScreen extends Screen {
 	}
 
 	static boolean canEdit(ItemStack stack) {
-		boolean hasUuid = !ItemUtils.getItemUuid(stack).isEmpty();
+		boolean hasUuid = !stack.getUuid().isEmpty();
 		if (stack.isOf(Items.PLAYER_HEAD)) return hasUuid;
 		return stack.isIn(ItemTags.TRIMMABLE_ARMOR) && hasUuid;
 	}
@@ -112,7 +112,7 @@ public class CustomizeArmorScreen extends Screen {
 		ImmutableMap.Builder<String, PreviousConfig> builder = ImmutableMap.builderWithExpectedSize(4);
 		for (ItemStack stack : armor) {
 			if (canEdit(stack)) {
-				String uuid = ItemUtils.getItemUuid(stack);
+				String uuid = stack.getUuid();
 				builder.put(uuid, new PreviousConfig(
 						SkyblockerConfigManager.get().general.customArmorTrims.containsKey(uuid) ? Optional.of(SkyblockerConfigManager.get().general.customArmorTrims.get(uuid)) : Optional.empty(),
 						SkyblockerConfigManager.get().general.customDyeColors.containsKey(uuid) ? OptionalInt.of(SkyblockerConfigManager.get().general.customDyeColors.getInt(uuid)) : OptionalInt.empty(),
