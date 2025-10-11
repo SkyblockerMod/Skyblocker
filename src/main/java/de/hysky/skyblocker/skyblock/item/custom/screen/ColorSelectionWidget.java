@@ -46,8 +46,8 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	private static final Text CYCLE_BACK_TEXT = Text.translatable("skyblocker.customization.armor.cycleBack");
 	private static final Text DURATION_TOOLTIP_TEXT = Text.translatable("skyblocker.customization.armor.durationTooltip");
 	private static final Text DELAY_TOOLTIP_TEXT = Text.translatable("skyblocker.customization.armor.delayTooltip");
-	private static final String DURATION_TEXT = "skyblocker.armorCustomization.duration";
-	private static final String DELAY_TEXT = "skyblocker.armorCustomization.delay";
+	private static final String DURATION_TEXT = "skyblocker.customization.armor.duration";
+	private static final String DELAY_TEXT = "skyblocker.customization.armor.delay";
 
 	private final ColorPickerWidget colorPicker;
 	private final ARGBTextInput argbTextInput;
