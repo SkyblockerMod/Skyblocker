@@ -725,7 +725,7 @@
     "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "当有野生兔子出现时，反复发出叮叮声。如果是金色的，声音会更加频繁且不同。",
     "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "以红色高亮显示要点击的正确拉杆",
     "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "以绿色高亮显示要点的正确按钮，并以黄色高亮显示下一个按钮。",
-    "skyblocker.profileviewer.inventory.inventory": "仓库",
+    "skyblocker.profileviewer.inventory.inventory": "物品栏",
     "skyblocker.profileviewer.inventory.armor": "护甲",
     "skyblocker.profileviewer.inventory.backpack": "背包",
     "skyblocker.profileviewer.inventory.wardrobe": "衣橱",
@@ -1483,5 +1483,7 @@
     "skyblocker.dungeons.splits.terminals": "终端",
     "skyblocker.customItemNames.screen.gradientEnd": "渐变终止点",
     "skyblocker.customItemNames.screen.gradientStart": "渐变起始点",
-    "skyblocker.customItemNames.screen.gradientColor": "渐变"
+    "skyblocker.customItemNames.screen.gradientColor": "渐变",
+    "skyblocker.config.uiAndVisuals.trueQuiverCount": "显示实际箭袋计数",
+    "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "显示箭袋中箭的实际数量，而不是被限制到数字 64。"
 }
