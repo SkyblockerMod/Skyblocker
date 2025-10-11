@@ -4,12 +4,14 @@ import com.demonwav.mcdev.annotations.Translatable;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.CheckboxWidgetAccessor;
+import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -17,9 +19,14 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
+import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.item.equipment.EquipmentAsset;
+import net.minecraft.item.equipment.EquipmentAssetKeys;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
@@ -28,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Closeable;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	private static final int PADDING = 3;
@@ -300,8 +308,25 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 	public void setCurrentItem(@NotNull ItemStack currentItem) {
 		this.currentItem = currentItem;
+		refresh();
+	}
+
+	public void refresh() {
 		String itemUuid = ItemUtils.getItemUuid(currentItem);
-		customizable = currentItem.isIn(ItemTags.DYEABLE);
+		RegistryKey<EquipmentAsset> key = null;
+		if (SkyblockerConfigManager.get().general.customArmorModel.containsKey(itemUuid)) {
+			key = RegistryKey.of(EquipmentAssetKeys.REGISTRY_KEY, SkyblockerConfigManager.get().general.customArmorModel.get(itemUuid));
+		} else if (currentItem.contains(DataComponentTypes.EQUIPPABLE)) {
+			EquippableComponent component = currentItem.get(DataComponentTypes.EQUIPPABLE);
+			key = component.assetId().orElse(null);
+		}
+		if (key == null) customizable = false;
+		else {
+			EquipmentModel model = ((EntityRenderDispatcherAccessor) MinecraftClient.getInstance().getEntityRenderDispatcher()).getEquipmentModelLoader().get(key);
+			customizable = Stream.of(EquipmentModel.LayerType.HUMANOID, EquipmentModel.LayerType.HUMANOID_LEGGINGS, EquipmentModel.LayerType.WINGS)
+					.flatMap(l -> model.getLayers(l).stream())
+					.anyMatch(layer -> layer.dyeable().isPresent());
+		}
 		if (!customizable) {
 			animated = false;
 			((CheckboxWidgetAccessor) animatedCheckbox).setChecked(false);

@@ -41,6 +41,7 @@ public class GeneralConfig {
 
     //maybe put this 5 somewhere else
 	//it's 7 now
+	//did I say 7? I meant 8
     public ObjectOpenHashSet<String> protectedItems = new ObjectOpenHashSet<>();
 
     public Object2ObjectOpenHashMap<String, Text> customItemNames = new Object2ObjectOpenHashMap<>();
@@ -56,6 +57,8 @@ public class GeneralConfig {
 	public Object2BooleanOpenHashMap<String> customGlint = new Object2BooleanOpenHashMap<>();
 
 	public Object2ObjectOpenHashMap<String, Identifier> customItemModel = new Object2ObjectOpenHashMap<>();
+
+	public Object2ObjectOpenHashMap<String, Identifier> customArmorModel = new Object2ObjectOpenHashMap<>();
 
 	public static class SpeedPresets {
 		public boolean enableSpeedPresets = true;

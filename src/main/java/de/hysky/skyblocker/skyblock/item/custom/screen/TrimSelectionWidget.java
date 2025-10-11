@@ -82,7 +82,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 		int materialButtonsPerRow = Math.min(Math.floorDiv(buttonsPerRow, 2), MAX_BUTTONS_PER_ROW_MATERIAL);
 
 		int maxHeight = getHeight() - PADDING * 2;
-		boolean overflow = (patternButtons.size() / patternButtonsPerRow) * 20 > maxHeight || (materialButtons.size() / materialButtonsPerRow) * 20 > maxHeight;
+		boolean overflow = (patternButtons.size() / patternButtonsPerRow + 1) * 20 > maxHeight || (materialButtons.size() / materialButtonsPerRow + 1) * 20 > maxHeight;
 		if (overflow) {
 			// subtract 6 extra pixels for the scrollbar
 			buttonsPerRow = (width - 15) / 20;

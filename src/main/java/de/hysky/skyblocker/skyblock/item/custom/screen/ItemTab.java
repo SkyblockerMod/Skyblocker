@@ -16,6 +16,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TriState;
 import org.joml.Matrix3x2fStack;
@@ -49,7 +50,13 @@ public class ItemTab extends GridScreenTab {
 				case FALSE -> customGlint.put(uuid, false);
 			}
 		}).width(ButtonWidget.DEFAULT_WIDTH_SMALL).build();
-		modelField = new IdentifierTextField(120, 20);
+		modelField = new IdentifierTextField(120, 20, identifier -> {
+			String uuid = ItemUtils.getItemUuid(currentItem);
+			if (uuid.isEmpty()) return;
+			if (identifier == null) SkyblockerConfigManager.get().general.customItemModel.remove(uuid);
+			else SkyblockerConfigManager.get().general.customItemModel.put(uuid, identifier);
+		});
+		modelField.setPlaceholder(Text.translatable("skyblocker.customization.item.modelOverride").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
 		nameWidget = new CustomizeNameWidget(parentScreen);
 
 		grid.add(new ItemSelector(), 0, 0, 2, 1);
@@ -77,19 +84,26 @@ public class ItemTab extends GridScreenTab {
 
 	private void setCurrentItem(ItemStack itemStack) {
 		this.currentItem = itemStack;
-		boolean empty = ItemUtils.getItemUuid(currentItem).isEmpty();
+		String uuid = ItemUtils.getItemUuid(currentItem);
+		boolean empty = uuid.isEmpty();
 		forEachChild(clickableWidget -> clickableWidget.visible = !empty);
 		if (empty) return;
 		parentScreen.backupConfigs(itemStack);
 		nameWidget.setItem(itemStack);
-		modelField.setItem(itemStack);
+		if (SkyblockerConfigManager.get().general.customItemModel.containsKey(uuid)) {
+			Identifier identifier = SkyblockerConfigManager.get().general.customItemModel.get(uuid);
+			String string = identifier.toString();
+			modelField.setText(string);
+		} else {
+			modelField.setText("");
+		}
 
 		// glint
 		Object2BooleanMap<String> customGlint = SkyblockerConfigManager.get().general.customGlint;
 		String itemUuid = ItemUtils.getItemUuid(itemStack);
 		if (customGlint.containsKey(itemUuid)) {
 			glintState = customGlint.getBoolean(itemUuid) ? TriState.TRUE : TriState.FALSE;
-		}  else {
+		} else {
 			glintState = TriState.DEFAULT;
 		}
 		glintButton.setMessage(getGlintText());

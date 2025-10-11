@@ -1,50 +1,38 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 class IdentifierTextField extends TextFieldWidget {
 
+	private final Consumer<@Nullable Identifier> callback;
 	private @NotNull String lastValid = "";
 	private boolean valid = false;
 
-	private String uuid = "";
-
-	IdentifierTextField(int width, int height) {
+	IdentifierTextField(int width, int height, Consumer<@Nullable Identifier> callback) {
 		super(MinecraftClient.getInstance().textRenderer, width, height, Text.empty());
 		super.setChangedListener(this::onChanged);
 		setRenderTextProvider((s, integer) -> OrderedText.styledForwardsVisitedString(s, valid ? Style.EMPTY : Style.EMPTY.withFormatting(Formatting.RED)));
-		setPlaceholder(Text.translatable("skyblocker.customization.item.modelOverride").formatted(Formatting.ITALIC).formatted(Formatting.GRAY));
-	}
-
-	public void setItem(ItemStack stack) {
-		uuid = ItemUtils.getItemUuid(stack);
-		if (SkyblockerConfigManager.get().general.customItemModel.containsKey(uuid)) {
-			Identifier identifier = SkyblockerConfigManager.get().general.customItemModel.get(uuid);
-			String string = identifier.toString();
-			setText(string);
-		} else {
-			setText("");
-		}
+		this.callback = callback;
 	}
 
 	private void onChanged(String s) {
 		Identifier identifier = Identifier.tryParse(s);
 		valid = true;
 		if (s.isBlank()) {
-			SkyblockerConfigManager.get().general.customItemModel.remove(uuid);
+			callback.accept(null);
 			lastValid = "";
 		} else if (identifier != null) {
-			SkyblockerConfigManager.get().general.customItemModel.put(uuid, identifier);
+			callback.accept(identifier);
 			lastValid = s;
 		} else valid = false;
 	}

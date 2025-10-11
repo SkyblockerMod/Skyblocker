@@ -1653,6 +1653,7 @@
   "skyblocker.customization.armor.delayTooltip": "The animation will be delayed by this amount in seconds.",
   "skyblocker.customization.armor.duration": "Duration: %s",
   "skyblocker.customization.armor.durationTooltip": "The duration of the animation in seconds.",
+  "skyblocker.customization.armor.modelOverride": "Armor Model Override",
   "skyblocker.customization.item.glint": "Glint: %s",
   "skyblocker.customization.item.glint.default": "Default",
   "skyblocker.customization.item.modelOverride": "Item Model Override",

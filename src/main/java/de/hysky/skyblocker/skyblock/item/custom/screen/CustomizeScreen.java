@@ -31,7 +31,6 @@ import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.TabNavigationWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -90,7 +89,11 @@ public class CustomizeScreen extends Screen {
 				general.customDyeColors.containsKey(uuid) ? OptionalInt.of(general.customDyeColors.getInt(uuid)) : OptionalInt.empty(),
 				general.customAnimatedDyes.containsKey(uuid) ? Optional.of(general.customAnimatedDyes.get(uuid)) : Optional.empty(),
 				general.customHelmetTextures.containsKey(uuid) ? Optional.of(general.customHelmetTextures.get(uuid)) : Optional.empty(),
-				general.customItemNames.containsKey(uuid) ? Optional.of(general.customItemNames.get(uuid)) : Optional.empty());
+				general.customItemNames.containsKey(uuid) ? Optional.of(general.customItemNames.get(uuid)) : Optional.empty(),
+				general.customGlint.containsKey(uuid) ? Optional.of(general.customGlint.getBoolean(uuid)) : Optional.empty(),
+				general.customItemModel.containsKey(uuid) ? Optional.of(general.customItemModel.get(uuid)) : Optional.empty(),
+				general.customArmorModel.containsKey(uuid) ? Optional.of(general.customArmorModel.get(uuid)) : Optional.empty()
+				);
 		previousConfigs.put(uuid, previousConfig);
 	}
 
@@ -149,6 +152,18 @@ public class CustomizeScreen extends Screen {
 					text -> SkyblockerConfigManager.get().general.customItemNames.put(uuid, text),
 					() -> SkyblockerConfigManager.get().general.customItemNames.remove(uuid)
 			);
+			previousConfig.glint().ifPresentOrElse(
+					b -> SkyblockerConfigManager.get().general.customGlint.put(uuid, b.booleanValue()),
+					() -> SkyblockerConfigManager.get().general.customGlint.removeBoolean(uuid)
+			);
+			previousConfig.itemModel().ifPresentOrElse(
+					identifier -> SkyblockerConfigManager.get().general.customItemModel.put(uuid, identifier),
+					() -> SkyblockerConfigManager.get().general.customItemModel.remove(uuid)
+			);
+			previousConfig.armorModel().ifPresentOrElse(
+					identifier -> SkyblockerConfigManager.get().general.customArmorModel.put(uuid, identifier),
+					() -> SkyblockerConfigManager.get().general.customArmorModel.remove(uuid)
+			);
 		});
 		close();
 	}
@@ -165,14 +180,14 @@ public class CustomizeScreen extends Screen {
 		int i = tabNavigation.getNavigationFocus().getBottom();
 		tabNavigation.setWidth(width);
 		tabNavigation.init();
-		tabManager.setTabArea(new ScreenRect(0, i, width, height - i - 30));
-		footerLayout.setPosition((width - footerLayout.getWidth()) / 2, height - footerLayout.getHeight() - 15);
+		footerLayout.setPosition((width - footerLayout.getWidth()) / 2, height - footerLayout.getHeight() - 5);
+		tabManager.setTabArea(new ScreenRect(0, i, width, footerLayout.getY() - i - 2));
 	}
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
-		context.drawCenteredTextWithShadow(textRenderer, getTitle(), this.width / 2, footerLayout.getY() + footerLayout.getHeight() + 2, Colors.WHITE);
+		//context.drawCenteredTextWithShadow(textRenderer, getTitle(), this.width / 2, footerLayout.getY() + footerLayout.getHeight() + 2, Colors.WHITE);
 	}
 
 	@Override
@@ -194,7 +209,15 @@ public class CustomizeScreen extends Screen {
 		client.setScreen(previousScreen);
 	}
 
-	private record PreviousConfig(Optional<CustomArmorTrims.ArmorTrimId> armorTrimId, OptionalInt color, Optional<CustomArmorAnimatedDyes.AnimatedDye> animatedDye, Optional<String> helmetTexture, Optional<Text> itemName) {}
+	private record PreviousConfig(Optional<CustomArmorTrims.ArmorTrimId> armorTrimId,
+								  OptionalInt color,
+								  Optional<CustomArmorAnimatedDyes.AnimatedDye> animatedDye,
+								  Optional<String> helmetTexture,
+								  Optional<Text> itemName,
+								  Optional<Boolean> glint,
+								  Optional<Identifier> itemModel,
+								  Optional<Identifier> armorModel
+								  ) {}
 
 	private static class CustomizeButton extends ClickableWidget {
 		// thanks to @yuflow

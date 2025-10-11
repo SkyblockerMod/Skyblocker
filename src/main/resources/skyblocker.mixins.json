@@ -20,6 +20,7 @@
     "EntityMixin",
     "EntityRenderDispatcherMixin",
     "EntityRendererMixin",
+    "EquipmentRendererMixin",
     "FarmlandBlockMixin",
     "FishingBobberEntityMixin",
     "FogRendererMixin",
