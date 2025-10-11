@@ -57,7 +57,7 @@ public class CompactDamageTest {
 	/**
 	 * Create damage text similar to how Hypixel does it
 	 */
-	private static Text makeInputText(String damageStr, Boolean isCrit, String modifierSymbol, Formatting modifierColor) {
+	private static Text makeInputText(String damageStr, boolean isCrit, String modifierSymbol, Formatting modifierColor) {
 		MutableText text = Text.empty();
 		if (isCrit) {
 			damageStr = "✧%s✧".formatted(damageStr);
@@ -76,7 +76,7 @@ public class CompactDamageTest {
 		return text;
 	}
 
-	private static Text makeInputText(String damageStr, Boolean isCrit) {
+	private static Text makeInputText(String damageStr, boolean isCrit) {
 		return makeInputText(damageStr, isCrit, null, null);
 	}
 
