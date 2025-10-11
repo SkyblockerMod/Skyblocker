@@ -41,6 +41,7 @@ public class PlayerListManager {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
 	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("\\s*(Players \\(\\d+\\)|Island|Coop \\(\\d+\\))\\s*");
 	private static final Pattern INFO_COLUMN_PATTERN = Pattern.compile("\\s*Info\\s*");
+	public static final Pattern PLAYER_NAME_PATTERN = Pattern.compile("\\[(?<level>\\d+)] (?:\\[[A-Za-z]+] )?(?<name>[A-Za-z0-9_]+)(?: .+)?");
 
 	/**
 	 * The player list in tab.
@@ -173,7 +174,7 @@ public class PlayerListManager {
 				// New widget alert!!!!
 				// Now check for : because of the farming contest ACTIVE
 				// Check for mining event minutes CUZ THEY FUCKING FORGOT THE SPACE iefzeoifzeoifomezhif
-				if (!string.startsWith(" ") && string.contains(":") && (!hypixelWidgetName.right().startsWith("Mining Event") || !string.toLowerCase().startsWith("ends in"))) {
+				if (!string.startsWith(" ") && string.contains(":") && (!hypixelWidgetName.right().startsWith("Mining Event") || !string.toLowerCase(Locale.ENGLISH).startsWith("ends in"))) {
 					if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents, playerListEntries));
 					contents.clear();
 					playerListEntries.clear();

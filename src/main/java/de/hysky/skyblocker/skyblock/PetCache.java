@@ -142,7 +142,7 @@ public class PetCache {
 
 			SkyblockItemRarity rarity = SkyblockItemRarity.fromColor(color.getValue());
 
-			if (rarity != null) {
+			if (rarity != null && rarity != SkyblockItemRarity.UNKNOWN) {
 				//This is technically an internal class but I don't feel like copying it out right now and I got no plans to change/remove it :shrug:
 				int petOffset = PetConstants.RARITY_OFFSETS.getOrDefault(rarity.name(), 0);
 				//The list is copied due to a FastUtil bug with sub list iterators
@@ -165,7 +165,7 @@ public class PetCache {
 
 					//If the pet from the NEU repo is missing the data then try to guess the type
 					String type = !copied.getPetInfo().isEmpty() ? copied.getPetInfo().type() : name.toUpperCase(Locale.ENGLISH).replace(" ", "_");
-					PetInfo petInfo = new PetInfo(type, exp, rarity, Optional.empty(), Optional.empty(), Optional.empty());
+					PetInfo petInfo = new PetInfo(Optional.of(name), type, exp, rarity, Optional.empty(), Optional.empty(), Optional.empty());
 
 					CACHED_PETS.put(petInfo);
 					CACHED_PETS.save();

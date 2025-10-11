@@ -172,8 +172,8 @@ public class GeneralConfig {
     }
 
     public enum ItemBackgroundStyle {
-        CIRCULAR(Identifier.of(SkyblockerMod.NAMESPACE, "item_background_circular")),
-        SQUARE(Identifier.of(SkyblockerMod.NAMESPACE, "item_background_square"));
+        CIRCULAR(SkyblockerMod.id("item_background_circular")),
+        SQUARE(SkyblockerMod.id("item_background_square"));
 
         public final Identifier tex;
 
@@ -196,8 +196,8 @@ public class GeneralConfig {
     }
 
     public enum SlotLockStyle {
-        CLASSIC(Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/slot_lock.png")),
-        FANCY(Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/fancy_slot_lock.png"));
+        CLASSIC(SkyblockerMod.id("textures/gui/slot_lock.png")),
+        FANCY(SkyblockerMod.id("textures/gui/fancy_slot_lock.png"));
 
         public final Identifier tex;
 
@@ -225,6 +225,8 @@ public class GeneralConfig {
     }
 
     public static class Hitbox {
+        public boolean oldCactusHitbox = false;
+
         public boolean oldFarmlandHitbox = false;
 
         public boolean oldLeverHitbox = false;

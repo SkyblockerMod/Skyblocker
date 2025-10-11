@@ -23,6 +23,7 @@ import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
 import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
 import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
 import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
+import de.hysky.skyblocker.skyblock.hunting.LassoHud;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
@@ -78,6 +79,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		SeaCreatureTracker.onEntitySpawn(armorStandEntity);
 		FishingHelper.checkIfFishWasCaught(armorStandEntity);
 		TreeBreakProgressHud.onEntityUpdate(armorStandEntity);
+		LassoHud.onEntityUpdate(armorStandEntity);
 		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
 			CompactDamage.compactDamage(armorStandEntity);
 		} catch (Exception e) {
@@ -86,6 +88,11 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 
 
 		FishingHookDisplayHelper.onArmorStandSpawn(armorStandEntity);
+	}
+
+	@Inject(method = "onEntityAttach", at = @At("TAIL"))
+	private void skyblocker$onEntityAttach(EntityAttachS2CPacket packet, CallbackInfo ci) {
+		LassoHud.onEntityAttach(packet);
 	}
 
 	@Inject(method = "onPlayerPositionLook", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))

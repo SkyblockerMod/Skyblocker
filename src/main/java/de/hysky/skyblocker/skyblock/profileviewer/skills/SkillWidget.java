@@ -27,8 +27,8 @@ public class SkillWidget {
     private final String SKILL_NAME;
     private final LevelFinder.LevelInfo SKILL_LEVEL;
 
-    private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
-    private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
+    private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+    private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
     private final ItemStack stack;
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;

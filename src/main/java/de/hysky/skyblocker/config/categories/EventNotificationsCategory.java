@@ -13,7 +13,6 @@ import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class EventNotificationsCategory {
     	//return null;
         shouldPlaySound = false;
         return ConfigCategory.createBuilder()
-        		.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/eventnotifications"))
+        		.id(SkyblockerMod.id("config/eventnotifications"))
                 .name(Text.translatable("skyblocker.config.eventNotifications"))
                 .option(Option.<EventNotificationsConfig.Criterion>createBuilder()
                         .binding(defaults.eventNotifications.criterion,

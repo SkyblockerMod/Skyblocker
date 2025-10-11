@@ -9,7 +9,6 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
@@ -62,7 +61,7 @@ public class CustomArmorAnimatedDyes {
 
 		if (Utils.isOnSkyblock() && heldItem != null && !heldItem.isEmpty()) {
 			if (heldItem.isIn(ItemTags.DYEABLE)) {
-				String itemUuid = ItemUtils.getItemUuid(heldItem);
+				String itemUuid = heldItem.getUuid();
 
 				if (!itemUuid.isEmpty()) {
 					Object2ObjectOpenHashMap<String, AnimatedDye> customAnimatedDyes = SkyblockerConfigManager.get().general.customAnimatedDyes;

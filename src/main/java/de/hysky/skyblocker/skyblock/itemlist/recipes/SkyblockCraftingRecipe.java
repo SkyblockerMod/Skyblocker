@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.ItemUtils;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
 import io.github.moulberry.repo.data.NEUIngredient;
 import net.minecraft.client.gui.ScreenPos;
@@ -12,10 +11,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SkyblockCraftingRecipe implements SkyblockRecipe {
 
-    public static final Identifier IDENTIFIER = Identifier.of(SkyblockerMod.NAMESPACE, "skyblock_crafting");
+    public static final Identifier IDENTIFIER = SkyblockerMod.id("skyblock_crafting");
 
     private final Text craftText;
     private final List<ItemStack> grid = new ArrayList<>(9);
@@ -77,7 +77,7 @@ public class SkyblockCraftingRecipe implements SkyblockRecipe {
 
     @Override
     public Identifier getRecipeIdentifier() {
-        return Identifier.of("skyblock", ItemUtils.getItemId(getResult()).toLowerCase().replace(';', '_') + "_" + getResult().getCount());
+        return Identifier.of("skyblock", getResult().getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + getResult().getCount());
 
     }
 

@@ -7,7 +7,6 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.screen.CustomizeScreen;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -49,7 +48,7 @@ public class CustomItemNames {
 			source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customItemNames.noItem")));
 			return 0;
 		}
-		if (ItemUtils.getItemUuid(handStack).isEmpty()) {
+		if (handStack.getUuid().isEmpty()) {
 			source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customItemNames.noItemUuid")));
 			return 0;
 		}
@@ -60,7 +59,7 @@ public class CustomItemNames {
 	@SuppressWarnings("SameReturnValue")
 	private static int renameItem(FabricClientCommandSource source, Text text) {
 		if (Utils.isOnSkyblock()) {
-			String itemUuid = ItemUtils.getItemUuid(source.getPlayer().getMainHandStack());
+			String itemUuid = source.getPlayer().getMainHandStack().getUuid();
 
 			if (!itemUuid.isEmpty()) {
 				SkyblockerConfigManager.update(config -> {

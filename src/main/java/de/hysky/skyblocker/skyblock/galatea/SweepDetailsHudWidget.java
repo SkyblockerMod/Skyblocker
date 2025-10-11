@@ -2,12 +2,15 @@ package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.IcoTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -28,10 +31,11 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 			"Acacia", new ItemStack(Items.ACACIA_LOG),
 			"Dark Oak", new ItemStack(Items.DARK_OAK_LOG),
 			"Spruce", new ItemStack(Items.SPRUCE_LOG),
-			"Birch", new ItemStack(Items.BIRCH_LOG)
+			"Birch", new ItemStack(Items.BIRCH_LOG),
+			"Oak", new ItemStack(Items.OAK_LOG)
 	);
 	private static final ItemStack RED_CONCRETE = new ItemStack(Items.RED_CONCRETE);
-	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.THE_PARK);
+	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.HUB, Location.THE_PARK);
 
 	public SweepDetailsHudWidget() {
 		super(Text.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweepDetails");
@@ -39,22 +43,32 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 	}
 
 	@Override
+	public boolean shouldRender(Location location) {
+		return (!Utils.getLocation().equals(Location.HUB) || Utils.getArea().equals(Area.FOREST)) && super.shouldRender(location);
+	}
+
+	@Override
 	public void updateContent() {
 		if (CLIENT.player == null || CLIENT.currentScreen instanceof WidgetsConfigurationScreen) {
-			addComponent(new IcoTextComponent(new ItemStack(Items.STRIPPED_SPRUCE_LOG), Text.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
+			addComponent(Components.iconTextComponent(new ItemStack(Items.STRIPPED_SPRUCE_LOG), Text.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
 			addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)));
 			addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));
 			return;
 		}
-
 		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
 			SweepDetailsListener.active = false;
-			addComponent(new IcoTextComponent(new ItemStack(Items.STONE_AXE), Text.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
+			ItemStack axeIcon = switch (Utils.getLocation()) {
+				case HUB -> ItemRepository.getItemStack("SWEET_AXE", new ItemStack(Items.IRON_AXE));
+				case THE_PARK -> ItemRepository.getItemStack("TREECAPITATOR_AXE", new ItemStack(Items.GOLDEN_AXE));
+				case GALATEA -> ItemRepository.getItemStack("FIGSTONE_AXE", new ItemStack(Items.STONE_AXE));
+				default -> RED_CONCRETE;
+			};
+			addComponent(Components.iconTextComponent(axeIcon, Text.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
 			return;
 		}
 
 		ItemStack logItem = LOG_TO_ITEM.getOrDefault(SweepDetailsListener.lastTreeType, RED_CONCRETE);
-		addComponent(new IcoTextComponent(logItem, Text.translatable("skyblocker.galatea.hud.sweepDetails.treeType", SweepDetailsListener.lastTreeType)));
+		addComponent(Components.iconTextComponent(logItem, Text.translatable("skyblocker.galatea.hud.sweepDetails.treeType", SweepDetailsListener.lastTreeType)));
 		addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.toughness", SweepDetailsListener.toughness)));
 
 		Text sweepAmount;
@@ -70,11 +84,11 @@ public class SweepDetailsHudWidget extends ComponentBasedWidget {
 		addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.logs", Text.literal(SweepDetailsListener.logs).withColor(Colors.GREEN))));
 
 		if (SweepDetailsListener.axePenalty) {
-			addComponent(new IcoTextComponent(new ItemStack(Items.BARRIER), Text.translatable("skyblocker.galatea.hud.sweepDetails.throwPenalty", SweepDetailsListener.axePenaltyAmount + "%")));
+			addComponent(Components.iconTextComponent(new ItemStack(Items.BARRIER), Text.translatable("skyblocker.galatea.hud.sweepDetails.throwPenalty", SweepDetailsListener.axePenaltyAmount + "%")));
 		}
 
 		if (SweepDetailsListener.stylePenalty) {
-			addComponent(new IcoTextComponent(new ItemStack(Items.BARRIER), Text.translatable("skyblocker.galatea.hud.sweepDetails.stylePenalty", SweepDetailsListener.stylePenaltyAmount + "%")));
+			addComponent(Components.iconTextComponent(new ItemStack(Items.BARRIER), Text.translatable("skyblocker.galatea.hud.sweepDetails.stylePenalty", SweepDetailsListener.stylePenaltyAmount + "%")));
 			addComponent(new PlainTextComponent(Text.translatable("skyblocker.galatea.hud.sweepDetails.correctStyle", SweepDetailsListener.correctStyle)));
 		}
 	}

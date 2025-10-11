@@ -18,6 +18,7 @@ import net.minecraft.util.Identifier;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class DungeonClassWidget {
@@ -28,10 +29,10 @@ public class DungeonClassWidget {
     private final ItemStack stack;
     private boolean active = false;
 
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
-    private static final Identifier ACTIVE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
-    private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
-    private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
+    private static final Identifier ACTIVE_TEXTURE = SkyblockerMod.id("textures/gui/item_protection.png");
+    private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+    private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
     private static final Map<String, ItemStack> CLASS_ICON = Map.ofEntries(
@@ -46,9 +47,9 @@ public class DungeonClassWidget {
         this.className = className;
         stack = CLASS_ICON.getOrDefault(className, Ico.BARRIER);
         try {
-            classData = playerProfile.getAsJsonObject("dungeons").getAsJsonObject("player_classes").getAsJsonObject(this.className.toLowerCase());
+            classData = playerProfile.getAsJsonObject("dungeons").getAsJsonObject("player_classes").getAsJsonObject(this.className.toLowerCase(Locale.ENGLISH));
             classLevel = LevelFinder.getLevelInfo("Catacombs", classData.get("experience").getAsLong());
-            active = playerProfile.getAsJsonObject("dungeons").get("selected_dungeon_class").getAsString().equals(className.toLowerCase());
+            active = playerProfile.getAsJsonObject("dungeons").get("selected_dungeon_class").getAsString().equals(className.toLowerCase(Locale.ENGLISH));
         } catch (Exception ignored) {
             classLevel = LevelFinder.getLevelInfo("", 0);
         }

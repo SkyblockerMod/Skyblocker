@@ -3,8 +3,6 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.skyblock.item.background.adders.ItemRarityBackground;
-import it.unimi.dsi.fastutil.objects.ObjectReferencePair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
@@ -16,13 +14,14 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.joml.Matrix3x2fStack;
 
 public class RarityWidget extends ClickableWidget {
 
-    private static final Identifier HOVER_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/rarity_widget/hover.png");
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/rarity_widget/background.png");
+    private static final Identifier HOVER_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/hover.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/background.png");
     private final SlotClickHandler onClick;
     private int slotId = -1;
 
@@ -85,14 +84,8 @@ public class RarityWidget extends ClickableWidget {
     public void setText(List<Text> tooltip, String current) {
         this.tooltip = tooltip;
         this.current = current;
-        for (ObjectReferencePair<String, SkyblockItemRarity> rarity : ItemRarityBackground.LORE_RARITIES) {
-            if (current.toUpperCase().contains(rarity.left())) {
-                this.color = rarity.right().color | 0xFF000000;
-                return;
-            }
-        }
-        //noinspection DataFlowIssue
-        this.color = Formatting.GRAY.getColorValue() | 0xFF000000;
+		//noinspection DataFlowIssue
+		this.color = SkyblockItemRarity.containsName(current.toUpperCase(Locale.ENGLISH)).map(r -> r.color).orElse(Formatting.GRAY.getColorValue()) | 0xFF000000;
     }
 
     @Override

@@ -19,6 +19,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -100,7 +101,7 @@ public class LividColor {
     private static void onLividColorFound(MinecraftClient client, Block color) {
         LividColor.color = WOOL_TO_FORMATTING.get(color);
         String colorString = Registries.BLOCK.getId(color).getPath();
-        colorString = colorString.substring(0, colorString.length() - 5).toUpperCase();
+        colorString = colorString.substring(0, colorString.length() - 5).toUpperCase(Locale.ENGLISH);
         Text message = Text.literal(CONFIG.get().lividColorText.replaceAll("\\[color]", colorString)).formatted(LividColor.color);
         if (CONFIG.get().enableLividColorText) {
             MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().append(message).getString(), false);

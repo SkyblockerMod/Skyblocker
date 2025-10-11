@@ -12,8 +12,11 @@ import com.mojang.util.UndashedUuid;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.*;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Http.ApiResponse;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import io.github.moulberry.repo.NEURepoFile;
 import it.unimi.dsi.fastutil.objects.*;
@@ -48,7 +51,8 @@ public class MuseumItemCache {
 	private static final Path CACHE_FILE = SkyblockerMod.CONFIG_DIR.resolve("museum_item_cache.json");
 	private static final ProfiledData<ProfileMuseumData> MUSEUM_ITEM_CACHE = new ProfiledData<>(CACHE_FILE, ProfileMuseumData.CODEC, true, true);
 	public static final String DONATION_CONFIRMATION_SCREEN_TITLE = "Confirm Donation";
-	public static final Map<String, String> ARMOR_NAMES = new Object2ObjectArrayMap<>();
+	public static final Map<String, String> ARMOR_NAMES = new Object2ObjectArrayMap<>(); // Set Id -> Display Name
+	public static final Map<String, String> ARMOR_TO_ID = new Object2ObjectArrayMap<>(); // Set Id -> Display Item Id
 	private static final Map<String, String> MAPPED_IDS = new Object2ObjectArrayMap<>();
 	public static final ObjectArrayList<Donation> MUSEUM_DONATIONS = new ObjectArrayList<>();
 	private static final ObjectArrayList<ObjectArrayList<String>> ORDERED_UPGRADES = new ObjectArrayList<>();
@@ -91,6 +95,7 @@ public class MuseumItemCache {
 				Map<String, JsonElement> itemToXp = json.get("itemToXp").getAsJsonObject().asMap();
 				Map<String, JsonElement> setsToItems = json.get("sets_to_items").getAsJsonObject().asMap();
 				Map<String, JsonElement> children = json.get("children").getAsJsonObject().asMap();
+				Map<String, JsonElement> armorToId = json.get("armor_to_id").getAsJsonObject().asMap();
 
 				Map<String, JsonArray> allDonations = Map.of(
 						"weapons", json.get("weapons").getAsJsonArray(),
@@ -163,6 +168,7 @@ public class MuseumItemCache {
 					}
 				});
 
+				armorToId.forEach((setId, displayIdObject) -> ARMOR_TO_ID.put(setId, displayIdObject.getAsString()));
 				LOGGER.info("[Skyblocker] Loaded museum data");
 			} catch (NoSuchFileException ignored) {
 			} catch (IOException e) {
@@ -238,7 +244,7 @@ public class MuseumItemCache {
 					ItemStack stack = slots.get(i).getStack();
 
 					if (!stack.isEmpty()) {
-						String itemId = ItemUtils.getItemId(stack);
+						String itemId = stack.getSkyblockId();
 
 						if (!itemId.isEmpty()) {
 							ProfileMuseumData data = MUSEUM_ITEM_CACHE.computeIfAbsent(ProfileMuseumData.EMPTY);

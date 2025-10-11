@@ -40,6 +40,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -107,7 +108,7 @@ public class ChestValue {
 				String skyblockApiId = stack.getSkyblockApiId();
 
 				//Regular item price
-				if (!skyblockApiId.isEmpty()) {
+				if (!skyblockApiId.isEmpty() && !name.contains("Essence")) {
 					DoubleBooleanPair priceData = ItemUtils.getItemPrice(skyblockApiId);
 
 					if (!priceData.rightBoolean()) hasIncompleteData = true;
@@ -126,7 +127,7 @@ public class ChestValue {
 						String type = matcher.group("type");
 						int amount = Integer.parseInt(matcher.group("amount"));
 
-						DoubleBooleanPair priceData = ItemUtils.getItemPrice(("ESSENCE_" + type).toUpperCase());
+						DoubleBooleanPair priceData = ItemUtils.getItemPrice(("ESSENCE_" + type).toUpperCase(Locale.ENGLISH));
 
 						if (!priceData.rightBoolean()) hasIncompleteData = true;
 

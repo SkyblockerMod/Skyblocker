@@ -30,8 +30,8 @@ import java.util.function.Consumer;
 
 public class StatusBar implements Widget, Drawable, Element, Selectable {
 
-	private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
-	private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
+	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
 	public static final int ICON_SIZE = 9;
 
@@ -98,7 +98,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 	public boolean showOverflow = false;
 
 	public StatusBar(StatusBarType type) {
-		this.icon = Identifier.of(SkyblockerMod.NAMESPACE, "bars/icons/" + type.asString());
+		this.icon = SkyblockerMod.id("bars/icons/" + type.asString());
 		this.colors = type.getColors();
 		this.textColor = type.getTextColor();
 		this.type = type;
@@ -111,6 +111,11 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		renderBar(context);
+		if (enabled) renderText(context);
+	}
+
+	public void renderBar(DrawContext context) {
 		if (renderWidth <= 0) return;
 		int transparency = transparency(-1);
 		switch (iconPosition) {
@@ -123,9 +128,6 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, renderY + 1, barWidth, 7, transparency);
 		drawBarFill(context, barX, barWidth);
 		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
-		if (showText() && enabled) {
-			renderText(context);
-		}
 	}
 
 	protected void drawBarFill(DrawContext context, int barX, int barWith) {
@@ -138,8 +140,8 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 	public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
 		this.value = text;
-		this.fill = fill;
-		this.overflowFill = overflowFill;
+		this.fill = Math.clamp(fill, 0, 1);
+		this.overflowFill = Math.clamp(overflowFill, 0, 1);
 		this.max = max;
 		this.overflow = overflow;
 	}

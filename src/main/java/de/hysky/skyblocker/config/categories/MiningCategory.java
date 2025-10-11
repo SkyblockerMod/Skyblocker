@@ -20,7 +20,6 @@ import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 import java.awt.*;
 
@@ -28,7 +27,7 @@ public class MiningCategory {
 
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
-        		.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/mining"))
+        		.id(SkyblockerMod.id("config/mining"))
                 .name(Text.translatable("skyblocker.config.mining"))
 
                 //Uncategorized Options
@@ -54,6 +53,15 @@ public class MiningCategory {
 						.binding(defaults.mining.callMismyla,
 								() -> config.mining.callMismyla,
 								newValue -> config.mining.callMismyla = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.mining.redialOnBadSignal"))
+						.description(Text.translatable("skyblocker.config.mining.redialOnBadSignal.@Tooltip"))
+						.binding(defaults.mining.redialOnBadSignal,
+								() -> config.mining.redialOnBadSignal,
+								newValue -> config.mining.redialOnBadSignal = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 
@@ -274,6 +282,14 @@ public class MiningCategory {
                                         newValue -> config.mining.commissionWaypoints.showEmissary = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.mining.commissionWaypoints.hideEmissaryOnPigeon"))
+								.description(Text.translatable("skyblocker.config.mining.commissionWaypoints.hideEmissaryOnPigeon.@Tooltip"))
+								.binding(defaults.mining.commissionWaypoints.hideEmissaryOnPigeon,
+										() -> config.mining.commissionWaypoints.hideEmissaryOnPigeon,
+										newValue -> config.mining.commissionWaypoints.hideEmissaryOnPigeon = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .build())
 
                 //Glacite Tunnels

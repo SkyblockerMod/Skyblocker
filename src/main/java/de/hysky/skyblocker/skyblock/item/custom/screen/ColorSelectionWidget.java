@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 	private static final int PADDING = 3;
 
-	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
+	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 	private static final Text RESET_COLOR_TEXT = Text.translatable("skyblocker.customization.armor.resetColor");
 	private static final Text CANNOT_CUSTOMIZE_COLOR_TEXT = Text.translatable("skyblocker.customization.armor.cannotCustomizeColor");
 	private static final Text ANIMATED_TEXT = Text.translatable("skyblocker.customization.armor.animated");

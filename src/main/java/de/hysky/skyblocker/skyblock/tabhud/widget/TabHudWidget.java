@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public abstract class TabHudWidget extends ComponentBasedWidget {
@@ -17,7 +18,7 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 
 
 	public TabHudWidget(String hypixelWidgetName, MutableText title, Integer colorValue) {
-		super(title, colorValue, hypixelWidgetName.toLowerCase().replace(' ', '_').replace("'", ""));
+		super(title, colorValue, hypixelWidgetName.toLowerCase(Locale.ENGLISH).replace(' ', '_').replace("'", ""));
 		this.hypixelWidgetName = hypixelWidgetName;
 	}
 

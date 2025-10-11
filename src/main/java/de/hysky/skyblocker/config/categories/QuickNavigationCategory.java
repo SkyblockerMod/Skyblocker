@@ -4,20 +4,22 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
+import de.hysky.skyblocker.config.screens.quicknav.ItemSelectionScreen;
+import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.ConfigCategory;
 import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.azureaaron.dandelion.systems.controllers.ItemController;
 import net.azureaaron.dandelion.systems.controllers.StringController;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class QuickNavigationCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
-        		.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/quicknav"))
+        		.id(SkyblockerMod.id("config/quicknav"))
                 .name(Text.translatable("skyblocker.config.quickNav"))
 
                 //Toggle
@@ -59,6 +61,12 @@ public class QuickNavigationCategory {
                                 newValue -> button.render = newValue)
                         .controller(ConfigUtils.createBooleanController())
                         .build())
+				.option(ButtonOption.createBuilder()
+						.name(Text.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem"))
+						.description(Text.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip"))
+						.action(screen -> MinecraftClient.getInstance().setScreen(new ItemSelectionScreen(screen, button.itemData)))
+						.prompt(Text.translatable("text.skyblocker.open"))
+						.build())
                 .option(Option.<Item>createBuilder()
                         .name(Text.translatable("skyblocker.config.quickNav.button.item.itemName"))
                         .binding(defaultButton.itemData.item,

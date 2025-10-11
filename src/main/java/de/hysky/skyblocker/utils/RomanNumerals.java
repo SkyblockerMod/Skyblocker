@@ -3,6 +3,9 @@ package de.hysky.skyblocker.utils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+
+import java.util.Locale;
+
 import org.jetbrains.annotations.NotNull;
 
 public class RomanNumerals {
@@ -50,7 +53,7 @@ public class RomanNumerals {
 	 */
 	public static int romanToDecimal(String romanNumeral) {
 		if (romanNumeral == null || romanNumeral.isEmpty()) return 0;
-		romanNumeral = romanNumeral.trim().toUpperCase();
+		romanNumeral = romanNumeral.trim().toUpperCase(Locale.ENGLISH);
 		int decimal = 0;
 		int lastNumber = 0;
 		for (int i = romanNumeral.length() - 1; i >= 0; i--) {

@@ -10,7 +10,9 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
@@ -31,7 +33,6 @@ public class CommissionLabels {
 	protected static List<MiningLocationLabel> activeWaypoints = new ArrayList<>();
 	private static List<String> commissions = List.of();
 	private static boolean commissionDone = false;
-
 
 	@Init
 	public static void init() {
@@ -126,6 +127,13 @@ public class CommissionLabels {
 		}
 		//if there is a commission completed and enabled show emissary
 		if (SkyblockerConfigManager.get().mining.commissionWaypoints.showEmissary && completed) {
+			if (SkyblockerConfigManager.get().mining.commissionWaypoints.hideEmissaryOnPigeon) {
+				for (ItemStack stack : MinecraftClient.getInstance().player.getInventory().getMainStacks()) {
+					if (stack.getSkyblockId().equals("ROYAL_PIGEON")) {
+						return;
+					}
+				}
+			}
 			for (MiningLocationLabel.DwarvenEmissaries emissaries : DWARVEN_EMISSARIES) {
 				activeWaypoints.add(new MiningLocationLabel(emissaries, emissaries.getLocation()));
 			}

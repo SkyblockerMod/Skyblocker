@@ -2,7 +2,7 @@ package de.hysky.skyblocker.compatibility.rei.info;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
-import de.hysky.skyblocker.skyblock.item.WikiLookup;
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -36,7 +36,7 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 	private static final int RED_ERROR_COLOR = 0xFFFF5555;
 	private static final EntryStack<ItemStack> ICON = EntryStacks.of(new ItemStack(Items.CHEST));
 
-	public static final Identifier IDENTIFIER = Identifier.of(SkyblockerMod.NAMESPACE, "skyblock_info");
+	public static final Identifier IDENTIFIER = SkyblockerMod.id("skyblock_info");
 
 	@Override
 	public CategoryIdentifier<? extends SkyblockInfoDisplay> getCategoryIdentifier() {
@@ -54,7 +54,7 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 	}
 
 	private ButtonWidget getWikiLookupButton(Text text, boolean isOfficial, ItemStack itemStack, ClientPlayerEntity player) {
-		ButtonWidget btn = ButtonWidget.builder(text, (button) -> WikiLookup.openWiki(itemStack, player, isOfficial)).build();
+		ButtonWidget btn = ButtonWidget.builder(text, (button) -> WikiLookupManager.openWiki(itemStack, player, isOfficial)).build();
 
 		if (ItemRepository.getWikiLink(itemStack.getNeuName(), isOfficial) == null) {
 			btn.setMessage(btn.getMessage().copy().withColor(RED_ERROR_COLOR));

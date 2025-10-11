@@ -7,8 +7,8 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.backup.ConfigBackupScreen;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
-import de.hysky.skyblocker.skyblock.item.WikiLookup;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresetsScreen;
 import net.azureaaron.dandelion.systems.ButtonOption;
@@ -20,13 +20,12 @@ import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 public class GeneralCategory {
 
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
-        		.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/general"))
+        		.id(SkyblockerMod.id("config/general"))
                 .name(Text.translatable("skyblocker.config.general"))
 
                 //Skyblocker Screen
@@ -399,7 +398,7 @@ public class GeneralCategory {
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup"))
                                 .description(Text.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip",
-										WikiLookup.officialWikiLookup.getBoundKeyLocalizedText(), WikiLookup.fandomWikiLookup.getBoundKeyLocalizedText()))
+										WikiLookupManager.officialWikiLookup.getBoundKeyLocalizedText(), WikiLookupManager.fandomWikiLookup.getBoundKeyLocalizedText()))
                                 .binding(defaults.general.wikiLookup.enableWikiLookup,
                                         () -> config.general.wikiLookup.enableWikiLookup,
                                         newValue -> config.general.wikiLookup.enableWikiLookup = newValue)
@@ -433,6 +432,13 @@ public class GeneralCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Text.translatable("skyblocker.config.general.hitbox"))
 						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.general.hitbox.oldCactusHitbox"))
+								.binding(defaults.general.hitbox.oldCactusHitbox,
+										() -> config.general.hitbox.oldCactusHitbox,
+										newValue -> config.general.hitbox.oldCactusHitbox = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.general.hitbox.oldFarmlandHitbox"))
 								.binding(defaults.general.hitbox.oldFarmlandHitbox,

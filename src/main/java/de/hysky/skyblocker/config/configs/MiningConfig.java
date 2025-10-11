@@ -13,6 +13,8 @@ public class MiningConfig {
 
 	public boolean callMismyla = true;
 
+	public boolean redialOnBadSignal = true;
+
 	public DwarvenMines dwarvenMines = new DwarvenMines();
 
 	@Deprecated
@@ -116,6 +118,8 @@ public class MiningConfig {
 		public boolean showBaseCamp = false;
 
 		public boolean showEmissary = true;
+
+		public boolean hideEmissaryOnPigeon = true;
 	}
 
 	public enum CommissionWaypointMode {

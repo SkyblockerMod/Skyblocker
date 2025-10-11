@@ -23,7 +23,7 @@ import java.util.Map;
 public class TrimSelectionWidget extends ContainerWidget {
 	private static final int PADDING = 3;
 
-	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
+	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 	private static final int MAX_BUTTONS_PER_ROW_PATTERN = 7;
 	private static final int MAX_BUTTONS_PER_ROW_MATERIAL = 6;
 
