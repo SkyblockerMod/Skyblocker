@@ -32,8 +32,8 @@ public class CompactDamageTest {
 		Bootstrap.initialize();
 
 		// Make crits cyan
-		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientStart = new Color(Colors.CYAN);
-		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientEnd = new Color(Colors.CYAN);
+		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientStart = new Color(Colors.BLACK);
+		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientEnd = new Color(Colors.BLACK);
 	}
 
 	private static ArmorStandEntity createEntityWithName(Text text) {
@@ -83,8 +83,7 @@ public class CompactDamageTest {
 	private static MutableText splitString(String string) {
 		MutableText text = Text.empty();
 		for (char chr : string.toCharArray()) {
-			// do not ask why it is -0x100...
-			text.append(Text.literal(String.valueOf(chr)).withColor(Colors.CYAN - 0x100));
+			text.append(Text.literal(String.valueOf(chr)).withColor(Colors.BLACK));
 		}
 		return text;
 	}
