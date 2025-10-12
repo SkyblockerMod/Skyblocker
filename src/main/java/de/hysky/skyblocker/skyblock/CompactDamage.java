@@ -14,7 +14,8 @@ import java.util.regex.Pattern;
 
 
 public class CompactDamage {
-	private static final Pattern DAMAGE_PATTERN = Pattern.compile("[✧✯]?[\\d,]+[✧✯]?❤?");
+	private static final Pattern DAMAGE_PATTERN = Pattern.compile("[✧✯]?[\\d,]+[✧✯]?[❤+]?");
+
 	private CompactDamage() {
 	}
 
@@ -22,6 +23,8 @@ public class CompactDamage {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.compactDamage.enabled) return;
 		if (!entity.isInvisible() || !entity.hasCustomName() || !entity.isCustomNameVisible()) return;
 		Text customName = entity.getCustomName();
+		if (customName == null) return;
+
 		String customNameStringified = customName.getString();
 		if (!DAMAGE_PATTERN.matcher(customNameStringified).matches()) return;
 		List<Text> siblings = customName.getSiblings();

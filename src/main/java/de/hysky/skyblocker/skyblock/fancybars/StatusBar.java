@@ -111,6 +111,11 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		renderBar(context);
+		if (enabled) renderText(context);
+	}
+
+	public void renderBar(DrawContext context) {
 		if (renderWidth <= 0) return;
 		int transparency = transparency(-1);
 		switch (iconPosition) {
@@ -123,9 +128,6 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, renderY + 1, barWidth, 7, transparency);
 		drawBarFill(context, barX, barWidth);
 		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
-		if (showText() && enabled) {
-			renderText(context);
-		}
 	}
 
 	protected void drawBarFill(DrawContext context, int barX, int barWith) {
@@ -138,8 +140,8 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 
 	public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
 		this.value = text;
-		this.fill = fill;
-		this.overflowFill = overflowFill;
+		this.fill = Math.clamp(fill, 0, 1);
+		this.overflowFill = Math.clamp(overflowFill, 0, 1);
 		this.max = max;
 		this.overflow = overflow;
 	}

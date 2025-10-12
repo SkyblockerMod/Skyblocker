@@ -5,7 +5,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -38,7 +37,7 @@ public class CustomArmorDyeColors {
 
 		if (Utils.isOnSkyblock() && heldItem != null) {
 			if (heldItem.isIn(ItemTags.DYEABLE)) {
-				String itemUuid = ItemUtils.getItemUuid(heldItem);
+				String itemUuid = heldItem.getUuid();
 
 				if (!itemUuid.isEmpty()) {
 					Object2IntOpenHashMap<String> customDyeColors = SkyblockerConfigManager.get().general.customDyeColors;

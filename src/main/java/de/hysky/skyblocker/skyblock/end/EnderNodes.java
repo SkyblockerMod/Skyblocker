@@ -125,7 +125,7 @@ public class EnderNodes {
         private long lastConfirmed;
 
         private EnderNode(BlockPos pos) {
-            super(pos, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, ColorUtils.getFloatComponents(DyeColor.CYAN));
+            super(pos, () -> SkyblockerConfigManager.get().otherLocations.end.enderNodeWaypointType, ColorUtils.getFloatComponents(DyeColor.CYAN));
         }
 
         private void updateWaypoint() {

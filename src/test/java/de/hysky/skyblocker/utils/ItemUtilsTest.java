@@ -78,9 +78,9 @@ public class ItemUtilsTest {
 
 	@Test
 	void testGetItemUuid() {
-		Assertions.assertEquals("098f4ac1-bf99-4829-a183-70e3a6bc8b2a", ItemUtils.getItemUuid(DARK_CLAYMORE));
-		Assertions.assertEquals("24404cec-7249-4612-b43e-0bc897384dd2", ItemUtils.getItemUuid(TITANIUM_DRILL_DR_X655));
-		Assertions.assertEquals("38d58369-401c-4cda-945d-759cb652c718", ItemUtils.getItemUuid(ASTRAEA));
+		Assertions.assertEquals("098f4ac1-bf99-4829-a183-70e3a6bc8b2a", DARK_CLAYMORE.getUuid());
+		Assertions.assertEquals("24404cec-7249-4612-b43e-0bc897384dd2", TITANIUM_DRILL_DR_X655.getUuid());
+		Assertions.assertEquals("38d58369-401c-4cda-945d-759cb652c718", ASTRAEA.getUuid());
 	}
 
 	@Test
