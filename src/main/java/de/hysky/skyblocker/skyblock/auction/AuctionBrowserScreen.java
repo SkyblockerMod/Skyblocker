@@ -39,15 +39,16 @@ import java.awt.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuctionBrowserScreen.class);
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/browser/background.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/browser/background.png");
     private static final Identifier SCROLLER_TEXTURE = Identifier.ofVanilla("container/creative_inventory/scroller");
 
-    private static final Identifier up_arrow_tex = Identifier.of(SkyblockerMod.NAMESPACE, "up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
-    private static final Identifier down_arrow_tex = Identifier.of(SkyblockerMod.NAMESPACE, "down_arrow_even");
+    private static final Identifier up_arrow_tex = SkyblockerMod.id("up_arrow_even"); // Put them in their own fields to avoid object allocation on each frame
+    private static final Identifier down_arrow_tex = SkyblockerMod.id("down_arrow_even");
     public static final Supplier<Sprite> UP_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(up_arrow_tex);
     public static final Supplier<Sprite> DOWN_ARROW = () -> MinecraftClient.getInstance().getGuiAtlasManager().getSprite(down_arrow_tex);
 
@@ -276,7 +277,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     categoryTabWidget.setIcon(handler.getSlot(slotId).getStack());
                     List<Text> tooltipDefault = ItemUtils.getLore(handler.getSlot(slotId).getStack());
                     for (int j = tooltipDefault.size() - 1; j >= 0; j--) {
-                        String lowerCase = tooltipDefault.get(j).getString().toLowerCase();
+                        String lowerCase = tooltipDefault.get(j).getString().toLowerCase(Locale.ENGLISH);
                         if (lowerCase.contains("currently")) {
                             categoryTabWidget.setToggled(true);
                             break;
@@ -291,7 +292,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
                     for (int k = tooltip.size() - 1; k >= 0; k--) {
                         Text text = tooltip.get(k);
                         String string = text.getString();
-                        if (string.toLowerCase().contains("buy it now:")) {
+                        if (string.toLowerCase(Locale.ENGLISH).contains("buy it now:")) {
                             String[] split = string.split(":");
                             if (split.length < 2) continue;
                             String coins = split[1].replace(",", "").replace("coins", "").trim();

@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -70,7 +71,7 @@ public class GoldorWaypointsManager {
     }
 
     private static void load(MinecraftClient client) {
-        CompletableFuture<Void> terminals = loadWaypoints(client, Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/goldorwaypoints.json"));
+        CompletableFuture<Void> terminals = loadWaypoints(client, SkyblockerMod.id("dungeons/goldorwaypoints.json"));
 
         terminals.whenComplete((_result, _throwable) -> loaded = true);
     }
@@ -236,7 +237,7 @@ public class GoldorWaypointsManager {
 
             @Override
             public String asString() {
-                return name().toLowerCase();
+                return name().toLowerCase(Locale.ENGLISH);
             }
         }
     }

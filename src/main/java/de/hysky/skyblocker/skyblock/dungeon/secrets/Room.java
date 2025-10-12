@@ -110,7 +110,7 @@ public class Room implements Tickable, Renderable {
         IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
         IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
         shape = getShape(segmentsX, segmentsY);
-        roomsData = DungeonManager.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(), Collections.emptyMap());
+        roomsData = DungeonManager.ROOMS_DATA.getOrDefault("catacombs", Collections.emptyMap()).getOrDefault(shape.shape.toLowerCase(Locale.ENGLISH), Collections.emptyMap());
         possibleRooms = getPossibleRooms(segmentsX, segmentsY);
     }
 
@@ -571,7 +571,7 @@ public class Room implements Tickable, Renderable {
     protected void onUseBlock(World world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         if ((state.isOf(Blocks.CHEST) || state.isOf(Blocks.TRAPPED_CHEST)) && lastChestSecretTime + 1000 < System.currentTimeMillis() || state.isOf(Blocks.PLAYER_HEAD) || state.isOf(Blocks.PLAYER_WALL_HEAD)) {
-            secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
+            secretWaypoints.column(pos).values().stream().filter(SecretWaypoint::needsInteraction).filter(SecretWaypoint::isEnabled).findAny()
                     .ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} interaction, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
             if (state.isOf(Blocks.CHEST) || state.isOf(Blocks.TRAPPED_CHEST)) {
                 lastChestSecret = pos;

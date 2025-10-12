@@ -18,6 +18,7 @@ import net.minecraft.util.Identifier;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class SlayerWidget {
@@ -25,19 +26,19 @@ public class SlayerWidget {
     private final LevelFinder.LevelInfo slayerLevel;
     private JsonObject slayerData = null;
 
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/icon_data_widget.png");
-    private static final Identifier BAR_FILL = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_fill");
-    private static final Identifier BAR_BACK = Identifier.of(SkyblockerMod.NAMESPACE, "bars/bar_back");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
+    private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
+    private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
     private final Identifier item;
     private final ItemStack drop;
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
     private static final Map<String, Identifier> HEAD_ICON = Map.ofEntries(
-            Map.entry("Zombie", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/zombie.png")),
-            Map.entry("Spider", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/spider.png")),
-            Map.entry("Wolf", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/wolf.png")),
-            Map.entry("Enderman", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/enderman.png")),
-            Map.entry("Vampire", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/vampire.png")),
-            Map.entry("Blaze", Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/blaze.png"))
+            Map.entry("Zombie", SkyblockerMod.id("textures/gui/profile_viewer/zombie.png")),
+            Map.entry("Spider", SkyblockerMod.id("textures/gui/profile_viewer/spider.png")),
+            Map.entry("Wolf", SkyblockerMod.id("textures/gui/profile_viewer/wolf.png")),
+            Map.entry("Enderman", SkyblockerMod.id("textures/gui/profile_viewer/enderman.png")),
+            Map.entry("Vampire", SkyblockerMod.id("textures/gui/profile_viewer/vampire.png")),
+            Map.entry("Blaze", SkyblockerMod.id("textures/gui/profile_viewer/blaze.png"))
     );
 
     private static final Map<String, ItemStack> DROP_ICON = Map.ofEntries(
@@ -55,7 +56,7 @@ public class SlayerWidget {
         this.item = HEAD_ICON.get(slayer);
         this.drop = DROP_ICON.getOrDefault(slayer, Ico.BARRIER);
         try {
-            this.slayerData = playerProfile.getAsJsonObject("slayer").getAsJsonObject("slayer_bosses").getAsJsonObject(this.slayerName.toLowerCase());
+            this.slayerData = playerProfile.getAsJsonObject("slayer").getAsJsonObject("slayer_bosses").getAsJsonObject(this.slayerName.toLowerCase(Locale.ENGLISH));
         } catch (Exception ignored) {}
     }
 

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
@@ -346,7 +347,7 @@ public class DungeonManager {
 			}));
 		}
 		dungeonFutures.add(CompletableFuture.runAsync(() -> {
-			try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/secretlocations.json"))) {
+			try (BufferedReader roomsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(SkyblockerMod.id("dungeons/dungeonrooms.json")); BufferedReader waypointsReader = MinecraftClient.getInstance().getResourceManager().openAsReader(SkyblockerMod.id("dungeons/secretlocations.json"))) {
 				loadJson(roomsReader, roomsJson);
 				loadJson(waypointsReader, waypointsJson);
 				LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded dungeon secret waypoints json");
@@ -400,7 +401,7 @@ public class DungeonManager {
 	 * @param map    the map to load into
 	 */
 	private static void loadJson(BufferedReader reader, Map<String, JsonElement> map) {
-		SkyblockerMod.GSON.fromJson(reader, JsonObject.class).asMap().forEach((room, jsonElement) -> map.put(room.toLowerCase().replaceAll(" ", "-"), jsonElement));
+		SkyblockerMod.GSON.fromJson(reader, JsonObject.class).asMap().forEach((room, jsonElement) -> map.put(room.toLowerCase(Locale.ENGLISH).replaceAll(" ", "-"), jsonElement));
 	}
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, Integer> markSecretsCommand(boolean found) {

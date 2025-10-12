@@ -89,7 +89,7 @@ public class CustomizeArmorScreen extends Screen {
 	}
 
 	static boolean canEdit(ItemStack stack) {
-		boolean hasUuid = !ItemUtils.getItemUuid(stack).isEmpty();
+		boolean hasUuid = !stack.getUuid().isEmpty();
 		if (stack.isOf(Items.PLAYER_HEAD)) return hasUuid;
 		return stack.isIn(ItemTags.TRIMMABLE_ARMOR) && hasUuid;
 	}
@@ -112,7 +112,7 @@ public class CustomizeArmorScreen extends Screen {
 		ImmutableMap.Builder<String, PreviousConfig> builder = ImmutableMap.builderWithExpectedSize(4);
 		for (ItemStack stack : armor) {
 			if (canEdit(stack)) {
-				String uuid = ItemUtils.getItemUuid(stack);
+				String uuid = stack.getUuid();
 				builder.put(uuid, new PreviousConfig(
 						SkyblockerConfigManager.get().general.customArmorTrims.containsKey(uuid) ? Optional.of(SkyblockerConfigManager.get().general.customArmorTrims.get(uuid)) : Optional.empty(),
 						SkyblockerConfigManager.get().general.customDyeColors.containsKey(uuid) ? OptionalInt.of(SkyblockerConfigManager.get().general.customDyeColors.getInt(uuid)) : OptionalInt.empty(),
@@ -221,8 +221,8 @@ public class CustomizeArmorScreen extends Screen {
 
 	private class PieceSelectionWidget extends ClickableWidget {
 
-		private static final Identifier HOTBAR_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "armor_customization_screen/mini_hotbar");
-		private static final Identifier HOTBAR_SELECTION_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "hotbar_selection_full");
+		private static final Identifier HOTBAR_TEXTURE = SkyblockerMod.id("armor_customization_screen/mini_hotbar");
+		private static final Identifier HOTBAR_SELECTION_TEXTURE = SkyblockerMod.id("hotbar_selection_full");
 
 		private final boolean[] selectable;
 
@@ -285,7 +285,7 @@ public class CustomizeArmorScreen extends Screen {
 
 	private static class CustomizeButton extends ClickableWidget {
 		// thanks to @yuflow
-		private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "armor_customization_screen/button");
+		private static final Identifier TEXTURE = SkyblockerMod.id("armor_customization_screen/button");
 
 		private CustomizeButton(int x, int y) {
 			super(x, y, 10, 10, Text.empty());

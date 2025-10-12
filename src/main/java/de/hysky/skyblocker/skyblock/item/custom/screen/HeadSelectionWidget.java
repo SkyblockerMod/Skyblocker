@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.skyblock.item.custom.CustomHelmetTextures;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import net.minecraft.client.MinecraftClient;
@@ -21,11 +20,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class HeadSelectionWidget extends ContainerWidget {
 
-	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
+	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 
 
 	private final List<HeadButton> allButtons = new ArrayList<>();
@@ -69,7 +69,7 @@ public class HeadSelectionWidget extends ContainerWidget {
 
 	private void updateConfig() {
 		if (currentItem == null) return;
-		String uuid = ItemUtils.getItemUuid(currentItem);
+		String uuid = currentItem.getUuid();
 		if (selectedTexture == null) {
 			SkyblockerConfigManager.get().general.customHelmetTextures.remove(uuid);
 		} else {
@@ -86,11 +86,11 @@ public class HeadSelectionWidget extends ContainerWidget {
 
 	private void filterButtons(String search) {
 		setScrollY(0);
-		String s = search.toLowerCase();
+		String s = search.toLowerCase(Locale.ENGLISH);
 		visibleButtons.clear();
 		visibleButtons.add(noneButton);
 		for (HeadButton b : allButtons) {
-			if (b.name.toLowerCase().contains(s)) {
+			if (b.name.toLowerCase(Locale.ENGLISH).contains(s)) {
 				visibleButtons.add(b);
 			}
 		}
@@ -205,7 +205,7 @@ public class HeadSelectionWidget extends ContainerWidget {
 
 	public void setCurrentItem(@NotNull ItemStack item) {
 		currentItem = item;
-		String uuid = ItemUtils.getItemUuid(item);
+		String uuid = item.getUuid();
 		selectedTexture = SkyblockerConfigManager.get().general.customHelmetTextures.get(uuid);
 		updateButtons();
 		filterButtons(searchField.getText());

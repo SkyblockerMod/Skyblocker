@@ -14,13 +14,14 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.joml.Matrix3x2fStack;
 
 public class RarityWidget extends ClickableWidget {
 
-    private static final Identifier HOVER_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/rarity_widget/hover.png");
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/auctions_gui/rarity_widget/background.png");
+    private static final Identifier HOVER_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/hover.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/rarity_widget/background.png");
     private final SlotClickHandler onClick;
     private int slotId = -1;
 
@@ -84,7 +85,7 @@ public class RarityWidget extends ClickableWidget {
         this.tooltip = tooltip;
         this.current = current;
 		//noinspection DataFlowIssue
-		this.color = SkyblockItemRarity.containsName(current.toUpperCase()).map(r -> r.color).orElse(Formatting.GRAY.getColorValue()) | 0xFF000000;
+		this.color = SkyblockItemRarity.containsName(current.toUpperCase(Locale.ENGLISH)).map(r -> r.color).orElse(Formatting.GRAY.getColorValue()) | 0xFF000000;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Formatters;
@@ -56,10 +57,10 @@ public class PowderWidget extends TabHudWidget {
 					if (mithril != lastMithril || msAfterLastUpdate > UPDATE_INTERVAL) {
 						lastMithrilDiff = mithril - lastMithril;
 						updated |= 0b1000;
-						addComponent(Components.iconTextComponent(Ico.MITHRIL, getTextToDisplay(lastMithrilDiff, line, Formatting.DARK_GREEN)));
+						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("MITHRIL_ORE", Ico.MITHRIL), getTextToDisplay(lastMithrilDiff, line, Formatting.DARK_GREEN)));
 						lastMithril = mithril;
 					} else {
-						addComponent(Components.iconTextComponent(Ico.MITHRIL, getTextToDisplay(lastMithrilDiff, line, Formatting.DARK_GREEN)));
+						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("MITHRIL_ORE", Ico.MITHRIL), getTextToDisplay(lastMithrilDiff, line, Formatting.DARK_GREEN)));
 					}
 					updated |= 0b001;
 				}
@@ -69,10 +70,10 @@ public class PowderWidget extends TabHudWidget {
 					if (gemstone != lastGemstone || msAfterLastUpdate > UPDATE_INTERVAL) {
 						lastGemstoneDiff = gemstone - lastGemstone;
 						updated |= 0b1000;
-						addComponent(Components.iconTextComponent(Ico.AMETHYST_SHARD, getTextToDisplay(lastGemstoneDiff, line, Formatting.LIGHT_PURPLE)));
+						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("GEMSTONE_COLLECTION", Ico.GEMSTONE), getTextToDisplay(lastGemstoneDiff, line, Formatting.LIGHT_PURPLE)));
 						lastGemstone = gemstone;
 					} else {
-						addComponent(Components.iconTextComponent(Ico.AMETHYST_SHARD, getTextToDisplay(lastGemstoneDiff, line, Formatting.LIGHT_PURPLE)));
+						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("GEMSTONE_COLLECTION", Ico.GEMSTONE), getTextToDisplay(lastGemstoneDiff, line, Formatting.LIGHT_PURPLE)));
 					}
 					updated |= 0b010;
 				}
@@ -82,10 +83,10 @@ public class PowderWidget extends TabHudWidget {
 					if (glacite != lastGlacite || msAfterLastUpdate > UPDATE_INTERVAL) {
 						lastGlaciteDiff = glacite - lastGlacite;
 						updated |= 0b1000;
-						addComponent(Components.iconTextComponent(Ico.BLUE_ICE, getTextToDisplay(lastGlaciteDiff, line, Formatting.AQUA)));
+						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("GLACITE", Ico.PACKED_ICE), getTextToDisplay(lastGlaciteDiff, line, Formatting.AQUA)));
 						lastGlacite = glacite;
 					} else {
-						addComponent(Components.iconTextComponent(Ico.BLUE_ICE, getTextToDisplay(lastGlaciteDiff, line, Formatting.AQUA)));
+						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("GLACITE", Ico.PACKED_ICE), getTextToDisplay(lastGlaciteDiff, line, Formatting.AQUA)));
 					}
 					updated |= 0b100;
 				}

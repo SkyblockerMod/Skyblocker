@@ -9,6 +9,7 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
     protected List<PartyEntry> partyEntries;
@@ -53,7 +54,7 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
 
     public void updateDisplay() {
         List<PartyEntry> entries = new ArrayList<>(partyEntries);
-        entries.removeIf(partyEntry -> !partyEntry.note.toLowerCase().contains(search) && !(partyEntry instanceof PartyEntry.YourParty));
+        entries.removeIf(partyEntry -> !partyEntry.note.toLowerCase(Locale.ENGLISH).contains(search) && !(partyEntry instanceof PartyEntry.YourParty));
         entries.sort(Comparator.comparing(PartyEntry::isLocked));
         entries.sort(Comparator.comparing(partyEntry -> !(partyEntry instanceof PartyEntry.YourParty)));
         if (entries.isEmpty() && !partyEntries.isEmpty()) {
@@ -63,7 +64,7 @@ public class PartyEntryListWidget extends ElementListWidget<PartyEntry> {
     }
 
     public void setSearch(String s) {
-        search = s.toLowerCase();
+        search = s.toLowerCase(Locale.ENGLISH);
         updateDisplay();
     }
 

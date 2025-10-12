@@ -1,22 +1,19 @@
 package de.hysky.skyblocker.mixins;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.item.Items;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import de.hysky.skyblocker.skyblock.item.custom.CustomHelmetTextures;
+import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.component.ComponentHolder;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.equipment.trim.ArmorTrim;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ComponentHolder.class)
 public interface ComponentHolderMixin {
@@ -25,7 +22,7 @@ public interface ComponentHolderMixin {
 	@ModifyReturnValue(method = "get", at = @At("RETURN"))
 	private <T> T skyblocker$customComponents(T original, ComponentType<? extends T> dataComponentType) {
 		if (Utils.isOnSkyblock() && ((Object) this) instanceof ItemStack stack) {
-			String itemUuid = ItemUtils.getItemUuid(stack);
+			String itemUuid = stack.getUuid();
 			if (dataComponentType == DataComponentTypes.TRIM) {
 				Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customTrims = SkyblockerConfigManager.get().general.customArmorTrims;
 				if (customTrims.containsKey(itemUuid)) {
