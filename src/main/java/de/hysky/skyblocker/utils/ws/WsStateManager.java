@@ -4,17 +4,16 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.ws.message.Message;
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ReferenceSet;
 import net.azureaaron.hmapi.data.server.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
+import java.util.EnumSet;
 import java.util.Optional;
 
 public class WsStateManager {
-	private static final ReferenceSet<Service> SUBSCRIBED_SERVER_SERVICES = new ReferenceOpenHashSet<>();
+	private static final EnumSet<Service> SUBSCRIBED_SERVER_SERVICES = EnumSet.noneOf(Service.class);
 	private static String lastServerId = "";
-	private static final ReferenceSet<Service> SUBSCRIBED_ISLAND_SERVICES = new ReferenceOpenHashSet<>();
+	private static final EnumSet<Service> SUBSCRIBED_ISLAND_SERVICES = EnumSet.noneOf(Service.class);
 	private static String lastLocation = "";
 
 	@Init
@@ -44,7 +43,7 @@ public class WsStateManager {
 	 * @implNote The service must be registered after the {@link ClientPlayConnectionEvents#JOIN} event fires, one good
 	 * place is inside the {@link SkyblockEvents#LOCATION_CHANGE} event.
 	 */
-	public static void subscribe(Service service, Optional<Message<? extends Message<?>>> message) {
+	public static void subscribeServer(Service service, Optional<Message<? extends Message<?>>> message) {
 		if (Utils.getEnvironment() != Environment.PRODUCTION) return;
 
 		SUBSCRIBED_SERVER_SERVICES.add(service);
@@ -56,7 +55,7 @@ public class WsStateManager {
 
 	/**
 	 * Subscribes to a location-based service.
-	 * See {@link #subscribe} for serverId-based services.
+	 * See {@link #subscribeServer} for serverId-based services.
 	 */
 	public static void subscribeIsland(Service service, Optional<Message<? extends Message<?>>> message) {
 		if (Utils.getEnvironment() != Environment.PRODUCTION) return;

@@ -368,7 +368,7 @@ public class CrystalsLocationsManager {
 
     private static void onLocationChange(Location newLocation) {
         if (newLocation == Location.CRYSTAL_HOLLOWS) {
-            WsStateManager.subscribe(Service.CRYSTAL_WAYPOINTS, Optional.of(CrystalsWaypointSubscribeMessage.create(CLIENT.world)));
+            WsStateManager.subscribeServer(Service.CRYSTAL_WAYPOINTS, Optional.of(CrystalsWaypointSubscribeMessage.create(CLIENT.world)));
         }
     }
 
