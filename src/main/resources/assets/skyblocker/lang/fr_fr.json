@@ -1188,7 +1188,7 @@
     "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Comportement de positionnement par défaut",
     "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Ouvrir l'Écran de Configuration",
     "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag": "Ajout Maximal de Lag (ms)",
-    "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "Combien de temps l'animation peut prendre du retard par rapport au jeu, en millisecondes. (Si cette valeur est définie sur 0, le lissage n'aura aucun retard, mais des saccades sont susceptibles de se produire. Augmentez cette valeur si vous constatez des clignotements.)",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "Prédictif - Combien de temps l'animation peut prendre du retard par rapport au jeu, en millisecondes. (Si cette valeur est définie sur 0, le lissage n'aura aucun retard, mais des saccades sont susceptibles de se produire. Augmentez cette valeur si vous constatez des clignotements.)\n Prédictif désactivé - Durée de l'animation",
     "skyblocker.customItemNames.screen.customColor": "Personnaliser",
     "skyblocker.customItemNames.noItem": "Vous ne tenez rien en main !",
     "skyblocker.dungeons.secrets.customWaypointAdded": "§rAjout du marqueur personnalisé en X : %s, Y : %s, Z : %s dans la salle %s secret #%s de la catégorie %s avec le nom '%s'.",
