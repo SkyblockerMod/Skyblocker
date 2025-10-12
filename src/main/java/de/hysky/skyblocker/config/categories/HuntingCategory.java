@@ -9,7 +9,6 @@ import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.ColourController;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 import java.awt.*;
 
@@ -17,7 +16,7 @@ public class HuntingCategory {
 
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
-				.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/hunting"))
+				.id(SkyblockerMod.id("config/hunting"))
 				.name(Text.translatable("skyblocker.config.hunting"))
 				.option(Option.<Boolean>createBuilder()
 						.name(Text.translatable("skyblocker.config.hunting.huntingBoxHelper"))

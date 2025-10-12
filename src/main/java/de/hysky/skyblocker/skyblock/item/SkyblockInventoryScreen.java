@@ -56,7 +56,7 @@ public class SkyblockInventoryScreen extends InventoryScreen {
             .xmap(itemStacks -> itemStacks.toArray(ItemStack[]::new), List::of).fieldOf("items").codec();
 
     private static final Identifier SLOT_TEXTURE = Identifier.ofVanilla("container/slot");
-    private static final Identifier EMPTY_SLOT = Identifier.of(SkyblockerMod.NAMESPACE, "equipment/empty_icon");
+    private static final Identifier EMPTY_SLOT = SkyblockerMod.id("equipment/empty_icon");
     private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("equipment");
 
     private final Slot[] equipmentSlots = new Slot[4];

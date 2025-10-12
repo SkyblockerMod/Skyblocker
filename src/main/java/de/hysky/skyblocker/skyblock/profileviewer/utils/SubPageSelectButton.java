@@ -11,7 +11,6 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
 
 import java.awt.*;
 
@@ -20,7 +19,7 @@ public class SubPageSelectButton extends ClickableWidget {
     private final int index;
     private boolean toggled;
 
-    private static final ButtonTextures TEXTURES = new ButtonTextures(Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/button_icon_toggled.png"), Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/button_icon.png"), Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/button_icon_toggled_highlighted.png"), Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/button_icon_highlighted.png"));
+    private static final ButtonTextures TEXTURES = new ButtonTextures(SkyblockerMod.id("textures/gui/profile_viewer/button_icon_toggled.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon_toggled_highlighted.png"), SkyblockerMod.id("textures/gui/profile_viewer/button_icon_highlighted.png"));
     private final ItemStack ICON;
 
     public SubPageSelectButton(ProfileViewerPage page, int x, int y, int index, ItemStack item) {

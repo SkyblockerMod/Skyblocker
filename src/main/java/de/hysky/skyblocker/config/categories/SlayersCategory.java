@@ -11,13 +11,12 @@ import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class SlayersCategory {
 
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
-				.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/slayers"))
+				.id(SkyblockerMod.id("config/slayers"))
 				.name(Text.translatable("skyblocker.config.slayer"))
 
 				//General Slayers Options

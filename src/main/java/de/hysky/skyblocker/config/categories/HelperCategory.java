@@ -13,12 +13,11 @@ import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class HelperCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()
-				.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/helpers"))
+				.id(SkyblockerMod.id("config/helpers"))
 				.name(Text.translatable("skyblocker.config.helpers"))
 
 				//Ungrouped Options

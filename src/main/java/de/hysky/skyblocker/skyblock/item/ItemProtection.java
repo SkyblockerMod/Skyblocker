@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class ItemProtection {
-	public static final Identifier ITEM_PROTECTION_TEX = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
+	public static final Identifier ITEM_PROTECTION_TEX = SkyblockerMod.id("textures/gui/item_protection.png");
 	public static KeyBinding itemProtection;
 
 	@Init
