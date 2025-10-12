@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.teleport;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
@@ -9,6 +10,7 @@ import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.*;
@@ -24,6 +26,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -39,7 +42,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PredictiveSmoothAOTE {
-
+	public static final Identifier SMOOTH_AOTE_BEFORE_PHASE = Identifier.of(SkyblockerMod.NAMESPACE, "smooth_aote");
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	private static final Pattern MANA_LORE = Pattern.compile("Mana Cost: (\\d+)");
@@ -57,7 +60,8 @@ public class PredictiveSmoothAOTE {
 
 	@Init
 	public static void init() {
-		UseItemCallback.EVENT.register(PredictiveSmoothAOTE::onItemInteract);
+		UseItemCallback.EVENT.register(SMOOTH_AOTE_BEFORE_PHASE, PredictiveSmoothAOTE::onItemInteract);
+		UseItemCallback.EVENT.addPhaseOrdering(SMOOTH_AOTE_BEFORE_PHASE, Event.DEFAULT_PHASE); // run this event first to check mana before it gets changed by the tracker
 		UseBlockCallback.EVENT.register(PredictiveSmoothAOTE::onBlockInteract);
 	}
 
@@ -194,8 +198,8 @@ public class PredictiveSmoothAOTE {
 		Matcher manaNeeded = ItemUtils.getLoreLineIfMatch(heldItem, MANA_LORE);
 		if (manaNeeded != null && manaNeeded.matches()) {
 			int manaCost = Integer.parseInt(manaNeeded.group(1));
-			int predictedMana = StatusBarTracker.getMana().value() - teleportsAhead * manaCost;
-			if (predictedMana < manaCost) { // todo the players mana can lag behind as it is updated server side. client side mana calculations would help with this
+			int predictedMana = StatusBarTracker.getMana().value();
+			if (predictedMana < manaCost) {
 				return;
 			}
 		}
@@ -256,8 +260,6 @@ public class PredictiveSmoothAOTE {
 	 * @return distance the item teleports or -1 if not valid
 	 */
 	protected static int getItemDistance(String itemId, NbtCompound customData) {
-
-
 		int distance;
 		switch (itemId) {
 			case "ASPECT_OF_THE_LEECH_1" -> {
