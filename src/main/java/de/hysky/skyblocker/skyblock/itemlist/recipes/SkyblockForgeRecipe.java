@@ -20,7 +20,7 @@ import java.util.Locale;
 
 public class SkyblockForgeRecipe implements SkyblockRecipe {
 
-    public static final Identifier IDENTIFIER = Identifier.of(SkyblockerMod.NAMESPACE, "skyblock_forge");
+    public static final Identifier IDENTIFIER = SkyblockerMod.id("skyblock_forge");
 
     private final List<ItemStack> inputs;
     private final ItemStack output;

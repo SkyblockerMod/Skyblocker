@@ -25,7 +25,7 @@ import java.util.Objects;
 
 public class HeadSelectionWidget extends ContainerWidget {
 
-	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
+	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 
 
 	private final List<HeadButton> allButtons = new ArrayList<>();

@@ -25,7 +25,7 @@ import java.util.Map;
  * EMI integration
  */
 public class SkyblockerEMIPlugin implements EmiPlugin {
-    public static final Identifier SIMPLIFIED_TEXTURES = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/emi_icons.png");
+    public static final Identifier SIMPLIFIED_TEXTURES = SkyblockerMod.id("textures/gui/emi_icons.png");
 
     public static final EmiRecipeCategory SKYBLOCK_CRAFTING = new EmiRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, EmiStack.of(Items.CRAFTING_TABLE), new EmiTexture(SIMPLIFIED_TEXTURES, 0, 0, 16, 16));
     public static final EmiRecipeCategory SKYBLOCK_FORGE = new EmiRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, EmiStack.of(Items.LAVA_BUCKET), new EmiTexture(SIMPLIFIED_TEXTURES, 16, 0, 16, 16));

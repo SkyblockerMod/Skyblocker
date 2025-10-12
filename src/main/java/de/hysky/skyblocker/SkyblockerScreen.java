@@ -42,10 +42,10 @@ public class SkyblockerScreen extends Screen {
 
 		if (date.getMonthValue() == 4 && date.getDayOfMonth() == 1) {
 			TITLE = Text.literal("Skibidiblocker " + SkyblockerMod.VERSION);
-			ICON = Identifier.of(SkyblockerMod.NAMESPACE, "icons.png");
+			ICON = SkyblockerMod.id("icons.png");
 		} else {
 			TITLE = Text.literal("Skyblocker " + SkyblockerMod.VERSION);
-			ICON = Identifier.of(SkyblockerMod.NAMESPACE, "icon.png");
+			ICON = SkyblockerMod.id("icon.png");
 		}
 	}
 

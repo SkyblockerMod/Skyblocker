@@ -32,7 +32,6 @@ import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.util.Comparator;
@@ -42,7 +41,7 @@ import java.util.Objects;
 public class UIAndVisualsCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
-        		.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/uiandvisuals"))
+        		.id(SkyblockerMod.id("config/uiandvisuals"))
 				.name(Text.translatable("skyblocker.config.uiAndVisuals"))
 
                 //Ungrouped Options

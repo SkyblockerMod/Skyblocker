@@ -29,7 +29,7 @@ public class CatPicture {
 
 	private static final Vec3d RENDER_POSITION = new Vec3d(6, 72, -92);
 	private static final Box CULLING_BOX = new Box(RENDER_POSITION.x, RENDER_POSITION.y, RENDER_POSITION.z, RENDER_POSITION.x + 1, RENDER_POSITION.y + 1, RENDER_POSITION.z + 1/16d);
-	private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/cat.png");
+	private static final Identifier TEXTURE = SkyblockerMod.id("textures/cat.png");
 
 	@Init
 	public static void init() {

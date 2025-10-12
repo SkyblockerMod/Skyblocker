@@ -19,7 +19,7 @@ public class DungeonHeaderWidget {
 
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
     private static final DecimalFormat DF = new DecimalFormat("#.##");
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/dungeons_header.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/dungeons_header.png");
 
     public DungeonHeaderWidget(JsonObject playerProfile, String[] classes) {
         try {
