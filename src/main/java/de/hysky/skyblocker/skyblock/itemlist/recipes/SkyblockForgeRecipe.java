@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import io.github.moulberry.repo.data.NEUForgeRecipe;
 import net.minecraft.client.MinecraftClient;
@@ -21,7 +20,7 @@ import java.util.Locale;
 
 public class SkyblockForgeRecipe implements SkyblockRecipe {
 
-    public static final Identifier IDENTIFIER = Identifier.of(SkyblockerMod.NAMESPACE, "skyblock_forge");
+    public static final Identifier IDENTIFIER = SkyblockerMod.id("skyblock_forge");
 
     private final List<ItemStack> inputs;
     private final ItemStack output;
@@ -97,7 +96,7 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
     }
 
     public Identifier getRecipeIdentifier() {
-        return Identifier.of("skyblock", ItemUtils.getItemId(output).toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
+        return Identifier.of("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
     }
 
     @Override

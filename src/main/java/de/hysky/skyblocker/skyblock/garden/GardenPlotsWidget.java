@@ -105,7 +105,8 @@ public class GardenPlotsWidget extends ContainerWidget {
 						ItemStack stack = slot.getStack();
 						if (stack.isEmpty() || stack.isOf(Items.RED_STAINED_GLASS_PANE) || stack.isOf(Items.OAK_BUTTON) || stack.isOf(Items.BLACK_STAINED_GLASS_PANE))
 							continue;
-						String name = stack.getName().getString();
+						// SkyHanni adds formatting codes to the plot names when using their custom plot icons.
+						String name = Formatting.strip(stack.getName().getString());
 						String[] parts = name.split("-", 2);
 						if (parts.length < 2) {
 							LOGGER.warn("Invalid plot name: {}", name);
@@ -189,7 +190,7 @@ public class GardenPlotsWidget extends ContainerWidget {
 	// THE WIDGET ITSELF
 	/////////////////////////////
 
-	private static final Identifier BACKGROUND_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/garden_plots.png");
+	private static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/garden_plots.png");
 	private static final MutableText GROSS_PEST_TEXT = Text.translatable("skyblocker.gardenPlots.pests").formatted(Formatting.RED, Formatting.BOLD);
 	private static final MutableText TP_TEXT = Text.translatable("skyblocker.gardenPlots.tp").formatted(Formatting.YELLOW, Formatting.BOLD);
 

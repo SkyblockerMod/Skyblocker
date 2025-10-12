@@ -82,7 +82,7 @@ public class FarmingHudWidget extends ComponentBasedWidget {
 		}
 		ItemStack farmingToolStack = client.player.getMainHandStack();
 		if (farmingToolStack == null) return;
-		String itemId = ItemUtils.getItemId(farmingToolStack);
+		String itemId = farmingToolStack.getSkyblockId();
 		String cropItemId = FARMING_TOOLS.getOrDefault(itemId, "");
 		ItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
 

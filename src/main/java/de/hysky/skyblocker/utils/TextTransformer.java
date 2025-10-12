@@ -82,7 +82,7 @@ public class TextTransformer {
 					case STRIKETHROUGH -> strikethrough = true;
 					case OBFUSCATED -> obfuscated = true;
 
-					default -> formatting = fmt;
+					case null, default -> formatting = fmt;
 				}
 
 				continue;

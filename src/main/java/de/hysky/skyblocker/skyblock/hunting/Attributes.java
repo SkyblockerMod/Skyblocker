@@ -21,7 +21,7 @@ import net.minecraft.util.Identifier;
 
 public class Attributes {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Identifier ATTRIBUTES_FILE = Identifier.of(SkyblockerMod.NAMESPACE, "hunting/attributes.json");
+	private static final Identifier ATTRIBUTES_FILE = SkyblockerMod.id("hunting/attributes.json");
 	private static List<Attribute> attributes = List.of();
 
 	@Init
