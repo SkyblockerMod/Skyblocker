@@ -44,7 +44,7 @@ public class ResourcePackCompatibility {
 
 		@Override
 		public Identifier getFabricId() {
-			return Identifier.of(SkyblockerMod.NAMESPACE, "reload_listener");
+			return SkyblockerMod.id("reload_listener");
 		}
 
 		@Override

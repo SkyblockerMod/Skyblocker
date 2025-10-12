@@ -101,7 +101,7 @@ Time starts when the water lever is turned on and stops when the last door opens
 public class WaterboardOneFlow extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WaterboardOneFlow.class);
 	public static final WaterboardOneFlow INSTANCE = new WaterboardOneFlow();
-	private static final Identifier WATER_TIMES = Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/watertimes.json");
+	private static final Identifier WATER_TIMES = SkyblockerMod.id("dungeons/watertimes.json");
 	private static final Text WAIT_TEXT = Text.literal("WAIT").formatted(Formatting.RED, Formatting.BOLD);
 	private static final Text CLICK_TEXT = Text.literal("CLICK").formatted(Formatting.GREEN, Formatting.BOLD);
 	private static JsonObject SOLUTIONS;

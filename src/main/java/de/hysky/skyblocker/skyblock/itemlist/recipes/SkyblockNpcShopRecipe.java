@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.ItemUtils;
 import io.github.moulberry.repo.data.NEUNpcShopRecipe;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.item.ItemStack;
@@ -15,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SkyblockNpcShopRecipe implements SkyblockRecipe {
-	public static final Identifier IDENTIFIER = Identifier.of(SkyblockerMod.NAMESPACE, "skyblock_npc_shop");
+	public static final Identifier IDENTIFIER = SkyblockerMod.id("skyblock_npc_shop");
 	private static final int SLOT_SIZE = 18;
 	private static final int ARROW_LENGTH = 24;
 	private static final int ARROW_PADDING = 3;
@@ -125,6 +124,6 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 
 	@Override
 	public Identifier getRecipeIdentifier() {
-		return Identifier.of("skyblock", ItemUtils.getItemId(output));
+		return Identifier.of("skyblock", output.getSkyblockId());
 	}
 }

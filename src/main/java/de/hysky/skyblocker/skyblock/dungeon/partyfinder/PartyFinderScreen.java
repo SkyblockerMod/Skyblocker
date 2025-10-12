@@ -113,7 +113,7 @@ public class PartyFinderScreen extends Screen {
 			CompletableFuture.runAsync(() -> {
 				floorIconsNormal = new HashMap<>();
 				floorIconsMaster = new HashMap<>();
-				try (BufferedReader skullTextureReader = client.getResourceManager().openAsReader(Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/catacombs/floorskulls.json"))) {
+				try (BufferedReader skullTextureReader = client.getResourceManager().openAsReader(SkyblockerMod.id("dungeons/catacombs/floorskulls.json"))) {
 					JsonObject json = SkyblockerMod.GSON.fromJson(skullTextureReader, JsonObject.class);
 					json.getAsJsonObject("normal").asMap().forEach((s, tex) -> floorIconsNormal.put(s, ItemUtils.propertyMapWithTexture(tex.getAsString())));
 					json.getAsJsonObject("master").asMap().forEach((s, tex) -> floorIconsMaster.put(s, ItemUtils.propertyMapWithTexture(tex.getAsString())));

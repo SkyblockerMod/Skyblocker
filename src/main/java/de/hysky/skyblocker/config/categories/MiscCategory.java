@@ -10,13 +10,12 @@ import net.azureaaron.dandelion.systems.Option;
 import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.controllers.StringController;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class MiscCategory {
 
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
-        		.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/misc"))
+        		.id(SkyblockerMod.id("config/misc"))
                 .name(Text.translatable("skyblocker.config.misc"))
 
                 //Uncategorized Options

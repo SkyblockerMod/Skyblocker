@@ -6,7 +6,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -33,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class ItemProtection {
-	public static final Identifier ITEM_PROTECTION_TEX = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/item_protection.png");
+	public static final Identifier ITEM_PROTECTION_TEX = SkyblockerMod.id("textures/gui/item_protection.png");
 	public static KeyBinding itemProtection;
 
 	@Init
@@ -49,7 +48,7 @@ public class ItemProtection {
 
 	public static boolean isItemProtected(ItemStack stack) {
 		if (stack == null) return false;
-		String itemUuid = ItemUtils.getItemUuid(stack);
+		String itemUuid = stack.getUuid();
 		return SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid);
 	}
 
@@ -63,7 +62,7 @@ public class ItemProtection {
 		ItemStack heldItem = source.getPlayer().getMainHandStack();
 
 		if (Utils.isOnSkyblock()) {
-			String itemUuid = ItemUtils.getItemUuid(heldItem);
+			String itemUuid = heldItem.getUuid();
 
 			if (!itemUuid.isEmpty()) {
 				ObjectOpenHashSet<String> protectedItems = SkyblockerConfigManager.get().general.protectedItems;
@@ -104,7 +103,7 @@ public class ItemProtection {
 			return;
 		}
 
-		String itemUuid = ItemUtils.getItemUuid(heldItem);
+		String itemUuid = heldItem.getUuid();
 		if (!itemUuid.isEmpty()) {
 			ObjectOpenHashSet<String> protectedItems = SkyblockerConfigManager.get().general.protectedItems;
 

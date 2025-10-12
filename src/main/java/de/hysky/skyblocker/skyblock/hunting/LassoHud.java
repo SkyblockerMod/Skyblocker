@@ -4,7 +4,6 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.MinecraftClient;
@@ -65,7 +64,7 @@ public class LassoHud extends ComponentBasedWidget {
 				lassoEntity = CLIENT.world.getEntityById(packet.getAttachedEntityId());
 
 				//get rarity of lasso used
-				String usedItemId = ItemUtils.getItemId(player.getMainHandStack());
+				String usedItemId = player.getMainHandStack().getSkyblockId();
 
 				reelValue = switch (usedItemId) {
 					case "ABYSMAL_LASSO" -> 2;
