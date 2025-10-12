@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class SidePanelWidget extends ContainerWidget {
-	private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_outer_space");
+	private static final Identifier TEXTURE = SkyblockerMod.id("menu_outer_space");
 	private static final int TOP_MARGIN = 16; // this is kinda horribly used but this widget will only be used here so it is whatever.
 	private static final int SCROLLBAR_AREA = SCROLLBAR_WIDTH + 1; // 1 for padding
 

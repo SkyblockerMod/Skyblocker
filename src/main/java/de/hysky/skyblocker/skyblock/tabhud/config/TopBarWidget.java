@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 class TopBarWidget extends ContainerWidget {
-	private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_outer_space");
+	private static final Identifier TEXTURE = SkyblockerMod.id("menu_outer_space");
 	private static final int HEIGHT = 15;
 	private final CustomDropdownWidget<Location> locationDropdown;
 	private final CustomDropdownWidget<WidgetManager.ScreenLayer> screenLayerDropdown;

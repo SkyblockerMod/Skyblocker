@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 class CustomDropdownWidget<T> extends DropdownWidget<T> {
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_outer_space");
+    private static final Identifier TEXTURE = SkyblockerMod.id("menu_outer_space");
 
     CustomDropdownWidget(int x, int y, int width, int maxHeight, List<T> entries, Consumer<T> selectCallback, T selected) {
         super(client, x, y, width, maxHeight, 12, entries, selectCallback, selected);
