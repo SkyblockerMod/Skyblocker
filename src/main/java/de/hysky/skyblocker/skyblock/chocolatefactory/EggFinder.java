@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.command.argumenttypes.EggTypeArgumentType;
@@ -80,17 +81,36 @@ public class EggFinder {
 			if (!isSpring) clearEggs();
 		});
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("shareLocation").then(argument("eggType", EggTypeArgumentType.eggType())
-						.executes(context -> {
-							EggType eggType = context.getArgument("eggType", EggType.class);
-							if (eggType == null || eggType.egg == null) {
-								context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.helpers.hoppitysHunt.unableToShareEgg").styled(style -> style.withColor(Formatting.RED))));
-								return Command.SINGLE_SUCCESS;
-							}
-							MessageScheduler.INSTANCE.sendMessageAfterCooldown("[Skyblocker] Chocolate %s Egg found at %s".formatted(eggType.name, eggType.egg.pos.toShortString()), false);
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("shareLocation").then(argument("eggType", EggTypeArgumentType.eggType())
+					.executes(context -> {
+						EggType eggType = context.getArgument("eggType", EggType.class);
+						if (eggType == null || eggType.egg == null) {
+							context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.helpers.hoppitysHunt.unableToShareEgg").styled(style -> style.withColor(Formatting.RED))));
 							return Command.SINGLE_SUCCESS;
-						}))))));
+						}
+						MessageScheduler.INSTANCE.sendMessageAfterCooldown("[Skyblocker] Chocolate %s Egg found at %s".formatted(eggType.name, eggType.egg.pos.toShortString()), false);
+						return Command.SINGLE_SUCCESS;
+					})))));
+
+			if (!Debug.debugEnabled()) return;
+			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("resetFoundStatus")
+					.executes(context -> {
+						for (EggType type : EggType.entries) {
+							type.collected = false;
+							if (type.egg != null) type.egg.setMissing();
+						}
+						return Command.SINGLE_SUCCESS;
+					}))));
+
+			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("clearWaypoints")
+					.executes(context -> {
+						for (EggType type : EggType.entries) {
+							type.egg = null;
+						}
+						return Command.SINGLE_SUCCESS;
+					}))));
+		});
 	}
 
 	public static void onWebsocketMessage(EggWaypointMessage message) {
