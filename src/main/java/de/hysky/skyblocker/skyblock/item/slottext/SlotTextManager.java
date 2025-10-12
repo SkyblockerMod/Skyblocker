@@ -10,6 +10,7 @@ import de.hysky.skyblocker.skyblock.dungeon.terminal.SameColorTerminal;
 import de.hysky.skyblocker.skyblock.hunting.AttributeLevelHelper;
 import de.hysky.skyblocker.skyblock.item.slottext.adders.*;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -78,7 +79,7 @@ public class SlotTextManager {
 	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
-			if ((screen instanceof HandledScreen<?> && Utils.isOnSkyblock()) || screen instanceof ProfileViewerScreen) {
+			if ((screen instanceof HandledScreen<?> && Utils.isOnSkyblock()) || screen instanceof ProfileViewerScreen || screen instanceof RadialMenuScreen) {
 				onScreenChange(screen);
 				ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
 			}
