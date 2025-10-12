@@ -41,7 +41,9 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	}
 
 	protected void registerAutoUpdate() {
-		PlayerListManager.registerListener(this::update);
+		PlayerListManager.registerListener(() -> {
+			if (isVisible()) update();
+		});
 	}
 
 	/**

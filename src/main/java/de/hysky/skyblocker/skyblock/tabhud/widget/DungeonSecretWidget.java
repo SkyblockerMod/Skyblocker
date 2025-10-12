@@ -7,7 +7,6 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -29,7 +28,6 @@ public class DungeonSecretWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent() {
-		if (!Utils.isInDungeons()) return;
 		if (!DungeonScore.isDungeonStarted()) {
 			this.addSimpleIcoText(Ico.CHEST, "Secrets:", Formatting.YELLOW, 30);
 			this.addSimpleIcoText(Ico.SKULL, "Crypts:", Formatting.YELLOW, 31);

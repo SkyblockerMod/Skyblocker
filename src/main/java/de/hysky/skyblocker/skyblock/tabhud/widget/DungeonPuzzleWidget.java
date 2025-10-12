@@ -7,7 +7,6 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -37,7 +36,6 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent() {
-		if (!Utils.isInDungeons()) return;
 		int pos = 48;
 
 		while (pos < 60) {

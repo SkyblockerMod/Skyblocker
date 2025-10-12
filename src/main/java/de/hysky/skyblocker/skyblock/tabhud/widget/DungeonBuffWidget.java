@@ -5,7 +5,6 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -28,7 +27,6 @@ public class DungeonBuffWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent() {
-		if (!Utils.isInDungeons()) return;
 		String footertext = PlayerListManager.getFooter();
 
 		if (footertext == null || !footertext.contains("Dungeon Buffs")) {
