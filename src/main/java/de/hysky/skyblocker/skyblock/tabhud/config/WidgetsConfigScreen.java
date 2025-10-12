@@ -342,6 +342,11 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	@Override
 	public void tick() {
 		if (selectedWidget == null && sidePanelWidget.isOpen()) sidePanelWidget.close();
+		for (HudWidget widget : builder.getWidgets()) {
+			if (widget.getNavigationFocus().intersects(getNavigationFocus()) || !widget.getPositionRule().parent().equals("screen")) continue;
+			widget.setPositionRule(PositionRule.DEFAULT);
+			builder.updatePositions(width, height);
+		}
 	}
 
 	@Override
