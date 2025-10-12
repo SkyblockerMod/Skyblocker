@@ -1,12 +1,7 @@
 package de.hysky.skyblocker.utils.render;
 
-import java.awt.Color;
-import java.util.Optional;
-import java.util.UUID;
-
-import org.joml.Matrix3x2f;
-
 import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
+import de.hysky.skyblocker.compatibility.ModernUICompatibility;
 import de.hysky.skyblocker.utils.render.gui.state.EquipmentGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.HorizontalGradientGuiElementRenderState;
 import de.hysky.skyblocker.utils.render.gui.state.OutlinedTextGuiElementRenderState;
@@ -23,9 +18,14 @@ import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.EquipmentAsset;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
+import org.joml.Matrix3x2f;
+
+import java.awt.*;
+import java.util.Optional;
+import java.util.UUID;
 
 public class HudHelper {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
@@ -56,10 +56,11 @@ public class HudHelper {
 		context.state.addSpecialElement(renderState);
 	}
 
-	public static void drawOutlinedText(DrawContext context, OrderedText text, int x, int y, int color, int outlineColor) {
-		if (CaxtonCompatibility.drawOutlinedText(context, text, x, y, color, outlineColor)) return;
+	public static void drawOutlinedText(DrawContext context, Text text, int x, int y, int color, int outlineColor) {
+		if (CaxtonCompatibility.drawOutlinedText(context, text.asOrderedText(), x, y, color, outlineColor)) return;
+		if (ModernUICompatibility.drawOutlinedText(context, text, x, y, color, outlineColor)) return;
 
-		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text, new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, context.scissorStack.peekLast());
+		OutlinedTextGuiElementRenderState renderState = new OutlinedTextGuiElementRenderState(CLIENT.textRenderer, text.asOrderedText(), new Matrix3x2f(context.getMatrices()), x, y, color, outlineColor, false, context.scissorStack.peekLast());
 		context.state.addText(renderState);
 	}
 

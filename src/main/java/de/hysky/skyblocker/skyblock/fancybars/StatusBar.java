@@ -180,7 +180,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		int color = transparency((textColor == null ? colors[0] : textColor).getRGB());
 		int outlineColor = transparency(Colors.BLACK);
 
-		HudHelper.drawOutlinedText(context, Text.of(text).asOrderedText(), x, y, color, outlineColor);
+		HudHelper.drawOutlinedText(context, Text.of(text), x, y, color, outlineColor);
 	}
 
 	public void renderCursor(DrawContext context, int mouseX, int mouseY, float delta) {
