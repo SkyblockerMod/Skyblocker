@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
@@ -36,6 +37,10 @@ public class HealthBars {
 	private static final Identifier HEALTH_BAR_TEXTURE = Identifier.ofVanilla("textures/gui/sprites/boss_bar/white_progress.png");
 	protected static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)/(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)❤");
 	protected static final Pattern HEALTH_ONLY_PATTERN = Pattern.compile("(\\d{1,3}(,\\d{3})*(\\.\\d+)?[kKmMbBtT]?)❤");
+	/**
+	 * See {@link #isDisallowedMob}
+	 */
+	private static final List<String> DISALLOWED_DUNGEON_MOBS = List.of("Blaze", "The Professor", "Guardian");
 
 	private static final Object2FloatOpenHashMap<ArmorStandEntity> healthValues = new Object2FloatOpenHashMap<>();
 	private static final Object2LongOpenHashMap<ArmorStandEntity> mobStartingHealth = new Object2LongOpenHashMap<>();
@@ -62,6 +67,16 @@ public class HealthBars {
 			healthValues.removeFloat(armorStandEntity);
 			mobStartingHealth.removeLong(armorStandEntity);
 		}
+	}
+
+	/**
+	 * There are certain mob names that we do not want to change as that can break other features.
+	 * Currently only applies to Dungeons
+	 * 	- Guardians and the Professor in F3/M3 Boss
+	 * 	- Blazes for the Higher or Lower puzzle.
+	 */
+	private static boolean isDisallowedMob(String name) {
+		return Utils.isInDungeons() && DISALLOWED_DUNGEON_MOBS.stream().anyMatch(name::contains);
 	}
 
 	/**
@@ -102,9 +117,8 @@ public class HealthBars {
 		boolean removeValue = SkyblockerConfigManager.get().uiAndVisuals.healthBars.removeHealthFromName;
 		boolean removeMax = SkyblockerConfigManager.get().uiAndVisuals.healthBars.removeMaxHealthFromName;
 		//if both disabled no need to edit name
-		if (!removeValue && !removeMax) {
-			return;
-		}
+		if (!removeValue && !removeMax) return;
+		if (isDisallowedMob(armorStand.getCustomName().getString())) return;
 		MutableText cleanedText = Text.empty();
 		List<Text> parts = armorStand.getCustomName().getSiblings();
 		//loop though name and add every part to a new text skipping over the hidden health values
@@ -178,9 +192,9 @@ public class HealthBars {
 		healthValues.put(armorStand, health);
 
 		//if enabled remove from name
-		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.removeHealthFromName) {
-			return;
-		}
+		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.removeHealthFromName) return;
+		if (isDisallowedMob(armorStand.getCustomName().getString())) return;
+
 		MutableText cleanedText = Text.empty();
 		List<Text> parts = armorStand.getCustomName().getSiblings();
 		//loop though name and add every part to a new text skipping over the health value

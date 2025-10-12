@@ -38,12 +38,18 @@ public class Calculator {
 	}
 
 	public enum Operator implements StringIdentifiable {
-		ADD("+"), SUB("-"), MULT("*"), DIV("/"), MOD("%"), POW("^");
+		ADD("+"), SUB("-"), MULT("*"), DIV("/"), MOD("%"), POW("^", true);
 		private static final java.util.function.Function<String, Operator> OPERATOR_MAP = StringIdentifiable.createMapper(Operator.values(), java.util.function.Function.identity());
 		private final String op;
+		private final boolean rightAssociative;
 
 		Operator(String op) {
+			this(op, false);
+		}
+
+		Operator(String op, boolean rightAssociative) {
 			this.op = op;
+			this.rightAssociative = rightAssociative;
 		}
 
 		@Override
@@ -232,7 +238,8 @@ public class Calculator {
 			switch (shuntingToken.type) {
 				case NUMBER -> outputQueue.add(shuntingToken);
 				case OPERATOR -> {
-					int precedence = getPrecedence(((Operator) shuntingToken.value));
+					Operator op = (Operator) shuntingToken.value;
+					int precedence = getPrecedence(op);
 					while (!operatorStack.isEmpty()) {
 						AbstractToken<?> leftToken = operatorStack.peek();
 						if (leftToken.type == TokenType.L_PARENTHESIS) {
@@ -240,7 +247,7 @@ public class Calculator {
 						}
 						assert (leftToken.type == TokenType.OPERATOR);
 						int leftPrecedence = getPrecedence((Operator) leftToken.value);
-						if (leftPrecedence >= precedence) {
+						if (leftPrecedence > precedence || (leftPrecedence == precedence && !op.rightAssociative)) {
 							outputQueue.add(operatorStack.pop());
 							continue;
 						}

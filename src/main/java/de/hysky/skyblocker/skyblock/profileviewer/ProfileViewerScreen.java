@@ -52,7 +52,7 @@ public class ProfileViewerScreen extends Screen {
     public static final Logger LOGGER = LoggerFactory.getLogger(ProfileViewerScreen.class);
     private static final Text TITLE = Text.of("Skyblocker Profile Viewer");
     private static final String HYPIXEL_COLLECTIONS = "https://api.hypixel.net/v2/resources/skyblock/collections";
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/base_plate.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/base_plate.png");
     private static final int GUI_WIDTH = 322;
     private static final int GUI_HEIGHT = 180;
     private static Map<String, String[]> COLLECTIONS;

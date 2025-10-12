@@ -32,7 +32,6 @@ import net.azureaaron.dandelion.systems.controllers.IntegerController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.util.Comparator;
@@ -42,7 +41,7 @@ import java.util.Objects;
 public class UIAndVisualsCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
-        		.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/uiandvisuals"))
+        		.id(SkyblockerMod.id("config/uiandvisuals"))
 				.name(Text.translatable("skyblocker.config.uiAndVisuals"))
 
                 //Ungrouped Options
@@ -144,6 +143,14 @@ public class UIAndVisualsCategory {
 						.binding(defaults.uiAndVisuals.showConfigButton,
 								() -> config.uiAndVisuals.showConfigButton,
 								newValue -> config.uiAndVisuals.showConfigButton = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.uiAndVisuals.trueQuiverCount"))
+						.description(Text.translatable("skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip"))
+						.binding(defaults.uiAndVisuals.trueQuiverCount,
+								() -> config.uiAndVisuals.trueQuiverCount,
+								newValue -> config.uiAndVisuals.trueQuiverCount = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 

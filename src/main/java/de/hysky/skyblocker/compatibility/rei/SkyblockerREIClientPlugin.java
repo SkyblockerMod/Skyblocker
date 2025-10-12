@@ -36,7 +36,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 import java.util.List;
 import java.util.Locale;
@@ -112,7 +111,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 				name = parentItem.get().getName();
 			}
 
-			registry.group(Identifier.of(SkyblockerMod.NAMESPACE, "rei_category/" + categoryPath), name, allItems);
+			registry.group(SkyblockerMod.id("rei_category/" + categoryPath), name, allItems);
 		});
 	}
 

@@ -31,7 +31,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class RenderHelper {
-    private static final Identifier TRANSLUCENT_DRAW = Identifier.of(SkyblockerMod.NAMESPACE, "translucent_draw");
+    private static final Identifier TRANSLUCENT_DRAW = SkyblockerMod.id("translucent_draw");
     private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
     private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 

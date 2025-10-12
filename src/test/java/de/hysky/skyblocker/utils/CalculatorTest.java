@@ -59,6 +59,9 @@ public class CalculatorTest {
 	@Test
 	void testCalculations() {
 		assertCalculation(30, "5(2*sqrt(36)+3log(1))/2");
+		assertCalculation(262144, "4^3^2");
+		assertCalculation(3.0001220703125, "3+4*2/(1-5)^2^3");
+		assertCalculation(-23635.272727272727, "(5 + 2 * sqrt(36) - 3 * lg(2))^2 - (4 * (0-sqrt(16))^2^3) / (3 + 256 / 2 * lg(65536) / 2^2^3)");
 	}
 
 	@Test
