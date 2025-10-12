@@ -39,10 +39,10 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 	private final ItemStack[] armor = new ItemStack[4];
 	private final CustomizeScreen parent;
 	private int selectedSlot = 0;
-	private TrimSelectionWidget trimSelectionWidget;
-	private ColorSelectionWidget colorSelectionWidget;
-	private HeadSelectionWidget headSelectionWidget;
-	private ModelFieldContainer modelFieldContainer;
+	private final TrimSelectionWidget trimSelectionWidget;
+	private final ColorSelectionWidget colorSelectionWidget;
+	private final HeadSelectionWidget headSelectionWidget;
+	private final ModelFieldContainer modelFieldContainer;
 
 	private final boolean nothingCustomizable;
 	private final OtherClientPlayerEntity player = new OtherClientPlayerEntity(CLIENT.world, CLIENT.getGameProfile()) {
@@ -76,25 +76,23 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 		vertical.add(pieceSelectionWidget);
 		grid.add(vertical, 0, 0, 2, 1, Positioner::alignVerticalCenter);
 
+		int width = 200;
+		headSelectionWidget = new HeadSelectionWidget(0, 0, width, 165);
+		grid.add(headSelectionWidget, 0, 1, 2, 1, Positioner::alignVerticalCenter);
 
-		if (!nothingCustomizable) {
-			int width = 200;
-			headSelectionWidget = new HeadSelectionWidget(0, 0, width, 165);
-			grid.add(headSelectionWidget, 0, 1, 2, 1, Positioner::alignVerticalCenter);
+		DirectionalLayoutWidget layoutWidget = DirectionalLayoutWidget.horizontal().spacing(PADDING / 2);
+		int containerWidth = (int) (width * (1 / 3f));
+		trimSelectionWidget = new TrimSelectionWidget(0, 0, width - containerWidth - PADDING / 2, 80);
+		modelFieldContainer = layoutWidget.add(new ModelFieldContainer(containerWidth, 80));
+		layoutWidget.add(trimSelectionWidget);
+		layoutWidget.refreshPositions();
+		grid.add(layoutWidget, 0, 1);
 
-			DirectionalLayoutWidget layoutWidget = DirectionalLayoutWidget.horizontal().spacing(PADDING / 2);
-			int containerWidth = (int) (width * (1/3f));
-			trimSelectionWidget = new TrimSelectionWidget(0, 0, width - containerWidth - PADDING / 2, 80);
-			modelFieldContainer = layoutWidget.add(new ModelFieldContainer(containerWidth, 80));
-			layoutWidget.add(trimSelectionWidget);
-			layoutWidget.refreshPositions();
-			grid.add(layoutWidget, 0, 1);
+		colorSelectionWidget = new ColorSelectionWidget(0, 0, width, 100, MinecraftClient.getInstance().textRenderer);
+		grid.add(colorSelectionWidget, 1, 1);
 
-			colorSelectionWidget = new ColorSelectionWidget(0, 0, width, 100, MinecraftClient.getInstance().textRenderer);
-			grid.add(colorSelectionWidget, 1, 1);
+		updateWidgets();
 
-			updateWidgets();
-		}
 	}
 
 	private static boolean canEdit(ItemStack stack) {
@@ -104,7 +102,13 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 	}
 
 	private void updateWidgets() {
-		if (nothingCustomizable) return;
+		if (nothingCustomizable) {
+			headSelectionWidget.visible = false;
+			trimSelectionWidget.visible = false;
+			colorSelectionWidget.visible = false;
+			modelFieldContainer.visible = false;
+			return;
+		}
 		ItemStack item = armor[selectedSlot];
 		parent.backupConfigs(item);
 		boolean isPlayerHead = item.isOf(Items.PLAYER_HEAD);
@@ -133,7 +137,7 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 	public void refreshGrid(ScreenRect tabArea) {
 		int width = Math.min(460, tabArea.width()) - PLAYER_WIDGET_WIDTH - PADDING * 3;
 		headSelectionWidget.setWidth(width);
-		int modelFieldWidth = (int) (width * (1/3f));
+		int modelFieldWidth = (int) (width * (1 / 3f));
 		trimSelectionWidget.setWidth(width - modelFieldWidth - PADDING / 2);
 		modelFieldContainer.setWidth(modelFieldWidth);
 		colorSelectionWidget.setWidth(width);
