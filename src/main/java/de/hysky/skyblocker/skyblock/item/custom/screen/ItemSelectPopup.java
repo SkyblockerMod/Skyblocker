@@ -15,10 +15,13 @@ import net.minecraft.client.gui.widget.EmptyWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -45,11 +48,13 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 		super.init();
 		GridWidget.Adder adder = mainGrid.createAdder(9);
 		ClientPlayerEntity player = client.player;
-		for (ItemStack stack : player.getInventory().getMainStacks()) {
+		DefaultedList<ItemStack> stacks = player.getInventory().getMainStacks();
+		for (int i = PlayerInventory.HOTBAR_SIZE; i < stacks.size() + PlayerInventory.HOTBAR_SIZE; i++) {
+			ItemStack stack = stacks.get(i % stacks.size());
 			if (stack.isEmpty()) adder.add(new EmptyWidget(18, 18));
 			else adder.add(new ItemWidget(stack));
 		}
-		Arrays.stream(EquipmentSlot.values()).filter(e -> e.getType() == EquipmentSlot.Type.HUMANOID_ARMOR).forEach(slot -> {
+		Arrays.stream(EquipmentSlot.values()).filter(e -> e.getType() == EquipmentSlot.Type.HUMANOID_ARMOR).toList().reversed().forEach(slot -> {
 			ItemStack stack = player.getEquippedStack(slot);
 			if (stack.isEmpty()) equipmentLayout.add(new EmptyWidget(18, 18));
 			else equipmentLayout.add(new ItemWidget(stack));
@@ -90,9 +95,10 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 
 		private ItemWidget(ItemStack item) {
 			super(0, 0, 18, 18, item.getName());
-			setTooltip(Tooltip.of(getMessage()));
-			this.item = item;
 			selectable = !item.getUuid().isEmpty();
+			Text message = selectable ? getMessage() : getMessage().copy().append("\n").append(Text.translatable("skyblocker.customization.item.cannotCustomize").formatted(Formatting.RED));
+			setTooltip(Tooltip.of(message));
+			this.item = item;
 		}
 
 		@Override

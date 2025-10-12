@@ -1701,6 +1701,7 @@
   "skyblocker.customization.item.glint": "Glint: %s",
   "skyblocker.customization.item.glint.default": "Default",
   "skyblocker.customization.item.modelOverride": "Item Model Override",
+  "skyblocker.customization.item.cannotCustomize": "Cannot be customized",
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
