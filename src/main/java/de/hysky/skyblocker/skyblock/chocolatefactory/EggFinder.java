@@ -112,7 +112,6 @@ public class EggFinder {
 	}
 
 	public static boolean checkIfEgg(ArmorStandEntity armorStand, EggType eggType) {
-		if (!isSpring || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return false;
 		if (armorStand.hasCustomName() || !armorStand.isInvisible() || armorStand.shouldShowBasePlate()) return false;
 		return handleArmorStand(armorStand, eggType);
 	}
