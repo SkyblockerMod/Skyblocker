@@ -73,6 +73,7 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 
 	@Override
 	protected void refreshWidgetPositions() {
+		super.refreshWidgetPositions();
 		x = (width - TEXTURE_WIDTH) / 2;
 		y = (height - TEXTURE_HEIGHT) / 2;
 		mainGrid.setPosition(x + 7, y + 53);

@@ -186,7 +186,7 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 
 			for (int i = 0; i < armor.length; i++) {
 				context.drawItem(armor[i], getX() + 4 + i * 20, getY() + 4);
-				if (!selectable[i]) {
+				if (!selectable[i] && !armor[i].isEmpty()) {
 					context.drawItem(BARRIER, getX() + 4 + i * 20, getY() + 4);
 				}
 			}
