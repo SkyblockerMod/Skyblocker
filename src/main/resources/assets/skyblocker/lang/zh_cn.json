@@ -1463,7 +1463,7 @@
     "skyblocker.config.general.backup.restore.error": "加载备份失败",
     "skyblocker.config.hunting.lassoHud": "套索HUD",
     "skyblocker.config.hunting.lassoHud.enabled": "已启用",
-    "skyblocker.config.hunting.lassoHud.hud.screen": "Lasso HUD设置…",
+    "skyblocker.config.hunting.lassoHud.hud.screen": "套索HUD设置…",
     "skyblocker.config.hunting.lassoHud.enabled.@Tooltip": "在HUD中显示套索倒计时。",
     "skyblocker.config.general.itemList.enableCollapsibleEntries": "启用可折叠分组",
     "skyblocker.config.general.itemList.enableCollapsibleEntries.@Tooltip": "将相似的物品分组为一个条目，可以通过点击展开查看。\n\n需要重新加入或重新加载REI插件才能生效！",
