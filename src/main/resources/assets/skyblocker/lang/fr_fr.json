@@ -1188,7 +1188,7 @@
     "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Comportement de positionnement par défaut",
     "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Ouvrir l'Écran de Configuration",
     "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag": "Ajout Maximal de Lag (ms)",
-    "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "Prédictif - Combien de temps l'animation peut prendre du retard par rapport au jeu, en millisecondes. (Si cette valeur est définie sur 0, le lissage n'aura aucun retard, mais des saccades sont susceptibles de se produire. Augmentez cette valeur si vous constatez des clignotements.)\n Prédictif désactivé - Durée de l'animation",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "Prédictif :\nCombien de temps l'animation peut prendre du retard par rapport au jeu, en millisecondes. (Si cette valeur est définie sur 0, le lissage n'aura aucun retard, mais des saccades sont susceptibles de se produire. Augmentez cette valeur si vous constatez des clignotements.)\n\nPrédictif désactivé :\nDurée de l'animation",
     "skyblocker.customItemNames.screen.customColor": "Personnaliser",
     "skyblocker.customItemNames.noItem": "Vous ne tenez rien en main !",
     "skyblocker.dungeons.secrets.customWaypointAdded": "§rAjout du marqueur personnalisé en X : %s, Y : %s, Z : %s dans la salle %s secret #%s de la catégorie %s avec le nom '%s'.",
@@ -1511,5 +1511,5 @@
     "skyblocker.config.uiAndVisuals.trueQuiverCount": "Afficher la Quantité Réelle du Carquois",
     "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "Affiche la quantité réelle de flèches dans votre carquois au lieu d'être limité à 64.",
     "skyblocker.config.uiAndVisuals.smoothAOTE.predictive": "Algorithme Prédictif",
-    "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "Prédit où la téléportation va s'arrêter. Cela signifie qu'il n'y aura aucun lag supplémentaire, mais cela peut parfois être inexact et provoquer des bugs"
+    "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "Prédit où la téléportation va s'arrêter. Cela signifie qu'il n'y aura aucun lag supplémentaire, mais cela peut parfois être inexact et provoquer des bugs."
 }
