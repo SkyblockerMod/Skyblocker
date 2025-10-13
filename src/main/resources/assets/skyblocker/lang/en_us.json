@@ -217,6 +217,9 @@
   "skyblocker.config.dungeons.bloodCampHelper": "Blood Camp Helper",
   "skyblocker.config.dungeons.bloodCampHelper.@Tooltip": "Predicts mob movement in the Blood Room to assist camping.",
 
+  "skyblocker.config.dungeons.ghostBlocks": "Ghost Blocks",
+  "skyblocker.config.dungeons.ghostBlocks.@Tooltip": "Creates ghost blocks without glitches.",
+
   "skyblocker.config.dungeons.secretWaypoints": "Dungeon Secret Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableAotvWaypoints": "Enable AOTV Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableBatWaypoints": "Enable Bat Waypoints",

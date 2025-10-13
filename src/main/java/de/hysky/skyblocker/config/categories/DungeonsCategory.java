@@ -130,6 +130,14 @@ public class DungeonsCategory {
 								newValue -> config.dungeons.bloodCampHelper = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Text.translatable("skyblocker.config.dungeons.ghostBlocks"))
+						.description(Text.translatable("skyblocker.config.dungeons.ghostBlocks.@Tooltip"))
+						.binding(defaults.dungeons.ghostBlocks,
+								() -> config.dungeons.ghostBlocks,
+								newValue -> config.dungeons.ghostBlocks = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 
 				// Map
 				.group(OptionGroup.createBuilder()
