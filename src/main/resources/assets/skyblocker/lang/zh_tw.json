@@ -1330,7 +1330,7 @@
     "skyblocker.config.hunting.huntingBoxHelper.@Tooltip": "高亮顯示你可以提升至下一階級的屬性碎片。並且在提示框中顯示碎片的售價。",
     "skyblocker.config.mining.crystalHollows.enablePowderTracker.@Tooltip": "追蹤你在水晶洞窟中進行粉末挖礦時獲得的寶箱獎勵。",
     "skyblocker.config.slayer.endermanSlayer.lazerTimer": "雷射計時器",
-    "skyblocker.dungeons.splits.sadanGiants": "撒旦的巨人",
+    "skyblocker.dungeons.splits.sadanGiants": "Sadan的巨人",
     "emi.category.skyblocker.skyblock_crafting": "製作（Skyblock）",
     "skyblocker.crimson.dojo.forceHelper.@Tooltip": "顯示殭屍消失前的倒數計時，並為扣分殭屍加上輪廓。",
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidMagnitudeError": "無效的大小「%s」",
@@ -1486,5 +1486,12 @@
     "skyblocker.config.hunting.lassoHud.now": "現在！",
     "skyblocker.slayer.callMaddox.message": "點擊這裡給Maddox the Slayer打電話！",
     "skyblocker.dungeons.croesusHelper.chestValue": "箱子價值：%s",
-    "emi.category.skyblocker.skyblock_npc_shop": "NPC商店（Skyblock）"
+    "emi.category.skyblocker.skyblock_npc_shop": "NPC商店（Skyblock）",
+    "skyblocker.customItemNames.screen.gradientEnd": "漸變終止點",
+    "skyblocker.customItemNames.screen.gradientStart": "漸變起始點",
+    "skyblocker.config.uiAndVisuals.trueQuiverCount": "顯示實際箭袋計數",
+    "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "顯示箭袋中箭的實際數量，而不是使用原本的物品數量上限64。",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.predictive": "預測算法",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "預測傳送的目的地。這意味著不會有額外的延遲，但有時會出現錯誤並且可能會發生故障。",
+    "skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip": "選擇一個Skyblock圖標或物品來填充此按鈕。"
 }
