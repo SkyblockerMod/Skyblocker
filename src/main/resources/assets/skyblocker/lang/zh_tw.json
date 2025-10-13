@@ -1468,7 +1468,7 @@
     "skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise": "海龜突顯顏色選擇器",
     "skyblocker.config.hunting.huntingMobs.colorPicker.Coralot": "墨西哥蠑螈突顯顏色選擇器",
     "skyblocker.config.hunting.lassoHud.enabled": "已啟用",
-    "skyblocker.config.hunting.lassoHud.hud.screen": "Lasso HUD設定…",
+    "skyblocker.config.hunting.lassoHud.hud.screen": "套索HUD設定…",
     "skyblocker.config.uiAndVisuals.inputCalculator.moduloByZeroError": "不能用0對%s取模",
     "skyblocker.config.general.itemList.enableCollapsibleEntries": "啟用可折疊分組",
     "skyblocker.config.general.itemList.enableCollapsibleEntries.@Tooltip": "將相似的物品分組為一個條目，可以透過點擊展開查看。\n\n需要重新加入或重新載入REI插件才能生效！",
