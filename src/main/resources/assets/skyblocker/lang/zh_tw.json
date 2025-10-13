@@ -1107,7 +1107,7 @@
     "skyblocker.config.uiAndVisuals.slotText.mode.PRESS_TO_TOGGLE": "點擊切換",
     "skyblocker.config.uiAndVisuals.slotText.mode.HOLD_TO_SHOW": "點擊顯示",
     "skyblocker.config.uiAndVisuals.slotText.prehistoricEgg.@Tooltip": "顯示你目前攜帶蛋行走的方塊距離。",
-    "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "允許動畫造成多久的遊戲滯後，以毫秒為單位。 （如果設為0，平滑動畫不會造成操作延遲，但可能引發畫面抽搐。在遇到畫面抽搐時增加該值。）",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "預測：\n允許動畫造成多久的遊戲滯後，以毫秒為單位。 （如果設為0，平滑動畫不會造成操作延遲，但可能引發畫面抽搐。在遇到畫面抽搐時增加該值。）\n\n禁用預測：\n動畫時長",
     "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault": "預設顯示原版TAB",
     "skyblocker.config.uiAndVisuals.tabHud.style.FANCY": "花俏",
     "skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[3]": "花俏：在普通的邊框中顯示以自訂組件格式化的資訊。\n",
