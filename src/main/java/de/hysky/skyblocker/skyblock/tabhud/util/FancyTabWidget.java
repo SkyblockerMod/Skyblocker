@@ -43,7 +43,6 @@ public class FancyTabWidget extends HudWidget {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	public static final String ID = "fancy_tab";
-	private static final Information INFORMATION = new Information(ID, Text.literal("Fancy Tab"));
 
 	private final List<HudWidget> widgets = new ObjectArrayList<>();
 	private Positioner positioner = Positioner.CENTERED;
@@ -52,6 +51,7 @@ public class FancyTabWidget extends HudWidget {
 	private String @NotNull [] hiddenWidgets = new String[0];
 
 	public FancyTabWidget() {
+		super(new Information(ID, Text.literal("Fancy Tab")));
 		PlayerListManager.registerListener(this::update);
 	}
 
@@ -95,11 +95,6 @@ public class FancyTabWidget extends HudWidget {
 		Vector2i widthAndHeight = widgetPositioner.finalizePositioning();
 		w = widthAndHeight.x;
 		h = widthAndHeight.y;
-	}
-
-	@Override
-	public @NotNull Information getInformation() {
-		return INFORMATION;
 	}
 
 	@Override

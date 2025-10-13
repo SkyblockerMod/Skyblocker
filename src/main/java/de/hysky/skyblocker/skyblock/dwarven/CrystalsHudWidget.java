@@ -13,12 +13,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import org.joml.Matrix3x2fStack;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
 import java.util.List;
-import java.util.Set;
 
 @RegisterWidget
 public class CrystalsHudWidget extends HudWidget {
@@ -26,7 +24,6 @@ public class CrystalsHudWidget extends HudWidget {
 	protected static final Identifier MAP_TEXTURE = SkyblockerMod.id("textures/gui/crystals_map.png");
 	private static final Identifier MAP_ICON = Identifier.ofVanilla("textures/map/decorations/player.png");
 	private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Unknown");
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.CRYSTAL_HOLLOWS);
 
 	private static CrystalsHudWidget instance = null;
 
@@ -37,7 +34,7 @@ public class CrystalsHudWidget extends HudWidget {
 	}
 
 	public CrystalsHudWidget() {
-		super();
+		super(new Information("hud_crystals", Text.translatable("skyblocker.config.mining.crystalsHud"), l -> l == Location.CRYSTAL_HOLLOWS));
 		instance = this;
 	}
 
@@ -138,10 +135,5 @@ public class CrystalsHudWidget extends HudWidget {
 	@Override
 	protected void renderWidgetConfig(DrawContext context, float delta) {
 		renderWidget(context, delta);
-	}
-
-	@Override
-	public @NotNull Information getInformation() {
-		return new Information("hud_crystals", Text.literal("Crystals HUD"), l -> l == Location.CRYSTAL_HOLLOWS); // TODO translatable
 	}
 }

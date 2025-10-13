@@ -5,29 +5,46 @@ import de.hysky.skyblocker.skyblock.tabhud.config.option.PositionRuleOption;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2fStack;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public abstract class HudWidget extends AbstractWidget {
+public abstract class HudWidget implements Widget {
 	private float scale = 1.0f;
+	private PositionRule positionRule;
+	private final Information information;
+
+	private boolean positioned = false;
+	private boolean visible = false;
+	/**
+	 * Used for the config screen.
+	 */
+	private boolean inherited = false;
+
+	protected int w = 0, h = 0;
+	protected int x = 0, y = 0;
+
+	public HudWidget(@NotNull Information information) {
+		this.information = information;
+	}
 
 	public static String nameToId(String name) {
 		return name.toLowerCase(Locale.ENGLISH).replace(' ', '_').replace("'", "");
 	}
 
-	private PositionRule positionRule;
-
 	/**
 	 * Renders the widget (duh)
+	 *
 	 * @apiNote The matrix stack is already translated. So the top left corner of the widget is (0,0)
 	 */
 	protected abstract void renderWidget(DrawContext context, float delta);
@@ -37,7 +54,9 @@ public abstract class HudWidget extends AbstractWidget {
 	 */
 	protected abstract void renderWidgetConfig(DrawContext context, float delta);
 
-	public abstract @NotNull Information getInformation();
+	public @NotNull Information getInformation() {
+		return information;
+	}
 
 	public String getId() {
 		return getInformation().id();
@@ -73,13 +92,9 @@ public abstract class HudWidget extends AbstractWidget {
 		renderConfig(context, MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks());
 	}
 
-	@Override
-	public final void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		renderWidget(context, delta);
-	}
-
 	/**
 	 * Add options to the list that will be saved and show up in the config screen. These options should be per widget, not global.
+	 *
 	 * @param options list to add to.
 	 * @apiNote REMEMBER TO CALL SUPER
 	 */
@@ -119,33 +134,51 @@ public abstract class HudWidget extends AbstractWidget {
 		return Math.round(getHeight() * scale);
 	}
 
+	public final int getX() {
+		return this.x;
+	}
+
+	public final void setX(int x) {
+		this.x = x;
+	}
+
+	public final int getY() {
+		return this.y;
+	}
+
+	public final void setY(int y) {
+		this.y = y;
+	}
+
+	public final int getWidth() {
+		return this.w;
+	}
+
+	public final int getHeight() {
+		return this.h;
+	}
+
 	@Override
 	public ScreenRect getNavigationFocus() {
 		return new ScreenRect(getX(), getY(), getScaledWidth(), getScaledHeight());
 	}
 
 	/**
-	 * @param id the id for the config file
+	 * @param id          the id for the config file
 	 * @param displayName the name that will be shown in the config screen
-	 * @param available in which locations the widget can be added. If not available everywhere, {@link java.util.EnumSet} and {@code contains} are recommended
+	 * @param available   in which locations the widget can be added. If not available everywhere, {@link java.util.EnumSet} and {@code contains} are recommended
 	 */
 	public record Information(String id, Text displayName, Predicate<Location> available) {
 		/**
 		 * Shorter constructor that makes the widget available everywhere
+		 *
 		 * @see Information#Information(String, Text, Predicate)
 		 */
 		public Information(String id, Text displayName) {
 			this(id, displayName, (location) -> true);
 		}
+
 	}
-
-	private boolean positioned = false;
-	private boolean visible = false;
-	/**
-	 * Used for the config screen.
-	 */
-	private boolean inherited = false;
-
 
 	public final boolean isPositioned() {
 		return positioned;
@@ -171,8 +204,10 @@ public abstract class HudWidget extends AbstractWidget {
 		this.inherited = inherited;
 	}
 
-	@Override
 	public final boolean isMouseOver(double mouseX, double mouseY) {
 		return mouseX >= getX() && mouseX <= getX() + getScaledWidth() && mouseY >= getY() && mouseY < getY() + getScaledHeight();
 	}
+
+	@Override
+	public void forEachChild(Consumer<ClickableWidget> consumer) {}
 }

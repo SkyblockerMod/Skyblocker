@@ -10,18 +10,20 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
 
 @RegisterWidget
 public class PowderMiningWidget extends HudWidget {
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final Information INFORMATION = new Information("powder_mining_tracker", Text.translatable("skyblocker.powderTracker"), l -> l == Location.CRYSTAL_HOLLOWS);
+
+	public PowderMiningWidget() {
+		super(new Information("powder_mining_tracker", Text.translatable("skyblocker.powderTracker"), l -> l == Location.CRYSTAL_HOLLOWS));
+	}
 
 	@Override
 	public void renderWidget(DrawContext context, float delta) {
 		var set = PowderMiningTracker.getShownRewards().object2IntEntrySet();
 		if (set.isEmpty()) {
-			setDimensions(0, 0);
+			w = h = 0;
 			return;
 		}
 
@@ -40,16 +42,12 @@ public class PowderMiningWidget extends HudWidget {
 		tempY += 10;
 		context.drawTextWithShadow(CLIENT.textRenderer, Text.translatable("skyblocker.powderTracker.profit", Formatters.DOUBLE_NUMBERS.format(PowderMiningTracker.getProfit())).formatted(Formatting.GOLD), x, tempY, Colors.WHITE);
 
-		setDimensions(maxWidth, tempY - y + 10);
+		w = maxWidth;
+		h = tempY - y + 10;
 	}
 
 	@Override
 	protected void renderWidgetConfig(DrawContext context, float delta) {
 		renderWidget(context, delta);
-	}
-
-	@Override
-	public @NotNull Information getInformation() {
-		return INFORMATION;
 	}
 }

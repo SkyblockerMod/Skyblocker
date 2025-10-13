@@ -48,7 +48,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	private final Text title;
 	private final ArrayList<Component> components = new ArrayList<>();
 	private String lastError = null;
-	private final @NotNull Information information;
 
 	protected boolean drawBorder = true;
 	protected float backgroundOpacity = 0.75f;
@@ -61,10 +60,10 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	 * @param color the color for the border
 	 */
 	public ComponentBasedWidget(Text title, Integer color, @NotNull Information information) { // use Integer object to not get that annoying warning on Formatting#getColor grrr
+		super(information);
 		Objects.requireNonNull(color);
 		this.title = title;
 		this.color = 0xff000000 | color;
-		this.information = information;
 	}
 
 	public ComponentBasedWidget(Text title, Integer color, String id) {
@@ -227,11 +226,6 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		// min width is dependent on title
 		w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + (drawBorder ? 0 : -6) + txtRend.getWidth(title) + 4 + 4 + 1);
 		// update the positions so it doesn't wait for the next tick or something
-	}
-
-	@Override
-	public @NotNull Information getInformation() {
-		return information;
 	}
 
 	@Override
