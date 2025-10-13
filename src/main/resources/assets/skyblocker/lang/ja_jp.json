@@ -647,5 +647,7 @@
     "skyblocker.config.uiAndVisuals.gyroOverlay.mode.SPHERE": "球体",
     "skyblocker.config.uiAndVisuals.gyroOverlay.mode.CIRCLE_OUTLINE": "円の輪郭",
     "skyblocker.config.uiAndVisuals.gyroOverlay.Color": "Gyroオーバーレイの色",
-    "skyblocker.config.uiAndVisuals.titleContainer.direction.VERTICAL": "垂直"
+    "skyblocker.config.uiAndVisuals.titleContainer.direction.VERTICAL": "垂直",
+    "skyblocker.config.hunting.lassoHud": "投げ縄HUD",
+    "skyblocker.config.hunting.lassoHud.hud.screen": "投げ縄HUD設定..."
 }
