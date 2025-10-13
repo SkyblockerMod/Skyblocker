@@ -7,6 +7,7 @@ import de.hysky.skyblocker.annotations.GenEquals;
 import de.hysky.skyblocker.annotations.GenHashCode;
 import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
@@ -21,21 +22,22 @@ public class WaypointGroup {
             Codec.STRING.fieldOf("name").forGetter(WaypointGroup::name),
             Codec.STRING.fieldOf("island").xmap(Location::from, Location::id).forGetter(WaypointGroup::island),
             NamedWaypoint.CODEC.listOf().fieldOf("waypoints").forGetter(WaypointGroup::waypoints),
-            Codec.BOOL.lenientOptionalFieldOf("ordered", false).forGetter(WaypointGroup::ordered)
+            Codec.BOOL.lenientOptionalFieldOf("ordered", false).forGetter(WaypointGroup::ordered),
+            Codec.BOOL.lenientOptionalFieldOf("throughWalls", true).forGetter(WaypointGroup::throughWalls)
     ).apply(instance, WaypointGroup::new));
     public static final Codec<WaypointGroup> SKYTILS_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("name").forGetter(WaypointGroup::name),
             Codec.STRING.fieldOf("island").xmap(Location::from, Location::id).forGetter(WaypointGroup::island),
             NamedWaypoint.SKYTILS_CODEC.listOf().fieldOf("waypoints").forGetter(WaypointGroup::waypoints)
-    ).apply(instance, WaypointGroup::new));
-    public static final Codec<WaypointGroup> COLEWEIGHT_CODEC = NamedWaypoint.COLEWEIGHT_CODEC.listOf().xmap(coleWeightWaypoints -> new WaypointGroup("Coleweight", Location.UNKNOWN, coleWeightWaypoints, true), WaypointGroup::waypoints);
+    ).apply(instance, (name, island, waypoints) -> new WaypointGroup(name, island, waypoints, false, true)));
+    public static final Codec<WaypointGroup> COLEWEIGHT_CODEC = NamedWaypoint.COLEWEIGHT_CODEC.listOf().xmap(coleWeightWaypoints -> new WaypointGroup("Coleweight", Location.UNKNOWN, coleWeightWaypoints, true, true), WaypointGroup::waypoints);
 	public static final Codec<WaypointGroup> SKYBLOCKER_LEGACY_ORDERED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("name").forGetter(WaypointGroup::name),
 			Codec.BOOL.fieldOf("enabled").forGetter(group -> !group.waypoints().isEmpty() && group.waypoints().stream().allMatch(Waypoint::isEnabled)),
 			NamedWaypoint.SKYBLOCKER_LEGACY_ORDERED_CODEC.listOf().fieldOf("waypoints").forGetter(WaypointGroup::waypoints)
 	).apply(instance, (name, enabled, waypoints) -> {
 		waypoints.forEach(enabled ? Waypoint::setMissing : Waypoint::setFound);
-		return new WaypointGroup(name, Location.UNKNOWN, waypoints, true);
+		return new WaypointGroup(name, Location.UNKNOWN, waypoints, true, true);
 	}));
     public static final int WAYPOINT_ACTIVATION_RADIUS = 2;
 
@@ -43,17 +45,23 @@ public class WaypointGroup {
     private final Location island;
     private final List<NamedWaypoint> waypoints;
     private final boolean ordered;
+    private final boolean throughWalls;
     private transient int currentIndex = 0;
 
     public WaypointGroup(String name, Location island, List<NamedWaypoint> waypoints) {
-        this(name, island, waypoints, false);
+        this(name, island, waypoints, false, true);
     }
 
     public WaypointGroup(String name, Location island, List<NamedWaypoint> waypoints, boolean ordered) {
+        this(name, island, waypoints, ordered, true);
+    }
+
+    public WaypointGroup(String name, Location island, List<NamedWaypoint> waypoints, boolean ordered, boolean throughWalls) {
         this.name = name;
         this.island = island;
         // Set ordered first since convertWaypoint depends on it
         this.ordered = ordered;
+        this.throughWalls = throughWalls;
         this.waypoints = waypoints.stream().map(this::convertWaypoint).collect(Collectors.toList());
     }
 
@@ -73,6 +81,10 @@ public class WaypointGroup {
         return ordered;
     }
 
+    public boolean throughWalls() {
+        return throughWalls;
+    }
+
 	public int currentIndex() {
 		return currentIndex;
 	}
@@ -89,30 +101,34 @@ public class WaypointGroup {
 	}
 
     public WaypointGroup withName(String name) {
-        return new WaypointGroup(name, island, waypoints, ordered);
+        return new WaypointGroup(name, island, waypoints, ordered, throughWalls);
     }
 
     public WaypointGroup withIsland(Location island) {
-        return new WaypointGroup(name, island, waypoints, ordered);
+        return new WaypointGroup(name, island, waypoints, ordered, throughWalls);
     }
 
     public WaypointGroup withOrdered(boolean ordered) {
-        return new WaypointGroup(name, island, waypoints, ordered);
+        return new WaypointGroup(name, island, waypoints, ordered, throughWalls);
+    }
+
+    public WaypointGroup withThroughWalls(boolean throughWalls) {
+        return new WaypointGroup(name, island, waypoints, ordered, throughWalls);
     }
 
     public WaypointGroup filterWaypoints(Predicate<NamedWaypoint> predicate) {
-        return new WaypointGroup(name, island, waypoints.stream().filter(predicate).toList(), ordered);
+        return new WaypointGroup(name, island, waypoints.stream().filter(predicate).toList(), ordered, throughWalls);
     }
 
 	public WaypointGroup sortWaypoints(Comparator<NamedWaypoint> comparator) {
-		return new WaypointGroup(name, island, waypoints.stream().sorted(comparator).toList(), ordered);
+		return new WaypointGroup(name, island, waypoints.stream().sorted(comparator).toList(), ordered, throughWalls);
 	}
 
     /**
      * Returns a deep copy of this {@link WaypointGroup} with a mutable waypoints list for editing.
      */
     public WaypointGroup deepCopy() {
-        return new WaypointGroup(name, island, waypoints.stream().map(NamedWaypoint::copy).collect(Collectors.toList()), ordered);
+        return new WaypointGroup(name, island, waypoints.stream().map(NamedWaypoint::copy).collect(Collectors.toList()), ordered, throughWalls);
     }
 
     public NamedWaypoint createWaypoint(BlockPos pos) {
@@ -160,7 +176,31 @@ public class WaypointGroup {
         }
         for (NamedWaypoint waypoint : waypoints) {
             if (waypoint.shouldRender()) {
-                waypoint.render(context);
+                renderWaypointWithGroupSettings(context, waypoint);
+            }
+        }
+    }
+
+    private void renderWaypointWithGroupSettings(WorldRenderContext context, NamedWaypoint waypoint) {
+        final float[] colorComponents = waypoint.getRenderColorComponents();
+        final boolean tw = this.throughWalls;
+        switch (waypoint.getRenderType()) {
+            case WAYPOINT -> RenderHelper.renderFilledWithBeaconBeam(context, waypoint.pos, colorComponents, waypoint.alpha, tw);
+            case OUTLINED_WAYPOINT -> {
+                RenderHelper.renderFilledWithBeaconBeam(context, waypoint.pos, colorComponents, waypoint.alpha, tw);
+                RenderHelper.renderOutline(context, waypoint.pos, colorComponents, waypoint.lineWidth, tw);
+            }
+            case HIGHLIGHT -> RenderHelper.renderFilled(context, waypoint.pos, colorComponents, waypoint.alpha, tw);
+            case OUTLINED_HIGHLIGHT -> {
+                RenderHelper.renderFilled(context, waypoint.pos, colorComponents, waypoint.alpha, tw);
+                RenderHelper.renderOutline(context, waypoint.pos, colorComponents, waypoint.lineWidth, tw);
+            }
+            case OUTLINE -> RenderHelper.renderOutline(context, waypoint.pos, colorComponents, waypoint.lineWidth, tw);
+        }
+        if (waypoint instanceof NamedWaypoint named) {
+            if (named.shouldRenderName()) {
+                float scale = Math.max((float) context.camera().getPos().distanceTo(named.centerPos) / 10, 1);
+                RenderHelper.renderText(context, named.name, named.centerPos.add(0, 1, 0), scale, tw);
             }
         }
     }
