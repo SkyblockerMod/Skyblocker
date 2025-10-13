@@ -1485,5 +1485,8 @@
     "skyblocker.customItemNames.screen.gradientStart": "渐变起始点",
     "skyblocker.customItemNames.screen.gradientColor": "渐变",
     "skyblocker.config.uiAndVisuals.trueQuiverCount": "显示实际箭袋计数",
-    "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "显示箭袋中箭的实际数量，而不是使用原本的物品数量上限64。"
+    "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "显示箭袋中箭的实际数量，而不是使用原本的物品数量上限64。",
+    "skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip": "选择一个Skyblock图标或物品来填充此按钮。",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.predictive": "预测算法",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "预测传送的目的地。这意味着不会有额外的延迟，但有时会出现错误并且可能会出现故障。"
 }
