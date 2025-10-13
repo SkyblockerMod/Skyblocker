@@ -7,6 +7,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
@@ -160,32 +161,41 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
     }
 
     /**
-     * enum for the different waypoints used int the crystals hud each with a {@link CrystalHollowsLocationsCategory#name} and associated {@link CrystalHollowsLocationsCategory#color}
+     * Enum for the different waypoints used in the crystals hud each with a {@link CrystalHollowsLocationsCategory#name} and associated {@link CrystalHollowsLocationsCategory#color}.
      */
     public enum CrystalHollowsLocationsCategory implements Category, StringIdentifiable {
-        UNKNOWN("Unknown", Color.WHITE, null), //used when a location is known but what's at the location is not known
-        JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor()), "[NPC] Kalhuiki Door Guardian:"),
-        MINES_OF_DIVAN("Mines of Divan", Color.GREEN, "    Jade Crystal"),
-        GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor()), "    Amber Crystal"),
-        LOST_PRECURSOR_CITY("Lost Precursor City", Color.CYAN, "    Sapphire Crystal"),
-        KHAZAD_DUM("Khazad-dûm", Color.YELLOW, "    Topaz Crystal"),
-        FAIRY_GROTTO("Fairy Grotto", Color.PINK, null),
-        DRAGONS_LAIR("Dragon's Lair", Color.BLACK, null),
-        CORLEONE("Corleone", Color.WHITE, null),
-        KING_YOLKAR("King Yolkar", Color.RED, "[NPC] King Yolkar:"),
-        ODAWA("Odawa", Color.MAGENTA, "[NPC] Odawa:"),
-        KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY, null);
+        UNKNOWN("Unknown", Color.WHITE), // Used when a location is known but what's at the location is not known
+        // These waypoints are verified by interacting with the corresponding NPC (e.g., by clicking on Odawa)
+        JUNGLE_TEMPLE("Jungle Temple", new Color(DyeColor.PURPLE.getSignColor()), "Kalhuiki Door Guardian", 10),
+        LOST_PRECURSOR_CITY("Lost Precursor City", Color.CYAN, "Professor Robot", 8),
+        KING_YOLKAR("King Yolkar", Color.RED, "King Yolkar", 8),
+        ODAWA("Odawa", Color.MAGENTA, "Odawa", 8),
+        CORLEONE("Corleone", Color.WHITE, "Boss Corleone", 20),
+        KEY_GUARDIAN("Key Guardian", Color.LIGHT_GRAY, "Key Guardian", 10),
+        // Look for chat messages containing the crystal name
+        KHAZAD_DUM("Khazad-dûm", Color.YELLOW, "    Topaz Crystal", 20),
+        GOBLIN_QUEENS_DEN("Goblin Queen's Den", new Color(DyeColor.ORANGE.getSignColor()), "    Amber Crystal", 20),
+        MINES_OF_DIVAN("Mines of Divan", Color.GREEN, "    Jade Crystal", 20),
+        // These cannot be found automatically yet.
+        FAIRY_GROTTO("Fairy Grotto", Color.PINK),
+        DRAGONS_LAIR("Dragon's Lair", Color.BLACK);
 
         public static final Codec<CrystalHollowsLocationsCategory> CODEC = StringIdentifiable.createBasicCodec(CrystalHollowsLocationsCategory::values);
 
         public final Color color;
         private final String name;
-        private final String linkedMessage;
+        private final @Nullable String identifyingText;
+        private final int searchRadius;
 
-        CrystalHollowsLocationsCategory(String name, Color color, String linkedMessage) {
+        CrystalHollowsLocationsCategory(String name, Color color) {
+            this(name, color, null, 0);
+        }
+
+        CrystalHollowsLocationsCategory(String name, Color color, @Nullable String identifyingText, int searchRadius) {
             this.name = name;
             this.color = color;
-            this.linkedMessage = linkedMessage;
+            this.identifyingText = identifyingText;
+            this.searchRadius = searchRadius;
         }
 
         @Override
@@ -198,13 +208,28 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
             return this.color.getRGB();
         }
 
-        public String getLinkedMessage() {
-            return this.linkedMessage;
+        public @Nullable String getIdentifyingText() {
+            return this.identifyingText;
+        }
+
+        public int getSearchRadius() {
+            return this.searchRadius;
         }
 
         @Override
         public String asString() {
             return name();
+        }
+
+        public static CrystalHollowsLocationsCategory fromContainsIdentifyingText(String query) {
+            if (query == null || query.isBlank()) return null;
+
+            for (CrystalHollowsLocationsCategory c : values()) {
+                if (c.identifyingText != null && !c.identifyingText.isBlank() && query.contains(c.identifyingText)) {
+                    return c;
+                }
+            }
+            return null;
         }
     }
 
