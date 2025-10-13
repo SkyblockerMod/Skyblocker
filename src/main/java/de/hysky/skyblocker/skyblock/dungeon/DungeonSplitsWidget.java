@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TableWidget;
@@ -12,6 +11,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import com.mojang.serialization.Codec;
@@ -191,7 +191,7 @@ public class DungeonSplitsWidget extends TableWidget {
 		BEST_SPLITS.init();
 
 		DungeonEvents.DUNGEON_LOADED.register(this::onDungeonLoaded);
-		ChatEvents.RECEIVE_STRING.register(this::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(this::onChatMessage);
 		SkyblockEvents.LOCATION_CHANGE.register(this::onLocationChange);
 	}
 
@@ -223,9 +223,10 @@ public class DungeonSplitsWidget extends TableWidget {
 		}
 	}
 
-	private void onChatMessage(String message) {
-		if (!Utils.isInDungeons()) return;
-		String stripped = Formatting.strip(message);
+	@SuppressWarnings("SameReturnValue")
+	private boolean onChatMessage(Text text, boolean overlay) {
+		if (!Utils.isInDungeons() || overlay) return true;
+		String stripped = Formatting.strip(text.getString());
 
 		if (!running && DUNGEON_START.matcher(stripped).matches()) {
 			startTime = System.currentTimeMillis();
@@ -235,10 +236,10 @@ public class DungeonSplitsWidget extends TableWidget {
 			for (Split split : splits) {
 				split.reset();
 			}
-			return;
+			return true;
 		}
 
-		if (!running) return;
+		if (!running) return true;
 
 		for (int i = 0; i < splits.size(); i++) {
 			Split split = splits.get(i);
@@ -253,7 +254,7 @@ public class DungeonSplitsWidget extends TableWidget {
 				if (i == splits.size() - 1) {
 					stopTimer(true);
 				}
-				return;
+				return true;
 			}
 		}
 
@@ -269,6 +270,7 @@ public class DungeonSplitsWidget extends TableWidget {
 				stopTimer(false);
 			}
 		}
+		return true;
 	}
 
 	private void updateFloor() {
