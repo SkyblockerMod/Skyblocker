@@ -17,12 +17,13 @@ public class MapRendererMixin {
 	private boolean preventDecorationInDungeons(boolean alwaysRendered, @Local(argsOnly = true) MapDecoration decoration) {
 		// Allow alwaysRendered if
 		// 1. not in dungeons and map is disabled OR
-		// 2. the decoration type is frame (self player) and don't show self head OR
+		// 2. the decoration type is frame (self player) and either fancy map or show self head are off OR
 		// 3. the decoration type is blue marker (other player) and the fancy map is off
 		if (Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.dungeonMap.enableMap) {
 			MapDecorationType decorationType = decoration.type().value();
-			boolean shouldShowSelfMarker = decorationType.equals(MapDecorationTypes.FRAME.value()) && !SkyblockerConfigManager.get().dungeons.dungeonMap.showSelfHead;
-			boolean shouldShowOtherPlayerMarkers = decorationType.equals(MapDecorationTypes.BLUE_MARKER.value()) && !SkyblockerConfigManager.get().dungeons.dungeonMap.fancyMap;
+			boolean fancyMap = SkyblockerConfigManager.get().dungeons.dungeonMap.fancyMap;
+			boolean shouldShowSelfMarker = decorationType.equals(MapDecorationTypes.FRAME.value()) && (!fancyMap || !SkyblockerConfigManager.get().dungeons.dungeonMap.showSelfHead);
+			boolean shouldShowOtherPlayerMarkers = decorationType.equals(MapDecorationTypes.BLUE_MARKER.value()) && fancyMap;
 
 			return shouldShowSelfMarker || shouldShowOtherPlayerMarkers;
 		}
