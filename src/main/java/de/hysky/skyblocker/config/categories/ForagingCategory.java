@@ -14,6 +14,7 @@ import net.azureaaron.dandelion.systems.OptionGroup;
 import net.azureaaron.dandelion.systems.ButtonOption;
 import net.azureaaron.dandelion.systems.controllers.ColourController;
 import net.azureaaron.dandelion.systems.controllers.IntegerController;
+import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
@@ -53,6 +54,14 @@ public class ForagingCategory {
 										newValue -> config.foraging.galatea.enableLushlilacHighlighter = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.lushlilacHighlighterOpacity"))
+								.description(Text.translatable("skyblocker.config.foraging.galatea.lushlilacHighlighterOpacity.@Tooltip"))
+								.binding(defaults.foraging.galatea.lushlilacHighlighterOpacity,
+										() -> config.foraging.galatea.lushlilacHighlighterOpacity,
+										newValue -> config.foraging.galatea.lushlilacHighlighterOpacity = newValue)
+								.controller(FloatController.createBuilder().range(0.0f, 1.0f).slider(0.05f).build())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter"))
 								.description(Text.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter.@Tooltip"))
@@ -63,6 +72,14 @@ public class ForagingCategory {
 											SeaLumiesHighlighter.INSTANCE.configCallback();
 										})
 								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Text.translatable("skyblocker.config.foraging.galatea.seaLumiesHighlighterOpacity"))
+								.description(Text.translatable("skyblocker.config.foraging.galatea.seaLumiesHighlighterOpacity.@Tooltip"))
+								.binding(defaults.foraging.galatea.seaLumiesHighlighterOpacity,
+										() -> config.foraging.galatea.seaLumiesHighlighterOpacity,
+										newValue -> config.foraging.galatea.seaLumiesHighlighterOpacity = newValue)
+								.controller(FloatController.createBuilder().range(0.0f, 1.0f).slider(0.05f).build())
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.foraging.galatea.enableTreeBreakProgress"))

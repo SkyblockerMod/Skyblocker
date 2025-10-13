@@ -11,7 +11,7 @@ public class LushlilacHighlighter extends AbstractBlockHighlighter {
 	public static final LushlilacHighlighter INSTANCE = new LushlilacHighlighter(Blocks.FLOWERING_AZALEA, DyeColor.MAGENTA);
 
 	private LushlilacHighlighter(Block target, DyeColor colour) {
-		super(target, colour);
+		super(target, colour, SkyblockerConfigManager.get().foraging.galatea.lushlilacHighlighterOpacity);
 	}
 
 	@Init
