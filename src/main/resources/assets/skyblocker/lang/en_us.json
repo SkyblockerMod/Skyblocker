@@ -1185,7 +1185,7 @@
   "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
   "skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip": "Smooths out teleporting with right click teleport abilities.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.predictive": "Predictive Algorithm",
-  "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "Predict where the teleport will end. This will mean there can be no added lag however it is sometimes wrong and can glitch out",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "Predict where the teleport will end. This will mean there can be no added lag however it is sometimes wrong and can glitch out.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission": "Enable Ether Transmission",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip": "For: Etherwarp Conduit and Ether Merged.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission": "Enable Instant Transmission",
@@ -1197,7 +1197,7 @@
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact": "Enable Wither Impact",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "For: Necron's Blade, Hyperion, Astraea, Scylla, and Valkyrie.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag": "Maximum Added Lag (ms)",
-  "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "predictive - How long the animation is allowed to get behind the game in milliseconds. (If set to 0, smoothing will not have any lag, but stuttering will likely occur. Increase this value if you're experiencing flashing.)\n predictive disabled - duration of animation",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "Predictive:\nHow long the animation is allowed to get behind the game in milliseconds. (If set to 0, smoothing will not have any lag, but stuttering will likely occur. Increase this value if you're experiencing flashing.)\n\nPredictive disabled:\nduration of animation",
 
   "skyblocker.config.uiAndVisuals.tabHud": "Fancy HUD and TAB",
   "skyblocker.config.uiAndVisuals.tabHud.compactWidgets": "Compact Widgets",
