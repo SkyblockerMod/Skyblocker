@@ -1134,7 +1134,7 @@
     "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation.@Tooltip": "取消在物品的组件更新时手部重新拿起物品的动画。",
     "skyblocker.config.uiAndVisuals.slotText.prehistoricEgg.@Tooltip": "显示你当前携带蛋行走的方块距离。",
     "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag": "最大增加的操作延迟（毫秒）",
-    "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "允许动画造成多久的游戏滞后，以毫秒为单位。（如果设为0，则平滑动画不会造成操作延迟，但可能引发画面抽搐。在遇到画面抽搐时增加该值。）",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "预测：\n允许动画造成多久的游戏滞后，以毫秒为单位。（如果设为0，则平滑动画不会造成操作延迟，但可能引发画面抽搐。在遇到画面抽搐时增加该值。）\n\n禁用预测：\n动画时长",
     "skyblocker.powderTracker.historyReset": "已为当前存档重置挖粉追踪器。",
     "skyblocker.config.uiAndVisuals.cancelComponentUpdateAnimation": "取消组件更新时的动画",
     "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault": "默认显示原版TAB",
