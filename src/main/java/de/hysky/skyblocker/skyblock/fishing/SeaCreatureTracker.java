@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.fishing;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
@@ -11,6 +10,7 @@ import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -33,7 +33,7 @@ public class SeaCreatureTracker {
 
 	@Init
 	public static void init() {
-		ChatEvents.RECEIVE_STRING.register(SeaCreatureTracker::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(SeaCreatureTracker::onChatMessage);
 		ClientEntityEvents.ENTITY_UNLOAD.register(SeaCreatureTracker::onEntityDespawn);
 	}
 
@@ -66,7 +66,7 @@ public class SeaCreatureTracker {
 	private static void checkTimerNotification() {
 		if (!SkyblockerConfigManager.get().helpers.fishing.seaCreatureTimerNotification || !isCreaturesAlive()) return;
 		//if the timer is about to finish show notification
-		if (Math.abs(SkyblockerConfigManager.get().helpers.fishing.timerLength * 1000L - getOldestSeaCreatureAge()) < 100){
+		if (Math.abs(SkyblockerConfigManager.get().helpers.fishing.timerLength * 1000L - getOldestSeaCreatureAge()) < 100) {
 			TitleContainer.addTitle(new Title(Text.translatable("skyblocker.config.helpers.fishing.seaCreatureTimerNotification.notification").formatted(Formatting.RED)), 60);
 			if (CLIENT.player == null) return;
 			CLIENT.player.playSound(SoundEvents.ENTITY_ARROW_HIT_PLAYER, 100f, 0.1f);
@@ -102,19 +102,17 @@ public class SeaCreatureTracker {
 
 	/**
 	 * Looks for a message that is sent when a sea creature is fished up
-	 *
-	 * @param s Message to check
 	 */
-	private static void onChatMessage(String s) {
-		if (!SkyblockerConfigManager.get().helpers.fishing.enableFishingHud) {
-			return;
-		}
-		String message = Formatting.strip(s);
+	@SuppressWarnings("SameReturnValue")
+	private static boolean onChatMessage(Text text, boolean overlay) {
+		if (!SkyblockerConfigManager.get().helpers.fishing.enableFishingHud || overlay) return true;
+		String message = Formatting.strip(text.getString());
 		//see if it's a double hook
 		if (DOUBLE_HOOK_PATTERN.matcher(message).find()) {
 			doubleHook = true;
-			return;
+			return true;
 		}
+
 		//see if message matches any creature
 		for (SeaCreature creature : SeaCreature.values()) {
 			if (creature.chatMessage.equals(message)) {
@@ -123,6 +121,8 @@ public class SeaCreatureTracker {
 				break;
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -136,6 +136,7 @@ public class SeaCreatureTracker {
 
 	/**
 	 * Checks if at least one creature is alive
+	 *
 	 * @return if atleast one creature is alive
 	 */
 	protected static Boolean isCreaturesAlive() {

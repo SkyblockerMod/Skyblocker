@@ -9,11 +9,11 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -100,7 +100,7 @@ public class TheEnd {
             return true;
         });
 
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(TheEnd::renderWaypoint);
+        WorldRenderExtractionCallback.EVENT.register(TheEnd::extractRendering);
 		PROFILES_STATS.init();
     }
 
@@ -167,10 +167,10 @@ public class TheEnd {
         return isZealot(enderman) && enderman.getCarriedBlock() != null && enderman.getCarriedBlock().isOf(Blocks.END_PORTAL_FRAME);
     }
 
-	private static void renderWaypoint(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
         if (!SkyblockerConfigManager.get().otherLocations.end.waypoint) return;
         if (currentProtectorLocation == null || stage != 5) return;
-        currentProtectorLocation.waypoint().render(context);
+        currentProtectorLocation.waypoint().extractRendering(collector);
     }
 
 	public record EndStats(int totalZealotKills, int zealotsSinceLastEye, int eyes) {

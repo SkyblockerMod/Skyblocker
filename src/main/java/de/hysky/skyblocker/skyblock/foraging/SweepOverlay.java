@@ -6,9 +6,8 @@ import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -71,7 +70,7 @@ public class SweepOverlay {
 	@Init
 	public static void init() {
 		configCallback(SkyblockerConfigManager.get().foraging.sweepOverlay.sweepOverlayColor);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(SweepOverlay::render);
+		WorldRenderExtractionCallback.EVENT.register(SweepOverlay::extractRendering);
 	}
 
 	private static boolean isValidLocation() {
@@ -86,10 +85,8 @@ public class SweepOverlay {
 	 * is enabled, a ray trace up to 50 blocks is performed to highlight logs
 	 * at the target point. This ray-cast overlay is skipped while the axe's
 	 * ability is on cooldown.
-	 *
-	 * @param wrc the world render context
 	 */
-	private static void render(WorldRenderContext wrc) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		var config = SkyblockerConfigManager.get().foraging.sweepOverlay;
 		if (!isValidLocation() || !config.enableSweepOverlay || CLIENT.player == null || CLIENT.world == null) {
 			return;
@@ -128,7 +125,7 @@ public class SweepOverlay {
 		if (blockHitResult != null) {
 			BlockState state = CLIENT.world.getBlockState(blockHitResult.getBlockPos());
 			if (isLog(state)) {
-				renderConnectedLogs(wrc, blockHitResult, state, isThrown);
+				submitConnectedLogs(collector, blockHitResult, state, isThrown);
 			}
 		}
 	}
@@ -220,12 +217,11 @@ public class SweepOverlay {
 	 * When triggered via a thrown axe, the overlay is drawn with a dimmer
 	 * color and the blocks broken is halved.
 	 *
-	 * @param wrc           the world render context
 	 * @param blockHitResult the block hit result from the crosshair or ray cast
 	 * @param state         the block state of the targeted block
 	 * @param isThrown      true if the hit comes from a ray cast (throwable axe)
 	 */
-	private static void renderConnectedLogs(WorldRenderContext wrc, BlockHitResult blockHitResult, BlockState state, boolean isThrown) {
+	private static void submitConnectedLogs(PrimitiveCollector collector, BlockHitResult blockHitResult, BlockState state, boolean isThrown) {
 		BlockPos startPos = blockHitResult.getBlockPos();
 		World world = CLIENT.world;
 		float sweepStat = getSweepStat();
@@ -260,7 +256,7 @@ public class SweepOverlay {
 			if (!isLog(currentState)) continue;
 
 			woodCount++;
-			RenderHelper.renderFilled(wrc, pos, renderColor, renderColor[3], false);
+			collector.submitFilledBox(pos, renderColor, renderColor[3], false);
 
 			for (BlockPos offset : NEIGHBOR_OFFSETS) {
 				BlockPos neighbor = pos.add(offset);

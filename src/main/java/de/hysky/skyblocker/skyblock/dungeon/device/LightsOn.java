@@ -6,9 +6,8 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -30,17 +29,17 @@ public class LightsOn {
 
 	@Init
 	public static void init() {
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(LightsOn::render);
+		WorldRenderExtractionCallback.EVENT.register(LightsOn::extractRendering);
 	}
 
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (SkyblockerConfigManager.get().dungeons.devices.solveLightsOn && Utils.isInDungeons() && DungeonManager.isInBoss() && DungeonManager.getBoss() == DungeonBoss.MAXOR) {
 			for (BlockPos lever : LEVERS) {
 				ClientWorld world = CLIENT.world;
 				BlockState state = world.getBlockState(lever);
 
 				if (state.getBlock().equals(Blocks.LEVER) && state.contains(Properties.POWERED) && !state.get(Properties.POWERED)) {
-					RenderHelper.renderFilled(context, lever, RED, 0.5f, false);
+					collector.submitFilledBox(lever, RED, 0.5f, false);
 				}
 			}
 		}

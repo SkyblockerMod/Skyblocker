@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
@@ -19,6 +18,7 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
@@ -70,7 +70,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 
 	@Init
 	public static void init() {
-		ChatEvents.RECEIVE_STRING.register(INSTANCE::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(INSTANCE::onChatMessage);
 
 		INSTANCE.allRewards.init();
 
@@ -123,13 +123,16 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		return SkyblockerConfigManager.get().mining.glacite.enableCorpseProfitTracker;
 	}
 
-	private void onChatMessage(String message) {
-		if (Utils.getLocation() != Location.GLACITE_MINESHAFT || !INSTANCE.isEnabled()) return;
+	@SuppressWarnings("SameReturnValue")
+	private boolean onChatMessage(Text text, boolean overlay) {
+		if (Utils.getLocation() != Location.GLACITE_MINESHAFT || !INSTANCE.isEnabled() || overlay) return true;
+		String message = text.getString();
+
 		// Reward messages end with a separator like so
 		if (insideRewardMessage && message.equals("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")) {
 			if (lastCorpseLoot == null) {
 				LOGGER.error("Received a reward message end without a corresponding start. Report this!");
-				return;
+				return true;
 			}
 			currentProfileRewards.add(lastCorpseLoot);
 			if (!lastCorpseLoot.isPriceDataComplete()) {
@@ -148,7 +151,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			}
 			lastCorpseLoot = null;
 			insideRewardMessage = false;
-			return;
+			return true;
 		}
 		Matcher matcher = CORPSE_PATTERN.matcher(message);
 		if (!insideRewardMessage && matcher.matches()) {
@@ -163,7 +166,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 				);
 			} catch (IllegalArgumentException e) {
 				LOGGER.error("Unknown corpse type `{}` for message: `{}`. Report this!", corpse, message);
-				return;
+				return true;
 			}
 
 			try {
@@ -173,15 +176,16 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 				lastCorpseLoot.markPriceDataIncomplete();
 			}
 			insideRewardMessage = true;
-			return;
+			return true;
 		}
 
-		if (!insideRewardMessage || lastCorpseLoot == null || !matcher.usePattern(REWARD_PATTERN).matches()) return;
+		if (!insideRewardMessage || lastCorpseLoot == null || !matcher.usePattern(REWARD_PATTERN).matches()) return true;
 
 		String itemName = matcher.group(1);
 		int amount = NumberUtils.toInt(matcher.group(2).replace(",", ""), 1);
-		if (matcher.usePattern(HOTM_XP_PATTERN).matches()) return; // Ignore HOTM XP messages.
+		if (matcher.usePattern(HOTM_XP_PATTERN).matches()) return true; // Ignore HOTM XP messages.
 		lastCorpseLoot.addLoot(itemName, amount);
+		return true;
 	}
 
 	private void recalculateAll() {

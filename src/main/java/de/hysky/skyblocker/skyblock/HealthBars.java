@@ -6,13 +6,13 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -48,7 +48,7 @@ public class HealthBars {
 	@Init
 	public static void init() {
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(HealthBars::render);
+		WorldRenderExtractionCallback.EVENT.register(HealthBars::extractRendering);
 		ClientEntityEvents.ENTITY_UNLOAD.register(HealthBars::onEntityDespawn);
 	}
 
@@ -215,7 +215,7 @@ public class HealthBars {
 	 *
 	 * @param context render context
 	 */
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.enabled || healthValues.isEmpty()) {
 			return;
 		}
@@ -224,7 +224,7 @@ public class HealthBars {
 		Color emptyColor = SkyblockerConfigManager.get().uiAndVisuals.healthBars.emptyBarColor;
 		boolean hideFullHealth = SkyblockerConfigManager.get().uiAndVisuals.healthBars.hideFullHealth;
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.healthBars.scale;
-		float tickDelta = context.tickCounter().getTickProgress(false);
+		float tickDelta = RenderHelper.getTickCounter().getTickProgress(false);
 		float width = scale;
 		float height = scale * 0.1f;
 
@@ -244,8 +244,8 @@ public class HealthBars {
 			int mixedColor = ColorUtils.interpolate(health, emptyColor.getRGB(), halfColor.getRGB(), fullColor.getRGB());
 			float[] components = ColorUtils.getFloatComponents(mixedColor);
 			// Render the health bar texture with scaling based on health percentage
-			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, components, 1f, true);
-			RenderHelper.renderTextureInWorld(context, armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, -0.003f), HEALTH_BAR_TEXTURE, components, 1f, true);
+			collector.submitTexturedQuad(armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width, height, 1f, 1f, new Vec3d(width * -0.5f, 0, 0), HEALTH_BAR_BACKGROUND_TEXTURE, components, 1f, true);
+			collector.submitTexturedQuad(armorStand.getCameraPosVec(tickDelta).add(0, 0.25 - height, 0), width * health, height, health, 1f, new Vec3d(width * -0.5f, 0, -0.003f), HEALTH_BAR_TEXTURE, components, 1f, true);
 		}
 	}
 }

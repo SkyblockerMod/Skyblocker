@@ -2,9 +2,8 @@ package de.hysky.skyblocker.skyblock.slayers.boss.voidgloom;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -15,7 +14,7 @@ public class LazerTimer {
 
 	@Init
 	public static void init() {
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(LazerTimer::render);
+		WorldRenderExtractionCallback.EVENT.register(LazerTimer::extractRendering);
 	}
 
 	public static void updateTimer() {
@@ -44,7 +43,7 @@ public class LazerTimer {
 		isRiding = riding;
 	}
 
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (isRiding) {
 			Entity boss = SlayerManager.getSlayerBoss();
 			if (boss != null) {
@@ -52,7 +51,7 @@ public class LazerTimer {
 				Text renderText = Text.literal("Lazer: ").formatted(Formatting.WHITE)
 						.append(Text.literal(timeText).formatted(Formatting.GREEN).formatted(Formatting.BOLD));
 
-				RenderHelper.renderText(context, renderText, boss.getPos().add(0, 2, 0), true);
+				collector.submitText(renderText, boss.getPos().add(0, 2, 0), true);
 			}
 		}
 	}
