@@ -5,11 +5,11 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.MinecraftClient;
@@ -34,7 +34,7 @@ public class ForestNodes {
 	@Init
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(ForestNodes::update, 20);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(ForestNodes::render);
+		WorldRenderExtractionCallback.EVENT.register(ForestNodes::extractRendering);
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
 			if (!shouldProcess()) {
 				return ActionResult.PASS;
@@ -115,13 +115,13 @@ public class ForestNodes {
 		}
 	}
 
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (!shouldProcess()) {
 			return;
 		}
 		for (ForestNode forestNode : forestNodes.values()) {
 			if (forestNode.shouldRender()) {
-				forestNode.render(context);
+				forestNode.extractRendering(collector);
 			}
 		}
 	}

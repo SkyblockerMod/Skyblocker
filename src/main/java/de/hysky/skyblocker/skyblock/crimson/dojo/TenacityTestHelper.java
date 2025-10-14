@@ -1,8 +1,7 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -24,7 +23,7 @@ public class TenacityTestHelper {
         particleOffsets.clear();
     }
 
-    protected static void render(WorldRenderContext context) {
+    protected static void extractRendering(PrimitiveCollector collector) {
         for (ArmorStandEntity fireball : fireBallsWithStartPos.keySet()) {
             Vec3d lineStart = fireBallsWithStartPos.get(fireball).add(particleOffsets.getOrDefault(fireball, Vec3d.ZERO));
             Vec3d fireballPos = fireball.getPos().add(particleOffsets.getOrDefault(fireball, Vec3d.ZERO));
@@ -34,12 +33,12 @@ public class TenacityTestHelper {
                 distance = distance.multiply(100);
                 Vec3d lineEnd = lineStart.add(distance);
 
-                RenderHelper.renderLinesFromPoints(context, new Vec3d[]{lineStart, lineEnd}, new float[]{1f, 0f, 0f}, 1, 3, false);
+                collector.submitLinesFromPoints(new Vec3d[]{lineStart, lineEnd}, new float[]{1f, 0f, 0f}, 1, 3, false);
 
                 //get highlighted block
                 HitResult hitResult = raycast(lineStart, lineEnd, fireball);
                 if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK && hitResult instanceof BlockHitResult blockHitResult) {
-                    RenderHelper.renderFilled(context, blockHitResult.getBlockPos(), new float[]{1f, 0f, 0f}, 0.5f, false);
+                    collector.submitFilledBox(blockHitResult.getBlockPos(), new float[]{1f, 0f, 0f}, 0.5f, false);
                 }
             }
         }

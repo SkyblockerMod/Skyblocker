@@ -6,11 +6,11 @@ import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.SeenWaypoint;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -33,7 +33,7 @@ public class GlowingMushrooms {
 	public static void init() {
 		ParticleEvents.FROM_SERVER.register(GlowingMushrooms::onParticle);
 		Scheduler.INSTANCE.scheduleCyclic(GlowingMushrooms::update, 1);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(GlowingMushrooms::render);
+		WorldRenderExtractionCallback.EVENT.register(GlowingMushrooms::extractRendering);
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
 			if (shouldProcess()) glowingMushrooms.remove(pos);
 			return ActionResult.PASS;
@@ -61,7 +61,7 @@ public class GlowingMushrooms {
 		}
 	}
 
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (!shouldProcess() || client.world == null) return;
 		for (GlowingMushroom glowingMushroom : glowingMushrooms.values()) {
 			if (!glowingMushroom.shouldRender()) continue;
@@ -70,7 +70,7 @@ public class GlowingMushrooms {
 			if (block != Blocks.RED_MUSHROOM && block != Blocks.BROWN_MUSHROOM) continue;
 
 			Box boundingBox = RenderHelper.getBlockBoundingBox(client.world, glowingMushroom.pos);
-			RenderHelper.renderOutline(context, boundingBox, ColorUtils.getFloatComponents(DyeColor.YELLOW), 3, glowingMushroom.shouldRenderThroughWalls());
+			collector.submitOutlinedBox(boundingBox, ColorUtils.getFloatComponents(DyeColor.YELLOW), 3, glowingMushroom.shouldRenderThroughWalls());
 		}
 	}
 

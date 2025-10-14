@@ -9,9 +9,9 @@ import de.hysky.skyblocker.skyblock.waypoint.FairySouls;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
@@ -132,11 +132,11 @@ public class Trivia extends DungeonPuzzle {
 	}
 
 	@Override
-	public void render(WorldRenderContext context) {
+	public void extractRendering(PrimitiveCollector collector) {
 		if (!shouldRun() || BOXES_TO_HIGHLIGHT.isEmpty()) return;
 		for (Box box : BOXES_TO_HIGHLIGHT) {
-			RenderHelper.renderFilled(context, box, ANSWER_COLOR, 0.5f, false);
-			RenderHelper.renderOutline(context, box, ANSWER_COLOR, 5f, false);
+			collector.submitFilledBox(box, ANSWER_COLOR, 0.5f, false);
+			collector.submitOutlinedBox(box, ANSWER_COLOR, 5f, false);
 		}
 	}
 

@@ -9,6 +9,8 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.command.argumenttypes.EggTypeArgumentType;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import de.hysky.skyblocker.utils.ws.Service;
@@ -19,8 +21,6 @@ import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
@@ -62,7 +62,7 @@ public class EggFinder {
 		ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> clearEggs());
 		SkyblockEvents.LOCATION_CHANGE.register(EggFinder::handleLocationChange);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(EggFinder::onChatMessage);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(EggFinder::renderWaypoints);
+		WorldRenderExtractionCallback.EVENT.register(EggFinder::extractRendering);
 
 		SkyblockTime.HOUR_CHANGE.register(hour -> {
 			if (!isSpring) return;
@@ -147,11 +147,12 @@ public class EggFinder {
 		return false;
 	}
 
-	private static void renderWaypoints(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (!isSpring || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
+		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		for (EggType type : EggType.entries) {
 			Egg egg = type.egg;
-			if (egg != null) egg.render(context);
+			if (egg != null) egg.extractRendering(collector);
 		}
 	}
 

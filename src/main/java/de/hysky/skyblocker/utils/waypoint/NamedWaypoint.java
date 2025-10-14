@@ -9,8 +9,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import net.minecraft.util.math.BlockPos;
@@ -149,11 +149,11 @@ public class NamedWaypoint extends Waypoint {
     }
 
     @Override
-    public void render(WorldRenderContext context) {
-        super.render(context);
+    public void extractRendering(PrimitiveCollector collector) {
+        super.extractRendering(collector);
         if (shouldRenderName()) {
-            float scale = Math.max((float) context.camera().getPos().distanceTo(centerPos) / 10, 1);
-            RenderHelper.renderText(context, name, centerPos.add(0, 1, 0), scale, true);
+            float scale = Math.max((float) RenderHelper.getCamera().getPos().distanceTo(centerPos) / 10, 1);
+            collector.submitText(name, centerPos.add(0, 1, 0), scale, true);
         }
     }
 

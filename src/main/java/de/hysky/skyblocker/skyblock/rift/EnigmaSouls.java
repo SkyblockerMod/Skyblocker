@@ -13,10 +13,10 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandRegistryAccess;
@@ -109,13 +109,13 @@ public class EnigmaSouls {
 		}
 	}
 
-	static void render(WorldRenderContext context) {
+	static void extractRendering(PrimitiveCollector collector) {
 		OtherLocationsConfig.Rift config = SkyblockerConfigManager.get().otherLocations.rift;
 
 		if (Utils.isInTheRift() && config.enigmaSoulWaypoints && soulsLoaded.isDone()) {
 			for (Waypoint soul : SOUL_WAYPOINTS.values()) {
 				if (soul.shouldRender() || config.highlightFoundEnigmaSouls) {
-					soul.render(context);
+					soul.extractRendering(collector);
 				}
 			}
 		}
