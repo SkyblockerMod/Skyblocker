@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.waypoint;
 
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.Renderable;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.StringIdentifiable;
@@ -194,22 +194,22 @@ public class Waypoint implements Renderable {
      * Override this method for custom behavior.
      */
     @Override
-    public void render(WorldRenderContext context) {
+    public void extractRendering(PrimitiveCollector collector) {
         if (!shouldRender()) return;
         final float[] colorComponents = getRenderColorComponents();
         final boolean throughWalls = shouldRenderThroughWalls();
         switch (getRenderType()) {
-            case WAYPOINT -> RenderHelper.renderFilledWithBeaconBeam(context, pos, colorComponents, alpha, throughWalls);
+            case WAYPOINT -> collector.submitFilledBoxWithBeaconBeam(pos, colorComponents, alpha, throughWalls);
             case OUTLINED_WAYPOINT -> {
-                RenderHelper.renderFilledWithBeaconBeam(context, pos, colorComponents, alpha, throughWalls);
-                RenderHelper.renderOutline(context, pos, colorComponents, lineWidth, throughWalls);
+            	collector.submitFilledBoxWithBeaconBeam(pos, colorComponents, alpha, throughWalls);
+            	collector.submitOutlinedBox(pos, colorComponents, lineWidth, throughWalls);
             }
-            case HIGHLIGHT -> RenderHelper.renderFilled(context, pos, colorComponents, alpha, throughWalls);
+            case HIGHLIGHT -> collector.submitFilledBox(pos, colorComponents, alpha, throughWalls);
             case OUTLINED_HIGHLIGHT -> {
-                RenderHelper.renderFilled(context, pos, colorComponents, alpha, throughWalls);
-                RenderHelper.renderOutline(context, pos, colorComponents, lineWidth, throughWalls);
+            	collector.submitFilledBox(pos, colorComponents, alpha, throughWalls);
+                collector.submitOutlinedBox(pos, colorComponents, lineWidth, throughWalls);
             }
-            case OUTLINE -> RenderHelper.renderOutline(context, pos, colorComponents, lineWidth, throughWalls);
+            case OUTLINE -> collector.submitOutlinedBox(pos, colorComponents, lineWidth, throughWalls);
         }
     }
     // endregion

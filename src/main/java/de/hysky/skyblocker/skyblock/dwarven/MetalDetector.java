@@ -4,12 +4,11 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
@@ -93,7 +92,7 @@ public class MetalDetector {
     @Init
     public static void init() {
         ClientReceiveMessageEvents.ALLOW_GAME.register(MetalDetector::getDistanceMessage);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(MetalDetector::render);
+        WorldRenderExtractionCallback.EVENT.register(MetalDetector::extractRendering);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
     }
 
@@ -240,7 +239,7 @@ public class MetalDetector {
      *
      * @param context world render context
      */
-    private static void render(WorldRenderContext context) {
+    private static void extractRendering(PrimitiveCollector collector) {
         //only render enabled and if there is a few location options and in the mines of divan
         if (!SkyblockerConfigManager.get().mining.crystalHollows.metalDetectorHelper || !Utils.isInCrystalHollows() || possibleBlocks.isEmpty() || possibleBlocks.size() > 8 || !(Utils.getIslandArea().substring(2).equals("Mines of Divan"))) {
             return;
@@ -249,14 +248,14 @@ public class MetalDetector {
         if (possibleBlocks.size() == 1) {
             Vec3i block = possibleBlocks.getFirst().add(0, -1, 0); //the block you are taken to is one block above the chest
             NamedWaypoint waypoint = new NamedWaypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.treasure").getString(), Color.yellow.getColorComponents(null));
-            waypoint.render(context);
-            RenderHelper.renderLineFromCursor(context, Vec3d.ofCenter(block), LIGHT_GRAY, 1f, 5f);
+            waypoint.extractRendering(collector);
+            collector.submitLineFromCursor(Vec3d.ofCenter(block), LIGHT_GRAY, 1f, 5f);
             return;
         }
 
         for (Vec3i block : possibleBlocks) {
             NamedWaypoint waypoint = new NamedWaypoint(new BlockPos(block.getX(), block.getY(), block.getZ()), Text.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possible").getString(), Color.white.getColorComponents(null));
-            waypoint.render(context);
+            waypoint.extractRendering(collector);
         }
     }
 }

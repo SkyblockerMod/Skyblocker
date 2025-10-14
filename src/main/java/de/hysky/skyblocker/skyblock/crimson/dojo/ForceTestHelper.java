@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.text.MutableText;
@@ -59,7 +59,7 @@ public class ForceTestHelper {
         }
     }
 
-    protected static void render(WorldRenderContext context) {
+    protected static void extractRendering(PrimitiveCollector collector) {
         //render times
         long currentTime = System.currentTimeMillis();
         for (Object2LongMap.Entry<ZombieEntity> zombie : zombies.object2LongEntrySet()) {
@@ -74,8 +74,8 @@ public class ForceTestHelper {
                 text = text.formatted(Formatting.RED);
             }
 
-            Vec3d labelPos = zombie.getKey().getCameraPosVec(context.tickCounter().getTickProgress(false));
-            RenderHelper.renderText(context, text, labelPos, 1.5f, true);
+            Vec3d labelPos = zombie.getKey().getCameraPosVec(RenderHelper.getTickCounter().getTickProgress(false));
+            collector.submitText(text, labelPos, 1.5f, true);
         }
     }
 }

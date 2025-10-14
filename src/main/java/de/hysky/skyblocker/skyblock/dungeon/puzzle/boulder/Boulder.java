@@ -7,9 +7,9 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -182,7 +182,7 @@ public class Boulder extends DungeonPuzzle {
     }
 
     @Override
-    public void render(WorldRenderContext context) {
+    public void extractRendering(PrimitiveCollector collector) {
         if (!shouldSolve() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveBoulder || !DungeonManager.isCurrentRoomMatched())
             return;
         float alpha = 1.0f;
@@ -192,11 +192,11 @@ public class Boulder extends DungeonPuzzle {
             for (int i = 0; i < linePoints.length - 1; i++) {
                 Vec3d startPoint = linePoints[i];
                 Vec3d endPoint = linePoints[i + 1];
-                RenderHelper.renderLinesFromPoints(context, new Vec3d[]{startPoint, endPoint}, ORANGE_COLOR_COMPONENTS, alpha, lineWidth, true);
+                collector.submitLinesFromPoints(new Vec3d[]{startPoint, endPoint}, ORANGE_COLOR_COMPONENTS, alpha, lineWidth, true);
             }
             if (boundingBox != null) {
-            	RenderHelper.renderFilled(context, boundingBox, RED_COLOR_COMPONENTS, 0.5f, false);
-                RenderHelper.renderOutline(context, boundingBox, RED_COLOR_COMPONENTS, 5f, false);
+            	collector.submitFilledBox(boundingBox, RED_COLOR_COMPONENTS, 0.5f, false);
+            	collector.submitOutlinedBox(boundingBox, RED_COLOR_COMPONENTS, 5f, false);
             }
         }
     }
