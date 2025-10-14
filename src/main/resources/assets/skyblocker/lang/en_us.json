@@ -1690,6 +1690,8 @@
   "skyblocker.galatea.hud.sweepDetails.stylePenalty": "Tree Style Penalty (%s)",
   "skyblocker.galatea.hud.sweepDetails.correctStyle": "Style: %s",
 
+  "skyblocker.quickNav.confirm": "Click again to confirm.",
+
   "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
   "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)",
   "emi.category.skyblocker.skyblock_info": "Skyblock Info",

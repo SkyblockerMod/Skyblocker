@@ -36,6 +36,7 @@ public class QuickNavButton extends ClickableWidget {
     private final boolean toggled;
     private final String command;
     private final ItemStack icon;
+	protected final Tooltip tooltip;
 
     private boolean temporaryToggled = false;
     private long toggleTime;
@@ -75,19 +76,24 @@ public class QuickNavButton extends ClickableWidget {
      * @param tooltip the tooltip to show when hovered
      */
     public QuickNavButton(int index, boolean toggled, String command, ItemStack icon, String tooltip) {
-        super(0, 0, 26, 32, Text.empty());
-        this.index = index;
-        this.toggled = toggled;
-        this.command = command;
-        this.icon = icon;
-        this.toggleTime = 0;
-        if (tooltip == null || tooltip.isEmpty()) return;
-        try {
-            setTooltip(Tooltip.of(TextCodecs.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(tooltip, JsonElement.class)).getOrThrow().getFirst()));
+		super(0, 0, 26, 32, Text.empty());
+		this.index = index;
+		this.toggled = toggled;
+		this.command = command;
+		this.icon = icon;
+		this.toggleTime = 0;
+		if (tooltip == null || tooltip.isEmpty()) {
+			this.tooltip = null;
+			return;
+		}
+		Tooltip tip;
+		try {
+            setTooltip(tip = Tooltip.of(TextCodecs.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(tooltip, JsonElement.class)).getOrThrow().getFirst()));
         } catch (Exception e) {
-            setTooltip(Tooltip.of(Text.literal(tooltip)));
+            setTooltip(tip = Tooltip.of(Text.literal(tooltip)));
         }
-        setTooltipDelay(Duration.ofMillis(100));
+		this.tooltip = tip;
+		setTooltipDelay(Duration.ofMillis(100));
     }
 
     private void updateCoordinates() {
