@@ -101,7 +101,7 @@ Time starts when the water lever is turned on and stops when the last door opens
 public class WaterboardOneFlow extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WaterboardOneFlow.class);
 	public static final WaterboardOneFlow INSTANCE = new WaterboardOneFlow();
-	private static final Identifier WATER_TIMES = Identifier.of(SkyblockerMod.NAMESPACE, "dungeons/watertimes.json");
+	private static final Identifier WATER_TIMES = SkyblockerMod.id("dungeons/watertimes.json");
 	private static final Text WAIT_TEXT = Text.literal("WAIT").formatted(Formatting.RED, Formatting.BOLD);
 	private static final Text CLICK_TEXT = Text.literal("CLICK").formatted(Formatting.GREEN, Formatting.BOLD);
 	private static JsonObject SOLUTIONS;
@@ -451,12 +451,12 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				if (nextLever != null) {
 					RenderHelper.renderLineFromCursor(context,
 							room.relativeToActual(nextLever.leverPos).toCenterPos(),
-							ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 2f);
+							ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 4f);
 					if (nextNextLever != null) {
 						RenderHelper.renderLinesFromPoints(context, new Vec3d[]{
 								room.relativeToActual(nextLever.leverPos).toCenterPos(),
 								room.relativeToActual(nextNextLever.leverPos).toCenterPos()
-						}, ColorUtils.getFloatComponents(DyeColor.WHITE), 0.5f, 1f, true);
+						}, ColorUtils.getFloatComponents(DyeColor.WHITE), 1f, 2f, true);
 					}
 				}
 

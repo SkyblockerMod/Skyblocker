@@ -272,7 +272,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 		// Compactor Preview
 		if (SkyblockerConfigManager.get().uiAndVisuals.compactorDeletorPreview) {
-			Matcher matcher = CompactorDeletorPreview.NAME.matcher(ItemUtils.getItemId(stack));
+			Matcher matcher = CompactorDeletorPreview.NAME.matcher(stack.getSkyblockId());
 			if (matcher.matches() && CompactorDeletorPreview.drawPreview(context, stack, getTooltipFromItem(stack), matcher.group("type"), matcher.group("size"), x, y)) {
 				return;
 			}
@@ -354,7 +354,10 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			return;
 		}
 		// Prevent Auctioning
-		if ((title.equals("Create BIN Auction") || title.equals("Create Auction")) && ItemProtection.isItemProtected(stack)) {
+		boolean isInAuctionGUI = title.endsWith("Auction House") // "Co-op Auction House" in Co-op profile
+				|| title.equals("Create Auction")
+				|| title.equals("Create BIN Auction");
+		if (isInAuctionGUI && ItemProtection.isItemProtected(stack)) {
 			ci.cancel();
 			return;
 		}

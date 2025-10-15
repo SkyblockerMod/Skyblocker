@@ -4,7 +4,6 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.*;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.OkLabColor;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
@@ -15,7 +14,8 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.*;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +45,7 @@ public class CustomizeNameScreen extends Screen {
 
 	public CustomizeNameScreen(@NotNull ItemStack stack) {
 		super(Text.literal("Customize Item Name"));
-		uuid = ItemUtils.getItemUuid(stack);
+		uuid = stack.getUuid();
 		setText(stack.getName().copy());
 	}
 

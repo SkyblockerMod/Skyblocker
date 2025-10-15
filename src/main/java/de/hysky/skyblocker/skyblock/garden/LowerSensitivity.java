@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -20,7 +19,7 @@ public class LowerSensitivity {
                 return;
             }
             ItemStack mainHandStack = MinecraftClient.getInstance().player.getMainHandStack();
-            String itemId = ItemUtils.getItemId(mainHandStack);
+            String itemId = mainHandStack.getSkyblockId();
             boolean shouldLockMouse = FarmingHudWidget.FARMING_TOOLS.containsKey(itemId) && (!SkyblockerConfigManager.get().farming.garden.lockMouseGroundOnly || MinecraftClient.getInstance().player.isOnGround());
             if (shouldLockMouse && !sensitivityLowered) lowerSensitivity(true);
             else if (!shouldLockMouse && sensitivityLowered) lowerSensitivity(false);

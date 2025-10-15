@@ -123,7 +123,7 @@
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage": "Dungeon Crypts Message",
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage.@Tooltip": "Message which will be sent in the chat when reaching threshold score before getting 5+ crypts. The string \"[crypts]\" will be replaced with the amount of crypts.",
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold": "Dungeon Crypts Message Threshold",
-  "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "Default 270 is intended for S+ runs when you enter at 300+ score - which is usually F5-F7 and M5-M7. \nIf you are running S runs (enter at 270 score) then you should consider lowering this to 250 or less, otherwise it will be useless.",
+  "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold.@Tooltip": "The default value of 250 is intended for S/S+ runs when you enter at 270+/300+ score.\nFor S+ runs, sending a message at 250 might be a bit early.\nIf you are running S+ runs only (entering at 300+ score), you should consider increasing this value.",
   "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage": "Dungeon Score %s Message",
   "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage.@Tooltip": "Message which will be sent in the chat when reaching %s score in dungeons. The string \"[score]\" will be replaced with the dungeon score (%s).",
   "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage": "Enable Dungeon Crypts Message",
@@ -478,8 +478,11 @@
   "skyblocker.config.helpers.bazaar": "Bazaar",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Draws icons on top of orders to explain the current state of the order.\n\n%s: Order is going to expire soon\n%s: Order has expired\n%s: Order is filled to some degree and there are items/coins to claim\n%s: Order is filled",
+  "skyblocker.config.helpers.bazaar.enableOrderTracker": "Enable Bazaar Order Tracker",
+  "skyblocker.config.helpers.bazaar.enableOrderTracker.@Tooltip": "Tracks your order in the list of orders for an item.",
   "skyblocker.config.helpers.bazaar.enableReorderHelper": "Enable Reorder Helper",
   "skyblocker.config.helpers.bazaar.enableReorderHelper.@Tooltip": "Hold CTRL when cancelling an unfilled buy/sell order to copy the unfilled amount to the clipboard.",
+  "skyblocker.config.helpers.bazaar.orderTrackerTooltip": "You have %sx in %s order(s)",
 
   "skyblocker.config.helpers.carnival": "Chivalrous Carnival",
   "skyblocker.config.helpers.carnival.catchAFishHelper": "Catch a Fish Helper",
@@ -515,6 +518,8 @@
 
   "skyblocker.config.helpers.enableCopyUnderbidPrice": "Enable Copy Underbid Price",
   "skyblocker.config.helpers.enableCopyUnderbidPrice.@Tooltip": "Copies the lowest BIN price minus one coin to your clipboard when opening the Create BIN Auction screen.",
+
+  "skyblocker.config.helpers.enableBuildersWandPreview": "Enable Builder's Wand and Builder's Ruler Preview",
 
   "skyblocker.config.helpers.experiments": "Experiments Solver",
   "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Enable Chronomatron Solver",
@@ -864,6 +869,7 @@
 
   "skyblocker.config.otherLocations.end": "The End",
   "skyblocker.config.otherLocations.end.enableEnderNodeHelper": "Enable Ender Node Helper",
+  "skyblocker.config.otherLocations.end.enderNodeWaypointType": "Ender Node Waypoint Type",
   "skyblocker.config.otherLocations.end.hudEnabled": "HUD Enabled",
   "skyblocker.config.otherLocations.end.muteEndermanSounds": "Mute Enderman Sounds",
   "skyblocker.config.otherLocations.end.protectorLocationEnable": "Show Protector Location",
@@ -1073,15 +1079,17 @@
   "skyblocker.config.uiAndVisuals.inputCalculator.closeSignsWithEnter.@Tooltip": "Close the current open sign screen with the enter key",
   "skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation": "Invalid Equation",
   "skyblocker.config.uiAndVisuals.inputCalculator.badNotationError": "Equation is not in RPN",
-  "skyblocker.config.uiAndVisuals.inputCalculator.divisionByZeroError": "Cannot divide by 0",
+  "skyblocker.config.uiAndVisuals.inputCalculator.divisionByZeroError": "Cannot divide %s by 0",
+  "skyblocker.config.uiAndVisuals.inputCalculator.moduloByZeroError": "Cannot modulo %s by 0",
   "skyblocker.config.uiAndVisuals.inputCalculator.duplicateOperatorError": "Unexpected duplicate operator",
-  "skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError": "Invalid operator",
-  "skyblocker.config.uiAndVisuals.inputCalculator.invalidCharacterError": "Invalid character",
-  "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError": "Invalid number",
-  "skyblocker.config.uiAndVisuals.inputCalculator.invalidMagnitudeError": "Invalid magnitude",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError": "Invalid operator '%s'",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidCharacterError": "Invalid character '%s'",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError": "Invalid number '%s'",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidMagnitudeError": "Invalid magnitude '%s'",
   "skyblocker.config.uiAndVisuals.inputCalculator.unbalancedParenthesisError": "Unbalanced left parenthesis",
   "skyblocker.config.uiAndVisuals.inputCalculator.emptyEquationError": "Equation is empty",
   "skyblocker.config.uiAndVisuals.inputCalculator.missingValueError": "Missing value around operator",
+  "skyblocker.config.uiAndVisuals.inputCalculator.invalidFunctionInputError": "Invalid input %s for function '%s'",
 
   "skyblocker.config.uiAndVisuals.inventorySearch": "Inventory Search",
   "skyblocker.config.uiAndVisuals.inventorySearch.ctrlK": "Use CTRL + K for inventory search instead of CTRL + F",
@@ -1176,6 +1184,8 @@
 
   "skyblocker.config.uiAndVisuals.smoothAOTE": "Smooth AOTE",
   "skyblocker.config.uiAndVisuals.smoothAOTE.@Tooltip": "Smooths out teleporting with right click teleport abilities.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.predictive": "Predictive Algorithm",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "Predict where the teleport will end. This will mean there can be no added lag however it is sometimes wrong and can glitch out.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission": "Enable Ether Transmission",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip": "For: Etherwarp Conduit and Ether Merged.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableInstantTransmission": "Enable Instant Transmission",
@@ -1187,7 +1197,7 @@
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact": "Enable Wither Impact",
   "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "For: Necron's Blade, Hyperion, Astraea, Scylla, and Valkyrie.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag": "Maximum Added Lag (ms)",
-  "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "How long the animation is allowed to get behind the game in milliseconds. (If set to 0, smoothing will not have any lag, but stuttering will likely occur. Increase this value if you're experiencing flashing.)",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "Predictive:\nHow long the animation is allowed to get behind the game in milliseconds. (If set to 0, smoothing will not have any lag, but stuttering will likely occur. Increase this value if you're experiencing flashing.)\n\nPredictive disabled:\nduration of animation",
 
   "skyblocker.config.uiAndVisuals.tabHud": "Fancy HUD and TAB",
   "skyblocker.config.uiAndVisuals.tabHud.compactWidgets": "Compact Widgets",
@@ -1234,6 +1244,9 @@
   "skyblocker.config.uiAndVisuals.titleContainer.direction.HORIZONTAL": "Horizontal",
   "skyblocker.config.uiAndVisuals.titleContainer.direction.VERTICAL": "Vertical",
   "skyblocker.config.uiAndVisuals.titleContainer.titleContainerScale": "Title Container Scale",
+
+  "skyblocker.config.uiAndVisuals.trueQuiverCount": "Show True Quiver Count",
+  "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "Shows the actual amount of arrows in your quiver instead of being capped at 64.",
 
   "skyblocker.config.uiAndVisuals.waypoints": "Waypoints",
   "skyblocker.config.uiAndVisuals.waypoints.enableWaypoints": "Enable Waypoints",
@@ -1320,6 +1333,7 @@
   "skyblocker.museum.resyncSuccess": "Successfully resynced your museum item donations!",
   "skyblocker.museum.resyncFailure": "Failed to resync your museum item donations!",
 
+  "skyblocker.dungeons.croesusHelper.chestValue": "Chest Value: %s",
   "skyblocker.dungeons.secrets.physicalEntranceNotFound": "§cDungeon Entrance Room coordinates not found. Please go back to the green Entrance Room.",
   "skyblocker.dungeons.secrets.markSecretFound": "§rMarked secret #%s as found.",
   "skyblocker.dungeons.secrets.markSecretMissing": "§rMarked secret #%s as missing.",
@@ -1703,6 +1717,7 @@
 
   "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
   "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)",
+  "emi.category.skyblocker.skyblock_npc_shop": "NPC Shops (Skyblock)",
   "emi.category.skyblocker.skyblock_info": "Skyblock Info",
 
   "skyblocker.rei.skyblockInfo.failedToFind": "Unable to find!",

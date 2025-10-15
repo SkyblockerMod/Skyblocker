@@ -7,7 +7,10 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.dwarven.CorpseType.CorpseTypeArgumentType;
-import de.hysky.skyblocker.utils.*;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -100,7 +103,7 @@ public class CorpseFinder {
 	}
 
 	private static void handleArmorStand(ArmorStandEntity armorStand) {
-		String helmetItemId = ItemUtils.getItemId(armorStand.getEquippedStack(EquipmentSlot.HEAD));
+		String helmetItemId = armorStand.getEquippedStack(EquipmentSlot.HEAD).getSkyblockId();
 		CorpseType corpseType = CorpseType.fromHelmetItemId(helmetItemId);
 		if (corpseType == CorpseType.UNKNOWN) return;
 

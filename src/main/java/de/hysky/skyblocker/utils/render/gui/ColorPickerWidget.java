@@ -19,7 +19,7 @@ import java.awt.*;
  * @implNote Does not render a background.
  */
 public class ColorPickerWidget extends ClickableWidget {
-	private static final Identifier SV_THUMB_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "color_picker/sv_thumb");
+	private static final Identifier SV_THUMB_TEXTURE = SkyblockerMod.id("color_picker/sv_thumb");
 
 	private final int[] rainbowColors;
 	/**

@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class DungeonFloorRunsWidget {
     private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-    private static final Identifier TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "textures/gui/profile_viewer/dungeons_body.png");
+    private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/dungeons_body.png");
 
     private static final String[] DUNGEONS = {"catacombs", "master_catacombs"};
     private JsonObject dungeonsStats;

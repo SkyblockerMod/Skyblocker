@@ -18,7 +18,7 @@ public class LegacyAttributeBackground extends ColoredItemBackground<Integer> {
 
 	@Override
 	protected Integer getColorKey(ItemStack stack, Int2ReferenceOpenHashMap<Integer> cache) {
-		if (stack == null || stack.isEmpty() || ItemUtils.getItemId(stack).equals("ATTRIBUTE_SHARD")) return null;
+		if (stack == null || stack.isEmpty() || stack.getSkyblockId().equals("ATTRIBUTE_SHARD")) return null;
 
 		int hashCode = System.identityHashCode(stack);
 		if (cache.containsKey(hashCode)) return cache.get(hashCode);

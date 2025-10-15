@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -24,7 +23,7 @@ import java.util.Map;
 
 public class TrimSelectionWidget extends ContainerWidget {
 
-	private static final Identifier INNER_SPACE_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "menu_inner_space");
+	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 	private static final int MAX_BUTTONS_PER_ROW_PATTERN = 7;
 	private static final int MAX_BUTTONS_PER_ROW_MATERIAL = 6;
 
@@ -115,7 +114,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 	private void updateConfig() {
 		if (currentItem == null) return;
 		Map<String, CustomArmorTrims.ArmorTrimId> trims = SkyblockerConfigManager.get().general.customArmorTrims;
-		String itemUuid = ItemUtils.getItemUuid(currentItem);
+		String itemUuid = currentItem.getUuid();
 		if (selectedPattern == null) {
 			trims.remove(itemUuid);
 		} else {
@@ -168,7 +167,7 @@ public class TrimSelectionWidget extends ContainerWidget {
 	public void setCurrentItem(@NotNull ItemStack currentItem) {
 		this.currentItem = currentItem;
 		Map<String, CustomArmorTrims.ArmorTrimId> trims = SkyblockerConfigManager.get().general.customArmorTrims;
-		String itemUuid = ItemUtils.getItemUuid(currentItem);
+		String itemUuid = currentItem.getUuid();
 		for (TrimElementButton.Pattern button : patternButtons) {
 			button.setStack(currentItem);
 		}

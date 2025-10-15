@@ -2,8 +2,10 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarOrderTracker;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
+import de.hysky.skyblocker.skyblock.dungeon.CroesusProfit;
 import de.hysky.skyblocker.skyblock.dwarven.fossil.FossilSolver;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.*;
 import de.hysky.skyblocker.utils.Utils;
@@ -34,6 +36,7 @@ public class TooltipManager {
 			BitsHelper.INSTANCE,
 			new FossilSolver(),
 			new ReorderHelper(),
+			BazaarOrderTracker.INSTANCE,
 			new StackingEnchantProgressTooltip(0), //Would be best to have after the lore but the tech doesn't exist for that
 			new NpcPriceTooltip(1),
 			new BazaarPriceTooltip(2),
@@ -49,7 +52,8 @@ public class TooltipManager {
 			new ColorTooltip(12),
 			new AccessoryTooltip(13),
 			new DateCalculatorTooltip(14),
-			new HuntingBoxPriceTooltip(15)
+			new HuntingBoxPriceTooltip(15),
+			CroesusProfit.INSTANCE, // priority = 16
 	};
 	private static List<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
