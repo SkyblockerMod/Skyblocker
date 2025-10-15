@@ -39,6 +39,8 @@ public class HelperConfig {
 
 	public ItemPrice itemPrice = new ItemPrice();
 
+	public GreatSpookEvent greatSpookEvent = new GreatSpookEvent();
+
 	public static class MythologicalRitual {
 		public boolean enableMythologicalRitualHelper = true;
 	}
@@ -146,5 +148,9 @@ public class HelperConfig {
 		public boolean enableItemPriceLookup = true;
 
 		public boolean enableItemPriceRefresh = true;
+	}
+
+	public static class GreatSpookEvent {
+		public boolean enableMathTeacherHelper = true;
 	}
 }
