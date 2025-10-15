@@ -9,7 +9,6 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigScreen;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
@@ -28,7 +27,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.toast.SystemToast;
-import net.minecraft.client.util.Window;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
@@ -99,12 +97,11 @@ public class WidgetManager {
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		if (client.currentScreen instanceof WidgetsConfigScreen) return;
-		Window window = client.getWindow();
-		float scale = SkyblockerConfigManager.get().uiAndVisuals.hud.hudScale / 100f;
+		float scale = TabHud.getScaleFactor();
 		Matrix3x2fStack matrices = context.getMatrices();
 		matrices.pushMatrix();
 		matrices.scale(scale, scale);
-		WidgetManager.render(context, (int) (window.getScaledWidth() / scale), (int) (window.getScaledHeight() / scale), hud);
+		WidgetManager.render(context, TabHud.getHudWidth(), TabHud.getHudHeight(), hud);
 		matrices.popMatrix();
 	}
 

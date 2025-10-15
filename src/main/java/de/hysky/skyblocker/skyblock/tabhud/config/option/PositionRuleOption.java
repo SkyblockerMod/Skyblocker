@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.tabhud.config.option;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetConfig;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
@@ -236,8 +235,7 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 			if (hoveredPoint != null) {
 				PositionRule oldRule = valueGetter.get();
 				// Get the x, y of the parent's point
-				float scale = SkyblockerConfigManager.get().uiAndVisuals.hud.hudScale / 100.f;
-				ScreenPos startPos = WidgetPositioner.getStartPosition(oldRule.parent(), (int) (widgetConfig.getScreenWidth() / scale), (int) (widgetConfig.getScreenHeight() / scale), parent ? hoveredPoint : oldRule.parentPoint());
+				ScreenPos startPos = WidgetPositioner.getStartPosition(oldRule.parent(), widgetConfig.getScreenWidth(), widgetConfig.getScreenHeight(), parent ? hoveredPoint : oldRule.parentPoint());
 				// Same but for the affected widget
 				PositionRule.Point thisPoint = parent ? oldRule.thisPoint() : hoveredPoint;
 				ScreenPos endPos = new ScreenPos(

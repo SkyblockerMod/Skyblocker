@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
@@ -23,6 +24,7 @@ import net.minecraft.util.Colors;
 import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -111,8 +113,8 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 						"screen",
 						PositionRule.Point.DEFAULT,
 						PositionRule.Point.DEFAULT,
-						(int) client.mouse.getScaledX(client.getWindow()),
-						(int) client.mouse.getScaledY(client.getWindow())
+						(int) (client.mouse.getScaledX(client.getWindow()) / TabHud.getScaleFactor()),
+						(int) (client.mouse.getScaledY(client.getWindow()) / TabHud.getScaleFactor())
 				)
 		);
 	}
@@ -136,10 +138,15 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 		super.render(context, mouseX, mouseY, deltaTicks);
-		builder.render(context, width, height, true);
+		Matrix3x2fStack matrices = context.getMatrices();
+		float scale = TabHud.getScaleFactor();
+		matrices.scale(scale);
+		builder.render(context, getScreenWidth(), getScreenHeight(), true);
 		hoveredWidget = null;
+		double scaledMouseX = mouseX / scale;
+		double scaledMouseY = mouseY / scale;
 		for (HudWidget hudWidget : builder.getWidgets()) {
-			if (hudWidget.isMouseOver(mouseX, mouseY)) {
+			if (hudWidget.isMouseOver(scaledMouseX, scaledMouseY)) {
 				hoveredWidget = hudWidget;
 				break;
 			}
@@ -225,7 +232,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 					}
 				}
 			}
-			ScreenPos startPosition =  WidgetPositioner.getStartPosition(newParent, width, height, parentPoint);
+			ScreenPos startPosition =  WidgetPositioner.getStartPosition(newParent, getScreenWidth(), getScreenHeight(), parentPoint);
 			PositionRule newRule = new PositionRule(
 					newParent,
 					parentPoint,
@@ -234,7 +241,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 					relativeY.orElse((int) mouseY - dragRelative.y() - startPosition.y() + (int) (selectedWidget.getScaledHeight() * thisPoint.verticalPoint().getPercentage()))
 			);
 			selectedWidget.setPositionRule(newRule);
-			builder.updatePositions(width, height);
+			updateBuilderPositions();
 			if (sidePanelWidget.isOpen() && new ScreenRect(sidePanelWidget.getX(), sidePanelWidget.getY(), sidePanelWidget.getWidth(), sidePanelWidget.getHeight()).overlaps(new ScreenRect(selectedWidget.getX(), selectedWidget.getY(), selectedWidget.getScaledWidth(), selectedWidget.getScaledHeight()))) {
 				sidePanelWidget.close();
 				openPanelAfterDragging = true;
@@ -249,8 +256,8 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	}
 
 	private @NotNull PositionRule.Point getPoint(@NotNull HudWidget widget, int x, int y) {
-		int widgetCenterX = x + widget.getScaledWidth() / 2 - width / 2;
-		int widgetCenterY = y + widget.getScaledHeight() / 2 - height / 2;
+		int widgetCenterX = x + widget.getScaledWidth() / 2 - getScreenWidth() / 2;
+		int widgetCenterY = y + widget.getScaledHeight() / 2 - getScreenHeight() / 2;
 		PositionRule.HorizontalPoint hPoint = widgetCenterX < -25 ? PositionRule.HorizontalPoint.LEFT : widgetCenterX > 25 ? PositionRule.HorizontalPoint.RIGHT : PositionRule.HorizontalPoint.CENTER;
 		PositionRule.VerticalPoint vPoint = widgetCenterY < -25 ? PositionRule.VerticalPoint.TOP : widgetCenterY > 25 ? PositionRule.VerticalPoint.BOTTOM : PositionRule.VerticalPoint.CENTER;
 		return new PositionRule.Point(vPoint, hPoint);
@@ -322,7 +329,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 						oldRule.relativeY() + y
 				);
 				selectedWidget.setPositionRule(newRule);
-				builder.updatePositions(width, height);
+				updateBuilderPositions();
 				return true;
 			}
 			if (keyCode == GLFW.GLFW_KEY_DELETE) {
@@ -335,7 +342,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 
 	private void openSidePanel() {
 		if (selectedWidget == null) return;
-		boolean rightSide = selectedWidget.getX() + selectedWidget.getWidth() / 2 < width / 2;
+		boolean rightSide = selectedWidget.getX() + selectedWidget.getWidth() / 2 < getScreenWidth() / 2;
 		sidePanelWidget.open(selectedWidget, this, rightSide, rightSide ? width - sidePanelWidget.getWidth() : 0);
 	}
 
@@ -345,7 +352,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		for (HudWidget widget : builder.getWidgets()) {
 			if (widget.getNavigationFocus().intersects(getNavigationFocus()) || !widget.getPositionRule().parent().equals("screen")) continue;
 			widget.setPositionRule(PositionRule.DEFAULT);
-			builder.updatePositions(width, height);
+			updateBuilderPositions();
 		}
 	}
 
@@ -390,7 +397,11 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 			sidePanelWidget.close();
 			selectedWidget = null;
 		}
-		builder.updatePositions(width, height);
+		updateBuilderPositions();
+	}
+
+	private void updateBuilderPositions() {
+		builder.updatePositions(getScreenWidth(), getScreenHeight());
 	}
 
 	@Override
@@ -400,12 +411,12 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 
 	@Override
 	public int getScreenWidth() {
-		return width;
+		return (int) (width / TabHud.getScaleFactor());
 	}
 
 	@Override
 	public int getScreenHeight() {
-		return height;
+		return (int) (height / TabHud.getScaleFactor());
 	}
 
 	@Override
