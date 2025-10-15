@@ -4,14 +4,13 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -94,7 +93,7 @@ public class BloodCampHelper {
 	public static void init() {
 		ClientEntityEvents.ENTITY_LOAD.register(BloodCampHelper::onEntityLoad);
 		ClientEntityEvents.ENTITY_UNLOAD.register(BloodCampHelper::onEntityUnload);
-		WorldRenderEvents.AFTER_ENTITIES.register(BloodCampHelper::render);
+		WorldRenderExtractionCallback.EVENT.register(BloodCampHelper::extractRendering);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> tick());
 		ClientPlayConnectionEvents.JOIN.register((h, s, c) -> reset());
 		ClientPlayConnectionEvents.DISCONNECT.register((h, c) -> reset());
@@ -159,16 +158,15 @@ public class BloodCampHelper {
 		}
 	}
 
-	private static void render(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (!Utils.isInDungeons() || !SkyblockerConfigManager.get().dungeons.bloodCampHelper) return;
 		for (TrackedMob mob : MOBS.values()) {
 			if (mob.predictedPos != null) {
-				RenderHelper.renderOutline(context, mob.entity.getBoundingBox().offset(0f, 2f, 0f), LINE_COLOR, 2, true);
-				RenderHelper.renderLinesFromPoints(context,
-						new Vec3d[]{mob.entity.getPos().add(0f, 2f, 0f), mob.predictedPos.add(0f, 2f, 0f)}, LINE_COLOR, 0.5f, 2f, true);
+				collector.submitOutlinedBox(mob.entity.getBoundingBox().offset(0f, 2f, 0f), LINE_COLOR, 2, true);
+				collector.submitLinesFromPoints(new Vec3d[]{mob.entity.getPos().add(0f, 2f, 0f), mob.predictedPos.add(0f, 2f, 0f)}, LINE_COLOR, 0.5f, 2f, true);
 				Box box = new Box(mob.predictedPos.x - 0.5, mob.predictedPos.y + 2, mob.predictedPos.z - 0.5,
 						mob.predictedPos.x + 0.5, mob.predictedPos.y + 4, mob.predictedPos.z + 0.5);
-				RenderHelper.renderOutline(context, box, BOX_COLOR, 5, true);
+				collector.submitOutlinedBox(box, BOX_COLOR, 5, true);
 			}
 		}
 	}

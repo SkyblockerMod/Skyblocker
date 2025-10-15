@@ -2,8 +2,7 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -38,7 +37,7 @@ public class NucleusWaypoints {
             new Waypoint(new BlockPos(513, 106, 524), "Nucleus", DyeColor.RED)
     );
 
-    public static void render(WorldRenderContext context) {
+    public static void extractRendering(PrimitiveCollector collector) {
         try {
             boolean enabled = SkyblockerConfigManager.get().mining.crystalHollows.nucleusWaypoints;
             boolean inCrystalHollows = Utils.isInCrystalHollows();
@@ -51,7 +50,7 @@ public class NucleusWaypoints {
 
                     MutableText text = Text.literal(waypoint.name).setStyle(Style.EMPTY.withColor(textColor));
 
-                    RenderHelper.renderText(context, text, waypoint.position.toCenterPos().add(0, 5, 0), 8, true);
+                    collector.submitText(text, waypoint.position.toCenterPos().add(0, 5, 0), 8, true);
                 }
             }
         } catch (Exception e) {

@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ChatEvents;
 import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -15,6 +14,7 @@ import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.*;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -70,7 +70,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 
 	@Init
 	public static void init() {
-		ChatEvents.RECEIVE_STRING.register(INSTANCE::onChatMessage);
+		ClientReceiveMessageEvents.ALLOW_GAME.register(INSTANCE::onChatMessage);
 		ItemPriceUpdateEvent.ON_PRICE_UPDATE.register(INSTANCE::onPriceUpdate);
 
 		INSTANCE.allRewards.init();
@@ -127,32 +127,35 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 		recalculateAll();
 	}
 
-	private void onChatMessage(String message) {
-		if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !INSTANCE.isEnabled()) return;
+	@SuppressWarnings("SameReturnValue")
+	private boolean onChatMessage(Text text, boolean overlay) {
+		if (Utils.getLocation() != Location.CRYSTAL_HOLLOWS || !INSTANCE.isEnabled() || overlay) return true;
+		String message = text.getString();
 		// Reward messages end with a separator like so
 		if (insideChestMessage && message.equals("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")) {
 			insideChestMessage = false;
-			return;
+			return true;
 		}
 
 		if (!insideChestMessage && (message.equals("  CHEST LOCKPICKED ") || (SkyblockerConfigManager.get().mining.crystalHollows.countNaturalChestsInTracker && message.equals("  LOOT CHEST COLLECTED ")))) {
 			insideChestMessage = true;
-			return;
+			return true;
 		}
 
-		if (!insideChestMessage) return;
+		if (!insideChestMessage) return true;
 		Matcher matcher = REWARD_PATTERN.matcher(message);
-		if (!matcher.matches()) return;
+		if (!matcher.matches()) return true;
 		String itemName = matcher.group(1);
 		int amount = NumberUtils.toInt(matcher.group(2).replace(",", ""), 1);
 
 		String itemId = getItemId(itemName);
 		if (itemId.isEmpty()) {
 			LOGGER.error("No matching item id for name `{}`. Report this!", itemName);
-			return;
+			return true;
 		}
 		incrementReward(itemName, itemId, amount);
 		calculateProfitForItem(itemId, amount);
+		return true;
 	}
 
 	private void incrementReward(String itemName, String itemId, int amount) {

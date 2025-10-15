@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
@@ -49,11 +49,11 @@ public class DebugRoom extends Room {
     }
 
     @Override
-    public void render(WorldRenderContext context) {
-        super.render(context);
+    public void extractRendering(PrimitiveCollector collector) {
+        super.extractRendering(collector);
         synchronized (checkedBlocks) {
             for (Waypoint checkedBlock : checkedBlocks) {
-                checkedBlock.render(context);
+                checkedBlock.extractRendering(collector);
             }
         }
     }

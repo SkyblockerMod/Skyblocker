@@ -9,6 +9,8 @@ import de.hysky.skyblocker.utils.*;
 import de.hysky.skyblocker.utils.command.argumenttypes.EggTypeArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.SeenWaypoint;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
@@ -16,8 +18,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -70,7 +70,7 @@ public class EggFinder {
 		});
 		SkyblockEvents.LOCATION_CHANGE.register(EggFinder::handleLocationChange);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(EggFinder::onChatMessage);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(EggFinder::renderWaypoints);
+		WorldRenderExtractionCallback.EVENT.register(EggFinder::extractRendering);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder || client.player == null) return;
 			if (!isLocationCorrect || SkyblockTime.skyblockSeason.get() != SkyblockTime.Season.SPRING) return;
@@ -146,11 +146,11 @@ public class EggFinder {
 		}
 	}
 
-	private static void renderWaypoints(WorldRenderContext context) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		for (EggType type : EggType.entries) {
 			Egg egg = type.egg;
-			if (egg != null) egg.render(context);
+			if (egg != null) egg.extractRendering(collector);
 		}
 	}
 

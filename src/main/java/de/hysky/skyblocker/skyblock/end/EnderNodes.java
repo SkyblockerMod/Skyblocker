@@ -5,13 +5,13 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.SeenWaypoint;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
@@ -33,7 +33,7 @@ public class EnderNodes {
     @Init
     public static void init() {
         Scheduler.INSTANCE.scheduleCyclic(EnderNodes::update, 20);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(EnderNodes::render);
+        WorldRenderExtractionCallback.EVENT.register(EnderNodes::extractRendering);
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
             enderNodes.remove(pos);
             return ActionResult.PASS;
@@ -95,11 +95,11 @@ public class EnderNodes {
         }
     }
 
-    private static void render(WorldRenderContext context) {
+    private static void extractRendering(PrimitiveCollector collector) {
         if (shouldProcess()) {
             for (EnderNode enderNode : enderNodes.values()) {
                 if (enderNode.shouldRender()) {
-                    enderNode.render(context);
+                    enderNode.extractRendering(collector);
                 }
             }
         }
