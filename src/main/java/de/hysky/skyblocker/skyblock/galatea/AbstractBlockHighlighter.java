@@ -3,11 +3,11 @@ package de.hysky.skyblocker.skyblock.galatea;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -53,7 +53,7 @@ public abstract class AbstractBlockHighlighter {
 	protected void init() {
 		ClientChunkEvents.CHUNK_LOAD.register(this::onChunkLoad);
 		ClientChunkEvents.CHUNK_UNLOAD.register(this::onChunkUnload);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(this::render);
+		WorldRenderExtractionCallback.EVENT.register(this::extractRendering);
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> this.reset());
 		WorldEvents.BLOCK_STATE_UPDATE.register(this::onBlockUpdate);
 	}
@@ -95,7 +95,7 @@ public abstract class AbstractBlockHighlighter {
 		}
 	}
 
-	private void render(WorldRenderContext context) {
+	private void extractRendering(PrimitiveCollector collector) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (!shouldProcess() || client.world == null) return;
 
@@ -103,7 +103,7 @@ public abstract class AbstractBlockHighlighter {
 			Box outline = RenderHelper.getBlockBoundingBox(client.world, highlight);
 
 			if (outline != null) {
-				RenderHelper.renderFilled(context, outline, this.colour, 0.4f, false);
+				collector.submitFilledBox(outline, this.colour, 0.4f, false);
 			}
 		}
 	}

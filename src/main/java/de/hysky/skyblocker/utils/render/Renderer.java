@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4fStack;
 import org.joml.Vector4f;
 import org.lwjgl.system.MemoryUtil;
@@ -38,6 +37,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BuiltBuffer;
 import net.minecraft.client.render.BuiltBuffer.DrawParameters;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.texture.TextureSetup;
 import net.minecraft.client.util.BufferAllocator;
 
 /**
@@ -59,41 +59,41 @@ public class Renderer {
 	private static final List<Draw> DRAWS = new ArrayList<>();
 	private static BatchedDraw lastUnbatchedDraw = null;
 
-	protected static BufferBuilder getBuffer(RenderPipeline pipeline) {
+	public static BufferBuilder getBuffer(RenderPipeline pipeline) {
 		return getBuffer(pipeline, DEFAULT_LINE_WIDTH);
 	}
 
-	protected static BufferBuilder getBuffer(RenderPipeline pipeline, float lineWidth) {
-		return getBuffer(pipeline, null, lineWidth, false);
+	public static BufferBuilder getBuffer(RenderPipeline pipeline, float lineWidth) {
+		return getBuffer(pipeline, TextureSetup.empty(), lineWidth, false);
 	}
 
-	protected static BufferBuilder getBuffer(RenderPipeline pipeline, GpuTextureView textureView) {
-		return getBuffer(pipeline, Objects.requireNonNull(textureView, "textureView must not be null"), false);
+	public static BufferBuilder getBuffer(RenderPipeline pipeline, TextureSetup textureSetup) {
+		return getBuffer(pipeline, Objects.requireNonNull(textureSetup, "textureSetup must not be null"), false);
 	}
 
-	public static BufferBuilder getBuffer(RenderPipeline pipeline, GpuTextureView textureView, boolean translucent) {
-		return getBuffer(pipeline, Objects.requireNonNull(textureView, "textureView must not be null"), DEFAULT_LINE_WIDTH, translucent);
+	public static BufferBuilder getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, boolean translucent) {
+		return getBuffer(pipeline, Objects.requireNonNull(textureSetup, "textureSetup must not be null"), DEFAULT_LINE_WIDTH, translucent);
 	}
 
 	/**
 	 * Returns the appropriate {@code BufferBuilder} that should be used with the given pipeline, texture view, and line width.
 	 */
-	private static BufferBuilder getBuffer(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {
+	private static BufferBuilder getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {
 		if (!EXCLUDED_FROM_BATCHING.contains(pipeline)) {
-			return setupBatched(pipeline, textureView, lineWidth, translucent);
+			return setupBatched(pipeline, textureSetup, lineWidth, translucent);
 		} else {
-			return setupUnbatched(pipeline, textureView, lineWidth, translucent);
+			return setupUnbatched(pipeline, textureSetup, lineWidth, translucent);
 		}
 	}
 
-	private static BufferBuilder setupBatched(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {
-		int hash = hash(pipeline, textureView, lineWidth, translucent);
+	private static BufferBuilder setupBatched(RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {
+		int hash = hash(pipeline, textureSetup, lineWidth, translucent);
 		BatchedDraw draw = BATCHED_DRAWS.get(hash);
 
 		if (draw == null) {
 			BufferAllocator allocator = ALLOCATORS.computeIfAbsent(hash, _hash -> new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE));
 			BufferBuilder bufferBuilder = new BufferBuilder(allocator, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
-			BATCHED_DRAWS.put(hash, new BatchedDraw(bufferBuilder, pipeline, textureView, lineWidth, translucent));
+			BATCHED_DRAWS.put(hash, new BatchedDraw(bufferBuilder, pipeline, textureSetup, lineWidth, translucent));
 
 			return bufferBuilder;
 		} else {
@@ -101,13 +101,13 @@ public class Renderer {
 		}
 	}
 
-	private static BufferBuilder setupUnbatched(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {
+	private static BufferBuilder setupUnbatched(RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {
 		if (lastUnbatchedDraw != null) {
 			prepareBatchedDraw(lastUnbatchedDraw);
 		}
 
 		BufferBuilder bufferBuilder = new BufferBuilder(GENERAL_ALLOCATOR, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
-		lastUnbatchedDraw = new BatchedDraw(bufferBuilder, pipeline, textureView, lineWidth, translucent);
+		lastUnbatchedDraw = new BatchedDraw(bufferBuilder, pipeline, textureSetup, lineWidth, translucent);
 
 		return bufferBuilder;
 	}
@@ -116,11 +116,11 @@ public class Renderer {
 	 * Calculates the hash of the given inputs which serves as the keys to our maps where we store stuff for the batched draws.
 	 * This is much faster than using an object-based key as we do not need to create any objects to find the instances we want.
 	 */
-	private static int hash(RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {
+	private static int hash(RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {
 		//This manually calculates the hash, avoiding Objects#hash to not incur the array allocation each time
 		int hash = 1;
 		hash = 31 * hash + pipeline.hashCode();
-		hash = 31 * hash + Objects.hashCode(textureView);
+		hash = 31 * hash + textureSetup.hashCode();
 		hash = 31 * hash + Float.hashCode(lineWidth);
 		hash = 31 * hash + Boolean.hashCode(translucent);
 
@@ -147,7 +147,7 @@ public class Renderer {
 	}
 
 	private static void prepareBatchedDraw(BatchedDraw draw) {
-		PREPARED_DRAWS.add(new PreparedDraw(draw.bufferBuilder().end(), draw.pipeline(), draw.textureView(), draw.lineWidth(), draw.translucent()));
+		PREPARED_DRAWS.add(new PreparedDraw(draw.bufferBuilder().end(), draw.pipeline(), draw.textureSetup(), draw.lineWidth(), draw.translucent()));
 	}
 
 	protected static void executeDraws() {
@@ -198,7 +198,7 @@ public class Renderer {
 					vertexBufferPosition / format.getVertexSize(),
 					drawParameters.indexCount(),
 					prepared.pipeline(),
-					prepared.textureView(),
+					prepared.textureSetup(),
 					prepared.lineWidth(),
 					prepared.translucent()
 			));
@@ -292,10 +292,14 @@ public class Renderer {
 			RenderSystem.bindDefaultUniforms(renderPass);
 			renderPass.setUniform("DynamicTransforms", dynamicTransforms);
 
-			//Bind texture if applicable
-			if (draw.textureView != null) {
-				//Sampler0 is used for texture inputs in vertices
-				renderPass.bindSampler("Sampler0", draw.textureView);
+			if (draw.textureSetup.texure0() != null) {
+				//Sampler0 is used for normal texture inputs in shaders
+				renderPass.bindSampler("Sampler0", draw.textureSetup.texure0());
+			}
+
+			if (draw.textureSetup.texure2() != null) {
+				//Sampler2 is used for lightmap texture inputs in shaders
+				renderPass.bindSampler("Sampler2", draw.textureSetup.texure2());
 			}
 
 			renderPass.setVertexBuffer(0, draw.vertices);
@@ -343,9 +347,9 @@ public class Renderer {
 		}
 	}
 
-	private record Draw(BuiltBuffer builtBuffer, GpuBuffer vertices, int baseVertex, int indexCount, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {}
+	private record Draw(BuiltBuffer builtBuffer, GpuBuffer vertices, int baseVertex, int indexCount, RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {}
 
-	private record PreparedDraw(BuiltBuffer builtBuffer, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {}
+	private record PreparedDraw(BuiltBuffer builtBuffer, RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {}
 
-	private record BatchedDraw(BufferBuilder bufferBuilder, RenderPipeline pipeline, @Nullable GpuTextureView textureView, float lineWidth, boolean translucent) {}
+	private record BatchedDraw(BufferBuilder bufferBuilder, RenderPipeline pipeline, TextureSetup textureSetup, float lineWidth, boolean translucent) {}
 }

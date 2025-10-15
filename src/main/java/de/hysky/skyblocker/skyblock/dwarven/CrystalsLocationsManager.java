@@ -13,6 +13,8 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.ws.WsMessageHandler;
@@ -25,7 +27,6 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.ClickEvent;
@@ -73,14 +74,14 @@ public class CrystalsLocationsManager {
     public static void init() {
         // Crystal Hollows Waypoints
         Scheduler.INSTANCE.scheduleCyclic(CrystalsLocationsManager::update, 40);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(CrystalsLocationsManager::render);
+        WorldRenderExtractionCallback.EVENT.register(CrystalsLocationsManager::extractRendering);
         ClientReceiveMessageEvents.ALLOW_GAME.register(CrystalsLocationsManager::extractLocationFromMessage);
         ClientCommandRegistrationCallback.EVENT.register(CrystalsLocationsManager::registerWaypointLocationCommands);
         SkyblockEvents.LOCATION_CHANGE.register(CrystalsLocationsManager::onLocationChange);
         ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
 
         // Nucleus Waypoints
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(NucleusWaypoints::render);
+        WorldRenderExtractionCallback.EVENT.register(NucleusWaypoints::extractRendering);
     }
 
     private static boolean extractLocationFromMessage(Text message, Boolean overlay) {
@@ -373,10 +374,10 @@ public class CrystalsLocationsManager {
         }
     }
 
-    private static void render(WorldRenderContext context) {
+    private static void extractRendering(PrimitiveCollector collector) {
         if (SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled) {
             for (MiningLocationLabel crystalsWaypoint : activeWaypoints.values()) {
-                crystalsWaypoint.render(context);
+                crystalsWaypoint.extractRendering(collector);
             }
         }
     }

@@ -3,9 +3,8 @@ package de.hysky.skyblocker.skyblock;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.StringIdentifiable;
@@ -31,7 +30,7 @@ public class GyroOverlay {
 	@Init
 	public static void init() {
 		configCallback(SkyblockerConfigManager.get().uiAndVisuals.gyroOverlay.gyroOverlayColor);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(GyroOverlay::render);
+		WorldRenderExtractionCallback.EVENT.register(GyroOverlay::extractRendering);
 	}
 
 	// render
@@ -52,11 +51,8 @@ public class GyroOverlay {
 	 *     <li>The player is holding the {@code GYROKINETIC_WAND} in the main hand.</li>
 	 *     <li>The raycast from the camera hits a block or entity (i.e., not a miss).</li>
 	 * </ul>
-	 *
-	 * @param wrc The {@link WorldRenderContext} provided during world rendering,
-	 *            containing rendering matrices and utilities for rendering custom elements.
 	 */
-	public static void render(WorldRenderContext wrc) {
+	public static void extractRendering(PrimitiveCollector collector) {
 		if (CLIENT.player == null || CLIENT.world == null) return;
 		if (!Utils.isOnSkyblock()) return;
 		if (SkyblockerConfigManager.get().uiAndVisuals.gyroOverlay.gyroOverlayMode == Mode.OFF) return;
@@ -73,9 +69,9 @@ public class GyroOverlay {
 
 		switch (SkyblockerConfigManager.get().uiAndVisuals.gyroOverlay.gyroOverlayMode) {
 			case OFF -> {}
-			case CIRCLE_OUTLINE -> RenderHelper.renderCircleOutlineWithQuads(wrc, hit.getPos().add(new Vec3d(0, 0.1, 0)), GYRO_RADIUS, 0.25f, SEGMENTS, color);
-			case CIRCLE -> RenderHelper.renderCircleFilled(wrc, hit.getPos().add(new Vec3d(0, 0.1, 0)), GYRO_RADIUS, SEGMENTS, color);
-			case SPHERE -> RenderHelper.renderSphere(wrc, hit.getPos(), GYRO_RADIUS, SEGMENTS, SEGMENTS, color);
+			case CIRCLE_OUTLINE -> collector.submitOutlinedCircle(hit.getPos().add(new Vec3d(0, 0.1, 0)), GYRO_RADIUS, 0.25f, SEGMENTS, color);
+			case CIRCLE -> collector.submitFilledCircle(hit.getPos().add(new Vec3d(0, 0.1, 0)), GYRO_RADIUS, SEGMENTS, color);
+			case SPHERE -> collector.submitSphere(hit.getPos(), GYRO_RADIUS, SEGMENTS, SEGMENTS, color);
 		}
 	}
 

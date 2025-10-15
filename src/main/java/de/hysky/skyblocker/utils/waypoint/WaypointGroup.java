@@ -7,7 +7,7 @@ import de.hysky.skyblocker.annotations.GenEquals;
 import de.hysky.skyblocker.annotations.GenHashCode;
 import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.utils.Location;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 
@@ -131,7 +131,7 @@ public class WaypointGroup {
         }
     }
 
-    public void render(WorldRenderContext context) {
+    public void extractRendering(PrimitiveCollector collector) {
         if (ordered && !waypoints.isEmpty()) {
             for (int i = 0; i < waypoints.size(); i++) {
                 NamedWaypoint waypoint = waypoints.get(i);
@@ -160,7 +160,7 @@ public class WaypointGroup {
         }
         for (NamedWaypoint waypoint : waypoints) {
             if (waypoint.shouldRender()) {
-                waypoint.render(context);
+                waypoint.extractRendering(collector);
             }
         }
     }
