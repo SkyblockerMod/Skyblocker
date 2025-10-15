@@ -52,7 +52,7 @@ public class FancyTabWidget extends HudWidget {
 
 	public FancyTabWidget() {
 		super(new Information(ID, Text.literal("Fancy Tab")));
-		PlayerListManager.registerListener(this::update);
+		PlayerListManager.registerTabListener(this::update);
 	}
 
 	@Override

@@ -59,7 +59,8 @@ public class PlayerListManager {
 	@Nullable
 	private static String footer;
 	static final Map<String, TabListWidget> WIDGET_MAP = new Object2ObjectLinkedOpenHashMap<>(); // linked so iterating gives the same order as the vanilla tab
-	private static final Set<Runnable> LISTENERS = new ObjectOpenHashSet<>(); // this might not actually be a set due to how lambdas work
+	private static final Set<Runnable> TAB_LISTENERS = new ObjectOpenHashSet<>(); // this might not actually be a set due to how lambdas work
+	private static final Set<Runnable> FOOTER_LISTENERS = new ObjectOpenHashSet<>();
 	static final Map<String, HudWidget> HANDLED_TAB_WIDGETS = new Object2ObjectOpenHashMap<>();
 
 	public static @Nullable TabListWidget getListWidget(String name) {
@@ -79,8 +80,12 @@ public class PlayerListManager {
 		HANDLED_TAB_WIDGETS.put(name, widget);
 	}
 
-	public static void registerListener(Runnable listener) {
-		LISTENERS.add(listener);
+	public static void registerTabListener(Runnable listener) {
+		TAB_LISTENERS.add(listener);
+	}
+
+	public static void registerFooterListener(Runnable listener) {
+		FOOTER_LISTENERS.add(listener);
 	}
 
 	public static void tryUpdateList() {
@@ -175,7 +180,7 @@ public class PlayerListManager {
 
 		if (!contents.isEmpty()) WIDGET_MAP.put(hypixelWidgetName.right(), new TabListWidget(sideThing, contents, playerListEntries));
 
-		LISTENERS.forEach(Runnable::run);
+		TAB_LISTENERS.forEach(Runnable::run);
 	}
 
 	private static Text trim(Text text) {
@@ -264,6 +269,7 @@ public class PlayerListManager {
 			if (footer.isEmpty()) {
 				footer = null;
 			}
+			FOOTER_LISTENERS.forEach(Runnable::run);
 		}
 	}
 

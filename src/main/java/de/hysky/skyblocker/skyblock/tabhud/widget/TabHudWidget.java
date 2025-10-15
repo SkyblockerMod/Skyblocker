@@ -41,7 +41,7 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 	}
 
 	protected void registerAutoUpdate() {
-		PlayerListManager.registerListener(() -> {
+		PlayerListManager.registerTabListener(() -> {
 			if (isVisible()) update();
 		});
 	}
@@ -74,14 +74,18 @@ public abstract class TabHudWidget extends ComponentBasedWidget {
 		cache.clear();
 		PlayerListManager.TabListWidget widget = PlayerListManager.getListWidget(hypixelWidgetName);
 		if (widget == null) {
-			for (Text text : PlayerListManager.createErrorMessage(hypixelWidgetName)) {
-				addComponent(new PlainTextComponent(text));
-			}
+			updateTabWidgetAbsent();
 		} else {
 			List<Text> list = new ArrayList<>(widget.lines().size() + 1);
 			if (!widget.detail().getString().isBlank()) list.add(widget.detail());
 			list.addAll(widget.lines());
 			updateContent(list, widget.playerListEntries());
+		}
+	}
+
+	protected void updateTabWidgetAbsent() {
+		for (Text text : PlayerListManager.createErrorMessage(hypixelWidgetName)) {
+			addComponent(new PlainTextComponent(text));
 		}
 	}
 

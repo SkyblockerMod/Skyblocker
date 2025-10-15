@@ -65,7 +65,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 
 	private @Nullable SelectWidgetPrompt selectWidgetPrompt = null;
 
-	protected WidgetsConfigScreen() {
+	public WidgetsConfigScreen() {
 		super(Text.literal("Widgets Config Screen"));
 		currentLocation = Utils.getLocation();
 		currentScreenLayer = WidgetManager.ScreenLayer.HUD;

@@ -5,11 +5,11 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.GyroOverlay;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigScreen;
 import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
-import de.hysky.skyblocker.skyblock.tabhud.util.FancyTabWidget;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
@@ -260,19 +260,21 @@ public class UIAndVisualsCategory {
                 .group(OptionGroup.createBuilder()
                         .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud"))
                         .collapsed(true)
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudEnabled"))
-                                .binding(defaults.uiAndVisuals.tabHud.tabHudEnabled,
-                                        () -> config.uiAndVisuals.tabHud.tabHudEnabled,
-                                        newValue -> config.uiAndVisuals.tabHud.tabHudEnabled = newValue)
-                                .controller(ConfigUtils.createBooleanController())
-                                .build())
 						.option(ButtonOption.createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
 								.prompt(Text.translatable("text.skyblocker.open"))
-								.action(screen -> {})
+								.action(screen -> MinecraftClient.getInstance().setScreen(new WidgetsConfigScreen()))
 								.build())
-                        .option(Option.<Integer>createBuilder()
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip"))
+								.binding(defaults.uiAndVisuals.tabHud.fancyWidgetsList,
+										() -> config.uiAndVisuals.tabHud.fancyWidgetsList,
+										newValue -> config.uiAndVisuals.tabHud.fancyWidgetsList = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Integer>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudScale"))
                                 .description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip"))
                                 .binding(defaults.uiAndVisuals.tabHud.tabHudScale,
@@ -322,30 +324,6 @@ public class UIAndVisualsCategory {
                                         newValue -> config.uiAndVisuals.tabHud.enableHudBackground = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.effectsFooter"))
-                                .description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip"))
-                                .controller(ConfigUtils.createBooleanController())
-                                .binding(defaults.uiAndVisuals.tabHud.effectsFromFooter,
-                                        () -> config.uiAndVisuals.tabHud.effectsFromFooter,
-                                        newValue -> config.uiAndVisuals.tabHud.effectsFromFooter = newValue)
-                                .build())
-                        .option(Option.<FancyTabWidget.Positioner>createBuilder()
-                                .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.defaultPositioning"))
-                                .binding(defaults.uiAndVisuals.tabHud.defaultPositioning,
-                                        () -> config.uiAndVisuals.tabHud.defaultPositioning,
-                                        newValue -> config.uiAndVisuals.tabHud.defaultPositioning = newValue)
-                                .controller(ConfigUtils.createEnumController())
-                                .build()
-                        )
-						.option(Option.<UIAndVisualsConfig.NameSorting>createBuilder()
-								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting"))
-								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip"))
-								.binding(defaults.uiAndVisuals.tabHud.nameSorting,
-										() -> config.uiAndVisuals.tabHud.nameSorting,
-										newValue -> config.uiAndVisuals.tabHud.nameSorting = newValue)
-								.controller(ConfigUtils.createEnumController())
-								.build())
                         .build())
 
                 // Fancy Auction House
