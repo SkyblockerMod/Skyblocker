@@ -236,7 +236,7 @@ public class PositionRuleOption implements WidgetOption<PositionRule> {
 			if (hoveredPoint != null) {
 				PositionRule oldRule = valueGetter.get();
 				// Get the x, y of the parent's point
-				float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
+				float scale = SkyblockerConfigManager.get().uiAndVisuals.hud.hudScale / 100.f;
 				ScreenPos startPos = WidgetPositioner.getStartPosition(oldRule.parent(), (int) (widgetConfig.getScreenWidth() / scale), (int) (widgetConfig.getScreenHeight() / scale), parent ? hoveredPoint : oldRule.parentPoint());
 				// Same but for the affected widget
 				PositionRule.Point thisPoint = parent ? oldRule.thisPoint() : hoveredPoint;

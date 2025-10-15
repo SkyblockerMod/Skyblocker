@@ -33,7 +33,7 @@ class ProgressComponent extends Component {
 	 * @see Components#progressComponent(ItemStack, Text, Text, float)
 	 */
 	ProgressComponent(@Nullable ItemStack ico, @Nullable Text description, @Nullable Text bar, float percent, int color) {
-		boolean showIcons = SkyblockerConfigManager.get().uiAndVisuals.tabHud.displayIcons;
+		boolean showIcons = SkyblockerConfigManager.get().uiAndVisuals.hud.displayIcons;
 		if (description == null || bar == null) {
 			this.ico = showIcons ? Ico.BARRIER : null;
 			this.desc = Text.literal("No data").formatted(Formatting.GRAY);

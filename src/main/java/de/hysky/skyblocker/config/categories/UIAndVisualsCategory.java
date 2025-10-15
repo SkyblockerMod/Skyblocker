@@ -269,59 +269,59 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip"))
-								.binding(defaults.uiAndVisuals.tabHud.fancyWidgetsList,
-										() -> config.uiAndVisuals.tabHud.fancyWidgetsList,
-										newValue -> config.uiAndVisuals.tabHud.fancyWidgetsList = newValue)
+								.binding(defaults.uiAndVisuals.hud.fancyWidgetsList,
+										() -> config.uiAndVisuals.hud.fancyWidgetsList,
+										newValue -> config.uiAndVisuals.hud.fancyWidgetsList = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Integer>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudScale"))
                                 .description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.tabHud.tabHudScale,
-                                        () -> config.uiAndVisuals.tabHud.tabHudScale,
-                                        newValue -> config.uiAndVisuals.tabHud.tabHudScale = newValue)
+                                .binding(defaults.uiAndVisuals.hud.hudScale,
+                                        () -> config.uiAndVisuals.hud.hudScale,
+                                        newValue -> config.uiAndVisuals.hud.hudScale = newValue)
                                 .controller(IntegerController.createBuilder().range(10, 200).slider(1).build())
                                 .build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault.@Tooltip"))
-								.binding(defaults.uiAndVisuals.tabHud.showVanillaTabByDefault,
-										() -> config.uiAndVisuals.tabHud.showVanillaTabByDefault,
-										newValue -> config.uiAndVisuals.tabHud.showVanillaTabByDefault = newValue)
+								.binding(defaults.uiAndVisuals.hud.showVanillaTabByDefault,
+										() -> config.uiAndVisuals.hud.showVanillaTabByDefault,
+										newValue -> config.uiAndVisuals.hud.showVanillaTabByDefault = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<UIAndVisualsConfig.TabHudStyle>createBuilder()
+						.option(Option.<UIAndVisualsConfig.HudStyle>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]"),
 										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]"),
 										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]"),
 										Text.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[3]"))
-								.binding(defaults.uiAndVisuals.tabHud.style,
-										() -> config.uiAndVisuals.tabHud.style,
-										newValue -> config.uiAndVisuals.tabHud.style = newValue)
+								.binding(defaults.uiAndVisuals.hud.style,
+										() -> config.uiAndVisuals.hud.style,
+										newValue -> config.uiAndVisuals.hud.style = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.displayIcons"))
-								.binding(defaults.uiAndVisuals.tabHud.displayIcons,
-										() -> config.uiAndVisuals.tabHud.displayIcons,
-										newValue -> config.uiAndVisuals.tabHud.displayIcons = newValue)
+								.binding(defaults.uiAndVisuals.hud.displayIcons,
+										() -> config.uiAndVisuals.hud.displayIcons,
+										newValue -> config.uiAndVisuals.hud.displayIcons = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets"))
 								.description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip"))
-								.binding(defaults.uiAndVisuals.tabHud.compactWidgets,
-										() -> config.uiAndVisuals.tabHud.compactWidgets,
-										newValue -> config.uiAndVisuals.tabHud.compactWidgets = newValue)
+								.binding(defaults.uiAndVisuals.hud.compactWidgets,
+										() -> config.uiAndVisuals.hud.compactWidgets,
+										newValue -> config.uiAndVisuals.hud.compactWidgets = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground"))
                                 .description(Text.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip"))
-                                .binding(defaults.uiAndVisuals.tabHud.enableHudBackground,
-                                        () -> config.uiAndVisuals.tabHud.enableHudBackground,
-                                        newValue -> config.uiAndVisuals.tabHud.enableHudBackground = newValue)
+                                .binding(defaults.uiAndVisuals.hud.enableHudBackground,
+                                        () -> config.uiAndVisuals.hud.enableHudBackground,
+                                        newValue -> config.uiAndVisuals.hud.enableHudBackground = newValue)
                                 .controller(ConfigUtils.createBooleanController())
                                 .build())
                         .build())

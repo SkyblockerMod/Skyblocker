@@ -165,7 +165,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 	}
 
 	private void renderInternal(DrawContext context, List<Component> components) {
-		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground && backgroundOpacity > 0) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.hud.enableHudBackground && backgroundOpacity > 0) {
 			int textBackgroundColor = ColorHelper.fromFloats(backgroundOpacity, 0, 0, 0);
 			if (roundedCorners) {
 				context.fill(1, 0, w - 1, h, textBackgroundColor);
@@ -187,7 +187,7 @@ public abstract class ComponentBasedWidget extends HudWidget {
 		}
 
 		// Only draw borders if not in minimal mode
-		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() && drawBorder) {
+		if (!SkyblockerConfigManager.get().uiAndVisuals.hud.style.isMinimal() && drawBorder) {
 			this.drawHLine(context, 2, 1 + strHeightHalf, 4);
 			this.drawHLine(context, 2 + strAreaWidth + 4, 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
 			this.drawHLine(context, 2, h - 2, w - 4);

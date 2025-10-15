@@ -100,7 +100,7 @@ public class WidgetManager {
 
 		if (client.currentScreen instanceof WidgetsConfigScreen) return;
 		Window window = client.getWindow();
-		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
+		float scale = SkyblockerConfigManager.get().uiAndVisuals.hud.hudScale / 100f;
 		Matrix3x2fStack matrices = context.getMatrices();
 		matrices.pushMatrix();
 		matrices.scale(scale, scale);

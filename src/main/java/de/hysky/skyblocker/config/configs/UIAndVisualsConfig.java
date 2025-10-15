@@ -53,7 +53,7 @@ public class UIAndVisualsConfig {
 
 	public TitleContainer titleContainer = new TitleContainer();
 
-	public TabHudConf tabHud = new TabHudConf();
+	public HudConf hud = new HudConf();
 
 	public FancyAuctionHouse fancyAuctionHouse = new FancyAuctionHouse();
 
@@ -163,17 +163,17 @@ public class UIAndVisualsConfig {
 		}
 	}
 
-	public static class TabHudConf {
+	public static class HudConf {
 		@Deprecated
 		public transient boolean tabHudEnabled = true;
 
 		public boolean fancyWidgetsList = true;
 
-		public int tabHudScale = 100;
+		public int hudScale = 100;
 
 		public boolean showVanillaTabByDefault = false;
 
-		public TabHudStyle style = TabHudStyle.FANCY;
+		public HudStyle style = HudStyle.FANCY;
 
 		public boolean displayIcons = true;
 
@@ -197,11 +197,11 @@ public class UIAndVisualsConfig {
 	/**
 	 * @implNote Currently, there are no "decorations", meaning that there is no difference between the SIMPLE and CLASSIC styles.
 	 */
-	public enum TabHudStyle {
+	public enum HudStyle {
 		/**
 		 * The minimal style, with no decorations nor custom components,
 		 * rendered in a minimal rectangle background,
-		 * or no background at all if {@link TabHudConf#enableHudBackground} is false.
+		 * or no background at all if {@link HudConf#enableHudBackground} is false.
 		 */
 		MINIMAL,
 		/**

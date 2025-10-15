@@ -31,7 +31,7 @@ class IcoTextComponent extends Component {
 
 	@Override
 	public void render(DrawContext context, int x, int y) {
-		int offset = SkyblockerConfigManager.get().uiAndVisuals.tabHud.compactWidgets ? 2 : 4;
+		int offset = SkyblockerConfigManager.get().uiAndVisuals.hud.compactWidgets ? 2 : 4;
 		renderIcon(context, ico, x, y);
 		context.drawText(txtRend, text, x + ICO_DIM.get() + PAD_L, y + offset, Colors.WHITE, false);
 	}

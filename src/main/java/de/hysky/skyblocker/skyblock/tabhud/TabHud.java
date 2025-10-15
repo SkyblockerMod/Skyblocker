@@ -26,6 +26,6 @@ public class TabHud {
 	}
 
 	public static boolean shouldRenderVanilla() {
-		return defaultTgl.isPressed() != SkyblockerConfigManager.get().uiAndVisuals.tabHud.showVanillaTabByDefault;
+		return defaultTgl.isPressed() != SkyblockerConfigManager.get().uiAndVisuals.hud.showVanillaTabByDefault;
 	}
 }
