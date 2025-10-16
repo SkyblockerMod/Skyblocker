@@ -1493,5 +1493,7 @@
     "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "顯示箭袋中箭的實際數量，而不是使用原本的物品數量上限64。",
     "skyblocker.config.uiAndVisuals.smoothAOTE.predictive": "預測算法",
     "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "預測傳送的目的地。這意味著不會有額外的延遲，但有時會出現錯誤並且可能會發生故障。",
-    "skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip": "選擇一個Skyblock圖標或物品來填充此按鈕。"
+    "skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip": "選擇一個Skyblock圖標或物品來填充此按鈕。",
+    "skyblocker.config.helpers.greatSpook.enableMathTeacherHelper.@Tooltip": "自動解決數學教師的問題。",
+    "skyblocker.config.helpers.greatSpook.enableMathTeacherHelper": "啟用數學教師助手"
 }
