@@ -568,6 +568,10 @@
   "skyblocker.config.helpers.fishing.fishingHookDisplay.HUD": "In HUD",
   "skyblocker.config.helpers.fishing.fishingHookDisplay.@Tooltip": "Display the skyblock fishing hook timer on the screen.\n\nOn crosshair: in the center of screen\n\nIn HUD: in the fishing HUD",
 
+  "skyblocker.config.helpers.greatSpook": "Great Spook Event",
+  "skyblocker.config.helpers.greatSpook.enableMathTeacherHelper": "Enable Math Teacher Helper",
+  "skyblocker.config.helpers.greatSpook.enableMathTeacherHelper.@Tooltip": "Automatically solves the Math Teacher's questions.",
+
   "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "Enable Item Price Lookup",
   "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Searches the Bazaar and Auction House for the current hovered item with the F6 key.",
   "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "Failed to find item in the Bazaar and Auction House",
