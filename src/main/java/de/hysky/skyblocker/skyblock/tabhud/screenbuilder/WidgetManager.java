@@ -209,6 +209,7 @@ public class WidgetManager {
 		if (object != null) {
 			setWidgetOptions(widget, object);
 		}
+		if (Utils.isOnSkyblock()) currentBuilder.updateWidgetsList();
 	}
 
 	public static void setWidgetOptions(HudWidget widget, JsonObject object) {
