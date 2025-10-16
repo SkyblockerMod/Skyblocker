@@ -24,6 +24,7 @@ import net.minecraft.util.Colors;
 import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
 
@@ -140,8 +141,10 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		super.render(context, mouseX, mouseY, deltaTicks);
 		Matrix3x2fStack matrices = context.getMatrices();
 		float scale = TabHud.getScaleFactor();
+		matrices.pushMatrix();
 		matrices.scale(scale);
 		builder.render(context, getScreenWidth(), getScreenHeight(), true);
+		matrices.popMatrix();
 		hoveredWidget = null;
 		double scaledMouseX = mouseX / scale;
 		double scaledMouseY = mouseY / scale;
@@ -152,11 +155,14 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 			}
 		}
 
+		Matrix3x2f scaleMatrix = new Matrix3x2f().scale(scale);
 		if (hoveredWidget != null) {
-			context.drawBorder(hoveredWidget.getX() - 1, hoveredWidget.getY() - 1, hoveredWidget.getScaledWidth() + 2, hoveredWidget.getScaledHeight() + 2, Colors.YELLOW);
+			ScreenRect rect = hoveredWidget.getNavigationFocus().transform(scaleMatrix);
+			context.drawBorder(rect.getLeft() - 1, rect.getTop() - 1, rect.width() + 2, rect.height() + 2, Colors.YELLOW);
 		}
 		if (selectedWidget != null) {
-			context.drawBorder(selectedWidget.getX() - 1, selectedWidget.getY() - 1, selectedWidget.getScaledWidth() + 2, selectedWidget.getScaledHeight() + 2, Colors.GREEN);
+			ScreenRect rect = selectedWidget.getNavigationFocus().transform(scaleMatrix);
+			context.drawBorder(rect.getLeft() - 1, rect.getTop() - 1, rect.width() + 2, rect.height() + 2, Colors.GREEN);
 		}
 		topBarWidget.visible = selectedWidget == null || selectedWidget.getY() >= 16;
 
@@ -171,6 +177,8 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) return true;
 		if (selectedWidget != null && dragRelative != null) {
 			PositionRule oldRule = selectedWidget.getPositionRule();
+			mouseX /= TabHud.getScaleFactor();
+			mouseY /= TabHud.getScaleFactor();
 
 			PositionRule.Point parentPoint;
 			PositionRule.Point thisPoint;
@@ -288,6 +296,8 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 		if (!hoveredWidget.equals(selectedWidget)) {
 			selectedWidget = hoveredWidget;
 		}
+		mouseX /= TabHud.getScaleFactor();
+		mouseY /= TabHud.getScaleFactor();
 		dragRelative = new ScreenPos((int) (mouseX - selectedWidget.getX()), (int) (mouseY - selectedWidget.getY()));
 		if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && (!sidePanelWidget.isOpen() || !selectedWidget.equals(sidePanelWidget.getHudWidget()))) {
 			openSidePanel();
