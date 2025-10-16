@@ -545,5 +545,16 @@
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style.CIRCULAR": "Círculo",
     "skyblocker.config.general.itemList.filter.items": "Itens",
     "skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds": "Fundo de Medalha da Competição Jacob",
-    "skyblocker.config.general.hitbox.oldCactusHitbox": "Habilitar Caixa de Impacto do Cacto da 1.8"
+    "skyblocker.config.general.hitbox.oldCactusHitbox": "Habilitar Caixa de Impacto do Cacto da 1.8",
+    "skyblocker.config.general.itemProtection.protectValuableConsumables": "Proteger Consumíveis Valiosos",
+    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[1]": "Você já possui o acessório de nível mais alto dessa família.",
+    "skyblocker.config.general.itemProtection.slotLockStyle.style.CLASSIC": "Clássico",
+    "skyblocker.config.general.itemProtection.displayChatNotification": "Mostrar Notificações do Bate-papo",
+    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper.@Tooltip[0]": "Quando passar o cursor em cima de um acessório, você será informado se já possui o acessório ou não, e também se ele é pior do que você já havia coletado ou melhor. Lista de Estatísticas:",
+    "skyblocker.config.general.itemTooltip.enableAccessoriesHelper": "Habilitar Ajudante para Acessórios",
+    "skyblocker.config.general.itemTooltip.dungeonQuality.@Tooltip": "Mostrará qualidade e nível de itens derrubados por monstros na dungeon.\n\n\nLembrete:\nNível 1-3 serão derrubados da F1-F3\nNível 4-7 serão derrubados da F4-F7 ou M1-M4\nNível 8-10 serão derrubados apenas da M5-M7",
+    "skyblocker.config.helpers.fishing.fishingTimerScale": "Escala do Temporizador de Pescaria",
+    "skyblocker.config.general.itemProtection.displayChatNotification.@Tooltip": "Mostrará uma notificação no bate-papo quando alterado o estado de proteção de um item.",
+    "skyblocker.config.general.itemProtection.protectValuableConsumables.@Tooltip": "Impede consumir itens como Bottle of Jyrre, Dark Cacao Truffles, e Discrite antes deles evoluírem.",
+    "skyblocker.config.general.itemProtection.slotLockStyle.style.FANCY": "Extravagante"
 }
