@@ -70,16 +70,16 @@ public class QuickNavButton extends ClickableWidget {
 		return alpha;
 	}
 
-    /**
-     * Constructs a new QuickNavButton with the given parameters.
-     *
-     * @param index   the index of the button.
-     * @param toggled the toggled state of the button.
-     * @param command the command to execute when the button is clicked.
-     * @param icon    the icon to display on the button.
-     * @param tooltip the tooltip to show when hovered
-     */
-    public QuickNavButton(int index, boolean toggled, String command, ItemStack icon, String tooltip) {
+	/**
+	 * Constructs a new QuickNavButton with the given parameters.
+	 *
+	 * @param index   the index of the button.
+	 * @param toggled the toggled state of the button.
+	 * @param command the command to execute when the button is clicked.
+	 * @param icon    the icon to display on the button.
+	 * @param tooltip the tooltip to show when hovered
+	 */
+	public QuickNavButton(int index, boolean toggled, String command, ItemStack icon, String tooltip) {
 		super(0, 0, 26, 32, Text.empty());
 		this.index = index;
 		this.toggled = toggled;
@@ -92,13 +92,13 @@ public class QuickNavButton extends ClickableWidget {
 		}
 		Tooltip tip;
 		try {
-            setTooltip(tip = Tooltip.of(TextCodecs.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(tooltip, JsonElement.class)).getOrThrow().getFirst()));
-        } catch (Exception e) {
-            setTooltip(tip = Tooltip.of(Text.literal(tooltip)));
-        }
+			setTooltip(tip = Tooltip.of(TextCodecs.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(tooltip, JsonElement.class)).getOrThrow().getFirst()));
+		} catch (Exception e) {
+			setTooltip(tip = Tooltip.of(Text.literal(tooltip)));
+		}
 		this.tooltip = tip;
 		setTooltipDelay(Duration.ofMillis(100));
-    }
+	}
 
 	private void updateCoordinates() {
 		Screen screen = MinecraftClient.getInstance().currentScreen;
@@ -106,7 +106,7 @@ public class QuickNavButton extends ClickableWidget {
 			if (!(screen instanceof PopupBackgroundAccessor popup)) {
 				throw new IllegalStateException(
 						"Current PopupScreen does not support AccessorPopupBackground"
-						);
+				);
 			}
 			screen = popup.getUnderlyingScreen();
 		}
