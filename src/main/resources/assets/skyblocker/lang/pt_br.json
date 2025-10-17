@@ -617,5 +617,16 @@
     "skyblocker.config.helpers.chocolateFactory.waypointType": "Tipos de Pontos de Referência de Ovo",
     "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "Repetidamente toca um tinido quando um coelho perdido estiver presentem. Se é um dourado, o som vai ser mais frequente e diferente.",
     "skyblocker.config.helpers.carnival.catchAFishHelper.@Tooltip": "Fará peixes dourados brilharem.",
-    "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder": "Habilitar Lembrete da Torre do Tempo"
+    "skyblocker.config.helpers.chocolateFactory.enableTimeTowerReminder": "Habilitar Lembrete da Torre do Tempo",
+    "skyblocker.config.helpers.enableCopyUnderbidPrice": "Habilitar Copiar Preço de Lance Inferior",
+    "skyblocker.config.helpers.enableWardrobeHelper": "Habilitar Ajudante de Armário",
+    "skyblocker.config.helpers.fishing.changeTimerColor": "Mudar Temporizador aos 20s",
+    "skyblocker.config.helpers.enableDateCalculator.@Tooltip": "Mostrará o tempo e dia de eventos no futuro, como o calendário de eventos.",
+    "skyblocker.config.helpers.fishing.changeTimerColor.@Tooltip": "Mudará o temporizador para verde após 20 segundos passarem",
+    "skyblocker.config.helpers.enableCopyUnderbidPrice.@Tooltip": "Copia o preço BIN mais baixo menos uma moeda para sua área de transferência quando abrir a tela de Criar Leilão BIN.",
+    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Habilita trocar de armadura no armário pressionando teclas da barra de ação sendo 1-9 enquanto o menu estiver aberto. A armadura correspondente do menu do armário será equipada.",
+    "skyblocker.config.helpers.enableBuildersWandPreview": "Habilitar Visualização da Vara do Builder e da Régua do Builder",
+    "skyblocker.config.helpers.enableDateCalculator": "Habilitar Calculadora de Data",
+    "skyblocker.config.helpers.enableBitsHelper.@Tooltip": "Destacará as melhores ofertas da Loja da Comunidade (Loja de Bits). Também mostrará moedas por bits. Verde sendo a melhor oferta que é da lista de itens que vendem rápido. Amarelo será a melhor oferta em geral - podendo incluir coisas que vendem uma vez por ano.\n\nAmbos talvez incluam itens com preços manipulados - por favor use senso comum ou pelo menos média da descrição de 1 dia/3 dias do preço.",
+    "skyblocker.config.helpers.experiments.blockIncorrectClicks": "Bloquear Cliques Incorretos"
 }
