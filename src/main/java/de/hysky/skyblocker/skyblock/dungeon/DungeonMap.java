@@ -44,7 +44,7 @@ import java.util.UUID;
 
 public class DungeonMap {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonMap.class);
-	private static final Identifier DUNGEON_MAP = Identifier.of(SkyblockerMod.NAMESPACE, "dungeon_map");
+	private static final Identifier DUNGEON_MAP = SkyblockerMod.id("dungeon_map");
 	private static final MapIdComponent DEFAULT_MAP_ID_COMPONENT = new MapIdComponent(1024);
 	private static final MapRenderState MAP_RENDER_STATE = new MapRenderState();
 	private static MapIdComponent cachedMapIdComponent = null;

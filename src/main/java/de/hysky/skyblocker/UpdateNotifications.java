@@ -11,11 +11,11 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.data.JsonData;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.toast.SystemToast;
@@ -38,9 +38,8 @@ import java.util.concurrent.CompletableFuture;
 public class UpdateNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final String BASE_URL = "https://api.modrinth.com/v2/project/y6DuFGwJ/version?loaders=[%22fabric%22]&game_versions=";
+	private static final String BASE_URL = "https://api.modrinth.com/v2/project/y6DuFGwJ/version?loaders=[%22fabric%22]";
 	private static final Version MOD_VERSION = SkyblockerMod.SKYBLOCKER_MOD.getMetadata().getVersion();
-	private static final String MC_VERSION = SharedConstants.getGameVersion().id();
 	private static final Path CONFIG_PATH = SkyblockerMod.CONFIG_DIR.resolve("update_notifications.json");
 	@VisibleForTesting
 	protected static final Comparator<Version> COMPARATOR = Version::compareTo;
@@ -57,18 +56,26 @@ public class UpdateNotifications {
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> loaded = config.init());
 		SkyblockEvents.JOIN.register(() -> {
 			if (!loaded.isDone()) {
-				loaded.thenRun(() -> {
-					if (config.getData().enabled() && !sentUpdateNotification) checkForNewVersion();
-				});
-			} else if (config.getData().enabled() && !sentUpdateNotification) checkForNewVersion();
+				loaded.thenRun(UpdateNotifications::tryCheckForNewVersion);
+			} else {
+				tryCheckForNewVersion();
+			}
 		});
+	}
+
+	private static void tryCheckForNewVersion() {
+		if (config.getData().enabled() && !sentUpdateNotification) {
+			//Wait a minute since when you join Skyblock there's usually a bunch of chat messages that pop up
+			//so that this doesn't get buried
+			Scheduler.INSTANCE.schedule(UpdateNotifications::checkForNewVersion, 60 * 20);
+		}
 	}
 
 	private static void checkForNewVersion() {
 		CompletableFuture.runAsync(() -> {
 			try {
 				SemanticVersion version = (SemanticVersion) MOD_VERSION; //Would only fail because someone changed it themselves
-				String response = Http.sendGetRequest(BASE_URL + "[%22" + MC_VERSION + "%22]");
+				String response = Http.sendGetRequest(BASE_URL);
 				List<MrVersion> mrVersions = MrVersion.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getOrThrow();
 
 				//Set it to true now so that we don't keep re-checking if the data should be discarded

@@ -15,12 +15,11 @@ import net.azureaaron.dandelion.systems.controllers.StringController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class QuickNavigationCategory {
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
-        		.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/quicknav"))
+        		.id(SkyblockerMod.id("config/quicknav"))
                 .name(Text.translatable("skyblocker.config.quickNav"))
 
                 //Toggle

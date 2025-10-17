@@ -45,8 +45,8 @@ import java.util.stream.Collectors;
 
 public class WidgetManager {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Identifier FANCY_TAB_HUD = Identifier.of(SkyblockerMod.NAMESPACE, "fancy_tab_hud");
-	private static final Identifier FANCY_TAB = Identifier.of(SkyblockerMod.NAMESPACE, "fancy_tab");
+	private static final Identifier FANCY_TAB_HUD = SkyblockerMod.id("fancy_tab_hud");
+	private static final Identifier FANCY_TAB = SkyblockerMod.id("fancy_tab");
 
 	private static final int VERSION = 2;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");

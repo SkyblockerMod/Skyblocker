@@ -14,10 +14,12 @@ public class SignCalculator {
 
     private static String lastInput;
     private static double output;
+	private static Text error;
 
     public static void renderCalculator(DrawContext context, String message, int renderX, int renderY) {
         if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.requiresEquals && !message.startsWith("=")) {
             output = -1;
+			error = null;
             lastInput = message;
             return;
         }
@@ -36,8 +38,10 @@ public class SignCalculator {
 			lastInput = message;
 			try {
 				output = Calculator.calculate(message);
-			} catch (Exception e) {
+				error = null;
+			} catch (Calculator.CalculatorException e) {
 				output = -1;
+				error = Text.translatable(e.getMessage(), e.args).formatted(Formatting.RED);
 			}
 		}
 	}
@@ -59,7 +63,7 @@ public class SignCalculator {
     private static void render(DrawContext context, String input, int renderX, int renderY) {
         Text text;
         if (output == -1) {
-            text = Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").formatted(Formatting.RED);
+            text = error != null ? error : Text.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").formatted(Formatting.RED);
         } else {
             text = Text.literal(input + " = " + Formatters.DOUBLE_NUMBERS.format(output)).formatted(Formatting.GREEN);
         }

@@ -12,6 +12,7 @@ import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.museum.MuseumManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -35,7 +36,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 import java.util.List;
 import java.util.Locale;
@@ -53,9 +53,11 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
 		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.IDENTIFIER), EntryStacks.of(Items.CRAFTING_TABLE));
 		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.IDENTIFIER), EntryStacks.of(Items.ANVIL));
+		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockNpcShopRecipe.IDENTIFIER), EntryStacks.of(Items.GOLD_NUGGET));
+
 		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
 		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_forge"), ItemUtils.getSkyblockerForgeStack(), 84));
-
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockNpcShopRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_npc_shop"), Items.GOLD_NUGGET.getDefaultStack(), 73));
 		categoryRegistry.add(new SkyblockInfoCategory());
 	}
 
@@ -109,7 +111,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 				name = parentItem.get().getName();
 			}
 
-			registry.group(Identifier.of(SkyblockerMod.NAMESPACE, "rei_category/" + categoryPath), name, allItems);
+			registry.group(SkyblockerMod.id("rei_category/" + categoryPath), name, allItems);
 		});
 	}
 

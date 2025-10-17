@@ -36,7 +36,7 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 	private static final int RED_ERROR_COLOR = 0xFFFF5555;
 	private static final EntryStack<ItemStack> ICON = EntryStacks.of(new ItemStack(Items.CHEST));
 
-	public static final Identifier IDENTIFIER = Identifier.of(SkyblockerMod.NAMESPACE, "skyblock_info");
+	public static final Identifier IDENTIFIER = SkyblockerMod.id("skyblock_info");
 
 	@Override
 	public CategoryIdentifier<? extends SkyblockInfoDisplay> getCategoryIdentifier() {

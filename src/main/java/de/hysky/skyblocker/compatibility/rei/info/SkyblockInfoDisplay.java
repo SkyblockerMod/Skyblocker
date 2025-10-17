@@ -32,7 +32,7 @@ public class SkyblockInfoDisplay implements Display {
 
 	@Override
 	public CategoryIdentifier<?> getCategoryIdentifier() {
-		return CategoryIdentifier.of(Identifier.of(SkyblockerMod.NAMESPACE, "skyblock_info"));
+		return CategoryIdentifier.of(SkyblockerMod.id("skyblock_info"));
 	}
 
 	@Override

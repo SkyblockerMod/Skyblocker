@@ -27,7 +27,7 @@ import java.util.List;
 
 public class AnimatedDyeTimelineWidget extends ContainerWidget implements Closeable {
 
-	private static final Identifier GRADIENT_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "generated/dye_gradient");
+	private static final Identifier GRADIENT_TEXTURE = SkyblockerMod.id("generated/dye_gradient");
 
 	private static final int HORIZONTAL_MARGIN = 3;
 	private static final int VERTICAL_MARGIN = 1;

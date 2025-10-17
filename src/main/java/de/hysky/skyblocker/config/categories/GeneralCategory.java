@@ -20,13 +20,12 @@ import net.azureaaron.dandelion.systems.controllers.FloatController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 public class GeneralCategory {
 
     public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
         return ConfigCategory.createBuilder()
-        		.id(Identifier.of(SkyblockerMod.NAMESPACE, "config/general"))
+        		.id(SkyblockerMod.id("config/general"))
                 .name(Text.translatable("skyblocker.config.general"))
 
                 //Skyblocker Screen

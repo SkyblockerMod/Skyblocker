@@ -10,7 +10,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import it.unimi.dsi.fastutil.Pair;
@@ -26,7 +25,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.trim.ArmorTrim;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
 import net.minecraft.item.equipment.trim.ArmorTrimPattern;
-import net.minecraft.registry.*;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry.Reference;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
@@ -93,7 +95,7 @@ public class CustomArmorTrims {
 
 		if (Utils.isOnSkyblock() && heldItem != null) {
 			if (heldItem.isIn(ItemTags.TRIMMABLE_ARMOR)) {
-				String itemUuid = ItemUtils.getItemUuid(heldItem);
+				String itemUuid = heldItem.getUuid();
 
 				if (!itemUuid.isEmpty()) {
 					Object2ObjectOpenHashMap<String, ArmorTrimId> customArmorTrims = SkyblockerConfigManager.get().general.customArmorTrims;
