@@ -32,6 +32,7 @@
 * Add responsive mode for Smooth AOTE
 * Add mana estimation for Status Bars
 * Add Chat Waypoints dedicated option and shareCoords alias
+* Add a double click option for Quick Navigation buttons
 * Update dungeon crypts message config text to reflect the new default
 * Update line width in Waterboard Puzzle to match Vanilla and other Features
 * Change progress percentage on hud widgets to show 2 decimal places.
@@ -130,6 +131,7 @@
 * Don't show Seen Waypoints through walls by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1747
 * Add a config option for Math Teacher Helper by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1750
 * Fix Dungeon Profit Calculator for Scarf & Thorn shards by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1751
+* Quick Nav: Add "Require Double Click" option by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/1680
 
 ## New Contributors
 * @Fyelne made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/1654
