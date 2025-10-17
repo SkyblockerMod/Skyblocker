@@ -346,7 +346,6 @@
 
   "skyblocker.config.general.hitbox": "Hitboxes",
   "skyblocker.config.general.hitbox.oldCactusHitbox": "Enable 1.8 cactus hitbox",
-  "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Enable 1.8 farmland hitbox",
   "skyblocker.config.general.hitbox.oldLeverHitbox": "Enable 1.8 lever hitbox",
   "skyblocker.config.general.hitbox.oldMushroomHitbox": "Enable 1.8 mushroom hitbox",
 
