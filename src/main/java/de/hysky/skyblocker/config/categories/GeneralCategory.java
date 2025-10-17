@@ -409,13 +409,6 @@ public class GeneralCategory {
 						.name(Text.translatable("skyblocker.config.general.hitbox"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.general.hitbox.oldFarmlandHitbox"))
-								.binding(defaults.general.hitbox.oldFarmlandHitbox,
-										() -> config.general.hitbox.oldFarmlandHitbox,
-										newValue -> config.general.hitbox.oldFarmlandHitbox = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
 								.name(Text.translatable("skyblocker.config.general.hitbox.oldLeverHitbox"))
 								.binding(defaults.general.hitbox.oldLeverHitbox,
 										() -> config.general.hitbox.oldLeverHitbox,

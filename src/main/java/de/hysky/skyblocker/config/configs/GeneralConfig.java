@@ -215,7 +215,8 @@ public class GeneralConfig {
     }
 
     public static class Hitbox {
-        public boolean oldFarmlandHitbox = false;
+    	@Deprecated
+        public transient boolean oldFarmlandHitbox = false;
 
         public boolean oldLeverHitbox = false;
 
