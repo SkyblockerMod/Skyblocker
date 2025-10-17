@@ -184,6 +184,7 @@ public class EggFinder {
 			eggType.egg = new Egg(entities.getFirst().getBlockPos().up(2), eggType);
 			WsMessageHandler.sendLocationMessage(Service.EGG_WAYPOINTS, new EggWaypointMessage(eggType, eggType.egg.pos));
 			eggType.egg.setFound();
+			eggType.sendEggMessage();
 		} catch (IllegalArgumentException e) {
 			LOGGER.error("[Skyblocker Egg Finder] Failed to process an egg!", e);
 		}
@@ -231,7 +232,10 @@ public class EggFinder {
 				egg.setFound();
 				return;
 			}
+			sendEggMessage();
+		}
 
+		public void sendEggMessage() {
 			MutableText eggName = Text.translatable("skyblocker.helpers.hoppitysHunt.chocolateEgg", this.name).withColor(color);
 			MinecraftClient.getInstance().player.sendMessage(
 					Constants.PREFIX.get().append(Text.translatable("skyblocker.helpers.hoppitysHunt.newEggDiscovered", eggName, egg.pos.toShortString())
