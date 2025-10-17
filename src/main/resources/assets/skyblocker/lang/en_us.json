@@ -903,6 +903,7 @@
   "skyblocker.config.quickNav.button.item.count": "Item Count",
   "skyblocker.config.quickNav.button.item.itemName": "Item",
   "skyblocker.config.quickNav.button.render": "Render",
+  "skyblocker.config.quickNav.button.doubleClick": "Require Double Click",
   "skyblocker.config.quickNav.button.tooltip": "Tooltip",
   "skyblocker.config.quickNav.button.tooltip.@Tooltip": "Tooltip shown when hovering your mouse over the button.\n\nYou can use text json format.\nPutting nothing will make the tooltip not render.",
   "skyblocker.config.quickNav.button.uiTitle": "UI Title",
@@ -1714,6 +1715,8 @@
   "skyblocker.galatea.hud.sweepDetails.throwPenalty": "Axe Throw Penalty (%s)",
   "skyblocker.galatea.hud.sweepDetails.stylePenalty": "Tree Style Penalty (%s)",
   "skyblocker.galatea.hud.sweepDetails.correctStyle": "Style: %s",
+
+  "skyblocker.quickNav.confirm": "Click again to confirm.",
 
   "emi.category.skyblocker.skyblock_crafting": "Crafting (Skyblock)",
   "emi.category.skyblocker.skyblock_forge": "Dwarven Forge (Skyblock)",

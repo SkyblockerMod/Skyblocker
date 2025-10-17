@@ -40,6 +40,7 @@ public class QuickNavButton extends ClickableWidget {
 	private final boolean toggled;
 	private final String command;
 	private final ItemStack icon;
+	protected final Tooltip tooltip;
 
 	private boolean temporaryToggled = false;
 	private long toggleTime;
@@ -85,12 +86,17 @@ public class QuickNavButton extends ClickableWidget {
 		this.command = command;
 		this.icon = icon;
 		this.toggleTime = 0;
-		if (tooltip == null || tooltip.isEmpty()) return;
-		try {
-			setTooltip(Tooltip.of(TextCodecs.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(tooltip, JsonElement.class)).getOrThrow().getFirst()));
-		} catch (Exception e) {
-			setTooltip(Tooltip.of(Text.literal(tooltip)));
+		if (tooltip == null || tooltip.isEmpty()) {
+			this.tooltip = null;
+			return;
 		}
+		Tooltip tip;
+		try {
+			setTooltip(tip = Tooltip.of(TextCodecs.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(tooltip, JsonElement.class)).getOrThrow().getFirst()));
+		} catch (Exception e) {
+			setTooltip(tip = Tooltip.of(Text.literal(tooltip)));
+		}
+		this.tooltip = tip;
 		setTooltipDelay(Duration.ofMillis(100));
 	}
 
@@ -100,7 +106,7 @@ public class QuickNavButton extends ClickableWidget {
 			if (!(screen instanceof PopupBackgroundAccessor popup)) {
 				throw new IllegalStateException(
 						"Current PopupScreen does not support AccessorPopupBackground"
-						);
+				);
 			}
 			screen = popup.getUnderlyingScreen();
 		}
