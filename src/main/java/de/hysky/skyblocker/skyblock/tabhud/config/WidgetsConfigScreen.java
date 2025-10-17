@@ -360,7 +360,7 @@ public class WidgetsConfigScreen extends Screen implements WidgetConfig {
 	public void tick() {
 		if (selectedWidget == null && sidePanelWidget.isOpen()) sidePanelWidget.close();
 		for (HudWidget widget : builder.getWidgets()) {
-			if (widget.getNavigationFocus().intersects(getNavigationFocus()) || !widget.getPositionRule().parent().equals("screen")) continue;
+			if (widget.getNavigationFocus().intersects(new ScreenRect(0, 0, getScreenWidth(), getScreenHeight())) || !widget.getPositionRule().parent().equals("screen")) continue;
 			widget.setPositionRule(PositionRule.DEFAULT);
 			updateBuilderPositions();
 		}
