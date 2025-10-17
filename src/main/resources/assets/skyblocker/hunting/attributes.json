@@ -65,12 +65,12 @@
 		"id": "C12",
 		"apiId": "SHARD_CHILL"
 	},
-	{
-		"name": "Monster Bait",
-		"shardName": "Sea Archer",
-		"id": "C14",
-		"apiId": "SHARD_SEA_ARCHER"
-	},
+  {
+    "name": "Creature Fisher",
+    "shardName": "Bogged",
+    "id": "C13",
+    "apiId": "SHARD_SEA_ARCHER"
+  },
 	{
 		"name": "Arthropod Resistance",
 		"shardName": "Voracious Spider",
@@ -647,6 +647,12 @@
 		"id": "R61",
 		"apiId": "SHARD_GECKO"
 	},
+  {
+    "name": "Chop",
+    "shardName": "Hummingbird",
+    "id": "R64",
+    "apiId": "SHARD_HUMMINGBIRD"
+  },
 	{
 		"name": "Earth Elemental",
 		"shardName": "Terra",
@@ -751,7 +757,7 @@
 	},
 	{
 		"name": "Sea Wisdom",
-		"shardName": "Sea Emperor",
+		"shardName": "Loch Emperor",
 		"id": "E20",
 		"apiId": "SHARD_SEA_EMPEROR"
 	},
@@ -889,7 +895,7 @@
 	},
 	{
 		"name": "Paramount Fortitude",
-		"shardName": "Endstone Protector",
+		"shardName": "End Stone Protector",
 		"id": "L9",
 		"apiId": "SHARD_ENDSTONE_PROTECTOR"
 	},
@@ -1042,5 +1048,17 @@
 		"shardName": "Starborn",
 		"id": "L44",
 		"apiId": "SHARD_STARBORN"
-	}
+	},
+  {
+    "name": "Bayou Biter",
+    "shardName": "Titanoboa",
+    "id": "L47",
+    "apiId": "SHARD_TITANOBOA"
+  },
+  {
+    "name": "Catacombs Graduate",
+    "shardName": "Scarf",
+    "id": "L51",
+    "apiId": "SHARD_SCARF"
+  }
 ]
