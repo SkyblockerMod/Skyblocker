@@ -134,6 +134,7 @@ public class WidgetManager {
 			currentLayer = layer;
 			currentBuilder = getScreenBuilder(currentLocation, currentLayer);
 			currentBuilder.updateWidgetsList();
+			currentBuilder.updatePositions(w, h);
 		}
 		currentBuilder.render(context, w, h, false);
 	}
