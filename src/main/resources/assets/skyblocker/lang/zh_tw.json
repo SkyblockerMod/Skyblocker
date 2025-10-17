@@ -23,7 +23,6 @@
     "skyblocker.config.general.hitbox.oldLeverHitbox": "啟用1.8的控制桿判定箱",
     "skyblocker.config.general.hitbox": "判定箱",
     "skyblocker.itemTooltip.nullMessage": "§c物品資訊裡面的價格訊息會在最多60秒內更新。如果沒有，請檢查latest.log",
-    "skyblocker.config.general.hitbox.oldFarmlandHitbox": "啟用1.8的耕地判定箱",
     "skyblocker.config.quickNav": "快速導航",
     "skyblocker.config.quickNav.enableQuickNav": "啟用快速導航",
     "skyblocker.config.dungeons.map.enableMap": "啟用地圖",

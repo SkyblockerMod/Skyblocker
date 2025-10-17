@@ -45,7 +45,6 @@
     "skyblocker.config.general.itemTooltip": "Описание предмета",
     "skyblocker.config.general.itemTooltip.enableNPCPrice": "Показать цены у NPC",
     "skyblocker.config.general.itemTooltip.avg.THREE_DAY": "Средняя цена за 3 дня",
-    "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Использовать хитбокс пашни из 1.8",
     "skyblocker.config.uiAndVisuals.backpackPreviewWithoutShift": "Просматривать содержимое рюкзаков без удержания кнопки Shift",
     "skyblocker.fishing.reelNow": "Тяни!",
     "skyblocker.config.chat.filter.hideAutopet": "Скрывать сообщения Autopet",

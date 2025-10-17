@@ -17,7 +17,6 @@
     "skyblocker.config.general.itemTooltip.enableLowestBIN": "显示最低BIN（立即购买）价格",
     "skyblocker.config.general.itemTooltip.enableBazaarPrice": "显示集市购买/卖出价格",
     "skyblocker.config.general.hitbox": "判定箱",
-    "skyblocker.config.general.hitbox.oldFarmlandHitbox": "启用1.8版本的耕地判定箱",
     "skyblocker.config.general.hitbox.oldLeverHitbox": "启用1.8版本的拉杆判定箱",
     "skyblocker.itemTooltip.nullMessage": "§c物品提示里的价格信息会在最多60秒内更新。如果没有，请检查latest.log",
     "skyblocker.itemTooltip.noData": "§c没有数据",

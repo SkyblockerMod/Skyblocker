@@ -14,7 +14,6 @@
     "skyblocker.config.general.itemTooltip.enableLowestBIN": "最安価の表示を表示する",
     "skyblocker.config.general.itemTooltip.enableBazaarPrice": "バザーでの売り買いの値段を表示する",
     "skyblocker.config.general.hitbox": "ヒットボックス",
-    "skyblocker.config.general.hitbox.oldFarmlandHitbox": "バージョン1.8での作物のヒットボックスを使う",
     "skyblocker.config.general.hitbox.oldLeverHitbox": "バージョン1.8でのレバーのヒットボックスを使う",
     "skyblocker.itemTooltip.nullMessage": "§cツールチップ上のアイテムの値段は最大60秒ごとに更新されます。されていない場合はlatest.logを確認してください",
     "skyblocker.config.misc.richPresence": "discordに自分のゲームアクティビティを表示する",

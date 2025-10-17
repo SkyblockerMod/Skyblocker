@@ -10,7 +10,6 @@
     "skyblocker.config.general.itemTooltip.enableMotesPrice": "Ativar Preço de Motes",
     "skyblocker.config.general.itemTooltip.enableNPCPrice": "Ativar Preço de NPC",
     "skyblocker.config.general.specialEffects.rareDungeonDropEffects.@Tooltip": "Adiciona um efeito especial visual que aciona quando é obtido um loot raro de dungeon!",
-    "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Ativar hitbox de farmland do 1.8",
     "skyblocker.config.general.hitbox.oldLeverHitbox": "Ativar hitbox de alavanca do 1.8",
     "skyblocker.config.uiAndVisuals.titleContainer": "Contêiner de Título",
     "skyblocker.config.uiAndVisuals.titleContainer.titleContainerScale": "Escala de Contêiner de Título",
