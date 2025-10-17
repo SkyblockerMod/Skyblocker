@@ -182,7 +182,7 @@ public class GeneralConfig {
     }
 
     public static class ItemProtection {
-        public SlotLockStyle slotLockStyle = SlotLockStyle.FANCY;
+        public SlotLockStyle slotLockStyle = SlotLockStyle.CLASSIC;
 
 		public boolean displayChatNotification = true;
 
