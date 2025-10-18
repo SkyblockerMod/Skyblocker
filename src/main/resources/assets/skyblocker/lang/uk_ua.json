@@ -58,7 +58,6 @@
     "skyblocker.config.general": "Загальне",
     "skyblocker.config.general.enableTips": "Увімкнути підказки",
     "skyblocker.config.general.hitbox": "Гітбокси",
-    "skyblocker.config.general.hitbox.oldFarmlandHitbox": "Використовувати гітбокс рілля із версії 1.8",
     "skyblocker.config.general.hitbox.oldLeverHitbox": "Використовувати гітбокс важелів із версії 1.8",
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds": "Фон рідкості предмета",
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style.CIRCULAR": "Круглий",
