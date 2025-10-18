@@ -19,6 +19,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -31,8 +32,10 @@ import net.minecraft.util.math.ColorHelper;
 import java.util.*;
 
 public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.AbstractWaypointEntry> {
-	private static final Identifier INSERT_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "insert_button");
-	private static final Identifier INSERT_HIGHLIGHTED_TEXTURE = Identifier.of(SkyblockerMod.NAMESPACE, "insert_button_highlighted");
+	private static final Identifier DELETE_ICON = SkyblockerMod.id("trash_can");
+	private static final int ICON_WIDTH = 12, ICON_HEIGHT = 15;
+	private static final Identifier INSERT_TEXTURE = SkyblockerMod.id("insert_button");
+	private static final Identifier INSERT_HIGHLIGHTED_TEXTURE = SkyblockerMod.id("insert_button_highlighted");
 
 	private final AbstractWaypointsScreen<?> screen;
 	private Location island;
@@ -48,7 +51,7 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 
 	@Override
 	public int getRowWidth() {
-		return 350;
+		return 340;
 	}
 
 	@Override
@@ -275,14 +278,16 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			}).width(72).build();
 			rightLayout.add(buttonNewWaypoint);
 
-			ButtonWidget buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.deleteButton"), ignored -> {
+			Text deleteText = Text.translatable("selectServer.deleteButton");
+			ButtonWidget buttonDelete = TextIconButtonWidget.builder(deleteText, ignored -> {
 				int entryIndex = WaypointsListWidget.this.children().indexOf(this) + 1;
 				while (entryIndex < WaypointsListWidget.this.children().size() && !(WaypointsListWidget.this.children().get(entryIndex) instanceof WaypointGroupEntry)) {
 					WaypointsListWidget.this.children().remove(entryIndex);
 				}
 				WaypointsListWidget.this.children().remove(this);
 				waypoints.remove(group);
-			}).width(38).build();
+			}, true).dimension(20, 20).texture(DELETE_ICON, ICON_WIDTH, ICON_HEIGHT).build();
+			buttonDelete.setTooltip(Tooltip.of(deleteText));
 			rightLayout.add(buttonDelete);
 
 			layout.refreshPositions();
@@ -404,10 +409,12 @@ public class WaypointsListWidget extends ElementListWidget<WaypointsListWidget.A
 			colorField.setOnChange(this::updateColor);
 			leftLayout.add(colorField);
 
-			ButtonWidget buttonDelete = ButtonWidget.builder(Text.translatable("selectServer.deleteButton"), button -> {
+			Text deleteText = Text.translatable("selectServer.deleteButton");
+			ButtonWidget buttonDelete = TextIconButtonWidget.builder(deleteText, button -> {
 				groupEntry.group.waypoints().remove(waypoint);
 				WaypointsListWidget.this.children().remove(this);
-			}).width(38).build();
+			}, true).dimension(20, 20).texture(DELETE_ICON, ICON_WIDTH, ICON_HEIGHT).build();
+			buttonDelete.setTooltip(Tooltip.of(deleteText));
 			layout.add(buttonDelete, Positioner::alignRight);
 			layout.refreshPositions();
 			ImmutableList.Builder<ClickableWidget> builder = ImmutableList.builder();
