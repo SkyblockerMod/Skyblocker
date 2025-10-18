@@ -835,7 +835,7 @@
   "skyblocker.config.mining.glacite.enableCorpseProfitTracker": "Enable Corpse Profit Tracker",
   "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": "Tracks the profit and the loot you get from corpses. Shows the profit in chat when looting a corpse, and has a command to see your history of corpse loot in /skyblocker rewardTrackers corpse list.",
   "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker": "Force English message for Corpse Profit message",
-  "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker.@Tooltip": "This option exists for non-English translations of this mod and it does nothing if your game language is set to English.",
+  "skyblocker.config.mining.glacite.forceEnglishCorpseProfitTracker.@Tooltip": "This option exists for non-English translations of this mod to remove language barriers when sharing profits. It does nothing if your game language is set to English.",
   "skyblocker.config.mining.glacite.fossilSolver": "Fossil Solver",
   "skyblocker.config.mining.glacite.fossilSolver.@Tooltip": "Helps find fossils in the Fossil Excavator",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound": "No fossil found",
