@@ -1501,7 +1501,7 @@
     "skyblocker.customItemNames.screen.gradientColor": "漸變",
     "skyblocker.quickNav.confirm": "再次點擊以確認。",
     "skyblocker.config.helpers.greatSpook": "萬聖節活動",
-    "skyblocker.config.dungeons.devices.solveArrowAlign": "解決箭矢對齊問題",
+    "skyblocker.config.dungeons.devices.solveArrowAlign": "Arrow Align助手",
     "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "顯示每支箭矢剩餘的旋轉次數。",
     "skyblocker.customization.item.glint": "附魔光效：%s",
     "skyblocker.customization.item.glint.default": "預設",
