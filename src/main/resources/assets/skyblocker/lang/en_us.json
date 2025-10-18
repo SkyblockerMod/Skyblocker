@@ -1695,6 +1695,7 @@
 
   "skyblocker.customization.title": "Customize Your Gear",
   "skyblocker.customization.titleSecret": "Pimp Your Gear",
+  "skyblocker.customization.nothingCustomizable": "Nothing customizable.",
   "skyblocker.customization.armor.animated": "Animated",
   "skyblocker.customization.armor.cannotCustomizeColor": "Cannot customize this piece's color :(",
   "skyblocker.customization.armor.cycleBack": "Cycle Back",

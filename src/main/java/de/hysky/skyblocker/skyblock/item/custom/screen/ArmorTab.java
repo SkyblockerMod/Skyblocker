@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -88,8 +89,13 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 		layoutWidget.refreshPositions();
 		grid.add(layoutWidget, 0, 1);
 
-		colorSelectionWidget = new ColorSelectionWidget(0, 0, width, 100, MinecraftClient.getInstance().textRenderer);
+		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		colorSelectionWidget = new ColorSelectionWidget(0, 0, width, 100, textRenderer);
 		grid.add(colorSelectionWidget, 1, 1);
+
+		if (nothingCustomizable) {
+			grid.add(new TextWidget(Text.translatable("skyblocker.customization.nothingCustomizable"), textRenderer), 0, 1, 2, 1, p -> p.alignVerticalCenter().alignHorizontalCenter());
+		}
 
 		updateWidgets();
 

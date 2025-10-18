@@ -2,7 +2,9 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.CustomizeNameWidget;
+import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
@@ -70,15 +72,21 @@ public class ItemTab extends GridScreenTab {
 			setCurrentItem(handStack);
 			return;
 		}
+		for (ItemStack stack : (Utils.isInTheRift() ? SkyblockInventoryScreen.equipment_rift : SkyblockInventoryScreen.equipment)) {
+			if (!stack.getUuid().isEmpty()) {
+				setCurrentItem(stack);
+				return;
+			}
+		}
 		for (ItemStack stack : player.getInventory()) {
 			if (!stack.getUuid().isEmpty()) {
 				setCurrentItem(stack);
-				break;
+				return;
 			}
 		}
-		if (currentItem.getUuid().isEmpty()) {
-			forEachChild(clickableWidget -> clickableWidget.visible = false);
-		}
+		forEachChild(clickableWidget -> clickableWidget.visible = false);
+		grid.add(new TextWidget(Text.translatable("skyblocker.customization.nothingCustomizable"), MinecraftClient.getInstance().textRenderer),
+				0, 0, 3, 2, p -> p.alignHorizontalCenter().alignVerticalCenter());
 	}
 
 	private void setCurrentItem(ItemStack itemStack) {
