@@ -724,5 +724,7 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.replace": "Trocar Mensagem Por:",
     "skyblocker.config.mining.commissionWaypoints": "Pontos de Referência de Comissão",
     "skyblocker.config.mining.callMismyla.message": "Clique aqui para ligar para a Queen Mismyla!",
-    "skyblocker.config.eventNotifications.notificationSound.sound.DING": "Tinido"
+    "skyblocker.config.eventNotifications.notificationSound.sound.DING": "Tinido",
+    "skyblocker.config.otherLocations.end.resetText": "Redefinir",
+    "skyblocker.config.otherLocations.end.resetName": "Redefinir estatísticas do Fim armazenadas"
 }
