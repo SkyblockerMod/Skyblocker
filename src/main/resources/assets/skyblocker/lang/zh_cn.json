@@ -1496,5 +1496,7 @@
     "skyblocker.config.quickNav.button.doubleClick": "需要双击",
     "skyblocker.waypoints.chat.display": "点击以在x: %s y: %s z: %s显示路径点",
     "skyblocker.quickNav.confirm": "再次点击以确认。",
-    "skyblocker.dungeons.splits.sadanGiants": "Sadan的巨人"
+    "skyblocker.dungeons.splits.sadanGiants": "Sadan的巨人",
+    "skyblocker.config.dungeons.devices.solveArrowAlign": "解决箭矢对齐问题",
+    "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "显示每支箭矢剩余的旋转次数。"
 }
