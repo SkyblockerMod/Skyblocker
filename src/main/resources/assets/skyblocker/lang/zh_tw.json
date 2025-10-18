@@ -721,7 +721,7 @@
     "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "當有野生兔子出現時，反覆發出叮叮聲。如果是金色的，聲音會更加頻繁且不同。",
     "skyblocker.config.dungeons.devices": "設備助手（F7/M7）",
     "skyblocker.config.dungeons.devices.solveLightsOn": "Lights On助手",
-    "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "以紅色突出顯示要點選的正確拉桿",
+    "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "以紅色突出顯示要點選的正確拉桿。",
     "skyblocker.config.dungeons.devices.solveSimonSays": "Simon Says助手",
     "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "以綠色突出顯示要點的正確按鈕，並以黃色突出顯示下一個按鈕。",
     "skyblocker.profileviewer.inventory.accessoryBag": "飾品包",
@@ -1500,5 +1500,7 @@
     "skyblocker.config.quickNav.button.doubleClick": "需要雙擊",
     "skyblocker.customItemNames.screen.gradientColor": "漸變",
     "skyblocker.quickNav.confirm": "再次點擊以確認。",
-    "skyblocker.config.helpers.greatSpook": "萬聖節活動"
+    "skyblocker.config.helpers.greatSpook": "萬聖節活動",
+    "skyblocker.config.dungeons.devices.solveArrowAlign": "解決箭矢對齊問題",
+    "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "顯示每支箭矢剩餘的旋轉次數。"
 }

@@ -722,7 +722,7 @@
     "skyblocker.reparty.error": "重新组队失败，请稍后再试！",
     "skyblocker.config.helpers.chocolateFactory.straySound": "野兔音效",
     "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "当有野生兔子出现时，反复发出叮叮声。如果是金色的，声音会更加频繁且不同。",
-    "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "以红色高亮显示要点击的正确拉杆",
+    "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "以红色高亮显示要点击的正确拉杆。",
     "skyblocker.config.dungeons.devices.solveSimonSays.@Tooltip": "以绿色高亮显示要点的正确按钮，并以黄色高亮显示下一个按钮。",
     "skyblocker.profileviewer.inventory.inventory": "物品栏",
     "skyblocker.profileviewer.inventory.armor": "护甲",
@@ -1496,5 +1496,7 @@
     "skyblocker.config.quickNav.button.doubleClick": "需要双击",
     "skyblocker.waypoints.chat.display": "点击以在x: %s y: %s z: %s显示路径点",
     "skyblocker.quickNav.confirm": "再次点击以确认。",
-    "skyblocker.dungeons.splits.sadanGiants": "Sadan的巨人"
+    "skyblocker.dungeons.splits.sadanGiants": "Sadan的巨人",
+    "skyblocker.config.dungeons.devices.solveArrowAlign": "解决箭矢对齐问题",
+    "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "显示每支箭矢剩余的旋转次数。"
 }
