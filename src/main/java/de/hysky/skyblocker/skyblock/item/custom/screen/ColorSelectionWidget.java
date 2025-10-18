@@ -89,7 +89,7 @@ public class ColorSelectionWidget extends ContainerWidget implements Closeable {
 
 		int sliderWidth = (int) (width * 0.35f);
 		boolean vertical = getRight() - sliderWidth - 3 > Math.max(animatedCheckbox.getRight(), cycleBackCheckbox.getRight());
-		int sliderY = vertical ? resetColorButton.getBottom() + 3: timelineWidget.getY() - 17;
+		int sliderY = vertical ? resetColorButton.getBottom() + 3 : timelineWidget.getY() - 17;
 		delaySlider = new Slider(getRight() - sliderWidth - 3, sliderY, sliderWidth, 0.0f, 2.0f, 0.02f, true, DELAY_TEXT, f -> {
 			String itemUuid = currentItem.getUuid();
 			CustomArmorAnimatedDyes.AnimatedDye dye = SkyblockerConfigManager.get().general.customAnimatedDyes.get(itemUuid);

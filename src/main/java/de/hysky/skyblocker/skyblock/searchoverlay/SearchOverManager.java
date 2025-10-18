@@ -295,7 +295,7 @@ public class SearchOverManager {
 	protected static String getSuggestion(int index) {
 		if (suggestionsArray.length > index && suggestionsArray[index] != null) {
 			return suggestionsArray[index];
-		} else {//there are no suggestions yet
+		} else { //there are no suggestions yet
 			return "";
 		}
 	}

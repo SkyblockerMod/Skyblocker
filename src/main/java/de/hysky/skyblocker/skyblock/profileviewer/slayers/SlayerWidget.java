@@ -75,7 +75,7 @@ public class SlayerWidget {
         Color fillColor = slayerLevel.fill == 1 ? Color.MAGENTA : Color.green;
         HudHelper.renderNineSliceColored(context, BAR_FILL, x + 30, y + 15, (int) (75 * slayerLevel.fill), 6, fillColor);
 
-        if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22){
+        if (mouseX > x + 30 && mouseX < x + 105 && mouseY > y + 12 && mouseY < y + 22) {
             List<Text> tooltipText = new ArrayList<>();
             tooltipText.add(Text.literal(this.slayerName).formatted(Formatting.GREEN));
             tooltipText.add(Text.literal("XP: " + Formatters.INTEGER_NUMBERS.format(this.slayerLevel.xp)).formatted(Formatting.GOLD));

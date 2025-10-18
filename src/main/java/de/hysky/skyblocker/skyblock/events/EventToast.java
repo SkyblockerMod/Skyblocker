@@ -59,7 +59,7 @@ public class EventToast implements Toast {
 
     protected int drawMessage(DrawContext context, int x, int y, int color) {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        for (OrderedText orderedText : started ? messageNow: message) {
+        for (OrderedText orderedText : started ? messageNow : message) {
             context.drawText(textRenderer, orderedText, x, y, color, false);
             y += textRenderer.fontHeight;
         }
@@ -80,7 +80,7 @@ public class EventToast implements Toast {
 
     @Override
     public int getWidth() {
-        return (started ? messageNowWidth: messageWidth) + 30 + 6;
+        return (started ? messageNowWidth : messageWidth) + 30 + 6;
     }
 
     protected int getInnerContentsHeight() {
