@@ -1502,5 +1502,12 @@
     "skyblocker.quickNav.confirm": "再次點擊以確認。",
     "skyblocker.config.helpers.greatSpook": "萬聖節活動",
     "skyblocker.config.dungeons.devices.solveArrowAlign": "解決箭矢對齊問題",
-    "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "顯示每支箭矢剩餘的旋轉次數。"
+    "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "顯示每支箭矢剩餘的旋轉次數。",
+    "skyblocker.customization.item.glint": "附魔光效：%s",
+    "skyblocker.customization.item.glint.default": "預設",
+    "skyblocker.customization.item.modelOverride": "物品類型覆蓋",
+    "skyblocker.customization.item.cannotCustomize": "無法自訂",
+    "skyblocker.customization.armor.modelOverride": "護甲類型覆蓋",
+    "skyblocker.customization.nothingCustomizable": "沒什麼能自訂的。",
+    "skyblocker.customization.armor.modelOverride.tooltip": "可裝備組件中的外觀ID。\n例如：「leather」、「diamond」等。"
 }
