@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.waypoint;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.MinecraftClient;
@@ -13,6 +14,7 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 	private static final float[] RED_COLOR_COMPONENTS = {1f, 0f, 0f};
 	private static final float[] WHITE_COLOR_COMPONENTS = {1f, 1f, 1f};
 	private static final float[] GREEN_COLOR_COMPONENTS = {0f, 1f, 0f};
+	private static final float[] FLOAT_ARRAY = new float[4];
 
 	int index;
 	RelativeIndex relativeIndex;
@@ -77,8 +79,10 @@ public class OrderedNamedWaypoint extends NamedWaypoint {
 	@Override
 	public void extractRendering(PrimitiveCollector collector) {
 		super.extractRendering(collector);
-		if (relativeIndex == RelativeIndex.NEXT && shouldRender()) {
-			collector.submitLineFromCursor(centerPos, getRenderColorComponents(), 1f, DEFAULT_LINE_WIDTH);
+		UIAndVisualsConfig.Waypoints waypoints = SkyblockerConfigManager.get().uiAndVisuals.waypoints;
+		if (waypoints.renderLine && relativeIndex == RelativeIndex.NEXT && shouldRender()) {
+			float[] components = waypoints.lineColor.getComponents(FLOAT_ARRAY);
+			collector.submitLineFromCursor(centerPos, components, components[3], DEFAULT_LINE_WIDTH);
 		}
 		if (shouldRenderName()) {
 			float scale = Math.max((float) RenderHelper.getCamera().getPos().distanceTo(centerPos) / 10, 1);

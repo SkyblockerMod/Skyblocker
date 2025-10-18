@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.annotations.GenEquals;
 import de.hysky.skyblocker.annotations.GenHashCode;
 import de.hysky.skyblocker.annotations.GenToString;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.MinecraftClient;
@@ -131,33 +132,36 @@ public class WaypointGroup {
         }
     }
 
-    public void extractRendering(PrimitiveCollector collector) {
-        if (ordered && !waypoints.isEmpty()) {
-            for (int i = 0; i < waypoints.size(); i++) {
-                NamedWaypoint waypoint = waypoints.get(i);
-                if (waypoint.pos.isWithinDistance(MinecraftClient.getInstance().player.getPos(), WAYPOINT_ACTIVATION_RADIUS)) {
-                    currentIndex = i;
-                }
-            }
+	public void tick() {
+		if (!ordered || waypoints.isEmpty()) return;
+		for (int i = 0; i < waypoints.size(); i++) {
+			NamedWaypoint waypoint = waypoints.get(i);
+			boolean notBackwards = SkyblockerConfigManager.get().uiAndVisuals.waypoints.allowGoingBackwards || i > currentIndex;
+			boolean notSkipping = SkyblockerConfigManager.get().uiAndVisuals.waypoints.allowSkippingWaypoints || i == (currentIndex + 1) % waypoints.size() || i == (currentIndex - 1 + waypoints.size()) % waypoints.size();
+			if (notBackwards && notSkipping && waypoint.pos.isWithinDistance(MinecraftClient.getInstance().player.getPos(), WAYPOINT_ACTIVATION_RADIUS)) {
+				currentIndex = i;
+			}
+		}
+		int previousIndex = (currentIndex - 1 + waypoints.size()) % waypoints.size();
+		int nextIndex = (currentIndex + 1) % waypoints.size();
+		for (int i = 0; i < waypoints.size(); i++) {
+			NamedWaypoint waypoint = waypoints.get(i);
+			if (waypoint instanceof OrderedNamedWaypoint orderedNamedWaypoint) {
+				orderedNamedWaypoint.index = i;
+				if (i == previousIndex) {
+					orderedNamedWaypoint.relativeIndex = OrderedNamedWaypoint.RelativeIndex.PREVIOUS;
+				} else if (i == nextIndex) {
+					orderedNamedWaypoint.relativeIndex = OrderedNamedWaypoint.RelativeIndex.NEXT;
+				} else if (i == currentIndex) {
+					orderedNamedWaypoint.relativeIndex = OrderedNamedWaypoint.RelativeIndex.CURRENT;
+				} else {
+					orderedNamedWaypoint.relativeIndex = OrderedNamedWaypoint.RelativeIndex.NONE;
+				}
+			}
+		}
+	}
 
-            int previousIndex = (currentIndex - 1 + waypoints.size()) % waypoints.size();
-            int nextIndex = (currentIndex + 1) % waypoints.size();
-            for (int i = 0; i < waypoints.size(); i++) {
-                NamedWaypoint waypoint = waypoints.get(i);
-                if (waypoint instanceof OrderedNamedWaypoint orderedNamedWaypoint) {
-                    orderedNamedWaypoint.index = i;
-                    if (i == previousIndex) {
-                        orderedNamedWaypoint.relativeIndex = OrderedNamedWaypoint.RelativeIndex.PREVIOUS;
-                    } else if (i == nextIndex) {
-                        orderedNamedWaypoint.relativeIndex = OrderedNamedWaypoint.RelativeIndex.NEXT;
-                    } else if (i == currentIndex) {
-                        orderedNamedWaypoint.relativeIndex = OrderedNamedWaypoint.RelativeIndex.CURRENT;
-                    } else {
-                        orderedNamedWaypoint.relativeIndex = OrderedNamedWaypoint.RelativeIndex.NONE;
-                    }
-                }
-            }
-        }
+    public void extractRendering(PrimitiveCollector collector) {
         for (NamedWaypoint waypoint : waypoints) {
             if (waypoint.shouldRender()) {
                 waypoint.extractRendering(collector);
