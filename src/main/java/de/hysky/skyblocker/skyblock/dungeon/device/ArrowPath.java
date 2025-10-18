@@ -18,7 +18,6 @@ import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,14 +52,14 @@ public class ArrowPath {
 				findSolution();
 			}
 			if (!noSolution) {
-				List<ItemFrameEntity> frameEntitiesList = MinecraftClient.getInstance().world.getEntitiesByClass(ItemFrameEntity.class, FRAMES_AREA, frame -> true);
+				List<ItemFrameEntity> frameEntitiesList = getFrameEntitiesList();
 				for (ItemFrameEntity frameEntity : frameEntitiesList) {
 					int now = frameEntity.getRotation();
 					int expect = currentSolution[getSolutionIndex(frameEntity.getBlockPos())];
 					if (expect >= 0) {
 						int remaining = (expect + 8 - now) % 8;
 						if (remaining > 0) {
-							collector.submitText(Text.literal(String.valueOf(remaining)).withColor(ColorUtils.interpolate(0xFF00FF00, 0xFFFF0000, remaining / 8d)), frameEntity.getPos().add(0.3, 0, 0), false);
+							collector.submitText(Text.literal(String.valueOf(remaining)).withColor(ColorUtils.interpolate(0xFF00FF00, 0xFFFF0000, remaining / 7d)), frameEntity.getPos().add(0.3, 0, 0), false);
 						}
 					}
 				}
@@ -68,13 +67,16 @@ public class ArrowPath {
 		}
 	}
 
+	private static List<ItemFrameEntity> getFrameEntitiesList() {
+		return MinecraftClient.getInstance().world.getEntitiesByClass(ItemFrameEntity.class, FRAMES_AREA, frame -> true);
+	}
+
 	private static int getSolutionIndex(BlockPos pos) {
 		return (LEFT_TOP.getY() - pos.getY()) * 5 + LEFT_TOP.getZ() - pos.getZ();
 	}
 
 	private static void findSolution() {
-		World world = MinecraftClient.getInstance().world;
-		List<ItemFrameEntity> frameEntitiesList = world.getEntitiesByClass(ItemFrameEntity.class, FRAMES_AREA, frame -> true);
+		List<ItemFrameEntity> frameEntitiesList = getFrameEntitiesList();
 
 		Optional<int[]> solution = Path.SOLUTIONS.stream()
 				.filter(rotations -> {
@@ -101,7 +103,7 @@ public class ArrowPath {
 		currentSolution = solution.orElse(null);
 		noSolution = solution.isEmpty();
 		if (noSolution) {
-			LOGGER.error("Failed to find a solution for Arrow Path device!");
+			LOGGER.error("[Skyblocker Arrow Path] Failed to find a solution for Arrow Path device!");
 		}
 	}
 
