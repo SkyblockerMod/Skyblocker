@@ -82,7 +82,7 @@ public class ArmorTab extends GridScreenTab implements Closeable {
 		grid.add(headSelectionWidget, 0, 1, 2, 1, Positioner::alignVerticalCenter);
 
 		DirectionalLayoutWidget layoutWidget = DirectionalLayoutWidget.horizontal().spacing(PADDING / 2);
-		int containerWidth = (int) (width * (1 / 3f));
+		int containerWidth = (int) (width * (1f / 3f));
 		trimSelectionWidget = new TrimSelectionWidget(0, 0, width - containerWidth - PADDING / 2, 80);
 		modelFieldContainer = layoutWidget.add(new ModelFieldContainer(containerWidth, 80));
 		layoutWidget.add(trimSelectionWidget);

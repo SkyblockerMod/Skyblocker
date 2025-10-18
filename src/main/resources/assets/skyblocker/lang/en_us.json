@@ -1705,7 +1705,7 @@
   "skyblocker.customization.armor.duration": "Duration: %s",
   "skyblocker.customization.armor.durationTooltip": "The duration of the animation in seconds.",
   "skyblocker.customization.armor.modelOverride": "Armor Model Override",
-  "skyblocker.customization.armor.modelOverride.tooltip": "Asset ID as seen in the equipable component.\n'leather', 'diamond', etc or a custom one.",
+  "skyblocker.customization.armor.modelOverride.tooltip": "Asset ID as seen in the equippable component.\n'leather', 'diamond', etc, or a custom one.",
   "skyblocker.customization.item.glint": "Glint: %s",
   "skyblocker.customization.item.glint.default": "Default",
   "skyblocker.customization.item.modelOverride": "Item Model Override",

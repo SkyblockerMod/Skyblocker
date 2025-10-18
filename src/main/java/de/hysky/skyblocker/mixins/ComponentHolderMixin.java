@@ -28,26 +28,20 @@ public interface ComponentHolderMixin {
 			String itemUuid = stack.getUuid();
 			if (dataComponentType == DataComponentTypes.TRIM) {
 				Object2ObjectOpenHashMap<String, CustomArmorTrims.ArmorTrimId> customTrims = SkyblockerConfigManager.get().general.customArmorTrims;
-				if (customTrims.containsKey(itemUuid)) {
-					CustomArmorTrims.ArmorTrimId trimKey = customTrims.get(itemUuid);
-					return (T) CustomArmorTrims.TRIMS_CACHE.getOrDefault(trimKey, (ArmorTrim) original);
-				}
+				CustomArmorTrims.ArmorTrimId trimKey = customTrims.get(itemUuid);
+				if (trimKey != null) return (T) CustomArmorTrims.TRIMS_CACHE.getOrDefault(trimKey, (ArmorTrim) original);
 			} else if (dataComponentType == DataComponentTypes.PROFILE && stack.isOf(Items.PLAYER_HEAD)) {
 				Object2ObjectOpenHashMap<String, String> customTextures = SkyblockerConfigManager.get().general.customHelmetTextures;
-				if (customTextures.containsKey(itemUuid)) {
-					String tex = customTextures.get(itemUuid);
-					return (T) CustomHelmetTextures.getProfile(tex);
-				}
+				String tex = customTextures.get(itemUuid);
+				if (tex != null) return (T) CustomHelmetTextures.getProfile(tex);
 			} else if (dataComponentType == DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE) {
 				Object2BooleanMap<String> customGlint = SkyblockerConfigManager.get().general.customGlint;
-				if (customGlint.containsKey(itemUuid)) {
-					return (T) Boolean.valueOf(customGlint.getBoolean(itemUuid));
-				}
+				Boolean glint = customGlint.get(itemUuid); // sorry fastutil :(
+				if (glint != null) return (T) glint;
 			} else if (dataComponentType == DataComponentTypes.ITEM_MODEL) {
 				Object2ObjectOpenHashMap<String, Identifier> customItemModel = SkyblockerConfigManager.get().general.customItemModel;
-				if (customItemModel.containsKey(itemUuid)) {
-					return (T) customItemModel.get(itemUuid);
-				}
+				Identifier id = customItemModel.get(itemUuid);
+				if (id != null) return (T) id;
 			}
 		}
 		return original;
