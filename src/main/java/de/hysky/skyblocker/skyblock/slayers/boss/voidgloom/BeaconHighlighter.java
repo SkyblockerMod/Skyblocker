@@ -11,7 +11,6 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.text.Text;
@@ -23,7 +22,7 @@ public class BeaconHighlighter {
 
     /**
      * Initializes the beacon highlighting system.
-     * {@link BeaconHighlighter#render(WorldRenderContext)} is called after translucent rendering.
+     * {@link BeaconHighlighter#extractRendering(PrimitiveCollector)} is called to extract the beacon highlight for rendering.
      */
     @Init
     public static void init() {

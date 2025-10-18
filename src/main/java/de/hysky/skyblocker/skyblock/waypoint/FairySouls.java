@@ -19,7 +19,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.player.PlayerEntity;
@@ -207,7 +206,7 @@ public class FairySouls {
         }
 
         /**
-         * Less strict than the check {@link FairySouls#render(WorldRenderContext)} since this only needs to ensure found fairy souls are rendered if the config is enabled.
+         * Less strict than the check {@link FairySouls#extractRendering(PrimitiveCollector)} since this only needs to ensure found fairy souls are rendered if the config is enabled.
          */
         @Override
         public boolean shouldRender() {

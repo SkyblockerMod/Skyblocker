@@ -308,6 +308,8 @@ public class UIAndVisualsConfig {
 
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 
+		public boolean enableChatWaypoints = true;
+
 		public boolean renderLine = true;
 
 		public Color lineColor = new Color(0, 255, 0, 255);
