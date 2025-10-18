@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.config.option.BooleanOption;
+import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
@@ -23,18 +25,25 @@ public class EffectWidget extends TabHudWidget {
 	private static final MutableText TITLE = Text.literal("Active Effects").formatted(Formatting.DARK_PURPLE,
 			Formatting.BOLD);
 	private static final Pattern COOKIE_PATTERN = Pattern.compile(".*\\nCookie Buff\\n(?<buff>.*)\\n");
+	private static final String HYPIXEL_WIDGET_NAME = "Active Effects";
+
+	private boolean effectsFromFooter = true;
 
 	public EffectWidget() {
-		super("Active Effects", TITLE, Formatting.DARK_PURPLE.getColorValue());
+		super(HYPIXEL_WIDGET_NAME, TITLE, Formatting.DARK_PURPLE.getColorValue());
+		PlayerListManager.registerFooterListener(() -> {
+			if (effectsFromFooter && PlayerListManager.getListWidget(HYPIXEL_WIDGET_NAME) == null) fetchFromFooter();
+		});
 	}
 
 	@Override
 	public void updateContent(List<Text> lines) {
+		fetchFromWidget(lines);
+	}
 
-		if (lines.isEmpty())
-			fetchFromFooter();
-		else
-			fetchFromWidget(lines);
+	@Override
+	protected void updateTabWidgetAbsent() {
+		if (!effectsFromFooter) super.updateTabWidgetAbsent();
 	}
 
 	private void fetchFromWidget(List<Text> lines) {
@@ -93,5 +102,12 @@ public class EffectWidget extends TabHudWidget {
 			this.addComponent(Components.iconFatTextComponent(Ico.POTION, active,
 					Text.literal(lines[2]).formatted(Formatting.AQUA)));
 		}
+	}
+
+	@Override
+	public void getOptions(List<WidgetOption<?>> options) {
+		super.getOptions(options);
+		// TODO translatable
+		options.add(new BooleanOption("from_footer", Text.literal("Effects from footer"), () -> effectsFromFooter, b -> effectsFromFooter = b, true));
 	}
 }
