@@ -1,7 +1,7 @@
 # Release 5.8.0
 
 ## Highlight
-* Improved Dungeons item secret detection
+* Improve Dungeons item secret detection
 * Add New /call features:
     * Add prompts for calling Trevor, Maddox, and Queen Mismyla
     * Add recall prompt for failed calls due to "bad signal"
@@ -20,8 +20,8 @@
 * Add support for Search Overlay in the Museum
 * Make sweep overlay more accurate on Galatea
 * Add correct axe preview in Sweep Details Widget for Hub/The Park
-* Improved Config Backup Preview
-* Improved chronomatron solver
+* Improve Config Backup Preview
+* Improve chronomatron solver
 * Add disabled slot texture in Personal Deletor/Compactor preview
 * Reduce item repository initial download size
 * Add highlighting for the correct answer buttons in Quiz puzzle room
