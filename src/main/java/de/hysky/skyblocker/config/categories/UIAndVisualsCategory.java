@@ -448,6 +448,29 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.waypoints.lineWidth = newValue)
 								.controller(FloatController.createBuilder().range(1f, 15f).slider(0.5f).build())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip"))
+								.binding(defaults.uiAndVisuals.waypoints.allowSkippingWaypoints,
+										() -> config.uiAndVisuals.waypoints.allowSkippingWaypoints,
+										newValue -> config.uiAndVisuals.waypoints.allowSkippingWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards"))
+								.description(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip"))
+								.binding(defaults.uiAndVisuals.waypoints.allowGoingBackwards,
+										() -> config.uiAndVisuals.waypoints.allowGoingBackwards,
+										newValue -> config.uiAndVisuals.waypoints.allowGoingBackwards = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("skyblocker.config.uiAndVisuals.waypoints.enableWaypoints"))
+								.binding(defaults.uiAndVisuals.waypoints.enableWaypoints,
+										() -> config.uiAndVisuals.waypoints.enableWaypoints,
+										newValue -> config.uiAndVisuals.waypoints.enableWaypoints = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
                         .option(ButtonOption.createBuilder()
                                 .name(Text.translatable("skyblocker.waypoints.config"))
                                 .prompt(Text.translatable("text.skyblocker.open"))

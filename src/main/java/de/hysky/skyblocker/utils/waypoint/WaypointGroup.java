@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.annotations.GenEquals;
 import de.hysky.skyblocker.annotations.GenHashCode;
 import de.hysky.skyblocker.annotations.GenToString;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.MinecraftClient;
@@ -135,7 +136,9 @@ public class WaypointGroup {
 		if (!ordered || waypoints.isEmpty()) return;
 		for (int i = 0; i < waypoints.size(); i++) {
 			NamedWaypoint waypoint = waypoints.get(i);
-			if (waypoint.pos.isWithinDistance(MinecraftClient.getInstance().player.getPos(), WAYPOINT_ACTIVATION_RADIUS)) {
+			boolean notBackwards = SkyblockerConfigManager.get().uiAndVisuals.waypoints.allowGoingBackwards || i > currentIndex;
+			boolean notSkipping = SkyblockerConfigManager.get().uiAndVisuals.waypoints.allowSkippingWaypoints || i == (currentIndex + 1) % waypoints.size() || i == (currentIndex - 1 + waypoints.size()) % waypoints.size();
+			if (notBackwards && notSkipping && waypoint.pos.isWithinDistance(MinecraftClient.getInstance().player.getPos(), WAYPOINT_ACTIVATION_RADIUS)) {
 				currentIndex = i;
 			}
 		}

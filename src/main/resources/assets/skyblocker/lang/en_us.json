@@ -1250,6 +1250,10 @@
   "skyblocker.config.uiAndVisuals.trueQuiverCount.@Tooltip": "Shows the actual amount of arrows in your quiver instead of being capped at 64.",
 
   "skyblocker.config.uiAndVisuals.waypoints": "Waypoints",
+  "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards": "Allow Going Backwards",
+  "skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip": "Allow going backwards in ordered waypoint groups.",
+  "skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints": "Allow Skipping Waypoints",
+  "skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip": "Allow skipping waypoints in ordered waypoint groups.",
   "skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints": "Enable Chat Waypoints",
   "skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints.@Tooltip": "Parses coordinates sent in the chat and sends a prompt which allows you to add a temporary waypoint to the location.",
   "skyblocker.config.uiAndVisuals.waypoints.enableWaypoints": "Enable Waypoints",

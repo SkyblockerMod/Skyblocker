@@ -314,6 +314,10 @@ public class UIAndVisualsConfig {
 
 		public float lineWidth = 5f;
 
+		public boolean allowSkippingWaypoints = true;
+
+		public boolean allowGoingBackwards = true;
+
 		public boolean enableChatWaypoints = true;
 	}
 
