@@ -134,6 +134,14 @@ repositories {
 		}
 	}
 
+	maven {
+		name = "DevAuth"
+		url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
+		content {
+			includeGroup "me.djtheredstoner"
+		}
+	}
+
 	//mavenLocal()
 }
 
@@ -208,6 +216,11 @@ dependencies {
 
 	// Fabric Language Kotlin for using MoulConfig - we are still a Java-exclusive mod
 	modImplementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}")
+
+	// DevAuth
+	modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:${project.devauth_version}") {
+		exclude group: "net.fabricmc", module: "fabric-loader"
+	}
 }
 
 loom {
@@ -215,6 +228,13 @@ loom {
 
 	mixin {
 		useLegacyMixinAp = false
+	}
+
+	runs {
+		client {
+			property("devauth.configDir", getRootProject().file(".devauth").absolutePath)
+			client()
+		}
 	}
 }
 
