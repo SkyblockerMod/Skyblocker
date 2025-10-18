@@ -26,10 +26,10 @@ import java.util.Optional;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class ArrowPath {
+public class ArrowAlign {
 	private static final BlockPos LEFT_TOP = new BlockPos(-2, 124, 79);
 	private static final Box FRAMES_AREA = Box.enclosing(LEFT_TOP, new BlockPos(-3, 120, 75));
-	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Arrow Path Solver");
+	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Arrow Align Solver");
 
 	private static int[] currentSolution = null;
 	private static boolean noSolution = false;
@@ -37,8 +37,8 @@ public class ArrowPath {
 	@Init
 	public static void init() {
 		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-		WorldRenderExtractionCallback.EVENT.register(ArrowPath::extractRendering);
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("device").then(literal("arrow-path")
+		WorldRenderExtractionCallback.EVENT.register(ArrowAlign::extractRendering);
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("device").then(literal("arrow-align")
 				.then(literal("solve").executes(context -> {
 					findSolution();
 					return Command.SINGLE_SUCCESS;
@@ -78,17 +78,17 @@ public class ArrowPath {
 	private static void findSolution() {
 		List<ItemFrameEntity> frameEntitiesList = getFrameEntitiesList();
 
-		Optional<int[]> solution = Path.SOLUTIONS.stream()
+		Optional<int[]> solution = Align.SOLUTIONS.stream()
 				.filter(rotations -> {
 					for (ItemFrameEntity itemFrame : frameEntitiesList) {
 						switch (rotations[getSolutionIndex(itemFrame.getBlockPos())]) {
-							case Path.X -> {
+							case Align.X -> {
 								return false;
 							}
-							case Path.S -> {
+							case Align.S -> {
 								if (!itemFrame.getHeldItemStack().isOf(Items.LIME_WOOL)) return false;
 							}
-							case Path.E -> {
+							case Align.E -> {
 								if (!itemFrame.getHeldItemStack().isOf(Items.RED_WOOL)) return false;
 							}
 							default -> {
@@ -103,12 +103,12 @@ public class ArrowPath {
 		currentSolution = solution.orElse(null);
 		noSolution = solution.isEmpty();
 		if (noSolution) {
-			LOGGER.error("[Skyblocker Arrow Path] Failed to find a solution for Arrow Path device!");
+			LOGGER.error("[Skyblocker Arrow Align] Failed to find a solution for Arrow Align device!");
 		}
 	}
 
 	private static boolean shouldProcess() {
-		return SkyblockerConfigManager.get().dungeons.devices.solveArrowPath &&
+		return SkyblockerConfigManager.get().dungeons.devices.solveArrowAlign &&
 				Utils.isInDungeons() && DungeonManager.isInBoss() && DungeonManager.getBoss() == DungeonBoss.MAXOR;
 	}
 
@@ -117,7 +117,7 @@ public class ArrowPath {
 		noSolution = false;
 	}
 
-	private static class Path {
+	private static class Align {
 		private static final int X = -1; // missing
 		private static final int S = -2; // start
 		private static final int E = -3; // end

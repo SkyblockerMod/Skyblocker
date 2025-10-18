@@ -157,7 +157,7 @@ public class DungeonsConfig {
 
 		public boolean solveLightsOn = true;
 
-		public boolean solveArrowPath = true;
+		public boolean solveArrowAlign = true;
 	}
 
 	public static class Goldor {

@@ -462,11 +462,11 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Text.translatable("skyblocker.config.dungeons.devices.solveArrowPath"))
-								.description(Text.translatable("skyblocker.config.dungeons.devices.solveArrowPath.@Tooltip"))
-								.binding(defaults.dungeons.devices.solveArrowPath,
-										() -> config.dungeons.devices.solveArrowPath,
-										newValue -> config.dungeons.devices.solveArrowPath = newValue)
+								.name(Text.translatable("skyblocker.config.dungeons.devices.solveArrowAlign"))
+								.description(Text.translatable("skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip"))
+								.binding(defaults.dungeons.devices.solveArrowAlign,
+										() -> config.dungeons.devices.solveArrowAlign,
+										newValue -> config.dungeons.devices.solveArrowAlign = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())

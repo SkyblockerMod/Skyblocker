@@ -87,8 +87,8 @@
   "skyblocker.config.dungeons.goldorWaypoints.waypointType": "Task waypoint type",
 
   "skyblocker.config.dungeons.devices": "Device Solvers (F7/M7)",
-  "skyblocker.config.dungeons.devices.solveArrowPath": "Solve Arrow Path",
-  "skyblocker.config.dungeons.devices.solveArrowPath.@Tooltip": "Displays the number of rotations remaining for each arrow.",
+  "skyblocker.config.dungeons.devices.solveArrowAlign": "Solve Arrow Align",
+  "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "Displays the number of rotations remaining for each arrow.",
   "skyblocker.config.dungeons.devices.solveLightsOn": "Solve Lights On",
   "skyblocker.config.dungeons.devices.solveLightsOn.@Tooltip": "Highlights the correct levers to click in red.",
   "skyblocker.config.dungeons.devices.solveSimonSays": "Solve Simon Says",
