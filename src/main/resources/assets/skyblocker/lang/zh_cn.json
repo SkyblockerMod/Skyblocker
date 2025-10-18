@@ -1498,5 +1498,12 @@
     "skyblocker.quickNav.confirm": "再次点击以确认。",
     "skyblocker.dungeons.splits.sadanGiants": "Sadan的巨人",
     "skyblocker.config.dungeons.devices.solveArrowAlign": "解决箭矢对齐问题",
-    "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "显示每支箭矢剩余的旋转次数。"
+    "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "显示每支箭矢剩余的旋转次数。",
+    "skyblocker.customization.item.cannotCustomize": "无法自定义",
+    "skyblocker.customization.nothingCustomizable": "没什么可自定义的。",
+    "skyblocker.customization.item.glint.default": "默认",
+    "skyblocker.customization.armor.modelOverride.tooltip": "可装备组件中的外观ID。\n例如：“leather”、“diamond”等。",
+    "skyblocker.customization.item.modelOverride": "物品类型覆盖",
+    "skyblocker.customization.armor.modelOverride": "护甲类型覆盖",
+    "skyblocker.customization.item.glint": "附魔光效：%s"
 }
