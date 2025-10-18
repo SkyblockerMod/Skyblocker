@@ -1,0 +1,70 @@
+{
+  "info": {
+    "name": "Red Blue"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Lever",
+      "category": "lever",
+      "x": 54,
+      "y": 69,
+      "z": 5
+    },
+    {
+      "secretName": "1 - Stonk",
+      "category": "stonk",
+      "x": 55,
+      "y": 70,
+      "z": 6
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 57,
+      "y": 70,
+      "z": 5
+    },
+    {
+      "secretName": "2 - AOTV",
+      "category": "aotv",
+      "x": 77,
+      "y": 82,
+      "z": 16
+    },
+    {
+      "secretName": "2 - Wither Essence",
+      "category": "wither",
+      "x": 79,
+      "y": 83,
+      "z": 15
+    },
+    {
+      "secretName": "3 - Item",
+      "category": "item",
+      "x": 60,
+      "y": 86,
+      "z": 22
+    },
+    {
+      "secretName": "4 - Entrance",
+      "category": "entrance",
+      "x": 42,
+      "y": 91,
+      "z": 29
+    },
+    {
+      "secretName": "4 - Chest",
+      "category": "chest",
+      "x": 39,
+      "y": 90,
+      "z": 26
+    },
+    {
+      "secretName": "Prince",
+      "category": "prince",
+      "x": 56,
+      "y": 84,
+      "z": 7
+    }
+  ]
+}

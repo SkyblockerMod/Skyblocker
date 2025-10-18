@@ -1,0 +1,105 @@
+{
+  "info": {
+    "name": "Atlas"
+  },
+  "secrets": [
+    {
+      "secretName": "1/2 - Entrance",
+      "category": "entrance",
+      "x": 54,
+      "y": 79,
+      "z": 41
+    },
+    {
+      "secretName": "1 - Item",
+      "category": "item",
+      "x": 55,
+      "y": 76,
+      "z": 26
+    },
+    {
+      "secretName": "2 - Lever",
+      "category": "lever",
+      "x": 60,
+      "y": 90,
+      "z": 33
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 7,
+      "y": 81,
+      "z": 24
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 11,
+      "y": 82,
+      "z": 31
+    },
+    {
+      "secretName": "2 - Stonk",
+      "category": "stonk",
+      "x": 13,
+      "y": 82,
+      "z": 31
+    },
+    {
+      "secretName": "3 - Entrance Vines",
+      "category": "entrance",
+      "x": 50,
+      "y": 65,
+      "z": 9
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 36,
+      "y": 57,
+      "z": 15
+    },
+    {
+      "secretName": "4 - Entrance",
+      "category": "entrance",
+      "x": 40,
+      "y": 79,
+      "z": 6
+    },
+    {
+      "secretName": "4 - Wither Essence",
+      "category": "wither",
+      "x": 38,
+      "y": 78,
+      "z": 4
+    },
+    {
+      "secretName": "5 - Entrance",
+      "category": "entrance",
+      "x": 8,
+      "y": 81,
+      "z": 51
+    },
+    {
+      "secretName": "5 - AOTV",
+      "category": "aotv",
+      "x": 16,
+      "y": 81,
+      "z": 53
+    },
+    {
+      "secretName": "5 - Chest",
+      "category": "chest",
+      "x": 31,
+      "y": 78,
+      "z": 52
+    },
+    {
+      "secretName": "6 - Bat",
+      "category": "bat",
+      "x": 7,
+      "y": 70,
+      "z": 55
+    }
+  ]
+}
