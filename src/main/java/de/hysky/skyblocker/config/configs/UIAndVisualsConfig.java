@@ -307,6 +307,8 @@ public class UIAndVisualsConfig {
 		public boolean enableWaypoints = true;
 
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+
+		public boolean enableChatWaypoints = true;
 	}
 
 	public static class TeleportOverlay {
@@ -328,6 +330,8 @@ public class UIAndVisualsConfig {
 	}
 
 	public static class SmoothAOTE {
+		public boolean predictive = false;
+
 		public boolean enableWeirdTransmission = false;
 
 		public boolean enableInstantTransmission = false;

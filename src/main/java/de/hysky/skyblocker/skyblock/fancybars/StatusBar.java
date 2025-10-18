@@ -180,7 +180,7 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 		int color = transparency((textColor == null ? colors[0] : textColor).getRGB());
 		int outlineColor = transparency(Colors.BLACK);
 
-		HudHelper.drawOutlinedText(context, Text.of(text).asOrderedText(), x, y, color, outlineColor);
+		HudHelper.drawOutlinedText(context, Text.of(text), x, y, color, outlineColor);
 	}
 
 	public void renderCursor(DrawContext context, int mouseX, int mouseY, float delta) {
@@ -444,6 +444,11 @@ public class StatusBar implements Widget, Drawable, Element, Selectable {
 			} else {
 				HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
 			}
+		}
+
+		@Override
+		public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
+			super.updateValues(fill, overflowFill, StatusBarTracker.isManaEstimated() ? "~" + text : text, max, overflow);
 		}
 	}
 }

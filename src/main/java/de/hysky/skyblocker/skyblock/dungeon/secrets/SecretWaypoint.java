@@ -8,9 +8,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
@@ -105,12 +105,12 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
     }
 
     /**
-     * Renders the secret waypoint, including a waypoint through {@link Waypoint#render(WorldRenderContext)}, the name, and the distance from the player.
+     * Extracts the rendering for the secret waypoint, including a waypoint through {@link Waypoint#extractRendering(PrimitiveCollector)}, the name, and the distance from the player.
      */
     @Override
-    public void render(WorldRenderContext context) {
-        //TODO In the future, shrink the box for wither essence and items so its more realistic
-        super.render(context);
+    public void extractRendering(PrimitiveCollector collector) {
+        //TODO In the future, shrink the box for wither essence and items so its more realistic - can be done with RenderHelper
+        super.extractRendering(collector);
     }
 
     @NotNull

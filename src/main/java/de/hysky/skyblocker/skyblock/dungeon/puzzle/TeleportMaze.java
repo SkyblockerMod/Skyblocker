@@ -4,8 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -115,18 +114,18 @@ public class TeleportMaze extends DungeonPuzzle {
 	}
 
 	@Override
-	public void render(WorldRenderContext context) {
+	public void extractRendering(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.solveTeleportMaze || !shouldSolve()) return;
 		boolean debug = Debug.debugEnabled();
 		for (Map.Entry<BlockPos, RoomType> entry : pads.entrySet()) {
 			// Only use the real room color in debug mode to present the solution to users in a simpler manner for now.
 			// Should be revisited eventually.
 			float[] color = debug ? entry.getValue().colorComponents : RED;
-			RenderHelper.renderFilled(context, entry.getKey(), color, 0.5f, debug);
+			collector.submitFilledBox(entry.getKey(), color, 0.5f, debug);
 		}
 		if (finalPad != null) {
-			RenderHelper.renderFilled(context, finalPad, LIME, 1f, true);
-			RenderHelper.renderLineFromCursor(context, Vec3d.ofCenter(finalPad), LIME, 1f, 2f);
+			collector.submitFilledBox(finalPad, LIME, 1f, true);
+			collector.submitLineFromCursor(Vec3d.ofCenter(finalPad), LIME, 1f, 2f);
 		}
 	}
 

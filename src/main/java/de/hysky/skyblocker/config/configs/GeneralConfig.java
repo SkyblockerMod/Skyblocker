@@ -188,7 +188,7 @@ public class GeneralConfig {
     }
 
     public static class ItemProtection {
-        public SlotLockStyle slotLockStyle = SlotLockStyle.FANCY;
+        public SlotLockStyle slotLockStyle = SlotLockStyle.CLASSIC;
 
 		public boolean displayChatNotification = true;
 
@@ -227,7 +227,8 @@ public class GeneralConfig {
     public static class Hitbox {
         public boolean oldCactusHitbox = false;
 
-        public boolean oldFarmlandHitbox = false;
+        @Deprecated
+        public transient boolean oldFarmlandHitbox = false;
 
         public boolean oldLeverHitbox = false;
 

@@ -10,14 +10,15 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.utils.*;
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.player.PlayerEntity;
@@ -65,7 +66,7 @@ public class FairySouls {
         loadFairySouls();
         ClientLifecycleEvents.CLIENT_STOPPING.register(FairySouls::saveFoundFairySouls);
         ClientCommandRegistrationCallback.EVENT.register(FairySouls::registerCommands);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(FairySouls::render);
+        WorldRenderExtractionCallback.EVENT.register(FairySouls::extractRendering);
         ClientReceiveMessageEvents.ALLOW_GAME.register(FairySouls::onChatMessage);
     }
 
@@ -140,16 +141,16 @@ public class FairySouls {
                         }))));
     }
 
-    private static void render(WorldRenderContext context) {
+    private static void extractRendering(PrimitiveCollector collector) {
         HelperConfig.FairySouls fairySoulsConfig = SkyblockerConfigManager.get().helpers.fairySouls;
 
         if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
             for (Waypoint fairySoul : fairySouls.get(Utils.getLocationRaw()).values()) {
                 boolean fairySoulNotFound = fairySoul.shouldRender();
-                if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoul.pos.getSquaredDistance(context.camera().getPos()) > 2500) {
+                if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoul.pos.getSquaredDistance(RenderHelper.getCamera().getPos()) > 2500) {
                     continue;
                 }
-                fairySoul.render(context);
+                fairySoul.extractRendering(collector);
             }
         }
     }
@@ -205,7 +206,7 @@ public class FairySouls {
         }
 
         /**
-         * Less strict than the check {@link FairySouls#render(WorldRenderContext)} since this only needs to ensure found fairy souls are rendered if the config is enabled.
+         * Less strict than the check {@link FairySouls#extractRendering(PrimitiveCollector)} since this only needs to ensure found fairy souls are rendered if the config is enabled.
          */
         @Override
         public boolean shouldRender() {

@@ -1,8 +1,7 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
-import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -48,13 +47,13 @@ public class MasteryTestHelper {
         }
     }
 
-    protected static void render(WorldRenderContext context) {
+    protected static void extractRendering(PrimitiveCollector collector) {
         //render connecting lines
         if (!blockOrder.isEmpty()) {
-            RenderHelper.renderLineFromCursor(context, blockOrder.getFirst().toCenterPos(), Color.LIGHT_GRAY.getColorComponents(new float[]{0, 0, 0}), 1f, 2);
+            collector.submitLineFromCursor(blockOrder.getFirst().toCenterPos(), Color.LIGHT_GRAY.getColorComponents(new float[]{0, 0, 0}), 1f, 2);
         }
         if (blockOrder.size() >= 2) {
-            RenderHelper.renderLinesFromPoints(context, new Vec3d[]{blockOrder.get(0).toCenterPos(), blockOrder.get(1).toCenterPos()}, Color.LIGHT_GRAY.getColorComponents(new float[]{0, 0, 0}), 1, 2, false);
+        	collector.submitLinesFromPoints(new Vec3d[]{blockOrder.get(0).toCenterPos(), blockOrder.get(1).toCenterPos()}, Color.LIGHT_GRAY.getColorComponents(new float[]{0, 0, 0}), 1, 2, false);
         }
 
         //render times
@@ -62,7 +61,7 @@ public class MasteryTestHelper {
         for (BlockPos pos : blockOrder) {
             long blockEndTime = endTimes.getLong(pos);
             float secondsTime = Math.max((blockEndTime - currentTime) / 1000f, 0);
-            RenderHelper.renderText(context, Text.literal(FORMATTER.format(secondsTime)), pos.add(0, 1, 0).toCenterPos(), 3, true);
+            collector.submitText(Text.literal(FORMATTER.format(secondsTime)), pos.add(0, 1, 0).toCenterPos(), 3, true);
         }
     }
 }
