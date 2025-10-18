@@ -28,7 +28,7 @@ public class ChatRulesConfigListWidget extends ElementListWidget<ChatRulesConfig
         //add labels
         addEntry(new ChatRuleLabelsEntry());
         //add entry fall all existing rules
-        for (int i = 0; i < ChatRulesHandler.chatRuleList.getData().size(); i++){
+        for (int i = 0; i < ChatRulesHandler.chatRuleList.getData().size(); i++) {
             addEntry(new ChatRuleConfigEntry(i));
         }
     }
