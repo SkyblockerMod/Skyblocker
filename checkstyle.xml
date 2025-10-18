@@ -28,6 +28,14 @@
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
 
+        <module name="ImportOrder">
+            <property name="groups" value="java,javax,*,de.hysky"/>
+            <property name="ordered" value="true"/>
+            <property name="separated" value="true"/>
+            <property name="option" value="bottom"/> <!-- Put static imports below regular imports -->
+            <property name="sortStaticImportsAlphabetically" value="true"/>
+        </module>
+
         <module name="SeparatorWrap">
             <property name="tokens" value="DOT,ELLIPSIS,AT"/>
             <property name="option" value="nl"/>
