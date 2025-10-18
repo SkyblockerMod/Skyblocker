@@ -1492,5 +1492,13 @@
     "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "預測傳送的目的地。這意味著不會有額外的延遲，但有時會出現錯誤並且可能會發生故障。",
     "skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip": "選擇一個Skyblock圖標或物品來填充此按鈕。",
     "skyblocker.config.helpers.greatSpook.enableMathTeacherHelper.@Tooltip": "自動解決數學教師的問題。",
-    "skyblocker.config.helpers.greatSpook.enableMathTeacherHelper": "啟用數學教師助手"
+    "skyblocker.config.helpers.greatSpook.enableMathTeacherHelper": "啟用數學教師助手",
+    "skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints": "啟用聊天路徑點",
+    "skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints.@Tooltip": "解析聊天中發送的座標並發送提示，使你可以在該位置添加臨時路徑點。",
+    "skyblocker.waypoints.chat.displayed": "已在x: %s y: %s z: %s顯示臨時路徑點",
+    "skyblocker.waypoints.chat.display": "點擊以在x: %s y: %s z: %s顯示路徑點",
+    "skyblocker.config.quickNav.button.doubleClick": "需要雙擊",
+    "skyblocker.customItemNames.screen.gradientColor": "漸變",
+    "skyblocker.quickNav.confirm": "再次點擊以確認。",
+    "skyblocker.config.helpers.greatSpook": "萬聖節活動"
 }
