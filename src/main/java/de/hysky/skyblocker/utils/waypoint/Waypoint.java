@@ -2,7 +2,6 @@ package de.hysky.skyblocker.utils.waypoint;
 
 import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
@@ -110,7 +109,7 @@ public class Waypoint implements Renderable {
     /**
      * Whether the waypoint should be rendered.
      * <p>
-     * Checked in {@link #render(WorldRenderContext)} before rendering.
+     * Checked in {@link #extractRendering(PrimitiveCollector)} before rendering.
      * <p>
      * Override this method for custom behavior.
      */

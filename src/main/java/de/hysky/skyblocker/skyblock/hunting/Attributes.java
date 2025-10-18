@@ -43,7 +43,11 @@ public class Attributes {
 	public static Attribute getAttributeFromItemName(ComponentHolder stack) {
 		if (!stack.contains(DataComponentTypes.CUSTOM_NAME)) return null;
 		String name = stack.get(DataComponentTypes.CUSTOM_NAME).getString();
-		name = name.replace(" Shard", ""); // Shards outside the hunting box now have "Shard" in their item name.
+
+		// Shards outside the hunting box now have "Shard" in their item name.
+		int index = name.indexOf("Shard");
+		if (index > -1) name = name.substring(0, index - 1);
+
 		name = name.replace("BUY ", "").replace("SELL ", ""); // Bazaar Buy/Sell orders
 
 		for (Attribute attribute : attributes) {

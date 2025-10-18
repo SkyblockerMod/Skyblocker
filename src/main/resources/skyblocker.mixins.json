@@ -21,7 +21,6 @@
     "EntityMixin",
     "EntityRenderDispatcherMixin",
     "EntityRendererMixin",
-    "FarmlandBlockMixin",
     "FishingBobberEntityMixin",
     "FogRendererMixin",
     "GameRendererMixin",
