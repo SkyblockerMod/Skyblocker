@@ -726,5 +726,10 @@
     "skyblocker.config.mining.callMismyla.message": "Clique aqui para ligar para a Queen Mismyla!",
     "skyblocker.config.eventNotifications.notificationSound.sound.DING": "Tinido",
     "skyblocker.config.otherLocations.end.resetText": "Redefinir",
-    "skyblocker.config.otherLocations.end.resetName": "Redefinir estatísticas do Fim armazenadas"
+    "skyblocker.config.otherLocations.end.resetName": "Redefinir estatísticas do End armazenadas",
+    "skyblocker.config.otherLocations.rift.blobbercystGlow.@Tooltip": "Aplica o efeito de brilho nos Blobbercysts da luta do BACTE.",
+    "skyblocker.config.otherLocations.rift.blobbercystGlow": "Blobbercyst Brilhante",
+    "skyblocker.config.otherLocations.end.screen": "Config da HUD do End...",
+    "skyblocker.config.otherLocations.end.waypoint": "Ponto de referência para o End Protector",
+    "skyblocker.config.otherLocations.end.zealotKillsEnabled": "Mostrar Informações de Mortes de Zealot"
 }
