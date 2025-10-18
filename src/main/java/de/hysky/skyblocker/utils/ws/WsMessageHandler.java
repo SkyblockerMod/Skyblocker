@@ -12,6 +12,8 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.ws.message.CrystalsWaypointMessage;
 import de.hysky.skyblocker.utils.ws.message.EggWaypointMessage;
 import de.hysky.skyblocker.utils.ws.message.Message;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
 import org.slf4j.Logger;
 
 import java.util.Optional;
@@ -80,6 +82,11 @@ public class WsMessageHandler {
 			}
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker WebSocket Message Handler] Failed to handle incoming message!", e);
+			// TODO: Remove
+			var player = MinecraftClient.getInstance().player;
+			if (player != null) {
+				player.sendMessage(Text.literal("[Skyblocker] Failed to process a WebSocket message - report this!"), false);
+			}
 		}
 	}
 }
