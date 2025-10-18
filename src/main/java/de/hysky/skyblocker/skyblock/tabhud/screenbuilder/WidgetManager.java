@@ -67,7 +67,7 @@ public class WidgetManager {
 	public static ScreenBuilder getScreenBuilder(Location location, ScreenLayer layer) {
 		return BUILDER_MAP
 				.computeIfAbsent(location, l -> new EnumMap<>(ScreenLayer.class))
-				.computeIfAbsent(layer, l -> new ScreenBuilder(config.perScreenConfig().getOrDefault(location, Map.of()).getOrDefault(l, new JsonObject()).deepCopy(), location == Location.UNKNOWN ? null : getScreenBuilder(Location.UNKNOWN, l)));
+				.computeIfAbsent(layer, l -> new ScreenBuilder(config.perScreenConfig().getOrDefault(location, Map.of()).getOrDefault(l, new ScreenBuilder.ScreenConfig()), location == Location.UNKNOWN ? null : getScreenBuilder(Location.UNKNOWN, l)));
 	}
 
 	// we probably want this to run pretty early?
@@ -169,15 +169,14 @@ public class WidgetManager {
 				}
 		).collect(Collectors.toMap(Pair::first, Pair::second));
 		// is it sign of bad code if intellij thinks I don't need to specify the generics when I actually do?
-		//noinspection Convert2Diamond
-		Map<Location, Map<ScreenLayer, JsonObject>> perScreenConfig = new EnumMap<Location, Map<ScreenLayer, JsonObject>>(BUILDER_MAP.entrySet().stream().collect(Collectors.toMap(
+		Map<Location, Map<ScreenLayer, ScreenBuilder.ScreenConfig>> perScreenConfig = new EnumMap<>(BUILDER_MAP.entrySet().stream().collect(Collectors.toMap(
 				Map.Entry::getKey,
-				e -> new EnumMap<ScreenLayer, JsonObject>(e.getValue().entrySet().stream().collect(Collectors.toMap(
+				e -> new EnumMap<>(e.getValue().entrySet().stream().collect(Collectors.toMap(
 						Map.Entry::getKey,
 						f -> f.getValue().getConfig()
 				))))));
 		// merge with old Config since ScreenBuilders are only instantiated as needed.
-		for (Map.Entry<Location, Map<ScreenLayer, JsonObject>> entry : config.perScreenConfig().entrySet()) {
+		for (Map.Entry<Location, Map<ScreenLayer, ScreenBuilder.ScreenConfig>> entry : config.perScreenConfig().entrySet()) {
 			perScreenConfig.merge(entry.getKey(), entry.getValue(), (currentMap, oldMap) -> {
 				oldMap.forEach(currentMap::putIfAbsent);
 				return currentMap;
@@ -223,10 +222,10 @@ public class WidgetManager {
 		}
 	}
 
-	private record Config(Map<String, JsonObject> widgetOptions, Map<Location, Map<ScreenLayer, JsonObject>> perScreenConfig) {
+	private record Config(Map<String, JsonObject> widgetOptions, Map<Location, Map<ScreenLayer, ScreenBuilder.ScreenConfig>> perScreenConfig) {
 		public static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.unboundedMap(Codec.STRING, CodecUtils.JSON_OBJECT_CODEC).fieldOf("widget_options").forGetter(Config::widgetOptions),
-				Codec.unboundedMap(Location.CODEC, Codec.unboundedMap(ScreenLayer.CODEC, CodecUtils.JSON_OBJECT_CODEC)).fieldOf("screens").forGetter(Config::perScreenConfig)
+				Codec.unboundedMap(Location.CODEC, Codec.unboundedMap(ScreenLayer.CODEC, ScreenBuilder.ScreenConfig.CODEC)).fieldOf("screens").forGetter(Config::perScreenConfig)
 		).apply(instance, Config::new));
 	}
 

@@ -3,11 +3,15 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.config.option.WidgetOption;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.util.FancyTabWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ComponentBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.CodecUtils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.profiler.Profilers;
@@ -27,43 +31,41 @@ public class ScreenBuilder {
 	}
 
 
-	private @NotNull JsonObject config;
+	private @NotNull ScreenConfig config;
 	private final @Nullable ScreenBuilder parent;
 	private int positionsHash = 0;
 
-	private final Set<HudWidget> widgets = new HashSet<>();
+	private final Set<HudWidget> widgets = new ObjectOpenHashSet<>();
+	private final Set<HudWidget> fancyTabWidgets = new ObjectOpenHashSet<>();
 	public boolean hasFancyTabWidget = false;
 
 
-	public ScreenBuilder(@NotNull JsonObject config, @Nullable ScreenBuilder parent) {
+	public ScreenBuilder(@NotNull ScreenConfig config, @Nullable ScreenBuilder parent) {
 		this.config = config;
 		this.parent = parent;
 	}
 
-	public @NotNull JsonObject getFullConfig(boolean addInheritedIndicator) {
-		JsonObject parentConfig = new JsonObject();
+	public @NotNull ScreenConfig getFullConfig(boolean addInheritedIndicator) {
+		ScreenConfig parentConfig;
 		if (parent != null) {
-			parentConfig = parent.getFullConfig(addInheritedIndicator).deepCopy();
+			parentConfig = parent.getFullConfig(addInheritedIndicator);
+		} else {
+			parentConfig = new ScreenConfig();
 		}
 		if (addInheritedIndicator) {
-			for (String s : parentConfig.keySet()) {
-				JsonElement element = parentConfig.get(s);
-				if (element.isJsonObject()) {
-					element.getAsJsonObject().addProperty("inherited", true);
-				}
-			}
+			parentConfig.widgetConfigs().replaceAll((s, widgetConfig) -> widgetConfig.getInherited());
 		}
-		for (Map.Entry<String, JsonElement> entry : config.entrySet()) {
-			parentConfig.add(entry.getKey(), entry.getValue().deepCopy());
+		for (Map.Entry<String, WidgetConfig> entry : config.widgetConfigs().entrySet()) {
+			parentConfig.widgetConfigs().put(entry.getKey(), entry.getValue());
 		}
 		return parentConfig;
 	}
 
-	public @NotNull JsonObject getConfig() {
+	public @NotNull ScreenConfig getConfig() {
 		return config;
 	}
 
-	public void setConfig(@NotNull JsonObject config) {
+	public void setConfig(@NotNull ScreenConfig config) {
 		this.config = config;
 	}
 
@@ -80,7 +82,7 @@ public class ScreenBuilder {
 	 * Updates the config JSON with the widgets
 	 */
 	public void updateConfig() {
-		JsonObject newConfig = new JsonObject();
+		Map<String, WidgetConfig> newConfig = new Object2ObjectOpenHashMap<>(widgets.size());
 		Set<String> widgetIds = widgets.stream().map(HudWidget::getId).collect(Collectors.toCollection(ObjectOpenHashSet::new));
 		for (HudWidget widget : widgets) {
 			if (widget.isInherited()) continue; // don't want to save inherited stuff
@@ -90,16 +92,16 @@ public class ScreenBuilder {
 			for (WidgetOption<?> option : options) {
 				widgetConfig.add(option.getId(), option.toJson());
 			}
-			newConfig.add(widget.getId(), widgetConfig);
+			newConfig.put(widget.getId(), new WidgetConfig(Optional.empty(),  widgetConfig));
 		}
 		if (parent != null) {
-			for (String s : parent.getFullConfig(false).keySet()) {
+			for (String s : parent.getFullConfig(false).widgetConfigs().keySet()) {
 				if (!widgetIds.contains(s)) {
-					newConfig.addProperty(s, false); // explicitly mark it has disabled if parent(s) has it but not this.
+					newConfig.put(s, new WidgetConfig(Optional.of(Boolean.FALSE), new JsonObject())); // explicitly mark it has disabled if parent(s) has it but not this.
 				}
 			}
 		}
-		setConfig(newConfig);
+		setConfig(new ScreenConfig(false, newConfig));
 	}
 
 	/**
@@ -109,14 +111,10 @@ public class ScreenBuilder {
 		Profilers.get().push("skyblocker:updateWidgetsList");
 		widgets.clear();
 		hasFancyTabWidget = false;
-		for (Map.Entry<String, JsonElement> entry : getFullConfig(true).entrySet()) {
-			if (!entry.getValue().isJsonObject()) {
-				if (entry.getValue().isJsonPrimitive() && !entry.getValue().getAsJsonPrimitive().getAsBoolean()) continue;
-				throw new IllegalStateException("Invalid widget config: " + entry.getKey());
-			}
+		for (Map.Entry<String, WidgetConfig> entry : getFullConfig(true).widgetConfigs().entrySet()) {
 			HudWidget widget = WidgetManager.getWidgetOrPlaceholder(entry.getKey());
-			JsonObject object = entry.getValue().getAsJsonObject();
-			widget.setInherited(object.has("inherited") && object.get("inherited").getAsBoolean());
+			JsonObject object = entry.getValue().config();
+			widget.setInherited(entry.getValue().inherited().orElse(false));
 			List<WidgetOption<?>> options = new ArrayList<>();
 			widget.getPerScreenOptions(options);
 			for (WidgetOption<?> option : options) {
@@ -179,5 +177,32 @@ public class ScreenBuilder {
 
 	public Collection<HudWidget> getWidgets() {
 		return widgets;
+	}
+
+	public record ScreenConfig(boolean fancyTab, Map<String, WidgetConfig> widgetConfigs) {
+		public static final Codec<ScreenConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.BOOL.optionalFieldOf("fancy_tab", Boolean.FALSE).forGetter(ScreenConfig::fancyTab),
+				Codec.unboundedMap(Codec.STRING, WidgetConfig.CODEC).fieldOf("widgets").forGetter(ScreenConfig::widgetConfigs)
+		).apply(instance, ScreenConfig::new));
+
+		public ScreenConfig(boolean fancyTab, Map<String, WidgetConfig> widgetConfigs) {
+			this.fancyTab = fancyTab;
+			this.widgetConfigs = new Object2ObjectOpenHashMap<>(widgetConfigs);
+		}
+
+		public ScreenConfig() {
+			this(false, new Object2ObjectOpenHashMap<>());
+		}
+	}
+
+	public record WidgetConfig(Optional<Boolean> inherited, JsonObject config) {
+		public static final Codec<WidgetConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.BOOL.optionalFieldOf("inherited").forGetter(WidgetConfig::inherited),
+				CodecUtils.JSON_OBJECT_CODEC.optionalFieldOf("config", new JsonObject()).forGetter(WidgetConfig::config)
+		).apply(instance, WidgetConfig::new));
+
+		public WidgetConfig getInherited() {
+			return new WidgetConfig(Optional.of(Boolean.TRUE), config);
+		}
 	}
 }
